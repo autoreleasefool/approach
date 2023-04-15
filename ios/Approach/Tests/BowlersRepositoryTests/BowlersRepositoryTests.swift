@@ -18,8 +18,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testPlayable_ReturnsOnlyPlayable() async throws {
 		// Given a database with a bowler and opponent
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Sarah", status: .opponent)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: id2, name: "Sarah", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Fetching the bowlers
@@ -37,8 +37,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testPlayable_SortsByName() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .playable)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .playable)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Fetching the bowlers
@@ -56,8 +56,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testPlayable_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .playable)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .playable)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Given an ordering of ids
@@ -80,8 +80,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testOpponents_ReturnsPlayablesAndOpponents() async throws {
 		// Given a database with a bowler and an opponent
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Sarah", status: .playable)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
+		let bowler2 = Bowler.Database(id: id2, name: "Sarah", status: .playable)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Fetching the opponents
@@ -99,8 +99,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testOpponents_SortsByName() async throws {
 		// Given a database with 2 opponents
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .opponent)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
+		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Fetching the opponents
@@ -118,8 +118,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testOpponents_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with 2 opponents
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .opponent)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
+		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Given an ordering of ids
@@ -143,7 +143,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testCreate_WhenBowlerExists_ThrowsError() async throws {
 		// Given a database with an existing bowler
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1])
 
 		// Create the bowler
@@ -157,11 +157,11 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Does not insert any records
-		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Bowler.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 
 		// Does not update the database
-		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Bowler.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Joseph")
 		XCTAssertEqual(updated?.status, .opponent)
@@ -180,11 +180,11 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Inserted the record
-		let exists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Bowler.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 
 		// Updates the database
-		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Bowler.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Joe")
 		XCTAssertEqual(updated?.status, .playable)
@@ -192,7 +192,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenBowlerExists_UpdatesBowler() async throws {
 		// Given a database with an existing bowler
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1])
 
 		// Editing the bowler
@@ -204,13 +204,13 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Bowler.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Joe")
 		XCTAssertEqual(updated?.status, .opponent)
 
 		// Does not insert any records
-		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Bowler.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 	}
 
@@ -229,13 +229,13 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Does not insert any records
-		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Bowler.Database.fetchCount($0) }
 		XCTAssertEqual(count, 0)
 	}
 
 	func testEdit_WhenBowlerExists_ReturnsBowler() async throws {
 		// Given a database with a bowler
-		let bowler = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
+		let bowler = Bowler.Database(id: id1, name: "Joseph", status: .playable)
 		let db = try await initializeDatabase(inserting: [bowler])
 
 		// Editing the bowler
@@ -266,8 +266,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesBowler() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
-		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Sarah", status: .opponent)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: id2, name: "Sarah", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
 
 		// Deleting the first bowler
@@ -278,17 +278,17 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deletedExists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		let deletedExists = try await db.read { try Bowler.Database.exists($0, id: self.id1) }
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other bowler intact
-		let otherExists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id2) }
+		let otherExists = try await db.read { try Bowler.Database.exists($0, id: self.id2) }
 		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1
-		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
+		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
 		let db = try await initializeDatabase(inserting: [bowler1])
 
 		// Deleting a non-existent bowler
@@ -299,12 +299,12 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the bowler
-		let exists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Bowler.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(
-		inserting bowlers: [Bowler.DatabaseModel] = []
+		inserting bowlers: [Bowler.Database] = []
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()

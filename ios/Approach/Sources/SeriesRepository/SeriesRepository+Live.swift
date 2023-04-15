@@ -35,7 +35,7 @@ extension SeriesRepository: DependencyKey {
 			delete: { id in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try Series.DatabaseModel.deleteOne($0, id: id)
+					try Series.Database.deleteOne($0, id: id)
 				}
 			}
 		)

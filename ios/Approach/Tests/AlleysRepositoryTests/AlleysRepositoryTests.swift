@@ -17,8 +17,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_ReturnsAllAlleys() async throws {
 		// Given a database with two alleys
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Grandview", material: .wood)
-		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Skyview", mechanism: .dedicated)
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
+		let alley2 = Alley.Database.mock(id: id2, name: "Skyview", mechanism: .dedicated)
 		let db = try await initializeDatabase(inserting: [alley1, alley2])
 
 		// Fetching the alleys
@@ -36,8 +36,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_FilterByProperty_ReturnsOneAlley() async throws {
 		// Given a database with two alleys
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
-		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
+		let alley1 = Alley.Database.mock(id: id1, name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: id2, name: "Grandview", mechanism: .dedicated)
 		let db = try await initializeDatabase(inserting: [alley1, alley2])
 
 		// Fetching the alleys by wood material
@@ -55,9 +55,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_FilterByMultipleProperties_ReturnsNone() async throws {
 		// Given a database with two alleys
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
-		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
-		let alley3 = Alley.DatabaseModel.mock(id: id3, name: "Commodore", pinFall: .freefall)
+		let alley1 = Alley.Database.mock(id: id1, name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: id2, name: "Grandview", mechanism: .dedicated)
+		let alley3 = Alley.Database.mock(id: id3, name: "Commodore", pinFall: .freefall)
 		let db = try await initializeDatabase(inserting: [alley1, alley2, alley3])
 
 		// Fetching the alleys by wood material and freefall
@@ -75,8 +75,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_SortsByName() async throws {
 		// Given a database with three alleys
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
-		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
+		let alley1 = Alley.Database.mock(id: id1, name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: id2, name: "Grandview", mechanism: .dedicated)
 		let db = try await initializeDatabase(inserting: [alley1, alley2])
 
 		// Fetching the alleys
@@ -94,8 +94,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with two alleys
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
-		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
+		let alley1 = Alley.Database.mock(id: id1, name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: id2, name: "Grandview", mechanism: .dedicated)
 		let db = try await initializeDatabase(inserting: [alley1, alley2])
 
 		// Given an ordering of ids
@@ -118,7 +118,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testLoad_WhenAlleyExists_ReturnsAlley() async throws {
 		// Given a database with one alley
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Grandview", material: .wood)
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
 		let db = try await initializeDatabase(inserting: [alley1])
 
 		// Fetching the alleys
@@ -153,7 +153,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testSave_WhenAlleyExists_UpdatesAlley() async throws {
 		// Given a database with an existing alley
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview")
+		let alley1 = Alley.Database.mock(id: id1, name: "Skyview")
 		let db = try await initializeDatabase(inserting: [alley1])
 
 		// Editing the alley
@@ -173,14 +173,14 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let updated = try await db.read { try Alley.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Alley.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Skyview Lanes")
 		XCTAssertNil(updated?.address)
 		XCTAssertEqual(updated?.material, .wood)
 
 		// Does not insert any records
-		let count = try await db.read { try Alley.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Alley.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 	}
 
@@ -205,11 +205,11 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Inserted the record
-		let exists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Alley.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 
 		// Updates the database
-		let updated = try await db.read { try Alley.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Alley.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Skyview Lanes")
 		XCTAssertNil(updated?.address)
@@ -218,7 +218,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testEdit_WhenAlleyExists_ReturnsAlley() async throws {
 		// Given a database with one alley
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Grandview", material: .wood)
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
 		let db = try await initializeDatabase(inserting: [alley1])
 
 		// Editing the alley
@@ -252,8 +252,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesAlley() async throws {
 		// Given a database with 2 alleys
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Grandview", material: .wood)
-		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Skyview", mechanism: .dedicated)
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
+		let alley2 = Alley.Database.mock(id: id2, name: "Skyview", mechanism: .dedicated)
 		let db = try await initializeDatabase(inserting: [alley1, alley2])
 
 		// Deleting the first alley
@@ -264,17 +264,17 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deletedExists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id1) }
+		let deletedExists = try await db.read { try Alley.Database.exists($0, id: self.id1) }
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other alley intact
-		let otherExists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id2) }
+		let otherExists = try await db.read { try Alley.Database.exists($0, id: self.id2) }
 		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 alley
-		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Grandview", material: .wood)
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
 		let db = try await initializeDatabase(inserting: [alley1])
 
 		// Deleting a non-existent alley
@@ -285,12 +285,12 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the alley
-		let exists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Alley.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(
-		inserting alleys: [Alley.DatabaseModel] = []
+		inserting alleys: [Alley.Database] = []
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
@@ -306,7 +306,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	}
 }
 
-extension Alley.DatabaseModel {
+extension Alley.Database {
 	static func mock(
 		id: ID,
 		name: String,
@@ -329,7 +329,7 @@ extension Alley.DatabaseModel {
 }
 
 extension Alley.Summary {
-	init(_ from: Alley.DatabaseModel) {
+	init(_ from: Alley.Database) {
 		self.init(
 			id: from.id,
 			name: from.name,

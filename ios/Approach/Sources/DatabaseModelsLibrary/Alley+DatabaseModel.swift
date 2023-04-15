@@ -4,7 +4,7 @@ import GRDB
 import ModelsLibrary
 
 extension Alley {
-	public struct DatabaseModel: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, TableRecord {
 		public static let databaseTableName = "alley"
 
 		public let id: Alley.ID
@@ -40,13 +40,13 @@ extension Alley.PinFall: DatabaseValueConvertible {}
 extension Alley.Mechanism: DatabaseValueConvertible {}
 extension Alley.PinBase: DatabaseValueConvertible {}
 
-extension Alley.DatabaseModel: FetchableRecord, PersistableRecord {
+extension Alley.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw DBValidationError.usingPlaceholderId }
 	}
 }
 
-extension Alley.DatabaseModel {
+extension Alley.Database {
 	public enum Columns {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)

@@ -61,14 +61,14 @@ final class FormLibraryTests: XCTestCase {
 		await store.send(.view(.didTapSaveButton))
 	}
 
-	func test_WhenCreating_WhenSaveButtonTapped_CreatesRecord() async {
+	func test_WhenCreating_WhenSaveButtonTapped_CreatesRecord() async throws {
 		let initialValue: TestForm.Value = .create(.init(isSaveable: false, name: "A"))
 		let value: TestForm.Value = .create(.init(isSaveable: true, name: "B"))
 
 		let expectation = self.expectation(description: "record created")
 		let store = withDependencies {
 			$0.records.create = {
-				XCTAssertEqual(value.record as! Createable, $0 as! Createable)
+				try XCTAssertEqual(XCTUnwrap(value.record as? Createable), XCTUnwrap($0 as? Createable))
 				expectation.fulfill()
 			}
 		} operation: {
@@ -84,17 +84,17 @@ final class FormLibraryTests: XCTestCase {
 
 		await fulfillment(of: [expectation])
 
-		await store.receive(.delegate(.didCreate(.success(value.record as! Createable))))
+		try await store.receive(.delegate(.didCreate(.success(XCTUnwrap(value.record as? Createable)))))
 	}
 
-	func test_WhenEditing_WhenSaveButtonTapped_UpdatesRecord() async {
+	func test_WhenEditing_WhenSaveButtonTapped_UpdatesRecord() async throws {
 		let initialValue: TestForm.Value = .edit(.init(isSaveable: false, name: "A"))
 		let value: TestForm.Value = .edit(.init(isSaveable: true, name: "B"))
 
 		let expectation = self.expectation(description: "record updated")
 		let store = withDependencies {
 			$0.records.update = {
-				XCTAssertEqual(value.record as! Editable, $0 as! Editable)
+				try XCTAssertEqual(XCTUnwrap(value.record as? Editable), XCTUnwrap($0 as? Editable))
 				expectation.fulfill()
 			}
 		} operation: {
@@ -110,7 +110,7 @@ final class FormLibraryTests: XCTestCase {
 
 		await fulfillment(of: [expectation])
 
-		await store.receive(.delegate(.didUpdate(.success(value.record as! Editable))))
+		try await store.receive(.delegate(.didUpdate(.success(XCTUnwrap(value.record as? Editable)))))
 	}
 
 	// MARK: Deleting
@@ -180,14 +180,14 @@ final class FormLibraryTests: XCTestCase {
 		}
 	}
 
-	func test_WhenDeletePromptConfirmed_DeletesRecord() async {
+	func test_WhenDeletePromptConfirmed_DeletesRecord() async throws {
 		let initialValue: TestForm.Value = .edit(.init())
 		let value: TestForm.Value = .edit(.init(isDeleteable: true))
 
 		let expectation = self.expectation(description: "record deleted")
 		let store = withDependencies {
 			$0.records.delete = {
-				XCTAssertEqual(initialValue.record?.id as! UUID, $0 as! UUID)
+				try XCTAssertEqual(XCTUnwrap(value.record?.id as? UUID), XCTUnwrap($0 as? UUID))
 				expectation.fulfill()
 			}
 		} operation: {
@@ -213,7 +213,7 @@ final class FormLibraryTests: XCTestCase {
 
 		await fulfillment(of: [expectation])
 
-		await store.receive(.delegate(.didDelete(.success(initialValue.record as! Editable))))
+		try await store.receive(.delegate(.didDelete(.success(XCTUnwrap(initialValue.record as? Editable)))))
 	}
 
 	// MARK: Discarding

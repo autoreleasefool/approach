@@ -50,7 +50,7 @@ extension AlleysRepository: DependencyKey {
 			delete: { id in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try Alley.DatabaseModel.deleteOne($0, id: id)
+					try Alley.Database.deleteOne($0, id: id)
 				}
 			}
 		)

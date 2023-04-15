@@ -4,7 +4,7 @@ import GRDB
 import ModelsLibrary
 
 extension Bowler {
-	public struct DatabaseModel: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, TableRecord {
 		public static let databaseTableName = "bowler"
 
 		public let id: Bowler.ID
@@ -25,13 +25,13 @@ extension Bowler {
 
 extension Bowler.Status: DatabaseValueConvertible {}
 
-extension Bowler.DatabaseModel: FetchableRecord, PersistableRecord {
+extension Bowler.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw DBValidationError.usingPlaceholderId }
 	}
 }
 
-extension Bowler.DatabaseModel {
+extension Bowler.Database {
 	public enum Columns {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)

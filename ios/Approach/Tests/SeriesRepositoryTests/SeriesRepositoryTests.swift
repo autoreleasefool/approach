@@ -21,8 +21,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testList_ReturnsAllSeries() async throws {
 		// Given a database with two series
-		let series1 = Series.DatabaseModel.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
-		let series2 = Series.DatabaseModel.mock(id: id2, date: Date(timeIntervalSince1970: 123_456_000))
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(id: id2, date: Date(timeIntervalSince1970: 123_456_000))
 		let db = try await initializeDatabase(inserting: [series1, series2])
 
 		// Fetching the series
@@ -40,8 +40,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testList_FilterByLeague_ReturnsLeagueSeries() async throws {
 		// Given a database with two series
-		let series1 = Series.DatabaseModel.mock(league: leagueId1, id: id1, date: Date(timeIntervalSince1970: 123_456_001))
-		let series2 = Series.DatabaseModel.mock(league: leagueId2, id: id2, date: Date(timeIntervalSince1970: 123_456_000))
+		let series1 = Series.Database.mock(league: leagueId1, id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(league: leagueId2, id: id2, date: Date(timeIntervalSince1970: 123_456_000))
 		let db = try await initializeDatabase(inserting: [series1, series2])
 
 		// Fetching the series by league
@@ -59,9 +59,9 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testList_SortsByDate() async throws {
 		// Given a database with three series
-		let series1 = Series.DatabaseModel.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
-		let series2 = Series.DatabaseModel.mock(id: id2, date: Date(timeIntervalSince1970: 123_456_002))
-		let series3 = Series.DatabaseModel.mock(id: id3, date: Date(timeIntervalSince1970: 123_456_000))
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(id: id2, date: Date(timeIntervalSince1970: 123_456_002))
+		let series3 = Series.Database.mock(id: id3, date: Date(timeIntervalSince1970: 123_456_000))
 		let db = try await initializeDatabase(inserting: [series1, series2, series3])
 
 		// Fetching the series
@@ -79,7 +79,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testSave_WhenSeriesExists_UpdatesSeries() async throws {
 		// Given a database with an existing series
-		let series1 = Series.DatabaseModel.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
 		let db = try await initializeDatabase(inserting: [series1])
 
 		// Editing the series
@@ -99,12 +99,12 @@ final class SeriesRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let updated = try await db.read { try Series.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_999))
 
 		// Does not insert any records
-		let count = try await db.read { try Series.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Series.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 	}
 
@@ -129,11 +129,11 @@ final class SeriesRepositoryTests: XCTestCase {
 		}
 
 		// Inserted the record
-		let exists = try await db.read { try Series.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Series.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 
 		// Updates the database
-		let updated = try await db.read { try Series.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_000))
 		XCTAssertEqual(updated?.numberOfGames, 4)
@@ -141,7 +141,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenSeriesExists_ReturnsSeries() async throws {
 		// Given a database with one series
-		let series1 = Series.DatabaseModel.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_000))
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_000))
 		let db = try await initializeDatabase(inserting: [series1])
 
 		// Editing the series
@@ -183,8 +183,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesSeries() async throws {
 		// Given a database with 2 series
-		let series1 = Series.DatabaseModel.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
-		let series2 = Series.DatabaseModel.mock(id: id2, date: Date(timeIntervalSince1970: 123_456_000))
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(id: id2, date: Date(timeIntervalSince1970: 123_456_000))
 		let db = try await initializeDatabase(inserting: [series1, series2])
 
 		// Deleting the first series
@@ -195,17 +195,17 @@ final class SeriesRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deletedExists = try await db.read { try Series.DatabaseModel.exists($0, id: self.id1) }
+		let deletedExists = try await db.read { try Series.Database.exists($0, id: self.id1) }
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other series intact
-		let otherExists = try await db.read { try Series.DatabaseModel.exists($0, id: self.id2) }
+		let otherExists = try await db.read { try Series.Database.exists($0, id: self.id2) }
 		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 series
-		let series1 = Series.DatabaseModel.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
 		let db = try await initializeDatabase(inserting: [series1])
 
 		// Deleting a non-existent series
@@ -216,21 +216,21 @@ final class SeriesRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the series
-		let exists = try await db.read { try Series.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Series.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(
-		inserting series: [Series.DatabaseModel] = []
+		inserting series: [Series.Database] = []
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
 		try migrator.prepare(dbQueue)
 
-		let bowler = Bowler.DatabaseModel(id: bowlerId1, name: "Joseph", status: .playable)
+		let bowler = Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable)
 
 		let leagues = [
-			League.DatabaseModel(
+			League.Database(
 				bowler: bowlerId1,
 				id: leagueId1,
 				name: "Majors",
@@ -241,7 +241,7 @@ final class SeriesRepositoryTests: XCTestCase {
 				excludeFromStatistics: .include,
 				alley: nil
 			),
-			League.DatabaseModel(
+			League.Database(
 				bowler: bowlerId1,
 				id: leagueId2,
 				name: "Minors",
@@ -268,7 +268,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	}
 }
 
-extension Series.DatabaseModel {
+extension Series.Database {
 	static func mock(
 		league: Bowler.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		id: ID,
@@ -291,7 +291,7 @@ extension Series.DatabaseModel {
 }
 
 extension Series.Summary {
-	init(_ from: Series.DatabaseModel) {
+	init(_ from: Series.Database) {
 		self.init(
 			id: from.id,
 			date: from.date

@@ -45,7 +45,7 @@ extension LeaguesRepository: DependencyKey {
 			delete: { id in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try League.DatabaseModel.deleteOne($0, id: id)
+					try League.Database.deleteOne($0, id: id)
 				}
 			}
 		)

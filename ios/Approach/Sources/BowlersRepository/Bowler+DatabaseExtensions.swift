@@ -4,25 +4,25 @@ import GRDB
 import ModelsLibrary
 
 extension Bowler.Edit: PersistableRecord, FetchableRecord {
-	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
+	public static let databaseTableName = Bowler.Database.databaseTableName
 }
 
 extension Bowler.Create: PersistableRecord, FetchableRecord {
-	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
+	public static let databaseTableName = Bowler.Database.databaseTableName
 }
 
 extension Bowler.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
+	public static let databaseTableName = Bowler.Database.databaseTableName
 }
 
 extension DerivableRequest<Bowler.Summary> {
 	func orderByName() -> Self {
-		let name = Bowler.DatabaseModel.Columns.name
+		let name = Bowler.Database.Columns.name
 		return order(name.collating(.localizedCaseInsensitiveCompare))
 	}
 
 	func filter(byStatus: Bowler.Status) -> Self {
-		let status = Bowler.DatabaseModel.Columns.status
+		let status = Bowler.Database.Columns.status
 		return filter(status == byStatus)
 	}
 }

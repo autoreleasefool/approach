@@ -4,7 +4,7 @@ import GRDB
 import ModelsLibrary
 
 extension League {
-	public struct DatabaseModel: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, TableRecord {
 		public static let databaseTableName = "league"
 
 		public let bowler: Bowler.ID
@@ -44,13 +44,13 @@ extension League {
 extension League.Recurrence: DatabaseValueConvertible {}
 extension League.ExcludeFromStatistics: DatabaseValueConvertible {}
 
-extension League.DatabaseModel: FetchableRecord, PersistableRecord {
+extension League.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw DBValidationError.usingPlaceholderId }
 	}
 }
 
-extension League.DatabaseModel {
+extension League.Database {
 	public enum Columns {
 		public static let bowler = Column(CodingKeys.bowler)
 		public static let id = Column(CodingKeys.id)

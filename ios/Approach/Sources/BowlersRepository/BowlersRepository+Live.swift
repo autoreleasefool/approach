@@ -71,7 +71,7 @@ extension BowlersRepository: DependencyKey {
 			delete: { id in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try Bowler.DatabaseModel.deleteOne($0, id: id)
+					try Bowler.Database.deleteOne($0, id: id)
 				}
 			}
 		)

@@ -20,8 +20,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testList_ReturnsAllLeagues() async throws {
 		// Given a database with two leagues
-		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors")
-		let league2 = League.DatabaseModel.mock(id: id2, name: "Minors")
+		let league1 = League.Database.mock(id: id1, name: "Majors")
+		let league2 = League.Database.mock(id: id2, name: "Minors")
 		let db = try await initializeDatabase(inserting: [league1, league2])
 
 		// Fetching the leagues
@@ -39,8 +39,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testList_FilterByRecurrence_ReturnsMatchingLeagues() async throws {
 		// Given a database with two leagues
-		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors", recurrence: .once)
-		let league2 = League.DatabaseModel.mock(id: id2, name: "Minors", recurrence: .repeating)
+		let league1 = League.Database.mock(id: id1, name: "Majors", recurrence: .once)
+		let league2 = League.Database.mock(id: id2, name: "Minors", recurrence: .repeating)
 		let db = try await initializeDatabase(inserting: [league1, league2])
 
 		// Fetching the leagues by recurrence
@@ -58,8 +58,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testList_FilterByBowler_ReturnsBowlerLeagues() async throws {
 		// Given a database with two leagues
-		let league1 = League.DatabaseModel.mock(bowler: bowlerId1, id: id1, name: "Majors")
-		let league2 = League.DatabaseModel.mock(bowler: bowlerId2, id: id2, name: "Minors")
+		let league1 = League.Database.mock(bowler: bowlerId1, id: id1, name: "Majors")
+		let league2 = League.Database.mock(bowler: bowlerId2, id: id2, name: "Minors")
 		let db = try await initializeDatabase(inserting: [league1, league2])
 
 		// Fetching the leagues by bowler
@@ -77,9 +77,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testList_SortsByName() async throws {
 		// Given a database with three leagues
-		let league1 = League.DatabaseModel.mock(id: id1, name: "B League")
-		let league2 = League.DatabaseModel.mock(id: id2, name: "A League")
-		let league3 = League.DatabaseModel.mock(id: id3, name: "C League")
+		let league1 = League.Database.mock(id: id1, name: "B League")
+		let league2 = League.Database.mock(id: id2, name: "A League")
+		let league3 = League.Database.mock(id: id3, name: "C League")
 		let db = try await initializeDatabase(inserting: [league1, league2, league3])
 
 		// Fetching the leagues
@@ -97,8 +97,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testList_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with two leagues
-		let league1 = League.DatabaseModel.mock(id: id1, name: "B League")
-		let league2 = League.DatabaseModel.mock(id: id2, name: "A League")
+		let league1 = League.Database.mock(id: id1, name: "B League")
+		let league2 = League.Database.mock(id: id2, name: "A League")
 		let db = try await initializeDatabase(inserting: [league1, league2])
 
 		// Given an ordering of ids
@@ -121,7 +121,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testSave_WhenLeagueExists_UpdatesLeague() async throws {
 		// Given a database with an existing league
-		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors", additionalPinfall: nil, additionalGames: nil)
+		let league1 = League.Database.mock(id: id1, name: "Majors", additionalPinfall: nil, additionalGames: nil)
 		let db = try await initializeDatabase(inserting: [league1])
 
 		// Editing the league
@@ -143,14 +143,14 @@ final class LeaguesRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let updated = try await db.read { try League.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try League.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Minors")
 		XCTAssertEqual(updated?.additionalGames, 123)
 		XCTAssertEqual(updated?.additionalPinfall, 123)
 
 		// Does not insert any records
-		let count = try await db.read { try League.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try League.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 	}
 
@@ -177,11 +177,11 @@ final class LeaguesRepositoryTests: XCTestCase {
 		}
 
 		// Inserted the record
-		let exists = try await db.read { try League.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try League.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 
 		// Updates the database
-		let updated = try await db.read { try League.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try League.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Minors")
 		XCTAssertEqual(updated?.numberOfGames, 1)
@@ -189,7 +189,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenLeagueExists_ReturnsLeague() async throws {
 		// Given a database with one league
-		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors")
+		let league1 = League.Database.mock(id: id1, name: "Majors")
 		let db = try await initializeDatabase(inserting: [league1])
 
 		// Editing the league
@@ -233,8 +233,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesLeague() async throws {
 		// Given a database with 2 leagues
-		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors")
-		let league2 = League.DatabaseModel.mock(id: id2, name: "Minors")
+		let league1 = League.Database.mock(id: id1, name: "Majors")
+		let league2 = League.Database.mock(id: id2, name: "Minors")
 		let db = try await initializeDatabase(inserting: [league1, league2])
 
 		// Deleting the first league
@@ -245,17 +245,17 @@ final class LeaguesRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deletedExists = try await db.read { try League.DatabaseModel.exists($0, id: self.id1) }
+		let deletedExists = try await db.read { try League.Database.exists($0, id: self.id1) }
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other league intact
-		let otherExists = try await db.read { try League.DatabaseModel.exists($0, id: self.id2) }
+		let otherExists = try await db.read { try League.Database.exists($0, id: self.id2) }
 		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 league
-		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors")
+		let league1 = League.Database.mock(id: id1, name: "Majors")
 		let db = try await initializeDatabase(inserting: [league1])
 
 		// Deleting a non-existent league
@@ -266,20 +266,20 @@ final class LeaguesRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the league
-		let exists = try await db.read { try League.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try League.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(
-		inserting leagues: [League.DatabaseModel] = []
+		inserting leagues: [League.Database] = []
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
 		try migrator.prepare(dbQueue)
 
 		let bowlers = [
-			Bowler.DatabaseModel(id: bowlerId1, name: "Joseph", status: .playable),
-			Bowler.DatabaseModel(id: bowlerId2, name: "Sarah", status: .playable)
+			Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable),
+			Bowler.Database(id: bowlerId2, name: "Sarah", status: .playable)
 		]
 
 		try await dbQueue.write {
@@ -295,7 +295,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 	}
 }
 
-extension League.DatabaseModel {
+extension League.Database {
 	static func mock(
 		bowler: Bowler.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		id: ID,
@@ -322,7 +322,7 @@ extension League.DatabaseModel {
 }
 
 extension League.Summary {
-	init(_ from: League.DatabaseModel) {
+	init(_ from: League.Database) {
 		self.init(
 			id: from.id,
 			name: from.name

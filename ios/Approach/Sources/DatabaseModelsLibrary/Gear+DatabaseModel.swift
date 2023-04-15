@@ -4,7 +4,7 @@ import GRDB
 import ModelsLibrary
 
 extension Gear {
-	public struct DatabaseModel: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, TableRecord {
 		public static let databaseTableName = "gear"
 
 		public let id: Gear.ID
@@ -28,13 +28,13 @@ extension Gear {
 
 extension Gear.Kind: DatabaseValueConvertible {}
 
-extension Gear.DatabaseModel: FetchableRecord, PersistableRecord {
+extension Gear.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw DBValidationError.usingPlaceholderId }
 	}
 }
 
-extension Gear.DatabaseModel {
+extension Gear.Database {
 	public enum Columns {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)

@@ -20,8 +20,8 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testList_ReturnsAllGear() async throws {
 		// Given a database with two gear
-		let gear1 = Gear.DatabaseModel.mock(id: id1, name: "Yellow")
-		let gear2 = Gear.DatabaseModel.mock(id: id2, name: "Blue")
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow")
+		let gear2 = Gear.Database.mock(id: id2, name: "Blue")
 		let db = try await initializeDatabase(inserting: [gear1, gear2])
 
 		// Fetching the gear
@@ -42,8 +42,8 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testList_FilterByKind_ReturnsMatchingGear() async throws {
 		// Given a database with two gear
-		let gear1 = Gear.DatabaseModel.mock(id: id1, name: "Yellow", kind: .bowlingBall)
-		let gear2 = Gear.DatabaseModel.mock(id: id2, name: "Blue", kind: .towel)
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow", kind: .bowlingBall)
+		let gear2 = Gear.Database.mock(id: id2, name: "Blue", kind: .towel)
 		let db = try await initializeDatabase(inserting: [gear1, gear2])
 
 		// Fetching the gear
@@ -63,8 +63,8 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testList_FilterByBowler_ReturnsMatchingGear() async throws {
 		// Given a database with two gear
-		let gear1 = Gear.DatabaseModel.mock(id: id1, name: "Yellow", kind: .bowlingBall, bowler: bowlerId1)
-		let gear2 = Gear.DatabaseModel.mock(id: id2, name: "Blue", kind: .towel, bowler: bowlerId2)
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow", kind: .bowlingBall, bowler: bowlerId1)
+		let gear2 = Gear.Database.mock(id: id2, name: "Blue", kind: .towel, bowler: bowlerId2)
 		let db = try await initializeDatabase(inserting: [gear1, gear2])
 
 		// Fetching the gear
@@ -84,7 +84,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testCreate_WhenGearExists_ThrowsError() async throws {
 		// Given a database with an existing gear
-		let gear1 = Gear.DatabaseModel.mock(id: id1, name: "Yellow")
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow")
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Create the gear
@@ -98,11 +98,11 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Does not insert any records
-		let count = try await db.read { try Gear.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Gear.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 
 		// Does not update the database
-		let updated = try await db.read { try Gear.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Gear.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Yellow")
 		XCTAssertEqual(updated?.kind, .bowlingBall)
@@ -122,11 +122,11 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Inserted the record
-		let exists = try await db.read { try Gear.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Gear.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 
 		// Updates the database
-		let updated = try await db.read { try Gear.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Gear.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Yellow")
 		XCTAssertEqual(updated?.kind, .bowlingBall)
@@ -134,7 +134,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGearExists_UpdatesGear() async throws {
 		// Given a database with an existing gear
-		let gear1 = Gear.DatabaseModel(id: id1, name: "Yellow", kind: .bowlingBall, bowler: nil)
+		let gear1 = Gear.Database(id: id1, name: "Yellow", kind: .bowlingBall, bowler: nil)
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Editing the gear
@@ -146,14 +146,14 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let updated = try await db.read { try Gear.DatabaseModel.fetchOne($0, id: self.id1) }
+		let updated = try await db.read { try Gear.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Blue")
 		XCTAssertEqual(updated?.kind, .bowlingBall)
 		XCTAssertEqual(updated?.bowler, bowlerId1)
 
 		// Does not insert any records
-		let count = try await db.read { try Gear.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Gear.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 	}
 
@@ -172,13 +172,13 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Does not insert any records
-		let count = try await db.read { try Gear.DatabaseModel.fetchCount($0) }
+		let count = try await db.read { try Gear.Database.fetchCount($0) }
 		XCTAssertEqual(count, 0)
 	}
 
 	func testEdit_WhenGearExists_ReturnsGear() async throws {
 		// Given a database with a gear
-		let gear = Gear.DatabaseModel(id: id1, name: "Yellow", kind: .bowlingBall, bowler: bowlerId1)
+		let gear = Gear.Database(id: id1, name: "Yellow", kind: .bowlingBall, bowler: bowlerId1)
 		let db = try await initializeDatabase(inserting: [gear])
 
 		// Editing the gear
@@ -209,8 +209,8 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesGear() async throws {
 		// Given a database with 2 gear
-		let gear1 = Gear.DatabaseModel.mock(id: id1, name: "Yellow")
-		let gear2 = Gear.DatabaseModel.mock(id: id2, name: "Blue")
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow")
+		let gear2 = Gear.Database.mock(id: id2, name: "Blue")
 		let db = try await initializeDatabase(inserting: [gear1, gear2])
 
 		// Deleting the first gear
@@ -221,17 +221,17 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deletedExists = try await db.read { try Gear.DatabaseModel.exists($0, id: self.id1) }
+		let deletedExists = try await db.read { try Gear.Database.exists($0, id: self.id1) }
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other gear intact
-		let otherExists = try await db.read { try Gear.DatabaseModel.exists($0, id: self.id2) }
+		let otherExists = try await db.read { try Gear.Database.exists($0, id: self.id2) }
 		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1
-		let gear1 = Gear.DatabaseModel.mock(id: id1, name: "Yellow")
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow")
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Deleting a non-existent gear
@@ -242,20 +242,20 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the gear
-		let exists = try await db.read { try Gear.DatabaseModel.exists($0, id: self.id1) }
+		let exists = try await db.read { try Gear.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(
-		inserting gear: [Gear.DatabaseModel] = []
+		inserting gear: [Gear.Database] = []
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
 		try migrator.prepare(dbQueue)
 
 		let bowlers = [
-			Bowler.DatabaseModel(id: bowlerId1, name: "Joseph", status: .playable),
-			Bowler.DatabaseModel(id: bowlerId2, name: "Sarah", status: .playable),
+			Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable),
+			Bowler.Database(id: bowlerId2, name: "Sarah", status: .playable),
 		]
 
 		try await dbQueue.write {
@@ -271,7 +271,7 @@ final class GearRepositoryTests: XCTestCase {
 	}
 }
 
-extension Gear.DatabaseModel {
+extension Gear.Database {
 	static func mock(
 		id: ID,
 		name: String,

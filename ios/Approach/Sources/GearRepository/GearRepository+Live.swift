@@ -11,7 +11,7 @@ public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 
 extension Gear {
 	struct SummaryFetch: Codable, TableRecord, FetchableRecord {
-		static let databaseTableName = Gear.DatabaseModel.databaseTableName
+		static let databaseTableName = Gear.Database.databaseTableName
 
 		var gear: Gear.Summary
 		var owner: String?
@@ -69,7 +69,7 @@ extension GearRepository: DependencyKey {
 			delete: { id in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try Gear.DatabaseModel.deleteOne($0, id: id)
+					try Gear.Database.deleteOne($0, id: id)
 				}
 			}
 		)
