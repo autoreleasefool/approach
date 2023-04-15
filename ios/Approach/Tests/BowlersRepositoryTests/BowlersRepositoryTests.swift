@@ -26,7 +26,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.playable(.init(ordering: .byName))
+			BowlersRepository.liveValue.playable(ordered: .byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -45,7 +45,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.playable(.init(ordering: .byName))
+			BowlersRepository.liveValue.playable(ordered: .byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -69,7 +69,7 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
 		} operation: {
-			BowlersRepository.liveValue.playable(.init(ordering: .byRecentlyUsed))
+			BowlersRepository.liveValue.playable(ordered: .byRecentlyUsed)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -88,7 +88,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let opponents = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.opponents(.init(ordering: .byName))
+			BowlersRepository.liveValue.opponents(ordered: .byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -107,7 +107,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let opponents = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.opponents(.init(ordering: .byName))
+			BowlersRepository.liveValue.opponents(ordered: .byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -132,7 +132,7 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
 		} operation: {
 			// with `byRecentlyUsed` ordering
-			BowlersRepository.liveValue.opponents(.init(ordering: .byRecentlyUsed))
+			BowlersRepository.liveValue.opponents(ordered: .byRecentlyUsed)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
