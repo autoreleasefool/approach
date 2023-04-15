@@ -38,6 +38,8 @@ let package = Package(
 		.library(name: "AlleysRepositoryInterface", targets: ["AlleysRepositoryInterface"]),
 		.library(name: "BowlersRepository", targets: ["BowlersRepository"]),
 		.library(name: "BowlersRepositoryInterface", targets: ["BowlersRepositoryInterface"]),
+		.library(name: "GearRepository", targets: ["GearRepository"]),
+		.library(name: "GearRepositoryInterface", targets: ["GearRepositoryInterface"]),
 		.library(name: "LeaguesRepository", targets: ["LeaguesRepository"]),
 		.library(name: "LeaguesRepositoryInterface", targets: ["LeaguesRepositoryInterface"]),
 		.library(name: "SeriesRepository", targets: ["SeriesRepository"]),
@@ -541,6 +543,32 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersRepository",
 				"DatabaseService",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "GearRepository",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"GearRepositoryInterface",
+				"RecentlyUsedServiceInterface",
+				"RepositoryLibrary",
+			]
+		),
+		.target(
+			name: "GearRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "GearRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"GearRepository",
 				"TestUtilitiesLibrary",
 			]
 		),
