@@ -12,7 +12,7 @@ import ViewsLibrary
 
 extension League.Summary: ResourceListItem {}
 
-extension League.FetchRequest.Ordering: CustomStringConvertible {
+extension League.Ordering: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
@@ -25,9 +25,9 @@ public struct LeaguesList: Reducer {
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
-		public var list: ResourceList<League.Summary, League.FetchRequest>.State
+		public var list: ResourceList<League.Summary, League.Summary.FetchRequest>.State
 		public var editor: LeagueEditor.State?
-		public var sortOrder: SortOrder<League.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		public var sortOrder: SortOrder<League.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public var isFiltersPresented = false
 		public var filters: LeaguesFilter.State = .init()
@@ -71,11 +71,11 @@ public struct LeaguesList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableLeague(League.Editable)
-			case list(ResourceList<League.Summary, League.FetchRequest>.Action)
+			case list(ResourceList<League.Summary, League.Summary.FetchRequest>.Action)
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
-			case sortOrder(SortOrder<League.FetchRequest.Ordering>.Action)
+			case sortOrder(SortOrder<League.Ordering>.Action)
 		}
 
 		case view(ViewAction)
@@ -100,7 +100,13 @@ public struct LeaguesList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: leagues.list)
+			ResourceList { request in
+				leagues.list(
+					bowledBy: request.filter.bowler,
+					withRecurrence: request.filter.recurrence,
+					ordering: request.ordering
+				)
+			}
 		}
 
 		Reduce<State, Action> { state, action in

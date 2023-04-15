@@ -1,6 +1,7 @@
 import AlleysRepositoryInterface
 import BaseFormLibrary
 import ComposableArchitecture
+import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
 import LeaguesRepositoryInterface
@@ -31,7 +32,7 @@ public struct LeagueEditor: Reducer {
 	public typealias Form = BaseForm<League.Editable, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var alleyPicker: ResourcePicker<Alley.Summary, Alley.FetchRequest>.State
+		public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State
 		@BindingState public var league: League.Editable
 		@BindingState public var gamesPerSeries: GamesPerSeries
 		@BindingState public var hasAdditionalPinfall: Bool
@@ -42,7 +43,7 @@ public struct LeagueEditor: Reducer {
 			self.gamesPerSeries = (league.numberOfGames == nil) ? .dynamic : .static
 			self.alleyPicker = .init(
 				selected: Set([league.alley].compactMap({ $0 })),
-				query: .init(filter: .init(), ordering: .byName),
+				query: .init(()),
 				limit: 1,
 				showsCancelHeaderButton: false
 			)
@@ -108,7 +109,7 @@ public struct LeagueEditor: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadAlley(TaskResult<Alley.Summary?>)
 			case form(Form.Action)
-			case alleyPicker(ResourcePicker<Alley.Summary, Alley.FetchRequest>.Action)
+			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action)
 		}
 
 		case view(ViewAction)
@@ -135,7 +136,7 @@ public struct LeagueEditor: Reducer {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
-			ResourcePicker(observeResources: alleys.list)
+			ResourcePicker { _ in alleys.list(ordered: .byName) }
 		}
 
 		Reduce<State, Action> { state, action in

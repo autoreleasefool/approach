@@ -28,7 +28,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			GearRepository.liveValue.list(.init(filter: .init(bowler: nil, kind: nil), ordering: .byName))
+			GearRepository.liveValue.list(ordered: .byName)
 		}
 		var iterator = gear.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -50,7 +50,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			GearRepository.liveValue.list(.init(filter: .init(bowler: nil, kind: .bowlingBall), ordering: .byName))
+			GearRepository.liveValue.list(ofKind: .bowlingBall, ordered: .byName)
 		}
 		var iterator = gear.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -71,7 +71,7 @@ final class GearRepositoryTests: XCTestCase {
 		let gear = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			GearRepository.liveValue.list(.init(filter: .init(bowler: bowlerId1, kind: nil), ordering: .byName))
+			GearRepository.liveValue.list(ownedBy: bowlerId1, ordered: .byName)
 		}
 		var iterator = gear.makeAsyncIterator()
 		let fetched = try await iterator.next()

@@ -9,14 +9,14 @@ import SeriesRepositoryInterface
 extension SeriesRepository: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
-			list: { request in
+			list: { league, _ in
 				@Dependency(\.database) var database
 
 				return database.reader().observe {
 					try Series.Summary
 						.all()
 						.orderByDate()
-						.bowled(inLeague: request.filter.league)
+						.bowled(inLeague: league)
 						.fetchAll($0)
 				}
 			},

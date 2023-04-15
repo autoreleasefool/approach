@@ -25,30 +25,18 @@ extension BowlersRepository: DependencyKey {
 		}
 
 		return Self(
-			playable: { ordering in
+			list: { status, ordering in
 				@Dependency(\.database) var database
 
 				let bowlers = database.reader().observe {
 					try Bowler.Summary
 						.all()
 						.orderByName()
-						.filter(byStatus: .playable)
+						.filter(byStatus: status)
 						.fetchAll($0)
 				}
 
 				return sortBowlers(bowlers, ordering)
-			},
-			opponents: { ordering in
-				@Dependency(\.database) var database
-
-				let opponents = database.reader().observe {
-					try Bowler.Summary
-						.all()
-						.orderByName()
-						.fetchAll($0)
-				}
-
-				return sortBowlers(opponents, ordering)
 			},
 			edit: { id in
 				@Dependency(\.database) var database

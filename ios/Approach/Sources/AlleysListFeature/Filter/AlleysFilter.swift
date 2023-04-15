@@ -68,7 +68,7 @@ extension AlleysFilter.State {
 		filter != .init()
 	}
 
-	public var filter: Alley.FetchRequest.Filter {
+	public var filter: Alley.Summary.FetchRequest.Filter {
 		.init(material: material, pinFall: pinFall, mechanism: mechanism, pinBase: pinBase)
 	}
 }

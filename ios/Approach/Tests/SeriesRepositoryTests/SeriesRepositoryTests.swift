@@ -29,7 +29,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			SeriesRepository.liveValue.list(.init(filter: .init(league: leagueId1), ordering: .byDate))
+			SeriesRepository.liveValue.list(bowledIn: leagueId1, ordering: .byDate)
 		}
 		var iterator = series.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -48,7 +48,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			SeriesRepository.liveValue.list(.init(filter: .init(league: leagueId1), ordering: .byDate))
+			SeriesRepository.liveValue.list(bowledIn: leagueId1, ordering: .byDate)
 		}
 		var iterator = series.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -68,7 +68,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			SeriesRepository.liveValue.list(.init(filter: .init(league: leagueId1), ordering: .byDate))
+			SeriesRepository.liveValue.list(bowledIn: leagueId1, ordering: .byDate)
 		}
 		var iterator = series.makeAsyncIterator()
 		let fetched = try await iterator.next()

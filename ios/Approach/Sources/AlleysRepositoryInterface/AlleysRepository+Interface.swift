@@ -1,15 +1,34 @@
 import Dependencies
 import ModelsLibrary
 
+extension Alley {
+	public enum Ordering {
+		case byName
+		case byRecentlyUsed
+	}
+}
+
 public struct AlleysRepository: Sendable {
-	public var list: @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley.Summary], Error>
+	public var list: @Sendable (
+		Alley.Material?,
+		Alley.PinFall?,
+		Alley.Mechanism?,
+		Alley.PinBase?,
+		Alley.Ordering
+	) -> AsyncThrowingStream<[Alley.Summary], Error>
 	public var load: @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>
 	public var edit: @Sendable (Alley.ID) async throws -> Alley.Editable?
 	public var save: @Sendable (Alley.Editable) async throws -> Void
 	public var delete: @Sendable (Alley.ID) async throws -> Void
 
 	public init(
-		list: @escaping @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley.Summary], Error>,
+		list: @escaping @Sendable (
+			Alley.Material?,
+			Alley.PinFall?,
+			Alley.Mechanism?,
+			Alley.PinBase?,
+			Alley.Ordering
+		) -> AsyncThrowingStream<[Alley.Summary], Error>,
 		load: @escaping @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>,
 		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.Editable?,
 		save: @escaping @Sendable (Alley.Editable) async throws -> Void,
@@ -21,11 +40,25 @@ public struct AlleysRepository: Sendable {
 		self.save = save
 		self.delete = delete
 	}
+
+	public func list(ordered: Alley.Ordering) -> AsyncThrowingStream<[Alley.Summary], Error> {
+		self.list(nil, nil, nil, nil, ordered)
+	}
+
+	public func filteredList(
+		withMaterial: Alley.Material? = nil,
+		withPinFall: Alley.PinFall? = nil,
+		withMechanism: Alley.Mechanism? = nil,
+		withPinBase: Alley.PinBase? = nil,
+		ordered: Alley.Ordering
+	) -> AsyncThrowingStream<[Alley.Summary], Error> {
+		self.list(withMaterial, withPinFall, withMechanism, withPinBase, ordered)
+	}
 }
 
 extension AlleysRepository: TestDependencyKey {
 	public static var testValue = Self(
-		list: { _ in unimplemented("\(Self.self).list") },
+		list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
 		load: { _ in unimplemented("\(Self.self).load") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		save: { _ in unimplemented("\(Self.self).save") },

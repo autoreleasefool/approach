@@ -28,7 +28,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let leagues = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			LeaguesRepository.liveValue.list(.init(filter: .init(bowler: bowlerId1, recurrence: nil), ordering: .byName))
+			LeaguesRepository.liveValue.list(bowledBy: bowlerId1, ordering: .byName)
 		}
 		var iterator = leagues.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -47,7 +47,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let leagues = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			LeaguesRepository.liveValue.list(.init(filter: .init(bowler: bowlerId1, recurrence: .once), ordering: .byName))
+			LeaguesRepository.liveValue.list(bowledBy: bowlerId1, withRecurrence: .once, ordering: .byName)
 		}
 		var iterator = leagues.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -66,7 +66,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let leagues = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			LeaguesRepository.liveValue.list(.init(filter: .init(bowler: bowlerId1, recurrence: nil), ordering: .byName))
+			LeaguesRepository.liveValue.list(bowledBy: bowlerId1, ordering: .byName)
 		}
 		var iterator = leagues.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -86,7 +86,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let leagues = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			LeaguesRepository.liveValue.list(.init(filter: .init(bowler: bowlerId1, recurrence: nil), ordering: .byName))
+			LeaguesRepository.liveValue.list(bowledBy: bowlerId1, ordering: .byName)
 		}
 		var iterator = leagues.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -110,7 +110,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
 		} operation: {
-			LeaguesRepository.liveValue.list(.init(filter: .init(bowler: bowlerId1, recurrence: nil), ordering: .byRecentlyUsed))
+			LeaguesRepository.liveValue.list(bowledBy: bowlerId1, ordering: .byRecentlyUsed)
 		}
 		var iterator = leagues.makeAsyncIterator()
 		let fetched = try await iterator.next()

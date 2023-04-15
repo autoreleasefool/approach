@@ -1,18 +1,19 @@
+import AlleysRepositoryInterface
 import ModelsLibrary
 
-extension Alley {
+extension Alley.Summary {
 	public struct FetchRequest: Equatable {
 		public let filter: Filter
-		public let ordering: Ordering
+		public let ordering: Alley.Ordering
 
-		public init(filter: Filter, ordering: Ordering) {
+		public init(filter: Filter, ordering: Alley.Ordering) {
 			self.filter = filter
 			self.ordering = ordering
 		}
 	}
 }
 
-extension Alley.FetchRequest {
+extension Alley.Summary.FetchRequest {
 	public struct Filter: Equatable {
 		public let material: Alley.Material?
 		public let pinFall: Alley.PinFall?
@@ -30,12 +31,5 @@ extension Alley.FetchRequest {
 			self.pinBase = pinBase
 			self.mechanism = mechanism
 		}
-	}
-}
-
-extension Alley.FetchRequest {
-	public enum Ordering {
-		case byName
-		case byRecentlyUsed
 	}
 }

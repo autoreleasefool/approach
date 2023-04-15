@@ -21,7 +21,8 @@ extension DerivableRequest<Bowler.Summary> {
 		return order(name.collating(.localizedCaseInsensitiveCompare))
 	}
 
-	func filter(byStatus: Bowler.Status) -> Self {
+	func filter(byStatus: Bowler.Status?) -> Self {
+		guard let byStatus else { return self }
 		let status = Bowler.Database.Columns.status
 		return filter(status == byStatus)
 	}

@@ -9,23 +9,23 @@ extension Bowler {
 }
 
 public struct BowlersRepository: Sendable {
-	public var playable: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
-	public var opponents: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
+	public var list: @Sendable (
+		Bowler.Status?,
+		Bowler.Ordering
+	) -> AsyncThrowingStream<[Bowler.Summary], Error>
 	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit?
 	public var create: @Sendable (Bowler.Create) async throws -> Void
 	public var update: @Sendable (Bowler.Edit) async throws -> Void
 	public var delete: @Sendable (Bowler.ID) async throws -> Void
 
 	public init(
-		playable: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
-		opponents: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
+		list: @escaping @Sendable (Bowler.Status?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
 		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit?,
 		create: @escaping @Sendable (Bowler.Create) async throws -> Void,
 		update: @escaping @Sendable (Bowler.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Bowler.ID) async throws -> Void
 	) {
-		self.playable = playable
-		self.opponents = opponents
+		self.list = list
 		self.edit = edit
 		self.create = create
 		self.update = update
@@ -33,18 +33,17 @@ public struct BowlersRepository: Sendable {
 	}
 
 	public func playable(ordered: Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error> {
-		self.playable(ordered)
+		self.list(.playable, ordered)
 	}
 
 	public func opponents(ordered: Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error> {
-		self.opponents(ordered)
+		self.list(nil, ordered)
 	}
 }
 
 extension BowlersRepository: TestDependencyKey {
 	public static var testValue = Self(
-		playable: { _ in unimplemented("\(Self.self).playable") },
-		opponents: { _ in unimplemented("\(Self.self).opponents") },
+		list: { _, _ in unimplemented("\(Self.self).list") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },
 		update: { _ in unimplemented("\(Self.self).update") },

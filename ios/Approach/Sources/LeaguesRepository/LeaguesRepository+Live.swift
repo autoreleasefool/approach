@@ -10,19 +10,19 @@ import RepositoryLibrary
 extension LeaguesRepository: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
-			list: { request in
+			list: { bowler, recurrence, ordering in
 				@Dependency(\.database) var database
 
 				let leagues = database.reader().observe {
 					try League.Summary
 						.all()
 						.orderByName()
-						.bowled(byBowler: request.filter.bowler)
-						.filter(byRecurrence: request.filter.recurrence)
+						.bowled(byBowler: bowler)
+						.filter(byRecurrence: recurrence)
 						.fetchAll($0)
 				}
 
-				switch request.ordering {
+				switch ordering {
 				case .byName:
 					return leagues
 				case .byRecentlyUsed:

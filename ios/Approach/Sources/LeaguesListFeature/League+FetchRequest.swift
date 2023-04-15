@@ -1,18 +1,19 @@
+import LeaguesRepositoryInterface
 import ModelsLibrary
 
-extension League {
+extension League.Summary {
 	public struct FetchRequest: Equatable {
 		public let filter: Filter
-		public let ordering: Ordering
+		public let ordering: League.Ordering
 
-		public init(filter: Filter, ordering: Ordering) {
+		public init(filter: Filter, ordering: League.Ordering) {
 			self.filter = filter
 			self.ordering = ordering
 		}
 	}
 }
 
-extension League.FetchRequest {
+extension League.Summary.FetchRequest {
 	public struct Filter: Equatable {
 		public let bowler: Bowler.ID
 		public let recurrence: League.Recurrence?
@@ -24,12 +25,5 @@ extension League.FetchRequest {
 			self.bowler = bowler
 			self.recurrence = recurrence
 		}
-	}
-}
-
-extension League.FetchRequest {
-	public enum Ordering: Hashable, CaseIterable {
-		case byName
-		case byRecentlyUsed
 	}
 }

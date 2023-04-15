@@ -25,7 +25,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.list(.init(filter: .init(), ordering: .byName))
+			AlleysRepository.liveValue.list(ordered: .byName)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -44,7 +44,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.list(.init(filter: .init(material: .wood), ordering: .byName))
+			AlleysRepository.liveValue.filteredList(withMaterial: .wood, ordered: .byName)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -64,7 +64,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.list(.init(filter: .init(material: .wood, pinFall: .freefall), ordering: .byName))
+			AlleysRepository.liveValue.filteredList(withMaterial: .wood, withPinFall: .freefall, ordered: .byName)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -83,7 +83,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.list(.init(filter: .init(), ordering: .byName))
+			AlleysRepository.liveValue.list(ordered: .byName)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -107,7 +107,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
 		} operation: {
-			AlleysRepository.liveValue.list(.init(filter: .init(), ordering: .byRecentlyUsed))
+			AlleysRepository.liveValue.list(ordered: .byRecentlyUsed)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()

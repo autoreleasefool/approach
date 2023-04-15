@@ -22,7 +22,7 @@ extension GearRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Sendable func sortGear(
 			_ gear: GearStream,
-			ordering: Gear.FetchRequest.Ordering
+			_ ordering: Gear.Ordering
 		) -> GearStream {
 			switch ordering {
 			case .byName:
@@ -34,19 +34,19 @@ extension GearRepository: DependencyKey {
 		}
 
 		return Self(
-			list: { request in
+			list: { owner, kind, ordering in
 				@Dependency(\.database) var database
 
 				let gear = database.reader().observe {
 					try Gear.Summary
 						.allAnnotated()
 						.orderByName()
-						.filter(byKind: request.filter.kind)
-						.owned(byBowler: request.filter.bowler)
+						.filter(byKind: kind)
+						.owned(byBowler: owner)
 						.fetchAll($0)
 				}
 
-				return sortGear(gear, ordering: request.ordering)
+				return sortGear(gear, ordering)
 			},
 			edit: { id in
 				@Dependency(\.database) var database
