@@ -20,6 +20,10 @@
 		CA632F5C29BD26E300272ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA632F5B29BD26E300272ADB /* Assets.xcassets */; };
 		CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA632F6529BD293E00272ADB /* GamesEditorFeature */; };
 		CA681DEE29B94BE900535750 /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CA681DED29B94BE900535750 /* AvatarService */; };
+		CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3429EBBE4C00B3BAF7 /* FramesRepository */; };
+		CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3629EBBE4C00B3BAF7 /* GamesRepository */; };
+		CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3829EBBE4C00B3BAF7 /* GearRepository */; };
+		CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */; };
 		CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */; };
 		CA8BBC5928D59B8B00653A1E /* ApproachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
@@ -97,6 +101,8 @@
 			files = (
 				CA2513FE296BEE4200EF3F1A /* OpponentsDataProvider in Frameworks */,
 				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
+				CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */,
+				CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
@@ -104,9 +110,11 @@
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
+				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
 				CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */,
+				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
 				CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */,
@@ -325,6 +333,10 @@
 				CA439E4F29E2949400B09020 /* AlleysRepository */,
 				CA439E5129E32A9900B09020 /* LeaguesRepository */,
 				CA439E5329E3796A00B09020 /* SeriesRepository */,
+				CA6CBA3429EBBE4C00B3BAF7 /* FramesRepository */,
+				CA6CBA3629EBBE4C00B3BAF7 /* GamesRepository */,
+				CA6CBA3829EBBE4C00B3BAF7 /* GearRepository */,
+				CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -828,6 +840,22 @@
 		CA681DED29B94BE900535750 /* AvatarService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AvatarService;
+		};
+		CA6CBA3429EBBE4C00B3BAF7 /* FramesRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FramesRepository;
+		};
+		CA6CBA3629EBBE4C00B3BAF7 /* GamesRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GamesRepository;
+		};
+		CA6CBA3829EBBE4C00B3BAF7 /* GearRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GearRepository;
+		};
+		CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LanesRepository;
 		};
 		CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
