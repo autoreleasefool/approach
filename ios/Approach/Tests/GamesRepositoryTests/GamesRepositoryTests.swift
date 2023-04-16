@@ -139,7 +139,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [])
 
 		// Updating a game
-		await assertThrowsError {
+		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Game.Edit(id: id1, locked: .locked, manualScore: nil, excludeFromStatistics: .exclude)
 			try await withDependencies {
 				$0.database.writer = { db }

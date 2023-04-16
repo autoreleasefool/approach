@@ -7,7 +7,7 @@ extension Bowler.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Bowler.Database.databaseTableName
 }
 
-extension Bowler.Create: PersistableRecord, FetchableRecord {
+extension Bowler.Create: PersistableRecord {
 	public static let databaseTableName = Bowler.Database.databaseTableName
 }
 

@@ -88,7 +88,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Create the gear
-		await assertThrowsError {
+		await assertThrowsError(ofType: DatabaseError.self) {
 			let create = Gear.Create(id: id1, name: "Blue", kind: .towel, bowler: bowlerId2)
 			try await withDependencies {
 				$0.database.writer = { db }
@@ -162,7 +162,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [])
 
 		// Updating a gear
-		await assertThrowsError {
+		await assertThrowsError(ofType: DatabaseError.self) {
 			let editable = Gear.Edit(id: id1, name: "Blue", bowler: nil)
 			try await withDependencies {
 				$0.database.writer = { db }

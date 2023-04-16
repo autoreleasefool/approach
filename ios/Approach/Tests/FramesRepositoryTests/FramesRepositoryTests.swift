@@ -109,7 +109,7 @@ final class FramesRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [])
 
 		// Updating a frame
-		await assertThrowsError {
+		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Frame.Edit(
 				game: gameId1,
 				ordinal: 1,

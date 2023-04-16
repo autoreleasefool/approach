@@ -147,7 +147,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [bowler1])
 
 		// Create the bowler
-		await assertThrowsError {
+		await assertThrowsError(ofType: DatabaseError.self) {
 			let create = Bowler.Create(id: id1, name: "Joe", status: .playable)
 			try await withDependencies {
 				$0.database.writer = { db }
@@ -219,7 +219,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [])
 
 		// Updating a bowler
-		await assertThrowsError {
+		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Bowler.Edit(id: id1, name: "Joe")
 			try await withDependencies {
 				$0.database.writer = { db }

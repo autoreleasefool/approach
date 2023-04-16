@@ -7,17 +7,12 @@ extension Gear.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Gear.Database.databaseTableName
 }
 
-extension Gear.Create: PersistableRecord, FetchableRecord {
+extension Gear.Create: PersistableRecord {
 	public static let databaseTableName = Gear.Database.databaseTableName
 }
 
 extension Gear.Summary: TableRecord, FetchableRecord, EncodableRecord {
 	public static let databaseTableName = Gear.Database.databaseTableName
-	public static let databaseSelection: [any SQLSelectable] = [
-		Gear.Database.Columns.id,
-		Gear.Database.Columns.name,
-		Gear.Database.Columns.kind,
-	]
 
 	static let owner = belongsTo(Bowler.Database.self)
 	var owner: QueryInterfaceRequest<Bowler.Database> { request(for: Gear.Summary.owner) }

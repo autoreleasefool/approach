@@ -9,7 +9,7 @@ public func assertThrowsError<T>(ofType: T.Type = Any.self, _ block: () async th
 	}
 
 	XCTAssertNotNil(caughtError)
-	XCTAssertTrue(caughtError is T)
+	XCTAssertTrue(caughtError is T, "\(String(describing: caughtError)) is not \(T.self)")
 }
 
 public func assertNoThrowsError(_ block: () async throws -> Void) async {
