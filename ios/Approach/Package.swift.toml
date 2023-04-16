@@ -125,6 +125,10 @@ services = [ "RecentlyUsed" ]
 [repositories.Gear.tests]
 libraries = [ "TestUtilities" ]
 
+[repositories.Lanes]
+[repositories.Lanes.tests]
+libraries = [ "TestUtilities" ]
+
 [repositories.Leagues]
 services = [ "RecentlyUsed" ]
 

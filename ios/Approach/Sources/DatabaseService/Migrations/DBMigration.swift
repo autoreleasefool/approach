@@ -22,6 +22,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230413CreateGear.self)
 		registerMigration(Migration20230414CreateGame.self)
 		registerMigration(Migration20230414CreateFrame.self)
+		registerMigration(Migration20230415CreateLane.self)
 
 		try migrate(writer)
 	}
