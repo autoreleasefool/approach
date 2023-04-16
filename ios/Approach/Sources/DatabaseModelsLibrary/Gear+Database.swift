@@ -10,18 +10,18 @@ extension Gear {
 		public let id: Gear.ID
 		public var name: String
 		public var kind: Kind
-		public var bowler: Bowler.ID?
+		public var bowlerId: Bowler.ID?
 
 		public init(
 			id: Gear.ID,
 			name: String,
 			kind: Kind,
-			bowler: Bowler.ID?
+			bowlerId: Bowler.ID?
 		) {
 			self.id = id
 			self.name = name
 			self.kind = kind
-			self.bowler = bowler
+			self.bowlerId = bowlerId
 		}
 	}
 }
@@ -39,6 +39,6 @@ extension Gear.Database {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)
 		public static let kind = Column(CodingKeys.kind)
-		public static let bowler = Column(CodingKeys.bowler)
+		public static let bowlerId = Column(CodingKeys.bowlerId)
 	}
 }

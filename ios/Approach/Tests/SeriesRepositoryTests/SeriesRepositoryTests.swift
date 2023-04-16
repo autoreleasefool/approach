@@ -40,8 +40,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testList_FilterByLeague_ReturnsLeagueSeries() async throws {
 		// Given a database with two series
-		let series1 = Series.Database.mock(league: leagueId1, id: id1, date: Date(timeIntervalSince1970: 123_456_001))
-		let series2 = Series.Database.mock(league: leagueId2, id: id2, date: Date(timeIntervalSince1970: 123_456_000))
+		let series1 = Series.Database.mock(leagueId: leagueId1, id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(leagueId: leagueId2, id: id2, date: Date(timeIntervalSince1970: 123_456_000))
 		let db = try await initializeDatabase(inserting: [series1, series2])
 
 		// Fetching the series by league
@@ -84,13 +84,13 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Editing the series
 		let editable = Series.Editable(
-			league: leagueId1,
+			leagueId: leagueId1,
 			id: id1,
 			date: Date(timeIntervalSince1970: 123_456_999),
 			numberOfGames: series1.numberOfGames,
 			preBowl: .regular,
 			excludeFromStatistics: series1.excludeFromStatistics,
-			alley: series1.alley
+			alleyId: series1.alleyId
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -114,13 +114,13 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Saving a series
 		let editable = Series.Editable(
-			league: leagueId1,
+			leagueId: leagueId1,
 			id: id1,
 			date: Date(timeIntervalSince1970: 123_456_000),
 			numberOfGames: 4,
 			preBowl: .regular,
 			excludeFromStatistics: .include,
-			alley: nil
+			alleyId: nil
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -155,13 +155,13 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				league: leagueId1,
+				leagueId: leagueId1,
 				id: id1,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				numberOfGames: 4,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alley: nil
+				alleyId: nil
 			)
 		)
 	}
@@ -231,7 +231,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		let leagues = [
 			League.Database(
-				bowler: bowlerId1,
+				bowlerId: bowlerId1,
 				id: leagueId1,
 				name: "Majors",
 				recurrence: .repeating,
@@ -239,10 +239,10 @@ final class SeriesRepositoryTests: XCTestCase {
 				additionalPinfall: nil,
 				additionalGames: nil,
 				excludeFromStatistics: .include,
-				alley: nil
+				alleyId: nil
 			),
 			League.Database(
-				bowler: bowlerId1,
+				bowlerId: bowlerId1,
 				id: leagueId2,
 				name: "Minors",
 				recurrence: .repeating,
@@ -250,7 +250,7 @@ final class SeriesRepositoryTests: XCTestCase {
 				additionalPinfall: nil,
 				additionalGames: nil,
 				excludeFromStatistics: .include,
-				alley: nil
+				alleyId: nil
 			),
 		]
 
@@ -270,22 +270,22 @@ final class SeriesRepositoryTests: XCTestCase {
 
 extension Series.Database {
 	static func mock(
-		league: League.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
+		leagueId: League.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		id: ID,
 		date: Date,
 		numberOfGames: Int = 4,
 		preBowl: Series.PreBowl = .regular,
 		excludeFromStatistics: Series.ExcludeFromStatistics = .include,
-		alley: Alley.ID? = nil
+		alleyId: Alley.ID? = nil
 	) -> Self {
 		.init(
-			league: league,
+			leagueId: leagueId,
 			id: id,
 			date: date,
 			numberOfGames: numberOfGames,
 			preBowl: preBowl,
 			excludeFromStatistics: excludeFromStatistics,
-			alley: alley
+			alleyId: alleyId
 		)
 	}
 }

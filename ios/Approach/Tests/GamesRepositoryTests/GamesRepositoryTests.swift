@@ -40,8 +40,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testList_FilterBySeries_ReturnsSeriesGames() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(series: seriesId1, id: id1, ordinal: 1)
-		let game2 = Game.Database.mock(series: seriesId2, id: id2, ordinal: 2)
+		let game1 = Game.Database.mock(seriesId: seriesId1, id: id1, ordinal: 1)
+		let game2 = Game.Database.mock(seriesId: seriesId2, id: id2, ordinal: 2)
 		let db = try await initializeDatabase(inserting: [game1, game2])
 
 		// Fetching the games by series
@@ -201,7 +201,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 		let bowler = Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable)
 		let league = League.Database(
-			bowler: bowlerId1,
+			bowlerId: bowlerId1,
 			id: leagueId1,
 			name: "Majors",
 			recurrence: .repeating,
@@ -209,26 +209,26 @@ final class GamesRepositoryTests: XCTestCase {
 			additionalPinfall: nil,
 			additionalGames: nil,
 			excludeFromStatistics: .include,
-			alley: nil
+			alleyId: nil
 		)
 		let series = [
 			Series.Database(
-				league: leagueId1,
+				leagueId: leagueId1,
 				id: seriesId1,
 				date: Date(),
 				numberOfGames: 4,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alley: nil
+				alleyId: nil
 			),
 			Series.Database(
-				league: leagueId1,
+				leagueId: leagueId1,
 				id: seriesId2,
 				date: Date(),
 				numberOfGames: 4,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alley: nil
+				alleyId: nil
 			),
 		]
 
@@ -249,7 +249,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 extension Game.Database {
 	static func mock(
-		series: Series.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
+		seriesId: Series.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		id: ID,
 		ordinal: Int,
 		locked: Game.Lock = .open,
@@ -257,7 +257,7 @@ extension Game.Database {
 		excludeFromStatistics: Game.ExcludeFromStatistics = .include
 	) -> Self {
 		.init(
-			series: series,
+			seriesId: seriesId,
 			id: id,
 			ordinal: ordinal,
 			locked: locked,

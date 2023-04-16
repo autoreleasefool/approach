@@ -19,8 +19,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testEdit_ReturnsFramesForOneGame() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(game: gameId1, ordinal: 1)
-		let frame2 = Frame.Database.mock(game: gameId2, ordinal: 1)
+		let frame1 = Frame.Database.mock(gameId: gameId1, ordinal: 1)
+		let frame2 = Frame.Database.mock(gameId: gameId2, ordinal: 1)
 		let db = try await initializeDatabase(inserting: [frame1, frame2])
 
 		// Editing the frames
@@ -33,14 +33,14 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns one frame
 		XCTAssertEqual(
 			frames,
-			[.init(game: gameId1, ordinal: 1, rolls: [])]
+			[.init(gameId: gameId1, ordinal: 1, rolls: [])]
 		)
 	}
 
 	func testEdit_WhenGameExists_ReturnsFrames() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(game: gameId1, ordinal: 1)
-		let frame2 = Frame.Database.mock(game: gameId1, ordinal: 2)
+		let frame1 = Frame.Database.mock(gameId: gameId1, ordinal: 1)
+		let frame2 = Frame.Database.mock(gameId: gameId1, ordinal: 2)
 		let db = try await initializeDatabase(inserting: [frame1, frame2])
 
 		// Editing the frames
@@ -53,7 +53,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns the game
 		XCTAssertEqual(
 			frames,
-			[.init(game: gameId1, ordinal: 1, rolls: []), .init(game: gameId1, ordinal: 2, rolls: [])]
+			[.init(gameId: gameId1, ordinal: 1, rolls: []), .init(gameId: gameId1, ordinal: 2, rolls: [])]
 		)
 	}
 
@@ -74,11 +74,11 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenFrameExists_UpdatesFrame() async throws {
 		// Given a database with a frame
-		let frame1 = Frame.Database.mock(game: gameId1, ordinal: 1)
+		let frame1 = Frame.Database.mock(gameId: gameId1, ordinal: 1)
 		let db = try await initializeDatabase(inserting: [frame1])
 
 		// Editing the frame
-		let editable = Frame.Edit(game: gameId1, ordinal: 1, rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)])
+		let editable = Frame.Edit(gameId: gameId1, ordinal: 1, rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)])
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -89,7 +89,7 @@ final class FramesRepositoryTests: XCTestCase {
 		let updated = try await db.read {
 			try Frame.Database
 				.all()
-				.filter(Frame.Database.Columns.game == self.gameId1)
+				.filter(Frame.Database.Columns.gameId == self.gameId1)
 				.filter(Frame.Database.Columns.ordinal == 1)
 				.fetchOne($0)
 		}
@@ -111,7 +111,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Updating a frame
 		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Frame.Edit(
-				game: gameId1,
+				gameId: gameId1,
 				ordinal: 1,
 				rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)]
 			)
@@ -136,7 +136,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 		let bowler = Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable)
 		let league = League.Database(
-			bowler: bowlerId1,
+			bowlerId: bowlerId1,
 			id: leagueId1,
 			name: "Majors",
 			recurrence: .repeating,
@@ -144,21 +144,21 @@ final class FramesRepositoryTests: XCTestCase {
 			additionalPinfall: nil,
 			additionalGames: nil,
 			excludeFromStatistics: .include,
-			alley: nil
+			alleyId: nil
 		)
 		let series = Series.Database(
-			league: leagueId1,
+			leagueId: leagueId1,
 			id: seriesId1,
 			date: Date(),
 			numberOfGames: 4,
 			preBowl: .regular,
 			excludeFromStatistics: .include,
-			alley: nil
+			alleyId: nil
 		)
 
 		let games = [
 			Game.Database(
-				series: seriesId1,
+				seriesId: seriesId1,
 				id: gameId1,
 				ordinal: 1,
 				locked: .open,
@@ -166,7 +166,7 @@ final class FramesRepositoryTests: XCTestCase {
 				excludeFromStatistics: .include
 			),
 			Game.Database(
-				series: seriesId1,
+				seriesId: seriesId1,
 				id: gameId2,
 				ordinal: 2,
 				locked: .open,
@@ -193,14 +193,14 @@ final class FramesRepositoryTests: XCTestCase {
 
 extension Frame.Database {
 	static func mock(
-		game: Game.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
+		gameId: Game.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		ordinal: Int,
 		roll0: String? = nil,
 		roll1: String? = nil,
 		roll2: String? = nil
 	) -> Self {
 		.init(
-			game: game,
+			gameId: gameId,
 			ordinal: ordinal,
 			roll0: roll0,
 			roll1: roll1,

@@ -14,7 +14,7 @@ extension DerivableRequest<Frame.Edit> {
 	}
 
 	func filter(byGame: Game.ID) -> Self {
-		let game = Frame.Database.Columns.game
+		let game = Frame.Database.Columns.gameId
 		return filter(game == byGame)
 	}
 }

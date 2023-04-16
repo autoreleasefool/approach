@@ -2,7 +2,7 @@ import ModelsLibrary
 
 extension League {
 	public struct Editable: Identifiable, Equatable, Codable {
-		public let bowler: Bowler.ID
+		public let bowlerId: Bowler.ID
 		public let id: League.ID
 		public var name: String
 		public var recurrence: Recurrence
@@ -10,10 +10,10 @@ extension League {
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
-		public var alley: Alley.ID?
+		public var alleyId: Alley.ID?
 
 		public init(
-			bowler: Bowler.ID,
+			bowlerId: Bowler.ID,
 			id: League.ID,
 			name: String,
 			recurrence: Recurrence,
@@ -21,9 +21,9 @@ extension League {
 			additionalPinfall: Int?,
 			additionalGames: Int?,
 			excludeFromStatistics: ExcludeFromStatistics,
-			alley: Alley.ID?
+			alleyId: Alley.ID?
 		) {
-			self.bowler = bowler
+			self.bowlerId = bowlerId
 			self.id = id
 			self.name = name
 			self.recurrence = recurrence
@@ -31,7 +31,7 @@ extension League {
 			self.additionalPinfall = additionalPinfall
 			self.additionalGames = additionalGames
 			self.excludeFromStatistics = excludeFromStatistics
-			self.alley = alley
+			self.alleyId = alleyId
 		}
 	}
 }

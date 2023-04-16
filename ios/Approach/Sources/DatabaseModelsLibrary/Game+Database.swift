@@ -7,7 +7,7 @@ extension Game {
 	public struct Database: Sendable, Identifiable, Codable, TableRecord {
 		public static let databaseTableName = "game"
 
-		public let series: Series.ID
+		public let seriesId: Series.ID
 		public let id: Game.ID
 		public var ordinal: Int
 		public var locked: Lock
@@ -15,14 +15,14 @@ extension Game {
 		public var excludeFromStatistics: ExcludeFromStatistics
 
 		public init(
-			series: Series.ID,
+			seriesId: Series.ID,
 			id: Game.ID,
 			ordinal: Int,
 			locked: Lock,
 			manualScore: Int?,
 			excludeFromStatistics: ExcludeFromStatistics
 		) {
-			self.series = series
+			self.seriesId = seriesId
 			self.id = id
 			self.ordinal = ordinal
 			self.locked = locked
@@ -43,7 +43,7 @@ extension Game.Database: FetchableRecord, PersistableRecord {
 
 extension Game.Database {
 	public enum Columns {
-		public static let series = Column(CodingKeys.series)
+		public static let seriesId = Column(CodingKeys.seriesId)
 		public static let id = Column(CodingKeys.id)
 		public static let ordinal = Column(CodingKeys.ordinal)
 		public static let locked = Column(CodingKeys.locked)

@@ -3,7 +3,7 @@ import GRDB
 struct Migration20230414CreateFrame: DBMigration {
 	static func migrate(_ db: Database) throws {
 		try db.create(table: "frame") { t in
-			t.column("game", .text)
+			t.column("gameId", .text)
 				.notNull()
 				.indexed()
 				.references("game", onDelete: .cascade)
@@ -13,7 +13,7 @@ struct Migration20230414CreateFrame: DBMigration {
 			t.column("roll1", .text)
 			t.column("roll2", .text)
 
-			t.primaryKey(["game", "ordinal"])
+			t.primaryKey(["gameId", "ordinal"])
 		}
 	}
 }

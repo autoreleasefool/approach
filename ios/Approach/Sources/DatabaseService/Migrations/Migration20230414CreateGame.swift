@@ -5,7 +5,7 @@ struct Migration20230414CreateGame: DBMigration {
 		try db.create(table: "game") { t in
 			t.column("id", .text)
 				.primaryKey()
-			t.column("series", .text)
+			t.column("seriesId", .text)
 				.notNull()
 				.indexed()
 				.references("series", onDelete: .cascade)

@@ -5,7 +5,7 @@ struct Migration20230413CreateGear: DBMigration {
 		try db.create(table: "gear") { t in
 			t.column("id", .text)
 				.primaryKey()
-			t.column("bowler", .text)
+			t.column("bowlerId", .text)
 				.indexed()
 				.references("bowler", onDelete: .cascade)
 			t.column("name", .text)

@@ -9,7 +9,7 @@ struct Migration20230415CreateLane: DBMigration {
 				.notNull()
 			t.column("position", .text)
 				.notNull()
-			t.column("alley", .text)
+			t.column("alleyId", .text)
 				.notNull()
 				.indexed()
 				.references("alley", onDelete: .cascade)

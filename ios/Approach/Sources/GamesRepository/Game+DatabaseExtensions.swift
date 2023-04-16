@@ -18,7 +18,7 @@ extension DerivableRequest<Game.Summary> {
 	}
 
 	func filter(bySeries: Series.ID) -> Self {
-		let series = Game.Database.Columns.series
+		let series = Game.Database.Columns.seriesId
 		return filter(series == bySeries)
 	}
 }

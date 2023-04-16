@@ -22,8 +22,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenLanesExist_ReturnsLanes() async throws {
 		// Given a database with two lanes
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
-		let lane2 = Lane.Database(alley: alleyId1, id: id2, label: "2", position: .noWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId1, id: id2, label: "2", position: .noWall)
 		let db = try await initializeDatabase(inserting: [lane1, lane2])
 
 		// Editing the lanes
@@ -57,8 +57,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testEdit_ReturnsLanesForAlley() async throws {
 		// Given a database with two lanes
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
-		let lane2 = Lane.Database(alley: alleyId2, id: id2, label: "2", position: .noWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId2, id: id2, label: "2", position: .noWall)
 		let db = try await initializeDatabase(inserting: [lane1, lane2])
 
 		// Editing the lanes
@@ -76,11 +76,11 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLaneExists_ThrowsError() async throws {
 		// Given a database with one lane
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
 		let db = try await initializeDatabase(inserting: [lane1])
 
 		// Creating the lane
-		let created = Lane.Create(alley: alleyId1, id: id1, label: "2", position: .noWall)
+		let created = Lane.Create(alleyId: alleyId1, id: id1, label: "2", position: .noWall)
 		await assertThrowsError(ofType: DatabaseError.self) {
 			try await withDependencies {
 				$0.database.writer = { db }
@@ -104,7 +104,7 @@ final class LanesRepositoryTests: XCTestCase {
 		// Given a database with no lanes
 		let db = try await initializeDatabase()
 
-		let created = Lane.Create(alley: alleyId1, id: id1, label: "1", position: .noWall)
+		let created = Lane.Create(alleyId: alleyId1, id: id1, label: "1", position: .noWall)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -126,8 +126,8 @@ final class LanesRepositoryTests: XCTestCase {
 		// Given a database with no lanes
 		let db = try await initializeDatabase()
 
-		let created1 = Lane.Create(alley: alleyId1, id: id1, label: "1", position: .noWall)
-		let created2 = Lane.Create(alley: alleyId1, id: id2, label: "2", position: .leftWall)
+		let created1 = Lane.Create(alleyId: alleyId1, id: id1, label: "1", position: .noWall)
+		let created2 = Lane.Create(alleyId: alleyId1, id: id2, label: "2", position: .leftWall)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -149,7 +149,7 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenLaneExists_UpdatesLane() async throws {
 		// Given a database with one lane
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
 		let db = try await initializeDatabase(inserting: [lane1])
 
 		let edit = Lane.Edit(id: id1, label: "2", position: .noWall)
@@ -191,8 +191,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenMultipleLanes_UpdatesAllLanes() async throws {
 		// Given a database with two lanes
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
-		let lane2 = Lane.Database(alley: alleyId1, id: id2, label: "2", position: .leftWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId1, id: id2, label: "2", position: .leftWall)
 		let db = try await initializeDatabase(inserting: [lane1, lane2])
 
 		let edit1 = Lane.Edit(id: id1, label: "3", position: .noWall)
@@ -222,8 +222,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenLaneExists_DeletesLane() async throws {
 		// Given a database with 2 lanes
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
-		let lane2 = Lane.Database(alley: alleyId1, id: id2, label: "2", position: .leftWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId1, id: id2, label: "2", position: .leftWall)
 		let db = try await initializeDatabase(inserting: [lane1, lane2])
 
 		// Deleting the first lane
@@ -244,7 +244,7 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenLaneNotExists_DoesNothing() async throws {
 		// Given a database with 1 lane
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
 		let db = try await initializeDatabase(inserting: [lane1])
 
 		// Deleting a non-existent lane
@@ -261,9 +261,9 @@ final class LanesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenMultipleLanes_DeletesAllLanes() async throws {
 		// Given a database with 3 lanes
-		let lane1 = Lane.Database(alley: alleyId1, id: id1, label: "1", position: .leftWall)
-		let lane2 = Lane.Database(alley: alleyId1, id: id2, label: "2", position: .leftWall)
-		let lane3 = Lane.Database(alley: alleyId1, id: id3, label: "3", position: .leftWall)
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId1, id: id2, label: "2", position: .leftWall)
+		let lane3 = Lane.Database(alleyId: alleyId1, id: id3, label: "3", position: .leftWall)
 		let db = try await initializeDatabase(inserting: [lane1, lane2, lane3])
 
 		// Deleting two lanes

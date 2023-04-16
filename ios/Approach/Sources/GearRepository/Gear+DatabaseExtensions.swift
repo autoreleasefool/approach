@@ -38,7 +38,7 @@ extension DerivableRequest<Gear.Summary> {
 
 	func owned(byBowler: Bowler.ID?) -> Self {
 		guard let byBowler else { return self }
-		let bowler = Gear.Database.Columns.bowler
+		let bowler = Gear.Database.Columns.bowlerId
 		return filter(bowler == byBowler)
 	}
 }

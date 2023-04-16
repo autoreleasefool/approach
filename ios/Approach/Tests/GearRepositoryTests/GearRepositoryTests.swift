@@ -63,8 +63,8 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testList_FilterByBowler_ReturnsMatchingGear() async throws {
 		// Given a database with two gear
-		let gear1 = Gear.Database.mock(id: id1, name: "Yellow", kind: .bowlingBall, bowler: bowlerId1)
-		let gear2 = Gear.Database.mock(id: id2, name: "Blue", kind: .towel, bowler: bowlerId2)
+		let gear1 = Gear.Database.mock(id: id1, name: "Yellow", kind: .bowlingBall, bowlerId: bowlerId1)
+		let gear2 = Gear.Database.mock(id: id2, name: "Blue", kind: .towel, bowlerId: bowlerId2)
 		let db = try await initializeDatabase(inserting: [gear1, gear2])
 
 		// Fetching the gear
@@ -89,7 +89,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Create the gear
 		await assertThrowsError(ofType: DatabaseError.self) {
-			let create = Gear.Create(id: id1, name: "Blue", kind: .towel, bowler: bowlerId2)
+			let create = Gear.Create(id: id1, name: "Blue", kind: .towel, bowler: .init(id: bowlerId2, name: "Sarah"))
 			try await withDependencies {
 				$0.database.writer = { db }
 			} operation: {
@@ -106,7 +106,7 @@ final class GearRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Yellow")
 		XCTAssertEqual(updated?.kind, .bowlingBall)
-		XCTAssertEqual(updated?.bowler, bowlerId1)
+		XCTAssertEqual(updated?.bowlerId, bowlerId1)
 	}
 
 	func testCreate_WhenGearNotExists_CreatesGear() async throws {
@@ -134,11 +134,11 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGearExists_UpdatesGear() async throws {
 		// Given a database with an existing gear
-		let gear1 = Gear.Database(id: id1, name: "Yellow", kind: .bowlingBall, bowler: nil)
+		let gear1 = Gear.Database(id: id1, name: "Yellow", kind: .bowlingBall, bowlerId: nil)
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Editing the gear
-		let editable = Gear.Edit(id: id1, name: "Blue", bowler: bowlerId1)
+		let editable = Gear.Edit(id: id1, name: "Blue", owner: .init(id: bowlerId1, name: "Sarah"))
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -150,7 +150,7 @@ final class GearRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Blue")
 		XCTAssertEqual(updated?.kind, .bowlingBall)
-		XCTAssertEqual(updated?.bowler, bowlerId1)
+		XCTAssertEqual(updated?.bowlerId, bowlerId1)
 
 		// Does not insert any records
 		let count = try await db.read { try Gear.Database.fetchCount($0) }
@@ -162,8 +162,8 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [])
 
 		// Updating a gear
-		await assertThrowsError(ofType: DatabaseError.self) {
-			let editable = Gear.Edit(id: id1, name: "Blue", bowler: nil)
+		await assertThrowsError(ofType: RecordError.self) {
+			let editable = Gear.Edit(id: id1, name: "Blue", owner: nil)
 			try await withDependencies {
 				$0.database.writer = { db }
 			} operation: {
@@ -178,7 +178,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGearExists_ReturnsGear() async throws {
 		// Given a database with a gear
-		let gear = Gear.Database(id: id1, name: "Yellow", kind: .bowlingBall, bowler: bowlerId1)
+		let gear = Gear.Database(id: id1, name: "Yellow", kind: .bowlingBall, bowlerId: bowlerId1)
 		let db = try await initializeDatabase(inserting: [gear])
 
 		// Editing the gear
@@ -189,7 +189,7 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Returns the gear
-		XCTAssertEqual(editable, .init(id: id1, name: "Yellow", bowler: bowlerId1))
+		XCTAssertEqual(editable, .init(id: id1, name: "Yellow", owner: .init(id: bowlerId1, name: "Joseph")))
 	}
 
 	func testEdit_WhenGearNotExists_ReturnsNil() async throws {
@@ -276,13 +276,13 @@ extension Gear.Database {
 		id: ID,
 		name: String,
 		kind: Gear.Kind = .bowlingBall,
-		bowler: Bowler.ID? = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!
+		bowlerId: Bowler.ID? = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!
 	) -> Self {
 		.init(
 			id: id,
 			name: name,
 			kind: kind,
-			bowler: bowler
+			bowlerId: bowlerId
 		)
 	}
 }

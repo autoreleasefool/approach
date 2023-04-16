@@ -18,7 +18,7 @@ extension DerivableRequest<Series.Summary> {
 	}
 
 	func bowled(inLeague: League.ID) -> Self {
-		let league = Series.Database.Columns.league
+		let league = Series.Database.Columns.leagueId
 		return filter(league == inLeague)
 	}
 }

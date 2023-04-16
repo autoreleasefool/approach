@@ -5,7 +5,7 @@ struct Migration20230408CreateLeague: DBMigration {
 		try db.create(table: "league") { t in
 			t.column("id", .text)
 				.primaryKey()
-			t.column("bowler", .text)
+			t.column("bowlerId", .text)
 				.notNull()
 				.indexed()
 				.references("bowler", onDelete: .cascade)
@@ -18,7 +18,7 @@ struct Migration20230408CreateLeague: DBMigration {
 			t.column("additionalGames", .integer)
 			t.column("excludeFromStatistics", .text)
 				.notNull()
-			t.column("alley", .text)
+			t.column("alleyId", .text)
 				.indexed()
 				.references("alley", onDelete: .setNull)
 		}

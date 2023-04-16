@@ -18,7 +18,7 @@ extension DerivableRequest<Lane.Edit> {
 	}
 
 	func filter(byAlley: Alley.ID) -> Self {
-		let alley = Lane.Database.Columns.alley
+		let alley = Lane.Database.Columns.alleyId
 		return filter(alley == byAlley)
 	}
 }

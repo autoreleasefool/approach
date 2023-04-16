@@ -58,8 +58,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testList_FilterByBowler_ReturnsBowlerLeagues() async throws {
 		// Given a database with two leagues
-		let league1 = League.Database.mock(bowler: bowlerId1, id: id1, name: "Majors")
-		let league2 = League.Database.mock(bowler: bowlerId2, id: id2, name: "Minors")
+		let league1 = League.Database.mock(bowlerId: bowlerId1, id: id1, name: "Majors")
+		let league2 = League.Database.mock(bowlerId: bowlerId2, id: id2, name: "Minors")
 		let db = try await initializeDatabase(inserting: [league1, league2])
 
 		// Fetching the leagues by bowler
@@ -126,7 +126,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Editing the league
 		let editable = League.Editable(
-			bowler: bowlerId1,
+			bowlerId: bowlerId1,
 			id: id1,
 			name: "Minors",
 			recurrence: league1.recurrence,
@@ -134,7 +134,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: league1.excludeFromStatistics,
-			alley: league1.alley
+			alleyId: league1.alleyId
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -160,7 +160,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Saving a league
 		let editable = League.Editable(
-			bowler: bowlerId1,
+			bowlerId: bowlerId1,
 			id: id1,
 			name: "Minors",
 			recurrence: .once,
@@ -168,7 +168,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude,
-			alley: nil
+			alleyId: nil
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -203,7 +203,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			league,
 			.init(
-				bowler: bowlerId1,
+				bowlerId: bowlerId1,
 				id: id1,
 				name: "Majors",
 				recurrence: .repeating,
@@ -211,7 +211,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 				additionalPinfall: nil,
 				additionalGames: nil,
 				excludeFromStatistics: .include,
-				alley: nil
+				alleyId: nil
 			)
 		)
 	}
@@ -297,7 +297,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 extension League.Database {
 	static func mock(
-		bowler: Bowler.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
+		bowlerId: Bowler.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		id: ID,
 		name: String,
 		recurrence: League.Recurrence = .repeating,
@@ -305,10 +305,10 @@ extension League.Database {
 		additionalPinfall: Int? = nil,
 		additionalGames: Int? = nil,
 		excludeFromStatistics: League.ExcludeFromStatistics = .include,
-		alley: Alley.ID? = nil
+		alleyId: Alley.ID? = nil
 	) -> Self {
 		.init(
-			bowler: bowler,
+			bowlerId: bowlerId,
 			id: id,
 			name: name,
 			recurrence: recurrence,
@@ -316,7 +316,7 @@ extension League.Database {
 			additionalPinfall: additionalPinfall,
 			additionalGames: additionalGames,
 			excludeFromStatistics: excludeFromStatistics,
-			alley: alley
+			alleyId: alleyId
 		)
 	}
 }
