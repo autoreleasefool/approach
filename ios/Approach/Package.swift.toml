@@ -146,11 +146,6 @@ services = [ "Persistence" ]
 [dataProviders.Games]
 services = [ "Persistence" ]
 
-[dataProviders.Gear]
-services = [ "Persistence", "RecentlyUsed" ]
-libraries = [ "Sorting" ]
-dependencies = [ "AsyncAlgorithms" ]
-
 [dataProviders.Lanes]
 services = [ "Persistence" ]
 

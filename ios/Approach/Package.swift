@@ -58,8 +58,6 @@ let package = Package(
 		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
-		.library(name: "GearDataProvider", targets: ["GearDataProvider"]),
-		.library(name: "GearDataProviderInterface", targets: ["GearDataProviderInterface"]),
 		.library(name: "LanesDataProvider", targets: ["LanesDataProvider"]),
 		.library(name: "LanesDataProviderInterface", targets: ["LanesDataProviderInterface"]),
 		.library(name: "OpponentsDataProvider", targets: ["OpponentsDataProvider"]),
@@ -766,31 +764,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "GearDataProvider",
-			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-				"GearDataProviderInterface",
-				"PersistenceServiceInterface",
-				"RecentlyUsedServiceInterface",
-				"SortingLibrary",
-			]
-		),
-		.target(
-			name: "GearDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "GearDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"GearDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),

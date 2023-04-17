@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CA1442322924582D00D39B86 /* GearDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA1442312924582D00D39B86 /* GearDataProvider */; };
 		CA2513FE296BEE4200EF3F1A /* OpponentsDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */; };
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
@@ -121,7 +120,6 @@
 				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
 				CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */,
 				CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */,
-				CA1442322924582D00D39B86 /* GearDataProvider in Frameworks */,
 				CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -314,7 +312,6 @@
 				CAC13AAC29204EA000DD36A5 /* FramesDataProvider */,
 				CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */,
 				CAC13AB229205E5600DD36A5 /* SeriesDataProvider */,
-				CA1442312924582D00D39B86 /* GearDataProvider */,
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
 				CAF8028F295D67FC00B19459 /* FeatureFlagsService */,
 				CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */,
@@ -795,10 +792,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		CA1442312924582D00D39B86 /* GearDataProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = GearDataProvider;
-		};
 		CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = OpponentsDataProvider;
