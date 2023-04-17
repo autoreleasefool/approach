@@ -111,7 +111,7 @@ public struct GearList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.editor = .init(value: .create(.init(id: uuid(), name: "", kind: .bowlingBall, owner: nil)))
+						state.editor = .init(value: .create(.default))
 						return .none
 
 					case .didDelete, .didTap:

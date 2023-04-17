@@ -1,3 +1,4 @@
+import Foundation
 import ModelsLibrary
 
 extension Gear {
@@ -7,16 +8,6 @@ extension Gear {
 		public var kind: Kind
 		public var owner: Bowler.Summary?
 
-		public init(
-			id: Gear.ID,
-			name: String,
-			kind: Kind,
-			owner: Bowler.Summary?
-		) {
-			self.id = id
-			self.name = name
-			self.kind = kind
-			self.owner = owner
-		}
+		public static let `default` = Self(id: UUID(), name: "", kind: .bowlingBall, owner: nil)
 	}
 }

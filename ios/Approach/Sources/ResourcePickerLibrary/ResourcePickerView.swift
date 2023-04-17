@@ -53,7 +53,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 								.frame(width: .smallIcon, height: .smallIcon)
 								.foregroundColor(.appAction)
 							row(resource)
-								.frame(maxWidth: .infinity)
+								.frame(maxWidth: .infinity, alignment: .leading)
 						}
 						.frame(maxWidth: .infinity)
 						.contentShape(Rectangle())

@@ -35,8 +35,12 @@ public struct GearEditor: Reducer {
 			}
 			set {
 				switch _form.value {
-				case let .create(new): _form.value = .create(.init(id: new.id, name: new.name, kind: new.kind, owner: newValue))
-				case let .edit(existing): _form.value = .edit(.init(id: existing.id, name: existing.name, owner: newValue))
+				case var .create(new):
+					new.owner = newValue
+					_form.value = .create(new)
+				case var .edit(existing):
+					existing.owner = newValue
+					_form.value = .edit(existing)
 				}
 			}
 		}
@@ -53,7 +57,7 @@ public struct GearEditor: Reducer {
 				bowler = new.owner
 			case let .edit(existing):
 				self.name = existing.name
-				self.kind = .other
+				self.kind = existing.kind
 				bowler = existing.owner
 			}
 
@@ -168,10 +172,15 @@ extension GearEditor.State {
 		get {
 			var form = _form
 			switch initialValue {
-			case let .create(new):
-				form.value = .create(.init(id: new.id, name: name, kind: kind, owner: owner))
-			case let .edit(existing):
-				form.value = .edit(.init(id: existing.id, name: name, owner: owner))
+			case var .create(new):
+				new.name = name
+				new.kind = kind
+				new.owner = owner
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				existing.owner = owner
+				form.value = .edit(existing)
 			}
 			return form
 		}

@@ -89,7 +89,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Create the gear
 		await assertThrowsError(ofType: DatabaseError.self) {
-			let create = Gear.Create(id: id1, name: "Blue", kind: .towel, bowler: .init(id: bowlerId2, name: "Sarah"))
+			let create = Gear.Create(id: id1, name: "Blue", kind: .towel, owner: .init(id: bowlerId2, name: "Sarah"))
 			try await withDependencies {
 				$0.database.writer = { db }
 			} operation: {
@@ -114,7 +114,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [])
 
 		// Creating a gear
-		let create = Gear.Create(id: id1, name: "Yellow", kind: .bowlingBall, bowler: nil)
+		let create = Gear.Create(id: id1, name: "Yellow", kind: .bowlingBall, owner: nil)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -138,7 +138,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Editing the gear
-		let editable = Gear.Edit(id: id1, name: "Blue", owner: .init(id: bowlerId1, name: "Sarah"))
+		let editable = Gear.Edit(id: id1, name: "Blue", kind: .bowlingBall, owner: .init(id: bowlerId1, name: "Sarah"))
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -163,7 +163,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Updating a gear
 		await assertThrowsError(ofType: RecordError.self) {
-			let editable = Gear.Edit(id: id1, name: "Blue", owner: nil)
+			let editable = Gear.Edit(id: id1, name: "Blue", kind: .bowlingBall, owner: nil)
 			try await withDependencies {
 				$0.database.writer = { db }
 			} operation: {
@@ -189,7 +189,10 @@ final class GearRepositoryTests: XCTestCase {
 		}
 
 		// Returns the gear
-		XCTAssertEqual(editable, .init(id: id1, name: "Yellow", owner: .init(id: bowlerId1, name: "Joseph")))
+		XCTAssertEqual(
+			editable,
+			.init(id: id1, name: "Yellow", kind: .bowlingBall, owner: .init(id: bowlerId1, name: "Joseph"))
+		)
 	}
 
 	func testEdit_WhenGearNotExists_ReturnsNil() async throws {
