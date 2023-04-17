@@ -54,8 +54,6 @@ let package = Package(
 		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
 		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
-		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
-		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
 		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
@@ -726,31 +724,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "BowlersDataProvider",
-			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-				"BowlersDataProviderInterface",
-				"PersistenceServiceInterface",
-				"RecentlyUsedServiceInterface",
-				"SortingLibrary",
-			]
-		),
-		.target(
-			name: "BowlersDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "BowlersDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"BowlersDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),

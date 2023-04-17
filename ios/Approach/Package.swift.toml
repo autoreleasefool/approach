@@ -140,11 +140,6 @@ services = [ "Persistence", "RecentlyUsed" ]
 libraries = [ "Sorting" ]
 dependencies = [ "AsyncAlgorithms" ]
 
-[dataProviders.Bowlers]
-services = [ "Persistence", "RecentlyUsed" ]
-libraries = [ "Sorting" ]
-dependencies = [ "AsyncAlgorithms" ]
-
 [dataProviders.Frames]
 services = [ "Persistence" ]
 

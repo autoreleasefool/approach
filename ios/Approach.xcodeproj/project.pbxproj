@@ -34,7 +34,6 @@
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
-		CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAA292045B700DD36A5 /* BowlersDataProvider */; };
 		CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAC29204EA000DD36A5 /* FramesDataProvider */; };
 		CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */; };
 		CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AB029205E5100DD36A5 /* LeaguesDataProvider */; };
@@ -123,7 +122,6 @@
 				CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */,
 				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
 				CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */,
-				CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */,
 				CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */,
 				CA1442322924582D00D39B86 /* GearDataProvider in Frameworks */,
 				CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */,
@@ -315,7 +313,6 @@
 				CAC56850291F54A100192D12 /* PreferenceService */,
 				CAC56852291F54A100192D12 /* RecentlyUsedService */,
 				CAC13AA829203D6600DD36A5 /* AlleysDataProvider */,
-				CAC13AAA292045B700DD36A5 /* BowlersDataProvider */,
 				CAC13AAC29204EA000DD36A5 /* FramesDataProvider */,
 				CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */,
 				CAC13AB029205E5100DD36A5 /* LeaguesDataProvider */,
@@ -880,10 +877,6 @@
 		CAC13AA829203D6600DD36A5 /* AlleysDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AlleysDataProvider;
-		};
-		CAC13AAA292045B700DD36A5 /* BowlersDataProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = BowlersDataProvider;
 		};
 		CAC13AAC29204EA000DD36A5 /* FramesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
