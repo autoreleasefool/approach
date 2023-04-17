@@ -4,7 +4,7 @@ import Dependencies
 @testable import FramesRepository
 @testable import FramesRepositoryInterface
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 

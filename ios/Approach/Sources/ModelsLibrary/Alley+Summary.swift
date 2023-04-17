@@ -7,23 +7,5 @@ extension Alley {
 		public let pinFall: PinFall?
 		public let mechanism: Mechanism?
 		public let pinBase: PinBase?
-
-		public init(
-			id: Alley.ID,
-			name: String,
-			address: String?,
-			material: Material?,
-			pinFall: PinFall?,
-			mechanism: Mechanism?,
-			pinBase: PinBase?
-		) {
-			self.id = id
-			self.name = name
-			self.address = address
-			self.material = material
-			self.pinFall = pinFall
-			self.mechanism = mechanism
-			self.pinBase = pinBase
-		}
 	}
 }

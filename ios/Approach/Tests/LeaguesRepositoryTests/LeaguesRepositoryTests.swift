@@ -4,7 +4,7 @@ import Dependencies
 import GRDB
 @testable import LeaguesRepository
 @testable import LeaguesRepositoryInterface
-import ModelsLibrary
+@testable import ModelsLibrary
 import RecentlyUsedServiceInterface
 import XCTest
 

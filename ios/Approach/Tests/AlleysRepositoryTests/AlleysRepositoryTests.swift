@@ -4,7 +4,7 @@ import DatabaseModelsLibrary
 @testable import DatabaseService
 import Dependencies
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 import RecentlyUsedServiceInterface
 import XCTest
 

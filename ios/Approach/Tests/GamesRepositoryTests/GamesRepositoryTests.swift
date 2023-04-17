@@ -4,7 +4,7 @@ import Dependencies
 @testable import GamesRepository
 @testable import GamesRepositoryInterface
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 

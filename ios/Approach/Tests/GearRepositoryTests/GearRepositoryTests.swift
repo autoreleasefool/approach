@@ -4,7 +4,7 @@ import Dependencies
 @testable import GearRepository
 @testable import GearRepositoryInterface
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 import RecentlyUsedServiceInterface
 import TestUtilitiesLibrary
 import XCTest
@@ -138,7 +138,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [gear1])
 
 		// Editing the gear
-		let editable = Gear.Edit(id: id1, name: "Blue", kind: .bowlingBall, owner: .init(id: bowlerId1, name: "Sarah"))
+		let editable = Gear.Edit(id: id1, kind: .bowlingBall, name: "Blue", owner: .init(id: bowlerId1, name: "Sarah"))
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -163,7 +163,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Updating a gear
 		await assertThrowsError(ofType: RecordError.self) {
-			let editable = Gear.Edit(id: id1, name: "Blue", kind: .bowlingBall, owner: nil)
+			let editable = Gear.Edit(id: id1, kind: .bowlingBall, name: "Blue", owner: nil)
 			try await withDependencies {
 				$0.database.writer = { db }
 			} operation: {
@@ -191,7 +191,7 @@ final class GearRepositoryTests: XCTestCase {
 		// Returns the gear
 		XCTAssertEqual(
 			editable,
-			.init(id: id1, name: "Yellow", kind: .bowlingBall, owner: .init(id: bowlerId1, name: "Joseph"))
+			.init(id: id1, kind: .bowlingBall, name: "Yellow", owner: .init(id: bowlerId1, name: "Joseph"))
 		)
 	}
 
