@@ -149,11 +149,6 @@ services = [ "Persistence" ]
 [dataProviders.Lanes]
 services = [ "Persistence" ]
 
-[dataProviders.Opponents]
-services = [ "Persistence", "RecentlyUsed" ]
-libraries = [ "Sorting" ]
-dependencies = [ "AsyncAlgorithms" ]
-
 [dataProviders.Series]
 services = [ "Persistence" ]
 
