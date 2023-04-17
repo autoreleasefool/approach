@@ -36,7 +36,6 @@
 		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
 		CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAC29204EA000DD36A5 /* FramesDataProvider */; };
 		CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */; };
-		CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AB029205E5100DD36A5 /* LeaguesDataProvider */; };
 		CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AB229205E5600DD36A5 /* SeriesDataProvider */; };
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
@@ -110,7 +109,6 @@
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
-				CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */,
 				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
@@ -315,7 +313,6 @@
 				CAC13AA829203D6600DD36A5 /* AlleysDataProvider */,
 				CAC13AAC29204EA000DD36A5 /* FramesDataProvider */,
 				CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */,
-				CAC13AB029205E5100DD36A5 /* LeaguesDataProvider */,
 				CAC13AB229205E5600DD36A5 /* SeriesDataProvider */,
 				CA1442312924582D00D39B86 /* GearDataProvider */,
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
@@ -885,10 +882,6 @@
 		CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GamesDataProvider;
-		};
-		CAC13AB029205E5100DD36A5 /* LeaguesDataProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LeaguesDataProvider;
 		};
 		CAC13AB229205E5600DD36A5 /* SeriesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;

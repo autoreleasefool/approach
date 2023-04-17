@@ -154,11 +154,6 @@ dependencies = [ "AsyncAlgorithms" ]
 [dataProviders.Lanes]
 services = [ "Persistence" ]
 
-[dataProviders.Leagues]
-services = [ "Persistence", "RecentlyUsed" ]
-libraries = [ "Sorting" ]
-dependencies = [ "AsyncAlgorithms" ]
-
 [dataProviders.Opponents]
 services = [ "Persistence", "RecentlyUsed" ]
 libraries = [ "Sorting" ]
