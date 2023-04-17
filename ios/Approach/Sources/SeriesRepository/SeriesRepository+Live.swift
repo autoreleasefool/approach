@@ -23,13 +23,19 @@ extension SeriesRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try Series.Editable.fetchOne($0, id: id)
+					try Series.Edit.fetchOne($0, id: id)
 				}
 			},
-			save: { series in
+			create: { series in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try series.save($0)
+					try series.insert($0)
+				}
+			},
+			update: { series in
+				@Dependency(\.database) var database
+				return try await database.writer().write {
+					try series.update($0)
 				}
 			},
 			delete: { id in

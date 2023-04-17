@@ -2,10 +2,11 @@ import DatabaseModelsLibrary
 @testable import DatabaseService
 import Dependencies
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 import RecentlyUsedServiceInterface
 @testable import SeriesRepository
 @testable import SeriesRepositoryInterface
+import TestUtilitiesLibrary
 import XCTest
 
 @MainActor
@@ -18,6 +19,8 @@ final class SeriesRepositoryTests: XCTestCase {
 	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
+
+	// MARK: List
 
 	func testList_ReturnsAllSeries() async throws {
 		// Given a database with two series
@@ -77,25 +80,90 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(series2), .init(series1), .init(series3)])
 	}
 
-	func testSave_WhenSeriesExists_UpdatesSeries() async throws {
+	// MARK: Create
+
+	func testCreate_WhenSeriesExists_ThrowsError() async throws {
+		// Given a database with an existing series
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
+		let db = try await initializeDatabase(inserting: [series1])
+
+		// Creating the series throws an error
+		await assertThrowsError(ofType: DatabaseError.self) {
+			let create = Series.Create(
+				leagueId: leagueId1,
+				id: id1,
+				date: Date(timeIntervalSince1970: 123_456_002),
+				preBowl: .regular,
+				excludeFromStatistics: .exclude,
+				numberOfGames: 1
+			)
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await SeriesRepository.liveValue.create(create)
+			}
+		}
+
+		// Does not insert any records
+		let count = try await db.read { try Series.Database.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+
+		// Does not update the database
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(updated?.id, id1)
+		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_001))
+	}
+
+	func testCreate_WhenSeriesNotExists_CreatesSeries() async throws {
+		// Given a database with no series
+		let db = try await initializeDatabase()
+
+		// Creating the series throws an error
+		let create = Series.Create(
+			leagueId: leagueId1,
+			id: id1,
+			date: Date(timeIntervalSince1970: 123_456_001),
+			preBowl: .regular,
+			excludeFromStatistics: .exclude,
+			numberOfGames: 1
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+		} operation: {
+			try await SeriesRepository.liveValue.create(create)
+		}
+
+		// Inserted the record
+		let exists = try await db.read { try Series.Database.exists($0, id: self.id1) }
+		XCTAssertTrue(exists)
+
+		// Updates the database
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(updated?.id, id1)
+		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_001))
+	}
+
+	// MARK: Update
+
+	func testUpdate_WhenSeriesExists_UpdatesSeries() async throws {
 		// Given a database with an existing series
 		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_001))
 		let db = try await initializeDatabase(inserting: [series1])
 
 		// Editing the series
-		let editable = Series.Editable(
+		let editable = Series.Edit(
 			leagueId: leagueId1,
 			id: id1,
-			date: Date(timeIntervalSince1970: 123_456_999),
 			numberOfGames: series1.numberOfGames,
+			date: Date(timeIntervalSince1970: 123_456_999),
 			preBowl: .regular,
 			excludeFromStatistics: series1.excludeFromStatistics,
-			alleyId: series1.alleyId
+			location: nil
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
-			try await SeriesRepository.liveValue.save(editable)
+			try await SeriesRepository.liveValue.update(editable)
 		}
 
 		// Updates the database
@@ -108,36 +176,34 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 1)
 	}
 
-	func testSave_WhenSeriesNotExists_SavesNewSeries() async throws {
+	func testUpdate_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
 		let db = try await initializeDatabase(inserting: [])
 
-		// Saving a series
-		let editable = Series.Editable(
+		// Updating a series
+		let editable = Series.Edit(
 			leagueId: leagueId1,
 			id: id1,
-			date: Date(timeIntervalSince1970: 123_456_000),
 			numberOfGames: 4,
+			date: Date(timeIntervalSince1970: 123_456_999),
 			preBowl: .regular,
-			excludeFromStatistics: .include,
-			alleyId: nil
+			excludeFromStatistics: .exclude,
+			location: nil
 		)
-		try await withDependencies {
-			$0.database.writer = { db }
-		} operation: {
-			try await SeriesRepository.liveValue.save(editable)
+		await assertThrowsError(ofType: RecordError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await SeriesRepository.liveValue.update(editable)
+			}
 		}
 
-		// Inserted the record
-		let exists = try await db.read { try Series.Database.exists($0, id: self.id1) }
-		XCTAssertTrue(exists)
-
-		// Updates the database
-		let updated = try await db.read { try Series.Database.fetchOne($0, id: self.id1) }
-		XCTAssertEqual(updated?.id, id1)
-		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_000))
-		XCTAssertEqual(updated?.numberOfGames, 4)
+		// Does not insert any records
+		let count = try await db.read { try Series.Database.fetchCount($0) }
+		XCTAssertEqual(count, 0)
 	}
+
+	// MARK: Edit
 
 	func testEdit_WhenSeriesExists_ReturnsSeries() async throws {
 		// Given a database with one series
@@ -157,11 +223,11 @@ final class SeriesRepositoryTests: XCTestCase {
 			.init(
 				leagueId: leagueId1,
 				id: id1,
-				date: Date(timeIntervalSince1970: 123_456_000),
 				numberOfGames: 4,
+				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alleyId: nil
+				location: nil
 			)
 		)
 	}
@@ -180,6 +246,8 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Returns nil
 		XCTAssertNil(series)
 	}
+
+	// MARK: Delete
 
 	func testDelete_WhenIdExists_DeletesSeries() async throws {
 		// Given a database with 2 series

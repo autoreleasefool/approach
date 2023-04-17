@@ -3,13 +3,6 @@ import GearRepositoryInterface
 import GRDB
 import ModelsLibrary
 
-extension Gear {
-	struct DBEdit: Codable {
-		let gear: Gear.Database
-		let bowler: Bowler.Summary
-	}
-}
-
 extension Bowler.Summary: TableRecord {
 	public static let databaseTableName = Bowler.Database.databaseTableName
 }

@@ -16,6 +16,8 @@ final class BowlersRepositoryTests: XCTestCase {
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
+	// MARK: Playable
+
 	func testPlayable_ReturnsOnlyPlayable() async throws {
 		// Given a database with a bowler and opponent
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
@@ -77,6 +79,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Returns the bowlers sorted by recently used ids
 		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph"), .init(id: id2, name: "Audriana")])
 	}
+
+	// MARK: Opponents
 
 	func testOpponents_ReturnsPlayablesAndOpponents() async throws {
 		// Given a database with a bowler and an opponent
@@ -141,6 +145,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph"), .init(id: id2, name: "Audriana")])
 	}
 
+	// MARK: Create
+
 	func testCreate_WhenBowlerExists_ThrowsError() async throws {
 		// Given a database with an existing bowler
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
@@ -190,6 +196,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.status, .playable)
 	}
 
+	// MARK: Update
+
 	func testUpdate_WhenBowlerExists_UpdatesBowler() async throws {
 		// Given a database with an existing bowler
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
@@ -233,6 +241,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 0)
 	}
 
+	// MARK: Edit
+
 	func testEdit_WhenBowlerExists_ReturnsBowler() async throws {
 		// Given a database with a bowler
 		let bowler = Bowler.Database(id: id1, name: "Joseph", status: .playable)
@@ -263,6 +273,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Returns nil
 		XCTAssertNil(editable)
 	}
+
+	// MARK: Delete
 
 	func testDelete_WhenIdExists_DeletesBowler() async throws {
 		// Given a database with 2 bowlers
