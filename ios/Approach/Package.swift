@@ -392,10 +392,9 @@ let package = Package(
 		.target(
 			name: "OpponentsListFeature",
 			dependencies: [
-				"OpponentEditorFeature",
-				"OpponentsDataProviderInterface",
+				"BowlerEditorFeature",
+				"RecentlyUsedServiceInterface",
 				"ResourceListLibrary",
-				"SharedModelsViewsLibrary",
 				"SortOrderLibrary",
 			]
 		),

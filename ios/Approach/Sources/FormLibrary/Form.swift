@@ -3,17 +3,16 @@ import FeatureActionLibrary
 import StringsLibrary
 
 public protocol FormRecord: Identifiable, Equatable {
+	var name: String { get }
 	var isSaveable: Bool { get }
 	var saveButtonText: String { get }
 }
 
 public protocol CreateableRecord: FormRecord {
 	static var modelName: String { get }
-	var name: String { get }
 }
 
 public protocol EditableRecord: FormRecord {
-	var name: String { get }
 	var isDeleteable: Bool { get }
 }
 
@@ -40,6 +39,7 @@ public struct Form<
 	}
 
 	public struct State: Equatable {
+		public let modelName: String
 		public var isLoading = false
 		@PresentationState public var alert: AlertState<AlertAction>?
 
@@ -65,9 +65,10 @@ public struct Form<
 			value.record?.saveButtonText ?? Strings.Action.save
 		}
 
-		public init(initialValue: Value, currentValue: Value) {
+		public init(initialValue: Value, currentValue: Value, modelName: String = New.modelName) {
 			self.initialValue = initialValue
 			self.value = currentValue
+			self.modelName = modelName
 		}
 	}
 

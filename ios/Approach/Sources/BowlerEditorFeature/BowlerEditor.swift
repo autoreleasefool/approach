@@ -17,8 +17,13 @@ public struct BowlerEditor: Reducer {
 		public var _form: BowlerForm.State
 
 		public init(value: BowlerForm.Value) {
+			let isCreatingOpponent = (value.record as? Bowler.Create)?.status == .opponent
 			self.initialValue = value
-			self._form = .init(initialValue: value, currentValue: value)
+			self._form = .init(
+				initialValue: value,
+				currentValue: value,
+				modelName: isCreatingOpponent ? Strings.Opponent.title : Bowler.Create.modelName
+			)
 
 			switch value {
 			case let .create(new):

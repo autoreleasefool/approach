@@ -15,11 +15,9 @@ public struct BowlersListView: View {
 
 	struct ViewState: Equatable {
 		let selection: Bowler.ID?
-		let isEditorPresented: Bool
 
 		init(state: BowlersList.State) {
 			self.selection = state.selection?.id
-			self.isEditorPresented = state.editor != nil
 		}
 	}
 

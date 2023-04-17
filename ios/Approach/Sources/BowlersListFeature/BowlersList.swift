@@ -95,7 +95,7 @@ public struct BowlersList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: bowlers.playable)
+			ResourceList(fetchResources: bowlers.playable(ordered:))
 		}
 
 		Reduce<State, Action> { state, action in

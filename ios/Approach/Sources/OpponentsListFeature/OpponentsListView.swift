@@ -1,10 +1,9 @@
 import AssetsLibrary
+import BowlerEditorFeature
 import ComposableArchitecture
 import FeatureActionLibrary
-import OpponentEditorFeature
+import ModelsLibrary
 import ResourceListLibrary
-import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
@@ -14,18 +13,15 @@ public struct OpponentsListView: View {
 	let store: StoreOf<OpponentsList>
 
 	struct ViewState: Equatable {
-		let selection: Opponent.ID?
-		let isEditorPresented: Bool
+		let selection: Bowler.ID?
 
 		init(state: OpponentsList.State) {
 			self.selection = state.selection?.id
-			self.isEditorPresented = state.editor != nil
 		}
 	}
 
 	enum ViewAction {
-		case setEditorSheet(isPresented: Bool)
-		case setNavigation(selection: Opponent.ID?)
+		case setNavigation(selection: Bowler.ID?)
 	}
 
 	public init(store: StoreOf<OpponentsList>) {
@@ -45,7 +41,7 @@ public struct OpponentsListView: View {
 						send: OpponentsListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					OpponentRow(opponent: opponent)
+					Text(opponent.name)
 				}
 			}
 			.navigationTitle(Strings.Opponent.List.title)
@@ -54,14 +50,9 @@ public struct OpponentsListView: View {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /OpponentsList.Action.InternalAction.sortOrder))
 				}
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isEditorPresented,
-				send: ViewAction.setEditorSheet(isPresented:)
-			)) {
-				IfLetStore(store.scope(state: \.editor, action: /OpponentsList.Action.InternalAction.editor)) { scopedStore in
-					NavigationView {
-						OpponentEditorView(store: scopedStore)
-					}
+			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+				NavigationView {
+					BowlerEditorView(store: scopedStore)
 				}
 			}
 		}
@@ -71,8 +62,6 @@ public struct OpponentsListView: View {
 extension OpponentsList.Action {
 	init(action: OpponentsListView.ViewAction) {
 		switch action {
-		case let .setEditorSheet(isPresented):
-			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
 			self = .view(.setNavigation(selection: selection))
 		}

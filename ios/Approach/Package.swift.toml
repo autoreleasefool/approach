@@ -77,9 +77,9 @@ services = [ "Persistence" ]
 libraries = [ "BaseForm", "Extensions" ]
 
 [features.OpponentsList]
-features = [ "OpponentEditor" ]
-dataProviders = [ "Opponents" ]
-libraries = [ "ResourceList", "SharedModelsViews", "SortOrder" ]
+features = [ "BowlerEditor" ]
+services = [ "RecentlyUsed" ]
+libraries = [ "ResourceList", "SortOrder" ]
 
 [features.ScoreSheet]
 libraries = [ "SharedModels", "Views" ]

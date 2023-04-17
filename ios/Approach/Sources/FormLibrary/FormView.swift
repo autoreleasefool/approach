@@ -33,7 +33,7 @@ public struct FormView<
 
 			switch state.initialValue {
 			case .create:
-				self.title = Strings.Form.Prompt.add(New.modelName)
+				self.title = Strings.Form.Prompt.add(state.modelName)
 			case let .edit(existing):
 				self.title = Strings.Form.Prompt.edit(existing.name)
 			}
