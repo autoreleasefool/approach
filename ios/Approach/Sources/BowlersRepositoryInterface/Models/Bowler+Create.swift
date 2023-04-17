@@ -1,3 +1,4 @@
+import Foundation
 import ModelsLibrary
 
 extension Bowler {
@@ -6,10 +7,12 @@ extension Bowler {
 		public var name: String
 		public let status: Bowler.Status
 
-		public init(id: Bowler.ID, name: String, status: Bowler.Status) {
-			self.id = id
-			self.name = name
-			self.status = status
+		public static func defaultBowler(withId: UUID) -> Self {
+			.init(id: withId, name: "", status: .playable)
+		}
+
+		public static func defaultOpponent(withId: UUID) -> Self {
+			.init(id: withId, name: "", status: .opponent)
 		}
 	}
 }

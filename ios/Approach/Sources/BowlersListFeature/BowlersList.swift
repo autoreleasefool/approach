@@ -132,7 +132,7 @@ public struct BowlersList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.editor = .init(value: .create(.init(id: uuid(), name: "", status: .playable)))
+						state.editor = .init(value: .create(.defaultBowler(withId: uuid())))
 						return .none
 
 					case .didDelete, .didTap:

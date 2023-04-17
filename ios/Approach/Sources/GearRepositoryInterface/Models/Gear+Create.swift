@@ -8,6 +8,8 @@ extension Gear {
 		public var kind: Kind
 		public var owner: Bowler.Summary?
 
-		public static let `default` = Self(id: UUID(), name: "", kind: .bowlingBall, owner: nil)
+		public static func `default`(withId: UUID) -> Self {
+			.init(id: withId, name: "", kind: .bowlingBall, owner: nil)
+		}
 	}
 }

@@ -134,7 +134,7 @@ struct GearEditorViewPreviews: PreviewProvider {
 		NavigationView {
 			GearEditorView(store:
 				.init(
-					initialState: .init(value: .edit(.default)),
+					initialState: .init(value: .create(.default(withId: UUID()))),
 					reducer: GearEditor()
 				)
 			)
