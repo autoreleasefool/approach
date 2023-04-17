@@ -9,15 +9,6 @@ import RepositoryLibrary
 
 public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 
-extension Gear {
-	struct SummaryFetch: Codable, TableRecord, FetchableRecord {
-		static let databaseTableName = Gear.Database.databaseTableName
-
-		var gear: Gear.Summary
-		var owner: String?
-	}
-}
-
 extension GearRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Sendable func sortGear(
@@ -39,7 +30,7 @@ extension GearRepository: DependencyKey {
 
 				let gear = database.reader().observe {
 					try Gear.Summary
-						.allAnnotated()
+						.withOwnerName()
 						.orderByName()
 						.filter(byKind: kind)
 						.owned(byBowler: owner)
@@ -51,7 +42,10 @@ extension GearRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try Gear.Edit.fetchOne($0, id: id)
+					try Gear.Edit
+						.withOwner()
+						.filter(Gear.Database.Columns.id == id)
+						.fetchOne($0)
 				}
 			},
 			create: { gear in

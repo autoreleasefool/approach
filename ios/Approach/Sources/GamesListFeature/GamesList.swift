@@ -1,4 +1,4 @@
-import BowlersDataProviderInterface
+
 import ComposableArchitecture
 import FeatureActionLibrary
 import GamesDataProviderInterface
@@ -53,7 +53,6 @@ public struct GamesList: Reducer {
 	public init() {}
 
 	@Dependency(\.gamesDataProvider) var gamesDataProvider
-	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {

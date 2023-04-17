@@ -1,24 +1,31 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import GearDataProviderInterface
 import GearEditorFeature
-import PersistenceServiceInterface
+import GearRepositoryInterface
+import ModelsLibrary
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension Gear: ResourceListItem {}
+extension Gear.Summary: ResourceListItem {}
+
+extension Gear.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
+		case .byName: return Strings.Ordering.alphabetical
+		}
+	}
+}
 
 public struct GearList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Gear, Gear.FetchRequest>.State
-		public var editor: GearEditor.State?
-		public var sortOrder: SortOrder<Gear.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		public var list: ResourceList<Gear.Summary, Gear.Ordering>.State
+		public var sortOrder: SortOrder<Gear.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		@PresentationState public var editor: GearEditor.State?
 
 		public init() {
 			self.list = .init(
@@ -26,11 +33,11 @@ public struct GearList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.persistenceService) var persistenceService: PersistenceService
-						try await persistenceService.deleteGear($0)
+						@Dependency(\.gear) var gear: GearRepository
+						try await gear.delete($0.id)
 					}),
 				],
-				query: .init(filter: nil, ordering: sortOrder.ordering),
+				query: sortOrder.ordering,
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
 					image: .emptyGear,
@@ -44,13 +51,14 @@ public struct GearList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case setEditorSheet(isPresented: Bool)
+			case didAppear
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case list(ResourceList<Gear, Gear.FetchRequest>.Action)
-			case editor(GearEditor.Action)
-			case sortOrder(SortOrder<Gear.FetchRequest.Ordering>.Action)
+			case didLoadEditableGear(Gear.Edit)
+			case list(ResourceList<Gear.Summary, Gear.Ordering>.Action)
+			case editor(PresentationAction<GearEditor.Action>)
+			case sortOrder(SortOrder<Gear.Ordering>.Action)
 		}
 
 		case view(ViewAction)
@@ -61,8 +69,9 @@ public struct GearList: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.gearDataProvider) var gearDataProvider
+	@Dependency(\.gear) var gear
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
@@ -70,32 +79,39 @@ public struct GearList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: gearDataProvider.observeGear)
+			ResourceList {
+				gear.list(ownedBy: nil, ofKind: nil, ordered: $0)
+			}
 		}
 
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .setEditorSheet(isPresented: true):
-					state.editor = .init(mode: .create)
-					return .none
-
-				case .setEditorSheet(isPresented: false):
-					state.editor = nil
+				case .didAppear:
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadEditableGear(gear):
+					state.editor = .init(value: .edit(gear))
+					return .none
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(gear):
-						state.editor = .init(mode: .edit(gear))
-						return .none
+						return .run { send in
+							guard let editable = try await self.gear.edit(gear.id) else {
+								// TODO: report gear not found
+								return
+							}
+
+							await send(.internal(.didLoadEditableGear(editable)))
+						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.editor = .init(mode: .create)
+						state.editor = .init(value: .create(.init(id: uuid(), name: "", kind: .bowlingBall, owner: nil)))
 						return .none
 
 					case .didDelete, .didTap:
@@ -109,7 +125,7 @@ public struct GearList: Reducer {
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
-				case let .editor(.delegate(delegateAction)):
+				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.editor = nil
@@ -122,7 +138,7 @@ public struct GearList: Reducer {
 				case .sortOrder(.internal), .sortOrder(.view):
 					return .none
 
-				case .editor(.internal), .editor(.view), .editor(.binding):
+				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.presented(.binding)), .editor(.dismiss):
 					return .none
 				}
 
@@ -130,7 +146,7 @@ public struct GearList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			GearEditor()
 		}
 	}
@@ -138,6 +154,6 @@ public struct GearList: Reducer {
 
 extension GearList.State {
 	mutating func updateQuery() {
-		list.query = .init(filter: nil, ordering: sortOrder.ordering)
+		list.query = sortOrder.ordering
 	}
 }

@@ -272,7 +272,6 @@ let package = Package(
 		.target(
 			name: "GamesListFeature",
 			dependencies: [
-				"BowlersDataProviderInterface",
 				"DateTimeLibrary",
 				"GamesDataProviderInterface",
 				"GamesEditorFeature",
@@ -291,13 +290,13 @@ let package = Package(
 			name: "GearEditorFeature",
 			dependencies: [
 				"AvatarServiceInterface",
-				"BaseFormLibrary",
-				"BowlersDataProviderInterface",
+				"BowlersRepositoryInterface",
+				"EquatableLibrary",
 				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
-				"PersistenceServiceInterface",
+				"FormLibrary",
+				"GearRepositoryInterface",
 				"ResourcePickerLibrary",
-				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -311,8 +310,8 @@ let package = Package(
 		.target(
 			name: "GearListFeature",
 			dependencies: [
-				"GearDataProviderInterface",
 				"GearEditorFeature",
+				"ModelsViewsLibrary",
 				"RecentlyUsedServiceInterface",
 				"ResourceListLibrary",
 				"SortOrderLibrary",

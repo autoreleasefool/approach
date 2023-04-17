@@ -42,7 +42,7 @@ public struct LeagueEditor: Reducer {
 			self.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
 			self.gamesPerSeries = (league.numberOfGames == nil) ? .dynamic : .static
 			self.alleyPicker = .init(
-				selected: Set([league.alley].compactMap({ $0 })),
+				selected: Set([league.alleyId].compactMap({ $0 })),
 				query: .init(()),
 				limit: 1,
 				showsCancelHeaderButton: false
@@ -69,7 +69,7 @@ public struct LeagueEditor: Reducer {
 			case .create:
 				@Dependency(\.uuid) var uuid: UUIDGenerator
 				fields = Fields(league: .init(
-					bowler: bowler,
+					bowlerId: bowler,
 					id: uuid(),
 					name: "",
 					recurrence: .repeating,
@@ -77,7 +77,7 @@ public struct LeagueEditor: Reducer {
 					additionalPinfall: nil,
 					additionalGames: nil,
 					excludeFromStatistics: .include,
-					alley: nil
+					alleyId: nil
 				))
 			}
 			self.hasAlleysEnabled = hasAlleysEnabled
@@ -144,7 +144,7 @@ public struct LeagueEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didAppear:
-					if case let .edit(league) = state.base.mode, let alley = league.alley {
+					if case let .edit(league) = state.base.mode, let alley = league.alleyId {
 						return .run { send in
 							for try await alley in alleys.load(alley) {
 								await send(.internal(.didLoadAlley(.success(alley))))
@@ -221,7 +221,7 @@ extension LeagueEditor.Fields {
 		}
 
 		return .init(
-			bowler: league.bowler,
+			bowlerId: league.bowlerId,
 			id: league.id,
 			name: league.name,
 			recurrence: league.recurrence,
@@ -229,7 +229,7 @@ extension LeagueEditor.Fields {
 			additionalPinfall: additionalPinfall,
 			additionalGames: additionalGames,
 			excludeFromStatistics: league.excludeFromStatistics,
-			alley: alleyPicker.selected.first
+			alleyId: alleyPicker.selected.first
 		)
 	}
 }

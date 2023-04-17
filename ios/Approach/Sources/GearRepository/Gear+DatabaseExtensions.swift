@@ -3,12 +3,48 @@ import GearRepositoryInterface
 import GRDB
 import ModelsLibrary
 
+extension Gear {
+	struct DBEdit: Codable {
+		let gear: Gear.Database
+		let bowler: Bowler.Summary
+	}
+}
+
+extension Bowler.Summary: TableRecord {
+	public static let databaseTableName = Bowler.Database.databaseTableName
+}
+
 extension Gear.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Gear.Database.databaseTableName
+	typealias Columns = Gear.Database.Columns
+
+	static let gearOwner = belongsTo(Bowler.Summary.self)
+	var gearOwner: QueryInterfaceRequest<Bowler.Summary> { request(for: Gear.Edit.gearOwner) }
+
+	public func encode(to container: inout PersistenceContainer) throws {
+		container[Columns.id] = id
+		container[Columns.name] = name
+		container[Columns.bowlerId] = owner?.id
+	}
+
+	static func withOwner() -> QueryInterfaceRequest<Gear.Edit> {
+		return including(optional: Gear.Edit.gearOwner.forKey("owner"))
+	}
 }
 
 extension Gear.Create: PersistableRecord {
 	public static let databaseTableName = Gear.Database.databaseTableName
+	typealias Columns = Gear.Database.Columns
+
+	static let gearOwner = belongsTo(Bowler.Database.self)
+	var gearOwner: QueryInterfaceRequest<Bowler.Database> { request(for: Gear.Create.gearOwner) }
+
+	public func encode(to container: inout PersistenceContainer) throws {
+		container[Columns.id] = id
+		container[Columns.name] = name
+		container[Columns.kind] = kind
+		container[Columns.bowlerId] = owner?.id
+	}
 }
 
 extension Gear.Summary: TableRecord, FetchableRecord, EncodableRecord {
@@ -17,10 +53,9 @@ extension Gear.Summary: TableRecord, FetchableRecord, EncodableRecord {
 	static let owner = belongsTo(Bowler.Database.self)
 	var owner: QueryInterfaceRequest<Bowler.Database> { request(for: Gear.Summary.owner) }
 
-	static func allAnnotated() -> QueryInterfaceRequest<Gear.Summary> {
+	static func withOwnerName() -> QueryInterfaceRequest<Gear.Summary> {
 		let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
-		return all()
-			.annotated(withOptional: Gear.Summary.owner.select(ownerName))
+		return all().annotated(withOptional: Gear.Summary.owner.select(ownerName))
 	}
 }
 

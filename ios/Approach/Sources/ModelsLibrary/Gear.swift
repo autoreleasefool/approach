@@ -7,7 +7,7 @@ extension Gear {
 }
 
 extension Gear {
-	public enum Kind: String, Codable, Sendable {
+	public enum Kind: String, Codable, Sendable, Identifiable, CaseIterable {
 		case shoes
 		case bowlingBall
 		case towel

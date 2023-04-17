@@ -65,7 +65,6 @@ public struct BowlersList: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapConfigureStatisticsButton
 			case setNavigation(selection: Bowler.ID?)
-			case setEditorSheet(isPresented: Bool)
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -112,13 +111,6 @@ public struct BowlersList: Reducer {
 
 				case .setNavigation(selection: .none):
 					return navigate(to: nil, state: &state)
-
-				case .setEditorSheet(isPresented: true):
-					return creatingBowler(state: &state)
-
-				case .setEditorSheet(isPresented: false):
-					state.editor = nil
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -140,7 +132,8 @@ public struct BowlersList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						return creatingBowler(state: &state)
+						state.editor = .init(value: .create(.init(id: uuid(), name: "", status: .playable)))
+						return .none
 
 					case .didDelete, .didTap:
 						return .none
@@ -191,11 +184,6 @@ public struct BowlersList: Reducer {
 				LeaguesList()
 			}
 		}
-	}
-
-	private func creatingBowler(state: inout State) -> Effect<Action> {
-		state.editor = .init(value: .create(.init(id: uuid(), name: "", status: .playable)))
-		return .none
 	}
 
 	private func navigate(to id: Bowler.ID?, state: inout State) -> Effect<Action> {

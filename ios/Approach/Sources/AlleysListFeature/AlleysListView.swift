@@ -40,7 +40,7 @@ public struct AlleysListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
 			) {
-				AlleyRow(alley: $0)
+				Alley.View(alley: $0)
 			}
 			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {

@@ -25,7 +25,6 @@ public struct BowlersListView: View {
 
 	enum ViewAction {
 		case didTapConfigureStatisticsButton
-		case setEditorSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 	}
 
@@ -82,8 +81,6 @@ extension BowlersList.Action {
 		switch action {
 		case .didTapConfigureStatisticsButton:
 			self = .view(.didTapConfigureStatisticsButton)
-		case let .setEditorSheet(isPresented):
-			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
 			self = .view(.setNavigation(selection: selection))
 		}

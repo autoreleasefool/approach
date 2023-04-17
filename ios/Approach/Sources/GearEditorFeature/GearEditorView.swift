@@ -1,10 +1,9 @@
 import AvatarServiceInterface
-import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FormLibrary
+import ModelsLibrary
 import ResourcePickerLibrary
-import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -15,31 +14,25 @@ public struct GearEditorView: View {
 	struct ViewState: Equatable {
 		@BindingState var name: String
 		@BindingState var kind: Gear.Kind
-		let selectedBowler: Bowler?
+		let owner: Bowler.Summary?
 		let isBowlerPickerPresented: Bool
 		let hasAvatarsEnabled: Bool
+		let isEditing: Bool
 
 		init(state: GearEditor.State) {
-			self.name = state.base.form.name
-			self.kind = state.base.form.kind
+			self.name = state.name
+			self.kind = state.kind
+			self.owner = state.owner
 			self.isBowlerPickerPresented = state.isBowlerPickerPresented
 			self.hasAvatarsEnabled = state.hasAvatarsEnabled
-			if let id = state.base.form.bowlerPicker.selected.first {
-				if let bowler = state.base.form.bowlerPicker.resources?[id: id] {
-					self.selectedBowler = bowler
-				} else if let bowler = state.initialBowler, bowler.id == id {
-					self.selectedBowler = bowler
-				} else {
-					self.selectedBowler = nil
-				}
-			} else {
-				self.selectedBowler = nil
+			switch state._form.value {
+			case .create: self.isEditing = false
+			case .edit: self.isEditing = true
 			}
 		}
 	}
 
 	enum ViewAction: BindableAction {
-		case didAppear
 		case setBowlerPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
@@ -50,7 +43,7 @@ public struct GearEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GearEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: /GearEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: /GearEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
@@ -66,6 +59,7 @@ public struct GearEditorView: View {
 							Text(String(describing: $0)).tag($0)
 						}
 					}
+					.disabled(viewStore.isEditing)
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
@@ -73,15 +67,16 @@ public struct GearEditorView: View {
 					NavigationLink(
 						destination: ResourcePickerView(
 							store: store.scope(
-								state: \.base.form.bowlerPicker,
+								state: \.bowlerPicker,
 								action: /GearEditor.Action.InternalAction.bowlerPicker
 							)
 						) { bowler in
-							if viewStore.hasAvatarsEnabled {
-								AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
-							} else {
-								Text(bowler.name)
-							}
+							Text(bowler.name)
+//							if viewStore.hasAvatarsEnabled {
+//								AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
+//							} else {
+//								Text(bowler.name)
+//							}
 						},
 						isActive: viewStore.binding(
 							get: \.isBowlerPickerPresented,
@@ -90,14 +85,24 @@ public struct GearEditorView: View {
 					) {
 						LabeledContent(
 							Strings.Bowler.title,
-							value: viewStore.selectedBowler?.name ?? Strings.none
+							value: viewStore.owner?.name ?? Strings.none
 						)
 					}
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 			.interactiveDismissDisabled(viewStore.isBowlerPickerPresented)
-			.onAppear { viewStore.send(.didAppear) }
+		}
+	}
+}
+
+extension Gear.Kind: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .shoes: return Strings.Gear.Properties.Kind.shoes
+		case .bowlingBall: return Strings.Gear.Properties.Kind.bowlingBall
+		case .towel: return Strings.Gear.Properties.Kind.towel
+		case .other: return Strings.other
 		}
 	}
 }
@@ -106,8 +111,8 @@ extension GearEditor.State {
 	var view: GearEditorView.ViewState {
 		get { .init(state: self) }
 		set {
-			self.base.form.name = newValue.name
-			self.base.form.kind = newValue.kind
+			self.name = newValue.name
+			self.kind = newValue.kind
 		}
 	}
 }
@@ -115,8 +120,6 @@ extension GearEditor.State {
 extension GearEditor.Action {
 	init(action: GearEditorView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
 		case let .setBowlerPicker(isPresented):
 			self = .view(.setBowlerPicker(isPresented: isPresented))
 		case let .binding(action):
@@ -131,7 +134,7 @@ struct GearEditorViewPreviews: PreviewProvider {
 		NavigationView {
 			GearEditorView(store:
 				.init(
-					initialState: .init(mode: .edit(.init(bowler: UUID(), id: UUID(), name: "Joseph", kind: .bowlingBall))),
+					initialState: .init(value: .edit(.init(id: UUID(), name: "Yellow", owner: .init(id: UUID(), name: "Joseph")))),
 					reducer: GearEditor()
 				)
 			)

@@ -2,9 +2,9 @@ import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import GearEditorFeature
+import ModelsLibrary
+import ModelsViewsLibrary
 import ResourceListLibrary
-import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
@@ -14,15 +14,11 @@ public struct GearListView: View {
 	let store: StoreOf<GearList>
 
 	struct ViewState: Equatable {
-		let isEditorPresented: Bool
-
-		init(state: GearList.State) {
-			self.isEditorPresented = state.editor != nil
-		}
+		init(state: GearList.State) {}
 	}
 
 	enum ViewAction {
-		case setEditorSheet(isPresented: Bool)
+		case didAppear
 	}
 
 	public init(store: StoreOf<GearList>) {
@@ -33,8 +29,8 @@ public struct GearListView: View {
 		WithViewStore(store, observe: ViewState.init, send: GearList.Action.init) { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /GearList.Action.InternalAction.list)
-			) { gear in
-				GearRow(gear: gear)
+			) {
+				Gear.View(gear: $0)
 			}
 			.navigationTitle(Strings.Gear.List.title)
 			.toolbar {
@@ -42,16 +38,12 @@ public struct GearListView: View {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /GearList.Action.InternalAction.sortOrder))
 				}
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isEditorPresented,
-				send: ViewAction.setEditorSheet(isPresented:)
-			)) {
-				IfLetStore(store.scope(state: \.editor, action: /GearList.Action.InternalAction.editor)) { scopedStore in
-					NavigationView {
-						GearEditorView(store: scopedStore)
-					}
+			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+				NavigationView {
+					GearEditorView(store: scopedStore)
 				}
 			}
+			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 }
@@ -59,8 +51,8 @@ public struct GearListView: View {
 extension GearList.Action {
 	init(action: GearListView.ViewAction) {
 		switch action {
-		case let .setEditorSheet(isPresented):
-			self = .view(.setEditorSheet(isPresented: isPresented))
+		case .didAppear:
+			self = .view(.didAppear)
 		}
 	}
 }

@@ -74,8 +74,8 @@ public struct LeagueEditorView: View {
 							state: \.base.form.alleyPicker,
 							action: /LeagueEditor.Action.InternalAction.alleyPicker
 						)
-					) { alley in
-						AlleyRow(alley: alley)
+					) {
+						Alley.View(alley: $0)
 					},
 					isActive: viewStore.binding(
 						get: \.isAlleyPickerPresented,
