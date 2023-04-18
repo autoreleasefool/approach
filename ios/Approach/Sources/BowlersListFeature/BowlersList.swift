@@ -6,7 +6,6 @@ import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import LeaguesListFeature
 import ModelsLibrary
-import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SortOrderLibrary

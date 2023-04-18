@@ -13,7 +13,7 @@ public struct BowlerEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var name: String
 
-		public var initialValue: BowlerForm.Value
+		public let initialValue: BowlerForm.Value
 		public var _form: BowlerForm.State
 
 		public init(value: BowlerForm.Value) {
