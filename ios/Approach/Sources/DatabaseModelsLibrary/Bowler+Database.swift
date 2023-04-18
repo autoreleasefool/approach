@@ -38,3 +38,7 @@ extension Bowler.Database {
 		public static let status = Column(CodingKeys.status)
 	}
 }
+
+extension Bowler.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Bowler.Database.databaseTableName
+}

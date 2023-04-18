@@ -12,10 +12,11 @@ extension GamesRepository: DependencyKey {
 			list: { series, _ in
 				@Dependency(\.database) var database
 				return database.reader().observe {
-					try Game.Summary
+					try Game.Database
 						.all()
 						.orderByOrdinal()
 						.filter(bySeries: series)
+						.asRequest(of: Game.Summary.self)
 						.fetchAll($0)
 				}
 			},

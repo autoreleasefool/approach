@@ -11,7 +11,7 @@ extension Lane.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Lane.Database.databaseTableName
 }
 
-extension DerivableRequest<Lane.Edit> {
+extension DerivableRequest<Lane.Database> {
 	func orderByLabel() -> Self {
 		let label = Lane.Database.Columns.label
 		return order(label.collating(.localizedCaseInsensitiveCompare))

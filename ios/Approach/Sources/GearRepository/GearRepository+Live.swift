@@ -29,11 +29,14 @@ extension GearRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let gear = database.reader().observe {
-					try Gear.Summary
-						.withOwnerName()
+					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
+					return try Gear.Database
+						.all()
 						.orderByName()
 						.filter(byKind: kind)
 						.owned(byBowler: owner)
+						.annotated(withOptional: Gear.Database.bowler.select(ownerName))
+						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
 
@@ -42,9 +45,10 @@ extension GearRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try Gear.Edit
-						.withOwner()
+					try Gear.Database
 						.filter(Gear.Database.Columns.id == id)
+						.including(optional: Gear.Database.bowler.forKey("owner"))
+						.asRequest(of: Gear.Edit.self)
 						.fetchOne($0)
 				}
 			},

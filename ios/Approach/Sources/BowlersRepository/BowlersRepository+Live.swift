@@ -29,10 +29,11 @@ extension BowlersRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let bowlers = database.reader().observe {
-					try Bowler.Summary
+					try Bowler.Database
 						.all()
 						.orderByName()
 						.filter(byStatus: status)
+						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 				}
 

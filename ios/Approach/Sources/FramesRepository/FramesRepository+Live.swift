@@ -12,10 +12,11 @@ extension FramesRepository: DependencyKey {
 			edit: { game in
 				@Dependency(\.database) var database
 				let frames = try await database.reader().read {
-					try Frame.Edit
+					try Frame.Database
 						.all()
 						.orderByOrdinal()
 						.filter(byGame: game)
+						.asRequest(of: Frame.Edit.self)
 						.fetchAll($0)
 				}
 

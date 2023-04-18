@@ -41,3 +41,7 @@ extension Lane.Database {
 		public static let position = Column(CodingKeys.position)
 	}
 }
+
+extension Lane.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Lane.Database.databaseTableName
+}

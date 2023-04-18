@@ -7,7 +7,7 @@ extension Frame.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Frame.Database.databaseTableName
 }
 
-extension DerivableRequest<Frame.Edit> {
+extension DerivableRequest<Frame.Database> {
 	func orderByOrdinal() -> Self {
 		let ordinal = Frame.Database.Columns.ordinal
 		return order(ordinal)

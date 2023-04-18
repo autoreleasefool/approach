@@ -11,11 +11,7 @@ extension Bowler.Create: PersistableRecord {
 	public static let databaseTableName = Bowler.Database.databaseTableName
 }
 
-extension Bowler.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Bowler.Database.databaseTableName
-}
-
-extension DerivableRequest<Bowler.Summary> {
+extension DerivableRequest<Bowler.Database>{
 	func orderByName() -> Self {
 		let name = Bowler.Database.Columns.name
 		return order(name.collating(.localizedCaseInsensitiveCompare))

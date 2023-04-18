@@ -11,10 +11,11 @@ extension LanesRepository: DependencyKey {
 			edit: { alley in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try Lane.Edit
+					try Lane.Database
 						.all()
 						.orderByLabel()
 						.filter(byAlley: alley)
+						.asRequest(of: Lane.Edit.self)
 						.fetchAll($0)
 				}
 			},

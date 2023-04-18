@@ -7,11 +7,7 @@ extension Game.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Game.Database.databaseTableName
 }
 
-extension Game.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Game.Database.databaseTableName
-}
-
-extension DerivableRequest<Game.Summary> {
+extension DerivableRequest<Game.Database> {
 	func orderByOrdinal() -> Self {
 		let ordinal = Game.Database.Columns.ordinal
 		return order(ordinal)

@@ -14,10 +14,11 @@ extension AlleysRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let alleys = database.reader().observe {
-					try Alley.Summary
+					try Alley.Database
 						.all()
 						.orderByName()
 						.filter(material, pinFall, mechanism, pinBase)
+						.asRequest(of: Alley.Summary.self)
 						.fetchAll($0)
 				}
 

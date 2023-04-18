@@ -7,11 +7,7 @@ extension Alley.Editable: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Alley.Database.databaseTableName
 }
 
-extension Alley.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Alley.Database.databaseTableName
-}
-
-extension DerivableRequest<Alley.Summary> {
+extension DerivableRequest<Alley.Database> {
 	func orderByName() -> Self {
 		let name = Alley.Database.Columns.name
 		return order(name.collating(.localizedCaseInsensitiveCompare))

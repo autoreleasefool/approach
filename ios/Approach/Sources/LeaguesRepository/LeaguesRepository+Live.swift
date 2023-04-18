@@ -14,11 +14,12 @@ extension LeaguesRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let leagues = database.reader().observe {
-					try League.Summary
+					try League.Database
 						.all()
 						.orderByName()
 						.bowled(byBowler: bowler)
 						.filter(byRecurrence: recurrence)
+						.asRequest(of: League.Summary.self)
 						.fetchAll($0)
 				}
 

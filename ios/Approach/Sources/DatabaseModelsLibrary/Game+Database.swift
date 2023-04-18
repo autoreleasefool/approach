@@ -51,3 +51,7 @@ extension Game.Database {
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
 	}
 }
+
+extension Game.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Game.Database.databaseTableName
+}

@@ -57,3 +57,7 @@ extension Alley.Database {
 		public static let pinBase = Column(CodingKeys.pinBase)
 	}
 }
+
+extension Alley.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Alley.Database.databaseTableName
+}

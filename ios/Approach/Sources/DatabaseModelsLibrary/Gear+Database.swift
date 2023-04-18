@@ -32,6 +32,9 @@ extension Gear.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw PlaceholderIDValidationError() }
 	}
+
+	public static let bowler = belongsTo(Bowler.Database.self)
+	public var bowler: QueryInterfaceRequest<Bowler.Database> { request(for: Self.bowler) }
 }
 
 extension Gear.Database {
@@ -41,4 +44,8 @@ extension Gear.Database {
 		public static let kind = Column(CodingKeys.kind)
 		public static let bowlerId = Column(CodingKeys.bowlerId)
 	}
+}
+
+extension Gear.Summary: TableRecord, FetchableRecord, EncodableRecord {
+	public static let databaseTableName = Gear.Database.databaseTableName
 }

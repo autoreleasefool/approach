@@ -63,3 +63,7 @@ extension League.Database {
 		public static let alleyId = Column(CodingKeys.alleyId)
 	}
 }
+
+extension League.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = League.Database.databaseTableName
+}
