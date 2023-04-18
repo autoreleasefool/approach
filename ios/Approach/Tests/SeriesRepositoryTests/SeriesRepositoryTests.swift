@@ -3,7 +3,6 @@ import DatabaseModelsLibrary
 import Dependencies
 import GRDB
 @testable import ModelsLibrary
-import RecentlyUsedServiceInterface
 @testable import SeriesRepository
 @testable import SeriesRepositoryInterface
 import TestUtilitiesLibrary
@@ -12,6 +11,11 @@ import XCTest
 @MainActor
 final class SeriesRepositoryTests: XCTestCase {
 	let bowlerId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000001A")!
+
+	let alleyId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000010A")!
+
+	let laneId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000100A")!
+	let laneId2 = UUID(uuidString: "00000000-0000-0000-0000-00000000100B")!
 
 	let leagueId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!
 	let leagueId2 = UUID(uuidString: "00000000-0000-0000-0000-00000000000B")!
@@ -221,13 +225,95 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				leagueId: leagueId1,
-				id: id1,
-				numberOfGames: 4,
-				date: Date(timeIntervalSince1970: 123_456_000),
-				preBowl: .regular,
-				excludeFromStatistics: .include,
-				location: nil
+				existing: .init(
+					leagueId: leagueId1,
+					id: id1,
+					numberOfGames: 4,
+					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
+					excludeFromStatistics: .include,
+					location: nil
+				),
+				lanes: []
+			)
+		)
+	}
+
+	func testEdit_WhenSeriesExists_WhenAlleyExists_ReturnsSeriesWithAlley() async throws {
+		// Given a database with one series
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_000), alleyId: alleyId1)
+		let db = try await initializeDatabase(inserting: [series1])
+
+		// Editing the series
+		let series = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await SeriesRepository.liveValue.edit(id1)
+		}
+
+		// Returns the series
+		XCTAssertEqual(
+			series,
+			.init(
+				existing: .init(
+					leagueId: leagueId1,
+					id: id1,
+					numberOfGames: 4,
+					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
+					excludeFromStatistics: .include,
+					location: .init(
+						id: alleyId1,
+						name: "Skyview",
+						address: nil,
+						material: nil,
+						pinFall: nil,
+						mechanism: nil,
+						pinBase: nil
+					)
+				),
+				lanes: []
+			)
+		)
+	}
+
+	func testEdit_WhenSeriesExists_WhenLanesExist_ReturnsSeriesWithLanes() async throws {
+		// Given a database with one series
+		let series1 = Series.Database.mock(id: id1, date: Date(timeIntervalSince1970: 123_456_000))
+		let db = try await initializeDatabase(inserting: [series1])
+
+		// And many lanes
+		let seriesLane1 = SeriesLane.Database(seriesId: id1, laneId: laneId2)
+		let seriesLane2 = SeriesLane.Database(seriesId: id1, laneId: laneId1)
+		try await db.write {
+			try seriesLane1.insert($0)
+			try seriesLane2.insert($0)
+		}
+
+		// Editing the series
+		let series = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await SeriesRepository.liveValue.edit(id1)
+		}
+
+		// Returns the series
+		XCTAssertEqual(
+			series,
+			.init(
+				existing: .init(
+					leagueId: leagueId1,
+					id: id1,
+					numberOfGames: 4,
+					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
+					excludeFromStatistics: .include,
+					location: nil
+				),
+				lanes: [
+					.init(id: laneId1, label: "1", position: .leftWall),
+					.init(id: laneId2, label: "2", position: .noWall),
+				]
 			)
 		)
 	}
@@ -297,6 +383,21 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		let bowler = Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable)
 
+		let alley = Alley.Database(
+			id: alleyId1,
+			name: "Skyview",
+			address: nil,
+			material: nil,
+			pinFall: nil,
+			mechanism: nil,
+			pinBase: nil
+		)
+
+		let lanes = [
+			Lane.Database(alleyId: alleyId1, id: laneId1, label: "1", position: .leftWall),
+			Lane.Database(alleyId: alleyId1, id: laneId2, label: "2", position: .noWall),
+		]
+
 		let leagues = [
 			League.Database(
 				bowlerId: bowlerId1,
@@ -324,6 +425,10 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		try await dbQueue.write {
 			try bowler.insert($0)
+			try alley.insert($0)
+			for lane in lanes {
+				try lane.insert($0)
+			}
 			for league in leagues {
 				try league.insert($0)
 			}

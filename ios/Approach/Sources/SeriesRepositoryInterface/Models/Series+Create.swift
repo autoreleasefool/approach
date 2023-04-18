@@ -25,3 +25,10 @@ extension Series {
 		}
 	}
 }
+
+extension Series {
+	public struct CreateWithLanes: Equatable {
+		public var new: Create
+		public var lanes: [Lane.Summary]
+	}
+}

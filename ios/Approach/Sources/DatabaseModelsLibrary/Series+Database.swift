@@ -42,6 +42,17 @@ extension Series.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw PlaceholderIDValidationError() }
 	}
+
+	public static let alley = belongsTo(Alley.Database.self)
+	public var alley: QueryInterfaceRequest<Alley.Database> {
+		request(for: Self.alley)
+	}
+
+	public static let seriesLanes = hasMany(SeriesLane.Database.self)
+	public static let lanes = hasMany(Lane.Database.self, through: seriesLanes, using: SeriesLane.Database.lane)
+	public var lanes: QueryInterfaceRequest<Lane.Database> {
+		request(for: Self.lanes)
+	}
 }
 
 extension Series.Database {
@@ -54,4 +65,8 @@ extension Series.Database {
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
 		public static let alleyId = Column(CodingKeys.alleyId)
 	}
+}
+
+extension Series.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Series.Database.databaseTableName
 }
