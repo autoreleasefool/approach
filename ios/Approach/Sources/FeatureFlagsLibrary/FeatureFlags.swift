@@ -23,3 +23,5 @@ extension FeatureFlag {
 		.teams,
 	]
 }
+
+// swiftlint:enable line_length

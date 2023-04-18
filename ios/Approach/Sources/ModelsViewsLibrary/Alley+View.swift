@@ -54,23 +54,3 @@ extension Alley {
 		}
 	}
 }
-
-#if DEBUG
-struct AlleyRowPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			Alley.View(
-				alley: .init(
-					id: UUID(),
-					name: "Skyview Lanes",
-					address: nil,
-					material: .wood,
-					pinFall: .freefall,
-					mechanism: .dedicated,
-					pinBase: .black
-				)
-			)
-		}
-	}
-}
-#endif

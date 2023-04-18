@@ -3,8 +3,8 @@
 import DatabaseServiceInterface
 import Dependencies
 import ExtensionsLibrary
-import ModelsLibrary
 import GRDB
+import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 
@@ -13,7 +13,7 @@ final class LaneDatabaseTests: XCTestCase {
 		let db = try await initializeDatabase()
 
 		let lane = Lane.Database(
-			alley: UUID(),
+			alleyId: UUID(),
 			id: .placeholder,
 			label: "Lane",
 			position: .leftWall

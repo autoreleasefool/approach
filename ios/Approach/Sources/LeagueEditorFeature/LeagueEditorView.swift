@@ -181,7 +181,7 @@ public struct LeagueEditorView: View {
 					)
 				)
 				.keyboardType(.numberPad)
-				
+
 				TextField(
 					Strings.League.Properties.additionalGames,
 					text: viewStore.binding(

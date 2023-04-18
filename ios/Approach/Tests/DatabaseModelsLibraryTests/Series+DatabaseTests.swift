@@ -3,8 +3,8 @@
 import DatabaseServiceInterface
 import Dependencies
 import ExtensionsLibrary
-import ModelsLibrary
 import GRDB
+import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 
@@ -13,13 +13,13 @@ final class SeriesDatabaseTests: XCTestCase {
 		let db = try await initializeDatabase()
 
 		let series = Series.Database(
-			league: UUID(),
+			leagueId: UUID(),
 			id: .placeholder,
 			date: Date(),
 			numberOfGames: 4,
 			preBowl: .regular,
 			excludeFromStatistics: .exclude,
-			alley: nil
+			alleyId: nil
 		)
 
 		await assertThrowsError(ofType: PlaceholderIDValidationError.self) {

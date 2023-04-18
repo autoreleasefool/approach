@@ -6,7 +6,7 @@ public struct BaseModelPersistence: Sendable {
 
 	public init(
 		save: @escaping @Sendable (Any) async throws -> Void,
-		delete: @escaping @Sendable (Any) async throws-> Void
+		delete: @escaping @Sendable (Any) async throws -> Void
 	) {
 		self.save = save
 		self.delete = delete

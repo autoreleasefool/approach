@@ -64,3 +64,5 @@ SOFTWARE.
 """),
 	]
 }
+
+// swiftlint:enable line_length

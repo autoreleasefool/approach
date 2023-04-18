@@ -8,7 +8,7 @@ public struct RecordPersistence: Sendable {
 	public init(
 		create: (@Sendable (Any) async throws -> Void)?,
 		update: (@Sendable (Any) async throws -> Void)?,
-		delete: (@Sendable (Any) async throws-> Void)?
+		delete: (@Sendable (Any) async throws -> Void)?
 	) {
 		self.create = create
 		self.update = update

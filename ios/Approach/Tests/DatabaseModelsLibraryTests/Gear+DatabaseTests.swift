@@ -3,8 +3,8 @@
 import DatabaseServiceInterface
 import Dependencies
 import ExtensionsLibrary
-import ModelsLibrary
 import GRDB
+import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 
@@ -16,7 +16,7 @@ final class GearDatabaseTests: XCTestCase {
 			id: .placeholder,
 			name: "Name",
 			kind: .bowlingBall,
-			bowler: nil
+			bowlerId: nil
 		)
 
 		await assertThrowsError(ofType: PlaceholderIDValidationError.self) {

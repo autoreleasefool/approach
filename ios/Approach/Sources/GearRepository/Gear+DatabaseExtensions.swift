@@ -48,4 +48,3 @@ extension DerivableRequest<Gear.Database> {
 		return filter(bowler == byBowler)
 	}
 }
-

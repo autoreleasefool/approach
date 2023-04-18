@@ -186,8 +186,8 @@ public struct AlleyEditor: Reducer {
 }
 
 // TODO: re-enable adding lanes to alleys
-//extension LaneEditor.State {
+// extension LaneEditor.State {
 //	func toLane(alley: Alley.ID) -> Lane {
 //		.init(id: id, label: label, isAgainstWall: isAgainstWall, alley: alley)
 //	}
-//}
+// }

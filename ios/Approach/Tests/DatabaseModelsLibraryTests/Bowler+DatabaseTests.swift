@@ -3,8 +3,8 @@
 import DatabaseServiceInterface
 import Dependencies
 import ExtensionsLibrary
-import ModelsLibrary
 import GRDB
+import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 

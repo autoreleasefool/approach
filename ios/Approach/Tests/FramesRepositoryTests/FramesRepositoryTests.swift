@@ -78,7 +78,11 @@ final class FramesRepositoryTests: XCTestCase {
 		let db = try await initializeDatabase(inserting: [frame1])
 
 		// Editing the frame
-		let editable = Frame.Edit(gameId: gameId1, ordinal: 1, rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)])
+		let editable = Frame.Edit(
+			gameId: gameId1,
+			ordinal: 1,
+			rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)]
+		)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
@@ -172,7 +176,7 @@ final class FramesRepositoryTests: XCTestCase {
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include
-			)
+			),
 		]
 
 		try await dbQueue.write {
