@@ -14,6 +14,7 @@ public struct LeaguesRepository: Sendable {
 		League.Recurrence?,
 		League.Ordering
 	) -> AsyncThrowingStream<[League.Summary], Error>
+	public var seriesHost: @Sendable(League.ID) async throws -> League.SeriesHost?
 	public var edit: @Sendable (League.ID) async throws -> League.Editable?
 	public var save: @Sendable (League.Editable) async throws -> Void
 	public var delete: @Sendable (League.ID) async throws -> Void
@@ -24,11 +25,13 @@ public struct LeaguesRepository: Sendable {
 			League.Recurrence?,
 			League.Ordering
 		) -> AsyncThrowingStream<[League.Summary], Error>,
+		seriesHost: @escaping @Sendable(League.ID) async throws -> League.SeriesHost?,
 		edit: @escaping @Sendable (League.ID) async throws -> League.Editable?,
 		save: @escaping @Sendable (League.Editable) async throws -> Void,
 		delete: @escaping @Sendable (League.ID) async throws -> Void
 	) {
 		self.list = list
+		self.seriesHost = seriesHost
 		self.edit = edit
 		self.save = save
 		self.delete = delete
@@ -46,6 +49,7 @@ public struct LeaguesRepository: Sendable {
 extension LeaguesRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _, _ in unimplemented("\(Self.self).list") },
+		seriesHost: { _ in unimplemented("\(Self.self).seriesHost") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		save: { _ in unimplemented("\(Self.self).save") },
 		delete: { _ in unimplemented("\(Self.self).delete") }

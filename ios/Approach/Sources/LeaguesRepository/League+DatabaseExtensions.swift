@@ -7,6 +7,10 @@ extension League.Editable: FetchableRecord, PersistableRecord {
 	public static let databaseTableName = League.Database.databaseTableName
 }
 
+extension League.SeriesHost: TableRecord, FetchableRecord {
+	public static let databaseTableName = League.Database.databaseTableName
+}
+
 extension DerivableRequest<League.Database> {
 	func orderByName() -> Self {
 		let name = League.Database.Columns.name

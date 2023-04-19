@@ -4,7 +4,7 @@ import Dependencies
 import GRDB
 @testable import LanesRepository
 @testable import LanesRepositoryInterface
-import ModelsLibrary
+@testable import ModelsLibrary
 import TestUtilitiesLibrary
 import XCTest
 
@@ -17,6 +17,60 @@ final class LanesRepositoryTests: XCTestCase {
 	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
+
+	// MARK: List
+
+	func testList_ReturnsLanes() async throws {
+		// Given a database with three lanes
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId1, id: id2, label: "2", position: .noWall)
+		let lane3 = Lane.Database(alleyId: alleyId2, id: id3, label: "3", position: .noWall)
+		let db = try await initializeDatabase(inserting: [lane1, lane2, lane3])
+
+		// Getting the lanes
+		let lanes = withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			LanesRepository.liveValue.list(nil)
+		}
+
+		var iterator = lanes.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the alley lanes
+		XCTAssertEqual(
+			fetched,
+			[
+				.init(id: id1, label: "1", position: .leftWall),
+				.init(id: id2, label: "2", position: .noWall),
+				.init(id: id3, label: "3", position: .noWall),
+			]
+		)
+	}
+
+	func testList_ReturnsLanesMatchingAlley() async throws {
+		// Given a database with three lanes
+		let lane1 = Lane.Database(alleyId: alleyId1, id: id1, label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: alleyId1, id: id2, label: "2", position: .noWall)
+		let lane3 = Lane.Database(alleyId: alleyId2, id: id3, label: "3", position: .noWall)
+		let db = try await initializeDatabase(inserting: [lane1, lane2, lane3])
+
+		// Getting the lanes
+		let lanes = withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			LanesRepository.liveValue.list(self.alleyId1)
+		}
+
+		var iterator = lanes.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the alley lanes
+		XCTAssertEqual(
+			fetched,
+			[.init(id: id1, label: "1", position: .leftWall), .init(id: id2, label: "2", position: .noWall)]
+		)
+	}
 
 	// MARK: Edit
 
@@ -36,7 +90,7 @@ final class LanesRepositoryTests: XCTestCase {
 		// Returns the lanes
 		XCTAssertEqual(lanes, [
 			.init(id: id1, label: "1", position: .leftWall),
-			.init(id: id2, label: "2", position: .noWall)
+			.init(id: id2, label: "2", position: .noWall),
 		])
 	}
 
@@ -309,7 +363,7 @@ final class LanesRepositoryTests: XCTestCase {
 				pinFall: nil,
 				mechanism: nil,
 				pinBase: nil
-			)
+			),
 		]
 
 		try await dbQueue.write {

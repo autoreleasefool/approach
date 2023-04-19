@@ -31,6 +31,16 @@ extension LeaguesRepository: DependencyKey {
 					return sort(leagues, byIds: recentlyUsed.observeRecentlyUsedIds(.leagues))
 				}
 			},
+			seriesHost: { id in
+				@Dependency(\.database) var database
+				return try await database.reader().read {
+					try League.Database
+						.filter(League.Database.Columns.id == id)
+						.including(optional: League.Database.alley)
+						.asRequest(of: League.SeriesHost.self)
+						.fetchOne($0)
+				}
+			},
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {

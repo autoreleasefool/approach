@@ -14,9 +14,13 @@ final class LeaguesRepositoryTests: XCTestCase {
 	let bowlerId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!
 	let bowlerId2 = UUID(uuidString: "00000000-0000-0000-0000-00000000000B")!
 
+	let alleyId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000001A")!
+
 	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
+
+	// MARK: - List
 
 	func testList_ReturnsAllLeagues() async throws {
 		// Given a database with two leagues
@@ -119,6 +123,83 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(league1), .init(league2)])
 	}
 
+	// MARK: - Series Host
+
+	func testSeriesHost_WhenLeagueExists_ReturnsLeague() async throws {
+		// Given a database with one league
+		let league1 = League.Database.mock(id: id1, name: "Majors")
+		let db = try await initializeDatabase(inserting: [league1])
+
+		// Fetching the league
+		let league = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await LeaguesRepository.liveValue.seriesHost(id1)
+		}
+
+		// Returns the league
+		XCTAssertEqual(
+			league,
+			.init(
+				id: id1,
+				name: "Majors",
+				numberOfGames: 4,
+				alley: nil,
+				excludeFromStatistics: .include
+			)
+		)
+	}
+
+	func testSeriesHost_WhenLeagueExistsWithAlley_ReturnsLeagueWithAlley() async throws {
+		// Given a database with one league
+		let league1 = League.Database.mock(id: id1, name: "Majors", alleyId: alleyId1)
+		let db = try await initializeDatabase(inserting: [league1])
+
+		// Fetching the league
+		let league = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await LeaguesRepository.liveValue.seriesHost(id1)
+		}
+
+		// Returns the league
+		XCTAssertEqual(
+			league,
+			.init(
+				id: id1,
+				name: "Majors",
+				numberOfGames: 4,
+				alley: .init(
+					id: alleyId1,
+					name: "Skyview",
+					address: nil,
+					material: nil,
+					pinFall: nil,
+					mechanism: nil,
+					pinBase: nil
+				),
+				excludeFromStatistics: .include
+			)
+		)
+	}
+
+	func testSeriesHost_WhenLeagueNotExists_ReturnsNil() async throws {
+		// Given a database with no leagues
+		let db = try await initializeDatabase(inserting: [])
+
+		// Fetching the league
+		let league = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await LeaguesRepository.liveValue.seriesHost(id1)
+		}
+
+		// Returns nothing
+		XCTAssertNil(league)
+	}
+
+	// MARK: - Save
+
 	func testSave_WhenLeagueExists_UpdatesLeague() async throws {
 		// Given a database with an existing league
 		let league1 = League.Database.mock(id: id1, name: "Majors", additionalPinfall: nil, additionalGames: nil)
@@ -187,6 +268,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.numberOfGames, 1)
 	}
 
+	// MARK: - Edit
+
 	func testEdit_WhenLeagueExists_ReturnsLeague() async throws {
 		// Given a database with one league
 		let league1 = League.Database.mock(id: id1, name: "Majors")
@@ -230,6 +313,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Returns nil
 		XCTAssertNil(league)
 	}
+
+	// MARK: - Delete
 
 	func testDelete_WhenIdExists_DeletesLeague() async throws {
 		// Given a database with 2 leagues
@@ -279,10 +364,22 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		let bowlers = [
 			Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable),
-			Bowler.Database(id: bowlerId2, name: "Sarah", status: .playable)
+			Bowler.Database(id: bowlerId2, name: "Sarah", status: .playable),
 		]
 
+		let alley =
+		Alley.Database(
+			id: alleyId1,
+			name: "Skyview",
+			address: nil,
+			material: nil,
+			pinFall: nil,
+			mechanism: nil,
+			pinBase: nil
+		)
+
 		try await dbQueue.write {
+			try alley.insert($0)
 			for bowler in bowlers {
 				try bowler.insert($0)
 			}

@@ -225,7 +225,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				existing: .init(
+				series: .init(
 					leagueId: leagueId1,
 					id: id1,
 					numberOfGames: 4,
@@ -255,7 +255,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				existing: .init(
+				series: .init(
 					leagueId: leagueId1,
 					id: id1,
 					numberOfGames: 4,
@@ -301,7 +301,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				existing: .init(
+				series: .init(
 					leagueId: leagueId1,
 					id: id1,
 					numberOfGames: 4,

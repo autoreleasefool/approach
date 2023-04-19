@@ -8,6 +8,16 @@ import ModelsLibrary
 extension LanesRepository: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
+			list: { alley in
+				@Dependency(\.database) var database
+				return database.reader().observe {
+					try Lane.Database
+						.all()
+						.filter(byAlley: alley)
+						.asRequest(of: Lane.Summary.self)
+						.fetchAll($0)
+				}
+			},
 			edit: { alley in
 				@Dependency(\.database) var database
 				return try await database.reader().read {

@@ -12,11 +12,11 @@ extension Series {
 		public var numberOfGames: Int
 		public var location: Alley.Summary?
 
-		public static func `default`(withId: UUID, inLeague: League.SeriesHost) -> Self {
+		public static func `default`(withId: UUID, onDate: Date, inLeague: League.SeriesHost) -> Self {
 			.init(
 				leagueId: inLeague.id,
 				id: withId,
-				date: Date(),
+				date: onDate,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				numberOfGames: inLeague.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,
@@ -28,7 +28,12 @@ extension Series {
 
 extension Series {
 	public struct CreateWithLanes: Equatable {
-		public var new: Create
+		public var series: Create
 		public var lanes: [Lane.Summary]
+
+		public init(series: Create, lanes: [Lane.Summary]) {
+			self.series = series
+			self.lanes = lanes
+		}
 	}
 }

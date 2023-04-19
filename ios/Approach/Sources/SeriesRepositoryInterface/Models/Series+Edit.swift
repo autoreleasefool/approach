@@ -16,7 +16,7 @@ extension Series {
 
 extension Series {
 	public struct EditWithLanes: Equatable, Codable {
-		public var existing: Edit
+		public var series: Edit
 		public var lanes: [Lane.Summary]
 	}
 }

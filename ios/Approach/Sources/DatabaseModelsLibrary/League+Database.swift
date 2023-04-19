@@ -48,6 +48,9 @@ extension League.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw PlaceholderIDValidationError() }
 	}
+
+	public static let alley = belongsTo(Alley.Database.self)
+	public var alley: QueryInterfaceRequest<Alley.Database> { request(for: Self.alley) }
 }
 
 extension League.Database {
