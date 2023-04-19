@@ -17,8 +17,9 @@ public struct AlleysRepository: Sendable {
 		Alley.Ordering
 	) -> AsyncThrowingStream<[Alley.Summary], Error>
 	public var load: @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>
-	public var edit: @Sendable (Alley.ID) async throws -> Alley.Editable?
-	public var save: @Sendable (Alley.Editable) async throws -> Void
+	public var edit: @Sendable (Alley.ID) async throws -> Alley.Edit?
+	public var create: @Sendable (Alley.Create) async throws -> Void
+	public var update: @Sendable (Alley.Edit) async throws -> Void
 	public var delete: @Sendable (Alley.ID) async throws -> Void
 
 	public init(
@@ -30,14 +31,16 @@ public struct AlleysRepository: Sendable {
 			Alley.Ordering
 		) -> AsyncThrowingStream<[Alley.Summary], Error>,
 		load: @escaping @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>,
-		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.Editable?,
-		save: @escaping @Sendable (Alley.Editable) async throws -> Void,
+		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.Edit?,
+		create: @escaping @Sendable (Alley.Create) async throws -> Void,
+		update: @escaping @Sendable (Alley.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Alley.ID) async throws -> Void
 	) {
 		self.list = list
 		self.load = load
 		self.edit = edit
-		self.save = save
+		self.create = create
+		self.update = update
 		self.delete = delete
 	}
 
@@ -61,7 +64,8 @@ extension AlleysRepository: TestDependencyKey {
 		list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
 		load: { _ in unimplemented("\(Self.self).load") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
-		save: { _ in unimplemented("\(Self.self).save") },
+		create: { _ in unimplemented("\(Self.self).create") },
+		update: { _ in unimplemented("\(Self.self).update") },
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }

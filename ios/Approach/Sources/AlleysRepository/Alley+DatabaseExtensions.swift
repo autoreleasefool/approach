@@ -3,7 +3,7 @@ import DatabaseModelsLibrary
 import GRDB
 import ModelsLibrary
 
-extension Alley.Editable: PersistableRecord, FetchableRecord {
+extension Alley.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Alley.Database.databaseTableName
 }
 

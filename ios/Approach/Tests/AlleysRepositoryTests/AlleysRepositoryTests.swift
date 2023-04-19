@@ -6,6 +6,7 @@ import Dependencies
 import GRDB
 @testable import ModelsLibrary
 import RecentlyUsedServiceInterface
+import TestUtilitiesLibrary
 import XCTest
 
 @MainActor
@@ -14,6 +15,8 @@ final class AlleysRepositoryTests: XCTestCase {
 	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
+
+	// MARK: - List
 
 	func testList_ReturnsAllAlleys() async throws {
 		// Given a database with two alleys
@@ -116,6 +119,8 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(alley1), .init(alley2)])
 	}
 
+	// MARK: - Load
+
 	func testLoad_WhenAlleyExists_ReturnsAlley() async throws {
 		// Given a database with one alley
 		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
@@ -151,13 +156,48 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertNil(fetched)
 	}
 
-	func testSave_WhenAlleyExists_UpdatesAlley() async throws {
+	// MARK: - Create
+
+	func testCreate_WhenAlleyExists_ThrowsError() async throws {
 		// Given a database with an existing alley
-		let alley1 = Alley.Database.mock(id: id1, name: "Skyview")
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview")
 		let db = try await initializeDatabase(inserting: [alley1])
 
-		// Editing the alley
-		let editable = Alley.Editable(
+		// Creating the alley
+		let new = Alley.Create(
+			id: id1,
+			name: "Skyview Lanes",
+			address: nil,
+			material: .wood,
+			pinFall: nil,
+			mechanism: nil,
+			pinBase: nil
+		)
+		await assertThrowsError(ofType: DatabaseError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await AlleysRepository.liveValue.create(new)
+			}
+		}
+
+		// Does not insert any records
+		let count = try await db.read { try Alley.Database.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+
+		// Does not update the existing alley
+		let existing = try await db.read { try Alley.Database.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(existing?.id, id1)
+		XCTAssertEqual(existing?.name, "Grandview")
+		XCTAssertNil(existing?.material)
+	}
+
+	func testCreate_WhenAlleyNotExists_CreatesAlley() async throws {
+		// Given a database with no alleys
+		let db = try await initializeDatabase()
+
+		// Creating the alley
+		let new = Alley.Create(
 			id: id1,
 			name: "Skyview Lanes",
 			address: nil,
@@ -169,7 +209,40 @@ final class AlleysRepositoryTests: XCTestCase {
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
-			try await AlleysRepository.liveValue.save(editable)
+			try await AlleysRepository.liveValue.create(new)
+		}
+
+		// Inserts the alley
+		let count = try await db.read { try Alley.Database.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+
+		// Updates the database
+		let created = try await db.read { try Alley.Database.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(created?.id, id1)
+		XCTAssertEqual(created?.name, "Skyview Lanes")
+	}
+
+	// MARK: - Update
+
+	func testUpdate_WhenAlleyExists_UpdatesAlley() async throws {
+		// Given a database with an existing alley
+		let alley1 = Alley.Database.mock(id: id1, name: "Skyview")
+		let db = try await initializeDatabase(inserting: [alley1])
+
+		// Editing the alley
+		let editable = Alley.Edit(
+			id: id1,
+			name: "Skyview Lanes",
+			address: nil,
+			material: .wood,
+			pinFall: nil,
+			mechanism: nil,
+			pinBase: nil
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+		} operation: {
+			try await AlleysRepository.liveValue.update(editable)
 		}
 
 		// Updates the database
@@ -184,12 +257,12 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 1)
 	}
 
-	func testSave_WhenAlleyNotExists_SavesNewAlley() async throws {
+	func testUpdate_WhenAlleyNotExists_ThrowsError() async throws {
 		// Given a database with no alleys
 		let db = try await initializeDatabase(inserting: [])
 
 		// Saving an alley
-		let editable = Alley.Editable(
+		let editable = Alley.Edit(
 			id: id1,
 			name: "Skyview Lanes",
 			address: nil,
@@ -198,23 +271,20 @@ final class AlleysRepositoryTests: XCTestCase {
 			mechanism: nil,
 			pinBase: nil
 		)
-		try await withDependencies {
-			$0.database.writer = { db }
-		} operation: {
-			try await AlleysRepository.liveValue.save(editable)
+		await assertThrowsError(ofType: RecordError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await AlleysRepository.liveValue.update(editable)
+			}
 		}
 
-		// Inserted the record
-		let exists = try await db.read { try Alley.Database.exists($0, id: self.id1) }
-		XCTAssertTrue(exists)
-
-		// Updates the database
-		let updated = try await db.read { try Alley.Database.fetchOne($0, id: self.id1) }
-		XCTAssertEqual(updated?.id, id1)
-		XCTAssertEqual(updated?.name, "Skyview Lanes")
-		XCTAssertNil(updated?.address)
-		XCTAssertEqual(updated?.material, .wood)
+		// Does not insert any records
+		let count = try await db.read { try Alley.Database.fetchCount($0) }
+		XCTAssertEqual(count, 0)
 	}
+
+	// MARK: - Edit
 
 	func testEdit_WhenAlleyExists_ReturnsAlley() async throws {
 		// Given a database with one alley
@@ -249,6 +319,8 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Returns nil
 		XCTAssertNil(alley)
 	}
+
+	// MARK: - Delete
 
 	func testDelete_WhenIdExists_DeletesAlley() async throws {
 		// Given a database with 2 alleys

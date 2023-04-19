@@ -39,13 +39,22 @@ extension AlleysRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try Alley.Editable.fetchOne($0, id: id)
+					try Alley.Database
+						.filter(Alley.Database.Columns.id == id)
+						.asRequest(of: Alley.Edit.self)
+						.fetchOne($0)
 				}
 			},
-			save: { alley in
+			create: { alley in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try alley.save($0)
+					try alley.insert($0)
+				}
+			},
+			update: { alley in
+				@Dependency(\.database) var database
+				return try await database.writer().write {
+					try alley.update($0)
 				}
 			},
 			delete: { id in

@@ -103,6 +103,8 @@ libraries = [ "Assets", "Strings" ]
 
 [repositories.Alleys]
 services = [ "RecentlyUsed" ]
+[repositories.Alleys.tests]
+libraries = [ "TestUtilities" ]
 
 [repositories.Bowlers]
 services = [ "RecentlyUsed" ]
