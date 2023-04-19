@@ -162,8 +162,9 @@ public struct LeaguesList: Reducer {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapOption:
-						state.updateQuery()
-						return .task { .internal(.list(.callback(.shouldRefreshData))) }
+						return state.list.updateQuery(
+							to: .init(filter: state.filters.filter(withBowler: state.bowler), ordering: state.sortOrder.ordering)
+						).map { .internal(.list($0)) }
 					}
 
 				case let .filters(.delegate(delegateAction)):
@@ -173,8 +174,9 @@ public struct LeaguesList: Reducer {
 						return .none
 
 					case .didChangeFilters:
-						state.updateQuery()
-						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
+						return state.list.updateQuery(
+							to: .init(filter: state.filters.filter(withBowler: state.bowler), ordering: state.sortOrder.ordering)
+						).map { .internal(.list($0)) }
 					}
 
 				case let .editor(.delegate(delegateAction)):
@@ -193,7 +195,7 @@ public struct LeaguesList: Reducer {
 				case .editor(.internal), .editor(.view), .editor(.binding):
 					return .none
 
-				case .list(.internal), .list(.view), .list(.callback):
+				case .list(.internal), .list(.view):
 					return .none
 
 				case .filters(.internal), .filters(.view), .filters(.binding):

@@ -29,7 +29,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 	}
 
 	enum ViewAction {
-		case didAppear
+		case didObserveData
 		case didTapSaveButton
 		case didTapCancelButton
 		case didTapResource(Resource)
@@ -100,14 +100,14 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				}
 			}
 			.navigationBarBackButtonHidden(viewStore.isCancellable)
-			.onAppear { viewStore.send(.didAppear) }
+			.task { await viewStore.send(.didObserveData).finish() }
 		}
 	}
 
 	private func map(viewAction: ViewAction) -> ResourcePicker<Resource, Query>.Action {
 		switch viewAction {
-		case .didAppear:
-			return .view(.didAppear)
+		case .didObserveData:
+			return .view(.didObserveData)
 		case .didTapSaveButton:
 			return .view(.didTapSaveButton)
 		case .didTapCancelButton:

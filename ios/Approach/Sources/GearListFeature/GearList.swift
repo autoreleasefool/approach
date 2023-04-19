@@ -121,8 +121,8 @@ public struct GearList: Reducer {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapOption:
-						state.updateQuery()
-						return .task { .internal(.list(.callback(.shouldRefreshData))) }
+						return state.list.updateQuery(to: state.sortOrder.ordering)
+							.map { .internal(.list($0)) }
 					}
 
 				case let .editor(.presented(.delegate(delegateAction))):
@@ -132,7 +132,7 @@ public struct GearList: Reducer {
 						return .none
 					}
 
-				case .list(.internal), .list(.view), .list(.callback):
+				case .list(.internal), .list(.view):
 					return .none
 
 				case .sortOrder(.internal), .sortOrder(.view):
@@ -149,11 +149,5 @@ public struct GearList: Reducer {
 		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			GearEditor()
 		}
-	}
-}
-
-extension GearList.State {
-	mutating func updateQuery() {
-		list.query = sortOrder.ordering
 	}
 }

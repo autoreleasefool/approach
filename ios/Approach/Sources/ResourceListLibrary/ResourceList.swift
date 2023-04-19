@@ -75,14 +75,9 @@ public struct ResourceList<
 			case error(ResourceListEmpty.Action)
 		}
 
-		public enum CallbackAction: Equatable {
-			case shouldRefreshData
-		}
-
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
-		case callback(CallbackAction)
 	}
 
 	public enum Feature: Equatable {
@@ -203,12 +198,6 @@ public struct ResourceList<
 					return .none
 				}
 
-			case let .callback(callbackAction):
-				switch callbackAction {
-				case .shouldRefreshData:
-					return beginObservation(query: state.query)
-				}
-
 			case .delegate:
 				return .none
 			}
@@ -226,6 +215,13 @@ public struct ResourceList<
 			await send(.internal(.resourcesResponse(.failure(error))))
 		}
 		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+	}
+}
+
+extension ResourceList.State {
+	public mutating func updateQuery(to query: Q) -> Effect<ResourceList.Action> {
+		self.query = query
+		return .task { .internal(.observeData) }
 	}
 }
 

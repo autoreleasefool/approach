@@ -36,7 +36,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didAppear
+			case didObserveData
 			case didTapCancelButton
 			case didTapSaveButton
 			case didTapResource(Resource)
@@ -45,6 +45,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			case didFinishEditing
 		}
 		public enum InternalAction: Equatable {
+			case observeData
 			case didLoadResources(TaskResult<[Resource]>)
 		}
 
@@ -52,6 +53,8 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
 	}
+
+	struct CancelObservationID {}
 
 	public init(observeResources: @escaping (Query) -> AsyncThrowingStream<[Resource], Error>) {
 		self.observeResources = observeResources
@@ -64,15 +67,9 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
+				case .didObserveData:
 					state.error = nil
-					return .run { [query = state.query] send in
-						for try await resources in observeResources(query) {
-							await send(.internal(.didLoadResources(.success(resources))))
-						}
-					} catch: { error, send in
-						await send(.internal(.didLoadResources(.failure(error))))
-					}
+					return beginObservation(query: state.query)
 
 				case .didTapCancelButton:
 					state.selected = state.initialSelection
@@ -98,6 +95,10 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .observeData:
+					state.error = nil
+					return beginObservation(query: state.query)
+
 				case let .didLoadResources(.success(resources)):
 					state.resources = .init(uniqueElements: resources)
 					return .none
@@ -111,5 +112,23 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 				return .none
 			}
 		}
+	}
+
+	private func beginObservation(query: Query) -> Effect<Action> {
+		return .run { send in
+			for try await resources in observeResources(query) {
+				await send(.internal(.didLoadResources(.success(resources))))
+			}
+		} catch: { error, send in
+			await send(.internal(.didLoadResources(.failure(error))))
+		}
+		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+	}
+}
+
+extension ResourcePicker.State {
+	public mutating func updateQuery(to query: Query) -> Effect<ResourcePicker.Action> {
+		self.query = query
+		return .task { .internal(.observeData) }
 	}
 }

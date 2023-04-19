@@ -92,7 +92,7 @@ public struct AlleysList: Reducer {
 
 				case .setFilterSheet(isPresented: false):
 					state.isFiltersPresented = false
-					return .task { .internal(.list(.callback(.shouldRefreshData))) }
+					return .none
 
 				case .setEditorSheet(isPresented: true):
 					state.editor = .init(
@@ -142,8 +142,8 @@ public struct AlleysList: Reducer {
 						return .none
 
 					case .didChangeFilters:
-						state.updateQuery()
-						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
+						return state.list.updateQuery(to: .init(filter: state.filters.filter, ordering: .byRecentlyUsed))
+							.map { .internal(.list($0)) }
 					}
 
 				case let .editor(.delegate(delegateAction)):
@@ -153,7 +153,7 @@ public struct AlleysList: Reducer {
 						return .none
 					}
 
-				case .list(.internal), .list(.view), .list(.callback):
+				case .list(.internal), .list(.view):
 					return .none
 
 				case .filters(.internal), .filters(.view), .filters(.binding):
@@ -170,11 +170,5 @@ public struct AlleysList: Reducer {
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
-	}
-}
-
-extension AlleysList.State {
-	mutating func updateQuery() {
-		list.query = .init(filter: filters.filter, ordering: .byRecentlyUsed)
 	}
 }

@@ -1,4 +1,3 @@
-
 import ComposableArchitecture
 import FeatureActionLibrary
 import GamesDataProviderInterface
@@ -91,7 +90,7 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
-				case .list(.internal), .list(.view), .list(.callback):
+				case .list(.internal), .list(.view):
 					return .none
 
 				case .editor(.internal), .editor(.view), .editor(.binding):

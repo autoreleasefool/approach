@@ -141,8 +141,8 @@ public struct BowlersList: Reducer {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapOption:
-						state.updateQuery()
-						return .task { .internal(.list(.callback(.shouldRefreshData))) }
+						return state.list.updateQuery(to: state.sortOrder.ordering)
+							.map { .internal(.list($0)) }
 					}
 
 				case let .editor(.presented(.delegate(delegateAction))):
@@ -158,7 +158,7 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
-				case .list(.internal), .list(.view), .list(.callback):
+				case .list(.internal), .list(.view):
 					return .none
 
 				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.presented(.binding)), .editor(.dismiss):
