@@ -85,14 +85,12 @@ libraries = [ "ResourceList", "SortOrder" ]
 libraries = [ "SharedModels", "Views" ]
 
 [features.SeriesEditor]
-dataProviders = [ "Alleys", "Lanes" ]
-services = [ "Persistence" ]
-libraries = [ "BaseForm", "Extensions", "ResourcePicker", "SharedModelsViews" ]
+repositories = [ "Alleys", "Lanes", "Series" ]
+services = [ "FeatureFlags" ]
+libraries = [ "DateTime", "Equatable", "Extensions", "Form", "ResourcePicker", "ModelsViews" ]
 
 [features.SeriesList]
 features = [ "GamesList", "SeriesEditor" ]
-dataProviders = [ "Series" ]
-services = [ "FeatureFlags" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
@@ -132,6 +130,8 @@ libraries = [ "TestUtilities" ]
 services = [ "RecentlyUsed" ]
 
 [repositories.Series]
+[repositories.Series.tests]
+libraries = [ "TestUtilities" ]
 
 # Data Providers
 
@@ -147,9 +147,6 @@ services = [ "Persistence" ]
 services = [ "Persistence" ]
 
 [dataProviders.Lanes]
-services = [ "Persistence" ]
-
-[dataProviders.Series]
 services = [ "Persistence" ]
 
 # Services
@@ -265,7 +262,7 @@ libraries = [ "Extensions", "SharedModels" ]
 dependencies = [ "Dependencies", "GRDB" ]
 
 [libraries.SharedModelsViews]
-libraries = [ "DateTime", "SharedModels", "Views" ]
+libraries = [ "SharedModels", "Views" ]
 
 [libraries.Sorting]
 

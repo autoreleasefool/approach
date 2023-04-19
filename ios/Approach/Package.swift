@@ -1,5 +1,5 @@
 // swift-tools-version: 5.7.1
-// swiftlint:disable file_length line_length
+// swiftlint:disable all
 
 import PackageDescription
 
@@ -60,8 +60,6 @@ let package = Package(
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "LanesDataProvider", targets: ["LanesDataProvider"]),
 		.library(name: "LanesDataProviderInterface", targets: ["LanesDataProviderInterface"]),
-		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
-		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "AddressLookupService", targets: ["AddressLookupService"]),
@@ -423,13 +421,16 @@ let package = Package(
 		.target(
 			name: "SeriesEditorFeature",
 			dependencies: [
-				"AlleysDataProviderInterface",
-				"BaseFormLibrary",
+				"AlleysRepositoryInterface",
+				"DateTimeLibrary",
+				"EquatableLibrary",
 				"ExtensionsLibrary",
-				"LanesDataProviderInterface",
-				"PersistenceServiceInterface",
+				"FeatureFlagsServiceInterface",
+				"FormLibrary",
+				"LanesRepositoryInterface",
+				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
-				"SharedModelsViewsLibrary",
+				"SeriesRepositoryInterface",
 			]
 		),
 		.testTarget(
@@ -443,9 +444,7 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
-				"FeatureFlagsServiceInterface",
 				"GamesListFeature",
-				"SeriesDataProviderInterface",
 				"SeriesEditorFeature",
 			]
 		),
@@ -691,6 +690,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"SeriesRepository",
+				"TestUtilitiesLibrary",
 			]
 		),
 
@@ -783,28 +783,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LanesDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "SeriesDataProvider",
-			dependencies: [
-				"PersistenceServiceInterface",
-				"SeriesDataProviderInterface",
-			]
-		),
-		.target(
-			name: "SeriesDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "SeriesDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SeriesDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),
@@ -1271,7 +1249,6 @@ let package = Package(
 		.target(
 			name: "SharedModelsViewsLibrary",
 			dependencies: [
-				"DateTimeLibrary",
 				"SharedModelsLibrary",
 				"ViewsLibrary",
 			]
@@ -1350,3 +1327,5 @@ let package = Package(
 		),
 	]
 )
+
+// swiftlint:enable all
