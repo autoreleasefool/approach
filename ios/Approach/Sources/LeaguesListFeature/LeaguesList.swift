@@ -71,6 +71,7 @@ public struct LeaguesList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableLeague(League.Editable)
+			case didLoadSeriesLeague(League.SeriesHost)
 			case list(ResourceList<League.Summary, League.Summary.FetchRequest>.Action)
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
@@ -114,18 +115,21 @@ public struct LeaguesList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, state: &state)
+					return .run { send in
+						guard let league = try await leagues.seriesHost(id) else {
+							// TODO: report league not found
+							return
+						}
+
+						await send(.internal(.didLoadSeriesLeague(league)))
+					}
 
 				case .setNavigation(selection: .none):
 					return navigate(to: nil, state: &state)
 
-				case .setFilterSheet(isPresented: true):
-					state.isFiltersPresented = true
+				case let .setFilterSheet(isPresented):
+					state.isFiltersPresented = isPresented
 					return .none
-
-				case .setFilterSheet(isPresented: false):
-					state.isFiltersPresented = false
-					return .task { .internal(.list(.callback(.shouldRefreshData))) }
 
 				case .setEditorSheet(isPresented: true):
 					return startEditing(league: nil, state: &state)
@@ -139,6 +143,9 @@ public struct LeaguesList: Reducer {
 				switch internalAction {
 				case let .didLoadEditableLeague(league):
 					return startEditing(league: league, state: &state)
+
+				case let .didLoadSeriesLeague(league):
+					return navigate(to: league, state: &state)
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
@@ -222,12 +229,12 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
-	private func navigate(to id: League.ID?, state: inout State) -> Effect<Action> {
-		if let id, let selection = state.list.resources?[id: id] {
-//			state.selection = Identified(.init(league: selection), id: selection.id)
+	private func navigate(to league: League.SeriesHost?, state: inout State) -> Effect<Action> {
+		if let league {
+			state.selection = Identified(.init(league: league), id: league.id)
 			return .fireAndForget {
 				try await clock.sleep(for: .seconds(1))
-				recentlyUsedService.didRecentlyUseResource(.leagues, selection.id)
+				recentlyUsedService.didRecentlyUseResource(.leagues, league.id)
 			}
 		} else {
 			state.selection = nil
@@ -250,11 +257,5 @@ public struct LeaguesList: Reducer {
 		)
 
 		return .none
-	}
-}
-
-extension LeaguesList.State {
-	mutating func updateQuery() {
-		list.query = .init(filter: filters.filter(withBowler: bowler), ordering: sortOrder.ordering)
 	}
 }

@@ -19,6 +19,7 @@ public struct GearEditor: Reducer {
 		public let hasAvatarsEnabled: Bool
 		@BindingState public var name: String
 		@BindingState public var kind: Gear.Kind
+		public var owner: Bowler.Summary?
 
 		public var initialValue: GearForm.Value
 		public var _form: GearForm.State
@@ -26,43 +27,23 @@ public struct GearEditor: Reducer {
 		public var bowlerPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State
 		public var isBowlerPickerPresented = false
 
-		public var owner: Bowler.Summary? {
-			get {
-				switch _form.value {
-				case let .create(new): return new.owner
-				case let .edit(existing): return existing.owner
-				}
-			}
-			set {
-				switch _form.value {
-				case var .create(new):
-					new.owner = newValue
-					_form.value = .create(new)
-				case var .edit(existing):
-					existing.owner = newValue
-					_form.value = .edit(existing)
-				}
-			}
-		}
-
 		public init(value: GearForm.Value) {
 			self.initialValue = value
 			self._form = .init(initialValue: value, currentValue: value)
-			let bowler: Bowler.Summary?
 
 			switch value {
 			case let .create(new):
 				self.name = new.name
 				self.kind = new.kind
-				bowler = new.owner
+				self.owner = new.owner
 			case let .edit(existing):
 				self.name = existing.name
 				self.kind = existing.kind
-				bowler = existing.owner
+				self.owner = existing.owner
 			}
 
 			self.bowlerPicker = .init(
-				selected: Set([bowler?.id].compactMap { $0 }),
+				selected: Set([self.owner?.id].compactMap { $0 }),
 				query: .init(()),
 				limit: 1,
 				showsCancelHeaderButton: false

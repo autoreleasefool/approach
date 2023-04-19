@@ -1,40 +1,39 @@
 import ComposableArchitecture
+import EquatableLibrary
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import GamesListFeature
-import PersistenceServiceInterface
+import ModelsLibrary
 import ResourceListLibrary
-import SeriesDataProviderInterface
 import SeriesEditorFeature
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
+import SeriesRepositoryInterface
 import StringsLibrary
 import ViewsLibrary
 
-extension Series: ResourceListItem {
+extension Series.Summary: ResourceListItem {
 	public var name: String { date.longFormat }
 }
 
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
-		public let league: League
+		public let league: League.SeriesHost
 
-		public var list: ResourceList<Series, Series.FetchRequest>.State
-		public var editor: SeriesEditor.State?
+		public var list: ResourceList<Series.Summary, League.ID>.State
 		public var selection: Identified<Series.ID, GamesList.State>?
+		@PresentationState public var editor: SeriesEditor.State?
 
-		public init(league: League) {
+		public init(league: League.SeriesHost) {
 			self.league = league
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.persistenceService) var persistenceService: PersistenceService
-						try await persistenceService.deleteSeries($0)
+						@Dependency(\.series) var series: SeriesRepository
+						try await series.delete($0.id)
 					}),
 				],
-				query: .init(filter: .league(league), ordering: .byDate),
+				query: league.id,
 				listTitle: Strings.Series.List.title,
 				emptyContent: .init(
 					image: .emptySeries,
@@ -48,12 +47,12 @@ public struct SeriesList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case setNavigation(selection: Series.ID?)
-			case setEditorSheet(isPresented: Bool)
 		}
 
 		public enum InternalAction: Equatable {
-			case list(ResourceList<Series, Series.FetchRequest>.Action)
-			case editor(SeriesEditor.Action)
+			case didLoadEditableSeries(Series.EditWithLanes)
+			case list(ResourceList<Series.Summary, League.ID>.Action)
+			case editor(PresentationAction<SeriesEditor.Action>)
 			case sidebar(GamesList.Action)
 		}
 
@@ -67,12 +66,15 @@ public struct SeriesList: Reducer {
 	public init() {}
 
 	@Dependency(\.date) var date
-	@Dependency(\.seriesDataProvider) var seriesDataProvider
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+	@Dependency(\.series) var series
+	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: seriesDataProvider.observeSeries)
+			ResourceList {
+				series.list(bowledIn: $0, ordering: .byDate)
+			}
 		}
 
 		Reduce<State, Action> { state, action in
@@ -84,21 +86,24 @@ public struct SeriesList: Reducer {
 
 				case .setNavigation(selection: .none):
 					return navigate(to: nil, state: &state)
-
-				case .setEditorSheet(isPresented: true):
-					return startEditing(series: nil, state: &state)
-
-				case .setEditorSheet(isPresented: false):
-					state.editor = nil
-					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadEditableSeries(series):
+					return startEditing(series: series, state: &state)
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(series):
-						return startEditing(series: series, state: &state)
+						return .run { send in
+							guard let editable = try await self.series.edit(series.id) else {
+								// TODO: report series not found
+								return
+							}
+
+							await send(.internal(.didLoadEditableSeries(editable)))
+						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						return startEditing(series: nil, state: &state)
@@ -107,7 +112,7 @@ public struct SeriesList: Reducer {
 						return .none
 					}
 
-				case let .editor(.delegate(delegateAction)):
+				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.editor = nil
@@ -123,10 +128,10 @@ public struct SeriesList: Reducer {
 				case .sidebar(.internal), .sidebar(.view):
 					return .none
 
-				case .list(.view), .list(.internal), .list(.callback):
+				case .list(.view), .list(.internal):
 					return .none
 
-				case .editor(.view), .editor(.internal), .editor(.binding):
+				case .editor(.presented(.view)), .editor(.presented(.internal)), .editor(.presented(.binding)), .editor(.dismiss):
 					return .none
 				}
 
@@ -139,14 +144,14 @@ public struct SeriesList: Reducer {
 				GamesList()
 			}
 		}
-		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			SeriesEditor()
 		}
 	}
 
 	private func navigate(to id: Series.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(series: selection), id: selection.id)
+//			state.selection = Identified(.init(series: selection), id: selection.id)
 			return .none
 		} else {
 			state.selection = nil
@@ -154,21 +159,15 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	private func startEditing(series: Series?, state: inout State) -> Effect<Action> {
-		let mode: SeriesEditor.Form.Mode
+	private func startEditing(series: Series.EditWithLanes?, state: inout State) -> Effect<Action> {
 		if let series {
-			mode = .edit(series)
+			state.editor = .init(value: .edit(series), inLeague: state.league)
 		} else {
-			mode = .create
+			state.editor = .init(
+				value: .create(.init(series: .default(withId: uuid(), onDate: date(), inLeague: state.league), lanes: [])),
+				inLeague: state.league
+			)
 		}
-
-		state.editor = .init(
-			league: state.league,
-			mode: mode,
-			date: date(),
-			hasAlleysEnabled: featureFlags.isEnabled(.alleys),
-			hasLanesEnabled: featureFlags.isEnabled(.lanes)
-		)
 
 		return .none
 	}
