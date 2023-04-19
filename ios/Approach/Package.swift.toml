@@ -135,11 +135,6 @@ libraries = [ "TestUtilities" ]
 
 # Data Providers
 
-[dataProviders.Alleys]
-services = [ "Persistence", "RecentlyUsed" ]
-libraries = [ "Sorting" ]
-dependencies = [ "AsyncAlgorithms" ]
-
 [dataProviders.Frames]
 services = [ "Persistence" ]
 

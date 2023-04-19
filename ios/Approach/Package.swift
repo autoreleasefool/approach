@@ -52,8 +52,6 @@ let package = Package(
 		.library(name: "SeriesRepositoryInterface", targets: ["SeriesRepositoryInterface"]),
 
 		// MARK: - Data Providers
-		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
-		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
 		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
 		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
@@ -695,31 +693,6 @@ let package = Package(
 		),
 
 		// MARK: - Data Providers
-		.target(
-			name: "AlleysDataProvider",
-			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-				"AlleysDataProviderInterface",
-				"PersistenceServiceInterface",
-				"RecentlyUsedServiceInterface",
-				"SortingLibrary",
-			]
-		),
-		.target(
-			name: "AlleysDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "AlleysDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"AlleysDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
 		.target(
 			name: "FramesDataProvider",
 			dependencies: [

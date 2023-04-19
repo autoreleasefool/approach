@@ -31,7 +31,6 @@
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
-		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
 		CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAC29204EA000DD36A5 /* FramesDataProvider */; };
 		CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */; };
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
@@ -113,7 +112,6 @@
 				CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */,
 				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
 				CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */,
-				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
 				CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */,
 				CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */,
 				CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */,
@@ -304,7 +302,6 @@
 				CA94DD632900B3AC00B81A87 /* FileManagerService */,
 				CAC56850291F54A100192D12 /* PreferenceService */,
 				CAC56852291F54A100192D12 /* RecentlyUsedService */,
-				CAC13AA829203D6600DD36A5 /* AlleysDataProvider */,
 				CAC13AAC29204EA000DD36A5 /* FramesDataProvider */,
 				CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */,
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
@@ -853,10 +850,6 @@
 		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AddressLookupService;
-		};
-		CAC13AA829203D6600DD36A5 /* AlleysDataProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AlleysDataProvider;
 		};
 		CAC13AAC29204EA000DD36A5 /* FramesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
