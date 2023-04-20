@@ -1,5 +1,4 @@
 // swift-tools-version: 5.7.1
-// swiftlint:disable all
 
 import PackageDescription
 
@@ -1304,5 +1303,3 @@ let package = Package(
 		),
 	]
 )
-
-// swiftlint:enable all
