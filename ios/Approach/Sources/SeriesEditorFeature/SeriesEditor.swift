@@ -62,14 +62,14 @@ public struct SeriesEditor: Reducer {
 				self.preBowl = new.series.preBowl
 				self.excludeFromStatistics = new.series.excludeFromStatistics
 				self.location = new.series.location
-				self.lanes = .init(uniqueElements: new.lanes)
+				self.lanes = new.lanes
 			case let .edit(existing):
 				self.numberOfGames = existing.series.numberOfGames
 				self.date = existing.series.date
 				self.preBowl = existing.series.preBowl
 				self.excludeFromStatistics = existing.series.excludeFromStatistics
 				self.location = existing.series.location
-				self.lanes = .init(uniqueElements: existing.lanes)
+				self.lanes = existing.lanes
 			}
 
 			self.alleyPicker = .init(
@@ -243,14 +243,14 @@ extension SeriesEditor.State {
 				new.series.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
 				new.series.numberOfGames = numberOfGames
 				new.series.location = location
-				new.lanes = Array(lanes)
+				new.lanes = lanes
 				form.value = .create(new)
 			case var .edit(existing):
 				existing.series.date = date
 				existing.series.preBowl = preBowl
 				existing.series.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
 				existing.series.location = location
-				existing.lanes = Array(lanes)
+				existing.lanes = lanes
 				form.value = .edit(existing)
 			}
 			return form

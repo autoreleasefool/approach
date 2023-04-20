@@ -1,4 +1,5 @@
 import Foundation
+import IdentifiedCollections
 import ModelsLibrary
 
 extension Series {
@@ -17,6 +18,6 @@ extension Series {
 extension Series {
 	public struct EditWithLanes: Equatable, Codable {
 		public var series: Edit
-		public var lanes: [Lane.Summary]
+		public var lanes: IdentifiedArrayOf<Lane.Summary>
 	}
 }

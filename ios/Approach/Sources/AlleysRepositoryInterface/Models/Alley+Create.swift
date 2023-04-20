@@ -1,4 +1,5 @@
 import Foundation
+import IdentifiedCollections
 import ModelsLibrary
 
 extension Alley {
@@ -14,9 +15,9 @@ extension Alley.Create {
 extension Alley {
 	public struct CreateWithLanes: Equatable {
 		public var alley: Create
-		public var lanes: [Lane.Summary]
+		public var lanes: IdentifiedArrayOf<Lane.Summary>
 
-		public init(alley: Create, lanes: [Lane.Summary]) {
+		public init(alley: Create, lanes: IdentifiedArrayOf<Lane.Summary>) {
 			self.alley = alley
 			self.lanes = lanes
 		}

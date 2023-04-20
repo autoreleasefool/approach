@@ -103,6 +103,8 @@ libraries = [ "Assets", "Strings" ]
 
 [repositories.Alleys]
 services = [ "RecentlyUsed" ]
+[repositories.Alleys.interface]
+dependencies = [ "IdentifiedCollections" ]
 [repositories.Alleys.tests]
 libraries = [ "TestUtilities" ]
 
@@ -132,6 +134,8 @@ libraries = [ "TestUtilities" ]
 services = [ "RecentlyUsed" ]
 
 [repositories.Series]
+[repositories.Series.interface]
+dependencies = [ "IdentifiedCollections" ]
 [repositories.Series.tests]
 libraries = [ "TestUtilities" ]
 
@@ -296,6 +300,10 @@ revision = "fc17996ded63b136741ab2e0c0e0d549a8486adc"
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
 from = "0.1.2"
+
+[dependencies.IdentifiedCollections]
+url = "https://github.com/pointfreeco/swift-identified-collections.git"
+from = "0.7.0"
 
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"

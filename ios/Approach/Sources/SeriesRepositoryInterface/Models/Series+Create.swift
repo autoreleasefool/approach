@@ -1,4 +1,5 @@
 import Foundation
+import IdentifiedCollections
 import ModelsLibrary
 
 extension Series {
@@ -29,9 +30,9 @@ extension Series {
 extension Series {
 	public struct CreateWithLanes: Equatable {
 		public var series: Create
-		public var lanes: [Lane.Summary]
+		public var lanes: IdentifiedArrayOf<Lane.Summary>
 
-		public init(series: Create, lanes: [Lane.Summary]) {
+		public init(series: Create, lanes: IdentifiedArrayOf<Lane.Summary>) {
 			self.series = series
 			self.lanes = lanes
 		}
