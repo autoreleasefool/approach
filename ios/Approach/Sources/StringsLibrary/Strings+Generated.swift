@@ -299,9 +299,9 @@ public enum Strings {
         public static func addLanes(_ p1: Int) -> String {
           return Strings.tr("Localizable", "lane.editor.fields.addLanes", p1, fallback: "Plural format key: \"%#@lanes@\"")
         }
-        public enum IsAgainstWall {
-          /// Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.
-          public static let help = Strings.tr("Localizable", "lane.editor.fields.isAgainstWall.help", fallback: "Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.")
+        public enum Position {
+          /// You can mark which lanes have a wall to either the left or right, if this affects your game. Generally, only the first and last lanes in an alley should be marked as against any walls.
+          public static let help = Strings.tr("Localizable", "lane.editor.fields.position.help", fallback: "You can mark which lanes have a wall to either the left or right, if this affects your game. Generally, only the first and last lanes in an alley should be marked as against any walls.")
         }
       }
     }
@@ -314,10 +314,18 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "lane.list.title", fallback: "Lanes")
     }
     public enum Properties {
-      /// Against Wall?
-      public static let isAgainstWall = Strings.tr("Localizable", "lane.properties.isAgainstWall", fallback: "Against Wall?")
       /// Lane
       public static let label = Strings.tr("Localizable", "lane.properties.label", fallback: "Lane")
+      /// Position by walls?
+      public static let position = Strings.tr("Localizable", "lane.properties.position", fallback: "Position by walls?")
+      public enum Position {
+        /// Wall on Left
+        public static let leftWall = Strings.tr("Localizable", "lane.properties.position.leftWall", fallback: "Wall on Left")
+        /// No walls
+        public static let noWall = Strings.tr("Localizable", "lane.properties.position.noWall", fallback: "No walls")
+        /// Wall on Right
+        public static let rightWall = Strings.tr("Localizable", "lane.properties.position.rightWall", fallback: "Wall on Right")
+      }
     }
   }
   public enum League {

@@ -317,7 +317,7 @@ let package = Package(
 			name: "LaneEditorFeature",
 			dependencies: [
 				"FeatureActionLibrary",
-				"SharedModelsLibrary",
+				"ModelsLibrary",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]

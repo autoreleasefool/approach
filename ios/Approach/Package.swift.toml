@@ -61,7 +61,7 @@ services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder", "ModelsViews" ]
 
 [features.LaneEditor]
-libraries = [ "SharedModels", "SwiftUIExtensions", "Views" ]
+libraries = [ "Models", "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
 repositories = [ "Alleys", "Leagues" ]

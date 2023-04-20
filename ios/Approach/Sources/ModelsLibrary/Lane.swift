@@ -7,7 +7,7 @@ extension Lane {
 }
 
 extension Lane {
-	public enum Position: String, Codable, Sendable {
+	public enum Position: String, Codable, Sendable, CaseIterable, Identifiable {
 		case leftWall
 		case rightWall
 		case noWall

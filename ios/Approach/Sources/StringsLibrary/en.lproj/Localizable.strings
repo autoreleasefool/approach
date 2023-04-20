@@ -62,8 +62,11 @@
 "lane.list.add" = "Add Lane";
 "lane.list.addMultiple" = "Add Muliple Lanes";
 "lane.properties.label" = "Lane";
-"lane.properties.isAgainstWall" = "Against Wall?";
-"lane.editor.fields.isAgainstWall.help" = "Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.";
+"lane.properties.position" = "Position by walls?";
+"lane.properties.position.leftWall" = "Wall on Left";
+"lane.properties.position.rightWall" = "Wall on Right";
+"lane.properties.position.noWall" = "No walls";
+"lane.editor.fields.position.help" = "You can mark which lanes have a wall to either the left or right, if this affects your game. Generally, only the first and last lanes in an alley should be marked as against any walls.";
 
 /* Leagues */
 

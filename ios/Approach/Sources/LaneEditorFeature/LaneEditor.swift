@@ -1,17 +1,28 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import SharedModelsLibrary
+import ModelsLibrary
+import StringsLibrary
+
+extension Lane.Position: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .leftWall: return Strings.Lane.Properties.Position.leftWall
+		case .rightWall: return Strings.Lane.Properties.Position.rightWall
+		case .noWall: return Strings.Lane.Properties.Position.noWall
+		}
+	}
+}
 
 public struct LaneEditor: Reducer {
 	public struct State: Identifiable, Equatable {
 		public let id: Lane.ID
 		@BindingState public var label: String
-		@BindingState public var isAgainstWall: Bool
+		@BindingState public var position: Lane.Position
 
-		public init(id: Lane.ID, label: String = "", isAgainstWall: Bool = false) {
+		public init(id: Lane.ID, label: String, position: Lane.Position) {
 			self.id = id
 			self.label = label
-			self.isAgainstWall = isAgainstWall
+			self.position = position
 		}
 	}
 

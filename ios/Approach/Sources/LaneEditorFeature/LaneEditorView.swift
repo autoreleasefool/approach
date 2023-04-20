@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -10,11 +11,11 @@ public struct LaneEditorView: View {
 
 	struct ViewState: Equatable {
 		@BindingState var label: String
-		@BindingState var isAgainstWall: Bool
+		@BindingState var position: Lane.Position
 
 		init(state: LaneEditor.State) {
 			self.label = state.label
-			self.isAgainstWall = state.isAgainstWall
+			self.position = state.position
 		}
 	}
 
@@ -37,11 +38,14 @@ public struct LaneEditorView: View {
 					)
 				}
 
-				Toggle(
-					Strings.Lane.Properties.isAgainstWall,
-					isOn: viewStore.binding(\.$isAgainstWall)
-				)
-				.toggleStyle(SwitchToggleStyle())
+				Picker(
+					Strings.Lane.Properties.position,
+					selection: viewStore.binding(\.$position)
+				) {
+					ForEach(Lane.Position.allCases) {
+						Text(String(describing: $0)).tag($0)
+					}
+				}
 			}
 			.swipeActions(allowsFullSwipe: true) {
 				DeleteButton { viewStore.send(.didSwipe(.delete)) }
@@ -55,7 +59,7 @@ extension LaneEditor.State {
 		get { .init(state: self) }
 		set {
 			self.label = newValue.label
-			self.isAgainstWall = newValue.isAgainstWall
+			self.position = newValue.position
 		}
 	}
 }
@@ -70,25 +74,3 @@ extension LaneEditor.Action {
 		}
 	}
 }
-
-#if DEBUG
-struct LaneEditorViewPreview: PreviewProvider {
-	static var previews: some View {
-		List {
-			LaneEditorView(
-				store: .init(
-					initialState: .init(id: UUID()),
-					reducer: LaneEditor()
-				)
-			)
-
-			LaneEditorView(
-				store: .init(
-					initialState: .init(id: UUID()),
-					reducer: LaneEditor()
-				)
-			)
-		}
-	}
-}
-#endif
