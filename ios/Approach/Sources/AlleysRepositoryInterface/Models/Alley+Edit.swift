@@ -11,3 +11,10 @@ extension Alley {
 		public var pinBase: PinBase?
 	}
 }
+
+extension Alley {
+	public struct EditWithLanes: Equatable, Codable {
+		public var alley: Edit
+		public var lanes: [Lane.Summary]
+	}
+}

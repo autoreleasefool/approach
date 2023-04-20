@@ -12,6 +12,9 @@ import XCTest
 @MainActor
 final class AlleysRepositoryTests: XCTestCase {
 
+	let laneId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!
+	let laneId2 = UUID(uuidString: "00000000-0000-0000-0000-00000000000B")!
+
 	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
@@ -301,9 +304,64 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Returns the alley
 		XCTAssertEqual(
 			alley,
-			.init(id: id1, name: "Grandview", address: nil, material: .wood, pinFall: nil, mechanism: nil, pinBase: nil)
+			.init(
+				alley: .init(
+					id: id1,
+					name: "Grandview",
+					address: nil,
+					material: .wood,
+					pinFall: nil,
+					mechanism: nil,
+					pinBase: nil
+				),
+				lanes: []
+			)
 		)
 	}
+
+	func testEdit_WhenAlleyExistsWithLanes_ReturnsAlleyWithLanes() async throws {
+		// Given a database with one alley
+		let alley1 = Alley.Database.mock(id: id1, name: "Grandview", material: .wood)
+		let db = try await initializeDatabase(inserting: [alley1])
+
+		let lanes = [
+			Lane.Database(alleyId: id1, id: laneId1, label: "1", position: .leftWall),
+			Lane.Database(alleyId: id1, id: laneId2, label: "2", position: .noWall)
+		]
+		try await db.write {
+			for lane in lanes {
+				try lane.insert($0)
+			}
+		}
+
+		// Editing the alley
+		let alley = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await AlleysRepository.liveValue.edit(id1)
+		}
+
+		// Returns the alley
+		XCTAssertEqual(
+			alley,
+			.init(
+				alley: .init(
+					id: id1,
+					name: "Grandview",
+					address: nil,
+					material: .wood,
+					pinFall: nil,
+					mechanism: nil,
+					pinBase: nil
+				),
+				lanes: [
+					.init(id: laneId1, label: "1", position: .leftWall),
+					.init(id: laneId2, label: "2", position: .noWall),
+				]
+			)
+		)
+	}
+
 
 	func testEdit_WhenAlleyNotExists_ReturnsNil() async throws {
 		// Given a database with no alleys

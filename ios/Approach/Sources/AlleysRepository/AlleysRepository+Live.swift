@@ -38,10 +38,16 @@ extension AlleysRepository: DependencyKey {
 			},
 			edit: { id in
 				@Dependency(\.database) var database
+				let lanesAlias = TableAlias(name: "lanes")
 				return try await database.reader().read {
 					try Alley.Database
 						.filter(Alley.Database.Columns.id == id)
-						.asRequest(of: Alley.Edit.self)
+						.including(
+							all: Alley.Database.lanes
+								.order(Lane.Database.Columns.label.collating(.localizedCaseInsensitiveCompare))
+								.aliased(lanesAlias)
+						)
+						.asRequest(of: Alley.EditWithLanes.self)
 						.fetchOne($0)
 				}
 			},

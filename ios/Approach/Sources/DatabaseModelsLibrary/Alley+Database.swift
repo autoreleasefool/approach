@@ -44,6 +44,11 @@ extension Alley.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
 		guard id != .placeholder else { throw PlaceholderIDValidationError() }
 	}
+
+	public static let lanes = hasMany(Lane.Database.self)
+	public var lanes: QueryInterfaceRequest<Lane.Database> {
+		request(for: Self.lanes)
+	}
 }
 
 extension Alley.Database {

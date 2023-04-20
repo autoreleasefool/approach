@@ -7,6 +7,8 @@ extension Alley.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Alley.Database.databaseTableName
 }
 
+extension Alley.EditWithLanes: TableRecord, FetchableRecord, EncodableRecord {}
+
 extension DerivableRequest<Alley.Database> {
 	func orderByName() -> Self {
 		let name = Alley.Database.Columns.name

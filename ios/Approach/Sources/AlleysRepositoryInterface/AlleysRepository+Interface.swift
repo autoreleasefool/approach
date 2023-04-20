@@ -17,7 +17,7 @@ public struct AlleysRepository: Sendable {
 		Alley.Ordering
 	) -> AsyncThrowingStream<[Alley.Summary], Error>
 	public var load: @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>
-	public var edit: @Sendable (Alley.ID) async throws -> Alley.Edit?
+	public var edit: @Sendable (Alley.ID) async throws -> Alley.EditWithLanes?
 	public var create: @Sendable (Alley.Create) async throws -> Void
 	public var update: @Sendable (Alley.Edit) async throws -> Void
 	public var delete: @Sendable (Alley.ID) async throws -> Void
@@ -31,7 +31,7 @@ public struct AlleysRepository: Sendable {
 			Alley.Ordering
 		) -> AsyncThrowingStream<[Alley.Summary], Error>,
 		load: @escaping @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>,
-		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.Edit?,
+		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.EditWithLanes?,
 		create: @escaping @Sendable (Alley.Create) async throws -> Void,
 		update: @escaping @Sendable (Alley.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Alley.ID) async throws -> Void
