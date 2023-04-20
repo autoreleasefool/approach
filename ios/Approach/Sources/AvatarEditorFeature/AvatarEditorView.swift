@@ -1,7 +1,6 @@
 import AvatarServiceInterface
 import ComposableArchitecture
 import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 

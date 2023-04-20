@@ -101,7 +101,6 @@ let package = Package(
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
 		.library(name: "SharedModelsPersistableLibrary", targets: ["SharedModelsPersistableLibrary"]),
-		.library(name: "SharedModelsViewsLibrary", targets: ["SharedModelsViewsLibrary"]),
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
@@ -181,7 +180,6 @@ let package = Package(
 			dependencies: [
 				"AvatarServiceInterface",
 				"FeatureActionLibrary",
-				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -1220,21 +1218,6 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharedModelsMocksLibrary",
 				"SharedModelsPersistableLibrary",
-			]
-		),
-		.target(
-			name: "SharedModelsViewsLibrary",
-			dependencies: [
-				"SharedModelsLibrary",
-				"ViewsLibrary",
-			]
-		),
-		.testTarget(
-			name: "SharedModelsViewsLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-				"SharedModelsViewsLibrary",
 			]
 		),
 		.target(

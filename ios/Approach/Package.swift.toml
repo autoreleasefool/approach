@@ -27,7 +27,6 @@ services = [ "Analytics" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
-libraries = [ "SharedModelsViews" ]
 
 [features.BowlerEditor]
 repositories = [ "Bowlers" ]
@@ -261,9 +260,6 @@ libraries = [ "SharedModels" ]
 [libraries.SharedModelsPersistable]
 libraries = [ "Extensions", "SharedModels" ]
 dependencies = [ "Dependencies", "GRDB" ]
-
-[libraries.SharedModelsViews]
-libraries = [ "SharedModels", "Views" ]
 
 [libraries.Sorting]
 
