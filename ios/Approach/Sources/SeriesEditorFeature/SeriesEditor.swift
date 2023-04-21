@@ -14,7 +14,7 @@ import ResourcePickerLibrary
 import SeriesRepositoryInterface
 import StringsLibrary
 
-public typealias SeriesForm = Form<Series.CreateWithLanes, Series.EditWithLanes>
+public typealias SeriesForm = Form<Series.Create, Series.Edit>
 
 extension Alley.Summary: PickableResource {
 	static public func pickableModelName(forCount count: Int) -> String {
@@ -50,19 +50,17 @@ public struct SeriesEditor: Reducer {
 		public var lanePicker: ResourcePicker<Lane.Summary, Alley.ID?>.State
 		public var isLanePickerPresented = false
 
-		public init(value: SeriesForm.Value, inLeague: League.SeriesHost) {
+		public init(value: InitialValue, inLeague: League.SeriesHost) {
 			self.league = inLeague
-			self.initialValue = value
-			self._form = .init(initialValue: value, currentValue: value)
-
 			switch value {
 			case let .create(new):
-				self.numberOfGames = new.series.numberOfGames
-				self.date = new.series.date
-				self.preBowl = new.series.preBowl
-				self.excludeFromStatistics = new.series.excludeFromStatistics
-				self.location = new.series.location
-				self.lanes = new.lanes
+				self.numberOfGames = new.numberOfGames
+				self.date = new.date
+				self.preBowl = new.preBowl
+				self.excludeFromStatistics = new.excludeFromStatistics
+				self.location = new.location
+				self.lanes = []
+				self.initialValue = .create(new)
 			case let .edit(existing):
 				self.numberOfGames = existing.series.numberOfGames
 				self.date = existing.series.date
@@ -70,7 +68,9 @@ public struct SeriesEditor: Reducer {
 				self.excludeFromStatistics = existing.series.excludeFromStatistics
 				self.location = existing.series.location
 				self.lanes = existing.lanes
+				self.initialValue = .edit(existing.series)
 			}
+			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
 
 			self.alleyPicker = .init(
 				selected: Set([self.location?.id].compactMap { $0 }),
@@ -111,6 +111,11 @@ public struct SeriesEditor: Reducer {
 		case binding(BindingAction<State>)
 	}
 
+	public enum InitialValue {
+		case create(Series.Create)
+		case edit(Series.EditWithLanes)
+	}
+
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
@@ -126,8 +131,8 @@ public struct SeriesEditor: Reducer {
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			SeriesForm()
 				.dependency(\.records, .init(
-					create: { (new: Series.CreateWithLanes) in try await series.create(new.series) },
-					update: { (existing: Series.EditWithLanes) in try await series.update(existing.series) },
+					create: series.create,
+					update: series.update,
 					delete: series.delete
 				))
 		}
@@ -184,10 +189,13 @@ public struct SeriesEditor: Reducer {
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didCreate(result):
+						// TODO: save lanes when series is created
 						return state.form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
+
 					case let .didUpdate(result):
+						// TODO: save lanes when series is edited
 						return state.form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
@@ -216,20 +224,18 @@ public struct SeriesEditor: Reducer {
 	}
 }
 
-extension Series.CreateWithLanes: CreateableRecord {
+extension Series.Create: CreateableRecord {
 	public static var modelName = Strings.Series.title
 
-	public var id: Series.ID { series.id }
 	public var isSaveable: Bool { true }
-	public var name: String { series.date.longFormat }
+	public var name: String { date.longFormat }
 	public var saveButtonText: String { Strings.Action.start }
 }
 
-extension Series.EditWithLanes: EditableRecord {
-	public var id: Series.ID { series.id }
+extension Series.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
 	public var isSaveable: Bool { true }
-	public var name: String { series.date.longFormat }
+	public var name: String { date.longFormat }
 }
 
 extension SeriesEditor.State {
@@ -238,19 +244,17 @@ extension SeriesEditor.State {
 			var form = _form
 			switch initialValue {
 			case var .create(new):
-				new.series.date = date
-				new.series.preBowl = preBowl
-				new.series.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
-				new.series.numberOfGames = numberOfGames
-				new.series.location = location
-				new.lanes = lanes
+				new.date = date
+				new.preBowl = preBowl
+				new.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
+				new.numberOfGames = numberOfGames
+				new.location = location
 				form.value = .create(new)
 			case var .edit(existing):
-				existing.series.date = date
-				existing.series.preBowl = preBowl
-				existing.series.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
-				existing.series.location = location
-				existing.lanes = lanes
+				existing.date = date
+				existing.preBowl = preBowl
+				existing.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
+				existing.location = location
 				form.value = .edit(existing)
 			}
 			return form

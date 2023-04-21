@@ -26,15 +26,3 @@ extension Series {
 		}
 	}
 }
-
-extension Series {
-	public struct CreateWithLanes: Equatable {
-		public var series: Create
-		public var lanes: IdentifiedArrayOf<Lane.Summary>
-
-		public init(series: Create, lanes: IdentifiedArrayOf<Lane.Summary>) {
-			self.series = series
-			self.lanes = lanes
-		}
-	}
-}
