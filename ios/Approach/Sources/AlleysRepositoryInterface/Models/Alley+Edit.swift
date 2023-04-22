@@ -1,4 +1,5 @@
 import IdentifiedCollections
+import LanesRepositoryInterface
 import ModelsLibrary
 
 extension Alley {
@@ -16,6 +17,6 @@ extension Alley {
 extension Alley {
 	public struct EditWithLanes: Equatable, Codable {
 		public var alley: Edit
-		public var lanes: IdentifiedArrayOf<Lane.Summary>
+		public var lanes: IdentifiedArrayOf<Lane.Edit>
 	}
 }

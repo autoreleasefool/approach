@@ -1,4 +1,5 @@
 import AlleysRepositoryInterface
+import LanesRepositoryInterface
 import DatabaseModelsLibrary
 import GRDB
 import ModelsLibrary
@@ -8,6 +9,10 @@ extension Alley.Edit: PersistableRecord, FetchableRecord {
 }
 
 extension Alley.EditWithLanes: TableRecord, FetchableRecord, EncodableRecord {}
+
+extension Lane.Edit: FetchableRecord {
+	public static let databaseTableName = Lane.Database.databaseTableName
+}
 
 extension DerivableRequest<Alley.Database> {
 	func orderByName() -> Self {

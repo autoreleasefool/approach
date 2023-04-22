@@ -4,6 +4,7 @@ import DatabaseModelsLibrary
 @testable import DatabaseService
 import Dependencies
 import GRDB
+@testable import LanesRepositoryInterface
 @testable import ModelsLibrary
 import RecentlyUsedServiceInterface
 import TestUtilitiesLibrary
