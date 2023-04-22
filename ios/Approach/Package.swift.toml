@@ -13,7 +13,7 @@ supported = [ ".v16" ]
 features = [ "LaneEditor" ]
 repositories = [ "Alleys" ]
 services = [ "FeatureFlags" ]
-libraries = [ "Extensions", "Form", "ModelsViews" ]
+libraries = [ "Equatable", "Extensions", "Form", "ModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
@@ -143,9 +143,6 @@ libraries = [ "TestUtilities" ]
 services = [ "Persistence" ]
 
 [dataProviders.Games]
-services = [ "Persistence" ]
-
-[dataProviders.Lanes]
 services = [ "Persistence" ]
 
 # Services

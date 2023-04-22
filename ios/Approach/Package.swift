@@ -56,8 +56,6 @@ let package = Package(
 		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
-		.library(name: "LanesDataProvider", targets: ["LanesDataProvider"]),
-		.library(name: "LanesDataProviderInterface", targets: ["LanesDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "AddressLookupService", targets: ["AddressLookupService"]),
@@ -125,6 +123,7 @@ let package = Package(
 			name: "AlleyEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
+				"EquatableLibrary",
 				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
@@ -731,28 +730,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "LanesDataProvider",
-			dependencies: [
-				"LanesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "LanesDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "LanesDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"LanesDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),
