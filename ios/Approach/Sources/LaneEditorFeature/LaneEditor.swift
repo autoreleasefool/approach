@@ -31,7 +31,7 @@ public struct LaneEditor: Reducer {
 			case didSwipe(SwipeAction)
 		}
 		public enum DelegateAction: Equatable {
-			case didSwipe(SwipeAction)
+			case didDeleteLane
 		}
 		public enum InternalAction: Equatable {}
 
@@ -57,7 +57,7 @@ public struct LaneEditor: Reducer {
 				case let .didSwipe(action):
 					switch action {
 					case .delete:
-						return .task { .delegate(.didSwipe(action)) }
+						return .task { .delegate(.didDeleteLane) }
 					}
 				}
 
