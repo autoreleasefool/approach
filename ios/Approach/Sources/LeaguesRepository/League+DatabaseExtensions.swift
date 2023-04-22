@@ -3,9 +3,42 @@ import GRDB
 import LeaguesRepositoryInterface
 import ModelsLibrary
 
-extension League.Editable: FetchableRecord, PersistableRecord {
+// MARK: - Edit
+
+extension League.Edit: FetchableRecord, PersistableRecord {
 	public static let databaseTableName = League.Database.databaseTableName
+	typealias Columns = League.Database.Columns
+
+	public func encode(to container: inout PersistenceContainer) throws {
+		container[Columns.id] = id
+		container[Columns.name] = name
+		container[Columns.additionalPinfall] = additionalPinfall
+		container[Columns.additionalGames] = additionalGames
+		container[Columns.excludeFromStatistics] = excludeFromStatistics
+		container[Columns.alleyId] = location?.id
+	}
 }
+
+// MARK: - Create
+
+extension League.Create: PersistableRecord {
+	public static let databaseTableName = League.Database.databaseTableName
+	typealias Columns = League.Database.Columns
+
+	public func encode(to container: inout PersistenceContainer) throws {
+		container[Columns.bowlerId] = bowlerId
+		container[Columns.id] = id
+		container[Columns.name] = name
+		container[Columns.recurrence] = recurrence
+		container[Columns.numberOfGames] = numberOfGames
+		container[Columns.additionalPinfall] = additionalPinfall
+		container[Columns.additionalGames] = additionalGames
+		container[Columns.excludeFromStatistics] = excludeFromStatistics
+		container[Columns.alleyId] = location?.id
+	}
+}
+
+// MARK: - Base
 
 extension League.SeriesHost: TableRecord, FetchableRecord {
 	public static let databaseTableName = League.Database.databaseTableName

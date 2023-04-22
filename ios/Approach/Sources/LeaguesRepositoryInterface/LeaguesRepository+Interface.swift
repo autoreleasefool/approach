@@ -15,8 +15,9 @@ public struct LeaguesRepository: Sendable {
 		League.Ordering
 	) -> AsyncThrowingStream<[League.Summary], Error>
 	public var seriesHost: @Sendable(League.ID) async throws -> League.SeriesHost?
-	public var edit: @Sendable (League.ID) async throws -> League.Editable?
-	public var save: @Sendable (League.Editable) async throws -> Void
+	public var edit: @Sendable (League.ID) async throws -> League.Edit?
+	public var create: @Sendable (League.Create) async throws -> Void
+	public var update: @Sendable(League.Edit) async throws -> Void
 	public var delete: @Sendable (League.ID) async throws -> Void
 
 	public init(
@@ -26,14 +27,16 @@ public struct LeaguesRepository: Sendable {
 			League.Ordering
 		) -> AsyncThrowingStream<[League.Summary], Error>,
 		seriesHost: @escaping @Sendable(League.ID) async throws -> League.SeriesHost?,
-		edit: @escaping @Sendable (League.ID) async throws -> League.Editable?,
-		save: @escaping @Sendable (League.Editable) async throws -> Void,
+		edit: @escaping @Sendable (League.ID) async throws -> League.Edit?,
+		create: @escaping @Sendable (League.Create) async throws -> Void,
+		update: @escaping @Sendable (League.Edit) async throws -> Void,
 		delete: @escaping @Sendable (League.ID) async throws -> Void
 	) {
 		self.list = list
 		self.seriesHost = seriesHost
 		self.edit = edit
-		self.save = save
+		self.create = create
+		self.update = update
 		self.delete = delete
 	}
 
@@ -51,7 +54,8 @@ extension LeaguesRepository: TestDependencyKey {
 		list: { _, _, _ in unimplemented("\(Self.self).list") },
 		seriesHost: { _ in unimplemented("\(Self.self).seriesHost") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
-		save: { _ in unimplemented("\(Self.self).save") },
+		create: { _ in unimplemented("\(Self.self).create") },
+		update: { _ in unimplemented("\(Self.self).update") },
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }

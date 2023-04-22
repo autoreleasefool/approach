@@ -44,13 +44,23 @@ extension LeaguesRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try League.Editable.fetchOne($0, id: id)
+					try League.Database
+						.filter(League.Database.Columns.id == id)
+						.including(optional: League.Database.alley.forKey("location"))
+						.asRequest(of: League.Edit.self)
+						.fetchOne($0)
 				}
 			},
-			save: { league in
+			create: { league in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try league.save($0)
+					try league.insert($0)
+				}
+			},
+			update: { league in
+				@Dependency(\.database) var database
+				return try await database.writer().write {
+					try league.update($0)
 				}
 			},
 			delete: { id in

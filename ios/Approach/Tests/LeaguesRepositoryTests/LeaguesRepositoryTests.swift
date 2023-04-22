@@ -6,6 +6,7 @@ import GRDB
 @testable import LeaguesRepositoryInterface
 @testable import ModelsLibrary
 import RecentlyUsedServiceInterface
+import TestUtilitiesLibrary
 import XCTest
 
 @MainActor
@@ -198,15 +199,15 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertNil(league)
 	}
 
-	// MARK: - Save
+	// MARK: - Create
 
-	func testSave_WhenLeagueExists_UpdatesLeague() async throws {
+	func testCreate_WhenLeagueExists_ThrowsError() async throws {
 		// Given a database with an existing league
 		let league1 = League.Database.mock(id: id1, name: "Majors", additionalPinfall: nil, additionalGames: nil)
 		let db = try await initializeDatabase(inserting: [league1])
 
-		// Editing the league
-		let editable = League.Editable(
+		// Creating the league
+		let new = League.Create(
 			bowlerId: bowlerId1,
 			id: id1,
 			name: "Minors",
@@ -215,32 +216,32 @@ final class LeaguesRepositoryTests: XCTestCase {
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: league1.excludeFromStatistics,
-			alleyId: league1.alleyId
+			location: nil
 		)
-		try await withDependencies {
-			$0.database.writer = { db }
-		} operation: {
-			try await LeaguesRepository.liveValue.save(editable)
+		await assertThrowsError(ofType: DatabaseError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await LeaguesRepository.liveValue.create(new)
+			}
 		}
 
-		// Updates the database
+		// Does not update the database
 		let updated = try await db.read { try League.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
-		XCTAssertEqual(updated?.name, "Minors")
-		XCTAssertEqual(updated?.additionalGames, 123)
-		XCTAssertEqual(updated?.additionalPinfall, 123)
+		XCTAssertEqual(updated?.name, "Majors")
 
 		// Does not insert any records
 		let count = try await db.read { try League.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
 	}
 
-	func testSave_WhenLeagueNotExists_SavesNewLeague() async throws {
+	func testCreate_WhenLeagueNotExists_CreatesLeague() async throws {
 		// Given a database with no leagues
 		let db = try await initializeDatabase(inserting: [])
 
-		// Saving a league
-		let editable = League.Editable(
+		// Creating a league
+		let new = League.Create(
 			bowlerId: bowlerId1,
 			id: id1,
 			name: "Minors",
@@ -249,12 +250,20 @@ final class LeaguesRepositoryTests: XCTestCase {
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude,
-			alleyId: nil
+			location: .init(
+				id: alleyId1,
+				name: "Skyview",
+				address: nil,
+				material: nil,
+				pinFall: nil,
+				mechanism: nil,
+				pinBase: nil
+			)
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
-			try await LeaguesRepository.liveValue.save(editable)
+			try await LeaguesRepository.liveValue.create(new)
 		}
 
 		// Inserted the record
@@ -262,10 +271,73 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertTrue(exists)
 
 		// Updates the database
+		let created = try await db.read { try League.Database.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(created?.id, id1)
+		XCTAssertEqual(created?.name, "Minors")
+		XCTAssertEqual(created?.numberOfGames, 1)
+		XCTAssertEqual(created?.alleyId, alleyId1)
+	}
+
+	// MARK: - Update
+
+	func testUpdate_WhenLeagueExists_UpdatesLeague() async throws {
+		// Given a database with an existing league
+		let league1 = League.Database.mock(id: id1, name: "Majors", additionalPinfall: nil, additionalGames: nil)
+		let db = try await initializeDatabase(inserting: [league1])
+
+		// Editing the league
+		let existing = League.Edit(
+			id: id1,
+			name: "Minors",
+			additionalPinfall: 123,
+			additionalGames: 123,
+			excludeFromStatistics: league1.excludeFromStatistics,
+			location: nil
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+		} operation: {
+			try await LeaguesRepository.liveValue.update(existing)
+		}
+
+		// Updates the database
 		let updated = try await db.read { try League.Database.fetchOne($0, id: self.id1) }
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Minors")
-		XCTAssertEqual(updated?.numberOfGames, 1)
+
+		// Does not insert any records
+		let count = try await db.read { try League.Database.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+	}
+
+	func testUpdate_WhenLeagueNotExists_ThrowsError() async throws {
+		// Given a database with no leagues
+		let db = try await initializeDatabase(inserting: [])
+
+		// Editing a league
+		let existing = League.Edit(
+			id: id1,
+			name: "Minors",
+			additionalPinfall: 123,
+			additionalGames: 123,
+			excludeFromStatistics: .exclude,
+			location: nil
+		)
+		await assertThrowsError(ofType: RecordError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await LeaguesRepository.liveValue.update(existing)
+			}
+		}
+
+		// Does not insert the record
+		let exists = try await db.read { try League.Database.exists($0, id: self.id1) }
+		XCTAssertFalse(exists)
+
+		// Does not insert any records
+		let count = try await db.read { try League.Database.fetchCount($0) }
+		XCTAssertEqual(count, 0)
 	}
 
 	// MARK: - Edit
@@ -286,15 +358,12 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			league,
 			.init(
-				bowlerId: bowlerId1,
 				id: id1,
 				name: "Majors",
-				recurrence: .repeating,
-				numberOfGames: 4,
 				additionalPinfall: nil,
 				additionalGames: nil,
 				excludeFromStatistics: .include,
-				alleyId: nil
+				location: nil
 			)
 		)
 	}
@@ -312,6 +381,40 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns nil
 		XCTAssertNil(league)
+	}
+
+	func testEdit_WhenLeagueHasAlley_ReturnLeagueWithAlley() async throws {
+		// Given a database with one league
+		let league1 = League.Database.mock(id: id1, name: "Majors", alleyId: alleyId1)
+		let db = try await initializeDatabase(inserting: [league1])
+
+		// Editing the league
+		let league = try await withDependencies {
+			$0.database.reader = { db }
+		} operation: {
+			try await LeaguesRepository.liveValue.edit(id1)
+		}
+
+		// Returns the league
+		XCTAssertEqual(
+			league,
+			.init(
+				id: id1,
+				name: "Majors",
+				additionalPinfall: nil,
+				additionalGames: nil,
+				excludeFromStatistics: .include,
+				location: .init(
+					id: alleyId1,
+					name: "Skyview",
+					address: nil,
+					material: nil,
+					pinFall: nil,
+					mechanism: nil,
+					pinBase: nil
+				)
+			)
+		)
 	}
 
 	// MARK: - Delete

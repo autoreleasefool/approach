@@ -99,30 +99,18 @@ services = [ "RecentlyUsed" ]
 [repositories.Alleys.interface]
 repositories = [ "Lanes" ]
 dependencies = [ "IdentifiedCollections" ]
-[repositories.Alleys.tests]
-libraries = [ "TestUtilities" ]
 
 [repositories.Bowlers]
 services = [ "RecentlyUsed" ]
-[repositories.Bowlers.tests]
-libraries = [ "TestUtilities" ]
 
 [repositories.Frames]
-[repositories.Frames.tests]
-libraries = [ "TestUtilities" ]
 
 [repositories.Games]
-[repositories.Games.tests]
-libraries = [ "TestUtilities" ]
 
 [repositories.Gear]
 services = [ "RecentlyUsed" ]
-[repositories.Gear.tests]
-libraries = [ "TestUtilities" ]
 
 [repositories.Lanes]
-[repositories.Lanes.tests]
-libraries = [ "TestUtilities" ]
 
 [repositories.Leagues]
 services = [ "RecentlyUsed" ]
@@ -130,8 +118,6 @@ services = [ "RecentlyUsed" ]
 [repositories.Series]
 [repositories.Series.interface]
 dependencies = [ "IdentifiedCollections" ]
-[repositories.Series.tests]
-libraries = [ "TestUtilities" ]
 
 # Data Providers
 
@@ -334,6 +320,7 @@ dependencies = [ "Dependencies" ]
 
 [defaults.repositories.tests]
 services = [ "Database" ]
+libraries = [ "TestUtilities" ]
 dependencies = [ "SnapshotTesting" ]
 
 [defaults.services.interface]
