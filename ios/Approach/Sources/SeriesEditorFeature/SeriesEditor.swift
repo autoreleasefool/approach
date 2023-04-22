@@ -190,17 +190,17 @@ public struct SeriesEditor: Reducer {
 					switch delegateAction {
 					case let .didCreate(result):
 						// TODO: save lanes when series is created
-						return state.form.didFinishCreating(result)
+						return state._form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
 
 					case let .didUpdate(result):
 						// TODO: save lanes when series is edited
-						return state.form.didFinishUpdating(result)
+						return state._form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didDelete(result):
-						return state.form.didFinishDeleting(result)
+						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:

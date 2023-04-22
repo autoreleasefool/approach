@@ -164,7 +164,7 @@ public struct SeriesList: Reducer {
 			state.editor = .init(value: .edit(series), inLeague: state.league)
 		} else {
 			state.editor = .init(
-				value: .create(.init(series: .default(withId: uuid(), onDate: date(), inLeague: state.league), lanes: [])),
+				value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
 				inLeague: state.league
 			)
 		}

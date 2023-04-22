@@ -74,15 +74,15 @@ public struct BowlerEditor: Reducer {
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didCreate(result):
-						return state.form.didFinishCreating(result)
+						return state._form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didUpdate(result):
-						return state.form.didFinishUpdating(result)
+						return state._form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didDelete(result):
-						return state.form.didFinishDeleting(result)
+						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
