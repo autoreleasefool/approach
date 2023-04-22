@@ -1,4 +1,5 @@
 // swift-tools-version: 5.7.1
+// swiftlint:disable file_length line_length
 
 import PackageDescription
 
@@ -124,12 +125,11 @@ let package = Package(
 			name: "AlleyEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"BaseFormLibrary",
 				"ExtensionsLibrary",
+				"FeatureFlagsServiceInterface",
+				"FormLibrary",
 				"LaneEditorFeature",
-				"LanesDataProviderInterface",
-				"PersistenceServiceInterface",
-				"SharedModelsViewsLibrary",
+				"ModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -144,8 +144,6 @@ let package = Package(
 			name: "AlleysListFeature",
 			dependencies: [
 				"AlleyEditorFeature",
-				"FeatureFlagsServiceInterface",
-				"ModelsViewsLibrary",
 				"ResourceListLibrary",
 			]
 		),
@@ -423,7 +421,6 @@ let package = Package(
 				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
-				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
@@ -500,9 +497,8 @@ let package = Package(
 		.target(
 			name: "AlleysRepositoryInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
-				"ModelsLibrary",
+				"LanesRepositoryInterface",
 			]
 		),
 		.testTarget(

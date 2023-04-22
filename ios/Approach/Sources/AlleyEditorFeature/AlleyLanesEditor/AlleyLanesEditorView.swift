@@ -1,7 +1,8 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import LaneEditorFeature
-import SharedModelsLibrary
+import LanesRepositoryInterface
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -13,20 +14,18 @@ public struct AlleyLanesEditorView: View {
 	@State private var addLaneSheetHeight: CGFloat = .zero
 
 	struct ViewState: Equatable {
-		let lanes: IdentifiedArrayOf<LaneEditor.State>?
-		let isAddLaneFormPresented: Bool
+		let existingLanes: IdentifiedArrayOf<Lane.Edit>
+		let newLanes: IdentifiedArrayOf<Lane.Create>
 
 		init(state: AlleyLanesEditor.State) {
-			self.lanes = state.lanes
-			self.isAddLaneFormPresented = state.addLaneForm != nil
+			self.existingLanes = state.existingLanes
+			self.newLanes = state.newLanes
 		}
 	}
 
 	enum ViewAction {
-		case didAppear
 		case didTapAddLaneButton
 		case didTapAddMultipleLanesButton
-		case setAddLaneForm(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<AlleyLanesEditor>) {
@@ -38,12 +37,17 @@ public struct AlleyLanesEditorView: View {
 			List {
 				Section {
 					ForEachStore(
-						store.scope(state: \.lanes, action: /AlleyLanesEditor.Action.InternalAction.laneEditor(id:action:))
+						store.scope(state: \.existingLaneEditors, action: /AlleyLanesEditor.Action.InternalAction.laneEditor(id:action:))
+					) {
+						LaneEditorView(store: $0)
+					}
+					ForEachStore(
+						store.scope(state: \.newLaneEditors, action: /AlleyLanesEditor.Action.InternalAction.laneEditor(id:action:))
 					) {
 						LaneEditorView(store: $0)
 					}
 				} footer: {
-					Text(Strings.Lane.Editor.Fields.IsAgainstWall.help)
+					Text(Strings.Lane.Editor.Fields.Position.help)
 				}
 
 				Section {
@@ -57,32 +61,23 @@ public struct AlleyLanesEditorView: View {
 				}
 			}
 			.navigationTitle(Strings.Lane.List.title)
-			.onAppear { viewStore.send(.didAppear) }
-			.alert(
-				self.store.scope(state: \.alert, action: { AlleyLanesEditor.Action.view(.alert($0)) }),
-				dismiss: .didTapDismissButton
-			)
-			.sheet(isPresented: viewStore.binding(
-				get: \.isAddLaneFormPresented,
-				send: ViewAction.setAddLaneForm(isPresented:)
-			)) {
-				IfLetStore(store.scope(state: \.addLaneForm, action: /AlleyLanesEditor.Action.InternalAction.addLaneForm)) {
-					AddLaneFormView(store: $0)
-						.padding()
-						.overlay {
-							GeometryReader { proxy in
-								Color.clear
-									.preference(
-										key: HeightPreferenceKey.self,
-										value: proxy.size.height + safeAreaInsets.bottom
-									)
-							}
+			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
+			.sheet(store: store.scope(state: \.$addLaneForm, action: { .internal(.addLaneForm($0)) })) {
+				AddLaneFormView(store: $0)
+					.padding()
+					.overlay {
+						GeometryReader { proxy in
+							Color.clear
+								.preference(
+									key: HeightPreferenceKey.self,
+									value: proxy.size.height + safeAreaInsets.bottom
+								)
 						}
-				}
-				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
-					addLaneSheetHeight = newHeight
-				}
-				.presentationDetents([.height(addLaneSheetHeight), .medium])
+					}
+					.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
+						addLaneSheetHeight = newHeight
+					}
+					.presentationDetents([.height(addLaneSheetHeight), .medium])
 			}
 		}
 	}
@@ -91,14 +86,10 @@ public struct AlleyLanesEditorView: View {
 extension AlleyLanesEditor.Action {
 	init(action: AlleyLanesEditorView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
 		case .didTapAddLaneButton:
 			self = .view(.didTapAddLaneButton)
 		case .didTapAddMultipleLanesButton:
 			self = .view(.didTapAddMultipleLanesButton)
-		case let .setAddLaneForm(isPresented):
-			self = .view(.setAddLaneForm(isPresented: isPresented))
 		}
 	}
 }

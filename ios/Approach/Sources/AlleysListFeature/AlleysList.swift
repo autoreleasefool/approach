@@ -13,7 +13,7 @@ extension Alley.Summary: ResourceListItem {}
 public struct AlleysList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Alley.Summary, Alley.Summary.FetchRequest>.State
-		public var editor: AlleyEditor.State?
+		@PresentationState public var editor: AlleyEditor.State?
 
 		public var isFiltersPresented = false
 		public var filters: AlleysFilter.State = .init()
@@ -43,15 +43,14 @@ public struct AlleysList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case setFilterSheet(isPresented: Bool)
-			case setEditorSheet(isPresented: Bool)
 		}
 
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableAlley(Alley.Editable)
+			case didLoadEditableAlley(Alley.EditWithLanes)
 			case list(ResourceList<Alley.Summary, Alley.Summary.FetchRequest>.Action)
-			case editor(AlleyEditor.Action)
+			case editor(PresentationAction<AlleyEditor.Action>)
 			case filters(AlleysFilter.Action)
 		}
 
@@ -63,7 +62,8 @@ public struct AlleysList: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
-	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.filters, action: /Action.internal..Action.InternalAction.filters) {
@@ -93,26 +93,12 @@ public struct AlleysList: Reducer {
 				case .setFilterSheet(isPresented: false):
 					state.isFiltersPresented = false
 					return .none
-
-				case .setEditorSheet(isPresented: true):
-					state.editor = .init(
-						mode: .create,
-						hasLanesEnabled: featureFlags.isEnabled(.lanes)
-					)
-					return .none
-
-				case .setEditorSheet(isPresented: false):
-					state.editor = nil
-					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadEditableAlley(alley):
-					state.editor = .init(
-						mode: .edit(alley),
-						hasLanesEnabled: featureFlags.isEnabled(.lanes)
-					)
+					state.editor = .init(value: .edit(alley))
 					return .none
 
 				case let .list(.delegate(delegateAction)):
@@ -128,7 +114,7 @@ public struct AlleysList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.editor = .init(mode: .create, hasLanesEnabled: featureFlags.isEnabled(.lanes))
+						state.editor = .init(value: .create(.default(withId: uuid())))
 						return .none
 
 					case .didDelete, .didTap:
@@ -146,7 +132,7 @@ public struct AlleysList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case let .editor(.delegate(delegateAction)):
+				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.editor = nil
@@ -159,7 +145,7 @@ public struct AlleysList: Reducer {
 				case .filters(.internal), .filters(.view), .filters(.binding):
 					return .none
 
-				case .editor(.internal), .editor(.view), .editor(.binding):
+				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.presented(.binding)), .editor(.dismiss):
 					return .none
 				}
 
@@ -167,7 +153,7 @@ public struct AlleysList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
 	}

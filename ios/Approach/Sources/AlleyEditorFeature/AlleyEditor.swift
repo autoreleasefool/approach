@@ -1,68 +1,69 @@
 import AlleysRepositoryInterface
-import BaseFormLibrary
 import ComposableArchitecture
+import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
+import FormLibrary
 import Foundation
 import LaneEditorFeature
+import LanesRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
 
-extension Alley.Editable: BaseFormModel {
-	static public var modelName = Strings.Alley.title
-}
+public typealias AlleyForm = Form<Alley.Create, Alley.Edit>
 
 public struct AlleyEditor: Reducer {
-	public typealias Form = BaseForm<Alley.Editable, Fields>
-
-	public struct Fields: BaseFormState, Equatable {
-		@BindingState public var alley: Alley.Editable
-		public var laneEditor: AlleyLanesEditor.State
-
-		public var model: Alley.Editable { alley }
-		public let isDeleteable = true
-		public var isSaveable: Bool {
-			!alley.name.isEmpty
-		}
-	}
-
 	public struct State: Equatable {
-		public var base: Form.State
-		public var isLaneEditorPresented = false
-		public var alleyLanes: AlleyLanes.State
+		@BindingState public var name: String
+		@BindingState public var address: String?
+		@BindingState public var material: Alley.Material?
+		@BindingState public var pinFall: Alley.PinFall?
+		@BindingState public var mechanism: Alley.Mechanism?
+		@BindingState public var pinBase: Alley.PinBase?
+
+		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
+		public var newLanes: IdentifiedArrayOf<Lane.Create>
+
+		public let initialValue: AlleyForm.Value
+		public var _form: AlleyForm.State
+
+		public var _alleyLanes: AlleyLanesEditor.State
 		public let hasLanesEnabled: Bool
+		public var isLaneEditorPresented = false
 
-		public init(mode: Form.Mode, hasLanesEnabled: Bool) {
-			var fields: Fields
-			switch mode {
-			case let .edit(alley):
-				fields = .init(
-					alley: alley,
-					// TODO: need to pass actual alley to editor
-					laneEditor: .init(alley: nil)
-				)
-				// TODO: need to pass actual alley to editor
-				self.alleyLanes = .init(alley: nil)
-			case .create:
-				@Dependency(\.uuid) var uuid: UUIDGenerator
-				fields = .init(
-					alley: .init(
-						id: uuid(),
-						name: "",
-						address: "",
-						material: nil,
-						pinFall: nil,
-						mechanism: nil,
-						pinBase: nil
-					),
-					// TODO: do we need to pass actual alley to editor? probably not
-					laneEditor: .init(alley: nil)
-				)
-				self.alleyLanes = .init(alley: nil)
+		public init(value: InitialValue) {
+			let alleyId: Alley.ID
+			switch value {
+			case let .create(new):
+				alleyId = new.id
+				self.name = new.name
+				self.address = new.address
+				self.material = new.material
+				self.pinFall = new.pinFall
+				self.mechanism = new.mechanism
+				self.pinBase = new.pinBase
+				self.existingLanes = []
+				self.newLanes = []
+				self.initialValue = .create(new)
+			case let .edit(existing):
+				alleyId = existing.alley.id
+				self.name = existing.alley.name
+				self.address = existing.alley.address
+				self.material = existing.alley.material
+				self.pinFall = existing.alley.pinFall
+				self.mechanism = existing.alley.mechanism
+				self.pinBase = existing.alley.pinBase
+				self.existingLanes = existing.lanes
+				self.newLanes = []
+				self.initialValue = .edit(existing.alley)
 			}
+			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
+			self._alleyLanes = .init(alley: alleyId, existingLanes: self.existingLanes, newLanes: self.newLanes)
 
-			self.hasLanesEnabled = hasLanesEnabled
-			self.base = .init(mode: mode, form: fields)
+			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			self.hasLanesEnabled = featureFlags.isEnabled(.lanes)
 		}
 	}
 
@@ -74,9 +75,10 @@ public struct AlleyEditor: Reducer {
 			case didFinishEditing
 		}
 		public enum InternalAction: Equatable {
-			case form(Form.Action)
-			case alleyLanes(AlleyLanes.Action)
-			case laneEditor(AlleyLanesEditor.Action)
+			case didCreateLanes(TaskResult<Alley.Create>)
+			case didUpdateLanes(TaskResult<Alley.Edit>)
+			case form(AlleyForm.Action)
+			case alleyLanes(AlleyLanesEditor.Action)
 		}
 
 		case view(ViewAction)
@@ -85,26 +87,30 @@ public struct AlleyEditor: Reducer {
 		case binding(BindingAction<State>)
 	}
 
+	public enum InitialValue {
+		case create(Alley.Create)
+		case edit(Alley.EditWithLanes)
+	}
+
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.dismiss) var dismiss
+	@Dependency(\.lanes) var lanes
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
-			BaseForm()
-				.dependency(\.modelPersistence, .init(
-					save: alleys.save,
-					delete: { try await alleys.delete($0.id) }
+		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+			AlleyForm()
+				.dependency(\.records, .init(
+					create: alleys.create,
+					update: alleys.update,
+					delete: alleys.delete
 				))
 		}
 
 		Scope(state: \.alleyLanes, action: /Action.internal..Action.InternalAction.alleyLanes) {
-			AlleyLanes()
-		}
-
-		Scope(state: \.base.form.laneEditor, action: /Action.internal..Action.InternalAction.laneEditor) {
 			AlleyLanesEditor()
 		}
 
@@ -114,52 +120,58 @@ public struct AlleyEditor: Reducer {
 				switch viewAction {
 				case let .setLaneEditor(isPresented):
 					state.isLaneEditorPresented = isPresented
-					if !isPresented {
-						// TODO: sort lanes
-						// TODO: AlleysRepository, support lane mapping
-//						state.alleyLanes.lanes = .init(
-//							uniqueElements: state.base.form.laneEditor.lanes.map {
-//								$0.toLane(alley: .placeholder)
-//							}
-//						)
-					}
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didCreateLanes(result):
+					return state._form.didFinishCreating(result)
+						.map { .internal(.form($0)) }
+
+				case let .didUpdateLanes(result):
+					return state._form.didFinishUpdating(result)
+						.map { .internal(.form($0)) }
+
 				case let .form(.delegate(formAction)):
 					switch formAction {
-					case let .didSaveModel(alley):
-						let existing = state.base.form.laneEditor.existingLanes
-						let existingIds = existing.map { $0.id }
-						let lanes = state.base.form.laneEditor.lanes
-						let laneIds = lanes.map { $0.id }
-						return .task {
-							// TODO: AlleysRepository, support lane mapping
-//							let added = lanes.filter { !existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
-//							let removed = existing.filter { !laneIds.contains($0.id) }
-//							let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
-//
-//							try await persistenceService.saveLanes(added + updated)
-//							try await persistenceService.deleteLanes(removed)
+					case let .didCreate(.failure(error)):
+						return state._form.didFinishCreating(.failure(error))
+							.map { .internal(.form($0)) }
 
-							return .internal(.form(.callback(.didFinishSaving(.success(alley)))))
-						} catch: { error in
-							return .internal(.form(.callback(.didFinishSaving(.failure(error)))))
+					case let .didUpdate(.failure(error)):
+						return state._form.didFinishUpdating(.failure(error))
+							.map { .internal(.form($0)) }
+
+					case let .didDelete(.failure(error)):
+						return state._form.didFinishDeleting(.failure(error))
+							.map { .internal(.form($0)) }
+
+					case let .didCreate(.success(new)):
+						return .task { [newLanes = state.newLanes, existingLanes = state.existingLanes] in
+							try await lanes.create(Array(newLanes))
+							try await lanes.update(Array(existingLanes))
+							return .internal(.didCreateLanes(.success(new)))
+						}
+						catch: { error in
+							return .internal(.didCreateLanes(.failure(error)))
 						}
 
-					case let .didDeleteModel(alley):
-						return .task { .internal(.form(.callback(.didFinishDeleting(.success(alley))))) }
+					case let .didUpdate(.success(existing)):
+						return .task { [newLanes = state.newLanes, existingLanes = state.existingLanes] in
+							try await lanes.create(Array(newLanes))
+							try await lanes.update(Array(existingLanes))
+							return .internal(.didUpdateLanes(.success(existing)))
+						} catch: { error in
+							return .internal(.didUpdateLanes(.failure(error)))
+						}
 
-					case .didFinishSaving, .didFinishDeleting, .didDiscard:
-						return .task { .delegate(.didFinishEditing) }
-					}
+					case let .didDelete(result):
+						return state._form.didFinishDeleting(result)
+							.map { .internal(.form($0)) }
 
-				case let .laneEditor(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+						return .fireAndForget { await self.dismiss() }
 					}
 
 				case let .alleyLanes(.delegate(delegateAction)):
@@ -168,13 +180,10 @@ public struct AlleyEditor: Reducer {
 						return .none
 					}
 
-				case .laneEditor(.internal), .laneEditor(.view):
-					return .none
-
-				case .form(.view), .form(.internal), .form(.callback):
-					return .none
-
 				case .alleyLanes(.view), .alleyLanes(.internal):
+					return .none
+
+				case .form(.view), .form(.internal):
 					return .none
 				}
 
@@ -185,9 +194,58 @@ public struct AlleyEditor: Reducer {
 	}
 }
 
-// TODO: re-enable adding lanes to alleys
-// extension LaneEditor.State {
-//	func toLane(alley: Alley.ID) -> Lane {
-//		.init(id: id, label: label, isAgainstWall: isAgainstWall, alley: alley)
-//	}
-// }
+extension AlleyEditor.State {
+	var alleyLanes: AlleyLanesEditor.State {
+		get {
+			var alleyLanes = _alleyLanes
+			alleyLanes.existingLanes = existingLanes
+			alleyLanes.newLanes = newLanes
+			return alleyLanes
+		}
+		set {
+			_alleyLanes = newValue
+			self.existingLanes = newValue.existingLanes
+			self.newLanes = newValue.newLanes
+		}
+	}
+
+	var form: AlleyForm.State {
+		get {
+			var form = _form
+			switch initialValue {
+			case var .create(new):
+				new.name = name
+				new.address = address
+				new.material = material
+				new.pinFall = pinFall
+				new.mechanism = mechanism
+				new.pinBase = pinBase
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				existing.address = address
+				existing.material = material
+				existing.pinFall = pinFall
+				existing.mechanism = mechanism
+				existing.pinBase = pinBase
+				form.value = .edit(existing)
+			}
+			return form
+		}
+		set {
+			_form = newValue
+		}
+	}
+}
+
+extension Alley.Create: CreateableRecord {
+	public static var modelName = Strings.Alley.title
+
+	public var isSaveable: Bool {
+		!name.isEmpty
+	}
+}
+
+extension Alley.Edit: EditableRecord {
+	public var isDeleteable: Bool { true }
+}

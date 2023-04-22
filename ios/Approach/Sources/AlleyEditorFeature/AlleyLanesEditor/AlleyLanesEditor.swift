@@ -1,45 +1,44 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import LaneEditorFeature
-import LanesDataProviderInterface
-import PersistenceServiceInterface
-import SharedModelsLibrary
+import LanesRepositoryInterface
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
 public struct AlleyLanesEditor: Reducer {
 	public struct State: Equatable {
-		public var alley: Alley?
+		public var alley: Alley.ID
+		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
+		public var newLanes: IdentifiedArrayOf<Lane.Create>
 
-		public var isLoadingData = true
-		public var lanes: IdentifiedArrayOf<LaneEditor.State> = []
-		public var existingLanes: [Lane] = []
+		@PresentationState public var alert: AlertState<AlertAction>?
+		@PresentationState public var addLaneForm: AddLaneForm.State?
 
-		public var alert: AlertState<AlertAction>?
-		public var addLaneForm: AddLaneForm.State?
-
-		public init(alley: Alley?) {
+		public init(
+			alley: Alley.ID,
+			existingLanes: IdentifiedArrayOf<Lane.Edit>,
+			newLanes: IdentifiedArrayOf<Lane.Create>
+		) {
 			self.alley = alley
+			self.newLanes = newLanes
+			self.existingLanes = existingLanes
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didAppear
 			case didTapAddLaneButton
 			case didTapAddMultipleLanesButton
-			case setAddLaneForm(isPresented: Bool)
-			case alert(AlertAction)
+			case alert(PresentationAction<AlertAction>)
 		}
 
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadLanes(TaskResult<[Lane]>)
 			case didDeleteLane(TaskResult<Lane.ID>)
-
 			case laneEditor(id: LaneEditor.State.ID, action: LaneEditor.Action)
-			case addLaneForm(AddLaneForm.Action)
+			case addLaneForm(PresentationAction<AddLaneForm.Action>)
 		}
 
 		case view(ViewAction)
@@ -47,62 +46,36 @@ public struct AlleyLanesEditor: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	public enum AlertAction: Equatable {
+		case didTapDeleteButton(Lane.ID)
+		case didTapDismissButton
+	}
+
 	public init() {}
 
+	@Dependency(\.lanes) var lanes
 	@Dependency(\.uuid) var uuid
-	@Dependency(\.lanesDataProvider) var lanesDataProvider
-	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
-					state.isLoadingData = true
-					return .task { [alley = state.alley] in
-						if let alley {
-							return await .internal(.didLoadLanes(TaskResult {
-								try await lanesDataProvider.fetchLanes(.init(filter: .alley(alley), ordering: .byLabel))
-							}))
-						} else {
-							return .internal(.didLoadLanes(.success([])))
-						}
-					}
-
 				case .didTapAddLaneButton:
 					// FIXME: is it possible to focus on this lane's input when it appears
-					if let previousLane = state.lanes.last?.label, let previousLaneNumber = Int(previousLane) {
-						state.lanes.append(.init(
-							id: uuid(),
-							label: String(previousLaneNumber + 1),
-							isAgainstWall: false
-						))
-					} else {
-						state.lanes.append(.init(
-							id: uuid(),
-							label: "",
-							isAgainstWall: false
-						))
-					}
-					return .none
+					return didFinishAddingLanes(&state, count: 1)
 
 				case .didTapAddMultipleLanesButton:
-					return presentAddLanesForm(&state)
+					state.addLaneForm = .init()
+					return .none
 
-				case .setAddLaneForm(isPresented: true):
-					return presentAddLanesForm(&state)
-
-				case .setAddLaneForm(isPresented: false):
-					return didFinishAddingLanes(&state, count: nil)
-
-				case let .alert(alertAction):
+				case let .alert(.presented(alertAction)):
 					switch alertAction {
 					case let .didTapDeleteButton(lane):
-						return .task { [lane = lane] in
+						return .task {
 							await .internal(.didDeleteLane(TaskResult {
-								try await persistenceService.deleteLanes([lane])
-								return lane.id
+								try await lanes.delete([lane])
+								return lane
 							}))
 						}
 
@@ -110,40 +83,16 @@ public struct AlleyLanesEditor: Reducer {
 						state.alert = nil
 						return .none
 					}
+
+				case .alert(.dismiss):
+					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didLoadLanes(.success(lanes)):
-					state.existingLanes = lanes
-					if lanes.count == 0 {
-						state.lanes = .init(uniqueElements: [
-							.init(
-								id: uuid(),
-								label: "1",
-								isAgainstWall: true
-							),
-						])
-					} else {
-						state.lanes = .init(uniqueElements: lanes.enumerated().map { .init(
-							id: $1.id,
-							label: $1.label,
-							isAgainstWall: $1.isAgainstWall
-						)})
-					}
-					state.isLoadingData = false
-					return .none
-
-				case .didLoadLanes(.failure):
-					// TODO: handle lanes load error
-					state.existingLanes = []
-					state.lanes = []
-					state.isLoadingData = false
-					return .none
-
 				case let .didDeleteLane(.success(id)):
-					state.lanes.removeAll { $0.id == id }
 					state.existingLanes.removeAll { $0.id == id }
+					state.newLanes.removeAll { $0.id == id }
 					return .none
 
 				case .didDeleteLane(.failure):
@@ -152,17 +101,22 @@ public struct AlleyLanesEditor: Reducer {
 
 				case let .laneEditor(id, .delegate(delegateAction)):
 					switch delegateAction {
-					case .didSwipe(.delete):
+					case .didDeleteLane:
 						if let deleted = state.existingLanes.first(where: { $0.id == id }) {
-							// FIXME: AlleyLanesEditorView does not re-render when alert is dismissed and deleted lane does not re-appear
-							state.alert = AlleyLanesEditor.alert(toDelete: deleted)
+							state.alert = AlertState {
+								TextState(Strings.Form.Prompt.delete(deleted.label))
+							} actions: {
+								ButtonState(role: .destructive, action: .didTapDeleteButton(deleted.id)) { TextState(Strings.Action.delete) }
+								ButtonState(role: .cancel, action: .didTapDismissButton) { TextState(Strings.Action.cancel) }
+							}
 						} else {
-							state.lanes.removeAll { $0.id == id }
+							state.existingLanes.removeAll { $0.id == id }
+							state.newLanes.removeAll { $0.id == id }
 						}
 						return .none
 					}
 
-				case let .addLaneForm(.delegate(delegateAction)):
+				case let .addLaneForm(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case let .didFinishAddingLanes(numberOfLanes):
 						return didFinishAddingLanes(&state, count: numberOfLanes)
@@ -171,7 +125,10 @@ public struct AlleyLanesEditor: Reducer {
 				case .laneEditor(_, .binding), .laneEditor(_, .view), .laneEditor(_, .internal):
 					return .none
 
-				case .addLaneForm(.internal), .addLaneForm(.view), .addLaneForm(.binding):
+				case .addLaneForm(.presented(.internal)),
+						.addLaneForm(.presented(.view)),
+						.addLaneForm(.presented(.binding)),
+						.addLaneForm(.dismiss):
 					return .none
 				}
 
@@ -179,34 +136,65 @@ public struct AlleyLanesEditor: Reducer {
 				return .none
 			}
 		}
-		.forEach(\.lanes, action: /Action.internal..Action.InternalAction.laneEditor(id:action:)) {
+		.forEach(\.existingLaneEditors, action: /Action.internal..Action.InternalAction.laneEditor(id:action:)) {
 			LaneEditor()
 		}
-		.ifLet(\.addLaneForm, action: /Action.internal..Action.InternalAction.addLaneForm) {
+		.forEach(\.newLaneEditors, action: /Action.internal..Action.InternalAction.laneEditor(id:action:)) {
+			LaneEditor()
+		}
+		.ifLet(\.$addLaneForm, action: /Action.internal..Action.InternalAction.addLaneForm) {
 			AddLaneForm()
 		}
 	}
 
-	private func presentAddLanesForm(_ state: inout State) -> Effect<Action> {
-		state.addLaneForm = .init()
-		return .none
-	}
-
 	private func didFinishAddingLanes(_ state: inout State, count numberOfLanes: Int?) -> Effect<Action> {
 		if let numberOfLanes {
-			if let previousLane = state.lanes.last?.label,
+			if let previousLane = state.newLanes.last?.label ?? state.existingLanes.last?.label,
 				 let previousLaneNumber = Int(previousLane) {
 				for index in 1...numberOfLanes {
-					state.lanes.append(.init(id: uuid(), label: String(previousLaneNumber + index), isAgainstWall: false))
+					state.newLanes.append(.init(
+						alleyId: state.alley,
+						id: uuid(),
+						label: String(previousLaneNumber + index),
+						position: .noWall
+					))
 				}
 			} else {
 				for _ in 1...numberOfLanes {
-					state.lanes.append(.init(id: uuid(), label: "", isAgainstWall: false))
+					state.newLanes.append(.init(alleyId: state.alley, id: uuid(), label: "", position: .noWall))
 				}
 			}
 		}
 
 		state.addLaneForm = nil
 		return .none
+	}
+}
+
+extension AlleyLanesEditor.State {
+	public var existingLaneEditors: IdentifiedArrayOf<LaneEditor.State> {
+		get {
+			.init(
+				uniqueElements: existingLanes.map { .init(id: $0.id, label: $0.label, position: $0.position) }
+			)
+		}
+		set {
+			self.existingLanes = .init(
+				uniqueElements: newValue.map { .init(id: $0.id, label: $0.label, position: $0.position) }
+			)
+		}
+	}
+
+	public var newLaneEditors: IdentifiedArrayOf<LaneEditor.State> {
+		get {
+			.init(
+				uniqueElements: newLanes.map { .init(id: $0.id, label: $0.label, position: $0.position) }
+			)
+		}
+		set {
+			self.newLanes = .init(
+				uniqueElements: newValue.map { .init(alleyId: alley, id: $0.id, label: $0.label, position: $0.position) }
+			)
+		}
 	}
 }

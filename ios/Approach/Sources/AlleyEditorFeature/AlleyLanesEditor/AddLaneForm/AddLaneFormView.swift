@@ -1,6 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
