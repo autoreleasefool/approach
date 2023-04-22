@@ -1,5 +1,4 @@
 // swift-tools-version: 5.7.1
-// swiftlint:disable file_length line_length
 
 import PackageDescription
 
@@ -25,7 +24,6 @@ let package = Package(
 		.library(name: "LaneEditorFeature", targets: ["LaneEditorFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
-		.library(name: "OpponentEditorFeature", targets: ["OpponentEditorFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
 		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
@@ -359,22 +357,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesListFeature",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "OpponentEditorFeature",
-			dependencies: [
-				"BaseFormLibrary",
-				"ExtensionsLibrary",
-				"PersistenceServiceInterface",
-			]
-		),
-		.testTarget(
-			name: "OpponentEditorFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"OpponentEditorFeature",
 				"SharedModelsMocksLibrary",
 			]
 		),

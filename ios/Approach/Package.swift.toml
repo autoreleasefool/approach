@@ -69,10 +69,6 @@ features = [ "LeagueEditor", "SeriesList" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "SortOrder" ]
 
-[features.OpponentEditor]
-services = [ "Persistence" ]
-libraries = [ "BaseForm", "Extensions" ]
-
 [features.OpponentsList]
 features = [ "BowlerEditor" ]
 services = [ "RecentlyUsed" ]
