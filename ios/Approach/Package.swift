@@ -79,7 +79,6 @@ let package = Package(
 
 		// MARK: - Libraries
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
-		.library(name: "BaseFormLibrary", targets: ["BaseFormLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
@@ -939,22 +938,6 @@ let package = Package(
 		.target(
 			name: "AssetsLibrary",
 			dependencies: []
-		),
-		.target(
-			name: "BaseFormLibrary",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"FeatureActionLibrary",
-				"ViewsLibrary",
-			]
-		),
-		.testTarget(
-			name: "BaseFormLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"BaseFormLibrary",
-				"SharedModelsMocksLibrary",
-			]
 		),
 		.target(
 			name: "ConstantsLibrary",

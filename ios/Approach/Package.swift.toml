@@ -176,10 +176,6 @@ libraries = [ "SharedModels" ]
 [libraries.Assets]
 skip_tests = true
 
-[libraries.BaseForm]
-libraries = [ "FeatureAction", "Views" ]
-dependencies = [ "Dependencies" ]
-
 [libraries.Constants]
 skip_tests = true
 libraries = [ "Strings" ]
