@@ -1,6 +1,6 @@
 import AlleysRepositoryInterface
-import LanesRepositoryInterface
 import DatabaseModelsLibrary
+import LanesRepositoryInterface
 import GRDB
 import ModelsLibrary
 

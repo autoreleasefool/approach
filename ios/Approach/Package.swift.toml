@@ -62,7 +62,8 @@ libraries = [ "Models", "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
 repositories = [ "Alleys", "Leagues" ]
-libraries = [ "BaseForm", "Equatable", "Extensions", "ModelsViews", "ResourcePicker" ]
+services = [ "FeatureFlags" ]
+libraries = [ "Equatable", "Extensions", "Form", "ModelsViews", "ResourcePicker" ]
 
 [features.LeaguesList]
 features = [ "LeagueEditor", "SeriesList" ]

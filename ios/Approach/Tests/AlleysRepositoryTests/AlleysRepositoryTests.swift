@@ -327,7 +327,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		let lanes = [
 			Lane.Database(alleyId: id1, id: laneId1, label: "1", position: .leftWall),
-			Lane.Database(alleyId: id1, id: laneId2, label: "2", position: .noWall)
+			Lane.Database(alleyId: id1, id: laneId2, label: "2", position: .noWall),
 		]
 		try await db.write {
 			for lane in lanes {
@@ -362,7 +362,6 @@ final class AlleysRepositoryTests: XCTestCase {
 			)
 		)
 	}
-
 
 	func testEdit_WhenAlleyNotExists_ReturnsNil() async throws {
 		// Given a database with no alleys

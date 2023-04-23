@@ -327,9 +327,10 @@ let package = Package(
 			name: "LeagueEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"BaseFormLibrary",
 				"EquatableLibrary",
 				"ExtensionsLibrary",
+				"FeatureFlagsServiceInterface",
+				"FormLibrary",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",

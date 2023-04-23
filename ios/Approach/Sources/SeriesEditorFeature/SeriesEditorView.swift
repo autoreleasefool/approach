@@ -58,7 +58,6 @@ public struct SeriesEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case didAppear
 		case setAlleyPicker(isPresented: Bool)
 		case setLanePicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
@@ -170,7 +169,6 @@ public struct SeriesEditorView: View {
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
-			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 
@@ -206,8 +204,6 @@ extension SeriesEditor.State {
 extension SeriesEditor.Action {
 	init(action: SeriesEditorView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
 		case let .setAlleyPicker(isPresented):
 			self = .view(.setAlleyPicker(isPresented: isPresented))
 		case let .setLanePicker(isPresented):

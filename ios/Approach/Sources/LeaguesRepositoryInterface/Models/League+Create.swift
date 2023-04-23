@@ -15,7 +15,14 @@ extension League {
 		public var location: Alley.Summary?
 
 		public static func `default`(withId: League.ID, forBowler: Bowler.ID) -> Self {
-			.init(bowlerId: forBowler, id: withId, name: "", recurrence: .repeating, excludeFromStatistics: .include)
+			.init(
+				bowlerId: forBowler,
+				id: withId,
+				name: "",
+				recurrence: .repeating,
+				numberOfGames: League.DEFAULT_NUMBER_OF_GAMES,
+				excludeFromStatistics: .include
+			)
 		}
 	}
 }

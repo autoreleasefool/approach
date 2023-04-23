@@ -9,6 +9,8 @@ import RecentlyUsedServiceInterface
 import TestUtilitiesLibrary
 import XCTest
 
+// swiftlint:disable type_body_length file_length
+
 @MainActor
 final class LeaguesRepositoryTests: XCTestCase {
 
@@ -288,6 +290,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Editing the league
 		let existing = League.Edit(
 			id: id1,
+			recurrence: .repeating,
+			numberOfGames: 4,
 			name: "Minors",
 			additionalPinfall: 123,
 			additionalGames: 123,
@@ -317,6 +321,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Editing a league
 		let existing = League.Edit(
 			id: id1,
+			recurrence: .once,
+			numberOfGames: 1,
 			name: "Minors",
 			additionalPinfall: 123,
 			additionalGames: 123,
@@ -359,6 +365,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 			league,
 			.init(
 				id: id1,
+				recurrence: .repeating,
+				numberOfGames: 4,
 				name: "Majors",
 				additionalPinfall: nil,
 				additionalGames: nil,
@@ -400,6 +408,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 			league,
 			.init(
 				id: id1,
+				recurrence: .repeating,
+				numberOfGames: 4,
 				name: "Majors",
 				additionalPinfall: nil,
 				additionalGames: nil,
@@ -529,3 +539,5 @@ extension League.Summary {
 		)
 	}
 }
+
+// swiftlint:enable type_body_length file_length

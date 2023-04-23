@@ -1,114 +1,94 @@
 import AlleysRepositoryInterface
-import BaseFormLibrary
 import ComposableArchitecture
 import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
+import FormLibrary
 import LeaguesRepositoryInterface
 import ModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 
-extension League.Editable: BaseFormModel {
-	static public var modelName = Strings.League.title
-}
-
-extension League.Recurrence: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .repeating: return Strings.League.Properties.Recurrence.repeats
-		case .once: return Strings.League.Properties.Recurrence.never
-		}
-	}
-}
-
-extension Alley.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
-	}
-}
+public typealias LeagueForm = Form<League.Create, League.Edit>
 
 public struct LeagueEditor: Reducer {
-	public typealias Form = BaseForm<League.Editable, Fields>
+	public struct State: Equatable {
+		public let hasAlleysEnabled: Bool
 
-	public struct Fields: BaseFormState, Equatable {
-		public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State
-		@BindingState public var league: League.Editable
+		@BindingState public var name: String
+		@BindingState public var recurrence: League.Recurrence
+		@BindingState public var numberOfGames: Int?
+		@BindingState public var additionalPinfall: Int?
+		@BindingState public var additionalGames: Int?
+		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics
+		public var location: Alley.Summary?
+
 		@BindingState public var gamesPerSeries: GamesPerSeries
 		@BindingState public var hasAdditionalPinfall: Bool
 
-		init(league: League.Editable) {
-			self.league = league
-			self.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
-			self.gamesPerSeries = (league.numberOfGames == nil) ? .dynamic : .static
+		public let initialValue: LeagueForm.Value
+		public var _form: LeagueForm.State
+
+		public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State
+		public var isAlleyPickerPresented = false
+
+		public init(value: LeagueForm.Value) {
+			let numberOfGames: Int?
+			let additionalGames: Int?
+			switch value {
+			case let .create(new):
+				self.name = new.name
+				self.recurrence = new.recurrence
+				self.additionalPinfall = new.additionalPinfall
+				self.excludeFromStatistics = new.excludeFromStatistics
+				self.location = new.location
+				numberOfGames = new.numberOfGames
+				additionalGames = new.additionalGames
+				self.initialValue = .create(new)
+			case let .edit(existing):
+				self.name = existing.name
+				self.recurrence = existing.recurrence
+				self.additionalPinfall = existing.additionalPinfall
+				self.excludeFromStatistics = existing.excludeFromStatistics
+				self.location = existing.location
+				numberOfGames = existing.numberOfGames
+				additionalGames = existing.additionalGames
+				self.initialValue = .edit(existing)
+			}
+			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
+			self.gamesPerSeries = numberOfGames == nil ? .dynamic : .static
+			self.hasAdditionalPinfall = (additionalGames ?? 0) > 0
+
 			self.alleyPicker = .init(
-				selected: Set([league.alleyId].compactMap({ $0 })),
+				selected: Set([self.location?.id].compactMap { $0 }),
 				query: .init(()),
 				limit: 1,
 				showsCancelHeaderButton: false
 			)
-		}
 
-		public let isDeleteable = true
-		public var isSaveable: Bool {
-			!league.name.isEmpty
+			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
 		}
 	}
 
-	public struct State: Equatable {
-		public var base: Form.State
-		public var initialAlley: Alley.Summary?
-		public var isAlleyPickerPresented = false
-		public let hasAlleysEnabled: Bool
-
-		public init(bowler: Bowler.ID, mode: Form.Mode, hasAlleysEnabled: Bool) {
-			var fields: Fields
-			switch mode {
-			case let .edit(league):
-				fields = .init(league: league)
-			case .create:
-				@Dependency(\.uuid) var uuid: UUIDGenerator
-				fields = Fields(league: .init(
-					bowlerId: bowler,
-					id: uuid(),
-					name: "",
-					recurrence: .repeating,
-					numberOfGames: League.DEFAULT_NUMBER_OF_GAMES,
-					additionalPinfall: nil,
-					additionalGames: nil,
-					excludeFromStatistics: .include,
-					alleyId: nil
-				))
-			}
-			self.hasAlleysEnabled = hasAlleysEnabled
-			self.base = .init(mode: mode, form: fields)
-		}
-	}
-
-	public enum GamesPerSeries: Int, Equatable, Identifiable, CaseIterable, CustomStringConvertible {
+	public enum GamesPerSeries: Int, Equatable, Identifiable, CaseIterable {
 		case `static`
 		case dynamic
 
 		public var id: Int { rawValue }
-		public var description: String {
-			switch self {
-			case .static: return Strings.League.Editor.Fields.GamesPerSeries.constant
-			case .dynamic: return Strings.League.Editor.Fields.GamesPerSeries.alwaysAskMe
-			}
-		}
 	}
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didAppear
 			case setAlleyPicker(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {
 			case didFinishEditing
 		}
 		public enum InternalAction: Equatable {
-			case didLoadAlley(TaskResult<Alley.Summary?>)
-			case form(Form.Action)
+			case form(LeagueForm.Action)
 			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action)
 		}
 
@@ -120,22 +100,24 @@ public struct LeagueEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.uuid) var uuid
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.leagues) var leagues
+	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
-			BaseForm()
-				.dependency(\.modelPersistence, .init(
-					save: leagues.save,
-					delete: { try await leagues.delete($0.id) }
+		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+			LeagueForm()
+				.dependency(\.records, .init(
+					create: leagues.create,
+					update: leagues.update,
+					delete: leagues.delete
 				))
 		}
 
-		Scope(state: \.base.form.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
+		Scope(state: \.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
 			ResourcePicker { _ in alleys.list(ordered: .byName) }
 		}
 
@@ -143,18 +125,6 @@ public struct LeagueEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
-					if case let .edit(league) = state.base.mode, let alley = league.alleyId {
-						return .run { send in
-							for try await alley in alleys.load(alley) {
-								await send(.internal(.didLoadAlley(.success(alley))))
-							}
-						} catch: { error, send in
-							await send(.internal(.didLoadAlley(.failure(error))))
-						}
-					}
-					return .none
-
 				case let .setAlleyPicker(isPresented):
 					state.isAlleyPickerPresented = isPresented
 					return .none
@@ -162,43 +132,42 @@ public struct LeagueEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didLoadAlley(.success(alley)):
-					state.initialAlley = alley
-					return .none
-
-				case .didLoadAlley(.failure):
-					// TODO: handle error failing to load alley
-					return .none
-
 				case let .alleyPicker(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.isAlleyPickerPresented = false
+						state.location = state.alleyPicker.selectedResources?.first
 						return .none
 					}
 
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didSaveModel(league):
-						return .task { .internal(.form(.callback(.didFinishSaving(.success(league))))) }
+					case let .didCreate(result):
+						return state._form.didFinishCreating(result)
+							.map { .internal(.form($0)) }
 
-					case let .didDeleteModel(league):
-						return .task { .internal(.form(.callback(.didFinishDeleting(.success(league))))) }
+					case let .didUpdate(result):
+						return state._form.didFinishUpdating(result)
+							.map { .internal(.form($0)) }
 
-					case .didFinishSaving, .didFinishDeleting, .didDiscard:
-						return .task { .delegate(.didFinishEditing) }
+					case let .didDelete(result):
+						return state._form.didFinishDeleting(result)
+							.map { .internal(.form($0)) }
+
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+						return .fireAndForget { await self.dismiss() }
 					}
 
-				case .form(.internal), .form(.view), .form(.callback):
+				case .form(.internal), .form(.view):
 					return .none
 
 				case .alleyPicker(.internal), .alleyPicker(.view):
 					return .none
 				}
 
-			case .binding(\.base.form.$league.recurrence):
-				if state.base.form.league.recurrence == .once {
-					state.base.form.gamesPerSeries = .static
+			case .binding(\.$recurrence):
+				if state.recurrence == .once {
+					state.gamesPerSeries = .static
 				}
 				return .none
 
@@ -209,27 +178,71 @@ public struct LeagueEditor: Reducer {
 	}
 }
 
-extension LeagueEditor.Fields {
-	public var model: League.Editable {
-		let numberOfGames = gamesPerSeries == .static ? league.numberOfGames : nil
-		let additionalGames = hasAdditionalPinfall ? league.additionalGames : nil
-		let additionalPinfall: Int?
-		if let additionalGames {
-			additionalPinfall = hasAdditionalPinfall && additionalGames > 0 ? league.additionalPinfall : nil
-		} else {
-			additionalPinfall = nil
+extension LeagueEditor.State {
+	var form: LeagueForm.State {
+		get {
+			var form = _form
+			switch initialValue {
+			case var .create(new):
+				new.name = name
+				new.recurrence = recurrence
+				new.numberOfGames = gamesPerSeries == .static ? numberOfGames : nil
+				new.additionalGames = hasAdditionalPinfall ? additionalGames : nil
+				new.additionalPinfall = hasAdditionalPinfall && (additionalGames ?? 0) > 0 ? additionalPinfall : nil
+				new.excludeFromStatistics = excludeFromStatistics
+				new.location = location
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				existing.additionalGames = hasAdditionalPinfall ? additionalGames : nil
+				existing.additionalPinfall = hasAdditionalPinfall && (additionalGames ?? 0) > 0 ? additionalPinfall : nil
+				existing.excludeFromStatistics = excludeFromStatistics
+				existing.location = location
+				form.value = .edit(existing)
+			}
+			return form
 		}
+		set {
+			_form = newValue
+		}
+	}
+}
 
-		return .init(
-			bowlerId: league.bowlerId,
-			id: league.id,
-			name: league.name,
-			recurrence: league.recurrence,
-			numberOfGames: numberOfGames,
-			additionalPinfall: additionalPinfall,
-			additionalGames: additionalGames,
-			excludeFromStatistics: league.excludeFromStatistics,
-			alleyId: alleyPicker.selected.first
-		)
+extension League.Create: CreateableRecord {
+	public static var modelName = Strings.League.title
+
+	public var isSaveable: Bool {
+		!name.isEmpty
+	}
+}
+
+extension League.Edit: EditableRecord {
+	public var isDeleteable: Bool { true }
+	public var isSaveable: Bool {
+		!name.isEmpty
+	}
+}
+
+extension Alley.Summary: PickableResource {
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
+	}
+}
+
+extension League.Recurrence: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .repeating: return Strings.League.Properties.Recurrence.repeats
+		case .once: return Strings.League.Properties.Recurrence.never
+		}
+	}
+}
+
+extension LeagueEditor.GamesPerSeries: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .static: return Strings.League.Editor.Fields.GamesPerSeries.constant
+		case .dynamic: return Strings.League.Editor.Fields.GamesPerSeries.alwaysAskMe
+		}
 	}
 }

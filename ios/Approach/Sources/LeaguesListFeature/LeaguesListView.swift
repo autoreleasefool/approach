@@ -15,14 +15,12 @@ public struct LeaguesListView: View {
 	struct ViewState: Equatable {
 		let bowlerName: String
 		let selection: League.ID?
-		let isEditorPresented: Bool
 		let isFiltersPresented: Bool
 		let isAnyFilterActive: Bool
 
 		init(state: LeaguesList.State) {
 			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
-			self.isEditorPresented = state.editor != nil
 			self.isFiltersPresented = state.isFiltersPresented
 			self.isAnyFilterActive = state.filters.hasFilters
 		}
@@ -30,7 +28,6 @@ public struct LeaguesListView: View {
 
 	enum ViewAction {
 		case didTapFilterButton
-		case setEditorSheet(isPresented: Bool)
 		case setFilterSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
 	}
@@ -79,14 +76,9 @@ public struct LeaguesListView: View {
 				}
 				.presentationDetents([.medium, .large])
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isEditorPresented,
-				send: ViewAction.setEditorSheet(isPresented:)
-			)) {
-				IfLetStore(store.scope(state: \.editor, action: /LeaguesList.Action.InternalAction.editor)) { scopedStore in
-					NavigationView {
-						LeagueEditorView(store: scopedStore)
-					}
+			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+				NavigationView {
+					LeagueEditorView(store: scopedStore)
 				}
 			}
 		}
@@ -100,8 +92,6 @@ extension LeaguesList.Action {
 			self = .view(.setFilterSheet(isPresented: true))
 		case let .setFilterSheet(isPresented):
 			self = .view(.setFilterSheet(isPresented: isPresented))
-		case let .setEditorSheet(isPresented):
-			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
 			self = .view(.setNavigation(selection: selection))
 		}

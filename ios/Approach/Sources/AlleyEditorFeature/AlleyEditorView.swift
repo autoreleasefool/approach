@@ -75,7 +75,7 @@ public struct AlleyEditorView: View {
 				Strings.Editor.Fields.Details.address,
 				text: viewStore.binding(
 					get: { $0.address ?? "" },
-					send: { ViewAction.set(\.$address, $0) }
+					send: { ViewAction.set(\.$address, $0.isEmpty ? nil : $0) }
 				)
 			)
 			.textContentType(.fullStreetAddress)

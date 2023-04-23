@@ -3,6 +3,8 @@ import ModelsLibrary
 extension League {
 	public struct Edit: Identifiable, Equatable, Codable {
 		public let id: League.ID
+		public let recurrence: League.Recurrence
+		public let numberOfGames: Int?
 
 		public var name: String
 		public var additionalPinfall: Int?

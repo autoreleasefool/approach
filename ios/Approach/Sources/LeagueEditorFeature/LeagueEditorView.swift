@@ -1,6 +1,6 @@
-import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FormLibrary
 import ModelsLibrary
 import ModelsViewsLibrary
 import ResourcePickerLibrary
@@ -12,36 +12,45 @@ public struct LeagueEditorView: View {
 	let store: StoreOf<LeagueEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var league: League.Editable
+		@BindingState var name: String
+		@BindingState var recurrence: League.Recurrence
+		@BindingState var numberOfGames: Int?
+		@BindingState var additionalPinfall: Int?
+		@BindingState var additionalGames: Int?
+		@BindingState var excludeFromStatistics: League.ExcludeFromStatistics
+
 		@BindingState var gamesPerSeries: LeagueEditor.GamesPerSeries
 		@BindingState var hasAdditionalPinfall: Bool
 
-		let selectedAlley: Alley.Summary?
+		let location: Alley.Summary?
 		let hasAlleysEnabled: Bool
 		let isAlleyPickerPresented: Bool
 
+		let isEditing: Bool
+
 		init(state: LeagueEditor.State) {
-			self.league = state.base.form.league
-			self.gamesPerSeries = state.base.form.gamesPerSeries
-			self.hasAdditionalPinfall = state.base.form.hasAdditionalPinfall
+			self.name = state.name
+			self.recurrence = state.recurrence
+			self.numberOfGames = state.numberOfGames
+			self.additionalGames = state.additionalGames
+			self.additionalPinfall = state.additionalPinfall
+			self.excludeFromStatistics = state.excludeFromStatistics
+
+			self.gamesPerSeries = state.gamesPerSeries
+			self.hasAdditionalPinfall = state.hasAdditionalPinfall
+
 			self.hasAlleysEnabled = state.hasAlleysEnabled
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
-			if let id = state.base.form.alleyPicker.selected.first {
-				if let alley = state.base.form.alleyPicker.resources?[id: id] {
-					self.selectedAlley = alley
-				} else if let alley = state.initialAlley, alley.id == id {
-					self.selectedAlley = alley
-				} else {
-					self.selectedAlley = nil
-				}
-			} else {
-				self.selectedAlley = nil
+			self.location = state.location
+
+			switch state._form.value {
+			case .create: self.isEditing = false
+			case .edit: self.isEditing = true
 			}
 		}
 	}
 
 	enum ViewAction: BindableAction {
-		case didAppear
 		case setAlleyPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
@@ -52,7 +61,7 @@ public struct LeagueEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeagueEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: /LeagueEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: /LeagueEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
 				statisticsSection(viewStore)
@@ -60,18 +69,17 @@ public struct LeagueEditorView: View {
 				additionalPinfallSection(viewStore)
 			}
 			.interactiveDismissDisabled(viewStore.isAlleyPickerPresented)
-			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
-			TextField(Strings.Editor.Fields.Details.name, text: viewStore.binding(\.$league.name))
+			TextField(Strings.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
 			if viewStore.hasAlleysEnabled {
 				NavigationLink(
 					destination: ResourcePickerView(
 						store: store.scope(
-							state: \.base.form.alleyPicker,
+							state: \.alleyPicker,
 							action: /LeagueEditor.Action.InternalAction.alleyPicker
 						)
 					) {
@@ -84,7 +92,7 @@ public struct LeagueEditorView: View {
 				) {
 					LabeledContent(
 						Strings.League.Properties.alley,
-						value: viewStore.selectedAlley?.name ?? Strings.none
+						value: viewStore.location?.name ?? Strings.none
 					)
 				}
 			}
@@ -98,20 +106,22 @@ public struct LeagueEditorView: View {
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
-	private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section {
-			Picker(
-				Strings.League.Properties.recurrence,
-				selection: viewStore.binding(\.$league.recurrence)
-			) {
-				ForEach(League.Recurrence.allCases) {
-					Text(String(describing: $0)).tag($0)
+	@ViewBuilder private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		if !viewStore.isEditing {
+			Section {
+				Picker(
+					Strings.League.Properties.recurrence,
+					selection: viewStore.binding(\.$recurrence)
+				) {
+					ForEach(League.Recurrence.allCases) {
+						Text(String(describing: $0)).tag($0)
+					}
 				}
+			} footer: {
+				Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.once))
 			}
-		} footer: {
-			Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.once))
+			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func statisticsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -119,8 +129,8 @@ public struct LeagueEditorView: View {
 			Toggle(
 				Strings.League.Editor.Fields.ExcludeFromStatistics.label,
 				isOn: viewStore.binding(
-					get: { $0.league.excludeFromStatistics == .exclude },
-					send: { ViewAction.set(\.$league.excludeFromStatistics, $0 ? .exclude : .include) }
+					get: { $0.excludeFromStatistics == .exclude },
+					send: { ViewAction.set(\.$excludeFromStatistics, $0 ? .exclude : .include) }
 				)
 			)
 		} header: {
@@ -131,37 +141,39 @@ public struct LeagueEditorView: View {
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
-	private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section {
-			Picker(
-				Strings.League.Properties.numberOfGames,
-				selection: viewStore.binding(\.$gamesPerSeries)
-			) {
-				ForEach(LeagueEditor.GamesPerSeries.allCases) {
-					Text(String(describing: $0)).tag($0)
+	@ViewBuilder private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		if !viewStore.isEditing {
+			Section {
+				Picker(
+					Strings.League.Properties.numberOfGames,
+					selection: viewStore.binding(\.$gamesPerSeries)
+				) {
+					ForEach(LeagueEditor.GamesPerSeries.allCases) {
+						Text(String(describing: $0)).tag($0)
+					}
 				}
-			}
-			.disabled(viewStore.league.recurrence == .once)
+				.disabled(viewStore.recurrence == .once)
 
-			if viewStore.gamesPerSeries == .static {
-				Stepper(
-					"\(viewStore.league.numberOfGames ?? 0)",
-					value: viewStore.binding(
-						get: { $0.league.numberOfGames ?? 0 },
-						send: { .binding(.set(\.$league.numberOfGames, $0)) }
-					),
-					in: League.NUMBER_OF_GAMES_RANGE
+				if viewStore.gamesPerSeries == .static {
+					Stepper(
+						"\(viewStore.numberOfGames ?? 0)",
+						value: viewStore.binding(
+							get: { $0.numberOfGames ?? 0 },
+							send: { .binding(.set(\.$numberOfGames, $0)) }
+						),
+						in: League.NUMBER_OF_GAMES_RANGE
+					)
+				}
+			} footer: {
+				Text(
+					Strings.League.Editor.Fields.NumberOfGames.help(
+						LeagueEditor.GamesPerSeries.static,
+						LeagueEditor.GamesPerSeries.dynamic
+					)
 				)
 			}
-		} footer: {
-			Text(
-				Strings.League.Editor.Fields.NumberOfGames.help(
-					LeagueEditor.GamesPerSeries.static,
-					LeagueEditor.GamesPerSeries.dynamic
-				)
-			)
+			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func additionalPinfallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -176,8 +188,8 @@ public struct LeagueEditorView: View {
 				TextField(
 					Strings.League.Properties.additionalPinfall,
 					text: viewStore.binding(
-						get: { String($0.league.additionalPinfall ?? 0) },
-						send: { .binding(.set(\.$league.additionalPinfall, Int($0))) }
+						get: { String($0.additionalPinfall ?? 0) },
+						send: { .binding(.set(\.$additionalPinfall, Int($0))) }
 					)
 				)
 				.keyboardType(.numberPad)
@@ -185,8 +197,8 @@ public struct LeagueEditorView: View {
 				TextField(
 					Strings.League.Properties.additionalGames,
 					text: viewStore.binding(
-						get: { String($0.league.additionalGames ?? 0) },
-						send: { .binding(.set(\.$league.additionalGames, Int($0))) }
+						get: { String($0.additionalGames ?? 0) },
+						send: { .binding(.set(\.$additionalGames, Int($0))) }
 					)
 				)
 				.keyboardType(.numberPad)
@@ -202,9 +214,14 @@ extension LeagueEditor.State {
 	var view: LeagueEditorView.ViewState {
 		get { .init(state: self) }
 		set {
-			self.base.form.league = newValue.league
-			self.base.form.gamesPerSeries = newValue.gamesPerSeries
-			self.base.form.hasAdditionalPinfall = newValue.hasAdditionalPinfall
+			self.name = newValue.name
+			self.recurrence = newValue.recurrence
+			self.numberOfGames = newValue.numberOfGames
+			self.additionalGames = newValue.additionalGames
+			self.additionalPinfall = newValue.additionalPinfall
+			self.excludeFromStatistics = newValue.excludeFromStatistics
+			self.hasAdditionalPinfall = newValue.hasAdditionalPinfall
+			self.gamesPerSeries = newValue.gamesPerSeries
 		}
 	}
 }
@@ -212,8 +229,6 @@ extension LeagueEditor.State {
 extension LeagueEditor.Action {
 	init(action: LeagueEditorView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
 		case let .setAlleyPicker(isPresented):
 			self = .view(.setAlleyPicker(isPresented: isPresented))
 		case let.binding(action):
@@ -221,22 +236,3 @@ extension LeagueEditor.Action {
 		}
 	}
 }
-
-#if DEBUG
-struct LeagueEditorViewPreviews: PreviewProvider {
-	static var previews: some View {
-		NavigationView {
-			LeagueEditorView(
-				store: .init(
-					initialState: .init(
-						bowler: UUID(),
-						mode: .create,
-						hasAlleysEnabled: true
-					),
-					reducer: LeagueEditor()
-				)
-			)
-		}
-	}
-}
-#endif

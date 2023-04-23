@@ -16,18 +16,6 @@ import StringsLibrary
 
 public typealias SeriesForm = Form<Series.Create, Series.Edit>
 
-extension Alley.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
-	}
-}
-
-extension Lane.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Lane.title : Strings.Lane.List.title
-	}
-}
-
 public struct SeriesEditor: Reducer {
 	public struct State: Equatable {
 		public let hasAlleysEnabled: Bool
@@ -92,7 +80,6 @@ public struct SeriesEditor: Reducer {
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didAppear
 			case setAlleyPicker(isPresented: Bool)
 			case setLanePicker(isPresented: Bool)
 		}
@@ -153,11 +140,7 @@ public struct SeriesEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
-					return .none
-
 				case let .setAlleyPicker(isPresented):
-
 					state.isAlleyPickerPresented = isPresented
 					return .none
 
@@ -224,20 +207,6 @@ public struct SeriesEditor: Reducer {
 	}
 }
 
-extension Series.Create: CreateableRecord {
-	public static var modelName = Strings.Series.title
-
-	public var isSaveable: Bool { true }
-	public var name: String { date.longFormat }
-	public var saveButtonText: String { Strings.Action.start }
-}
-
-extension Series.Edit: EditableRecord {
-	public var isDeleteable: Bool { true }
-	public var isSaveable: Bool { true }
-	public var name: String { date.longFormat }
-}
-
 extension SeriesEditor.State {
 	var form: SeriesForm.State {
 		get {
@@ -262,5 +231,31 @@ extension SeriesEditor.State {
 		set {
 			_form = newValue
 		}
+	}
+}
+
+extension Series.Create: CreateableRecord {
+	public static var modelName = Strings.Series.title
+
+	public var isSaveable: Bool { true }
+	public var name: String { date.longFormat }
+	public var saveButtonText: String { Strings.Action.start }
+}
+
+extension Series.Edit: EditableRecord {
+	public var isDeleteable: Bool { true }
+	public var isSaveable: Bool { true }
+	public var name: String { date.longFormat }
+}
+
+extension Alley.Summary: PickableResource {
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
+	}
+}
+
+extension Lane.Summary: PickableResource {
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Lane.title : Strings.Lane.List.title
 	}
 }

@@ -26,8 +26,8 @@ public struct LeaguesList: Reducer {
 		public let bowler: Bowler.Summary
 
 		public var list: ResourceList<League.Summary, League.Summary.FetchRequest>.State
-		public var editor: LeagueEditor.State?
 		public var sortOrder: SortOrder<League.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		@PresentationState public var editor: LeagueEditor.State?
 
 		public var isFiltersPresented = false
 		public var filters: LeaguesFilter.State = .init()
@@ -64,16 +64,15 @@ public struct LeaguesList: Reducer {
 		public enum ViewAction: Equatable {
 			case setNavigation(selection: League.ID?)
 			case setFilterSheet(isPresented: Bool)
-			case setEditorSheet(isPresented: Bool)
 		}
 
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableLeague(League.Editable)
+			case didLoadEditableLeague(League.Edit)
 			case didLoadSeriesLeague(League.SeriesHost)
 			case list(ResourceList<League.Summary, League.Summary.FetchRequest>.Action)
-			case editor(LeagueEditor.Action)
+			case editor(PresentationAction<LeagueEditor.Action>)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
 			case sortOrder(SortOrder<League.Ordering>.Action)
@@ -88,8 +87,9 @@ public struct LeaguesList: Reducer {
 
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.leagues) var leagues
-	@Dependency(\.recentlyUsedService) var recentlyUsedService
 	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
@@ -130,19 +130,13 @@ public struct LeaguesList: Reducer {
 				case let .setFilterSheet(isPresented):
 					state.isFiltersPresented = isPresented
 					return .none
-
-				case .setEditorSheet(isPresented: true):
-					return startEditing(league: nil, state: &state)
-
-				case .setEditorSheet(isPresented: false):
-					state.editor = nil
-					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadEditableLeague(league):
-					return startEditing(league: league, state: &state)
+					state.editor = .init(value: .edit(league))
+					return .none
 
 				case let .didLoadSeriesLeague(league):
 					return navigate(to: league, state: &state)
@@ -160,7 +154,8 @@ public struct LeaguesList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						return startEditing(league: nil, state: &state)
+						state.editor = .init(value: .create(.default(withId: uuid(), forBowler: state.bowler.id)))
+						return .none
 
 					case .didDelete, .didTap:
 						return .none
@@ -186,7 +181,7 @@ public struct LeaguesList: Reducer {
 						).map { .internal(.list($0)) }
 					}
 
-				case let .editor(.delegate(delegateAction)):
+				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.editor = nil
@@ -199,7 +194,7 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
-				case .editor(.internal), .editor(.view), .editor(.binding):
+				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.presented(.binding)), .editor(.dismiss):
 					return .none
 
 				case .list(.internal), .list(.view):
@@ -219,7 +214,7 @@ public struct LeaguesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			LeagueEditor()
 		}
 		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.series) {
@@ -240,22 +235,5 @@ public struct LeaguesList: Reducer {
 			state.selection = nil
 			return .none
 		}
-	}
-
-	private func startEditing(league: League.Editable?, state: inout State) -> Effect<Action> {
-		let mode: LeagueEditor.Form.Mode
-		if let league {
-			mode = .edit(league)
-		} else {
-			mode = .create
-		}
-
-		state.editor = .init(
-			bowler: state.bowler.id,
-			mode: mode,
-			hasAlleysEnabled: featureFlags.isEnabled(.alleys)
-		)
-
-		return .none
 	}
 }
