@@ -251,6 +251,12 @@ skip_tests = true
 
 [libraries.SwiftUIExtensions]
 
+[libraries.TestDatabaseUtilities]
+suitable_for_dependents_matching = "\\w+Tests$"
+skip_tests = true
+libraries = [ "Database", "DatabaseModels" ]
+dependencies = [ "Dependencies" ]
+
 [libraries.TestUtilities]
 suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
@@ -322,7 +328,7 @@ dependencies = [ "Dependencies" ]
 
 [defaults.repositories.tests]
 services = [ "Database" ]
-libraries = [ "TestUtilities" ]
+libraries = [ "TestUtilities", "TestDatabaseUtilities" ]
 dependencies = [ "SnapshotTesting" ]
 
 [defaults.services.interface]

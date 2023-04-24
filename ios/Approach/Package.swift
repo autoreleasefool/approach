@@ -102,6 +102,7 @@ let package = Package(
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
+		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
 		.library(name: "TestUtilitiesLibrary", targets: ["TestUtilitiesLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
@@ -483,6 +484,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysRepository",
 				"DatabaseService",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -509,6 +511,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersRepository",
 				"DatabaseService",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -534,6 +537,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"FramesRepository",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -559,6 +563,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"GamesRepository",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -585,6 +590,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"GearRepository",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -610,6 +616,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"LanesRepository",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -636,6 +643,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"LeaguesRepository",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -662,6 +670,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"SeriesRepository",
+				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
 		),
@@ -1200,6 +1209,14 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharedModelsMocksLibrary",
 				"SwiftUIExtensionsLibrary",
+			]
+		),
+		.target(
+			name: "TestDatabaseUtilitiesLibrary",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"DatabaseLibrary",
+				"DatabaseModelsLibrary",
 			]
 		),
 		.target(

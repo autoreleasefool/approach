@@ -11,6 +11,8 @@ typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
 extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.database) var database
+
 		@Sendable func sortBowlers(
 			_ bowlers: BowlerStream,
 			_ ordering: Bowler.Ordering
@@ -26,8 +28,6 @@ extension BowlersRepository: DependencyKey {
 
 		return Self(
 			list: { status, ordering in
-				@Dependency(\.database) var database
-
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
@@ -40,25 +40,21 @@ extension BowlersRepository: DependencyKey {
 				return sortBowlers(bowlers, ordering)
 			},
 			edit: { id in
-				@Dependency(\.database) var database
-				return try await database.reader().read {
+				try await database.reader().read {
 					try Bowler.Edit.fetchOne($0, id: id)
 				}
 			},
 			create: { bowler in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try bowler.insert($0)
 				}
 			},
 			update: { bowler in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try bowler.update($0)
 				}
 			},
 			delete: { id in
-				@Dependency(\.database) var database
 				return try await database.writer().write {
 					try Bowler.Database.deleteOne($0, id: id)
 				}
