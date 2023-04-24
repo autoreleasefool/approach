@@ -1,4 +1,3 @@
-import ExtensionsLibrary
 import Foundation
 import GRDB
 import ModelsLibrary
@@ -45,10 +44,6 @@ extension League.Recurrence: DatabaseValueConvertible {}
 extension League.ExcludeFromStatistics: DatabaseValueConvertible {}
 
 extension League.Database: FetchableRecord, PersistableRecord {
-	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw PlaceholderIDValidationError() }
-	}
-
 	public static let alley = belongsTo(Alley.Database.self)
 	public var alley: QueryInterfaceRequest<Alley.Database> { request(for: Self.alley) }
 }
@@ -69,4 +64,28 @@ extension League.Database {
 
 extension League.Summary: TableRecord, FetchableRecord {
 	public static let databaseTableName = League.Database.databaseTableName
+}
+
+extension League.Database {
+	public struct Inserted {
+		public let id: League.ID
+		public let recurrence: League.Recurrence
+		public let numberOfGames: Int?
+		public let excludeFromStatistics: League.ExcludeFromStatistics
+		public let alleyId: Alley.ID?
+
+		public init(
+			id: League.ID,
+			recurrence: League.Recurrence,
+			numberOfGames: Int?,
+			excludeFromStatistics: League.ExcludeFromStatistics,
+			alleyId: Alley.ID?
+		) {
+			self.id = id
+			self.recurrence = recurrence
+			self.numberOfGames = numberOfGames
+			self.excludeFromStatistics = excludeFromStatistics
+			self.alleyId = alleyId
+		}
+	}
 }

@@ -1,4 +1,3 @@
-import ExtensionsLibrary
 import Foundation
 import GRDB
 import ModelsLibrary
@@ -35,11 +34,7 @@ extension Game {
 extension Game.Lock: DatabaseValueConvertible {}
 extension Game.ExcludeFromStatistics: DatabaseValueConvertible {}
 
-extension Game.Database: FetchableRecord, PersistableRecord {
-	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw PlaceholderIDValidationError() }
-	}
-}
+extension Game.Database: FetchableRecord, PersistableRecord {}
 
 extension Game.Database {
 	public enum Columns {

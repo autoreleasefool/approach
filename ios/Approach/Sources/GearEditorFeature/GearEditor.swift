@@ -1,7 +1,6 @@
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
-import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface

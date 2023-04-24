@@ -27,11 +27,7 @@ extension Lane {
 
 extension Lane.Position: DatabaseValueConvertible {}
 
-extension Lane.Database: FetchableRecord, PersistableRecord {
-	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw PlaceholderIDValidationError() }
-	}
-}
+extension Lane.Database: FetchableRecord, PersistableRecord {}
 
 extension Lane.Database {
 	public enum Columns {

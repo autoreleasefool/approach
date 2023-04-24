@@ -1,4 +1,3 @@
-import ExtensionsLibrary
 import Foundation
 import GRDB
 import ModelsLibrary
@@ -25,11 +24,7 @@ extension Bowler {
 
 extension Bowler.Status: DatabaseValueConvertible {}
 
-extension Bowler.Database: FetchableRecord, PersistableRecord {
-	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw PlaceholderIDValidationError() }
-	}
-}
+extension Bowler.Database: FetchableRecord, PersistableRecord {}
 
 extension Bowler.Database {
 	public enum Columns {

@@ -2,7 +2,6 @@ import AlleysRepositoryInterface
 import ComposableArchitecture
 import DateTimeLibrary
 import EquatableLibrary
-import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface

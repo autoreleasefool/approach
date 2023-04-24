@@ -122,7 +122,6 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"EquatableLibrary",
-				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
 				"LaneEditorFeature",
@@ -189,7 +188,6 @@ let package = Package(
 			name: "BowlerEditorFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
-				"ExtensionsLibrary",
 				"FormLibrary",
 			]
 		),
@@ -273,7 +271,6 @@ let package = Package(
 				"AvatarServiceInterface",
 				"BowlersRepositoryInterface",
 				"EquatableLibrary",
-				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
 				"GearRepositoryInterface",
@@ -328,7 +325,6 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"EquatableLibrary",
-				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
 				"LeaguesRepositoryInterface",
@@ -400,7 +396,6 @@ let package = Package(
 				"AlleysRepositoryInterface",
 				"DateTimeLibrary",
 				"EquatableLibrary",
-				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
 				"ModelsViewsLibrary",
@@ -964,9 +959,7 @@ let package = Package(
 		.target(
 			name: "DatabaseModelsLibrary",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
-				"ExtensionsLibrary",
 				"ModelsLibrary",
 			]
 		),
@@ -1155,7 +1148,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
-				"ExtensionsLibrary",
 				"SharedModelsLibrary",
 			]
 		),

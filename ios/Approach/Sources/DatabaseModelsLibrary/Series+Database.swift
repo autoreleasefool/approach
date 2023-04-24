@@ -1,4 +1,3 @@
-import ExtensionsLibrary
 import Foundation
 import GRDB
 import ModelsLibrary
@@ -39,10 +38,6 @@ extension Series.PreBowl: DatabaseValueConvertible {}
 extension Series.ExcludeFromStatistics: DatabaseValueConvertible {}
 
 extension Series.Database: FetchableRecord, PersistableRecord {
-	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw PlaceholderIDValidationError() }
-	}
-
 	public static let alley = belongsTo(Alley.Database.self)
 	public var alley: QueryInterfaceRequest<Alley.Database> {
 		request(for: Self.alley)

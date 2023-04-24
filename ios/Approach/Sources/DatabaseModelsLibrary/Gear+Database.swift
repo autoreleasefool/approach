@@ -1,4 +1,3 @@
-import ExtensionsLibrary
 import Foundation
 import GRDB
 import ModelsLibrary
@@ -29,10 +28,6 @@ extension Gear {
 extension Gear.Kind: DatabaseValueConvertible {}
 
 extension Gear.Database: FetchableRecord, PersistableRecord {
-	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw PlaceholderIDValidationError() }
-	}
-
 	public static let bowler = belongsTo(Bowler.Database.self)
 	public var bowler: QueryInterfaceRequest<Bowler.Database> { request(for: Self.bowler) }
 }
