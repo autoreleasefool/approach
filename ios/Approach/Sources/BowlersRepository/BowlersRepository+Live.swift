@@ -12,6 +12,7 @@ typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
+		@Dependency(\.recentlyUsedService) var recentlyUsed
 
 		@Sendable func sortBowlers(
 			_ bowlers: BowlerStream,
@@ -21,7 +22,6 @@ extension BowlersRepository: DependencyKey {
 			case .byName:
 				return bowlers
 			case .byRecentlyUsed:
-				@Dependency(\.recentlyUsedService) var recentlyUsed
 				return sort(bowlers, byIds: recentlyUsed.observeRecentlyUsedIds(.bowlers))
 			}
 		}
