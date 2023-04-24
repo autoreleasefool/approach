@@ -21,5 +21,14 @@ extension Series {
 		case exclude
 
 		public var id: String { rawValue }
+
+		public init(from: League.ExcludeFromStatistics) {
+			switch from {
+			case .include:
+				self = .include
+			case .exclude:
+				self = .exclude
+			}
+		}
 	}
 }

@@ -53,8 +53,24 @@ extension LeaguesRepository: DependencyKey {
 			},
 			create: { league in
 				@Dependency(\.database) var database
+				@Dependency(\.uuid) var uuid
+				@Dependency(\.date) var date
+
 				return try await database.writer().write {
 					try league.insert($0)
+
+					if league.recurrence == .once, let numberOfGames = league.numberOfGames {
+						let series = Series.Database(
+							leagueId: league.id,
+							id: uuid(),
+							date: date(),
+							numberOfGames: numberOfGames,
+							preBowl: .regular,
+							excludeFromStatistics: .init(from: league.excludeFromStatistics),
+							alleyId: league.location?.id
+						)
+						try series.insert($0)
+					}
 				}
 			},
 			update: { league in

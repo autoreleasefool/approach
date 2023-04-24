@@ -4,6 +4,8 @@ public enum Game {}
 
 extension Game {
 	public typealias ID = UUID
+
+	public static let NUMBER_OF_FRAMES = 10
 }
 
 extension Game {
@@ -21,5 +23,14 @@ extension Game {
 		case exclude
 
 		public var id: String { rawValue }
+
+		public init(from: Series.ExcludeFromStatistics) {
+			switch from {
+			case .include:
+				self = .include
+			case .exclude:
+				self = .exclude
+			}
+		}
 	}
 }

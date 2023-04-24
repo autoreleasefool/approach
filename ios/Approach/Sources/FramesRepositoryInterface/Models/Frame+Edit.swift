@@ -8,11 +8,7 @@ extension Frame {
 
 		public var id: String { "\(gameId)-\(ordinal)" }
 
-		public init(
-			gameId: Game.ID,
-			ordinal: Int,
-			rolls: [Roll]
-		) {
+		init(gameId: Game.ID, ordinal: Int, rolls: [Roll]) {
 			self.gameId = gameId
 			self.ordinal = ordinal
 			self.rolls = rolls

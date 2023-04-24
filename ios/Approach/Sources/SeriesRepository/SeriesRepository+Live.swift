@@ -39,8 +39,27 @@ extension SeriesRepository: DependencyKey {
 			},
 			create: { series in
 				@Dependency(\.database) var database
+				@Dependency(\.uuid) var uuid
+
 				return try await database.writer().write {
 					try series.insert($0)
+
+					for ordinal in (1...series.numberOfGames) {
+						let game = Game.Database(
+							seriesId: series.id,
+							id: uuid(),
+							ordinal: ordinal,
+							locked: .open,
+							manualScore: nil,
+							excludeFromStatistics: .init(from: series.excludeFromStatistics)
+						)
+						try game.insert($0)
+
+						for frameOrdinal in (1...Game.NUMBER_OF_FRAMES) {
+							let frame = Frame.Database(gameId: game.id, ordinal: ordinal, roll0: nil, roll1: nil, roll2: nil)
+							try frame.insert($0)
+						}
+					}
 				}
 			},
 			update: { series in
