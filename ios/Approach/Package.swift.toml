@@ -76,7 +76,8 @@ services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder" ]
 
 [features.ScoreSheet]
-libraries = [ "SharedModels", "Views" ]
+repositories = [ "Frames" ]
+libraries = [ "Views" ]
 
 [features.SeriesEditor]
 repositories = [ "Alleys", "Series" ]

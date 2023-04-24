@@ -1,5 +1,6 @@
 import Dependencies
 @testable import ScoringService
+@testable import ScoringServiceInterface
 import XCTest
 
 @MainActor

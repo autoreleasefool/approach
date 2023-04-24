@@ -378,7 +378,7 @@ let package = Package(
 			name: "ScoreSheetFeature",
 			dependencies: [
 				"FeatureActionLibrary",
-				"SharedModelsLibrary",
+				"FramesRepositoryInterface",
 				"ViewsLibrary",
 			]
 		),

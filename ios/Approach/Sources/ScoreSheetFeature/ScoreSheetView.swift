@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import SharedModelsLibrary
+import ModelsLibrary
 import SwiftUI
 import ViewsLibrary
 
@@ -7,12 +7,12 @@ public struct ScoreSheetView: View {
 	let store: StoreOf<ScoreSheet>
 
 	struct ViewState: Equatable {
-		let frames: [Frame]
+		let data: ScoreSheet.DataSource
 		let currentFrameIndex: Int
 		let currentRollIndex: Int
 
 		init(state: ScoreSheet.State) {
-			self.frames = state.frames
+			self.data = state.data
 			self.currentFrameIndex = state.currentFrameIndex
 			self.currentRollIndex = state.currentRollIndex
 		}
@@ -30,21 +30,36 @@ public struct ScoreSheetView: View {
 		WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
 			ScrollView(.horizontal) {
 				HStack {
-					ForEach(viewStore.frames) { frame in
-						Button { viewStore.send(.didTapFrame(index: frame.ordinal - 1, rollIndex: nil)) } label: {
-							VStack {
-								HStack {
-									Button { viewStore.send(.didTapFrame(index: frame.ordinal - 1, rollIndex: 0)) } label: {
-										Text("5")
-									}
-								}
-							}
+					switch viewStore.data {
+					case let .edits(frames):
+						ForEach(frames) { frame in
+							frameView(ordinal: frame.ordinal, rolls: frame.rolls, viewStore: viewStore)
 						}
-						.buttonStyle(TappableElement())
+					case let .summaries(frames):
+						ForEach(frames) { frame in
+							frameView(ordinal: frame.ordinal, rolls: frame.rolls, viewStore: viewStore)
+						}
 					}
 				}
 			}
 		}
+	}
+
+	@ViewBuilder private func frameView(
+		ordinal: Int,
+		rolls: [Frame.Roll],
+		viewStore: ViewStore<ViewState, ViewAction>
+	) -> some View {
+		Button { viewStore.send(.didTapFrame(index: ordinal - 1, rollIndex: nil)) } label: {
+			VStack {
+				HStack {
+					Button { viewStore.send(.didTapFrame(index: ordinal - 1, rollIndex: 0)) } label: {
+						Text("5")
+					}
+				}
+			}
+		}
+		.buttonStyle(TappableElement())
 	}
 }
 
