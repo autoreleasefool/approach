@@ -1,3 +1,4 @@
+import DatabaseLibrary
 import DatabaseServiceInterface
 import Dependencies
 import FileManagerServiceInterface
@@ -20,7 +21,8 @@ extension DatabaseService: DependencyKey {
 			writer = dbPool
 
 			var migrator = DatabaseMigrator()
-			try migrator.prepare(writer)
+			migrator.registerDBMigrations()
+			try migrator.migrate(writer)
 		} catch {
 			// TODO: should notify user of failure to open DB
 			fatalError("Unable to access database service: \(error)")

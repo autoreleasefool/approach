@@ -143,6 +143,7 @@ dependencies = [ "TelemetryClient" ]
 libraries = [ "Assets", "SharedModels" ]
 
 [services.Database]
+libraries = [ "Database" ]
 services = [ "FileManager" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
@@ -180,9 +181,13 @@ skip_tests = true
 skip_tests = true
 libraries = [ "Strings" ]
 
-[libraries.DatabaseModels]
-libraries = [ "Extensions", "Models" ]
+[libraries.Database]
 dependencies = [ "GRDB" ]
+
+[libraries.DatabaseModels]
+skip_tests = true
+libraries = [ "Extensions", "Models" ]
+dependencies = [ "Dependencies", "GRDB" ]
 [libraries.DatabaseModels.tests]
 services = [ "Database" ]
 libraries = [ "TestUtilities" ]

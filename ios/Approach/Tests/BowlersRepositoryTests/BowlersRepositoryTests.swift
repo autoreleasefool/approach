@@ -320,7 +320,8 @@ final class BowlersRepositoryTests: XCTestCase {
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
-		try migrator.prepare(dbQueue)
+		migrator.registerDBMigrations()
+		try migrator.migrate(dbQueue)
 
 		try await dbQueue.write {
 			for bowler in bowlers {

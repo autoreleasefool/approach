@@ -10,7 +10,7 @@ extension DBMigration {
 }
 
 extension DatabaseMigrator {
-	mutating func prepare(_ writer: any DatabaseWriter) throws {
+	public mutating func registerDBMigrations() {
 		#if DEBUG
 		eraseDatabaseOnSchemaChange = true
 		#endif
@@ -24,8 +24,6 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230414CreateFrame.self)
 		registerMigration(Migration20230415CreateLane.self)
 		registerMigration(Migration20230417CreateSeriesLanePivot.self)
-
-		try migrate(writer)
 	}
 
 	mutating func registerMigration(_ migration: DBMigration.Type) {

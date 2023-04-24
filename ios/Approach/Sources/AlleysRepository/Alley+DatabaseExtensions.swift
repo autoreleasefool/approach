@@ -1,7 +1,7 @@
 import AlleysRepositoryInterface
 import DatabaseModelsLibrary
-import LanesRepositoryInterface
 import GRDB
+import LanesRepositoryInterface
 import ModelsLibrary
 
 extension Alley.Edit: PersistableRecord, FetchableRecord {

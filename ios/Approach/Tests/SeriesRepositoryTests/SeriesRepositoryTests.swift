@@ -379,7 +379,8 @@ final class SeriesRepositoryTests: XCTestCase {
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
-		try migrator.prepare(dbQueue)
+		migrator.registerDBMigrations()
+		try migrator.migrate(dbQueue)
 
 		let bowler = Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable)
 

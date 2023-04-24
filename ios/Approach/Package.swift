@@ -80,6 +80,7 @@ let package = Package(
 		// MARK: - Libraries
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
+		.library(name: "DatabaseLibrary", targets: ["DatabaseLibrary"]),
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "EquatableLibrary", targets: ["EquatableLibrary"]),
@@ -786,6 +787,7 @@ let package = Package(
 		.target(
 			name: "DatabaseService",
 			dependencies: [
+				"DatabaseLibrary",
 				"DatabaseServiceInterface",
 				"FileManagerServiceInterface",
 			]
@@ -946,21 +948,26 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "DatabaseModelsLibrary",
+			name: "DatabaseLibrary",
 			dependencies: [
 				.product(name: "GRDB", package: "GRDB.swift"),
-				"ExtensionsLibrary",
-				"ModelsLibrary",
 			]
 		),
 		.testTarget(
-			name: "DatabaseModelsLibraryTests",
+			name: "DatabaseLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"DatabaseModelsLibrary",
-				"DatabaseService",
+				"DatabaseLibrary",
 				"SharedModelsMocksLibrary",
-				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "DatabaseModelsLibrary",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "GRDB", package: "GRDB.swift"),
+				"ExtensionsLibrary",
+				"ModelsLibrary",
 			]
 		),
 		.target(

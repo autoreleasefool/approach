@@ -343,7 +343,8 @@ final class LanesRepositoryTests: XCTestCase {
 	) async throws -> any DatabaseWriter {
 		let dbQueue = try DatabaseQueue()
 		var migrator = DatabaseMigrator()
-		try migrator.prepare(dbQueue)
+		migrator.registerDBMigrations()
+		try migrator.migrate(dbQueue)
 
 		let alleys = [
 			Alley.Database(
