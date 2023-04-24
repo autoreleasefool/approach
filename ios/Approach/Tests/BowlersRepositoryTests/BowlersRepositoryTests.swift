@@ -1,16 +1,17 @@
 @testable import BowlersRepository
 @testable import BowlersRepositoryInterface
 import DatabaseModelsLibrary
-@testable import DatabaseService
 import Dependencies
 import GRDB
 @testable import ModelsLibrary
 import RecentlyUsedServiceInterface
+import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
 @MainActor
 final class BowlersRepositoryTests: XCTestCase {
+	@Dependency(\.bowlers) var bowlers
 
 	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
@@ -22,13 +23,14 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with a bowler and opponent
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: id2, name: "Sarah", status: .opponent)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the bowlers
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			BowlersRepository.liveValue.playable(ordered: .byName)
+			self.bowlers.playable(ordered: .byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -41,13 +43,14 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 2 bowlers
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .playable)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the bowlers
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			BowlersRepository.liveValue.playable(ordered: .byName)
+			self.bowlers.playable(ordered: .byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -60,7 +63,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 2 bowlers
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .playable)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
@@ -70,8 +73,9 @@ final class BowlersRepositoryTests: XCTestCase {
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.bowlers = .liveValue
 		} operation: {
-			BowlersRepository.liveValue.playable(ordered: .byRecentlyUsed)
+			self.bowlers.playable(ordered: .byRecentlyUsed)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -86,13 +90,14 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with a bowler and an opponent
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
 		let bowler2 = Bowler.Database(id: id2, name: "Sarah", status: .playable)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the opponents
 		let opponents = withDependencies {
 			$0.database.reader = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			BowlersRepository.liveValue.opponents(ordered: .byName)
+			self.bowlers.opponents(ordered: .byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -105,13 +110,14 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 2 opponents
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
 		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .opponent)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the opponents
 		let opponents = withDependencies {
 			$0.database.reader = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			BowlersRepository.liveValue.opponents(ordered: .byName)
+			self.bowlers.opponents(ordered: .byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -124,7 +130,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 2 opponents
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
 		let bowler2 = Bowler.Database(id: id2, name: "Audriana", status: .opponent)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
@@ -134,9 +140,10 @@ final class BowlersRepositoryTests: XCTestCase {
 		let opponents = withDependencies {
 			$0.database.reader = { db }
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.bowlers = .liveValue
 		} operation: {
 			// with `byRecentlyUsed` ordering
-			BowlersRepository.liveValue.opponents(ordered: .byRecentlyUsed)
+			self.bowlers.opponents(ordered: .byRecentlyUsed)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -150,15 +157,16 @@ final class BowlersRepositoryTests: XCTestCase {
 	func testCreate_WhenBowlerExists_ThrowsError() async throws {
 		// Given a database with an existing bowler
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
-		let db = try await initializeDatabase(inserting: [bowler1])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1]))
 
 		// Create the bowler
 		await assertThrowsError(ofType: DatabaseError.self) {
 			let create = Bowler.Create(id: id1, name: "Joe", status: .playable)
 			try await withDependencies {
 				$0.database.writer = { db }
+				$0.bowlers = .liveValue
 			} operation: {
-				try await BowlersRepository.liveValue.create(create)
+				try await self.bowlers.create(create)
 			}
 		}
 
@@ -175,14 +183,15 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testCreate_WhenBowlerNotExists_CreatesBowler() async throws {
 		// Given a database with no bowlers
-		let db = try await initializeDatabase(inserting: [])
+		let db = try await initializeDatabase()
 
 		// Creating a bowler
 		let create = Bowler.Create(id: id1, name: "Joe", status: .playable)
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			try await BowlersRepository.liveValue.create(create)
+			try await self.bowlers.create(create)
 		}
 
 		// Inserted the record
@@ -201,14 +210,15 @@ final class BowlersRepositoryTests: XCTestCase {
 	func testUpdate_WhenBowlerExists_UpdatesBowler() async throws {
 		// Given a database with an existing bowler
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .opponent)
-		let db = try await initializeDatabase(inserting: [bowler1])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1]))
 
 		// Editing the bowler
 		let editable = Bowler.Edit(id: id1, name: "Joe")
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			try await BowlersRepository.liveValue.update(editable)
+			try await self.bowlers.update(editable)
 		}
 
 		// Updates the database
@@ -224,15 +234,16 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenBowlerNotExists_ThrowError() async throws {
 		// Given a database with no bowlers
-		let db = try await initializeDatabase(inserting: [])
+		let db = try await initializeDatabase()
 
 		// Updating a bowler
 		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Bowler.Edit(id: id1, name: "Joe")
 			try await withDependencies {
 				$0.database.writer = { db }
+				$0.bowlers = .liveValue
 			} operation: {
-				try await BowlersRepository.liveValue.update(editable)
+				try await self.bowlers.update(editable)
 			}
 		}
 
@@ -246,13 +257,14 @@ final class BowlersRepositoryTests: XCTestCase {
 	func testEdit_WhenBowlerExists_ReturnsBowler() async throws {
 		// Given a database with a bowler
 		let bowler = Bowler.Database(id: id1, name: "Joseph", status: .playable)
-		let db = try await initializeDatabase(inserting: [bowler])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler]))
 
 		// Editing the bowler
 		let editable = try await withDependencies {
 			$0.database.reader = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			try await BowlersRepository.liveValue.edit(id1)
+			try await self.bowlers.edit(id1)
 		}
 
 		// Returns the bowler
@@ -261,13 +273,14 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testEdit_WhenBowlerNotExists_ReturnsNil() async throws {
 		// Given a database with no bowlers
-		let db = try await initializeDatabase(inserting: [])
+		let db = try await initializeDatabase()
 
 		// Editing a bowler
 		let editable = try await withDependencies {
 			$0.database.reader = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			try await BowlersRepository.liveValue.edit(id1)
+			try await self.bowlers.edit(id1)
 		}
 
 		// Returns nil
@@ -280,13 +293,14 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 2 bowlers
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: id2, name: "Sarah", status: .opponent)
-		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Deleting the first bowler
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			try await BowlersRepository.liveValue.delete(self.id1)
+			try await self.bowlers.delete(self.id1)
 		}
 
 		// Updates the database
@@ -301,34 +315,18 @@ final class BowlersRepositoryTests: XCTestCase {
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1
 		let bowler1 = Bowler.Database(id: id1, name: "Joseph", status: .playable)
-		let db = try await initializeDatabase(inserting: [bowler1])
+		let db = try await initializeDatabase(withBowlers: .custom([bowler1]))
 
 		// Deleting a non-existent bowler
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.bowlers = .liveValue
 		} operation: {
-			try await BowlersRepository.liveValue.delete(self.id2)
+			try await self.bowlers.delete(self.id2)
 		}
 
 		// Leaves the bowler
 		let exists = try await db.read { try Bowler.Database.exists($0, id: self.id1) }
 		XCTAssertTrue(exists)
-	}
-
-	private func initializeDatabase(
-		inserting bowlers: [Bowler.Database] = []
-	) async throws -> any DatabaseWriter {
-		let dbQueue = try DatabaseQueue()
-		var migrator = DatabaseMigrator()
-		migrator.registerDBMigrations()
-		try migrator.migrate(dbQueue)
-
-		try await dbQueue.write {
-			for bowler in bowlers {
-				try bowler.insert($0)
-			}
-		}
-
-		return dbQueue
 	}
 }
