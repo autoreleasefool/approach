@@ -9,10 +9,11 @@ import RepositoryLibrary
 
 extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.database) var database
+		@Dependency(\.recentlyUsedService) var recentlyUsed
+
 		return Self(
 			list: { material, pinFall, mechanism, pinBase, ordering in
-				@Dependency(\.database) var database
-
 				let alleys = database.reader().observe {
 					try Alley.Database
 						.all()
@@ -26,18 +27,15 @@ extension AlleysRepository: DependencyKey {
 				case .byName:
 					return alleys
 				case .byRecentlyUsed:
-					@Dependency(\.recentlyUsedService) var recentlyUsed
 					return sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys))
 				}
 			},
 			load: { id in
-				@Dependency(\.database) var database
-				return database.reader().observeOne {
+				database.reader().observeOne {
 					try Alley.Summary.fetchOne($0, id: id)
 				}
 			},
 			edit: { id in
-				@Dependency(\.database) var database
 				let lanesAlias = TableAlias(name: "lanes")
 				return try await database.reader().read {
 					try Alley.Database
@@ -52,20 +50,17 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			create: { alley in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try alley.insert($0)
 				}
 			},
 			update: { alley in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try alley.update($0)
 				}
 			},
 			delete: { id in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				_ = try await database.writer().write {
 					try Alley.Database.deleteOne($0, id: id)
 				}
 			}
