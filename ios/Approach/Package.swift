@@ -108,7 +108,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "fc17996ded63b136741ab2e0c0e0d549a8486adc"),
-		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.4.1"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "0.7.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "0.8.4"),

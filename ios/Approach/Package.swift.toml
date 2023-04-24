@@ -270,7 +270,7 @@ revision = "fc17996ded63b136741ab2e0c0e0d549a8486adc"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "0.1.2"
+from = "0.4.1"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
