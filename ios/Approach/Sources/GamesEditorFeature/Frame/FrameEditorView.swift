@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import SharedModelsLibrary
+import ModelsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary

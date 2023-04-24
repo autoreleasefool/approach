@@ -1,15 +1,16 @@
 import ComposableArchitecture
-import SharedModelsLibrary
+import FramesRepositoryInterface
+import ModelsLibrary
 import SwiftUI
 
 public struct FrameEditor: Reducer {
 	public struct State: Equatable {
 		public var currentRollIndex: Int
-		public var frame: Frame
+		public var frame: Frame.Edit
 		public var draggedPinNewState: Bool?
 		public var renderWidth: CGFloat = .zero
 
-		public init(currentRollIndex: Int, frame: Frame) {
+		public init(currentRollIndex: Int, frame: Frame.Edit) {
 			self.currentRollIndex = currentRollIndex
 			self.frame = frame
 		}

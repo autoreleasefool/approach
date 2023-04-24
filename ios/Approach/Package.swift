@@ -235,7 +235,6 @@ let package = Package(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"ExtensionsLibrary",
-				"FramesDataProviderInterface",
 				"ScoreSheetFeature",
 				"SwiftUIExtensionsLibrary",
 			]
@@ -252,8 +251,8 @@ let package = Package(
 			name: "GamesListFeature",
 			dependencies: [
 				"DateTimeLibrary",
-				"GamesDataProviderInterface",
 				"GamesEditorFeature",
+				"GamesRepositoryInterface",
 				"ResourceListLibrary",
 			]
 		),

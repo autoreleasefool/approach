@@ -1,8 +1,8 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import ModelsLibrary
 import ScoreSheetFeature
-import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary

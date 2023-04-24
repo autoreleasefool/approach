@@ -1,29 +1,29 @@
 import ComposableArchitecture
+import EquatableLibrary
 import FeatureActionLibrary
-import GamesDataProviderInterface
 import GamesEditorFeature
+import GamesRepositoryInterface
+import ModelsLibrary
 import ResourceListLibrary
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
 import StringsLibrary
 
-extension Game: ResourceListItem {
+extension Game.Summary: ResourceListItem {
 	public var name: String { Strings.Game.title(ordinal) }
 }
 
 public struct GamesList: Reducer {
 	public struct State: Equatable {
-		public let series: Series
+		public let series: Series.Summary
 		public var isLoadingGameDetails = false
-		public var list: ResourceList<Game, Game.FetchRequest>.State
+		public var list: ResourceList<Game.Summary, Series.ID>.State
 
 		public var selection: Identified<Game.ID, GamesEditor.State>?
 
-		public init(series: Series) {
+		public init(series: Series.Summary) {
 			self.series = series
 			self.list = .init(
 				features: [],
-				query: .init(filter: .series(series), ordering: .byOrdinal),
+				query: series.id,
 				listTitle: series.date.longFormat,
 				emptyContent: .init(
 					image: .emptyGames,
@@ -40,8 +40,8 @@ public struct GamesList: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case bowlerResponse(Game.ID, TaskResult<Bowler>)
-			case list(ResourceList<Game, Game.FetchRequest>.Action)
+			case bowlerResponse(Game.ID, TaskResult<Bowler.Summary>)
+			case list(ResourceList<Game.Summary, Series.ID>.Action)
 			case editor(GamesEditor.Action)
 		}
 		case view(ViewAction)
@@ -51,11 +51,11 @@ public struct GamesList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.gamesDataProvider) var gamesDataProvider
+	@Dependency(\.games) var games
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: gamesDataProvider.observeGames)
+			ResourceList { series in games.seriesGames(forId: series, ordering: .byOrdinal) }
 		}
 
 		Reduce<State, Action> { state, action in
@@ -108,7 +108,7 @@ public struct GamesList: Reducer {
 		}
 	}
 
-	private func navigate(to id: Game.ID?, bowler: Bowler?, state: inout State) -> Effect<Action> {
+	private func navigate(to id: Game.ID?, bowler: Bowler.Summary?, state: inout State) -> Effect<Action> {
 		if let id, let games = state.list.resources, let selection = games[id: id] {
 			state.isLoadingGameDetails = true
 			if let bowler {

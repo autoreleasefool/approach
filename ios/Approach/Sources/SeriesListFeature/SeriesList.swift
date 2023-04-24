@@ -151,7 +151,7 @@ public struct SeriesList: Reducer {
 
 	private func navigate(to id: Series.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-//			state.selection = Identified(.init(series: selection), id: selection.id)
+			state.selection = Identified(.init(series: selection), id: selection.id)
 			return .none
 		} else {
 			state.selection = nil

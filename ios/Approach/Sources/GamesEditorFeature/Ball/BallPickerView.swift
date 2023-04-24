@@ -1,11 +1,11 @@
 import AssetsLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
 struct BallPickerView: View {
-	@Binding var ballRolled: Gear?
+	@Binding var ballRolled: Gear.Summary?
 
 	var body: some View {
 		Button { } label: {

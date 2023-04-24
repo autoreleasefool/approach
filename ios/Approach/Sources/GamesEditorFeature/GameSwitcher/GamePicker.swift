@@ -1,6 +1,5 @@
 import ComposableArchitecture
-import ExtensionsLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary

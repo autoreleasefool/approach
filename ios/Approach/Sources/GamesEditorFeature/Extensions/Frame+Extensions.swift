@@ -1,6 +1,7 @@
-import SharedModelsLibrary
+import ExtensionsLibrary
+import ModelsLibrary
 
-extension Frame {
+extension Frame.Edit {
 	mutating func toggle(_ pin: Pin, rollIndex: Int, newValue: Bool? = nil) {
 		guaranteeRollExists(upTo: rollIndex)
 		rolls[rollIndex].toggle(pin, newValue: newValue)
@@ -12,7 +13,7 @@ extension Frame {
 		}
 	}
 
-	mutating func roll(at index: Int) -> Roll {
+	mutating func roll(at index: Int) -> Frame.Roll {
 		guaranteeRollExists(upTo: index)
 		return rolls[index]
 	}

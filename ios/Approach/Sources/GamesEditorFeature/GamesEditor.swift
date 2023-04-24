@@ -1,8 +1,8 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import FramesDataProviderInterface
+import FramesRepositoryInterface
+import ModelsLibrary
 import ScoreSheetFeature
-import SharedModelsLibrary
 import SwiftUI
 
 public struct GamesEditor: Reducer {
@@ -11,9 +11,9 @@ public struct GamesEditor: Reducer {
 		public var sheet: SheetState = .presenting(.gameDetails)
 		public var sheetHeight: CGFloat = .zero
 
-		public var bowlers: IdentifiedArrayOf<Bowler>
+		public var bowlers: IdentifiedArrayOf<Bowler.Summary>
 		public var bowlerGames: [Bowler.ID: [Game.ID]]
-		public var frames: [Frame]?
+		public var frames: [Frame.Edit]?
 
 		public var currentBowlerId: Bowler.ID
 		public var currentGameId: Game.ID
@@ -25,7 +25,7 @@ public struct GamesEditor: Reducer {
 		public var _frameEditor: FrameEditor.State?
 
 		public init(
-			bowlers: IdentifiedArrayOf<Bowler>,
+			bowlers: IdentifiedArrayOf<Bowler.Summary>,
 			bowlerGames: [Bowler.ID: [Game.ID]],
 			currentBowler: Bowler.ID,
 			currentGame: Game.ID
@@ -53,7 +53,7 @@ public struct GamesEditor: Reducer {
 		public enum InternalAction: Equatable {
 			case switchToBowler(Bowler.ID)
 			case switchToGame(Game.ID)
-			case framesResponse(TaskResult<[Frame]>)
+			case framesResponse(TaskResult<[Frame.Edit]>)
 
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
@@ -71,7 +71,7 @@ public struct GamesEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.framesDataProvider) var framesDataProvider
+	@Dependency(\.frames) var frames
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
@@ -129,7 +129,7 @@ public struct GamesEditor: Reducer {
 					return loadGameDetails(for: state.currentGameId)
 
 				case let .framesResponse(.success(frames)):
-					guard frames.first?.game == state.currentGameId else {
+					guard frames.first?.gameId == state.currentGameId else {
 						// TODO: log error that unexpected frames loaded (should be cancelled in flight)
 						return .none
 					}
@@ -201,7 +201,7 @@ public struct GamesEditor: Reducer {
 	private func loadGameDetails(for gameId: Game.ID) -> Effect<Action> {
 		return .task {
 			await .internal(.framesResponse(TaskResult {
-				try await framesDataProvider.fetchFrames(.init(filter: .game(gameId), ordering: .byOrdinal))
+				try await frames.frames(forGame: gameId) ?? []
 			}))
 		}
 		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
@@ -256,7 +256,7 @@ extension GamesEditor.State {
 		get {
 			guard let frames else { return nil }
 			return .init(
-				frames: frames,
+				data: .edits(frames),
 				currentFrameIndex: currentFrameIndex,
 				currentRollIndex: currentRollIndex
 			)

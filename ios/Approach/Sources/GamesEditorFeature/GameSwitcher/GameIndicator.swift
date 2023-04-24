@@ -1,7 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
