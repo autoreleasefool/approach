@@ -39,12 +39,11 @@ libraries = [ "Strings" ]
 
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
-dataProviders = [ "Frames" ]
 libraries = [ "Extensions", "SwiftUIExtensions" ]
 
 [features.GamesList]
 features = [ "GamesEditor" ]
-dataProviders = [ "Games" ]
+repositories = [ "Games" ]
 libraries = [ "DateTime", "ResourceList" ]
 
 [features.GearEditor]
