@@ -11,6 +11,9 @@ public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 
 extension GearRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.database) var database
+		@Dependency(\.recentlyUsedService) var recentlyUsed
+
 		@Sendable func sortGear(
 			_ gear: GearStream,
 			_ ordering: Gear.Ordering
@@ -19,15 +22,12 @@ extension GearRepository: DependencyKey {
 			case .byName:
 				return gear
 			case .byRecentlyUsed:
-				@Dependency(\.recentlyUsedService) var recentlyUsed
 				return sort(gear, byIds: recentlyUsed.observeRecentlyUsedIds(.gear))
 			}
 		}
 
 		return Self(
 			list: { owner, kind, ordering in
-				@Dependency(\.database) var database
-
 				let gear = database.reader().observe {
 					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
 					return try Gear.Database
@@ -39,12 +39,10 @@ extension GearRepository: DependencyKey {
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
-
 				return sortGear(gear, ordering)
 			},
 			edit: { id in
-				@Dependency(\.database) var database
-				return try await database.reader().read {
+				try await database.reader().read {
 					try Gear.Database
 						.filter(Gear.Database.Columns.id == id)
 						.including(optional: Gear.Database.bowler.forKey("owner"))
@@ -53,20 +51,17 @@ extension GearRepository: DependencyKey {
 				}
 			},
 			create: { gear in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try gear.insert($0)
 				}
 			},
 			update: { gear in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try gear.update($0)
 				}
 			},
 			delete: { id in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				_ = try await database.writer().write {
 					try Gear.Database.deleteOne($0, id: id)
 				}
 			}
