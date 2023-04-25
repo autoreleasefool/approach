@@ -9,10 +9,13 @@ import RepositoryLibrary
 
 extension LeaguesRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.database) var database
+		@Dependency(\.recentlyUsedService) var recentlyUsed
+		@Dependency(\.uuid) var uuid
+		@Dependency(\.date) var date
+
 		return Self(
 			list: { bowler, recurrence, ordering in
-				@Dependency(\.database) var database
-
 				let leagues = database.reader().observe {
 					try League.Database
 						.all()
@@ -27,13 +30,11 @@ extension LeaguesRepository: DependencyKey {
 				case .byName:
 					return leagues
 				case .byRecentlyUsed:
-					@Dependency(\.recentlyUsedService) var recentlyUsed
 					return sort(leagues, byIds: recentlyUsed.observeRecentlyUsedIds(.leagues))
 				}
 			},
 			seriesHost: { id in
-				@Dependency(\.database) var database
-				return try await database.reader().read {
+				try await database.reader().read {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
 						.including(optional: League.Database.alley)
@@ -42,8 +43,7 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			edit: { id in
-				@Dependency(\.database) var database
-				return try await database.reader().read {
+				try await database.reader().read {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
 						.including(optional: League.Database.alley.forKey("location"))
@@ -52,36 +52,34 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			create: { league in
-				@Dependency(\.database) var database
-				@Dependency(\.uuid) var uuid
-				@Dependency(\.date) var date
+				try await withEscapedDependencies { dependencies in
+					try await database.writer().write { db in
+						try league.insert(db)
 
-				return try await database.writer().write {
-					try league.insert($0)
-
-					if league.recurrence == .once, let numberOfGames = league.numberOfGames {
-						let series = Series.Database(
-							leagueId: league.id,
-							id: uuid(),
-							date: date(),
-							numberOfGames: numberOfGames,
-							preBowl: .regular,
-							excludeFromStatistics: .init(from: league.excludeFromStatistics),
-							alleyId: league.location?.id
-						)
-						try series.insert($0)
+						try dependencies.yield {
+							if league.recurrence == .once, let numberOfGames = league.numberOfGames {
+								let series = Series.Database(
+									leagueId: league.id,
+									id: uuid(),
+									date: date(),
+									numberOfGames: numberOfGames,
+									preBowl: .regular,
+									excludeFromStatistics: .init(from: league.excludeFromStatistics),
+									alleyId: league.location?.id
+								)
+								try series.insert(db)
+							}
+						}
 					}
 				}
 			},
 			update: { league in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try league.update($0)
 				}
 			},
 			delete: { id in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				_ = try await database.writer().write {
 					try League.Database.deleteOne($0, id: id)
 				}
 			}
