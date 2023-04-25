@@ -1,6 +1,6 @@
 import AvatarServiceInterface
 import ComposableArchitecture
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -8,7 +8,7 @@ public struct AvatarEditorView: View {
 	let store: StoreOf<AvatarEditor>
 
 	struct ViewState: Equatable {
-		let avatar: Avatar
+		let avatar: Avatar.Summary
 		let hasChanges: Bool
 
 		init(state: AvatarEditor.State) {
@@ -70,11 +70,3 @@ extension AvatarEditor.Action {
 		}
 	}
 }
-
-#if DEBUG
-struct AvatarEditorViewPreviews: PreviewProvider {
-	static var previews: some View {
-		AvatarView(.text("J", .red()), size: .largeIcon)
-	}
-}
-#endif

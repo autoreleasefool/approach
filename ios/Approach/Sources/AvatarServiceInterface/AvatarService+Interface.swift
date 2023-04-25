@@ -1,15 +1,15 @@
 import Dependencies
 import Foundation
-import SharedModelsLibrary
+import ModelsLibrary
 import SwiftUI
 
 public struct AvatarService {
-	public var render: @Sendable (Avatar) async -> UIImage?
-	public var preRender: @Sendable (Avatar) async -> Void
+	public var render: @Sendable (Avatar.Summary) async -> UIImage?
+	public var preRender: @Sendable (Avatar.Summary) async -> Void
 
 	public init(
-		render: @escaping @Sendable (Avatar) async -> UIImage?,
-		preRender: @escaping @Sendable (Avatar) async -> Void
+		render: @escaping @Sendable (Avatar.Summary) async -> UIImage?,
+		preRender: @escaping @Sendable (Avatar.Summary) async -> Void
 	) {
 		self.render = render
 		self.preRender = preRender

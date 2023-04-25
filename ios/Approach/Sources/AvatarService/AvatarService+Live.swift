@@ -1,7 +1,7 @@
 import AvatarServiceInterface
 import Dependencies
 import Foundation
-import SharedModelsLibrary
+import ModelsLibrary
 import UIKit
 
 extension AvatarService: DependencyKey {
@@ -37,13 +37,13 @@ extension AvatarService: DependencyKey {
 			}
 		}
 
-		@Sendable func render(_ avatar: Avatar) async -> UIImage? {
+		@Sendable func render(_ avatar: Avatar.Summary) async -> UIImage? {
 			if let image = await cache.fetch(avatar) {
 				return image
 			}
 
 			let image: UIImage?
-			switch avatar {
+			switch avatar.value {
 			case let .url(url):
 				if url.isFileURL {
 					image = UIImage(contentsOfFile: url.absoluteString)
@@ -73,24 +73,11 @@ extension AvatarService: DependencyKey {
 private actor Cache {
 	var imageCache: NSCache<NSString, UIImage> = NSCache()
 
-	private func cacheKey(for avatar: Avatar) -> NSString? {
-		switch avatar {
-		case let .url(url):
-			return NSString(string: url.absoluteString)
-		case  .data:
-			return nil
-		case let .text(text, color):
-			return NSString(string: "\(text).\(String(describing: color))")
-		}
+	func fetch(_ avatar: Avatar.Summary) async -> UIImage? {
+		return imageCache.object(forKey: NSString(string: avatar.id.uuidString))
 	}
 
-	func fetch(_ avatar: Avatar) async -> UIImage? {
-		guard let key = cacheKey(for: avatar) else { return nil }
-		return imageCache.object(forKey: key)
-	}
-
-	func store(_ avatar: Avatar, image: UIImage) async {
-		guard let key = cacheKey(for: avatar) else { return }
-		imageCache.setObject(image, forKey: key)
+	func store(_ avatar: Avatar.Summary, image: UIImage) async {
+		imageCache.setObject(image, forKey: NSString(string: avatar.id.uuidString))
 	}
 }

@@ -171,6 +171,7 @@ let package = Package(
 			dependencies: [
 				"AvatarServiceInterface",
 				"FeatureActionLibrary",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(
@@ -728,7 +729,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"AssetsLibrary",
-				"SharedModelsLibrary",
+				"ModelsLibrary",
 			]
 		),
 		.testTarget(

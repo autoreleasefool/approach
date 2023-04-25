@@ -1,15 +1,15 @@
 import AssetsLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 import SwiftUI
 
 public struct AvatarLabelView: View {
-	let avatar: Avatar
+	let avatar: Avatar.Summary
 	let size: CGFloat
 	let title: String?
 	let subtitle: String?
 
 	public init(
-		_ avatar: Avatar,
+		_ avatar: Avatar.Summary,
 		size: CGFloat,
 		title: String? = nil,
 		subtitle: String? = nil
@@ -39,29 +39,3 @@ public struct AvatarLabelView: View {
 		}
 	}
 }
-
-#if DEBUG
-struct AvatarLabelViewPreviews: PreviewProvider {
-	static var previews: some View {
-		VStack {
-			HStack {
-				AvatarLabelView(.text("J", .red()), size: .smallIcon)
-				AvatarLabelView(.text("J", .red()), size: .standardIcon)
-				AvatarLabelView(.text("J", .red()), size: .largeIcon)
-			}
-
-			HStack {
-				AvatarLabelView(.text("J", .red()), size: .smallIcon, title: "Ball Rolled")
-				AvatarLabelView(.text("J", .red()), size: .standardIcon, title: "Ball Rolled")
-				AvatarLabelView(.text("J", .red()), size: .largeIcon, title: "Ball Rolled")
-			}
-
-			HStack {
-				AvatarLabelView(.text("J", .red()), size: .smallIcon, title: "Ball Rolled", subtitle: "Something")
-				AvatarLabelView(.text("J", .red()), size: .standardIcon, title: "Ball Rolled", subtitle: "Something")
-				AvatarLabelView(.text("J", .red()), size: .largeIcon, title: "Ball Rolled", subtitle: "Something")
-			}
-		}
-	}
-}
-#endif

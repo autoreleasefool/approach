@@ -25,6 +25,7 @@ services = [ "Analytics" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
+libraries = [ "Strings" ]
 
 [features.BowlerEditor]
 repositories = [ "Bowlers" ]
@@ -132,7 +133,7 @@ dependencies = [ "TelemetryClient" ]
 
 [services.Avatar]
 [services.Avatar.interface]
-libraries = [ "Assets", "SharedModels" ]
+libraries = [ "Assets", "Models" ]
 
 [services.Database]
 libraries = [ "Database" ]

@@ -1,15 +1,15 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 import SwiftUI
 
 public struct AvatarEditor: Reducer {
 	public struct State: Equatable {
 		public var name: String
-		public var avatar: Avatar
-		public let initialAvatar: Avatar
+		public var avatar: Avatar.Summary
+		public let initialAvatar: Avatar.Summary
 
-		public init(name: String, avatar: Avatar) {
+		public init(name: String, avatar: Avatar.Summary) {
 			self.name = name
 			self.avatar = avatar
 			self.initialAvatar = avatar

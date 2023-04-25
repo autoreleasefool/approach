@@ -1,18 +1,15 @@
 import AssetsLibrary
 import Dependencies
-import SharedModelsLibrary
+import ModelsLibrary
 import SwiftUI
 
 public struct AvatarView: View {
-	let avatar: Avatar
+	let avatar: Avatar.Summary
 	let size: CGFloat
 
 	@State private var image: UIImage?
 
-	public init(
-		_ avatar: Avatar,
-		size: CGFloat
-	) {
+	public init(_ avatar: Avatar.Summary, size: CGFloat) {
 		self.avatar = avatar
 		self.size = size
 	}
@@ -36,23 +33,3 @@ public struct AvatarView: View {
 		}
 	}
 }
-
-#if DEBUG
-struct AvatarViewPreviews: PreviewProvider {
-	static var previews: some View {
-		VStack {
-			HStack {
-				AvatarView(.text("JR", .red()), size: .smallIcon)
-				AvatarView(.text("JR", .red()), size: .standardIcon)
-				AvatarView(.text("JR", .red()), size: .largeIcon)
-			}
-
-			HStack {
-				AvatarView(.text("JR", .red()), size: .smallIcon)
-				AvatarView(.text("JR", .red()), size: .standardIcon)
-				AvatarView(.text("JR", .red()), size: .largeIcon)
-			}
-		}
-	}
-}
-#endif

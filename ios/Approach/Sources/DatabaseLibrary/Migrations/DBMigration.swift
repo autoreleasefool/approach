@@ -24,6 +24,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230414CreateFrame.self)
 		registerMigration(Migration20230415CreateLane.self)
 		registerMigration(Migration20230417CreateSeriesLanePivot.self)
+		registerMigration(Migration20230425CreateAvatar.self)
 	}
 
 	mutating func registerMigration(_ migration: DBMigration.Type) {
