@@ -120,14 +120,6 @@ services = [ "RecentlyUsed" ]
 [repositories.Series.interface]
 dependencies = [ "IdentifiedCollections" ]
 
-# Data Providers
-
-[dataProviders.Frames]
-services = [ "Persistence" ]
-
-[dataProviders.Games]
-services = [ "Persistence" ]
-
 # Services
 
 [services.AddressLookup]
@@ -307,14 +299,6 @@ libraries = [ "FeatureAction" ]
 dependencies = [ "ComposableArchitecture" ]
 
 [defaults.features.tests]
-libraries = [ "SharedModelsMocks" ]
-dependencies = [ "SnapshotTesting" ]
-
-[defaults.dataProviders.interface]
-libraries = [ "SharedModelsFetchable" ]
-dependencies = [ "Dependencies" ]
-
-[defaults.dataProviders.tests]
 libraries = [ "SharedModelsMocks" ]
 dependencies = [ "SnapshotTesting" ]
 

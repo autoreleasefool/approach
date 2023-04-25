@@ -50,10 +50,6 @@ let package = Package(
 		.library(name: "SeriesRepositoryInterface", targets: ["SeriesRepositoryInterface"]),
 
 		// MARK: - Data Providers
-		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
-		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
-		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
-		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "AddressLookupService", targets: ["AddressLookupService"]),
@@ -676,50 +672,6 @@ let package = Package(
 		),
 
 		// MARK: - Data Providers
-		.target(
-			name: "FramesDataProvider",
-			dependencies: [
-				"FramesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "FramesDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "FramesDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"FramesDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "GamesDataProvider",
-			dependencies: [
-				"GamesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "GamesDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "GamesDataProviderTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"GamesDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
 
 		// MARK: - Services
 		.target(
