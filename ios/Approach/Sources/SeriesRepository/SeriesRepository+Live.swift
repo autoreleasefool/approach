@@ -8,10 +8,12 @@ import SeriesRepositoryInterface
 
 extension SeriesRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.database) var database
+		@Dependency(\.uuid) var uuid
+
 		return Self(
 			list: { league, _ in
-				@Dependency(\.database) var database
-				return database.reader().observe {
+				database.reader().observe {
 					try Series.Database
 						.all()
 						.orderByDate()
@@ -21,8 +23,7 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			edit: { id in
-				@Dependency(\.database) var database
-				return try await database.reader().read {
+				try await database.reader().read {
 					let lanesAlias = TableAlias(name: "lanes")
 					return try Series.Database
 						.filter(id: id)
@@ -38,39 +39,38 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			create: { series in
-				@Dependency(\.database) var database
-				@Dependency(\.uuid) var uuid
+				try await withEscapedDependencies { dependencies in
+					try await database.writer().write { db in
+						try series.insert(db)
 
-				return try await database.writer().write {
-					try series.insert($0)
+						try dependencies.yield {
+							for ordinal in (1...series.numberOfGames) {
+								let game = Game.Database(
+									seriesId: series.id,
+									id: uuid(),
+									ordinal: ordinal,
+									locked: .open,
+									manualScore: nil,
+									excludeFromStatistics: .init(from: series.excludeFromStatistics)
+								)
+								try game.insert(db)
 
-					for ordinal in (1...series.numberOfGames) {
-						let game = Game.Database(
-							seriesId: series.id,
-							id: uuid(),
-							ordinal: ordinal,
-							locked: .open,
-							manualScore: nil,
-							excludeFromStatistics: .init(from: series.excludeFromStatistics)
-						)
-						try game.insert($0)
-
-						for frameOrdinal in (1...Game.NUMBER_OF_FRAMES) {
-							let frame = Frame.Database(gameId: game.id, ordinal: ordinal, roll0: nil, roll1: nil, roll2: nil)
-							try frame.insert($0)
+								for frameOrdinal in (1...Game.NUMBER_OF_FRAMES) {
+									let frame = Frame.Database(gameId: game.id, ordinal: frameOrdinal, roll0: nil, roll1: nil, roll2: nil)
+									try frame.insert(db)
+								}
+							}
 						}
 					}
 				}
 			},
 			update: { series in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				try await database.writer().write {
 					try series.update($0)
 				}
 			},
 			delete: { id in
-				@Dependency(\.database) var database
-				return try await database.writer().write {
+				_ = try await database.writer().write {
 					try Series.Database.deleteOne($0, id: id)
 				}
 			}
