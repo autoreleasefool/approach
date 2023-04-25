@@ -161,9 +161,8 @@ libraries = [ "SharedModelsFetchable" ]
 services = [ "Preference" ]
 
 [services.Scoring]
-services = [ "Persistence" ]
 [services.Scoring.interface]
-libraries = [ "SharedModels" ]
+libraries = [ "Models" ]
 
 # Libraries
 

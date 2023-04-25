@@ -1,37 +1,29 @@
 import Dependencies
-import SharedModelsLibrary
+import ModelsLibrary
 
 public struct ScoringService: Sendable {
-	public var calculateScoreForGame: @Sendable (Game.ID) async throws -> Int?
-	public var calculateScoreForFrames: @Sendable ([Frame]) async throws -> Int?
-	public var calculateScoreForFramesWithSteps: @Sendable ([Frame]) async throws -> [ScoreStep]
+	public var calculateScoreForFrames: @Sendable ([Frame.Summary]) async throws -> Int?
+	public var calculateScoreForFramesWithSteps: @Sendable ([Frame.Summary]) async throws -> [ScoreStep]
 
 	public init(
-		calculateScoreForGame: @escaping @Sendable (Game.ID) async throws -> Int?,
-		calculateScoreForFrames: @escaping @Sendable ([Frame]) async throws -> Int?,
-		calculateScoreForFramesWithSteps: @escaping @Sendable ([Frame]) async throws -> [ScoreStep]
+		calculateScoreForFrames: @escaping @Sendable ([Frame.Summary]) async throws -> Int?,
+		calculateScoreForFramesWithSteps: @escaping @Sendable ([Frame.Summary]) async throws -> [ScoreStep]
 	) {
-		self.calculateScoreForGame = calculateScoreForGame
 		self.calculateScoreForFrames = calculateScoreForFrames
 		self.calculateScoreForFramesWithSteps = calculateScoreForFramesWithSteps
 	}
 
-	public func calculateScore(for game: Game.ID) async throws -> Int? {
-		try await self.calculateScoreForGame(game)
-	}
-
-	public func calculateScore(for frames: [Frame]) async throws -> Int? {
+	public func calculateScore(for frames: [Frame.Summary]) async throws -> Int? {
 		try await self.calculateScoreForFrames(frames)
 	}
 
-	public func calculateScoreWithSteps(for frames: [Frame]) async throws -> [ScoreStep] {
+	public func calculateScoreWithSteps(for frames: [Frame.Summary]) async throws -> [ScoreStep] {
 		try await self.calculateScoreForFramesWithSteps(frames)
 	}
 }
 
 extension ScoringService: TestDependencyKey {
 	public static var testValue = Self(
-		calculateScoreForGame: { _ in unimplemented("\(Self.self).calculateScoreForGame") },
 		calculateScoreForFrames: { _ in unimplemented("\(Self.self).calculateScoreForFrames") },
 		calculateScoreForFramesWithSteps: { _ in unimplemented("\(Self.self).calculateScoreForFramesWithSteps") }
 	)

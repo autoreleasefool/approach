@@ -872,7 +872,6 @@ let package = Package(
 		.target(
 			name: "ScoringService",
 			dependencies: [
-				"PersistenceServiceInterface",
 				"ScoringServiceInterface",
 			]
 		),
@@ -880,7 +879,7 @@ let package = Package(
 			name: "ScoringServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsLibrary",
+				"ModelsLibrary",
 			]
 		),
 		.testTarget(

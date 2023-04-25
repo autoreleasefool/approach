@@ -11,6 +11,17 @@ extension FramesRepository: DependencyKey {
 		@Dependency(\.database) var database
 
 		return Self(
+			load: { game in
+				let frames = try await database.reader().read {
+					try Frame.Database
+						.all()
+						.orderByOrdinal()
+						.filter(byGame: game)
+						.asRequest(of: Frame.Summary.self)
+						.fetchAll($0)
+				}
+				return frames.count > 0 ? frames : nil
+			},
 			edit: { game in
 				let frames = try await database.reader().read {
 					try Frame.Database

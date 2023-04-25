@@ -6,6 +6,12 @@ extension Frame {
 
 		public var id: String { "\(gameId)-\(ordinal)" }
 
+		init(gameId: Game.ID, ordinal: Int, rolls: [Roll]) {
+			self.gameId = gameId
+			self.ordinal = ordinal
+			self.rolls = rolls
+		}
+
 		public init(from decoder: Decoder) throws {
 			let container = try decoder.container(keyedBy: CodingKeys.self)
 			self.gameId = try container.decode(Game.ID.self, forKey: CodingKeys.gameId)
