@@ -8,9 +8,10 @@ import RepositoryLibrary
 
 extension FramesRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.database) var database
+
 		return Self(
 			edit: { game in
-				@Dependency(\.database) var database
 				let frames = try await database.reader().read {
 					try Frame.Database
 						.all()
@@ -19,11 +20,9 @@ extension FramesRepository: DependencyKey {
 						.asRequest(of: Frame.Edit.self)
 						.fetchAll($0)
 				}
-
 				return frames.count > 0 ? frames : nil
 			},
 			update: { frame in
-				@Dependency(\.database) var database
 				try await database.writer().write {
 					try frame.update($0)
 				}
