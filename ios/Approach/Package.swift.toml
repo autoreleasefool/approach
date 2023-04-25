@@ -149,12 +149,6 @@ libraries = [ "FeatureFlags" ]
 
 [services.FileManager]
 
-[services.Persistence]
-services = [ "FileManager" ]
-libraries = [ "SharedModelsPersistable" ]
-[services.Persistence.interface]
-libraries = [ "SharedModelsFetchable" ]
-
 [services.Preference]
 
 [services.RecentlyUsed]
@@ -218,20 +212,6 @@ libraries = [ "Equatable", "FeatureAction", "Views" ]
 
 [libraries.ResourcePicker]
 libraries = [ "FeatureAction", "Views" ]
-
-[libraries.SharedModels]
-libraries = [ "Strings" ]
-
-[libraries.SharedModelsFetchable]
-libraries = [ "SharedModels" ]
-
-[libraries.SharedModelsMocks]
-suitable_for_dependents_matching = "\\w+Tests$"
-libraries = [ "SharedModels" ]
-
-[libraries.SharedModelsPersistable]
-libraries = [ "SharedModels" ]
-dependencies = [ "Dependencies", "GRDB" ]
 
 [libraries.Sorting]
 
@@ -299,7 +279,6 @@ libraries = [ "FeatureAction" ]
 dependencies = [ "ComposableArchitecture" ]
 
 [defaults.features.tests]
-libraries = [ "SharedModelsMocks" ]
 dependencies = [ "SnapshotTesting" ]
 
 [defaults.repositories]
@@ -319,9 +298,7 @@ dependencies = [ "SnapshotTesting" ]
 dependencies = [ "Dependencies" ]
 
 [defaults.services.tests]
-libraries = [ "SharedModelsMocks" ]
 dependencies = [ "SnapshotTesting" ]
 
 [defaults.libraries.tests]
-libraries = [ "SharedModelsMocks" ]
 dependencies = [ "SnapshotTesting" ]

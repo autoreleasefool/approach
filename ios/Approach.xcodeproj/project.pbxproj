@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
-		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
 		CA2E6A7129BAA6D500CCA917 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2E6A7029BAA6D500CCA917 /* File.swift */; };
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E4F29E2949400B09020 /* AlleysRepository */; };
@@ -103,7 +102,6 @@
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */,
 				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
-				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
 				CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */,
 				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
@@ -292,7 +290,6 @@
 			name = Approach;
 			packageProductDependencies = (
 				CA2890DD28F87FF2003C1EE9 /* AppFeature */,
-				CA2890E228F8DA53003C1EE9 /* PersistenceService */,
 				CA94DD632900B3AC00B81A87 /* FileManagerService */,
 				CAC56850291F54A100192D12 /* PreferenceService */,
 				CAC56852291F54A100192D12 /* RecentlyUsedService */,
@@ -777,10 +774,6 @@
 		CA2890DD28F87FF2003C1EE9 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
-		};
-		CA2890E228F8DA53003C1EE9 /* PersistenceService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = PersistenceService;
 		};
 		CA318B3F2999E1F500BD4BEC /* AnalyticsService */ = {
 			isa = XCSwiftPackageProductDependency;

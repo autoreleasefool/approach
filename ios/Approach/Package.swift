@@ -64,8 +64,6 @@ let package = Package(
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
-		.library(name: "PersistenceService", targets: ["PersistenceService"]),
-		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
@@ -90,10 +88,6 @@ let package = Package(
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
-		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
-		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
-		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
-		.library(name: "SharedModelsPersistableLibrary", targets: ["SharedModelsPersistableLibrary"]),
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
@@ -130,7 +124,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleyEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -145,7 +138,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -163,7 +155,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AppFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -179,7 +170,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -194,7 +184,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlerEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -210,7 +199,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -226,7 +214,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -242,7 +229,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -259,7 +245,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -279,7 +264,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -297,7 +281,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -314,7 +297,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LaneEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -334,7 +316,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeagueEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -351,7 +332,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -368,7 +348,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentsListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -384,7 +363,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ScoreSheetFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -405,7 +383,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesEditorFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -420,7 +397,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesListFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -437,7 +413,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SettingsFeature",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -452,7 +427,6 @@ let package = Package(
 			name: "StatisticsWidgetsFeatureTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
 				"StatisticsWidgetsFeature",
 			]
 		),
@@ -693,7 +667,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AddressLookupService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -715,7 +688,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnalyticsService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -737,7 +709,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -760,7 +731,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -782,7 +752,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -802,30 +771,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FileManagerService",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "PersistenceService",
-			dependencies: [
-				"FileManagerServiceInterface",
-				"PersistenceServiceInterface",
-				"SharedModelsPersistableLibrary",
-			]
-		),
-		.target(
-			name: "PersistenceServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "PersistenceServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"PersistenceService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -845,7 +790,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PreferenceService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -866,7 +810,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -887,7 +830,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ScoringService",
-				"SharedModelsMocksLibrary",
 			]
 		),
 
@@ -913,7 +855,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -932,7 +873,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DateTimeLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -944,7 +884,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"EquatableLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -956,7 +895,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ExtensionsLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -974,7 +912,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -990,7 +927,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FormLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -1013,7 +949,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ModelsViewsLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -1028,7 +963,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RepositoryLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -1044,7 +978,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ResourceListLibrary",
-				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -1059,64 +992,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ResourcePickerLibrary",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "SharedModelsFetchableLibrary",
-			dependencies: [
-				"SharedModelsLibrary",
-			]
-		),
-		.testTarget(
-			name: "SharedModelsFetchableLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsFetchableLibrary",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "SharedModelsLibrary",
-			dependencies: [
-				"StringsLibrary",
-			]
-		),
-		.testTarget(
-			name: "SharedModelsLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsLibrary",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "SharedModelsMocksLibrary",
-			dependencies: [
-				"SharedModelsLibrary",
-			]
-		),
-		.testTarget(
-			name: "SharedModelsMocksLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "SharedModelsPersistableLibrary",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				.product(name: "GRDB", package: "GRDB.swift"),
-				"SharedModelsLibrary",
-			]
-		),
-		.testTarget(
-			name: "SharedModelsPersistableLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-				"SharedModelsPersistableLibrary",
 			]
 		),
 		.target(
@@ -1131,7 +1006,6 @@ let package = Package(
 			name: "SortOrderLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
 				"SortOrderLibrary",
 			]
 		),
@@ -1143,7 +1017,6 @@ let package = Package(
 			name: "SortingLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
 				"SortingLibrary",
 			]
 		),
@@ -1159,7 +1032,6 @@ let package = Package(
 			name: "SwiftUIExtensionsLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
 				"SwiftUIExtensionsLibrary",
 			]
 		),
@@ -1187,7 +1059,6 @@ let package = Package(
 			name: "ViewsLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
 				"ViewsLibrary",
 			]
 		),
