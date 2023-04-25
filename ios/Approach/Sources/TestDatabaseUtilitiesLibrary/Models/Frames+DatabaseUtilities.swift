@@ -28,4 +28,3 @@ func insert(
 		try frame.insert(db)
 	}
 }
-

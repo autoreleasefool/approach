@@ -175,7 +175,6 @@ public struct SeriesEditor: Reducer {
 						return state._form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
-
 					case let .didUpdate(result):
 						// TODO: save lanes when series is edited
 						return state._form.didFinishUpdating(result)

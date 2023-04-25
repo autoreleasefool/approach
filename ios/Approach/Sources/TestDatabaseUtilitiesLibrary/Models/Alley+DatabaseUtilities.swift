@@ -30,7 +30,7 @@ func insert(
 				pinFall: .strings,
 				mechanism: .interchangeable,
 				pinBase: .black
-			)
+			),
 		]
 	case let .custom(custom):
 		alleys = custom
