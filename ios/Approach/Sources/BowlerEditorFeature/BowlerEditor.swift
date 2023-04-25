@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -50,6 +51,7 @@ public struct BowlerEditor: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.uuid) var uuid
@@ -84,7 +86,25 @@ public struct BowlerEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case let .didFinishCreating(bowler):
+						return .merge(
+							.fireAndForget { await self.dismiss() },
+							.fireAndForget { await analytics.trackEvent(Analytics.Bowler.Created(id: bowler.id.uuidString)) }
+						)
+
+					case let .didFinishUpdating(bowler):
+						return .merge(
+							.fireAndForget { await self.dismiss() },
+							.fireAndForget { await analytics.trackEvent(Analytics.Bowler.Updated(id: bowler.id.uuidString)) }
+						)
+
+					case let .didFinishDeleting(bowler):
+						return .merge(
+							.fireAndForget { await self.dismiss() },
+							.fireAndForget { await analytics.trackEvent(Analytics.Bowler.Deleted(id: bowler.id.uuidString)) }
+						)
+
+					case .didDiscard:
 						return .fireAndForget { await self.dismiss() }
 
 					}

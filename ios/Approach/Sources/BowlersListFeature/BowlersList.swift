@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
@@ -83,6 +84,7 @@ public struct BowlersList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
@@ -188,10 +190,15 @@ public struct BowlersList: Reducer {
 	private func navigate(to id: Bowler.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
 			state.selection = Identified(.init(bowler: selection), id: selection.id)
-			return .fireAndForget {
-				try await clock.sleep(for: .seconds(1))
-				recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
-			}
+			return .merge(
+				.fireAndForget {
+					try await clock.sleep(for: .seconds(1))
+					recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
+				},
+				.fireAndForget {
+					await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString))
+				}
+			)
 		} else {
 			state.selection = nil
 			return .none

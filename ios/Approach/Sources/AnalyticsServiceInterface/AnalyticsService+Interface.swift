@@ -3,12 +3,12 @@ import Dependencies
 public struct AnalyticsService: Sendable {
 	public var initialize: @Sendable () -> Void
 	public var setGlobalProperty: @Sendable (String?, String) async -> Void
-	public var trackEvent: @Sendable (AnalyticsEvent) -> Void
+	public var trackEvent: @Sendable (TrackableEvent) async -> Void
 
 	public init(
 		initialize: @escaping @Sendable () -> Void,
 		setGlobalProperty: @escaping @Sendable (String?, String) async -> Void,
-		trackEvent: @escaping @Sendable (AnalyticsEvent) -> Void
+		trackEvent: @escaping @Sendable (TrackableEvent) async -> Void
 	) {
 		self.initialize = initialize
 		self.setGlobalProperty = setGlobalProperty

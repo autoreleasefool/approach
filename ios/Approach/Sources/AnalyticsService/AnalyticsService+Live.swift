@@ -26,10 +26,8 @@ extension AnalyticsService: DependencyKey {
 				}
 			},
 			trackEvent: { event in
-				Task.detached {
-					let payload = (await properties.globalProperties).merging(event.payload ?? [:]) { first, _ in first }
-					TelemetryManager.send(event.name, with: payload)
-				}
+				let payload = (await properties.globalProperties).merging(event.payload ?? [:]) { first, _ in first }
+				TelemetryManager.send(event.name, with: payload)
 			}
 		)
 	}()

@@ -86,9 +86,9 @@ public struct Form<
 			case didCreate(TaskResult<New>)
 			case didUpdate(TaskResult<Existing>)
 			case didDelete(TaskResult<Existing>)
-			case didFinishCreating
-			case didFinishUpdating
-			case didFinishDeleting
+			case didFinishCreating(New)
+			case didFinishUpdating(Existing)
+			case didFinishDeleting(Existing)
 			case didDiscard
 		}
 
@@ -198,8 +198,8 @@ extension Form.State {
 	public mutating func didFinishCreating(_ record: TaskResult<New>) -> Effect<Form.Action> {
 		isLoading = false
 		switch record {
-		case .success:
-			return .task { .delegate(.didFinishCreating) }
+		case let .success(new):
+			return .task { .delegate(.didFinishCreating(new)) }
 		case .failure:
 			// TODO: handle failure creating record
 			return .none
@@ -209,8 +209,8 @@ extension Form.State {
 	public mutating func didFinishUpdating(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
 		isLoading = false
 		switch record {
-		case .success:
-			return .task { .delegate(.didFinishUpdating) }
+		case let .success(existing):
+			return .task { .delegate(.didFinishUpdating(existing)) }
 		case .failure:
 			// TODO: handle failure updating record
 			return .none
@@ -220,8 +220,8 @@ extension Form.State {
 	public mutating func didFinishDeleting(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
 		isLoading = false
 		switch record {
-		case .success:
-			return .task { .delegate(.didFinishDeleting) }
+		case let .success(existing):
+			return .task { .delegate(.didFinishDeleting(existing)) }
 		case .failure:
 			// TODO: handle failure deleting record
 			return .none

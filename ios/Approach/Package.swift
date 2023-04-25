@@ -144,7 +144,6 @@ let package = Package(
 			name: "AppFeature",
 			dependencies: [
 				"AlleysListFeature",
-				"AnalyticsServiceInterface",
 				"BowlersListFeature",
 				"GearListFeature",
 				"SettingsFeature",
@@ -175,6 +174,7 @@ let package = Package(
 		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"FormLibrary",
 			]
