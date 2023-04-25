@@ -1,35 +1,36 @@
 import DatabaseModelsLibrary
-@testable import DatabaseService
 import Dependencies
 @testable import GamesRepository
 @testable import GamesRepositoryInterface
 import GRDB
 @testable import ModelsLibrary
+import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
 @MainActor
 final class GamesRepositoryTests: XCTestCase {
-	let bowlerId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000001A")!
-	let leagueId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000001B")!
-
-	let seriesId1 = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!
-	let seriesId2 = UUID(uuidString: "00000000-0000-0000-0000-00000000000B")!
-
-	let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
-	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+	@Dependency(\.games) var games
 
 	func testList_ReturnsAllGames() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(id: id1, ordinal: 1)
-		let game2 = Game.Database.mock(id: id2, ordinal: 2)
-		let db = try await initializeDatabase(inserting: [game1, game2])
+		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
+		let game2 = Game.Database.mock(id: UUID(1), ordinal: 2)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1, game2])
+		)
 
 		// Fetching the games
 		let games = withDependencies {
 			$0.database.reader = { db }
+			$0.games = .liveValue
 		} operation: {
-			GamesRepository.liveValue.seriesGames(forId: seriesId1, ordering: .byOrdinal)
+			self.games.seriesGames(forId: UUID(0), ordering: .byOrdinal)
 		}
 		var iterator = games.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -40,15 +41,23 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testList_FilterBySeries_ReturnsSeriesGames() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(seriesId: seriesId1, id: id1, ordinal: 1)
-		let game2 = Game.Database.mock(seriesId: seriesId2, id: id2, ordinal: 2)
-		let db = try await initializeDatabase(inserting: [game1, game2])
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), ordinal: 1)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), ordinal: 2)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1, game2])
+		)
 
 		// Fetching the games by series
 		let games = withDependencies {
 			$0.database.reader = { db }
+			$0.games = .liveValue
 		} operation: {
-			GamesRepository.liveValue.seriesGames(forId: seriesId1, ordering: .byOrdinal)
+			self.games.seriesGames(forId: UUID(0), ordering: .byOrdinal)
 		}
 		var iterator = games.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -59,15 +68,23 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testList_SortsByOrdinal() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(id: id1, ordinal: 2)
-		let game2 = Game.Database.mock(id: id2, ordinal: 1)
-		let db = try await initializeDatabase(inserting: [game1, game2])
+		let game1 = Game.Database.mock(id: UUID(0), ordinal: 2)
+		let game2 = Game.Database.mock(id: UUID(1), ordinal: 1)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1, game2])
+		)
 
 		// Fetching the games
 		let games = withDependencies {
 			$0.database.reader = { db }
+			$0.games = .liveValue
 		} operation: {
-			GamesRepository.liveValue.seriesGames(forId: seriesId1, ordering: .byOrdinal)
+			self.games.seriesGames(forId: UUID(0), ordering: .byOrdinal)
 		}
 		var iterator = games.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -78,32 +95,48 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGameExists_ReturnsGame() async throws {
 		// Given a database with one game
-		let game1 = Game.Database.mock(id: id1, ordinal: 1)
-		let db = try await initializeDatabase(inserting: [game1])
+		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1])
+		)
 
 		// Editing the game
 		let game = try await withDependencies {
 			$0.database.reader = { db }
+			$0.games = .liveValue
 		} operation: {
-			try await GamesRepository.liveValue.edit(id1)
+			try await self.games.edit(UUID(0))
 		}
 
 		// Returns the game
 		XCTAssertEqual(
 			game,
-			.init(id: id1, locked: .open, manualScore: nil, excludeFromStatistics: .include)
+			.init(id: UUID(0), locked: .open, manualScore: nil, excludeFromStatistics: .include)
 		)
 	}
 
 	func testEdit_WhenGameNotExists_ReturnsNil() async throws {
 		// Given a database with no games
-		let db = try await initializeDatabase(inserting: [])
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: nil
+		)
 
 		// Editing the game
 		let game = try await withDependencies {
 			$0.database.reader = { db }
+			$0.games = .liveValue
 		} operation: {
-			try await GamesRepository.liveValue.edit(id1)
+			try await self.games.edit(UUID(0))
 		}
 
 		// Returns nil
@@ -112,20 +145,28 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGameExists_UpdatesGame() async throws {
 		// Given a database with a game
-		let game1 = Game.Database.mock(id: id1, ordinal: 1, locked: .open, manualScore: nil)
-		let db = try await initializeDatabase(inserting: [game1])
+		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1, locked: .open, manualScore: nil)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1])
+		)
 
 		// Editing the game
-		let editable = Game.Edit(id: id1, locked: .locked, manualScore: 123, excludeFromStatistics: .include)
+		let editable = Game.Edit(id: UUID(0), locked: .locked, manualScore: 123, excludeFromStatistics: .include)
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.games = .liveValue
 		} operation: {
-			try await GamesRepository.liveValue.update(editable)
+			try await self.games.update(editable)
 		}
 
 		// Updates the database
-		let updated = try await db.read { try Game.Database.fetchOne($0, id: self.id1) }
-		XCTAssertEqual(updated?.id, id1)
+		let updated = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updated?.id, UUID(0))
 		XCTAssertEqual(updated?.ordinal, 1)
 		XCTAssertEqual(updated?.locked, .locked)
 
@@ -136,15 +177,23 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGameNotExists_ThrowError() async throws {
 		// Given a database with no games
-		let db = try await initializeDatabase(inserting: [])
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: nil
+		)
 
 		// Updating a game
 		await assertThrowsError(ofType: RecordError.self) {
-			let editable = Game.Edit(id: id1, locked: .locked, manualScore: nil, excludeFromStatistics: .exclude)
+			let editable = Game.Edit(id: UUID(0), locked: .locked, manualScore: nil, excludeFromStatistics: .exclude)
 			try await withDependencies {
 				$0.database.writer = { db }
+				$0.games = .liveValue
 			} operation: {
-				try await GamesRepository.liveValue.update(editable)
+				try await self.games.update(editable)
 			}
 		}
 
@@ -155,102 +204,63 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesGame() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(id: id1, ordinal: 1)
-		let game2 = Game.Database.mock(id: id2, ordinal: 2)
-		let db = try await initializeDatabase(inserting: [game1, game2])
+		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
+		let game2 = Game.Database.mock(id: UUID(1), ordinal: 2)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1, game2])
+		)
 
 		// Deleting the first game
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.games = .liveValue
 		} operation: {
-			try await GamesRepository.liveValue.delete(self.id1)
+			try await self.games.delete(UUID(0))
 		}
 
 		// Updates the database
-		let deletedExists = try await db.read { try Game.Database.exists($0, id: self.id1) }
+		let deletedExists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other game intact
-		let otherExists = try await db.read { try Game.Database.exists($0, id: self.id2) }
+		let otherExists = try await db.read { try Game.Database.exists($0, id: UUID(1)) }
 		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with one game
-		let game1 = Game.Database.mock(id: id1, ordinal: 1)
-		let db = try await initializeDatabase(inserting: [game1])
+		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
+		let db = try await initializeDatabase(
+			withAlleys: .default,
+			withLanes: .default,
+			withBowlers: .default,
+			withLeagues: .default,
+			withSeries: .default,
+			withGames: .custom([game1])
+		)
 
 		// Deleting a non-existent series
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.games = .liveValue
 		} operation: {
-			try await GamesRepository.liveValue.delete(self.id2)
+			try await self.games.delete(UUID(1))
 		}
 
 		// Leaves the game
-		let exists = try await db.read { try Game.Database.exists($0, id: self.id1) }
+		let exists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
-	}
-
-	private func initializeDatabase(
-		inserting games: [Game.Database] = []
-	) async throws -> any DatabaseWriter {
-		let dbQueue = try DatabaseQueue()
-		var migrator = DatabaseMigrator()
-		migrator.registerDBMigrations()
-		try migrator.migrate(dbQueue)
-
-		let bowler = Bowler.Database(id: bowlerId1, name: "Joseph", status: .playable)
-		let league = League.Database(
-			bowlerId: bowlerId1,
-			id: leagueId1,
-			name: "Majors",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil,
-			excludeFromStatistics: .include,
-			alleyId: nil
-		)
-		let series = [
-			Series.Database(
-				leagueId: leagueId1,
-				id: seriesId1,
-				date: Date(),
-				numberOfGames: 4,
-				preBowl: .regular,
-				excludeFromStatistics: .include,
-				alleyId: nil
-			),
-			Series.Database(
-				leagueId: leagueId1,
-				id: seriesId2,
-				date: Date(),
-				numberOfGames: 4,
-				preBowl: .regular,
-				excludeFromStatistics: .include,
-				alleyId: nil
-			),
-		]
-
-		try await dbQueue.write {
-			try bowler.insert($0)
-			try league.insert($0)
-			for series in series {
-				try series.insert($0)
-			}
-			for game in games {
-				try game.insert($0)
-			}
-		}
-
-		return dbQueue
 	}
 }
 
 extension Game.Database {
 	static func mock(
-		seriesId: Series.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
+		seriesId: Series.ID = UUID(0),
 		id: ID,
 		ordinal: Int,
 		locked: Game.Lock = .open,
