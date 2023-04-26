@@ -14,6 +14,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230415CreateLane",
 		"Migration20230417CreateSeriesLanePivot",
 		"Migration20230425CreateAvatar",
+		"Migration20230426CreateLocation",
 	]
 
 	func testIdentifier() {

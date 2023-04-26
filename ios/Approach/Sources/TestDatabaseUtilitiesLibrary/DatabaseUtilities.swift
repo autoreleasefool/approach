@@ -11,6 +11,7 @@ public enum InitialValue<T> {
 }
 
 public func initializeDatabase(
+	withLocations: InitialValue<Location.Database>? = nil,
 	withAlleys: InitialValue<Alley.Database>? = nil,
 	withLanes: InitialValue<Lane.Database>? = nil,
 	withBowlers: InitialValue<Bowler.Database>? = nil,
@@ -26,6 +27,7 @@ public func initializeDatabase(
 	try migrator.migrate(dbQueue)
 
 	try await dbQueue.write {
+		try insert(locations: withLocations, into: $0)
 		try insert(alleys: withAlleys, into: $0)
 		try insert(lanes: withLanes, into: $0)
 		try insert(bowlers: withBowlers, into: $0)

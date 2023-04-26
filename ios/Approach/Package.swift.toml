@@ -117,6 +117,8 @@ services = [ "RecentlyUsed" ]
 [repositories.Leagues]
 services = [ "RecentlyUsed" ]
 
+[repositories.Locations]
+
 [repositories.Series]
 [repositories.Series.interface]
 dependencies = [ "IdentifiedCollections" ]
