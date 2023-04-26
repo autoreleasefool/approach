@@ -16,20 +16,20 @@ func insert(
 			.init(
 				id: UUID(0),
 				name: "Skyview",
-				address: nil,
 				material: .wood,
 				pinFall: .strings,
 				mechanism: .dedicated,
-				pinBase: nil
+				pinBase: nil,
+				locationId: UUID(0)
 			),
 			.init(
 				id: UUID(1),
 				name: "Grandview",
-				address: nil,
 				material: .synthetic,
 				pinFall: .strings,
 				mechanism: .interchangeable,
-				pinBase: .black
+				pinBase: .black,
+				locationId: UUID(1)
 			),
 		]
 	case let .custom(custom):

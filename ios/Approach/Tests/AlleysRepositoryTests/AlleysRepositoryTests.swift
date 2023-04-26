@@ -36,6 +36,43 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(alley1), .init(alley2)])
 	}
 
+	func testList_WithAlleyWithLocation_ReturnsAlleyWithLocation() async throws {
+		// Given a database with alleys
+		let db = try await initializeDatabase(withLocations: .default, withAlleys: .default)
+
+		// Fetching the alleys
+		let alleys = withDependencies {
+			$0.database.reader = { db }
+			$0.alleys = .liveValue
+		} operation: {
+			self.alleys.list(ordered: .byName)
+		}
+		var iterator = alleys.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the alleys
+		XCTAssertEqual(fetched, [
+			.init(
+				id: UUID(1),
+				name: "Grandview",
+				material: .synthetic,
+				pinFall: .strings,
+				mechanism: .interchangeable,
+				pinBase: .black,
+				location: .init(id: UUID(1), title: "321 Real Street", coordinate: .init(latitude: 321, longitude: 321))
+			),
+			.init(
+				id: UUID(0),
+				name: "Skyview",
+				material: .wood,
+				pinFall: .strings,
+				mechanism: .dedicated,
+				pinBase: nil,
+				location: .init(id: UUID(0), title: "123 Fake Street", coordinate: .init(latitude: 123, longitude: 123))
+			),
+		])
+	}
+
 	func testList_FilterByProperty_ReturnsOneAlley() async throws {
 		// Given a database with two alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
@@ -143,6 +180,41 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, .init(alley1))
 	}
 
+	func testLoad_WhenAlleyHasLocation_ReturnsAlleyWithLocation() async throws {
+		// Given a database with one alley
+		let alley1 = Alley.Database.mock(
+			id: UUID(0),
+			name: "Grandview",
+			material: .wood,
+			locationId: UUID(0)
+		)
+		let db = try await initializeDatabase(withLocations: .default, withAlleys: .custom([alley1]))
+
+		// Fetching the alleys
+		let alley = withDependencies {
+			$0.database.reader = { db }
+			$0.alleys = .liveValue
+		} operation: {
+			self.alleys.load(UUID(0))
+		}
+		var iterator = alley.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the alley
+		XCTAssertEqual(
+			fetched,
+			.init(
+				id: UUID(0),
+				name: "Grandview",
+				material: .wood,
+				pinFall: nil,
+				mechanism: nil,
+				pinBase: nil,
+				location: .init(id: UUID(0), title: "123 Fake Street", coordinate: .init(latitude: 123, longitude: 123))
+			)
+		)
+	}
+
 	func testLoad_WhenAlleyNotExists_ReturnsNil() async throws {
 		// Given a database with no alleys
 		let db = try await initializeDatabase(withAlleys: nil)
@@ -172,11 +244,11 @@ final class AlleysRepositoryTests: XCTestCase {
 		let new = Alley.Create(
 			id: UUID(0),
 			name: "Skyview Lanes",
-			address: nil,
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
-			pinBase: nil
+			pinBase: nil,
+			location: nil
 		)
 		await assertThrowsError(ofType: DatabaseError.self) {
 			try await withDependencies {
@@ -206,11 +278,11 @@ final class AlleysRepositoryTests: XCTestCase {
 		let new = Alley.Create(
 			id: UUID(0),
 			name: "Skyview Lanes",
-			address: nil,
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
-			pinBase: nil
+			pinBase: nil,
+			location: nil
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -232,18 +304,18 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenAlleyExists_UpdatesAlley() async throws {
 		// Given a database with an existing alley
-		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview")
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", locationId: UUID(0))
+		let db = try await initializeDatabase(withLocations: .default, withAlleys: .custom([alley1]))
 
 		// Editing the alley
 		let editable = Alley.Edit(
 			id: UUID(0),
 			name: "Skyview Lanes",
-			address: nil,
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
-			pinBase: nil
+			pinBase: nil,
+			location: nil
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -256,7 +328,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let updated = try await db.read { try Alley.Database.fetchOne($0, id: UUID(0)) }
 		XCTAssertEqual(updated?.id, UUID(0))
 		XCTAssertEqual(updated?.name, "Skyview Lanes")
-		XCTAssertNil(updated?.address)
+		XCTAssertNil(updated?.locationId)
 		XCTAssertEqual(updated?.material, .wood)
 
 		// Does not insert any records
@@ -272,11 +344,11 @@ final class AlleysRepositoryTests: XCTestCase {
 		let editable = Alley.Edit(
 			id: UUID(0),
 			name: "Skyview Lanes",
-			address: nil,
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
-			pinBase: nil
+			pinBase: nil,
+			location: nil
 		)
 		await assertThrowsError(ofType: RecordError.self) {
 			try await withDependencies {
@@ -314,11 +386,42 @@ final class AlleysRepositoryTests: XCTestCase {
 				alley: .init(
 					id: UUID(0),
 					name: "Grandview",
-					address: nil,
 					material: .wood,
 					pinFall: nil,
 					mechanism: nil,
-					pinBase: nil
+					pinBase: nil,
+					location: nil
+				),
+				lanes: []
+			)
+		)
+	}
+
+	func testEdit_WhenAlleyExistsWithLocation_ReturnsAlleyWithLocation() async throws {
+		// Given a database with one alley
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood, locationId: UUID(0))
+		let db = try await initializeDatabase(withLocations: .default, withAlleys: .custom([alley1]))
+
+		// Editing the alley
+		let alley = try await withDependencies {
+			$0.database.reader = { db }
+			$0.alleys = .liveValue
+		} operation: {
+			try await self.alleys.edit(UUID(0))
+		}
+
+		// Returns the alley
+		XCTAssertEqual(
+			alley,
+			.init(
+				alley: .init(
+					id: UUID(0),
+					name: "Grandview",
+					material: .wood,
+					pinFall: nil,
+					mechanism: nil,
+					pinBase: nil,
+					location: .init(id: UUID(0), title: "123 Fake Street", coordinate: .init(latitude: 123, longitude: 123))
 				),
 				lanes: []
 			)
@@ -351,11 +454,11 @@ final class AlleysRepositoryTests: XCTestCase {
 				alley: .init(
 					id: UUID(0),
 					name: "Grandview",
-					address: nil,
 					material: .wood,
 					pinFall: nil,
 					mechanism: nil,
-					pinBase: nil
+					pinBase: nil,
+					location: nil
 				),
 				lanes: [
 					.init(id: UUID(0), label: "1", position: .leftWall),
@@ -429,20 +532,20 @@ extension Alley.Database {
 	static func mock(
 		id: ID,
 		name: String,
-		address: String? = nil,
 		material: Alley.Material? = nil,
 		pinFall: Alley.PinFall? = nil,
 		mechanism: Alley.Mechanism? = nil,
-		pinBase: Alley.PinBase? = nil
+		pinBase: Alley.PinBase? = nil,
+		locationId: Location.ID? = nil
 	) -> Self {
 		.init(
 			id: id,
 			name: name,
-			address: address,
 			material: material,
 			pinFall: pinFall,
 			mechanism: mechanism,
-			pinBase: pinBase
+			pinBase: pinBase,
+			locationId: locationId
 		)
 	}
 }
@@ -452,11 +555,11 @@ extension Alley.Summary {
 		self.init(
 			id: from.id,
 			name: from.name,
-			address: from.address,
 			material: from.material,
 			pinFall: from.pinFall,
 			mechanism: from.mechanism,
-			pinBase: from.pinBase
+			pinBase: from.pinBase,
+			location: nil
 		)
 	}
 }

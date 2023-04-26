@@ -19,6 +19,7 @@ extension AlleysRepository: DependencyKey {
 						.all()
 						.orderByName()
 						.filter(material, pinFall, mechanism, pinBase)
+						.including(optional: Alley.Database.location)
 						.asRequest(of: Alley.Summary.self)
 						.fetchAll($0)
 				}
@@ -32,7 +33,11 @@ extension AlleysRepository: DependencyKey {
 			},
 			load: { id in
 				database.reader().observeOne {
-					try Alley.Summary.fetchOne($0, id: id)
+					try Alley.Database
+						.filter(Alley.Database.Columns.id == id)
+						.including(optional: Alley.Database.location)
+						.asRequest(of: Alley.Summary.self)
+						.fetchOne($0)
 				}
 			},
 			edit: { id in
@@ -40,6 +45,7 @@ extension AlleysRepository: DependencyKey {
 				return try await database.reader().read {
 					try Alley.Database
 						.filter(Alley.Database.Columns.id == id)
+						.including(optional: Alley.Database.location)
 						.including(
 							all: Alley.Database.lanes
 								.order(Lane.Database.Columns.label.collating(.localizedCaseInsensitiveCompare))

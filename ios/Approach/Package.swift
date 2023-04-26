@@ -449,6 +449,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"LanesRepositoryInterface",
+				"LocationsRepositoryInterface",
 			]
 		),
 		.testTarget(
