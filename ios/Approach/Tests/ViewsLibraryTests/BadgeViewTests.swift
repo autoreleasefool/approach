@@ -11,7 +11,7 @@ final class BadgeViewTests: XCTestCase {
 			BadgeView("Badge", style: .destructive)
 			BadgeView("Badge", style: .info)
 			BadgeView("Badge", style: .primary)
-			BadgeView("Badge", style: .custom(foreground: .red, background: .blue))
+			BadgeView("Badge", style: .init(foreground: .red, background: .blue))
 		}
 
 		let vc = UIHostingController(rootView: badges)
