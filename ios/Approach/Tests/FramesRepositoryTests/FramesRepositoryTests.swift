@@ -18,15 +18,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Given a database with frames
 		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
 		let frame2 = Frame.Database.mock(gameId: UUID(1), ordinal: 1)
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: .custom([frame1, frame2])
-		)
+		let db = try await initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
 		let frames = try await withDependencies {
@@ -47,15 +39,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Given a database with frames
 		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
 		let frame2 = Frame.Database.mock(gameId: UUID(0), ordinal: 2)
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: .custom([frame1, frame2])
-		)
+		let db = try await initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
 		let frames = try await withDependencies {
@@ -74,15 +58,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testLoad_WhenGameNotExists_ReturnsNil() async throws {
 		// Given a database with no frames
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: nil
-		)
+		let db = try await initializeDatabase(withFrames: nil)
 
 		// Editing the game
 		let frames = try await withDependencies {
@@ -102,15 +78,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Given a database with frames
 		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
 		let frame2 = Frame.Database.mock(gameId: UUID(1), ordinal: 1)
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: .custom([frame1, frame2])
-		)
+		let db = try await initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
 		let frames = try await withDependencies {
@@ -131,15 +99,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Given a database with frames
 		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
 		let frame2 = Frame.Database.mock(gameId: UUID(0), ordinal: 2)
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: .custom([frame1, frame2])
-		)
+		let db = try await initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
 		let frames = try await withDependencies {
@@ -158,15 +118,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGameNotExists_ReturnsNil() async throws {
 		// Given a database with no frames
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: nil
-		)
+		let db = try await initializeDatabase(withFrames: nil)
 
 		// Editing the game
 		let frames = try await withDependencies {
@@ -185,15 +137,7 @@ final class FramesRepositoryTests: XCTestCase {
 	func testUpdate_WhenFrameExists_UpdatesFrame() async throws {
 		// Given a database with a frame
 		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: .custom([frame1])
-		)
+		let db = try await initializeDatabase(withFrames: .custom([frame1]))
 
 		// Editing the frame
 		let editable = Frame.Edit(
@@ -229,15 +173,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenFrameNotExists_ThrowError() async throws {
 		// Given a database with no frames
-		let db = try await initializeDatabase(
-			withAlleys: .default,
-			withLanes: .default,
-			withBowlers: .default,
-			withLeagues: .default,
-			withSeries: .default,
-			withGames: .default,
-			withFrames: nil
-		)
+		let db = try await initializeDatabase(withFrames: nil)
 
 		// Updating a frame
 		await assertThrowsError(ofType: RecordError.self) {

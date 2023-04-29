@@ -26,17 +26,34 @@ public func initializeDatabase(
 	migrator.registerDBMigrations()
 	try migrator.migrate(dbQueue)
 
+	let games = coallesce(withGames, ifHas: withFrames)
+	let series = coallesce(withSeries, ifHas: games)
+	let leagues = coallesce(withLeagues, ifHas: series)
+	let gear = withGear
+	let bowlers = coallesce(withBowlers, ifHas: leagues, gear)
+	let lanes = coallesce(withLanes, ifHas: series)
+	let alleys = coallesce(withAlleys, ifHas: lanes, leagues)
+	let locations = coallesce(withLocations, ifHas: alleys)
+
 	try await dbQueue.write {
-		try insert(locations: withLocations, into: $0)
-		try insert(alleys: withAlleys, into: $0)
-		try insert(lanes: withLanes, into: $0)
-		try insert(bowlers: withBowlers, into: $0)
-		try insert(gear: withGear, into: $0)
-		try insert(leagues: withLeagues, into: $0)
-		try insert(series: withSeries, into: $0)
-		try insert(games: withGames, into: $0)
+		try insert(locations: locations, into: $0)
+		try insert(alleys: alleys, into: $0)
+		try insert(lanes: lanes, into: $0)
+		try insert(bowlers: bowlers, into: $0)
+		try insert(gear: gear, into: $0)
+		try insert(leagues: leagues, into: $0)
+		try insert(series: series, into: $0)
+		try insert(games: games, into: $0)
 		try insert(frames: withFrames, into: $0)
 	}
 
 	return dbQueue
+}
+
+func coallesce<T>(_ value: InitialValue<T>?, ifHas: Optional<Any>...) -> InitialValue<T>? {
+	if ifHas.compactMap({ $0 }).isEmpty {
+		return value
+	} else {
+		return value == nil ? .default : value
+	}
 }

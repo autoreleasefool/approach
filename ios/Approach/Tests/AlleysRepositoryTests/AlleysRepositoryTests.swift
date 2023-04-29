@@ -38,7 +38,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_WithAlleyWithLocation_ReturnsAlleyWithLocation() async throws {
 		// Given a database with alleys
-		let db = try await initializeDatabase(withLocations: .default, withAlleys: .default)
+		let db = try await initializeDatabase(withAlleys: .default)
 
 		// Fetching the alleys
 		let alleys = withDependencies {
@@ -59,7 +59,12 @@ final class AlleysRepositoryTests: XCTestCase {
 				pinFall: .strings,
 				mechanism: .interchangeable,
 				pinBase: .black,
-				location: .init(id: UUID(1), title: "321 Real Street", coordinate: .init(latitude: 321, longitude: 321))
+				location: .init(
+					id: UUID(1),
+					title: "321 Real Street",
+					subtitle: "Viewgrand",
+					coordinate: .init(latitude: 321, longitude: 321)
+				)
 			),
 			.init(
 				id: UUID(0),
@@ -68,7 +73,12 @@ final class AlleysRepositoryTests: XCTestCase {
 				pinFall: .strings,
 				mechanism: .dedicated,
 				pinBase: nil,
-				location: .init(id: UUID(0), title: "123 Fake Street", coordinate: .init(latitude: 123, longitude: 123))
+				location: .init(
+					id: UUID(0),
+					title: "123 Fake Street",
+					subtitle: "Grandview",
+					coordinate: .init(latitude: 123, longitude: 123)
+				)
 			),
 		])
 	}
@@ -188,7 +198,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			material: .wood,
 			locationId: UUID(0)
 		)
-		let db = try await initializeDatabase(withLocations: .default, withAlleys: .custom([alley1]))
+		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Fetching the alleys
 		let alley = withDependencies {
@@ -210,7 +220,12 @@ final class AlleysRepositoryTests: XCTestCase {
 				pinFall: nil,
 				mechanism: nil,
 				pinBase: nil,
-				location: .init(id: UUID(0), title: "123 Fake Street", coordinate: .init(latitude: 123, longitude: 123))
+				location: .init(
+					id: UUID(0),
+					title: "123 Fake Street",
+					subtitle: "Grandview",
+					coordinate: .init(latitude: 123, longitude: 123)
+				)
 			)
 		)
 	}
@@ -305,7 +320,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testUpdate_WhenAlleyExists_UpdatesAlley() async throws {
 		// Given a database with an existing alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", locationId: UUID(0))
-		let db = try await initializeDatabase(withLocations: .default, withAlleys: .custom([alley1]))
+		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
 		let editable = Alley.Edit(
@@ -400,7 +415,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testEdit_WhenAlleyExistsWithLocation_ReturnsAlleyWithLocation() async throws {
 		// Given a database with one alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood, locationId: UUID(0))
-		let db = try await initializeDatabase(withLocations: .default, withAlleys: .custom([alley1]))
+		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
 		let alley = try await withDependencies {
@@ -421,7 +436,12 @@ final class AlleysRepositoryTests: XCTestCase {
 					pinFall: nil,
 					mechanism: nil,
 					pinBase: nil,
-					location: .init(id: UUID(0), title: "123 Fake Street", coordinate: .init(latitude: 123, longitude: 123))
+					location: .init(
+						id: UUID(0),
+						title: "123 Fake Street",
+						subtitle: "Grandview",
+						coordinate: .init(latitude: 123, longitude: 123)
+					)
 				),
 				lanes: []
 			)

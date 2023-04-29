@@ -11,11 +11,11 @@ extension Alley.Edit: PersistableRecord, FetchableRecord {
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.id] = id
 		container[Columns.name] = name
-		container[Columns.locationId] = location?.id
 		container[Columns.material] = material
 		container[Columns.mechanism] = mechanism
 		container[Columns.pinBase] = pinBase
 		container[Columns.pinFall] = pinFall
+		container[Columns.locationId] = location?.id
 	}
 }
 

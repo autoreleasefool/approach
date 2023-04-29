@@ -23,6 +23,7 @@ final class LocationsRepositoryTests: XCTestCase {
 		let new = Location.Create(
 			id: UUID(0),
 			title: "456 Fake Street",
+			subtitle: "Grandview",
 			coordinate: .init(latitude: 456, longitude: 456)
 		)
 		await assertThrowsError(ofType: DatabaseError.self) {
@@ -52,6 +53,7 @@ final class LocationsRepositoryTests: XCTestCase {
 		let new = Location.Create(
 			id: UUID(0),
 			title: "456 Fake Street",
+			subtitle: "Viewgrand",
 			coordinate: .init(latitude: 456, longitude: 456)
 		)
 		try await withDependencies {
@@ -71,9 +73,9 @@ final class LocationsRepositoryTests: XCTestCase {
 		XCTAssertEqual(existing?.title, "456 Fake Street")
 	}
 
-	// MARK: - Edit
+	// MARK: - Update
 
-	func testEdit_WhenLocationExists_UpdatesLocation() async throws {
+	func testUpdate_WhenLocationExists_UpdatesLocation() async throws {
 		// Given a database with an existing location
 		let location = Location.Database.mock(id: UUID(0))
 		let db = try await initializeDatabase(withLocations: .custom([location]))
@@ -82,13 +84,14 @@ final class LocationsRepositoryTests: XCTestCase {
 		let existing = Location.Edit(
 			id: UUID(0),
 			title: "456 Fake Street",
+			subtitle: "Viewgrand",
 			coordinate: .init(latitude: 456, longitude: 456)
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.locations = .liveValue
 		} operation: {
-			try await self.locations.edit(existing)
+			try await self.locations.update(existing)
 		}
 
 		// Does not insert any records
@@ -101,7 +104,7 @@ final class LocationsRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.title, "456 Fake Street")
 	}
 
-	func testEdit_WhenLocationNotExists_ThrowsError() async throws {
+	func testUpdate_WhenLocationNotExists_ThrowsError() async throws {
 		// Given a database with no locations
 		let db = try await initializeDatabase(withLocations: nil)
 
@@ -109,6 +112,7 @@ final class LocationsRepositoryTests: XCTestCase {
 		let existing = Location.Create(
 			id: UUID(0),
 			title: "456 Fake Street",
+			subtitle: "Viewgrand",
 			coordinate: .init(latitude: 456, longitude: 456)
 		)
 		await assertThrowsError(ofType: RecordError.self) {
@@ -116,7 +120,7 @@ final class LocationsRepositoryTests: XCTestCase {
 				$0.database.writer = { db }
 				$0.locations = .liveValue
 			} operation: {
-				try await self.locations.edit(existing)
+				try await self.locations.update(existing)
 			}
 		}
 
@@ -130,15 +134,16 @@ extension Location.Database {
 	static func mock(
 		id: ID,
 		title: String = "123 Fake Street",
+		subtitle: String = "Grandview",
 		latitude: Double = 123,
 		longitude: Double = 123
 	) -> Self {
 		.init(
 			id: id,
 			title: title,
+			subtitle: subtitle,
 			latitude: latitude,
 			longitude: longitude
 		)
 	}
 }
-
