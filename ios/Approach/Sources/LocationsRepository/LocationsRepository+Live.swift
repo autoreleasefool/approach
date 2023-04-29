@@ -15,7 +15,7 @@ extension LocationsRepository: DependencyKey {
 					try location.insert($0)
 				}
 			},
-			edit: { location in
+			update: { location in
 				try await database.writer().write {
 					try location.update($0)
 				}
