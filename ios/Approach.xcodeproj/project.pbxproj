@@ -32,6 +32,7 @@
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
 		CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */ = {isa = PBXBuildFile; productRef = CACA8A5729C616850075A6C1 /* ScoringService */; };
+		CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BB629FB91270015E4CB /* LocationsRepository */; };
 		CAD79F5D29BFB9670047C22F /* BowlersDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAD79F5C29BFB9670047C22F /* BowlersDataProvider */; };
 		CAD79F5F29BFB9670047C22F /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAD79F5E29BFB9670047C22F /* FramesDataProvider */; };
 		CAE1ED3429BFF81E00076B79 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAE1ED3329BFF81E00076B79 /* PersistenceService */; };
@@ -99,6 +100,7 @@
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
+				CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */,
 				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
@@ -307,6 +309,7 @@
 				CA6CBA3629EBBE4C00B3BAF7 /* GamesRepository */,
 				CA6CBA3829EBBE4C00B3BAF7 /* GearRepository */,
 				CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */,
+				CAD15BB629FB91270015E4CB /* LocationsRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -842,6 +845,10 @@
 		CACA8A5729C616850075A6C1 /* ScoringService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ScoringService;
+		};
+		CAD15BB629FB91270015E4CB /* LocationsRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocationsRepository;
 		};
 		CAD79F5C29BFB9670047C22F /* BowlersDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
