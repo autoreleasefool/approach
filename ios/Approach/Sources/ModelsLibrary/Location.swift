@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 
 public enum Location {}
@@ -14,6 +15,10 @@ extension Location {
 		public init(latitude: Double, longitude: Double) {
 			self.latitude = latitude
 			self.longitude = longitude
+		}
+
+		public var mapCoordinate: CLLocationCoordinate2D {
+			.init(latitude: latitude, longitude: longitude)
 		}
 	}
 }

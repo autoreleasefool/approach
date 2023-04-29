@@ -7,6 +7,7 @@ struct Migration20230426CreateLocation: DBMigration {
 				.primaryKey()
 			t.column("title", .text)
 				.notNull()
+			t.column("subtitle", .text)
 			t.column("latitude", .double)
 				.notNull()
 			t.column("longitude", .double)

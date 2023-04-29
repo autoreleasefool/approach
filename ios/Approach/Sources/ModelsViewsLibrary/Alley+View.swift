@@ -27,25 +27,25 @@ extension Alley {
 						if let material = alley.material {
 							BadgeView(
 								String(describing: material),
-								style: .custom(foreground: .appAlleyMaterialBorder, background: .appAlleyMaterialBackground)
+								style: .init(foreground: .appAlleyMaterialBorder, background: .appAlleyMaterialBackground)
 							)
 						}
 						if let mechanism = alley.mechanism {
 							BadgeView(
 								String(describing: mechanism),
-								style: .custom(foreground: .appAlleyMechanismBorder, background: .appAlleyMechanismBackground)
+								style: .init(foreground: .appAlleyMechanismBorder, background: .appAlleyMechanismBackground)
 							)
 						}
 						if let pinFall = alley.pinFall {
 							BadgeView(
 								String(describing: pinFall),
-								style: .custom(foreground: .appAlleyPinFallBorder, background: .appAlleyPinFallBackground)
+								style: .init(foreground: .appAlleyPinFallBorder, background: .appAlleyPinFallBackground)
 							)
 						}
 						if let pinBase = alley.pinBase {
 							BadgeView(
 								String(describing: pinBase),
-								style: .custom(foreground: .appAlleyPinBaseBorder, background: .appAlleyPinBaseBackground)
+								style: .init(foreground: .appAlleyPinBaseBorder, background: .appAlleyPinBaseBackground)
 							)
 						}
 					}

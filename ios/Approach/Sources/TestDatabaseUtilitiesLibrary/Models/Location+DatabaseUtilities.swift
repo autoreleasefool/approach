@@ -16,12 +16,14 @@ func insert(
 			.init(
 				id: UUID(0),
 				title: "123 Fake Street",
+				subtitle: "Grandview",
 				latitude: 123,
 				longitude: 123
 			),
 			.init(
 				id: UUID(1),
 				title: "321 Real Street",
+				subtitle: "Viewgrand",
 				latitude: 321,
 				longitude: 321
 			),
