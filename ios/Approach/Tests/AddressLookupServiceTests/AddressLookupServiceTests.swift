@@ -17,7 +17,7 @@ final class AddressLookupServiceTests: XCTestCase {
 		XCTAssertNil(value)
 	}
 
-	func _testUpdateLookupReturnsResults() async throws {
+	func testUpdateLookupReturnsResults() async throws {
 		// FIXME: does MKLocalSearchCompleter work in XCTests?
 		let addressLookup: AddressLookupService = .liveValue
 
@@ -33,7 +33,7 @@ final class AddressLookupServiceTests: XCTestCase {
 		XCTAssertNil(value)
 	}
 
-	func _testLookupReturnsFirstResult() async {
+	func testLookupReturnsFirstResult() async {
 		// FIXME: does MKLocalSearch work in XCTests?
 	}
 }

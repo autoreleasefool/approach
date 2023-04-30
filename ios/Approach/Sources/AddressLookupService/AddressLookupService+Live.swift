@@ -74,13 +74,13 @@ extension AddressLookupService: DependencyKey {
 			updateSearchQuery: { await LocalSearch.shared.update($0, query: $1) },
 			finishSearch: { await LocalSearch.shared.finish($0) },
 			lookUpAddress: { result in
-				let search = MKLocalSearch(request: .init(completion: result.completion))
+				let search = MKLocalSearch(request: .init(completion: result.completion.wrapped))
 				let response = try await search.start()
 				guard let item = response.mapItems.first else { return nil }
 				return .init(
 					id: result.id,
-					title: result.completion.title,
-					subtitle: result.completion.subtitle,
+					title: result.completion.wrapped.title,
+					subtitle: result.completion.wrapped.subtitle,
 					coordinate: .init(
 						latitude: item.placemark.coordinate.latitude,
 						longitude: item.placemark.coordinate.longitude
