@@ -16,7 +16,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
 		let game2 = Game.Database.mock(id: UUID(1), ordinal: 2)
-		let db = try await initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -36,7 +36,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), ordinal: 1)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), ordinal: 2)
-		let db = try await initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games by series
 		let games = withDependencies {
@@ -56,7 +56,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(id: UUID(0), ordinal: 2)
 		let game2 = Game.Database.mock(id: UUID(1), ordinal: 1)
-		let db = try await initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -75,7 +75,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testEdit_WhenGameExists_ReturnsGame() async throws {
 		// Given a database with one game
 		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
-		let db = try await initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
 		let game = try await withDependencies {
@@ -94,7 +94,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGameNotExists_ReturnsNil() async throws {
 		// Given a database with no games
-		let db = try await initializeDatabase(withGames: nil)
+		let db = try initializeDatabase(withGames: nil)
 
 		// Editing the game
 		let game = try await withDependencies {
@@ -111,7 +111,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testUpdate_WhenGameExists_UpdatesGame() async throws {
 		// Given a database with a game
 		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1, locked: .open, manualScore: nil)
-		let db = try await initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
 		let editable = Game.Edit(id: UUID(0), locked: .locked, manualScore: 123, excludeFromStatistics: .include)
@@ -135,7 +135,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGameNotExists_ThrowError() async throws {
 		// Given a database with no games
-		let db = try await initializeDatabase(withGames: nil)
+		let db = try initializeDatabase(withGames: nil)
 
 		// Updating a game
 		await assertThrowsError(ofType: RecordError.self) {
@@ -157,7 +157,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
 		let game2 = Game.Database.mock(id: UUID(1), ordinal: 2)
-		let db = try await initializeDatabase(withGames: .custom([game1, game2]))
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Deleting the first game
 		try await withDependencies {
@@ -179,7 +179,7 @@ final class GamesRepositoryTests: XCTestCase {
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with one game
 		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
-		let db = try await initializeDatabase(withGames: .custom([game1]))
+		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Deleting a non-existent series
 		try await withDependencies {

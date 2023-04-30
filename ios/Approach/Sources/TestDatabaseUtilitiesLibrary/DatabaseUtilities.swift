@@ -20,7 +20,7 @@ public func initializeDatabase(
 	withSeries: InitialValue<Series.Database>? = nil,
 	withGames: InitialValue<Game.Database>? = nil,
 	withFrames: InitialValue<Frame.Database>? = nil
-) async throws -> any DatabaseWriter {
+) throws -> any DatabaseWriter {
 	let dbQueue = try DatabaseQueue()
 	var migrator = DatabaseMigrator()
 	migrator.registerDBMigrations()
@@ -35,7 +35,7 @@ public func initializeDatabase(
 	let alleys = coallesce(withAlleys, ifHas: lanes, leagues)
 	let locations = coallesce(withLocations, ifHas: alleys)
 
-	try await dbQueue.write {
+	try dbQueue.write {
 		try insert(locations: locations, into: $0)
 		try insert(alleys: alleys, into: $0)
 		try insert(lanes: lanes, into: $0)

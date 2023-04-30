@@ -20,7 +20,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Given a database with two alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Skyview", mechanism: .dedicated)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1, alley2]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2]))
 
 		// Fetching the alleys
 		let alleys = withDependencies {
@@ -38,7 +38,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testList_WithAlleyWithLocation_ReturnsAlleyWithLocation() async throws {
 		// Given a database with alleys
-		let db = try await initializeDatabase(withAlleys: .default)
+		let db = try initializeDatabase(withAlleys: .default)
 
 		// Fetching the alleys
 		let alleys = withDependencies {
@@ -87,7 +87,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Given a database with two alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1, alley2]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2]))
 
 		// Fetching the alleys by wood material
 		let alleys = withDependencies {
@@ -108,7 +108,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
 		let alley3 = Alley.Database.mock(id: UUID(2), name: "Commodore", pinFall: .freefall)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1, alley2, alley3]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2, alley3]))
 
 		// Fetching the alleys by wood material and freefall
 		let alleys = withDependencies {
@@ -128,7 +128,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Given a database with three alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1, alley2]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2]))
 
 		// Fetching the alleys
 		let alleys = withDependencies {
@@ -148,7 +148,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Given a database with two alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1, alley2]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2]))
 
 		// Given an ordering of ids
 		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
@@ -174,7 +174,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testLoad_WhenAlleyExists_ReturnsAlley() async throws {
 		// Given a database with one alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Fetching the alleys
 		let alley = withDependencies {
@@ -198,7 +198,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			material: .wood,
 			locationId: UUID(0)
 		)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Fetching the alleys
 		let alley = withDependencies {
@@ -232,7 +232,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testLoad_WhenAlleyNotExists_ReturnsNil() async throws {
 		// Given a database with no alleys
-		let db = try await initializeDatabase(withAlleys: nil)
+		let db = try initializeDatabase(withAlleys: nil)
 
 		// Fetching the alleys
 		let alley = withDependencies {
@@ -253,7 +253,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testCreate_WhenAlleyExists_ThrowsError() async throws {
 		// Given a database with an existing alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview")
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Creating the alley
 		let new = Alley.Create(
@@ -287,7 +287,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testCreate_WhenAlleyNotExists_CreatesAlley() async throws {
 		// Given a database with no alleys
-		let db = try await initializeDatabase()
+		let db = try initializeDatabase()
 
 		// Creating the alley
 		let new = Alley.Create(
@@ -320,7 +320,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testUpdate_WhenAlleyExists_UpdatesAlley() async throws {
 		// Given a database with an existing alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", locationId: UUID(0))
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
 		let editable = Alley.Edit(
@@ -353,7 +353,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenAlleyNotExists_ThrowsError() async throws {
 		// Given a database with no alleys
-		let db = try await initializeDatabase(withAlleys: nil)
+		let db = try initializeDatabase(withAlleys: nil)
 
 		// Saving an alley
 		let editable = Alley.Edit(
@@ -384,7 +384,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testEdit_WhenAlleyExists_ReturnsAlley() async throws {
 		// Given a database with one alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
 		let alley = try await withDependencies {
@@ -415,7 +415,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testEdit_WhenAlleyExistsWithLocation_ReturnsAlleyWithLocation() async throws {
 		// Given a database with one alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood, locationId: UUID(0))
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
 		let alley = try await withDependencies {
@@ -451,7 +451,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testEdit_WhenAlleyExistsWithLanes_ReturnsAlleyWithLanes() async throws {
 		// Given a database with one alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood)
-		let db = try await initializeDatabase(
+		let db = try initializeDatabase(
 			withAlleys: .custom([alley1]),
 			withLanes: .custom([
 				Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall),
@@ -490,7 +490,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testEdit_WhenAlleyNotExists_ReturnsNil() async throws {
 		// Given a database with no alleys
-		let db = try await initializeDatabase(withAlleys: nil)
+		let db = try initializeDatabase(withAlleys: nil)
 
 		// Editing the alley
 		let alley = try await withDependencies {
@@ -510,7 +510,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Given a database with 2 alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Skyview", mechanism: .dedicated)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1, alley2]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2]))
 
 		// Deleting the first alley
 		try await withDependencies {
@@ -532,7 +532,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 alley
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood)
-		let db = try await initializeDatabase(withAlleys: .custom([alley1]))
+		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Deleting a non-existent alley
 		try await withDependencies {

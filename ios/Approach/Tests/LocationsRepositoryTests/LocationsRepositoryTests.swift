@@ -17,7 +17,7 @@ final class LocationsRepositoryTests: XCTestCase {
 	func testCreate_WhenLocationExists_ThrowsError() async throws {
 		// Given a database with an existing location
 		let location = Location.Database.mock(id: UUID(0))
-		let db = try await initializeDatabase(withLocations: .custom([location]))
+		let db = try initializeDatabase(withLocations: .custom([location]))
 
 		// Creating the location
 		let new = Location.Create(
@@ -47,7 +47,7 @@ final class LocationsRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLocationNotExists_CreatesLocation() async throws {
 		// Given a database with no locations
-		let db = try await initializeDatabase(withLocations: nil)
+		let db = try initializeDatabase(withLocations: nil)
 
 		// Creating the location
 		let new = Location.Create(
@@ -78,7 +78,7 @@ final class LocationsRepositoryTests: XCTestCase {
 	func testUpdate_WhenLocationExists_UpdatesLocation() async throws {
 		// Given a database with an existing location
 		let location = Location.Database.mock(id: UUID(0))
-		let db = try await initializeDatabase(withLocations: .custom([location]))
+		let db = try initializeDatabase(withLocations: .custom([location]))
 
 		// Editing the location
 		let existing = Location.Edit(
@@ -106,7 +106,7 @@ final class LocationsRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenLocationNotExists_ThrowsError() async throws {
 		// Given a database with no locations
-		let db = try await initializeDatabase(withLocations: nil)
+		let db = try initializeDatabase(withLocations: nil)
 
 		// Editing the location
 		let existing = Location.Create(
