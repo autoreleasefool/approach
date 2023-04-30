@@ -9,11 +9,16 @@ supported = [ ".v16" ]
 
 # Features
 
+[features.AddressLookup]
+repositories = [ "Locations" ]
+services = [ "AddressLookup" ]
+libraries = [ "Views" ]
+
 [features.AlleyEditor]
-features = [ "LaneEditor" ]
+features = [ "AddressLookup", "LaneEditor" ]
 repositories = [ "Alleys" ]
 services = [ "FeatureFlags" ]
-libraries = [ "Equatable", "Form", "ModelsViews" ]
+libraries = [ "Form", "ModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
@@ -127,6 +132,7 @@ dependencies = [ "IdentifiedCollections" ]
 
 [services.AddressLookup]
 [services.AddressLookup.interface]
+libraries = [ "Equatable", "Models" ]
 dependencies = [ "XCTestDynamicOverlay" ]
 
 [services.Analytics]

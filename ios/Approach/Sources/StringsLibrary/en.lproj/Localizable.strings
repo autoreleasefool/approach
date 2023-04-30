@@ -22,9 +22,14 @@
 "alley.editor.fields.pinFall.help" = "Look at how the pins are set up. Do you notice the pins are pushed off the lane after each ball, or are they attached to strings and pulled up?";
 "alley.editor.fields.mechanism.help" = "Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?";
 "alley.editor.fields.pinBase.help" = "What kind of base do the pins have?";
+"alley.editor.fields.address.editorTitle" = "Alley Address";
 "alley.error.empty.title" = "No alleys found";
 "alley.error.empty.message" = "You haven't added any alleys yet.";
 "alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
+
+/* Address */
+"address.error.empty.title" = "No suggestions found";
+"address.error.notFound" = "We were unable to gather details for the chosen location. Please try again.";
 
 /* Bowlers */
 
@@ -201,6 +206,9 @@
 "picker.empty.title" = "No items found";
 "sortOrder.title" = "Sort Order";
 
+/* List */
+"list.results" = "Results";
+
 /* Errors */
 
 "error.generic.title" = "Something went wrong!";
@@ -223,6 +231,7 @@
 "action.save" = "Save";
 "action.manage" = "Manage";
 "action.start" = "Start";
+"action.search" = "Search";
 
 /* Other */
 

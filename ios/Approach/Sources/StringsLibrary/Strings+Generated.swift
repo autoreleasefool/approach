@@ -49,16 +49,34 @@ public enum Strings {
     public static let reset = Strings.tr("Localizable", "action.reset", fallback: "Reset")
     /// Save
     public static let save = Strings.tr("Localizable", "action.save", fallback: "Save")
+    /// Search
+    public static let search = Strings.tr("Localizable", "action.search", fallback: "Search")
     /// Start
     public static let start = Strings.tr("Localizable", "action.start", fallback: "Start")
     /// Try again
     public static let tryAgain = Strings.tr("Localizable", "action.tryAgain", fallback: "Try again")
+  }
+  public enum Address {
+    public enum Error {
+      /// We couldn't load any results. Try another query.
+      public static let noResults = Strings.tr("Localizable", "address.error.noResults", fallback: "We couldn't load any results. Try another query.")
+      /// We were unable to gather details for the chosen location. Please try again.
+      public static let notFound = Strings.tr("Localizable", "address.error.notFound", fallback: "We were unable to gather details for the chosen location. Please try again.")
+      public enum Empty {
+        /// Address
+        public static let title = Strings.tr("Localizable", "address.error.empty.title", fallback: "No suggestions found")
+      }
+    }
   }
   public enum Alley {
     /// Alleys
     public static let title = Strings.tr("Localizable", "alley.title", fallback: "Alley")
     public enum Editor {
       public enum Fields {
+        public enum Address {
+          /// Alley Address
+          public static let editorTitle = Strings.tr("Localizable", "alley.editor.fields.address.editorTitle", fallback: "Alley Address")
+        }
         public enum Material {
           /// To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother.
           public static let help = Strings.tr("Localizable", "alley.editor.fields.material.help", fallback: "To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother.")
@@ -409,6 +427,10 @@ public enum Strings {
         public static let repeats = Strings.tr("Localizable", "league.properties.recurrence.repeats", fallback: "Repeats")
       }
     }
+  }
+  public enum List {
+    /// List
+    public static let results = Strings.tr("Localizable", "list.results", fallback: "Results")
   }
   public enum Opponent {
     /// Opponents

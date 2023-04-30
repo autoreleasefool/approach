@@ -10,6 +10,7 @@ let package = Package(
 	],
 	products: [
 		// MARK: - Features
+		.library(name: "AddressLookupFeature", targets: ["AddressLookupFeature"]),
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
@@ -111,10 +112,26 @@ let package = Package(
 	targets: [
 		// MARK: - Features
 		.target(
+			name: "AddressLookupFeature",
+			dependencies: [
+				"AddressLookupServiceInterface",
+				"FeatureActionLibrary",
+				"LocationsRepositoryInterface",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AddressLookupFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AddressLookupFeature",
+			]
+		),
+		.target(
 			name: "AlleyEditorFeature",
 			dependencies: [
+				"AddressLookupFeature",
 				"AlleysRepositoryInterface",
-				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
 				"LaneEditorFeature",
@@ -689,6 +706,8 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
+				"EquatableLibrary",
+				"ModelsLibrary",
 			]
 		),
 		.testTarget(
