@@ -16,7 +16,7 @@ extension DatabaseService: DependencyKey {
 
 			try fileManager.createDirectory(folderUrl)
 
-			let dbUrl = folderUrl.appending(path: "db_next.sqlite")
+			let dbUrl = folderUrl.appending(path: "db.sqlite")
 			let dbPool = try DatabasePool(path: dbUrl.path())
 			writer = dbPool
 
