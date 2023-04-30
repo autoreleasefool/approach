@@ -33,9 +33,9 @@
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
 		CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */ = {isa = PBXBuildFile; productRef = CACA8A5729C616850075A6C1 /* ScoringService */; };
 		CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BB629FB91270015E4CB /* LocationsRepository */; };
-		CAD79F5D29BFB9670047C22F /* BowlersDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAD79F5C29BFB9670047C22F /* BowlersDataProvider */; };
-		CAD79F5F29BFB9670047C22F /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAD79F5E29BFB9670047C22F /* FramesDataProvider */; };
-		CAE1ED3429BFF81E00076B79 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAE1ED3329BFF81E00076B79 /* PersistenceService */; };
+		CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BB829FDF8DF0015E4CB /* FramesRepository */; };
+		CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BBA29FDF8E40015E4CB /* GamesRepository */; };
+		CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */; };
 		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
 /* End PBXBuildFile section */
 
@@ -79,9 +79,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAE1ED3429BFF81E00076B79 /* PersistenceService in Frameworks */,
-				CAD79F5F29BFB9670047C22F /* FramesDataProvider in Frameworks */,
-				CAD79F5D29BFB9670047C22F /* BowlersDataProvider in Frameworks */,
+				CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */,
+				CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */,
+				CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */,
 				CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -268,9 +268,9 @@
 			name = GameEditorPreview;
 			packageProductDependencies = (
 				CA632F6529BD293E00272ADB /* GamesEditorFeature */,
-				CAD79F5C29BFB9670047C22F /* BowlersDataProvider */,
-				CAD79F5E29BFB9670047C22F /* FramesDataProvider */,
-				CAE1ED3329BFF81E00076B79 /* PersistenceService */,
+				CAD15BB829FDF8DF0015E4CB /* FramesRepository */,
+				CAD15BBA29FDF8E40015E4CB /* GamesRepository */,
+				CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */,
 			);
 			productName = GameEditorPreview;
 			productReference = CA632F5529BD26E200272ADB /* GameEditorPreview.app */;
@@ -850,17 +850,17 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = LocationsRepository;
 		};
-		CAD79F5C29BFB9670047C22F /* BowlersDataProvider */ = {
+		CAD15BB829FDF8DF0015E4CB /* FramesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = BowlersDataProvider;
+			productName = FramesRepository;
 		};
-		CAD79F5E29BFB9670047C22F /* FramesDataProvider */ = {
+		CAD15BBA29FDF8E40015E4CB /* GamesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = FramesDataProvider;
+			productName = GamesRepository;
 		};
-		CAE1ED3329BFF81E00076B79 /* PersistenceService */ = {
+		CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = PersistenceService;
+			productName = TestDatabaseUtilitiesLibrary;
 		};
 		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;

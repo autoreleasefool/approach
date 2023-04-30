@@ -1,19 +1,42 @@
 import ComposableArchitecture
+import DatabaseServiceInterface
 import GamesEditorFeature
-import SharedModelsLibrary
+import GRDB
+import ModelsLibrary
 import SwiftUI
+import TestDatabaseUtilitiesLibrary
 
 @main
 struct GameEditorPreviewApp: App {
 	let store: Store = {
 		return .init(
 			initialState: GamesEditor.State(
-				bowlers: Bowler.mocks,
-				bowlerGames: [Bowler.mocks.first!.id: Game.mocks.map(\.id)],
-				currentBowler: Bowler.mocks.first!.id,
-				currentGame: Game.mocks.first!.id
+				bowlers: [.init(id: UUID(0), name: "Joseph")],
+				bowlerGames: [UUID(0): [UUID(0), UUID(1)]],
+				currentBowler: UUID(0),
+				currentGame: UUID(0)
 			),
 			reducer: GamesEditor()._printChanges()
+				.dependency(\.database, {
+					let db: any DatabaseWriter
+					do {
+						db = try initializeDatabase(
+							withLocations: .default,
+							withAlleys: .default,
+							withLanes: .default,
+							withBowlers: .default,
+							withGear: .default,
+							withLeagues: .default,
+							withSeries: .default,
+							withGames: .default,
+							withFrames: .default
+						)
+					} catch {
+						fatalError("Could not initialize database: \(error)")
+					}
+
+					return .init(reader: { db }, writer: { db })
+				}())
 		)
 	}()
 
@@ -24,43 +47,4 @@ struct GameEditorPreviewApp: App {
 			}
 		}
 	}
-}
-
-extension Bowler {
-	public static let mocks: IdentifiedArrayOf<Self> = .init(uniqueElements: [
-		.init(
-			id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-			name: "Joseph",
-			avatar: .text("JR", .red())
-		)
-	])
-}
-
-extension Game {
-	public static let mocks: [Self] = [
-		.init(
-			series: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-			id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
-			ordinal: 1,
-			locked: .unlocked,
-			manualScore: nil,
-			excludeFromStatistics: .include
-		),
-		.init(
-			series: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-			id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
-			ordinal: 2,
-			locked: .unlocked,
-			manualScore: nil,
-			excludeFromStatistics: .include
-		),
-		.init(
-			series: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-			id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
-			ordinal: 3,
-			locked: .unlocked,
-			manualScore: nil,
-			excludeFromStatistics: .include
-		)
-	]
 }
