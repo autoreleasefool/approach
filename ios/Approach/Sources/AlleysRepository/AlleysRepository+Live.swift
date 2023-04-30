@@ -3,6 +3,7 @@ import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
 import GRDB
+import LocationsRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
 import RepositoryLibrary
@@ -11,6 +12,7 @@ extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
 		@Dependency(\.recentlyUsedService) var recentlyUsed
+		@Dependency(\.locations) var locations
 
 		return Self(
 			list: { material, pinFall, mechanism, pinBase, ordering in
@@ -56,11 +58,17 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			create: { alley in
+				if let location = alley.location {
+					try await locations.create(location)
+				}
 				try await database.writer().write {
 					try alley.insert($0)
 				}
 			},
 			update: { alley in
+				if let location = alley.location {
+					try await locations.update(location)
+				}
 				try await database.writer().write {
 					try alley.update($0)
 				}

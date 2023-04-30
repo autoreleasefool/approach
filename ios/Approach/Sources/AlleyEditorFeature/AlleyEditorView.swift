@@ -1,22 +1,26 @@
+import AddressLookupFeature
 import AlleysRepositoryInterface
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import FormLibrary
+import MapKit
 import ModelsLibrary
 import ModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct AlleyEditorView: View {
 	let store: StoreOf<AlleyEditor>
 
 	struct ViewState: Equatable {
 		@BindingState public var name: String
-		@BindingState public var address: String?
 		@BindingState public var material: Alley.Material?
 		@BindingState public var pinFall: Alley.PinFall?
 		@BindingState public var mechanism: Alley.Mechanism?
 		@BindingState public var pinBase: Alley.PinBase?
+		public let location: Location.Edit?
 
 		var isLaneEditorPresented: Bool
 		let hasLanesEnabled: Bool
@@ -25,11 +29,11 @@ public struct AlleyEditorView: View {
 
 		init(state: AlleyEditor.State) {
 			self.name = state.name
-			self.address = state.address
 			self.material = state.material
 			self.pinFall = state.pinFall
 			self.mechanism = state.mechanism
 			self.pinBase = state.pinBase
+			self.location = state.location
 			self.isLaneEditorPresented = state.isLaneEditorPresented
 			self.hasLanesEnabled = state.hasLanesEnabled
 			self.newLanes = state.newLanes
@@ -38,6 +42,8 @@ public struct AlleyEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
+		case didTapAddressField
+		case didTapRemoveAddressButton
 		case setLaneEditor(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
@@ -50,6 +56,7 @@ public struct AlleyEditorView: View {
 		WithViewStore(store, observe: ViewState.init, send: AlleyEditor.Action.init) { viewStore in
 			FormView(store: store.scope(state: \.form, action: /AlleyEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
+				mapSection(viewStore)
 				materialSection(viewStore)
 				mechanismSection(viewStore)
 				pinFallSection(viewStore)
@@ -62,6 +69,13 @@ public struct AlleyEditorView: View {
 						.font(.caption)
 				}
 			}
+			.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
+				NavigationView {
+					AddressLookupView(store: scopedStore)
+						.navigationTitle(Strings.Alley.Editor.Fields.Address.editorTitle)
+						.navigationBarTitleDisplayMode(.inline)
+				}
+			}
 		}
 	}
 
@@ -71,16 +85,40 @@ public struct AlleyEditorView: View {
 				Strings.Editor.Fields.Details.name,
 				text: viewStore.binding(\.$name)
 			)
-			TextField(
-				Strings.Editor.Fields.Details.address,
-				text: viewStore.binding(
-					get: { $0.address ?? "" },
-					send: { ViewAction.set(\.$address, $0.isEmpty ? nil : $0) }
-				)
-			)
-			.textContentType(.fullStreetAddress)
+			HStack {
+				Button { viewStore.send(.didTapAddressField) } label: {
+					Text(viewStore.location?.title ?? "Address")
+				}
+				Spacer()
+				if viewStore.location != nil {
+					Button { viewStore.send(.didTapRemoveAddressButton) } label: {
+						Image(systemName: "x.circle.fill")
+					}
+				}
+			}
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
+	}
+
+	@ViewBuilder private func mapSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		if let location = viewStore.location {
+			Section {
+				Map(
+					coordinateRegion: .constant(.init(
+						center: location.coordinate.mapCoordinate,
+						span: .init(latitudeDelta: 0.005, longitudeDelta: 0.005)
+					)),
+					interactionModes: [],
+					annotationItems: [location]
+				) { place in
+					MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Color.appAction)
+				}
+				.frame(maxWidth: .infinity)
+				.frame(height: 125)
+				.padding(0)
+			}
+			.listRowInsets(EdgeInsets())
+		}
 	}
 
 	private func materialSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -193,7 +231,6 @@ extension AlleyEditor.State {
 		get { .init(state: self) }
 		set {
 			self.name = newValue.name
-			self.address = newValue.address
 			self.material = newValue.material
 			self.pinFall = newValue.pinFall
 			self.mechanism = newValue.mechanism
@@ -205,6 +242,10 @@ extension AlleyEditor.State {
 extension AlleyEditor.Action {
 	init(action: AlleyEditorView.ViewAction) {
 		switch action {
+		case .didTapRemoveAddressButton:
+			self = .view(.didTapRemoveAddressButton)
+		case .didTapAddressField:
+			self = .view(.didTapAddressField)
 		case let .setLaneEditor(isPresented):
 			self = .view(.setLaneEditor(isPresented: isPresented))
 		case let .binding(action):

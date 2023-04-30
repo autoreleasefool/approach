@@ -164,7 +164,7 @@ public struct LeagueEditor: Reducer {
 					return .none
 				}
 
-			case .binding(\.$recurrence):
+			case .binding(\.view.$recurrence):
 				if state.recurrence == .once {
 					state.gamesPerSeries = .static
 				}

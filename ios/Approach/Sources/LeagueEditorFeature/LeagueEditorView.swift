@@ -156,9 +156,9 @@ public struct LeagueEditorView: View {
 
 				if viewStore.gamesPerSeries == .static {
 					Stepper(
-						"\(viewStore.numberOfGames ?? 0)",
+						"\(viewStore.numberOfGames ?? 1)",
 						value: viewStore.binding(
-							get: { $0.numberOfGames ?? 0 },
+							get: { $0.numberOfGames ?? 1 },
 							send: { .binding(.set(\.$numberOfGames, $0)) }
 						),
 						in: League.NUMBER_OF_GAMES_RANGE

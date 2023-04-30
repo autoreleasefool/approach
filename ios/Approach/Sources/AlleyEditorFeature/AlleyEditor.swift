@@ -1,3 +1,4 @@
+import AddressLookupFeature
 import AlleysRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
@@ -8,6 +9,7 @@ import FormLibrary
 import Foundation
 import LaneEditorFeature
 import LanesRepositoryInterface
+import LocationsRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
 
@@ -16,11 +18,11 @@ public typealias AlleyForm = Form<Alley.Create, Alley.Edit>
 public struct AlleyEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var name: String
-		@BindingState public var address: String?
 		@BindingState public var material: Alley.Material?
 		@BindingState public var pinFall: Alley.PinFall?
 		@BindingState public var mechanism: Alley.Mechanism?
 		@BindingState public var pinBase: Alley.PinBase?
+		public var location: Location.Edit?
 
 		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
 		public var newLanes: IdentifiedArrayOf<Lane.Create>
@@ -32,13 +34,14 @@ public struct AlleyEditor: Reducer {
 		public let hasLanesEnabled: Bool
 		public var isLaneEditorPresented = false
 
+		@PresentationState public var addressLookup: AddressLookup.State?
+
 		public init(value: InitialValue) {
 			let alleyId: Alley.ID
 			switch value {
 			case let .create(new):
 				alleyId = new.id
 				self.name = new.name
-				self.address = new.address
 				self.material = new.material
 				self.pinFall = new.pinFall
 				self.mechanism = new.mechanism
@@ -49,7 +52,6 @@ public struct AlleyEditor: Reducer {
 			case let .edit(existing):
 				alleyId = existing.alley.id
 				self.name = existing.alley.name
-				self.address = existing.alley.address
 				self.material = existing.alley.material
 				self.pinFall = existing.alley.pinFall
 				self.mechanism = existing.alley.mechanism
@@ -68,6 +70,8 @@ public struct AlleyEditor: Reducer {
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didTapRemoveAddressButton
+			case didTapAddressField
 			case setLaneEditor(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {
@@ -78,6 +82,7 @@ public struct AlleyEditor: Reducer {
 			case didUpdateLanes(TaskResult<Alley.Edit>)
 			case form(AlleyForm.Action)
 			case alleyLanes(AlleyLanesEditor.Action)
+			case addressLookup(PresentationAction<AddressLookup.Action>)
 		}
 
 		case view(ViewAction)
@@ -117,6 +122,17 @@ public struct AlleyEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didTapRemoveAddressButton:
+					state.location = nil
+					// TODO: Fix bug with .didTapRemoveAddressButton needing to set `addressLookup` to nil
+					// The problem is the buttons overlap in AlleyEditorView
+					state.addressLookup = nil
+					return .none
+
+				case .didTapAddressField:
+					state.addressLookup = .init(initialQuery: state.location?.title ?? "")
+					return .none
+
 				case let .setLaneEditor(isPresented):
 					state.isLaneEditorPresented = isPresented
 					return .none
@@ -179,16 +195,32 @@ public struct AlleyEditor: Reducer {
 						return .none
 					}
 
+				case let .addressLookup(.presented(.delegate(delegateAction))):
+					switch delegateAction {
+					case let .didSelectAddress(location):
+						state.location?.updateProperties(with: location)
+						return .none
+					}
+
 				case .alleyLanes(.view), .alleyLanes(.internal):
 					return .none
 
 				case .form(.view), .form(.internal):
+					return .none
+
+				case .addressLookup(.presented(.binding)),
+						.addressLookup(.presented(.internal)),
+						.addressLookup(.presented(.view)),
+						.addressLookup(.dismiss):
 					return .none
 				}
 
 			case .binding, .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.$addressLookup, action: /Action.internal..Action.InternalAction.addressLookup) {
+			AddressLookup()
 		}
 	}
 }
@@ -214,19 +246,19 @@ extension AlleyEditor.State {
 			switch initialValue {
 			case var .create(new):
 				new.name = name
-				new.address = address
 				new.material = material
 				new.pinFall = pinFall
 				new.mechanism = mechanism
 				new.pinBase = pinBase
+				new.location = location
 				form.value = .create(new)
 			case var .edit(existing):
 				existing.name = name
-				existing.address = address
 				existing.material = material
 				existing.pinFall = pinFall
 				existing.mechanism = mechanism
 				existing.pinBase = pinBase
+				existing.location = location
 				form.value = .edit(existing)
 			}
 			return form
