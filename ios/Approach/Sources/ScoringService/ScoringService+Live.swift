@@ -18,11 +18,11 @@ extension ScoringService: DependencyKey {
 				// Must be at least 1 roll or we skip the frame
 				guard !frame.rolls.isEmpty else { return }
 
-				// Last roll must be from previous frame (previous index is ordinal minus 2)
-				if let lastRoll = rolls.last, lastRoll.frameIndex != frame.ordinal - 2 { return }
+				// Last roll must be from previous frame
+				if let lastRoll = rolls.last, lastRoll.frameIndex != frame.index - 1 { return }
 
 				rolls.append(contentsOf: frame.rolls.enumerated().map {
-					.init(frameIndex: frame.ordinal - 1, rollIndex: $0.offset, roll: $0.element)
+					.init(frameIndex: frame.index, rollIndex: $0.offset, roll: $0.element.roll)
 				})
 			}
 

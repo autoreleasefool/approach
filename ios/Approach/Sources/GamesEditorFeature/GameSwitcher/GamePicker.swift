@@ -4,23 +4,19 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
-struct GameIndex: Hashable, Identifiable {
-	let id: Game.ID
-	let ordinal: Int
+public struct GameIndex: Hashable, Identifiable {
+	public let id: Game.ID
+	public let index: Int
 }
 
 public struct GamePicker: Reducer {
 	public struct State: Equatable {
-		public let games: [Game.ID]
 		public var selected: Game.ID
-
-		var indexedGames: [GameIndex] {
-			games.enumerated().map { .init(id: $0.element, ordinal: $0.offset + 1) }
-		}
+		public let indexedGames: [GameIndex]
 
 		init(games: [Game.ID], selected: Game.ID) {
-			self.games = games
 			self.selected = selected
+			self.indexedGames = games.enumerated().map { .init(id: $0.element, index: $0.offset) }
 		}
 	}
 
@@ -85,7 +81,7 @@ struct GamePickerView: View {
 				Button { viewStore.send(.didTapGame(indexedGame.id)) } label: {
 					HStack {
 						Label(
-							Strings.Game.title(indexedGame.ordinal),
+							Strings.Game.title(indexedGame.index + 1),
 							systemImage: viewStore.selected == indexedGame.id ? "smallcircle.filled.circle" : "circle"
 						)
 						.foregroundColor(.appAction)

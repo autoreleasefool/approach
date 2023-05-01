@@ -8,7 +8,7 @@ extension Game {
 
 		public let seriesId: Series.ID
 		public let id: Game.ID
-		public var ordinal: Int
+		public var index: Int
 		public var locked: Lock
 		public var manualScore: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
@@ -16,14 +16,14 @@ extension Game {
 		public init(
 			seriesId: Series.ID,
 			id: Game.ID,
-			ordinal: Int,
+			index: Int,
 			locked: Lock,
 			manualScore: Int?,
 			excludeFromStatistics: ExcludeFromStatistics
 		) {
 			self.seriesId = seriesId
 			self.id = id
-			self.ordinal = ordinal
+			self.index = index
 			self.locked = locked
 			self.manualScore = manualScore
 			self.excludeFromStatistics = excludeFromStatistics
@@ -40,7 +40,7 @@ extension Game.Database {
 	public enum Columns {
 		public static let seriesId = Column(CodingKeys.seriesId)
 		public static let id = Column(CodingKeys.id)
-		public static let ordinal = Column(CodingKeys.ordinal)
+		public static let index = Column(CodingKeys.index)
 		public static let locked = Column(CodingKeys.locked)
 		public static let manualScore = Column(CodingKeys.manualScore)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)

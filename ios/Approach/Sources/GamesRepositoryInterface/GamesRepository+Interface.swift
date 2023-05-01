@@ -3,7 +3,7 @@ import ModelsLibrary
 
 extension Game {
 	public enum Ordering: Hashable, CaseIterable {
-		case byOrdinal
+		case byIndex
 	}
 }
 

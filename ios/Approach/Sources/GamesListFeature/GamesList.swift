@@ -8,7 +8,7 @@ import ResourceListLibrary
 import StringsLibrary
 
 extension Game.Summary: ResourceListItem {
-	public var name: String { Strings.Game.title(ordinal) }
+	public var name: String { Strings.Game.title(index + 1) }
 }
 
 public struct GamesList: Reducer {
@@ -55,7 +55,7 @@ public struct GamesList: Reducer {
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList { series in games.seriesGames(forId: series, ordering: .byOrdinal) }
+			ResourceList { series in games.seriesGames(forId: series, ordering: .byIndex) }
 		}
 
 		Reduce<State, Action> { state, action in

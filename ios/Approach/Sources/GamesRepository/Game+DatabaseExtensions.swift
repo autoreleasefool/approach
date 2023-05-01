@@ -8,13 +8,11 @@ extension Game.Edit: PersistableRecord, FetchableRecord {
 }
 
 extension DerivableRequest<Game.Database> {
-	func orderByOrdinal() -> Self {
-		let ordinal = Game.Database.Columns.ordinal
-		return order(ordinal)
+	func orderByIndex() -> Self {
+		return order(Game.Database.Columns.index)
 	}
 
 	func filter(bySeries: Series.ID) -> Self {
-		let series = Game.Database.Columns.seriesId
-		return filter(series == bySeries)
+		return filter(Game.Database.Columns.seriesId == bySeries)
 	}
 }

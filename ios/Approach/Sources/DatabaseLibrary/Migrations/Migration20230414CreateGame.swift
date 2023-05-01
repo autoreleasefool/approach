@@ -9,7 +9,7 @@ struct Migration20230414CreateGame: DBMigration {
 				.notNull()
 				.indexed()
 				.references("series", onDelete: .cascade)
-			t.column("ordinal", .integer)
+			t.column("index", .integer)
 				.notNull()
 			t.column("locked", .text)
 				.notNull()

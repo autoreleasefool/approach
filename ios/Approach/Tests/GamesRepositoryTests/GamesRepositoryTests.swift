@@ -14,8 +14,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testList_ReturnsAllGames() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
-		let game2 = Game.Database.mock(id: UUID(1), ordinal: 2)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games
@@ -23,7 +23,7 @@ final class GamesRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			self.games.seriesGames(forId: UUID(0), ordering: .byOrdinal)
+			self.games.seriesGames(forId: UUID(0), ordering: .byIndex)
 		}
 		var iterator = games.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -34,8 +34,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testList_FilterBySeries_ReturnsSeriesGames() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), ordinal: 1)
-		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), ordinal: 2)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1)
 		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games by series
@@ -43,7 +43,7 @@ final class GamesRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			self.games.seriesGames(forId: UUID(0), ordering: .byOrdinal)
+			self.games.seriesGames(forId: UUID(0), ordering: .byIndex)
 		}
 		var iterator = games.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -52,10 +52,10 @@ final class GamesRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(game1)])
 	}
 
-	func testList_SortsByOrdinal() async throws {
+	func testList_SortsByIndex() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(id: UUID(0), ordinal: 2)
-		let game2 = Game.Database.mock(id: UUID(1), ordinal: 1)
+		let game1 = Game.Database.mock(id: UUID(0), index: 1)
+		let game2 = Game.Database.mock(id: UUID(1), index: 0)
 		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Fetching the games
@@ -63,18 +63,18 @@ final class GamesRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			self.games.seriesGames(forId: UUID(0), ordering: .byOrdinal)
+			self.games.seriesGames(forId: UUID(0), ordering: .byIndex)
 		}
 		var iterator = games.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
-		// Returns all the games sorted by ordinal
+		// Returns all the games sorted by index
 		XCTAssertEqual(fetched, [.init(game2), .init(game1)])
 	}
 
 	func testEdit_WhenGameExists_ReturnsGame() async throws {
 		// Given a database with one game
-		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
@@ -110,7 +110,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGameExists_UpdatesGame() async throws {
 		// Given a database with a game
-		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1, locked: .open, manualScore: nil)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, locked: .open, manualScore: nil)
 		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
@@ -125,7 +125,7 @@ final class GamesRepositoryTests: XCTestCase {
 		// Updates the database
 		let updated = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
 		XCTAssertEqual(updated?.id, UUID(0))
-		XCTAssertEqual(updated?.ordinal, 1)
+		XCTAssertEqual(updated?.index, 0)
 		XCTAssertEqual(updated?.locked, .locked)
 
 		// Does not insert any records
@@ -155,8 +155,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdExists_DeletesGame() async throws {
 		// Given a database with two games
-		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
-		let game2 = Game.Database.mock(id: UUID(1), ordinal: 2)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
 		// Deleting the first game
@@ -178,7 +178,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with one game
-		let game1 = Game.Database.mock(id: UUID(0), ordinal: 1)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Deleting a non-existent series
@@ -199,7 +199,7 @@ extension Game.Database {
 	static func mock(
 		seriesId: Series.ID = UUID(0),
 		id: ID,
-		ordinal: Int,
+		index: Int,
 		locked: Game.Lock = .open,
 		manualScore: Int? = nil,
 		excludeFromStatistics: Game.ExcludeFromStatistics = .include
@@ -207,7 +207,7 @@ extension Game.Database {
 		.init(
 			seriesId: seriesId,
 			id: id,
-			ordinal: ordinal,
+			index: index,
 			locked: locked,
 			manualScore: manualScore,
 			excludeFromStatistics: excludeFromStatistics
@@ -219,7 +219,7 @@ extension Game.Summary {
 	init(_ from: Game.Database) {
 		self.init(
 			id: from.id,
-			ordinal: from.ordinal,
+			index: from.index,
 			manualScore: from.manualScore
 		)
 	}

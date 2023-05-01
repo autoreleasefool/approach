@@ -16,7 +16,7 @@ func insert(
 			.init(
 				seriesId: UUID(0),
 				id: UUID(0),
-				ordinal: 1,
+				index: 0,
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include
@@ -24,7 +24,7 @@ func insert(
 			.init(
 				seriesId: UUID(1),
 				id: UUID(1),
-				ordinal: 1,
+				index: 0,
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include
@@ -32,7 +32,7 @@ func insert(
 			.init(
 				seriesId: UUID(1),
 				id: UUID(2),
-				ordinal: 2,
+				index: 1,
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include
@@ -40,7 +40,7 @@ func insert(
 			.init(
 				seriesId: UUID(2),
 				id: UUID(3),
-				ordinal: 1,
+				index: 0,
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include
@@ -48,7 +48,7 @@ func insert(
 			.init(
 				seriesId: UUID(3),
 				id: UUID(4),
-				ordinal: 1,
+				index: 0,
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include
@@ -56,7 +56,7 @@ func insert(
 			.init(
 				seriesId: UUID(3),
 				id: UUID(5),
-				ordinal: 2,
+				index: 1,
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include

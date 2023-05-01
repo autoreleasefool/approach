@@ -16,8 +16,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testLoad_ReturnsFramesForOneGame() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
-		let frame2 = Frame.Database.mock(gameId: UUID(1), ordinal: 1)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
@@ -31,14 +31,14 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns one frame
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), ordinal: 1, rolls: [])]
+			[.init(gameId: UUID(0), index: 0, rolls: [])]
 		)
 	}
 
 	func testLoad_WhenGameExists_ReturnsFrames() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
-		let frame2 = Frame.Database.mock(gameId: UUID(0), ordinal: 2)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
@@ -52,7 +52,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns the game
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), ordinal: 1, rolls: []), .init(gameId: UUID(0), ordinal: 2, rolls: [])]
+			[.init(gameId: UUID(0), index: 0, rolls: []), .init(gameId: UUID(0), index: 1, rolls: [])]
 		)
 	}
 
@@ -76,8 +76,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testEdit_ReturnsFramesForOneGame() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
-		let frame2 = Frame.Database.mock(gameId: UUID(1), ordinal: 1)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
@@ -91,14 +91,14 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns one frame
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), ordinal: 1, rolls: [])]
+			[.init(gameId: UUID(0), index: 0, rolls: [])]
 		)
 	}
 
 	func testEdit_WhenGameExists_ReturnsFrames() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
-		let frame2 = Frame.Database.mock(gameId: UUID(0), ordinal: 2)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
@@ -112,7 +112,7 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns the game
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), ordinal: 1, rolls: []), .init(gameId: UUID(0), ordinal: 2, rolls: [])]
+			[.init(gameId: UUID(0), index: 0, rolls: []), .init(gameId: UUID(0), index: 1, rolls: [])]
 		)
 	}
 
@@ -136,14 +136,17 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenFrameExists_UpdatesFrame() async throws {
 		// Given a database with a frame
-		let frame1 = Frame.Database.mock(gameId: UUID(0), ordinal: 1)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
 		let db = try initializeDatabase(withFrames: .custom([frame1]))
 
 		// Editing the frame
 		let editable = Frame.Edit(
 			gameId: UUID(0),
-			ordinal: 1,
-			rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)]
+			index: 0,
+			rolls: [
+				.init(index: 0, roll: .default),
+				.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: true)),
+			]
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -157,11 +160,11 @@ final class FramesRepositoryTests: XCTestCase {
 			try Frame.Database
 				.all()
 				.filter(Frame.Database.Columns.gameId == UUID(0))
-				.filter(Frame.Database.Columns.ordinal == 1)
+				.filter(Frame.Database.Columns.index == 0)
 				.fetchOne($0)
 		}
-		XCTAssertEqual(updated?.id, "\(UUID(0))-1")
-		XCTAssertEqual(updated?.ordinal, 1)
+		XCTAssertEqual(updated?.id, "\(UUID(0))-0")
+		XCTAssertEqual(updated?.index, 0)
 		XCTAssertEqual(updated?.roll0, "000000")
 		XCTAssertEqual(updated?.roll1, "100100")
 		XCTAssertNil(updated?.roll2)
@@ -179,8 +182,11 @@ final class FramesRepositoryTests: XCTestCase {
 		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Frame.Edit(
 				gameId: UUID(0),
-				ordinal: 1,
-				rolls: [.default, .init(pinsDowned: [.headPin], didFoul: true)]
+				index: 0,
+				rolls: [
+					.init(index: 0, roll: .default),
+					.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: true)),
+				]
 			)
 			try await withDependencies {
 				$0.database.writer = { db }
@@ -199,14 +205,14 @@ final class FramesRepositoryTests: XCTestCase {
 extension Frame.Database {
 	static func mock(
 		gameId: Game.ID = UUID(0),
-		ordinal: Int,
+		index: Int,
 		roll0: String? = nil,
 		roll1: String? = nil,
 		roll2: String? = nil
 	) -> Self {
 		.init(
 			gameId: gameId,
-			ordinal: ordinal,
+			index: index,
 			roll0: roll0,
 			roll1: roll1,
 			roll2: roll2

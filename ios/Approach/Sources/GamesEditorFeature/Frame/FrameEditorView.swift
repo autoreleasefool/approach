@@ -14,7 +14,7 @@ struct FrameEditorView: View {
 
 		init(state: FrameEditor.State) {
 			self.rollIndex = state.currentRollIndex
-			self.roll = state.frame.rolls[state.currentRollIndex]
+			self.roll = state.frame.rolls[state.currentRollIndex].roll
 			self.renderWidth = state.renderWidth
 		}
 	}

@@ -15,7 +15,7 @@ extension FramesRepository: DependencyKey {
 				let frames = try await database.reader().read {
 					try Frame.Database
 						.all()
-						.orderByOrdinal()
+						.orderByIndex()
 						.filter(byGame: game)
 						.asRequest(of: Frame.Summary.self)
 						.fetchAll($0)
@@ -26,7 +26,7 @@ extension FramesRepository: DependencyKey {
 				let frames = try await database.reader().read {
 					try Frame.Database
 						.all()
-						.orderByOrdinal()
+						.orderByIndex()
 						.filter(byGame: game)
 						.asRequest(of: Frame.Edit.self)
 						.fetchAll($0)

@@ -7,13 +7,13 @@ struct Migration20230414CreateFrame: DBMigration {
 				.notNull()
 				.indexed()
 				.references("game", onDelete: .cascade)
-			t.column("ordinal", .integer)
+			t.column("index", .integer)
 				.notNull()
 			t.column("roll0", .text)
 			t.column("roll1", .text)
 			t.column("roll2", .text)
 
-			t.primaryKey(["gameId", "ordinal"])
+			t.primaryKey(["gameId", "index"])
 		}
 	}
 }

@@ -33,4 +33,20 @@ extension Frame {
 
 		public static let `default` = Self(pinsDowned: [], didFoul: false)
 	}
+
+	public struct OrderedRoll: Sendable, Identifiable, Equatable {
+		public let index: Int
+		public var roll: Roll
+
+		public var id: Int { index }
+
+		public init(index: Int, roll: Roll) {
+			self.index = index
+			self.roll = roll
+		}
+
+		public var displayValue: String {
+			roll.pinsDowned.displayValue(rollIndex: index)
+		}
+	}
 }

@@ -12,13 +12,11 @@ extension Frame.Summary: TableRecord, FetchableRecord {
 }
 
 extension DerivableRequest<Frame.Database> {
-	func orderByOrdinal() -> Self {
-		let ordinal = Frame.Database.Columns.ordinal
-		return order(ordinal)
+	func orderByIndex() -> Self {
+		order(Frame.Database.Columns.index)
 	}
 
 	func filter(byGame: Game.ID) -> Self {
-		let game = Frame.Database.Columns.gameId
-		return filter(game == byGame)
+		filter(Frame.Database.Columns.gameId == byGame)
 	}
 }

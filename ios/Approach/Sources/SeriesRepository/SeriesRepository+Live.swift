@@ -44,19 +44,19 @@ extension SeriesRepository: DependencyKey {
 						try series.insert(db)
 
 						try dependencies.yield {
-							for ordinal in (1...series.numberOfGames) {
+							for index in (0..<series.numberOfGames) {
 								let game = Game.Database(
 									seriesId: series.id,
 									id: uuid(),
-									ordinal: ordinal,
+									index: index,
 									locked: .open,
 									manualScore: nil,
 									excludeFromStatistics: .init(from: series.excludeFromStatistics)
 								)
 								try game.insert(db)
 
-								for frameOrdinal in (1...Game.NUMBER_OF_FRAMES) {
-									let frame = Frame.Database(gameId: game.id, ordinal: frameOrdinal, roll0: nil, roll1: nil, roll2: nil)
+								for frameIndex in (0..<Game.NUMBER_OF_FRAMES) {
+									let frame = Frame.Database(gameId: game.id, index: frameIndex, roll0: nil, roll1: nil, roll2: nil)
 									try frame.insert(db)
 								}
 							}

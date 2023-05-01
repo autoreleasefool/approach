@@ -15,7 +15,7 @@ extension GamesRepository: DependencyKey {
 				database.reader().observe {
 					try Game.Database
 						.all()
-						.orderByOrdinal()
+						.orderByIndex()
 						.filter(bySeries: series)
 						.asRequest(of: Game.Summary.self)
 						.fetchAll($0)
