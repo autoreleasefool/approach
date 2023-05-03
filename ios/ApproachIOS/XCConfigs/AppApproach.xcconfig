@@ -1,0 +1,6 @@
+#include "./Base/App.xcconfig"
+
+DEVELOPMENT_ASSET_PATHS = "ApproachIOS/Preview Content"
+INFOPLIST_FILE = Approach/Info.plist
+INFOPLIST_KEY_CFBundleDisplayName = Approach
+PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.approach

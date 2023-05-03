@@ -1,0 +1,10 @@
+#include "./Version.xcconfig"
+
+GENERATE_INFOPLIST_FILE = YES
+LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/Frameworks @loader_path/Frameworks
+PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.ApproachTests
+PRODUCT_NAME = $(TARGET_NAME)
+SUPPORTED_PLATFORMS = iphoneos iphonesimulator
+SUPPORTS_MACCATALYST = NO
+SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES
+SWIFT_EMIT_LOC_STRINGS = NO
