@@ -61,7 +61,6 @@ public struct GearEditorView: View {
 					}
 					.disabled(viewStore.isEditing)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section(Strings.Gear.Properties.owner) {
 					NavigationLink(
@@ -89,7 +88,6 @@ public struct GearEditorView: View {
 						)
 					}
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 			.interactiveDismissDisabled(viewStore.isBowlerPickerPresented)
 		}

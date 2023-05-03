@@ -39,15 +39,12 @@ struct LeaguesFilterView: View {
 						}
 					}
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section {
 					Button(Strings.Action.reset) { viewStore.send(.didTapClearButton) }
 						.tint(.appDestructive)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Action.filter)
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {

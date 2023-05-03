@@ -47,7 +47,6 @@ public struct AddressLookupView: View {
 						}
 						.frame(maxWidth: .infinity)
 					}
-					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				} else {
 					if let error = viewStore.loadingAddressError ?? viewStore.loadingResultsError {
 						Section {
@@ -61,7 +60,6 @@ public struct AddressLookupView: View {
 							Text(Strings.Address.Error.Empty.title)
 								.font(.caption)
 								.multilineTextAlignment(.center)
-								.listRowBackground(Color(uiColor: .secondarySystemBackground))
 						} else {
 							ForEach(viewStore.results) { result in
 								Button { viewStore.send(.didTapResult(result.id)) } label: {

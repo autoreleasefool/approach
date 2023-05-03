@@ -85,7 +85,6 @@ public struct SeriesEditorView: View {
 					)
 					.datePickerStyle(.graphical)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				if viewStore.hasAlleysEnabled {
 					Section(Strings.Series.Properties.alley) {
@@ -132,7 +131,6 @@ public struct SeriesEditorView: View {
 							.disabled(viewStore.location == nil)
 						}
 					}
-					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
 
 				Section {
@@ -148,7 +146,6 @@ public struct SeriesEditorView: View {
 				} footer: {
 					Text(Strings.Series.Editor.Fields.PreBowl.help)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section {
 					Toggle(
@@ -167,7 +164,6 @@ public struct SeriesEditorView: View {
 				} footer: {
 					excludeFromStatisticsHelp(viewStore)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 		}
 	}

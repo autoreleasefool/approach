@@ -60,7 +60,6 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 					}
 					.buttonStyle(TappableElement())
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			} empty: {
 				ListEmptyContent(
 					.emptyAlleys, // TODO: empty picker image
@@ -82,7 +81,6 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 					}
 				}
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Picker.title(Resource.pickableModelName(forCount: viewStore.limit)))
 			.toolbar {
 				if viewStore.isCancellable {

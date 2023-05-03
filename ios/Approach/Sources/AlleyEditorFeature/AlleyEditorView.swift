@@ -95,7 +95,6 @@ public struct AlleyEditorView: View {
 				}
 			}
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	@ViewBuilder private func mapSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -133,7 +132,6 @@ public struct AlleyEditorView: View {
 		} footer: {
 			Text(Strings.Alley.Editor.Fields.Material.help)
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func pinFallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -150,7 +148,6 @@ public struct AlleyEditorView: View {
 		} footer: {
 			Text(Strings.Alley.Editor.Fields.PinFall.help)
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func mechanismSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -167,7 +164,6 @@ public struct AlleyEditorView: View {
 		} footer: {
 			Text(Strings.Alley.Editor.Fields.Mechanism.help)
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func pinBaseSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -184,7 +180,6 @@ public struct AlleyEditorView: View {
 		} footer: {
 			Text(Strings.Alley.Editor.Fields.PinBase.help)
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func lanesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -201,7 +196,6 @@ public struct AlleyEditorView: View {
 					}
 				}
 			}
-			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		} header: {
 			HStack(alignment: .bottom) {
 				Text(Strings.Lane.List.title)

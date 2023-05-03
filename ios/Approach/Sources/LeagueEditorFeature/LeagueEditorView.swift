@@ -103,7 +103,6 @@ public struct LeagueEditorView: View {
 				Text(Strings.League.Editor.Fields.Alley.help)
 			}
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	@ViewBuilder private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -120,7 +119,6 @@ public struct LeagueEditorView: View {
 			} footer: {
 				Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.once))
 			}
-			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		}
 	}
 
@@ -138,7 +136,6 @@ public struct LeagueEditorView: View {
 		} footer: {
 			Text(Strings.League.Editor.Fields.ExcludeFromStatistics.help)
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	@ViewBuilder private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -172,7 +169,6 @@ public struct LeagueEditorView: View {
 					)
 				)
 			}
-			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		}
 	}
 
@@ -206,7 +202,6 @@ public struct LeagueEditorView: View {
 		} footer: {
 			Text(Strings.League.Editor.Fields.AdditionalPinfall.help)
 		}
-		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 }
 

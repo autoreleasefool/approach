@@ -65,10 +65,8 @@ public struct FormView<
 						DeleteButton { viewStore.send(.didTapDeleteButton) }
 					}
 					.disabled(viewStore.isLoading)
-					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(viewStore.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {

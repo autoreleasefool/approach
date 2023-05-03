@@ -36,7 +36,6 @@ public struct BowlerEditorView: View {
 					)
 					.textContentType(.name)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 		}
 	}

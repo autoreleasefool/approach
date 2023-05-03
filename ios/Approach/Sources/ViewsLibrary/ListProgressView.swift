@@ -11,6 +11,5 @@ public struct ListProgressView: View {
 				Spacer()
 			}
 		}
-		.listRowBackground(Color.clear)
 	}
 }
