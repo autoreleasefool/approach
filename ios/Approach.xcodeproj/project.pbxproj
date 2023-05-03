@@ -56,8 +56,6 @@
 		CA2E6A7029BAA6D500CCA917 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		CA2E6A7229BAA6DC00CCA917 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		CA2F033928F87C4100030BFE /* Approach */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Approach; sourceTree = "<group>"; };
-		CA318B3D2999DEE500BD4BEC /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		CA318B3E2999DF1300BD4BEC /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		CA5F86EE2A01E58D0092F519 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		CA5F86EF2A01E5930092F519 /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
 		CA5F86F02A01E59B0092F519 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
@@ -163,15 +161,6 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
-		CA318B3C2999DED000BD4BEC /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				CA318B3D2999DEE500BD4BEC /* Release.xcconfig */,
-				CA318B3E2999DF1300BD4BEC /* Debug.xcconfig */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		CA5F86EC2A01E5780092F519 /* XCConfigs */ = {
 			isa = PBXGroup;
 			children = (
@@ -247,7 +236,6 @@
 			children = (
 				CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */,
 				CA8BBC5E28D59B8C00653A1E /* Preview Content */,
-				CA318B3C2999DED000BD4BEC /* Resources */,
 				CA2F033828F8797100030BFE /* Source */,
 				CA5F86EC2A01E5780092F519 /* XCConfigs */,
 			);
