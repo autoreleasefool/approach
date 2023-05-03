@@ -6,4 +6,3 @@ extension Analytics.App {
 		public init() {}
 	}
 }
-

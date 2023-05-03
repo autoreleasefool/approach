@@ -284,7 +284,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			subtitle: "subtitle",
 			coordinate: .init(latitude: 123, longitude: 123)
 		)
-		let editLocation: Location.Edit = .init (
+		let editLocation: Location.Edit = .init(
 			id: UUID(0),
 			title: "title",
 			subtitle: "subtitle",
