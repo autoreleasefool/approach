@@ -69,7 +69,7 @@ public struct GamesEditorView: View {
 			.onChange(of: viewStore.detent) { detent in
 				guard viewStore.isGameDetailsPresented else { return }
 				switch detent {
-				case .medium, .large:
+				case .large:
 					viewStore.send(.setShield(isVisible: true), animation: .easeInOut)
 				default:
 					viewStore.send(.setShield(isVisible: false), animation: .easeInOut)
@@ -109,13 +109,9 @@ public struct GamesEditorView: View {
 							)
 					}
 				}
-				.padding(.vertical, .largeSpacing)
-				.padding(.horizontal, .standardSpacing)
-				.presentationDetents(
-					undimmed: [.height(viewStore.sheetHeight), .medium, .large],
-					selection: viewStore.binding(\.$detent)
-				)
+				.presentationDetents([.height(viewStore.sheetHeight), .medium, .large], selection: viewStore.binding(\.$detent))
 				.presentationDragIndicator(.hidden)
+				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.interactiveDismissDisabled(true)
 				.edgesIgnoringSafeArea(.bottom)
 			})
