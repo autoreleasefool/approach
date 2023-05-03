@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
+		CA2A5E302A00DC1F00EE6353 /* ScoringService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2A5E2F2A00DC1F00EE6353 /* ScoringService */; };
 		CA2E6A7129BAA6D500CCA917 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2E6A7029BAA6D500CCA917 /* File.swift */; };
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E4F29E2949400B09020 /* AlleysRepository */; };
@@ -82,6 +83,7 @@
 				CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */,
 				CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */,
 				CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */,
+				CA2A5E302A00DC1F00EE6353 /* ScoringService in Frameworks */,
 				CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,6 +273,7 @@
 				CAD15BB829FDF8DF0015E4CB /* FramesRepository */,
 				CAD15BBA29FDF8E40015E4CB /* GamesRepository */,
 				CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */,
+				CA2A5E2F2A00DC1F00EE6353 /* ScoringService */,
 			);
 			productName = GameEditorPreview;
 			productReference = CA632F5529BD26E200272ADB /* GameEditorPreview.app */;
@@ -773,6 +776,10 @@
 		CA2890DD28F87FF2003C1EE9 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
+		};
+		CA2A5E2F2A00DC1F00EE6353 /* ScoringService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ScoringService;
 		};
 		CA318B3F2999E1F500BD4BEC /* AnalyticsService */ = {
 			isa = XCSwiftPackageProductDependency;
