@@ -1,7 +1,6 @@
 import AssetsLibrary
 import ModelsLibrary
 import SwiftUI
-import ViewsLibrary
 
 extension Alley {
 	public struct View: SwiftUI.View {
@@ -11,44 +10,15 @@ extension Alley {
 			self.alley = alley
 		}
 
-		var hasSomeBadge: Bool {
-			alley.material != nil ||
-				alley.mechanism != nil ||
-				alley.pinBase != nil ||
-				alley.pinFall != nil
-		}
-
 		public var body: some SwiftUI.View {
-			VStack(alignment: .leading, spacing: .smallSpacing) {
+			VStack(alignment: .leading, spacing: .unitSpacing) {
 				Text(alley.name)
+					.font(.headline)
 
-				if hasSomeBadge {
-					HStack {
-						if let material = alley.material {
-							BadgeView(
-								String(describing: material),
-								style: .init(foreground: .appAlleyMaterialBorder, background: .appAlleyMaterialBackground)
-							)
-						}
-						if let mechanism = alley.mechanism {
-							BadgeView(
-								String(describing: mechanism),
-								style: .init(foreground: .appAlleyMechanismBorder, background: .appAlleyMechanismBackground)
-							)
-						}
-						if let pinFall = alley.pinFall {
-							BadgeView(
-								String(describing: pinFall),
-								style: .init(foreground: .appAlleyPinFallBorder, background: .appAlleyPinFallBackground)
-							)
-						}
-						if let pinBase = alley.pinBase {
-							BadgeView(
-								String(describing: pinBase),
-								style: .init(foreground: .appAlleyPinBaseBorder, background: .appAlleyPinBaseBackground)
-							)
-						}
-					}
+				if let subtitle = alley.location?.subtitle, !subtitle.isEmpty {
+					Text(subtitle)
+						.font(.body)
+						.padding(.top, .unitSpacing)
 				}
 			}
 		}

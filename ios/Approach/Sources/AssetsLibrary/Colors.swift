@@ -12,15 +12,6 @@ extension Color {
 	public static let appDestructive = Color("Colors/Destructive/Default", bundle: .module)
 	public static let appWarning = Color("Colors/Warning/Default", bundle: .module)
 
-	public static let appAlleyMaterialBorder = Color("Colors/Alley/Material/Border", bundle: .module)
-	public static let appAlleyMaterialBackground = Color("Colors/Alley/Material/Background", bundle: .module)
-	public static let appAlleyMechanismBorder = Color("Colors/Alley/Mechanism/Border", bundle: .module)
-	public static let appAlleyMechanismBackground = Color("Colors/Alley/Mechanism/Background", bundle: .module)
-	public static let appAlleyPinBaseBorder = Color("Colors/Alley/PinBase/Border", bundle: .module)
-	public static let appAlleyPinBaseBackground = Color("Colors/Alley/PinBase/Background", bundle: .module)
-	public static let appAlleyPinFallBorder = Color("Colors/Alley/PinFall/Border", bundle: .module)
-	public static let appAlleyPinFallBackground = Color("Colors/Alley/PinFall/Background", bundle: .module)
-
 	public static let appShieldBackground = Color("Colors/Frame/Shield/Background", bundle: .module)
 	public static let appShieldProtector = Color("Colors/Frame/Shield/Protector", bundle: .module)
 	public static let appShieldFrame = Color("Colors/Frame/Shield/Frame", bundle: .module)
