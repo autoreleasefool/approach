@@ -51,11 +51,7 @@ public struct AddressLookupView: View {
 				} else {
 					if let error = viewStore.loadingAddressError ?? viewStore.loadingResultsError {
 						Section {
-							Banner(
-								Strings.Error.Generic.title,
-								message: error,
-								style: .error
-							)
+							Banner(.titleAndMessage(Strings.Error.Generic.title, error), style: .error)
 						}
 						.listRowInsets(EdgeInsets())
 					}

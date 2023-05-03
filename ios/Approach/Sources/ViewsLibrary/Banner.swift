@@ -2,22 +2,22 @@ import AssetsLibrary
 import SwiftUI
 
 public struct Banner: View {
-	let title: String
-	let message: String?
+	let content: Content
 	let style: Style
 
-	public init(_ title: String, message: String? = nil, style: Style = .plain) {
-		self.title = title
-		self.message = message
+	public init(_ content: Content, style: Style = .plain) {
+		self.content = content
 		self.style = style
 	}
 
 	public var body: some View {
 		VStack(alignment: .leading, spacing: .smallSpacing) {
-			Text(title)
-				.font(.headline)
+			if let title = content.title {
+				Text(title)
+					.font(.headline)
+			}
 
-			if let message {
+			if let message = content.message {
 				Text(message)
 					.multilineTextAlignment(.leading)
 			}
@@ -26,6 +26,32 @@ public struct Banner: View {
 		.frame(maxWidth: .infinity)
 		.background(style.backgroundColor)
 		.cornerRadius(.standardRadius)
+	}
+}
+
+extension Banner {
+	public enum Content {
+		case title(String)
+		case message(String)
+		case titleAndMessage(String, String)
+
+		var title: String? {
+			switch self {
+			case .title(let title), .titleAndMessage(let title, _):
+				return title
+			case .message:
+				return nil
+			}
+		}
+
+		var message: String? {
+			switch self {
+			case .message(let message), .titleAndMessage(_, let message):
+				return message
+			case .title:
+				return nil
+			}
+		}
 	}
 }
 
