@@ -12,9 +12,13 @@ public struct GamesEditorView: View {
 
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 
+	@State private var sheetContentHeight: CGFloat = .zero
+	@State private var windowContentSize: CGSize = .zero
+
 	struct ViewState: Equatable {
 		@BindingState var detent: PresentationDetent = .height(.zero)
-		let sheetHeight: CGFloat
+		let minimumSheetHeight: CGFloat
+//		let sheetContentHeight: CGFloat
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
 		let isShieldVisible: Bool
@@ -24,13 +28,15 @@ public struct GamesEditorView: View {
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 			self.detent = state.detent
 			self.isShieldVisible = state.isShieldVisible
-			self.sheetHeight = state.sheetHeight
+			self.minimumSheetHeight = state.minimumSheetHeight
+//			self.sheetContentHeight = state.sheetContentHeight
 		}
 	}
 
 	enum ViewAction: BindableAction {
 		case didAppear
-		case didMeasureSheetHeight(CGFloat)
+//		case didMeasureSheetContentHeight(CGFloat)
+		case didMeasureScoreSheetHeight(CGFloat)
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
 		case setShield(isVisible: Bool)
@@ -44,7 +50,8 @@ public struct GamesEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
+		print("\(windowContentSize.height), \(sheetContentHeight), \(windowContentSize.height - sheetContentHeight)")
+		return WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
 			ZStack {
 				VStack {
 					GameIndicatorView(
@@ -66,6 +73,25 @@ public struct GamesEditorView: View {
 						.zIndex(1)
 				}
 			}
+			.overlay(
+				GeometryReader { proxy in
+					Color.clear
+						.preference(
+							key: WindowContentSizeKey.self,
+							value: proxy.size
+						)
+				}
+			)
+			.onPreferenceChange(WindowContentSizeKey.self) { newSize in
+				windowContentSize = newSize
+			}
+			.background(alignment: .top) {
+				Image(uiImage: .laneBackdrop)
+					.resizable(resizingMode: .stretch)
+					.fixedSize(horizontal: true, vertical: false)
+					.frame(width: windowContentSize.width, height: windowContentSize.height - sheetContentHeight)
+			}
+			.background(Color.appPinTint)
 			.onChange(of: viewStore.detent) { detent in
 				guard viewStore.isGameDetailsPresented else { return }
 				switch detent {
@@ -104,16 +130,31 @@ public struct GamesEditorView: View {
 							.overlay(
 								GeometryReader { proxy in
 									Color.clear
-										.onAppear { viewStore.send(.didMeasureSheetHeight(proxy.size.height + safeAreaInsets.top)) }
+										.onAppear { viewStore.send(.didMeasureScoreSheetHeight(proxy.size.height + safeAreaInsets.top)) }
 								}
 							)
 					}
 				}
-				.presentationDetents([.height(viewStore.sheetHeight), .medium, .large], selection: viewStore.binding(\.$detent))
+				.presentationDetents(
+					[.height(viewStore.minimumSheetHeight), .medium, .large],
+					selection: viewStore.binding(\.$detent)
+				)
 				.presentationDragIndicator(.hidden)
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.interactiveDismissDisabled(true)
 				.edgesIgnoringSafeArea(.bottom)
+				.overlay(
+					GeometryReader { proxy in
+						Color.clear
+							.preference(
+								key: SheetContentHeightKey.self,
+								value: proxy.size.height
+							)
+					}
+				)
+				.onPreferenceChange(SheetContentHeightKey.self) { newHeight in
+					sheetContentHeight = newHeight
+				}
 			})
 			.onAppear { viewStore.send(.didAppear) }
 		}
@@ -134,8 +175,10 @@ extension GamesEditor.Action {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)
-		case let .didMeasureSheetHeight(height):
-			self = .view(.didMeasureSheetHeight(height))
+//		case let .didMeasureSheetContentHeight(height):
+//			self = .view(.didMeasureSheetContentHeight(height))
+		case let .didMeasureScoreSheetHeight(height):
+			self = .view(.didMeasureScoreSheetHeight(height))
 		case let .setGameDetails(isPresented):
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setGamePicker(isPresented):
@@ -149,5 +192,19 @@ extension GamesEditor.Action {
 		case let .binding(action):
 			self = .binding(action.pullback(\GamesEditor.State.view))
 		}
+	}
+}
+
+private struct SheetContentHeightKey: PreferenceKey {
+	static var defaultValue: CGFloat = .zero
+	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+		value = nextValue()
+	}
+}
+
+private struct WindowContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
 	}
 }

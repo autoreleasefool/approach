@@ -10,7 +10,8 @@ public struct GamesEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
-		public var sheetHeight: CGFloat = .zero
+		public var minimumSheetHeight: CGFloat = .zero
+//		public var sheetContentHeight: CGFloat = .zero
 
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>
 		public var bowlerGames: [Bowler.ID: [Game.ID]]
@@ -45,7 +46,8 @@ public struct GamesEditor: Reducer {
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
-			case didMeasureSheetHeight(CGFloat)
+//			case didMeasureSheetContentHeight(CGFloat)
+			case didMeasureScoreSheetHeight(CGFloat)
 			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
@@ -99,8 +101,12 @@ public struct GamesEditor: Reducer {
 					state.isShieldVisible = isVisible
 					return .none
 
-				case let .didMeasureSheetHeight(newHeight):
-					state.sheetHeight = newHeight
+//				case let .didMeasureSheetContentHeight(newHeight):
+//					state.sheetContentHeight = newHeight
+//					return .none
+
+				case let .didMeasureScoreSheetHeight(newHeight):
+					state.minimumSheetHeight = newHeight
 					if state.detent == .height(.zero) {
 						state.detent = .height(newHeight)
 					}

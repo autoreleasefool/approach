@@ -16,7 +16,7 @@ struct GameEditorPreviewApp: App {
 				currentBowler: UUID(0),
 				currentGame: UUID(0)
 			),
-			reducer: GamesEditor()._printChanges()
+			reducer: GamesEditor()//._printChanges()
 				.dependency(\.database, {
 					let db: any DatabaseWriter
 					do {

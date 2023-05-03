@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import ModelsLibrary
 import SwiftUI
@@ -47,7 +48,7 @@ struct FrameEditorView: View {
 								.resizable()
 								.renderingMode(.template)
 								.aspectRatio(contentMode: .fit)
-								.tint(.black)
+								.tint(.appPinTint)
 								.opacity(0.5)
 						}
 					}

@@ -80,11 +80,12 @@ struct GameIndicatorView: View {
 				HStack(alignment: .center, spacing: .smallSpacing) {
 					Text(Strings.Game.title(viewStore.selectedOrdinal))
 						.font(.caption)
-
+						.foregroundColor(.white)
 					if viewStore.games.count > 1 {
 						Image(systemName: "chevron.down.circle.fill")
 							.resizable()
 							.aspectRatio(contentMode: .fit)
+							.foregroundColor(.white)
 							.frame(width: .extraTinyIcon, height: .extraTinyIcon)
 					}
 				}
