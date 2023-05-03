@@ -45,6 +45,7 @@ libraries = [ "Strings" ]
 
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
+repositories = [ "Frames" ]
 libraries = [ "Extensions", "SwiftUIExtensions" ]
 
 [features.GamesList]
@@ -81,7 +82,7 @@ services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder" ]
 
 [features.ScoreSheet]
-repositories = [ "Frames" ]
+services = [ "Scoring" ]
 libraries = [ "Views" ]
 
 [features.SeriesEditor]

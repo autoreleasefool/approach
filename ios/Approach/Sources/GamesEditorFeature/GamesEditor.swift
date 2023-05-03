@@ -3,6 +3,7 @@ import FeatureActionLibrary
 import FramesRepositoryInterface
 import ModelsLibrary
 import ScoreSheetFeature
+import ScoringServiceInterface
 import SwiftUI
 
 public struct GamesEditor: Reducer {
@@ -14,6 +15,7 @@ public struct GamesEditor: Reducer {
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>
 		public var bowlerGames: [Bowler.ID: [Game.ID]]
 		public var frames: [Frame.Edit]?
+		public var scoreSteps: [ScoreStep]?
 
 		public var currentBowlerId: Bowler.ID
 		public var currentGameId: Game.ID
@@ -54,6 +56,7 @@ public struct GamesEditor: Reducer {
 			case switchToBowler(Bowler.ID)
 			case switchToGame(Game.ID)
 			case framesResponse(TaskResult<[Frame.Edit]>)
+			case calculatedScore([ScoreStep])
 
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
@@ -72,6 +75,7 @@ public struct GamesEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.frames) var frames
+	@Dependency(\.scoringService) var scoringService
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
@@ -141,10 +145,14 @@ public struct GamesEditor: Reducer {
 					state.frames = frames
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 					state.frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
-					return .none
+					return updateScoreSheet(from: state)
 
 				case .framesResponse(.failure):
 					// TODO: handle error loading frames
+					return .none
+
+				case let .calculatedScore(steps):
+					state.scoreSteps = steps
 					return .none
 
 				case let .gamePicker(.delegate(delegateAction)):
@@ -156,8 +164,8 @@ public struct GamesEditor: Reducer {
 
 				case let .frameEditor(.delegate(delegateAction)):
 					switch delegateAction {
-					case .never:
-						return .none
+					case .didEditFrame:
+						return updateScoreSheet(from: state)
 					}
 
 				case let .scoreSheet(.delegate(delegateAction)):
@@ -205,6 +213,14 @@ public struct GamesEditor: Reducer {
 			}))
 		}
 		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+	}
+
+	private func updateScoreSheet(from state: State) -> Effect<GamesEditor.Action> {
+		guard let frames = state.frames else { return .none }
+		return .task {
+			let steps = await scoringService.calculateScoreWithSteps(for: frames.map { $0.rolls })
+			return .internal(.calculatedScore(steps))
+		}
 	}
 }
 
@@ -254,9 +270,9 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var scoreSheet: ScoreSheet.State? {
 		get {
-			guard let frames else { return nil }
+			guard let scoreSteps else { return nil }
 			return .init(
-				data: .edits(frames),
+				steps: scoreSteps,
 				currentFrameIndex: currentFrameIndex,
 				currentRollIndex: currentRollIndex
 			)

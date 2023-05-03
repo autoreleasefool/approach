@@ -1,5 +1,7 @@
+import AssetsLibrary
 import ComposableArchitecture
 import ModelsLibrary
+import ScoringServiceInterface
 import SwiftUI
 import ViewsLibrary
 
@@ -7,12 +9,12 @@ public struct ScoreSheetView: View {
 	let store: StoreOf<ScoreSheet>
 
 	struct ViewState: Equatable {
-		let data: ScoreSheet.DataSource
+		let steps: [ScoreStep]
 		let currentFrameIndex: Int
 		let currentRollIndex: Int
 
 		init(state: ScoreSheet.State) {
-			self.data = state.data
+			self.steps = state.steps
 			self.currentFrameIndex = state.currentFrameIndex
 			self.currentRollIndex = state.currentRollIndex
 		}
@@ -28,38 +30,67 @@ public struct ScoreSheetView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
-			ScrollView(.horizontal) {
-				HStack {
-					switch viewStore.data {
-					case let .edits(frames):
-						ForEach(frames) { frame in
-							frameView(ordinal: frame.ordinal, rolls: frame.rolls, viewStore: viewStore)
+			ZStack {
+				Color.appPrimaryLight
+					.cornerRadius(.standardRadius)
+				ScrollView(.horizontal) {
+					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+						GridRow {
+							ForEach(viewStore.steps, id: \.index) { step in
+								rollViews(
+									forRolls: step.rolls,
+									frameIndex: step.index
+								) { rollIndex in
+									viewStore.send(.didTapFrame(index: step.index, rollIndex: rollIndex))
+								}
+							}
 						}
-					case let .summaries(frames):
-						ForEach(frames) { frame in
-							frameView(ordinal: frame.ordinal, rolls: frame.rolls, viewStore: viewStore)
+						Divider()
+						GridRow {
+							ForEach(viewStore.steps, id: \.index) { step in
+								stepView(step) {
+									viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
+								}
+								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+							}
+						}
+						GridRow {
+							ForEach(viewStore.steps, id: \.index) { step in
+								Text(String(step.index + 1))
+									.padding()
+									.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+							}
 						}
 					}
 				}
+				.scrollIndicators(.hidden)
 			}
+			.padding()
 		}
 	}
 
-	@ViewBuilder private func frameView(
-		ordinal: Int,
-		rolls: [Frame.Roll],
-		viewStore: ViewStore<ViewState, ViewAction>
+	private func stepView(_ step: ScoreStep, action: @escaping () -> Void) -> some View {
+		Button(action: action) {
+			Text(step.display)
+				.padding(.horizontal, .smallSpacing)
+				.padding(.vertical, .tinySpacing)
+		}
+	}
+
+	private func rollViews(
+		forRolls: [ScoreStep.RollStep],
+		frameIndex: Int,
+		action: @escaping (Int) -> Void
 	) -> some View {
-		Button { viewStore.send(.didTapFrame(index: ordinal - 1, rollIndex: nil)) } label: {
-			VStack {
-				HStack {
-					Button { viewStore.send(.didTapFrame(index: ordinal - 1, rollIndex: 0)) } label: {
-						Text("5")
-					}
-				}
+		ForEach(forRolls, id: \.index) { roll in
+			Button {
+				action(roll.index)
+			} label: {
+				Text(roll.display)
+					.padding(.horizontal, .smallSpacing)
+					.padding(.vertical, .tinySpacing)
 			}
 		}
-		.buttonStyle(TappableElement())
 	}
 }
 
@@ -71,3 +102,28 @@ extension ScoreSheet.Action {
 		}
 	}
 }
+
+#if DEBUG
+struct ScoreSheetViewPreviews: PreviewProvider {
+	static var previews: some View {
+		ScoreSheetView(store: .init(
+			initialState: .init(
+				steps: (0..<Game.NUMBER_OF_FRAMES).map {
+					.init(
+						index: $0,
+						rolls: [
+							.init(index: 0, display: "1", didFoul: false),
+							.init(index: 0, display: "2", didFoul: false),
+							.init(index: 0, display: "3", didFoul: false),
+						],
+						score: nil
+					)
+				},
+				currentFrameIndex: 0,
+				currentRollIndex: 0
+			),
+			reducer: ScoreSheet()
+		))
+	}
+}
+#endif

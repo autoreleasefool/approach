@@ -1,6 +1,10 @@
 public enum Frame {}
 
 extension Frame {
+	public static let NUMBER_OF_ROLLS = 3
+}
+
+extension Frame {
 	public struct Roll: Sendable, Equatable, Codable {
 		public var pinsDowned: [Pin]
 		public var didFoul: Bool

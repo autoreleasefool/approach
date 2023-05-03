@@ -239,6 +239,7 @@ let package = Package(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"ExtensionsLibrary",
+				"FramesRepositoryInterface",
 				"ScoreSheetFeature",
 				"SwiftUIExtensionsLibrary",
 			]
@@ -373,7 +374,7 @@ let package = Package(
 			name: "ScoreSheetFeature",
 			dependencies: [
 				"FeatureActionLibrary",
-				"FramesRepositoryInterface",
+				"ScoringServiceInterface",
 				"ViewsLibrary",
 			]
 		),

@@ -2,23 +2,23 @@ import Dependencies
 import ModelsLibrary
 
 public struct ScoringService: Sendable {
-	public var calculateScoreForFrames: @Sendable ([Frame.Summary]) async throws -> Int?
-	public var calculateScoreForFramesWithSteps: @Sendable ([Frame.Summary]) async throws -> [ScoreStep]
+	public var calculateScoreForFrames: @Sendable ([[Frame.OrderedRoll]]) async -> Int?
+	public var calculateScoreForFramesWithSteps: @Sendable ([[Frame.OrderedRoll]]) async -> [ScoreStep]
 
 	public init(
-		calculateScoreForFrames: @escaping @Sendable ([Frame.Summary]) async throws -> Int?,
-		calculateScoreForFramesWithSteps: @escaping @Sendable ([Frame.Summary]) async throws -> [ScoreStep]
+		calculateScoreForFrames: @escaping @Sendable ([[Frame.OrderedRoll]]) async -> Int?,
+		calculateScoreForFramesWithSteps: @escaping @Sendable ([[Frame.OrderedRoll]]) async -> [ScoreStep]
 	) {
 		self.calculateScoreForFrames = calculateScoreForFrames
 		self.calculateScoreForFramesWithSteps = calculateScoreForFramesWithSteps
 	}
 
-	public func calculateScore(for frames: [Frame.Summary]) async throws -> Int? {
-		try await self.calculateScoreForFrames(frames)
+	public func calculateScore(for frames: [[Frame.OrderedRoll]]) async -> Int? {
+		await self.calculateScoreForFrames(frames)
 	}
 
-	public func calculateScoreWithSteps(for frames: [Frame.Summary]) async throws -> [ScoreStep] {
-		try await self.calculateScoreForFramesWithSteps(frames)
+	public func calculateScoreWithSteps(for frames: [[Frame.OrderedRoll]]) async -> [ScoreStep] {
+		await self.calculateScoreForFramesWithSteps(frames)
 	}
 }
 

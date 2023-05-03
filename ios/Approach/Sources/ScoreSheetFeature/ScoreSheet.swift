@@ -1,16 +1,16 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import FramesRepositoryInterface
 import ModelsLibrary
+import ScoringServiceInterface
 
 public struct ScoreSheet: Reducer {
 	public struct State: Equatable {
-		public let data: DataSource
+		public let steps: [ScoreStep]
 		public var currentFrameIndex: Int
 		public var currentRollIndex: Int
 
-		public init(data: DataSource, currentFrameIndex: Int, currentRollIndex: Int) {
-			self.data = data
+		public init(steps: [ScoreStep], currentFrameIndex: Int, currentRollIndex: Int) {
+			self.steps = steps
 			self.currentFrameIndex = currentFrameIndex
 			self.currentRollIndex = currentRollIndex
 		}
@@ -28,11 +28,6 @@ public struct ScoreSheet: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	public enum DataSource: Equatable {
-		case summaries([Frame.Summary])
-		case edits([Frame.Edit])
-	}
-
 	public init() {}
 
 	public var body: some Reducer<State, Action> {
@@ -45,14 +40,8 @@ public struct ScoreSheet: Reducer {
 					if let rollIndex {
 						state.currentRollIndex = rollIndex
 					} else {
-						switch state.data {
-						case let .edits(frames):
-							state.currentRollIndex = frames[state.currentFrameIndex].rolls.endIndex - 1
-						case let .summaries(frames):
-							state.currentRollIndex = frames[state.currentFrameIndex].rolls.endIndex - 1
-						}
+						state.currentRollIndex = state.steps[state.currentFrameIndex].rolls.endIndex - 1
 					}
-
 					return .none
 				}
 
