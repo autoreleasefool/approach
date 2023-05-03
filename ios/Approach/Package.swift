@@ -6,7 +6,7 @@ let package = Package(
 	name: "Approach",
 	defaultLocalization: "en",
 	platforms: [
-		.iOS(.v16),
+		.iOS("16.4"),
 	],
 	products: [
 		// MARK: - Features

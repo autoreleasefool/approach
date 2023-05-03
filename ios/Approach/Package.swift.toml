@@ -5,7 +5,7 @@ default_localization = "en"
 # Platforms
 
 [platforms.iOS]
-supported = [ ".v16" ]
+supported = [ "\"16.4\"" ]
 
 # Features
 
