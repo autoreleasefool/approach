@@ -23,8 +23,6 @@ public struct GamesEditor: Reducer {
 		public var currentFrameIndex = 0
 		public var currentRollIndex = 0
 
-		public var isShieldVisible = false
-
 		public var _frameEditor: FrameEditor.State?
 
 		public init(
@@ -51,7 +49,6 @@ public struct GamesEditor: Reducer {
 			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
-			case setShield(isVisible: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -97,9 +94,6 @@ public struct GamesEditor: Reducer {
 				case .didAppear:
 					return loadGameDetails(for: state.currentGameId)
 
-				case let .setShield(isVisible):
-					state.isShieldVisible = isVisible
-					return .none
 
 //				case let .didMeasureSheetContentHeight(newHeight):
 //					state.sheetContentHeight = newHeight

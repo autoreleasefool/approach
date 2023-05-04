@@ -12,8 +12,5 @@ extension Color {
 	public static let appDestructive = Color("Colors/Destructive/Default", bundle: .module)
 	public static let appWarning = Color("Colors/Warning/Default", bundle: .module)
 
-	public static let appShieldBackground = Color("Colors/Frame/Shield/Background", bundle: .module)
-	public static let appShieldProtector = Color("Colors/Frame/Shield/Protector", bundle: .module)
-	public static let appShieldFrame = Color("Colors/Frame/Shield/Frame", bundle: .module)
 	public static let appPinTint = Color("Colors/Frame/PinTint", bundle: .module)
 }

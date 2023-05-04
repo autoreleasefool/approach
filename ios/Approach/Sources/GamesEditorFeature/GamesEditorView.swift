@@ -21,13 +21,11 @@ public struct GamesEditorView: View {
 //		let sheetContentHeight: CGFloat
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
-		let isShieldVisible: Bool
 
 		init(state: GamesEditor.State) {
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 			self.detent = state.detent
-			self.isShieldVisible = state.isShieldVisible
 			self.minimumSheetHeight = state.minimumSheetHeight
 //			self.sheetContentHeight = state.sheetContentHeight
 		}
@@ -39,7 +37,7 @@ public struct GamesEditorView: View {
 		case didMeasureScoreSheetHeight(CGFloat)
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
-		case setShield(isVisible: Bool)
+
 		case didDismissGameDetails
 		case didDismissGamePicker
 		case binding(BindingAction<ViewState>)
@@ -65,13 +63,6 @@ public struct GamesEditorView: View {
 					}
 					Spacer()
 				}
-
-				if viewStore.isShieldVisible {
-					Shield()
-						.edgesIgnoringSafeArea(.top)
-						.transition(.move(edge: .top))
-						.zIndex(1)
-				}
 			}
 			.overlay(
 				GeometryReader { proxy in
@@ -92,18 +83,6 @@ public struct GamesEditorView: View {
 					.frame(width: windowContentSize.width, height: windowContentSize.height - sheetContentHeight)
 			}
 			.background(Color.appPinTint)
-			.onChange(of: viewStore.detent) { detent in
-				guard viewStore.isGameDetailsPresented else { return }
-				switch detent {
-				case .large:
-					viewStore.send(.setShield(isVisible: true), animation: .easeInOut)
-				default:
-					viewStore.send(.setShield(isVisible: false), animation: .easeInOut)
-				}
-			}
-			.onChange(of: viewStore.isGamePickerPresented) { isGamePickerPresented in
-				viewStore.send(.setShield(isVisible: isGamePickerPresented), animation: .easeInOut)
-			}
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(isPresented: viewStore.binding(
 				get: \.isGamePickerPresented,
@@ -187,8 +166,6 @@ extension GamesEditor.Action {
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
-		case let .setShield(isVisible):
-			self = .view(.setShield(isVisible: isVisible))
 		case let .binding(action):
 			self = .binding(action.pullback(\GamesEditor.State.view))
 		}

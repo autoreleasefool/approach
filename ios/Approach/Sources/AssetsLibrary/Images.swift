@@ -14,7 +14,6 @@ extension UIImage {
 
 	public static let iconAnalytics = UIImage(named: "Images/Icons/Analytics", in: .module, with: nil)!
 
-	public static let shieldName = UIImage(named: "Images/Frame/Shield/Name", in: .module, with: nil)!
 	public static let pin = UIImage(named: "Images/Frame/Pin", in: .module, with: nil)!
 	public static let pinDown = UIImage(named: "Images/Frame/PinDown", in: .module, with: nil)!
 	public static let laneBackdrop = UIImage(named: "Images/Lane/Backdrop", in: .module, with: nil)!
