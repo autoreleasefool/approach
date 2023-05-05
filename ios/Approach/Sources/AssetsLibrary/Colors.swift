@@ -11,6 +11,7 @@ extension Color {
 	public static let appErrorLight = Color("Colors/Error/Light", bundle: .module)
 	public static let appDestructive = Color("Colors/Destructive/Default", bundle: .module)
 	public static let appWarning = Color("Colors/Warning/Default", bundle: .module)
+	public static let appSuccess = Color("Colors/Success/Default", bundle: .module)
 
 	public static let appPinTint = Color("Colors/Frame/PinTint", bundle: .module)
 }

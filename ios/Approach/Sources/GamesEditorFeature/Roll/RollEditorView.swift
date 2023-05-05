@@ -34,7 +34,9 @@ public struct RollEditorView: View {
 						Text(Strings.Roll.Properties.Ball.title)
 							.font(.caption)
 							.italic()
+							.foregroundColor(.white)
 						Text(viewStore.ballRolled?.name ?? Strings.Roll.Properties.Ball.noneSelected)
+							.foregroundColor(.white)
 					}
 				}
 				.buttonStyle(TappableElement())
@@ -44,9 +46,11 @@ public struct RollEditorView: View {
 				Button { viewStore.send(.didToggleFoul) } label: {
 					HStack(spacing: .smallSpacing) {
 						Text(Strings.Roll.Properties.Foul.title)
+							.foregroundColor(.white)
 						Image(systemName: viewStore.didFoul ? "f.cursive.circle.fill" : "f.cursive.circle")
 							.resizable()
 							.frame(width: .smallIcon, height: .smallIcon)
+							.foregroundColor(.white)
 					}
 				}
 				.buttonStyle(TappableElement())

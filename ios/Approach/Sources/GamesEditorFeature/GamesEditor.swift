@@ -25,6 +25,8 @@ public struct GamesEditor: Reducer {
 		public var currentFrameIndex = 0
 		public var currentRollIndex = 0
 
+		public var isGameStatsVisible = true
+
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _bowlingBallPicker: BowlingBallPicker.State
@@ -111,6 +113,12 @@ public struct GamesEditor: Reducer {
 
 				case let .didAdjustBackdropSize(newSize):
 					state.backdropSize = newSize
+					switch state.sheetDetent {
+					case .large, .medium:
+						state.isGameStatsVisible = false
+					default:
+						state.isGameStatsVisible = true
+					}
 					return .none
 
 				case let .didChangeDetent(newDetent):

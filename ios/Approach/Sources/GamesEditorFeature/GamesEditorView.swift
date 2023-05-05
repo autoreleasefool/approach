@@ -24,6 +24,8 @@ public struct GamesEditorView: View {
 		let isGameDetailsPresented: Bool
 		let isBowlingBallPickerPresented: Bool
 
+		let isGameStatsVisible: Bool
+
 		init(state: GamesEditor.State) {
 			self.sheetDetent = state.sheetDetent
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
@@ -31,6 +33,7 @@ public struct GamesEditorView: View {
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 			self.isBowlingBallPickerPresented = state.sheet == .presenting(.bowlingBallPicker)
+			self.isGameStatsVisible = state.isGameStatsVisible
 		}
 	}
 
@@ -71,6 +74,11 @@ public struct GamesEditorView: View {
 						store.scope(state: \.rollEditor, action: /GamesEditor.Action.InternalAction.rollEditor)
 					) { scopedStore in
 						RollEditorView(store: scopedStore)
+							.padding(.horizontal)
+					}
+
+					if viewStore.isGameStatsVisible {
+						GameStatisticsSummary()
 							.padding(.horizontal)
 					}
 				}
