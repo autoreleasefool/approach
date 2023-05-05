@@ -10,37 +10,37 @@ import SwiftUIExtensionsLibrary
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
 
-	@Environment(\.safeAreaInsets) private var safeAreaInsets
-
-	@State private var sheetContentHeight: CGFloat = .zero
+	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
+	@State private var minimumSheetContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
-		@BindingState var detent: PresentationDetent = .height(.zero)
-		let minimumSheetHeight: CGFloat
-//		let sheetContentHeight: CGFloat
+		let sheetDetent: PresentationDetent
+		let willAdjustLaneLayoutAt: Date
+		let backdropSize: CGSize
+
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
 
 		init(state: GamesEditor.State) {
+			self.sheetDetent = state.sheetDetent
+			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
+			self.backdropSize = state.backdropSize
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
-			self.detent = state.detent
-			self.minimumSheetHeight = state.minimumSheetHeight
-//			self.sheetContentHeight = state.sheetContentHeight
 		}
 	}
 
-	enum ViewAction: BindableAction {
+	enum ViewAction {
 		case didAppear
-//		case didMeasureSheetContentHeight(CGFloat)
-		case didMeasureScoreSheetHeight(CGFloat)
+		case didChangeDetent(PresentationDetent)
+		case didAdjustBackdropSize(CGSize)
+
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
 
 		case didDismissGameDetails
 		case didDismissGamePicker
-		case binding(BindingAction<ViewState>)
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -48,8 +48,7 @@ public struct GamesEditorView: View {
 	}
 
 	public var body: some View {
-		print("\(windowContentSize.height), \(sheetContentHeight), \(windowContentSize.height - sheetContentHeight)")
-		return WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
 			ZStack {
 				VStack {
 					GameIndicatorView(
@@ -64,25 +63,14 @@ public struct GamesEditorView: View {
 					Spacer()
 				}
 			}
-			.overlay(
-				GeometryReader { proxy in
-					Color.clear
-						.preference(
-							key: WindowContentSizeKey.self,
-							value: proxy.size
-						)
-				}
-			)
-			.onPreferenceChange(WindowContentSizeKey.self) { newSize in
-				windowContentSize = newSize
-			}
+			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
 			.background(alignment: .top) {
 				Image(uiImage: .laneBackdrop)
 					.resizable(resizingMode: .stretch)
 					.fixedSize(horizontal: true, vertical: false)
-					.frame(width: windowContentSize.width, height: windowContentSize.height - sheetContentHeight)
+					.frame(width: viewStore.backdropSize.width, height: viewStore.backdropSize.height)
 			}
-			.background(Color.appPinTint)
+			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(isPresented: viewStore.binding(
 				get: \.isGamePickerPresented,
@@ -106,45 +94,27 @@ public struct GamesEditorView: View {
 						store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
 					) { scopedStore in
 						ScoreSheetView(store: scopedStore)
-							.overlay(
-								GeometryReader { proxy in
-									Color.clear
-										.onAppear { viewStore.send(.didMeasureScoreSheetHeight(proxy.size.height + safeAreaInsets.top)) }
-								}
-							)
+							.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
 					}
 				}
+				.edgesIgnoringSafeArea(.bottom)
 				.presentationDetents(
-					[.height(viewStore.minimumSheetHeight), .medium, .large],
-					selection: viewStore.binding(\.$detent)
+					[.height(minimumSheetContentSize.height), .medium, .large],
+					selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
 				)
-				.presentationDragIndicator(.hidden)
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.interactiveDismissDisabled(true)
-				.edgesIgnoringSafeArea(.bottom)
-				.overlay(
-					GeometryReader { proxy in
-						Color.clear
-							.preference(
-								key: SheetContentHeightKey.self,
-								value: proxy.size.height
-							)
-					}
-				)
-				.onPreferenceChange(SheetContentHeightKey.self) { newHeight in
-					sheetContentHeight = newHeight
-				}
+				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 			})
+			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
+				let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
+				viewStore
+					.send(.didAdjustBackdropSize(.init(
+						width: windowContentSize.width,
+						height: windowContentSize.height - sheetContentSize.height
+					)), animation: .easeInOut)
+			}
 			.onAppear { viewStore.send(.didAppear) }
-		}
-	}
-}
-
-extension GamesEditor.State {
-	var view: GamesEditorView.ViewState {
-		get { .init(state: self) }
-		set {
-			self.detent = newValue.detent
 		}
 	}
 }
@@ -154,10 +124,6 @@ extension GamesEditor.Action {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)
-//		case let .didMeasureSheetContentHeight(height):
-//			self = .view(.didMeasureSheetContentHeight(height))
-		case let .didMeasureScoreSheetHeight(height):
-			self = .view(.didMeasureScoreSheetHeight(height))
 		case let .setGameDetails(isPresented):
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setGamePicker(isPresented):
@@ -166,15 +132,24 @@ extension GamesEditor.Action {
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
-		case let .binding(action):
-			self = .binding(action.pullback(\GamesEditor.State.view))
+		case let .didChangeDetent(newDetent):
+			self = .view(.didChangeDetent(newDetent))
+		case let .didAdjustBackdropSize(newSize):
+			self = .view(.didAdjustBackdropSize(newSize))
 		}
 	}
 }
 
-private struct SheetContentHeightKey: PreferenceKey {
-	static var defaultValue: CGFloat = .zero
-	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+private struct MinimumSheetContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+private struct SheetContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
 		value = nextValue()
 	}
 }

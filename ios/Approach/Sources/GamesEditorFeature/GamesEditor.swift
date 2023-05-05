@@ -1,5 +1,7 @@
 import ComposableArchitecture
+import Dependencies
 import FeatureActionLibrary
+import Foundation
 import FramesRepositoryInterface
 import ModelsLibrary
 import ScoreSheetFeature
@@ -8,10 +10,10 @@ import SwiftUI
 
 public struct GamesEditor: Reducer {
 	public struct State: Equatable {
-		@BindingState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
-		public var minimumSheetHeight: CGFloat = .zero
-//		public var sheetContentHeight: CGFloat = .zero
+		public var sheetDetent: PresentationDetent = .height(.zero)
+		public var willAdjustLaneLayoutAt: Date
+		public var backdropSize: CGSize = .zero
 
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>
 		public var bowlerGames: [Bowler.ID: [Game.ID]]
@@ -38,14 +40,17 @@ public struct GamesEditor: Reducer {
 			self.bowlerGames = bowlerGames
 			self.currentBowlerId = currentBowler
 			self.currentGameId = currentGame
+
+			@Dependency(\.date) var date
+			self.willAdjustLaneLayoutAt = date()
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
+	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
-//			case didMeasureSheetContentHeight(CGFloat)
-			case didMeasureScoreSheetHeight(CGFloat)
+			case didChangeDetent(PresentationDetent)
+			case didAdjustBackdropSize(CGSize)
 			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
@@ -56,6 +61,7 @@ public struct GamesEditor: Reducer {
 			case switchToGame(Game.ID)
 			case framesResponse(TaskResult<[Frame.Edit]>)
 			case calculatedScore([ScoreStep])
+			case adjustBackdrop
 
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
@@ -66,19 +72,18 @@ public struct GamesEditor: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
 	}
 
 	struct CancelObservationID {}
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
+	@Dependency(\.date) var date
 	@Dependency(\.frames) var frames
 	@Dependency(\.scoringService) var scoringService
 
 	public var body: some Reducer<State, Action> {
-		BindingReducer()
-
 		Scope(state: \.gameIndicator, action: /Action.internal..Action.InternalAction.gameIndicator) {
 			GameIndicator()
 		}
@@ -94,17 +99,16 @@ public struct GamesEditor: Reducer {
 				case .didAppear:
 					return loadGameDetails(for: state.currentGameId)
 
-
-//				case let .didMeasureSheetContentHeight(newHeight):
-//					state.sheetContentHeight = newHeight
-//					return .none
-
-				case let .didMeasureScoreSheetHeight(newHeight):
-					state.minimumSheetHeight = newHeight
-					if state.detent == .height(.zero) {
-						state.detent = .height(newHeight)
-					}
+				case let .didAdjustBackdropSize(newSize):
+					state.backdropSize = newSize
 					return .none
+
+				case let .didChangeDetent(newDetent):
+					state.sheetDetent = newDetent
+					return .task {
+						try await clock.sleep(for: .milliseconds(25))
+						return .internal(.adjustBackdrop)
+					}
 
 				case .didDismissOpenSheet:
 					state.sheet.finishTransition()
@@ -155,6 +159,10 @@ public struct GamesEditor: Reducer {
 					state.scoreSteps = steps
 					return .none
 
+				case .adjustBackdrop:
+					state.willAdjustLaneLayoutAt = date()
+					return .none
+
 				case let .gamePicker(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didFinish:
@@ -194,7 +202,7 @@ public struct GamesEditor: Reducer {
 					return .none
 				}
 
-			case .delegate, .binding:
+			case .delegate:
 				return .none
 			}
 		}
