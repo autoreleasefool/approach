@@ -10,6 +10,7 @@ import SwiftUIExtensionsLibrary
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
 
+	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 	@State private var minimumSheetContentSize: CGSize = .zero
@@ -21,6 +22,7 @@ public struct GamesEditorView: View {
 
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
+		let isBowlingBallPickerPresented: Bool
 
 		init(state: GamesEditor.State) {
 			self.sheetDetent = state.sheetDetent
@@ -28,6 +30,7 @@ public struct GamesEditorView: View {
 			self.backdropSize = state.backdropSize
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
+			self.isBowlingBallPickerPresented = state.sheet == .presenting(.bowlingBallPicker)
 		}
 	}
 
@@ -38,9 +41,11 @@ public struct GamesEditorView: View {
 
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
+		case setBowlingBallPicker(isPresented: Bool)
 
 		case didDismissGameDetails
 		case didDismissGamePicker
+		case didDismissBowlingBallPicker
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -49,11 +54,12 @@ public struct GamesEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
-			ZStack {
+			VStack {
+				GameIndicatorView(
+					store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator)
+				)
 				VStack {
-					GameIndicatorView(
-						store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator)
-					)
+					Spacer()
 					IfLetStore(
 						store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)
 					) { scopedStore in
@@ -61,8 +67,17 @@ public struct GamesEditorView: View {
 							.padding(.top)
 					}
 					Spacer()
+					IfLetStore(
+						store.scope(state: \.rollEditor, action: /GamesEditor.Action.InternalAction.rollEditor)
+					) { scopedStore in
+						RollEditorView(store: scopedStore)
+							.padding(.horizontal)
+					}
 				}
+				.frame(idealWidth: viewStore.backdropSize.width, maxHeight: viewStore.backdropSize.height)
+				Spacer()
 			}
+			.frame(maxWidth: .infinity)
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
 			.background(alignment: .top) {
 				Image(uiImage: .laneBackdrop)
@@ -80,6 +95,19 @@ public struct GamesEditorView: View {
 			}, content: {
 				NavigationView {
 					GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
+				}
+				.presentationDetents([.medium])
+			})
+			.sheet(isPresented: viewStore.binding(
+				get: \.isBowlingBallPickerPresented,
+				send: ViewAction.setBowlingBallPicker(isPresented:)
+			), onDismiss: {
+				viewStore.send(.didDismissBowlingBallPicker)
+			}, content: {
+				NavigationView {
+					BowlingBallPickerView(
+						store: store.scope(state: \.bowlingBallPicker, action: /GamesEditor.Action.InternalAction.bowlingBallPicker)
+					)
 				}
 				.presentationDetents([.medium])
 			})
@@ -107,15 +135,21 @@ public struct GamesEditorView: View {
 				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 			})
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
-				let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
-				viewStore
-					.send(.didAdjustBackdropSize(.init(
-						width: windowContentSize.width,
-						height: windowContentSize.height - sheetContentSize.height
-					)), animation: .easeInOut)
+				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
-			.onAppear { viewStore.send(.didAppear) }
+			.onAppear {
+				viewStore.send(.didAppear)
+				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
+			}
 		}
+	}
+
+	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
+		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
+		return .init(
+			width: windowContentSize.width,
+			height: windowContentSize.height - sheetContentSize.height - safeAreaInsets.top
+		)
 	}
 }
 
@@ -128,9 +162,13 @@ extension GamesEditor.Action {
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setGamePicker(isPresented):
 			self = .view(.setGamePicker(isPresented: isPresented))
+		case let .setBowlingBallPicker(isPresented):
+			self = .view(.setBowlingBallPicker(isPresented: isPresented))
 		case .didDismissGamePicker:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
+			self = .view(.didDismissOpenSheet)
+		case .didDismissBowlingBallPicker:
 			self = .view(.didDismissOpenSheet)
 		case let .didChangeDetent(newDetent):
 			self = .view(.didChangeDetent(newDetent))

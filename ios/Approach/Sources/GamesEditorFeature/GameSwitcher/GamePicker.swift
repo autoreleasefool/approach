@@ -96,7 +96,7 @@ struct GamePickerView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
-					Button("Cancel") { viewStore.send(.didTapCancelButton) }
+					Button(Strings.Action.cancel) { viewStore.send(.didTapCancelButton) }
 				}
 			}
 		})

@@ -58,8 +58,6 @@ public enum Strings {
   }
   public enum Address {
     public enum Error {
-      /// We couldn't load any results. Try another query.
-      public static let noResults = Strings.tr("Localizable", "address.error.noResults", fallback: "We couldn't load any results. Try another query.")
       /// We were unable to gather details for the chosen location. Please try again.
       public static let notFound = Strings.tr("Localizable", "address.error.notFound", fallback: "We were unable to gather details for the chosen location. Please try again.")
       public enum Empty {
@@ -198,6 +196,14 @@ public enum Strings {
       public static let add = Strings.tr("Localizable", "bowler.list.add", fallback: "Add Bowler")
       /// Bowlers
       public static let title = Strings.tr("Localizable", "bowler.list.title", fallback: "Bowlers")
+    }
+  }
+  public enum BowlingBall {
+    /// Bowling Balls
+    public static let title = Strings.tr("Localizable", "bowlingBall.title", fallback: "Bowling Ball")
+    public enum List {
+      /// Bowling Balls
+      public static let title = Strings.tr("Localizable", "bowlingBall.list.title", fallback: "Bowling Balls")
     }
   }
   public enum Editor {
@@ -464,6 +470,20 @@ public enum Strings {
     public enum Empty {
       /// No items found
       public static let title = Strings.tr("Localizable", "picker.empty.title", fallback: "No items found")
+    }
+  }
+  public enum Roll {
+    public enum Properties {
+      public enum Ball {
+        /// None selected
+        public static let noneSelected = Strings.tr("Localizable", "roll.properties.ball.noneSelected", fallback: "None selected")
+        /// Roll
+        public static let title = Strings.tr("Localizable", "roll.properties.ball.title", fallback: "Ball rolled")
+      }
+      public enum Foul {
+        /// Foul?
+        public static let title = Strings.tr("Localizable", "roll.properties.foul.title", fallback: "Foul?")
+      }
     }
   }
   public enum Series {

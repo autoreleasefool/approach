@@ -45,8 +45,8 @@ libraries = [ "Strings" ]
 
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
-repositories = [ "Frames" ]
-libraries = [ "Extensions", "SwiftUIExtensions" ]
+repositories = [ "Frames", "Gear" ]
+libraries = [ "Equatable", "Extensions", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.GamesList]
 features = [ "GamesEditor" ]
@@ -210,7 +210,7 @@ skip_tests = true
 skip_tests = true
 
 [libraries.ModelsViews]
-libraries = [ "Models", "Views" ]
+libraries = [ "Assets", "Models" ]
 
 [libraries.Repository]
 libraries = [ "Sorting" ]

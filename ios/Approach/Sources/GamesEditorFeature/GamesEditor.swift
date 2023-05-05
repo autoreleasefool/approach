@@ -26,6 +26,8 @@ public struct GamesEditor: Reducer {
 		public var currentRollIndex = 0
 
 		public var _frameEditor: FrameEditor.State?
+		public var _rollEditor: RollEditor.State?
+		public var _bowlingBallPicker: BowlingBallPicker.State
 
 		public init(
 			bowlers: IdentifiedArrayOf<Bowler.Summary>,
@@ -40,6 +42,7 @@ public struct GamesEditor: Reducer {
 			self.bowlerGames = bowlerGames
 			self.currentBowlerId = currentBowler
 			self.currentGameId = currentGame
+			self._bowlingBallPicker = .init(forBowler: currentBowler, selected: nil)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -54,6 +57,7 @@ public struct GamesEditor: Reducer {
 			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
+			case setBowlingBallPicker(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -65,8 +69,10 @@ public struct GamesEditor: Reducer {
 
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
+			case bowlingBallPicker(BowlingBallPicker.Action)
 			case frameEditor(FrameEditor.Action)
 			case scoreSheet(ScoreSheet.Action)
+			case rollEditor(RollEditor.Action)
 		}
 
 		case view(ViewAction)
@@ -90,6 +96,10 @@ public struct GamesEditor: Reducer {
 
 		Scope(state: \.gamePicker, action: /Action.internal..Action.InternalAction.gamePicker) {
 			GamePicker()
+		}
+
+		Scope(state: \.bowlingBallPicker, action: /Action.internal..Action.InternalAction.bowlingBallPicker) {
+			BowlingBallPicker()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -121,6 +131,10 @@ public struct GamesEditor: Reducer {
 				case let .setGamePicker(isPresented):
 					state.sheet.handle(isPresented: isPresented, for: .gamePicker)
 					return .none
+
+				case let .setBowlingBallPicker(isPresented):
+					state.sheet.handle(isPresented: isPresented, for: .bowlingBallPicker)
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -148,7 +162,13 @@ public struct GamesEditor: Reducer {
 
 					state.frames = frames
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
-					state.frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
+					state._frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
+
+					// TODO: get initial ball rolled loaded from frame
+					state._rollEditor = .init(
+						ballRolled: nil,// TODO: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.ballRolled,
+						didFoul: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.didFoul
+					)
 					return updateScoreSheet(from: state)
 
 				case .framesResponse(.failure):
@@ -170,6 +190,13 @@ public struct GamesEditor: Reducer {
 						return .none
 					}
 
+				case let .bowlingBallPicker(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinish:
+						state.sheet.hide(.bowlingBallPicker)
+						return .none
+					}
+
 				case let .frameEditor(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEditFrame:
@@ -179,6 +206,13 @@ public struct GamesEditor: Reducer {
 				case let .scoreSheet(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:
+						return .none
+					}
+
+				case let .rollEditor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didTapBall:
+						state.sheet.transition(to: .bowlingBallPicker)
 						return .none
 					}
 
@@ -192,10 +226,16 @@ public struct GamesEditor: Reducer {
 				case .scoreSheet(.view), .scoreSheet(.internal):
 					return .none
 
+				case .rollEditor(.view), .rollEditor(.internal):
+					return .none
+
 				case .frameEditor(.view), .frameEditor(.internal):
 					return .none
 
 				case .gamePicker(.view), .gamePicker(.internal):
+					return .none
+
+				case .bowlingBallPicker(.view), .bowlingBallPicker(.internal):
 					return .none
 
 				case .gameIndicator(.view), .gameIndicator(.internal):
@@ -208,6 +248,9 @@ public struct GamesEditor: Reducer {
 		}
 		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
 			FrameEditor()
+		}
+		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
+			RollEditor()
 		}
 		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
 			ScoreSheet()
@@ -273,6 +316,42 @@ extension GamesEditor.State {
 	}
 }
 
+// MARK: - BowlingBallPicker
+
+extension GamesEditor.State {
+	var bowlingBallPicker: BowlingBallPicker.State {
+		get {
+			var picker = _bowlingBallPicker
+			picker.forBowler = currentBowlerId
+			picker.selected = nil // TODO: frames?[currentFrameIndex].rolls[currentRollIndex].roll.ballRolled
+			return picker
+		}
+		set {
+			_bowlingBallPicker = newValue
+			// TODO: frames?[currentFrameIndex].rolls[currentRollIndex].roll.ballRolled = newValue.selectedResource
+		}
+	}
+}
+
+// MARK: - RollEditor
+
+extension GamesEditor.State {
+	var rollEditor: RollEditor.State? {
+		get {
+			guard let _rollEditor, let frames else { return nil }
+			var rollEditor = _rollEditor
+			rollEditor.ballRolled = nil //  TODO: frames[currentFrameIndex].roll(at: currentRollIndex).ballRolled
+			rollEditor.didFoul = frames[currentFrameIndex].rolls[currentRollIndex].roll.didFoul
+			return rollEditor
+		}
+		set {
+			_rollEditor = newValue
+			guard let newValue else { return }
+			frames?[currentFrameIndex].rolls[currentRollIndex].roll.didFoul = newValue.didFoul
+		}
+	}
+}
+
 // MARK: - Scoresheet
 
 extension GamesEditor.State {
@@ -300,6 +379,7 @@ extension GamesEditor.State {
 	public enum Sheet: Equatable {
 		case gamePicker
 		case gameDetails
+		case bowlingBallPicker
 
 		static let `default`: Self = .gameDetails
 	}

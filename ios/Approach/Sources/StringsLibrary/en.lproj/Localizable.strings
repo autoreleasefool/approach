@@ -60,6 +60,17 @@
 "gear.error.empty.title" = "No gear found";
 "gear.error.empty.message" = "You haven't added any gear yet. Track usage stats for your shoes, balls, or more.";
 
+/* Bowling Balls */
+
+"bowlingBall.title" = "Bowling Ball";
+"bowlingBall.list.title" = "Bowling Balls";
+
+/* Roll */
+
+"roll.properties.ball.title" = "Ball rolled";
+"roll.properties.ball.noneSelected" = "None selected";
+"roll.properties.foul.title" = "Foul?";
+
 /* Lanes */
 
 "lane.title" = "Lane";
