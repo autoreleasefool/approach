@@ -3,41 +3,39 @@ import SwiftUI
 
 public struct GameStatisticsSummary: View {
 	public var body: some View {
-			Grid(horizontalSpacing: .smallSpacing) {
+		Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .tinySpacing) {
 				GridRow {
-					Text("Middle Hit %")
-						.foregroundColor(.white)
-						.frame(maxWidth: .infinity)
-						.gridColumnAlignment(.leading)
+					HStack {
+						Text("Middle Hit %")
+							.foregroundColor(.white)
+							.gridColumnAlignment(.leading)
+						Spacer()
+
+					}
 					Text("75%")
 						.foregroundColor(.white)
 						.gridColumnAlignment(.trailing)
-//						.gridCellUnsizedAxes(.horizontal)
 					Text("+12%")
 						.foregroundColor(.appSuccess)
 						.gridColumnAlignment(.leading)
-//						.gridCellUnsizedAxes(.horizontal)
 				}
-//				.gridColumnAlignment(.leading)
+
+				Divider().hidden()
 
 				GridRow {
-					Text("Pins left on deck")
-						.frame(maxWidth: .infinity)
-						.foregroundColor(.white)
-						.gridColumnAlignment(.leading)
+					HStack {
+						Text("Pins left on deck")
+							.foregroundColor(.white)
+							.gridColumnAlignment(.leading)
+						Spacer()
+					}
 					Text("14")
 						.foregroundColor(.white)
 						.gridColumnAlignment(.trailing)
-//						.gridCellUnsizedAxes(.horizontal)
 					Text("+8%")
 						.foregroundColor(.appDestructive)
 						.gridColumnAlignment(.leading)
-//						.gridCellUnsizedAxes(.horizontal)
 				}
-
 			}
-			.gridColumnAlignment(.leading)
-//			.gridCellUnsizedAxes(.horizontal)
-//			.gridCellUnsizedAxes(.vertical)
 	}
 }
