@@ -10,6 +10,7 @@ import SwiftUIExtensionsLibrary
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
 
+	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
@@ -147,7 +148,10 @@ public struct GamesEditorView: View {
 			}
 			.onAppear {
 				viewStore.send(.didAppear)
-				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
+				Task.detached { @MainActor in
+					try await clock.sleep(for: .milliseconds(100))
+					viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
+				}
 			}
 		}
 	}
