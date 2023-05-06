@@ -38,19 +38,10 @@ struct FrameEditorView: View {
 				Spacer(minLength: .smallSpacing)
 				ForEach(Pin.fullDeck) { pin in
 					ZStack {
-						Image(uiImage: .pin)
+						Image(uiImage: viewStore.roll.isPinDown(pin) ? .pinDown : .pin)
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.shadow(color: .black, radius: 2)
-
-						if viewStore.roll.isPinDown(pin) {
-							Image(uiImage: .pin)
-								.resizable()
-								.renderingMode(.template)
-								.aspectRatio(contentMode: .fit)
-								.tint(.appPinTint)
-								.opacity(0.5)
-						}
 					}
 					.frame(width: getWidth(for: pin, renderWidth: viewStore.renderWidth))
 					.gesture(
