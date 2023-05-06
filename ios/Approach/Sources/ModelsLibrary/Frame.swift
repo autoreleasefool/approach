@@ -41,12 +41,14 @@ extension Frame {
 	public struct OrderedRoll: Sendable, Identifiable, Equatable {
 		public let index: Int
 		public var roll: Roll
+		public var bowlingBall: Gear.Rolled?
 
 		public var id: Int { index }
 
-		public init(index: Int, roll: Roll) {
+		public init(index: Int, roll: Roll, bowlingBall: Gear.Rolled?) {
 			self.index = index
 			self.roll = roll
+			self.bowlingBall = bowlingBall
 		}
 
 		public var displayValue: String {

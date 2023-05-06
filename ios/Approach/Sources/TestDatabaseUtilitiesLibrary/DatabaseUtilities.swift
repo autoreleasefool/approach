@@ -26,10 +26,11 @@ public func initializeDatabase(
 	migrator.registerDBMigrations()
 	try migrator.migrate(dbQueue)
 
-	let games = coallesce(withGames, ifHas: withFrames)
+	let frames = withFrames
+	let games = coallesce(withGames, ifHas: frames)
 	let series = coallesce(withSeries, ifHas: games)
 	let leagues = coallesce(withLeagues, ifHas: series)
-	let gear = withGear
+	let gear = coallesce(withGear, ifHas: frames)
 	let bowlers = coallesce(withBowlers, ifHas: leagues, gear)
 	let lanes = coallesce(withLanes, ifHas: series)
 	let alleys = coallesce(withAlleys, ifHas: lanes, leagues)
@@ -44,7 +45,7 @@ public func initializeDatabase(
 		try insert(leagues: leagues, into: $0)
 		try insert(series: series, into: $0)
 		try insert(games: games, into: $0)
-		try insert(frames: withFrames, into: $0)
+		try insert(frames: frames, into: $0)
 	}
 
 	return dbQueue

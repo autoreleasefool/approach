@@ -16,7 +16,7 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testLoad_ReturnsFramesForOneGame() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", ball0: UUID(0))
 		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
@@ -31,13 +31,25 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns one frame
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), index: 0, rolls: [])]
+			[
+				.init(
+					gameId: UUID(0),
+					index: 0,
+					rolls: [
+						.init(
+							index: 0,
+							roll: .init(pinsDowned: [.headPin], didFoul: false),
+							bowlingBall: .init(id: UUID(0), name: "Yellow")
+						)
+					]
+				)
+			]
 		)
 	}
 
 	func testLoad_WhenGameExists_ReturnsFrames() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "100110", ball0: UUID(1))
 		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
@@ -52,7 +64,24 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns the game
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), index: 0, rolls: []), .init(gameId: UUID(0), index: 1, rolls: [])]
+			[
+				.init(
+					gameId: UUID(0),
+					index: 0,
+					rolls: [
+						.init(
+							index: 0,
+							roll: .init(pinsDowned: [.headPin, .rightThreePin], didFoul: true),
+							bowlingBall: .init(id: UUID(1), name: "Blue")
+						)
+					]
+				),
+				.init(
+					gameId: UUID(0),
+					index: 1,
+					rolls: []
+				)
+			]
 		)
 	}
 
@@ -76,7 +105,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 	func testEdit_ReturnsFramesForOneGame() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame1 = Frame.Database
+			.mock(gameId: UUID(0), index: 0, roll0: "110100", roll1: "011000", ball0: UUID(0), ball1: UUID(1))
 		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
@@ -91,13 +121,30 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns one frame
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), index: 0, rolls: [])]
+			[
+				.init(
+					gameId: UUID(0),
+					index: 0,
+					rolls: [
+						.init(
+							index: 0,
+							roll: .init(pinsDowned: [.leftTwoPin, .headPin], didFoul: true),
+							bowlingBall: .init(id: UUID(0), name: "Yellow")
+						),
+						.init(
+							index: 1,
+							roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false),
+							bowlingBall: .init(id: UUID(1), name: "Blue")
+						),
+					]
+				)
+			]
 		)
 	}
 
 	func testEdit_WhenGameExists_ReturnsFrames() async throws {
 		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000101")
 		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
@@ -112,7 +159,13 @@ final class FramesRepositoryTests: XCTestCase {
 		// Returns the game
 		XCTAssertEqual(
 			frames,
-			[.init(gameId: UUID(0), index: 0, rolls: []), .init(gameId: UUID(0), index: 1, rolls: [])]
+			[
+				.init(
+					gameId: UUID(0),
+					index: 0,
+					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin], didFoul: false), bowlingBall: nil)]
+				),
+				.init(gameId: UUID(0), index: 1, rolls: [])]
 		)
 	}
 
@@ -144,8 +197,8 @@ final class FramesRepositoryTests: XCTestCase {
 			gameId: UUID(0),
 			index: 0,
 			rolls: [
-				.init(index: 0, roll: .default),
-				.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: true)),
+				.init(index: 0, roll: .default, bowlingBall: nil),
+				.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: true), bowlingBall: nil),
 			]
 		)
 		try await withDependencies {
@@ -184,8 +237,8 @@ final class FramesRepositoryTests: XCTestCase {
 				gameId: UUID(0),
 				index: 0,
 				rolls: [
-					.init(index: 0, roll: .default),
-					.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: true)),
+					.init(index: 0, roll: .default, bowlingBall: nil),
+					.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: true), bowlingBall: nil),
 				]
 			)
 			try await withDependencies {
@@ -208,14 +261,20 @@ extension Frame.Database {
 		index: Int,
 		roll0: String? = nil,
 		roll1: String? = nil,
-		roll2: String? = nil
+		roll2: String? = nil,
+		ball0: Gear.ID? = nil,
+		ball1: Gear.ID? = nil,
+		ball2: Gear.ID? = nil
 	) -> Self {
 		.init(
 			gameId: gameId,
 			index: index,
 			roll0: roll0,
 			roll1: roll1,
-			roll2: roll2
+			roll2: roll2,
+			ball0: ball0,
+			ball1: ball1,
+			ball2: ball2
 		)
 	}
 }

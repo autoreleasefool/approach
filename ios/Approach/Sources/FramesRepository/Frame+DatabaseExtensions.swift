@@ -11,6 +11,10 @@ extension Frame.Summary: TableRecord, FetchableRecord {
 	public static let databaseTableName = Frame.Database.databaseTableName
 }
 
+extension Gear.Rolled: TableRecord, FetchableRecord {
+	public static let databaseTableName = Gear.Database.databaseTableName
+}
+
 extension DerivableRequest<Frame.Database> {
 	func orderByIndex() -> Self {
 		order(Frame.Database.Columns.index)

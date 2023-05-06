@@ -16,7 +16,18 @@ func insert(
 		for gameIdInt in 0...5 {
 			let gameId = UUID(gameIdInt)
 			for index in 0..<Game.NUMBER_OF_FRAMES {
-				framesBuilder.append(.init(gameId: gameId, index: index, roll0: nil, roll1: nil, roll2: nil))
+				framesBuilder.append(
+					.init(
+						gameId: gameId,
+						index: index,
+						roll0: nil,
+						roll1: nil,
+						roll2: nil,
+						ball0: nil,
+						ball1: nil,
+						ball2: nil
+					)
+				)
 			}
 		}
 		frames = framesBuilder

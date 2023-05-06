@@ -22,9 +22,14 @@ extension Frame {
 			let roll0 = try container.decodeIfPresent(Roll.self, forKey: CodingKeys.roll0)
 			let roll1 = try container.decodeIfPresent(Roll.self, forKey: CodingKeys.roll1)
 			let roll2 = try container.decodeIfPresent(Roll.self, forKey: CodingKeys.roll2)
-			self.rolls = [roll0, roll1, roll2].enumerated().compactMap {
-				guard let roll = $0.element else { return nil }
-				return .init(index: $0.offset, roll: roll)
+			let ball0 = try container.decodeIfPresent(Gear.Rolled.self, forKey: CodingKeys.bowlingBall0)
+			let ball1 = try container.decodeIfPresent(Gear.Rolled.self, forKey: CodingKeys.bowlingBall1)
+			let ball2 = try container.decodeIfPresent(Gear.Rolled.self, forKey: CodingKeys.bowlingBall2)
+			let rolls = [roll0, roll1, roll2]
+			let bowlingBalls = [ball0, ball1, ball2]
+			self.rolls = zip(rolls, bowlingBalls).enumerated().compactMap {
+				guard let roll = $0.element.0 else { return nil }
+				return .init(index: $0.offset, roll: roll, bowlingBall: $0.element.1)
 			}
 		}
 
@@ -39,6 +44,9 @@ extension Frame {
 			try container.encodeIfPresent(roll0?.roll, forKey: CodingKeys.roll0)
 			try container.encodeIfPresent(roll1?.roll, forKey: CodingKeys.roll1)
 			try container.encodeIfPresent(roll2?.roll, forKey: CodingKeys.roll2)
+			try container.encodeIfPresent(roll0?.bowlingBall?.id, forKey: CodingKeys.ball0)
+			try container.encodeIfPresent(roll1?.bowlingBall?.id, forKey: CodingKeys.ball1)
+			try container.encodeIfPresent(roll2?.bowlingBall?.id, forKey: CodingKeys.ball2)
 		}
 
 		enum CodingKeys: CodingKey {
@@ -47,6 +55,12 @@ extension Frame {
 			case roll0
 			case roll1
 			case roll2
+			case bowlingBall0
+			case bowlingBall1
+			case bowlingBall2
+			case ball0
+			case ball1
+			case ball2
 		}
 	}
 }

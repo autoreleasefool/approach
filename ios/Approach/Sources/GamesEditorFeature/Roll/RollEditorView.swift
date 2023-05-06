@@ -62,7 +62,7 @@ public struct RollEditorView: View {
 extension RollEditor.Action {
 	init(action: RollEditorView.ViewAction) {
 		switch action {
-		case let .didToggleFoul:
+		case .didToggleFoul:
 			self = .view(.didToggleFoul)
 		case .didTapBall:
 			self = .delegate(.didTapBall)
