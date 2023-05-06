@@ -9,7 +9,7 @@ extension Frame.Edit {
 
 	mutating func guaranteeRollExists(upTo index: Int) {
 		while rolls.count < index + 1 {
-			rolls.append(.init(index: rolls.count, roll: .default))
+			rolls.append(.init(index: rolls.count, roll: .default, bowlingBall: nil))
 		}
 	}
 

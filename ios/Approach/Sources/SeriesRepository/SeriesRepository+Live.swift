@@ -56,7 +56,16 @@ extension SeriesRepository: DependencyKey {
 								try game.insert(db)
 
 								for frameIndex in (0..<Game.NUMBER_OF_FRAMES) {
-									let frame = Frame.Database(gameId: game.id, index: frameIndex, roll0: nil, roll1: nil, roll2: nil)
+									let frame = Frame.Database(
+										gameId: game.id,
+										index: frameIndex,
+										roll0: nil,
+										roll1: nil,
+										roll2: nil,
+										ball0: nil,
+										ball1: nil,
+										ball2: nil
+									)
 									try frame.insert(db)
 								}
 							}

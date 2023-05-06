@@ -331,12 +331,12 @@ extension GamesEditor.State {
 		get {
 			var picker = _bowlingBallPicker
 			picker.forBowler = currentBowlerId
-			picker.selected = nil // TODO: frames?[currentFrameIndex].rolls[currentRollIndex].roll.ballRolled
+			picker.selected = frames?[currentFrameIndex].rolls[currentRollIndex].bowlingBall?.id
 			return picker
 		}
 		set {
 			_bowlingBallPicker = newValue
-			// TODO: frames?[currentFrameIndex].rolls[currentRollIndex].roll.ballRolled = newValue.selectedResource
+			frames?[currentFrameIndex].rolls[currentRollIndex].bowlingBall = newValue.selectedBall?.rolled
 		}
 	}
 }
@@ -348,8 +348,9 @@ extension GamesEditor.State {
 		get {
 			guard let _rollEditor, let frames else { return nil }
 			var rollEditor = _rollEditor
-			rollEditor.ballRolled = nil //  TODO: frames[currentFrameIndex].roll(at: currentRollIndex).ballRolled
-			rollEditor.didFoul = frames[currentFrameIndex].rolls[currentRollIndex].roll.didFoul
+			let currentRoll = frames[currentFrameIndex].rolls[currentRollIndex]
+			rollEditor.ballRolled = currentRoll.bowlingBall
+			rollEditor.didFoul = currentRoll.roll.didFoul
 			return rollEditor
 		}
 		set {

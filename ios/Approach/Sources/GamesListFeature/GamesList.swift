@@ -93,7 +93,7 @@ public struct GamesList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .editor(.internal), .editor(.view), .editor(.binding):
+				case .editor(.internal), .editor(.view):
 					return .none
 				}
 

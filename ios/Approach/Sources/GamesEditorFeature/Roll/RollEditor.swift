@@ -6,11 +6,11 @@ import StringsLibrary
 
 public struct RollEditor: Reducer {
 	public struct State: Equatable {
-		public var ballRolled: Gear.Summary?
+		public var ballRolled: Gear.Rolled?
 		public var didFoul: Bool
 
 
-		init(ballRolled: Gear.Summary?, didFoul: Bool) {
+		init(ballRolled: Gear.Rolled?, didFoul: Bool) {
 			self.ballRolled = ballRolled
 			self.didFoul = didFoul
 		}

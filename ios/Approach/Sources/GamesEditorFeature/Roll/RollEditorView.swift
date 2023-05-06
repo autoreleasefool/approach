@@ -8,7 +8,7 @@ public struct RollEditorView: View {
 	let store: StoreOf<RollEditor>
 
 	struct ViewState: Equatable {
-		let ballRolled: Gear.Summary?
+		let ballRolled: Gear.Rolled?
 		let didFoul: Bool
 
 		init(state: RollEditor.State) {
@@ -46,11 +46,11 @@ public struct RollEditorView: View {
 				Button { viewStore.send(.didToggleFoul) } label: {
 					HStack(spacing: .smallSpacing) {
 						Text(Strings.Roll.Properties.Foul.title)
-							.foregroundColor(.white)
+							.foregroundColor(viewStore.didFoul ? .appError : .white)
 						Image(systemName: viewStore.didFoul ? "f.cursive.circle.fill" : "f.cursive.circle")
 							.resizable()
 							.frame(width: .smallIcon, height: .smallIcon)
-							.foregroundColor(.white)
+							.foregroundColor(viewStore.didFoul ? .appError : .white)
 					}
 				}
 				.buttonStyle(TappableElement())
