@@ -8,7 +8,6 @@ public struct FrameEditor: Reducer {
 		public var currentRollIndex: Int
 		public var frame: Frame.Edit
 		public var draggedPinNewState: Bool?
-		public var renderWidth: CGFloat = .zero
 
 		public init(currentRollIndex: Int, frame: Frame.Edit) {
 			self.currentRollIndex = currentRollIndex
@@ -18,7 +17,6 @@ public struct FrameEditor: Reducer {
 
 	public enum Action: Equatable {
 		public enum ViewAction: Equatable {
-			case didMeasureViewWidth(CGFloat)
 			case didTapNextBallButton
 			case didTapPin(Pin)
 			case didStartDraggingPin(Pin)
@@ -41,10 +39,6 @@ public struct FrameEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didMeasureViewWidth(width):
-					state.renderWidth = width
-					return .none
-
 				case .didTapNextBallButton:
 					return .none
 

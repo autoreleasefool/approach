@@ -82,6 +82,7 @@ public struct GamesEditorView: View {
 						store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)
 					) { scopedStore in
 						FrameEditorView(store: scopedStore)
+							.frame(maxHeight: viewStore.backdropSize.height * 0.6)
 							.padding(.top)
 					}
 					Spacer()
@@ -94,6 +95,7 @@ public struct GamesEditorView: View {
 
 					if viewStore.isGameStatsVisible {
 						GameStatisticsSummary()
+							.padding(.top)
 							.padding(.horizontal)
 					}
 				}
@@ -106,6 +108,7 @@ public struct GamesEditorView: View {
 					.resizable(resizingMode: .stretch)
 					.fixedSize(horizontal: true, vertical: false)
 					.frame(width: viewStore.backdropSize.width, height: viewStore.backdropSize.height)
+					.padding(.top, headerContentSize.height)
 			}
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
@@ -199,7 +202,7 @@ public struct GamesEditorView: View {
 		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
-			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height - safeAreaInsets.bottom
+			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height - safeAreaInsets.bottom - CGFloat.largeSpacing
 		)
 	}
 }

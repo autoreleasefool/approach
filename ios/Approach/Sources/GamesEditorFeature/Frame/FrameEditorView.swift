@@ -8,20 +8,20 @@ import ViewsLibrary
 struct FrameEditorView: View {
 	let store: StoreOf<FrameEditor>
 
+	@State private var initialContentSize: CGSize = .zero
+	@State private var contentSize: CGSize = .zero
+
 	struct ViewState: Equatable {
 		let rollIndex: Int
 		let roll: Frame.Roll
-		let renderWidth: CGFloat
 
 		init(state: FrameEditor.State) {
 			self.rollIndex = state.currentRollIndex
 			self.roll = state.frame.rolls[state.currentRollIndex].roll
-			self.renderWidth = state.renderWidth
 		}
 	}
 
 	enum ViewAction {
-		case didMeasureViewWidth(CGFloat)
 		case didTapNextBallButton
 		case didTapPin(Pin)
 		case didStartDraggingPin(Pin)
@@ -35,7 +35,7 @@ struct FrameEditorView: View {
 	var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: FrameEditor.Action.init) { viewStore in
 			HStack(alignment: .center, spacing: .smallSpacing) {
-				Spacer(minLength: .smallSpacing)
+				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.fullDeck) { pin in
 					ZStack {
 						Image(uiImage: viewStore.roll.isPinDown(pin) ? .pinDown : .pin)
@@ -43,7 +43,7 @@ struct FrameEditorView: View {
 							.aspectRatio(contentMode: .fit)
 							.shadow(color: .black, radius: 2)
 					}
-					.frame(width: getWidth(for: pin, renderWidth: viewStore.renderWidth))
+					.frame(width: getWidth(for: pin), height: getHeight(for: pin))
 					.gesture(
 						TapGesture()
 							.onEnded { viewStore.send(.didTapPin(pin)) }
@@ -54,21 +54,21 @@ struct FrameEditorView: View {
 							.onEnded { _ in viewStore.send(.didStopDraggingPins) }
 					)
 				}
-				Spacer(minLength: .smallSpacing)
+				Spacer(minLength: .standardSpacing)
 			}
-			.overlay(
-				GeometryReader { proxy in
-					Color.clear
-						.onAppear { viewStore.send(.didMeasureViewWidth(proxy.size.width)) }
-				}
-			)
+			.measure(key: InitialContentSizeKey.self, to: $initialContentSize, exactlyOnce: true)
+			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
 	}
 
-	private func getWidth(for pin: Pin, renderWidth: CGFloat) -> CGFloat {
-		let spacing = CGFloat.smallSpacing * 6 // 2 sides, 4 spaces between pins
-		guard renderWidth > spacing else { return 0 }
-		let availableWidth = renderWidth - spacing
+	private func getHeight(for pin: Pin) -> CGFloat? {
+		return nil
+	}
+
+	private func getWidth(for pin: Pin) -> CGFloat {
+		let spacing = CGFloat.unitSpacing * 16 // 2x4 sides, 4x2 spaces between pins
+		guard initialContentSize.width > spacing else { return 0 }
+		let availableWidth = initialContentSize.width - spacing
 		switch pin {
 		case .leftTwoPin, .rightTwoPin:
 			return availableWidth * 100 / 530
@@ -83,8 +83,6 @@ struct FrameEditorView: View {
 extension FrameEditor.Action {
 	init(action: FrameEditorView.ViewAction) {
 		switch action {
-		case let .didMeasureViewWidth(width):
-			self = .view(.didMeasureViewWidth(width))
 		case .didTapNextBallButton:
 			self = .view(.didTapNextBallButton)
 		case let .didTapPin(pin):
@@ -94,5 +92,20 @@ extension FrameEditor.Action {
 		case .didStopDraggingPins:
 			self = .view(.didStopDraggingPins)
 		}
+	}
+}
+
+private struct InitialContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+
+private struct ContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
 	}
 }
