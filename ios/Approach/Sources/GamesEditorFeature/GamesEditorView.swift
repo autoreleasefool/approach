@@ -12,6 +12,7 @@ public struct GamesEditorView: View {
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@State private var headerContentSize: CGSize = .zero
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 	@State private var minimumSheetContentSize: CGSize = .zero
@@ -74,6 +75,7 @@ public struct GamesEditorView: View {
 					Spacer()
 					headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
 				}
+				.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
 				VStack {
 					Spacer()
 					IfLetStore(
@@ -197,7 +199,7 @@ public struct GamesEditorView: View {
 		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
-			height: windowContentSize.height - sheetContentSize.height - safeAreaInsets.top
+			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height - safeAreaInsets.bottom
 		)
 	}
 }
@@ -250,6 +252,13 @@ private struct SheetContentSizeKey: PreferenceKey {
 }
 
 private struct WindowContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+private struct HeaderContentSizeKey: PreferenceKey {
 	static var defaultValue: CGSize = .zero
 	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
 		value = nextValue()
