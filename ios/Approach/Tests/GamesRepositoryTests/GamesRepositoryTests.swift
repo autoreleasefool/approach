@@ -88,7 +88,16 @@ final class GamesRepositoryTests: XCTestCase {
 		// Returns the game
 		XCTAssertEqual(
 			game,
-			.init(id: UUID(0), locked: .open, manualScore: nil, excludeFromStatistics: .include)
+			.init(
+				id: UUID(0),
+				index: 0,
+				locked: .open,
+				manualScore: nil,
+				excludeFromStatistics: .include,
+				bowler: .init(id: UUID(0), name: "Joseph"),
+				league: .init(id: UUID(0), name: "Majors"),
+				series: .init(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+			)
 		)
 	}
 
@@ -114,7 +123,16 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
-		let editable = Game.Edit(id: UUID(0), locked: .locked, manualScore: 123, excludeFromStatistics: .include)
+		let editable = Game.Edit(
+			id: UUID(0),
+			index: 0,
+			locked: .locked,
+			manualScore: 123,
+			excludeFromStatistics: .include,
+			bowler: .init(id: UUID(0), name: "Joseph"),
+			league: .init(id: UUID(0), name: "Majors"),
+			series: .init(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+		)
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.games = .liveValue
@@ -139,7 +157,16 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Updating a game
 		await assertThrowsError(ofType: RecordError.self) {
-			let editable = Game.Edit(id: UUID(0), locked: .locked, manualScore: nil, excludeFromStatistics: .exclude)
+			let editable = Game.Edit(
+				id: UUID(0),
+				index: 0,
+				locked: .locked,
+				manualScore: nil,
+				excludeFromStatistics: .exclude,
+				bowler: .init(id: UUID(0), name: "Joseph"),
+				league: .init(id: UUID(0), name: "Majors"),
+				series: .init(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+			)
 			try await withDependencies {
 				$0.database.writer = { db }
 				$0.games = .liveValue

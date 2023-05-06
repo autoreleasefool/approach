@@ -44,6 +44,8 @@ extension League.Recurrence: DatabaseValueConvertible {}
 extension League.ExcludeFromStatistics: DatabaseValueConvertible {}
 
 extension League.Database: FetchableRecord, PersistableRecord {
+	public static let bowler = belongsTo(Bowler.Database.self)
+
 	public static let alley = belongsTo(Alley.Database.self)
 	public var alley: QueryInterfaceRequest<Alley.Database> { request(for: Self.alley) }
 }

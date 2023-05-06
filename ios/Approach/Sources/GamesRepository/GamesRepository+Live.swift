@@ -23,7 +23,13 @@ extension GamesRepository: DependencyKey {
 			},
 			edit: { id in
 				try await database.reader().read {
-					try Game.Edit.fetchOne($0, id: id)
+					try Game.Database
+						.filter(id: id)
+						.including(required: Game.Database.series)
+						.including(required: Game.Database.league)
+						.including(required: Game.Database.bowler)
+						.asRequest(of: Game.Edit.self)
+						.fetchOne($0)
 				}
 			},
 			update: { game in

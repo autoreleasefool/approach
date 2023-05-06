@@ -34,7 +34,11 @@ extension Game {
 extension Game.Lock: DatabaseValueConvertible {}
 extension Game.ExcludeFromStatistics: DatabaseValueConvertible {}
 
-extension Game.Database: FetchableRecord, PersistableRecord {}
+extension Game.Database: FetchableRecord, PersistableRecord {
+	public static let series = belongsTo(Series.Database.self)
+	public static let league = hasOne(League.Database.self, through: series, using: Series.Database.league)
+	public static let bowler = hasOne(Bowler.Database.self, through: league, using: League.Database.bowler)
+}
 
 extension Game.Database {
 	public enum Columns {

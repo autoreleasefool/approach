@@ -6,4 +6,9 @@ final class DateExtensionTests: XCTestCase {
 		let date = Date(timeIntervalSince1970: 72_072)
 		XCTAssertEqual(date.longFormat, "January 1, 1970")
 	}
+
+	func testShortDateFormat() {
+		let date = Date(timeIntervalSince1970: 72_072)
+		XCTAssertEqual(date.shortFormat, "Thu, Jan 1")
+	}
 }

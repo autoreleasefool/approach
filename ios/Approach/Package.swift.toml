@@ -45,13 +45,12 @@ libraries = [ "Strings" ]
 
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
-repositories = [ "Frames", "Gear" ]
-libraries = [ "Equatable", "Extensions", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
+repositories = [ "Frames", "Games", "Gear" ]
+libraries = [ "DateTime", "Equatable", "Extensions", "SwiftUIExtensions" ]
 
 [features.GamesList]
 features = [ "GamesEditor" ]
-repositories = [ "Games" ]
-libraries = [ "DateTime", "ResourceList" ]
+libraries = [ "ResourceList" ]
 
 [features.GearEditor]
 repositories = [ "Bowlers", "Gear" ]

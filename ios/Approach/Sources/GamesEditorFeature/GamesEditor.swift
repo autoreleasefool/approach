@@ -3,6 +3,7 @@ import Dependencies
 import FeatureActionLibrary
 import Foundation
 import FramesRepositoryInterface
+import GamesRepositoryInterface
 import ModelsLibrary
 import ScoreSheetFeature
 import ScoringServiceInterface
@@ -22,6 +23,7 @@ public struct GamesEditor: Reducer {
 
 		public var currentBowlerId: Bowler.ID
 		public var currentGameId: Game.ID
+		public var currentGame: Game.Edit?
 		public var currentFrameIndex = 0
 		public var currentRollIndex = 0
 
@@ -54,18 +56,22 @@ public struct GamesEditor: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
+			case didTapClose
+			case didTapSettings
 			case didChangeDetent(PresentationDetent)
 			case didAdjustBackdropSize(CGSize)
 			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
 			case setBowlingBallPicker(isPresented: Bool)
+			case setGamesSettings(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case switchToBowler(Bowler.ID)
 			case switchToGame(Game.ID)
 			case framesResponse(TaskResult<[Frame.Edit]>)
+			case gameReponse(TaskResult<Game.Edit?>)
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
 
@@ -75,6 +81,7 @@ public struct GamesEditor: Reducer {
 			case frameEditor(FrameEditor.Action)
 			case scoreSheet(ScoreSheet.Action)
 			case rollEditor(RollEditor.Action)
+			case gamesSettings(GamesSettings.Action)
 		}
 
 		case view(ViewAction)
@@ -89,6 +96,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.frames) var frames
+	@Dependency(\.games) var games
 	@Dependency(\.scoringService) var scoringService
 
 	public var body: some Reducer<State, Action> {
@@ -110,6 +118,14 @@ public struct GamesEditor: Reducer {
 				switch viewAction {
 				case .didAppear:
 					return loadGameDetails(for: state.currentGameId)
+
+				case .didTapClose:
+					// TODO: close the games editor
+					return .none
+
+				case .didTapSettings:
+					state.sheet.transition(to: .settings)
+					return .none
 
 				case let .didAdjustBackdropSize(newSize):
 					state.backdropSize = newSize
@@ -143,6 +159,10 @@ public struct GamesEditor: Reducer {
 				case let .setBowlingBallPicker(isPresented):
 					state.sheet.handle(isPresented: isPresented, for: .bowlingBallPicker)
 					return .none
+
+				case let .setGamesSettings(isPresented):
+					state.sheet.handle(isPresented: isPresented, for: .settings)
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -157,6 +177,11 @@ public struct GamesEditor: Reducer {
 					precondition(state.bowlerGames[state.currentBowlerId]!.contains(gameId))
 					state.currentGameId = gameId
 					return loadGameDetails(for: state.currentGameId)
+
+				case let .gameReponse(.success(game)):
+					guard state.currentGameId == game?.id else { return .none }
+					state.currentGame = game
+					return .none
 
 				case let .framesResponse(.success(frames)):
 					guard frames.first?.gameId == state.currentGameId else {
@@ -181,6 +206,10 @@ public struct GamesEditor: Reducer {
 
 				case .framesResponse(.failure):
 					// TODO: handle error loading frames
+					return .none
+
+				case .gameReponse(.failure):
+					// TODO: handle error loading game
 					return .none
 
 				case let .calculatedScore(steps):
@@ -231,6 +260,13 @@ public struct GamesEditor: Reducer {
 						return .none
 					}
 
+				case let .gamesSettings(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinish:
+						state.sheet.hide(.settings)
+						return .none
+					}
+
 				case .scoreSheet(.view), .scoreSheet(.internal):
 					return .none
 
@@ -248,11 +284,17 @@ public struct GamesEditor: Reducer {
 
 				case .gameIndicator(.view), .gameIndicator(.internal):
 					return .none
+
+				case .gamesSettings(.view), .gamesSettings(.internal):
+					return .none
 				}
 
 			case .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.gamesSettings, action: /Action.internal..Action.InternalAction.gamesSettings) {
+			GamesSettings()
 		}
 		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
 			FrameEditor()
@@ -266,11 +308,18 @@ public struct GamesEditor: Reducer {
 	}
 
 	private func loadGameDetails(for gameId: Game.ID) -> Effect<Action> {
-		return .task {
-			await .internal(.framesResponse(TaskResult {
-				try await frames.frames(forGame: gameId) ?? []
-			}))
-		}
+		return .merge(
+			.task {
+				await .internal(.framesResponse(TaskResult {
+					try await frames.frames(forGame: gameId) ?? []
+				}))
+			},
+			.task {
+				await .internal(.gameReponse(TaskResult {
+					try await games.edit(gameId)
+				}))
+			}
+		)
 		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
 	}
 
@@ -300,6 +349,19 @@ extension GamesEditor.State {
 	var gamePicker: GamePicker.State {
 		get { .init(games: currentBowlerGames, selected: currentGameId) }
 		set { self.currentGameId = newValue.selected }
+	}
+
+	// MARK: - GamesSettings
+
+	var gamesSettings: GamesSettings.State? {
+		get {
+			guard let currentGame else { return nil }
+			return .init(game: currentGame)
+		}
+		set {
+			guard let newValue, currentGameId == newValue.game.id else { return }
+			currentGame = newValue.game
+		}
 	}
 }
 
@@ -389,6 +451,7 @@ extension GamesEditor.State {
 		case gamePicker
 		case gameDetails
 		case bowlingBallPicker
+		case settings
 
 		static let `default`: Self = .gameDetails
 	}

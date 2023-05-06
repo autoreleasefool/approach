@@ -238,12 +238,12 @@ let package = Package(
 		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
+				"DateTimeLibrary",
 				"EquatableLibrary",
 				"ExtensionsLibrary",
 				"FramesRepositoryInterface",
+				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
-				"ModelsViewsLibrary",
-				"ResourcePickerLibrary",
 				"ScoreSheetFeature",
 				"SwiftUIExtensionsLibrary",
 			]
@@ -258,9 +258,7 @@ let package = Package(
 		.target(
 			name: "GamesListFeature",
 			dependencies: [
-				"DateTimeLibrary",
 				"GamesEditorFeature",
-				"GamesRepositoryInterface",
 				"ResourceListLibrary",
 			]
 		),

@@ -260,12 +260,22 @@ public enum Strings {
     public enum Editor {
       public enum Fields {
         public enum ExcludeFromStatistics {
-          /// You can choose to exclude this game from all statistics. It will still appear in the app, but won't affect your overall average or other statistics.
-          public static let help = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.help", fallback: "You can choose to exclude this game from all statistics. It will still appear in the app, but won't affect your overall average or other statistics.")
+          /// All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.
+          public static let excludedWhenLeagueExcluded = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded", fallback: "All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.")
+          /// All of this series' games have been excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics.
+          public static let excludedWhenSeriesExcluded = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.excludedWhenSeriesExcluded", fallback: "All of this series' games have been excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics.")
+          /// This game will not count towards any statistics. It will still appear in the app, but won't affect your overall average or other statistics. This can be useful for practice or incomplete games.
+          public static let help = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.help", fallback: "This game will not count towards any statistics. It will still appear in the app, but won't affect your overall average or other statistics. This can be useful for practice or incomplete games.")
           /// Exclude from statistics?
           public static let label = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.label", fallback: "Exclude from statistics?")
           /// Statistics
           public static let title = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
+        }
+        public enum Lock {
+          /// Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.
+          public static let help = Strings.tr("Localizable", "game.editor.fields.lock.help", fallback: "Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.")
+          /// Lock for editing
+          public static let label = Strings.tr("Localizable", "game.editor.fields.lock.label", fallback: "Lock for editing")
         }
       }
       public enum Picker {
@@ -280,6 +290,12 @@ public enum Strings {
         /// Include in statistics
         public static let include = Strings.tr("Localizable", "game.properties.excludeFromStatistics.include", fallback: "Include in statistics")
       }
+    }
+    public enum Settings {
+      /// Currently Editing
+      public static let current = Strings.tr("Localizable", "game.settings.current", fallback: "Currently Editing")
+      /// Game Settings
+      public static let title = Strings.tr("Localizable", "game.settings.title", fallback: "Game Settings")
     }
   }
   public enum Gear {
@@ -368,8 +384,8 @@ public enum Strings {
           public static let help = Strings.tr("Localizable", "league.editor.fields.alley.help", fallback: "This is where you'll usually bowl this league. You can always change it for specific series later.")
         }
         public enum ExcludeFromStatistics {
-          /// You can choose to exclude this league and all of its games from all statistics. They will still appear in the app, but won't affect your overall average or other statistics.
-          public static let help = Strings.tr("Localizable", "league.editor.fields.excludeFromStatistics.help", fallback: "You can choose to exclude this league and all of its games from all statistics. They will still appear in the app, but won't affect your overall average or other statistics.")
+          /// This league and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your overall average or other statistics.
+          public static let help = Strings.tr("Localizable", "league.editor.fields.excludeFromStatistics.help", fallback: "This league and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your overall average or other statistics.")
           /// Exclude from statistics?
           public static let label = Strings.tr("Localizable", "league.editor.fields.excludeFromStatistics.label", fallback: "Exclude from statistics?")
           /// Statistics
@@ -504,8 +520,8 @@ public enum Strings {
           public static let excludedWhenLeagueExcluded = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded", fallback: "All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.")
           /// Pre-bowls are automatically excluded from all statistics.
           public static let excludedWhenPreBowl = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl", fallback: "Pre-bowls are automatically excluded from all statistics.")
-          /// You can choose to exclude this series and all of its games from all statistics. They will still appear in the app, but won't affect your average or other statistics.
-          public static let help = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.help", fallback: "You can choose to exclude this series and all of its games from all statistics. They will still appear in the app, but won't affect your average or other statistics.")
+          /// This series and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your average or other statistics.
+          public static let help = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.help", fallback: "This series and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your average or other statistics.")
           /// Exclude from all statistics?
           public static let label = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.label", fallback: "Exclude from all statistics?")
           /// Statistics

@@ -24,6 +24,7 @@ public struct GamesEditorView: View {
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
 		let isBowlingBallPickerPresented: Bool
+		let isGamesSettingsPresented: Bool
 
 		let isGameStatsVisible: Bool
 
@@ -34,22 +35,27 @@ public struct GamesEditorView: View {
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 			self.isBowlingBallPickerPresented = state.sheet == .presenting(.bowlingBallPicker)
+			self.isGamesSettingsPresented = state.sheet == .presenting(.settings)
 			self.isGameStatsVisible = state.isGameStatsVisible
 		}
 	}
 
 	enum ViewAction {
 		case didAppear
+		case didTapClose
+		case didTapSettings
 		case didChangeDetent(PresentationDetent)
 		case didAdjustBackdropSize(CGSize)
 
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
 		case setBowlingBallPicker(isPresented: Bool)
+		case setGamesSettings(isPresented: Bool)
 
 		case didDismissGameDetails
 		case didDismissGamePicker
 		case didDismissBowlingBallPicker
+		case didDismissGamesSettings
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -59,9 +65,15 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
 			VStack {
-				GameIndicatorView(
-					store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator)
-				)
+				HStack {
+					headerButton(systemName: "chevron.backward") { viewStore.send(.didTapClose) }
+					Spacer()
+					GameIndicatorView(
+						store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator)
+					)
+					Spacer()
+					headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
+				}
 				VStack {
 					Spacer()
 					IfLetStore(
@@ -86,7 +98,6 @@ public struct GamesEditorView: View {
 				.frame(idealWidth: viewStore.backdropSize.width, maxHeight: viewStore.backdropSize.height)
 				Spacer()
 			}
-			.frame(maxWidth: .infinity)
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
 			.background(alignment: .top) {
 				Image(uiImage: .laneBackdrop)
@@ -119,6 +130,21 @@ public struct GamesEditorView: View {
 					)
 				}
 				.presentationDetents([.medium])
+			})
+			.sheet(isPresented: viewStore.binding(
+				get: \.isGamesSettingsPresented,
+				send: ViewAction.setGamesSettings(isPresented:)
+			), onDismiss: {
+				viewStore.send(.didDismissGamesSettings)
+			}, content: {
+				IfLetStore(
+					store.scope(state: \.gamesSettings, action: /GamesEditor.Action.InternalAction.gamesSettings)
+				) { scopedStore in
+					NavigationView {
+						GamesSettingsView(store: scopedStore)
+					}
+				}
+				.presentationDetents([.large])
 			})
 			.sheet(isPresented: viewStore.binding(
 				get: \.isGameDetailsPresented,
@@ -156,6 +182,17 @@ public struct GamesEditorView: View {
 		}
 	}
 
+	private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
+		Button(action: action) {
+			Image(systemName: systemName)
+				.resizable()
+				.scaledToFit()
+				.frame(width: .smallIcon, height: .smallIcon)
+				.foregroundColor(.white)
+				.padding()
+		}
+	}
+
 	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
 		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
@@ -170,17 +207,25 @@ extension GamesEditor.Action {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)
+		case .didTapClose:
+			self = .view(.didTapClose)
+		case .didTapSettings:
+			self = .view(.didTapSettings)
 		case let .setGameDetails(isPresented):
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setGamePicker(isPresented):
 			self = .view(.setGamePicker(isPresented: isPresented))
 		case let .setBowlingBallPicker(isPresented):
 			self = .view(.setBowlingBallPicker(isPresented: isPresented))
+		case let .setGamesSettings(isPresented):
+			self = .view(.setGamesSettings(isPresented: isPresented))
 		case .didDismissGamePicker:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissBowlingBallPicker:
+			self = .view(.didDismissOpenSheet)
+		case .didDismissGamesSettings:
 			self = .view(.didDismissOpenSheet)
 		case let .didChangeDetent(newDetent):
 			self = .view(.didChangeDetent(newDetent))

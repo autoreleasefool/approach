@@ -38,6 +38,8 @@ extension Series.PreBowl: DatabaseValueConvertible {}
 extension Series.ExcludeFromStatistics: DatabaseValueConvertible {}
 
 extension Series.Database: FetchableRecord, PersistableRecord {
+	public static let league = belongsTo(League.Database.self)
+
 	public static let alley = belongsTo(Alley.Database.self)
 	public var alley: QueryInterfaceRequest<Alley.Database> {
 		request(for: Self.alley)
