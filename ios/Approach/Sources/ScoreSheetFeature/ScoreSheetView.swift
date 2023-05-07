@@ -30,41 +30,38 @@ public struct ScoreSheetView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
-			ZStack {
-				Color.appPrimaryLight
-					.cornerRadius(.standardRadius)
-				ScrollView(.horizontal) {
-					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-						GridRow {
-							ForEach(viewStore.steps, id: \.index) { step in
-								rollViews(
-									forRolls: step.rolls,
-									frameIndex: step.index
-								) { rollIndex in
-									viewStore.send(.didTapFrame(index: step.index, rollIndex: rollIndex))
-								}
-							}
-						}
-						Divider()
-						GridRow {
-							ForEach(viewStore.steps, id: \.index) { step in
-								stepView(step) {
-									viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
-								}
-								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-							}
-						}
-						GridRow {
-							ForEach(viewStore.steps, id: \.index) { step in
-								Text(String(step.index + 1))
-									.padding()
-									.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+			ScrollView(.horizontal) {
+				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+					GridRow {
+						ForEach(viewStore.steps, id: \.index) { step in
+							rollViews(
+								forRolls: step.rolls,
+								frameIndex: step.index
+							) { rollIndex in
+								viewStore.send(.didTapFrame(index: step.index, rollIndex: rollIndex))
 							}
 						}
 					}
+					Divider()
+					GridRow {
+						ForEach(viewStore.steps, id: \.index) { step in
+							stepView(step) {
+								viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
+							}
+							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+						}
+					}
+					GridRow {
+						ForEach(viewStore.steps, id: \.index) { step in
+							Text(String(step.index + 1))
+								.padding()
+								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+						}
+					}
 				}
-				.scrollIndicators(.hidden)
 			}
+			.scrollIndicators(.hidden)
+			.background(Color.appPrimaryLight.cornerRadius(.standardRadius))
 			.padding()
 		}
 	}

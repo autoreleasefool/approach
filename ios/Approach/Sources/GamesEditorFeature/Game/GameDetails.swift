@@ -3,7 +3,7 @@ import FeatureActionLibrary
 import GamesRepositoryInterface
 import ModelsLibrary
 
-public struct GamesSettings: Reducer {
+public struct GameDetails: Reducer {
 	public struct State: Equatable {
 		public var game: Game.Edit
 
@@ -17,9 +17,7 @@ public struct GamesSettings: Reducer {
 			case didToggleLock
 			case didToggleExclude
 		}
-		public enum DelegateAction: Equatable {
-			case didFinish
-		}
+		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
@@ -50,6 +48,24 @@ public struct GamesSettings: Reducer {
 			case .delegate:
 				return .none
 			}
+		}
+	}
+}
+
+extension Game.Lock {
+	mutating func toggle() {
+		switch self {
+		case .locked: self = .open
+		case .open: self = .locked
+		}
+	}
+}
+
+extension Game.ExcludeFromStatistics {
+	mutating func toggle() {
+		switch self {
+		case .exclude: self = .include
+		case .include: self = .exclude
 		}
 	}
 }

@@ -82,6 +82,7 @@ public struct GamesEditor: Reducer {
 			case scoreSheet(ScoreSheet.Action)
 			case rollEditor(RollEditor.Action)
 			case gamesSettings(GamesSettings.Action)
+			case gameDetails(GameDetails.Action)
 		}
 
 		case view(ViewAction)
@@ -267,6 +268,15 @@ public struct GamesEditor: Reducer {
 						return .none
 					}
 
+				case let .gameDetails(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .gameDetails(.internal), .gameDetails(.view):
+					return .none
+
 				case .scoreSheet(.view), .scoreSheet(.internal):
 					return .none
 
@@ -292,6 +302,9 @@ public struct GamesEditor: Reducer {
 			case .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.gameDetails, action: /Action.internal..Action.InternalAction.gameDetails) {
+			GameDetails()
 		}
 		.ifLet(\.gamesSettings, action: /Action.internal..Action.InternalAction.gamesSettings) {
 			GamesSettings()
@@ -354,6 +367,19 @@ extension GamesEditor.State {
 	// MARK: - GamesSettings
 
 	var gamesSettings: GamesSettings.State? {
+		get {
+			guard let currentGame else { return nil }
+			return .init(game: currentGame)
+		}
+		set {
+			guard let newValue, currentGameId == newValue.game.id else { return }
+			currentGame = newValue.game
+		}
+	}
+
+	// MARK: - GameDetails
+
+	var gameDetails: GameDetails.State? {
 		get {
 			guard let currentGame else { return nil }
 			return .init(game: currentGame)

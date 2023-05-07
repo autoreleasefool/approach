@@ -158,11 +158,20 @@ public struct GamesEditorView: View {
 				viewStore.send(.didDismissGameDetails)
 			}, content: {
 				ScrollView {
+					Section {
+						IfLetStore(
+							store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
+						) { scopedStore in
+							ScoreSheetView(store: scopedStore)
+
+						}
+					}
+					.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+
 					IfLetStore(
-						store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
+						store.scope(state: \.gameDetails, action: /GamesEditor.Action.InternalAction.gameDetails)
 					) { scopedStore in
-						ScoreSheetView(store: scopedStore)
-							.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+						GameDetailsView(store: scopedStore)
 					}
 				}
 				.edgesIgnoringSafeArea(.bottom)
