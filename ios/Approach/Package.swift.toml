@@ -113,6 +113,8 @@ services = [ "RecentlyUsed" ]
 [repositories.Frames]
 
 [repositories.Games]
+[repositories.Games.interface]
+dependencies = [ "IdentifiedCollections" ]
 
 [repositories.Gear]
 services = [ "RecentlyUsed" ]

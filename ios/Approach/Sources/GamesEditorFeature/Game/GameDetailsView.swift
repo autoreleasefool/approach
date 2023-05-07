@@ -9,6 +9,7 @@ public struct GameDetailsView: View {
 	let store: StoreOf<GameDetails>
 
 	struct ViewState: Equatable {
+//		let series: Game.Edit.SeriesInfo
 		let gameLock: Game.Lock
 		let gameExcluded: Game.ExcludeFromStatistics
 
@@ -36,9 +37,10 @@ public struct GameDetailsView: View {
 			.modifier(ToggleModifier())
 
 			Text(Strings.Game.Editor.Fields.Lock.help)
-				.font(.caption)
+				.font(.caption2)
 				.padding(.top, .tinySpacing)
 				.padding(.bottom, .smallSpacing)
+				.padding(.horizontal, .smallSpacing)
 
 			Toggle(
 				Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
@@ -48,8 +50,9 @@ public struct GameDetailsView: View {
 
 			// TODO: check if series or league is locked and display different help message
 			Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
-				.font(.caption)
+				.font(.caption2)
 				.padding(.top, .tinySpacing)
+				.padding(.horizontal, .smallSpacing)
 		}
 		.padding(.horizontal)
 	}

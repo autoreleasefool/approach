@@ -94,9 +94,14 @@ final class GamesRepositoryTests: XCTestCase {
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include,
-				bowler: .init(id: UUID(0), name: "Joseph"),
-				league: .init(id: UUID(0), name: "Majors"),
-				series: .init(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					alley: .init(name: "Skyview"),
+					lanes: [
+						.init(id: UUID(0), label: "1"),
+						.init(id: UUID(1), label: "2"),
+					]
+				)
 			)
 		)
 	}
@@ -129,9 +134,11 @@ final class GamesRepositoryTests: XCTestCase {
 			locked: .locked,
 			manualScore: 123,
 			excludeFromStatistics: .include,
-			bowler: .init(id: UUID(0), name: "Joseph"),
-			league: .init(id: UUID(0), name: "Majors"),
-			series: .init(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+			series: .init(
+				date: Date(timeIntervalSince1970: 123_456_000),
+				alley: .init(name: "Skyview"),
+				lanes: []
+			)
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -163,9 +170,11 @@ final class GamesRepositoryTests: XCTestCase {
 				locked: .locked,
 				manualScore: nil,
 				excludeFromStatistics: .exclude,
-				bowler: .init(id: UUID(0), name: "Joseph"),
-				league: .init(id: UUID(0), name: "Majors"),
-				series: .init(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					alley: .init(name: "Skyview"),
+					lanes: []
+				)
 			)
 			try await withDependencies {
 				$0.database.writer = { db }

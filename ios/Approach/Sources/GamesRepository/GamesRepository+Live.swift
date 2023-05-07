@@ -25,9 +25,14 @@ extension GamesRepository: DependencyKey {
 				try await database.reader().read {
 					try Game.Database
 						.filter(id: id)
-						.including(required: Game.Database.series)
-						.including(required: Game.Database.league)
-						.including(required: Game.Database.bowler)
+						.including(
+							required: Game.Database.series
+								.including(optional: Series.Database.alley)
+								.including(
+									all: Series.Database.lanes
+										.orderByLabel()
+								)
+						)
 						.asRequest(of: Game.Edit.self)
 						.fetchOne($0)
 				}

@@ -548,6 +548,7 @@ let package = Package(
 			name: "GamesRepositoryInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"ModelsLibrary",
 			]
 		),

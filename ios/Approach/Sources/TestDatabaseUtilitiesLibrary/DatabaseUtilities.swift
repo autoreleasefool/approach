@@ -18,6 +18,7 @@ public func initializeDatabase(
 	withGear: InitialValue<Gear.Database>? = nil,
 	withLeagues: InitialValue<League.Database>? = nil,
 	withSeries: InitialValue<Series.Database>? = nil,
+	withSeriesLanes: InitialValue<SeriesLane.Database>? = nil,
 	withGames: InitialValue<Game.Database>? = nil,
 	withFrames: InitialValue<Frame.Database>? = nil
 ) throws -> any DatabaseWriter {
@@ -27,14 +28,15 @@ public func initializeDatabase(
 	try migrator.migrate(dbQueue)
 
 	let frames = withFrames
-	let games = coallesce(withGames, ifHas: frames)
-	let series = coallesce(withSeries, ifHas: games)
-	let leagues = coallesce(withLeagues, ifHas: series)
-	let gear = coallesce(withGear, ifHas: frames)
-	let bowlers = coallesce(withBowlers, ifHas: leagues, gear)
-	let lanes = coallesce(withLanes, ifHas: series)
-	let alleys = coallesce(withAlleys, ifHas: lanes, leagues)
-	let locations = coallesce(withLocations, ifHas: alleys)
+	let games = coallesce(withGames, ifHasOneOf: frames)
+	let series = coallesce(withSeries, ifHasOneOf: games)
+	let leagues = coallesce(withLeagues, ifHasOneOf: series)
+	let gear = coallesce(withGear, ifHasOneOf: frames)
+	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear)
+	let lanes = coallesce(withLanes, ifHasOneOf: series)
+	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)
+	let locations = coallesce(withLocations, ifHasOneOf: alleys)
+	let seriesLanes = coallesce(withSeriesLanes, ifHasAllOf: series, lanes)
 
 	try dbQueue.write {
 		try insert(locations: locations, into: $0)
@@ -44,6 +46,7 @@ public func initializeDatabase(
 		try insert(gear: gear, into: $0)
 		try insert(leagues: leagues, into: $0)
 		try insert(series: series, into: $0)
+		try insert(seriesLanes: seriesLanes, into: $0)
 		try insert(games: games, into: $0)
 		try insert(frames: frames, into: $0)
 	}
@@ -51,8 +54,16 @@ public func initializeDatabase(
 	return dbQueue
 }
 
-func coallesce<T>(_ value: InitialValue<T>?, ifHas: Optional<Any>...) -> InitialValue<T>? {
-	if ifHas.compactMap({ $0 }).isEmpty {
+func coallesce<T>(_ value: InitialValue<T>?, ifHasAllOf: Optional<Any>...) -> InitialValue<T>? {
+	if ifHasAllOf.compactMap({ $0 }).count < ifHasAllOf.count {
+		return value
+	} else {
+		return value == nil ? .default : value
+	}
+}
+
+func coallesce<T>(_ value: InitialValue<T>?, ifHasOneOf: Optional<Any>...) -> InitialValue<T>? {
+	if ifHasOneOf.compactMap({ $0 }).isEmpty {
 		return value
 	} else {
 		return value == nil ? .default : value
