@@ -29,31 +29,29 @@ public struct GameDetailsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GameDetails.Action.init) { viewStore in
-			VStack {
-				Toggle(
-					Strings.Game.Editor.Fields.Lock.label,
-					isOn: viewStore.binding(get: { $0.gameLock == .locked }, send: ViewAction.didToggleLock)
-				)
-				.modifier(ToggleModifier())
+			Toggle(
+				Strings.Game.Editor.Fields.Lock.label,
+				isOn: viewStore.binding(get: { $0.gameLock == .locked }, send: ViewAction.didToggleLock)
+			)
+			.modifier(ToggleModifier())
 
-				Text(Strings.Game.Editor.Fields.Lock.help)
-					.font(.caption)
-					.padding(.top, .tinySpacing)
-					.padding(.bottom, .smallSpacing)
+			Text(Strings.Game.Editor.Fields.Lock.help)
+				.font(.caption)
+				.padding(.top, .tinySpacing)
+				.padding(.bottom, .smallSpacing)
 
-				Toggle(
-					Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
-					isOn: viewStore.binding(get: { $0.gameExcluded == .exclude }, send: ViewAction.didToggleExclude)
-				)
-				.modifier(ToggleModifier())
+			Toggle(
+				Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
+				isOn: viewStore.binding(get: { $0.gameExcluded == .exclude }, send: ViewAction.didToggleExclude)
+			)
+			.modifier(ToggleModifier())
 
-				// TODO: check if series or league is locked and display different help message
-				Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
-					.font(.caption)
-					.padding(.top, .tinySpacing)
-			}
-			.padding(.horizontal)
+			// TODO: check if series or league is locked and display different help message
+			Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
+				.font(.caption)
+				.padding(.top, .tinySpacing)
 		}
+		.padding(.horizontal)
 	}
 }
 
