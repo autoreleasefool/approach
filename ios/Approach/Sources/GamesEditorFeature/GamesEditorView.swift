@@ -169,8 +169,17 @@ public struct GamesEditorView: View {
 			}, content: {
 				Form {
 					if let bowlerName = viewStore.bowlerName, let leagueName = viewStore.leagueName {
-						GameSummaryHeader(bowlerName: bowlerName, leagueName: leagueName)
+						Section {
+							GameSummaryHeader(
+								bowlerName: bowlerName,
+								leagueName: leagueName,
+								accessory: .seriesDate("Fri, May 20")
+//								accessory: .nextBowler("Sarah")
+							) {
+								
+							}
 							.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+						}
 					}
 
 					IfLetStore(
