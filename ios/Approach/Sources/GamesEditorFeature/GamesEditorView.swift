@@ -17,6 +17,7 @@ public struct GamesEditorView: View {
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 	@State private var minimumSheetContentSize: CGSize = .zero
+	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
 		let sheetDetent: PresentationDetent
@@ -179,6 +180,9 @@ public struct GamesEditorView: View {
 								
 							}
 							.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+						} header: {
+							Color.clear
+								.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
 						}
 					}
 
@@ -188,11 +192,12 @@ public struct GamesEditorView: View {
 						GameDetailsView(store: scopedStore)
 					}
 				}
-				.frame(minHeight: 30)
+				.padding(.top, -sectionHeaderContentSize.height)
+				.frame(minHeight: 50)
 				.edgesIgnoringSafeArea(.bottom)
 				.presentationDetents(
 					[
-						.height(minimumSheetContentSize.height + 48),
+						.height(minimumSheetContentSize.height + 40),
 						.medium,
 						.large
 					],
@@ -303,6 +308,13 @@ private struct HeaderContentSizeKey: PreferenceKey {
 }
 
 private struct FrameContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+private struct SectionHeaderContentSizeKey: PreferenceKey {
 	static var defaultValue: CGSize = .zero
 	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
 		value = nextValue()
