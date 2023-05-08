@@ -5,7 +5,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
-public struct BowlingBallPicker: Reducer {
+public struct BallPicker: Reducer {
 	public struct State: Equatable {
 		public var forBowler: Bowler.ID
 		public var selected: Gear.ID?
@@ -87,8 +87,8 @@ public struct BowlingBallPicker: Reducer {
 	}
 }
 
-struct BowlingBallPickerView: View {
-	let store: StoreOf<BowlingBallPicker>
+struct BallPickerView: View {
+	let store: StoreOf<BallPicker>
 
 	enum ViewAction {
 		case didAppear
@@ -96,12 +96,12 @@ struct BowlingBallPickerView: View {
 		case didTapCancelButton
 	}
 
-	init(store: StoreOf<BowlingBallPicker>) {
+	init(store: StoreOf<BallPicker>) {
 		self.store = store
 	}
 
 	var body: some View {
-		WithViewStore(store, observe: { $0 }, send: BowlingBallPicker.Action.init, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: BallPicker.Action.init, content: { viewStore in
 			List(viewStore.bowlingBalls) { bowlingBall in
 				Button { viewStore.send(.didTapGear(bowlingBall.id)) } label: {
 					Label(
@@ -124,8 +124,8 @@ struct BowlingBallPickerView: View {
 	}
 }
 
-extension BowlingBallPicker.Action {
-	init(action: BowlingBallPickerView.ViewAction) {
+extension BallPicker.Action {
+	init(action: BallPickerView.ViewAction) {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)

@@ -26,10 +26,10 @@ public struct GamesEditorView: View {
 
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
-		let isBowlingBallPickerPresented: Bool
-		let isGamesSettingsPresented: Bool
+		let isBallPickerPresented: Bool
+		let isSettingsPresented: Bool
 
-		let isGameStatsVisible: Bool
+		let isScoreSheetVisible: Bool
 
 		let bowlerName: String?
 		let leagueName: String?
@@ -40,9 +40,9 @@ public struct GamesEditorView: View {
 			self.backdropSize = state.backdropSize
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
-			self.isBowlingBallPickerPresented = state.sheet == .presenting(.bowlingBallPicker)
-			self.isGamesSettingsPresented = state.sheet == .presenting(.settings)
-			self.isGameStatsVisible = state.isGameStatsVisible
+			self.isBallPickerPresented = state.sheet == .presenting(.ballPicker)
+			self.isSettingsPresented = state.sheet == .presenting(.settings)
+			self.isScoreSheetVisible = state.isScoreSheetVisible
 			self.bowlerName = state.currentGame?.bowler.name
 			self.leagueName = state.currentGame?.league.name
 		}
@@ -50,19 +50,17 @@ public struct GamesEditorView: View {
 
 	enum ViewAction {
 		case didAppear
-		case didTapClose
-		case didTapSettings
 		case didChangeDetent(PresentationDetent)
 		case didAdjustBackdropSize(CGSize)
 
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
-		case setBowlingBallPicker(isPresented: Bool)
-		case setGamesSettings(isPresented: Bool)
+		case setBallPicker(isPresented: Bool)
+		case setSettings(isPresented: Bool)
 
 		case didDismissGameDetails
 		case didDismissGamePicker
-		case didDismissBowlingBallPicker
+		case didDismissBallPicker
 		case didDismissGamesSettings
 	}
 
@@ -73,44 +71,29 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
 			VStack {
-				HStack {
-					headerButton(systemName: "chevron.backward") { viewStore.send(.didTapClose) }
-					Spacer()
-					GameIndicatorView(
-						store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator)
-					)
-					Spacer()
-					headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
-				}
-				.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
+				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: /GamesEditor.Action.InternalAction.gamesHeader))
+					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
+
 				VStack {
 					Spacer()
-					IfLetStore(
-						store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)
-					) { scopedStore in
-						FrameEditorView(store: scopedStore)
-							.padding(.top)
-					}
-					Spacer()
-					IfLetStore(
-						store.scope(state: \.rollEditor, action: /GamesEditor.Action.InternalAction.rollEditor)
-					) { scopedStore in
-						RollEditorView(store: scopedStore)
-							.padding(.horizontal)
-					}
 
-					if viewStore.isGameStatsVisible {
-						IfLetStore(
-							store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
-						) { scopedStore in
-							ScoreSheetView(store: scopedStore)
-								.padding(.top)
-								.padding(.horizontal)
-								.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
-						}
+					frameEditor
+						.padding(.top)
+
+					Spacer()
+
+					rollEditor
+						.padding(.horizontal)
+
+					if viewStore.isScoreSheetVisible {
+						scoreSheet
+							.padding(.top)
+							.padding(.horizontal)
+							.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
 					}
 				}
 				.frame(idealWidth: viewStore.backdropSize.width, maxHeight: viewStore.backdropSize.height)
+
 				Spacer()
 			}
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
@@ -123,90 +106,51 @@ public struct GamesEditorView: View {
 			}
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
-			.sheet(isPresented: viewStore.binding(
-				get: \.isGamePickerPresented,
-				send: ViewAction.setGamePicker(isPresented:)
-			), onDismiss: {
-				viewStore.send(.didDismissGamePicker)
-			}, content: {
-				NavigationView {
-					GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
+			.sheet(
+				isPresented: viewStore.binding(get: \.isGamePickerPresented, send: ViewAction.setGamePicker(isPresented:)),
+				onDismiss: { viewStore.send(.didDismissGamePicker) },
+				content: {
+					gamePicker
+						.presentationDetents([.medium])
 				}
-				.presentationDetents([.medium])
-			})
-			.sheet(isPresented: viewStore.binding(
-				get: \.isBowlingBallPickerPresented,
-				send: ViewAction.setBowlingBallPicker(isPresented:)
-			), onDismiss: {
-				viewStore.send(.didDismissBowlingBallPicker)
-			}, content: {
-				NavigationView {
-					BowlingBallPickerView(
-						store: store.scope(state: \.bowlingBallPicker, action: /GamesEditor.Action.InternalAction.bowlingBallPicker)
-					)
+			)
+			.sheet(
+				isPresented: viewStore.binding(get: \.isBallPickerPresented, send: ViewAction.setBallPicker(isPresented:)),
+				onDismiss: { viewStore.send(.didDismissBallPicker) },
+				content: {
+					ballPicker
+						.presentationDetents([.medium])
 				}
-				.presentationDetents([.medium])
-			})
-			.sheet(isPresented: viewStore.binding(
-				get: \.isGamesSettingsPresented,
-				send: ViewAction.setGamesSettings(isPresented:)
-			), onDismiss: {
-				viewStore.send(.didDismissGamesSettings)
-			}, content: {
-				IfLetStore(
-					store.scope(state: \.gamesSettings, action: /GamesEditor.Action.InternalAction.gamesSettings)
-				) { scopedStore in
-					NavigationView {
-						GamesSettingsView(store: scopedStore)
-					}
+			)
+			.sheet(
+				isPresented: viewStore.binding(get: \.isSettingsPresented, send: ViewAction.setSettings(isPresented:)),
+				onDismiss: { viewStore.send(.didDismissGamesSettings) },
+				content: {
+					gamesSettings
+						.presentationDetents([.large])
 				}
-				.presentationDetents([.large])
-			})
-			.sheet(isPresented: viewStore.binding(
-				get: \.isGameDetailsPresented,
-				send: ViewAction.setGameDetails(isPresented:)
-			), onDismiss: {
-				viewStore.send(.didDismissGameDetails)
-			}, content: {
-				Form {
-					if let bowlerName = viewStore.bowlerName, let leagueName = viewStore.leagueName {
-						Section {
-							GameSummaryHeader(
-								bowlerName: bowlerName,
-								leagueName: leagueName,
-								accessory: .seriesDate("Fri, May 20")
-//								accessory: .nextBowler("Sarah")
-							) {
-								
-							}
-							.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
-						} header: {
-							Color.clear
-								.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
-						}
-					}
-
-					IfLetStore(
-						store.scope(state: \.gameDetails, action: /GamesEditor.Action.InternalAction.gameDetails)
-					) { scopedStore in
-						GameDetailsView(store: scopedStore)
-					}
+			)
+			.sheet(
+				isPresented: viewStore.binding(get: \.isGameDetailsPresented, send: ViewAction.setGameDetails(isPresented:)),
+				onDismiss: { viewStore.send(.didDismissGameDetails) },
+				content: {
+					gameDetails
+						.padding(.top, -sectionHeaderContentSize.height)
+						.frame(minHeight: 50)
+						.edgesIgnoringSafeArea(.bottom)
+						.presentationDetents(
+							[
+								.height(minimumSheetContentSize.height + 40),
+								.medium,
+								.large
+							],
+							selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
+						)
+						.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+						.interactiveDismissDisabled(true)
+						.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 				}
-				.padding(.top, -sectionHeaderContentSize.height)
-				.frame(minHeight: 50)
-				.edgesIgnoringSafeArea(.bottom)
-				.presentationDetents(
-					[
-						.height(minimumSheetContentSize.height + 40),
-						.medium,
-						.large
-					],
-					selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
-				)
-				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-				.interactiveDismissDisabled(true)
-				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
-			})
+			)
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
@@ -222,14 +166,61 @@ public struct GamesEditorView: View {
 		}
 	}
 
-	private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
-		Button(action: action) {
-			Image(systemName: systemName)
-				.resizable()
-				.scaledToFit()
-				.frame(width: .smallIcon, height: .smallIcon)
-				.foregroundColor(.white)
-				.padding()
+	private var frameEditor: some View {
+		IfLetStore(store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)) {
+			FrameEditorView(store: $0)
+		}
+	}
+
+	private var rollEditor: some View {
+		IfLetStore(store.scope(state: \.rollEditor, action: /GamesEditor.Action.InternalAction.rollEditor)) {
+			RollEditorView(store: $0)
+		}
+	}
+
+	private var scoreSheet: some View {
+		IfLetStore(store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)) {
+			ScoreSheetView(store: $0)
+		}
+	}
+
+	private var gamePicker: some View {
+		NavigationView {
+			GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
+		}
+	}
+
+	private var ballPicker: some View {
+		NavigationView {
+			BallPickerView(
+				store: store.scope(state: \.ballPicker, action: /GamesEditor.Action.InternalAction.ballPicker)
+			)
+		}
+	}
+
+	private var gamesSettings: some View {
+		NavigationView {
+			IfLetStore(store.scope(state: \.gamesSettings, action: /GamesEditor.Action.InternalAction.gamesSettings)) {
+				GamesSettingsView(store: $0)
+			}
+		}
+	}
+
+	private var gameDetails: some View {
+		Form {
+			Section {
+				IfLetStore(store.scope(state: \.gameDetailsHeader, action: /GamesEditor.Action.InternalAction.gameDetailsHeader)) {
+					GameDetailsHeaderView(store: $0)
+						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+				}
+			} header: {
+				Color.clear
+					.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
+			}
+
+			IfLetStore(store.scope(state: \.gameDetails, action: /GamesEditor.Action.InternalAction.gameDetails)) {
+				GameDetailsView(store: $0)
+			}
 		}
 	}
 
@@ -242,7 +233,7 @@ public struct GamesEditorView: View {
 	}
 
 	private func getBackdropHeight(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGFloat {
-		max(viewStore.backdropSize.height - (viewStore.isGameStatsVisible ? frameContentSize.height : 0), 0)
+		max(viewStore.backdropSize.height - (viewStore.isScoreSheetVisible ? frameContentSize.height : 0), 0)
 	}
 }
 
@@ -251,23 +242,19 @@ extension GamesEditor.Action {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)
-		case .didTapClose:
-			self = .view(.didTapClose)
-		case .didTapSettings:
-			self = .view(.didTapSettings)
 		case let .setGameDetails(isPresented):
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setGamePicker(isPresented):
 			self = .view(.setGamePicker(isPresented: isPresented))
-		case let .setBowlingBallPicker(isPresented):
-			self = .view(.setBowlingBallPicker(isPresented: isPresented))
-		case let .setGamesSettings(isPresented):
+		case let .setBallPicker(isPresented):
+			self = .view(.setBallPicker(isPresented: isPresented))
+		case let .setSettings(isPresented):
 			self = .view(.setGamesSettings(isPresented: isPresented))
 		case .didDismissGamePicker:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
-		case .didDismissBowlingBallPicker:
+		case .didDismissBallPicker:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGamesSettings:
 			self = .view(.didDismissOpenSheet)

@@ -27,11 +27,11 @@ public struct GamesEditor: Reducer {
 		public var currentFrameIndex = 0
 		public var currentRollIndex = 0
 
-		public var isGameStatsVisible = true
+		public var isScoreSheetVisible = true
 
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
-		public var _bowlingBallPicker: BowlingBallPicker.State
+		public var _ballPicker: BallPicker.State
 
 		public init(
 			bowlers: IdentifiedArrayOf<Bowler.Summary>,
@@ -46,7 +46,7 @@ public struct GamesEditor: Reducer {
 			self.bowlerGames = bowlerGames
 			self.currentBowlerId = currentBowler
 			self.currentGameId = currentGame
-			self._bowlingBallPicker = .init(forBowler: currentBowler, selected: nil)
+			self._ballPicker = .init(forBowler: currentBowler, selected: nil)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -56,14 +56,12 @@ public struct GamesEditor: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
-			case didTapClose
-			case didTapSettings
 			case didChangeDetent(PresentationDetent)
 			case didAdjustBackdropSize(CGSize)
 			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
-			case setBowlingBallPicker(isPresented: Bool)
+			case setBallPicker(isPresented: Bool)
 			case setGamesSettings(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
@@ -75,14 +73,15 @@ public struct GamesEditor: Reducer {
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
 
-			case gameIndicator(GameIndicator.Action)
-			case gamePicker(GamePicker.Action)
-			case bowlingBallPicker(BowlingBallPicker.Action)
-			case frameEditor(FrameEditor.Action)
-			case scoreSheet(ScoreSheet.Action)
-			case rollEditor(RollEditor.Action)
 			case gamesSettings(GamesSettings.Action)
+			case gamesHeader(GamesHeader.Action)
+			case gameDetailsHeader(GameDetailsHeader.Action)
 			case gameDetails(GameDetails.Action)
+			case gamePicker(GamePicker.Action)
+			case frameEditor(FrameEditor.Action)
+			case rollEditor(RollEditor.Action)
+			case scoreSheet(ScoreSheet.Action)
+			case ballPicker(BallPicker.Action)
 		}
 
 		case view(ViewAction)
@@ -101,16 +100,16 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.scoringService) var scoringService
 
 	public var body: some Reducer<State, Action> {
-		Scope(state: \.gameIndicator, action: /Action.internal..Action.InternalAction.gameIndicator) {
-			GameIndicator()
+		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
+			GamesHeader()
 		}
 
 		Scope(state: \.gamePicker, action: /Action.internal..Action.InternalAction.gamePicker) {
 			GamePicker()
 		}
 
-		Scope(state: \.bowlingBallPicker, action: /Action.internal..Action.InternalAction.bowlingBallPicker) {
-			BowlingBallPicker()
+		Scope(state: \.ballPicker, action: /Action.internal..Action.InternalAction.ballPicker) {
+			BallPicker()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -120,21 +119,13 @@ public struct GamesEditor: Reducer {
 				case .didAppear:
 					return loadGameDetails(for: state.currentGameId)
 
-				case .didTapClose:
-					// TODO: close the games editor
-					return .none
-
-				case .didTapSettings:
-					state.sheet.transition(to: .settings)
-					return .none
-
 				case let .didAdjustBackdropSize(newSize):
 					state.backdropSize = newSize
 					switch state.sheetDetent {
 					case .large, .medium:
-						state.isGameStatsVisible = false
+						state.isScoreSheetVisible = false
 					default:
-						state.isGameStatsVisible = true
+						state.isScoreSheetVisible = true
 					}
 					return .none
 
@@ -157,8 +148,8 @@ public struct GamesEditor: Reducer {
 					state.sheet.handle(isPresented: isPresented, for: .gamePicker)
 					return .none
 
-				case let .setBowlingBallPicker(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .bowlingBallPicker)
+				case let .setBallPicker(isPresented):
+					state.sheet.handle(isPresented: isPresented, for: .ballPicker)
 					return .none
 
 				case let .setGamesSettings(isPresented):
@@ -228,10 +219,10 @@ public struct GamesEditor: Reducer {
 						return .none
 					}
 
-				case let .bowlingBallPicker(.delegate(delegateAction)):
+				case let .ballPicker(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didFinish:
-						state.sheet.hide(.bowlingBallPicker)
+						state.sheet.hide(.ballPicker)
 						return .none
 					}
 
@@ -250,13 +241,21 @@ public struct GamesEditor: Reducer {
 				case let .rollEditor(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapBall:
-						state.sheet.transition(to: .bowlingBallPicker)
+						state.sheet.transition(to: .ballPicker)
 						return .none
 					}
 
-				case let .gameIndicator(.delegate(delegateAction)):
+				case let .gamesHeader(.delegate(delegateAction)):
 					switch delegateAction {
-					case .didRequestGamePicker:
+					case .didCloseEditor:
+						// TODO: close the games editor
+						return .none
+
+					case .didOpenSettings:
+						state.sheet.transition(to: .settings)
+						return .none
+
+					case .didOpenGamePicker:
 						state.sheet.transition(to: .gamePicker)
 						return .none
 					}
@@ -274,7 +273,17 @@ public struct GamesEditor: Reducer {
 						return .none
 					}
 
+				case let .gameDetailsHeader(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didProceedToNextElement:
+						// TODO: next ball or bowler
+						return .none
+					}
+
 				case .gameDetails(.internal), .gameDetails(.view):
+					return .none
+
+				case .gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
 
 				case .scoreSheet(.view), .scoreSheet(.internal):
@@ -289,10 +298,10 @@ public struct GamesEditor: Reducer {
 				case .gamePicker(.view), .gamePicker(.internal):
 					return .none
 
-				case .bowlingBallPicker(.view), .bowlingBallPicker(.internal):
+				case .ballPicker(.view), .ballPicker(.internal):
 					return .none
 
-				case .gameIndicator(.view), .gameIndicator(.internal):
+				case .gamesHeader(.view), .gamesHeader(.internal):
 					return .none
 
 				case .gamesSettings(.view), .gamesSettings(.internal):
@@ -305,6 +314,8 @@ public struct GamesEditor: Reducer {
 		}
 		.ifLet(\.gameDetails, action: /Action.internal..Action.InternalAction.gameDetails) {
 			GameDetails()
+		}.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
+			GameDetailsHeader()
 		}
 		.ifLet(\.gamesSettings, action: /Action.internal..Action.InternalAction.gamesSettings) {
 			GamesSettings()
@@ -345,27 +356,33 @@ public struct GamesEditor: Reducer {
 	}
 }
 
+// MARK: - GamesHeader
+
 extension GamesEditor.State {
-	var currentBowlerGames: [Game.ID] {
-		bowlerGames[currentBowlerId] ?? []
+	var gamesHeader: GamesHeader.State {
+		get {
+			let currentGames = bowlerGames[currentBowlerId]
+			return .init(
+				numberOfGames: currentGames?.count ?? 0,
+				currentGameOrdinal: currentGames?.firstIndex(of: currentGameId) ?? 0
+			)
+		}
+		set {}
 	}
+}
 
-	// MARK: - GameIndicator
+// MARK: - GamePicker
 
-	var gameIndicator: GameIndicator.State {
-		get { .init(games: currentBowlerGames, selected: currentGameId) }
-		set { self.currentGameId = newValue.selected }
-	}
-
-	// MARK: - GamePicker
-
+extension GamesEditor.State {
 	var gamePicker: GamePicker.State {
-		get { .init(games: currentBowlerGames, selected: currentGameId) }
+		get { .init(games: bowlerGames[currentBowlerId] ?? [], selected: currentGameId) }
 		set { self.currentGameId = newValue.selected }
 	}
+}
 
-	// MARK: - GamesSettings
+// MARK: - GamesSettings
 
+extension GamesEditor.State {
 	var gamesSettings: GamesSettings.State? {
 		get {
 			guard let currentGame else { return nil }
@@ -376,9 +393,23 @@ extension GamesEditor.State {
 			currentGame = newValue.game
 		}
 	}
+}
 
-	// MARK: - GameDetails
+// MARK: - GameDetailsHeader
 
+extension GamesEditor.State {
+	var gameDetailsHeader: GameDetailsHeader.State? {
+		get {
+			guard let currentGame else { return nil }
+			return .init(game: currentGame, nextElement: nil)
+		}
+		set { }
+	}
+}
+
+// MARK: - GameDetails
+
+extension GamesEditor.State {
 	var gameDetails: GameDetails.State? {
 		get {
 			guard let currentGame else { return nil }
@@ -412,18 +443,18 @@ extension GamesEditor.State {
 	}
 }
 
-// MARK: - BowlingBallPicker
+// MARK: - BallPicker
 
 extension GamesEditor.State {
-	var bowlingBallPicker: BowlingBallPicker.State {
+	var ballPicker: BallPicker.State {
 		get {
-			var picker = _bowlingBallPicker
+			var picker = _ballPicker
 			picker.forBowler = currentBowlerId
 			picker.selected = frames?[currentFrameIndex].rolls[currentRollIndex].bowlingBall?.id
 			return picker
 		}
 		set {
-			_bowlingBallPicker = newValue
+			_ballPicker = newValue
 			frames?[currentFrameIndex].rolls[currentRollIndex].bowlingBall = newValue.selectedBall?.rolled
 		}
 	}
@@ -476,7 +507,7 @@ extension GamesEditor.State {
 	public enum Sheet: Equatable {
 		case gamePicker
 		case gameDetails
-		case bowlingBallPicker
+		case ballPicker
 		case settings
 
 		static let `default`: Self = .gameDetails
