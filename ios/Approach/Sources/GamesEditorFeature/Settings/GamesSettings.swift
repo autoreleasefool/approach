@@ -13,10 +13,7 @@ public struct GamesSettings: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
-			case didToggleLock
-			case didToggleExclude
-		}
+		public enum ViewAction: Equatable {}
 		public enum DelegateAction: Equatable {
 			case didFinish
 		}
@@ -32,12 +29,7 @@ public struct GamesSettings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didToggleLock:
-					state.game.locked.toggle()
-					return .none
-
-				case .didToggleExclude:
-					state.game.excludeFromStatistics.toggle()
+				case .never:
 					return .none
 				}
 

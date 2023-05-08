@@ -1,6 +1,7 @@
 /* Alleys */
 
 "alley.title" = "Alley";
+"alley.title.bowlingAlley" = "Bowling Alley";
 "alley.list.title" = "Alleys";
 "alley.list.add" = "Add Alley";
 "alley.properties.material" = "Material";

@@ -94,8 +94,11 @@ final class GamesRepositoryTests: XCTestCase {
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include,
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
+					excludeFromStatistics: .include,
 					alley: .init(name: "Skyview"),
 					lanes: [
 						.init(id: UUID(0), label: "1"),
@@ -134,8 +137,11 @@ final class GamesRepositoryTests: XCTestCase {
 			locked: .locked,
 			manualScore: 123,
 			excludeFromStatistics: .include,
+			bowler: .init(name: "Joseph"),
+			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
+				excludeFromStatistics: .include,
 				alley: .init(name: "Skyview"),
 				lanes: []
 			)
@@ -170,8 +176,11 @@ final class GamesRepositoryTests: XCTestCase {
 				locked: .locked,
 				manualScore: nil,
 				excludeFromStatistics: .exclude,
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
+					excludeFromStatistics: .include,
 					alley: .init(name: "Skyview"),
 					lanes: []
 				)

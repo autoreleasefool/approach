@@ -155,6 +155,10 @@ public enum Strings {
         public static let strings = Strings.tr("Localizable", "alley.properties.pinFall.strings", fallback: "Strings")
       }
     }
+    public enum Title {
+      /// Bowling Alley
+      public static let bowlingAlley = Strings.tr("Localizable", "alley.title.bowlingAlley", fallback: "Bowling Alley")
+    }
   }
   public enum App {
     public enum Tabs {

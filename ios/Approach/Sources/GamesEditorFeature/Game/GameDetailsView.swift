@@ -8,17 +8,6 @@ import SwiftUI
 public struct GameDetailsView: View {
 	let store: StoreOf<GameDetails>
 
-	struct ViewState: Equatable {
-//		let series: Game.Edit.SeriesInfo
-		let gameLock: Game.Lock
-		let gameExcluded: Game.ExcludeFromStatistics
-
-		init(state: GameDetails.State) {
-			self.gameLock = state.game.locked
-			self.gameExcluded = state.game.excludeFromStatistics
-		}
-	}
-
 	enum ViewAction {
 		case didToggleLock
 		case didToggleExclude
@@ -29,32 +18,33 @@ public struct GameDetailsView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GameDetails.Action.init) { viewStore in
-			Toggle(
-				Strings.Game.Editor.Fields.Lock.label,
-				isOn: viewStore.binding(get: { $0.gameLock == .locked }, send: ViewAction.didToggleLock)
-			)
-			.modifier(ToggleModifier())
+		WithViewStore(store, observe: { $0 }, send: GameDetails.Action.init) { viewStore in
+			if let alley = viewStore.game.series.alley?.name {
+				Section(Strings.Alley.title) {
+					LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
+					LabeledContent(Strings.Lane.List.title, value: viewStore.game.series.laneLabels)
+				}
+			}
 
-			Text(Strings.Game.Editor.Fields.Lock.help)
-				.font(.caption2)
-				.padding(.top, .tinySpacing)
-				.padding(.bottom, .smallSpacing)
-				.padding(.horizontal, .smallSpacing)
+			Section {
+				Toggle(
+					Strings.Game.Editor.Fields.Lock.label,
+					isOn: viewStore.binding(get: { $0.game.locked == .locked }, send: ViewAction.didToggleLock)
+				)
+			} footer: {
+				Text(Strings.Game.Editor.Fields.Lock.help)
+			}
 
-			Toggle(
-				Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
-				isOn: viewStore.binding(get: { $0.gameExcluded == .exclude }, send: ViewAction.didToggleExclude)
-			)
-			.modifier(ToggleModifier())
-
-			// TODO: check if series or league is locked and display different help message
-			Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
-				.font(.caption2)
-				.padding(.top, .tinySpacing)
-				.padding(.horizontal, .smallSpacing)
+			Section {
+				Toggle(
+					Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
+					isOn: viewStore.binding(get: { $0.game.excludeFromStatistics == .exclude }, send: ViewAction.didToggleExclude)
+				)
+			} footer: {
+				// TODO: check if series or league is locked and display different help message
+				Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
+			}
 		}
-		.padding(.horizontal)
 	}
 }
 
@@ -69,14 +59,8 @@ extension GameDetails.Action {
 	}
 }
 
-public struct ToggleModifier: ViewModifier {
-	public func body(content: Content) -> some View {
-		content
-			.padding(.horizontal)
-			.padding(.vertical, .smallSpacing)
-			.background(
-				RoundedRectangle(cornerRadius: .standardRadius)
-					.foregroundColor(Color(uiColor: .secondarySystemBackground))
-			)
+extension Game.Edit.SeriesInfo {
+	var laneLabels: String {
+		lanes.isEmpty ? Strings.none : lanes.map(\.label).joined(separator: ", ")
 	}
 }

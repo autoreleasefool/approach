@@ -13,6 +13,7 @@ public struct GamesEditorView: View {
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@State private var headerContentSize: CGSize = .zero
+	@State private var frameContentSize: CGSize = .zero
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 	@State private var minimumSheetContentSize: CGSize = .zero
@@ -29,6 +30,9 @@ public struct GamesEditorView: View {
 
 		let isGameStatsVisible: Bool
 
+		let bowlerName: String?
+		let leagueName: String?
+
 		init(state: GamesEditor.State) {
 			self.sheetDetent = state.sheetDetent
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
@@ -38,6 +42,8 @@ public struct GamesEditorView: View {
 			self.isBowlingBallPickerPresented = state.sheet == .presenting(.bowlingBallPicker)
 			self.isGamesSettingsPresented = state.sheet == .presenting(.settings)
 			self.isGameStatsVisible = state.isGameStatsVisible
+			self.bowlerName = state.currentGame?.bowler.name
+			self.leagueName = state.currentGame?.league.name
 		}
 	}
 
@@ -82,7 +88,6 @@ public struct GamesEditorView: View {
 						store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)
 					) { scopedStore in
 						FrameEditorView(store: scopedStore)
-							.frame(maxHeight: viewStore.backdropSize.height * 0.6)
 							.padding(.top)
 					}
 					Spacer()
@@ -94,9 +99,14 @@ public struct GamesEditorView: View {
 					}
 
 					if viewStore.isGameStatsVisible {
-						GameStatisticsSummary()
-							.padding(.top)
-							.padding(.horizontal)
+						IfLetStore(
+							store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
+						) { scopedStore in
+							ScoreSheetView(store: scopedStore)
+								.padding(.top)
+								.padding(.horizontal)
+								.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
+						}
 					}
 				}
 				.frame(idealWidth: viewStore.backdropSize.width, maxHeight: viewStore.backdropSize.height)
@@ -107,7 +117,7 @@ public struct GamesEditorView: View {
 				Image(uiImage: .laneBackdrop)
 					.resizable(resizingMode: .stretch)
 					.fixedSize(horizontal: true, vertical: false)
-					.frame(width: viewStore.backdropSize.width, height: viewStore.backdropSize.height)
+					.frame(width: viewStore.backdropSize.width, height: getBackdropHeight(viewStore))
 					.padding(.top, headerContentSize.height)
 			}
 			.background(Color.black)
@@ -157,16 +167,11 @@ public struct GamesEditorView: View {
 			), onDismiss: {
 				viewStore.send(.didDismissGameDetails)
 			}, content: {
-				ScrollView {
-					Section {
-						IfLetStore(
-							store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
-						) { scopedStore in
-							ScoreSheetView(store: scopedStore)
-
-						}
+				Form {
+					if let bowlerName = viewStore.bowlerName, let leagueName = viewStore.leagueName {
+						GameSummaryHeader(bowlerName: bowlerName, leagueName: leagueName)
+							.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
 					}
-					.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
 
 					IfLetStore(
 						store.scope(state: \.gameDetails, action: /GamesEditor.Action.InternalAction.gameDetails)
@@ -174,9 +179,14 @@ public struct GamesEditorView: View {
 						GameDetailsView(store: scopedStore)
 					}
 				}
+				.frame(minHeight: 30)
 				.edgesIgnoringSafeArea(.bottom)
 				.presentationDetents(
-					[.height(minimumSheetContentSize.height), .medium, .large],
+					[
+						.height(minimumSheetContentSize.height + 48),
+						.medium,
+						.large
+					],
 					selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
 				)
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
@@ -188,9 +198,11 @@ public struct GamesEditorView: View {
 			}
 			.onAppear {
 				viewStore.send(.didAppear)
-				Task.detached { @MainActor in
+				Task.detached {
 					try await clock.sleep(for: .milliseconds(100))
-					viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
+					Task.detached { @MainActor in
+						viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
+					}
 				}
 			}
 		}
@@ -213,6 +225,10 @@ public struct GamesEditorView: View {
 			width: windowContentSize.width,
 			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height - safeAreaInsets.bottom - CGFloat.largeSpacing
 		)
+	}
+
+	private func getBackdropHeight(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGFloat {
+		max(viewStore.backdropSize.height - (viewStore.isGameStatsVisible ? frameContentSize.height : 0), 0)
 	}
 }
 
@@ -271,6 +287,13 @@ private struct WindowContentSizeKey: PreferenceKey {
 }
 
 private struct HeaderContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}
+
+private struct FrameContentSizeKey: PreferenceKey {
 	static var defaultValue: CGSize = .zero
 	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
 		value = nextValue()

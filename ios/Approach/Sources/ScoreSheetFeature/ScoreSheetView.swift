@@ -36,7 +36,8 @@ public struct ScoreSheetView: View {
 						ForEach(viewStore.steps, id: \.index) { step in
 							rollViews(
 								forRolls: step.rolls,
-								frameIndex: step.index
+								frameIndex: step.index,
+								highlightRollIndex: viewStore.currentFrameIndex == step.index ? viewStore.currentRollIndex : nil
 							) { rollIndex in
 								viewStore.send(.didTapFrame(index: step.index, rollIndex: rollIndex))
 							}
@@ -48,13 +49,16 @@ public struct ScoreSheetView: View {
 							stepView(step) {
 								viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
 							}
+							.background(viewStore.currentFrameIndex == step.index ? Color.appPrimary : Color.clear)
 							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 						}
 					}
 					GridRow {
 						ForEach(viewStore.steps, id: \.index) { step in
 							Text(String(step.index + 1))
-								.padding()
+								.font(.caption2)
+								.foregroundColor(step.index == viewStore.currentFrameIndex ? .black : .gray)
+								.padding(.bottom, .tinySpacing)
 								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 						}
 					}
@@ -62,7 +66,6 @@ public struct ScoreSheetView: View {
 			}
 			.scrollIndicators(.hidden)
 			.background(Color.appPrimaryLight.cornerRadius(.standardRadius))
-			.padding()
 		}
 	}
 
@@ -71,12 +74,15 @@ public struct ScoreSheetView: View {
 			Text(step.display)
 				.padding(.horizontal, .smallSpacing)
 				.padding(.vertical, .tinySpacing)
+
 		}
+		.buttonStyle(TappableElement())
 	}
 
 	private func rollViews(
 		forRolls: [ScoreStep.RollStep],
 		frameIndex: Int,
+		highlightRollIndex: Int?,
 		action: @escaping (Int) -> Void
 	) -> some View {
 		ForEach(forRolls, id: \.index) { roll in
@@ -86,7 +92,9 @@ public struct ScoreSheetView: View {
 				Text(roll.display)
 					.padding(.horizontal, .smallSpacing)
 					.padding(.vertical, .tinySpacing)
+					.background(highlightRollIndex == roll.index ? Color.appPrimary : Color.clear)
 			}
+			.buttonStyle(TappableElement())
 		}
 	}
 }

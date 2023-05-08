@@ -25,6 +25,8 @@ extension GamesRepository: DependencyKey {
 				try await database.reader().read {
 					try Game.Database
 						.filter(id: id)
+						.including(required: Game.Database.bowler)
+						.including(required: Game.Database.league)
 						.including(
 							required: Game.Database.series
 								.including(optional: Series.Database.alley)
