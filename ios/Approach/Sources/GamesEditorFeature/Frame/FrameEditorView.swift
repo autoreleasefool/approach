@@ -95,17 +95,5 @@ extension FrameEditor.Action {
 	}
 }
 
-private struct InitialContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
-
-
-private struct ContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
+private struct InitialContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

@@ -17,3 +17,12 @@ extension View {
 		}
 	}
 }
+
+public protocol CGSizePreferenceKey {}
+
+public extension PreferenceKey where Self: CGSizePreferenceKey {
+	static var defaultValue: CGSize { .zero }
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
+	}
+}

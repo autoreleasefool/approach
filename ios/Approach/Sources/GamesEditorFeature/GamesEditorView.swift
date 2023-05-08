@@ -279,44 +279,9 @@ extension GamesEditor.Action {
 	}
 }
 
-private struct MinimumSheetContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
-
-private struct SheetContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
-
-private struct WindowContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
-
-private struct HeaderContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
-
-private struct FrameContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
-
-private struct SectionHeaderContentSizeKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
-	}
-}
+private struct MinimumSheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct HeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct FrameContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct SectionHeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
