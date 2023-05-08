@@ -6,11 +6,11 @@ public struct ScoreStep: Sendable, Equatable {
 	/// The score after this step in the game
 	public let score: Int?
 
-	public var display: String {
+	public var display: String? {
 		if let score {
 			return String(score)
 		} else {
-			return ""
+			return nil
 		}
 	}
 
@@ -25,11 +25,11 @@ extension ScoreStep {
 	public struct RollStep: Sendable, Equatable {
 		public let index: Int
 		/// The display value of the roll, e.g. X, /, A, R, L, S, Hp, H2, 2, 3, etc
-		public let display: String
+		public let display: String?
 		/// If a foul was incurred for this roll
 		public let didFoul: Bool
 
-		public init(index: Int, display: String, didFoul: Bool) {
+		public init(index: Int, display: String?, didFoul: Bool) {
 			self.index = index
 			self.display = display
 			self.didFoul = didFoul

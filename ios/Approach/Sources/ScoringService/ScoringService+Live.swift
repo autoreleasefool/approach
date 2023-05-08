@@ -12,7 +12,7 @@ extension ScoringService: DependencyKey {
 	public static var liveValue: Self = {
 		@Sendable func padRolls(_ rolls: [ScoreStep.RollStep]) -> [ScoreStep.RollStep] {
 			rolls + (0..<(Frame.NUMBER_OF_ROLLS - rolls.count))
-				.map { .init(index: rolls.count + $0, display: "", didFoul: false) }
+				.map { .init(index: rolls.count + $0, display: nil, didFoul: false) }
 		}
 
 		@Sendable func padSteps(_ steps: [ScoreStep]) -> [ScoreStep] {
@@ -43,7 +43,7 @@ extension ScoringService: DependencyKey {
 					.init(
 						index: index,
 						rolls: (0..<Frame.NUMBER_OF_ROLLS).map { rollIndex in
-							.init(index: rollIndex, display: "", didFoul: false)
+							.init(index: rollIndex, display: nil, didFoul: false)
 						},
 						score: nil
 					)

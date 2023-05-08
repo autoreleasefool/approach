@@ -3,10 +3,13 @@ import ComposableArchitecture
 import ModelsLibrary
 import ScoringServiceInterface
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct ScoreSheetView: View {
 	let store: StoreOf<ScoreSheet>
+
+	@State private var contentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
 		let steps: [ScoreStep]
@@ -46,13 +49,13 @@ public struct ScoreSheetView: View {
 					Divider()
 					GridRow {
 						ForEach(viewStore.steps, id: \.index) { step in
-							stepView(step) {
+							stepView(step, highlighted: viewStore.currentFrameIndex == step.index) {
 								viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
 							}
-							.background(viewStore.currentFrameIndex == step.index ? Color.appPrimary : Color.clear)
 							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 						}
 					}
+					
 					GridRow {
 						ForEach(viewStore.steps, id: \.index) { step in
 							Text(String(step.index + 1))
@@ -64,18 +67,22 @@ public struct ScoreSheetView: View {
 					}
 				}
 			}
+			.background(Color.appPrimaryLight)
+			.cornerRadius(.standardRadius)
 			.scrollIndicators(.hidden)
-			.background(Color.appPrimaryLight.cornerRadius(.standardRadius))
 		}
+		.measure(key: ContentSizeKey.self, to: $contentSize)
 	}
 
-	private func stepView(_ step: ScoreStep, action: @escaping () -> Void) -> some View {
+	private func stepView(_ step: ScoreStep, highlighted: Bool, action: @escaping () -> Void) -> some View {
 		Button(action: action) {
-			Text(step.display)
+			Text(step.display ?? " ")
+				.frame(maxWidth: .infinity)
 				.padding(.horizontal, .smallSpacing)
-				.padding(.vertical, .tinySpacing)
-
+				.padding(.vertical, .smallSpacing)
+				.background(highlighted ? Color.appPrimary : Color.appPrimaryLight)
 		}
+		.contentShape(Rectangle())
 		.buttonStyle(TappableElement())
 	}
 
@@ -89,11 +96,16 @@ public struct ScoreSheetView: View {
 			Button {
 				action(roll.index)
 			} label: {
-				Text(roll.display)
+				Text(roll.display ?? " ")
+					.font(.caption)
+					.minimumScaleFactor(0.2)
+					.lineLimit(1)
+					.frame(width: contentSize.width / 12)
 					.padding(.horizontal, .smallSpacing)
-					.padding(.vertical, .tinySpacing)
-					.background(highlightRollIndex == roll.index ? Color.appPrimary : Color.clear)
+					.padding(.vertical, .smallSpacing)
+					.background(highlightRollIndex == roll.index ? Color.appPrimary : Color.appPrimaryLight)
 			}
+			.contentShape(Rectangle())
 			.buttonStyle(TappableElement())
 		}
 	}
@@ -105,6 +117,13 @@ extension ScoreSheet.Action {
 		case let .didTapFrame(frameIndex, rollIndex):
 			self = .view(.didTapFrame(index: frameIndex, rollIndex: rollIndex))
 		}
+	}
+}
+
+private struct ContentSizeKey: PreferenceKey {
+	static var defaultValue: CGSize = .zero
+	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
+		value = nextValue()
 	}
 }
 

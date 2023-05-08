@@ -28,7 +28,7 @@ public struct RollEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: RollEditor.Action.init) { viewStore in
-			HStack {
+			HStack(alignment: .bottom) {
 				Button { viewStore.send(.didTapBall) } label: {
 					VStack(alignment: .leading, spacing: .tinySpacing) {
 						Text(Strings.Roll.Properties.Ball.title)
