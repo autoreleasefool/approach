@@ -40,7 +40,7 @@ public struct ScoreSheet: Reducer {
 					if let rollIndex {
 						state.currentRollIndex = rollIndex
 					} else {
-						state.currentRollIndex = state.steps[state.currentFrameIndex].rolls.endIndex - 1
+						state.currentRollIndex = state.steps[state.currentFrameIndex].rolls.lastIndex { $0.display != nil } ?? 0
 					}
 					return .none
 				}
