@@ -10,14 +10,14 @@ struct SequencedRoll {
 
 extension ScoringService: DependencyKey {
 	public static var liveValue: Self = {
-		@Sendable func padRolls(_ rolls: [ScoreStep.RollStep]) -> [ScoreStep.RollStep] {
-			rolls + (0..<(Frame.NUMBER_OF_ROLLS - rolls.count))
-				.map { .init(index: rolls.count + $0, display: nil, didFoul: false) }
+		@Sendable func padRolls(_ rolls: [ScoreStep.RollStep], displayValue: String?) -> [ScoreStep.RollStep] {
+			rolls + Frame.rollIndices(after: rolls.endIndex - 1)
+				.map { .init(index: $0, display: displayValue, didFoul: false) }
 		}
 
 		@Sendable func padSteps(_ steps: [ScoreStep]) -> [ScoreStep] {
-			steps + (0..<(Game.NUMBER_OF_FRAMES - steps.count))
-				.map { .init(index: steps.count + $0, rolls: padRolls([]), score: nil)}
+			steps + Game.frameIndices(after: steps.endIndex - 1)
+				.map { .init(index: $0, rolls: padRolls([], displayValue: nil), score: nil)}
 		}
 
 		@Sendable func calculateScore(for frames: [[Frame.OrderedRoll]]) async -> [ScoreStep] {
@@ -25,16 +25,21 @@ extension ScoringService: DependencyKey {
 			var steps: [ScoreStep] = []
 
 			let rolls: [SequencedRoll] = frames.enumerated().reduce(into: []) { rolls, indexedFrame in
-				let (index, frame) = indexedFrame
+				let (frameIndex, frame) = indexedFrame
 				// Must be at least 1 roll or we skip the frame
 				guard !frame.isEmpty else { return }
 
 				// Last roll must be from previous frame
-				if let lastRoll = rolls.last, lastRoll.frameIndex != index - 1 { return }
+				if let lastRoll = rolls.last, lastRoll.frameIndex != frameIndex - 1 { return }
 
-				rolls.append(contentsOf: frame.enumerated().map {
-					.init(frameIndex: index, rollIndex: $0.offset, roll: $0.element.roll)
-				})
+				var pinsDowned: Set<Pin> = []
+				for (rollIndex, roll) in frame.enumerated() {
+					pinsDowned.formUnion(roll.roll.pinsDowned)
+					rolls.append(.init(frameIndex: frameIndex, rollIndex: rollIndex, roll: roll.roll))
+					if pinsDowned.count == 5 && !Frame.isLast(frameIndex) {
+						break
+					}
+				}
 			}
 
 			// Ensure there is at least one roll in the game, or return a nil score
@@ -42,7 +47,7 @@ extension ScoringService: DependencyKey {
 				return frames.enumerated().map { index, _ in
 					.init(
 						index: index,
-						rolls: (0..<Frame.NUMBER_OF_ROLLS).map { rollIndex in
+						rolls: Frame.ROLL_INDICES.map { rollIndex in
 							.init(index: rollIndex, display: nil, didFoul: false)
 						},
 						score: nil
@@ -58,14 +63,14 @@ extension ScoringService: DependencyKey {
 			var penalties = 0
 
 			// Calculate all except the final frame
-			for (index, roll) in rolls.enumerated() where roll.frameIndex < Game.NUMBER_OF_FRAMES - 1 {
+			for (index, roll) in rolls.enumerated() where !Frame.isLast(roll.frameIndex) {
 				penalties += roll.roll.didFoul ? 1 : 0
 
 				// Accumulate the downed pins. Assume this is reset appropriately between frames below
 				pinsDown.formUnion(roll.roll.pinsDowned)
 
 				// When all the pins have been cleared
-				if pinsDown.count == 5 && roll.rollIndex < Frame.NUMBER_OF_ROLLS - 1 {
+				if pinsDown.count == 5 && !Frame.Roll.isLast(roll.rollIndex) {
 					// Append a roll with the full deck cleared
 					rollSteps.append(.init(
 						index: rollSteps.count,
@@ -87,7 +92,7 @@ extension ScoringService: DependencyKey {
 
 					steps.append(.init(
 						index: steps.count,
-						rolls: padRolls(rollSteps),
+						rolls: padRolls(rollSteps, displayValue: index < rolls.endIndex - 1 ? "-" : nil),
 						score: max((steps.last?.score ?? 0) + stepScore - (penalties * Frame.Roll.FOUL_PENALTY), 0)
 					))
 					penalties = 0
@@ -105,7 +110,7 @@ extension ScoringService: DependencyKey {
 					if index == rolls.endIndex - 1 || rolls[index + 1].frameIndex != roll.frameIndex {
 						steps.append(.init(
 							index: steps.count,
-							rolls: padRolls(rollSteps),
+							rolls: padRolls(rollSteps, displayValue: index < rolls.endIndex - 1 ? "-" : nil),
 							score: max((steps.last?.score ?? 0) + pinsDown.value - (penalties * Frame.Roll.FOUL_PENALTY), 0)
 						))
 						penalties = 0
@@ -119,7 +124,7 @@ extension ScoringService: DependencyKey {
 			var initialRollIndex = 0
 
 			// Calculate the final frame separately
-			for (index, roll) in rolls.enumerated() where roll.frameIndex == Game.NUMBER_OF_FRAMES - 1 {
+			for (index, roll) in rolls.enumerated() where Frame.isLast(roll.frameIndex) {
 				penalties += roll.roll.didFoul ? 1 : 0
 				pinsDown.formUnion(roll.roll.pinsDowned)
 
@@ -143,7 +148,7 @@ extension ScoringService: DependencyKey {
 						didFoul: roll.roll.didFoul
 					))
 
-					if roll.rollIndex == Frame.NUMBER_OF_ROLLS - 1 {
+					if Frame.Roll.isLast(roll.rollIndex) {
 						stepScore += pinsDown.value
 					}
 				}
@@ -153,7 +158,7 @@ extension ScoringService: DependencyKey {
 			if !rollSteps.isEmpty {
 				steps.append(.init(
 					index: steps.count,
-					rolls: padRolls(rollSteps),
+					rolls: padRolls(rollSteps, displayValue: nil),
 					score: max((steps.last?.score ?? 0) + stepScore - (penalties * Frame.Roll.FOUL_PENALTY), 0)
 				))
 			}
