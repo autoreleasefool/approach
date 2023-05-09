@@ -8,6 +8,7 @@ import ViewsLibrary
 struct FrameEditorView: View {
 	let store: StoreOf<FrameEditor>
 
+	@GestureState private var dragLocation: CGPoint = .zero
 	@State private var initialContentSize: CGSize = .zero
 	@State private var contentSize: CGSize = .zero
 
@@ -22,9 +23,7 @@ struct FrameEditorView: View {
 	}
 
 	enum ViewAction {
-		case didTapNextBallButton
-		case didTapPin(Pin)
-		case didStartDraggingPin(Pin)
+		case didDragOverPin(Pin)
 		case didStopDraggingPins
 	}
 
@@ -44,20 +43,27 @@ struct FrameEditorView: View {
 							.shadow(color: .black, radius: 2)
 					}
 					.frame(width: getWidth(for: pin), height: getHeight(for: pin))
-					.gesture(
-						TapGesture()
-							.onEnded { viewStore.send(.didTapPin(pin)) }
-					)
-					.gesture(
-						DragGesture()
-							.onChanged { _ in viewStore.send(.didStartDraggingPin(pin)) }
-							.onEnded { _ in viewStore.send(.didStopDraggingPins) }
-					)
+					.background(dragReader(for: pin, withViewStore: viewStore))
 				}
 				Spacer(minLength: .standardSpacing)
 			}
 			.measure(key: InitialContentSizeKey.self, to: $initialContentSize, exactlyOnce: true)
 			.measure(key: ContentSizeKey.self, to: $contentSize)
+			.gesture(
+				DragGesture(minimumDistance: 0, coordinateSpace: .global)
+					.updating($dragLocation) { (value, state, _) in state = value.location }
+					.onEnded { _ in viewStore.send(.didStopDraggingPins) }
+			)
+		}
+	}
+
+	private func dragReader(for pin: Pin, withViewStore viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		GeometryReader { proxy in
+			if proxy.frame(in: .global).contains(dragLocation) {
+				Task.detached { @MainActor in viewStore.send(.didDragOverPin(pin)) }
+			}
+
+			return Color.clear
 		}
 	}
 
@@ -83,12 +89,8 @@ struct FrameEditorView: View {
 extension FrameEditor.Action {
 	init(action: FrameEditorView.ViewAction) {
 		switch action {
-		case .didTapNextBallButton:
-			self = .view(.didTapNextBallButton)
-		case let .didTapPin(pin):
-			self = .view(.didTapPin(pin))
-		case let .didStartDraggingPin(pin):
-			self = .view(.didStartDraggingPin(pin))
+		case let .didDragOverPin(pin):
+			self = .view(.didDragOverPin(pin))
 		case .didStopDraggingPins:
 			self = .view(.didStopDraggingPins)
 		}

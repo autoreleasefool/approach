@@ -17,9 +17,7 @@ public struct FrameEditor: Reducer {
 
 	public enum Action: Equatable {
 		public enum ViewAction: Equatable {
-			case didTapNextBallButton
-			case didTapPin(Pin)
-			case didStartDraggingPin(Pin)
+			case didDragOverPin(Pin)
 			case didStopDraggingPins
 		}
 		public enum DelegateAction: Equatable {
@@ -39,20 +37,15 @@ public struct FrameEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didTapNextBallButton:
-					return .none
-
-				case let .didTapPin(pin):
-					state.frame.toggle(pin, rollIndex: state.currentRollIndex)
-					return .task { .delegate(.didEditFrame) }
-
-				case let .didStartDraggingPin(pin):
-					// TODO: dragging is not working
-					guard state.draggedPinNewState == nil else { return .none }
-					let oldState = state.frame.roll(at: state.currentRollIndex).isPinDown(pin)
-					let newState = !oldState
-					state.draggedPinNewState = newState
-					state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
+				case let .didDragOverPin(pin):
+					if let newState = state.draggedPinNewState {
+						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
+					} else {
+						let oldState = state.frame.roll(at: state.currentRollIndex).isPinDown(pin)
+						let newState = !oldState
+						state.draggedPinNewState = newState
+						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
+					}
 					return .task { .delegate(.didEditFrame) }
 
 				case .didStopDraggingPins:
