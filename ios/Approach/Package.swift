@@ -240,12 +240,10 @@ let package = Package(
 			dependencies: [
 				"DateTimeLibrary",
 				"EquatableLibrary",
-				"ExtensionsLibrary",
 				"FramesRepositoryInterface",
 				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
 				"ScoreSheetFeature",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -377,6 +375,7 @@ let package = Package(
 			dependencies: [
 				"FeatureActionLibrary",
 				"ScoringServiceInterface",
+				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -522,6 +521,7 @@ let package = Package(
 			name: "FramesRepositoryInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ExtensionsLibrary",
 				"ModelsLibrary",
 			]
 		),

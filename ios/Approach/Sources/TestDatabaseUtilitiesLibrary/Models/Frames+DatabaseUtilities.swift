@@ -15,7 +15,7 @@ func insert(
 		var framesBuilder: [Frame.Database] = []
 		for gameIdInt in 0...5 {
 			let gameId = UUID(gameIdInt)
-			for index in 0..<Game.NUMBER_OF_FRAMES {
+			for index in Game.FRAME_INDICES {
 				framesBuilder.append(
 					.init(
 						gameId: gameId,

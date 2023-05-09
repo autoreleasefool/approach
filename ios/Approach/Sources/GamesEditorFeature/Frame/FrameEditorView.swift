@@ -14,11 +14,11 @@ struct FrameEditorView: View {
 
 	struct ViewState: Equatable {
 		let rollIndex: Int
-		let roll: Frame.Roll
+		let deck: [Pin]
 
 		init(state: FrameEditor.State) {
 			self.rollIndex = state.currentRollIndex
-			self.roll = state.frame.rolls[state.currentRollIndex].roll
+			self.deck = state.frame.deck(forRoll: state.currentRollIndex)
 		}
 	}
 
@@ -37,7 +37,7 @@ struct FrameEditorView: View {
 				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.fullDeck) { pin in
 					ZStack {
-						Image(uiImage: viewStore.roll.isPinDown(pin) ? .pinDown : .pin)
+						Image(uiImage: viewStore.deck.contains(pin) ? .pinDown : .pin)
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.shadow(color: .black, radius: 2)

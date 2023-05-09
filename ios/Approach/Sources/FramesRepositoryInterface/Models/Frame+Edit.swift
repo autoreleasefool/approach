@@ -1,10 +1,11 @@
+import ExtensionsLibrary
 import ModelsLibrary
 
 extension Frame {
 	public struct Edit: Identifiable, Equatable, Codable {
 		public let gameId: Game.ID
 		public let index: Int
-		public var rolls: [OrderedRoll]
+		public internal(set) var rolls: [OrderedRoll]
 
 		public var id: String { "\(gameId)-\(index)" }
 
@@ -62,5 +63,72 @@ extension Frame {
 			case ball1
 			case ball2
 		}
+	}
+}
+
+extension Frame.Edit {
+	public mutating func setBowlingBall(_ bowlingBall: Gear.Rolled?, forRoll rollIndex: Int) {
+		guaranteeRollExists(upTo: rollIndex)
+		rolls[rollIndex].bowlingBall = bowlingBall
+	}
+
+	public mutating func setDidFoul(_ didFoul: Bool, forRoll rollIndex: Int) {
+		guaranteeRollExists(upTo: rollIndex)
+		rolls[rollIndex].roll.didFoul = didFoul
+	}
+
+	public mutating func toggle(_ pin: Pin, rollIndex: Int, newValue: Bool? = nil) {
+		guaranteeRollExists(upTo: rollIndex)
+		rolls[rollIndex].toggle(pin, newValue: newValue)
+
+		// Raise pins in subsequent rolls
+		for roll in (rollIndex + 1..<rolls.endIndex) {
+			rolls[roll].toggle(pin, newValue: false)
+		}
+	}
+
+	public mutating func guaranteeRollExists(upTo index: Int) {
+		while rolls.count < index + 1 {
+			rolls.append(.init(index: rolls.count, roll: .default, bowlingBall: nil))
+		}
+	}
+
+	public mutating func roll(at index: Int) -> Frame.Roll {
+		guaranteeRollExists(upTo: index)
+		return rolls[index].roll
+	}
+
+	public func deck(forRoll index: Int) -> [Pin] {
+		Array(rolls.prefix(index + 1).reduce(into: Set(), { deck, roll in
+			// For the last frame, if the deck is cleared in a previous roll,
+			// we don't include those in the standing deck for the current roll
+			if Frame.isLast(index) && deck.count == 5 {
+				deck = []
+			}
+			deck.formUnion(roll.roll.pinsDowned)
+		}))
+	}
+
+	public func canModify(pin: Pin, inRoll index: Int) -> Bool {
+		guard index > 0 else { return true }
+		return !deck(forRoll: index - 1).contains(pin)
+	}
+}
+
+extension Frame.OrderedRoll {
+	mutating func toggle(_ pin: Pin, newValue: Bool?) {
+		if let newValue {
+			if roll.pinsDowned.contains(pin) != newValue {
+				roll.pinsDowned.toggle(pin)
+			}
+		} else {
+			roll.pinsDowned.toggle(pin)
+		}
+	}
+}
+
+extension Frame.Roll {
+	public func isPinDown(_ pin: Pin) -> Bool {
+		pinsDowned.contains(pin)
 	}
 }

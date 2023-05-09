@@ -127,7 +127,7 @@ struct ScoreSheetViewPreviews: PreviewProvider {
 	static var previews: some View {
 		ScoreSheetView(store: .init(
 			initialState: .init(
-				steps: (0..<Game.NUMBER_OF_FRAMES).map {
+				steps: Game.FRAME_INDICES.map {
 					.init(
 						index: $0,
 						rolls: [

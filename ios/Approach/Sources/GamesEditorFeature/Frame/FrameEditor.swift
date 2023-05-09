@@ -38,6 +38,8 @@ public struct FrameEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didDragOverPin(pin):
+					guard state.frame.canModify(pin: pin, inRoll: state.currentRollIndex) else { return .none }
+					let existingState = state
 					if let newState = state.draggedPinNewState {
 						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
 					} else {
@@ -46,11 +48,12 @@ public struct FrameEditor: Reducer {
 						state.draggedPinNewState = newState
 						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
 					}
-					return .task { .delegate(.didEditFrame) }
+
+					return existingState != state ? .task { .delegate(.didEditFrame) } : .none
 
 				case .didStopDraggingPins:
 					state.draggedPinNewState = nil
-					return .task { .delegate(.didEditFrame) }
+					return .none
 				}
 
 			case let .internal(internalAction):

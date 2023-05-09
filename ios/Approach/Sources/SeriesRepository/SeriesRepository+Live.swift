@@ -55,7 +55,7 @@ extension SeriesRepository: DependencyKey {
 								)
 								try game.insert(db)
 
-								for frameIndex in (0..<Game.NUMBER_OF_FRAMES) {
+								for frameIndex in Game.FRAME_INDICES {
 									let frame = Frame.Database(
 										gameId: game.id,
 										index: frameIndex,

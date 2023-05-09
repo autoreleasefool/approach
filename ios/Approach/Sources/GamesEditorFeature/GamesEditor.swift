@@ -229,6 +229,7 @@ public struct GamesEditor: Reducer {
 				case let .frameEditor(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEditFrame:
+						print(state.frames)
 						return updateScoreSheet(from: state)
 					}
 
@@ -455,7 +456,7 @@ extension GamesEditor.State {
 		}
 		set {
 			_ballPicker = newValue
-			frames?[currentFrameIndex].rolls[currentRollIndex].bowlingBall = newValue.selectedBall?.rolled
+			frames?[currentFrameIndex].setBowlingBall(newValue.selectedBall?.rolled, forRoll: currentRollIndex)
 		}
 	}
 }
@@ -475,7 +476,7 @@ extension GamesEditor.State {
 		set {
 			_rollEditor = newValue
 			guard let newValue else { return }
-			frames?[currentFrameIndex].rolls[currentRollIndex].roll.didFoul = newValue.didFoul
+			frames?[currentFrameIndex].setDidFoul(newValue.didFoul, forRoll: currentRollIndex)
 		}
 	}
 }
