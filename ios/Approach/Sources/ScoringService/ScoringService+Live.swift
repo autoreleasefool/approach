@@ -52,31 +52,45 @@ extension ScoringService: DependencyKey {
 
 			// Cumulative set of pins downed in the frame
 			var pinsDown: Set<Pin> = []
+			// Each roll to be displayed in the final output
 			var rollSteps: [ScoreStep.RollStep] = []
+			// Fouls accumulated in a single frame
+			var penalties = 0
 
-			for (index, roll) in rolls.enumerated() {
+			// Calculate all except the final frame
+			for (index, roll) in rolls.enumerated() where roll.frameIndex < Game.NUMBER_OF_FRAMES - 1 {
+				penalties += roll.roll.didFoul ? 1 : 0
+
 				// Accumulate the downed pins. Assume this is reset appropriately between frames below
 				pinsDown.formUnion(roll.roll.pinsDowned)
 
 				// When all the pins have been cleared
-				if pinsDown.count == 5 {
+				if pinsDown.count == 5 && roll.rollIndex < Frame.NUMBER_OF_ROLLS - 1 {
+					// Append a roll with the full deck cleared
 					rollSteps.append(.init(
 						index: rollSteps.count,
 						display: pinsDown.displayValue(rollIndex: roll.rollIndex),
 						didFoul: roll.roll.didFoul
 					))
+
 					var stepScore = pinsDown.value
 					let rollsToAdd = 2 - roll.rollIndex
 
+					// If the roll was a spare or a strike, add the scores of the subsequent rolls to this roll
 					if rollsToAdd > 0 {
-						for addedRollIndex in 0..<rollsToAdd where index + addedRollIndex < rolls.endIndex {
+						for addedRollIndex in 1...rollsToAdd where index + addedRollIndex < rolls.endIndex {
 							let pinsToAdd = rolls[index + addedRollIndex].roll.pinsDowned
 							stepScore += pinsToAdd.value
 							rollSteps.append(.init(index: rollSteps.count, display: pinsToAdd.displayValue(rollIndex: -1), didFoul: false))
 						}
 					}
 
-					steps.append(.init(index: steps.count, rolls: padRolls(rollSteps), score: (steps.last?.score ?? 0) + stepScore))
+					steps.append(.init(
+						index: steps.count,
+						rolls: padRolls(rollSteps),
+						score: max((steps.last?.score ?? 0) + stepScore - (penalties * Frame.Roll.FOUL_PENALTY), 0)
+					))
+					penalties = 0
 					pinsDown = []
 					rollSteps = []
 				} else {
@@ -92,12 +106,56 @@ extension ScoringService: DependencyKey {
 						steps.append(.init(
 							index: steps.count,
 							rolls: padRolls(rollSteps),
-							score: (steps.last?.score ?? 0) + pinsDown.value)
-						)
+							score: max((steps.last?.score ?? 0) + pinsDown.value - (penalties * Frame.Roll.FOUL_PENALTY), 0)
+						))
+						penalties = 0
 						pinsDown = []
 						rollSteps = []
 					}
 				}
+			}
+
+			var stepScore = 0
+			var initialRollIndex = 0
+
+			// Calculate the final frame separately
+			for (index, roll) in rolls.enumerated() where roll.frameIndex == Game.NUMBER_OF_FRAMES - 1 {
+				penalties += roll.roll.didFoul ? 1 : 0
+				pinsDown.formUnion(roll.roll.pinsDowned)
+
+				// When all the pins have been cleared
+				if pinsDown.count == 5 {
+					// Append a roll with the full deck cleared
+					rollSteps.append(.init(
+						index: rollSteps.count,
+						display: pinsDown.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
+						didFoul: roll.roll.didFoul
+					))
+
+					stepScore += pinsDown.value
+					pinsDown = []
+					initialRollIndex = roll.rollIndex + 1
+				} else {
+					// Append the value of pins downed this roll
+					rollSteps.append(.init(
+						index: rollSteps.count,
+						display: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
+						didFoul: roll.roll.didFoul
+					))
+
+					if roll.rollIndex == Frame.NUMBER_OF_ROLLS - 1 {
+						stepScore += pinsDown.value
+					}
+				}
+			}
+
+			// Append the final frame steps to the output if it exists
+			if !rollSteps.isEmpty {
+				steps.append(.init(
+					index: steps.count,
+					rolls: padRolls(rollSteps),
+					score: max((steps.last?.score ?? 0) + stepScore - (penalties * Frame.Roll.FOUL_PENALTY), 0)
+				))
 			}
 
 			return padSteps(steps)

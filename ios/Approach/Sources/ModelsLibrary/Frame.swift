@@ -4,6 +4,10 @@ extension Frame {
 	public static let NUMBER_OF_ROLLS = 3
 }
 
+extension Frame.Roll {
+	public static let FOUL_PENALTY = 15
+}
+
 extension Frame {
 	public struct Roll: Sendable, Equatable, Codable {
 		public var pinsDowned: [Pin]

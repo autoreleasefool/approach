@@ -110,7 +110,8 @@ public enum RollOutcome: String {
 
 	public var numeral: String {
 		switch self {
-		case .strike, .spare, .cleared: return "15"
+		case .strike, .spare: return rawValue
+		case .cleared: return "15"
 		case .left, .right: return "13"
 		case .ace: return "11"
 		case .chopOff, .splitWithBonus: return "10"
