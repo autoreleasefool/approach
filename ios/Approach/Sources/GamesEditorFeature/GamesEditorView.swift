@@ -157,7 +157,7 @@ public struct GamesEditorView: View {
 			.onAppear {
 				viewStore.send(.didAppear)
 				Task.detached {
-					try await clock.sleep(for: .milliseconds(100))
+					try await clock.sleep(for: .milliseconds(150))
 					Task.detached { @MainActor in
 						viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
 					}
