@@ -64,7 +64,6 @@ extension Game.Edit {
 	}
 }
 
-
 extension Game.Edit {
 	public struct LeagueInfo: Codable, Equatable {
 		public let name: String

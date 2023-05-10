@@ -42,7 +42,6 @@ extension DerivableRequest<Lane.Database> {
 	}
 }
 
-
 extension Lane.Database {
 	public enum Columns {
 		public static let alleyId = Column(CodingKeys.alleyId)

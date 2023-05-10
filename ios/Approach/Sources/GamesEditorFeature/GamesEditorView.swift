@@ -142,7 +142,7 @@ public struct GamesEditorView: View {
 							[
 								.height(minimumSheetContentSize.height + 40),
 								.medium,
-								.large
+								.large,
 							],
 							selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
 						)
@@ -228,7 +228,8 @@ public struct GamesEditorView: View {
 		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
-			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height - safeAreaInsets.bottom - CGFloat.largeSpacing
+			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height
+				- safeAreaInsets.bottom - CGFloat.largeSpacing
 		)
 	}
 

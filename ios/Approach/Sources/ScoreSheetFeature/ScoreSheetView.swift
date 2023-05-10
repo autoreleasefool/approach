@@ -55,7 +55,7 @@ public struct ScoreSheetView: View {
 							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 						}
 					}
-					
+
 					GridRow {
 						ForEach(viewStore.steps, id: \.index) { step in
 							Text(String(step.index + 1))

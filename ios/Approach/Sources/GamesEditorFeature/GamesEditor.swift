@@ -191,7 +191,7 @@ public struct GamesEditor: Reducer {
 
 					// TODO: get initial ball rolled loaded from frame
 					state._rollEditor = .init(
-						ballRolled: nil,// TODO: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.ballRolled,
+						ballRolled: nil, // TODO: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.ballRolled,
 						didFoul: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.didFoul
 					)
 					return updateScoreSheet(from: state)
@@ -370,6 +370,8 @@ extension GamesEditor.State {
 				currentGameOrdinal: currentGames?.firstIndex(of: currentGameId) ?? 0
 			)
 		}
+		// We aren't observing any values from this reducer, so we ignore the setter
+		// swiftlint:disable:next unused_setter_value
 		set {}
 	}
 }
@@ -406,6 +408,8 @@ extension GamesEditor.State {
 			guard let currentGame else { return nil }
 			return .init(game: currentGame, nextElement: nil)
 		}
+		// We aren't observing any values from this reducer, so we ignore the setter
+		// swiftlint:disable:next unused_setter_value
 		set { }
 	}
 }

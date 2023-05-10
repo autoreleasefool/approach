@@ -32,7 +32,7 @@ public struct GameDetailsHeader: Reducer {
 	}
 
 	public var body: some Reducer<State, Action> {
-		Reduce { state, action in
+		Reduce { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
@@ -53,6 +53,8 @@ public struct GameDetailsHeader: Reducer {
 	}
 }
 
+// MARK: - View
+
 public struct GameDetailsHeaderView: View {
 	let store: StoreOf<GameDetailsHeader>
 
@@ -61,7 +63,7 @@ public struct GameDetailsHeaderView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GameDetailsHeader.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, send: GameDetailsHeader.Action.init, content: { viewStore in
 			HStack(alignment: .top) {
 				VStack(alignment: .leading) {
 					Text(viewStore.currentBowlerName)
@@ -90,7 +92,7 @@ public struct GameDetailsHeaderView: View {
 			}
 			.listRowInsets(EdgeInsets())
 			.listRowBackground(Color.clear)
-		}
+		})
 	}
 }
 

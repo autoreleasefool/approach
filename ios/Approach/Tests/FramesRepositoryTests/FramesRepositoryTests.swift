@@ -40,9 +40,9 @@ final class FramesRepositoryTests: XCTestCase {
 							index: 0,
 							roll: .init(pinsDowned: [.headPin], didFoul: false),
 							bowlingBall: .init(id: UUID(0), name: "Yellow")
-						)
+						),
 					]
-				)
+				),
 			]
 		)
 	}
@@ -73,14 +73,14 @@ final class FramesRepositoryTests: XCTestCase {
 							index: 0,
 							roll: .init(pinsDowned: [.headPin, .rightThreePin], didFoul: true),
 							bowlingBall: .init(id: UUID(1), name: "Blue")
-						)
+						),
 					]
 				),
 				.init(
 					gameId: UUID(0),
 					index: 1,
 					rolls: []
-				)
+				),
 			]
 		)
 	}
@@ -137,7 +137,7 @@ final class FramesRepositoryTests: XCTestCase {
 							bowlingBall: .init(id: UUID(1), name: "Blue")
 						),
 					]
-				)
+				),
 			]
 		)
 	}
@@ -165,7 +165,8 @@ final class FramesRepositoryTests: XCTestCase {
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin], didFoul: false), bowlingBall: nil)]
 				),
-				.init(gameId: UUID(0), index: 1, rolls: [])]
+				.init(gameId: UUID(0), index: 1, rolls: []),
+			]
 		)
 	}
 

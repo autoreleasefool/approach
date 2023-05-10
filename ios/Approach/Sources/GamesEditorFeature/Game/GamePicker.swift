@@ -9,8 +9,6 @@ public struct GameIndex: Hashable, Identifiable {
 	public let index: Int
 }
 
-// MARK: - Reducer
-
 public struct GamePicker: Reducer {
 	public struct State: Equatable {
 		public var selected: Game.ID

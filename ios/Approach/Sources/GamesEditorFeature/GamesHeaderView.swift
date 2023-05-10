@@ -18,7 +18,7 @@ public struct GamesHeaderView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GamesHeader.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, send: GamesHeader.Action.init, content: { viewStore in
 			HStack {
 				headerButton(systemName: "chevron.backward") { viewStore.send(.didTapClose) }
 
@@ -45,7 +45,7 @@ public struct GamesHeaderView: View {
 
 				headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
 			}
-		}
+		})
 	}
 
 	private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
