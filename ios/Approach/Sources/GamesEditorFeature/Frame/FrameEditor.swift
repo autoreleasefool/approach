@@ -38,7 +38,6 @@ public struct FrameEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didDragOverPin(pin):
-					guard state.frame.canModify(pin: pin, inRoll: state.currentRollIndex) else { return .none }
 					let existingState = state
 					if let newState = state.draggedPinNewState {
 						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)

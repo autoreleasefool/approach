@@ -20,7 +20,13 @@ struct FrameEditorView: View {
 		init(state: FrameEditor.State) {
 			self.rollIndex = state.currentRollIndex
 			self.downPins = state.frame.deck(forRoll: state.currentRollIndex)
-			self.inaccessiblePins = state.currentRollIndex > 0 ? state.frame.deck(forRoll: state.currentRollIndex - 1) : []
+
+			let pinsDownLastFrame = state.currentRollIndex > 0 ? state.frame.deck(forRoll: state.currentRollIndex - 1) : []
+			if Frame.isLast(state.frame.index) {
+				self.inaccessiblePins = pinsDownLastFrame.isFullDeck ? [] : pinsDownLastFrame
+			} else {
+				self.inaccessiblePins = pinsDownLastFrame
+			}
 		}
 	}
 

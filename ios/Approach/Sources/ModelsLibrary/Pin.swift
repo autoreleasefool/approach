@@ -20,11 +20,12 @@ public enum Pin: Int, Equatable, Sendable, Identifiable, Codable {
 	public static let fullDeck: [Self] = [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin]
 }
 
-extension Collection where Element == Pin {
+extension Set where Element == Pin {
 	public var value: Int { reduce(0) { value, pin in value + pin.value } }
+	public var isFullDeck: Bool { count == 5 }
 }
 
-extension Collection where Element == Pin {
+extension Set where Element == Pin {
 	public var isHeadPin: Bool { count == 1 && first == .headPin }
 	public var isHeadPin2: Bool { value == 7 && contains(.headPin) }
 	public var isLeft: Bool { count == 4 && !contains(.leftTwoPin) }
@@ -56,7 +57,7 @@ extension Collection where Element == Pin {
 	public var arePinsCleared: Bool { count == 5 }
 }
 
-extension Collection where Element == Pin {
+extension Set where Element == Pin {
 	public func displayValue(rollIndex: Int) -> String {
 		let outcome: RollOutcome
 		if isHeadPin {
