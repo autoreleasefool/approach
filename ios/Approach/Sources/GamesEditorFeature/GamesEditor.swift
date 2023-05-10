@@ -229,7 +229,6 @@ public struct GamesEditor: Reducer {
 				case let .frameEditor(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEditFrame:
-						print(state.frames)
 						return updateScoreSheet(from: state)
 					}
 

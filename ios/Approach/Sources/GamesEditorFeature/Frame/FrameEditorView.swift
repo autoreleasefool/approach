@@ -14,7 +14,7 @@ struct FrameEditorView: View {
 
 	struct ViewState: Equatable {
 		let rollIndex: Int
-		let deck: [Pin]
+		let deck: Set<Pin>
 
 		init(state: FrameEditor.State) {
 			self.rollIndex = state.currentRollIndex

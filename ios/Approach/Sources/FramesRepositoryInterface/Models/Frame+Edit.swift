@@ -98,15 +98,15 @@ extension Frame.Edit {
 		return rolls[index].roll
 	}
 
-	public func deck(forRoll index: Int) -> [Pin] {
-		Array(rolls.prefix(index + 1).reduce(into: Set(), { deck, roll in
+	public func deck(forRoll index: Int) -> Set<Pin> {
+		rolls.prefix(index + 1).reduce(into: Set(), { deck, roll in
 			// For the last frame, if the deck is cleared in a previous roll,
 			// we don't include those in the standing deck for the current roll
 			if Frame.isLast(index) && deck.count == 5 {
 				deck = []
 			}
 			deck.formUnion(roll.roll.pinsDowned)
-		}))
+		})
 	}
 
 	public func canModify(pin: Pin, inRoll index: Int) -> Bool {

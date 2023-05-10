@@ -23,10 +23,10 @@ extension Frame.Roll {
 
 extension Frame {
 	public struct Roll: Sendable, Equatable, Codable {
-		public var pinsDowned: [Pin]
+		public var pinsDowned: Set<Pin>
 		public var didFoul: Bool
 
-		public init(pinsDowned: [Pin], didFoul: Bool) {
+		public init(pinsDowned: Set<Pin>, didFoul: Bool) {
 			self.pinsDowned = pinsDowned
 			self.didFoul = didFoul
 		}
@@ -34,9 +34,9 @@ extension Frame {
 		public init(from bitString: String) {
 			assert(bitString.count == 6)
 			self.didFoul = bitString.first != "0"
-			self.pinsDowned = bitString.dropFirst().enumerated().compactMap { index, bit in
+			self.pinsDowned = Set(bitString.dropFirst().enumerated().compactMap { index, bit in
 				bit == "0" ? nil : Pin(rawValue: index)
-			}
+			})
 		}
 
 		public init(from decoder: Decoder) throws {

@@ -1,12 +1,11 @@
 import Foundation
 
-extension Array where Element: Equatable {
+extension Set {
 	public mutating func toggle(_ element: Element) {
-		guard let index = self.firstIndex(of: element) else {
-			self.append(element)
-			return
+		if contains(element) {
+			remove(element)
+		} else {
+			insert(element)
 		}
-
-		self.remove(at: index)
 	}
 }

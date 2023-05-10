@@ -16,7 +16,7 @@ final class ScoringServiceTests: XCTestCase {
 	func testCalculatesScoreForFramesWithSteps() async {
 		let frames: [[Frame.OrderedRoll]] = [
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(index: 0, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
 			],
 			[
 				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false), bowlingBall: nil),
@@ -28,10 +28,10 @@ final class ScoringServiceTests: XCTestCase {
 				.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(index: 0, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(index: 0, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
 			],
 			[
 				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin], didFoul: false), bowlingBall: nil),
@@ -48,11 +48,11 @@ final class ScoringServiceTests: XCTestCase {
 				.init(index: 2, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(index: 0, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(index: 0, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
+				.init(index: 1, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
 				.init(index: 2, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
 			],
 		]
@@ -85,7 +85,7 @@ final class ScoringServiceTests: XCTestCase {
 	func testCalculator() async {
 		let frames: [[Frame.OrderedRoll]] = [
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(index: 0, roll: .init(pinsDowned: Set(Pin.fullDeck), didFoul: false), bowlingBall: nil),
 				.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
 				.init(index: 2, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
 			],
