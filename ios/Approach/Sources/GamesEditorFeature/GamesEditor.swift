@@ -243,6 +243,9 @@ public struct GamesEditor: Reducer {
 					case .didTapBall:
 						state.sheet.transition(to: .ballPicker)
 						return .none
+
+					case .didEditRoll:
+						return updateScoreSheet(from: state)
 					}
 
 				case let .gamesHeader(.delegate(delegateAction)):

@@ -22,6 +22,7 @@ public struct RollEditor: Reducer {
 		}
 		public enum InternalAction: Equatable {}
 		public enum DelegateAction: Equatable {
+			case didEditRoll
 			case didTapBall
 		}
 
@@ -39,7 +40,7 @@ public struct RollEditor: Reducer {
 				switch viewAction {
 				case .didToggleFoul:
 					state.didFoul.toggle()
-					return .none
+					return .task { .delegate(.didEditRoll) }
 				}
 
 			case let .internal(internalAction):
