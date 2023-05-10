@@ -63,12 +63,11 @@ extension ScoringService: DependencyKey {
 			var pinsDown: Set<Pin> = []
 			// Each roll to be displayed in the final output
 			var rollSteps: [ScoreStep.RollStep] = []
-			// Fouls accumulated in a single frame
-			var penalties = 0
+			var accruedScore = 0
 
 			// Calculate all except the final frame
 			for (index, roll) in rolls.enumerated() where !Frame.isLast(roll.frameIndex) {
-				penalties += roll.roll.didFoul ? 1 : 0
+				accruedScore -= (roll.roll.didFoul ? 1 : 0) * Frame.Roll.FOUL_PENALTY
 
 				// Accumulate the downed pins. Assume this is reset appropriately between frames below
 				pinsDown.formUnion(roll.roll.pinsDowned)
@@ -94,12 +93,12 @@ extension ScoringService: DependencyKey {
 						}
 					}
 
+					accruedScore += stepScore
 					steps.append(.init(
 						index: steps.count,
 						rolls: padRolls(rollSteps, displayValue: index < rolls.endIndex - 1 ? "-" : nil),
-						score: max((steps.last?.score ?? 0) + stepScore - (penalties * Frame.Roll.FOUL_PENALTY), 0)
+						score: max(accruedScore, 0)
 					))
-					penalties = 0
 					pinsDown = []
 					rollSteps = []
 				} else {
@@ -112,12 +111,12 @@ extension ScoringService: DependencyKey {
 
 					// For the last roll of a frame, add the total value of pins downed this frame to the score
 					if index == rolls.endIndex - 1 || rolls[index + 1].frameIndex != roll.frameIndex {
+						accruedScore += pinsDown.value
 						steps.append(.init(
 							index: steps.count,
 							rolls: padRolls(rollSteps, displayValue: index < rolls.endIndex - 1 ? "-" : nil),
-							score: max((steps.last?.score ?? 0) + pinsDown.value - (penalties * Frame.Roll.FOUL_PENALTY), 0)
+							score: max(accruedScore, 0)
 						))
-						penalties = 0
 						pinsDown = []
 						rollSteps = []
 					}
@@ -129,7 +128,7 @@ extension ScoringService: DependencyKey {
 
 			// Calculate the final frame separately
 			for (index, roll) in rolls.enumerated() where Frame.isLast(roll.frameIndex) {
-				penalties += roll.roll.didFoul ? 1 : 0
+				accruedScore -= (roll.roll.didFoul ? 1 : 0) * Frame.Roll.FOUL_PENALTY
 				pinsDown.formUnion(roll.roll.pinsDowned)
 
 				// When all the pins have been cleared
@@ -160,10 +159,11 @@ extension ScoringService: DependencyKey {
 
 			// Append the final frame steps to the output if it exists
 			if !rollSteps.isEmpty {
+				accruedScore += stepScore
 				steps.append(.init(
 					index: steps.count,
 					rolls: padRolls(rollSteps, displayValue: nil),
-					score: max((steps.last?.score ?? 0) + stepScore - (penalties * Frame.Roll.FOUL_PENALTY), 0)
+					score: max(accruedScore, 0)
 				))
 			}
 
