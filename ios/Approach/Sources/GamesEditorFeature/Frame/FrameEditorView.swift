@@ -14,11 +14,13 @@ struct FrameEditorView: View {
 
 	struct ViewState: Equatable {
 		let rollIndex: Int
-		let deck: Set<Pin>
+		let downPins: Set<Pin>
+		let inaccessiblePins: Set<Pin>
 
 		init(state: FrameEditor.State) {
 			self.rollIndex = state.currentRollIndex
-			self.deck = state.frame.deck(forRoll: state.currentRollIndex)
+			self.downPins = state.frame.deck(forRoll: state.currentRollIndex)
+			self.inaccessiblePins = state.currentRollIndex > 0 ? state.frame.deck(forRoll: state.currentRollIndex - 1) : []
 		}
 	}
 
@@ -37,13 +39,14 @@ struct FrameEditorView: View {
 				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.fullDeck) { pin in
 					ZStack {
-						Image(uiImage: viewStore.deck.contains(pin) ? .pinDown : .pin)
+						Image(uiImage: viewStore.downPins.contains(pin) ? .pinDown : .pin)
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.shadow(color: .black, radius: 2)
 					}
 					.frame(width: getWidth(for: pin), height: getHeight(for: pin))
 					.background(dragReader(for: pin, withViewStore: viewStore))
+					.opacity(viewStore.inaccessiblePins.contains(pin) ? 0.25 : 1)
 				}
 				Spacer(minLength: .standardSpacing)
 			}
@@ -59,7 +62,7 @@ struct FrameEditorView: View {
 
 	private func dragReader(for pin: Pin, withViewStore viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		GeometryReader { proxy in
-			if proxy.frame(in: .global).contains(dragLocation) {
+			if !viewStore.inaccessiblePins.contains(pin) && proxy.frame(in: .global).contains(dragLocation) {
 				Task.detached { @MainActor in viewStore.send(.didDragOverPin(pin)) }
 			}
 
