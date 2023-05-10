@@ -24,13 +24,17 @@ extension ScoringService: DependencyKey {
 			// The output is a step indicating the score and status of the game after each frame
 			var steps: [ScoreStep] = []
 
-			let rolls: [SequencedRoll] = frames.enumerated().reduce(into: []) { rolls, indexedFrame in
-				let (frameIndex, frame) = indexedFrame
-				// Must be at least 1 roll or we skip the frame
-				guard !frame.isEmpty else { return }
+			let lastValidFrame = frames.lastIndex { !$0.isEmpty } ?? 0
 
-				// Last roll must be from previous frame
-				if let lastRoll = rolls.last, lastRoll.frameIndex != frameIndex - 1 { return }
+			var rolls: [SequencedRoll] = []
+			for (frameIndex, frame) in frames.enumerated() {
+				// Must be at least 1 roll or we skip the frame
+				guard !frame.isEmpty else {
+					if frameIndex < lastValidFrame {
+						rolls.append(.init(frameIndex: frameIndex, rollIndex: 0, roll: .default))
+					}
+					continue
+				}
 
 				var pinsDowned: Set<Pin> = []
 				for (rollIndex, roll) in frame.enumerated() {
