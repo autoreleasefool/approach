@@ -4,7 +4,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
-struct AlleysFilterView: View {
+public struct AlleysFilterView: View {
 	let store: StoreOf<AlleysFilter>
 
 	struct ViewState: Hashable, Equatable {

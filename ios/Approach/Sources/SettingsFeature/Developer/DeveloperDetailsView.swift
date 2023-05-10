@@ -2,8 +2,8 @@ import ConstantsLibrary
 import StringsLibrary
 import SwiftUI
 
-struct DeveloperDetailsView: View {
-	var body: some View {
+public struct DeveloperDetailsView: View {
+	public var body: some View {
 		List {
 			Section(Strings.Settings.Developer.contact) {
 				Text(DeveloperConstants.name)

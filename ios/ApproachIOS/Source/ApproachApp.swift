@@ -4,8 +4,8 @@ import SwiftUI
 import XCTestDynamicOverlay
 
 @main
-struct ApproachApp: App {
-	var body: some Scene {
+public struct ApproachApp: App {
+	public var body: some Scene {
 		WindowGroup {
 			if !_XCTIsTesting {
 				ContentView()
@@ -13,7 +13,7 @@ struct ApproachApp: App {
 		}
 	}
 
-	init() {
+	public init() {
 		@Dependency(\.analytics) var analytics: AnalyticsService
 		analytics.initialize()
 		Task.detached {

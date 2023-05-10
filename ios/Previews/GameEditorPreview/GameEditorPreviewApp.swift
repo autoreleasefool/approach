@@ -7,7 +7,7 @@ import SwiftUI
 import TestDatabaseUtilitiesLibrary
 
 @main
-struct GameEditorPreviewApp: App {
+public struct GameEditorPreviewApp: App {
 	let store: Store = {
 		return .init(
 			initialState: GamesEditor.State(
@@ -40,7 +40,9 @@ struct GameEditorPreviewApp: App {
 		)
 	}()
 
-	var body: some Scene {
+	public init() {}
+
+	public var body: some Scene {
 		WindowGroup {
 			NavigationView {
 				GamesEditorView(store: store)

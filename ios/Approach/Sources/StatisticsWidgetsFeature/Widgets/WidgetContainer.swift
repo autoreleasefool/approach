@@ -1,7 +1,7 @@
 import AssetsLibrary
 import SwiftUI
 
-struct WidgetContainer<Content: View>: View {
+public struct WidgetContainer<Content: View>: View {
 	let title: String?
 	let size: WidgetSize
 	let content: Content
@@ -12,7 +12,7 @@ struct WidgetContainer<Content: View>: View {
 		self.content = content()
 	}
 
-	var body: some View {
+	public var body: some View {
 		VStack(alignment: .leading, spacing: .unitSpacing) {
 			if let title {
 				Text(title)

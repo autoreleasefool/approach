@@ -4,7 +4,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
-struct LeaguesFilterView: View {
+public struct LeaguesFilterView: View {
 	let store: StoreOf<LeaguesFilter>
 
 	struct ViewState: Equatable {

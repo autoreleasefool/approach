@@ -9,6 +9,8 @@ public struct GameIndex: Hashable, Identifiable {
 	public let index: Int
 }
 
+// MARK: - Reducer
+
 public struct GamePicker: Reducer {
 	public struct State: Equatable {
 		public var selected: Game.ID
@@ -63,7 +65,9 @@ public struct GamePicker: Reducer {
 	}
 }
 
-struct GamePickerView: View {
+// MARK: - View
+
+public struct GamePickerView: View {
 	let store: StoreOf<GamePicker>
 
 	enum ViewAction {
@@ -75,7 +79,7 @@ struct GamePickerView: View {
 		self.store = store
 	}
 
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: GamePicker.Action.init, content: { viewStore in
 			List(viewStore.indexedGames) { indexedGame in
 				Button { viewStore.send(.didTapGame(indexedGame.id)) } label: {

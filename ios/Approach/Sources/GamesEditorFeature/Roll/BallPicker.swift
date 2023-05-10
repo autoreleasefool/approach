@@ -87,7 +87,9 @@ public struct BallPicker: Reducer {
 	}
 }
 
-struct BallPickerView: View {
+// MARK: - View
+
+public struct BallPickerView: View {
 	let store: StoreOf<BallPicker>
 
 	enum ViewAction {
@@ -100,7 +102,7 @@ struct BallPickerView: View {
 		self.store = store
 	}
 
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: BallPicker.Action.init, content: { viewStore in
 			List(viewStore.bowlingBalls) { bowlingBall in
 				Button { viewStore.send(.didTapGear(bowlingBall.id)) } label: {

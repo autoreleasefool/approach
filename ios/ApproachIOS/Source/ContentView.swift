@@ -3,7 +3,7 @@ import ComposableArchitecture
 import FeatureFlagsServiceInterface
 import SwiftUI
 
-struct ContentView: View {
+public struct ContentView: View {
 	let store: Store = {
 		return .init(
 			initialState: App.State(),
@@ -11,7 +11,7 @@ struct ContentView: View {
 		)
 	}()
 
-	var body: some View {
+	public var body: some View {
 		NavigationView {
 			AppView(store: store)
 		}

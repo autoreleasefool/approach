@@ -4,7 +4,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
-struct AddLaneFormView: View {
+public struct AddLaneFormView: View {
 	let store: StoreOf<AddLaneForm>
 
 	struct ViewState: Equatable {
@@ -21,7 +21,7 @@ struct AddLaneFormView: View {
 		case binding(BindingAction<ViewState>)
 	}
 
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AddLaneForm.Action.init) { viewStore in
 			VStack(spacing: .standardSpacing) {
 				HStack {

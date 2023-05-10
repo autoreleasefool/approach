@@ -5,7 +5,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
-struct FrameEditorView: View {
+public struct FrameEditorView: View {
 	let store: StoreOf<FrameEditor>
 
 	@GestureState private var dragLocation: CGPoint = .zero
@@ -39,7 +39,7 @@ struct FrameEditorView: View {
 		self.store = store
 	}
 
-	var body: some View {
+	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: FrameEditor.Action.init) { viewStore in
 			HStack(alignment: .center, spacing: .smallSpacing) {
 				Spacer(minLength: .standardSpacing)

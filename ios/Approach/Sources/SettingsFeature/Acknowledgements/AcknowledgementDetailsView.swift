@@ -1,10 +1,10 @@
 import ConstantsLibrary
 import SwiftUI
 
-struct AcknowledgementDetailsView: View {
+public struct AcknowledgementDetailsView: View {
 	let acknowledgement: Acknowledgement
 
-	var body: some View {
+	public var body: some View {
 		ScrollView {
 			Text(acknowledgement.licenseContents)
 				.padding(.horizontal)
