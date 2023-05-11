@@ -38,9 +38,9 @@ public struct ScoreSheet: Reducer {
 				case let .didTapFrame(frameIndex, rollIndex):
 					state.currentFrameIndex = frameIndex
 					if let rollIndex {
-						state.currentRollIndex = rollIndex
+						state.currentRollIndex = state.steps[state.currentFrameIndex].lastValidIndex(upTo: rollIndex)
 					} else {
-						state.currentRollIndex = state.steps[state.currentFrameIndex].rolls.lastIndex { $0.display != nil } ?? 0
+						state.currentRollIndex = state.steps[state.currentFrameIndex].lastValidIndex(upTo: Frame.NUMBER_OF_ROLLS - 1)
 					}
 					return .none
 				}
@@ -54,6 +54,19 @@ public struct ScoreSheet: Reducer {
 			case .delegate:
 				return .none
 			}
+		}
+	}
+}
+
+extension ScoreStep {
+	func lastValidIndex(upTo rollIndex: Int) -> Int {
+		guard rollIndex > 0, !Frame.isLast(index) else { return rollIndex }
+		if rolls.first?.display == "X" {
+			return 0
+		} else if rolls.dropFirst().first?.display == "/" {
+			return 1
+		} else {
+			return rollIndex
 		}
 	}
 }
