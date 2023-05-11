@@ -278,9 +278,22 @@ public struct GamesEditor: Reducer {
 
 				case let .gameDetailsHeader(.delegate(delegateAction)):
 					switch delegateAction {
-					case .didProceedToNextElement:
-						// TODO: next ball or bowler
-						return .none
+					case let .didProceed(next):
+						switch next {
+						case let .bowler(_, id):
+							// TODO: load frames for new bowler
+							state.currentBowlerId = id
+							return .none
+						case let .frame(frameIndex):
+							state.currentFrameIndex = frameIndex
+							state.currentRollIndex = 0
+							state.frames?[frameIndex].guaranteeRollExists(upTo: 0)
+							return .none
+						case let .roll(rollIndex):
+							state.currentRollIndex = rollIndex
+							state.frames?[state.currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
+							return .none
+						}
 					}
 
 				case .gameDetails(.internal), .gameDetails(.view):
@@ -405,8 +418,22 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var gameDetailsHeader: GameDetailsHeader.State? {
 		get {
-			guard let currentGame else { return nil }
-			return .init(game: currentGame, nextElement: nil)
+			guard let currentGame, let frames else { return nil }
+			let next: GameDetailsHeader.State.NextElement?
+			if !Frame.Roll.isLast(currentRollIndex) &&
+					(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).isFullDeck) {
+				next = .roll(rollIndex: currentRollIndex + 1)
+				// TODO: load next bowler if available
+//			} else if let bowler = nextBowler() {
+//				next = .bowler(name: bowler.name, id: bowler.id)
+//			}
+			} else if !Frame.isLast(currentFrameIndex) {
+				next = .frame(frameIndex: currentFrameIndex + 1)
+			} else {
+				next = nil
+			}
+
+			return .init(game: currentGame, next: next)
 		}
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value

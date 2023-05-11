@@ -493,11 +493,15 @@ public enum Strings {
     }
   }
   public enum Roll {
+    /// Roll
+    public static func title(_ p1: Int) -> String {
+      return Strings.tr("Localizable", "roll.title", p1, fallback: "Ball %d")
+    }
     public enum Properties {
       public enum Ball {
         /// None selected
         public static let noneSelected = Strings.tr("Localizable", "roll.properties.ball.noneSelected", fallback: "None selected")
-        /// Roll
+        /// Ball rolled
         public static let title = Strings.tr("Localizable", "roll.properties.ball.title", fallback: "Ball rolled")
       }
       public enum Foul {

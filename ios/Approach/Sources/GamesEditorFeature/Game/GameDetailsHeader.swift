@@ -3,6 +3,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import ModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
@@ -10,12 +11,12 @@ public struct GameDetailsHeader: Reducer {
 	public struct State: Equatable {
 		public let currentBowlerName: String
 		public let currentLeagueName: String
-		public let nextElement: String?
+		public let next: NextElement?
 
-		init(game: Game.Edit, nextElement: String?) {
+		init(game: Game.Edit, next: NextElement?) {
 			self.currentBowlerName = game.bowler.name
 			self.currentLeagueName = game.league.name
-			self.nextElement = nextElement
+			self.next = next
 		}
 	}
 
@@ -23,7 +24,7 @@ public struct GameDetailsHeader: Reducer {
 		public enum ViewAction: Equatable {}
 		public enum InternalAction: Equatable {}
 		public enum DelegateAction: Equatable {
-			case didProceedToNextElement
+			case didProceed(to: State.NextElement)
 		}
 
 		case view(ViewAction)
@@ -53,13 +54,32 @@ public struct GameDetailsHeader: Reducer {
 	}
 }
 
+extension GameDetailsHeader.State {
+	public enum NextElement: Equatable, CustomStringConvertible {
+		case bowler(name: String, id: Bowler.ID)
+		case roll(rollIndex: Int)
+		case frame(frameIndex: Int)
+
+		public var description: String {
+			switch self {
+			case let .bowler(name, _):
+				return name
+			case let .roll(rollIndex):
+				return Strings.Roll.title(rollIndex + 1)
+			case let .frame(frameIndex):
+				return Strings.Frame.title(frameIndex + 1)
+			}
+		}
+	}
+}
+
 // MARK: - View
 
 public struct GameDetailsHeaderView: View {
 	let store: StoreOf<GameDetailsHeader>
 
 	enum ViewAction {
-		case didTapNext
+		case didTapNext(GameDetailsHeader.State.NextElement)
 	}
 
 	public var body: some View {
@@ -76,10 +96,11 @@ public struct GameDetailsHeaderView: View {
 
 				Spacer()
 
-				if let next = viewStore.nextElement {
-					Button { viewStore.send(.didTapNext) } label: {
+				if let next = viewStore.next {
+					Button { viewStore.send(.didTapNext(next)) } label: {
 						HStack {
-							Text(next)
+							Text(String(describing: next))
+								.font(.caption)
 							Image(systemName: "chevron.forward")
 								.resizable()
 								.scaledToFit()
@@ -99,8 +120,8 @@ public struct GameDetailsHeaderView: View {
 extension GameDetailsHeader.Action {
 	init(action: GameDetailsHeaderView.ViewAction) {
 		switch action {
-		case .didTapNext:
-			self = .delegate(.didProceedToNextElement)
+		case let .didTapNext(next):
+			self = .delegate(.didProceed(to: next))
 		}
 	}
 }

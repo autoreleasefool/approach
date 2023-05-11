@@ -68,6 +68,7 @@
 
 /* Roll */
 
+"roll.title" = "Ball %d";
 "roll.properties.ball.title" = "Ball rolled";
 "roll.properties.ball.noneSelected" = "None selected";
 "roll.properties.foul.title" = "Foul?";
