@@ -16,6 +16,8 @@ public struct ScoreSheetView: View {
 		let currentFrameIndex: Int
 		let currentRollIndex: Int
 
+		var rollId: RollID { .init(frameIndex: currentFrameIndex, rollIndex: currentRollIndex) }
+
 		init(state: ScoreSheet.State) {
 			self.steps = state.steps
 			self.currentFrameIndex = state.currentFrameIndex
@@ -27,51 +29,68 @@ public struct ScoreSheetView: View {
 		case didTapFrame(index: Int, rollIndex: Int?)
 	}
 
+	struct FrameID: Hashable {
+		let index: Int
+	}
+
+	struct RollID: Hashable {
+		let frameIndex: Int
+		let rollIndex: Int
+	}
+
 	public init(store: StoreOf<ScoreSheet>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
-			ScrollView(.horizontal) {
-				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-					GridRow {
-						ForEach(viewStore.steps, id: \.index) { step in
-							rollViews(
-								forRolls: step.rolls,
-								frameIndex: step.index,
-								highlightRollIndex: viewStore.currentFrameIndex == step.index ? viewStore.currentRollIndex : nil
-							) { rollIndex in
-								viewStore.send(.didTapFrame(index: step.index, rollIndex: rollIndex))
+		ScrollViewReader { proxy in
+			WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
+				ScrollView(.horizontal) {
+					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+						GridRow {
+							ForEach(viewStore.steps, id: \.index) { step in
+								rollViews(
+									forRolls: step.rolls,
+									frameIndex: step.index,
+									highlightRollIndex: viewStore.currentFrameIndex == step.index ? viewStore.currentRollIndex : nil
+								) { rollIndex in
+									viewStore.send(.didTapFrame(index: step.index, rollIndex: rollIndex))
+								}
 							}
 						}
-					}
-					Divider()
-					GridRow {
-						ForEach(viewStore.steps, id: \.index) { step in
-							stepView(step, highlighted: viewStore.currentFrameIndex == step.index) {
-								viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
-							}
-							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
-						}
-					}
-
-					GridRow {
-						ForEach(viewStore.steps, id: \.index) { step in
-							Text(String(step.index + 1))
-								.font(.caption2)
-								.foregroundColor(step.index == viewStore.currentFrameIndex ? .black : .gray)
-								.padding(.bottom, .tinySpacing)
+						Divider()
+						GridRow {
+							ForEach(viewStore.steps, id: \.index) { step in
+								stepView(step, highlighted: viewStore.currentFrameIndex == step.index) {
+									viewStore.send(.didTapFrame(index: step.index, rollIndex: nil))
+								}
+								.id(FrameID(index: step.index))
 								.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+							}
+						}
+
+						GridRow {
+							ForEach(viewStore.steps, id: \.index) { step in
+								Text(String(step.index + 1))
+									.font(.caption2)
+									.foregroundColor(step.index == viewStore.currentFrameIndex ? .black : .gray)
+									.padding(.bottom, .tinySpacing)
+									.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+							}
 						}
 					}
 				}
+				.background(Color.appPrimaryLight)
+				.cornerRadius(.standardRadius)
+				.scrollIndicators(.hidden)
+				.onChange(of: viewStore.rollId) { rollId in
+					withAnimation(.easeInOut(duration: 300)) {
+						proxy.scrollTo(FrameID(index: rollId.frameIndex), anchor: .leading)
+					}
+				}
 			}
-			.background(Color.appPrimaryLight)
-			.cornerRadius(.standardRadius)
-			.scrollIndicators(.hidden)
+			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
-		.measure(key: ContentSizeKey.self, to: $contentSize)
 	}
 
 	private func stepView(_ step: ScoreStep, highlighted: Bool, action: @escaping () -> Void) -> some View {
