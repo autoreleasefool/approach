@@ -11,10 +11,8 @@ public struct GameEditorPreviewApp: App {
 	let store: Store = {
 		return .init(
 			initialState: GamesEditor.State(
-				bowlers: [.init(id: UUID(0), name: "Joseph")],
-				bowlerGames: [UUID(0): [UUID(0), UUID(1)]],
-				currentBowler: UUID(0),
-				currentGame: UUID(0)
+				bowlerIds: [UUID(0)],
+				bowlerGameIds: [UUID(0): [UUID(0), UUID(1)]]
 			),
 			reducer: GamesEditor()//._printChanges()
 				.dependency(\.database, {

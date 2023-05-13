@@ -45,7 +45,7 @@ libraries = [ "Strings" ]
 
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
-repositories = [ "Frames", "Games", "Gear" ]
+repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
 services = [ "FeatureFlags" ]
 libraries = [ "DateTime", "Equatable" ]
 

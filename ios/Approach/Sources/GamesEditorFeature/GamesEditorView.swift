@@ -43,8 +43,8 @@ public struct GamesEditorView: View {
 			self.isBallPickerPresented = state.sheet == .presenting(.ballPicker)
 			self.isSettingsPresented = state.sheet == .presenting(.settings)
 			self.isScoreSheetVisible = state.isScoreSheetVisible
-			self.bowlerName = state.currentGame?.bowler.name
-			self.leagueName = state.currentGame?.league.name
+			self.bowlerName = state.game?.bowler.name
+			self.leagueName = state.game?.league.name
 		}
 	}
 

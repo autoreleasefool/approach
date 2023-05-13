@@ -1,3 +1,4 @@
+import BowlersRepositoryInterface
 import ComposableArchitecture
 import Dependencies
 import EquatableLibrary
@@ -16,38 +17,37 @@ public struct GamesEditor: Reducer {
 		public var sheetDetent: PresentationDetent = .height(.zero)
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
+		public var isScoreSheetVisible = true
 
-		public var bowlers: IdentifiedArrayOf<Bowler.Summary>
-		public var bowlerGames: [Bowler.ID: [Game.ID]]
-		public var frames: [Frame.Edit]?
-		public var scoreSteps: [ScoreStep]?
+		// IDs for games being edited (and their corresponding bowlers)
+		public var bowlerIds: [Bowler.ID]
+		public var bowlerGameIds: [Bowler.ID: [Game.ID]]
 
+		// ID Details for the current entity being edited
 		public var currentBowlerId: Bowler.ID
 		public var currentGameId: Game.ID
-		public var currentGame: Game.Edit?
-		public var currentFrameIndex = 0
-		public var currentRollIndex = 0
+		public var currentFrameIndex: Int = 0
+		public var currentRollIndex: Int = 0
 
-		public var isScoreSheetVisible = true
+		// Loaded details for the current entity being edited
+		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
+		public var game: Game.Edit?
+		public var frames: [Frame.Edit]?
+		public var score: [ScoreStep]?
 
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _ballPicker: BallPicker.State
 
-		public init(
-			bowlers: IdentifiedArrayOf<Bowler.Summary>,
-			bowlerGames: [Bowler.ID: [Game.ID]],
-			currentBowler: Bowler.ID,
-			currentGame: Game.ID
-		) {
-			precondition(bowlers[id: currentBowler] != nil)
-			precondition(bowlerGames[currentBowler]?.contains(currentGame) == true)
-			precondition(bowlerGames.allSatisfy { $0.value.count == bowlerGames.first!.value.count })
-			self.bowlers = bowlers
-			self.bowlerGames = bowlerGames
-			self.currentBowlerId = currentBowler
-			self.currentGameId = currentGame
-			self._ballPicker = .init(forBowler: currentBowler, selected: nil)
+		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
+			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
+			self.bowlerIds = bowlerIds
+			self.bowlerGameIds = bowlerGameIds
+
+			let currentBowlerId = bowlerIds.first!
+			self.currentBowlerId = currentBowlerId
+			self.currentGameId = bowlerGameIds[currentBowlerId]!.first!
+			self._ballPicker = .init(forBowler: currentBowlerId, selected: nil)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -69,10 +69,13 @@ public struct GamesEditor: Reducer {
 		public enum InternalAction: Equatable {
 			case switchToBowler(Bowler.ID)
 			case switchToGame(Game.ID)
-			case frameSaved(TaskResult<AlwaysEqual<Void>>)
+
+			case bowlersResponse(TaskResult<[Bowler.Summary]>)
 			case framesResponse(TaskResult<[Frame.Edit]>)
-			case gameSaved(TaskResult<AlwaysEqual<Void>>)
 			case gameReponse(TaskResult<Game.Edit?>)
+			case frameUpdateError(AlwaysEqual<Error>)
+			case gameUpdateError(AlwaysEqual<Error>)
+
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
 
@@ -96,6 +99,7 @@ public struct GamesEditor: Reducer {
 
 	public init() {}
 
+	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.frames) var frames
@@ -120,7 +124,10 @@ public struct GamesEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didAppear:
-					return loadGameDetails(for: state.currentGameId)
+					return .merge(
+						loadBowlers(withIds: state.bowlerIds),
+						loadGameDetails(for: state.currentGameId)
+					)
 
 				case let .didAdjustBackdropSize(newSize):
 					state.backdropSize = newSize
@@ -163,15 +170,20 @@ public struct GamesEditor: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .switchToBowler(bowlerId):
-					let gameIndex = state.bowlerGames[state.currentBowlerId]!.firstIndex(of: state.currentGameId)!
 					state.currentBowlerId = bowlerId
-					state.currentGameId = state.bowlerGames[bowlerId]![gameIndex]
 					return loadGameDetails(for: state.currentGameId)
 
 				case let .switchToGame(gameId):
-					precondition(state.bowlerGames[state.currentBowlerId]!.contains(gameId))
 					state.currentGameId = gameId
 					return loadGameDetails(for: state.currentGameId)
+
+				case let .bowlersResponse(.success(bowlers)):
+					state.bowlers = .init(uniqueElements: bowlers)
+					return .none
+
+				case .bowlersResponse(.failure):
+					// TODO: handle failure loading bowler
+					return .none
 
 				case let .framesResponse(.success(frames)):
 					guard frames.first?.gameId == state.currentGameId else {
@@ -198,31 +210,25 @@ public struct GamesEditor: Reducer {
 					// TODO: handle error loading frames
 					return .none
 
-				case .frameSaved(.success):
-					return .none
-
-				case .frameSaved(.failure):
+				case .frameUpdateError:
 					// TODO: handle error saving frame
 					return .none
 
 				case let .gameReponse(.success(game)):
 					guard state.currentGameId == game?.id else { return .none }
-					state.currentGame = game
+					state.game = game
 					return .none
 
 				case .gameReponse(.failure):
 					// TODO: handle error loading game
 					return .none
 
-				case .gameSaved(.success):
-					return .none
-
-				case .gameSaved(.failure):
+				case .gameUpdateError:
 					// TODO: handle error saving game
 					return .none
 
-				case let .calculatedScore(steps):
-					state.scoreSteps = steps
+				case let .calculatedScore(score):
+					state.score = score
 					return .none
 
 				case .adjustBackdrop:
@@ -293,7 +299,7 @@ public struct GamesEditor: Reducer {
 				case let .gameDetails(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEditGame:
-						return save(game: state.currentGame)
+						return save(game: state.game)
 					}
 
 				case let .gameDetailsHeader(.delegate(delegateAction)):
@@ -301,9 +307,8 @@ public struct GamesEditor: Reducer {
 					case let .didProceed(next):
 						switch next {
 						case let .bowler(_, id):
-							// TODO: load frames for new bowler
 							state.currentBowlerId = id
-							return .none
+							return loadGameDetails(for: state.currentGameId)
 						case let .frame(frameIndex):
 							state.currentFrameIndex = frameIndex
 							state.currentRollIndex = 0
@@ -367,6 +372,14 @@ public struct GamesEditor: Reducer {
 		}
 	}
 
+	private func loadBowlers(withIds bowlerIds: [Bowler.ID]) -> Effect<Action> {
+		return .task {
+			await .internal(.bowlersResponse(TaskResult {
+				try await bowlers.summaries(forIds: bowlerIds)
+			}))
+		}
+	}
+
 	private func loadGameDetails(for gameId: Game.ID) -> Effect<Action> {
 		return .merge(
 			.task {
@@ -393,21 +406,24 @@ public struct GamesEditor: Reducer {
 
 	private func save(frame: Frame.Edit?) -> Effect<Action> {
 		guard let frame else { return .none }
-		return .task {
-			await .internal(.frameSaved(TaskResult {
-				.init(try await frames.update(frame))
-			}))
+		return .run { send in
+			do {
+				try await frames.update(frame)
+			} catch {
+				await send(.internal(.frameUpdateError(.init(error))))
+			}
 		}.cancellable(id: frame.id, cancelInFlight: true)
 	}
 
 	private func save(game: Game.Edit?) -> Effect<Action> {
 		guard let game else { return .none }
-		return .task {
-			await .internal(.gameSaved(TaskResult {
-				.init(try await games.update(game))
-			}))
-		}
-		.cancellable(id: game.id, cancelInFlight: true)
+		return .run { send in
+			do {
+				try await games.update(game)
+			} catch {
+				await send(.internal(.gameUpdateError(.init(error))))
+			}
+		}.cancellable(id: game.id, cancelInFlight: true)
 	}
 }
 
@@ -416,7 +432,7 @@ public struct GamesEditor: Reducer {
 extension GamesEditor.State {
 	var gamesHeader: GamesHeader.State {
 		get {
-			let currentGames = bowlerGames[currentBowlerId]
+			let currentGames = bowlerGameIds[currentBowlerId]
 			return .init(
 				numberOfGames: currentGames?.count ?? 0,
 				currentGameOrdinal: (currentGames?.firstIndex(of: currentGameId) ?? 0) + 1
@@ -432,7 +448,7 @@ extension GamesEditor.State {
 
 extension GamesEditor.State {
 	var gamePicker: GamePicker.State {
-		get { .init(games: bowlerGames[currentBowlerId] ?? [], selected: currentGameId) }
+		get { .init(games: bowlerGameIds[currentBowlerId] ?? [], selected: currentGameId) }
 		set { self.currentGameId = newValue.selected }
 	}
 }
@@ -442,12 +458,12 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var gamesSettings: GamesSettings.State? {
 		get {
-			guard let currentGame else { return nil }
-			return .init(game: currentGame)
+			guard let game else { return nil }
+			return .init(game: game)
 		}
 		set {
 			guard let newValue, currentGameId == newValue.game.id else { return }
-			currentGame = newValue.game
+			game = newValue.game
 		}
 	}
 }
@@ -457,7 +473,7 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var gameDetailsHeader: GameDetailsHeader.State? {
 		get {
-			guard let currentGame, let frames else { return nil }
+			guard let game, let frames else { return nil }
 			let next: GameDetailsHeader.State.NextElement?
 			if !Frame.Roll.isLast(currentRollIndex) &&
 					(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).isFullDeck) {
@@ -472,7 +488,7 @@ extension GamesEditor.State {
 				next = nil
 			}
 
-			return .init(game: currentGame, next: next)
+			return .init(game: game, next: next)
 		}
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
@@ -485,12 +501,12 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var gameDetails: GameDetails.State? {
 		get {
-			guard let currentGame else { return nil }
-			return .init(game: currentGame)
+			guard let game else { return nil }
+			return .init(game: game)
 		}
 		set {
 			guard let newValue, currentGameId == newValue.game.id else { return }
-			currentGame = newValue.game
+			game = newValue.game
 		}
 	}
 }
@@ -556,9 +572,9 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var scoreSheet: ScoreSheet.State? {
 		get {
-			guard let scoreSteps else { return nil }
+			guard let score else { return nil }
 			return .init(
-				steps: scoreSteps,
+				steps: score,
 				currentFrameIndex: currentFrameIndex,
 				currentRollIndex: currentRollIndex
 			)

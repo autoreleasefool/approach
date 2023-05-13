@@ -238,6 +238,7 @@ let package = Package(
 		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
+				"BowlersRepositoryInterface",
 				"DateTimeLibrary",
 				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",

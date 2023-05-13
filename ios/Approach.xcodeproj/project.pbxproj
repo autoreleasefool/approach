@@ -31,6 +31,7 @@
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
 		CA9E25F12A0FA03400BA216C /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F02A0FA03400BA216C /* FeatureFlagsService */; };
+		CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F22A0FA66B00BA216C /* BowlersRepository */; };
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
@@ -93,6 +94,7 @@
 				CA5901192A05A862000261C9 /* GearRepository in Frameworks */,
 				CA9E25F12A0FA03400BA216C /* FeatureFlagsService in Frameworks */,
 				CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */,
+				CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */,
 				CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */,
 				CA2A5E302A00DC1F00EE6353 /* ScoringService in Frameworks */,
 				CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */,
@@ -302,6 +304,7 @@
 				CA59011A2A05AD62000261C9 /* RecentlyUsedService */,
 				CA59011C2A05AD81000261C9 /* PreferenceService */,
 				CA9E25F02A0FA03400BA216C /* FeatureFlagsService */,
+				CA9E25F22A0FA66B00BA216C /* BowlersRepository */,
 			);
 			productName = GameEditorPreview;
 			productReference = CA632F5529BD26E200272ADB /* GameEditorPreview.app */;
@@ -639,6 +642,10 @@
 		CA9E25F02A0FA03400BA216C /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeatureFlagsService;
+		};
+		CA9E25F22A0FA66B00BA216C /* BowlersRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BowlersRepository;
 		};
 		CAA3D74C29CFB48D00876EDC /* BowlersRepository */ = {
 			isa = XCSwiftPackageProductDependency;
