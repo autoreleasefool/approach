@@ -240,6 +240,7 @@ let package = Package(
 			dependencies: [
 				"DateTimeLibrary",
 				"EquatableLibrary",
+				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
