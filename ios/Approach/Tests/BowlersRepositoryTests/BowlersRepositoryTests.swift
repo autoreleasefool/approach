@@ -148,6 +148,54 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph"), .init(id: UUID(1), name: "Audriana")])
 	}
 
+	// MARK: Summaries
+
+	func testSummaries_ReturnsMatchingBowlers() async throws {
+		// Given a database with 3 bowlers
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", status: .opponent)
+		let bowler3 = Bowler.Database(id: UUID(2), name: "Sarah", status: .playable)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2, bowler3]))
+
+		// Fetching the bowlers
+		let bowlers = try await withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			try await self.bowlers.summaries(forIds: [UUID(0), UUID(1)])
+		}
+
+		// Returns the expected bowlers
+		XCTAssertEqual(bowlers, [.init(id: UUID(0), name: "Joseph"), .init(id: UUID(1), name: "Audriana")])
+	}
+
+	func testSummaries_SortsByIDs() async throws {
+		// Given a database with 3 bowlers
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", status: .opponent)
+		let bowler3 = Bowler.Database(id: UUID(2), name: "Sarah", status: .playable)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2, bowler3]))
+
+		// Fetching the bowlers
+		let bowlers = try await withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			// With a specific ID ordering
+			try await self.bowlers.summaries(forIds: [UUID(2), UUID(0), UUID(1)])
+		}
+
+		// Returns the bowlers in order
+		XCTAssertEqual(
+			bowlers,
+			[
+				.init(id: UUID(2), name: "Sarah"),
+				.init(id: UUID(0), name: "Joseph"),
+				.init(id: UUID(1), name: "Audriana"),
+			]
+		)
+	}
+
 	// MARK: Create
 
 	func testCreate_WhenBowlerExists_ThrowsError() async throws {

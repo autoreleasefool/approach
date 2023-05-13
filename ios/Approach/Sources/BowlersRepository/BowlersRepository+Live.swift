@@ -6,6 +6,7 @@ import GRDB
 import ModelsLibrary
 import RecentlyUsedServiceInterface
 import RepositoryLibrary
+import SortingLibrary
 
 typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
@@ -38,6 +39,17 @@ extension BowlersRepository: DependencyKey {
 				}
 
 				return sortBowlers(bowlers, ordering)
+			},
+			summaries: { ids in
+				let bowlers = try await database.reader().read {
+					try Bowler.Database
+						.all()
+						.filter(ids: ids)
+						.asRequest(of: Bowler.Summary.self)
+						.fetchAll($0)
+				}
+
+				return bowlers.sortBy(ids: ids)
 			},
 			edit: { id in
 				try await database.reader().read {
