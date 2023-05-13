@@ -1,6 +1,8 @@
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -10,10 +12,14 @@ public struct RollEditor: Reducer {
 	public struct State: Equatable {
 		public var ballRolled: Gear.Rolled?
 		public var didFoul: Bool
+		public var isGearEnabled: Bool
 
 		init(ballRolled: Gear.Rolled?, didFoul: Bool) {
 			self.ballRolled = ballRolled
 			self.didFoul = didFoul
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isGearEnabled = featureFlags.isEnabled(.gear)
 		}
 	}
 
@@ -74,17 +80,19 @@ public struct RollEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: RollEditor.Action.init, content: { viewStore in
 			HStack(alignment: .bottom) {
-				Button { viewStore.send(.didTapBall) } label: {
-					VStack(alignment: .leading, spacing: .tinySpacing) {
-						Text(Strings.Roll.Properties.Ball.title)
-							.font(.caption)
-							.italic()
-							.foregroundColor(.white)
-						Text(viewStore.ballRolled?.name ?? Strings.Roll.Properties.Ball.noneSelected)
-							.foregroundColor(.white)
+				if viewStore.isGearEnabled {
+					Button { viewStore.send(.didTapBall) } label: {
+						VStack(alignment: .leading, spacing: .tinySpacing) {
+							Text(Strings.Roll.Properties.Ball.title)
+								.font(.caption)
+								.italic()
+								.foregroundColor(.white)
+							Text(viewStore.ballRolled?.name ?? Strings.Roll.Properties.Ball.noneSelected)
+								.foregroundColor(.white)
+						}
 					}
+					.buttonStyle(TappableElement())
 				}
-				.buttonStyle(TappableElement())
 
 				Spacer()
 

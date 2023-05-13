@@ -380,7 +380,7 @@ extension GamesEditor.State {
 			let currentGames = bowlerGames[currentBowlerId]
 			return .init(
 				numberOfGames: currentGames?.count ?? 0,
-				currentGameOrdinal: currentGames?.firstIndex(of: currentGameId) ?? 0
+				currentGameOrdinal: (currentGames?.firstIndex(of: currentGameId) ?? 0) + 1
 			)
 		}
 		// We aren't observing any values from this reducer, so we ignore the setter
