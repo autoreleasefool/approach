@@ -60,7 +60,6 @@ public struct GamesEditor: Reducer {
 			case didChangeDetent(PresentationDetent)
 			case didAdjustBackdropSize(CGSize)
 			case didDismissOpenSheet
-			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
 			case setBallPicker(isPresented: Bool)
 			case setGamesSettings(isPresented: Bool)
@@ -83,7 +82,6 @@ public struct GamesEditor: Reducer {
 			case gamesHeader(GamesHeader.Action)
 			case gameDetailsHeader(GameDetailsHeader.Action)
 			case gameDetails(GameDetails.Action)
-			case gamePicker(GamePicker.Action)
 			case frameEditor(FrameEditor.Action)
 			case rollEditor(RollEditor.Action)
 			case scoreSheet(ScoreSheet.Action)
@@ -109,10 +107,6 @@ public struct GamesEditor: Reducer {
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
 			GamesHeader()
-		}
-
-		Scope(state: \.gamePicker, action: /Action.internal..Action.InternalAction.gamePicker) {
-			GamePicker()
 		}
 
 		Scope(state: \.ballPicker, action: /Action.internal..Action.InternalAction.ballPicker) {
@@ -152,10 +146,6 @@ public struct GamesEditor: Reducer {
 
 				case let .setGameDetails(isPresented):
 					state.sheet.handle(isPresented: isPresented, for: .gameDetails)
-					return .none
-
-				case let .setGamePicker(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .gamePicker)
 					return .none
 
 				case let .setBallPicker(isPresented):
@@ -235,13 +225,6 @@ public struct GamesEditor: Reducer {
 					state.willAdjustLaneLayoutAt = date()
 					return .none
 
-				case let .gamePicker(.delegate(delegateAction)):
-					switch delegateAction {
-					case .didFinish:
-						state.sheet.hide(.gamePicker)
-						return .none
-					}
-
 				case let .ballPicker(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didFinish:
@@ -282,10 +265,6 @@ public struct GamesEditor: Reducer {
 
 					case .didOpenSettings:
 						state.sheet.transition(to: .settings)
-						return .none
-
-					case .didOpenGamePicker:
-						state.sheet.transition(to: .gamePicker)
 						return .none
 					}
 
@@ -334,9 +313,6 @@ public struct GamesEditor: Reducer {
 					return .none
 
 				case .frameEditor(.view), .frameEditor(.internal):
-					return .none
-
-				case .gamePicker(.view), .gamePicker(.internal):
 					return .none
 
 				case .ballPicker(.view), .ballPicker(.internal):
@@ -431,25 +407,10 @@ public struct GamesEditor: Reducer {
 
 extension GamesEditor.State {
 	var gamesHeader: GamesHeader.State {
-		get {
-			let currentGames = bowlerGameIds[currentBowlerId]
-			return .init(
-				numberOfGames: currentGames?.count ?? 0,
-				currentGameOrdinal: (currentGames?.firstIndex(of: currentGameId) ?? 0) + 1
-			)
-		}
+		get { .init() }
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
 		set {}
-	}
-}
-
-// MARK: - GamePicker
-
-extension GamesEditor.State {
-	var gamePicker: GamePicker.State {
-		get { .init(games: bowlerGameIds[currentBowlerId] ?? [], selected: currentGameId) }
-		set { self.currentGameId = newValue.selected }
 	}
 }
 
@@ -592,7 +553,6 @@ extension GamesEditor.State {
 
 extension GamesEditor.State {
 	public enum Sheet: Equatable {
-		case gamePicker
 		case gameDetails
 		case ballPicker
 		case settings

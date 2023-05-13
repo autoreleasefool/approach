@@ -4,13 +4,7 @@ import ModelsLibrary
 
 public struct GamesHeader: Reducer {
 	public struct State: Equatable {
-		public let numberOfGames: Int
-		public let currentGameOrdinal: Int
-
-		init(numberOfGames: Int, currentGameOrdinal: Int) {
-			self.numberOfGames = numberOfGames
-			self.currentGameOrdinal = currentGameOrdinal
-		}
+		init() {}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -18,7 +12,6 @@ public struct GamesHeader: Reducer {
 		public enum DelegateAction: Equatable {
 			case didCloseEditor
 			case didOpenSettings
-			case didOpenGamePicker
 		}
 		public enum InternalAction: Equatable {}
 

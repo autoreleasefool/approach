@@ -24,7 +24,6 @@ public struct GamesEditorView: View {
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
 
-		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
 		let isBallPickerPresented: Bool
 		let isSettingsPresented: Bool
@@ -39,7 +38,6 @@ public struct GamesEditorView: View {
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
 			self.backdropSize = state.backdropSize
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
-			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 			self.isBallPickerPresented = state.sheet == .presenting(.ballPicker)
 			self.isSettingsPresented = state.sheet == .presenting(.settings)
 			self.isScoreSheetVisible = state.isScoreSheetVisible
@@ -53,13 +51,11 @@ public struct GamesEditorView: View {
 		case didChangeDetent(PresentationDetent)
 		case didAdjustBackdropSize(CGSize)
 
-		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
 		case setBallPicker(isPresented: Bool)
 		case setSettings(isPresented: Bool)
 
 		case didDismissGameDetails
-		case didDismissGamePicker
 		case didDismissBallPicker
 		case didDismissGamesSettings
 	}
@@ -106,14 +102,6 @@ public struct GamesEditorView: View {
 			}
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
-			.sheet(
-				isPresented: viewStore.binding(get: \.isGamePickerPresented, send: ViewAction.setGamePicker(isPresented:)),
-				onDismiss: { viewStore.send(.didDismissGamePicker) },
-				content: {
-					gamePicker
-						.presentationDetents([.medium])
-				}
-			)
 			.sheet(
 				isPresented: viewStore.binding(get: \.isBallPickerPresented, send: ViewAction.setBallPicker(isPresented:)),
 				onDismiss: { viewStore.send(.didDismissBallPicker) },
@@ -184,12 +172,6 @@ public struct GamesEditorView: View {
 		}
 	}
 
-	private var gamePicker: some View {
-		NavigationView {
-			GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
-		}
-	}
-
 	private var ballPicker: some View {
 		NavigationView {
 			BallPickerView(
@@ -245,14 +227,10 @@ extension GamesEditor.Action {
 			self = .view(.didAppear)
 		case let .setGameDetails(isPresented):
 			self = .view(.setGameDetails(isPresented: isPresented))
-		case let .setGamePicker(isPresented):
-			self = .view(.setGamePicker(isPresented: isPresented))
 		case let .setBallPicker(isPresented):
 			self = .view(.setBallPicker(isPresented: isPresented))
 		case let .setSettings(isPresented):
 			self = .view(.setGamesSettings(isPresented: isPresented))
-		case .didDismissGamePicker:
-			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissBallPicker:

@@ -10,7 +10,6 @@ public struct GamesHeaderView: View {
 	enum ViewAction {
 		case didTapClose
 		case didTapSettings
-		case didTapGameIndicator
 	}
 
 	init(store: StoreOf<GamesHeader>) {
@@ -21,28 +20,7 @@ public struct GamesHeaderView: View {
 		WithViewStore(store, observe: { $0 }, send: GamesHeader.Action.init, content: { viewStore in
 			HStack {
 				headerButton(systemName: "chevron.backward") { viewStore.send(.didTapClose) }
-
 				Spacer()
-
-				Button { viewStore.send(.didTapGameIndicator) } label: {
-					HStack(alignment: .center, spacing: .smallSpacing) {
-						Text(Strings.Game.title(viewStore.currentGameOrdinal))
-							.font(.caption)
-							.foregroundColor(.white)
-						if viewStore.numberOfGames > 1 {
-							Image(systemName: "chevron.down.circle.fill")
-								.resizable()
-								.aspectRatio(contentMode: .fit)
-								.foregroundColor(.white)
-								.frame(width: .extraTinyIcon, height: .extraTinyIcon)
-						}
-					}
-				}
-				.buttonStyle(TappableElement())
-				.disabled(viewStore.numberOfGames == 1)
-
-				Spacer()
-
 				headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
 			}
 		})
@@ -67,8 +45,6 @@ extension GamesHeader.Action {
 			self = .delegate(.didCloseEditor)
 		case .didTapSettings:
 			self = .delegate(.didOpenSettings)
-		case .didTapGameIndicator:
-			self = .delegate(.didOpenGamePicker)
 		}
 	}
 }
