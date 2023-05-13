@@ -21,7 +21,9 @@ public struct GameDetails: Reducer {
 			case didToggleLock
 			case didToggleExclude
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable {
+			case didEditGame
+		}
 		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
@@ -36,11 +38,11 @@ public struct GameDetails: Reducer {
 				switch viewAction {
 				case .didToggleLock:
 					state.game.locked.toggle()
-					return .none
+					return .task { .delegate(.didEditGame) }
 
 				case .didToggleExclude:
 					state.game.excludeFromStatistics.toggle()
-					return .none
+					return .task { .delegate(.didEditGame) }
 				}
 
 			case let .internal(internalAction):

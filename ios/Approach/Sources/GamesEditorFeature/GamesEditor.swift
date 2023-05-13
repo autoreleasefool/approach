@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Dependencies
+import EquatableLibrary
 import FeatureActionLibrary
 import Foundation
 import FramesRepositoryInterface
@@ -68,7 +69,9 @@ public struct GamesEditor: Reducer {
 		public enum InternalAction: Equatable {
 			case switchToBowler(Bowler.ID)
 			case switchToGame(Game.ID)
+			case frameSaved(TaskResult<AlwaysEqual<Void>>)
 			case framesResponse(TaskResult<[Frame.Edit]>)
+			case gameSaved(TaskResult<AlwaysEqual<Void>>)
 			case gameReponse(TaskResult<Game.Edit?>)
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
@@ -170,11 +173,6 @@ public struct GamesEditor: Reducer {
 					state.currentGameId = gameId
 					return loadGameDetails(for: state.currentGameId)
 
-				case let .gameReponse(.success(game)):
-					guard state.currentGameId == game?.id else { return .none }
-					state.currentGame = game
-					return .none
-
 				case let .framesResponse(.success(frames)):
 					guard frames.first?.gameId == state.currentGameId else {
 						// TODO: log error that unexpected frames loaded (should be cancelled in flight)
@@ -200,8 +198,27 @@ public struct GamesEditor: Reducer {
 					// TODO: handle error loading frames
 					return .none
 
+				case .frameSaved(.success):
+					return .none
+
+				case .frameSaved(.failure):
+					// TODO: handle error saving frame
+					return .none
+
+				case let .gameReponse(.success(game)):
+					guard state.currentGameId == game?.id else { return .none }
+					state.currentGame = game
+					return .none
+
 				case .gameReponse(.failure):
 					// TODO: handle error loading game
+					return .none
+
+				case .gameSaved(.success):
+					return .none
+
+				case .gameSaved(.failure):
+					// TODO: handle error saving game
 					return .none
 
 				case let .calculatedScore(steps):
@@ -229,7 +246,10 @@ public struct GamesEditor: Reducer {
 				case let .frameEditor(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEditFrame:
-						return updateScoreSheet(from: state)
+						return .merge(
+							save(frame: state.frames?[state.currentFrameIndex]),
+							updateScoreSheet(from: state)
+						)
 					}
 
 				case let .scoreSheet(.delegate(delegateAction)):
@@ -272,8 +292,8 @@ public struct GamesEditor: Reducer {
 
 				case let .gameDetails(.delegate(delegateAction)):
 					switch delegateAction {
-					case .never:
-						return .none
+					case .didEditGame:
+						return save(game: state.currentGame)
 					}
 
 				case let .gameDetailsHeader(.delegate(delegateAction)):
@@ -363,12 +383,31 @@ public struct GamesEditor: Reducer {
 		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
 	}
 
-	private func updateScoreSheet(from state: State) -> Effect<GamesEditor.Action> {
+	private func updateScoreSheet(from state: State) -> Effect<Action> {
 		guard let frames = state.frames else { return .none }
 		return .task {
 			let steps = await scoringService.calculateScoreWithSteps(for: frames.map { $0.rolls })
 			return .internal(.calculatedScore(steps))
 		}
+	}
+
+	private func save(frame: Frame.Edit?) -> Effect<Action> {
+		guard let frame else { return .none }
+		return .task {
+			await .internal(.frameSaved(TaskResult {
+				.init(try await frames.update(frame))
+			}))
+		}.cancellable(id: frame.id, cancelInFlight: true)
+	}
+
+	private func save(game: Game.Edit?) -> Effect<Action> {
+		guard let game else { return .none }
+		return .task {
+			await .internal(.gameSaved(TaskResult {
+				.init(try await games.update(game))
+			}))
+		}
+		.cancellable(id: game.id, cancelInFlight: true)
 	}
 }
 
@@ -470,8 +509,6 @@ extension GamesEditor.State {
 		set {
 			_frameEditor = newValue
 			guard let newValue else { return }
-			self.currentRollIndex = newValue.currentRollIndex
-			self.frames?[self.currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
 			self.frames?[self.currentFrameIndex] = newValue.frame
 		}
 	}
