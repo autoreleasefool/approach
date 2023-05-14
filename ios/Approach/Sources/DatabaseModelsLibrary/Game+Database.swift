@@ -38,6 +38,7 @@ extension Game.Database: FetchableRecord, PersistableRecord {
 	public static let series = belongsTo(Series.Database.self)
 	public static let league = hasOne(League.Database.self, through: series, using: Series.Database.league)
 	public static let bowler = hasOne(Bowler.Database.self, through: league, using: League.Database.bowler)
+	public static let matchPlay = hasOne(MatchPlay.Database.self)
 }
 
 extension Game.Database {

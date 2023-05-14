@@ -27,6 +27,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230425CreateAvatar.self)
 		registerMigration(Migration20230426CreateLocation.self)
 		registerMigration(Migration20230506AddGearToFrame.self)
+		registerMigration(Migration20230514CreateMatchPlay.self)
 	}
 
 	mutating func registerMigration(_ migration: DBMigration.Type) {

@@ -16,6 +16,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230425CreateAvatar",
 		"Migration20230426CreateLocation",
 		"Migration20230506AddGearToFrame",
+		"Migration20230514CreateMatchPlay",
 	]
 
 	func testIdentifier() {

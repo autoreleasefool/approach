@@ -20,15 +20,17 @@ public func initializeDatabase(
 	withSeries: InitialValue<Series.Database>? = nil,
 	withSeriesLanes: InitialValue<SeriesLane.Database>? = nil,
 	withGames: InitialValue<Game.Database>? = nil,
-	withFrames: InitialValue<Frame.Database>? = nil
+	withFrames: InitialValue<Frame.Database>? = nil,
+	withMatchPlays: InitialValue<MatchPlay.Database>? = nil
 ) throws -> any DatabaseWriter {
 	let dbQueue = try DatabaseQueue()
 	var migrator = DatabaseMigrator()
 	migrator.registerDBMigrations()
 	try migrator.migrate(dbQueue)
 
+	let matchPlays = withMatchPlays
 	let frames = withFrames
-	let games = coallesce(withGames, ifHasOneOf: frames)
+	let games = coallesce(withGames, ifHasOneOf: frames, matchPlays)
 	let series = coallesce(withSeries, ifHasOneOf: games)
 	let leagues = coallesce(withLeagues, ifHasOneOf: series)
 	let gear = coallesce(withGear, ifHasOneOf: frames)
@@ -49,6 +51,7 @@ public func initializeDatabase(
 		try insert(seriesLanes: seriesLanes, into: $0)
 		try insert(games: games, into: $0)
 		try insert(frames: frames, into: $0)
+		try insert(matchPlays: matchPlays, into: $0)
 	}
 
 	return dbQueue
