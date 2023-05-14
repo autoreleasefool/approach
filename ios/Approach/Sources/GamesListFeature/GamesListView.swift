@@ -51,7 +51,7 @@ public struct GamesListView: View {
 						send: GamesListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					Text(Strings.Game.title(game.index + 1))
+					Text(Strings.Game.titleWithOrdinal(game.index + 1))
 				}
 			} header: {
 				if viewStore.isLoadingGameDetails {

@@ -185,6 +185,8 @@ public enum Strings {
     }
   }
   public enum Bowler {
+    /// Current bowler
+    public static let current = Strings.tr("Localizable", "bowler.current", fallback: "Current bowler")
     /// Bowlers
     public static let title = Strings.tr("Localizable", "bowler.title", fallback: "Bowler")
     public enum Error {
@@ -258,10 +260,16 @@ public enum Strings {
   }
   public enum Game {
     /// Games
-    public static func title(_ p1: Int) -> String {
-      return Strings.tr("Localizable", "game.title", p1, fallback: "Game %d")
+    public static let title = Strings.tr("Localizable", "game.title", fallback: "Game")
+    /// Game %d
+    public static func titleWithOrdinal(_ p1: Int) -> String {
+      return Strings.tr("Localizable", "game.titleWithOrdinal", p1, fallback: "Game %d")
     }
     public enum Editor {
+      public enum Bowlers {
+        /// Drag to reorder
+        public static let dragToReorder = Strings.tr("Localizable", "game.editor.bowlers.dragToReorder", fallback: "Drag to reorder")
+      }
       public enum Fields {
         public enum ExcludeFromStatistics {
           /// All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.
@@ -286,6 +294,10 @@ public enum Strings {
         /// Switch game
         public static let `switch` = Strings.tr("Localizable", "game.editor.picker.switch", fallback: "Switch game")
       }
+    }
+    public enum List {
+      /// Games
+      public static let title = Strings.tr("Localizable", "game.list.title", fallback: "Games")
     }
     public enum Properties {
       public enum ExcludeFromStatistics {

@@ -35,6 +35,7 @@
 /* Bowlers */
 
 "bowler.title" = "Bowler";
+"bowler.current" = "Current bowler";
 "bowler.list.title" = "Bowlers";
 "bowler.list.add" = "Add Bowler";
 "bowler.error.empty.title" = "No bowlers found";
@@ -141,7 +142,9 @@
 
 /* Games */
 
-"game.title" = "Game %d";
+"game.title" = "Game";
+"game.titleWithOrdinal" = "Game %d";
+"game.list.title" = "Games";
 "game.settings.title" = "Game Settings";
 "game.settings.current" = "Currently Editing";
 "game.properties.excludeFromStatistics.include" = "Include in statistics";
@@ -154,6 +157,7 @@
 "game.editor.fields.lock.label" = "Lock for editing";
 "game.editor.fields.lock.help" = "Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.";
 "game.editor.picker.switch" = "Switch game";
+"game.editor.bowlers.dragToReorder" = "Drag to reorder";
 
 "frame.title" = "Frame %d";
 "ball.title" = "Ball %d";

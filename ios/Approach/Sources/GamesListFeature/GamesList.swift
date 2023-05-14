@@ -8,7 +8,7 @@ import ResourceListLibrary
 import StringsLibrary
 
 extension Game.Summary: ResourceListItem {
-	public var name: String { Strings.Game.title(index + 1) }
+	public var name: String { Strings.Game.titleWithOrdinal(index + 1) }
 }
 
 public struct GamesList: Reducer {

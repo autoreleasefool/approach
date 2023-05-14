@@ -35,6 +35,9 @@ public struct GamesEditor: Reducer {
 		public var frames: [Frame.Edit]?
 		public var score: [ScoreStep]?
 
+		var numberOfGames: Int { bowlerGameIds.first!.value.count }
+		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
+
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _ballPicker: BallPicker.State
@@ -270,6 +273,20 @@ public struct GamesEditor: Reducer {
 
 				case let .gamesSettings(.delegate(delegateAction)):
 					switch delegateAction {
+					case let .switchedGame(to):
+						state.currentGameId = state.bowlerGameIds[state.currentBowlerId]![to]
+						return loadGameDetails(for: state.currentGameId)
+
+					case let .switchedBowler(to):
+						state.currentGameId = state.bowlerGameIds[to]![state.currentGameIndex]
+						state.currentBowlerId = to
+						return loadGameDetails(for: state.currentGameId)
+
+					case let .movedBowlers(source, destination):
+						state.bowlers?.move(fromOffsets: source, toOffset: destination)
+						state.bowlerIds.move(fromOffsets: source, toOffset: destination)
+						return .none
+
 					case .didFinish:
 						state.sheet.hide(.settings)
 						return .none
@@ -419,13 +436,17 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var gamesSettings: GamesSettings.State? {
 		get {
-			guard let game else { return nil }
-			return .init(game: game)
+			guard let bowlers else { return nil }
+			return .init(
+				bowlers: bowlers,
+				currentBowlerId: currentBowlerId,
+				numberOfGames: numberOfGames,
+				gameIndex: currentGameIndex
+			)
 		}
-		set {
-			guard let newValue, currentGameId == newValue.game.id else { return }
-			game = newValue.game
-		}
+		// We aren't observing any values from this reducer, so we ignore the setter
+		// swiftlint:disable:next unused_setter_value
+		set { }
 	}
 }
 

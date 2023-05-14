@@ -7,16 +7,25 @@ import SwiftUI
 
 public struct GamesSettings: Reducer {
 	public struct State: Equatable {
-		public var game: Game.Edit
+		public let bowlers: IdentifiedArrayOf<Bowler.Summary>
+		public let currentBowlerId: Bowler.ID
+		public let numberOfGames: Int
+		public let gameIndex: Int
 
-		init(game: Game.Edit) {
-			self.game = game
+		init(bowlers: IdentifiedArrayOf<Bowler.Summary>, currentBowlerId: Bowler.ID, numberOfGames: Int, gameIndex: Int) {
+			self.bowlers = bowlers
+			self.currentBowlerId = currentBowlerId
+			self.numberOfGames = numberOfGames
+			self.gameIndex = gameIndex
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {}
 		public enum DelegateAction: Equatable {
+			case movedBowlers(source: IndexSet, destination: Int)
+			case switchedGame(to: Int)
+			case switchedBowler(to: Bowler.ID)
 			case didFinish
 		}
 		public enum InternalAction: Equatable {}
@@ -53,12 +62,11 @@ public struct GamesSettings: Reducer {
 public struct GamesSettingsView: View {
 	let store: StoreOf<GamesSettings>
 
-	struct ViewState: Equatable {
-		init(state: GamesSettings.State) {}
-	}
-
 	enum ViewAction {
 		case didTapDone
+		case didMoveBowlers(IndexSet, Int)
+		case didSwitchGame(Int)
+		case didSwitchBowler(Bowler.ID)
 	}
 
 	init(store: StoreOf<GamesSettings>) {
@@ -66,14 +74,48 @@ public struct GamesSettingsView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GamesSettings.Action.init) { viewStore in
-			EmptyView()
-				.navigationTitle(Strings.Game.Settings.title)
-				.toolbar {
-					ToolbarItem(placement: .navigationBarLeading) {
-						Button(Strings.Action.done) { viewStore.send(.didTapDone) }
+		WithViewStore(store, observe: { $0 }, send: GamesSettings.Action.init) { viewStore in
+			List {
+				Section(Strings.Game.Settings.current) {
+					Picker(
+						Strings.Game.title,
+						selection: viewStore.binding(get: \.gameIndex, send: ViewAction.didSwitchGame)
+					) {
+						ForEach(Array(0..<viewStore.numberOfGames), id: \.self) { index in
+							Text(Strings.Game.titleWithOrdinal(index + 1))
+								.tag(index)
+						}
+					}
+
+					Picker(
+						Strings.Bowler.title,
+						selection: viewStore.binding(get: \.currentBowlerId, send: ViewAction.didSwitchBowler)
+					) {
+						ForEach(viewStore.bowlers) { bowler in
+							Text(bowler.name)
+								.tag(bowler.id)
+						}
 					}
 				}
+
+				Section {
+					ForEach(viewStore.bowlers) { bowler in
+						Text(bowler.name)
+					}
+					.onMove { viewStore.send(.didMoveBowlers($0, $1)) }
+				} header: {
+					Text(Strings.Bowler.List.title)
+				} footer: {
+					Text(Strings.Game.Editor.Bowlers.dragToReorder)
+				}
+			}
+			.environment(\.editMode, .constant(.active))
+			.navigationTitle(Strings.Game.Settings.title)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarLeading) {
+					Button(Strings.Action.done) { viewStore.send(.didTapDone) }
+				}
+			}
 		}
 	}
 }
@@ -83,6 +125,12 @@ extension GamesSettings.Action {
 		switch action {
 		case .didTapDone:
 			self = .delegate(.didFinish)
+		case let .didMoveBowlers(source, destination):
+			self = .delegate(.movedBowlers(source: source, destination: destination))
+		case let .didSwitchGame(index):
+			self = .delegate(.switchedGame(to: index))
+		case let .didSwitchBowler(id):
+			self = .delegate(.switchedBowler(to: id))
 		}
 	}
 }
