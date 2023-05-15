@@ -357,7 +357,7 @@ final class BowlersRepositoryTests: XCTestCase {
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
-		// Given a database with 1
+		// Given a database with 1 bowler
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
 

@@ -49,6 +49,8 @@ let package = Package(
 		.library(name: "LeaguesRepositoryInterface", targets: ["LeaguesRepositoryInterface"]),
 		.library(name: "LocationsRepository", targets: ["LocationsRepository"]),
 		.library(name: "LocationsRepositoryInterface", targets: ["LocationsRepositoryInterface"]),
+		.library(name: "MatchPlaysRepository", targets: ["MatchPlaysRepository"]),
+		.library(name: "MatchPlaysRepositoryInterface", targets: ["MatchPlaysRepositoryInterface"]),
 		.library(name: "SeriesRepository", targets: ["SeriesRepository"]),
 		.library(name: "SeriesRepositoryInterface", targets: ["SeriesRepositoryInterface"]),
 
@@ -666,6 +668,32 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"LocationsRepository",
+				"TestDatabaseUtilitiesLibrary",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "MatchPlaysRepository",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"MatchPlaysRepositoryInterface",
+				"RepositoryLibrary",
+			]
+		),
+		.target(
+			name: "MatchPlaysRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "MatchPlaysRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"MatchPlaysRepository",
 				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]

@@ -34,7 +34,7 @@ public func initializeDatabase(
 	let series = coallesce(withSeries, ifHasOneOf: games)
 	let leagues = coallesce(withLeagues, ifHasOneOf: series)
 	let gear = coallesce(withGear, ifHasOneOf: frames)
-	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear)
+	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear, matchPlays)
 	let lanes = coallesce(withLanes, ifHasOneOf: series)
 	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)
 	let locations = coallesce(withLocations, ifHasOneOf: alleys)

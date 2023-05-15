@@ -13,9 +13,9 @@ func insert(
 		matchPlays = []
 	case .default:
 		matchPlays = [
-			.init(gameId: UUID(0), id: UUID(0), opponent: UUID(1), opponentScore: 300, result: .lost),
-			.init(gameId: UUID(1), id: UUID(1), opponent: UUID(1), opponentScore: 255, result: nil),
-			.init(gameId: UUID(2), id: UUID(2), opponent: UUID(2), opponentScore: 123, result: .won),
+			.init(gameId: UUID(0), id: UUID(0), opponentId: UUID(1), opponentScore: 300, result: .lost),
+			.init(gameId: UUID(1), id: UUID(1), opponentId: UUID(1), opponentScore: 255, result: nil),
+			.init(gameId: UUID(2), id: UUID(2), opponentId: UUID(2), opponentScore: 123, result: .won),
 		]
 	case let .custom(custom):
 		matchPlays = custom
