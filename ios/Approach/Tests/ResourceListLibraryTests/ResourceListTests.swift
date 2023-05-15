@@ -102,7 +102,7 @@ final class ResourceListTests: XCTestCase {
 
 		await store.receive(.delegate(.didDelete(.mock)))
 
-		waitForExpectations(timeout: 1)
+		await fulfillment(of: [expectation])
 	}
 
 	func testDeleteButtonWhenErrorThrownShowsError() async {
