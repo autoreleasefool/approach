@@ -42,21 +42,12 @@ extension Frame {
 extension Frame.Database: FetchableRecord, PersistableRecord {
 	public static let ball0ForeignKey = ForeignKey(["ball0"])
 	public static let bowlingBall0 = belongsTo(Gear.Database.self, using: ball0ForeignKey)
-	public var bowlingBall0: QueryInterfaceRequest<Gear.Database> {
-		request(for: Self.bowlingBall0)
-	}
 
 	public static let ball1ForeignKey = ForeignKey(["ball1"])
 	public static let bowlingBall1 = belongsTo(Gear.Database.self, using: ball1ForeignKey)
-	public var bowlingBall1: QueryInterfaceRequest<Gear.Database> {
-		request(for: Self.bowlingBall1)
-	}
 
 	public static let ball2ForeignKey = ForeignKey(["ball2"])
 	public static let bowlingBall2 = belongsTo(Gear.Database.self, using: ball2ForeignKey)
-	public var bowlingBall2: QueryInterfaceRequest<Gear.Database> {
-		request(for: Self.bowlingBall2)
-	}
 }
 
 extension Frame.Database {

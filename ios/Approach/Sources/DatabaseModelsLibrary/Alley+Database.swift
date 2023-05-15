@@ -41,14 +41,7 @@ extension Alley.PinBase: DatabaseValueConvertible {}
 
 extension Alley.Database: FetchableRecord, PersistableRecord {
 	public static let lanes = hasMany(Lane.Database.self)
-	public var lanes: QueryInterfaceRequest<Lane.Database> {
-		request(for: Self.lanes)
-	}
-
 	public static let location = belongsTo(Location.Database.self)
-	public var location: QueryInterfaceRequest<Location.Database> {
-		request(for: Self.location)
-	}
 }
 
 extension Alley.Database {

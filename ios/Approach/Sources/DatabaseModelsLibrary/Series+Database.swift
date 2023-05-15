@@ -39,17 +39,10 @@ extension Series.ExcludeFromStatistics: DatabaseValueConvertible {}
 
 extension Series.Database: FetchableRecord, PersistableRecord {
 	public static let league = belongsTo(League.Database.self)
-
 	public static let alley = belongsTo(Alley.Database.self)
-	public var alley: QueryInterfaceRequest<Alley.Database> {
-		request(for: Self.alley)
-	}
 
 	public static let seriesLanes = hasMany(SeriesLane.Database.self)
 	public static let lanes = hasMany(Lane.Database.self, through: seriesLanes, using: SeriesLane.Database.lane)
-	public var lanes: QueryInterfaceRequest<Lane.Database> {
-		request(for: Self.lanes)
-	}
 }
 
 extension Series.Database {

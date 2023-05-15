@@ -29,7 +29,6 @@ extension Gear.Kind: DatabaseValueConvertible {}
 
 extension Gear.Database: FetchableRecord, PersistableRecord {
 	public static let bowler = belongsTo(Bowler.Database.self)
-	public var bowler: QueryInterfaceRequest<Bowler.Database> { request(for: Self.bowler) }
 }
 
 extension Gear.Database {
