@@ -54,7 +54,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		case `internal`(InternalAction)
 	}
 
-	struct CancelObservationID {}
+	enum CancelID { case observation }
 
 	public init(observeResources: @escaping (Query) -> AsyncThrowingStream<[Resource], Error>) {
 		self.observeResources = observeResources
@@ -122,7 +122,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		} catch: { error, send in
 			await send(.internal(.didLoadResources(.failure(error))))
 		}
-		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
 }
 

@@ -40,7 +40,7 @@ public struct BallPicker: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	struct CancelObservationID {}
+	enum CancelID { case observation }
 
 	init() {}
 
@@ -59,7 +59,7 @@ public struct BallPicker: Reducer {
 					} catch: { error, send in
 						await send(.internal(.didLoadBowlingBalls(.failure(error))))
 					}
-					.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+					.cancellable(id: CancelID.observation, cancelInFlight: true)
 
 				case let .didTapGear(id):
 					state.selected = id

@@ -87,7 +87,7 @@ public struct ResourceList<
 		case add
 	}
 
-	struct CancelObservationID {}
+	enum CancelID { case observation }
 
 	public init(fetchResources: @escaping (Q) -> AsyncThrowingStream<[R], Swift.Error>) {
 		self.fetchResources = fetchResources
@@ -161,7 +161,7 @@ public struct ResourceList<
 					return beginObservation(query: state.query)
 
 				case .cancelObservation:
-					return .cancel(id: CancelObservationID.self)
+					return .cancel(id: CancelID.observation)
 
 				case let .resourcesResponse(.success(resources)):
 					state.resources = .init(uniqueElements: resources)
@@ -214,7 +214,7 @@ public struct ResourceList<
 		} catch: { error, send in
 			await send(.internal(.resourcesResponse(.failure(error))))
 		}
-		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
 }
 

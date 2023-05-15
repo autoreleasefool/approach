@@ -96,7 +96,7 @@ public struct GamesEditor: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	struct CancelObservationID {}
+	enum CancelID { case observation }
 
 	public init() {}
 
@@ -386,7 +386,7 @@ public struct GamesEditor: Reducer {
 				}))
 			}
 		)
-		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
 
 	private func updateScoreSheet(from state: State) -> Effect<Action> {
