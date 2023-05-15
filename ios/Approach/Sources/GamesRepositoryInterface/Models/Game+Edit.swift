@@ -1,5 +1,6 @@
 import Foundation
 import IdentifiedCollections
+import MatchPlaysRepositoryInterface
 import ModelsLibrary
 
 extension Game {
@@ -13,6 +14,7 @@ extension Game {
 		public var locked: Game.Lock
 		public var manualScore: Int?
 		public var excludeFromStatistics: Game.ExcludeFromStatistics
+		public var matchPlay: MatchPlay.Edit?
 
 		public init(
 			id: Game.ID,
@@ -20,6 +22,7 @@ extension Game {
 			locked: Game.Lock,
 			manualScore: Int?,
 			excludeFromStatistics: Game.ExcludeFromStatistics,
+			matchPlay: MatchPlay.Edit?,
 			bowler: BowlerInfo,
 			league: LeagueInfo,
 			series: SeriesInfo
@@ -29,6 +32,7 @@ extension Game {
 			self.locked = locked
 			self.manualScore = manualScore
 			self.excludeFromStatistics = excludeFromStatistics
+			self.matchPlay = matchPlay
 			self.series = series
 			self.bowler = bowler
 			self.league = league

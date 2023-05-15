@@ -117,7 +117,9 @@ libraries = [ "Extensions" ]
 
 [repositories.Games]
 [repositories.Games.interface]
+repositories = [ "MatchPlays" ]
 dependencies = [ "IdentifiedCollections" ]
+
 
 [repositories.Gear]
 services = [ "RecentlyUsed" ]

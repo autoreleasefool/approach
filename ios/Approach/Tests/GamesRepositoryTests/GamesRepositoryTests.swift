@@ -3,6 +3,7 @@ import Dependencies
 @testable import GamesRepository
 @testable import GamesRepositoryInterface
 import GRDB
+@testable import MatchPlaysRepositoryInterface
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
@@ -11,6 +12,8 @@ import XCTest
 @MainActor
 final class GamesRepositoryTests: XCTestCase {
 	@Dependency(\.games) var games
+
+	// MARK: List
 
 	func testList_ReturnsAllGames() async throws {
 		// Given a database with two games
@@ -72,6 +75,8 @@ final class GamesRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(game2), .init(game1)])
 	}
 
+	// MARK: Edit
+
 	func testEdit_WhenGameExists_ReturnsGame() async throws {
 		// Given a database with one game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
@@ -94,6 +99,58 @@ final class GamesRepositoryTests: XCTestCase {
 				locked: .open,
 				manualScore: nil,
 				excludeFromStatistics: .include,
+				matchPlay: nil,
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors", excludeFromStatistics: .include),
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					excludeFromStatistics: .include,
+					alley: .init(name: "Skyview"),
+					lanes: [
+						.init(id: UUID(0), label: "1"),
+						.init(id: UUID(1), label: "2"),
+					]
+				)
+			)
+		)
+	}
+
+	func testEdit_WhenGameHasMatchPlay_ReturnsGameWithMatchPlay() async throws {
+		// Given a database with one game and match play
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let matchPlay1 = MatchPlay.Database(
+			gameId: UUID(0),
+			id: UUID(0),
+			opponentId: UUID(0),
+			opponentScore: 123,
+			result: .lost
+		)
+		let db = try initializeDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
+
+		// Editing the game
+		let game = try await withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.edit(UUID(0))
+		}
+
+		// Returns the game
+		XCTAssertEqual(
+			game,
+			.init(
+				id: UUID(0),
+				index: 0,
+				locked: .open,
+				manualScore: nil,
+				excludeFromStatistics: .include,
+				matchPlay: .init(
+					gameId: UUID(0),
+					id: UUID(0),
+					opponent: .init(id: UUID(0), name: "Joseph"),
+					opponentScore: 123,
+					result: .lost
+				),
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
@@ -125,6 +182,8 @@ final class GamesRepositoryTests: XCTestCase {
 		XCTAssertNil(game)
 	}
 
+	// MARK: Update
+
 	func testUpdate_WhenGameExists_UpdatesGame() async throws {
 		// Given a database with a game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0, locked: .open, manualScore: nil)
@@ -137,6 +196,7 @@ final class GamesRepositoryTests: XCTestCase {
 			locked: .locked,
 			manualScore: 123,
 			excludeFromStatistics: .include,
+			matchPlay: nil,
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
@@ -164,6 +224,60 @@ final class GamesRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 1)
 	}
 
+	func testUpdate_WhenHasMatchPlay_UpdatesMatchPlay() async throws {
+		// Given a database with a game and a match play
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, locked: .open, manualScore: nil)
+		let matchPlay1 = MatchPlay.Database(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 123, result: nil)
+		let db = try initializeDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
+
+		// Editing the game
+		let editable = Game.Edit(
+			id: UUID(0),
+			index: 0,
+			locked: .open,
+			manualScore: nil,
+			excludeFromStatistics: .include,
+			matchPlay: .init(
+				gameId: UUID(0),
+				id: UUID(0),
+				opponent: .init(id: UUID(1), name: "Sarah"),
+				opponentScore: 456,
+				result: .lost
+			),
+			bowler: .init(name: "Joseph"),
+			league: .init(name: "Majors", excludeFromStatistics: .include),
+			series: .init(
+				date: Date(timeIntervalSince1970: 123_456_000),
+				excludeFromStatistics: .include,
+				alley: .init(name: "Skyview"),
+				lanes: []
+			)
+		)
+
+		let updatedMatchPlay = self.expectation(description: "updated match play")
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games.update = GamesRepository.liveValue.update
+			$0.matchPlays.update = { matchPlay in
+				XCTAssertEqual(
+					matchPlay,
+					.init(
+						gameId: UUID(0),
+						id: UUID(0),
+						opponent: .init(id: UUID(1), name: "Sarah"),
+						opponentScore: 456,
+						result: .lost
+					)
+				)
+				updatedMatchPlay.fulfill()
+			}
+		} operation: {
+			try await self.games.update(editable)
+		}
+
+		await fulfillment(of: [updatedMatchPlay])
+	}
+
 	func testUpdate_WhenGameNotExists_ThrowError() async throws {
 		// Given a database with no games
 		let db = try initializeDatabase(withGames: nil)
@@ -176,6 +290,7 @@ final class GamesRepositoryTests: XCTestCase {
 				locked: .locked,
 				manualScore: nil,
 				excludeFromStatistics: .exclude,
+				matchPlay: nil,
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
@@ -197,6 +312,8 @@ final class GamesRepositoryTests: XCTestCase {
 		let count = try await db.read { try Game.Database.fetchCount($0) }
 		XCTAssertEqual(count, 0)
 	}
+
+	// MARK: Delete
 
 	func testDelete_WhenIdExists_DeletesGame() async throws {
 		// Given a database with two games

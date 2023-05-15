@@ -3,12 +3,14 @@ import DatabaseServiceInterface
 import Dependencies
 import GamesRepositoryInterface
 import GRDB
+import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import RepositoryLibrary
 
 extension GamesRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
+		@Dependency(\.matchPlays) var matchPlays
 
 		return Self(
 			list: { series, _ in
@@ -28,6 +30,10 @@ extension GamesRepository: DependencyKey {
 						.including(required: Game.Database.bowler)
 						.including(required: Game.Database.league)
 						.including(
+							optional: Game.Database.matchPlay
+								.including(optional: MatchPlay.Database.opponent.forKey("opponent"))
+						)
+						.including(
 							required: Game.Database.series
 								.including(optional: Series.Database.alley)
 								.including(
@@ -42,6 +48,10 @@ extension GamesRepository: DependencyKey {
 			update: { game in
 				try await database.writer().write {
 					try game.update($0)
+				}
+
+				if let matchPlay = game.matchPlay {
+					try await matchPlays.update(matchPlay)
 				}
 			},
 			delete: { id in
