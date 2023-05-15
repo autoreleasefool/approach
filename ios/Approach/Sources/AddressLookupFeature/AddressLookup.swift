@@ -42,7 +42,7 @@ public struct AddressLookup: Reducer {
 		case binding(BindingAction<State>)
 	}
 
-	enum SearchID {}
+	enum SearchID { case lookup }
 	enum LookupError: Error {
 		case addressNotFound
 	}
@@ -62,29 +62,29 @@ public struct AddressLookup: Reducer {
 				case .didAppear:
 					return .merge(
 						.run { send in
-							for try await results in await addressLookup.beginSearch(SearchID.self) {
+							for try await results in await addressLookup.beginSearch(SearchID.lookup) {
 								await send(.internal(.didReceiveResults(.success(results))))
 							}
 						} catch: { error, send in
 							await send(.internal(.didReceiveResults(.failure(error))))
-						}.cancellable(id: SearchID.self),
+						}.cancellable(id: SearchID.lookup),
 						.fireAndForget { [query = state.query] in
 							guard !query.isEmpty else { return }
-							await addressLookup.updateSearchQuery(SearchID.self, query)
+							await addressLookup.updateSearchQuery(SearchID.lookup, query)
 						}
 					)
 
 				case .didDisappear:
 					return .merge(
-						.cancel(id: SearchID.self),
+						.cancel(id: SearchID.lookup),
 						.fireAndForget {
-							await addressLookup.finishSearch(SearchID.self)
+							await addressLookup.finishSearch(SearchID.lookup)
 						}
 					)
 
 				case .didTapCancelButton:
 					return .merge(
-						.cancel(id: SearchID.self),
+						.cancel(id: SearchID.lookup),
 						.fireAndForget { await self.dismiss() }
 					)
 
@@ -128,7 +128,7 @@ public struct AddressLookup: Reducer {
 				switch delegateAction {
 				case .didSelectAddress:
 					return .merge(
-						.cancel(id: SearchID.self),
+						.cancel(id: SearchID.lookup),
 						.fireAndForget { await self.dismiss() }
 					)
 				}
@@ -137,7 +137,7 @@ public struct AddressLookup: Reducer {
 				state.loadingAddressError = nil
 				state.loadingResultsError = nil
 				return .fireAndForget { [query = state.query] in
-					await addressLookup.updateSearchQuery(SearchID.self, query)
+					await addressLookup.updateSearchQuery(SearchID.lookup, query)
 				}
 
 			case .binding:

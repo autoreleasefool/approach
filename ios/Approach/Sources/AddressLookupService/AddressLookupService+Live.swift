@@ -25,10 +25,9 @@ extension AddressLookupService: DependencyKey {
 
 			static let shared = LocalSearch()
 
-			var dependencies: [ObjectIdentifier: Dependencies] = [:]
+			var dependencies: [AnyHashable: Dependencies] = [:]
 
-			func initiate(_ id: Any.Type) -> AsyncThrowingStream<[AddressLookupResult], Error> {
-				let id = ObjectIdentifier(id)
+			func initiate(_ id: AnyHashable) -> AsyncThrowingStream<[AddressLookupResult], Error> {
 				let delegate = Delegate()
 				let completer = MKLocalSearchCompleter()
 				completer.resultTypes = [.address, .pointOfInterest]
@@ -46,10 +45,9 @@ extension AddressLookupService: DependencyKey {
 				return stream
 			}
 
-			func update(_ id: Any.Type, query: String) {
+			func update(_ id: AnyHashable, query: String) {
 				Task.detached { @MainActor in
 					guard !query.isEmpty else { return }
-					let id = ObjectIdentifier(id)
 					guard let (completer, _) = await self.dependencies[id] else { return }
 					if completer.isSearching {
 						completer.cancel()
@@ -58,13 +56,12 @@ extension AddressLookupService: DependencyKey {
 				}
 			}
 
-			func finish(_ id: Any.Type) {
-				let id = ObjectIdentifier(id)
+			func finish(_ id: AnyHashable) {
 				self.dependencies[id]?.delegate.continuation?.finish()
 				self.removeDependencies(id: id)
 			}
 
-			private func removeDependencies(id: ObjectIdentifier) {
+			private func removeDependencies(id: AnyHashable) {
 				self.dependencies[id] = nil
 			}
 		}
