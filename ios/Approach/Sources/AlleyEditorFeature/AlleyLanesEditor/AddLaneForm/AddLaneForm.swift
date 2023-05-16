@@ -1,5 +1,9 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import ModelsLibrary
+import StringsLibrary
+import SwiftUI
 
 public struct AddLaneForm: Reducer {
 	public struct State: Equatable {
@@ -34,9 +38,10 @@ public struct AddLaneForm: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapSaveButton:
-					return didFinishAddingLanes(count: state.lanesToAdd)
+					return .send(.delegate(.didFinishAddingLanes(state.lanesToAdd)))
+
 				case .didTapCancelButton:
-					return didFinishAddingLanes(count: nil)
+					return .send(.delegate(.didFinishAddingLanes(nil)))
 				}
 
 			case let .internal(internalAction):
@@ -50,8 +55,32 @@ public struct AddLaneForm: Reducer {
 			}
 		}
 	}
+}
 
-	private func didFinishAddingLanes(count: Int?) -> Effect<Action> {
-		.task { .delegate(.didFinishAddingLanes(count)) }
+// MARK: - View
+
+public struct AddLaneFormView: View {
+	let store: StoreOf<AddLaneForm>
+
+	public var body: some View {
+		WithViewStore(store, observe: { $0 }, content: { viewStore in
+			VStack(spacing: .standardSpacing) {
+				HStack {
+					Button(Strings.Action.cancel) {
+						viewStore.send(.view(.didTapCancelButton))
+					}
+					Spacer()
+					Button(Strings.Action.add) {
+						viewStore.send(.view(.didTapSaveButton))
+					}
+				}
+
+				Stepper(
+					Strings.Lane.Editor.Fields.addLanes(viewStore.lanesToAdd),
+					value: viewStore.binding(\.$lanesToAdd),
+					in: Alley.NUMBER_OF_LANES_RANGE
+				)
+			}
+		})
 	}
 }
