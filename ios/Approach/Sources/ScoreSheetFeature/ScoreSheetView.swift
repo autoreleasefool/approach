@@ -16,7 +16,12 @@ public struct ScoreSheetView: View {
 		let currentFrameIndex: Int
 		let currentRollIndex: Int
 
-		var rollId: RollID { .init(frameIndex: currentFrameIndex, rollIndex: currentRollIndex) }
+		var rollId: RollID {
+			.init(
+				frameIndex: currentFrameIndex > 0 ? currentFrameIndex - 1 : 0,
+				rollIndex: currentFrameIndex == 0 ? 0 : 1
+			)
+		}
 
 		init(state: ScoreSheet.State) {
 			self.steps = state.steps
@@ -85,7 +90,7 @@ public struct ScoreSheetView: View {
 				.scrollIndicators(.hidden)
 				.onChange(of: viewStore.rollId) { rollId in
 					withAnimation(.easeInOut(duration: 300)) {
-						proxy.scrollTo(FrameID(index: rollId.frameIndex), anchor: .leading)
+						proxy.scrollTo(rollId, anchor: .leading)
 					}
 				}
 			}
@@ -124,6 +129,7 @@ public struct ScoreSheetView: View {
 					.padding(.vertical, .smallSpacing)
 					.background(highlightRollIndex == roll.index ? Color.appPrimary : Color.appPrimaryLight)
 			}
+			.id(RollID(frameIndex: frameIndex, rollIndex: roll.index))
 			.contentShape(Rectangle())
 			.buttonStyle(TappableElement())
 		}
