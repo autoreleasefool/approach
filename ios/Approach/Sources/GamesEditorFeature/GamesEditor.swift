@@ -436,7 +436,7 @@ public struct GamesEditor: Reducer {
 
 extension GamesEditor.State {
 	var gamesHeader: GamesHeader.State {
-		get { .init() }
+		get { .init(currentGameIndex: currentGameIndex) }
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
 		set {}

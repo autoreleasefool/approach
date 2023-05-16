@@ -8,7 +8,11 @@ import ViewsLibrary
 
 public struct GamesHeader: Reducer {
 	public struct State: Equatable {
-		init() {}
+		public let currentGameIndex: Int
+
+		init(currentGameIndex: Int) {
+			self.currentGameIndex = currentGameIndex
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -64,6 +68,10 @@ public struct GamesHeaderView: View {
 		WithViewStore(store, observe: { $0 }, send: GamesHeader.Action.init, content: { viewStore in
 			HStack {
 				headerButton(systemName: "chevron.backward") { viewStore.send(.didTapClose) }
+				Spacer()
+				Text(Strings.Game.titleWithOrdinal(viewStore.currentGameIndex + 1))
+					.font(.caption)
+					.foregroundColor(.white)
 				Spacer()
 				headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
 			}
