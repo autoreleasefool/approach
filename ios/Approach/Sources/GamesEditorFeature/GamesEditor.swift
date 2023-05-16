@@ -19,6 +19,9 @@ public struct GamesEditor: Reducer {
 		public var backdropSize: CGSize = .zero
 		public var isScoreSheetVisible = true
 
+		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
+		var isEditable: Bool { elementsRefreshing.isEmpty }
+
 		// IDs for games being edited (and their corresponding bowlers)
 		public var bowlerIds: [Bowler.ID]
 		public var bowlerGameIds: [Bowler.ID: [Game.ID]]
@@ -37,6 +40,7 @@ public struct GamesEditor: Reducer {
 
 		var numberOfGames: Int { bowlerGameIds.first!.value.count }
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
+		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
 
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
@@ -69,9 +73,6 @@ public struct GamesEditor: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case switchToBowler(Bowler.ID)
-			case switchToGame(Game.ID)
-
 			case bowlersResponse(TaskResult<[Bowler.Summary]>)
 			case framesResponse(TaskResult<[Frame.Edit]>)
 			case gameReponse(TaskResult<Game.Edit?>)
@@ -94,6 +95,12 @@ public struct GamesEditor: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+	}
+
+	public enum RefreshableElements {
+		case bowlers
+		case game
+		case frames
 	}
 
 	enum CancelID { case observation }
@@ -122,8 +129,8 @@ public struct GamesEditor: Reducer {
 				switch viewAction {
 				case .didAppear:
 					return .merge(
-						loadBowlers(withIds: state.bowlerIds),
-						loadGameDetails(for: state.currentGameId)
+						loadBowlers(state: &state),
+						loadGameDetails(state: &state)
 					)
 
 				case let .didAdjustBackdropSize(newSize):
@@ -162,20 +169,14 @@ public struct GamesEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .switchToBowler(bowlerId):
-					state.currentBowlerId = bowlerId
-					return loadGameDetails(for: state.currentGameId)
-
-				case let .switchToGame(gameId):
-					state.currentGameId = gameId
-					return loadGameDetails(for: state.currentGameId)
-
 				case let .bowlersResponse(.success(bowlers)):
+					state.elementsRefreshing.remove(.bowlers)
 					state.bowlers = .init(uniqueElements: bowlers)
 					return .none
 
 				case .bowlersResponse(.failure):
 					// TODO: handle failure loading bowler
+					state.elementsRefreshing.remove(.bowlers)
 					return .none
 
 				case let .framesResponse(.success(frames)):
@@ -197,10 +198,12 @@ public struct GamesEditor: Reducer {
 						ballRolled: nil, // TODO: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.ballRolled,
 						didFoul: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.didFoul
 					)
+					state.elementsRefreshing.remove(.frames)
 					return updateScoreSheet(from: state)
 
 				case .framesResponse(.failure):
 					// TODO: handle error loading frames
+					state.elementsRefreshing.remove(.frames)
 					return .none
 
 				case .frameUpdateError:
@@ -210,10 +213,12 @@ public struct GamesEditor: Reducer {
 				case let .gameReponse(.success(game)):
 					guard state.currentGameId == game?.id else { return .none }
 					state.game = game
+					state.elementsRefreshing.remove(.game)
 					return .none
 
 				case .gameReponse(.failure):
 					// TODO: handle error loading game
+					state.elementsRefreshing.remove(.game)
 					return .none
 
 				case .gameUpdateError:
@@ -275,12 +280,12 @@ public struct GamesEditor: Reducer {
 					switch delegateAction {
 					case let .switchedGame(to):
 						state.currentGameId = state.bowlerGameIds[state.currentBowlerId]![to]
-						return loadGameDetails(for: state.currentGameId)
+						return loadGameDetails(state: &state)
 
 					case let .switchedBowler(to):
 						state.currentGameId = state.bowlerGameIds[to]![state.currentGameIndex]
 						state.currentBowlerId = to
-						return loadGameDetails(for: state.currentGameId)
+						return loadGameDetails(state: &state)
 
 					case let .movedBowlers(source, destination):
 						state.bowlers?.move(fromOffsets: source, toOffset: destination)
@@ -303,8 +308,10 @@ public struct GamesEditor: Reducer {
 					case let .didProceed(next):
 						switch next {
 						case let .bowler(_, id):
+							let gameIndex = state.currentGameIndex
 							state.currentBowlerId = id
-							return loadGameDetails(for: state.currentGameId)
+							state.currentGameId = state.bowlerGameIds[id]![gameIndex]
+							return loadGameDetails(state: &state)
 						case let .frame(frameIndex):
 							state.currentFrameIndex = frameIndex
 							state.currentRollIndex = 0
@@ -348,7 +355,8 @@ public struct GamesEditor: Reducer {
 		}
 		.ifLet(\.gameDetails, action: /Action.internal..Action.InternalAction.gameDetails) {
 			GameDetails()
-		}.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
+		}
+		.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
 			GameDetailsHeader()
 		}
 		.ifLet(\.gamesSettings, action: /Action.internal..Action.InternalAction.gamesSettings) {
@@ -365,22 +373,25 @@ public struct GamesEditor: Reducer {
 		}
 	}
 
-	private func loadBowlers(withIds bowlerIds: [Bowler.ID]) -> Effect<Action> {
-		return .task {
+	private func loadBowlers(state: inout State) -> Effect<Action> {
+		state.elementsRefreshing.insert(.bowlers)
+		return .task { [bowlerIds = state.bowlerIds] in
 			await .internal(.bowlersResponse(TaskResult {
 				try await bowlers.summaries(forIds: bowlerIds)
 			}))
 		}
 	}
 
-	private func loadGameDetails(for gameId: Game.ID) -> Effect<Action> {
+	private func loadGameDetails(state: inout State) -> Effect<Action> {
+		state.elementsRefreshing.insert(.frames)
+		state.elementsRefreshing.insert(.game)
 		return .merge(
-			.task {
-				await .internal(.framesResponse(TaskResult {
+			.task { [gameId = state.currentGameId] in
+				return await .internal(.framesResponse(TaskResult {
 					try await frames.frames(forGame: gameId) ?? []
 				}))
 			},
-			.task {
+			.task { [gameId = state.currentGameId] in
 				await .internal(.gameReponse(TaskResult {
 					try await games.edit(gameId)
 				}))
@@ -487,7 +498,7 @@ extension GamesEditor.State {
 			return .init(game: game)
 		}
 		set {
-			guard let newValue, currentGameId == newValue.game.id else { return }
+			guard isEditable, let newValue, currentGameId == newValue.game.id else { return }
 			game = newValue.game
 		}
 	}
@@ -505,6 +516,7 @@ extension GamesEditor.State {
 			return frameEditor
 		}
 		set {
+			guard isEditable else { return }
 			_frameEditor = newValue
 			guard let newValue else { return }
 			self.frames?[self.currentFrameIndex] = newValue.frame
@@ -523,6 +535,7 @@ extension GamesEditor.State {
 			return picker
 		}
 		set {
+			guard isEditable else { return }
 			_ballPicker = newValue
 			frames?[currentFrameIndex].setBowlingBall(newValue.selectedBall?.rolled, forRoll: currentRollIndex)
 		}
@@ -542,6 +555,7 @@ extension GamesEditor.State {
 			return rollEditor
 		}
 		set {
+			guard isEditable else { return }
 			_rollEditor = newValue
 			guard let newValue else { return }
 			frames?[currentFrameIndex].setDidFoul(newValue.didFoul, forRoll: currentRollIndex)
