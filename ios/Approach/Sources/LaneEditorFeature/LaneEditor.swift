@@ -57,7 +57,7 @@ public struct LaneEditor: Reducer {
 				case let .didSwipe(action):
 					switch action {
 					case .delete:
-						return .task { .delegate(.didDeleteLane) }
+						return .send(.delegate(.didDeleteLane))
 					}
 				}
 
