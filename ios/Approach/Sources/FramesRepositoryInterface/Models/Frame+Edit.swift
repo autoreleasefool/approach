@@ -67,6 +67,15 @@ extension Frame {
 }
 
 extension Frame.Edit {
+	public var hasUntouchedRoll: Bool {
+		firstUntouchedRoll != nil
+	}
+
+	public var firstUntouchedRoll: Int? {
+		guard rolls.count < Frame.NUMBER_OF_ROLLS else { return nil }
+		return deck(forRoll: rolls.endIndex - 1).isFullDeck ? nil : rolls.endIndex
+	}
+
 	public mutating func setBowlingBall(_ bowlingBall: Gear.Rolled?, forRoll rollIndex: Int) {
 		guaranteeRollExists(upTo: rollIndex)
 		rolls[rollIndex].bowlingBall = bowlingBall

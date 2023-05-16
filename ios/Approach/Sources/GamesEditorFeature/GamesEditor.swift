@@ -185,17 +185,15 @@ public struct GamesEditor: Reducer {
 						return .none
 					}
 
-					// TODO: determine which frame and roll to start with
-					state.currentFrameIndex = 0
-					state.currentRollIndex = 0
+					state.currentFrameIndex = frames.firstIndex { $0.hasUntouchedRoll } ?? 0
+					state.currentRollIndex = frames[state.currentFrameIndex].firstUntouchedRoll ?? 0
 
 					state.frames = frames
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 					state._frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
 
-					// TODO: get initial ball rolled loaded from frame
 					state._rollEditor = .init(
-						ballRolled: nil, // TODO: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.ballRolled,
+						ballRolled: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall,
 						didFoul: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.didFoul
 					)
 					state.elementsRefreshing.remove(.frames)
@@ -471,10 +469,9 @@ extension GamesEditor.State {
 			if !Frame.Roll.isLast(currentRollIndex) &&
 					(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).isFullDeck) {
 				next = .roll(rollIndex: currentRollIndex + 1)
-				// TODO: load next bowler if available
-//			} else if let bowler = nextBowler() {
-//				next = .bowler(name: bowler.name, id: bowler.id)
-//			}
+			} else if bowlerIds.count > 1 {
+				let nextBowlerId = bowlerIds[(currentBowlerIndex + 1) % bowlerIds.count]
+				next = .bowler(name: bowlers![id: nextBowlerId]!.name, id: nextBowlerId)
 			} else if !Frame.isLast(currentFrameIndex) {
 				next = .frame(frameIndex: currentFrameIndex + 1)
 			} else {
