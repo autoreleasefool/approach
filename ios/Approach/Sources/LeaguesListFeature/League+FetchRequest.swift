@@ -16,11 +16,11 @@ extension League.Summary {
 extension League.Summary.FetchRequest {
 	public struct Filter: Equatable {
 		public let bowler: Bowler.ID
-		public let recurrence: League.Recurrence?
+		public var recurrence: League.Recurrence?
 
 		public init(
 			bowler: Bowler.ID,
-			recurrence: League.Recurrence?
+			recurrence: League.Recurrence? = nil
 		) {
 			self.bowler = bowler
 			self.recurrence = recurrence

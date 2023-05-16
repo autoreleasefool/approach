@@ -30,12 +30,13 @@ public struct LeaguesList: Reducer {
 		@PresentationState public var editor: LeagueEditor.State?
 
 		public var isFiltersPresented = false
-		public var filters: LeaguesFilter.State = .init()
+		public var filter: League.Summary.FetchRequest.Filter
 
 		public var selection: Identified<League.ID, SeriesList.State>?
 
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
+			self.filter = .init(bowler: bowler.id)
 			self.list = .init(
 				features: [
 					.add,
@@ -46,7 +47,7 @@ public struct LeaguesList: Reducer {
 					}),
 				],
 				query: .init(
-					filter: filters.filter(withBowler: bowler),
+					filter: filter,
 					ordering: sortOrder.ordering
 				),
 				listTitle: Strings.League.List.title,
@@ -165,7 +166,7 @@ public struct LeaguesList: Reducer {
 					switch delegateAction {
 					case .didTapOption:
 						return state.list.updateQuery(
-							to: .init(filter: state.filters.filter(withBowler: state.bowler), ordering: state.sortOrder.ordering)
+							to: .init(filter: state.filter, ordering: state.sortOrder.ordering)
 						).map { .internal(.list($0)) }
 					}
 
@@ -177,7 +178,7 @@ public struct LeaguesList: Reducer {
 
 					case .didChangeFilters:
 						return state.list.updateQuery(
-							to: .init(filter: state.filters.filter(withBowler: state.bowler), ordering: state.sortOrder.ordering)
+							to: .init(filter: state.filter, ordering: state.sortOrder.ordering)
 						).map { .internal(.list($0)) }
 					}
 
@@ -235,5 +236,12 @@ public struct LeaguesList: Reducer {
 			state.selection = nil
 			return .none
 		}
+	}
+}
+
+extension LeaguesList.State {
+	var filters: LeaguesFilter.State {
+		get { .init(recurrence: filter.recurrence) }
+		set { filter.recurrence = newValue.recurrence }
 	}
 }

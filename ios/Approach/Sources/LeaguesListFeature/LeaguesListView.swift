@@ -22,7 +22,7 @@ public struct LeaguesListView: View {
 			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
 			self.isFiltersPresented = state.isFiltersPresented
-			self.isAnyFilterActive = state.filters.hasFilters
+			self.isAnyFilterActive = state.filter != .init(bowler: state.bowler.id)
 		}
 	}
 
