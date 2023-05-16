@@ -19,6 +19,7 @@ public struct PlaceholderWidget: View {
 				Text(Strings.Statistics.Placeholder.message)
 					.foregroundColor(.white)
 			}
+			.padding(.horizontal)
 			.background(alignment: .bottomTrailing) {
 				Image(uiImage: .iconAnalytics)
 					.resizable()

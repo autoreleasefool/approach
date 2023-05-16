@@ -101,26 +101,12 @@ public struct ResourceListEmpty: Reducer {
 public struct ResourceListEmptyView: View {
 	let store: StoreOf<ResourceListEmpty>
 
-	struct ViewState: Equatable {
-		public let content: ResourceListEmptyContent
-		public let style: ResourceListEmpty.Style
-
-		init(state: ResourceListEmpty.State) {
-			self.content = state.content
-			self.style = state.style
-		}
-	}
-
-	enum ViewAction {
-		case didTapActionButton
-	}
-
 	public init(store: StoreOf<ResourceListEmpty>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: map(viewAction:)) { viewStore in
+		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			VStack {
 				Spacer()
 
@@ -147,7 +133,7 @@ public struct ResourceListEmptyView: View {
 				.padding(.bottom, .smallSpacing)
 
 				Button {
-					viewStore.send(.didTapActionButton)
+					viewStore.send(.view(.didTapActionButton))
 				} label: {
 					Text(viewStore.content.action)
 						.frame(maxWidth: .infinity)
@@ -158,13 +144,6 @@ public struct ResourceListEmptyView: View {
 				.tint(.appAction)
 			}
 			.padding()
-		}
-	}
-
-	private func map(viewAction: ViewAction) -> ResourceListEmpty.Action {
-		switch viewAction {
-		case .didTapActionButton:
-			return .view(.didTapActionButton)
-		}
+		})
 	}
 }
