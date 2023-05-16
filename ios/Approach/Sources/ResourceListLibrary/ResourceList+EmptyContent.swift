@@ -108,29 +108,32 @@ public struct ResourceListEmptyView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			VStack {
-				Spacer()
+				VStack {
+					Spacer()
 
-				Image(uiImage: viewStore.content.image)
-					.resizable()
-					.scaledToFit()
-					.padding(.bottom, .smallSpacing)
+					Image(uiImage: viewStore.content.image)
+						.resizable()
+						.scaledToFit()
+						.padding(.bottom, .smallSpacing)
 
-				Spacer()
+					Spacer()
 
-				VStack(spacing: .smallSpacing) {
-					Text(viewStore.content.title)
-						.font(.headline)
+					VStack(spacing: .smallSpacing) {
+						Text(viewStore.content.title)
+							.font(.headline)
 
-					if let message = viewStore.content.message {
-						Text(message)
-							.multilineTextAlignment(.center)
+						if let message = viewStore.content.message {
+							Text(message)
+								.multilineTextAlignment(.center)
+						}
 					}
+					.padding()
+					.frame(maxWidth: .infinity)
+					.background(viewStore.style == .error ? Color.appErrorLight : Color.appPrimaryLight)
+					.cornerRadius(.standardRadius)
+					.padding(.bottom, .smallSpacing)
+					.layoutPriority(1)
 				}
-				.padding()
-				.frame(maxWidth: .infinity)
-				.background(viewStore.style == .error ? Color.appErrorLight : Color.appPrimaryLight)
-				.cornerRadius(.standardRadius)
-				.padding(.bottom, .smallSpacing)
 
 				Button {
 					viewStore.send(.view(.didTapActionButton))
