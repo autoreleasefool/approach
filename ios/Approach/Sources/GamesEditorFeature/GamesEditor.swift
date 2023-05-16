@@ -235,7 +235,7 @@ public struct GamesEditor: Reducer {
 					switch delegateAction {
 					case .didFinish:
 						state.sheet.hide(.ballPicker)
-						return .none
+						return save(frame: state.frames?[state.currentFrameIndex])
 					}
 
 				case let .frameEditor(.delegate(delegateAction)):
@@ -260,7 +260,10 @@ public struct GamesEditor: Reducer {
 						return .none
 
 					case .didEditRoll:
-						return updateScoreSheet(from: state)
+						return .merge(
+							save(frame: state.frames?[state.currentFrameIndex]),
+							updateScoreSheet(from: state)
+						)
 					}
 
 				case let .gamesHeader(.delegate(delegateAction)):
@@ -314,11 +317,11 @@ public struct GamesEditor: Reducer {
 							state.currentFrameIndex = frameIndex
 							state.currentRollIndex = 0
 							state.frames?[frameIndex].guaranteeRollExists(upTo: 0)
-							return .none
+							return save(frame: state.frames?[frameIndex])
 						case let .roll(rollIndex):
 							state.currentRollIndex = rollIndex
 							state.frames?[state.currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
-							return .none
+							return save(frame: state.frames?[state.currentFrameIndex])
 						}
 					}
 
