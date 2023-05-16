@@ -16,7 +16,7 @@ public struct AlleysList: Reducer {
 		@PresentationState public var editor: AlleyEditor.State?
 
 		public var isFiltersPresented = false
-		public var filters: AlleysFilter.State = .init()
+		public var filter: Alley.Summary.FetchRequest.Filter = .init()
 
 		public init() {
 			self.list = .init(
@@ -28,7 +28,7 @@ public struct AlleysList: Reducer {
 						try await alleys.delete($0.id)
 					}),
 				],
-				query: .init(filter: filters.filter, ordering: .byRecentlyUsed),
+				query: .init(filter: filter, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
 					image: .emptyAlleys,
@@ -156,5 +156,12 @@ public struct AlleysList: Reducer {
 		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
+	}
+}
+
+extension AlleysList.State {
+	var filters: AlleysFilter.State {
+		get { .init(filter: filter) }
+		set { filter = newValue.filter }
 	}
 }

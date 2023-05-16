@@ -14,11 +14,11 @@ extension Alley.Summary {
 }
 
 extension Alley.Summary.FetchRequest {
-	public struct Filter: Equatable {
-		public let material: Alley.Material?
-		public let pinFall: Alley.PinFall?
-		public let pinBase: Alley.PinBase?
-		public let mechanism: Alley.Mechanism?
+	public struct Filter: Hashable {
+		public var material: Alley.Material?
+		public var pinFall: Alley.PinFall?
+		public var pinBase: Alley.PinBase?
+		public var mechanism: Alley.Mechanism?
 
 		public init(
 			material: Alley.Material? = nil,

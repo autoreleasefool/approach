@@ -19,7 +19,7 @@ public struct AlleysListView: View {
 
 		init(state: AlleysList.State) {
 			self.isFiltersPresented = state.isFiltersPresented
-			self.isAnyFilterActive = state.filters.hasFilters
+			self.isAnyFilterActive = state.filter != .init()
 		}
 	}
 
