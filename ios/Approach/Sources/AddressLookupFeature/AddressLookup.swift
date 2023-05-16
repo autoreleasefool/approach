@@ -133,7 +133,7 @@ public struct AddressLookup: Reducer {
 					)
 				}
 
-			case .binding(\.view.$query), .binding(\.$query):
+			case .binding(\.$query):
 				state.loadingAddressError = nil
 				state.loadingResultsError = nil
 				return .fireAndForget { [query = state.query] in
