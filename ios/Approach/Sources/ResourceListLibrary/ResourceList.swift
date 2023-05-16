@@ -121,21 +121,21 @@ public struct ResourceList<
 						fatalError("\(Self.self) did not specify `swipeToEdit` feature")
 					}
 
-					return .task { .delegate(.didEdit(resource)) }
+					return .send(.delegate(.didEdit(resource)))
 
 				case let .didTap(resource):
 					guard state.features.contains(.tappable) else {
 						fatalError("\(Self.self) did not specify `didTap` feature")
 					}
 
-					return .task { .delegate(.didTap(resource)) }
+					return .send(.delegate(.didTap(resource)))
 
 				case .didTapAddButton:
 					guard state.features.contains(.add) else {
 						fatalError("\(Self.self) did not specify `add` feature")
 					}
 
-					return .task { .delegate(.didAddNew) }
+					return .send(.delegate(.didAddNew))
 
 				case let .alert(.didTapDeleteButton(resource)):
 					state.alert = nil
@@ -179,7 +179,7 @@ public struct ResourceList<
 					return .none
 
 				case .empty(.delegate(.didTapActionButton)):
-					return .task { .delegate(.didTapEmptyStateButton) }
+					return .send(.delegate(.didTapEmptyStateButton))
 
 				case .error(.delegate(.didTapActionButton)):
 					if state.errorState == .failedToLoad {
@@ -221,7 +221,7 @@ public struct ResourceList<
 extension ResourceList.State {
 	public mutating func updateQuery(to query: Q) -> Effect<ResourceList.Action> {
 		self.query = query
-		return .task { .internal(.observeData) }
+		return .send(.internal(.observeData))
 	}
 }
 

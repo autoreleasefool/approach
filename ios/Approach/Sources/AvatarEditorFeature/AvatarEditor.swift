@@ -40,10 +40,10 @@ public struct AvatarEditor: Reducer {
 				switch viewAction {
 				case .didTapCancel:
 					state.avatar = state.initialAvatar
-					return .task { .delegate(.didFinishEditing) }
+					return .send(.delegate(.didFinishEditing))
 
 				case .didTapDone:
-					return .task { .delegate(.didFinishEditing) }
+					return .send(.delegate(.didFinishEditing))
 				}
 
 			case let .internal(internalAction):

@@ -51,7 +51,7 @@ public struct FrameEditor: Reducer {
 						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
 					}
 
-					return existingState != state ? .task { .delegate(.didEditFrame) } : .none
+					return existingState != state ? .send(.delegate(.didEditFrame)) : .none
 
 				case .didStopDraggingPins:
 					state.draggedPinNewState = nil

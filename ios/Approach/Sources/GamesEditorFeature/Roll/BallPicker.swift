@@ -63,10 +63,10 @@ public struct BallPicker: Reducer {
 
 				case let .didTapGear(id):
 					state.selected = id
-					return .task { .delegate(.didFinish) }
+					return .send(.delegate(.didFinish))
 
 				case .didTapCancelButton:
-					return .task { .delegate(.didFinish) }
+					return .send(.delegate(.didFinish))
 				}
 
 			case let .internal(internalAction):

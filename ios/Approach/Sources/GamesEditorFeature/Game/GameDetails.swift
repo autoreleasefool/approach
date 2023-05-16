@@ -38,11 +38,11 @@ public struct GameDetails: Reducer {
 				switch viewAction {
 				case .didToggleLock:
 					state.game.locked.toggle()
-					return .task { .delegate(.didEditGame) }
+					return .send(.delegate(.didEditGame))
 
 				case .didToggleExclude:
 					state.game.excludeFromStatistics.toggle()
-					return .task { .delegate(.didEditGame) }
+					return .send(.delegate(.didEditGame))
 				}
 
 			case let .internal(internalAction):

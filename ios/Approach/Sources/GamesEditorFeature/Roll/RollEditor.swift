@@ -47,7 +47,7 @@ public struct RollEditor: Reducer {
 				switch viewAction {
 				case .didToggleFoul:
 					state.didFoul.toggle()
-					return .task { .delegate(.didEditRoll) }
+					return .send(.delegate(.didEditRoll))
 				}
 
 			case let .internal(internalAction):

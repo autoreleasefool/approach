@@ -82,7 +82,7 @@ public struct ResourceListEmpty: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapActionButton:
-					return .task { .delegate(.didTapActionButton) }
+					return .send(.delegate(.didTapActionButton))
 				}
 
 			case let .internal(internalAction):

@@ -73,11 +73,11 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 				case .didTapCancelButton:
 					state.selected = state.initialSelection
-					return .task { .delegate(.didFinishEditing) }
+					return .send(.delegate(.didFinishEditing))
 
 				case .didTapSaveButton:
 					state.updateInitialSelection()
-					return .task { .delegate(.didFinishEditing) }
+					return .send(.delegate(.didFinishEditing))
 
 				case let .didTapResource(resource):
 					if state.selected.contains(resource.id) {
@@ -86,7 +86,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 						state.selected.removeAll()
 						state.selected.insert(resource.id)
 						state.updateInitialSelection()
-						return .task { .delegate(.didFinishEditing) }
+						return .send(.delegate(.didFinishEditing))
 					} else if state.selected.count < state.limit || state.limit <= 0 {
 						state.selected.insert(resource.id)
 					}
@@ -129,6 +129,6 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 extension ResourcePicker.State {
 	public mutating func updateQuery(to query: Query) -> Effect<ResourcePicker.Action> {
 		self.query = query
-		return .task { .internal(.observeData) }
+		return .send(.internal(.observeData))
 	}
 }

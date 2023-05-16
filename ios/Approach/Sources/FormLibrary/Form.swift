@@ -169,7 +169,7 @@ public struct Form<
 
 					case .presented(.didTapDiscardButton):
 						state.discard()
-						return .task { .delegate(.didDiscard) }
+						return .send(.delegate(.didDiscard))
 
 					case .presented(.didTapCancelButton), .dismiss:
 						return .none
@@ -199,7 +199,7 @@ extension Form.State {
 		isLoading = false
 		switch record {
 		case let .success(new):
-			return .task { .delegate(.didFinishCreating(new)) }
+			return .send(.delegate(.didFinishCreating(new)))
 		case .failure:
 			// TODO: handle failure creating record
 			return .none
@@ -210,7 +210,7 @@ extension Form.State {
 		isLoading = false
 		switch record {
 		case let .success(existing):
-			return .task { .delegate(.didFinishUpdating(existing)) }
+			return .send(.delegate(.didFinishUpdating(existing)))
 		case .failure:
 			// TODO: handle failure updating record
 			return .none
@@ -221,7 +221,7 @@ extension Form.State {
 		isLoading = false
 		switch record {
 		case let .success(existing):
-			return .task { .delegate(.didFinishDeleting(existing)) }
+			return .send(.delegate(.didFinishDeleting(existing)))
 		case .failure:
 			// TODO: handle failure deleting record
 			return .none

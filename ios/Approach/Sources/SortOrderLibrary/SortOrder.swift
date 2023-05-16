@@ -39,7 +39,7 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 				case let .didTapOption(ordering):
 					state.ordering = ordering
 					state.isSheetPresented = false
-					return .task { .delegate(.didTapOption(ordering)) }
+					return .send(.delegate(.didTapOption(ordering)))
 
 				case let .setSheetPresented(isPresented):
 					state.isSheetPresented = isPresented
