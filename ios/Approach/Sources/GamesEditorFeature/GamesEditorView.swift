@@ -2,6 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
+import ResourcePickerLibrary
 import ScoreSheetFeature
 import StringsLibrary
 import SwiftUI
@@ -26,6 +27,7 @@ public struct GamesEditorView: View {
 
 		let isGameDetailsPresented: Bool
 		let isBallPickerPresented: Bool
+		let isOpponentPickerPresented: Bool
 		let isSettingsPresented: Bool
 
 		let isScoreSheetVisible: Bool
@@ -39,6 +41,7 @@ public struct GamesEditorView: View {
 			self.backdropSize = state.backdropSize
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isBallPickerPresented = state.sheet == .presenting(.ballPicker)
+			self.isOpponentPickerPresented = state.sheet == .presenting(.opponentPicker)
 			self.isSettingsPresented = state.sheet == .presenting(.settings)
 			self.isScoreSheetVisible = state.isScoreSheetVisible
 			self.bowlerName = state.game?.bowler.name
@@ -53,10 +56,12 @@ public struct GamesEditorView: View {
 
 		case setGameDetails(isPresented: Bool)
 		case setBallPicker(isPresented: Bool)
+		case setOpponentPicker(isPresented: Bool)
 		case setSettings(isPresented: Bool)
 
 		case didDismissGameDetails
 		case didDismissBallPicker
+		case didDismissOpponentPicker
 		case didDismissGamesSettings
 	}
 
@@ -108,6 +113,14 @@ public struct GamesEditorView: View {
 				content: {
 					ballPicker
 						.presentationDetents([.medium])
+				}
+			)
+			.sheet(
+				isPresented: viewStore.binding(get: \.isOpponentPickerPresented, send: ViewAction.setOpponentPicker(isPresented:)),
+				onDismiss: { viewStore.send(.didDismissOpponentPicker) },
+				content: {
+					opponentPicker
+						.presentationDetents([.large])
 				}
 			)
 			.sheet(
@@ -180,6 +193,16 @@ public struct GamesEditorView: View {
 		}
 	}
 
+	private var opponentPicker: some View {
+		NavigationView {
+			ResourcePickerView(
+				store: store.scope(state: \.opponentPicker, action: /GamesEditor.Action.InternalAction.opponentPicker)
+			) {
+				Text($0.name)
+			}
+		}
+	}
+
 	private var gamesSettings: some View {
 		NavigationView {
 			IfLetStore(store.scope(state: \.gamesSettings, action: /GamesEditor.Action.InternalAction.gamesSettings)) {
@@ -229,11 +252,15 @@ extension GamesEditor.Action {
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setBallPicker(isPresented):
 			self = .view(.setBallPicker(isPresented: isPresented))
+		case let .setOpponentPicker(isPresented):
+			self = .view(.setOpponentPicker(isPresented: isPresented))
 		case let .setSettings(isPresented):
 			self = .view(.setGamesSettings(isPresented: isPresented))
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissBallPicker:
+			self = .view(.didDismissOpenSheet)
+		case .didDismissOpponentPicker:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGamesSettings:
 			self = .view(.didDismissOpenSheet)

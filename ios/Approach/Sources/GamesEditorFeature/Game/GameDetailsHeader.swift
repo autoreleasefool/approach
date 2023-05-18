@@ -59,6 +59,7 @@ extension GameDetailsHeader.State {
 		case bowler(name: String, id: Bowler.ID)
 		case roll(rollIndex: Int)
 		case frame(frameIndex: Int)
+		case game(gameIndex: Int, bowler: Bowler.ID, game: Game.ID)
 
 		public var description: String {
 			switch self {
@@ -68,6 +69,8 @@ extension GameDetailsHeader.State {
 				return Strings.Roll.title(rollIndex + 1)
 			case let .frame(frameIndex):
 				return Strings.Frame.title(frameIndex + 1)
+			case let .game(gameIndex, _, _):
+				return Strings.Game.titleWithOrdinal(gameIndex + 1)
 			}
 		}
 	}

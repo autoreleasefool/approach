@@ -7,8 +7,10 @@ import Foundation
 import FramesRepositoryInterface
 import GamesRepositoryInterface
 import ModelsLibrary
+import ResourcePickerLibrary
 import ScoreSheetFeature
 import ScoringServiceInterface
+import StringsLibrary
 import SwiftUI
 
 public struct GamesEditor: Reducer {
@@ -45,6 +47,7 @@ public struct GamesEditor: Reducer {
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _ballPicker: BallPicker.State
+		public var _opponentPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State
 
 		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
 			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
@@ -55,6 +58,12 @@ public struct GamesEditor: Reducer {
 			self.currentBowlerId = currentBowlerId
 			self.currentGameId = bowlerGameIds[currentBowlerId]!.first!
 			self._ballPicker = .init(forBowler: currentBowlerId, selected: nil)
+			self._opponentPicker = .init(
+				selected: [],
+				query: .init(()),
+				limit: 1,
+				showsCancelHeaderButton: false
+			)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -69,6 +78,7 @@ public struct GamesEditor: Reducer {
 			case didDismissOpenSheet
 			case setGameDetails(isPresented: Bool)
 			case setBallPicker(isPresented: Bool)
+			case setOpponentPicker(isPresented: Bool)
 			case setGamesSettings(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
@@ -90,6 +100,7 @@ public struct GamesEditor: Reducer {
 			case rollEditor(RollEditor.Action)
 			case scoreSheet(ScoreSheet.Action)
 			case ballPicker(BallPicker.Action)
+			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 		}
 
 		case view(ViewAction)
@@ -121,6 +132,10 @@ public struct GamesEditor: Reducer {
 
 		Scope(state: \.ballPicker, action: /Action.internal..Action.InternalAction.ballPicker) {
 			BallPicker()
+		}
+
+		Scope(state: \.opponentPicker, action: /Action.internal..Action.InternalAction.opponentPicker) {
+			ResourcePicker { _ in bowlers.opponents(ordered: .byName) }
 		}
 
 		Reduce<State, Action> { state, action in
@@ -164,6 +179,10 @@ public struct GamesEditor: Reducer {
 
 				case let .setGamesSettings(isPresented):
 					state.sheet.handle(isPresented: isPresented, for: .settings)
+					return .none
+
+				case let .setOpponentPicker(isPresented):
+					state.sheet.handle(isPresented: isPresented, for: .opponentPicker)
 					return .none
 				}
 
@@ -230,6 +249,15 @@ public struct GamesEditor: Reducer {
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
 					return .none
+
+				case let .opponentPicker(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.sheet.hide(.opponentPicker)
+						guard state.isEditable && state.gameDetails != nil else { return .none }
+						return state.gameDetails!.setMatchPlay(opponent: state._opponentPicker.selectedResources?.first)
+							.map { .internal(.gameDetails($0)) }
+					}
 
 				case let .ballPicker(.delegate(delegateAction)):
 					switch delegateAction {
@@ -300,6 +328,10 @@ public struct GamesEditor: Reducer {
 
 				case let .gameDetails(.delegate(delegateAction)):
 					switch delegateAction {
+					case .didRequestOpponentPicker:
+						state.sheet.transition(to: .opponentPicker)
+						return .none
+
 					case .didEditGame:
 						return save(game: state.game)
 					}
@@ -322,6 +354,10 @@ public struct GamesEditor: Reducer {
 							state.currentRollIndex = rollIndex
 							state.frames?[state.currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
 							return save(frame: state.frames?[state.currentFrameIndex])
+						case let .game(_, bowler, game):
+							state.currentBowlerId = bowler
+							state.currentGameId = game
+							return loadGameDetails(state: &state)
 						}
 					}
 
@@ -347,6 +383,9 @@ public struct GamesEditor: Reducer {
 					return .none
 
 				case .gamesSettings(.view), .gamesSettings(.internal):
+					return .none
+
+				case .opponentPicker(.view), .opponentPicker(.internal):
 					return .none
 				}
 
@@ -479,6 +518,7 @@ extension GamesEditor.State {
 				next = .frame(frameIndex: currentFrameIndex + 1)
 			} else {
 				next = nil
+				// TODO: figure out when to show next game
 			}
 
 			return .init(game: game, next: next)
@@ -542,6 +582,22 @@ extension GamesEditor.State {
 	}
 }
 
+// MARK: - OpponentPicker
+
+extension GamesEditor.State {
+	var opponentPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State {
+		get {
+			var picker = _opponentPicker
+			picker.initialSelection = Set([game?.matchPlay?.opponent?.id].compactMap { $0 })
+			return picker
+		}
+		set {
+			guard isEditable else { return }
+			_opponentPicker = newValue
+		}
+	}
+}
+
 // MARK: - RollEditor
 
 extension GamesEditor.State {
@@ -591,6 +647,7 @@ extension GamesEditor.State {
 		case gameDetails
 		case ballPicker
 		case settings
+		case opponentPicker
 
 		static let `default`: Self = .gameDetails
 	}
@@ -638,5 +695,11 @@ extension GamesEditor.State {
 				break
 			}
 		}
+	}
+}
+
+extension Bowler.Summary: PickableResource {
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Opponent.title : Strings.Opponent.List.title
 	}
 }

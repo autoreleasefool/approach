@@ -247,6 +247,7 @@ let package = Package(
 				"FramesRepositoryInterface",
 				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
+				"ResourcePickerLibrary",
 				"ScoreSheetFeature",
 			]
 		),

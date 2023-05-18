@@ -470,6 +470,28 @@ public enum Strings {
     /// List
     public static let results = Strings.tr("Localizable", "list.results", fallback: "Results")
   }
+  public enum MatchPlay {
+    /// Record results?
+    public static let record = Strings.tr("Localizable", "matchPlay.record", fallback: "Record results?")
+    /// Match Play
+    public static let title = Strings.tr("Localizable", "matchPlay.title", fallback: "Match Play")
+    public enum Properties {
+      /// Opponent's score
+      public static let opponentScore = Strings.tr("Localizable", "matchPlay.properties.opponentScore", fallback: "Opponent's score")
+      /// Outcome
+      public static let result = Strings.tr("Localizable", "matchPlay.properties.result", fallback: "Outcome")
+      public enum Result {
+        /// Lost
+        public static let lost = Strings.tr("Localizable", "matchPlay.properties.result.lost", fallback: "Lost")
+        /// None
+        public static let `none` = Strings.tr("Localizable", "matchPlay.properties.result.none", fallback: "None")
+        /// Tied
+        public static let tied = Strings.tr("Localizable", "matchPlay.properties.result.tied", fallback: "Tied")
+        /// Won
+        public static let won = Strings.tr("Localizable", "matchPlay.properties.result.won", fallback: "Won")
+      }
+    }
+  }
   public enum Opponent {
     /// Opponents
     public static let title = Strings.tr("Localizable", "opponent.title", fallback: "Opponent")

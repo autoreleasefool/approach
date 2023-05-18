@@ -49,6 +49,16 @@
 "opponent.error.empty.title" = "No opponents found";
 "opponent.error.empty.message" = "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.";
 
+/* Match Play */
+"matchPlay.title" = "Match Play";
+"matchPlay.record" = "Record results?";
+"matchPlay.properties.opponentScore" = "Opponent's score";
+"matchPlay.properties.result" = "Outcome";
+"matchPlay.properties.result.won" = "Won";
+"matchPlay.properties.result.tied" = "Tied";
+"matchPlay.properties.result.lost" = "Lost";
+"matchPlay.properties.result.none" = "None";
+
 /* Gear */
 
 "gear.title" = "Gear";
