@@ -13,6 +13,8 @@ import XCTest
 final class GearRepositoryTests: XCTestCase {
 	@Dependency(\.gear) var gear
 
+	// MARK: - List
+
 	func testList_ReturnsAllGear() async throws {
 		// Given a database with two gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
@@ -80,6 +82,102 @@ final class GearRepositoryTests: XCTestCase {
 		])
 	}
 
+	func testList_OrderByRecentlyUsed_ReturnsOrderedList() async throws {
+		// Given a database with two gear
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
+		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .towel, bowlerId: UUID(1))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		recentContinuation.yield([UUID(2), UUID(0), UUID(1)])
+
+		// Fetching the gear
+		let gear = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.gear = .liveValue
+		} operation: {
+			self.gear.list(ordered: .byRecentlyUsed)
+		}
+		var iterator = gear.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the gear ordered by ids
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(2), name: "Green", kind: .towel, ownerName: "Sarah"),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah"),
+		])
+	}
+
+	// MARK: - Overview
+
+	func testOverview_ReturnsGear() async throws {
+		// Given a database with four gear
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
+		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
+		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		recentContinuation.yield([])
+
+		// Fetching the gear
+		let gear = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.gear = .liveValue
+		} operation: {
+			self.gear.overview()
+		}
+		var iterator = gear.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the expected gear
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah"),
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph"),
+			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah"),
+		])
+	}
+
+	func testOverview_WithRecentlyUsedGear_ReturnsGearOrderedByRecentlyUsed() async throws {
+		// Given a database with four gear
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
+		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
+		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		recentContinuation.yield([UUID(2), UUID(3)])
+
+		// Fetching the gear
+		let gear = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.gear = .liveValue
+		} operation: {
+			self.gear.overview()
+		}
+		var iterator = gear.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the expected gear
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph"),
+			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah"),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah"),
+		])
+	}
+
+	// MARK: - Create
+
 	func testCreate_WhenGearExists_ThrowsError() async throws {
 		// Given a database with an existing gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
@@ -132,6 +230,8 @@ final class GearRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.kind, .bowlingBall)
 	}
 
+	// MARK: - Update
+
 	func testUpdate_WhenGearExists_UpdatesGear() async throws {
 		// Given a database with an existing gear
 		let gear1 = Gear.Database(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: nil)
@@ -178,6 +278,8 @@ final class GearRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 0)
 	}
 
+	// MARK: - Edit
+
 	func testEdit_WhenGearExists_ReturnsGear() async throws {
 		// Given a database with a gear
 		let gear = Gear.Database(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
@@ -213,6 +315,8 @@ final class GearRepositoryTests: XCTestCase {
 		// Returns nil
 		XCTAssertNil(editable)
 	}
+
+	// MARK: - Delete
 
 	func testDelete_WhenIdExists_DeletesGear() async throws {
 		// Given a database with 2 gear
