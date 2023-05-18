@@ -41,3 +41,38 @@ public func sort<T: Identifiable>(
 		continuation.onTermination = { _ in task.cancel() }
 	}
 }
+
+public func `prefix`<T>(
+	_ itemsStream: AsyncStream<[T]>,
+	ofSize: Int
+) -> AsyncStream<[T]> {
+	.init { continutation in
+		let task = Task {
+			for await items in itemsStream {
+				continutation.yield(Array(items.prefix(ofSize)))
+			}
+		}
+
+		continutation.onTermination = { _ in task.cancel() }
+	}
+}
+
+
+public func `prefix`<T>(
+	_ itemsStream: AsyncThrowingStream<[T], Error>,
+	ofSize: Int
+) -> AsyncThrowingStream<[T], Error> {
+	.init { continutation in
+		let task = Task {
+			do {
+				for try await items in itemsStream {
+					continutation.yield(Array(items.prefix(ofSize)))
+				}
+			} catch {
+				continutation.finish(throwing: error)
+			}
+		}
+
+		continutation.onTermination = { _ in task.cancel() }
+	}
+}

@@ -33,6 +33,18 @@ extension AlleysRepository: DependencyKey {
 					return sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys))
 				}
 			},
+			overview: {
+				let alleys = database.reader().observe {
+					try Alley.Database
+						.all()
+						.orderByName()
+						.including(optional: Alley.Database.location)
+						.asRequest(of: Alley.Summary.self)
+						.fetchAll($0)
+				}
+
+				return prefix(sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys)), ofSize: 3)
+			},
 			load: { id in
 				database.reader().observeOne {
 					try Alley.Database
