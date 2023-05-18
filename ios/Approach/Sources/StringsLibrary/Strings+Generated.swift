@@ -163,13 +163,13 @@ public enum Strings {
   public enum App {
     public enum Tabs {
       /// Tabs
-      public static let alley = Strings.tr("Localizable", "app.tabs.alley", fallback: "Alleys")
-      /// Gear
-      public static let gear = Strings.tr("Localizable", "app.tabs.gear", fallback: "Gear")
-      /// Scoresheet
-      public static let scoresheet = Strings.tr("Localizable", "app.tabs.scoresheet", fallback: "Scoresheet")
+      public static let accessories = Strings.tr("Localizable", "app.tabs.accessories", fallback: "Accessories")
+      /// Overview
+      public static let overview = Strings.tr("Localizable", "app.tabs.overview", fallback: "Overview")
       /// Settings
       public static let settings = Strings.tr("Localizable", "app.tabs.settings", fallback: "Settings")
+      /// Statistics
+      public static let statistics = Strings.tr("Localizable", "app.tabs.statistics", fallback: "Statistics")
     }
   }
   public enum Ball {

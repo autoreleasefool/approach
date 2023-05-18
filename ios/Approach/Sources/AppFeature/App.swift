@@ -1,20 +1,16 @@
-import AlleysListFeature
 import AnalyticsServiceInterface
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
-import GearListFeature
 import SettingsFeature
 
 public struct App: Reducer {
 	public struct State: Equatable {
 		public var tabs: [Tab] = []
-		public var selectedTab: Tab = .bowlers
+		public var selectedTab: Tab = .overview
 		public var bowlersList = BowlersList.State()
-		public var alleysList = AlleysList.State()
-		public var gearList = GearList.State()
 		public var settings = Settings.State()
 
 		public init() {}
@@ -28,8 +24,6 @@ public struct App: Reducer {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didChangeTabs([Tab])
-			case alleysList(AlleysList.Action)
-			case gearList(GearList.Action)
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
 		}
@@ -39,18 +33,18 @@ public struct App: Reducer {
 	}
 
 	public enum Tab: String, Identifiable, CaseIterable, CustomStringConvertible {
-		case bowlers
-		case alleys
-		case gear
+		case overview
+		case statistics
+		case accessories
 		case settings
 
 		public var id: String { rawValue }
 		public var description: String { rawValue }
 		public var featureFlag: FeatureFlag {
 			switch self {
-			case .alleys: return .alleys
-			case .bowlers: return .scoreSheetTab
-			case .gear: return .gear
+			case .overview: return .overviewTab
+			case .statistics: return .statisticsTab
+			case .accessories: return .accessoriesTab
 			case .settings: return .settingsTab
 			}
 		}
@@ -64,12 +58,6 @@ public struct App: Reducer {
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
 			BowlersList()
-		}
-		Scope(state: \.alleysList, action: /Action.internal..Action.InternalAction.alleysList) {
-			AlleysList()
-		}
-		Scope(state: \.gearList, action: /Action.internal..Action.InternalAction.gearList) {
-			GearList()
 		}
 		Scope(state: \.settings, action: /Action.internal..Action.InternalAction.settings) {
 			Settings()
@@ -112,28 +100,10 @@ public struct App: Reducer {
 						return .none
 					}
 
-				case let .alleysList(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
-				case let .gearList(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
 				case .bowlersList(.view), .bowlersList(.internal):
 					return .none
 
 				case .settings(.view), .settings(.internal):
-					return .none
-
-				case .alleysList(.view), .alleysList(.internal):
-					return .none
-
-				case .gearList(.view), .gearList(.internal):
 					return .none
 				}
 

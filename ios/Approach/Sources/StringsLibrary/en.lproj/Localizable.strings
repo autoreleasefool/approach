@@ -219,10 +219,10 @@
 
 /* Tabs */
 
-"app.tabs.alley" = "Alleys";
-"app.tabs.gear" = "Gear";
+"app.tabs.accessories" = "Accessories";
+"app.tabs.overview" = "Overview";
 "app.tabs.settings" = "Settings";
-"app.tabs.scoresheet" = "Scoresheet";
+"app.tabs.statistics" = "Statistics";
 "tab" = "Tab";
 
 /* Editor & Forms */

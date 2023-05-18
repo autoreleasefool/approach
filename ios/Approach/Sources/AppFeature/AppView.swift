@@ -1,9 +1,7 @@
-import AlleysListFeature
 import AssetsLibrary
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
-import GearListFeature
 import SettingsFeature
 import StringsLibrary
 import SwiftUI
@@ -41,14 +39,14 @@ public struct AppView: View {
 					ForEach(viewStore.tabs) { tab in
 						NavigationView {
 							switch tab {
-							case .alleys:
-								AlleysListView(store: store.scope(state: \.alleysList, action: /App.Action.InternalAction.alleysList))
-							case .bowlers:
+							case .overview:
 								BowlersListView(store: store.scope(state: \.bowlersList, action: /App.Action.InternalAction.bowlersList))
+							case .statistics:
+								EmptyView()
+							case .accessories:
+								EmptyView()
 							case .settings:
 								SettingsView(store: store.scope(state: \.settings, action: /App.Action.InternalAction.settings))
-							case .gear:
-								GearListView(store: store.scope(state: \.gearList, action: /App.Action.InternalAction.gearList))
 							}
 						}
 						.tag(tab)
@@ -70,27 +68,27 @@ public struct AppView: View {
 extension App.Tab {
 	var name: String {
 		switch self {
-		case .alleys:
-			return Strings.App.Tabs.alley
+		case .overview:
+			return Strings.App.Tabs.overview
 		case .settings:
 			return Strings.App.Tabs.settings
-		case .bowlers:
-			return Strings.App.Tabs.scoresheet
-		case .gear:
-			return Strings.App.Tabs.gear
+		case .accessories:
+			return Strings.App.Tabs.accessories
+		case .statistics:
+			return Strings.App.Tabs.statistics
 		}
 	}
 
 	var image: String {
 		switch self {
-		case .alleys:
-			return "building.columns"
+		case .accessories:
+			return "bag"
 		case .settings:
 			return "gear"
-		case .bowlers:
+		case .overview:
 			return "figure.bowling"
-		case .gear:
-			return "bag"
+		case .statistics:
+			return "chart.bar"
 		}
 	}
 }

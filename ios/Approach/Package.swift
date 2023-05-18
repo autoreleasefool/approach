@@ -164,9 +164,7 @@ let package = Package(
 		.target(
 			name: "AppFeature",
 			dependencies: [
-				"AlleysListFeature",
 				"BowlersListFeature",
-				"GearListFeature",
 				"SettingsFeature",
 			]
 		),
