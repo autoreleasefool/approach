@@ -13,7 +13,7 @@ public struct LeaguesRepository: Sendable {
 		Bowler.ID,
 		League.Recurrence?,
 		League.Ordering
-	) -> AsyncThrowingStream<[League.Summary], Error>
+	) -> AsyncThrowingStream<[League.List], Error>
 	public var seriesHost: @Sendable(League.ID) async throws -> League.SeriesHost?
 	public var edit: @Sendable (League.ID) async throws -> League.Edit?
 	public var create: @Sendable (League.Create) async throws -> Void
@@ -25,7 +25,7 @@ public struct LeaguesRepository: Sendable {
 			Bowler.ID,
 			League.Recurrence?,
 			League.Ordering
-		) -> AsyncThrowingStream<[League.Summary], Error>,
+		) -> AsyncThrowingStream<[League.List], Error>,
 		seriesHost: @escaping @Sendable(League.ID) async throws -> League.SeriesHost?,
 		edit: @escaping @Sendable (League.ID) async throws -> League.Edit?,
 		create: @escaping @Sendable (League.Create) async throws -> Void,
@@ -44,7 +44,7 @@ public struct LeaguesRepository: Sendable {
 		bowledBy: Bowler.ID,
 		withRecurrence: League.Recurrence? = nil,
 		ordering: League.Ordering
-	) -> AsyncThrowingStream<[League.Summary], Error> {
+	) -> AsyncThrowingStream<[League.List], Error> {
 		self.list(bowledBy, withRecurrence, ordering)
 	}
 }

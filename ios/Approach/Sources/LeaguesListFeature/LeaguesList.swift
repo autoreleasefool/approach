@@ -10,7 +10,7 @@ import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension League.Summary: ResourceListItem {}
+extension League.List: ResourceListItem {}
 
 extension League.Ordering: CustomStringConvertible {
 	public var description: String {
@@ -25,12 +25,12 @@ public struct LeaguesList: Reducer {
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
-		public var list: ResourceList<League.Summary, League.Summary.FetchRequest>.State
+		public var list: ResourceList<League.List, League.List.FetchRequest>.State
 		public var sortOrder: SortOrder<League.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 		@PresentationState public var editor: LeagueEditor.State?
 
 		public var isFiltersPresented = false
-		public var filter: League.Summary.FetchRequest.Filter
+		public var filter: League.List.FetchRequest.Filter
 
 		public var selection: Identified<League.ID, SeriesList.State>?
 
@@ -72,7 +72,7 @@ public struct LeaguesList: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadEditableLeague(League.Edit)
 			case didLoadSeriesLeague(League.SeriesHost)
-			case list(ResourceList<League.Summary, League.Summary.FetchRequest>.Action)
+			case list(ResourceList<League.List, League.List.FetchRequest>.Action)
 			case editor(PresentationAction<LeagueEditor.Action>)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)

@@ -121,8 +121,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 1 bowler
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		// 2 leagues
-		let league1 = League.Database.mock(id: UUID(0), name: "Skyview", excludeFromStatistics: .include)
-		let league2 = League.Database.mock(id: UUID(1), name: "Grandview", excludeFromStatistics: .exclude)
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", excludeFromStatistics: .include)
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors", excludeFromStatistics: .exclude)
 		// with series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date())
@@ -157,8 +157,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 1 bowler
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		// 2 leagues
-		let league1 = League.Database.mock(id: UUID(0), name: "Skyview")
-		let league2 = League.Database.mock(id: UUID(1), name: "Grandview")
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
 		// with series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(), excludeFromStatistics: .include)
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(), excludeFromStatistics: .exclude)
@@ -193,8 +193,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Given a database with 1 bowler
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		// 2 leagues
-		let league1 = League.Database.mock(id: UUID(0), name: "Skyview")
-		let league2 = League.Database.mock(id: UUID(1), name: "Grandview")
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
 		// with series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date())

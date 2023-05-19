@@ -53,7 +53,12 @@ public struct LeaguesListView: View {
 						send: LeaguesListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					Text(league.name)
+					HStack {
+						Text(league.name)
+						Spacer()
+						Text(format(average: league.average))
+							.font(.caption)
+					}
 				}
 			}
 			.navigationTitle(viewStore.bowlerName)

@@ -26,3 +26,32 @@ extension League {
 		public var id: String { rawValue }
 	}
 }
+
+extension League {
+	public struct Summary: Identifiable, Codable, Equatable {
+		public let id: League.ID
+		public let name: String
+	}
+}
+
+extension League {
+	public struct SeriesHost: Identifiable, Codable, Equatable {
+		public let id: League.ID
+		public let name: String
+		public let numberOfGames: Int?
+		public let alley: Alley.Summary?
+		public let excludeFromStatistics: League.ExcludeFromStatistics
+	}
+}
+
+extension League {
+	public struct List: Identifiable, Codable, Equatable {
+		public let id: League.ID
+		public let name: String
+		public let average: Double?
+
+		public var summary: Summary {
+			.init(id: id, name: name)
+		}
+	}
+}

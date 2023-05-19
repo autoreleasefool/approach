@@ -17,12 +17,14 @@ extension LeaguesRepository: DependencyKey {
 		return Self(
 			list: { bowler, recurrence, ordering in
 				let leagues = database.reader().observe {
-					try League.Database
+					let averageScore = League.Database.gamesForStatistics.average(Game.Database.Columns.score).forKey("average")
+					return try League.Database
 						.all()
 						.orderByName()
 						.bowled(byBowler: bowler)
 						.filter(byRecurrence: recurrence)
-						.asRequest(of: League.Summary.self)
+						.annotated(with: averageScore)
+						.asRequest(of: League.List.self)
 						.fetchAll($0)
 				}
 

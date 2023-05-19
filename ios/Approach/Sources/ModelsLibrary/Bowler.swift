@@ -34,11 +34,5 @@ extension Bowler {
 		public var summary: Summary {
 			.init(id: id, name: name)
 		}
-
-		public init(id: Bowler.ID, name: String, average: Double?) {
-			self.id = id
-			self.name = name
-			self.average = average
-		}
 	}
 }
