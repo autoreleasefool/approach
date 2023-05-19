@@ -256,6 +256,10 @@ dependencies = [ "ComposableArchitecture" ]
 
 # External Dependencies
 
+[dependencies.Algorithms]
+url = "https://github.com/apple/swift-algorithms.git"
+from = "1.0.0"
+
 [dependencies.AsyncAlgorithms]
 url = "https://github.com/apple/swift-async-algorithms.git"
 from = "0.0.4"

@@ -102,6 +102,7 @@ let package = Package(
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
 	dependencies: [
+		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "fc17996ded63b136741ab2e0c0e0d549a8486adc"),
