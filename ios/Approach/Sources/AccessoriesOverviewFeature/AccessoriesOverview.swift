@@ -118,7 +118,7 @@ public struct AccessoriesOverview: Reducer {
 						}
 
 					case .delete:
-						return .run { send in
+						return .run { _ in
 							try await self.alleys.delete(id)
 						} catch: { error, send in
 							await send(.internal(.errorDeletingAlley(.init(error))))
@@ -126,7 +126,7 @@ public struct AccessoriesOverview: Reducer {
 					}
 
 				case .didTapViewAllGear:
-					state.gearList = .init()
+					state.gearList = .init(kind: nil)
 					return .none
 
 				case .didTapViewAllAlleys:
@@ -142,7 +142,7 @@ public struct AccessoriesOverview: Reducer {
 					return .none
 
 				case let .didTapGearKind(kind):
-					// TODO: navigate to gear with kind filter
+					state.gearList = .init(kind: kind)
 					return .none
 				}
 

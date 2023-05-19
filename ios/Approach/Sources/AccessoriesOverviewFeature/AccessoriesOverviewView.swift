@@ -89,7 +89,7 @@ public struct AccessoriesOverviewView: View {
 												.resizable()
 												.scaledToFit()
 												.frame(width: .smallIcon, height: .smallIcon)
-											Text(String(describing: kind))
+											Text(kind.pluralDescription)
 												.frame(maxWidth: .infinity, alignment: .leading)
 										}
 										.padding()
@@ -177,6 +177,17 @@ extension AccessoriesOverview.Action {
 			self = .view(.didSwipeGear(action, gear))
 		case let .didSwipeAlley(action, alley):
 			self = .view(.didSwipeAlley(action, alley))
+		}
+	}
+}
+
+extension Gear.Kind {
+	var pluralDescription: String {
+		switch self {
+		case .shoes: return Strings.Gear.Properties.Kind.shoes
+		case .bowlingBall: return Strings.Gear.Properties.Kind.bowlingBalls
+		case .towel: return Strings.Gear.Properties.Kind.towels
+		case .other: return Strings.other
 		}
 	}
 }

@@ -23,11 +23,15 @@ extension Gear.Ordering: CustomStringConvertible {
 
 public struct GearList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Gear.Summary, Gear.Ordering>.State
+		public var list: ResourceList<Gear.Summary, Query>.State
 		public var sortOrder: SortOrder<Gear.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 		@PresentationState public var editor: GearEditor.State?
 
-		public init() {
+		public var isFiltersPresented = false
+		public var kindFilter: Gear.Kind?
+
+		public init(kind: Gear.Kind?) {
+			self.kindFilter = kind
 			self.list = .init(
 				features: [
 					.add,
@@ -37,7 +41,7 @@ public struct GearList: Reducer {
 						try await gear.delete($0.id)
 					}),
 				],
-				query: sortOrder.ordering,
+				query: .init(kind: kindFilter, sortOrder: sortOrder.ordering),
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
 					image: .emptyGear,
@@ -51,19 +55,27 @@ public struct GearList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didAppear
+			case didTapFilterButton
+			case setFilterSheet(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableGear(Gear.Edit)
-			case list(ResourceList<Gear.Summary, Gear.Ordering>.Action)
+			case list(ResourceList<Gear.Summary, Query>.Action)
 			case editor(PresentationAction<GearEditor.Action>)
 			case sortOrder(SortOrder<Gear.Ordering>.Action)
+			case filters(GearFilter.Action)
+
 		}
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
+	}
+
+	public struct Query: Equatable {
+		public var kind: Gear.Kind?
+		public var sortOrder: Gear.Ordering
 	}
 
 	public init() {}
@@ -80,15 +92,24 @@ public struct GearList: Reducer {
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList {
-				gear.list(ownedBy: nil, ofKind: nil, ordered: $0)
+				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.sortOrder)
 			}
+		}
+
+		Scope(state: \.filters, action: /Action.internal..Action.InternalAction.filters) {
+			GearFilter()
 		}
 
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
+				case .didTapFilterButton:
+					state.isFiltersPresented = true
+					return .none
+
+				case let .setFilterSheet(isPresented):
+					state.isFiltersPresented = isPresented
 					return .none
 				}
 
@@ -121,7 +142,18 @@ public struct GearList: Reducer {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapOption:
-						return state.list.updateQuery(to: state.sortOrder.ordering)
+						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.sortOrder.ordering))
+							.map { .internal(.list($0)) }
+					}
+
+				case let .filters(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didApplyFilters:
+						state.isFiltersPresented = false
+						return .none
+
+					case .didChangeFilters:
+						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.sortOrder.ordering))
 							.map { .internal(.list($0)) }
 					}
 
@@ -133,6 +165,9 @@ public struct GearList: Reducer {
 					}
 
 				case .list(.internal), .list(.view):
+					return .none
+
+				case .filters(.internal), .filters(.view), .filters(.binding):
 					return .none
 
 				case .sortOrder(.internal), .sortOrder(.view):
@@ -149,5 +184,12 @@ public struct GearList: Reducer {
 		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			GearEditor()
 		}
+	}
+}
+
+extension GearList.State {
+	var filters: GearFilter.State {
+		get { .init(kind: kindFilter) }
+		set { kindFilter = newValue.kind }
 	}
 }

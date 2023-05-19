@@ -14,11 +14,18 @@ public struct GearListView: View {
 	let store: StoreOf<GearList>
 
 	struct ViewState: Equatable {
-		init(state: GearList.State) {}
+		let isFiltersPresented: Bool
+		let isAnyFilterActive: Bool
+
+		init(state: GearList.State) {
+			self.isFiltersPresented = state.isFiltersPresented
+			self.isAnyFilterActive = state.kindFilter != nil
+		}
 	}
 
 	enum ViewAction {
-		case didAppear
+		case didTapFilterButton
+		case setFilterSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<GearList>) {
@@ -35,6 +42,11 @@ public struct GearListView: View {
 			.navigationTitle(Strings.Gear.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
+					FilterButton(isActive: viewStore.isAnyFilterActive) {
+						viewStore.send(.didTapFilterButton)
+					}
+				}
+				ToolbarItem(placement: .navigationBarTrailing) {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /GearList.Action.InternalAction.sortOrder))
 				}
 			}
@@ -43,7 +55,15 @@ public struct GearListView: View {
 					GearEditorView(store: scopedStore)
 				}
 			}
-			.onAppear { viewStore.send(.didAppear) }
+			.sheet(isPresented: viewStore.binding(
+				get: \.isFiltersPresented,
+				send: ViewAction.setFilterSheet(isPresented:)
+			)) {
+				NavigationView {
+					GearFilterView(store: store.scope(state: \.filters, action: /GearList.Action.InternalAction.filters))
+				}
+				.presentationDetents([.medium, .large])
+			}
 		}
 	}
 }
@@ -51,8 +71,10 @@ public struct GearListView: View {
 extension GearList.Action {
 	init(action: GearListView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
+		case .didTapFilterButton:
+			self = .view(.setFilterSheet(isPresented: true))
+		case let .setFilterSheet(isPresented):
+			self = .view(.setFilterSheet(isPresented: isPresented))
 		}
 	}
 }
