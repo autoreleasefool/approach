@@ -119,12 +119,16 @@ public struct AccessoriesOverviewView: View {
 				}
 
 				Section {
-					ForEach(viewStore.gear) { gear in
-						Gear.View(gear: gear)
-							.swipeActions(allowsFullSwipe: true) {
-								EditButton { viewStore.send(.didSwipeGear(.edit, gear.id)) }
-								DeleteButton { viewStore.send(.didSwipeGear(.delete, gear.id)) }
-							}
+					if viewStore.gear.isEmpty {
+						Text(Strings.Gear.Error.Empty.message)
+					} else {
+						ForEach(viewStore.gear) { gear in
+							Gear.View(gear: gear)
+								.swipeActions(allowsFullSwipe: true) {
+									EditButton { viewStore.send(.didSwipeGear(.edit, gear.id)) }
+									DeleteButton { viewStore.send(.didSwipeGear(.delete, gear.id)) }
+								}
+						}
 					}
 				}
 			}
