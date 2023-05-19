@@ -11,16 +11,18 @@ extension Game {
 		public let league: LeagueInfo
 		public let series: SeriesInfo
 
+		public var score: Int
 		public var locked: Game.Lock
-		public var manualScore: Int?
+		public var scoringMethod: Game.ScoringMethod
 		public var excludeFromStatistics: Game.ExcludeFromStatistics
 		public var matchPlay: MatchPlay.Edit?
 
 		public init(
 			id: Game.ID,
 			index: Int,
+			score: Int,
 			locked: Game.Lock,
-			manualScore: Int?,
+			scoringMethod: Game.ScoringMethod,
 			excludeFromStatistics: Game.ExcludeFromStatistics,
 			matchPlay: MatchPlay.Edit?,
 			bowler: BowlerInfo,
@@ -29,8 +31,9 @@ extension Game {
 		) {
 			self.id = id
 			self.index = index
+			self.score = score
 			self.locked = locked
-			self.manualScore = manualScore
+			self.scoringMethod = scoringMethod
 			self.excludeFromStatistics = excludeFromStatistics
 			self.matchPlay = matchPlay
 			self.series = series

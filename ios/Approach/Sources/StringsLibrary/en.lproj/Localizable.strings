@@ -172,6 +172,11 @@
 "game.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.";
 "game.editor.fields.lock.label" = "Lock for editing";
 "game.editor.fields.lock.help" = "Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.";
+"game.editor.fields.scoringMethod.label" = "Set manual score?";
+"game.editor.fields.scoringMethod.help" = "This game's frames will be hidden and ignored in all statistics.";
+"game.editor.fields.manualScore.title" = "Set manual score";
+"game.editor.fields.manualScore.prompt" = "Score";
+"game.editor.fields.manualScore.caption" = "Score set manually";
 "game.editor.picker.switch" = "Switch game";
 "game.editor.bowlers.dragToReorder" = "Drag to reorder";
 

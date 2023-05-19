@@ -14,6 +14,9 @@ import ViewsLibrary
 public struct GameDetails: Reducer {
 	public struct State: Equatable {
 		public var game: Game.Edit
+		public var isScoreAlertPresented = false
+		public var didJustToggleScoringMethod = false
+		public var alertScore: Int = 0
 
 		init(game: Game.Edit) {
 			self.game = game
@@ -25,12 +28,19 @@ public struct GameDetails: Reducer {
 			case didToggleLock
 			case didToggleExclude
 			case didToggleMatchPlay
+			case didToggleScoringMethod
+			case didTapManualScore
+			case didDismissScoreAlert
+			case didTapSaveScore
+			case didTapCancelScore
 			case didSetMatchPlayResult(MatchPlay.Result?)
 			case didSetMatchPlayScore(String)
+			case didSetAlertScore(String)
 		}
 		public enum DelegateAction: Equatable {
 			case didRequestOpponentPicker
 			case didEditGame
+			case didClearManualScore
 		}
 		public enum InternalAction: Equatable {
 			case matchPlayUpdateError(AlwaysEqual<Error>)
@@ -63,6 +73,37 @@ public struct GameDetails: Reducer {
 					state.game.matchPlay?.result = result
 					return state.saveMatchPlay()
 
+				case .didToggleScoringMethod:
+					return toggleScoringMethod(in: &state)
+
+				case .didDismissScoreAlert:
+					state.didJustToggleScoringMethod = false
+					state.isScoreAlertPresented = false
+					return .none
+
+				case .didTapSaveScore:
+					state.game.score = max(min(state.alertScore, 450), 0)
+					return .send(.delegate(.didEditGame))
+
+				case .didTapCancelScore:
+					if state.didJustToggleScoringMethod {
+						state.didJustToggleScoringMethod = false
+						return toggleScoringMethod(in: &state)
+					} else {
+						return .none
+					}
+
+				case .didTapManualScore:
+					state.alertScore = state.game.score
+					state.isScoreAlertPresented = true
+					return .none
+
+				case let .didSetAlertScore(string):
+					if !string.isEmpty, let score = Int(string) {
+						state.alertScore = max(min(score, 450), 0)
+					}
+					return .none
+
 				case let .didSetMatchPlayScore(string):
 					if !string.isEmpty, let score = Int(string) {
 						state.game.matchPlay?.opponentScore = score
@@ -89,6 +130,19 @@ public struct GameDetails: Reducer {
 			case .delegate:
 				return .none
 			}
+		}
+	}
+
+	private func toggleScoringMethod(in state: inout State) -> Effect<Action> {
+		state.game.scoringMethod.toggle()
+		switch state.game.scoringMethod {
+		case .byFrame:
+			return .send(.delegate(.didClearManualScore))
+		case .manual:
+			state.alertScore = state.game.score
+			state.didJustToggleScoringMethod = true
+			state.isScoreAlertPresented = true
+			return .none
 		}
 	}
 
@@ -138,6 +192,15 @@ extension Game.ExcludeFromStatistics {
 	}
 }
 
+extension Game.ScoringMethod {
+	mutating func toggle() {
+		switch self {
+		case .byFrame: self = .manual
+		case .manual: self = .byFrame
+		}
+	}
+}
+
 // MARK: - View
 
 public struct GameDetailsView: View {
@@ -148,8 +211,14 @@ public struct GameDetailsView: View {
 		case didToggleLock
 		case didToggleExclude
 		case didToggleMatchPlay
+		case didToggleScoringMethod
+		case didTapManualScore
+		case didDismissScoreAlert
+		case didTapSaveScore
+		case didTapCancelScore
 		case didSetMatchPlayResult(MatchPlay.Result?)
 		case didSetMatchPlayScore(String)
+		case didSetAlertScore(String)
 	}
 
 	init(store: StoreOf<GameDetails>) {
@@ -194,6 +263,7 @@ public struct GameDetailsView: View {
 							send: ViewAction.didSetMatchPlayScore
 						)
 					)
+					.keyboardType(.numberPad)
 
 					Picker(
 						Strings.MatchPlay.Properties.result,
@@ -212,6 +282,36 @@ public struct GameDetailsView: View {
 					LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
 					LabeledContent(Strings.Lane.List.title, value: viewStore.game.series.laneLabels)
 				}
+			}
+
+			Section {
+				Toggle(
+					Strings.Game.Editor.Fields.ScoringMethod.label,
+					isOn: viewStore.binding(get: { $0.game.scoringMethod == .manual }, send: ViewAction.didToggleScoringMethod)
+				)
+
+				if viewStore.game.scoringMethod == .manual {
+					Button { viewStore.send(.didTapManualScore) } label: {
+						Text(String(viewStore.game.score))
+					}
+				}
+			} footer: {
+				Text(Strings.Game.Editor.Fields.ScoringMethod.help)
+			}
+			.alert(
+				Strings.Game.Editor.Fields.ManualScore.title,
+				isPresented: viewStore.binding(get: \.isScoreAlertPresented, send: ViewAction.didDismissScoreAlert)
+			) {
+				TextField(
+					Strings.Game.Editor.Fields.ManualScore.prompt,
+					text: viewStore.binding(
+						get: { $0.alertScore > 0 ? String($0.alertScore) : "" },
+						send: ViewAction.didSetAlertScore
+					)
+				)
+				.keyboardType(.numberPad)
+				Button(Strings.Action.save) { viewStore.send(.didTapSaveScore) }
+				Button(Strings.Action.cancel, role: .cancel) { viewStore.send(.didTapCancelScore) }
 			}
 
 			Section {
@@ -268,10 +368,22 @@ extension GameDetails.Action {
 			self = .view(.didToggleExclude)
 		case .didToggleMatchPlay:
 			self = .view(.didToggleMatchPlay)
+		case .didToggleScoringMethod:
+			self = .view(.didToggleScoringMethod)
+		case .didTapManualScore:
+			self = .view(.didTapManualScore)
+		case .didDismissScoreAlert:
+			self = .view(.didDismissScoreAlert)
+		case .didTapCancelScore:
+			self = .view(.didTapCancelScore)
+		case .didTapSaveScore:
+			self = .view(.didTapSaveScore)
 		case let .didSetMatchPlayResult(result):
 			self = .view(.didSetMatchPlayResult(result))
 		case let .didSetMatchPlayScore(score):
 			self = .view(.didSetMatchPlayScore(score))
+		case let .didSetAlertScore(score):
+			self = .view(.didSetAlertScore(score))
 		case .didTapBowler:
 			self = .delegate(.didRequestOpponentPicker)
 		}

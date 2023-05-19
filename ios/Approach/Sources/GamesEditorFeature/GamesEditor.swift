@@ -22,7 +22,7 @@ public struct GamesEditor: Reducer {
 		public var isScoreSheetVisible = true
 
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
-		var isEditable: Bool { elementsRefreshing.isEmpty }
+		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
 
 		// IDs for games being edited (and their corresponding bowlers)
 		public var bowlerIds: [Bowler.ID]
@@ -44,6 +44,7 @@ public struct GamesEditor: Reducer {
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
 		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
 
+		public var _gameDetails: GameDetails.State?
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _ballPicker: BallPicker.State
@@ -85,7 +86,7 @@ public struct GamesEditor: Reducer {
 		public enum InternalAction: Equatable {
 			case bowlersResponse(TaskResult<[Bowler.Summary]>)
 			case framesResponse(TaskResult<[Frame.Edit]>)
-			case gameReponse(TaskResult<Game.Edit?>)
+			case gameResponse(TaskResult<Game.Edit?>)
 			case frameUpdateError(AlwaysEqual<Error>)
 			case gameUpdateError(AlwaysEqual<Error>)
 
@@ -227,13 +228,14 @@ public struct GamesEditor: Reducer {
 					// TODO: handle error saving frame
 					return .none
 
-				case let .gameReponse(.success(game)):
-					guard state.currentGameId == game?.id else { return .none }
+				case let .gameResponse(.success(game)):
+					guard state.currentGameId == game?.id, let game else { return .none }
+					state._gameDetails = .init(game: game)
 					state.game = game
 					state.elementsRefreshing.remove(.game)
 					return .none
 
-				case .gameReponse(.failure):
+				case .gameResponse(.failure):
 					// TODO: handle error loading game
 					state.elementsRefreshing.remove(.game)
 					return .none
@@ -244,7 +246,13 @@ public struct GamesEditor: Reducer {
 
 				case let .calculatedScore(score):
 					state.score = score
-					return .none
+					switch state.game?.scoringMethod {
+					case .none, .manual:
+						return .none
+					case .byFrame:
+						state.game?.score = score.last?.score ?? 0
+						return save(game: state.game)
+					}
 
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
@@ -334,6 +342,9 @@ public struct GamesEditor: Reducer {
 
 					case .didEditGame:
 						return save(game: state.game)
+
+					case .didClearManualScore:
+						return updateScoreSheet(from: state)
 					}
 
 				case let .gameDetailsHeader(.delegate(delegateAction)):
@@ -432,7 +443,7 @@ public struct GamesEditor: Reducer {
 				}))
 			},
 			.task { [gameId = state.currentGameId] in
-				await .internal(.gameReponse(TaskResult {
+				await .internal(.gameResponse(TaskResult {
 					try await games.edit(gameId)
 				}))
 			}
@@ -536,11 +547,14 @@ extension GamesEditor.State {
 extension GamesEditor.State {
 	var gameDetails: GameDetails.State? {
 		get {
-			guard let game else { return nil }
-			return .init(game: game)
+			guard let _gameDetails, let game else { return nil }
+			var gameDetails = _gameDetails
+			gameDetails.game = game
+			return gameDetails
 		}
 		set {
 			guard isEditable, let newValue, currentGameId == newValue.game.id else { return }
+			_gameDetails = newValue
 			game = newValue.game
 		}
 	}

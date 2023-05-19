@@ -49,8 +49,9 @@ extension SeriesRepository: DependencyKey {
 									seriesId: series.id,
 									id: uuid(),
 									index: index,
+									score: 0,
 									locked: .open,
-									manualScore: nil,
+									scoringMethod: .byFrame,
 									excludeFromStatistics: .init(from: series.excludeFromStatistics)
 								)
 								try game.insert(db)

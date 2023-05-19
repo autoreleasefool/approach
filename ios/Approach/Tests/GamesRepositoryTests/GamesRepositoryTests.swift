@@ -96,8 +96,9 @@ final class GamesRepositoryTests: XCTestCase {
 			.init(
 				id: UUID(0),
 				index: 0,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include,
 				matchPlay: nil,
 				bowler: .init(name: "Joseph"),
@@ -141,8 +142,9 @@ final class GamesRepositoryTests: XCTestCase {
 			.init(
 				id: UUID(0),
 				index: 0,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include,
 				matchPlay: .init(
 					gameId: UUID(0),
@@ -186,15 +188,16 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGameExists_UpdatesGame() async throws {
 		// Given a database with a game
-		let game1 = Game.Database.mock(id: UUID(0), index: 0, locked: .open, manualScore: nil)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
 		let editable = Game.Edit(
 			id: UUID(0),
 			index: 0,
+			score: 123,
 			locked: .locked,
-			manualScore: 123,
+			scoringMethod: .manual,
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			bowler: .init(name: "Joseph"),
@@ -217,7 +220,9 @@ final class GamesRepositoryTests: XCTestCase {
 		let updated = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
 		XCTAssertEqual(updated?.id, UUID(0))
 		XCTAssertEqual(updated?.index, 0)
+		XCTAssertEqual(updated?.score, 123)
 		XCTAssertEqual(updated?.locked, .locked)
+		XCTAssertEqual(updated?.scoringMethod, .manual)
 
 		// Does not insert any records
 		let count = try await db.read { try Game.Database.fetchCount($0) }
@@ -226,7 +231,7 @@ final class GamesRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenHasMatchPlay_UpdatesMatchPlay() async throws {
 		// Given a database with a game and a match play
-		let game1 = Game.Database.mock(id: UUID(0), index: 0, locked: .open, manualScore: nil)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let matchPlay1 = MatchPlay.Database(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 123, result: nil)
 		let db = try initializeDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
 
@@ -234,8 +239,9 @@ final class GamesRepositoryTests: XCTestCase {
 		let editable = Game.Edit(
 			id: UUID(0),
 			index: 0,
+			score: 0,
 			locked: .open,
-			manualScore: nil,
+			scoringMethod: .byFrame,
 			excludeFromStatistics: .include,
 			matchPlay: .init(
 				gameId: UUID(0),
@@ -287,8 +293,9 @@ final class GamesRepositoryTests: XCTestCase {
 			let editable = Game.Edit(
 				id: UUID(0),
 				index: 0,
+				score: 0,
 				locked: .locked,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .exclude,
 				matchPlay: nil,
 				bowler: .init(name: "Joseph"),
@@ -362,16 +369,18 @@ extension Game.Database {
 		seriesId: Series.ID = UUID(0),
 		id: ID,
 		index: Int,
+		score: Int = 0,
 		locked: Game.Lock = .open,
-		manualScore: Int? = nil,
+		scoringMethod: Game.ScoringMethod = .byFrame,
 		excludeFromStatistics: Game.ExcludeFromStatistics = .include
 	) -> Self {
 		.init(
 			seriesId: seriesId,
 			id: id,
 			index: index,
+			score: score,
 			locked: locked,
-			manualScore: manualScore,
+			scoringMethod: scoringMethod,
 			excludeFromStatistics: excludeFromStatistics
 		)
 	}
@@ -382,7 +391,8 @@ extension Game.Summary {
 		self.init(
 			id: from.id,
 			index: from.index,
-			manualScore: from.manualScore
+			score: from.score,
+			scoringMethod: from.scoringMethod
 		)
 	}
 }

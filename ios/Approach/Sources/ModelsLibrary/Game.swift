@@ -23,6 +23,13 @@ extension Game {
 }
 
 extension Game {
+	public enum ScoringMethod: String, Codable, Sendable {
+		case manual
+		case byFrame
+	}
+}
+
+extension Game {
 	public enum ExcludeFromStatistics: String, Codable, Sendable, Identifiable, CaseIterable {
 		case include
 		case exclude

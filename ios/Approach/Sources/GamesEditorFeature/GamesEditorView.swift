@@ -32,6 +32,8 @@ public struct GamesEditorView: View {
 
 		let isScoreSheetVisible: Bool
 
+		let manualScore: Int?
+
 		let bowlerName: String?
 		let leagueName: String?
 
@@ -46,6 +48,16 @@ public struct GamesEditorView: View {
 			self.isScoreSheetVisible = state.isScoreSheetVisible
 			self.bowlerName = state.game?.bowler.name
 			self.leagueName = state.game?.league.name
+			if let game = state.game {
+				switch game.scoringMethod {
+				case .byFrame:
+					self.manualScore = nil
+				case .manual:
+					self.manualScore = game.score
+				}
+			} else {
+				self.manualScore = nil
+			}
 		}
 	}
 
@@ -76,21 +88,39 @@ public struct GamesEditorView: View {
 					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
 
 				VStack {
-					Spacer()
+					if let manualScore = viewStore.manualScore {
+						Spacer()
 
-					frameEditor
-						.padding(.top)
+						VStack {
+							Text(String(manualScore))
+								.font(.largeTitle)
+							Text(Strings.Game.Editor.Fields.ManualScore.caption)
+								.font(.caption)
+						}
+						.padding()
+						.background(.regularMaterial, in: RoundedRectangle(cornerRadius: .standardRadius, style: .continuous))
+						.padding()
 
-					Spacer()
+						Spacer()
 
-					rollEditor
-						.padding(.horizontal)
+					} else {
 
-					if viewStore.isScoreSheetVisible {
-						scoreSheet
+						Spacer()
+
+						frameEditor
 							.padding(.top)
+
+						Spacer()
+
+						rollEditor
 							.padding(.horizontal)
-							.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
+
+						if viewStore.isScoreSheetVisible {
+							scoreSheet
+								.padding(.top)
+								.padding(.horizontal)
+								.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
+						}
 					}
 				}
 				.frame(idealWidth: viewStore.backdropSize.width, maxHeight: viewStore.backdropSize.height)

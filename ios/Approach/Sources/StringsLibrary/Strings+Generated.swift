@@ -299,6 +299,20 @@ public enum Strings {
           /// Lock for editing
           public static let label = Strings.tr("Localizable", "game.editor.fields.lock.label", fallback: "Lock for editing")
         }
+        public enum ManualScore {
+          /// Score set manually
+          public static let caption = Strings.tr("Localizable", "game.editor.fields.manualScore.caption", fallback: "Score set manually")
+          /// Score
+          public static let prompt = Strings.tr("Localizable", "game.editor.fields.manualScore.prompt", fallback: "Score")
+          /// Set manual score
+          public static let title = Strings.tr("Localizable", "game.editor.fields.manualScore.title", fallback: "Set manual score")
+        }
+        public enum ScoringMethod {
+          /// This game's frames will be hidden and ignored in all statistics.
+          public static let help = Strings.tr("Localizable", "game.editor.fields.scoringMethod.help", fallback: "This game's frames will be hidden and ignored in all statistics.")
+          /// Set manual score?
+          public static let label = Strings.tr("Localizable", "game.editor.fields.scoringMethod.label", fallback: "Set manual score?")
+        }
       }
       public enum Picker {
         /// Switch game
