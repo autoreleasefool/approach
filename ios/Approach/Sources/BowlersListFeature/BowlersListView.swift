@@ -50,7 +50,7 @@ public struct BowlersListView: View {
 					HStack {
 						Text(bowler.name)
 						Spacer()
-						Text(bowler.averageDescription)
+						Text(format(average: bowler.average))
 							.font(.caption)
 					}
 				}
