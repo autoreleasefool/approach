@@ -24,7 +24,19 @@ extension Bowler {
 
 extension Bowler.Status: DatabaseValueConvertible {}
 
-extension Bowler.Database: FetchableRecord, PersistableRecord {}
+extension Bowler.Database: FetchableRecord, PersistableRecord {
+	public static let leaguesForStatistics =
+		hasMany(League.Database.self)
+			.filter(League.Database.Columns.excludeFromStatistics == League.ExcludeFromStatistics.include)
+	public static let seriesForStatistics =
+		hasMany(Series.Database.self, through: leaguesForStatistics, using: League.Database.series)
+			.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
+	public static let gamesForStatistics =
+		hasMany(Game.Database.self, through: seriesForStatistics, using: Series.Database.games)
+			.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
+	public static let framesForStatistics =
+		hasMany(Frame.Database.self, through: gamesForStatistics, using: Game.Database.frames)
+}
 
 extension Bowler.Database {
 	public enum Columns {
@@ -35,5 +47,9 @@ extension Bowler.Database {
 }
 
 extension Bowler.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Bowler.Database.databaseTableName
+}
+
+extension Bowler.List: TableRecord, FetchableRecord {
 	public static let databaseTableName = Bowler.Database.databaseTableName
 }

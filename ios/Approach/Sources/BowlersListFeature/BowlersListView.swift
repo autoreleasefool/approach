@@ -47,7 +47,12 @@ public struct BowlersListView: View {
 						send: BowlersListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					Text(bowler.name)
+					HStack {
+						Text(bowler.name)
+						Spacer()
+						Text(bowler.averageDescription)
+							.font(.caption)
+					}
 				}
 			} header: {
 				Section {

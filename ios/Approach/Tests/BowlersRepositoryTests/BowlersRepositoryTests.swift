@@ -13,9 +13,9 @@ import XCTest
 final class BowlersRepositoryTests: XCTestCase {
 	@Dependency(\.bowlers) var bowlers
 
-	// MARK: Playable
+	// MARK: List
 
-	func testPlayable_ReturnsOnlyPlayable() async throws {
+	func testList_ReturnsOnlyPlayable() async throws {
 		// Given a database with a bowler and opponent
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", status: .opponent)
@@ -26,16 +26,16 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.bowlers = .liveValue
 		} operation: {
-			self.bowlers.playable(ordered: .byName)
+			self.bowlers.list(ordered: .byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns only the playable bowler
-		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph")])
+		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph", average: nil)])
 	}
 
-	func testPlayable_SortsByName() async throws {
+	func testList_SortsByName() async throws {
 		// Given a database with 2 bowlers
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", status: .playable)
@@ -46,16 +46,19 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.bowlers = .liveValue
 		} operation: {
-			self.bowlers.playable(ordered: .byName)
+			self.bowlers.list(ordered: .byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns the bowlers sorted by name
-		XCTAssertEqual(fetched, [.init(id: UUID(1), name: "Audriana"), .init(id: UUID(0), name: "Joseph")])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), name: "Audriana", average: nil),
+			.init(id: UUID(0), name: "Joseph", average: nil),
+		])
 	}
 
-	func testPlayable_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
+	func testList_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with 2 bowlers
 		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
 		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", status: .playable)
@@ -71,13 +74,155 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
 			$0.bowlers = .liveValue
 		} operation: {
-			self.bowlers.playable(ordered: .byRecentlyUsed)
+			self.bowlers.list(ordered: .byRecentlyUsed)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns the bowlers sorted by recently used ids
-		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph"), .init(id: UUID(1), name: "Audriana")])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", average: nil),
+			.init(id: UUID(1), name: "Audriana", average: nil),
+		])
+	}
+
+	func testList_WithGames_CalculatesAverages() async throws {
+		// Given a database with 2 bowlers
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", status: .playable)
+		// and 2 games each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 200)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 0, score: 250)
+		let game4 = Game.Database.mock(seriesId: UUID(2), id: UUID(3), index: 1, score: 300)
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler1, bowler2]),
+			withGames: .custom([game1, game2, game3, game4])
+		)
+
+		// Fetching the bowlers
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			self.bowlers.list(ordered: .byName)
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowlers with averages
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), name: "Audriana", average: 275),
+			.init(id: UUID(0), name: "Joseph", average: 150),
+		])
+	}
+
+	func testList_WhenLeagueExcludedFromStatistics_DoesNotIncludeInStatistics() async throws {
+		// Given a database with 1 bowler
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
+		// 2 leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "Skyview", excludeFromStatistics: .include)
+		let league2 = League.Database.mock(id: UUID(1), name: "Grandview", excludeFromStatistics: .exclude)
+		// with series
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
+		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date())
+		// and 1 game each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200)
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler1]),
+			withLeagues: .custom([league1, league2]),
+			withSeries: .custom([series1, series2]),
+			withSeriesLanes: .zero,
+			withGames: .custom([game1, game2])
+		)
+
+		// Fetching the bowler
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			self.bowlers.list(ordered: .byName)
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowlers with only one score accounted for in the average
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", average: 100),
+		])
+	}
+
+	func testList_WhenSeriesExcludedFromStatistics_DoesNotIncludeInStatistics() async throws {
+		// Given a database with 1 bowler
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
+		// 2 leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "Skyview")
+		let league2 = League.Database.mock(id: UUID(1), name: "Grandview")
+		// with series
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(), excludeFromStatistics: .include)
+		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(), excludeFromStatistics: .exclude)
+		// and 1 game each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200)
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler1]),
+			withLeagues: .custom([league1, league2]),
+			withSeries: .custom([series1, series2]),
+			withSeriesLanes: .zero,
+			withGames: .custom([game1, game2])
+		)
+
+		// Fetching the bowler
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			self.bowlers.list(ordered: .byName)
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowlers with only one score accounted for in the average
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", average: 100),
+		])
+	}
+
+	func testList_WhenGameExcludedFromStatistics_DoesNotIncludeInStatistics() async throws {
+		// Given a database with 1 bowler
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", status: .playable)
+		// 2 leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "Skyview")
+		let league2 = League.Database.mock(id: UUID(1), name: "Grandview")
+		// with series
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
+		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date())
+		// and 1 game each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100, excludeFromStatistics: .include)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200, excludeFromStatistics: .exclude)
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler1]),
+			withLeagues: .custom([league1, league2]),
+			withSeries: .custom([series1, series2]),
+			withSeriesLanes: .zero,
+			withGames: .custom([game1, game2])
+		)
+
+		// Fetching the bowler
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			self.bowlers.list(ordered: .byName)
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowlers with only one score accounted for in the average
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", average: 100),
+		])
 	}
 
 	// MARK: Opponents

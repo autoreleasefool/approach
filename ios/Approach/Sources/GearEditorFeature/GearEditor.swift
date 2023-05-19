@@ -91,9 +91,7 @@ public struct GearEditor: Reducer {
 		}
 
 		Scope(state: \.bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
-			ResourcePicker { _ in
-				bowlers.playable(ordered: .byName)
-			}
+			ResourcePicker { _ in bowlers.pickable() }
 		}
 
 		Reduce<State, Action> { state, action in

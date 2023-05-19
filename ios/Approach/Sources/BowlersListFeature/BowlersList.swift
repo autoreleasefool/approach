@@ -13,7 +13,7 @@ import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension Bowler.Summary: ResourceListItem {}
+extension Bowler.List: ResourceListItem {}
 
 extension Bowler.Ordering: CustomStringConvertible {
 	public var description: String {
@@ -26,7 +26,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 
 public struct BowlersList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Bowler.Summary, Bowler.Ordering>.State
+		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var sortOrder: SortOrder<Bowler.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		@PresentationState public var editor: BowlerEditor.State?
@@ -71,7 +71,7 @@ public struct BowlersList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
-			case list(ResourceList<Bowler.Summary, Bowler.Ordering>.Action)
+			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
 			case editor(PresentationAction<BowlerEditor.Action>)
 			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
@@ -96,7 +96,7 @@ public struct BowlersList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: bowlers.playable(ordered:))
+			ResourceList(fetchResources: bowlers.list)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -189,7 +189,7 @@ public struct BowlersList: Reducer {
 
 	private func navigate(to id: Bowler.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(bowler: selection), id: selection.id)
+			state.selection = Identified(.init(bowler: selection.summary), id: selection.id)
 			return .merge(
 				.fireAndForget {
 					try await clock.sleep(for: .seconds(1))
