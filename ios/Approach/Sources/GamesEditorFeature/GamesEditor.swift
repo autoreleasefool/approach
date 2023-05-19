@@ -452,6 +452,7 @@ public struct GamesEditor: Reducer {
 		guard let frame else { return .none }
 		return .run { send in
 			do {
+				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
 				try await frames.update(frame)
 			} catch {
 				await send(.internal(.frameUpdateError(.init(error))))
@@ -463,6 +464,7 @@ public struct GamesEditor: Reducer {
 		guard let game else { return .none }
 		return .run { send in
 			do {
+				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
 				try await games.update(game)
 			} catch {
 				await send(.internal(.gameUpdateError(.init(error))))
