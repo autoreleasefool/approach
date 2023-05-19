@@ -9,7 +9,7 @@ func insert(
 ) throws {
 	let games: [Game.Database]
 	switch initial {
-	case .none:
+	case .none, .zero:
 		games = []
 	case .default:
 		games = [
@@ -17,48 +17,54 @@ func insert(
 				seriesId: UUID(0),
 				id: UUID(0),
 				index: 0,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include
 			),
 			.init(
 				seriesId: UUID(1),
 				id: UUID(1),
 				index: 0,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include
 			),
 			.init(
 				seriesId: UUID(1),
 				id: UUID(2),
 				index: 1,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include
 			),
 			.init(
 				seriesId: UUID(2),
 				id: UUID(3),
 				index: 0,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include
 			),
 			.init(
 				seriesId: UUID(3),
 				id: UUID(4),
 				index: 0,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include
 			),
 			.init(
 				seriesId: UUID(3),
 				id: UUID(5),
 				index: 1,
+				score: 0,
 				locked: .open,
-				manualScore: nil,
+				scoringMethod: .byFrame,
 				excludeFromStatistics: .include
 			),
 		]

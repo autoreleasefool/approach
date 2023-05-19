@@ -9,7 +9,7 @@ func insert(
 ) throws {
 	let matchPlays: [MatchPlay.Database]
 	switch initial {
-	case .none:
+	case .none, .zero:
 		matchPlays = []
 	case .default:
 		matchPlays = [

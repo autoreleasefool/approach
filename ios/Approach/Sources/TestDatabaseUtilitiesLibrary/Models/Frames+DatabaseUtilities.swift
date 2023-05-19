@@ -9,7 +9,7 @@ func insert(
 ) throws {
 	let frames: [Frame.Database]
 	switch initial {
-	case .none:
+	case .none, .zero:
 		frames = []
 	case .default:
 		var framesBuilder: [Frame.Database] = []

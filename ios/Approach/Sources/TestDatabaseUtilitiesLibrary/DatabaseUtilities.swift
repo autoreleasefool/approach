@@ -8,6 +8,7 @@ import ModelsLibrary
 public enum InitialValue<T> {
 	case `default`
 	case custom([T])
+	case zero
 }
 
 public func initializeDatabase(

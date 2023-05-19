@@ -9,7 +9,7 @@ func insert(
 ) throws {
 	let leagues: [League.Database]
 	switch initial {
-	case .none:
+	case .none, .zero:
 		leagues = []
 	case .default:
 		leagues = [

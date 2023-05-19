@@ -9,7 +9,7 @@ func insert(
 ) throws {
 	let alleys: [Alley.Database]
 	switch initial {
-	case .none:
+	case .none, .zero:
 		alleys = []
 	case .default:
 		alleys = [

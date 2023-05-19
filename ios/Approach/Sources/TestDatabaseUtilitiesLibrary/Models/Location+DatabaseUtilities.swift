@@ -9,7 +9,7 @@ func insert(
 ) throws {
 	let locations: [Location.Database]
 	switch initial {
-	case .none:
+	case .none, .zero:
 		locations = []
 	case .default:
 		locations = [
