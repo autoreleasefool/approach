@@ -22,6 +22,14 @@ public enum Strings {
   public static let unknown = Strings.tr("Localizable", "unknown", fallback: "Unknown")
   /// Yes
   public static let yes = Strings.tr("Localizable", "yes", fallback: "Yes")
+  public enum Accessory {
+    /// Accessories
+    public static let title = Strings.tr("Localizable", "accessory.title", fallback: "Accessory")
+    public enum Overview {
+      /// Accessories
+      public static let title = Strings.tr("Localizable", "accessory.overview.title", fallback: "Accessories")
+    }
+  }
   public enum Action {
     /// Add
     public static let add = Strings.tr("Localizable", "action.add", fallback: "Add")
@@ -339,10 +347,14 @@ public enum Strings {
       public enum Kind {
         /// Ball
         public static let bowlingBall = Strings.tr("Localizable", "gear.properties.kind.bowlingBall", fallback: "Ball")
+        /// Balls
+        public static let bowlingBalls = Strings.tr("Localizable", "gear.properties.kind.bowlingBalls", fallback: "Balls")
         /// Shoes
         public static let shoes = Strings.tr("Localizable", "gear.properties.kind.shoes", fallback: "Shoes")
         /// Towel
         public static let towel = Strings.tr("Localizable", "gear.properties.kind.towel", fallback: "Towel")
+        /// Towels
+        public static let towels = Strings.tr("Localizable", "gear.properties.kind.towels", fallback: "Towels")
       }
     }
   }

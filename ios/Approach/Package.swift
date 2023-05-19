@@ -10,6 +10,7 @@ let package = Package(
 	],
 	products: [
 		// MARK: - Features
+		.library(name: "AccessoriesOverviewFeature", targets: ["AccessoriesOverviewFeature"]),
 		.library(name: "AddressLookupFeature", targets: ["AddressLookupFeature"]),
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
@@ -115,6 +116,21 @@ let package = Package(
 	targets: [
 		// MARK: - Features
 		.target(
+			name: "AccessoriesOverviewFeature",
+			dependencies: [
+				.product(name: "Algorithms", package: "swift-algorithms"),
+				"AlleyEditorFeature",
+				"GearEditorFeature",
+			]
+		),
+		.testTarget(
+			name: "AccessoriesOverviewFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AccessoriesOverviewFeature",
+			]
+		),
+		.target(
 			name: "AddressLookupFeature",
 			dependencies: [
 				"AddressLookupServiceInterface",
@@ -165,6 +181,7 @@ let package = Package(
 		.target(
 			name: "AppFeature",
 			dependencies: [
+				"AccessoriesOverviewFeature",
 				"BowlersListFeature",
 				"SettingsFeature",
 			]

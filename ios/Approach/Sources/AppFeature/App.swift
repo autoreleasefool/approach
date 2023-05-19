@@ -1,3 +1,4 @@
+import AccessoriesOverviewFeature
 import AnalyticsServiceInterface
 import BowlersListFeature
 import ComposableArchitecture
@@ -10,6 +11,7 @@ public struct App: Reducer {
 	public struct State: Equatable {
 		public var tabs: [Tab] = []
 		public var selectedTab: Tab = .overview
+		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
 		public var settings = Settings.State()
 
@@ -24,6 +26,7 @@ public struct App: Reducer {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didChangeTabs([Tab])
+			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
 		}
@@ -59,8 +62,13 @@ public struct App: Reducer {
 		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
 			BowlersList()
 		}
+
 		Scope(state: \.settings, action: /Action.internal..Action.InternalAction.settings) {
 			Settings()
+		}
+
+		Scope(state: \.accessories, action: /Action.internal..Action.InternalAction.accessories) {
+			AccessoriesOverview()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -88,6 +96,12 @@ public struct App: Reducer {
 					state.tabs = tabs
 					return .none
 
+				case let .accessories(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .bowlersList(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:
@@ -99,6 +113,9 @@ public struct App: Reducer {
 					case .never:
 						return .none
 					}
+
+				case .accessories(.view), .accessories(.internal):
+					return .none
 
 				case .bowlersList(.view), .bowlersList(.internal):
 					return .none

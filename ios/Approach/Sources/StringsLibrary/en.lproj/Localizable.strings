@@ -1,3 +1,7 @@
+/* Accessories */
+"accessory.title" = "Accessory";
+"accessory.overview.title" = "Accessories";
+
 /* Alleys */
 
 "alley.title" = "Alley";
@@ -66,7 +70,9 @@
 "gear.properties.kind" = "Kind";
 "gear.properties.kind.shoes" = "Shoes";
 "gear.properties.kind.bowlingBall" = "Ball";
+"gear.properties.kind.bowlingBalls" = "Balls";
 "gear.properties.kind.towel" = "Towel";
+"gear.properties.kind.towels" = "Towels";
 "gear.properties.owner" = "Owner";
 "gear.list.add" = "Add Gear";
 "gear.error.empty.title" = "No gear found";

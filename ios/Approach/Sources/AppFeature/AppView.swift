@@ -1,3 +1,4 @@
+import AccessoriesOverviewFeature
 import AssetsLibrary
 import BowlersListFeature
 import ComposableArchitecture
@@ -44,7 +45,9 @@ public struct AppView: View {
 							case .statistics:
 								EmptyView()
 							case .accessories:
-								EmptyView()
+								AccessoriesOverviewView(
+									store: store.scope(state: \.accessories, action: /App.Action.InternalAction.accessories)
+								)
 							case .settings:
 								SettingsView(store: store.scope(state: \.settings, action: /App.Action.InternalAction.settings))
 							}

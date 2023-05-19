@@ -9,6 +9,11 @@ supported = [ "\"16.4\"" ]
 
 # Features
 
+[features.AccessoriesOverview]
+features = [ "AlleyEditor", "GearEditor" ]
+libraries = [ "Equatable" ]
+dependencies = [ "Algorithms" ]
+
 [features.AddressLookup]
 repositories = [ "Locations" ]
 services = [ "AddressLookup" ]
@@ -25,7 +30,7 @@ features = [ "AlleyEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.App]
-features = [ "BowlersList", "Settings" ]
+features = [ "AccessoriesOverview", "BowlersList", "Settings" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]

@@ -10,6 +10,8 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
+// swiftlint:disable type_body_length
+
 @MainActor
 final class AlleysRepositoryTests: XCTestCase {
 	@Dependency(\.alleys) var alleys
@@ -647,3 +649,5 @@ extension Alley.Summary {
 		)
 	}
 }
+
+// swiftlint:enable type_body_length
