@@ -1,9 +1,11 @@
 import AlleyEditorFeature
 import AlleysRepositoryInterface
+import AlleysListFeature
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
 import GearEditorFeature
+import GearListFeature
 import GearRepositoryInterface
 import ModelsLibrary
 
@@ -13,7 +15,9 @@ public struct AccessoriesOverview: Reducer {
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
 
 		@PresentationState public var alleyEditor: AlleyEditor.State?
+		@PresentationState public var alleysList: AlleysList.State?
 		@PresentationState public var gearEditor: GearEditor.State?
+		@PresentationState public var gearList: GearList.State?
 
 		public init() {}
 	}
@@ -21,6 +25,8 @@ public struct AccessoriesOverview: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didObserveData
+			case didTapViewAllAlleys
+			case didTapViewAllGear
 			case didTapGearKind(Gear.Kind)
 			case didTapAddAlley
 			case didTapAddGear
@@ -38,7 +44,9 @@ public struct AccessoriesOverview: Reducer {
 			case errorDeletingGear(AlwaysEqual<Error>)
 
 			case alleyEditor(PresentationAction<AlleyEditor.Action>)
+			case alleysList(PresentationAction<AlleysList.Action>)
 			case gearEditor(PresentationAction<GearEditor.Action>)
+			case gearList(PresentationAction<GearList.Action>)
 		}
 
 		case view(ViewAction)
@@ -117,6 +125,14 @@ public struct AccessoriesOverview: Reducer {
 						}
 					}
 
+				case .didTapViewAllGear:
+					state.gearList = .init()
+					return .none
+
+				case .didTapViewAllAlleys:
+					state.alleysList = .init()
+					return .none
+
 				case .didTapAddAlley:
 					state.alleyEditor = .init(value: .create(.default(withId: uuid())))
 					return .none
@@ -181,10 +197,22 @@ public struct AccessoriesOverview: Reducer {
 						return .none
 					}
 
+				case let .alleysList(.presented(.delegate(delegateAction))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .gearEditor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.gearEditor = nil
+						return .none
+					}
+
+				case let .gearList(.presented(.delegate(delegateAction))):
+					switch delegateAction {
+					case .never:
 						return .none
 					}
 
@@ -199,6 +227,12 @@ public struct AccessoriesOverview: Reducer {
 						.alleyEditor(.presented(.view)),
 						.alleyEditor(.presented(.internal)):
 					return .none
+
+				case .alleysList(.dismiss), .alleysList(.presented(.internal)), .alleysList(.presented(.view)):
+					return .none
+
+				case .gearList(.dismiss), .gearList(.presented(.internal)), .gearList(.presented(.view)):
+					return .none
 				}
 
 			case .delegate:
@@ -210,6 +244,12 @@ public struct AccessoriesOverview: Reducer {
 		}
 		.ifLet(\.$gearEditor, action: /Action.internal..Action.InternalAction.gearEditor) {
 			GearEditor()
+		}
+		.ifLet(\.$alleysList, action: /Action.internal..Action.InternalAction.alleysList) {
+			AlleysList()
+		}
+		.ifLet(\.$gearList, action: /Action.internal..Action.InternalAction.gearList) {
+			GearList()
 		}
 	}
 }

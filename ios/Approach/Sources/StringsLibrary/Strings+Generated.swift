@@ -63,6 +63,8 @@ public enum Strings {
     public static let start = Strings.tr("Localizable", "action.start", fallback: "Start")
     /// Try again
     public static let tryAgain = Strings.tr("Localizable", "action.tryAgain", fallback: "Try again")
+    /// View All
+    public static let viewAll = Strings.tr("Localizable", "action.viewAll", fallback: "View All")
   }
   public enum Address {
     public enum Error {

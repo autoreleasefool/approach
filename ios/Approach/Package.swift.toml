@@ -10,8 +10,7 @@ supported = [ "\"16.4\"" ]
 # Features
 
 [features.AccessoriesOverview]
-features = [ "AlleyEditor", "GearEditor" ]
-libraries = [ "Equatable" ]
+features = [ "AlleysList", "GearList" ]
 dependencies = [ "Algorithms" ]
 
 [features.AddressLookup]

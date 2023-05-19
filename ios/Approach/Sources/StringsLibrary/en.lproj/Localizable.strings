@@ -271,6 +271,7 @@
 "action.manage" = "Manage";
 "action.start" = "Start";
 "action.search" = "Search";
+"action.viewAll" = "View All";
 
 /* Other */
 

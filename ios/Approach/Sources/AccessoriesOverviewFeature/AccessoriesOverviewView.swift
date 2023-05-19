@@ -1,8 +1,10 @@
 import Algorithms
 import AlleyEditorFeature
+import AlleysListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import GearEditorFeature
+import GearListFeature
 import ModelsLibrary
 import ModelsViewsLibrary
 import StringsLibrary
@@ -30,6 +32,8 @@ public struct AccessoriesOverviewView: View {
 
 	enum ViewAction {
 		case didObserveData
+		case didTapViewAllAlleys
+		case didTapViewAllGear
 		case didTapAddAlley
 		case didTapAddGear
 		case didTapGearKind(Gear.Kind)
@@ -44,18 +48,37 @@ public struct AccessoriesOverviewView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AccessoriesOverview.Action.init) { viewStore in
 			List {
-				Section(Strings.Alley.List.title) {
-					// TODO: show empty state for no alleys
-					ForEach(viewStore.alleys) { alley in
-						Alley.View(alley: alley)
-							.swipeActions(allowsFullSwipe: true) {
-								EditButton { viewStore.send(.didSwipeAlley(.edit, alley.id)) }
-								DeleteButton { viewStore.send(.didSwipeAlley(.delete, alley.id)) }
-							}
+				Section {
+					if viewStore.alleys.isEmpty {
+						Text(Strings.Alley.Error.Empty.message)
+					} else {
+						// TODO: show empty state for no alleys
+						ForEach(viewStore.alleys) { alley in
+							Alley.View(alley: alley)
+								.swipeActions(allowsFullSwipe: true) {
+									EditButton { viewStore.send(.didSwipeAlley(.edit, alley.id)) }
+									DeleteButton { viewStore.send(.didSwipeAlley(.delete, alley.id)) }
+								}
+						}
+					}
+				} header: {
+					HStack(alignment: .firstTextBaseline) {
+						Text(Strings.Alley.List.title)
+						Spacer()
+						NavigationLinkStore(
+							store.scope(state: \.$alleysList, action: { .internal(.alleysList($0)) })
+						) {
+							viewStore.send(.didTapViewAllAlleys)
+						} destination: {
+							AlleysListView(store: $0)
+						} label: {
+							Text(Strings.Action.viewAll)
+								.font(.caption)
+						}
 					}
 				}
 
-				Section(Strings.Gear.List.title) {
+				Section {
 					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
 						ForEach(ViewState.gearKinds) { row in
 							GridRow {
@@ -78,6 +101,21 @@ public struct AccessoriesOverviewView: View {
 
 					}
 					.listRowInsets(EdgeInsets())
+				} header: {
+					HStack(alignment: .firstTextBaseline) {
+						Text(Strings.Gear.List.title)
+						Spacer()
+						NavigationLinkStore(
+							store.scope(state: \.$gearList, action: { .internal(.gearList($0)) })
+						) {
+							viewStore.send(.didTapViewAllGear)
+						} destination: {
+							GearListView(store: $0)
+						} label: {
+							Text(Strings.Action.viewAll)
+								.font(.caption)
+						}
+					}
 				}
 
 				Section {
@@ -121,6 +159,10 @@ extension AccessoriesOverview.Action {
 		switch action {
 		case .didObserveData:
 			self = .view(.didObserveData)
+		case .didTapViewAllGear:
+			self = .view(.didTapViewAllGear)
+		case .didTapViewAllAlleys:
+			self = .view(.didTapViewAllAlleys)
 		case let .didTapGearKind(kind):
 			self = .view(.didTapGearKind(kind))
 		case .didTapAddGear:

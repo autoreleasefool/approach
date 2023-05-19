@@ -119,8 +119,8 @@ let package = Package(
 			name: "AccessoriesOverviewFeature",
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
-				"AlleyEditorFeature",
-				"GearEditorFeature",
+				"AlleysListFeature",
+				"GearListFeature",
 			]
 		),
 		.testTarget(

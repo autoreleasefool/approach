@@ -197,7 +197,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} header: {
-			HStack(alignment: .bottom) {
+			HStack(alignment: .firstTextBaseline) {
 				Text(Strings.Lane.List.title)
 				Spacer()
 				NavigationLink(
