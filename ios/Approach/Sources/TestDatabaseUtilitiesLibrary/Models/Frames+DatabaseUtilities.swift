@@ -1,7 +1,33 @@
 import DatabaseModelsLibrary
+import Dependencies
 import Foundation
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
+
+extension Frame.Database {
+	public static func mock(
+		gameId: Game.ID = UUID(0),
+		index: Int,
+		roll0: String? = nil,
+		roll1: String? = nil,
+		roll2: String? = nil,
+		ball0: Gear.ID? = nil,
+		ball1: Gear.ID? = nil,
+		ball2: Gear.ID? = nil
+	) -> Self {
+		.init(
+			gameId: gameId,
+			index: index,
+			roll0: roll0,
+			roll1: roll1,
+			roll2: roll2,
+			ball0: ball0,
+			ball1: ball1,
+			ball2: ball2
+		)
+	}
+}
+
 
 func insert(
 	frames initial: InitialValue<Frame.Database>?,

@@ -477,38 +477,3 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertTrue(exists)
 	}
 }
-
-extension League.Database {
-	static func mock(
-		bowlerId: Bowler.ID = UUID(0),
-		id: ID,
-		name: String,
-		recurrence: League.Recurrence = .repeating,
-		numberOfGames: Int? = League.DEFAULT_NUMBER_OF_GAMES,
-		additionalPinfall: Int? = nil,
-		additionalGames: Int? = nil,
-		excludeFromStatistics: League.ExcludeFromStatistics = .include,
-		alleyId: Alley.ID? = nil
-	) -> Self {
-		.init(
-			bowlerId: bowlerId,
-			id: id,
-			name: name,
-			recurrence: recurrence,
-			numberOfGames: numberOfGames,
-			additionalPinfall: additionalPinfall,
-			additionalGames: additionalGames,
-			excludeFromStatistics: excludeFromStatistics,
-			alleyId: alleyId
-		)
-	}
-}
-
-extension League.Summary {
-	init(_ from: League.Database) {
-		self.init(
-			id: from.id,
-			name: from.name
-		)
-	}
-}

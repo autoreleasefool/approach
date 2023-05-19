@@ -1,7 +1,43 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
+
+extension Alley.Database {
+	public static func mock(
+		id: Alley.ID,
+		name: String,
+		material: Alley.Material? = nil,
+		pinFall: Alley.PinFall? = nil,
+		mechanism: Alley.Mechanism? = nil,
+		pinBase: Alley.PinBase? = nil,
+		location: Location.ID? = nil
+	) -> Self {
+		.init(
+			id: id,
+			name: name,
+			material: material,
+			pinFall: pinFall,
+			mechanism: mechanism,
+			pinBase: pinBase,
+			locationId: location
+		)
+	}
+}
+
+extension Alley.Summary {
+	public init(_ from: Alley.Database) {
+		self.init(
+			id: from.id,
+			name: from.name,
+			material: from.material,
+			pinFall: from.pinFall,
+			mechanism: from.mechanism,
+			pinBase: from.pinBase,
+			location: nil
+		)
+	}
+}
 
 func insert(
 	alleys initial: InitialValue<Alley.Database>?,

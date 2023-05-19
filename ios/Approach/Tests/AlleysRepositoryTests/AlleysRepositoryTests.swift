@@ -262,7 +262,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			id: UUID(0),
 			name: "Grandview",
 			material: .wood,
-			locationId: UUID(0)
+			location: UUID(0)
 		)
 		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
@@ -385,7 +385,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenAlleyExists_UpdatesAlley() async throws {
 		// Given a database with an existing alley
-		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", locationId: UUID(0))
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", location: UUID(0))
 		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
@@ -480,7 +480,7 @@ final class AlleysRepositoryTests: XCTestCase {
 
 	func testEdit_WhenAlleyExistsWithLocation_ReturnsAlleyWithLocation() async throws {
 		// Given a database with one alley
-		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood, locationId: UUID(0))
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Grandview", material: .wood, location: UUID(0))
 		let db = try initializeDatabase(withAlleys: .custom([alley1]))
 
 		// Editing the alley
@@ -611,42 +611,6 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Leaves the alley
 		let exists = try await db.read { try Alley.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
-	}
-}
-
-extension Alley.Database {
-	static func mock(
-		id: ID,
-		name: String,
-		material: Alley.Material? = nil,
-		pinFall: Alley.PinFall? = nil,
-		mechanism: Alley.Mechanism? = nil,
-		pinBase: Alley.PinBase? = nil,
-		locationId: Location.ID? = nil
-	) -> Self {
-		.init(
-			id: id,
-			name: name,
-			material: material,
-			pinFall: pinFall,
-			mechanism: mechanism,
-			pinBase: pinBase,
-			locationId: locationId
-		)
-	}
-}
-
-extension Alley.Summary {
-	init(_ from: Alley.Database) {
-		self.init(
-			id: from.id,
-			name: from.name,
-			material: from.material,
-			pinFall: from.pinFall,
-			mechanism: from.mechanism,
-			pinBase: from.pinBase,
-			location: nil
-		)
 	}
 }
 

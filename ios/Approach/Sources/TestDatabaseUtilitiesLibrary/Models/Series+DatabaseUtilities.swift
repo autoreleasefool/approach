@@ -1,7 +1,40 @@
 import DatabaseModelsLibrary
+import Dependencies
 import Foundation
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
+
+extension Series.Database {
+	public static func mock(
+		leagueId: League.ID = UUID(0),
+		id: ID,
+		date: Date,
+		numberOfGames: Int = 4,
+		preBowl: Series.PreBowl = .regular,
+		excludeFromStatistics: Series.ExcludeFromStatistics = .include,
+		alleyId: Alley.ID? = nil
+	) -> Self {
+		.init(
+			leagueId: leagueId,
+			id: id,
+			date: date,
+			numberOfGames: numberOfGames,
+			preBowl: preBowl,
+			excludeFromStatistics: excludeFromStatistics,
+			alleyId: alleyId
+		)
+	}
+}
+
+extension Series.Summary {
+	public init(_ from: Series.Database) {
+		self.init(
+			id: from.id,
+			date: from.date
+		)
+	}
+}
+
 
 func insert(
 	series initial: InitialValue<Series.Database>?,

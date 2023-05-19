@@ -359,19 +359,3 @@ final class GearRepositoryTests: XCTestCase {
 		XCTAssertTrue(exists)
 	}
 }
-
-extension Gear.Database {
-	static func mock(
-		id: ID,
-		name: String,
-		kind: Gear.Kind = .bowlingBall,
-		bowlerId: Bowler.ID? = UUID(0)
-	) -> Self {
-		.init(
-			id: id,
-			name: name,
-			kind: kind,
-			bowlerId: bowlerId
-		)
-	}
-}

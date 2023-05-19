@@ -1,7 +1,43 @@
 import DatabaseModelsLibrary
+import Dependencies
 import Foundation
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
+
+extension League.Database {
+	public static func mock(
+		bowlerId: Bowler.ID = UUID(0),
+		id: ID,
+		name: String,
+		recurrence: League.Recurrence = .repeating,
+		numberOfGames: Int? = League.DEFAULT_NUMBER_OF_GAMES,
+		additionalPinfall: Int? = nil,
+		additionalGames: Int? = nil,
+		excludeFromStatistics: League.ExcludeFromStatistics = .include,
+		alleyId: Alley.ID? = nil
+	) -> Self {
+		.init(
+			bowlerId: bowlerId,
+			id: id,
+			name: name,
+			recurrence: recurrence,
+			numberOfGames: numberOfGames,
+			additionalPinfall: additionalPinfall,
+			additionalGames: additionalGames,
+			excludeFromStatistics: excludeFromStatistics,
+			alleyId: alleyId
+		)
+	}
+}
+
+extension League.Summary {
+	public init(_ from: League.Database) {
+		self.init(
+			id: from.id,
+			name: from.name
+		)
+	}
+}
 
 func insert(
 	leagues initial: InitialValue<League.Database>?,

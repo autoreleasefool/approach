@@ -3,6 +3,25 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
+extension Location.Database {
+	public static func mock(
+		id: ID,
+		title: String = "123 Fake Street",
+		subtitle: String = "Grandview",
+		latitude: Double = 123,
+		longitude: Double = 123
+	) -> Self {
+		.init(
+			id: id,
+			title: title,
+			subtitle: subtitle,
+			latitude: latitude,
+			longitude: longitude
+		)
+	}
+}
+
+
 func insert(
 	locations initial: InitialValue<Location.Database>?,
 	into db: Database

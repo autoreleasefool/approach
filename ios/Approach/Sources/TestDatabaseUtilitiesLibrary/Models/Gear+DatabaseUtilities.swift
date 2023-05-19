@@ -1,7 +1,25 @@
 import DatabaseModelsLibrary
+import Dependencies
 import Foundation
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
+
+extension Gear.Database {
+	public static func mock(
+		id: ID,
+		name: String,
+		kind: Gear.Kind = .bowlingBall,
+		bowlerId: Bowler.ID? = UUID(0)
+	) -> Self {
+		.init(
+			id: id,
+			name: name,
+			kind: kind,
+			bowlerId: bowlerId
+		)
+	}
+}
+
 
 func insert(
 	gear initial: InitialValue<Gear.Database>?,

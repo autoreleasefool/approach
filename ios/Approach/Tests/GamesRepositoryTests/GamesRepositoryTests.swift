@@ -363,36 +363,3 @@ final class GamesRepositoryTests: XCTestCase {
 		XCTAssertTrue(exists)
 	}
 }
-
-extension Game.Database {
-	static func mock(
-		seriesId: Series.ID = UUID(0),
-		id: ID,
-		index: Int,
-		score: Int = 0,
-		locked: Game.Lock = .open,
-		scoringMethod: Game.ScoringMethod = .byFrame,
-		excludeFromStatistics: Game.ExcludeFromStatistics = .include
-	) -> Self {
-		.init(
-			seriesId: seriesId,
-			id: id,
-			index: index,
-			score: score,
-			locked: locked,
-			scoringMethod: scoringMethod,
-			excludeFromStatistics: excludeFromStatistics
-		)
-	}
-}
-
-extension Game.Summary {
-	init(_ from: Game.Database) {
-		self.init(
-			id: from.id,
-			index: from.index,
-			score: from.score,
-			scoringMethod: from.scoringMethod
-		)
-	}
-}

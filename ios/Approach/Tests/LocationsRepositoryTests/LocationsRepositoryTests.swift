@@ -129,21 +129,3 @@ final class LocationsRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 0)
 	}
 }
-
-extension Location.Database {
-	static func mock(
-		id: ID,
-		title: String = "123 Fake Street",
-		subtitle: String = "Grandview",
-		latitude: Double = 123,
-		longitude: Double = 123
-	) -> Self {
-		.init(
-			id: id,
-			title: title,
-			subtitle: subtitle,
-			latitude: latitude,
-			longitude: longitude
-		)
-	}
-}
