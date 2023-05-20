@@ -26,7 +26,3 @@ extension SeriesLane.Database {
 		public static let laneId = Column(CodingKeys.laneId)
 	}
 }
-
-extension SeriesLane.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = SeriesLane.Database.databaseTableName
-}

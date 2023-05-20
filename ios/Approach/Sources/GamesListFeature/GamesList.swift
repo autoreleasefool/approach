@@ -112,15 +112,10 @@ public struct GamesList: Reducer {
 		if let id, let games = state.list.resources, let selection = games[id: id] {
 			state.isLoadingGameDetails = true
 			if let bowler {
-//				state.selection = Identified(
-//					.init(
-//						bowlers: .init(uniqueElements: [bowler]),
-//						bowlerGames: [bowler.id: games.map(\.id)],
-//						currentBowler: bowler.id,
-//						currentGame: id
-//					),
-//					id: selection.id
-//				)
+				state.selection = Identified(
+					.init(bowlerIds: [bowler.id], bowlerGameIds: [bowler.id: [selection.id]]),
+					id: selection.id
+				)
 			} else {
 				// TODO: need to fetch bowlers for games
 				return .none
