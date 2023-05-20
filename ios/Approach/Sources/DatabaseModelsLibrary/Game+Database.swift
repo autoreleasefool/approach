@@ -58,6 +58,6 @@ extension Game.Database {
 	}
 }
 
-extension Game.Summary: TableRecord, FetchableRecord {
+extension Game.List: TableRecord, FetchableRecord {
 	public static let databaseTableName = Game.Database.databaseTableName
 }

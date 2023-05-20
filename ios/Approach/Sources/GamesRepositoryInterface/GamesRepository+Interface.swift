@@ -8,13 +8,13 @@ extension Game {
 }
 
 public struct GamesRepository: Sendable {
-	public var list: @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.Summary], Error>
+	public var list: @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.List], Error>
 	public var edit: @Sendable (Game.ID) async throws -> Game.Edit?
 	public var update: @Sendable (Game.Edit) async throws -> Void
 	public var delete: @Sendable (Game.ID) async throws -> Void
 
 	public init(
-		list: @escaping @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.Summary], Error>,
+		list: @escaping @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.List], Error>,
 		edit: @escaping @Sendable (Game.ID) async throws -> Game.Edit?,
 		update: @escaping @Sendable (Game.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Game.ID) async throws -> Void
@@ -25,7 +25,7 @@ public struct GamesRepository: Sendable {
 		self.delete = delete
 	}
 
-	public func seriesGames(forId: Series.ID, ordering: Game.Ordering) -> AsyncThrowingStream<[Game.Summary], Error> {
+	public func seriesGames(forId: Series.ID, ordering: Game.Ordering) -> AsyncThrowingStream<[Game.List], Error> {
 		self.list(forId, ordering)
 	}
 }

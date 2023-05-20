@@ -32,7 +32,10 @@ final class GamesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns all the games
-		XCTAssertEqual(fetched, [.init(game1), .init(game2)])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), bowlerId: UUID(0), index: 0, score: 0),
+			.init(id: UUID(1), bowlerId: UUID(0), index: 1, score: 0),
+		])
 	}
 
 	func testList_FilterBySeries_ReturnsSeriesGames() async throws {
@@ -52,7 +55,9 @@ final class GamesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns one game
-		XCTAssertEqual(fetched, [.init(game1)])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), bowlerId: UUID(0), index: 0, score: 0),
+		])
 	}
 
 	func testList_SortsByIndex() async throws {
@@ -72,7 +77,10 @@ final class GamesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns all the games sorted by index
-		XCTAssertEqual(fetched, [.init(game2), .init(game1)])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), bowlerId: UUID(0), index: 0, score: 0),
+			.init(id: UUID(0), bowlerId: UUID(0), index: 1, score: 0),
+		])
 	}
 
 	// MARK: Edit

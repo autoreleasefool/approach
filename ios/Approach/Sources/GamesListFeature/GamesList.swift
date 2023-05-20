@@ -7,15 +7,14 @@ import ModelsLibrary
 import ResourceListLibrary
 import StringsLibrary
 
-extension Game.Summary: ResourceListItem {
+extension Game.List: ResourceListItem {
 	public var name: String { Strings.Game.titleWithOrdinal(index + 1) }
 }
 
 public struct GamesList: Reducer {
 	public struct State: Equatable {
 		public let series: Series.Summary
-		public var isLoadingGameDetails = false
-		public var list: ResourceList<Game.Summary, Series.ID>.State
+		public var list: ResourceList<Game.List, Series.ID>.State
 
 		public var selection: Identified<Game.ID, GamesEditor.State>?
 
@@ -40,8 +39,7 @@ public struct GamesList: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case bowlerResponse(Game.ID, TaskResult<Bowler.Summary>)
-			case list(ResourceList<Game.Summary, Series.ID>.Action)
+			case list(ResourceList<Game.List, Series.ID>.Action)
 			case editor(GamesEditor.Action)
 		}
 		case view(ViewAction)
@@ -63,21 +61,14 @@ public struct GamesList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, bowler: nil, state: &state)
+					return navigate(to: id, state: &state)
 
 				case .setNavigation(selection: .none):
-					return navigate(to: nil, bowler: nil, state: &state)
+					return navigate(to: nil, state: &state)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .bowlerResponse(id, .success(bowler)):
-					return navigate(to: id, bowler: bowler, state: &state)
-
-				case .bowlerResponse(_, .failure):
-					// TODO: handle failure to load bowler
-					return navigate(to: nil, bowler: nil, state: &state)
-
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton:
@@ -108,30 +99,13 @@ public struct GamesList: Reducer {
 		}
 	}
 
-	private func navigate(to id: Game.ID?, bowler: Bowler.Summary?, state: inout State) -> Effect<Action> {
+	private func navigate(to id: Game.ID?, state: inout State) -> Effect<Action> {
 		if let id, let games = state.list.resources, let selection = games[id: id] {
-			state.isLoadingGameDetails = true
-			if let bowler {
-				state.selection = Identified(
-					.init(bowlerIds: [bowler.id], bowlerGameIds: [bowler.id: [selection.id]]),
-					id: selection.id
-				)
-			} else {
-				// TODO: need to fetch bowlers for games
-				return .none
-//				return .task {
-//					await .internal(.bowlerResponse(id, TaskResult {
-//						guard let bowler = try await bowlersDataProvider.fetchBowlers(
-//							.init(filter: .forGame(selection), ordering: .byName)
-//						).first else {
-//							throw BowlerNotFoundError()
-//						}
-//						return bowler
-//					}))
-//				}
-			}
+			state.selection = Identified(
+				.init(bowlerIds: [selection.bowlerId], bowlerGameIds: [selection.bowlerId: [id]]),
+				id: id
+			)
 		} else {
-			state.isLoadingGameDetails = false
 			state.selection = nil
 		}
 

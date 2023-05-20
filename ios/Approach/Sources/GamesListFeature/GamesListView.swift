@@ -14,12 +14,10 @@ public struct GamesListView: View {
 	struct ViewState: Equatable {
 		let title: String
 		let selection: Game.ID?
-		let isLoadingGameDetails: Bool
 
 		init(state: GamesList.State) {
 			self.title = state.series.date.longFormat
 			self.selection = state.selection?.id
-			self.isLoadingGameDetails = state.isLoadingGameDetails
 		}
 	}
 
@@ -52,10 +50,6 @@ public struct GamesListView: View {
 					)
 				) {
 					Text(Strings.Game.titleWithOrdinal(game.index + 1))
-				}
-			} header: {
-				if viewStore.isLoadingGameDetails {
-					ListProgressView()
 				}
 			}
 			.navigationTitle(viewStore.title)

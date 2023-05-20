@@ -26,17 +26,6 @@ extension Game.Database {
 	}
 }
 
-extension Game.Summary {
-	public init(_ from: Game.Database) {
-		self.init(
-			id: from.id,
-			index: from.index,
-			score: from.score,
-			scoringMethod: from.scoringMethod
-		)
-	}
-}
-
 func insert(
 	games initial: InitialValue<Game.Database>?,
 	into db: Database

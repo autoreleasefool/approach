@@ -19,7 +19,8 @@ extension GamesRepository: DependencyKey {
 						.all()
 						.orderByIndex()
 						.filter(bySeries: series)
-						.asRequest(of: Game.Summary.self)
+						.annotated(withRequired: Game.Database.bowler.select(Bowler.Database.Columns.id.forKey("bowlerId")))
+						.asRequest(of: Game.List.self)
 						.fetchAll($0)
 				}
 			},
