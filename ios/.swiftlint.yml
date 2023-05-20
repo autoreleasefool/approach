@@ -15,6 +15,7 @@ type_name:
     - ID
 
 disabled_rules:
+  - cyclomatic_complexity
   - identifier_name
   - nesting
 

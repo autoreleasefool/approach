@@ -74,7 +74,7 @@ public struct GamesSettingsView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GamesSettings.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, send: GamesSettings.Action.init, content: { viewStore in
 			List {
 				Section(Strings.Game.Settings.current) {
 					Picker(
@@ -116,7 +116,7 @@ public struct GamesSettingsView: View {
 					Button(Strings.Action.done) { viewStore.send(.didTapDone) }
 				}
 			}
-		}
+		})
 	}
 }
 

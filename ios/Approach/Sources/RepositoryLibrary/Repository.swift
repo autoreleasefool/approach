@@ -57,7 +57,6 @@ public func `prefix`<T>(
 	}
 }
 
-
 public func `prefix`<T>(
 	_ itemsStream: AsyncThrowingStream<[T], Error>,
 	ofSize: Int

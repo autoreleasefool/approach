@@ -9,8 +9,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-// swiftlint:disable file_length type_body_length
-
 @MainActor
 final class LeaguesRepositoryTests: XCTestCase {
 	@Dependency(\.leagues) var leagues
@@ -584,5 +582,3 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertTrue(exists)
 	}
 }
-
-// swiftlint:enable file_length type_body_length

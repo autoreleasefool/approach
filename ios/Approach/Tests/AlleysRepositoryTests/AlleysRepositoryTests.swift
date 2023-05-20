@@ -10,8 +10,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-// swiftlint:disable type_body_length
-
 @MainActor
 final class AlleysRepositoryTests: XCTestCase {
 	@Dependency(\.alleys) var alleys
@@ -613,5 +611,3 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertTrue(exists)
 	}
 }
-
-// swiftlint:enable type_body_length

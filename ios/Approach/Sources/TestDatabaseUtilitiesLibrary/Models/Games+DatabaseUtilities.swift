@@ -37,7 +37,6 @@ extension Game.Summary {
 	}
 }
 
-
 func insert(
 	games initial: InitialValue<Game.Database>?,
 	into db: Database
@@ -48,60 +47,12 @@ func insert(
 		games = []
 	case .default:
 		games = [
-			.init(
-				seriesId: UUID(0),
-				id: UUID(0),
-				index: 0,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
-			),
-			.init(
-				seriesId: UUID(1),
-				id: UUID(1),
-				index: 0,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
-			),
-			.init(
-				seriesId: UUID(1),
-				id: UUID(2),
-				index: 1,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
-			),
-			.init(
-				seriesId: UUID(2),
-				id: UUID(3),
-				index: 0,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
-			),
-			.init(
-				seriesId: UUID(3),
-				id: UUID(4),
-				index: 0,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
-			),
-			.init(
-				seriesId: UUID(3),
-				id: UUID(5),
-				index: 1,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
-			),
+			.mock(seriesId: UUID(0), id: UUID(0), index: 0),
+			.mock(seriesId: UUID(1), id: UUID(1), index: 0),
+			.mock(seriesId: UUID(1), id: UUID(2), index: 1),
+			.mock(seriesId: UUID(2), id: UUID(3), index: 0),
+			.mock(seriesId: UUID(3), id: UUID(4), index: 0),
+			.mock(seriesId: UUID(3), id: UUID(5), index: 1),
 		]
 	case let .custom(custom):
 		games = custom

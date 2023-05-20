@@ -58,7 +58,7 @@ public func initializeDatabase(
 	return dbQueue
 }
 
-func coallesce<T>(_ value: InitialValue<T>?, ifHasAllOf: Optional<Any>...) -> InitialValue<T>? {
+func coallesce<T>(_ value: InitialValue<T>?, ifHasAllOf: Any?...) -> InitialValue<T>? {
 	if ifHasAllOf.compactMap({ $0 }).count < ifHasAllOf.count {
 		return value
 	} else {
@@ -66,7 +66,7 @@ func coallesce<T>(_ value: InitialValue<T>?, ifHasAllOf: Optional<Any>...) -> In
 	}
 }
 
-func coallesce<T>(_ value: InitialValue<T>?, ifHasOneOf: Optional<Any>...) -> InitialValue<T>? {
+func coallesce<T>(_ value: InitialValue<T>?, ifHasOneOf: Any?...) -> InitialValue<T>? {
 	if ifHasOneOf.compactMap({ $0 }).isEmpty {
 		return value
 	} else {

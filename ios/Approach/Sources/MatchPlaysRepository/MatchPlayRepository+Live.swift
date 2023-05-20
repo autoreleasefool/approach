@@ -2,8 +2,8 @@ import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
 import GRDB
-import ModelsLibrary
 import MatchPlaysRepositoryInterface
+import ModelsLibrary
 
 extension MatchPlaysRepository: DependencyKey {
 	public static var liveValue: Self = {

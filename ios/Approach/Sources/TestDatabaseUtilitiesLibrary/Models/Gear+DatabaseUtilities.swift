@@ -20,7 +20,6 @@ extension Gear.Database {
 	}
 }
 
-
 func insert(
 	gear initial: InitialValue<Gear.Database>?,
 	into db: Database

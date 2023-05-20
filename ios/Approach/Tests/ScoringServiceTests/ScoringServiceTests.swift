@@ -4,8 +4,6 @@ import Dependencies
 @testable import ScoringServiceInterface
 import XCTest
 
-// swiftlint:disable line_length
-
 @MainActor
 final class ScoringServiceTests: XCTestCase {
 	@Dependency(\.scoringService) var scoring
@@ -253,5 +251,3 @@ final class ScoringServiceTests: XCTestCase {
 		XCTFail("TODO")
 	}
 }
-
-// swiftlint:enable line_length

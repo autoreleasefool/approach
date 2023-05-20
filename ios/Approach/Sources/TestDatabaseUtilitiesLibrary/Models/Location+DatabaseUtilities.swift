@@ -21,7 +21,6 @@ extension Location.Database {
 	}
 }
 
-
 func insert(
 	locations initial: InitialValue<Location.Database>?,
 	into db: Database

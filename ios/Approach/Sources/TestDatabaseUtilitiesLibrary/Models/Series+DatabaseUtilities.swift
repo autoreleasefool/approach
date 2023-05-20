@@ -35,7 +35,6 @@ extension Series.Summary {
 	}
 }
 
-
 func insert(
 	series initial: InitialValue<Series.Database>?,
 	into db: Database

@@ -28,7 +28,6 @@ extension Frame.Database {
 	}
 }
 
-
 func insert(
 	frames initial: InitialValue<Frame.Database>?,
 	into db: Database
