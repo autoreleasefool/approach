@@ -2,6 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
 import EquatableLibrary
+import ExtensionsLibrary
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import MatchPlaysRepositoryInterface
@@ -62,11 +63,11 @@ public struct GameDetails: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didToggleLock:
-					state.game.locked.toggle()
+					state.game.locked.toNext()
 					return .send(.delegate(.didEditGame))
 
 				case .didToggleExclude:
-					state.game.excludeFromStatistics.toggle()
+					state.game.excludeFromStatistics.toNext()
 					return .send(.delegate(.didEditGame))
 
 				case let .didSetMatchPlayResult(result):
@@ -134,7 +135,7 @@ public struct GameDetails: Reducer {
 	}
 
 	private func toggleScoringMethod(in state: inout State) -> Effect<Action> {
-		state.game.scoringMethod.toggle()
+		state.game.scoringMethod.toNext()
 		switch state.game.scoringMethod {
 		case .byFrame:
 			return .send(.delegate(.didClearManualScore))
@@ -171,33 +172,6 @@ public struct GameDetails: Reducer {
 				}
 			}
 		)
-	}
-}
-
-extension Game.Lock {
-	mutating func toggle() {
-		switch self {
-		case .locked: self = .open
-		case .open: self = .locked
-		}
-	}
-}
-
-extension Game.ExcludeFromStatistics {
-	mutating func toggle() {
-		switch self {
-		case .exclude: self = .include
-		case .include: self = .exclude
-		}
-	}
-}
-
-extension Game.ScoringMethod {
-	mutating func toggle() {
-		switch self {
-		case .byFrame: self = .manual
-		case .manual: self = .byFrame
-		}
 	}
 }
 

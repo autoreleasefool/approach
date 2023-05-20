@@ -23,7 +23,7 @@ extension Game {
 }
 
 extension Game {
-	public enum ScoringMethod: String, Codable, Sendable {
+	public enum ScoringMethod: String, Codable, Sendable, CaseIterable {
 		case manual
 		case byFrame
 	}
