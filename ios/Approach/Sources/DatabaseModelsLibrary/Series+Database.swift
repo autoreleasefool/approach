@@ -40,6 +40,7 @@ extension Series.ExcludeFromStatistics: DatabaseValueConvertible {}
 extension Series.Database: FetchableRecord, PersistableRecord {
 	public static let league = belongsTo(League.Database.self)
 	public static let alley = belongsTo(Alley.Database.self)
+	public static let games = hasMany(Game.Database.self)
 
 	public static let seriesLanes = hasMany(SeriesLane.Database.self)
 	public static let lanes = hasMany(Lane.Database.self, through: seriesLanes, using: SeriesLane.Database.lane)

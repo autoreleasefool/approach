@@ -1,6 +1,6 @@
 import AlleyEditorFeature
-import AlleysRepositoryInterface
 import AlleysListFeature
+import AlleysRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
@@ -101,7 +101,7 @@ public struct AccessoriesOverview: Reducer {
 						}
 
 					case .delete:
-						return .run { send in
+						return .run { _ in
 							try await self.gear.delete(id)
 						} catch: { error, send in
 							await send(.internal(.errorDeletingGear(.init(error))))

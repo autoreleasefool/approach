@@ -20,6 +20,7 @@ extension ScoringService: DependencyKey {
 				.map { .init(index: $0, rolls: padRolls([], displayValue: nil), score: nil)}
 		}
 
+		// swiftlint:disable function_body_length
 		@Sendable func calculateScore(for frames: [[Frame.OrderedRoll]]) async -> [ScoreStep] {
 			// The output is a step indicating the score and status of the game after each frame
 			var steps: [ScoreStep] = []
@@ -169,6 +170,7 @@ extension ScoringService: DependencyKey {
 
 			return padSteps(steps)
 		}
+		// swiftlint:enable function_body_length
 
 		return Self(
 			calculateScoreForFrames: { frames in
