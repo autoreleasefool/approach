@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/combine-schedulers",
       "state" : {
-        "revision" : "aa3e575929f2bcc5bad012bd2575eae716cbcdf7",
-        "version" : "0.8.0"
+        "revision" : "0625932976b3ae23949f6b816d13bd97f3b40b7c",
+        "version" : "0.10.0"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-clocks",
       "state" : {
-        "revision" : "20b25ca0dd88ebfb9111ec937814ddc5a8880172",
-        "version" : "0.2.0"
+        "revision" : "f9acfa1a45f4483fe0f2c434a74e6f68f865d12d",
+        "version" : "0.3.0"
       }
     },
     {
@@ -68,7 +68,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-composable-architecture.git",
       "state" : {
-        "revision" : "fc17996ded63b136741ab2e0c0e0d549a8486adc"
+        "revision" : "82c673a3187f34e4b204999adf02bba6e4f2952e"
       }
     },
     {
@@ -76,8 +76,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-custom-dump",
       "state" : {
-        "revision" : "de8ba65649e7ee317b9daf27dd5eebf34bd4be57",
-        "version" : "0.9.1"
+        "revision" : "505aa98716275fbd045d8f934fee3337c82ffbd3",
+        "version" : "0.10.3"
       }
     },
     {
@@ -85,8 +85,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies.git",
       "state" : {
-        "revision" : "98650d886ec950b587d671261f06d6b59dec4052",
-        "version" : "0.4.1"
+        "revision" : "25c9b6789b4b7ada649a3808e6d8de1489082a33",
+        "version" : "0.5.0"
       }
     },
     {
