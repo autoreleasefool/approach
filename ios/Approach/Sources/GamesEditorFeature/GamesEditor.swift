@@ -58,9 +58,9 @@ public struct GamesEditor: Reducer {
 
 				case let .didChangeDetent(newDetent):
 					state.sheetDetent = newDetent
-					return .task {
+					return .run { send in
 						try await clock.sleep(for: .milliseconds(25))
-						return .internal(.adjustBackdrop)
+						await send(.internal(.adjustBackdrop))
 					}
 
 				case .didDismissOpenSheet:
@@ -320,10 +320,10 @@ extension GamesEditor {
 extension GamesEditor {
 	func loadBowlers(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.bowlers)
-		return .task { [bowlerIds = state.bowlerIds] in
-			await .internal(.bowlersResponse(TaskResult {
+		return .run { [bowlerIds = state.bowlerIds] send in
+			await send(.internal(.bowlersResponse(TaskResult {
 				try await bowlers.summaries(forIds: bowlerIds)
-			}))
+			})))
 		}
 	}
 
@@ -331,15 +331,15 @@ extension GamesEditor {
 		state.elementsRefreshing.insert(.frames)
 		state.elementsRefreshing.insert(.game)
 		return .merge(
-			.task { [gameId = state.currentGameId] in
-				return await .internal(.framesResponse(TaskResult {
+			.run { [gameId = state.currentGameId] send in
+				await send(.internal(.framesResponse(TaskResult {
 					try await frames.frames(forGame: gameId) ?? []
-				}))
+				})))
 			},
-			.task { [gameId = state.currentGameId] in
-				await .internal(.gameResponse(TaskResult {
+			.run { [gameId = state.currentGameId] send in
+				await send(.internal(.gameResponse(TaskResult {
 					try await games.edit(gameId)
-				}))
+				})))
 			}
 		)
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
@@ -347,9 +347,9 @@ extension GamesEditor {
 
 	func updateScoreSheet(from state: State) -> Effect<Action> {
 		guard let frames = state.frames else { return .none }
-		return .task {
+		return .run { send in
 			let steps = await scoringService.calculateScoreWithSteps(for: frames.map { $0.rolls })
-			return .internal(.calculatedScore(steps))
+			await send(.internal(.calculatedScore(steps)))
 		}
 	}
 

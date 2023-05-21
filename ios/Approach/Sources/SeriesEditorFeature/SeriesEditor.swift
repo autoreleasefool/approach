@@ -185,7 +185,7 @@ public struct SeriesEditor: Reducer {
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
-						return .fireAndForget { await self.dismiss() }
+						return .run { _ in await self.dismiss() }
 					}
 
 				case .form(.view), .form(.internal):

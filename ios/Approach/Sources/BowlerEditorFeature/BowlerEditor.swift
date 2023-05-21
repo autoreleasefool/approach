@@ -88,24 +88,24 @@ public struct BowlerEditor: Reducer {
 
 					case let .didFinishCreating(bowler):
 						return .merge(
-							.fireAndForget { await self.dismiss() },
-							.fireAndForget { await analytics.trackEvent(Analytics.Bowler.Created(id: bowler.id.uuidString)) }
+							.run { _ in await self.dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Bowler.Created(id: bowler.id.uuidString)) }
 						)
 
 					case let .didFinishUpdating(bowler):
 						return .merge(
-							.fireAndForget { await self.dismiss() },
-							.fireAndForget { await analytics.trackEvent(Analytics.Bowler.Updated(id: bowler.id.uuidString)) }
+							.run { _ in await self.dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Bowler.Updated(id: bowler.id.uuidString)) }
 						)
 
 					case let .didFinishDeleting(bowler):
 						return .merge(
-							.fireAndForget { await self.dismiss() },
-							.fireAndForget { await analytics.trackEvent(Analytics.Bowler.Deleted(id: bowler.id.uuidString)) }
+							.run { _ in await self.dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted(id: bowler.id.uuidString)) }
 						)
 
 					case .didDiscard:
-						return .fireAndForget { await self.dismiss() }
+						return .run { _ in await self.dismiss() }
 
 					}
 

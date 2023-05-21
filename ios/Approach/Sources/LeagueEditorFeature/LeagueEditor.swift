@@ -154,7 +154,7 @@ public struct LeagueEditor: Reducer {
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
-						return .fireAndForget { await self.dismiss() }
+						return .run { _ in await self.dismiss() }
 					}
 
 				case .form(.internal), .form(.view):

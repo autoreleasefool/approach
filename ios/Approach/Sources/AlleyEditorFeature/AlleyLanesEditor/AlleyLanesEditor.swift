@@ -72,11 +72,11 @@ public struct AlleyLanesEditor: Reducer {
 				case let .alert(.presented(alertAction)):
 					switch alertAction {
 					case let .didTapDeleteButton(lane):
-						return .task {
-							await .internal(.didDeleteLane(TaskResult {
+						return .run { send in
+							await send(.internal(.didDeleteLane(TaskResult {
 								try await lanes.delete([lane])
 								return lane
-							}))
+							})))
 						}
 
 					case .didTapDismissButton:

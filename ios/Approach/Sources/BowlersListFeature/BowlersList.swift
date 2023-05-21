@@ -191,13 +191,11 @@ public struct BowlersList: Reducer {
 		if let id, let selection = state.list.resources?[id: id] {
 			state.selection = Identified(.init(bowler: selection.summary), id: selection.id)
 			return .merge(
-				.fireAndForget {
+				.run { _ in
 					try await clock.sleep(for: .seconds(1))
 					recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
 				},
-				.fireAndForget {
-					await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString))
-				}
+				.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString)) }
 			)
 		} else {
 			state.selection = nil

@@ -94,10 +94,10 @@ public struct AccessoriesOverview: Reducer {
 				case let .didSwipeGear(action, id):
 					switch action {
 					case .edit:
-						return .task {
-							await .internal(.didLoadEditableGear(TaskResult {
+						return .run { send in
+							await send(.internal(.didLoadEditableGear(TaskResult {
 								try await self.gear.edit(id)
-							}))
+							})))
 						}
 
 					case .delete:
@@ -111,10 +111,10 @@ public struct AccessoriesOverview: Reducer {
 				case let .didSwipeAlley(action, id):
 					switch action {
 					case .edit:
-						return .task {
-							await .internal(.didLoadEditableAlley(TaskResult {
+						return .run { send in
+							await send(.internal(.didLoadEditableAlley(TaskResult {
 								try await self.alleys.edit(id)
-							}))
+							})))
 						}
 
 					case .delete:

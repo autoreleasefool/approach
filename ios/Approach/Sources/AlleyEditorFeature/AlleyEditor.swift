@@ -163,22 +163,22 @@ public struct AlleyEditor: Reducer {
 							.map { .internal(.form($0)) }
 
 					case let .didCreate(.success(new)):
-						return .task { [newLanes = state.newLanes, existingLanes = state.existingLanes] in
+						return .run { [newLanes = state.newLanes, existingLanes = state.existingLanes] send in
 							try await lanes.create(Array(newLanes))
 							try await lanes.update(Array(existingLanes))
-							return .internal(.didCreateLanes(.success(new)))
+							await send(.internal(.didCreateLanes(.success(new))))
 						}
-						catch: { error in
-							return .internal(.didCreateLanes(.failure(error)))
+						catch: { error, send in
+							await send(.internal(.didCreateLanes(.failure(error))))
 						}
 
 					case let .didUpdate(.success(existing)):
-						return .task { [newLanes = state.newLanes, existingLanes = state.existingLanes] in
+						return .run { [newLanes = state.newLanes, existingLanes = state.existingLanes] send in
 							try await lanes.create(Array(newLanes))
 							try await lanes.update(Array(existingLanes))
-							return .internal(.didUpdateLanes(.success(existing)))
-						} catch: { error in
-							return .internal(.didUpdateLanes(.failure(error)))
+							await send(.internal(.didUpdateLanes(.success(existing))))
+						} catch: { error, send in
+							await send(.internal(.didUpdateLanes(.failure(error))))
 						}
 
 					case let .didDelete(result):
@@ -186,7 +186,7 @@ public struct AlleyEditor: Reducer {
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
-						return .fireAndForget { await self.dismiss() }
+						return .run { _ in await self.dismiss() }
 					}
 
 				case let .alleyLanes(.delegate(delegateAction)):

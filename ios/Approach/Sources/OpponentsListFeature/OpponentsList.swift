@@ -157,7 +157,7 @@ public struct OpponentsList: Reducer {
 		if let id, let selection = state.list.resources?[id: id] {
 			// TODO: show opponent profile
 //			state.selection = Identified(.init(bowler: selection), id: selection.id)
-			return .fireAndForget {
+			return .run { _ in
 				try await clock.sleep(for: .seconds(1))
 				recentlyUsedService.didRecentlyUseResource(.opponents, selection.id)
 			}

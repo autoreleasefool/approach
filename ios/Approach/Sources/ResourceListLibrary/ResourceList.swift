@@ -142,11 +142,11 @@ public struct ResourceList<
 					guard let onDelete = state.onDelete else {
 						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
 					}
-					return .task {
-						return await .internal(.deleteResponse(TaskResult {
+					return .run { send in
+						await send(.internal(.deleteResponse(TaskResult {
 							try await onDelete(resource)
 							return resource
-						}))
+						})))
 					}
 
 				case .alert(.didTapDismissButton):
@@ -172,7 +172,7 @@ public struct ResourceList<
 					return .none
 
 				case let .deleteResponse(.success(resource)):
-					return .task { .delegate(.didDelete(resource))}
+					return .send(.delegate(.didDelete(resource)))
 
 				case .deleteResponse(.failure):
 					state.errorState = .failedToDelete

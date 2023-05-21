@@ -228,7 +228,7 @@ public struct LeaguesList: Reducer {
 	private func navigate(to league: League.SeriesHost?, state: inout State) -> Effect<Action> {
 		if let league {
 			state.selection = Identified(.init(league: league), id: league.id)
-			return .fireAndForget {
+			return .run { _ in
 				try await clock.sleep(for: .seconds(1))
 				recentlyUsedService.didRecentlyUseResource(.leagues, league.id)
 			}

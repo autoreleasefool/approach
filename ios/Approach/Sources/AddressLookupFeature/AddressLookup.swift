@@ -68,7 +68,7 @@ public struct AddressLookup: Reducer {
 						} catch: { error, send in
 							await send(.internal(.didReceiveResults(.failure(error))))
 						}.cancellable(id: SearchID.lookup),
-						.fireAndForget { [query = state.query] in
+						.run { [query = state.query] _ in
 							guard !query.isEmpty else { return }
 							await addressLookup.updateSearchQuery(SearchID.lookup, query)
 						}
@@ -77,33 +77,31 @@ public struct AddressLookup: Reducer {
 				case .didDisappear:
 					return .merge(
 						.cancel(id: SearchID.lookup),
-						.fireAndForget {
-							await addressLookup.finishSearch(SearchID.lookup)
-						}
+						.run { _ in await addressLookup.finishSearch(SearchID.lookup) }
 					)
 
 				case .didTapCancelButton:
 					return .merge(
 						.cancel(id: SearchID.lookup),
-						.fireAndForget { await self.dismiss() }
+						.run { _ in await self.dismiss() }
 					)
 
 				case let .didTapResult(id):
 					guard let address = state.results[id: id] else { return .none }
 					state.isLoadingAddress = true
-					return .task {
+					return .run { send in
 						guard let location = try await addressLookup.lookUpAddress(address) else {
-							return .internal(.didFailToLoadAddress(.init(LookupError.addressNotFound)))
+							return await send(.internal(.didFailToLoadAddress(.init(LookupError.addressNotFound))))
 						}
 
-						return .delegate(.didSelectAddress(.init(
+						await send(.delegate(.didSelectAddress(.init(
 							id: location.id,
 							title: location.title,
 							subtitle: location.subtitle,
 							coordinate: location.coordinate
-						)))
-					} catch: { error in
-						return .internal(.didFailToLoadAddress(.init(error)))
+						))))
+					} catch: { error, send in
+						await send(.internal(.didFailToLoadAddress(.init(error))))
 					}
 				}
 
@@ -129,14 +127,14 @@ public struct AddressLookup: Reducer {
 				case .didSelectAddress:
 					return .merge(
 						.cancel(id: SearchID.lookup),
-						.fireAndForget { await self.dismiss() }
+						.run { _ in await self.dismiss() }
 					)
 				}
 
 			case .binding(\.$query):
 				state.loadingAddressError = nil
 				state.loadingResultsError = nil
-				return .fireAndForget { [query = state.query] in
+				return .run { [query = state.query] _ in
 					await addressLookup.updateSearchQuery(SearchID.lookup, query)
 				}
 

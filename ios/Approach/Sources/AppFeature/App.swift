@@ -85,9 +85,7 @@ public struct App: Reducer {
 
 				case let .didSelectTab(tab):
 					state.selectedTab = tab
-					return .fireAndForget {
-						await analytics.trackEvent(Analytics.App.TabSwitched(tab: String(describing: tab)))
-					}
+					return .run { _ in await analytics.trackEvent(Analytics.App.TabSwitched(tab: String(describing: tab))) }
 				}
 
 			case let .internal(internalAction):

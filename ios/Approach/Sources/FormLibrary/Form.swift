@@ -119,19 +119,19 @@ public struct Form<
 
 					switch state.value {
 					case let .edit(existing):
-						return .task {
-							await .delegate(.didUpdate(TaskResult {
+						return .run { send in
+							await send(.delegate(.didUpdate(TaskResult {
 								try await records.update?(existing)
 								return existing
-							}))
+							})))
 						}
 
 					case let .create(new):
-						return .task {
-							await .delegate(.didCreate(TaskResult {
+						return .run { send in
+							await send(.delegate(.didCreate(TaskResult {
 								try await records.create?(new)
 								return new
-							}))
+							})))
 						}
 					}
 
@@ -160,11 +160,11 @@ public struct Form<
 					case .presented(.didTapDeleteButton):
 						guard case let .edit(record) = state.initialValue else { return .none }
 						state.isLoading = true
-						return .task {
-							await .delegate(.didDelete(TaskResult {
+						return .run { send in
+							await send(.delegate(.didDelete(TaskResult {
 								try await records.delete?(record.id)
 								return record
-							}))
+							})))
 						}
 
 					case .presented(.didTapDiscardButton):
