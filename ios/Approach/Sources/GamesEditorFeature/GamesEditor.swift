@@ -121,7 +121,7 @@ public struct GamesEditor: Reducer {
 					state.elementsRefreshing.remove(.frames)
 					return .none
 
-				case .frameUpdateError:
+				case .didUpdateFrame(.failure):
 					// TODO: handle error saving frame
 					return .none
 
@@ -137,7 +137,7 @@ public struct GamesEditor: Reducer {
 					state.elementsRefreshing.remove(.game)
 					return .none
 
-				case .gameUpdateError:
+				case .didUpdateGame(.failure):
 					// TODO: handle error saving game
 					return .none
 
@@ -284,8 +284,8 @@ extension GamesEditor {
 			case bowlersResponse(TaskResult<[Bowler.Summary]>)
 			case framesResponse(TaskResult<[Frame.Edit]>)
 			case gameResponse(TaskResult<Game.Edit?>)
-			case frameUpdateError(AlwaysEqual<Error>)
-			case gameUpdateError(AlwaysEqual<Error>)
+			case didUpdateFrame(TaskResult<Never>)
+			case didUpdateGame(TaskResult<Never>)
 
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
@@ -360,7 +360,7 @@ extension GamesEditor {
 				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
 				try await frames.update(frame)
 			} catch {
-				await send(.internal(.frameUpdateError(.init(error))))
+				await send(.internal(.didUpdateFrame(.failure(error))))
 			}
 		}.cancellable(id: frame.id, cancelInFlight: true)
 	}
@@ -372,7 +372,7 @@ extension GamesEditor {
 				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
 				try await games.update(game)
 			} catch {
-				await send(.internal(.gameUpdateError(.init(error))))
+				await send(.internal(.didUpdateGame(.failure(error))))
 			}
 		}.cancellable(id: game.id, cancelInFlight: true)
 	}

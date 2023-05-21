@@ -1,6 +1,5 @@
 import AddressLookupServiceInterface
 import ComposableArchitecture
-import EquatableLibrary
 import FeatureActionLibrary
 import Foundation
 import LocationsRepositoryInterface
@@ -33,7 +32,7 @@ public struct AddressLookup: Reducer {
 		}
 		public enum InternalAction: Equatable {
 			case didReceiveResults(TaskResult<[AddressLookupResult]>)
-			case didFailToLoadAddress(AlwaysEqual<Error?>)
+			case didLoadAddress(TaskResult<Never>)
 		}
 
 		case view(ViewAction)
@@ -91,7 +90,7 @@ public struct AddressLookup: Reducer {
 					state.isLoadingAddress = true
 					return .run { send in
 						guard let location = try await addressLookup.lookUpAddress(address) else {
-							return await send(.internal(.didFailToLoadAddress(.init(LookupError.addressNotFound))))
+							return await send(.internal(.didLoadAddress(.failure(LookupError.addressNotFound))))
 						}
 
 						await send(.delegate(.didSelectAddress(.init(
@@ -101,7 +100,7 @@ public struct AddressLookup: Reducer {
 							coordinate: location.coordinate
 						))))
 					} catch: { error, send in
-						await send(.internal(.didFailToLoadAddress(.init(error))))
+						await send(.internal(.didLoadAddress(.failure(error))))
 					}
 				}
 
@@ -116,9 +115,9 @@ public struct AddressLookup: Reducer {
 					state.loadingResultsError = error.localizedDescription
 					return .none
 
-				case let .didFailToLoadAddress(error):
+				case let .didLoadAddress(.failure(error)):
 					state.isLoadingAddress = false
-					state.loadingAddressError = error.wrapped?.localizedDescription
+					state.loadingAddressError = error.localizedDescription
 					return .none
 				}
 

@@ -1,7 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
-import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
 import GamesRepositoryInterface
@@ -44,7 +43,7 @@ public struct GameDetails: Reducer {
 			case didClearManualScore
 		}
 		public enum InternalAction: Equatable {
-			case matchPlayUpdateError(AlwaysEqual<Error>)
+			case didUpdateMatchPlay(TaskResult<Never>)
 		}
 
 		case view(ViewAction)
@@ -123,7 +122,7 @@ public struct GameDetails: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .matchPlayUpdateError:
+				case .didUpdateMatchPlay(.failure):
 					// TODO: handle error updating match play
 					return .none
 				}
@@ -154,7 +153,7 @@ public struct GameDetails: Reducer {
 			do {
 				try await matchPlays.create(matchPlay)
 			} catch {
-				await send(.internal(.matchPlayUpdateError(.init(error))))
+				await send(.internal(.didUpdateMatchPlay(.failure(error))))
 			}
 		}
 	}
@@ -168,7 +167,7 @@ public struct GameDetails: Reducer {
 				do {
 					try await matchPlays.delete(matchPlay.id)
 				} catch {
-					await send(.internal(.matchPlayUpdateError(.init(error))))
+					await send(.internal(.didUpdateMatchPlay(.failure(error))))
 				}
 			}
 		)
@@ -326,7 +325,7 @@ extension GameDetails.State {
 				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
 				try await matchPlays.update(matchPlay)
 			} catch {
-				await send(.internal(.matchPlayUpdateError(.init(error))))
+				await send(.internal(.didUpdateMatchPlay(.failure(error))))
 			}
 		}
 		.cancellable(id: GameDetails.CancelID.saveMatchPlay)

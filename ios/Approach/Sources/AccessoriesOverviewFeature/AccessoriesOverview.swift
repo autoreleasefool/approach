@@ -2,7 +2,6 @@ import AlleyEditorFeature
 import AlleysListFeature
 import AlleysRepositoryInterface
 import ComposableArchitecture
-import EquatableLibrary
 import FeatureActionLibrary
 import GearEditorFeature
 import GearListFeature
@@ -37,11 +36,11 @@ public struct AccessoriesOverview: Reducer {
 		public enum InternalAction: Equatable {
 			case alleysResponse(TaskResult<[Alley.Summary]>)
 			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes?>)
-			case errorDeletingAlley(AlwaysEqual<Error>)
+			case didDeleteAlley(TaskResult<Never>)
 
 			case gearResponse(TaskResult<[Gear.Summary]>)
 			case didLoadEditableGear(TaskResult<Gear.Edit?>)
-			case errorDeletingGear(AlwaysEqual<Error>)
+			case didDeleteGear(TaskResult<Never>)
 
 			case alleyEditor(PresentationAction<AlleyEditor.Action>)
 			case alleysList(PresentationAction<AlleysList.Action>)
@@ -104,7 +103,7 @@ public struct AccessoriesOverview: Reducer {
 						return .run { _ in
 							try await self.gear.delete(id)
 						} catch: { error, send in
-							await send(.internal(.errorDeletingGear(.init(error))))
+							await send(.internal(.didDeleteGear(.failure(error))))
 						}
 					}
 
@@ -121,7 +120,7 @@ public struct AccessoriesOverview: Reducer {
 						return .run { _ in
 							try await self.alleys.delete(id)
 						} catch: { error, send in
-							await send(.internal(.errorDeletingAlley(.init(error))))
+							await send(.internal(.didDeleteAlley(.failure(error))))
 						}
 					}
 
@@ -165,7 +164,7 @@ public struct AccessoriesOverview: Reducer {
 					// TODO: show error failed to load alley
 					return .none
 
-				case .errorDeletingAlley:
+				case .didDeleteAlley(.failure):
 					// TODO: show error deleting alley
 					return .none
 
@@ -186,7 +185,7 @@ public struct AccessoriesOverview: Reducer {
 					// TODO: show error failed to load gear
 					return .none
 
-				case .errorDeletingGear:
+				case .didDeleteGear(.failure):
 					// TODO: show error deleting gear
 					return .none
 
