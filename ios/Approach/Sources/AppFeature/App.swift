@@ -14,7 +14,14 @@ public struct App: Reducer {
 		case onboarding(Onboarding.State)
 		case content(TabbedContent.State)
 
-		public init() { self = .onboarding(.init()) }
+		public init() {
+			@Dependency(\.preferences) var preferences: PreferenceService
+			if preferences.getBool(Preferences.appDidCompleteOnboarding.rawValue) == true {
+				self = .content(.init())
+			} else {
+				self = .onboarding(.init())
+			}
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -29,9 +36,14 @@ public struct App: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	public init() {}
+	public enum Preferences: String {
+		case appDidCompleteOnboarding
+	}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.preferences) var preferences
+
+	public init() {}
 
 	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
@@ -54,7 +66,10 @@ public struct App: Reducer {
 					switch delegateAction {
 					case .didFinishOnboarding:
 						state = .content(.init())
-						return .none
+						return .merge(
+							.run { _ in preferences.setBool(Preferences.appDidCompleteOnboarding.rawValue, true) },
+							.run { _ in await analytics.trackEvent(Analytics.App.OnboardingCompleted()) }
+						)
 					}
 
 				case .content(.internal), .content(.view):
