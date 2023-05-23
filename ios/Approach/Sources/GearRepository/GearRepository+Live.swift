@@ -12,7 +12,7 @@ public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 extension GearRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
-		@Dependency(\.recentlyUsedService) var recentlyUsed
+		@Dependency(\.recentlyUsed) var recentlyUsed
 
 		@Sendable func sortGear(
 			_ gear: GearStream,

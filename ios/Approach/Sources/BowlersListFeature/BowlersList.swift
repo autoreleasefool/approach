@@ -88,7 +88,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
-	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.recentlyUsed) var recentlyUsed
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
@@ -193,7 +193,7 @@ public struct BowlersList: Reducer {
 			return .merge(
 				.run { _ in
 					try await clock.sleep(for: .seconds(1))
-					recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
+					recentlyUsed.didRecentlyUseResource(.bowlers, selection.id)
 				},
 				.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString)) }
 			)

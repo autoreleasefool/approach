@@ -30,7 +30,7 @@ extension ScoringService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var scoringService: ScoringService {
+	public var scoring: ScoringService {
 		get { self[ScoringService.self] }
 		set { self[ScoringService.self] = newValue }
 	}

@@ -6,7 +6,7 @@ import GRDB
 
 extension DatabaseService: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.fileManagerService) var fileManager
+		@Dependency(\.fileManager) var fileManager
 		let writer: any DatabaseWriter
 
 		do {

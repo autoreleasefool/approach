@@ -69,7 +69,7 @@ extension PreferenceService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var preferenceService: PreferenceService {
+	public var preferences: PreferenceService {
 		get { self[PreferenceService.self] }
 		set { self[PreferenceService.self] = newValue }
 	}

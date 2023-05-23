@@ -28,8 +28,8 @@ public struct AvatarView: View {
 					.cornerRadius(size)
 			}
 		}.task {
-			@Dependency(\.avatarService) var avatarService: AvatarService
-			image = await avatarService.render(avatar)
+			@Dependency(\.avatars) var avatars: AvatarService
+			image = await avatars.render(avatar)
 		}
 	}
 }

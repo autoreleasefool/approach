@@ -89,7 +89,7 @@ public struct LeaguesList: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.featureFlags) var featureFlags
-	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
@@ -230,7 +230,7 @@ public struct LeaguesList: Reducer {
 			state.selection = Identified(.init(league: league), id: league.id)
 			return .run { _ in
 				try await clock.sleep(for: .seconds(1))
-				recentlyUsedService.didRecentlyUseResource(.leagues, league.id)
+				recentlyUsed.didRecentlyUseResource(.leagues, league.id)
 			}
 		} else {
 			state.selection = nil

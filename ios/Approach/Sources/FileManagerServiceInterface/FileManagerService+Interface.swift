@@ -30,7 +30,7 @@ extension FileManagerService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var fileManagerService: FileManagerService {
+	public var fileManager: FileManagerService {
 		get { self[FileManagerService.self] }
 		set { self[FileManagerService.self] = newValue }
 	}

@@ -11,6 +11,9 @@ extension Notification.Name {
 
 extension RecentlyUsedService: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.preferences) var preferences: PreferenceService
+		@Dependency(\.date) var date: DateGenerator
+
 		let encoder = JSONEncoder()
 		let decoder = JSONDecoder()
 
@@ -19,10 +22,8 @@ extension RecentlyUsedService: DependencyKey {
 		}
 
 		@Sendable func entries(forCategory category: Resource) -> [Entry] {
-			@Dependency(\.preferenceService) var preferenceService: PreferenceService
-
 			let categoryKey = key(forCategory: category)
-			let string = preferenceService.getString(categoryKey) ?? "[]"
+			let string = preferences.getString(categoryKey) ?? "[]"
 			guard let data = string.data(using: .utf8),
 						let recentlyUsed = try? decoder.decode([Entry].self, from: data) else {
 				return []
@@ -33,9 +34,6 @@ extension RecentlyUsedService: DependencyKey {
 
 		return Self(
 			didRecentlyUseResource: { category, uuid in
-				@Dependency(\.preferenceService) var preferenceService: PreferenceService
-				@Dependency(\.date) var date: DateGenerator
-
 				let categoryKey = key(forCategory: category)
 				var recentlyUsed = entries(forCategory: category)
 				let entry = Entry(id: uuid, lastUsedAt: date())
@@ -52,7 +50,7 @@ extension RecentlyUsedService: DependencyKey {
 					return
 				}
 
-				preferenceService.setString(categoryKey, recentlyUsedString)
+				preferences.setString(categoryKey, recentlyUsedString)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			},
 			getRecentlyUsed: { category in
@@ -99,10 +97,8 @@ extension RecentlyUsedService: DependencyKey {
 					}
 			},
 			resetRecentlyUsed: { category in
-				@Dependency(\.preferenceService) var preferenceService: PreferenceService
-
 				let categoryKey = key(forCategory: category)
-				preferenceService.removeKey(categoryKey)
+				preferences.removeKey(categoryKey)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			}
 		)

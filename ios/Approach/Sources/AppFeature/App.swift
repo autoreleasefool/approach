@@ -31,7 +31,7 @@ public struct App: Reducer {
 
 	public init() {}
 
-	@Dependency(\.preferenceService) var preferences
+	@Dependency(\.preferences) var preferences
 
 	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in

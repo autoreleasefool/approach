@@ -57,7 +57,7 @@ extension RecentlyUsedService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var recentlyUsedService: RecentlyUsedService {
+	public var recentlyUsed: RecentlyUsedService {
 		get { self[RecentlyUsedService.self] }
 		set { self[RecentlyUsedService.self] = newValue }
 	}

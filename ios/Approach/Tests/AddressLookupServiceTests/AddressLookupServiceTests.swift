@@ -4,13 +4,11 @@ import Dependencies
 import XCTest
 
 final class AddressLookupServiceTests: XCTestCase {
-	@Dependency(\.addressLookupService) var addressLookup
+	@Dependency(\.addressLookup) var addressLookup
 
 	enum LookupID { case lookup }
 
 	func testBeginLookupHasNoResults() async throws {
-		let addressLookup: AddressLookupService = .liveValue
-
 		let results = await addressLookup.beginSearch(LookupID.lookup)
 		var iterator = results.makeAsyncIterator()
 		await addressLookup.finishSearch(LookupID.lookup)
@@ -21,8 +19,6 @@ final class AddressLookupServiceTests: XCTestCase {
 
 	func testUpdateLookupReturnsResults() async throws {
 		// FIXME: does MKLocalSearchCompleter work in XCTests?
-		let addressLookup: AddressLookupService = .liveValue
-
 		let results = await addressLookup.beginSearch(LookupID.lookup)
 		var iterator = results.makeAsyncIterator()
 

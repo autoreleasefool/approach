@@ -11,7 +11,7 @@ import RepositoryLibrary
 extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
-		@Dependency(\.recentlyUsedService) var recentlyUsed
+		@Dependency(\.recentlyUsed) var recentlyUsed
 		@Dependency(\.locations) var locations
 
 		return Self(

@@ -21,7 +21,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.date) var date
 	@Dependency(\.frames) var frames
 	@Dependency(\.games) var games
-	@Dependency(\.scoringService) var scoringService
+	@Dependency(\.scoring) var scoring
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
@@ -348,7 +348,7 @@ extension GamesEditor {
 	func updateScoreSheet(from state: State) -> Effect<Action> {
 		guard let frames = state.frames else { return .none }
 		return .run { send in
-			let steps = await scoringService.calculateScoreWithSteps(for: frames.map { $0.rolls })
+			let steps = await scoring.calculateScoreWithSteps(for: frames.map { $0.rolls })
 			await send(.internal(.calculatedScore(steps)))
 		}
 	}

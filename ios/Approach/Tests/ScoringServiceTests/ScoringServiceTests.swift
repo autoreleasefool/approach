@@ -6,7 +6,7 @@ import XCTest
 
 @MainActor
 final class ScoringServiceTests: XCTestCase {
-	@Dependency(\.scoringService) var scoring
+	@Dependency(\.scoring) var scoring
 
 	func testCalculatesScoreForFrames() {
 		// TODO: testCalculatesScoreForFrames
@@ -58,7 +58,7 @@ final class ScoringServiceTests: XCTestCase {
 		]
 
 		let steps = await withDependencies {
-			$0.scoringService = .liveValue
+			$0.scoring = .liveValue
 		} operation: {
 			await scoring.calculateScoreForFramesWithSteps(frames)
 		}

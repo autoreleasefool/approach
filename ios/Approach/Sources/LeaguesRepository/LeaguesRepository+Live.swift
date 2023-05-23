@@ -10,7 +10,7 @@ import RepositoryLibrary
 extension LeaguesRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
-		@Dependency(\.recentlyUsedService) var recentlyUsed
+		@Dependency(\.recentlyUsed) var recentlyUsed
 		@Dependency(\.uuid) var uuid
 		@Dependency(\.date) var date
 

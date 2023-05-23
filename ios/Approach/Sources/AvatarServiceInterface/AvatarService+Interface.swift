@@ -24,7 +24,7 @@ extension AvatarService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var avatarService: AvatarService {
+	public var avatars: AvatarService {
 		get { self[AvatarService.self] }
 		set { self[AvatarService.self] = newValue }
 	}

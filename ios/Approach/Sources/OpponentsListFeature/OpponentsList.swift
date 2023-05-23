@@ -72,7 +72,7 @@ public struct OpponentsList: Reducer {
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
-	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.recentlyUsed) var recentlyUsed
 
 	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
@@ -159,7 +159,7 @@ public struct OpponentsList: Reducer {
 //			state.selection = Identified(.init(bowler: selection), id: selection.id)
 			return .run { _ in
 				try await clock.sleep(for: .seconds(1))
-				recentlyUsedService.didRecentlyUseResource(.opponents, selection.id)
+				recentlyUsed.didRecentlyUseResource(.opponents, selection.id)
 			}
 		} else {
 			state.selection = nil

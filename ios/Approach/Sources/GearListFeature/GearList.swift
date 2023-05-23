@@ -82,7 +82,7 @@ public struct GearList: Reducer {
 
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.gear) var gear
-	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {

@@ -31,7 +31,7 @@ extension AddressLookupService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var addressLookupService: AddressLookupService {
+	public var addressLookup: AddressLookupService {
 		get { self[AddressLookupService.self] }
 		set { self[AddressLookupService.self] = newValue }
 	}
