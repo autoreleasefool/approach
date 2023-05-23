@@ -105,7 +105,7 @@ final class ScoringServiceTests: XCTestCase {
 		]
 
 		let steps = await withDependencies {
-			$0.scoringService = .liveValue
+			$0.scoring = .liveValue
 		} operation: {
 			await scoring.calculateScoreForFramesWithSteps(frames)
 		}
@@ -148,7 +148,7 @@ final class ScoringServiceTests: XCTestCase {
 		]
 
 		let steps = await withDependencies {
-			$0.scoringService = .liveValue
+			$0.scoring = .liveValue
 		} operation: {
 			await scoring.calculateScoreForFramesWithSteps(frames)
 		}
@@ -197,7 +197,7 @@ final class ScoringServiceTests: XCTestCase {
 		]
 
 		let steps = await withDependencies {
-			$0.scoringService = .liveValue
+			$0.scoring = .liveValue
 		} operation: {
 			await scoring.calculateScoreForFramesWithSteps(frames)
 		}
