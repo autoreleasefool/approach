@@ -184,6 +184,8 @@ let package = Package(
 			dependencies: [
 				"AccessoriesOverviewFeature",
 				"BowlersListFeature",
+				"OnboardingFeature",
+				"PreferenceServiceInterface",
 				"SettingsFeature",
 			]
 		),

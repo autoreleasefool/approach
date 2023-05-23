@@ -29,7 +29,8 @@ features = [ "AlleyEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.App]
-features = [ "AccessoriesOverview", "BowlersList", "Settings" ]
+features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings" ]
+services = [ "Preference" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
