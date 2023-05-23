@@ -59,6 +59,8 @@ public enum Strings {
     public static let save = Strings.tr("Localizable", "action.save", fallback: "Save")
     /// Search
     public static let search = Strings.tr("Localizable", "action.search", fallback: "Search")
+    /// Skip
+    public static let skip = Strings.tr("Localizable", "action.skip", fallback: "Skip")
     /// Start
     public static let start = Strings.tr("Localizable", "action.start", fallback: "Start")
     /// Try again
@@ -518,6 +520,32 @@ public enum Strings {
         /// Won
         public static let won = Strings.tr("Localizable", "matchPlay.properties.result.won", fallback: "Won")
       }
+    }
+  }
+  public enum Onboarding {
+    /// Get started
+    public static let getStarted = Strings.tr("Localizable", "onboarding.getStarted", fallback: "Get started")
+    public enum Header {
+      /// Approach
+      public static let appName = Strings.tr("Localizable", "onboarding.header.appName", fallback: "Approach")
+      /// Onboarding
+      public static let welcomeTo = Strings.tr("Localizable", "onboarding.header.welcomeTo", fallback: "Welcome to a new")
+    }
+    public enum Logbook {
+      /// Add Bowler
+      public static let addBowler = Strings.tr("Localizable", "onboarding.logbook.addBowler", fallback: "Add Bowler")
+      /// This logbook belongs to
+      public static let belongsTo = Strings.tr("Localizable", "onboarding.logbook.belongsTo", fallback: "This logbook belongs to")
+      /// Your Name
+      public static let name = Strings.tr("Localizable", "onboarding.logbook.name", fallback: "Your Name")
+    }
+    public enum Message {
+      /// Your 5 Pin Bowling Companion has arrived, with all the tracking, stats, and charts you could have ever wanted
+      /// 
+      /// Approach is the 5 Pin Bowling app I always wish existed, and I hope you feel the same
+      public static let description = Strings.tr("Localizable", "onboarding.message.description", fallback: "Your 5 Pin Bowling Companion has arrived, with all the tracking, stats, and charts you could have ever wanted\n\nApproach is the 5 Pin Bowling app I always wish existed, and I hope you feel the same")
+      /// Lovingly crafted in Vancouver
+      public static let lovinglyCrafted = Strings.tr("Localizable", "onboarding.message.lovinglyCrafted", fallback: "Lovingly crafted in Vancouver")
     }
   }
   public enum Opponent {

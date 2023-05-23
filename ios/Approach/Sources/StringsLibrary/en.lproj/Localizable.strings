@@ -228,6 +228,17 @@
 "ordering.alphabetical" = "Alphabetical";
 "ordering.mostRecentlyUsed" = "Most Recently Used";
 
+/* Onboarding */
+
+"onboarding.header.welcomeTo" = "Welcome to a new";
+"onboarding.header.appName" = "Approach";
+"onboarding.message.description" = "Your 5 Pin Bowling Companion has arrived, with all the tracking, stats, and charts you could have ever wanted\n\nApproach is the 5 Pin Bowling app I always wish existed, and I hope you feel the same";
+"onboarding.message.lovinglyCrafted" = "Lovingly crafted in Vancouver";
+"onboarding.getStarted" = "Get started";
+"onboarding.logbook.belongsTo" = "This logbook belongs to";
+"onboarding.logbook.name" = "Your Name";
+"onboarding.logbook.addBowler" = "Add Bowler";
+
 /* Tabs */
 
 "app.tabs.accessories" = "Accessories";
@@ -277,6 +288,7 @@
 "action.start" = "Start";
 "action.search" = "Search";
 "action.viewAll" = "View All";
+"action.skip" = "Skip";
 
 /* Other */
 

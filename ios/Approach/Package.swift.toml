@@ -85,6 +85,10 @@ features = [ "BowlerEditor" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder" ]
 
+[features.Onboarding]
+repositories = [ "Bowlers" ]
+libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
+
 [features.ScoreSheet]
 services = [ "Scoring" ]
 libraries = [ "SwiftUIExtensions", "Views" ]

@@ -26,6 +26,7 @@ let package = Package(
 		.library(name: "LaneEditorFeature", targets: ["LaneEditorFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
+		.library(name: "OnboardingFeature", targets: ["OnboardingFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
 		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
@@ -373,6 +374,23 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesListFeature",
+			]
+		),
+		.target(
+			name: "OnboardingFeature",
+			dependencies: [
+				"BowlersRepositoryInterface",
+				"ExtensionsLibrary",
+				"FeatureActionLibrary",
+				"SwiftUIExtensionsLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "OnboardingFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"OnboardingFeature",
 			]
 		),
 		.target(

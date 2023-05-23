@@ -3,6 +3,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct ResourceListEmptyContent: Equatable {
 	public let image: UIImage
@@ -141,10 +142,7 @@ public struct ResourceListEmptyView: View {
 					Text(viewStore.content.action)
 						.frame(maxWidth: .infinity)
 				}
-				.buttonStyle(.borderedProminent)
-				.controlSize(.large)
-				.foregroundColor(.white)
-				.tint(.appAction)
+				.modifier(PrimaryButton())
 			}
 			.padding()
 		})
