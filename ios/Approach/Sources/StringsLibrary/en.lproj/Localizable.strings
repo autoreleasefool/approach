@@ -1,0 +1,299 @@
+/* Accessories */
+"accessory.title" = "Accessory";
+"accessory.overview.title" = "Accessories";
+
+/* Alleys */
+
+"alley.title" = "Alley";
+"alley.title.bowlingAlley" = "Bowling Alley";
+"alley.list.title" = "Alleys";
+"alley.list.add" = "Add Alley";
+"alley.properties.material" = "Material";
+"alley.properties.material.synthetic" = "Synthetic";
+"alley.properties.material.wood" = "Wood";
+"alley.properties.pinFall" = "Pin Fall";
+"alley.properties.pinFall.strings" = "Strings";
+"alley.properties.pinFall.freefall" = "Freefall";
+"alley.properties.mechanism" = "Mechanism";
+"alley.properties.mechanism.dedicated" = "Dedicated";
+"alley.properties.mechanism.interchangeable" = "Interchangeable";
+"alley.properties.pinBase" = "Pin Base";
+"alley.properties.pinBase.black" = "Black";
+"alley.properties.pinBase.white" = "White";
+"alley.properties.lanes.manage" = "Manage";
+"alley.properties.lanes.none" = "No lanes created";
+"alley.editor.help.askAStaffMember" = "Not sure about any of the settings? Ask a staff member! They'll probably be happy to help";
+"alley.editor.fields.material.help" = "To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother.";
+"alley.editor.fields.pinFall.help" = "Look at how the pins are set up. Do you notice the pins are pushed off the lane after each ball, or are they attached to strings and pulled up?";
+"alley.editor.fields.mechanism.help" = "Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?";
+"alley.editor.fields.pinBase.help" = "What kind of base do the pins have?";
+"alley.editor.fields.address.editorTitle" = "Alley Address";
+"alley.error.empty.title" = "No alleys found";
+"alley.error.empty.message" = "You haven't added any alleys yet.";
+"alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
+
+/* Address */
+"address.error.empty.title" = "No suggestions found";
+"address.error.notFound" = "We were unable to gather details for the chosen location. Please try again.";
+
+/* Bowlers */
+
+"bowler.title" = "Bowler";
+"bowler.current" = "Current bowler";
+"bowler.list.title" = "Bowlers";
+"bowler.list.add" = "Add Bowler";
+"bowler.error.empty.title" = "No bowlers found";
+"bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
+
+/* Opponents */
+
+"opponent.title" = "Opponent";
+"opponent.list.title" = "Opponents";
+"opponent.list.add" = "Add Opponent";
+"opponent.error.empty.title" = "No opponents found";
+"opponent.error.empty.message" = "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.";
+
+/* Match Play */
+"matchPlay.title" = "Match Play";
+"matchPlay.record" = "Record results?";
+"matchPlay.properties.opponentScore" = "Opponent's score";
+"matchPlay.properties.result" = "Outcome";
+"matchPlay.properties.result.won" = "Won";
+"matchPlay.properties.result.tied" = "Tied";
+"matchPlay.properties.result.lost" = "Lost";
+"matchPlay.properties.result.none" = "None";
+
+/* Gear */
+
+"gear.title" = "Gear";
+"gear.list.title" = "Gear";
+"gear.properties.kind" = "Kind";
+"gear.properties.kind.shoes" = "Shoes";
+"gear.properties.kind.bowlingBall" = "Ball";
+"gear.properties.kind.bowlingBalls" = "Balls";
+"gear.properties.kind.towel" = "Towel";
+"gear.properties.kind.towels" = "Towels";
+"gear.properties.owner" = "Owner";
+"gear.list.add" = "Add Gear";
+"gear.error.empty.title" = "No gear found";
+"gear.error.empty.message" = "You haven't added any gear yet. Track usage stats for your shoes, balls, or more.";
+
+/* Bowling Balls */
+
+"bowlingBall.title" = "Bowling Ball";
+"bowlingBall.list.title" = "Bowling Balls";
+
+/* Roll */
+
+"roll.title" = "Ball %d";
+"roll.properties.ball.title" = "Ball rolled";
+"roll.properties.ball.noneSelected" = "None selected";
+"roll.properties.foul.title" = "Foul?";
+
+/* Lanes */
+
+"lane.title" = "Lane";
+"lane.list.title" = "Lanes";
+"lane.list.add" = "Add Lane";
+"lane.list.addMultiple" = "Add Muliple Lanes";
+"lane.properties.label" = "Lane";
+"lane.properties.position" = "Position by walls?";
+"lane.properties.position.leftWall" = "Wall on Left";
+"lane.properties.position.rightWall" = "Wall on Right";
+"lane.properties.position.noWall" = "No walls";
+"lane.editor.fields.position.help" = "You can mark which lanes have a wall to either the left or right, if this affects your game. Generally, only the first and last lanes in an alley should be marked as against any walls.";
+
+/* Leagues */
+
+"league.title" = "League";
+"league.list.title" = "Leagues";
+"league.list.add" = "Add League";
+"league.properties.alley" = "Bowling Alley";
+"league.properties.recurrence" = "Repeat?";
+"league.properties.recurrence.repeats" = "Repeats";
+"league.properties.recurrence.never" = "Never";
+"league.properties.numberOfGames" = "Number of games";
+"league.properties.additionalPinfall" = "Additional Pinfall";
+"league.properties.additionalGames" = "Additional Games";
+"league.properties.excludeFromStatistics.include" = "Include in statistics";
+"league.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"league.editor.fields.gamesPerSeries.constant" = "Constant";
+"league.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";
+"league.editor.fields.alley.help" = "This is where you'll usually bowl this league. You can always change it for specific series later.";
+"league.editor.fields.recurrence.help" = "Choose '%@' for leagues that happen semi-frequently, such as once a week, or choose '%@' for tournaments and one-off events.";
+"league.editor.fields.numberOfGames.help" = "Choose '%@' if you always play the same number of games each series, or '%@' to choose the number of games each time you bowl.";
+"league.editor.fields.additionalPinfall.title" = "Include additional pinfall?";
+"league.editor.fields.additionalPinfall.help" = "If you're starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average provided by your league.";
+"league.editor.fields.excludeFromStatistics.title" = "Statistics";
+"league.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
+"league.editor.fields.excludeFromStatistics.help" = "This league and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your overall average or other statistics.";
+"league.error.empty.title" = "No leagues found";
+"league.error.empty.message" = "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events.";
+
+/* Series */
+
+"series.title" = "Series";
+"series.list.title" = "Series";
+"series.list.add" = "Add Series";
+"series.properties.numberOfGames" = "Number of games";
+"series.properties.alley" = "Bowling Alley";
+"series.properties.date" = "Date";
+"series.properties.preBowl.preBowl" = "Pre-Bowl";
+"series.properties.preBowl.regular" = "Regular";
+"series.properties.excludeFromStatistics.include" = "Include in statistics";
+"series.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"series.editor.fields.alley.lanes" = "Lanes";
+"series.editor.fields.preBowl.title" = "Pre-Bowl";
+"series.editor.fields.preBowl.label" = "This is a pre-bowl";
+"series.editor.fields.preBowl.help" = "Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.";
+"series.editor.fields.excludeFromStatistics.title" = "Statistics";
+"series.editor.fields.excludeFromStatistics.label" = "Exclude from all statistics?";
+"series.editor.fields.excludeFromStatistics.help" = "This series and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your average or other statistics.";
+"series.editor.fields.excludeFromStatistics.excludedWhenPreBowl" = "Pre-bowls are automatically excluded from all statistics.";
+"series.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.";
+"series.error.failedToCreate.title" = "Failed to create series";
+"series.error.failedToCreate.message" = "We couldn't create a new series";
+"series.error.empty.title" = "No series found";
+"series.error.empty.message" = "You haven't added a series yet. Create a new series every time you bowl to see your stats mapped accurately over time.";
+
+/* Games */
+
+"game.title" = "Game";
+"game.titleWithOrdinal" = "Game %d";
+"game.list.title" = "Games";
+"game.settings.title" = "Game Settings";
+"game.settings.current" = "Currently Editing";
+"game.properties.excludeFromStatistics.include" = "Include in statistics";
+"game.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"game.editor.fields.excludeFromStatistics.title" = "Statistics";
+"game.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
+"game.editor.fields.excludeFromStatistics.help" = "This game will not count towards any statistics. It will still appear in the app, but won't affect your overall average or other statistics. This can be useful for practice or incomplete games.";
+"game.editor.fields.excludeFromStatistics.excludedWhenSeriesExcluded" = "All of this series' games have been excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics.";
+"game.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.";
+"game.editor.fields.lock.label" = "Lock for editing";
+"game.editor.fields.lock.help" = "Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.";
+"game.editor.fields.scoringMethod.label" = "Set manual score?";
+"game.editor.fields.scoringMethod.help" = "This game's frames will be hidden and ignored in all statistics.";
+"game.editor.fields.manualScore.title" = "Set manual score";
+"game.editor.fields.manualScore.prompt" = "Score";
+"game.editor.fields.manualScore.caption" = "Score set manually";
+"game.editor.picker.switch" = "Switch game";
+"game.editor.bowlers.dragToReorder" = "Drag to reorder";
+
+"frame.title" = "Frame %d";
+"ball.title" = "Ball %d";
+"ball.properties.ballRolled" = "Ball Rolled";
+"ball.properties.fouled" = "Fouled?";
+
+/* Statistics */
+
+"statistics.placeholder.title" = "Statistics at a glance";
+"statistics.placeholder.message" = "Tap here to configure the stats you want to see";
+
+/* Settings */
+
+"settings.acknowledgements.title" = "Acknowledgements";
+"settings.developer.name" = "Joseph Roque";
+"settings.developer.contact" = "Contact";
+"settings.developer.twitterHandle" = "@autoreleasefool";
+"settings.developer.twitterUrl" = "https://twitter.com/@autoreleasefool";
+"settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";
+"settings.developer.mastodonUrl" = "https://iosdev.space/@autoreleasefool";
+"settings.developer.learnMore" = "Learn More";
+"settings.developer.websiteTitle" = "Website";
+"settings.developer.website" = "https://josephroque.dev";
+"settings.developer.blogTitle" = "Blog";
+"settings.developer.blog" = "https://runcode.blog";
+"settings.developer.title" = "Developer";
+"settings.help.title" = "Help";
+"settings.help.reportBug" = "Report Bug";
+"settings.help.sendFeedback" = "Send Feedback";
+"settings.help.acknowledgements" = "Acknowledgements";
+"settings.help.developer" = "Developer";
+"settings.help.viewSource" = "View Source";
+"settings.help.development.title" = "Development";
+"settings.help.development.help" = "%@ is an open source project you can aid in the development of by using the links above";
+"settings.appInfo.title" = "App Info";
+"settings.appInfo.version" = "Version";
+"settings.appInfo.appVersion" = "%@ (%@)";
+"settings.appInfo.copyright" = "©2023, Joseph Roque";
+"settings.featureFlags.title" = "Features";
+"settings.featureFlags.matchRelease" = "Match flags to Release";
+"settings.featureFlags.matchTest" = "Match flags to Test";
+"settings.featureFlags.matchDevelopment" = "Match flags to Development";
+"settings.title" = "Settings";
+
+/* Ordering */
+
+"ordering.alphabetical" = "Alphabetical";
+"ordering.mostRecentlyUsed" = "Most Recently Used";
+
+/* Onboarding */
+
+"onboarding.header.welcomeTo" = "Welcome to a new";
+"onboarding.header.appName" = "Approach";
+"onboarding.message.description" = "Your 5 Pin Bowling Companion has arrived, with all the tracking, stats, and charts you could have ever wanted\n\nApproach is the 5 Pin Bowling app I always wish existed, and I hope you feel the same";
+"onboarding.message.lovinglyCrafted" = "Lovingly crafted in Vancouver";
+"onboarding.getStarted" = "Get started";
+"onboarding.logbook.belongsTo" = "This logbook belongs to";
+"onboarding.logbook.name" = "Your Name";
+"onboarding.logbook.addBowler" = "Add Bowler";
+
+/* Tabs */
+
+"app.tabs.accessories" = "Accessories";
+"app.tabs.overview" = "Overview";
+"app.tabs.settings" = "Settings";
+"app.tabs.statistics" = "Statistics";
+"tab" = "Tab";
+
+/* Editor & Forms */
+
+"editor.fields.details.title" = "Details";
+"editor.fields.details.name" = "Name";
+"editor.fields.details.address" = "Address";
+"editor.fields.options" = "Options";
+"form.prompt.add" = "Add %@";
+"form.prompt.edit" = "Edit %@";
+"form.prompt.discardChanges" = "Discard your changes?";
+"form.prompt.delete" = "Are you sure you want to delete %@?";
+"picker.title" = "Picking %@";
+"picker.empty.title" = "No items found";
+"sortOrder.title" = "Sort Order";
+
+/* List */
+"list.results" = "Results";
+
+/* Errors */
+
+"error.generic.title" = "Something went wrong!";
+"error.loadingFailed" = "We couldn't load your data.";
+
+/* Actions */
+
+"action.apply" = "Apply";
+"action.filter" = "Filter";
+"action.add" = "Add";
+"action.edit" = "Edit";
+"action.done" = "Done";
+"action.delete" = "Delete";
+"action.cancel" = "Cancel";
+"action.dismiss" = "Dismiss";
+"action.tryAgain" = "Try again";
+"action.reload" = "Reload";
+"action.discard" = "Discard";
+"action.reset" = "Reset";
+"action.save" = "Save";
+"action.manage" = "Manage";
+"action.start" = "Start";
+"action.search" = "Search";
+"action.viewAll" = "View All";
+"action.skip" = "Skip";
+
+/* Other */
+
+"unknown" = "Unknown";
+"other" = "Other";
+"none" = "None";
+"yes" = "Yes";
+"no" = "No";

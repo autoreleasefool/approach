@@ -1,0 +1,10 @@
+strings:
+  inputs:
+    - Approach/Sources/StringsLibrary/en.lproj
+  outputs:
+    - templateName: structured-swift5
+      output: Approach/Sources/StringsLibrary/Strings+Generated.swift
+      params:
+        enumName: Strings
+        publicAccess: true
+        bundle: Bundle.module

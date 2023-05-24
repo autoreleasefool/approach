@@ -1,0 +1,23 @@
+included:
+  - Approach/Sources
+  - Approach/Tests
+
+excluded:
+  - .build
+  - Approach/Package.swift
+  - Approach/Sources/StringsLibrary
+
+trailing_comma:
+  mandatory_comma: true
+
+type_name:
+  excluded:
+    - ID
+
+disabled_rules:
+  - cyclomatic_complexity
+  - identifier_name
+  - nesting
+
+opt_in_rules:
+  - sorted_imports

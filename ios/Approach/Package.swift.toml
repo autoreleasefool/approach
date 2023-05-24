@@ -1,0 +1,334 @@
+name = "Approach"
+tools_version = "5.7.1"
+default_localization = "en"
+
+# Platforms
+
+[platforms.iOS]
+supported = [ "\"16.4\"" ]
+
+# Features
+
+[features.AccessoriesOverview]
+features = [ "AlleysList", "GearList" ]
+dependencies = [ "Algorithms" ]
+
+[features.AddressLookup]
+repositories = [ "Locations" ]
+services = [ "AddressLookup" ]
+libraries = [ "Views" ]
+
+[features.AlleyEditor]
+features = [ "AddressLookup", "LaneEditor" ]
+repositories = [ "Alleys" ]
+services = [ "FeatureFlags" ]
+libraries = [ "Form", "ModelsViews" ]
+
+[features.AlleysList]
+features = [ "AlleyEditor" ]
+libraries = [ "ResourceList" ]
+
+[features.App]
+features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings" ]
+services = [ "Preference" ]
+
+[features.AvatarEditor]
+services = [ "Avatar" ]
+libraries = [ "Strings" ]
+
+[features.BowlerEditor]
+repositories = [ "Bowlers" ]
+libraries = [ "Form" ]
+services = [ "Analytics" ]
+
+[features.BowlersList]
+features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]
+
+[features.FeatureFlagsList]
+services = [ "FeatureFlags" ]
+libraries = [ "Strings" ]
+
+[features.GamesEditor]
+features = [ "ScoreSheet" ]
+repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
+services = [ "FeatureFlags" ]
+libraries = [ "DateTime", "Equatable", "ResourcePicker" ]
+
+[features.GamesList]
+features = [ "GamesEditor" ]
+libraries = [ "ResourceList" ]
+
+[features.GearEditor]
+repositories = [ "Bowlers", "Gear" ]
+services = [ "Avatar", "FeatureFlags" ]
+libraries = [ "Equatable", "Form", "ResourcePicker" ]
+
+[features.GearList]
+features = [ "GearEditor" ]
+services = [ "RecentlyUsed" ]
+libraries = [ "ResourceList", "SortOrder", "ModelsViews" ]
+
+[features.LaneEditor]
+libraries = [ "Models", "SwiftUIExtensions", "Views" ]
+
+[features.LeagueEditor]
+repositories = [ "Alleys", "Leagues" ]
+services = [ "FeatureFlags" ]
+libraries = [ "Equatable", "Form", "ModelsViews", "ResourcePicker" ]
+
+[features.LeaguesList]
+features = [ "LeagueEditor", "SeriesList" ]
+services = [ "RecentlyUsed" ]
+libraries = [ "SortOrder" ]
+
+[features.OpponentsList]
+features = [ "BowlerEditor" ]
+services = [ "RecentlyUsed" ]
+libraries = [ "ResourceList", "SortOrder" ]
+
+[features.Onboarding]
+repositories = [ "Bowlers" ]
+libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
+
+[features.ScoreSheet]
+services = [ "Scoring" ]
+libraries = [ "SwiftUIExtensions", "Views" ]
+
+[features.SeriesEditor]
+repositories = [ "Alleys", "Series" ]
+services = [ "FeatureFlags" ]
+libraries = [ "DateTime", "Equatable", "Form", "ResourcePicker", "ModelsViews" ]
+
+[features.SeriesList]
+features = [ "GamesList", "SeriesEditor" ]
+
+[features.Settings]
+features = [ "FeatureFlagsList", "OpponentsList" ]
+libraries = [ "Constants", "FoundationExtensions" ]
+
+[features.StatisticsWidgets]
+libraries = [ "Assets", "Strings" ]
+
+# Repositories
+
+[repositories.Alleys]
+services = [ "RecentlyUsed" ]
+[repositories.Alleys.interface]
+repositories = [ "Lanes", "Locations" ]
+dependencies = [ "IdentifiedCollections" ]
+
+[repositories.Bowlers]
+services = [ "RecentlyUsed" ]
+
+[repositories.Frames]
+[repositories.Frames.interface]
+libraries = [ "Extensions" ]
+
+[repositories.Games]
+[repositories.Games.interface]
+repositories = [ "MatchPlays" ]
+dependencies = [ "IdentifiedCollections" ]
+
+
+[repositories.Gear]
+services = [ "RecentlyUsed" ]
+
+[repositories.Lanes]
+
+[repositories.Leagues]
+services = [ "RecentlyUsed" ]
+
+[repositories.Locations]
+
+[repositories.MatchPlays]
+
+[repositories.Series]
+[repositories.Series.interface]
+dependencies = [ "IdentifiedCollections" ]
+
+# Services
+
+[services.AddressLookup]
+[services.AddressLookup.interface]
+libraries = [ "Equatable", "Models" ]
+dependencies = [ "XCTestDynamicOverlay" ]
+
+[services.Analytics]
+libraries = [ "Constants" ]
+dependencies = [ "TelemetryClient" ]
+
+[services.Avatar]
+[services.Avatar.interface]
+libraries = [ "Assets", "Models" ]
+
+[services.Database]
+libraries = [ "Database" ]
+services = [ "FileManager" ]
+[services.Database.interface]
+suitable_for_dependents_matching = "\\w+Repository$"
+dependencies = [ "GRDB" ]
+
+[services.FeatureFlags]
+services = [ "Preference" ]
+[services.FeatureFlags.interface]
+libraries = [ "FeatureFlags" ]
+
+[services.FileManager]
+
+[services.Preference]
+
+[services.RecentlyUsed]
+services = [ "Preference" ]
+
+[services.Scoring]
+[services.Scoring.interface]
+libraries = [ "Models" ]
+
+# Libraries
+
+[libraries.Assets]
+skip_tests = true
+
+[libraries.Constants]
+skip_tests = true
+libraries = [ "Strings" ]
+
+[libraries.Database]
+dependencies = [ "GRDB" ]
+
+[libraries.DatabaseModels]
+skip_tests = true
+libraries = [ "Models" ]
+dependencies = [ "GRDB" ]
+[libraries.DatabaseModels.tests]
+services = [ "Database" ]
+libraries = [ "TestUtilities" ]
+
+[libraries.DateTime]
+
+[libraries.Equatable]
+
+[libraries.Extensions]
+
+[libraries.FeatureAction]
+skip_tests = true
+dependencies = [ "ComposableArchitecture" ]
+
+[libraries.FeatureFlags]
+
+[libraries.Form]
+libraries = [ "FeatureAction", "Views" ]
+dependencies = [ "Dependencies" ]
+
+[libraries.FoundationExtensions]
+skip_tests = true
+
+[libraries.Models]
+skip_tests = true
+
+[libraries.ModelsViews]
+libraries = [ "Assets", "Models" ]
+
+[libraries.Repository]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
+[libraries.ResourceList]
+libraries = [ "Equatable", "FeatureAction", "Views" ]
+
+[libraries.ResourcePicker]
+libraries = [ "FeatureAction", "Views" ]
+
+[libraries.Sorting]
+
+[libraries.SortOrder]
+libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
+
+[libraries.Strings]
+skip_tests = true
+
+[libraries.SwiftUIExtensions]
+
+[libraries.TestDatabaseUtilities]
+suitable_for_dependents_matching = "\\w+Tests$"
+skip_tests = true
+libraries = [ "Database", "DatabaseModels" ]
+dependencies = [ "Dependencies" ]
+
+[libraries.TestUtilities]
+suitable_for_dependents_matching = "\\w+Tests$"
+skip_tests = true
+
+[libraries.Views]
+libraries = [ "Assets", "Strings" ]
+dependencies = [ "ComposableArchitecture" ]
+
+# External Dependencies
+
+[dependencies.Algorithms]
+url = "https://github.com/apple/swift-algorithms.git"
+from = "1.0.0"
+
+[dependencies.AsyncAlgorithms]
+url = "https://github.com/apple/swift-async-algorithms.git"
+from = "0.0.4"
+
+[dependencies.GRDB]
+url = "https://github.com/groue/GRDB.swift.git"
+from = "6.6.0"
+
+[dependencies.ComposableArchitecture]
+url = "https://github.com/pointfreeco/swift-composable-architecture.git"
+revision = "82c673a3187f34e4b204999adf02bba6e4f2952e"
+
+[dependencies.Dependencies]
+url = "https://github.com/pointfreeco/swift-dependencies.git"
+from = "0.4.1"
+
+[dependencies.IdentifiedCollections]
+url = "https://github.com/pointfreeco/swift-identified-collections.git"
+from = "0.7.0"
+
+[dependencies.SnapshotTesting]
+suitable_for_dependents_matching = "\\w+Tests$"
+url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
+from = "1.10.0"
+
+[dependencies.TelemetryClient]
+url = "https://github.com/TelemetryDeck/SwiftClient.git"
+from = "1.4.2"
+
+[dependencies.XCTestDynamicOverlay]
+url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
+from = "0.8.4"
+
+# Default Imports
+
+[defaults.features]
+libraries = [ "FeatureAction" ]
+dependencies = [ "ComposableArchitecture" ]
+
+[defaults.features.tests]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.repositories]
+services = [ "Database" ]
+libraries = [ "DatabaseModels", "Repository" ]
+
+[defaults.repositories.interface]
+libraries = [ "Models" ]
+dependencies = [ "Dependencies" ]
+
+[defaults.repositories.tests]
+services = [ "Database" ]
+libraries = [ "TestUtilities", "TestDatabaseUtilities" ]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.services.interface]
+dependencies = [ "Dependencies" ]
+
+[defaults.services.tests]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.libraries.tests]
+dependencies = [ "SnapshotTesting" ]

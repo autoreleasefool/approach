@@ -1,0 +1,389 @@
+swift-tools-version: 5.7.1
+
+package:
+  name: Approach
+  defaultLocalization: "en"
+
+  platforms:
+    iOS:
+      - .v16
+
+  dependencies:
+    - url: "https://github.com/apple/swift-async-algorithms.git"
+      from: "0.0.4"
+      exports:
+        - AsyncAlgorithms
+    - url: "https://github.com/pointfreeco/swift-dependencies.git"
+      from: "0.1.2"
+      exports:
+        - Dependencies
+    - url: "https://github.com/pointfreeco/swift-composable-architecture.git"
+      revision: "132cb3bae2d333c75ff2c952086d1dcd53ba392e"
+      exports:
+        - ComposableArchitecture
+    - url: "https://github.com/pointfreeco/swift-snapshot-testing.git"
+      from: "1.10.0"
+      exports:
+        - SnapshotTesting
+    - url: "https://github.com/groue/GRDB.swift.git"
+      from: "6.6.0"
+      exports:
+        - GRDB
+    - url: "https://github.com/TelemetryDeck/SwiftClient.git"
+      from: "1.4.2"
+      exports:
+        - TelemetryClient
+
+  feature:
+    - name: AlleyEditorFeature
+      dependencies:
+        - BaseFormLibrary
+        - LaneEditorFeature
+        - LanesDataProvider
+        - PersistenceService
+        - SharedModelsViewsLibrary
+    - name: AlleysListFeature
+      dependencies:
+        - AlleyEditorFeature
+        - AlleysDataProvider
+        - ResourceListLibrary
+        - SharedModelsViewsLibrary
+    - name: AppFeature
+      dependencies:
+        - AlleysListFeature
+        - AnalyticsService
+        - BowlersListFeature
+        - GearListFeature
+        - SettingsFeature
+    - name: AvatarEditorFeature
+      dependencies:
+        - AvatarService
+        - SharedModelsViewsLibrary
+        - StringsLibrary
+    - name: BowlerEditorFeature
+      dependencies:
+        - AvatarEditorFeature
+        - BaseFormLibrary
+        - BowlersRepository
+        - PersistenceService
+    - name: BowlersListFeature
+      dependencies:
+        - BowlersDataProvider
+        - BowlerEditorFeature
+        - FeatureFlagsService
+        - LeaguesListFeature
+        - ResourceListLibrary
+        - SortOrderLibrary
+        - StatisticsWidgetsFeature
+    - name: FeatureFlagsListFeature
+      dependencies:
+        - FeatureFlagsService
+    - name: GamesEditorFeature
+      dependencies:
+        - AssetsLibrary
+        - ExtensionsLibrary
+        - FramesDataProvider
+        - ScoreSheetFeature
+        - SwiftUIExtensionsLibrary
+        - SharedModelsLibrary
+        - ViewsLibrary
+    - name: GamesListFeature
+      dependencies:
+        - BowlersDataProvider
+        - GamesDataProvider
+        - GamesEditorFeature
+        - ResourceListLibrary
+    - name: GearEditorFeature
+      dependencies:
+        - AvatarService
+        - BaseFormLibrary
+        - BowlersDataProvider
+        - FeatureFlagsService
+        - PersistenceService
+        - ResourcePickerLibrary
+        - StringsLibrary
+    - name: GearListFeature
+      dependencies:
+        - GearEditorFeature
+        - GearDataProvider
+        - SharedModelsViewsLibrary
+    - name: LaneEditorFeature
+      dependencies:
+        - AssetsLibrary
+        - LanesDataProvider
+        - PersistenceService
+        - StringsLibrary
+        - SwiftUIExtensionsLibrary
+        - ViewsLibrary
+    - name: LeagueEditorFeature
+      dependencies:
+        - AlleysDataProvider
+        - BaseFormLibrary
+        - PersistenceService
+        - ResourcePickerLibrary
+        - SharedModelsViewsLibrary
+    - name: LeaguesListFeature
+      dependencies:
+        - LeaguesDataProvider
+        - LeagueEditorFeature
+        - RecentlyUsedService
+        - ResourceListLibrary
+        - SeriesListFeature
+        - SharedModelsViewsLibrary
+    - name: OpponentEditorFeature
+      dependencies:
+        - BaseFormLibrary
+        - OpponentsDataProvider
+        - PersistenceService
+    - name: OpponentsListFeature
+      dependencies:
+        - OpponentEditorFeature
+        - SortOrderLibrary
+    - name: ScoreSheetFeature
+      dependencies:
+        - SharedModelsLibrary
+        - ViewsLibrary
+    - name: SeriesEditorFeature
+      dependencies:
+        - AlleysDataProvider
+        - BaseFormLibrary
+        - DateTimeLibrary
+        - PersistenceService
+        - ResourcePickerLibrary
+        - SharedModelsViewsLibrary
+    - name: SeriesListFeature
+      dependencies:
+        - DateTimeLibrary
+        - FeatureFlagsService
+        - GamesListFeature
+        - ResourceListLibrary
+        - SeriesDataProvider
+        - SeriesEditorFeature
+    - name: SettingsFeature
+      dependencies:
+        - ConstantsLibrary
+        - FeatureFlagsListFeature
+        - FoundationExtensionsLibrary
+        - OpponentsListFeature
+    - name: StatisticsWidgetsFeature
+      dependencies:
+        - AssetsLibrary
+        - ViewsLibrary
+    - name: TeamEditorFeature
+      dependencies:
+        - BaseFormLibrary
+        - BowlersDataProvider
+        - ResourcePickerLibrary
+        - PersistenceService
+    - name: TeamsListFeature
+      dependencies:
+        - SortOrderLibrary
+        - TeamsDataProvider
+        - TeamEditorFeature
+
+  repository:
+    - name: BowlersRepository
+      dependencies:
+        interface:
+          - ModelsLibrary
+        implementation:
+          - AsyncAlgorithms
+          - DatabaseModelsLibrary
+          - DatabaseService
+          - RecentlyUsedService
+          - SortingLibrary
+
+  data_provider:
+    - name: AlleysDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+    - name: BowlersDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+    - name: FramesDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
+    - name: GamesDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
+    - name: GearDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+    - name: LanesDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
+    - name: LeaguesDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+    - name: OpponentsDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+    - name: SeriesDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
+    - name: TeamsDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+
+  service:
+    - name: AddressLookupService
+    - name: AnalyticsService
+      dependencies:
+        implementation:
+          - ConstantsLibrary
+          - TelemetryClient
+    - name: AvatarService
+      dependencies:
+        interface:
+          - AssetsLibrary
+          - SharedModelsLibrary
+    - name: DatabaseService
+      dependencies:
+        interface:
+          - GRDB
+        implementation:
+          - FileManagerService
+    - name: FeatureFlagsService
+      dependencies:
+        interface:
+          - FeatureFlagsLibrary
+          - PreferenceService
+    - name: FileManagerService
+    - name: PersistenceService
+      dependencies:
+        interface:
+          - SharedModelsLibrary
+          - SharedModelsFetchableLibrary
+        implementation:
+          - FileManagerService
+          - SharedModelsPersistableLibrary
+    - name: PreferenceService
+      dependencies:
+        implementation:
+          - ComposableArchitecture
+    - name: RecentlyUsedService
+      dependencies:
+        implementation:
+          - PreferenceService
+    - name: ScoringService
+      dependencies:
+        interface:
+          - SharedModelsLibrary
+        implementation:
+          - PersistenceService
+
+  library:
+    - name: BaseFormLibrary
+      requires_tests: true
+      dependencies:
+        - AssetsLibrary
+        - FeatureActionLibrary
+        - ViewsLibrary
+    - name: ConstantsLibrary
+      dependencies:
+        - StringsLibrary
+    - name: DatabaseModelsLibrary
+      dependencies:
+        - GRDB
+        - ExtensionsLibrary
+        - ModelsLibrary
+    - name: DateTimeLibrary
+      requires_tests: true
+    - name: EquatableLibrary
+      requires_tests: true
+    - name: ExtensionsLibrary
+      requires_tests: true
+    - name: FeatureActionLibrary
+      dependencies:
+        - ComposableArchitecture
+    - name: FeatureFlagsLibrary
+      requires_tests: true
+    - name: FoundationExtensionsLibrary
+    - name: ModelsLibrary
+    - name: ResourceListLibrary
+      requires_tests: true
+      dependencies:
+        - AssetsLibrary
+        - EquatableLibrary
+        - FeatureActionLibrary
+        - StringsLibrary
+        - ViewsLibrary
+    - name: ResourcePickerLibrary
+      requires_tests: true
+      dependencies:
+        - AssetsLibrary
+        - FeatureActionLibrary
+        - StringsLibrary
+        - ViewsLibrary
+    - name: SharedModelsLibrary
+      requires_tests: true
+      dependencies:
+        - StringsLibrary
+    - name: SharedModelsFetchableLibrary
+      dependencies:
+        - SharedModelsLibrary
+    - name: SharedModelsMocksLibrary
+      dependencies:
+        - SharedModelsLibrary
+    - name: SharedModelsViewsLibrary
+      requires_tests: true
+      dependencies:
+        - AssetsLibrary
+        - DateTimeLibrary
+        - SharedModelsLibrary
+        - ViewsLibrary
+    - name: SharedModelsPersistableLibrary
+      requires_tests: true
+      dependencies:
+        - Dependencies
+        - ExtensionsLibrary
+        - GRDB
+        - SharedModelsLibrary
+    - name: SortingLibrary
+      requires_tests: true
+    - name: SortOrderLibrary
+      requires_tests: true
+      dependencies:
+        - ComposableArchitecture
+        - FeatureActionLibrary
+        - StringsLibrary
+        - SwiftUIExtensionsLibrary
+        - ViewsLibrary
+    - name: StringsLibrary
+    - name: SwiftUIExtensionsLibrary
+      requires_tests: true
+    - name: AssetsLibrary
+    - name: ViewsLibrary
+      requires_tests: true
+      dependencies:
+        - AssetsLibrary
+        - ComposableArchitecture
+        - StringsLibrary
