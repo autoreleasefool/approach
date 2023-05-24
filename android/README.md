@@ -1,3 +1,0 @@
-# Approach, for Android
-
-To be completed...
