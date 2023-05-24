@@ -1,7 +1,5 @@
 # Bowling Companion (5 Pin Bowling Statistics)
 
-![Android build](https://github.com/autoreleasefool/bowling-companion/workflows/Android%20build/badge.svg)
-
 An Android app to track 5-pin bowling statistics. Allows users to track multiple bowlers and leagues, and provides in-depth statistics on their game. Useful for determining areas in which the user's performance can be improved.
 
 [View it on the Play Store](https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion)
@@ -31,47 +29,6 @@ This app is also open source. Feel free to check out the repository at https://g
 
 ## Screenshots
 
-### Screenshots from Version 3.0
-
-![Version 3.0 - Select a bowler](/screenshots/v3.0_bowlers.png)
-![Version 3.0 - Select a series](/screenshots/v3.0_series.png)
-![Version 3.0 - Navigation](/screenshots/v3.0_nav.png)
-![Version 3.0 - Editing a game](/screenshots/v3.0_editing.png)
-![Version 3.0 - Statistics](/screenshots/v3.0_statistics.png)
-![Version 3.0 - Graphs](/screenshots/v3.0_graphs.png)
-
-#### Screenshots from Version 2.0
-
-![Version 2.0 - Select a bowler](/screenshots/v2.0_bowlers.png)
-![Version 2.0 - Select a series](/screenshots/v2.0_series.png)
-![Version 2.0 - Navigation](/screenshots/v2.0_nav.png)
-![Version 2.0 - Editing a game](/screenshots/v2.0_editingpart.png)
-![Version 2.0 - Statistics](/screenshots/v2.0_stats.png)
-![Version 2.0 - Graphs](/screenshots/v2.0_statsgraph.png)
-
-#### Screenshots from Version 1.0
-
-![Version 1.0 - Select a bowler](/screenshots/v1.0_bowlers.png)
-![Version 1.0 - Select a league](/screenshots/v1.0_leagues.png)
-![Version 1.0 - Select a series](/screenshots/v1.0_series.png)
-![Version 1.0 - Locked Game](/screenshots/v1.0_editingfin.png)
-![Version 1.0 - Unlocked Game](/screenshots/v1.0_editingpart.png)
-![Version 1.0 - Manual Score Game](/screenshots/v1.0_manual.png)
-
-## License
-
-```
-Copyright 2015 Joseph Roque
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+| List of Bowlers                                    | Editor                                            | Statistics                               |
+| -------------------------------------------------- | ------------------------------------------------- | ---------------------------------------- |
+| ![List of bowlers](./screenshots/v3.0_bowlers.png) | ![Editing a game](./screenshots/v3.0_editing.png) | ![Graphs](./screenshots/v3.0_graphs.png) |
