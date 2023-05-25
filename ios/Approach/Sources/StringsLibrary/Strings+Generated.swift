@@ -765,6 +765,14 @@ public enum Strings {
       /// Statistics
       public static let title = Strings.tr("Localizable", "statistics.placeholder.title", fallback: "Statistics at a glance")
     }
+    public enum Title {
+      /// Head Pins
+      public static let headPins = Strings.tr("Localizable", "statistics.title.headPins", fallback: "Head Pins")
+      /// High Series of 3
+      public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.title.highSeriesOf3", fallback: "High Series of 3")
+      /// High Single
+      public static let highSingle = Strings.tr("Localizable", "statistics.title.highSingle", fallback: "High Single")
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

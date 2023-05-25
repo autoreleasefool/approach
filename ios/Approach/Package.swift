@@ -97,6 +97,7 @@ let package = Package(
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
+		.library(name: "StatisticsLibrary", targets: ["StatisticsLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
@@ -1136,6 +1137,21 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SortingLibrary",
+			]
+		),
+		.target(
+			name: "StatisticsLibrary",
+			dependencies: [
+				"ModelsLibrary",
+				"StringsLibrary",
+			]
+		),
+		.testTarget(
+			name: "StatisticsLibraryTests",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StatisticsLibrary",
 			]
 		),
 		.target(

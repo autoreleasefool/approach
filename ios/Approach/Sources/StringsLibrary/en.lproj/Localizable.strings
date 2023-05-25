@@ -189,6 +189,9 @@
 
 "statistics.placeholder.title" = "Statistics at a glance";
 "statistics.placeholder.message" = "Tap here to configure the stats you want to see";
+"statistics.title.highSeriesOf3" = "High Series of 3";
+"statistics.title.highSingle" = "High Single";
+"statistics.title.headPins" = "Head Pins";
 
 /* Settings */
 

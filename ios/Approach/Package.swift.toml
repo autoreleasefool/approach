@@ -244,6 +244,11 @@ libraries = [ "FeatureAction", "Views" ]
 [libraries.SortOrder]
 libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
 
+[libraries.Statistics]
+libraries = [ "Models", "Strings" ]
+[libraries.Statistics.tests]
+dependencies = [ "Dependencies" ]
+
 [libraries.Strings]
 skip_tests = true
 
