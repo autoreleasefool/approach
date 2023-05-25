@@ -90,13 +90,13 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(2), UUID(0), UUID(1)])
 
 		// Fetching the gear
 		let gear = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.gear = .liveValue
 		} operation: {
 			self.gear.list(ordered: .byRecentlyUsed)
@@ -123,13 +123,13 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([])
 
 		// Fetching the gear
 		let gear = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.gear = .liveValue
 		} operation: {
 			self.gear.overview()
@@ -154,13 +154,13 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(2), UUID(3)])
 
 		// Fetching the gear
 		let gear = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.gear = .liveValue
 		} operation: {
 			self.gear.overview()

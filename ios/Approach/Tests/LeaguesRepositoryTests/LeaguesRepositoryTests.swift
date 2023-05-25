@@ -110,13 +110,13 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(0), UUID(1)])
 
 		// Fetching the leagues
 		let leagues = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.leagues = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byRecentlyUsed)

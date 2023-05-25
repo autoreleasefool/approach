@@ -9,7 +9,7 @@ import XCTest
 @MainActor
 final class AddressLookupFeatureTests: XCTestCase {
 	func testView_OnAppear_BeginsSearch() async throws {
-		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let beginsSearch = expectation(description: "begins search")
 		let store = withDependencies {
@@ -31,7 +31,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testView_OnDisappear_FinishesSearch() async throws {
-		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let finishesSearch = expectation(description: "finishes search")
 		let store = withDependencies {
@@ -68,7 +68,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testView_OnResultTapped_LooksUpLocation() async throws {
-		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 		let lookedUpLocation = expectation(description: "looked up location")
 
 		let store = withDependencies {
@@ -111,7 +111,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testQuery_MatchesInitialQuery() async throws {
-		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 		let initialQuery = "Query"
 		let updatedQuery = expectation(description: "updated query")
 
@@ -137,7 +137,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testQuery_OnChange_UpdatesSearch() async throws {
-		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 		let updatedQuery = expectation(description: "updated query")
 
 		let store = withDependencies {
@@ -166,7 +166,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testQuery_OnChange_ClearsError() async throws {
-		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
 			$0.addressLookupService.beginSearch = { _ in results }
@@ -193,7 +193,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testResults_OnReceiveNewResults_UpdatesState() async throws {
-		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
 			$0.uuid = .incrementing
@@ -219,7 +219,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testResults_WhenError_DisplaysError() async throws {
-		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
 			$0.addressLookupService.beginSearch = { _ in results }
@@ -241,7 +241,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testLookup_WhenError_DisplaysError() async throws {
-		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
 			$0.addressLookupService.beginSearch = { _ in results }
@@ -277,7 +277,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 	}
 
 	func testLookup_WhenSuccess_Dismisses() async throws {
-		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.streamWithContinuation()
+		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 		let location: Location.Summary = .init(
 			id: UUID(0),
 			title: "title",

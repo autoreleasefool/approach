@@ -198,7 +198,7 @@ final class ResourceListTests: XCTestCase {
 	}
 
 	func testTappingRowSendsAction() async {
-		let (models, modelsContinuation) = AsyncThrowingStream<[Model], Error>.streamWithContinuation()
+		let (models, modelsContinuation) = AsyncThrowingStream<[Model], Error>.makeStream()
 
 		let store = TestStore(
 			initialState: buildState(withFeatures: [.tappable]),

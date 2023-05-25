@@ -151,13 +151,13 @@ final class AlleysRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(0), UUID(1)])
 
 		// Fetching the alleys
 		let alleys = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.alleys = .liveValue
 		} operation: {
 			self.alleys.list(ordered: .byRecentlyUsed)
@@ -180,13 +180,13 @@ final class AlleysRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2, alley3, alley4]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([])
 
 		// Fetching the alleys
 		let alleys = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.alleys = .liveValue
 		} operation: {
 			self.alleys.overview()
@@ -211,13 +211,13 @@ final class AlleysRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2, alley3, alley4]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(3), UUID(0)])
 
 		// Fetching the alleys
 		let alleys = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.alleys = .liveValue
 		} operation: {
 			self.alleys.overview()

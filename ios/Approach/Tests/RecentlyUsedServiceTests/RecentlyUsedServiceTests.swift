@@ -26,9 +26,9 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			}
 
 		} operation: {
-			let recentlyUsedService: RecentlyUsedService = .liveValue
+			let recentlyUsed: RecentlyUsedService = .liveValue
 
-			recentlyUsedService.didRecentlyUseResource(.bowlers, id0)
+			recentlyUsed.didRecentlyUseResource(.bowlers, id0)
 		}
 
 		waitForExpectations(timeout: 1)
@@ -55,9 +55,9 @@ final class RecentlyUsedServiceTests: XCTestCase {
 				expectation.fulfill()
 			}
 		} operation: {
-			let recentlyUsedService: RecentlyUsedService = .liveValue
+			let recentlyUsed: RecentlyUsedService = .liveValue
 
-			recentlyUsedService.didRecentlyUseResource(.bowlers, id1)
+			recentlyUsed.didRecentlyUseResource(.bowlers, id1)
 		}
 
 		waitForExpectations(timeout: 1)
@@ -72,9 +72,9 @@ final class RecentlyUsedServiceTests: XCTestCase {
 				expectation.fulfill()
 			}
 		} operation: {
-			let recentlyUsedService: RecentlyUsedService = .liveValue
+			let recentlyUsed: RecentlyUsedService = .liveValue
 
-			recentlyUsedService.resetRecentlyUsed(.bowlers)
+			recentlyUsed.resetRecentlyUsed(.bowlers)
 		}
 
 		waitForExpectations(timeout: 1)
@@ -104,15 +104,15 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 			$0.date = .constant(now)
 		} operation: {
-			let recentlyUsedService: RecentlyUsedService = .liveValue
+			let recentlyUsed: RecentlyUsedService = .liveValue
 
-			let recentlyUsed = recentlyUsedService.observeRecentlyUsed(.bowlers)
+			let recentlyUsed = recentlyUsed.observeRecentlyUsed(.bowlers)
 			var recentlyUsedIterator = recentlyUsed.makeAsyncIterator()
 
 			let firstValue = await recentlyUsedIterator.next()
 			XCTAssertEqual([RecentlyUsedService.Entry(id: id0, lastUsedAt: now)], firstValue)
 //
-			recentlyUsedService.didRecentlyUseResource(.bowlers, id1)
+			recentlyUsed.didRecentlyUseResource(.bowlers, id1)
 
 			let secondValue = await recentlyUsedIterator.next()
 			XCTAssertEqual([RecentlyUsedService.Entry(id: id0, lastUsedAt: now)], secondValue)
@@ -127,7 +127,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 		let now = Date(timeIntervalSince1970: 1672519204)
 
-		let recentlyUsedService: RecentlyUsedService = .liveValue
+		let recentlyUsed: RecentlyUsedService = .liveValue
 		var recentlyUsed: AsyncStream<[RecentlyUsedService.Entry]>?
 		var recentlyUsedIterator: AsyncStream<[RecentlyUsedService.Entry]>.Iterator?
 
@@ -137,7 +137,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 				return Self.entriesString(ids: [id0])
 			}
 		} operation: {
-			recentlyUsed = recentlyUsedService.observeRecentlyUsed(.bowlers)
+			recentlyUsed = recentlyUsed.observeRecentlyUsed(.bowlers)
 			recentlyUsedIterator = recentlyUsed!.makeAsyncIterator()
 
 			let firstValue = await recentlyUsedIterator!.next()
@@ -157,7 +157,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 				XCTAssertEqual(Self.entriesString(ids: [id1]), value)
 			}
 		} operation: {
-			recentlyUsedService.didRecentlyUseResource(.alleys, id1)
+			recentlyUsed.didRecentlyUseResource(.alleys, id1)
 		}
 
 		await withDependencies {
@@ -173,7 +173,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 				XCTAssertEqual(Self.entriesString(ids: [id2]), value)
 			}
 		} operation: {
-			recentlyUsedService.didRecentlyUseResource(.bowlers, id2)
+			recentlyUsed.didRecentlyUseResource(.bowlers, id2)
 
 			// We shouldn't see id1 ever surfaced here
 			let secondValue = await recentlyUsedIterator!.next()

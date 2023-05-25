@@ -65,13 +65,13 @@ final class BowlersRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(0), UUID(1)])
 
 		// Fetching the bowlers
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.bowlers = .liveValue
 		} operation: {
 			self.bowlers.list(ordered: .byRecentlyUsed)
@@ -274,13 +274,13 @@ final class BowlersRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Given an ordering of ids
-		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
 		recentContinuation.yield([UUID(0), UUID(1)])
 
 		// Fetching the opponents
 		let opponents = withDependencies {
 			$0.database.reader = { db }
-			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.bowlers = .liveValue
 		} operation: {
 			// with `byRecentlyUsed` ordering
