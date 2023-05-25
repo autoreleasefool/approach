@@ -84,13 +84,7 @@ public struct ResourceListView<
 		WithViewStore(store, observe: ViewState.init, send: map(viewAction:)) { viewStore in
 			Group {
 				switch viewStore.listContent {
-				case .notLoaded:
-					List {
-						EmptyView()
-					}
-					.listStyle(.insetGrouped)
-
-				case .loading:
+				case .notLoaded, .loading:
 					List {
 						ListProgressView()
 					}
