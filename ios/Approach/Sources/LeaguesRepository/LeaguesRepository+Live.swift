@@ -17,7 +17,7 @@ extension LeaguesRepository: DependencyKey {
 		return Self(
 			list: { bowler, recurrence, ordering in
 				let leagues = database.reader().observe {
-					let averageScore = League.Database.gamesForStatistics.average(Game.Database.Columns.score).forKey("average")
+					let averageScore = League.Database.trackableGames.average(Game.Database.Columns.score).forKey("average")
 					return try League.Database
 						.all()
 						.orderByName()

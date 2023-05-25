@@ -44,6 +44,10 @@ extension Series.Database: FetchableRecord, PersistableRecord {
 
 	public static let seriesLanes = hasMany(SeriesLane.Database.self)
 	public static let lanes = hasMany(Lane.Database.self, through: seriesLanes, using: SeriesLane.Database.lane)
+
+	public static let trackableGames = hasMany(Game.Database.self)
+		.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
+	public static let trackableFrames = hasMany(Frame.Database.self, through: trackableGames, using: Game.Database.frames)
 }
 
 extension Series.Database {

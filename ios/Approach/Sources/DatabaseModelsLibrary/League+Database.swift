@@ -48,14 +48,18 @@ extension League.Database: FetchableRecord, PersistableRecord {
 	public static let alley = belongsTo(Alley.Database.self)
 	public static let series = hasMany(Series.Database.self)
 
-	public static let seriesForStatistics =
-		hasMany(Series.Database.self)
-			.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
-	public static let gamesForStatistics =
-		hasMany(Game.Database.self, through: seriesForStatistics, using: Series.Database.games)
-			.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
-	public static let framesForStatistics =
-		hasMany(Frame.Database.self, through: gamesForStatistics, using: Game.Database.frames)
+	public static let trackableSeries = hasMany(Series.Database.self)
+		.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
+	public static let trackableGames = hasMany(
+		Game.Database.self,
+		through: trackableSeries,
+		using: Series.Database.trackableGames
+	)
+	public static let trackableFrames = hasMany(
+		Frame.Database.self,
+		through: trackableGames,
+		using: Game.Database.frames
+	)
 }
 
 extension League.Database {

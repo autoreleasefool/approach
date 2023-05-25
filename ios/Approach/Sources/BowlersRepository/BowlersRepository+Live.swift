@@ -18,7 +18,7 @@ extension BowlersRepository: DependencyKey {
 		return Self(
 			list: { ordering in
 				let bowlers = database.reader().observe {
-					let averageScore = Bowler.Database.gamesForStatistics.average(Game.Database.Columns.score).forKey("average")
+					let averageScore = Bowler.Database.trackableGames.average(Game.Database.Columns.score).forKey("average")
 					return try Bowler.Database
 						.all()
 						.orderByName()
