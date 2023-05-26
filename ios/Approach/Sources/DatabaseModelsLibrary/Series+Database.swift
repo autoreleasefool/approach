@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Series {
-	public struct Database: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
 		public static let databaseTableName = "series"
 
 		public let leagueId: League.ID

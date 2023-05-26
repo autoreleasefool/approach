@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Lane {
-	public struct Database: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
 		public static let databaseTableName = "lane"
 
 		public let alleyId: Alley.ID

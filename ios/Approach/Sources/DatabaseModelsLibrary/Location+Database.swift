@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Location {
-	public struct Database: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
 		public static let databaseTableName = "location"
 
 		public let id: Location.ID

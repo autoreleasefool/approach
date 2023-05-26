@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension MatchPlay {
-	public struct Database: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
 		public static let databaseTableName = "matchPlay"
 
 		public let gameId: Game.ID

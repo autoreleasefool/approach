@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Gear {
-	public struct Database: Sendable, Identifiable, Codable, TableRecord {
+	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
 		public static let databaseTableName = "gear"
 
 		public let id: Gear.ID

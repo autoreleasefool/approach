@@ -2,7 +2,7 @@ import GRDB
 import ModelsLibrary
 
 extension SeriesLane {
-	public struct Database: Sendable, Codable, TableRecord {
+	public struct Database: Sendable, Codable, Equatable, TableRecord {
 		public static let databaseTableName = "seriesLane"
 
 		public let seriesId: Series.ID
