@@ -13,10 +13,9 @@ extension NSNotification.Name {
 
 extension FeatureFlagsService: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.preferences) var preferences: PreferenceService
 		@Dependency(\.featureFlagsQueue) var queue: DispatchQueue
 
-		let flagManager = FeatureFlagOverrides(queue: queue, preferences: preferences)
+		let flagManager = FeatureFlagOverrides(queue: queue)
 
 		@Sendable func isFlagEnabled(flag: FeatureFlag) -> Bool {
 			#if DEBUG
@@ -88,11 +87,10 @@ extension FeatureFlagsService: DependencyKey {
 class FeatureFlagOverrides {
 	private let queue: DispatchQueue
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
-	private let preferences: PreferenceService
+	@Dependency(\.preferences) var preferences
 
-	init(queue: DispatchQueue, preferences: PreferenceService) {
+	init(queue: DispatchQueue) {
 		self.queue = queue
-		self.preferences = preferences
 		queue.sync {
 			for flag in FeatureFlag.allFlags {
 				queue_overrides[flag] = preferences.getBool(flag.overrideKey)
@@ -105,7 +103,7 @@ class FeatureFlagOverrides {
 			let overridden = Array(self.queue_overrides.keys)
 			self.queue_overrides.removeAll()
 			for flag in FeatureFlag.allFlags {
-				preferences.removeKey(flag.overrideKey)
+				preferences.remove(flag.overrideKey)
 			}
 			return overridden
 		}
@@ -118,7 +116,7 @@ class FeatureFlagOverrides {
 			if let enabled {
 				self.preferences.setBool(flag.overrideKey, enabled)
 			} else {
-				self.preferences.removeKey(flag.overrideKey)
+				self.preferences.remove(flag.overrideKey)
 			}
 		}
 	}

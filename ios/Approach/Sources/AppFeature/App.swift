@@ -16,7 +16,7 @@ public struct App: Reducer {
 
 		public init() {
 			@Dependency(\.preferences) var preferences: PreferenceService
-			if preferences.getBool(Preferences.appDidCompleteOnboarding.rawValue) == true {
+			if preferences.bool(forKey: .appDidCompleteOnboarding) == true {
 				self = .content(.init())
 			} else {
 				self = .onboarding(.init())
@@ -34,10 +34,6 @@ public struct App: Reducer {
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
-	}
-
-	public enum Preferences: String {
-		case appDidCompleteOnboarding
 	}
 
 	@Dependency(\.analytics) var analytics
@@ -67,7 +63,7 @@ public struct App: Reducer {
 					case .didFinishOnboarding:
 						state = .content(.init())
 						return .merge(
-							.run { _ in preferences.setBool(Preferences.appDidCompleteOnboarding.rawValue, true) },
+							.run { _ in preferences.setKey(.appDidCompleteOnboarding, toBool: true) },
 							.run { _ in await analytics.trackEvent(Analytics.App.OnboardingCompleted()) }
 						)
 					}

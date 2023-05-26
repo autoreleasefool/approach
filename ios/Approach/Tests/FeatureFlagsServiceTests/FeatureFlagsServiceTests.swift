@@ -11,9 +11,9 @@ final class FeatureFlagsServiceTests: XCTestCase {
 
 	override func invokeTest() {
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
-			$0.preferenceService.removeKey = { _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
+			$0.preferences.remove = { _ in }
 			$0.featureFlagsQueue = testQueue
 		} operation: {
 			super.invokeTest()
@@ -27,7 +27,7 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testIsFlagEnabledWhenEnabled() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
+			$0.preferences.getBool = { _ in false }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -39,7 +39,7 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testIsFlagEnabledWhenDisabled() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
+			$0.preferences.getBool = { _ in false }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -51,7 +51,7 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testAllEnabledWhenAllEnabled() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
+			$0.preferences.getBool = { _ in false }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -68,7 +68,7 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testAllEnabledWhenSomeEnabled() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
+			$0.preferences.getBool = { _ in false }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -85,7 +85,7 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testAllEnabledWhenNoneEnabled() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
+			$0.preferences.getBool = { _ in false }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -102,8 +102,8 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testObserveFlagReceivesChanges() async {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -124,8 +124,8 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testObserveFlagDoesNotReceiveUnrelatedChanges() async {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -148,8 +148,8 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testObserveAllFlagsReceivesAllChanges() async {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -178,8 +178,8 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testOverridingFlagPublishesNotification() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -203,8 +203,8 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testSetOverride() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
 		} operation: {
 			featureFlags = .liveValue
 		}
@@ -223,8 +223,8 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	func testResetOverrides() {
 		var featureFlags: FeatureFlagsService!
 		withDependencies {
-			$0.preferenceService.getBool = { _ in false }
-			$0.preferenceService.setBool = { _, _ in }
+			$0.preferences.getBool = { _ in false }
+			$0.preferences.setBool = { _, _ in }
 		} operation: {
 			featureFlags = .liveValue
 		}

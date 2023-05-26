@@ -16,7 +16,7 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertNotNil(preferenceService.getString(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 
 		XCTAssertFalse(preferenceService.contains(key))
 		XCTAssertNil(preferenceService.getString(key))
@@ -33,7 +33,7 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertEqual(true, preferenceService.getBool(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 	}
 
 	func testStoreAndRetrievesInt() {
@@ -47,7 +47,7 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertEqual(101, preferenceService.getInt(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 	}
 
 	func testStoreAndRetrievesFloat() {
@@ -61,7 +61,7 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertEqual(101.2, preferenceService.getFloat(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 	}
 
 	func testStoreAndRetrievesDouble() {
@@ -75,7 +75,7 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertEqual(101.2, preferenceService.getDouble(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 	}
 
 	func testStoreAndRetrievesString() {
@@ -89,7 +89,7 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertEqual("test value", preferenceService.getString(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 	}
 
 	func testStoreAndRetrievesStringArray() {
@@ -103,6 +103,6 @@ final class PreferenceServiceTests: XCTestCase {
 		XCTAssertTrue(preferenceService.contains(key))
 		XCTAssertEqual(["test value", "another test"], preferenceService.getStringArray(key))
 
-		preferenceService.removeKey(key)
+		preferenceService.remove(key)
 	}
 }

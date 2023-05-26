@@ -11,7 +11,7 @@ extension Notification.Name {
 
 extension RecentlyUsedService: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.preferences) var preferences: PreferenceService
+		@Dependency(\.preferences) var preferences
 		@Dependency(\.date) var date: DateGenerator
 
 		let encoder = JSONEncoder()
@@ -98,7 +98,7 @@ extension RecentlyUsedService: DependencyKey {
 			},
 			resetRecentlyUsed: { category in
 				let categoryKey = key(forCategory: category)
-				preferences.removeKey(categoryKey)
+				preferences.remove(categoryKey)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			}
 		)

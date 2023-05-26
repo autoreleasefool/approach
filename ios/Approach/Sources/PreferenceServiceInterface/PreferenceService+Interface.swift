@@ -14,7 +14,7 @@ public struct PreferenceService: Sendable {
 	public var getStringArray: @Sendable (String) -> [String]?
 	public var setStringArray: @Sendable (String, [String]) -> Void
 	public var contains: @Sendable (String) -> Bool
-	public var removeKey: @Sendable (String) -> Void
+	public var remove: @Sendable (String) -> Void
 
 	public init(
 		getBool: @escaping @Sendable (String) -> Bool?,
@@ -30,7 +30,7 @@ public struct PreferenceService: Sendable {
 		getStringArray: @escaping @Sendable (String) -> [String]?,
 		setStringArray: @escaping @Sendable (String, [String]) -> Void,
 		contains: @escaping @Sendable (String) -> Bool,
-		removeKey: @escaping @Sendable (String) -> Void
+		remove: @escaping @Sendable (String) -> Void
 	) {
 		self.getBool = getBool
 		self.setBool = setBool
@@ -45,8 +45,21 @@ public struct PreferenceService: Sendable {
 		self.getStringArray = getStringArray
 		self.setStringArray = setStringArray
 		self.contains = contains
-		self.removeKey = removeKey
+		self.remove = remove
 	}
+
+	public func bool(forKey: PreferenceKey) -> Bool? { self.getBool(forKey.rawValue) }
+	public func setKey(_ key: PreferenceKey, toBool: Bool) { self.setBool(key.rawValue, toBool) }
+	public func double(forKey: PreferenceKey) -> Double? { self.getDouble(forKey.rawValue) }
+	public func setKey(_ key: PreferenceKey, toDouble: Double) { self.setDouble(key.rawValue, toDouble) }
+	public func float(forKey: PreferenceKey) -> Float? { self.getFloat(forKey.rawValue) }
+	public func setKey(_ key: PreferenceKey, toFloat: Float) { self.setFloat(key.rawValue, toFloat) }
+	public func int(forKey: PreferenceKey) -> Int? { self.getInt(forKey.rawValue) }
+	public func setKey(_ key: PreferenceKey, toInt: Int) { self.setInt(key.rawValue, toInt) }
+	public func string(forKey: PreferenceKey) -> String? { self.getString(forKey.rawValue) }
+	public func setKey(_ key: PreferenceKey, toString: String) { self.setString(key.rawValue, toString) }
+	public func stringArray(forKey: PreferenceKey) -> [String]? { self.getStringArray(forKey.rawValue) }
+	public func setKey(_ key: PreferenceKey, toStringArray: [String]) { self.setStringArray(key.rawValue, toStringArray) }
 }
 
 extension PreferenceService: TestDependencyKey {
@@ -64,7 +77,7 @@ extension PreferenceService: TestDependencyKey {
 		getStringArray: { _ in unimplemented("\(Self.self).getStringArray") },
 		setStringArray: { _, _ in unimplemented("\(Self.self).setStringArray") },
 		contains: { _ in unimplemented("\(Self.self).contains") },
-		removeKey: { _ in unimplemented("\(Self.self).removeKey") }
+		remove: { _ in unimplemented("\(Self.self).remove") }
 	)}()
 }
 
