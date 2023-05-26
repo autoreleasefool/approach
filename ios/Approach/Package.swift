@@ -983,6 +983,15 @@ let package = Package(
 				"ModelsLibrary",
 			]
 		),
+		.testTarget(
+			name: "DatabaseModelsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseModelsLibrary",
+				"DatabaseService",
+				"TestDatabaseUtilitiesLibrary",
+			]
+		),
 		.target(
 			name: "DateTimeLibrary",
 			dependencies: []
