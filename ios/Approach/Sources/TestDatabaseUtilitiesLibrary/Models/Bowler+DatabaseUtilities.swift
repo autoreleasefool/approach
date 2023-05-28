@@ -3,6 +3,16 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
+extension Bowler.Database {
+	public static func mock(
+		id: Bowler.ID,
+		name: String,
+		status: Bowler.Status = .playable
+	) -> Self {
+		.init(id: id, name: name, status: status)
+	}
+}
+
 func insert(
 	bowlers initial: InitialValue<Bowler.Database>?,
 	into db: Database

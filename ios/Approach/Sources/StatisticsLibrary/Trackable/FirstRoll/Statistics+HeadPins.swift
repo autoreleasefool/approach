@@ -6,10 +6,16 @@ extension Statistics {
 		public static let title = Strings.Statistics.Title.headPins
 		public static let category: StatisticCategory = .onFirstRoll
 
-		private var headPins: Int = 0
+		private var headPins: Int
 		public var value: String { String(headPins) }
 
-		public init() {}
+		public init() {
+			self.init(headPins: 0)
+		}
+
+		public init(headPins: Int) {
+			self.headPins = headPins
+		}
 
 		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
 			guard let pinsDowned = byFrame.rolls.first?.roll.pinsDowned else { return }

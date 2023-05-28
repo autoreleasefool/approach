@@ -146,6 +146,11 @@ services = [ "RecentlyUsed" ]
 [repositories.Series.interface]
 dependencies = [ "IdentifiedCollections" ]
 
+[repositories.Statistics]
+services = [ "Preference" ]
+[repositories.Statistics.interface]
+libraries = [ "Statistics" ]
+
 # Services
 
 [services.AddressLookup]

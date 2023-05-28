@@ -6,10 +6,16 @@ extension Statistics {
 		public static let title = Strings.Statistics.Title.highSingle
 		public static let category: StatisticCategory = .overall
 
-		private var highSingle: Int = 0
+		private var highSingle: Int
 		public var value: String { String(highSingle) }
 
-		public init() {}
+		public init() {
+			self.init(highSingle: 0)
+		}
+
+		public init(highSingle: Int) {
+			self.highSingle = highSingle
+		}
 
 		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
 			highSingle = max(highSingle, byGame.score)

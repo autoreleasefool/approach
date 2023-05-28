@@ -6,10 +6,16 @@ extension Statistics {
 		public static let title = Strings.Statistics.Title.highSeriesOf3
 		public static let category: StatisticCategory = .series
 
-		private var highSeries: Int = 0
+		private var highSeries: Int
 		public var value: String { String(highSeries) }
 
-		public init() {}
+		public init() {
+			self.init(highSeries: 0)
+		}
+
+		public init(highSeries: Int) {
+			self.highSeries = highSeries
+		}
 
 		public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {
 			guard bySeries.numberOfGames == 3 else { return }

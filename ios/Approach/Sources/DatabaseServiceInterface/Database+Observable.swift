@@ -20,7 +20,7 @@ extension DatabaseReader {
 		}
 	}
 
-	public func observeOne<Model: Identifiable>(
+	public func observeOne<Model>(
 		_ fetch: @escaping (Database) throws -> Model?
 	) -> AsyncThrowingStream<Model, Error> {
 		.init { continuation in

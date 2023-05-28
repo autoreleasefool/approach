@@ -50,7 +50,7 @@ public protocol GraphableStatistic {}
 
 // MARK: - Trackable
 
-public protocol TrackablePerFrame {
+public protocol TrackablePerFrame: Statistic {
 	mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration)
 }
 
@@ -62,7 +62,7 @@ public struct TrackablePerFrameConfiguration {
 	}
 }
 
-public protocol TrackablePerGame {
+public protocol TrackablePerGame: Statistic {
 	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
 }
 
@@ -70,7 +70,7 @@ public struct TrackablePerGameConfiguration {
 	public init() {}
 }
 
-public protocol TrackablePerSeries {
+public protocol TrackablePerSeries: Statistic {
 	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
 }
 
