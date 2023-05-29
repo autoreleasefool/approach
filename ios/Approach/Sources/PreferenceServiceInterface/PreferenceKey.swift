@@ -6,5 +6,7 @@ public enum PreferenceKey: String {
 
 	// MARK: - Statistics
 
+	case statisticsOverviewHintHidden
+	case statisticsDetailsHintHidden
 	case statisticsCountH2AsH
 }

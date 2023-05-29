@@ -759,10 +759,28 @@ public enum Strings {
     public static let title = Strings.tr("Localizable", "sortOrder.title", fallback: "Sort Order")
   }
   public enum Statistics {
+    /// Statistics
+    public static let title = Strings.tr("Localizable", "statistics.title", fallback: "Statistics")
+    public enum Overview {
+      /// View Detailed Statistics
+      public static let viewDetailedStatistics = Strings.tr("Localizable", "statistics.overview.viewDetailedStatistics", fallback: "View Detailed Statistics")
+      public enum GetAnOverviewHint {
+        /// You'll see an overview of all your statistics any time you open this screen. We'll show you some key statistics you'll probably want to keep in mind, for all your leagues.
+        public static let message = Strings.tr("Localizable", "statistics.overview.getAnOverviewHint.message", fallback: "You'll see an overview of all your statistics any time you open this screen. We'll show you some key statistics you'll probably want to keep in mind, for all your leagues.")
+        /// Get an overview
+        public static let title = Strings.tr("Localizable", "statistics.overview.getAnOverviewHint.title", fallback: "Get an overview")
+      }
+      public enum ViewMoreDetailsHint {
+        /// You can look up detailed statistics for bowlers, leagues, and more. Select the filters you're interested in exploring and see how your bowling improves over time, and what you need to focus on.
+        public static let message = Strings.tr("Localizable", "statistics.overview.viewMoreDetailsHint.message", fallback: "You can look up detailed statistics for bowlers, leagues, and more. Select the filters you're interested in exploring and see how your bowling improves over time, and what you need to focus on.")
+        /// View more detailed statistics
+        public static let title = Strings.tr("Localizable", "statistics.overview.viewMoreDetailsHint.title", fallback: "View more detailed statistics")
+      }
+    }
     public enum Placeholder {
       /// Tap here to configure the stats you want to see
       public static let message = Strings.tr("Localizable", "statistics.placeholder.message", fallback: "Tap here to configure the stats you want to see")
-      /// Statistics
+      /// Statistics at a glance
       public static let title = Strings.tr("Localizable", "statistics.placeholder.title", fallback: "Statistics at a glance")
     }
     public enum Title {

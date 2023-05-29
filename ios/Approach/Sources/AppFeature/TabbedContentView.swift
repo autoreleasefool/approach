@@ -4,6 +4,7 @@ import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import SettingsFeature
+import StatisticsOverviewFeature
 import StringsLibrary
 import SwiftUI
 
@@ -41,15 +42,21 @@ public struct TabbedContentView: View {
 						NavigationView {
 							switch tab {
 							case .overview:
-								BowlersListView(store: store.scope(state: \.bowlersList, action: /TabbedContent.Action.InternalAction.bowlersList))
+								BowlersListView(
+									store: store.scope(state: \.bowlersList, action: /TabbedContent.Action.InternalAction.bowlersList)
+								)
 							case .statistics:
-								EmptyView()
+								StatisticsOverviewView(
+									store: store.scope(state: \.statistics, action: /TabbedContent.Action.InternalAction.statistics)
+								)
 							case .accessories:
 								AccessoriesOverviewView(
 									store: store.scope(state: \.accessories, action: /TabbedContent.Action.InternalAction.accessories)
 								)
 							case .settings:
-								SettingsView(store: store.scope(state: \.settings, action: /TabbedContent.Action.InternalAction.settings))
+								SettingsView(
+									store: store.scope(state: \.settings, action: /TabbedContent.Action.InternalAction.settings)
+								)
 							}
 						}
 						.tag(tab)

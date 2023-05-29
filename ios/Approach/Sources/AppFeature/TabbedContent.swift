@@ -6,6 +6,7 @@ import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import SettingsFeature
+import StatisticsOverviewFeature
 
 public struct TabbedContent: Reducer {
 	public struct State: Equatable {
@@ -13,6 +14,7 @@ public struct TabbedContent: Reducer {
 		public var selectedTab: Tab = .overview
 		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
+		public var statistics = StatisticsOverview.State()
 		public var settings = Settings.State()
 
 		public init() {}
@@ -29,6 +31,7 @@ public struct TabbedContent: Reducer {
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
+			case statistics(StatisticsOverview.Action)
 		}
 		case view(ViewAction)
 		case `internal`(InternalAction)
@@ -69,6 +72,10 @@ public struct TabbedContent: Reducer {
 
 		Scope(state: \.accessories, action: /Action.internal..Action.InternalAction.accessories) {
 			AccessoriesOverview()
+		}
+
+		Scope(state: \.statistics, action: /Action.internal..Action.InternalAction.statistics) {
+			StatisticsOverview()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -112,6 +119,12 @@ public struct TabbedContent: Reducer {
 						return .none
 					}
 
+				case let .statistics(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .accessories(.view), .accessories(.internal):
 					return .none
 
@@ -119,6 +132,9 @@ public struct TabbedContent: Reducer {
 					return .none
 
 				case .settings(.view), .settings(.internal):
+					return .none
+
+				case .statistics(.view), .statistics(.internal):
 					return .none
 				}
 

@@ -187,8 +187,14 @@
 
 /* Statistics */
 
+"statistics.title" = "Statistics";
 "statistics.placeholder.title" = "Statistics at a glance";
 "statistics.placeholder.message" = "Tap here to configure the stats you want to see";
+"statistics.overview.getAnOverviewHint.title" = "Get an overview";
+"statistics.overview.getAnOverviewHint.message" = "You'll see an overview of all your statistics any time you open this screen. We'll show you some key statistics you'll probably want to keep in mind, for all your leagues.";
+"statistics.overview.viewMoreDetailsHint.title" = "View more detailed statistics";
+"statistics.overview.viewMoreDetailsHint.message" = "You can look up detailed statistics for bowlers, leagues, and more. Select the filters you're interested in exploring and see how your bowling improves over time, and what you need to focus on.";
+"statistics.overview.viewDetailedStatistics" = "View Detailed Statistics";
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";

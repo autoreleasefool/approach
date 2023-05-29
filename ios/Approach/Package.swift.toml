@@ -29,8 +29,7 @@ features = [ "AlleyEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.App]
-features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings" ]
-services = [ "Preference" ]
+features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
@@ -105,6 +104,11 @@ features = [ "GamesList", "SeriesEditor" ]
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
 libraries = [ "Constants", "FoundationExtensions" ]
+
+[features.StatisticsOverview]
+repositories = [ "Statistics" ]
+services = [ "Preference" ]
+libraries = [ "Views" ]
 
 [features.StatisticsWidgets]
 libraries = [ "Assets", "Strings" ]

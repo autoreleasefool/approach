@@ -32,6 +32,7 @@ let package = Package(
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 
 		// MARK: - Repositories
@@ -188,8 +189,8 @@ let package = Package(
 				"AccessoriesOverviewFeature",
 				"BowlersListFeature",
 				"OnboardingFeature",
-				"PreferenceServiceInterface",
 				"SettingsFeature",
+				"StatisticsOverviewFeature",
 			]
 		),
 		.testTarget(
@@ -478,6 +479,22 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SettingsFeature",
+			]
+		),
+		.target(
+			name: "StatisticsOverviewFeature",
+			dependencies: [
+				"FeatureActionLibrary",
+				"PreferenceServiceInterface",
+				"StatisticsRepositoryInterface",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "StatisticsOverviewFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StatisticsOverviewFeature",
 			]
 		),
 		.target(
