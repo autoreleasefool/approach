@@ -10,6 +10,7 @@
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2A5E302A00DC1F00EE6353 /* ScoringService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2A5E2F2A00DC1F00EE6353 /* ScoringService */; };
 		CA2E6A7129BAA6D500CCA917 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2E6A7029BAA6D500CCA917 /* File.swift */; };
+		CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FA1542A2559C3008341A5 /* NotificationsService */; };
 		CA2FCE912A14908C0061A7FE /* MatchPlaysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */; };
 		CA2FCE932A1490910061A7FE /* MatchPlaysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FCE922A1490910061A7FE /* MatchPlaysRepository */; };
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
@@ -111,6 +112,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
+				CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */,
 				CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */,
 				CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
@@ -353,6 +355,7 @@
 				CAD15BB629FB91270015E4CB /* LocationsRepository */,
 				CA2FCE922A1490910061A7FE /* MatchPlaysRepository */,
 				CA5952BA2A1FF51D0002494C /* StatisticsRepository */,
+				CA2FA1542A2559C3008341A5 /* NotificationsService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -591,6 +594,10 @@
 		CA2A5E2F2A00DC1F00EE6353 /* ScoringService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ScoringService;
+		};
+		CA2FA1542A2559C3008341A5 /* NotificationsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NotificationsService;
 		};
 		CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */ = {
 			isa = XCSwiftPackageProductDependency;
