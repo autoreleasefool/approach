@@ -184,6 +184,8 @@ libraries = [ "FeatureFlags" ]
 
 [services.FileManager]
 
+[services.Notifications]
+
 [services.Preference]
 
 [services.RecentlyUsed]

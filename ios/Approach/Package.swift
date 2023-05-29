@@ -74,6 +74,8 @@ let package = Package(
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
+		.library(name: "NotificationsService", targets: ["NotificationsService"]),
+		.library(name: "NotificationsServiceInterface", targets: ["NotificationsServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
@@ -936,6 +938,25 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FileManagerService",
+			]
+		),
+		.target(
+			name: "NotificationsService",
+			dependencies: [
+				"NotificationsServiceInterface",
+			]
+		),
+		.target(
+			name: "NotificationsServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "NotificationsServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"NotificationsService",
 			]
 		),
 		.target(
