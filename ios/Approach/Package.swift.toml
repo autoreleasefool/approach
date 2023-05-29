@@ -106,8 +106,12 @@ features = [ "FeatureFlagsList", "OpponentsList" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsOverview]
-repositories = [ "Statistics" ]
+features = [ "StatisticsDetails" ]
 services = [ "Preference" ]
+
+[features.StatisticsDetails]
+repositories = [ "Statistics" ]
+services = [ "Notifications" ]
 libraries = [ "Views" ]
 
 [features.StatisticsWidgets]
@@ -256,6 +260,7 @@ libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
 
 [libraries.Statistics]
 libraries = [ "Models", "Strings" ]
+dependencies = [ "IdentifiedCollections" ]
 [libraries.Statistics.tests]
 dependencies = [ "Dependencies" ]
 

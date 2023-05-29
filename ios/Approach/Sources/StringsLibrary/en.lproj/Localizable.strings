@@ -188,6 +188,13 @@
 /* Statistics */
 
 "statistics.title" = "Statistics";
+"statistics.categories.overall.title" = "Overall";
+"statistics.categories.onFirstRoll.title" = "On First Roll";
+"statistics.categories.fouls.title" = "Fouls";
+"statistics.categories.pinsLeftOnDeck.title" = "Pins Left on Deck";
+"statistics.categories.matchPlay.title" = "Match Play";
+"statistics.categories.average.title" = "Average";
+"statistics.categories.series.title" = "Series";
 "statistics.placeholder.title" = "Statistics at a glance";
 "statistics.placeholder.message" = "Tap here to configure the stats you want to see";
 "statistics.overview.getAnOverviewHint.title" = "Get an overview";

@@ -32,6 +32,7 @@ let package = Package(
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+		.library(name: "StatisticsDetailsFeature", targets: ["StatisticsDetailsFeature"]),
 		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 
@@ -484,12 +485,26 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "StatisticsOverviewFeature",
+			name: "StatisticsDetailsFeature",
 			dependencies: [
 				"FeatureActionLibrary",
-				"PreferenceServiceInterface",
+				"NotificationsServiceInterface",
 				"StatisticsRepositoryInterface",
 				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "StatisticsDetailsFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StatisticsDetailsFeature",
+			]
+		),
+		.target(
+			name: "StatisticsOverviewFeature",
+			dependencies: [
+				"PreferenceServiceInterface",
+				"StatisticsDetailsFeature",
 			]
 		),
 		.testTarget(
@@ -1218,6 +1233,7 @@ let package = Package(
 		.target(
 			name: "StatisticsLibrary",
 			dependencies: [
+				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"ModelsLibrary",
 				"StringsLibrary",
 			]

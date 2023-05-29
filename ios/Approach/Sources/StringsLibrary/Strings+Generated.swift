@@ -761,6 +761,36 @@ public enum Strings {
   public enum Statistics {
     /// Statistics
     public static let title = Strings.tr("Localizable", "statistics.title", fallback: "Statistics")
+    public enum Categories {
+      public enum Average {
+        /// Average
+        public static let title = Strings.tr("Localizable", "statistics.categories.average.title", fallback: "Average")
+      }
+      public enum Fouls {
+        /// Fouls
+        public static let title = Strings.tr("Localizable", "statistics.categories.fouls.title", fallback: "Fouls")
+      }
+      public enum MatchPlay {
+        /// Match Play
+        public static let title = Strings.tr("Localizable", "statistics.categories.matchPlay.title", fallback: "Match Play")
+      }
+      public enum OnFirstRoll {
+        /// On First Roll
+        public static let title = Strings.tr("Localizable", "statistics.categories.onFirstRoll.title", fallback: "On First Roll")
+      }
+      public enum Overall {
+        /// Overall
+        public static let title = Strings.tr("Localizable", "statistics.categories.overall.title", fallback: "Overall")
+      }
+      public enum PinsLeftOnDeck {
+        /// Pins Left on Deck
+        public static let title = Strings.tr("Localizable", "statistics.categories.pinsLeftOnDeck.title", fallback: "Pins Left on Deck")
+      }
+      public enum Series {
+        /// Series
+        public static let title = Strings.tr("Localizable", "statistics.categories.series.title", fallback: "Series")
+      }
+    }
     public enum Overview {
       /// View Detailed Statistics
       public static let viewDetailedStatistics = Strings.tr("Localizable", "statistics.overview.viewDetailedStatistics", fallback: "View Detailed Statistics")
