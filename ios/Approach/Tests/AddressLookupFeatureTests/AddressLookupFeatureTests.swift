@@ -14,7 +14,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let beginsSearch = expectation(description: "begins search")
 		let store = withDependencies {
 			$0.uuid = .incrementing
-			$0.addressLookupService.beginSearch = { _ in
+			$0.addressLookup.beginSearch = { _ in
 				beginsSearch.fulfill()
 				return results
 			}
@@ -36,8 +36,8 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let finishesSearch = expectation(description: "finishes search")
 		let store = withDependencies {
 			$0.uuid = .incrementing
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.finishSearch = { _ in finishesSearch.fulfill() }
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.finishSearch = { _ in finishesSearch.fulfill() }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -73,9 +73,9 @@ final class AddressLookupFeatureTests: XCTestCase {
 
 		let store = withDependencies {
 			$0.uuid = .incrementing
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.finishSearch = { _ in }
-			$0.addressLookupService.lookUpAddress = { address in
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.finishSearch = { _ in }
+			$0.addressLookup.lookUpAddress = { address in
 				XCTAssertEqual(address.id, UUID(0))
 				lookedUpLocation.fulfill()
 				return nil
@@ -102,7 +102,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 
 		await fulfillment(of: [lookedUpLocation])
 
-		await store.receive(.internal(.didFailToLoadAddress(.init(AddressLookup.LookupError.addressNotFound)))) {
+		await store.receive(.internal(.didLoadAddress(.failure(AddressLookup.LookupError.addressNotFound)))) {
 			$0.isLoadingAddress = false
 			$0.loadingAddressError = AddressLookup.LookupError.addressNotFound.errorDescription
 		}
@@ -116,12 +116,12 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let updatedQuery = expectation(description: "updated query")
 
 		let store = withDependencies {
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.updateSearchQuery = { _, query in
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.updateSearchQuery = { _, query in
 				XCTAssertEqual(query, initialQuery)
 				updatedQuery.fulfill()
 			}
-			$0.addressLookupService.finishSearch = { _ in }
+			$0.addressLookup.finishSearch = { _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: initialQuery),
@@ -141,12 +141,12 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let updatedQuery = expectation(description: "updated query")
 
 		let store = withDependencies {
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.updateSearchQuery = { _, query in
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.updateSearchQuery = { _, query in
 				XCTAssertEqual(query, "new query")
 				updatedQuery.fulfill()
 			}
-			$0.addressLookupService.finishSearch = { _ in }
+			$0.addressLookup.finishSearch = { _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -169,8 +169,8 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.updateSearchQuery = { _, _ in }
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.updateSearchQuery = { _, _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -197,8 +197,8 @@ final class AddressLookupFeatureTests: XCTestCase {
 
 		let store = withDependencies {
 			$0.uuid = .incrementing
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.finishSearch = { _ in }
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.finishSearch = { _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -222,8 +222,8 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.updateSearchQuery = { _, _ in }
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.updateSearchQuery = { _, _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -244,10 +244,10 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let (results, resultsContinuation) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
 
 		let store = withDependencies {
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.updateSearchQuery = { _, _ in }
-			$0.addressLookupService.finishSearch = { _ in }
-			$0.addressLookupService.lookUpAddress = { _ in throw MockLookupError() }
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.updateSearchQuery = { _, _ in }
+			$0.addressLookup.finishSearch = { _ in }
+			$0.addressLookup.lookUpAddress = { _ in throw MockLookupError() }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -268,7 +268,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.isLoadingAddress = true
 		}
 
-		await store.receive(.internal(.didFailToLoadAddress(.init(MockLookupError())))) {
+		await store.receive(.internal(.didLoadAddress(.failure(MockLookupError())))) {
 			$0.isLoadingAddress = false
 			$0.loadingAddressError = "lookup error"
 		}
@@ -295,10 +295,10 @@ final class AddressLookupFeatureTests: XCTestCase {
 
 		let store = withDependencies {
 			$0.dismiss = .init { dismissed.fulfill() }
-			$0.addressLookupService.beginSearch = { _ in results }
-			$0.addressLookupService.updateSearchQuery = { _, _ in }
-			$0.addressLookupService.finishSearch = { _ in }
-			$0.addressLookupService.lookUpAddress = { _ in location }
+			$0.addressLookup.beginSearch = { _ in results }
+			$0.addressLookup.updateSearchQuery = { _, _ in }
+			$0.addressLookup.finishSearch = { _ in }
+			$0.addressLookup.lookUpAddress = { _ in location }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),

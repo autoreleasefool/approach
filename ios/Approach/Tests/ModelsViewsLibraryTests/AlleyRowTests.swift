@@ -1,3 +1,4 @@
+@testable import ModelsLibrary
 @testable import ModelsViewsLibrary
 import SnapshotTesting
 import SwiftUI
@@ -7,23 +8,28 @@ final class AlleyRowTests: XCTestCase {
 	func testAlleyRowUnknownPropertiesSnapshot() {
 		let rows = List {
 			Section {
-				AlleyRow(alley: .init(
+				Alley.View(alley: .init(
 					id: UUID(),
 					name: "Skyview Lanes",
-					address: "123 Fake Street",
 					material: nil,
 					pinFall: nil,
 					mechanism: nil,
-					pinBase: nil
+					pinBase: nil,
+					location: nil
 				))
-				AlleyRow(alley: .init(
+				Alley.View(alley: .init(
 					id: UUID(),
 					name: "Skyview Lanes",
-					address: "123 Fake Street",
 					material: .synthetic,
 					pinFall: .freefall,
 					mechanism: .dedicated,
-					pinBase: .black
+					pinBase: .black,
+					location: .init(
+						id: UUID(),
+						title: "Skyview Lanes",
+						subtitle: "123 Fake Street",
+						coordinate: .init(latitude: 1.0, longitude: 1.0)
+					)
 				))
 			}
 		}

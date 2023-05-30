@@ -15,11 +15,13 @@ public struct Banner: View {
 			if let title = content.title {
 				Text(title)
 					.font(.headline)
+					.frame(maxWidth: .infinity, alignment: .leading)
 			}
 
 			if let message = content.message {
 				Text(message)
 					.multilineTextAlignment(.leading)
+					.frame(maxWidth: .infinity, alignment: .leading)
 			}
 		}
 		.padding()
