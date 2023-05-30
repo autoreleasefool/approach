@@ -12,25 +12,8 @@ extension StatisticsRepository: DependencyKey {
 		@Dependency(\.database) var database
 		@Dependency(\.preferences) var preferences
 
-		@Sendable func perFrameConfiguration() -> TrackablePerFrameConfiguration {
-			.init(
-				countHeadPin2AsHeadPin: preferences.bool(forKey: .statisticsCountH2AsH) ?? false
-			)
-		}
-
-		@Sendable func perGameConfiguration() -> TrackablePerGameConfiguration {
-			.init()
-		}
-
-		@Sendable func perSeriesConfiguration() -> TrackablePerSeriesConfiguration {
-			.init()
-		}
-
-		@Sendable func adjustStatistics(
-			_ statistics: inout [any Statistic],
-			bySeries: RecordCursor<Series.TrackableEntry>
-		) throws {
-			let perSeries = perSeriesConfiguration()
+		@Sendable func adjust(statistics: inout [any Statistic], bySeries: RecordCursor<Series.TrackableEntry>) throws {
+			let perSeries = preferences.perSeriesConfiguration()
 			while let series = try bySeries.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
 					guard var seriesTrackable = statistics[index] as? any TrackablePerSeries else { continue }
@@ -40,12 +23,9 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func adjustStatistics(
-			_ statistics: inout [any Statistic],
-			byGame: RecordCursor<Game.TrackableEntry>
-		) throws {
-			let perGame = perGameConfiguration()
-			while let game = try byGame.next() {
+		@Sendable func adjust(statistics: inout [any Statistic], byGames: RecordCursor<Game.TrackableEntry>) throws {
+			let perGame = preferences.perGameConfiguration()
+			while let game = try byGames.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
 					guard var gameTrackable = statistics[index] as? any TrackablePerGame else { continue }
 					gameTrackable.adjust(byGame: game, configuration: perGame)
@@ -54,12 +34,9 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func adjustStatistics(
-			_ statistics: inout [any Statistic],
-			byFrame: RecordCursor<Frame.TrackableEntry>
-		) throws {
-			let perFrame = perFrameConfiguration()
-			while let frame = try byFrame.next() {
+		@Sendable func adjust(statistics: inout [any Statistic], byFrames: RecordCursor<Frame.TrackableEntry>) throws {
+			let perFrame = preferences.perFrameConfiguration()
+			while let frame = try byFrames.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
 					guard var frameTrackable = statistics[index] as? any TrackablePerFrame else { continue }
 					frameTrackable.adjust(byFrame: frame, configuration: perFrame)
@@ -94,9 +71,9 @@ extension StatisticsRepository: DependencyKey {
 						.asRequest(of: Frame.TrackableEntry.self)
 						.fetchCursor($0)
 
-					try adjustStatistics(&statistics, bySeries: seriesCursor)
-					try adjustStatistics(&statistics, byGame: gamesCursor)
-					try adjustStatistics(&statistics, byFrame: framesCursor)
+					try adjust(statistics: &statistics, bySeries: seriesCursor)
+					try adjust(statistics: &statistics, byGames: gamesCursor)
+					try adjust(statistics: &statistics, byFrames: framesCursor)
 					return statistics
 				}
 			}
