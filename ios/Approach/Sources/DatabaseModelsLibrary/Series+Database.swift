@@ -47,6 +47,7 @@ extension Series.Database: FetchableRecord, PersistableRecord {
 
 	public static let trackableGames = hasMany(Game.Database.self)
 		.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
+		.order(Game.Database.Columns.index.asc)
 	public static let trackableFrames = hasMany(Frame.Database.self, through: trackableGames, using: Game.Database.frames)
 }
 

@@ -40,6 +40,9 @@ extension Frame {
 }
 
 extension Frame.Database: FetchableRecord, PersistableRecord {
+	public static let game = belongsTo(Game.Database.self)
+	public static let series = hasOne(Series.Database.self, through: game, using: Game.Database.series)
+
 	public static let ball0ForeignKey = ForeignKey(["ball0"])
 	public static let bowlingBall0 = belongsTo(Gear.Database.self, using: ball0ForeignKey)
 

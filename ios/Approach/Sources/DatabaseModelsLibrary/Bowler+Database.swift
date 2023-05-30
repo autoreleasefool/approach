@@ -32,6 +32,7 @@ extension Bowler.Database: FetchableRecord, PersistableRecord {
 		through: trackableLeagues,
 		using: League.Database.trackableSeries
 	)
+		.order(Series.Database.Columns.date.asc)
 	public static let trackableGames = hasMany(
 		Game.Database.self,
 		through: trackableSeries,
