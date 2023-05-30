@@ -1,0 +1,38 @@
+name: iOS CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - ".github/workflows/ios.yml"
+      - "ios/Approach/"
+      - "ios/ApproachIOS/"
+      - "ios/Approach.xcodeproj/"
+      - "ios/.swiftlint.yml"
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-ios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: SwiftLint
+        uses: norio-nomura/action-swiftlint@3.2.1
+        env:
+          WORKING_DIRECTORY: ios
+  test-ios:
+    runs-on: macos-13
+    defaults:
+      run:
+        working-directory: ./ios
+    steps:
+      - uses: actions/checkout@v3
+      - name: Select Xcode 14.3
+        run: sudo xcode-select -s /Applications/Xcode_14.3.app
+      - name: Run tests
+        run: xcodebuild test - project Approach.xcodeproj -scheme Approach -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=16.4'
