@@ -299,11 +299,11 @@ from = "6.6.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-revision = "82c673a3187f34e4b204999adf02bba6e4f2952e"
+revision = "b29e8987200ffd58741748866c9e66d97a95a595"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "0.4.1"
+from = "0.5.1"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
