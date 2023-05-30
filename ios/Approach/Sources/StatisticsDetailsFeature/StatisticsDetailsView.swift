@@ -9,17 +9,17 @@ public struct StatisticsDetailsView: View {
 
 	struct ViewState: Equatable {
 		let isListSheetVisible: Bool
-		let statistics: IdentifiedArrayOf<TrackedGroup>
+		let staticValues: IdentifiedArrayOf<StaticValueGroup>
 
 		init(state: StatisticsDetails.State) {
 			self.isListSheetVisible = state.isListSheetVisible
-			self.statistics = state.statistics
+			self.staticValues = state.staticValues
 		}
 	}
 
 	enum ViewAction {
 		case didAppear
-		case didTapTrackedValue(id: String)
+		case didTapStaticValue(id: String)
 		case setListSheet(isPresented: Bool)
 	}
 
@@ -37,12 +37,12 @@ public struct StatisticsDetailsView: View {
 					send: ViewAction.setListSheet(isPresented:))
 				) {
 					List {
-						ForEach(viewStore.statistics) { trackableGroup in
-							Section(trackableGroup.category.title) {
-								ForEach(trackableGroup.values) { trackable in
-									Button { viewStore.send(.didTapTrackedValue(id: trackable.id)) } label: {
+						ForEach(viewStore.staticValues) { group in
+							Section(group.category.title) {
+								ForEach(group.values) { staticValue in
+									Button { viewStore.send(.didTapStaticValue(id: staticValue.id)) } label: {
 										HStack {
-											LabeledContent(trackable.title, value: trackable.value)
+											LabeledContent(staticValue.title, value: staticValue.value)
 											Image(systemName: "chevron.forward")
 												.resizable()
 												.scaledToFit()
@@ -68,8 +68,8 @@ extension StatisticsDetails.Action {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)
-		case let .didTapTrackedValue(id):
-			self = .view(.didTapTrackedValue(id: id))
+		case let .didTapStaticValue(id):
+			self = .view(.didTapStaticValue(id: id))
 		case let .setListSheet(isPresented):
 			self = .view(.setListSheet(isPresented: isPresented))
 		}

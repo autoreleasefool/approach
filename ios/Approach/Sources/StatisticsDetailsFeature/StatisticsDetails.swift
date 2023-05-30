@@ -8,7 +8,7 @@ import SwiftUI
 public struct StatisticsDetails: Reducer {
 	public struct State: Equatable {
 		public var isListSheetVisible = true
-		public var statistics: IdentifiedArrayOf<TrackedGroup> = []
+		public var staticValues: IdentifiedArrayOf<StaticValueGroup> = []
 
 		public init() {}
 	}
@@ -16,12 +16,12 @@ public struct StatisticsDetails: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
-			case didTapTrackedValue(id: String)
+			case didTapStaticValue(id: String)
 			case setListSheet(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case didLoadStatistics(TaskResult<[TrackedGroup]>)
+			case didLoadStaticValues(TaskResult<[StaticValueGroup]>)
 			case orientationChange(UIDeviceOrientation)
 		}
 
@@ -43,8 +43,8 @@ public struct StatisticsDetails: Reducer {
 				case .didAppear:
 					return .merge(
 						.run { send in
-							await send(.internal(.didLoadStatistics(TaskResult {
-								try await statistics.load(forBowler: UUID(0)).trackedValues()
+							await send(.internal(.didLoadStaticValues(TaskResult {
+								try await statistics.load(forBowler: UUID(0)).staticValueGroups()
 							})))
 						},
 						.run { send in
@@ -54,7 +54,7 @@ public struct StatisticsDetails: Reducer {
 						}
 					)
 
-				case let .didTapTrackedValue(id):
+				case let .didTapStaticValue(id):
 					return .none
 
 				case let .setListSheet(isPresented):
@@ -64,11 +64,11 @@ public struct StatisticsDetails: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didLoadStatistics(.success(statistics)):
-					state.statistics = .init(uniqueElements: statistics)
+				case let .didLoadStaticValues(.success(statistics)):
+					state.staticValues = .init(uniqueElements: statistics)
 					return .none
 
-				case .didLoadStatistics(.failure):
+				case .didLoadStaticValues(.failure):
 					// TODO: show statistics loading failure
 					return .none
 

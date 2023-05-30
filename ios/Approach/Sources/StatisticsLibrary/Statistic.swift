@@ -10,6 +10,7 @@ public protocol Statistic: Identifiable, Equatable {
 
 	var value: String { get }
 	var category: StatisticCategory { get }
+	var staticValue: StaticValue { get }
 	var trackedValue: TrackedValue { get }
 
 	init()
@@ -44,16 +45,16 @@ public enum StatisticCategory: CaseIterable {
 	}
 }
 
-// MARK: - TrackedValue
+// MARK: - StaticValue
 
-public struct TrackedGroup: Identifiable, Equatable {
+public struct StaticValueGroup: Identifiable, Equatable {
 	public let category: StatisticCategory
-	public let values: IdentifiedArrayOf<TrackedValue>
+	public let values: IdentifiedArrayOf<StaticValue>
 
 	public var id: StatisticCategory { category }
 }
 
-public struct TrackedValue: Identifiable, Equatable {
+public struct StaticValue: Identifiable, Equatable {
 	public let title: String
 	public let value: String
 
@@ -61,18 +62,36 @@ public struct TrackedValue: Identifiable, Equatable {
 }
 
 extension Statistic {
-	public var trackedValue: TrackedValue {
+	public var staticValue: StaticValue {
 		.init(title: Self.title, value: value)
 	}
 }
 
 extension Collection where Element == any Statistic {
-	public func trackedValues() -> [TrackedGroup] {
+	public func staticValueGroups() -> [StaticValueGroup] {
 		StatisticCategory.allCases.compactMap { category in
 			let matchingStatistics = self.filter { $0.category == category }
 			guard !matchingStatistics.isEmpty else { return nil }
-			return .init(category: category, values: .init(uniqueElements: matchingStatistics.map(\.trackedValue)))
+			return .init(category: category, values: .init(uniqueElements: matchingStatistics.map(\.staticValue)))
 		}
+	}
+}
+
+// MARK: - TrackedValue
+
+public struct TrackedValue: Equatable {
+	public let value: Int
+}
+
+extension Statistic {
+	public var trackedValue: TrackedValue {
+		.init(value: Int(value) ?? 0)
+	}
+}
+
+extension Collection where Element == any Statistic {
+	public func trackedValues() -> [TrackedValue] {
+		self.map(\.trackedValue)
 	}
 }
 
