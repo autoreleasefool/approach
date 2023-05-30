@@ -291,7 +291,7 @@ from = "1.0.0"
 
 [dependencies.AsyncAlgorithms]
 url = "https://github.com/apple/swift-async-algorithms.git"
-from = "0.0.4"
+from = "0.1.0"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
