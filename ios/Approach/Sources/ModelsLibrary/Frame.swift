@@ -11,6 +11,10 @@ extension Frame {
 	public static func rollIndices(after: Int) -> Range<Int> {
 		(after + 1)..<NUMBER_OF_ROLLS
 	}
+
+	public static func buildId(game: Game.ID, index: Int) -> String {
+		"\(game)-\(index)"
+	}
 }
 
 extension Frame.Roll {
@@ -80,7 +84,7 @@ extension Frame {
 		public let index: Int
 		public let rolls: [OrderedRoll]
 
-		public var id: String { "\(gameId)-\(index)" }
+		public var id: String { Frame.buildId(game: gameId, index: index) }
 
 		public init(gameId: Game.ID, index: Int, rolls: [OrderedRoll]) {
 			self.gameId = gameId

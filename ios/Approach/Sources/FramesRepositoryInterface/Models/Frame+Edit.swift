@@ -7,7 +7,7 @@ extension Frame {
 		public let index: Int
 		public internal(set) var rolls: [OrderedRoll]
 
-		public var id: String { "\(gameId)-\(index)" }
+		public var id: String { Frame.buildId(game: gameId, index: index) }
 
 		public init(gameId: Game.ID, index: Int, rolls: [OrderedRoll]) {
 			self.gameId = gameId
