@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Avatar {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "avatar"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Avatar.ID
 		public var value: Avatar.Value
 
@@ -16,7 +14,9 @@ extension Avatar {
 	}
 }
 
-extension Avatar.Database: FetchableRecord, PersistableRecord {}
+extension Avatar.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "avatar"
+}
 
 extension Avatar.Database {
 	public enum Columns {

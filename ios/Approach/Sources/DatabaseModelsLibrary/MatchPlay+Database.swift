@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension MatchPlay {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "matchPlay"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let gameId: Game.ID
 		public let id: MatchPlay.ID
 
@@ -29,9 +27,8 @@ extension MatchPlay {
 	}
 }
 
-extension MatchPlay.Database: FetchableRecord, PersistableRecord {
-	public static let opponentKey = ForeignKey(["opponentId"])
-	public static let opponent = belongsTo(Bowler.Database.self, using: opponentKey)
+extension MatchPlay.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "matchPlay"
 }
 
 extension MatchPlay.Result: DatabaseValueConvertible {}

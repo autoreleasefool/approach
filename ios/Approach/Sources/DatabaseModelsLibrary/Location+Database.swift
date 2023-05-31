@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Location {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "location"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Location.ID
 		public var title: String
 		public var subtitle: String
@@ -22,7 +20,9 @@ extension Location {
 	}
 }
 
-extension Location.Database: FetchableRecord, PersistableRecord {}
+extension Location.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "location"
+}
 
 extension Location.Database {
 	public enum Columns {

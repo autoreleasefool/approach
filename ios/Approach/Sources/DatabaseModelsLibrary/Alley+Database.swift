@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Alley {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "alley"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Alley.ID
 		public var name: String
 		public var material: Material?
@@ -34,15 +32,14 @@ extension Alley {
 	}
 }
 
+extension Alley.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "alley"
+}
+
 extension Alley.Material: DatabaseValueConvertible {}
 extension Alley.PinFall: DatabaseValueConvertible {}
 extension Alley.Mechanism: DatabaseValueConvertible {}
 extension Alley.PinBase: DatabaseValueConvertible {}
-
-extension Alley.Database: FetchableRecord, PersistableRecord {
-	public static let lanes = hasMany(Lane.Database.self)
-	public static let location = belongsTo(Location.Database.self)
-}
 
 extension Alley.Database {
 	public enum Columns {

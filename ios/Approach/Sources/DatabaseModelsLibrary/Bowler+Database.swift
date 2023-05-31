@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Bowler {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "bowler"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public var name: String
 		public var status: Status
@@ -22,28 +20,11 @@ extension Bowler {
 	}
 }
 
-extension Bowler.Status: DatabaseValueConvertible {}
-
-extension Bowler.Database: FetchableRecord, PersistableRecord {
-	public static let trackableLeagues = hasMany(League.Database.self)
-		.filter(League.Database.Columns.excludeFromStatistics == League.ExcludeFromStatistics.include)
-	public static let trackableSeries = hasMany(
-		Series.Database.self,
-		through: trackableLeagues,
-		using: League.Database.trackableSeries
-	)
-		.order(Series.Database.Columns.date.asc)
-	public static let trackableGames = hasMany(
-		Game.Database.self,
-		through: trackableSeries,
-		using: Series.Database.trackableGames
-	)
-	public static let trackableFrames = hasMany(
-		Frame.Database.self,
-		through: trackableGames,
-		using: Game.Database.frames
-	)
+extension Bowler.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "bowler"
 }
+
+extension Bowler.Status: DatabaseValueConvertible {}
 
 extension Bowler.Database {
 	public enum Columns {

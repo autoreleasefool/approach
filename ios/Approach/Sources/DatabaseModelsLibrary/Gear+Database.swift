@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Gear {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "gear"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Gear.ID
 		public var name: String
 		public var kind: Kind
@@ -25,11 +23,11 @@ extension Gear {
 	}
 }
 
-extension Gear.Kind: DatabaseValueConvertible {}
-
-extension Gear.Database: FetchableRecord, PersistableRecord {
-	public static let bowler = belongsTo(Bowler.Database.self)
+extension Gear.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "gear"
 }
+
+extension Gear.Kind: DatabaseValueConvertible {}
 
 extension Gear.Database {
 	public enum Columns {

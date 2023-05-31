@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension League {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "league"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let bowlerId: Bowler.ID
 		public let id: League.ID
 		public var name: String
@@ -40,27 +38,12 @@ extension League {
 	}
 }
 
+extension League.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "league"
+}
+
 extension League.Recurrence: DatabaseValueConvertible {}
 extension League.ExcludeFromStatistics: DatabaseValueConvertible {}
-
-extension League.Database: FetchableRecord, PersistableRecord {
-	public static let bowler = belongsTo(Bowler.Database.self)
-	public static let alley = belongsTo(Alley.Database.self)
-	public static let series = hasMany(Series.Database.self)
-
-	public static let trackableSeries = hasMany(Series.Database.self)
-		.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
-	public static let trackableGames = hasMany(
-		Game.Database.self,
-		through: trackableSeries,
-		using: Series.Database.trackableGames
-	)
-	public static let trackableFrames = hasMany(
-		Frame.Database.self,
-		through: trackableGames,
-		using: Game.Database.frames
-	)
-}
 
 extension League.Database {
 	public enum Columns {

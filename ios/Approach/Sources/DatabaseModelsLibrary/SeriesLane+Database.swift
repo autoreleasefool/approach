@@ -2,9 +2,7 @@ import GRDB
 import ModelsLibrary
 
 extension SeriesLane {
-	public struct Database: Sendable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "seriesLane"
-
+	public struct Database: Sendable, Codable, Equatable {
 		public let seriesId: Series.ID
 		public let laneId: Lane.ID
 
@@ -15,9 +13,8 @@ extension SeriesLane {
 	}
 }
 
-extension SeriesLane.Database: FetchableRecord, PersistableRecord {
-	public static let series = belongsTo(Series.Database.self)
-	public static let lane = belongsTo(Lane.Database.self)
+extension SeriesLane.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "seriesLane"
 }
 
 extension SeriesLane.Database {

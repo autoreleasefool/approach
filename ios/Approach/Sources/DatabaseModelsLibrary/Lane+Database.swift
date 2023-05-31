@@ -3,9 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension Lane {
-	public struct Database: Sendable, Identifiable, Codable, Equatable, TableRecord {
-		public static let databaseTableName = "lane"
-
+	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let alleyId: Alley.ID
 		public let id: Lane.ID
 		public var label: String
@@ -25,9 +23,11 @@ extension Lane {
 	}
 }
 
-extension Lane.Position: DatabaseValueConvertible {}
+extension Lane.Database: TableRecord, FetchableRecord, PersistableRecord {
+	public static let databaseTableName = "lane"
+}
 
-extension Lane.Database: FetchableRecord, PersistableRecord {}
+extension Lane.Position: DatabaseValueConvertible {}
 
 extension DerivableRequest<Lane.Database> {
 	public func orderByLabel() -> Self {
