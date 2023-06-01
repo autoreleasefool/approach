@@ -198,6 +198,10 @@ services = [ "Preference" ]
 [services.Scoring]
 [services.Scoring.interface]
 libraries = [ "Models" ]
+[services.Scoring.tests]
+repositories = [ "Frames" ]
+services = [ "Database" ]
+libraries = [ "TestDatabaseUtilities" ]
 
 # Libraries
 
@@ -212,11 +216,9 @@ libraries = [ "Strings" ]
 dependencies = [ "GRDB" ]
 
 [libraries.DatabaseModels]
+skip_tests = true
 libraries = [ "Models" ]
 dependencies = [ "GRDB" ]
-[libraries.DatabaseModels.tests]
-services = [ "Database" ]
-libraries = [ "TestDatabaseUtilities" ]
 
 [libraries.DateTime]
 

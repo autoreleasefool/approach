@@ -9,7 +9,7 @@ extension Series.Database {
 		leagueId: League.ID = UUID(0),
 		id: ID,
 		date: Date,
-		numberOfGames: Int = 4,
+		numberOfGames: Int = 3,
 		preBowl: Series.PreBowl = .regular,
 		excludeFromStatistics: Series.ExcludeFromStatistics = .include,
 		alleyId: Alley.ID? = nil
@@ -86,7 +86,5 @@ func insert(
 		series = custom
 	}
 
-	for series in series {
-		try series.insert(db)
-	}
+	try series.forEach { try $0.insert(db) }
 }

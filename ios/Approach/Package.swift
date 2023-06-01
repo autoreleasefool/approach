@@ -1030,7 +1030,10 @@ let package = Package(
 			name: "ScoringServiceTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"FramesRepository",
 				"ScoringService",
+				"TestDatabaseUtilitiesLibrary",
 			]
 		),
 
@@ -1063,15 +1066,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "GRDB", package: "GRDB.swift"),
 				"ModelsLibrary",
-			]
-		),
-		.testTarget(
-			name: "DatabaseModelsLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"DatabaseModelsLibrary",
-				"DatabaseService",
-				"TestDatabaseUtilitiesLibrary",
 			]
 		),
 		.target(
