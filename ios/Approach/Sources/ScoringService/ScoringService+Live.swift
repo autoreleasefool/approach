@@ -128,13 +128,16 @@ extension ScoringService: DependencyKey {
 			var initialRollIndex = 0
 
 			// Calculate the final frame separately
+			let ballsRolledInFinalFrame = rolls.filter { Frame.isLast($0.frameIndex) }.count
+			var pinsDownedOnce = false
 			for (index, roll) in rolls.enumerated() where Frame.isLast(roll.frameIndex) {
 				accruedScore -= (roll.roll.didFoul ? 1 : 0) * Frame.Roll.FOUL_PENALTY
 				pinsDown.formUnion(roll.roll.pinsDowned)
 
 				// When all the pins have been cleared
-				if pinsDown.count == 5 {
+				if pinsDown.count == 5 && !(!pinsDownedOnce && ballsRolledInFinalFrame == 3 && Frame.Roll.isLast(roll.rollIndex)) {
 					// Append a roll with the full deck cleared
+					pinsDownedOnce = true
 					rollSteps.append(.init(
 						index: rollSteps.count,
 						display: pinsDown.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
