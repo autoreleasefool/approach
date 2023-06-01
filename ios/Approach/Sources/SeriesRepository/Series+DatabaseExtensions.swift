@@ -20,8 +20,6 @@ extension Series.Edit: FetchableRecord, PersistableRecord {
 	}
 }
 
-extension Series.EditWithLanes: TableRecord, FetchableRecord, EncodableRecord {}
-
 // MARK: - Create
 
 extension Series.Create: PersistableRecord {

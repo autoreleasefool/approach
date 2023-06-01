@@ -64,6 +64,7 @@ public struct LeagueEditorView: View {
 			FormView(store: store.scope(state: \.form, action: /LeagueEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
+				locationSection(viewStore)
 				statisticsSection(viewStore)
 				gamesSection(viewStore)
 				additionalPinfallSection(viewStore)
@@ -73,9 +74,32 @@ public struct LeagueEditorView: View {
 	}
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section {
+		Section(Strings.Editor.Fields.Details.title) {
 			TextField(Strings.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
-			if viewStore.hasAlleysEnabled {
+		}
+	}
+
+	@ViewBuilder private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		if !viewStore.isEditing {
+			Section {
+				Picker(
+					Strings.League.Properties.recurrence,
+					selection: viewStore.binding(\.$recurrence)
+				) {
+					ForEach(League.Recurrence.allCases) {
+						Text(String(describing: $0)).tag($0)
+					}
+				}
+			} footer: {
+				Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.once))
+			}
+		}
+	}
+
+	@ViewBuilder private func locationSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		// TODO: better show the location section when recurrence is toggled
+		if viewStore.hasAlleysEnabled && viewStore.recurrence == .once {
+			Section {
 				NavigationLink(
 					destination: ResourcePickerView(
 						store: store.scope(
@@ -95,29 +119,10 @@ public struct LeagueEditorView: View {
 						value: viewStore.location?.name ?? Strings.none
 					)
 				}
-			}
-		} header: {
-			Text(Strings.Editor.Fields.Details.title)
-		} footer: {
-			if viewStore.hasAlleysEnabled {
-				Text(Strings.League.Editor.Fields.Alley.help)
-			}
-		}
-	}
-
-	@ViewBuilder private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		if !viewStore.isEditing {
-			Section {
-				Picker(
-					Strings.League.Properties.recurrence,
-					selection: viewStore.binding(\.$recurrence)
-				) {
-					ForEach(League.Recurrence.allCases) {
-						Text(String(describing: $0)).tag($0)
-					}
-				}
+			} header: {
+				Text(Strings.League.Editor.Fields.Alley.title)
 			} footer: {
-				Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.once))
+				Text(Strings.League.Editor.Fields.Alley.help)
 			}
 		}
 	}

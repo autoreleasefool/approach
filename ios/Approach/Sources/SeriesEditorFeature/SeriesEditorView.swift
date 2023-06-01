@@ -17,22 +17,15 @@ public struct SeriesEditorView: View {
 		@BindingState var preBowl: Series.PreBowl
 		@BindingState var excludeFromStatistics: Series.ExcludeFromStatistics
 		let location: Alley.Summary?
-		let lanes: IdentifiedArrayOf<Lane.Summary>
 
 		let hasSetNumberOfGames: Bool
 		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
 
 		let isAlleyPickerPresented: Bool
-		let isLanePickerPresented: Bool
 
 		let hasAlleysEnabled: Bool
-		let hasLanesEnabled: Bool
 
 		let isEditing: Bool
-
-		var laneLabels: String {
-			lanes.isEmpty ? Strings.none : lanes.map(\.label).joined(separator: ", ")
-		}
 
 		init(state: SeriesEditor.State) {
 			self.date = state.date
@@ -40,15 +33,12 @@ public struct SeriesEditorView: View {
 			self.preBowl = state.preBowl
 			self.excludeFromStatistics = state.excludeFromStatistics
 			self.location = state.location
-			self.lanes = state.lanes
 
 			self.hasSetNumberOfGames = state.league.numberOfGames != nil
 			self.excludeLeagueFromStatistics = state.league.excludeFromStatistics
 
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
-			self.isLanePickerPresented = state.isLanePickerPresented
 			self.hasAlleysEnabled = state.hasAlleysEnabled
-			self.hasLanesEnabled = state.hasLanesEnabled
 
 			switch state._form.value {
 			case .create: self.isEditing = false
@@ -59,7 +49,6 @@ public struct SeriesEditorView: View {
 
 	enum ViewAction: BindableAction {
 		case setAlleyPicker(isPresented: Bool)
-		case setLanePicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -106,29 +95,6 @@ public struct SeriesEditorView: View {
 								Strings.Series.Properties.alley,
 								value: viewStore.location?.name ?? Strings.none
 							)
-						}
-
-						if viewStore.hasLanesEnabled {
-							NavigationLink(
-								destination: ResourcePickerView(
-									store: store.scope(
-										state: \.lanePicker,
-										action: /SeriesEditor.Action.InternalAction.lanePicker
-									)
-								) { lane in
-									Lane.View(lane: lane)
-								},
-								isActive: viewStore.binding(
-									get: \.isLanePickerPresented,
-									send: ViewAction.setLanePicker(isPresented:)
-								)
-							) {
-								LabeledContent(
-									Strings.Series.Editor.Fields.Alley.lanes,
-									value: viewStore.laneLabels
-								)
-							}
-							.disabled(viewStore.location == nil)
 						}
 					}
 				}
@@ -202,8 +168,6 @@ extension SeriesEditor.Action {
 		switch action {
 		case let .setAlleyPicker(isPresented):
 			self = .view(.setAlleyPicker(isPresented: isPresented))
-		case let .setLanePicker(isPresented):
-			self = .view(.setLanePicker(isPresented: isPresented))
 		case .binding(let action):
 			self = .binding(action.pullback(\SeriesEditor.State.view))
 		}

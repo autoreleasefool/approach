@@ -50,7 +50,6 @@ final class StatisticsForBowlerTests: XCTestCase {
 			withGear: .zero,
 			withLeagues: .custom([league]),
 			withSeries: .custom([series]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game]),
 			withFrames: .custom(frames)
 		)

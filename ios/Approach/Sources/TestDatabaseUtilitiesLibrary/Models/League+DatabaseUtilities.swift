@@ -13,8 +13,7 @@ extension League.Database {
 		numberOfGames: Int? = League.DEFAULT_NUMBER_OF_GAMES,
 		additionalPinfall: Int? = nil,
 		additionalGames: Int? = nil,
-		excludeFromStatistics: League.ExcludeFromStatistics = .include,
-		alleyId: Alley.ID? = nil
+		excludeFromStatistics: League.ExcludeFromStatistics = .include
 	) -> Self {
 		.init(
 			bowlerId: bowlerId,
@@ -24,8 +23,7 @@ extension League.Database {
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
 			additionalGames: additionalGames,
-			excludeFromStatistics: excludeFromStatistics,
-			alleyId: alleyId
+			excludeFromStatistics: excludeFromStatistics
 		)
 	}
 }
@@ -57,8 +55,7 @@ func insert(
 				numberOfGames: nil,
 				additionalPinfall: nil,
 				additionalGames: nil,
-				excludeFromStatistics: .include,
-				alleyId: UUID(0)
+				excludeFromStatistics: .include
 			),
 			.init(
 				bowlerId: UUID(1),
@@ -68,8 +65,7 @@ func insert(
 				numberOfGames: nil,
 				additionalPinfall: nil,
 				additionalGames: nil,
-				excludeFromStatistics: .include,
-				alleyId: UUID(0)
+				excludeFromStatistics: .include
 			),
 		]
 	case let .custom(custom):

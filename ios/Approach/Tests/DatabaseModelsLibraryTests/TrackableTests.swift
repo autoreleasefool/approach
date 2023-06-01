@@ -33,8 +33,7 @@ final class TrackableTests: XCTestCase {
 
 		let database = try initializeDatabase(
 			withLeagues: .custom([league1, league2]),
-			withSeries: .custom([series1, series2, series3, series4]),
-			withSeriesLanes: .zero
+			withSeries: .custom([series1, series2, series3, series4])
 		)
 
 		let result = try await database.read {
@@ -69,7 +68,6 @@ final class TrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withLeagues: .custom([league1, league2]),
 			withSeries: .custom([series1, series2, series3, series4]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8])
 		)
 
@@ -114,7 +112,6 @@ final class TrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withLeagues: .custom([league1, league2]),
 			withSeries: .custom([series1, series2, series3, series4]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]),
 			withFrames: .custom([frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8])
 		)
@@ -134,7 +131,7 @@ final class TrackableTests: XCTestCase {
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_789), excludeFromStatistics: .include)
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_789), excludeFromStatistics: .exclude)
 
-		let database = try initializeDatabase(withLeagues: .default, withSeries: .custom([series1, series2]), withSeriesLanes: .zero)
+		let database = try initializeDatabase(withLeagues: .default, withSeries: .custom([series1, series2]))
 
 		let result = try await database.read {
 			try League.Database
@@ -159,7 +156,6 @@ final class TrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withLeagues: .default,
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2, game3, game4])
 		)
 
@@ -191,7 +187,6 @@ final class TrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withLeagues: .default,
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2, game3, game4]),
 			withFrames: .custom([frame1, frame2, frame3, frame4])
 		)
@@ -214,7 +209,6 @@ final class TrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withLeagues: .default,
 			withSeries: .default,
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2])
 		)
 
@@ -239,7 +233,6 @@ final class TrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withLeagues: .default,
 			withSeries: .default,
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2]),
 			withFrames: .custom([frame1, frame2])
 		)

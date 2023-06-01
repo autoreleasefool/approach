@@ -9,14 +9,14 @@ extension Series {
 
 public struct SeriesRepository: Sendable {
 	public var list: @Sendable (League.ID, Series.Ordering) -> AsyncThrowingStream<[Series.Summary], Error>
-	public var edit: @Sendable (Series.ID) async throws -> Series.EditWithLanes?
+	public var edit: @Sendable (Series.ID) async throws -> Series.Edit?
 	public var create: @Sendable (Series.Create) async throws -> Void
 	public var update: @Sendable (Series.Edit) async throws -> Void
 	public var delete: @Sendable (Series.ID) async throws -> Void
 
 	public init(
 		list: @escaping @Sendable (League.ID, Series.Ordering) -> AsyncThrowingStream<[Series.Summary], Error>,
-		edit: @escaping @Sendable (Series.ID) async throws -> Series.EditWithLanes?,
+		edit: @escaping @Sendable (Series.ID) async throws -> Series.Edit?,
 		create: @escaping @Sendable (Series.Create) async throws -> Void,
 		update: @escaping @Sendable (Series.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Series.ID) async throws -> Void

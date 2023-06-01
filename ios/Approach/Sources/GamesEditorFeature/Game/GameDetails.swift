@@ -253,7 +253,7 @@ public struct GameDetailsView: View {
 			if let alley = viewStore.game.series.alley?.name {
 				Section(Strings.Alley.title) {
 					LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
-					LabeledContent(Strings.Lane.List.title, value: viewStore.game.series.laneLabels)
+					// TODO: add lane picker for game
 				}
 			}
 
@@ -360,12 +360,6 @@ extension GameDetails.Action {
 		case .didTapBowler:
 			self = .delegate(.didRequestOpponentPicker)
 		}
-	}
-}
-
-extension Game.Edit.SeriesInfo {
-	var laneLabels: String {
-		lanes.isEmpty ? Strings.none : lanes.map(\.label).joined(separator: ", ")
 	}
 }
 

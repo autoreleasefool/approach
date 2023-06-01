@@ -133,7 +133,6 @@ final class BowlersRepositoryTests: XCTestCase {
 			withBowlers: .custom([bowler1]),
 			withLeagues: .custom([league1, league2]),
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2])
 		)
 
@@ -169,7 +168,6 @@ final class BowlersRepositoryTests: XCTestCase {
 			withBowlers: .custom([bowler1]),
 			withLeagues: .custom([league1, league2]),
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2])
 		)
 
@@ -205,7 +203,6 @@ final class BowlersRepositoryTests: XCTestCase {
 			withBowlers: .custom([bowler1]),
 			withLeagues: .custom([league1, league2]),
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2])
 		)
 

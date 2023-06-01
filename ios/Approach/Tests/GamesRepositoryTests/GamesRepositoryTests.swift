@@ -114,11 +114,7 @@ final class GamesRepositoryTests: XCTestCase {
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview"),
-					lanes: [
-						.init(id: UUID(0), label: "1"),
-						.init(id: UUID(1), label: "2"),
-					]
+					alley: .init(name: "Skyview")
 				)
 			)
 		)
@@ -166,11 +162,7 @@ final class GamesRepositoryTests: XCTestCase {
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview"),
-					lanes: [
-						.init(id: UUID(0), label: "1"),
-						.init(id: UUID(1), label: "2"),
-					]
+					alley: .init(name: "Skyview")
 				)
 			)
 		)
@@ -213,8 +205,7 @@ final class GamesRepositoryTests: XCTestCase {
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
 				excludeFromStatistics: .include,
-				alley: .init(name: "Skyview"),
-				lanes: []
+				alley: .init(name: "Skyview")
 			)
 		)
 		try await withDependencies {
@@ -263,8 +254,7 @@ final class GamesRepositoryTests: XCTestCase {
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
 				excludeFromStatistics: .include,
-				alley: .init(name: "Skyview"),
-				lanes: []
+				alley: .init(name: "Skyview")
 			)
 		)
 
@@ -311,8 +301,7 @@ final class GamesRepositoryTests: XCTestCase {
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview"),
-					lanes: []
+					alley: .init(name: "Skyview")
 				)
 			)
 			try await withDependencies {

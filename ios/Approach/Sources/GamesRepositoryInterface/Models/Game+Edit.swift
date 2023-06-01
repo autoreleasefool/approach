@@ -48,7 +48,6 @@ extension Game.Edit {
 		public let date: Date
 		public let excludeFromStatistics: Series.ExcludeFromStatistics
 		public let alley: Game.Edit.AlleyInfo?
-		public let lanes: IdentifiedArrayOf<Game.Edit.LaneInfo>
 	}
 }
 

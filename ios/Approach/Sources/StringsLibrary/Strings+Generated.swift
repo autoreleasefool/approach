@@ -428,6 +428,8 @@ public enum Strings {
         public enum Alley {
           /// This is where you'll usually bowl this league. You can always change it for specific series later.
           public static let help = Strings.tr("Localizable", "league.editor.fields.alley.help", fallback: "This is where you'll usually bowl this league. You can always change it for specific series later.")
+          /// Alley
+          public static let title = Strings.tr("Localizable", "league.editor.fields.alley.title", fallback: "Alley")
         }
         public enum ExcludeFromStatistics {
           /// This league and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your overall average or other statistics.

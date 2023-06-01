@@ -174,7 +174,6 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(
 			withLeagues: .custom([league1]),
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2])
 		)
 
@@ -206,7 +205,6 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(
 			withLeagues: .custom([league1]),
 			withSeries: .custom([series1, series2]),
-			withSeriesLanes: .zero,
 			withGames: .custom([game1, game2])
 		)
 
@@ -254,40 +252,6 @@ final class LeaguesRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testSeriesHost_WhenLeagueExistsWithAlley_ReturnsLeagueWithAlley() async throws {
-		// Given a database with one league
-		let league1 = League.Database.mock(id: UUID(0), name: "Majors", alleyId: UUID(0))
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
-
-		// Fetching the league
-		let league = try await withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
-		} operation: {
-			try await self.leagues.seriesHost(UUID(0))
-		}
-
-		// Returns the league
-		XCTAssertEqual(
-			league,
-			.init(
-				id: UUID(0),
-				name: "Majors",
-				numberOfGames: 4,
-				alley: .init(
-					id: UUID(0),
-					name: "Skyview",
-					material: .wood,
-					pinFall: .strings,
-					mechanism: .dedicated,
-					pinBase: nil,
-					location: nil
-				),
-				excludeFromStatistics: .include
-			)
-		)
-	}
-
 	func testSeriesHost_WhenLeagueNotExists_ReturnsNil() async throws {
 		// Given a database with no leagues
 		let db = try initializeDatabase(withLeagues: nil)
@@ -320,8 +284,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			numberOfGames: league1.numberOfGames,
 			additionalPinfall: 123,
 			additionalGames: 123,
-			excludeFromStatistics: league1.excludeFromStatistics,
-			location: nil
+			excludeFromStatistics: league1.excludeFromStatistics
 		)
 		await assertThrowsError(ofType: DatabaseError.self) {
 			try await withDependencies {
@@ -355,16 +318,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			numberOfGames: 1,
 			additionalPinfall: 123,
 			additionalGames: 123,
-			excludeFromStatistics: .exclude,
-			location: .init(
-				id: UUID(0),
-				name: "Skyview",
-				material: .wood,
-				pinFall: .strings,
-				mechanism: .dedicated,
-				pinBase: nil,
-				location: nil
-			)
+			excludeFromStatistics: .exclude
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -384,7 +338,6 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(created?.id, UUID(0))
 		XCTAssertEqual(created?.name, "Minors")
 		XCTAssertEqual(created?.numberOfGames, 1)
-		XCTAssertEqual(created?.alleyId, UUID(0))
 	}
 
 	// MARK: - Update
@@ -402,8 +355,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			name: "Minors",
 			additionalPinfall: 123,
 			additionalGames: 123,
-			excludeFromStatistics: league1.excludeFromStatistics,
-			location: nil
+			excludeFromStatistics: league1.excludeFromStatistics
 		)
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -434,8 +386,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			name: "Minors",
 			additionalPinfall: 123,
 			additionalGames: 123,
-			excludeFromStatistics: .exclude,
-			location: nil
+			excludeFromStatistics: .exclude
 		)
 		await assertThrowsError(ofType: RecordError.self) {
 			try await withDependencies {
@@ -480,8 +431,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 				name: "Majors",
 				additionalPinfall: nil,
 				additionalGames: nil,
-				excludeFromStatistics: .include,
-				location: nil
+				excludeFromStatistics: .include
 			)
 		)
 	}
@@ -500,43 +450,6 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns nil
 		XCTAssertNil(league)
-	}
-
-	func testEdit_WhenLeagueHasAlley_ReturnLeagueWithAlley() async throws {
-		// Given a database with one league
-		let league1 = League.Database.mock(id: UUID(0), name: "Majors", alleyId: UUID(0))
-		let db = try initializeDatabase(withLeagues: .custom([league1]))
-
-		// Editing the league
-		let league = try await withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
-		} operation: {
-			try await self.leagues.edit(UUID(0))
-		}
-
-		// Returns the league
-		XCTAssertEqual(
-			league,
-			.init(
-				id: UUID(0),
-				recurrence: .repeating,
-				numberOfGames: 4,
-				name: "Majors",
-				additionalPinfall: nil,
-				additionalGames: nil,
-				excludeFromStatistics: .include,
-				location: .init(
-					id: UUID(0),
-					name: "Skyview",
-					material: .wood,
-					pinFall: .strings,
-					mechanism: .dedicated,
-					pinBase: nil,
-					location: nil
-				)
-			)
-		)
 	}
 
 	// MARK: - Delete

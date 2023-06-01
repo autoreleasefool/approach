@@ -12,7 +12,6 @@ extension League {
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
-		public var alleyId: Alley.ID?
 
 		public init(
 			bowlerId: Bowler.ID,
@@ -22,8 +21,7 @@ extension League {
 			numberOfGames: Int?,
 			additionalPinfall: Int?,
 			additionalGames: Int?,
-			excludeFromStatistics: ExcludeFromStatistics,
-			alleyId: Alley.ID?
+			excludeFromStatistics: ExcludeFromStatistics
 		) {
 			self.bowlerId = bowlerId
 			self.id = id
@@ -33,7 +31,6 @@ extension League {
 			self.additionalPinfall = additionalPinfall
 			self.additionalGames = additionalGames
 			self.excludeFromStatistics = excludeFromStatistics
-			self.alleyId = alleyId
 		}
 	}
 }
@@ -55,7 +52,6 @@ extension League.Database {
 		public static let additionalPinfall = Column(CodingKeys.additionalPinfall)
 		public static let additionalGames = Column(CodingKeys.additionalGames)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
-		public static let alleyId = Column(CodingKeys.alleyId)
 	}
 }
 
@@ -65,28 +61,4 @@ extension League.Summary: TableRecord, FetchableRecord {
 
 extension League.List: TableRecord, FetchableRecord {
 	public static let databaseTableName = League.Database.databaseTableName
-}
-
-extension League.Database {
-	public struct Inserted {
-		public let id: League.ID
-		public let recurrence: League.Recurrence
-		public let numberOfGames: Int?
-		public let excludeFromStatistics: League.ExcludeFromStatistics
-		public let alleyId: Alley.ID?
-
-		public init(
-			id: League.ID,
-			recurrence: League.Recurrence,
-			numberOfGames: Int?,
-			excludeFromStatistics: League.ExcludeFromStatistics,
-			alleyId: Alley.ID?
-		) {
-			self.id = id
-			self.recurrence = recurrence
-			self.numberOfGames = numberOfGames
-			self.excludeFromStatistics = excludeFromStatistics
-			self.alleyId = alleyId
-		}
-	}
 }

@@ -15,7 +15,6 @@ extension League.Edit: FetchableRecord, PersistableRecord {
 		container[Columns.additionalPinfall] = additionalPinfall
 		container[Columns.additionalGames] = additionalGames
 		container[Columns.excludeFromStatistics] = excludeFromStatistics
-		container[Columns.alleyId] = location?.id
 	}
 }
 
@@ -34,7 +33,6 @@ extension League.Create: PersistableRecord {
 		container[Columns.additionalPinfall] = additionalPinfall
 		container[Columns.additionalGames] = additionalGames
 		container[Columns.excludeFromStatistics] = excludeFromStatistics
-		container[Columns.alleyId] = location?.id
 	}
 }
 

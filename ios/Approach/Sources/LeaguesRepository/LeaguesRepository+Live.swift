@@ -39,7 +39,6 @@ extension LeaguesRepository: DependencyKey {
 				try await database.reader().read {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
-						.including(optional: League.Database.alley)
 						.asRequest(of: League.SeriesHost.self)
 						.fetchOne($0)
 				}
@@ -48,7 +47,7 @@ extension LeaguesRepository: DependencyKey {
 				try await database.reader().read {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
-						.including(optional: League.Database.alley.forKey("location"))
+						.including(optional: League.Database.alleys.forKey("location"))
 						.asRequest(of: League.Edit.self)
 						.fetchOne($0)
 				}

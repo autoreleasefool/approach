@@ -18,7 +18,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with two series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -38,7 +38,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with two series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
 		// Fetching the series by league
 		let series = withDependencies {
@@ -80,7 +80,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testCreate_WhenSeriesExists_ThrowsError() async throws {
 		// Given a database with an existing series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Creating the series throws an error
 		await assertThrowsError(ofType: DatabaseError.self) {
@@ -146,7 +146,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testUpdate_WhenSeriesExists_UpdatesSeries() async throws {
 		// Given a database with an existing series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Editing the series
 		let editable = Series.Edit(
@@ -208,7 +208,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testEdit_WhenSeriesExists_ReturnsSeries() async throws {
 		// Given a database with one series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Editing the series
 		let series = try await withDependencies {
@@ -222,16 +222,13 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				series: .init(
-					leagueId: UUID(0),
-					id: UUID(0),
-					numberOfGames: 4,
-					date: Date(timeIntervalSince1970: 123_456_000),
-					preBowl: .regular,
-					excludeFromStatistics: .include,
-					location: nil
-				),
-				lanes: []
+				leagueId: UUID(0),
+				id: UUID(0),
+				numberOfGames: 4,
+				date: Date(timeIntervalSince1970: 123_456_000),
+				preBowl: .regular,
+				excludeFromStatistics: .include,
+				location: nil
 			)
 		)
 	}
@@ -239,7 +236,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testEdit_WhenSeriesExists_WhenAlleyExists_ReturnsSeriesWithAlley() async throws {
 		// Given a database with one series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000), alleyId: UUID(0))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Editing the series
 		let series = try await withDependencies {
@@ -253,66 +250,21 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(
 			series,
 			.init(
-				series: .init(
-					leagueId: UUID(0),
+				leagueId: UUID(0),
+				id: UUID(0),
+				numberOfGames: 4,
+				date: Date(timeIntervalSince1970: 123_456_000),
+				preBowl: .regular,
+				excludeFromStatistics: .include,
+				location: .init(
 					id: UUID(0),
-					numberOfGames: 4,
-					date: Date(timeIntervalSince1970: 123_456_000),
-					preBowl: .regular,
-					excludeFromStatistics: .include,
-					location: .init(
-						id: UUID(0),
-						name: "Skyview",
-						material: .wood,
-						pinFall: .strings,
-						mechanism: .dedicated,
-						pinBase: nil,
-						location: nil
-					)
-				),
-				lanes: []
-			)
-		)
-	}
-
-	func testEdit_WhenSeriesExists_WhenLanesExist_ReturnsSeriesWithLanes() async throws {
-		// Given a database with one series
-		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withSeriesLanes: .zero)
-
-		// And many lanes
-		let seriesLane1 = SeriesLane.Database(seriesId: UUID(0), laneId: UUID(1))
-		let seriesLane2 = SeriesLane.Database(seriesId: UUID(0), laneId: UUID(0))
-		try await db.write {
-			try seriesLane1.insert($0)
-			try seriesLane2.insert($0)
-		}
-
-		// Editing the series
-		let series = try await withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
-		} operation: {
-			try await self.series.edit(UUID(0))
-		}
-
-		// Returns the series
-		XCTAssertEqual(
-			series,
-			.init(
-				series: .init(
-					leagueId: UUID(0),
-					id: UUID(0),
-					numberOfGames: 4,
-					date: Date(timeIntervalSince1970: 123_456_000),
-					preBowl: .regular,
-					excludeFromStatistics: .include,
+					name: "Skyview",
+					material: .wood,
+					pinFall: .strings,
+					mechanism: .dedicated,
+					pinBase: nil,
 					location: nil
-				),
-				lanes: [
-					.init(id: UUID(0), label: "1", position: .leftWall),
-					.init(id: UUID(1), label: "2", position: .noWall),
-				]
+				)
 			)
 		)
 	}
@@ -339,7 +291,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with 2 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
 		// Deleting the first series
 		try await withDependencies {
@@ -361,7 +313,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
-		let db = try initializeDatabase(withSeries: .custom([series1]), withSeriesLanes: .zero)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Deleting a non-existent series
 		try await withDependencies {

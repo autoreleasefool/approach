@@ -3,14 +3,10 @@ import ModelsLibrary
 
 extension Series.Database {
 	public static let league = belongsTo(League.Database.self)
-
 	public static let games = hasMany(Game.Database.self)
 
 	public static let alley = belongsTo(Alley.Database.self)
-
-	public static let seriesLanes = hasMany(SeriesLane.Database.self)
-
-	public static let lanes = hasMany(Lane.Database.self, through: seriesLanes, using: SeriesLane.Database.lane)
+	public static let lanes = hasMany(Lane.Database.self, through: games, using: Game.Database.lanes)
 
 	public static let trackableGames = hasMany(Game.Database.self)
 		.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)

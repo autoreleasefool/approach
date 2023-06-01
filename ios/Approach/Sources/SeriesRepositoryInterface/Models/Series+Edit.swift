@@ -14,10 +14,3 @@ extension Series {
 		public var location: Alley.Summary?
 	}
 }
-
-extension Series {
-	public struct EditWithLanes: Equatable, Codable {
-		public var series: Edit
-		public var lanes: IdentifiedArrayOf<Lane.Summary>
-	}
-}

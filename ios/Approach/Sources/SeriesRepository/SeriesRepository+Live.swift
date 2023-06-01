@@ -28,13 +28,7 @@ extension SeriesRepository: DependencyKey {
 					return try Series.Database
 						.filter(id: id)
 						.including(optional: Series.Database.alley.forKey("location"))
-						.including(
-							all: Series.Database
-								.lanes
-								.order(Lane.Database.Columns.label.collating(.localizedCaseInsensitiveCompare))
-								.aliased(lanesAlias)
-						)
-						.asRequest(of: Series.EditWithLanes.self)
+						.asRequest(of: Series.Edit.self)
 						.fetchOne($0)
 				}
 			},

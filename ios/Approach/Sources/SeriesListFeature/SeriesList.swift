@@ -50,7 +50,7 @@ public struct SeriesList: Reducer {
 		}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableSeries(Series.EditWithLanes)
+			case didLoadEditableSeries(Series.Edit)
 			case list(ResourceList<Series.Summary, League.ID>.Action)
 			case editor(PresentationAction<SeriesEditor.Action>)
 			case sidebar(GamesList.Action)
@@ -159,7 +159,7 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	private func startEditing(series: Series.EditWithLanes?, state: inout State) -> Effect<Action> {
+	private func startEditing(series: Series.Edit?, state: inout State) -> Effect<Action> {
 		if let series {
 			state.editor = .init(value: .edit(series), inLeague: state.league)
 		} else {

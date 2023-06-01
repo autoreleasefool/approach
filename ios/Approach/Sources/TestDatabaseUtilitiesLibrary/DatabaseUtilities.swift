@@ -19,8 +19,8 @@ public func initializeDatabase(
 	withGear: InitialValue<Gear.Database>? = nil,
 	withLeagues: InitialValue<League.Database>? = nil,
 	withSeries: InitialValue<Series.Database>? = nil,
-	withSeriesLanes: InitialValue<SeriesLane.Database>? = nil,
 	withGames: InitialValue<Game.Database>? = nil,
+	withGameLanes: InitialValue<GameLane.Database>? = nil,
 	withFrames: InitialValue<Frame.Database>? = nil,
 	withMatchPlays: InitialValue<MatchPlay.Database>? = nil
 ) throws -> any DatabaseWriter {
@@ -36,10 +36,10 @@ public func initializeDatabase(
 	let leagues = coallesce(withLeagues, ifHasOneOf: series)
 	let gear = coallesce(withGear, ifHasOneOf: frames)
 	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear, matchPlays)
-	let lanes = coallesce(withLanes, ifHasOneOf: series)
+	let lanes = withLanes
 	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)
 	let locations = coallesce(withLocations, ifHasOneOf: alleys)
-	let seriesLanes = coallesce(withSeriesLanes, ifHasAllOf: series, lanes)
+	let gameLanes = coallesce(withGameLanes, ifHasAllOf: games, lanes)
 
 	try dbQueue.write {
 		try insert(locations: locations, into: $0)
@@ -49,8 +49,8 @@ public func initializeDatabase(
 		try insert(gear: gear, into: $0)
 		try insert(leagues: leagues, into: $0)
 		try insert(series: series, into: $0)
-		try insert(seriesLanes: seriesLanes, into: $0)
 		try insert(games: games, into: $0)
+		try insert(gameLanes: gameLanes, into: $0)
 		try insert(frames: frames, into: $0)
 		try insert(matchPlays: matchPlays, into: $0)
 	}
