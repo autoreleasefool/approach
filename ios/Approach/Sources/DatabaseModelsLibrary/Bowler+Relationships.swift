@@ -2,24 +2,19 @@ import GRDB
 import ModelsLibrary
 
 extension Bowler.Database {
-	public static let trackableLeagues = hasMany(League.Database.self)
-		.filter(League.Database.Columns.excludeFromStatistics == League.ExcludeFromStatistics.include)
+	public static let leagues = hasMany(League.Database.self)
 
-	public static let trackableSeries = hasMany(
+	public static let series = hasMany(
 		Series.Database.self,
-		through: trackableLeagues,
-		using: League.Database.trackableSeries
+		through: leagues,
+		using: League.Database.series
 	)
 
-	public static let trackableGames = hasMany(
+	public static let games = hasMany(
 		Game.Database.self,
-		through: trackableSeries,
-		using: Series.Database.trackableGames
+		through: series,
+		using: Series.Database.games
 	)
 
-	public static let trackableFrames = hasMany(
-		Frame.Database.self,
-		through: trackableGames,
-		using: Game.Database.frames
-	)
+	public static let gear = hasMany(Gear.Database.self)
 }
