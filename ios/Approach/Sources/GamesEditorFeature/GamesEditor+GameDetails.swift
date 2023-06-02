@@ -9,7 +9,15 @@ extension GamesEditor.State {
 			return gameDetails
 		}
 		set {
-			guard isEditable, let newValue, currentGameId == newValue.game.id else { return }
+			guard let newValue, currentGameId == newValue.game.id else { return }
+			guard isEditable else {
+				// Always enable toggling the locked status of the game
+				if _gameDetails?.game.locked != newValue.game.locked {
+					_gameDetails?.game.locked = newValue.game.locked
+					game?.locked = newValue.game.locked
+				}
+				return
+			}
 			_gameDetails = newValue
 			game = newValue.game
 		}
