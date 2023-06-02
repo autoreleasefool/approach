@@ -17,6 +17,7 @@ type_name:
 disabled_rules:
   - cyclomatic_complexity
   - identifier_name
+  - large_tuple
   - nesting
 
 opt_in_rules:
