@@ -59,6 +59,8 @@ public enum Strings {
     public static let save = Strings.tr("Localizable", "action.save", fallback: "Save")
     /// Search
     public static let search = Strings.tr("Localizable", "action.search", fallback: "Search")
+    /// Select
+    public static let select = Strings.tr("Localizable", "action.select", fallback: "Select")
     /// Skip
     public static let skip = Strings.tr("Localizable", "action.skip", fallback: "Skip")
     /// Start
@@ -294,6 +296,10 @@ public enum Strings {
           public static let label = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.label", fallback: "Exclude from statistics?")
           /// Statistics
           public static let title = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
+        }
+        public enum Gear {
+          /// Choose any additional gear you're using this game
+          public static let help = Strings.tr("Localizable", "game.editor.fields.gear.help", fallback: "Choose any additional gear you're using this game")
         }
         public enum Lock {
           /// Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.

@@ -178,6 +178,7 @@
 "game.editor.fields.manualScore.title" = "Set manual score";
 "game.editor.fields.manualScore.prompt" = "Score";
 "game.editor.fields.manualScore.caption" = "Score set manually";
+"game.editor.fields.gear.help" = "Choose any additional gear you're using this game";
 "game.editor.picker.switch" = "Switch game";
 "game.editor.bowlers.dragToReorder" = "Drag to reorder";
 
@@ -306,6 +307,7 @@
 "action.search" = "Search";
 "action.viewAll" = "View All";
 "action.skip" = "Skip";
+"action.select" = "Select";
 
 /* Other */
 

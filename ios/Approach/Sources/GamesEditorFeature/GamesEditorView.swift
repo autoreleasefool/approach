@@ -28,6 +28,7 @@ public struct GamesEditorView: View {
 		let isGameDetailsPresented: Bool
 		let isBallPickerPresented: Bool
 		let isOpponentPickerPresented: Bool
+		let isGearPickerPresented: Bool
 		let isSettingsPresented: Bool
 
 		let isScoreSheetVisible: Bool
@@ -45,6 +46,7 @@ public struct GamesEditorView: View {
 			self.isBallPickerPresented = state.sheet == .presenting(.ballPicker)
 			self.isOpponentPickerPresented = state.sheet == .presenting(.opponentPicker)
 			self.isSettingsPresented = state.sheet == .presenting(.settings)
+			self.isGearPickerPresented = state.sheet == .presenting(.gearPicker)
 			self.isScoreSheetVisible = state.isScoreSheetVisible
 			self.bowlerName = state.game?.bowler.name
 			self.leagueName = state.game?.league.name
@@ -69,11 +71,13 @@ public struct GamesEditorView: View {
 		case setGameDetails(isPresented: Bool)
 		case setBallPicker(isPresented: Bool)
 		case setOpponentPicker(isPresented: Bool)
+		case setGearPicker(isPresented: Bool)
 		case setSettings(isPresented: Bool)
 
 		case didDismissGameDetails
 		case didDismissBallPicker
 		case didDismissOpponentPicker
+		case didDismissGearPicker
 		case didDismissGamesSettings
 	}
 
@@ -150,6 +154,14 @@ public struct GamesEditorView: View {
 				onDismiss: { viewStore.send(.didDismissOpponentPicker) },
 				content: {
 					opponentPicker
+						.presentationDetents([.large])
+				}
+			)
+			.sheet(
+				isPresented: viewStore.binding(get: \.isGearPickerPresented, send: ViewAction.setGearPicker(isPresented:)),
+				onDismiss: { viewStore.send(.didDismissGearPicker) },
+				content: {
+					gearPicker
 						.presentationDetents([.large])
 				}
 			)
@@ -233,6 +245,16 @@ public struct GamesEditorView: View {
 		}
 	}
 
+	private var gearPicker: some View {
+		NavigationView {
+			ResourcePickerView(
+				store: store.scope(state: \.gearPicker, action: /GamesEditor.Action.InternalAction.gearPicker)
+			) {
+				Text($0.name)
+			}
+		}
+	}
+
 	private var gamesSettings: some View {
 		NavigationView {
 			IfLetStore(store.scope(state: \.gamesSettings, action: /GamesEditor.Action.InternalAction.gamesSettings)) {
@@ -284,6 +306,8 @@ extension GamesEditor.Action {
 			self = .view(.setBallPicker(isPresented: isPresented))
 		case let .setOpponentPicker(isPresented):
 			self = .view(.setOpponentPicker(isPresented: isPresented))
+		case let .setGearPicker(isPresented):
+			self = .view(.setGearPicker(isPresented: isPresented))
 		case let .setSettings(isPresented):
 			self = .view(.setGamesSettings(isPresented: isPresented))
 		case .didDismissGameDetails:
@@ -293,6 +317,8 @@ extension GamesEditor.Action {
 		case .didDismissOpponentPicker:
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGamesSettings:
+			self = .view(.didDismissOpenSheet)
+		case .didDismissGearPicker:
 			self = .view(.didDismissOpenSheet)
 		case let .didChangeDetent(newDetent):
 			self = .view(.didChangeDetent(newDetent))

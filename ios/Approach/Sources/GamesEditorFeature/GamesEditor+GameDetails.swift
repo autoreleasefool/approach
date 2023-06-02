@@ -28,6 +28,13 @@ extension GamesEditor {
 				state.sheet.transition(to: .opponentPicker)
 				return .none
 
+			case .didRequestGearPicker:
+				let gear = Set(state.game?.gear.map(\.id) ?? [])
+				state._gearPicker.initialSelection = gear
+				state._gearPicker.selected = gear
+				state.sheet.transition(to: .gearPicker)
+				return .none
+
 			case .didEditGame:
 				return save(game: state.game)
 

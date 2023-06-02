@@ -4,6 +4,7 @@ extension GamesEditor.State {
 		case ballPicker
 		case settings
 		case opponentPicker
+		case gearPicker
 
 		static let `default`: Self = .gameDetails
 	}

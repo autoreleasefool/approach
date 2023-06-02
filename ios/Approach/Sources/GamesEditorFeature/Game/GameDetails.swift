@@ -6,6 +6,7 @@ import FeatureActionLibrary
 import GamesRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
+import ModelsViewsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
@@ -36,9 +37,11 @@ public struct GameDetails: Reducer {
 			case didSetMatchPlayResult(MatchPlay.Result?)
 			case didSetMatchPlayScore(String)
 			case didSetAlertScore(String)
+			case didSwipeGear(SwipeAction, id: Gear.ID)
 		}
 		public enum DelegateAction: Equatable {
 			case didRequestOpponentPicker
+			case didRequestGearPicker
 			case didEditGame
 			case didClearManualScore
 		}
@@ -52,6 +55,10 @@ public struct GameDetails: Reducer {
 	}
 
 	enum CancelID { case saveMatchPlay }
+
+	public enum SwipeAction: Equatable {
+		case delete
+	}
 
 	@Dependency(\.matchPlays) var matchPlays
 	@Dependency(\.uuid) var uuid
@@ -118,6 +125,10 @@ public struct GameDetails: Reducer {
 					} else {
 						return deleteMatchPlay(state: &state)
 					}
+
+				case let .didSwipeGear(.delete, id):
+					state.game.gear.remove(id: id)
+					return .send(.delegate(.didEditGame))
 				}
 
 			case let .internal(internalAction):
@@ -181,6 +192,8 @@ public struct GameDetailsView: View {
 
 	enum ViewAction {
 		case didTapOpponent
+		case didTapGear
+		case didSwipeGear(GameDetails.SwipeAction, id: Gear.ID)
 		case didToggleLock
 		case didToggleExclude
 		case didToggleMatchPlay
@@ -200,6 +213,32 @@ public struct GameDetailsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: GameDetails.Action.init, content: { viewStore in
+			Section {
+				if viewStore.game.gear.isEmpty {
+					Text(Strings.Game.Editor.Fields.Gear.help)
+				} else {
+					ForEach(viewStore.game.gear) { gear in
+						Gear.View(gear: gear)
+							.swipeActions(allowsFullSwipe: false) {
+								DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
+							}
+					}
+				}
+			} header: {
+				HStack(alignment: .firstTextBaseline) {
+					Text(Strings.Gear.List.title)
+					Spacer()
+					Button { viewStore.send(.didTapGear) } label: {
+						Text(Strings.Action.select)
+							.font(.caption)
+					}
+				}
+			} footer: {
+				if !viewStore.game.gear.isEmpty {
+					Text(Strings.Game.Editor.Fields.Gear.help)
+				}
+			}
+
 			Section(Strings.MatchPlay.title) {
 				Toggle(
 					Strings.MatchPlay.record,
@@ -330,6 +369,11 @@ extension GameDetails.State {
 		}
 		.cancellable(id: GameDetails.CancelID.saveMatchPlay)
 	}
+
+	mutating func setGear(_ gear: [Gear.Summary]) -> Effect<GameDetails.Action> {
+		game.gear = .init(uniqueElements: gear)
+		return .send(.delegate(.didEditGame))
+	}
 }
 
 extension GameDetails.Action {
@@ -359,6 +403,10 @@ extension GameDetails.Action {
 			self = .view(.didSetAlertScore(score))
 		case .didTapOpponent:
 			self = .delegate(.didRequestOpponentPicker)
+		case .didTapGear:
+			self = .delegate(.didRequestGearPicker)
+		case let .didSwipeGear(action, id):
+			self = .view(.didSwipeGear(action, id: id))
 		}
 	}
 }

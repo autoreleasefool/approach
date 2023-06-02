@@ -104,6 +104,7 @@ public struct BallPickerView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: BallPicker.Action.init, content: { viewStore in
+			// TODO: handle empty state for no bowling balls
 			List(viewStore.bowlingBalls) { bowlingBall in
 				Button { viewStore.send(.didTapGear(bowlingBall.id)) } label: {
 					Label(

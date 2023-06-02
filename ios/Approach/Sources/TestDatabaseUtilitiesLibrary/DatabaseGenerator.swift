@@ -98,7 +98,15 @@ private func generateSeries(
 	var date = startDate
 	var series: [Series.Database] = []
 	while series.count < numberOfSeries {
-		series.append(.init(leagueId: league, id: UUID(firstId + series.count), date: Date(timeIntervalSince1970: date.timeIntervalSince1970), numberOfGames: numberOfGames ?? series.count % 4 + 1, preBowl: .regular, excludeFromStatistics: .include, alleyId: alley ?? UUID(series.count % 2)))
+		series.append(.init(
+			leagueId: league,
+			id: UUID(firstId + series.count),
+			date: Date(timeIntervalSince1970: date.timeIntervalSince1970),
+			numberOfGames: numberOfGames ?? series.count % 4 + 1,
+			preBowl: .regular,
+			excludeFromStatistics: .include,
+			alleyId: alley ?? UUID(series.count % 2)
+		))
 		date.addTimeInterval(604800)
 	}
 	return series
@@ -115,7 +123,15 @@ private func generateGames(forSeries: [Series.Database]) -> [Game.Database] {
 			let lastIndex = seriesGames[seriesId] ?? -1
 			seriesGames[seriesId] = lastIndex + 1
 			gameId += 1
-			return .init(seriesId: seriesId, id: UUID(gameId), index: lastIndex + 1, score: baseGamesScores[gameId % baseGamesScores.count], locked: .locked, scoringMethod: .byFrame, excludeFromStatistics: .include)
+			return .init(
+				seriesId: seriesId,
+				id: UUID(gameId),
+				index: lastIndex + 1,
+				score: baseGamesScores[gameId % baseGamesScores.count],
+				locked: .locked,
+				scoringMethod: .byFrame,
+				excludeFromStatistics: .include
+			)
 		}
 	}
 

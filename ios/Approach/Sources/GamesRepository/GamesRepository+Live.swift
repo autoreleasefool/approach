@@ -56,6 +56,15 @@ extension GamesRepository: DependencyKey {
 			update: { game in
 				try await database.writer().write {
 					try game.update($0)
+
+					// FIXME: Rather than deleting all associations, should only add new/remove old
+					try GameGear.Database
+						.filter(GameGear.Database.Columns.gameId == game.id)
+						.deleteAll($0)
+					for gear in game.gear {
+						let gameGear = GameGear.Database(gameId: game.id, gearId: gear.id)
+						try gameGear.save($0)
+					}
 				}
 
 				if let matchPlay = game.matchPlay {

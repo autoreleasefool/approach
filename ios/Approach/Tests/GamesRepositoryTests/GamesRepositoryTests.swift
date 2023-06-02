@@ -330,6 +330,47 @@ final class GamesRepositoryTests: XCTestCase {
 		await fulfillment(of: [updatedMatchPlay])
 	}
 
+	func testUpdate_WhenHasGear_UpdatesGear() async throws {
+		// Given a database with a game and gear
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Towel", kind: .towel)
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Shoes", kind: .shoes)
+		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withGames: .custom([game1]), withGameGear: .custom([gameGear1]))
+
+		// Editing the game with a different gear
+		let editable = Game.Edit(
+			id: UUID(0),
+			index: 0,
+			score: 0,
+			locked: .open,
+			scoringMethod: .byFrame,
+			excludeFromStatistics: .include,
+			matchPlay: nil,
+			gear: [
+				.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil)
+			],
+			bowler: .init(name: "Joseph"),
+			league: .init(name: "Majors", excludeFromStatistics: .include),
+			series: .init(
+				date: Date(timeIntervalSince1970: 123_456_000),
+				excludeFromStatistics: .include,
+				alley: .init(name: "Skyview")
+			)
+		)
+
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games.update = GamesRepository.liveValue.update
+		} operation: {
+			try await self.games.update(editable)
+		}
+
+		// It deletes the old GameGear and creates the new association
+		let gameGear = try await db.read { try GameGear.Database.fetchAll($0 ) }
+		XCTAssertEqual(gameGear, [.init(gameId: UUID(0), gearId: UUID(1))])
+	}
+
 	func testUpdate_WhenGameNotExists_ThrowError() async throws {
 		// Given a database with no games
 		let db = try initializeDatabase(withGames: nil)

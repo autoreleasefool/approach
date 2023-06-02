@@ -6,6 +6,7 @@ import FeatureActionLibrary
 import Foundation
 import FramesRepositoryInterface
 import GamesRepositoryInterface
+import GearRepositoryInterface
 import ModelsLibrary
 import ResourcePickerLibrary
 import ScoreSheetFeature
@@ -21,6 +22,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.date) var date
 	@Dependency(\.frames) var frames
 	@Dependency(\.games) var games
+	@Dependency(\.gear) var gear
 	@Dependency(\.scoring) var scoring
 
 	public var body: some Reducer<State, Action> {
@@ -34,6 +36,10 @@ public struct GamesEditor: Reducer {
 
 		Scope(state: \.opponentPicker, action: /Action.internal..Action.InternalAction.opponentPicker) {
 			ResourcePicker { _ in bowlers.opponents(ordered: .byName) }
+		}
+
+		Scope(state: \.gearPicker, action: /Action.internal..Action.InternalAction.gearPicker) {
+			ResourcePicker { _ in gear.list(ordered: .byName) }
 		}
 
 		Reduce<State, Action> { state, action in
@@ -81,6 +87,10 @@ public struct GamesEditor: Reducer {
 
 				case let .setOpponentPicker(isPresented):
 					state.sheet.handle(isPresented: isPresented, for: .opponentPicker)
+					return .none
+
+				case let .setGearPicker(isPresented):
+					state.sheet.handle(isPresented: isPresented, for: .gearPicker)
 					return .none
 				}
 
@@ -157,6 +167,9 @@ public struct GamesEditor: Reducer {
 
 				case let .opponentPicker(action):
 					return reduce(into: &state, opponentPickerAction: action)
+
+				case let .gearPicker(action):
+					return reduce(into: &state, gearPickerAction: action)
 
 				case let .gameDetails(action):
 					return reduce(into: &state, gameDetailsAction: action)
@@ -244,6 +257,7 @@ extension GamesEditor {
 		public var _rollEditor: RollEditor.State?
 		public var _ballPicker: BallPicker.State
 		public var _opponentPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State
+		public var _gearPicker: ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State
 
 		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
 			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
@@ -258,6 +272,11 @@ extension GamesEditor {
 				selected: [],
 				query: .init(()),
 				limit: 1,
+				showsCancelHeaderButton: false
+			)
+			self._gearPicker = .init(
+				selected: [],
+				query: .init(()),
 				showsCancelHeaderButton: false
 			)
 
@@ -277,6 +296,7 @@ extension GamesEditor {
 			case setGameDetails(isPresented: Bool)
 			case setBallPicker(isPresented: Bool)
 			case setOpponentPicker(isPresented: Bool)
+			case setGearPicker(isPresented: Bool)
 			case setGamesSettings(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
@@ -299,6 +319,7 @@ extension GamesEditor {
 			case scoreSheet(ScoreSheet.Action)
 			case ballPicker(BallPicker.Action)
 			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
+			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 		}
 
 		case view(ViewAction)
@@ -381,5 +402,11 @@ extension GamesEditor {
 extension Bowler.Summary: PickableResource {
 	static public func pickableModelName(forCount count: Int) -> String {
 		count == 1 ? Strings.Opponent.title : Strings.Opponent.List.title
+	}
+}
+
+extension Gear.Summary: PickableResource {
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Gear.title : Strings.Gear.List.title
 	}
 }
