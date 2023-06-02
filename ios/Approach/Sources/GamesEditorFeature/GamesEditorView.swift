@@ -250,7 +250,7 @@ public struct GamesEditorView: View {
 			ResourcePickerView(
 				store: store.scope(state: \.gearPicker, action: /GamesEditor.Action.InternalAction.gearPicker)
 			) {
-				Text($0.name)
+				Gear.View(gear: $0)
 			}
 		}
 	}

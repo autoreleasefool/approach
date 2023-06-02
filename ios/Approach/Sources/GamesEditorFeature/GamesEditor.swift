@@ -274,10 +274,7 @@ extension GamesEditor {
 				limit: 1,
 				showsCancelHeaderButton: false
 			)
-			self._gearPicker = .init(
-				selected: [],
-				query: .init(()),
-				showsCancelHeaderButton: false
+			self._gearPicker = .init(selected: [], query: .init(())
 			)
 
 			@Dependency(\.date) var date
