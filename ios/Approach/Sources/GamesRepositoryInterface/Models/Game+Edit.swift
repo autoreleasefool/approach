@@ -16,6 +16,7 @@ extension Game {
 		public var scoringMethod: Game.ScoringMethod
 		public var excludeFromStatistics: Game.ExcludeFromStatistics
 		public var matchPlay: MatchPlay.Edit?
+		public var gear: IdentifiedArrayOf<Gear.Summary>
 
 		public init(
 			id: Game.ID,
@@ -25,6 +26,7 @@ extension Game {
 			scoringMethod: Game.ScoringMethod,
 			excludeFromStatistics: Game.ExcludeFromStatistics,
 			matchPlay: MatchPlay.Edit?,
+			gear: IdentifiedArrayOf<Gear.Summary>,
 			bowler: BowlerInfo,
 			league: LeagueInfo,
 			series: SeriesInfo
@@ -36,6 +38,7 @@ extension Game {
 			self.scoringMethod = scoringMethod
 			self.excludeFromStatistics = excludeFromStatistics
 			self.matchPlay = matchPlay
+			self.gear = gear
 			self.series = series
 			self.bowler = bowler
 			self.league = league

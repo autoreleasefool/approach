@@ -17,4 +17,7 @@ extension Game.Database {
 	public static let alley = hasOne(Alley.Database.self, through: series, using: Series.Database.alley)
 	public static let gameLanes = hasMany(GameLane.Database.self)
 	public static let lanes = hasMany(Lane.Database.self, through: gameLanes, using: GameLane.Database.lane)
+
+	public static let gameGear = hasMany(GameGear.Database.self)
+	public static let gear = hasMany(Gear.Database.self, through: gameGear, using: GameGear.Database.gear)
 }

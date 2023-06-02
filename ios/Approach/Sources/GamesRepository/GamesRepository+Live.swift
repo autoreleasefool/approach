@@ -34,6 +34,7 @@ extension GamesRepository: DependencyKey {
 							optional: Game.Database.matchPlay
 								.including(optional: MatchPlay.Database.opponent.forKey("opponent"))
 						)
+						// FIXME: should use game lanes, not series lanes
 						.including(
 							required: Game.Database.series
 								.including(optional: Series.Database.alley)
@@ -41,6 +42,12 @@ extension GamesRepository: DependencyKey {
 									all: Series.Database.lanes
 										.orderByLabel()
 								)
+						)
+						.including(
+							all: Game.Database.gear
+								.order(Gear.Database.Columns.kind)
+								.order(Gear.Database.Columns.name)
+								.forKey("gear")
 						)
 						.asRequest(of: Game.Edit.self)
 						.fetchOne($0)

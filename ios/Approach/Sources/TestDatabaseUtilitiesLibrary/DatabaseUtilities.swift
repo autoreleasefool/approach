@@ -21,6 +21,7 @@ public func initializeDatabase(
 	withSeries: InitialValue<Series.Database>? = nil,
 	withGames: InitialValue<Game.Database>? = nil,
 	withGameLanes: InitialValue<GameLane.Database>? = nil,
+	withGameGear: InitialValue<GameGear.Database>? = nil,
 	withFrames: InitialValue<Frame.Database>? = nil,
 	withMatchPlays: InitialValue<MatchPlay.Database>? = nil
 ) throws -> any DatabaseWriter {
@@ -40,6 +41,7 @@ public func initializeDatabase(
 	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)
 	let locations = coallesce(withLocations, ifHasOneOf: alleys)
 	let gameLanes = coallesce(withGameLanes, ifHasAllOf: games, lanes)
+	let gameGear = coallesce(withGameGear, ifHasAllOf: games, gear)
 
 	try dbQueue.write {
 		try insert(locations: locations, into: $0)
@@ -51,6 +53,7 @@ public func initializeDatabase(
 		try insert(series: series, into: $0)
 		try insert(games: games, into: $0)
 		try insert(gameLanes: gameLanes, into: $0)
+		try insert(gameGear: gameGear, into: $0)
 		try insert(frames: frames, into: $0)
 		try insert(matchPlays: matchPlays, into: $0)
 	}

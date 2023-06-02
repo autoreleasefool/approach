@@ -109,6 +109,7 @@ final class GamesRepositoryTests: XCTestCase {
 				scoringMethod: .byFrame,
 				excludeFromStatistics: .include,
 				matchPlay: nil,
+				gear: [],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
@@ -157,6 +158,51 @@ final class GamesRepositoryTests: XCTestCase {
 					opponentScore: 123,
 					result: .lost
 				),
+				gear: [],
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors", excludeFromStatistics: .include),
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					excludeFromStatistics: .include,
+					alley: .init(name: "Skyview")
+				)
+			)
+		)
+	}
+
+	func testEdit_WhenGameHasGear_ReturnsGameWithGear() async throws {
+		// Given a database with one game and 3 gear
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Towel", kind: .towel)
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Shoes", kind: .shoes)
+		let gear3 = Gear.Database.mock(id: UUID(2), name: "Other", kind: .other)
+		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
+		let gameGear2 = GameGear.Database(gameId: UUID(0), gearId: UUID(1))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]), withGames: .custom([game1]), withGameGear: .custom([gameGear1, gameGear2]))
+
+		// Editing the game
+		let game = try await withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.edit(UUID(0))
+		}
+
+		// Returns the game
+		XCTAssertEqual(
+			game,
+			.init(
+				id: UUID(0),
+				index: 0,
+				score: 0,
+				locked: .open,
+				scoringMethod: .byFrame,
+				excludeFromStatistics: .include,
+				matchPlay: nil,
+				gear: [
+					.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil),
+					.init(id: UUID(0), name: "Towel", kind: .towel, ownerName: nil),
+				],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
@@ -200,6 +246,7 @@ final class GamesRepositoryTests: XCTestCase {
 			scoringMethod: .manual,
 			excludeFromStatistics: .include,
 			matchPlay: nil,
+			gear: [],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
@@ -249,6 +296,7 @@ final class GamesRepositoryTests: XCTestCase {
 				opponentScore: 456,
 				result: .lost
 			),
+			gear: [],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
@@ -296,6 +344,7 @@ final class GamesRepositoryTests: XCTestCase {
 				scoringMethod: .byFrame,
 				excludeFromStatistics: .exclude,
 				matchPlay: nil,
+				gear: [],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(

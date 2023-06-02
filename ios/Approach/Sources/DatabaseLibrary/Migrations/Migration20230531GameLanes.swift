@@ -18,7 +18,7 @@ struct Migration20230531GameLanes: DBMigration {
 			t.column("laneId", .text)
 				.notNull()
 				.indexed()
-				.references("lane")
+				.references("lane", onDelete: .cascade)
 
 			t.primaryKey(["gameId", "laneId"])
 		}

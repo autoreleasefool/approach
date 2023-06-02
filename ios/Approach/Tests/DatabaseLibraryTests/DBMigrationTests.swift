@@ -19,6 +19,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230514CreateMatchPlay",
 		"Migration20230519AddScoreToGame",
 		"Migration20230531GameLanes",
+		"Migration20230602AddGearToGame",
 	]
 
 	func testIdentifier() {
