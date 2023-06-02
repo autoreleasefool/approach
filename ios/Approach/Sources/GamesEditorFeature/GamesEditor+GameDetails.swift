@@ -22,6 +22,9 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didRequestOpponentPicker:
+				let opponent = Set([state.game?.matchPlay?.opponent?.id].compactMap { $0 })
+				state._opponentPicker.initialSelection = opponent
+				state._opponentPicker.selected = opponent
 				state.sheet.transition(to: .opponentPicker)
 				return .none
 

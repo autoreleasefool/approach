@@ -180,7 +180,7 @@ public struct GameDetailsView: View {
 	let store: StoreOf<GameDetails>
 
 	enum ViewAction {
-		case didTapBowler
+		case didTapOpponent
 		case didToggleLock
 		case didToggleExclude
 		case didToggleMatchPlay
@@ -207,7 +207,7 @@ public struct GameDetailsView: View {
 				)
 
 				if let matchPlay = viewStore.game.matchPlay {
-					Button { viewStore.send(.didTapBowler) } label: {
+					Button { viewStore.send(.didTapOpponent) } label: {
 						HStack {
 							LabeledContent(
 								Strings.Opponent.title,
@@ -357,7 +357,7 @@ extension GameDetails.Action {
 			self = .view(.didSetMatchPlayScore(score))
 		case let .didSetAlertScore(score):
 			self = .view(.didSetAlertScore(score))
-		case .didTapBowler:
+		case .didTapOpponent:
 			self = .delegate(.didRequestOpponentPicker)
 		}
 	}
