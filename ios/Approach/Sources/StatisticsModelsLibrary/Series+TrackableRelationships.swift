@@ -17,16 +17,16 @@ extension Series.Database {
 
 			if !filter.gearUsed.isEmpty {
 				association = association
-					.having(Game.Database.gear.filter(ids: filter.gearUsed).count > 0)
+					.joining(required: Game.Database.gear.filter(ids: filter.gearUsed))
 			}
 
 			switch filter.lanes {
 			case let .lanes(lanes):
 				association = association
-					.having(Game.Database.lanes.filter(ids: lanes).count > 0)
+					.joining(required: Game.Database.lanes.filter(ids: lanes))
 			case let .positions(positions):
 				association = association
-					.having(Game.Database.lanes.filter(positions.contains(Lane.Database.Columns.position)).count > 0)
+					.joining(required: Game.Database.lanes.filter(positions.contains(Lane.Database.Columns.position)))
 			case .none:
 				break
 			}

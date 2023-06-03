@@ -10,11 +10,9 @@ extension Game.Database {
 		if let bowlingBallsUsed = filter?.bowlingBallsUsed, !bowlingBallsUsed.isEmpty {
 			association = association
 				.filter(
-					bowlingBallsUsed.contains(
-						Frame.Database.Columns.ball0 ||
-						Frame.Database.Columns.ball1 ||
-						Frame.Database.Columns.ball2
-					)
+					bowlingBallsUsed.contains(Frame.Database.Columns.ball0) ||
+					bowlingBallsUsed.contains(Frame.Database.Columns.ball1) ||
+					bowlingBallsUsed.contains(Frame.Database.Columns.ball2)
 				)
 		}
 

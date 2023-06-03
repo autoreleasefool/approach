@@ -1,7 +1,20 @@
 import DatabaseModelsLibrary
+import Dependencies
 import Foundation
 import GRDB
 import ModelsLibrary
+
+extension MatchPlay.Database {
+	public static func mock(
+		gameId: Game.ID = UUID(0),
+		id: MatchPlay.ID,
+		opponentId: Bowler.ID? = nil,
+		opponentScore: Int = 123,
+		result: MatchPlay.Result? = nil
+	) -> Self {
+		.init(gameId: gameId, id: id, opponentId: opponentId, opponentScore: opponentScore, result: result)
+	}
+}
 
 func insert(
 	matchPlays initial: InitialValue<MatchPlay.Database>?,
