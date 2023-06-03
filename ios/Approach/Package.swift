@@ -104,6 +104,7 @@ let package = Package(
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StatisticsLibrary", targets: ["StatisticsLibrary"]),
+		.library(name: "StatisticsModelsLibrary", targets: ["StatisticsModelsLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
@@ -563,10 +564,10 @@ let package = Package(
 			name: "BowlersRepository",
 			dependencies: [
 				"BowlersRepositoryInterface",
-				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
+				"StatisticsModelsLibrary",
 			]
 		),
 		.target(
@@ -695,11 +696,11 @@ let package = Package(
 		.target(
 			name: "LeaguesRepository",
 			dependencies: [
-				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"LeaguesRepositoryInterface",
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
+				"StatisticsModelsLibrary",
 			]
 		),
 		.target(
@@ -801,10 +802,10 @@ let package = Package(
 		.target(
 			name: "StatisticsRepository",
 			dependencies: [
-				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"PreferenceServiceInterface",
 				"RepositoryLibrary",
+				"StatisticsModelsLibrary",
 				"StatisticsRepositoryInterface",
 			]
 		),
@@ -1238,6 +1239,22 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsLibrary",
+			]
+		),
+		.target(
+			name: "StatisticsModelsLibrary",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"StatisticsLibrary",
+			]
+		),
+		.testTarget(
+			name: "StatisticsModelsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"StatisticsModelsLibrary",
+				"TestDatabaseUtilitiesLibrary",
 			]
 		),
 		.target(

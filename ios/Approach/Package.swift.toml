@@ -127,6 +127,7 @@ dependencies = [ "IdentifiedCollections" ]
 
 [repositories.Bowlers]
 services = [ "RecentlyUsed" ]
+libraries = [ "StatisticsModels" ]
 
 [repositories.Frames]
 [repositories.Frames.interface]
@@ -145,6 +146,7 @@ services = [ "RecentlyUsed" ]
 
 [repositories.Leagues]
 services = [ "RecentlyUsed" ]
+libraries = [ "StatisticsModels" ]
 
 [repositories.Locations]
 
@@ -156,6 +158,7 @@ dependencies = [ "IdentifiedCollections" ]
 
 [repositories.Statistics]
 services = [ "Preference" ]
+libraries = [ "StatisticsModels" ]
 [repositories.Statistics.interface]
 libraries = [ "Statistics" ]
 
@@ -265,6 +268,12 @@ libraries = [ "Models", "Strings" ]
 dependencies = [ "IdentifiedCollections" ]
 [libraries.Statistics.tests]
 dependencies = [ "Dependencies" ]
+
+[libraries.StatisticsModels]
+libraries = [ "DatabaseModels", "Statistics" ]
+[libraries.StatisticsModels.tests]
+services = [ "Database" ]
+libraries = [ "TestDatabaseUtilities" ]
 
 [libraries.Strings]
 skip_tests = true

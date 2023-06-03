@@ -6,6 +6,7 @@ import LeaguesRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
 import RepositoryLibrary
+import StatisticsModelsLibrary
 
 extension LeaguesRepository: DependencyKey {
 	public static var liveValue: Self = {
@@ -17,7 +18,11 @@ extension LeaguesRepository: DependencyKey {
 		return Self(
 			list: { bowler, recurrence, ordering in
 				let leagues = database.reader().observe {
-					let averageScore = League.Database.trackableGames.average(Game.Database.Columns.score).forKey("average")
+					let series = League.Database.trackableSeries(filter: nil)
+					let games = League.Database.trackableGames(through: series, filter: nil)
+					let averageScore = games
+						.average(Game.Database.Columns.score)
+						.forKey("average")
 					return try League.Database
 						.all()
 						.orderByName()

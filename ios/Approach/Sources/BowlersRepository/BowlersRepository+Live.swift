@@ -7,6 +7,7 @@ import ModelsLibrary
 import RecentlyUsedServiceInterface
 import RepositoryLibrary
 import SortingLibrary
+import StatisticsModelsLibrary
 
 typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
@@ -18,7 +19,13 @@ extension BowlersRepository: DependencyKey {
 		return Self(
 			list: { ordering in
 				let bowlers = database.reader().observe {
-					let averageScore = Bowler.Database.trackableGames.average(Game.Database.Columns.score).forKey("average")
+					let leagues = Bowler.Database.trackableLeagues(filter: nil)
+					let series = Bowler.Database.trackableSeries(through: leagues, filter: nil)
+					let games = Bowler.Database.trackableGames(through: series, filter: nil)
+					let averageScore = games
+						.average(Game.Database.Columns.score)
+						.forKey("average")
+
 					return try Bowler.Database
 						.all()
 						.orderByName()
