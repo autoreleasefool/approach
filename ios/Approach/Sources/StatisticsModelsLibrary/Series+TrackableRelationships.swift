@@ -36,7 +36,7 @@ extension Series.Database {
 			.order(Game.Database.Columns.index.asc)
 	}
 
-	public static func frames(
+	public static func trackableFrames(
 		through games: HasManyAssociation<Self, Game.Database>,
 		filter: TrackableFilter.FrameFilter?
 	) -> HasManyThroughAssociation<Self, Frame.Database> {
