@@ -1,6 +1,7 @@
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
+import Foundation
 import GRDB
 import ModelsLibrary
 import PreferenceServiceInterface
@@ -12,9 +13,9 @@ extension StatisticsRepository: DependencyKey {
 		@Dependency(\.database) var database
 		@Dependency(\.preferences) var preferences
 
-		@Sendable func adjust(statistics: inout [any Statistic], bySeries: RecordCursor<Series.TrackableEntry>) throws {
+		@Sendable func adjust(statistics: inout [any Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
 			let perSeries = preferences.perSeriesConfiguration()
-			while let series = try bySeries.next() {
+			while let series = try bySeries?.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
 					guard var seriesTrackable = statistics[index] as? any TrackablePerSeries else { continue }
 					seriesTrackable.adjust(bySeries: series, configuration: perSeries)
@@ -23,9 +24,9 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func adjust(statistics: inout [any Statistic], byGames: RecordCursor<Game.TrackableEntry>) throws {
+		@Sendable func adjust(statistics: inout [any Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
 			let perGame = preferences.perGameConfiguration()
-			while let game = try byGames.next() {
+			while let game = try byGames?.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
 					guard var gameTrackable = statistics[index] as? any TrackablePerGame else { continue }
 					gameTrackable.adjust(byGame: game, configuration: perGame)
@@ -34,9 +35,9 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func adjust(statistics: inout [any Statistic], byFrames: RecordCursor<Frame.TrackableEntry>) throws {
+		@Sendable func adjust(statistics: inout [any Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
 			let perFrame = preferences.perFrameConfiguration()
-			while let frame = try byFrames.next() {
+			while let frame = try byFrames?.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
 					guard var frameTrackable = statistics[index] as? any TrackablePerFrame else { continue }
 					frameTrackable.adjust(byFrame: frame, configuration: perFrame)
@@ -46,28 +47,21 @@ extension StatisticsRepository: DependencyKey {
 		}
 
 		return Self(
-			loadForBowler: { id in
+			loadStaticValues: { filter in
 				try database.reader().read {
 					var statistics = Statistics.all.map { $0.init() }
-					guard let bowler = try Bowler.Database.fetchOne($0, id: id) else {
-						throw RecordError.recordNotFound(databaseTableName: "bowler", key: ["id": id.uuidString.databaseValue])
-					}
 
-					let seriesCursor = try bowler
-						.request(
-							for: Bowler.Database.trackableSeries
-								.annotated(with: Series.Database.trackableGames.sum(Game.Database.Columns.score).forKey("total"))
-						)
+					let (series, games, frames) = try filter.buildInitialQueries(db: $0)
+					let seriesCursor = try series?
+						.annotated(with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total"))
 						.asRequest(of: Series.TrackableEntry.self)
 						.fetchCursor($0)
-
-					let gamesCursor = try bowler
-						.request(for: Bowler.Database.trackableGames)
+					let gamesCursor = try games?
+						.annotated(withRequired: Game.Database.series.select(Series.Database.Columns.date))
 						.asRequest(of: Game.TrackableEntry.self)
 						.fetchCursor($0)
-
-					let framesCursor = try bowler
-						.request(for: Bowler.Database.trackableFrames)
+					let framesCursor = try frames?
+						.annotated(withRequired: Frame.Database.series.select(Series.Database.Columns.date))
 						.asRequest(of: Frame.TrackableEntry.self)
 						.fetchCursor($0)
 

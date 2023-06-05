@@ -64,8 +64,8 @@ public func generatePopulatedDatabase() throws -> any DatabaseWriter {
 		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400), numberOfSeries: 32, numberOfGames: 4, firstId: 0, league: UUID(0), alley: UUID(1)),
 		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200), numberOfSeries: 32, numberOfGames: 3, firstId: 32, league: UUID(1), alley: UUID(1)),
 		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200), numberOfSeries: 32, numberOfGames: nil, firstId: 64, league: UUID(2), alley: nil),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400), numberOfSeries: 32, numberOfGames: 4, firstId: 96, league: UUID(4), alley: UUID(1)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1685643496), numberOfSeries: 1, numberOfGames: 20, firstId: 128, league: UUID(3), alley: UUID(0)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1685643496), numberOfSeries: 1, numberOfGames: 20, firstId: 96, league: UUID(3), alley: UUID(0)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400), numberOfSeries: 32, numberOfGames: 4, firstId: 97, league: UUID(4), alley: UUID(1)),
 	].flatMap { $0 }
 	let games: [Game.Database] = generateGames(forSeries: series)
 	let gameLanes: [GameLane.Database] = generateLanes(forGames: games)
@@ -82,6 +82,7 @@ public func generatePopulatedDatabase() throws -> any DatabaseWriter {
 		withSeries: .custom(series),
 		withGames: .custom(games),
 		withGameLanes: .custom(gameLanes),
+		withGameGear: .zero,
 		withFrames: .custom(frames),
 		withMatchPlays: .custom(matchPlays)
 	)
@@ -137,7 +138,9 @@ private func generateGames(forSeries: [Series.Database]) -> [Game.Database] {
 
 	let gameGenerator = generateGame()
 	for series in forSeries {
-		games.append(gameGenerator(series.id))
+		for _ in (0..<series.numberOfGames) {
+			games.append(gameGenerator(series.id))
+		}
 	}
 
 	return games

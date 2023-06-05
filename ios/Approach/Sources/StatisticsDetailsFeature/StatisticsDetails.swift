@@ -44,7 +44,7 @@ public struct StatisticsDetails: Reducer {
 					return .merge(
 						.run { send in
 							await send(.internal(.didLoadStaticValues(TaskResult {
-								try await statistics.load(forBowler: UUID(0)).staticValueGroups()
+								try await statistics.load(for: .bowler(.init(id: UUID(0)))).staticValueGroups()
 							})))
 						},
 						.run { send in

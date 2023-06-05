@@ -3,22 +3,22 @@ import ModelsLibrary
 import StatisticsLibrary
 
 public struct StatisticsRepository: Sendable {
-	public var loadForBowler: @Sendable (Bowler.ID) async throws -> [any Statistic]
+	public var loadStaticValues: @Sendable (TrackableFilter) async throws -> [any Statistic]
 
 	public init(
-		loadForBowler: @escaping @Sendable (Bowler.ID) async throws -> [any Statistic]
+		loadStaticValues: @escaping @Sendable (TrackableFilter) async throws -> [any Statistic]
 	) {
-		self.loadForBowler = loadForBowler
+		self.loadStaticValues = loadStaticValues
 	}
 
-	public func load(forBowler: Bowler.ID) async throws -> [any Statistic] {
-		try await self.loadForBowler(forBowler)
+	public func load(for filter: TrackableFilter) async throws -> [any Statistic] {
+		try await self.loadStaticValues(filter)
 	}
 }
 
 extension StatisticsRepository: TestDependencyKey {
 	public static var testValue = Self(
-		loadForBowler: { _ in unimplemented("\(Self.self).loadForBowler") }
+		loadStaticValues: { _ in unimplemented("\(Self.self).loadStaticValues") }
 	)
 }
 
