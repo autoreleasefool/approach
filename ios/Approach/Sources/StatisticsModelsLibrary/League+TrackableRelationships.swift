@@ -44,7 +44,7 @@ extension League.Database {
 	) -> HasManyThroughAssociation<Self, Frame.Database> {
 		hasMany(
 			Frame.Database.self,
-			through: games,
+			through: games.filter(Game.Database.Columns.scoringMethod == Game.ScoringMethod.byFrame),
 			using: Game.Database.trackableFrames(filter: filter)
 		)
 	}
