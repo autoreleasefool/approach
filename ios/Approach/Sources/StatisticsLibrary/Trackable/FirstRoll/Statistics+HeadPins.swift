@@ -18,9 +18,10 @@ extension Statistics {
 		}
 
 		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
-			guard let pinsDowned = byFrame.rolls.first?.roll.pinsDowned else { return }
-			if pinsDowned.isHeadPin || (configuration.countHeadPin2AsHeadPin && pinsDowned.isHeadPin2) {
-				headPins += 1
+			for roll in byFrame.firstRolls {
+				if roll.roll.pinsDowned.isHeadPin || (configuration.countHeadPin2AsHeadPin && roll.roll.pinsDowned.isHeadPin2) {
+					headPins += 1
+				}
 			}
 		}
 	}
