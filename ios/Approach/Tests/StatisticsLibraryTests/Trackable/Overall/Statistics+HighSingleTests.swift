@@ -8,9 +8,9 @@ final class HighSingleTests: XCTestCase {
 		var statistic = Statistics.HighSingle()
 
 		let gameList = [
-			Game.TrackableEntry(id: UUID(0), score: 100),
-			Game.TrackableEntry(id: UUID(1), score: 120),
-			Game.TrackableEntry(id: UUID(2), score: 90),
+			Game.TrackableEntry(id: UUID(0), score: 100, date: Date(timeIntervalSince1970: 123)),
+			Game.TrackableEntry(id: UUID(1), score: 120, date: Date(timeIntervalSince1970: 123)),
+			Game.TrackableEntry(id: UUID(2), score: 90, date: Date(timeIntervalSince1970: 123)),
 		]
 
 		for game in gameList {

@@ -9,16 +9,14 @@ final class HeadPinsTests: XCTestCase {
 
 		let frameList = [
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 0,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 1,
 				rolls: [
-					.init(index: 0, roll: .init(pinsDowned: [.leftThreePin], didFoul: false), bowlingBall: nil),
-					.init(index: 1, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
+					.init(index: 0, roll: .init(pinsDowned: [.leftThreePin])),
+					.init(index: 1, roll: .init(pinsDowned: [.headPin])),
 				]
 			),
 		]
@@ -35,24 +33,20 @@ final class HeadPinsTests: XCTestCase {
 
 		let frameList = [
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 0,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 1,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftTwoPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftTwoPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 2,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 3,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin]))]
 			),
 		]
 
@@ -68,24 +62,20 @@ final class HeadPinsTests: XCTestCase {
 
 		let frameList = [
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 0,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 1,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftTwoPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftTwoPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 2,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin]))]
 			),
 			Frame.TrackableEntry(
-				gameId: UUID(0),
 				index: 3,
-				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin], didFoul: false), bowlingBall: nil)]
+				rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin]))]
 			),
 		]
 
