@@ -14,6 +14,8 @@ public protocol Statistic: Identifiable, Equatable {
 	var trackedValue: TrackedValue { get }
 
 	init()
+
+	static func supports(trackableSource: TrackableFilter.Source) -> Bool
 }
 
 extension Statistic {

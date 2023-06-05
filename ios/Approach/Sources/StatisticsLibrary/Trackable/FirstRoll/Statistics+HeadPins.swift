@@ -24,5 +24,11 @@ extension Statistics {
 				}
 			}
 		}
+
+		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {
+			switch trackableSource {
+			case .bowler, .league, .series, .game: return true
+			}
+		}
 	}
 }

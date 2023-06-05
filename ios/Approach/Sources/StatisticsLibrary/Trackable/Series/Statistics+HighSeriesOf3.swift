@@ -21,5 +21,12 @@ extension Statistics {
 			guard bySeries.numberOfGames == 3 else { return }
 			highSeries = max(highSeries, bySeries.total)
 		}
+
+		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {
+			switch trackableSource {
+			case .bowler, .league: return true
+			case .series, .game: return false
+			}
+		}
 	}
 }

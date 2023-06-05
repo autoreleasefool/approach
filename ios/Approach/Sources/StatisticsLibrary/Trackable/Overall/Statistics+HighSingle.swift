@@ -20,5 +20,12 @@ extension Statistics {
 		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
 			highSingle = max(highSingle, byGame.score)
 		}
+
+		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {
+			switch trackableSource {
+			case .bowler, .league, .series: return true
+			case .game: return false
+			}
+		}
 	}
 }

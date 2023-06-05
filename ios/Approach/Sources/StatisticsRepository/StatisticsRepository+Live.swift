@@ -49,7 +49,7 @@ extension StatisticsRepository: DependencyKey {
 		return Self(
 			loadStaticValues: { filter in
 				try database.reader().read {
-					var statistics = Statistics.all.map { $0.init() }
+					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }
 
 					let (series, games, frames) = try filter.buildInitialQueries(db: $0)
 					let seriesCursor = try series?
