@@ -60,17 +60,16 @@ public func generatePopulatedDatabase() throws -> any DatabaseWriter {
 		.init(bowlerId: UUID(0), id: UUID(3), name: "The Open, 2023", recurrence: .once, numberOfGames: 20, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include),
 		.init(bowlerId: UUID(1), id: UUID(4), name: "Majors, 2023-24", recurrence: .repeating, numberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include),
 	]
-	let series: [Series.Database] = [
-		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400), numberOfSeries: 32, numberOfGames: 4, firstId: 0, league: UUID(0), alley: UUID(1)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200), numberOfSeries: 32, numberOfGames: 3, firstId: 32, league: UUID(1), alley: UUID(1)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200), numberOfSeries: 32, numberOfGames: nil, firstId: 64, league: UUID(2), alley: nil),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1685643496), numberOfSeries: 1, numberOfGames: 20, firstId: 96, league: UUID(3), alley: UUID(0)),
-		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400), numberOfSeries: 32, numberOfGames: 4, firstId: 97, league: UUID(4), alley: UUID(1)),
+	let series = [
+		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 0, league: UUID(0), alley: UUID(1)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200 /* September 8, 2023 */), numberOfSeries: 32, numberOfGames: 3, firstId: 32, league: UUID(1), alley: UUID(1)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1694221200 /* September 8 ,2023 */), numberOfSeries: 32, numberOfGames: nil, firstId: 64, league: UUID(2), alley: nil),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1685643496 /* June 1, 2023 */), numberOfSeries: 1, numberOfGames: 20, firstId: 96, league: UUID(3), alley: UUID(0)),
+		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 97, league: UUID(4), alley: UUID(1)),
 	].flatMap { $0 }
-	let games: [Game.Database] = generateGames(forSeries: series)
-	let gameLanes: [GameLane.Database] = generateLanes(forGames: games)
-	let frames: [Frame.Database] = generateFrames(forGames: games)
-	let matchPlays: [MatchPlay.Database] = generateMatchPlay(forGames: games)
+	let (games, gameLanes) = generateGames(forSeries: series)
+	let frames = generateFrames(forGames: games)
+	let matchPlays = generateMatchPlay(forGames: games)
 
 	return try initializeDatabase(
 		withLocations: .custom(locations),
@@ -113,8 +112,9 @@ private func generateSeries(
 	return series
 }
 
-private func generateGames(forSeries: [Series.Database]) -> [Game.Database] {
+private func generateGames(forSeries: [Series.Database]) -> ([Game.Database], [GameLane.Database]) {
 	var games: [Game.Database] = []
+	var gameLanes: [GameLane.Database] = []
 	func generateGame() -> (Series.ID) -> Game.Database {
 		var gameId = -1
 		var seriesGames: [Series.ID: Int] = [:]
@@ -138,19 +138,29 @@ private func generateGames(forSeries: [Series.Database]) -> [Game.Database] {
 
 	let gameGenerator = generateGame()
 	for series in forSeries {
+		var seriesGames: [Game.Database] = []
 		for _ in (0..<series.numberOfGames) {
-			games.append(gameGenerator(series.id))
+			seriesGames.append(gameGenerator(series.id))
 		}
+		let laneIds: Range<Int>?
+		switch series.alleyId {
+		case UUID(0): laneIds = (0..<12)
+		case UUID(1): laneIds = (12..<24)
+		default: laneIds = nil
+		}
+		gameLanes.append(contentsOf: generateLanes(forGames: seriesGames, ids: laneIds))
+		games.append(contentsOf: seriesGames)
 	}
 
-	return games
+	return (games, gameLanes)
 }
 
-private func generateLanes(forGames: [Game.Database]) -> [GameLane.Database] {
+private func generateLanes(forGames: [Game.Database], ids: Range<Int>?) -> [GameLane.Database] {
+	guard let ids else { return [] }
 	var lanes: [GameLane.Database] = []
 	for (index, game) in forGames.enumerated() {
-		lanes.append(.init(gameId: game.id, laneId: UUID(index % 24)))
-		lanes.append(.init(gameId: game.id, laneId: UUID((index + 1) % 24)))
+		lanes.append(.init(gameId: game.id, laneId: UUID(ids[index % ids.count + ids.lowerBound])))
+		lanes.append(.init(gameId: game.id, laneId: UUID(ids[(index + 1) % ids.count + ids.lowerBound])))
 	}
 	return lanes
 }
@@ -224,7 +234,7 @@ private func generateMatchPlay(forGames: [Game.Database]) -> [MatchPlay.Database
 	let scores = [100, 150, 200, 250]
 	let results: [MatchPlay.Result] = [.lost, .won, .tied]
 	for (index, game) in forGames.enumerated() {
-		matchPlays.append(.init(gameId: game.id, id: UUID(index), opponentId: UUID(index % 4), opponentScore: scores[index % scores.count], result: results[index % results.count]))
+		matchPlays.append(.init(gameId: game.id, id: UUID(index), opponentId: UUID(index % 3), opponentScore: scores[index % scores.count], result: results[index % results.count]))
 	}
 	return matchPlays
 }
