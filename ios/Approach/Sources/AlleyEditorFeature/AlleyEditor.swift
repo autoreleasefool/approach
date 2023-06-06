@@ -30,17 +30,14 @@ public struct AlleyEditor: Reducer {
 		public let initialValue: AlleyForm.Value
 		public var _form: AlleyForm.State
 
-		public var _alleyLanes: AlleyLanesEditor.State
 		public let hasLanesEnabled: Bool
-		public var isLaneEditorPresented = false
 
 		@PresentationState public var addressLookup: AddressLookup.State?
+		@PresentationState public var alleyLanesEditor: AlleyLanesEditor.State?
 
 		public init(value: InitialValue) {
-			let alleyId: Alley.ID
 			switch value {
 			case let .create(new):
-				alleyId = new.id
 				self.name = new.name
 				self.material = new.material
 				self.pinFall = new.pinFall
@@ -50,7 +47,6 @@ public struct AlleyEditor: Reducer {
 				self.newLanes = []
 				self.initialValue = .create(new)
 			case let .edit(existing):
-				alleyId = existing.alley.id
 				self.name = existing.alley.name
 				self.material = existing.alley.material
 				self.pinFall = existing.alley.pinFall
@@ -61,7 +57,6 @@ public struct AlleyEditor: Reducer {
 				self.initialValue = .edit(existing.alley)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
-			self._alleyLanes = .init(alley: alleyId, existingLanes: self.existingLanes, newLanes: self.newLanes)
 
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 			self.hasLanesEnabled = featureFlags.isEnabled(.lanes)
@@ -72,7 +67,7 @@ public struct AlleyEditor: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapRemoveAddressButton
 			case didTapAddressField
-			case setLaneEditor(isPresented: Bool)
+			case didTapManageLanes
 		}
 		public enum DelegateAction: Equatable {
 			case didFinishEditing
@@ -81,8 +76,8 @@ public struct AlleyEditor: Reducer {
 			case didCreateLanes(TaskResult<Alley.Create>)
 			case didUpdateLanes(TaskResult<Alley.Edit>)
 			case form(AlleyForm.Action)
-			case alleyLanes(AlleyLanesEditor.Action)
 			case addressLookup(PresentationAction<AddressLookup.Action>)
+			case alleyLanesEditor(PresentationAction<AlleyLanesEditor.Action>)
 		}
 
 		case view(ViewAction)
@@ -114,10 +109,6 @@ public struct AlleyEditor: Reducer {
 				))
 		}
 
-		Scope(state: \.alleyLanes, action: /Action.internal..Action.InternalAction.alleyLanes) {
-			AlleyLanesEditor()
-		}
-
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -133,8 +124,12 @@ public struct AlleyEditor: Reducer {
 					state.addressLookup = .init(initialQuery: state.location?.title ?? "")
 					return .none
 
-				case let .setLaneEditor(isPresented):
-					state.isLaneEditorPresented = isPresented
+				case .didTapManageLanes:
+					state.alleyLanesEditor = .init(
+						alley: state.alleyId,
+						existingLanes: state.existingLanes,
+						newLanes: state.newLanes
+					)
 					return .none
 				}
 
@@ -189,11 +184,20 @@ public struct AlleyEditor: Reducer {
 						return .run { _ in await self.dismiss() }
 					}
 
-				case let .alleyLanes(.delegate(delegateAction)):
+				case let .alleyLanesEditor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
+
+				case .alleyLanesEditor(.dismiss):
+					guard let newLanes = state.alleyLanesEditor?.newLanes,
+								let existingLanes = state.alleyLanesEditor?.existingLanes else {
+						return .none
+					}
+					state.newLanes = newLanes.filter { !$0.label.isEmpty }
+					state.existingLanes = existingLanes
+					return .none
 
 				case let .addressLookup(.presented(.delegate(delegateAction))):
 					switch delegateAction {
@@ -202,7 +206,8 @@ public struct AlleyEditor: Reducer {
 						return .none
 					}
 
-				case .alleyLanes(.view), .alleyLanes(.internal):
+				case .alleyLanesEditor(.presented(.internal)),
+						.alleyLanesEditor(.presented(.view)):
 					return .none
 
 				case .form(.view), .form(.internal):
@@ -222,21 +227,17 @@ public struct AlleyEditor: Reducer {
 		.ifLet(\.$addressLookup, action: /Action.internal..Action.InternalAction.addressLookup) {
 			AddressLookup()
 		}
+		.ifLet(\.$alleyLanesEditor, action: /Action.internal..Action.InternalAction.alleyLanesEditor) {
+			AlleyLanesEditor()
+		}
 	}
 }
 
 extension AlleyEditor.State {
-	var alleyLanes: AlleyLanesEditor.State {
-		get {
-			var alleyLanes = _alleyLanes
-			alleyLanes.existingLanes = existingLanes
-			alleyLanes.newLanes = newLanes
-			return alleyLanes
-		}
-		set {
-			_alleyLanes = newValue
-			self.existingLanes = newValue.existingLanes
-			self.newLanes = newValue.newLanes
+	var alleyId: Alley.ID {
+		switch initialValue {
+		case let .create(create): return create.id
+		case let .edit(edit): return edit.id
 		}
 	}
 

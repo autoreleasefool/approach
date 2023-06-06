@@ -160,8 +160,8 @@ public struct AlleyLanesEditor: Reducer {
 					))
 				}
 			} else {
-				for _ in 1...numberOfLanes {
-					state.newLanes.append(.init(alleyId: state.alley, id: uuid(), label: "", position: .noWall))
+				for index in 1...numberOfLanes {
+					state.newLanes.append(.init(alleyId: state.alley, id: uuid(), label: String(index), position: .noWall))
 				}
 			}
 		}

@@ -22,7 +22,6 @@ public struct AlleyEditorView: View {
 		@BindingState public var pinBase: Alley.PinBase?
 		public let location: Location.Edit?
 
-		var isLaneEditorPresented: Bool
 		let hasLanesEnabled: Bool
 		let newLanes: IdentifiedArrayOf<Lane.Create>
 		let existingLanes: IdentifiedArrayOf<Lane.Edit>
@@ -34,7 +33,6 @@ public struct AlleyEditorView: View {
 			self.mechanism = state.mechanism
 			self.pinBase = state.pinBase
 			self.location = state.location
-			self.isLaneEditorPresented = state.isLaneEditorPresented
 			self.hasLanesEnabled = state.hasLanesEnabled
 			self.newLanes = state.newLanes
 			self.existingLanes = state.existingLanes
@@ -44,7 +42,7 @@ public struct AlleyEditorView: View {
 	enum ViewAction: BindableAction {
 		case didTapAddressField
 		case didTapRemoveAddressButton
-		case setLaneEditor(isPresented: Bool)
+		case didTapManageLanes
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -73,6 +71,11 @@ public struct AlleyEditorView: View {
 						.navigationTitle(Strings.Alley.Editor.Fields.Address.editorTitle)
 						.navigationBarTitleDisplayMode(.inline)
 				}
+			}
+			.navigationDestination(
+				store: store.scope(state: \.$alleyLanesEditor, action: { .internal(.alleyLanesEditor($0)) })
+			) {
+				AlleyLanesEditorView(store: $0)
 			}
 		}
 	}
@@ -200,16 +203,7 @@ public struct AlleyEditorView: View {
 			HStack(alignment: .firstTextBaseline) {
 				Text(Strings.Lane.List.title)
 				Spacer()
-				NavigationLink(
-					destination: AlleyLanesEditorView(store: store.scope(
-						state: \.alleyLanes,
-						action: /AlleyEditor.Action.InternalAction.alleyLanes
-					)),
-					isActive: viewStore.binding(
-						get: \.isLaneEditorPresented,
-						send: AlleyEditorView.ViewAction.setLaneEditor(isPresented:)
-					)
-				) {
+				Button { viewStore.send(.didTapManageLanes) } label: {
 					Text(Strings.Action.manage)
 						.font(.caption)
 				}
@@ -238,8 +232,8 @@ extension AlleyEditor.Action {
 			self = .view(.didTapRemoveAddressButton)
 		case .didTapAddressField:
 			self = .view(.didTapAddressField)
-		case let .setLaneEditor(isPresented):
-			self = .view(.setLaneEditor(isPresented: isPresented))
+		case .didTapManageLanes:
+			self = .view(.didTapManageLanes)
 		case let .binding(action):
 			self = .binding(action.pullback(\AlleyEditor.State.view))
 		}

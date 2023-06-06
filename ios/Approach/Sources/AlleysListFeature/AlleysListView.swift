@@ -58,7 +58,7 @@ public struct AlleysListView: View {
 				.presentationDetents([.medium, .large])
 			}
 			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
-				NavigationView {
+				NavigationStack {
 					AlleyEditorView(store: scopedStore)
 				}
 			}

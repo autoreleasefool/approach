@@ -144,7 +144,7 @@ public struct AccessoriesOverviewView: View {
 				}
 			}
 			.sheet(store: store.scope(state: \.$alleyEditor, action: { .internal(.alleyEditor($0)) })) { scopedStore in
-				NavigationView {
+				NavigationStack {
 					AlleyEditorView(store: scopedStore)
 				}
 			}
