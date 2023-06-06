@@ -115,7 +115,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.14.0"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "b29e8987200ffd58741748866c9e66d97a95a595"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "b2815caa1727d72180836b85578272b763cc4853"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.5.1"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "0.7.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
@@ -274,6 +274,7 @@ let package = Package(
 				"FramesRepositoryInterface",
 				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
+				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
 				"ScoreSheetFeature",
 			]
@@ -488,10 +489,10 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
-				"FeatureActionLibrary",
+				"EquatableLibrary",
 				"NotificationsServiceInterface",
+				"ResourcePickerLibrary",
 				"StatisticsRepositoryInterface",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(

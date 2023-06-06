@@ -51,7 +51,7 @@ libraries = [ "Strings" ]
 features = [ "ScoreSheet" ]
 repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
 services = [ "FeatureFlags" ]
-libraries = [ "DateTime", "Equatable", "ResourcePicker" ]
+libraries = [ "DateTime", "Equatable", "ModelsViews", "ResourcePicker" ]
 
 [features.GamesList]
 features = [ "GamesEditor" ]
@@ -112,7 +112,7 @@ services = [ "Preference" ]
 [features.StatisticsDetails]
 repositories = [ "Statistics" ]
 services = [ "Notifications" ]
-libraries = [ "Views" ]
+libraries = [ "Equatable", "ResourcePicker" ]
 
 [features.StatisticsWidgets]
 libraries = [ "Assets", "Strings" ]
@@ -310,7 +310,7 @@ from = "6.14.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-revision = "b29e8987200ffd58741748866c9e66d97a95a595"
+revision = "b2815caa1727d72180836b85578272b763cc4853"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
