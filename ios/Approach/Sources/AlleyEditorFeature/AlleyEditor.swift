@@ -53,6 +53,7 @@ public struct AlleyEditor: Reducer {
 				self.mechanism = existing.alley.mechanism
 				self.pinBase = existing.alley.pinBase
 				self.existingLanes = existing.lanes
+				self.location = existing.alley.location
 				self.newLanes = []
 				self.initialValue = .edit(existing.alley)
 			}
@@ -199,10 +200,18 @@ public struct AlleyEditor: Reducer {
 					state.existingLanes = existingLanes
 					return .none
 
+				case .addressLookup(.dismiss):
+					guard let result = state.addressLookup?.lookUpResult else { return .none }
+					if state.location == nil {
+						state.location = result
+					} else {
+						state.location?.updateProperties(with: result)
+					}
+					return .none
+
 				case let .addressLookup(.presented(.delegate(delegateAction))):
 					switch delegateAction {
-					case let .didSelectAddress(location):
-						state.location?.updateProperties(with: location)
+					case .never:
 						return .none
 					}
 
@@ -215,8 +224,7 @@ public struct AlleyEditor: Reducer {
 
 				case .addressLookup(.presented(.binding)),
 						.addressLookup(.presented(.internal)),
-						.addressLookup(.presented(.view)),
-						.addressLookup(.dismiss):
+						.addressLookup(.presented(.view)):
 					return .none
 				}
 

@@ -66,7 +66,7 @@ public struct AlleyEditorView: View {
 					.listRowInsets(EdgeInsets())
 			}
 			.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
-				NavigationView {
+				NavigationStack {
 					AddressLookupView(store: scopedStore)
 						.navigationTitle(Strings.Alley.Editor.Fields.Address.editorTitle)
 						.navigationBarTitleDisplayMode(.inline)

@@ -35,7 +35,7 @@ extension AddressLookupService: DependencyKey {
 				var continuation: AsyncThrowingStream<[AddressLookupResult], Error>.Continuation!
 				let stream = AsyncThrowingStream<[AddressLookupResult], Error> {
 					$0.onTermination = { _ in
-						Task { await self.removeDependencies(id: id) }
+						Task.detached { await self.removeDependencies(id: id) }
 					}
 					continuation = $0
 				}
@@ -56,11 +56,6 @@ extension AddressLookupService: DependencyKey {
 				}
 			}
 
-			func finish(_ id: AnyHashable) {
-				self.dependencies[id]?.delegate.continuation?.finish()
-				self.removeDependencies(id: id)
-			}
-
 			private func removeDependencies(id: AnyHashable) {
 				self.dependencies[id] = nil
 			}
@@ -69,7 +64,6 @@ extension AddressLookupService: DependencyKey {
 		return Self(
 			beginSearch: { await LocalSearch.shared.initiate($0) },
 			updateSearchQuery: { await LocalSearch.shared.update($0, query: $1) },
-			finishSearch: { await LocalSearch.shared.finish($0) },
 			lookUpAddress: { result in
 				let search = MKLocalSearch(request: .init(completion: result.completion.wrapped))
 				let response = try await search.start()

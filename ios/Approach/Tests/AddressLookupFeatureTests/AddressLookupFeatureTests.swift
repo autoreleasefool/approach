@@ -30,27 +30,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 		await task.cancel()
 	}
 
-	func testView_OnDisappear_FinishesSearch() async throws {
-		let (results, _) = AsyncThrowingStream<[AddressLookupResult], Error>.makeStream()
-
-		let finishesSearch = expectation(description: "finishes search")
-		let store = withDependencies {
-			$0.uuid = .incrementing
-			$0.addressLookup.beginSearch = { _ in results }
-			$0.addressLookup.finishSearch = { _ in finishesSearch.fulfill() }
-		} operation: {
-			TestStore(
-				initialState: AddressLookup.State(initialQuery: ""),
-				reducer: AddressLookup()
-			)
-		}
-
-		await store.send(.view(.didAppear))
-		await store.send(.view(.didDisappear))
-
-		await fulfillment(of: [finishesSearch])
-	}
-
 	func testView_OnCancelButton_DismissesFeature() async throws {
 		let dismissed = expectation(description: "dismissed")
 
@@ -74,7 +53,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let store = withDependencies {
 			$0.uuid = .incrementing
 			$0.addressLookup.beginSearch = { _ in results }
-			$0.addressLookup.finishSearch = { _ in }
 			$0.addressLookup.lookUpAddress = { address in
 				XCTAssertEqual(address.id, UUID(0))
 				lookedUpLocation.fulfill()
@@ -87,7 +65,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		let expectedResults: [AddressLookupResult] = [.init(id: UUID(0), completion: .init())]
 		resultsContinuation.yield(expectedResults)
@@ -107,7 +85,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.loadingAddressError = AddressLookup.LookupError.addressNotFound.errorDescription
 		}
 
-		await store.send(.view(.didDisappear))
+		await task.cancel()
 	}
 
 	func testQuery_MatchesInitialQuery() async throws {
@@ -121,7 +99,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 				XCTAssertEqual(query, initialQuery)
 				updatedQuery.fulfill()
 			}
-			$0.addressLookup.finishSearch = { _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: initialQuery),
@@ -129,11 +106,11 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		await fulfillment(of: [updatedQuery])
 
-		await store.send(.view(.didDisappear))
+		await task.cancel()
 	}
 
 	func testQuery_OnChange_UpdatesSearch() async throws {
@@ -146,7 +123,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 				XCTAssertEqual(query, "new query")
 				updatedQuery.fulfill()
 			}
-			$0.addressLookup.finishSearch = { _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -154,7 +130,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		await store.send(.set(\.$query, "new query")) {
 			$0.query = "new query"
@@ -162,7 +138,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 
 		await fulfillment(of: [updatedQuery])
 
-		await store.send(.view(.didDisappear))
+		await task.cancel()
 	}
 
 	func testQuery_OnChange_ClearsError() async throws {
@@ -178,7 +154,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		resultsContinuation.finish(throwing: MockResultsError())
 
@@ -190,6 +166,8 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.loadingResultsError = nil
 			$0.query = "new query"
 		}
+
+		await task.cancel()
 	}
 
 	func testResults_OnReceiveNewResults_UpdatesState() async throws {
@@ -198,7 +176,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let store = withDependencies {
 			$0.uuid = .incrementing
 			$0.addressLookup.beginSearch = { _ in results }
-			$0.addressLookup.finishSearch = { _ in }
 		} operation: {
 			TestStore(
 				initialState: AddressLookup.State(initialQuery: ""),
@@ -206,7 +183,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		let expectedResults: [AddressLookupResult] = [.init(id: UUID(0), completion: .init())]
 		resultsContinuation.yield(expectedResults)
@@ -215,7 +192,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.results = .init(uniqueElements: expectedResults)
 		}
 
-		await store.send(.view(.didDisappear))
+		await task.cancel()
 	}
 
 	func testResults_WhenError_DisplaysError() async throws {
@@ -231,13 +208,15 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		resultsContinuation.finish(throwing: MockResultsError())
 
 		await store.receive(.internal(.didReceiveResults(.failure(MockResultsError())))) {
 			$0.loadingResultsError = "results error"
 		}
+
+		await task.cancel()
 	}
 
 	func testLookup_WhenError_DisplaysError() async throws {
@@ -246,7 +225,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 		let store = withDependencies {
 			$0.addressLookup.beginSearch = { _ in results }
 			$0.addressLookup.updateSearchQuery = { _, _ in }
-			$0.addressLookup.finishSearch = { _ in }
 			$0.addressLookup.lookUpAddress = { _ in throw MockLookupError() }
 		} operation: {
 			TestStore(
@@ -255,7 +233,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		let expectedResults: [AddressLookupResult] = [.init(id: UUID(0), completion: .init())]
 		resultsContinuation.yield(expectedResults)
@@ -273,7 +251,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.loadingAddressError = "lookup error"
 		}
 
-		await store.send(.view(.didDisappear))
+		await task.cancel()
 	}
 
 	func testLookup_WhenSuccess_Dismisses() async throws {
@@ -297,7 +275,6 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.dismiss = .init { dismissed.fulfill() }
 			$0.addressLookup.beginSearch = { _ in results }
 			$0.addressLookup.updateSearchQuery = { _, _ in }
-			$0.addressLookup.finishSearch = { _ in }
 			$0.addressLookup.lookUpAddress = { _ in location }
 		} operation: {
 			TestStore(
@@ -306,7 +283,7 @@ final class AddressLookupFeatureTests: XCTestCase {
 			)
 		}
 
-		await store.send(.view(.didAppear))
+		let task = await store.send(.view(.didAppear))
 
 		let expectedResults: [AddressLookupResult] = [.init(id: UUID(0), completion: .init())]
 		resultsContinuation.yield(expectedResults)
@@ -322,6 +299,8 @@ final class AddressLookupFeatureTests: XCTestCase {
 		await store.receive(.delegate(.didSelectAddress(editLocation)))
 
 		await fulfillment(of: [dismissed])
+
+		await task.cancel()
 	}
 }
 

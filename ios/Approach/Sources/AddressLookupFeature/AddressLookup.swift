@@ -14,6 +14,7 @@ public struct AddressLookup: Reducer {
 		public var isLoadingAddress = false
 		public var loadingAddressError: String?
 		public var loadingResultsError: String?
+		public var lookUpResult: Location.Edit?
 
 		public init(initialQuery: String) {
 			self.query = initialQuery
@@ -23,16 +24,13 @@ public struct AddressLookup: Reducer {
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
-			case didDisappear
 			case didTapCancelButton
 			case didTapResult(AddressLookupResult.ID)
 		}
-		public enum DelegateAction: Equatable {
-			case didSelectAddress(Location.Edit)
-		}
+		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didReceiveResults(TaskResult<[AddressLookupResult]>)
-			case didLoadAddress(TaskResult<Never>)
+			case didLoadAddress(TaskResult<Location.Edit>)
 		}
 
 		case view(ViewAction)
@@ -66,47 +64,37 @@ public struct AddressLookup: Reducer {
 							}
 						} catch: { error, send in
 							await send(.internal(.didReceiveResults(.failure(error))))
-						}.cancellable(id: SearchID.lookup),
+						},
 						.run { [query = state.query] _ in
 							guard !query.isEmpty else { return }
 							await addressLookup.updateSearchQuery(SearchID.lookup, query)
 						}
 					)
 
-				case .didDisappear:
-					return .merge(
-						.cancel(id: SearchID.lookup),
-						.run { _ in await addressLookup.finishSearch(SearchID.lookup) }
-					)
-
 				case .didTapCancelButton:
-					return .merge(
-						.cancel(id: SearchID.lookup),
-						.run { _ in await self.dismiss() }
-					)
+					return .run { _ in await self.dismiss() }
 
 				case let .didTapResult(id):
 					guard let address = state.results[id: id] else { return .none }
 					state.isLoadingAddress = true
 					return .run { send in
-						guard let location = try await addressLookup.lookUpAddress(address) else {
-							return await send(.internal(.didLoadAddress(.failure(LookupError.addressNotFound))))
-						}
+						await send(.internal(.didLoadAddress(TaskResult {
+							guard let location = try await addressLookup.lookUpAddress(address) else {
+								throw LookupError.addressNotFound
+							}
 
-						await send(.delegate(.didSelectAddress(.init(
-							id: location.id,
-							title: location.title,
-							subtitle: location.subtitle,
-							coordinate: location.coordinate
-						))))
-					} catch: { error, send in
-						await send(.internal(.didLoadAddress(.failure(error))))
+							return .init(
+								id: location.id,
+								title: location.title,
+								subtitle: location.subtitle,
+								coordinate: location.coordinate
+							)
+						})))
 					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-
 				case let .didReceiveResults(.success(results)):
 					state.results = .init(uniqueElements: results)
 					return .none
@@ -115,19 +103,14 @@ public struct AddressLookup: Reducer {
 					state.loadingResultsError = error.localizedDescription
 					return .none
 
+				case let .didLoadAddress(.success(address)):
+					state.lookUpResult = address
+					return .run { _ in await dismiss() }
+
 				case let .didLoadAddress(.failure(error)):
 					state.isLoadingAddress = false
 					state.loadingAddressError = error.localizedDescription
 					return .none
-				}
-
-			case let .delegate(delegateAction):
-				switch delegateAction {
-				case .didSelectAddress:
-					return .merge(
-						.cancel(id: SearchID.lookup),
-						.run { _ in await self.dismiss() }
-					)
 				}
 
 			case .binding(\.$query):
@@ -137,7 +120,7 @@ public struct AddressLookup: Reducer {
 					await addressLookup.updateSearchQuery(SearchID.lookup, query)
 				}
 
-			case .binding:
+			case .binding, .delegate:
 				return .none
 			}
 		}

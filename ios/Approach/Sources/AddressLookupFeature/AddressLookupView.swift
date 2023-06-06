@@ -65,7 +65,6 @@ public struct AddressLookupView: View {
 				}
 			}
 			.onAppear { viewStore.send(.view(.didAppear)) }
-			.onDisappear { viewStore.send(.view(.didDisappear)) }
 		})
 	}
 }
