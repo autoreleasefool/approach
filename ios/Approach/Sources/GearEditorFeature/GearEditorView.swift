@@ -6,6 +6,7 @@ import ModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct GearEditorView: View {
@@ -15,7 +16,6 @@ public struct GearEditorView: View {
 		@BindingState var name: String
 		@BindingState var kind: Gear.Kind
 		let owner: Bowler.Summary?
-		let isBowlerPickerPresented: Bool
 		let hasAvatarsEnabled: Bool
 		let isEditing: Bool
 
@@ -23,7 +23,6 @@ public struct GearEditorView: View {
 			self.name = state.name
 			self.kind = state.kind
 			self.owner = state.owner
-			self.isBowlerPickerPresented = state.isBowlerPickerPresented
 			self.hasAvatarsEnabled = state.hasAvatarsEnabled
 			switch state._form.value {
 			case .create: self.isEditing = false
@@ -33,7 +32,7 @@ public struct GearEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case setBowlerPicker(isPresented: Bool)
+		case didTapOwner
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -63,33 +62,27 @@ public struct GearEditorView: View {
 				}
 
 				Section(Strings.Gear.Properties.owner) {
-					NavigationLink(
-						destination: ResourcePickerView(
-							store: store.scope(
-								state: \.bowlerPicker,
-								action: /GearEditor.Action.InternalAction.bowlerPicker
-							)
-						) { bowler in
-							Text(bowler.name)
-//							if viewStore.hasAvatarsEnabled {
-//								AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
-//							} else {
-//								Text(bowler.name)
-//							}
-						},
-						isActive: viewStore.binding(
-							get: \.isBowlerPickerPresented,
-							send: ViewAction.setBowlerPicker(isPresented:)
-						)
-					) {
+					Button { viewStore.send(.didTapOwner) } label: {
 						LabeledContent(
 							Strings.Bowler.title,
 							value: viewStore.owner?.name ?? Strings.none
 						)
 					}
+					.buttonStyle(.navigation)
 				}
 			}
-			.interactiveDismissDisabled(viewStore.isBowlerPickerPresented)
+			.navigationDestination(
+				store: store.scope(state: \.$bowlerPicker, action: { .internal(.bowlerPicker($0)) })
+			) {
+				ResourcePickerView(store: $0) { bowler in
+					Text(bowler.name)
+//							if viewStore.hasAvatarsEnabled {
+//								AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
+//							} else {
+//								Text(bowler.name)
+//							}
+				}
+			}
 		}
 	}
 }
@@ -118,8 +111,8 @@ extension GearEditor.State {
 extension GearEditor.Action {
 	init(action: GearEditorView.ViewAction) {
 		switch action {
-		case let .setBowlerPicker(isPresented):
-			self = .view(.setBowlerPicker(isPresented: isPresented))
+		case .didTapOwner:
+			self = .view(.didTapOwner)
 		case let .binding(action):
 			self = .binding(action.pullback(\GearEditor.State.view))
 		}

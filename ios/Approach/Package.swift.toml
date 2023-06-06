@@ -60,7 +60,7 @@ libraries = [ "ResourceList" ]
 [features.GearEditor]
 repositories = [ "Bowlers", "Gear" ]
 services = [ "Avatar", "FeatureFlags" ]
-libraries = [ "Equatable", "Form", "ResourcePicker" ]
+libraries = [ "Equatable", "Form", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.GearList]
 features = [ "GearEditor" ]

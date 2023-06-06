@@ -23,8 +23,7 @@ public struct GearEditor: Reducer {
 		public var initialValue: GearForm.Value
 		public var _form: GearForm.State
 
-		public var bowlerPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State
-		public var isBowlerPickerPresented = false
+		@PresentationState var bowlerPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: GearForm.Value) {
 			self.initialValue = value
@@ -41,13 +40,6 @@ public struct GearEditor: Reducer {
 				self.owner = existing.owner
 			}
 
-			self.bowlerPicker = .init(
-				selected: Set([self.owner?.id].compactMap { $0 }),
-				query: .init(()),
-				limit: 1,
-				showsCancelHeaderButton: false
-			)
-
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
@@ -55,14 +47,14 @@ public struct GearEditor: Reducer {
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
-			case setBowlerPicker(isPresented: Bool)
+			case didTapOwner
 		}
 		public enum DelegateAction: Equatable {
 			case didFinishEditing
 		}
 		public enum InternalAction: Equatable {
 			case form(GearForm.Action)
-			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
+			case bowlerPicker(PresentationAction<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action>)
 		}
 
 		case view(ViewAction)
@@ -90,16 +82,17 @@ public struct GearEditor: Reducer {
 				))
 		}
 
-		Scope(state: \.bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
-			ResourcePicker { _ in bowlers.pickable() }
-		}
-
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .setBowlerPicker(isPresented):
-					state.isBowlerPickerPresented = isPresented
+				case .didTapOwner:
+					state.bowlerPicker = .init(
+						selected: Set([state.owner?.id].compactMap { $0 }),
+						query: .init(()),
+						limit: 1,
+						showsCancelHeaderButton: false
+					)
 					return .none
 				}
 
@@ -123,24 +116,31 @@ public struct GearEditor: Reducer {
 						return .run { _ in await self.dismiss() }
 					}
 
-				case let .bowlerPicker(.delegate(delegateAction)):
+				case let .bowlerPicker(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
-						state.owner = state.bowlerPicker.selectedResources?.first
-						state.isBowlerPickerPresented = false
+						state.owner = state.bowlerPicker?.selectedResources?.first
+						state.bowlerPicker = nil
 						return .none
 					}
+
+				case .bowlerPicker(.dismiss):
+					state.owner = state.bowlerPicker?.selectedResources?.first
+					return .none
 
 				case .form(.view), .form(.internal):
 					return .none
 
-				case .bowlerPicker(.view), .bowlerPicker(.internal):
+				case .bowlerPicker(.presented(.view)), .bowlerPicker(.presented(.internal)):
 					return .none
 				}
 
 			case .binding, .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.$bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
+			ResourcePicker { _ in bowlers.pickable() }
 		}
 	}
 }

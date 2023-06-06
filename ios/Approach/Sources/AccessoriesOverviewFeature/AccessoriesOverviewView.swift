@@ -149,7 +149,7 @@ public struct AccessoriesOverviewView: View {
 				}
 			}
 			.sheet(store: store.scope(state: \.$gearEditor, action: { .internal(.gearEditor($0)) })) { scopedStore in
-				NavigationView {
+				NavigationStack {
 					GearEditorView(store: scopedStore)
 				}
 			}

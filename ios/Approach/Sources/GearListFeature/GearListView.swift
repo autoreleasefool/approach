@@ -51,7 +51,7 @@ public struct GearListView: View {
 				}
 			}
 			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
-				NavigationView {
+				NavigationStack {
 					GearEditorView(store: scopedStore)
 				}
 			}

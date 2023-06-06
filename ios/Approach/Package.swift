@@ -310,6 +310,7 @@ let package = Package(
 				"FormLibrary",
 				"GearRepositoryInterface",
 				"ResourcePickerLibrary",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
