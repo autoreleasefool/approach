@@ -16,7 +16,7 @@ public struct GamesList: Reducer {
 		public let series: Series.Summary
 		public var list: ResourceList<Game.List, Series.ID>.State
 
-		public var selection: Identified<Game.ID, GamesEditor.State>?
+		@PresentationState public var editor: GamesEditor.State?
 
 		public init(series: Series.Summary) {
 			self.series = series
@@ -35,12 +35,12 @@ public struct GamesList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case setNavigation(selection: Game.ID?)
+			case didTapGame(Game.ID)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case list(ResourceList<Game.List, Series.ID>.Action)
-			case editor(GamesEditor.Action)
+			case editor(PresentationAction<GamesEditor.Action>)
 		}
 		case view(ViewAction)
 		case `internal`(InternalAction)
@@ -60,11 +60,11 @@ public struct GamesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, state: &state)
-
-				case .setNavigation(selection: .none):
-					return navigate(to: nil, state: &state)
+				case let .didTapGame(id):
+					if let game = state.list.resources?[id: id] {
+						state.editor = .init(bowlerIds: [game.bowlerId], bowlerGameIds: [game.bowlerId: [id]])
+					}
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -75,7 +75,7 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
-				case let .editor(.delegate(delegateAction)):
+				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .never:
 						return .none
@@ -84,7 +84,7 @@ public struct GamesList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .editor(.internal), .editor(.view):
+				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.dismiss):
 					return .none
 				}
 
@@ -92,25 +92,8 @@ public struct GamesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.editor) {
-			Scope(state: \Identified<Game.ID, GamesEditor.State>.value, action: /.self) {
-				GamesEditor()
-			}
+		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
+			GamesEditor()
 		}
-	}
-
-	private func navigate(to id: Game.ID?, state: inout State) -> Effect<Action> {
-		if let id, let games = state.list.resources, let selection = games[id: id] {
-			state.selection = Identified(
-				.init(bowlerIds: [selection.bowlerId], bowlerGameIds: [selection.bowlerId: [id]]),
-				id: id
-			)
-		} else {
-			state.selection = nil
-		}
-
-		return .none
 	}
 }
-
-struct BowlerNotFoundError: Error {}

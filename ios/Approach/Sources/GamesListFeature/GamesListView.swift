@@ -6,6 +6,7 @@ import ModelsLibrary
 import ResourceListLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct GamesListView: View {
@@ -13,16 +14,14 @@ public struct GamesListView: View {
 
 	struct ViewState: Equatable {
 		let title: String
-		let selection: Game.ID?
 
 		init(state: GamesList.State) {
 			self.title = state.series.date.longFormat
-			self.selection = state.selection?.id
 		}
 	}
 
 	enum ViewAction {
-		case setNavigation(selection: Game.ID?)
+		case didTapGame(Game.ID)
 	}
 
 	public init(store: StoreOf<GamesList>) {
@@ -34,25 +33,15 @@ public struct GamesListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /GamesList.Action.InternalAction.list)
 			) { game in
-				NavigationLink(
-					destination: IfLetStore(
-						store.scope(
-							state: \.selection?.value,
-							action: /GamesList.Action.InternalAction.editor
-						)
-					) {
-						GamesEditorView(store: $0)
-					},
-					tag: game.id,
-					selection: viewStore.binding(
-						get: \.selection,
-						send: GamesListView.ViewAction.setNavigation(selection:)
-					)
-				) {
+				Button { viewStore.send(.didTapGame(game.id)) } label: {
 					Text(Strings.Game.titleWithOrdinal(game.index + 1))
 				}
+				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.title)
+			.navigationDestination(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
+				GamesEditorView(store: store)
+			}
 		}
 	}
 }
@@ -60,8 +49,8 @@ public struct GamesListView: View {
 extension GamesList.Action {
 	init(action: GamesListView.ViewAction) {
 		switch action {
-		case let .setNavigation(selection):
-			self = .view(.setNavigation(selection: selection))
+		case let .didTapGame(id):
+			self = .view(.didTapGame(id))
 		}
 	}
 }
