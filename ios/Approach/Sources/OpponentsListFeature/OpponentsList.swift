@@ -136,7 +136,7 @@ public struct OpponentsList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.presented(.binding)), .editor(.dismiss):
+				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.dismiss):
 					return .none
 
 				case .sortOrder(.internal), .sortOrder(.view):

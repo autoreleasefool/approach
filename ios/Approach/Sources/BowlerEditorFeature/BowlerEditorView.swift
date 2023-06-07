@@ -11,15 +11,15 @@ public struct BowlerEditorView: View {
 	let store: StoreOf<BowlerEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var name = ""
+		let name: String
 
 		init(state: BowlerEditor.State) {
 			self.name = state.name
 		}
 	}
 
-	enum ViewAction: BindableAction {
-		case binding(BindingAction<ViewState>)
+	enum ViewAction {
+		case didChangeName(String)
 	}
 
 	public init(store: StoreOf<BowlerEditor>) {
@@ -32,7 +32,7 @@ public struct BowlerEditorView: View {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.binding(\.$name)
+						text: viewStore.binding(get: \.name, send: ViewAction.didChangeName)
 					)
 					.textContentType(.name)
 				}
@@ -41,20 +41,11 @@ public struct BowlerEditorView: View {
 	}
 }
 
-extension BowlerEditor.State {
-	var view: BowlerEditorView.ViewState {
-		get { .init(state: self) }
-		set {
-			self.name = newValue.name
-		}
-	}
-}
-
 extension BowlerEditor.Action {
 	init(action: BowlerEditorView.ViewAction) {
 		switch action {
-		case let .binding(action):
-			self = .binding(action.pullback(\BowlerEditor.State.view))
+		case let .didChangeName(name):
+			self = .view(.didChangeName(name))
 		}
 	}
 }
