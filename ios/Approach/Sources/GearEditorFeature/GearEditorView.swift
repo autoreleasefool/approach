@@ -13,8 +13,8 @@ public struct GearEditorView: View {
 	let store: StoreOf<GearEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var name: String
-		@BindingState var kind: Gear.Kind
+		let name: String
+		let kind: Gear.Kind
 		let owner: Bowler.Summary?
 		let hasAvatarsEnabled: Bool
 		let isEditing: Bool
@@ -31,9 +31,10 @@ public struct GearEditorView: View {
 		}
 	}
 
-	enum ViewAction: BindableAction {
+	enum ViewAction {
 		case didTapOwner
-		case binding(BindingAction<ViewState>)
+		case didChangeName(String)
+		case didChangeKind(Gear.Kind)
 	}
 
 	public init(store: StoreOf<GearEditor>) {
@@ -46,13 +47,13 @@ public struct GearEditorView: View {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.binding(\.$name)
+						text: viewStore.binding(get: \.name, send: ViewAction.didChangeName)
 					)
 					.textContentType(.name)
 
 					Picker(
 						Strings.Gear.Properties.kind,
-						selection: viewStore.binding(\.$kind)
+						selection: viewStore.binding(get: \.kind, send: ViewAction.didChangeKind)
 					) {
 						ForEach(Gear.Kind.allCases) {
 							Text(String(describing: $0)).tag($0)
@@ -76,11 +77,6 @@ public struct GearEditorView: View {
 			) {
 				ResourcePickerView(store: $0) { bowler in
 					Text(bowler.name)
-//							if viewStore.hasAvatarsEnabled {
-//								AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
-//							} else {
-//								Text(bowler.name)
-//							}
 				}
 			}
 		}
@@ -98,23 +94,15 @@ extension Gear.Kind: CustomStringConvertible {
 	}
 }
 
-extension GearEditor.State {
-	var view: GearEditorView.ViewState {
-		get { .init(state: self) }
-		set {
-			self.name = newValue.name
-			self.kind = newValue.kind
-		}
-	}
-}
-
 extension GearEditor.Action {
 	init(action: GearEditorView.ViewAction) {
 		switch action {
 		case .didTapOwner:
 			self = .view(.didTapOwner)
-		case let .binding(action):
-			self = .binding(action.pullback(\GearEditor.State.view))
+		case let .didChangeName(name):
+			self = .view(.didChangeName(name))
+		case let .didChangeKind(kind):
+			self = .view(.didChangeKind(kind))
 		}
 	}
 }

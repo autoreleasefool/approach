@@ -214,7 +214,6 @@ public struct AccessoriesOverview: Reducer {
 					}
 
 				case .gearEditor(.dismiss),
-						.gearEditor(.presented(.binding)),
 						.gearEditor(.presented(.view)),
 						.gearEditor(.presented(.internal)):
 					return .none
