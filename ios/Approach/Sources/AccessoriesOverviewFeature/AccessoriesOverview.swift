@@ -13,10 +13,7 @@ public struct AccessoriesOverview: Reducer {
 		public var recentAlleys: IdentifiedArrayOf<Alley.Summary> = []
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
 
-		@PresentationState public var alleyEditor: AlleyEditor.State?
-		@PresentationState public var alleysList: AlleysList.State?
-		@PresentationState public var gearEditor: GearEditor.State?
-		@PresentationState public var gearList: GearList.State?
+		@PresentationState public var destination: Destination.State?
 
 		public init() {}
 	}
@@ -42,10 +39,7 @@ public struct AccessoriesOverview: Reducer {
 			case didLoadEditableGear(TaskResult<Gear.Edit?>)
 			case didDeleteGear(TaskResult<Never>)
 
-			case alleyEditor(PresentationAction<AlleyEditor.Action>)
-			case alleysList(PresentationAction<AlleysList.Action>)
-			case gearEditor(PresentationAction<GearEditor.Action>)
-			case gearList(PresentationAction<GearList.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
@@ -57,6 +51,37 @@ public struct AccessoriesOverview: Reducer {
 		case edit
 		case delete
 	}
+
+	public struct Destination: Reducer {
+			public enum State: Equatable {
+				case alleyEditor(AlleyEditor.State)
+				case alleysList(AlleysList.State)
+				case gearEditor(GearEditor.State)
+				case gearList(GearList.State)
+			}
+
+			public enum Action: Equatable {
+				case alleyEditor(AlleyEditor.Action)
+				case alleysList(AlleysList.Action)
+				case gearEditor(GearEditor.Action)
+				case gearList(GearList.Action)
+			}
+
+			public var body: some ReducerOf<Self> {
+				Scope(state: /State.alleyEditor, action: /Action.alleyEditor) {
+					AlleyEditor()
+				}
+				Scope(state: /State.alleysList, action: /Action.alleysList) {
+					AlleysList()
+				}
+				Scope(state: /State.gearEditor, action: /Action.gearEditor) {
+					GearEditor()
+				}
+				Scope(state: /State.gearList, action: /Action.gearList) {
+					GearList()
+				}
+			}
+		}
 
 	enum CancelID { case observe }
 
@@ -125,23 +150,23 @@ public struct AccessoriesOverview: Reducer {
 					}
 
 				case .didTapViewAllGear:
-					state.gearList = .init(kind: nil)
+					state.destination = .gearList(.init(kind: nil))
 					return .none
 
 				case .didTapViewAllAlleys:
-					state.alleysList = .init()
+					state.destination = .alleysList(.init())
 					return .none
 
 				case .didTapAddAlley:
-					state.alleyEditor = .init(value: .create(.default(withId: uuid())))
+					state.destination = .alleyEditor(.init(value: .create(.default(withId: uuid()))))
 					return .none
 
 				case .didTapAddGear:
-					state.gearEditor = .init(value: .create(.default(withId: uuid())))
+					state.destination = .gearEditor(.init(value: .create(.default(withId: uuid()))))
 					return .none
 
 				case let .didTapGearKind(kind):
-					state.gearList = .init(kind: kind)
+					state.destination = .gearList(.init(kind: kind))
 					return .none
 				}
 
@@ -157,7 +182,7 @@ public struct AccessoriesOverview: Reducer {
 
 				case let .didLoadEditableAlley(.success(alley)):
 					guard let alley else { return .none } // TODO: show error failed to load alley
-					state.alleyEditor = .init(value: .edit(alley))
+					state.destination = .alleyEditor(.init(value: .edit(alley)))
 					return .none
 
 				case .didLoadEditableAlley(.failure):
@@ -178,7 +203,7 @@ public struct AccessoriesOverview: Reducer {
 
 				case let .didLoadEditableGear(.success(gear)):
 					guard let gear else { return .none } // TODO: show error failed to load gear
-					state.gearEditor = .init(value: .edit(gear))
+					state.destination = .gearEditor(.init(value: .edit(gear)))
 					return .none
 
 				case .didLoadEditableGear(.failure):
@@ -189,45 +214,40 @@ public struct AccessoriesOverview: Reducer {
 					// TODO: show error deleting gear
 					return .none
 
-				case let .alleyEditor(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.alleyEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case let .alleysList(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.alleysList(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case let .gearEditor(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.gearEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case let .gearList(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.gearList(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case .gearEditor(.dismiss),
-						.gearEditor(.presented(.view)),
-						.gearEditor(.presented(.internal)):
-					return .none
-
-				case .alleyEditor(.dismiss),
-						.alleyEditor(.presented(.binding)),
-						.alleyEditor(.presented(.view)),
-						.alleyEditor(.presented(.internal)):
-					return .none
-
-				case .alleysList(.dismiss), .alleysList(.presented(.internal)), .alleysList(.presented(.view)):
-					return .none
-
-				case .gearList(.dismiss), .gearList(.presented(.internal)), .gearList(.presented(.view)):
+				case .destination(.dismiss),
+						.destination(.presented(.gearEditor(.view))),
+						.destination(.presented(.gearEditor(.internal))),
+						.destination(.presented(.alleyEditor(.binding))),
+						.destination(.presented(.alleyEditor(.view))),
+						.destination(.presented(.alleyEditor(.internal))),
+						.destination(.presented(.alleysList(.internal))),
+						.destination(.presented(.alleysList(.view))),
+						.destination(.presented(.gearList(.internal))),
+						.destination(.presented(.gearList(.view))):
 					return .none
 				}
 
@@ -235,17 +255,8 @@ public struct AccessoriesOverview: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$alleyEditor, action: /Action.internal..Action.InternalAction.alleyEditor) {
-			AlleyEditor()
-		}
-		.ifLet(\.$gearEditor, action: /Action.internal..Action.InternalAction.gearEditor) {
-			GearEditor()
-		}
-		.ifLet(\.$alleysList, action: /Action.internal..Action.InternalAction.alleysList) {
-			AlleysList()
-		}
-		.ifLet(\.$gearList, action: /Action.internal..Action.InternalAction.gearList) {
-			GearList()
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
 	}
 }

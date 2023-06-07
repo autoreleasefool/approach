@@ -65,13 +65,7 @@ public struct AccessoriesOverviewView: View {
 					HStack(alignment: .firstTextBaseline) {
 						Text(Strings.Alley.List.title)
 						Spacer()
-						NavigationLinkStore(
-							store.scope(state: \.$alleysList, action: { .internal(.alleysList($0)) })
-						) {
-							viewStore.send(.didTapViewAllAlleys)
-						} destination: {
-							AlleysListView(store: $0)
-						} label: {
+						Button { viewStore.send(.didTapViewAllAlleys) } label: {
 							Text(Strings.Action.viewAll)
 								.font(.caption)
 						}
@@ -105,13 +99,7 @@ public struct AccessoriesOverviewView: View {
 					HStack(alignment: .firstTextBaseline) {
 						Text(Strings.Gear.List.title)
 						Spacer()
-						NavigationLinkStore(
-							store.scope(state: \.$gearList, action: { .internal(.gearList($0)) })
-						) {
-							viewStore.send(.didTapViewAllGear)
-						} destination: {
-							GearListView(store: $0)
-						} label: {
+						Button { viewStore.send(.didTapViewAllGear) } label: {
 							Text(Strings.Action.viewAll)
 								.font(.caption)
 						}
@@ -143,14 +131,36 @@ public struct AccessoriesOverviewView: View {
 					}
 				}
 			}
-			.sheet(store: store.scope(state: \.$alleyEditor, action: { .internal(.alleyEditor($0)) })) { scopedStore in
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AccessoriesOverview.Destination.State.gearList,
+				action: AccessoriesOverview.Destination.Action.gearList
+			) { (store: StoreOf<GearList>) in
+				GearListView(store: store)
+			}
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AccessoriesOverview.Destination.State.alleysList,
+				action: AccessoriesOverview.Destination.Action.alleysList
+			) { (store: StoreOf<AlleysList>) in
+				AlleysListView(store: store)
+			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AccessoriesOverview.Destination.State.alleyEditor,
+				action: AccessoriesOverview.Destination.Action.alleyEditor
+			) { (store: StoreOf<AlleyEditor>) in
 				NavigationStack {
-					AlleyEditorView(store: scopedStore)
+					AlleyEditorView(store: store)
 				}
 			}
-			.sheet(store: store.scope(state: \.$gearEditor, action: { .internal(.gearEditor($0)) })) { scopedStore in
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AccessoriesOverview.Destination.State.gearEditor,
+				action: AccessoriesOverview.Destination.Action.gearEditor
+			) { (store: StoreOf<GearEditor>) in
 				NavigationStack {
-					GearEditorView(store: scopedStore)
+					GearEditorView(store: store)
 				}
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
