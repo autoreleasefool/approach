@@ -14,18 +14,15 @@ public struct AlleysListView: View {
 	let store: StoreOf<AlleysList>
 
 	struct ViewState: Equatable {
-		let isFiltersPresented: Bool
 		let isAnyFilterActive: Bool
 
 		init(state: AlleysList.State) {
-			self.isFiltersPresented = state.isFiltersPresented
 			self.isAnyFilterActive = state.filter != .init()
 		}
 	}
 
 	enum ViewAction {
-		case filterButtonTapped
-		case setFilterSheet(isPresented: Bool)
+		case didTapFiltersButton
 	}
 
 	public init(store: StoreOf<AlleysList>) {
@@ -43,23 +40,27 @@ public struct AlleysListView: View {
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					FilterButton(isActive: viewStore.isAnyFilterActive) {
-						viewStore.send(.filterButtonTapped)
+						viewStore.send(.didTapFiltersButton)
 					}
-					.disabled(viewStore.isFiltersPresented)
 				}
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isFiltersPresented,
-				send: ViewAction.setFilterSheet(isPresented:)
-			)) {
-				NavigationView {
-					AlleysFilterView(store: store.scope(state: \.filters, action: /AlleysList.Action.InternalAction.filters))
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AlleysList.Destination.State.filters,
+				action: AlleysList.Destination.Action.filters
+			) { store in
+				NavigationStack {
+					AlleysFilterView(store: store)
 				}
 				.presentationDetents([.medium, .large])
 			}
-			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AlleysList.Destination.State.editor,
+				action: AlleysList.Destination.Action.editor
+			) { store in
 				NavigationStack {
-					AlleyEditorView(store: scopedStore)
+					AlleyEditorView(store: store)
 				}
 			}
 		}
@@ -69,10 +70,8 @@ public struct AlleysListView: View {
 extension AlleysList.Action {
 	init(action: AlleysListView.ViewAction) {
 		switch action {
-		case .filterButtonTapped:
-			self = .view(.setFilterSheet(isPresented: true))
-		case let .setFilterSheet(isPresented):
-			self = .view(.setFilterSheet(isPresented: isPresented))
+		case .didTapFiltersButton:
+			self = .view(.didTapFiltersButton)
 		}
 	}
 }

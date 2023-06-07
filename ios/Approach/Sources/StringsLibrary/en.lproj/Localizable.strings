@@ -8,6 +8,8 @@
 "alley.title.bowlingAlley" = "Bowling Alley";
 "alley.list.title" = "Alleys";
 "alley.list.add" = "Add Alley";
+"alley.filters.title" = "Filter Alleys";
+"alley.properties.title" = "Properties";
 "alley.properties.material" = "Material";
 "alley.properties.material.synthetic" = "Synthetic";
 "alley.properties.material.wood" = "Wood";
@@ -207,6 +209,7 @@
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";
+"statistics.details.filter.source" = "Source";
 
 /* Settings */
 

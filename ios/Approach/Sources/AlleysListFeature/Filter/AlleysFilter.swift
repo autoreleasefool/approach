@@ -21,8 +21,7 @@ public struct AlleysFilter: Reducer {
 			case didTapApplyButton
 		}
 		public enum DelegateAction: Equatable {
-			case didChangeFilters
-			case didApplyFilters
+			case didChangeFilters(Alley.Summary.FetchRequest.Filter)
 		}
 		public enum InternalAction: Equatable {}
 
@@ -34,6 +33,8 @@ public struct AlleysFilter: Reducer {
 
 	public init() {}
 
+	@Dependency(\.dismiss) var dismiss
+
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
@@ -43,10 +44,13 @@ public struct AlleysFilter: Reducer {
 				switch viewAction {
 				case .didTapClearButton:
 					state = .init(filter: .init())
-					return .send(.delegate(.didApplyFilters))
+					return .concatenate(
+						.send(.delegate(.didChangeFilters(.init()))),
+						.run { _ in await dismiss() }
+					)
 
 				case .didTapApplyButton:
-					return .send(.delegate(.didApplyFilters))
+					return .run { _ in await dismiss() }
 				}
 
 			case let .internal(internalAction):
@@ -56,7 +60,7 @@ public struct AlleysFilter: Reducer {
 				}
 
 			case .binding:
-				return .send(.delegate(.didChangeFilters))
+				return .send(.delegate(.didChangeFilters(state.filter)))
 
 			case .delegate:
 				return .none
@@ -77,7 +81,7 @@ public struct AlleysFilterView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			List {
-				Section {
+				Section(Strings.Alley.Properties.title) {
 					Picker(
 						Strings.Alley.Properties.material,
 						selection: viewStore.binding(\.$filter.material)
@@ -124,7 +128,7 @@ public struct AlleysFilterView: View {
 						.tint(.appDestructive)
 				}
 			}
-			.navigationTitle(Strings.Action.filter)
+			.navigationTitle(Strings.Alley.Filters.title)
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {

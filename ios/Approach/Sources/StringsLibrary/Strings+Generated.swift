@@ -123,6 +123,10 @@ public enum Strings {
         }
       }
     }
+    public enum Filters {
+      /// Filter Alleys
+      public static let title = Strings.tr("Localizable", "alley.filters.title", fallback: "Filter Alleys")
+    }
     public enum List {
       /// Add Alley
       public static let add = Strings.tr("Localizable", "alley.list.add", fallback: "Add Alley")
@@ -138,6 +142,8 @@ public enum Strings {
       public static let pinBase = Strings.tr("Localizable", "alley.properties.pinBase", fallback: "Pin Base")
       /// Pin Fall
       public static let pinFall = Strings.tr("Localizable", "alley.properties.pinFall", fallback: "Pin Fall")
+      /// Properties
+      public static let title = Strings.tr("Localizable", "alley.properties.title", fallback: "Properties")
       public enum Lanes {
         /// Manage
         public static let manage = Strings.tr("Localizable", "alley.properties.lanes.manage", fallback: "Manage")
@@ -797,6 +803,12 @@ public enum Strings {
       public enum Series {
         /// Series
         public static let title = Strings.tr("Localizable", "statistics.categories.series.title", fallback: "Series")
+      }
+    }
+    public enum Details {
+      public enum Filter {
+        /// Source
+        public static let source = Strings.tr("Localizable", "statistics.details.filter.source", fallback: "Source")
       }
     }
     public enum Overview {
