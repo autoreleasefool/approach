@@ -4,7 +4,9 @@ import ModelsLibrary
 import StatisticsLibrary
 
 extension League.Database {
-	public static func trackableSeries(filter: TrackableFilter.SeriesFilter?) -> HasManyAssociation<Self, Series.Database> {
+	public static func trackableSeries(
+		filter: TrackableFilter.SeriesFilter?
+	) -> HasManyAssociation<Self, Series.Database> {
 		var association = hasMany(Series.Database.self)
 			.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
 

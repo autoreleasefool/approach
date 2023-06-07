@@ -182,7 +182,6 @@ private func generateFrames(forGames: [Game.Database]) -> [Frame.Database] {
 				.init(gameId: game.id, index: 8, roll0: "011000", roll1: "000111", roll2: nil, ball0: UUID(1), ball1: UUID(1), ball2: nil),
 				.init(gameId: game.id, index: 9, roll0: "011000", roll1: "000011", roll2: "000000", ball0: UUID(2), ball1: UUID(2), ball2: UUID(2)),
 			])
-			break
 		case 269:
 			frames.append(contentsOf: [
 				.init(gameId: game.id, index: 0, roll0: "000101", roll1: "011000", roll2: "000010", ball0: UUID(1), ball1: UUID(1), ball2: UUID(1)),

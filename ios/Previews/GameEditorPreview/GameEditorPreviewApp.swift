@@ -45,7 +45,7 @@ public struct GameEditorPreviewApp: App {
 
 	public var body: some Scene {
 		WindowGroup {
-			NavigationView {
+			NavigationStack {
 				GamesEditorView(store: store)
 			}
 		}

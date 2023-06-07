@@ -348,7 +348,7 @@ final class GamesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			gear: [
-				.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil)
+				.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil),
 			],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),

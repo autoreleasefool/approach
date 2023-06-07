@@ -54,7 +54,7 @@ public struct StatisticsDetails: Reducer {
 						}
 					)
 
-				case let .didTapStaticValue(id):
+				case .didTapStaticValue:
 					return .none
 
 				case let .setListSheet(isPresented):
