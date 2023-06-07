@@ -69,6 +69,7 @@
 
 "gear.title" = "Gear";
 "gear.list.title" = "Gear";
+"gear.filters.title" = "Filter Gear";
 "gear.properties.kind" = "Kind";
 "gear.properties.kind.shoes" = "Shoes";
 "gear.properties.kind.bowlingBall" = "Ball";

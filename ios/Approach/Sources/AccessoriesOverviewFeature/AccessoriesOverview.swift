@@ -191,8 +191,7 @@ public struct AccessoriesOverview: Reducer {
 
 				case let .alleyEditor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
-					case .didFinishEditing:
-						state.alleyEditor = nil
+					case .never:
 						return .none
 					}
 
@@ -204,8 +203,7 @@ public struct AccessoriesOverview: Reducer {
 
 				case let .gearEditor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
-					case .didFinishEditing:
-						state.gearEditor = nil
+					case .never:
 						return .none
 					}
 

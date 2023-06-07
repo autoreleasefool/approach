@@ -43,7 +43,6 @@ public struct AlleysFilter: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapClearButton:
-					state = .init(filter: .init())
 					return .concatenate(
 						.send(.delegate(.didChangeFilters(.init()))),
 						.run { _ in await dismiss() }

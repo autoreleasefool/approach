@@ -14,18 +14,15 @@ public struct GearListView: View {
 	let store: StoreOf<GearList>
 
 	struct ViewState: Equatable {
-		let isFiltersPresented: Bool
 		let isAnyFilterActive: Bool
 
 		init(state: GearList.State) {
-			self.isFiltersPresented = state.isFiltersPresented
 			self.isAnyFilterActive = state.kindFilter != nil
 		}
 	}
 
 	enum ViewAction {
 		case didTapFilterButton
-		case setFilterSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<GearList>) {
@@ -50,17 +47,22 @@ public struct GearListView: View {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /GearList.Action.InternalAction.sortOrder))
 				}
 			}
-			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GearList.Destination.State.editor,
+				action: GearList.Destination.Action.editor
+			) { store in
 				NavigationStack {
-					GearEditorView(store: scopedStore)
+					GearEditorView(store: store)
 				}
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isFiltersPresented,
-				send: ViewAction.setFilterSheet(isPresented:)
-			)) {
-				NavigationView {
-					GearFilterView(store: store.scope(state: \.filters, action: /GearList.Action.InternalAction.filters))
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GearList.Destination.State.filters,
+				action: GearList.Destination.Action.filters
+			) { store in
+				NavigationStack {
+					GearFilterView(store: store)
 				}
 				.presentationDetents([.medium, .large])
 			}
@@ -72,9 +74,7 @@ extension GearList.Action {
 	init(action: GearListView.ViewAction) {
 		switch action {
 		case .didTapFilterButton:
-			self = .view(.setFilterSheet(isPresented: true))
-		case let .setFilterSheet(isPresented):
-			self = .view(.setFilterSheet(isPresented: isPresented))
+			self = .view(.didTapFilterButton)
 		}
 	}
 }

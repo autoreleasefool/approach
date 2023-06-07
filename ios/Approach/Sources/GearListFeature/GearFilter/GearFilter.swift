@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import GearRepositoryInterface
@@ -16,8 +17,7 @@ public struct GearFilter: Reducer {
 			case didTapApplyButton
 		}
 		public enum DelegateAction: Equatable {
-			case didChangeFilters
-			case didApplyFilters
+			case didChangeFilters(Gear.Kind?)
 		}
 		public enum InternalAction: Equatable {}
 
@@ -29,6 +29,8 @@ public struct GearFilter: Reducer {
 
 	public init() {}
 
+	@Dependency(\.dismiss) var dismiss
+
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
@@ -37,15 +39,17 @@ public struct GearFilter: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapClearButton:
-					state = .init()
-					return .send(.delegate(.didApplyFilters))
+					return .concatenate(
+						.send(.delegate(.didChangeFilters(nil))),
+						.run { _ in await dismiss() }
+					)
 
 				case .didTapApplyButton:
-					return .send(.delegate(.didApplyFilters))
+					return .run { _ in await dismiss() }
 				}
 
 			case .binding:
-				return .send(.delegate(.didChangeFilters))
+				return .send(.delegate(.didChangeFilters(state.kind)))
 
 			case let .internal(internalAction):
 				switch internalAction {
@@ -89,7 +93,7 @@ public struct GearFilterView: View {
 						.tint(.appDestructive)
 				}
 			}
-			.navigationTitle(Strings.Action.filter)
+			.navigationTitle(Strings.Gear.Filters.title)
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {

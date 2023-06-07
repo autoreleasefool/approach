@@ -49,9 +49,7 @@ public struct GearEditor: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapOwner
 		}
-		public enum DelegateAction: Equatable {
-			case didFinishEditing
-		}
+		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case form(GearForm.Action)
 			case bowlerPicker(PresentationAction<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action>)

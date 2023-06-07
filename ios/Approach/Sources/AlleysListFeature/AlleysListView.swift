@@ -46,6 +46,15 @@ public struct AlleysListView: View {
 			}
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /AlleysList.Destination.State.editor,
+				action: AlleysList.Destination.Action.editor
+			) { store in
+				NavigationStack {
+					AlleyEditorView(store: store)
+				}
+			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /AlleysList.Destination.State.filters,
 				action: AlleysList.Destination.Action.filters
 			) { store in
@@ -53,15 +62,6 @@ public struct AlleysListView: View {
 					AlleysFilterView(store: store)
 				}
 				.presentationDetents([.medium, .large])
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /AlleysList.Destination.State.editor,
-				action: AlleysList.Destination.Action.editor
-			) { store in
-				NavigationStack {
-					AlleyEditorView(store: store)
-				}
 			}
 		}
 	}

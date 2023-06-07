@@ -122,7 +122,7 @@ extension GearEditor.Action {
 #if DEBUG
 struct GearEditorViewPreviews: PreviewProvider {
 	static var previews: some View {
-		NavigationView {
+		NavigationStack {
 			GearEditorView(store:
 				.init(
 					initialState: .init(value: .create(.default(withId: UUID()))),

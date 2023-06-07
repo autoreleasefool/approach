@@ -363,6 +363,10 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "gear.error.empty.title", fallback: "No gear found")
       }
     }
+    public enum Filters {
+      /// Filter Gear
+      public static let title = Strings.tr("Localizable", "gear.filters.title", fallback: "Filter Gear")
+    }
     public enum List {
       /// Add Gear
       public static let add = Strings.tr("Localizable", "gear.list.add", fallback: "Add Gear")
