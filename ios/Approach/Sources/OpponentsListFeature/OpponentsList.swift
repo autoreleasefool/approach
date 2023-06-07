@@ -26,7 +26,6 @@ public struct OpponentsList: Reducer {
 		public var sortOrder: SortOrder<Bowler.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		@PresentationState public var editor: BowlerEditor.State?
-		public var selection: Identified<Bowler.ID, Int>?
 
 		public init() {
 			self.list = .init(
@@ -51,9 +50,7 @@ public struct OpponentsList: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
-			case setNavigation(selection: Bowler.ID?)
-		}
+		public enum ViewAction: Equatable {}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
@@ -87,11 +84,8 @@ public struct OpponentsList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, state: &state)
-
-				case .setNavigation(selection: .none):
-					return navigate(to: nil, state: &state)
+				case .never:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -149,20 +143,6 @@ public struct OpponentsList: Reducer {
 		}
 		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			BowlerEditor()
-		}
-	}
-
-	private func navigate(to id: Bowler.ID?, state: inout State) -> Effect<Action> {
-		if let id, let selection = state.list.resources?[id: id] {
-			// TODO: show opponent profile
-//			state.selection = Identified(.init(bowler: selection), id: selection.id)
-			return .run { _ in
-				try await clock.sleep(for: .seconds(1))
-				recentlyUsed.didRecentlyUseResource(.opponents, selection.id)
-			}
-		} else {
-			state.selection = nil
-			return .none
 		}
 	}
 }
