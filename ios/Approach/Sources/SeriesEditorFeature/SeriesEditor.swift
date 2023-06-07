@@ -68,9 +68,7 @@ public struct SeriesEditor: Reducer {
 		public enum ViewAction: Equatable {
 			case setAlleyPicker(isPresented: Bool)
 		}
-		public enum DelegateAction: Equatable {
-			case didFinishEditing
-		}
+		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case form(SeriesForm.Action)
 			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action)

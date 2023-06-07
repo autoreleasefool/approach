@@ -19,8 +19,8 @@ public struct SeriesList: Reducer {
 		public let league: League.SeriesHost
 
 		public var list: ResourceList<Series.Summary, League.ID>.State
-		public var selection: Identified<Series.ID, GamesList.State>?
-		@PresentationState public var editor: SeriesEditor.State?
+
+		@PresentationState public var destination: Destination.State?
 
 		public init(league: League.SeriesHost) {
 			self.league = league
@@ -46,14 +46,13 @@ public struct SeriesList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case setNavigation(selection: Series.ID?)
+			case didTapSeries(Series.ID)
 		}
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableSeries(Series.Edit)
 			case list(ResourceList<Series.Summary, League.ID>.Action)
-			case editor(PresentationAction<SeriesEditor.Action>)
-			case sidebar(GamesList.Action)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -62,6 +61,27 @@ public struct SeriesList: Reducer {
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
 	}
+
+	public struct Destination: Reducer {
+			public enum State: Equatable {
+				case editor(SeriesEditor.State)
+				case games(GamesList.State)
+			}
+
+			public enum Action: Equatable {
+				case editor(SeriesEditor.Action)
+				case games(GamesList.Action)
+			}
+
+			public var body: some ReducerOf<Self> {
+				Scope(state: /State.editor, action: /Action.editor) {
+					SeriesEditor()
+				}
+				Scope(state: /State.games, action: /Action.games) {
+					GamesList()
+				}
+			}
+		}
 
 	public init() {}
 
@@ -81,17 +101,18 @@ public struct SeriesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, state: &state)
-
-				case .setNavigation(selection: .none):
-					return navigate(to: nil, state: &state)
+				case let .didTapSeries(id):
+					if let series = state.list.resources?[id: id] {
+						state.destination = .games(.init(series: series))
+					}
+					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadEditableSeries(series):
-					return startEditing(series: series, state: &state)
+					state.destination = .editor(.init(value: .edit(series), inLeague: state.league))
+					return .none
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
@@ -106,32 +127,37 @@ public struct SeriesList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						return startEditing(series: nil, state: &state)
+						state.destination = .editor(.init(
+							value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
+							inLeague: state.league
+						))
+						return .none
 
 					case .didDelete, .didTap:
 						return .none
 					}
 
-				case let .editor(.presented(.delegate(delegateAction))):
-					switch delegateAction {
-					case .didFinishEditing:
-						state.editor = nil
-						return .none
-					}
-
-				case let .sidebar(.delegate(delegateAction)):
+				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case .sidebar(.internal), .sidebar(.view):
-					return .none
+				case let .destination(.presented(.games(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
 
 				case .list(.view), .list(.internal):
 					return .none
 
-				case .editor(.presented(.view)), .editor(.presented(.internal)), .editor(.presented(.binding)), .editor(.dismiss):
+				case .destination(.dismiss),
+						.destination(.presented(.editor(.view))),
+						.destination(.presented(.editor(.internal))),
+						.destination(.presented(.editor(.binding))),
+						.destination(.presented(.games(.view))),
+						.destination(.presented(.games(.internal))):
 					return .none
 				}
 
@@ -139,37 +165,9 @@ public struct SeriesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.sidebar) {
-			Scope(state: \Identified<Series.ID, GamesList.State>.value, action: /.self) {
-				GamesList()
-			}
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
-		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
-			SeriesEditor()
-		}
-	}
-
-	private func navigate(to id: Series.ID?, state: inout State) -> Effect<Action> {
-		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(series: selection), id: selection.id)
-			return .none
-		} else {
-			state.selection = nil
-			return .none
-		}
-	}
-
-	private func startEditing(series: Series.Edit?, state: inout State) -> Effect<Action> {
-		if let series {
-			state.editor = .init(value: .edit(series), inLeague: state.league)
-		} else {
-			state.editor = .init(
-				value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
-				inLeague: state.league
-			)
-		}
-
-		return .none
 	}
 }
 

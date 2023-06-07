@@ -7,6 +7,7 @@ import ResourceListLibrary
 import SeriesEditorFeature
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct SeriesListView: View {
@@ -14,16 +15,14 @@ public struct SeriesListView: View {
 
 	struct ViewState: Equatable {
 		let leagueName: String
-		let selection: Series.ID?
 
 		init(state: SeriesList.State) {
 			self.leagueName = state.league.name
-			self.selection = state.selection?.id
 		}
 	}
 
 	enum ViewAction {
-		case setNavigation(selection: Series.ID?)
+		case didTapSeres(Series.ID)
 	}
 
 	public init(store: StoreOf<SeriesList>) {
@@ -35,26 +34,27 @@ public struct SeriesListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /SeriesList.Action.InternalAction.list)
 			) { series in
-				NavigationLink(
-					destination: IfLetStore(
-						store.scope(state: \.selection?.value, action: /SeriesList.Action.InternalAction.sidebar)
-					) {
-						GamesListView(store: $0)
-					},
-					tag: series.id,
-					selection: viewStore.binding(
-						get: \.selection,
-						send: SeriesListView.ViewAction.setNavigation(selection:)
-					)
-				) {
+				Button { viewStore.send(.didTapSeres(series.id)) } label: {
 					Text(series.name)
 				}
+				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.leagueName)
-			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /SeriesList.Destination.State.editor,
+				action: SeriesList.Destination.Action.editor
+			) { store in
 				NavigationStack {
-					SeriesEditorView(store: scopedStore)
+					SeriesEditorView(store: store)
 				}
+			}
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /SeriesList.Destination.State.games,
+				action: SeriesList.Destination.Action.games
+			) { store in
+				GamesListView(store: store)
 			}
 		}
 	}
@@ -63,8 +63,8 @@ public struct SeriesListView: View {
 extension SeriesList.Action {
 	init(action: SeriesListView.ViewAction) {
 		switch action {
-		case let .setNavigation(selection):
-			self = .view(.setNavigation(selection: selection))
+		case let .didTapSeres(id):
+			self = .view(.didTapSeries(id))
 		}
 	}
 }
