@@ -20,17 +20,16 @@ public struct SeriesEditor: Reducer {
 		public let hasAlleysEnabled: Bool
 		public let league: League.SeriesHost
 
-		@BindingState public var numberOfGames: Int
-		@BindingState public var date: Date
-		@BindingState public var preBowl: Series.PreBowl
-		@BindingState public var excludeFromStatistics: Series.ExcludeFromStatistics
+		public var numberOfGames: Int
+		public var date: Date
+		public var preBowl: Series.PreBowl
+		public var excludeFromStatistics: Series.ExcludeFromStatistics
 		public var location: Alley.Summary?
 
 		public let initialValue: SeriesForm.Value
 		public var _form: SeriesForm.State
 
-		public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State
-		public var isAlleyPickerPresented = false
+		@PresentationState public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: InitialValue, inLeague: League.SeriesHost) {
 			self.league = inLeague
@@ -52,32 +51,28 @@ public struct SeriesEditor: Reducer {
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
 
-			self.alleyPicker = .init(
-				selected: Set([self.location?.id].compactMap { $0 }),
-				query: .init(()),
-				limit: 1,
-				showsCancelHeaderButton: false
-			)
-
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
+	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case setAlleyPicker(isPresented: Bool)
+			case didTapAlley
+			case didChangeDate(Date)
+			case didChangeNumberOfGames(Int)
+			case didChangePreBowl(Series.PreBowl)
+			case didChangeExcludeFromStatistics(Series.ExcludeFromStatistics)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case form(SeriesForm.Action)
-			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action)
+			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 		}
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
-		case binding(BindingAction<State>)
 	}
 
 	public enum InitialValue {
@@ -93,9 +88,7 @@ public struct SeriesEditor: Reducer {
 	@Dependency(\.series) var series
 	@Dependency(\.uuid) var uuid
 
-	public var body: some Reducer<State, Action> {
-		BindingReducer()
-
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			SeriesForm()
 				.dependency(\.records, .init(
@@ -105,24 +98,39 @@ public struct SeriesEditor: Reducer {
 				))
 		}
 
-		Scope(state: \.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
-			ResourcePicker { _ in
-				alleys.list(ordered: .byRecentlyUsed)
-			}
-		}
-
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .setAlleyPicker(isPresented):
-					state.isAlleyPickerPresented = isPresented
+				case .didTapAlley:
+					state.alleyPicker = .init(
+						selected: Set([state.location?.id].compactMap { $0 }),
+						query: .init(()),
+						limit: 1,
+						showsCancelHeaderButton: false
+					)
+					return .none
+
+				case let .didChangeDate(date):
+					state.date = date
+					return .none
+
+				case let .didChangePreBowl(preBowl):
+					state.preBowl = preBowl
+					return .none
+
+				case let .didChangeNumberOfGames(numberOfGames):
+					state.numberOfGames = numberOfGames
+					return .none
+
+				case let .didChangeExcludeFromStatistics(exclude):
+					state.excludeFromStatistics = exclude
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .alleyPicker(.delegate(delegateAction)):
+				case let .alleyPicker(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
@@ -150,12 +158,17 @@ public struct SeriesEditor: Reducer {
 				case .form(.view), .form(.internal):
 					return .none
 
-				case .alleyPicker(.internal), .alleyPicker(.view):
+				case .alleyPicker(.presented(.internal)), .alleyPicker(.presented(.view)), .alleyPicker(.dismiss):
 					return .none
 				}
 
-			case .binding, .delegate:
+			case .delegate:
 				return .none
+			}
+		}
+		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
+			ResourcePicker { _ in
+				alleys.list(ordered: .byRecentlyUsed)
 			}
 		}
 	}

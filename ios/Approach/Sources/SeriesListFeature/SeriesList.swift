@@ -155,7 +155,6 @@ public struct SeriesList: Reducer {
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.editor(.internal))),
-						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.games(.view))),
 						.destination(.presented(.games(.internal))):
 					return .none

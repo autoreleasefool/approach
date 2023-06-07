@@ -7,21 +7,20 @@ import ModelsViewsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 
 public struct SeriesEditorView: View {
 	let store: StoreOf<SeriesEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var date: Date
-		@BindingState var numberOfGames: Int
-		@BindingState var preBowl: Series.PreBowl
-		@BindingState var excludeFromStatistics: Series.ExcludeFromStatistics
+		let date: Date
+		let numberOfGames: Int
+		let preBowl: Series.PreBowl
+		let excludeFromStatistics: Series.ExcludeFromStatistics
 		let location: Alley.Summary?
 
 		let hasSetNumberOfGames: Bool
 		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
-
-		let isAlleyPickerPresented: Bool
 
 		let hasAlleysEnabled: Bool
 
@@ -37,7 +36,6 @@ public struct SeriesEditorView: View {
 			self.hasSetNumberOfGames = state.league.numberOfGames != nil
 			self.excludeLeagueFromStatistics = state.league.excludeFromStatistics
 
-			self.isAlleyPickerPresented = state.isAlleyPickerPresented
 			self.hasAlleysEnabled = state.hasAlleysEnabled
 
 			switch state._form.value {
@@ -47,9 +45,12 @@ public struct SeriesEditorView: View {
 		}
 	}
 
-	enum ViewAction: BindableAction {
-		case setAlleyPicker(isPresented: Bool)
-		case binding(BindingAction<ViewState>)
+	enum ViewAction {
+		case didTapAlley
+		case didChangeDate(Date)
+		case didChangeNumberOfGames(Int)
+		case didChangePreBowl(Series.PreBowl)
+		case didChangeExcludeFromStatistics(Series.ExcludeFromStatistics)
 	}
 
 	public init(store: StoreOf<SeriesEditor>) {
@@ -62,14 +63,14 @@ public struct SeriesEditorView: View {
 				Section(Strings.Editor.Fields.Details.title) {
 					Stepper(
 						Strings.Series.Editor.Fields.numberOfGames(viewStore.numberOfGames),
-						value: viewStore.binding(\.$numberOfGames),
+						value: viewStore.binding(get: \.numberOfGames, send: ViewAction.didChangeNumberOfGames),
 						in: League.NUMBER_OF_GAMES_RANGE
 					)
 					.disabled(viewStore.hasSetNumberOfGames || viewStore.isEditing)
 
 					DatePicker(
 						Strings.Series.Properties.date,
-						selection: viewStore.binding(\.$date),
+						selection: viewStore.binding(get: \.date, send: ViewAction.didChangeDate),
 						displayedComponents: [.date]
 					)
 					.datePickerStyle(.graphical)
@@ -77,25 +78,13 @@ public struct SeriesEditorView: View {
 
 				if viewStore.hasAlleysEnabled {
 					Section(Strings.Series.Properties.alley) {
-						NavigationLink(
-							destination: ResourcePickerView(
-								store: store.scope(
-									state: \.alleyPicker,
-									action: /SeriesEditor.Action.InternalAction.alleyPicker
-								)
-							) { alley in
-								Alley.View(alley: alley)
-							},
-							isActive: viewStore.binding(
-								get: \.isAlleyPickerPresented,
-								send: ViewAction.setAlleyPicker(isPresented:)
-							)
-						) {
+						Button { viewStore.send(.didTapAlley) } label: {
 							LabeledContent(
 								Strings.Series.Properties.alley,
 								value: viewStore.location?.name ?? Strings.none
 							)
 						}
+						.buttonStyle(.navigation)
 					}
 				}
 
@@ -104,7 +93,7 @@ public struct SeriesEditorView: View {
 						Strings.Series.Editor.Fields.PreBowl.label,
 						isOn: viewStore.binding(
 							get: { $0.preBowl == .preBowl },
-							send: { ViewAction.set(\.$preBowl, $0 ? .preBowl : .regular) }
+							send: { ViewAction.didChangePreBowl($0 ? .preBowl : .regular) }
 						)
 					)
 				} header: {
@@ -122,13 +111,20 @@ public struct SeriesEditorView: View {
 								$0.preBowl == .preBowl ||
 								$0.excludeFromStatistics == .exclude
 							},
-							send: { ViewAction.set(\.$excludeFromStatistics, $0 ? .exclude : .include) }
+							send: { ViewAction.didChangeExcludeFromStatistics($0 ? .exclude : .include) }
 						)
 					).disabled(viewStore.preBowl == .preBowl || viewStore.excludeLeagueFromStatistics == .exclude)
 				} header: {
 					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
 				} footer: {
 					excludeFromStatisticsHelp(viewStore)
+				}
+			}
+			.navigationDestination(
+				store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
+			) { store in
+				ResourcePickerView(store: store) { alley in
+					Alley.View(alley: alley)
 				}
 			}
 		}
@@ -151,25 +147,19 @@ public struct SeriesEditorView: View {
 	}
 }
 
-extension SeriesEditor.State {
-	var view: SeriesEditorView.ViewState {
-		get { .init(state: self) }
-		set {
-			self.date = newValue.date
-			self.numberOfGames = newValue.numberOfGames
-			self.preBowl = newValue.preBowl
-			self.excludeFromStatistics = newValue.excludeFromStatistics
-		}
-	}
-}
-
 extension SeriesEditor.Action {
 	init(action: SeriesEditorView.ViewAction) {
 		switch action {
-		case let .setAlleyPicker(isPresented):
-			self = .view(.setAlleyPicker(isPresented: isPresented))
-		case .binding(let action):
-			self = .binding(action.pullback(\SeriesEditor.State.view))
+		case .didTapAlley:
+			self = .view(.didTapAlley)
+		case let .didChangeDate(date):
+			self = .view(.didChangeDate(date))
+		case let .didChangePreBowl(preBowl):
+			self = .view(.didChangePreBowl(preBowl))
+		case let .didChangeNumberOfGames(numberOfGames):
+			self = .view(.didChangeNumberOfGames(numberOfGames))
+		case let .didChangeExcludeFromStatistics(exclude):
+			self = .view(.didChangeExcludeFromStatistics(exclude))
 		}
 	}
 }
