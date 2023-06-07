@@ -179,21 +179,21 @@ public struct GamesEditor: Reducer {
 				return .none
 			}
 		}
-//		.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
-//			GameDetailsHeader()
-//		}
-//		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
-//			FrameEditor()
-//		}
-//		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
-//			RollEditor()
-//		}
-//		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
-//			ScoreSheet()
-//		}
-//		.ifLet(\.destination, action: /Action.internal..Action.InternalAction.destination) {
-//			Destination()
-//		}
+		.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
+			GameDetailsHeader()
+		}
+		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
+			FrameEditor()
+		}
+		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
+			RollEditor()
+		}
+		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
+			ScoreSheet()
+		}
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
+		}
 	}
 }
 
