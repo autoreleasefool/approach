@@ -36,9 +36,7 @@ public struct BowlerEditor: Reducer {
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {}
-		public enum DelegateAction: Equatable {
-			case didFinishEditing
-		}
+		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case form(BowlerForm.Action)
 		}

@@ -62,7 +62,7 @@ extension BowlerEditor.Action {
 #if DEBUG
 struct BowlerEditorViewPreviews: PreviewProvider {
 	static var previews: some View {
-		NavigationView {
+		NavigationStack {
 			BowlerEditorView(store:
 				.init(
 					initialState: .init(value: .create(.defaultBowler(withId: UUID()))),

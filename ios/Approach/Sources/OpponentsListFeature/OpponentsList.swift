@@ -129,8 +129,7 @@ public struct OpponentsList: Reducer {
 
 				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
-					case .didFinishEditing:
-						state.editor = nil
+					case .never:
 						return .none
 					}
 
