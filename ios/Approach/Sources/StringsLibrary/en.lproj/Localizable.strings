@@ -111,6 +111,7 @@
 "league.title" = "League";
 "league.list.title" = "Leagues";
 "league.list.add" = "Add League";
+"league.filters.title" = "Filter Leagues";
 "league.properties.alley" = "Bowling Alley";
 "league.properties.recurrence" = "Repeat?";
 "league.properties.recurrence.repeats" = "Repeats";

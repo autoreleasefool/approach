@@ -7,6 +7,7 @@ import SeriesListFeature
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct LeaguesListView: View {
@@ -14,22 +15,17 @@ public struct LeaguesListView: View {
 
 	struct ViewState: Equatable {
 		let bowlerName: String
-		let selection: League.ID?
-		let isFiltersPresented: Bool
 		let isAnyFilterActive: Bool
 
 		init(state: LeaguesList.State) {
-			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
-			self.isFiltersPresented = state.isFiltersPresented
 			self.isAnyFilterActive = state.filter != .init(bowler: state.bowler.id)
 		}
 	}
 
 	enum ViewAction {
 		case didTapFilterButton
-		case setFilterSheet(isPresented: Bool)
-		case setNavigation(selection: League.ID?)
+		case didTapLeague(League.ID)
 	}
 
 	public init(store: StoreOf<LeaguesList>) {
@@ -41,25 +37,10 @@ public struct LeaguesListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /LeaguesList.Action.InternalAction.list)
 			) { league in
-				NavigationLink(
-					destination: IfLetStore(
-						store.scope(state: \.selection?.value, action: /LeaguesList.Action.InternalAction.series)
-					) {
-						SeriesListView(store: $0)
-					},
-					tag: league.id,
-					selection: viewStore.binding(
-						get: \.selection,
-						send: LeaguesListView.ViewAction.setNavigation(selection:)
-					)
-				) {
-					HStack {
-						Text(league.name)
-						Spacer()
-						Text(format(average: league.average))
-							.font(.caption)
-					}
+				Button { viewStore.send(.didTapLeague(league.id)) } label: {
+					LabeledContent(league.name, value: format(average: league.average))
 				}
+				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
@@ -72,19 +53,31 @@ public struct LeaguesListView: View {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /LeaguesList.Action.InternalAction.sortOrder))
 				}
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isFiltersPresented,
-				send: ViewAction.setFilterSheet(isPresented:)
-			)) {
-				NavigationView {
-					LeaguesFilterView(store: store.scope(state: \.filters, action: /LeaguesList.Action.InternalAction.filters))
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /LeaguesList.Destination.State.editor,
+				action: LeaguesList.Destination.Action.editor
+			) { store in
+				NavigationStack {
+					LeagueEditorView(store: store)
+				}
+			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /LeaguesList.Destination.State.filters,
+				action: LeaguesList.Destination.Action.filters
+			) { store in
+				NavigationStack {
+					LeaguesFilterView(store: store)
 				}
 				.presentationDetents([.medium, .large])
 			}
-			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
-				NavigationView {
-					LeagueEditorView(store: scopedStore)
-				}
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /LeaguesList.Destination.State.series,
+				action: LeaguesList.Destination.Action.series
+			) { store in
+				SeriesListView(store: store)
 			}
 		}
 	}
@@ -94,11 +87,9 @@ extension LeaguesList.Action {
 	init(action: LeaguesListView.ViewAction) {
 		switch action {
 		case .didTapFilterButton:
-			self = .view(.setFilterSheet(isPresented: true))
-		case let .setFilterSheet(isPresented):
-			self = .view(.setFilterSheet(isPresented: isPresented))
-		case let .setNavigation(selection):
-			self = .view(.setNavigation(selection: selection))
+			self = .view(.didTapFilterButton)
+		case let .didTapLeague(id):
+			self = .view(.didTapLeague(id: id))
 		}
 	}
 }

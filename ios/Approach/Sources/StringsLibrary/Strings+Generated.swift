@@ -483,6 +483,10 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "league.error.empty.title", fallback: "No leagues found")
       }
     }
+    public enum Filters {
+      /// Filter Leagues
+      public static let title = Strings.tr("Localizable", "league.filters.title", fallback: "Filter Leagues")
+    }
     public enum List {
       /// Add League
       public static let add = Strings.tr("Localizable", "league.list.add", fallback: "Add League")
