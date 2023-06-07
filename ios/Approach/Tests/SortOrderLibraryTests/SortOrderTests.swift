@@ -21,50 +21,21 @@ final class SortOrderTests: XCTestCase {
 		XCTAssertEqual(state.ordering, .second)
 	}
 
-	func testSetSheetPresented() async {
-		let store = TestStore(
-			initialState: SortOrder.State(initialValue: MockOrderable.first),
-			reducer: SortOrder()
-		)
+	func testDidTapOption_SetsOrdering_AndDismisses() async {
+		let dismissed = self.expectation(description: "dismissed")
 
-		await store.send(.view(.setSheetPresented(isPresented: true))) {
-			$0.isSheetPresented = true
-		}
-
-		await store.send(.view(.setSheetPresented(isPresented: false))) {
-			$0.isSheetPresented = false
-		}
-	}
-
-	func testDidTapOptionSetsOrdering() async {
-		let store = TestStore(
-			initialState: SortOrder.State(initialValue: MockOrderable.first),
-			reducer: SortOrder()
-		)
-
-		await store.send(.view(.didTapOption(.second))) {
-			$0.ordering = .second
-			$0.isSheetPresented = false
-		}
-
-		await store.receive(.delegate(.didTapOption(.second)))
-	}
-
-	func testOptionTappedHidesSheet() async {
-		let store = TestStore(
-			initialState: SortOrder.State(initialValue: MockOrderable.first),
-			reducer: SortOrder()
-		)
-
-		await store.send(.view(.setSheetPresented(isPresented: true))) {
-			$0.isSheetPresented = true
+		let store = TestStore(initialState: SortOrder.State(initialValue: MockOrderable.first)) {
+			SortOrder()
+		} withDependencies: {
+			$0.dismiss = .init { dismissed.fulfill() }
 		}
 
 		await store.send(.view(.didTapOption(.second))) {
 			$0.ordering = .second
-			$0.isSheetPresented = false
 		}
 
 		await store.receive(.delegate(.didTapOption(.second)))
+
+		await fulfillment(of: [dismissed])
 	}
 }

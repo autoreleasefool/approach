@@ -23,6 +23,7 @@ public struct GearListView: View {
 
 	enum ViewAction {
 		case didTapFilterButton
+		case didTapSortOrderButton
 	}
 
 	public init(store: StoreOf<GearList>) {
@@ -44,7 +45,7 @@ public struct GearListView: View {
 					}
 				}
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortOrderView(store: store.scope(state: \.sortOrder, action: /GearList.Action.InternalAction.sortOrder))
+					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
 			.sheet(
@@ -66,6 +67,16 @@ public struct GearListView: View {
 				}
 				.presentationDetents([.medium, .large])
 			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GearList.Destination.State.sortOrder,
+				action: GearList.Destination.Action.sortOrder
+			) { store in
+				NavigationStack {
+					SortOrderView(store: store)
+				}
+				.presentationDetents([.medium])
+			}
 		}
 	}
 }
@@ -75,6 +86,8 @@ extension GearList.Action {
 		switch action {
 		case .didTapFilterButton:
 			self = .view(.didTapFilterButton)
+		case .didTapSortOrderButton:
+			self = .view(.didTapSortOrderButton)
 		}
 	}
 }

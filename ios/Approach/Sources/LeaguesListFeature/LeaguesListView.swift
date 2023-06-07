@@ -25,6 +25,7 @@ public struct LeaguesListView: View {
 
 	enum ViewAction {
 		case didTapFilterButton
+		case didTapSortOrderButton
 		case didTapLeague(League.ID)
 	}
 
@@ -50,7 +51,7 @@ public struct LeaguesListView: View {
 					}
 				}
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortOrderView(store: store.scope(state: \.sortOrder, action: /LeaguesList.Action.InternalAction.sortOrder))
+					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
 			.sheet(
@@ -72,6 +73,16 @@ public struct LeaguesListView: View {
 				}
 				.presentationDetents([.medium, .large])
 			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /LeaguesList.Destination.State.sortOrder,
+				action: LeaguesList.Destination.Action.sortOrder
+			) { store in
+				NavigationStack {
+					SortOrderView(store: store)
+				}
+				.presentationDetents([.medium])
+			}
 			.navigationDestination(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /LeaguesList.Destination.State.series,
@@ -88,6 +99,8 @@ extension LeaguesList.Action {
 		switch action {
 		case .didTapFilterButton:
 			self = .view(.didTapFilterButton)
+		case .didTapSortOrderButton:
+			self = .view(.didTapSortOrderButton)
 		case let .didTapLeague(id):
 			self = .view(.didTapLeague(id: id))
 		}

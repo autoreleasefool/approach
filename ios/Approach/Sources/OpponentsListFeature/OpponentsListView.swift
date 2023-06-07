@@ -26,13 +26,27 @@ public struct OpponentsListView: View {
 		.navigationTitle(Strings.Opponent.List.title)
 		.toolbar {
 			ToolbarItem(placement: .navigationBarTrailing) {
-				SortOrderView(store: store.scope(state: \.sortOrder, action: /OpponentsList.Action.InternalAction.sortOrder))
+				SortButton(isActive: false) { ViewStore(store.stateless).send(.view(.didTapSortOrderButton)) }
 			}
 		}
-		.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /OpponentsList.Destination.State.editor,
+			action: OpponentsList.Destination.Action.editor
+		) { store in
 			NavigationStack {
-				BowlerEditorView(store: scopedStore)
+				BowlerEditorView(store: store)
 			}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /OpponentsList.Destination.State.sortOrder,
+			action: OpponentsList.Destination.Action.sortOrder
+		) { store in
+			NavigationStack {
+				SortOrderView(store: store)
+			}
+			.presentationDetents([.medium])
 		}
 	}
 }

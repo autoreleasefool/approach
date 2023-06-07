@@ -26,8 +26,8 @@ public struct LeaguesList: Reducer {
 		public let bowler: Bowler.Summary
 
 		public var list: ResourceList<League.List, League.List.FetchRequest>.State
-		public var sortOrder: SortOrder<League.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
+		public var ordering: League.Ordering = .byRecentlyUsed
 		public var filter: League.List.FetchRequest.Filter
 
 		@PresentationState public var destination: Destination.State?
@@ -46,7 +46,7 @@ public struct LeaguesList: Reducer {
 				],
 				query: .init(
 					filter: filter,
-					ordering: sortOrder.ordering
+					ordering: ordering
 				),
 				listTitle: Strings.League.List.title,
 				emptyContent: .init(
@@ -63,6 +63,7 @@ public struct LeaguesList: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapLeague(id: League.ID)
 			case didTapFilterButton
+			case didTapSortOrderButton
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -71,7 +72,6 @@ public struct LeaguesList: Reducer {
 			case didLoadEditableLeague(League.Edit)
 			case didLoadSeriesLeague(League.SeriesHost)
 			case list(ResourceList<League.List, League.List.FetchRequest>.Action)
-			case sortOrder(SortOrder<League.Ordering>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -85,12 +85,14 @@ public struct LeaguesList: Reducer {
 			case editor(LeagueEditor.State)
 			case filters(LeaguesFilter.State)
 			case series(SeriesList.State)
+			case sortOrder(SortOrder<League.Ordering>.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
+			case sortOrder(SortOrder<League.Ordering>.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -102,6 +104,9 @@ public struct LeaguesList: Reducer {
 			}
 			Scope(state: /State.series, action: /Action.series) {
 				SeriesList()
+			}
+			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+				SortOrder()
 			}
 		}
 	}
@@ -115,10 +120,6 @@ public struct LeaguesList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
-			SortOrder()
-		}
-
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList { request in
 				leagues.list(
@@ -135,6 +136,10 @@ public struct LeaguesList: Reducer {
 				switch viewAction {
 				case .didTapFilterButton:
 					state.destination = .filters(.init(recurrence: state.filter.recurrence))
+					return .none
+
+				case .didTapSortOrderButton:
+					state.destination = .sortOrder(.init(initialValue: state.ordering))
 					return .none
 
 				case let .didTapLeague(id):
@@ -181,21 +186,20 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
-				case let .sortOrder(.delegate(delegateAction)):
+				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .didTapOption:
-						return state.list.updateQuery(
-							to: .init(filter: state.filter, ordering: state.sortOrder.ordering)
-						).map { .internal(.list($0)) }
+					case let .didTapOption(option):
+						state.ordering = option
+						return state.list.updateQuery(to: .init(filter: state.filter, ordering: state.ordering))
+							.map { .internal(.list($0)) }
 					}
 
 				case let .destination(.presented(.filters(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeFilters(recurrence):
 						state.filter.recurrence = recurrence
-						return state.list.updateQuery(
-							to: .init(filter: state.filter, ordering: state.sortOrder.ordering)
-						).map { .internal(.list($0)) }
+						return state.list.updateQuery(to: .init(filter: state.filter, ordering: state.ordering))
+							.map { .internal(.list($0)) }
 					}
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
@@ -213,9 +217,6 @@ public struct LeaguesList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .sortOrder(.internal), .sortOrder(.view):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.series(.internal))),
 						.destination(.presented(.series(.view))),
@@ -224,7 +225,9 @@ public struct LeaguesList: Reducer {
 						.destination(.presented(.filters(.binding))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
-						.destination(.presented(.editor(.binding))):
+						.destination(.presented(.editor(.binding))),
+						.destination(.presented(.sortOrder(.internal))),
+						.destination(.presented(.sortOrder(.view))):
 					return .none
 				}
 

@@ -24,7 +24,7 @@ extension Gear.Ordering: CustomStringConvertible {
 public struct GearList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Gear.Summary, Query>.State
-		public var sortOrder: SortOrder<Gear.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		public var ordering: Gear.Ordering = .byRecentlyUsed
 		public var kindFilter: Gear.Kind?
 
 		@PresentationState public var destination: Destination.State?
@@ -40,7 +40,7 @@ public struct GearList: Reducer {
 						try await gear.delete($0.id)
 					}),
 				],
-				query: .init(kind: kindFilter, sortOrder: sortOrder.ordering),
+				query: .init(kind: kindFilter, sortOrder: ordering),
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
 					image: .emptyGear,
@@ -55,12 +55,12 @@ public struct GearList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapFilterButton
+			case didTapSortOrderButton
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableGear(Gear.Edit)
 			case list(ResourceList<Gear.Summary, Query>.Action)
-			case sortOrder(SortOrder<Gear.Ordering>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -78,11 +78,13 @@ public struct GearList: Reducer {
 		public enum State: Equatable {
 			case editor(GearEditor.State)
 			case filters(GearFilter.State)
+			case sortOrder(SortOrder<Gear.Ordering>.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(GearEditor.Action)
 			case filters(GearFilter.Action)
+			case sortOrder(SortOrder<Gear.Ordering>.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -91,6 +93,9 @@ public struct GearList: Reducer {
 			}
 			Scope(state: /State.filters, action: /Action.filters) {
 				GearFilter()
+			}
+			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+				SortOrder()
 			}
 		}
 	}
@@ -103,10 +108,6 @@ public struct GearList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
-		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
-			SortOrder()
-		}
-
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList {
 				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.sortOrder)
@@ -119,6 +120,10 @@ public struct GearList: Reducer {
 				switch viewAction {
 				case .didTapFilterButton:
 					state.destination = .filters(.init(kind: state.kindFilter))
+					return .none
+
+				case .didTapSortOrderButton:
+					state.destination = .sortOrder(.init(initialValue: state.ordering))
 					return .none
 				}
 
@@ -148,10 +153,11 @@ public struct GearList: Reducer {
 						return .none
 					}
 
-				case let .sortOrder(.delegate(delegateAction)):
+				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .didTapOption:
-						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.sortOrder.ordering))
+					case let .didTapOption(option):
+						state.ordering = option
+						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.ordering))
 							.map { .internal(.list($0)) }
 					}
 
@@ -159,7 +165,7 @@ public struct GearList: Reducer {
 					switch delegateAction {
 					case let .didChangeFilters(filter):
 						state.kindFilter = filter
-						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.sortOrder.ordering))
+						return state.list.updateQuery(to: .init(kind: state.kindFilter, sortOrder: state.ordering))
 							.map { .internal(.list($0)) }
 					}
 
@@ -172,15 +178,14 @@ public struct GearList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .sortOrder(.internal), .sortOrder(.view):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.filters(.internal))),
 						.destination(.presented(.filters(.view))),
 						.destination(.presented(.filters(.binding))),
 						.destination(.presented(.editor(.internal))),
-						.destination(.presented(.editor(.view))):
+						.destination(.presented(.editor(.view))),
+						.destination(.presented(.sortOrder(.internal))),
+						.destination(.presented(.sortOrder(.view))):
 					return .none
 				}
 

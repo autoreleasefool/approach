@@ -20,6 +20,7 @@ public struct BowlersListView: View {
 
 	enum ViewAction {
 		case didTapConfigureStatisticsButton
+		case didTapSortOrderButton
 		case didTapBowler(Bowler.ID)
 	}
 
@@ -49,7 +50,7 @@ public struct BowlersListView: View {
 			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortOrderView(store: store.scope(state: \.sortOrder, action: /BowlersList.Action.InternalAction.sortOrder))
+					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
 			.sheet(
@@ -60,6 +61,16 @@ public struct BowlersListView: View {
 				NavigationStack {
 					BowlerEditorView(store: store)
 				}
+			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /BowlersList.Destination.State.sortOrder,
+				action: BowlersList.Destination.Action.sortOrder
+			) { store in
+				NavigationStack {
+					SortOrderView(store: store)
+				}
+				.presentationDetents([.medium])
 			}
 			.navigationDestination(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -77,6 +88,8 @@ extension BowlersList.Action {
 		switch action {
 		case .didTapConfigureStatisticsButton:
 			self = .view(.didTapConfigureStatisticsButton)
+		case .didTapSortOrderButton:
+			self = .view(.didTapSortOrderButton)
 		case let .didTapBowler(id):
 			self = .view(.didTapBowler(id))
 		}

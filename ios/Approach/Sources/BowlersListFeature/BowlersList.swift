@@ -27,7 +27,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 public struct BowlersList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
-		public var sortOrder: SortOrder<Bowler.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		public var ordering: Bowler.Ordering = .byRecentlyUsed
 
 		@PresentationState public var destination: Destination.State?
 
@@ -45,7 +45,7 @@ public struct BowlersList: Reducer {
 						}
 					),
 				],
-				query: sortOrder.ordering,
+				query: ordering,
 				listTitle: Strings.Bowler.List.title,
 				emptyContent: .init(
 					image: .emptyBowlers,
@@ -63,6 +63,7 @@ public struct BowlersList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapConfigureStatisticsButton
+			case didTapSortOrderButton
 			case didTapBowler(Bowler.ID)
 		}
 
@@ -71,7 +72,6 @@ public struct BowlersList: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
-			case sortOrder(SortOrder<Bowler.Ordering>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -84,11 +84,13 @@ public struct BowlersList: Reducer {
 		public enum State: Equatable {
 			case editor(BowlerEditor.State)
 			case leagues(LeaguesList.State)
+			case sortOrder(SortOrder<Bowler.Ordering>.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
+			case sortOrder(SortOrder<Bowler.Ordering>.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -97,6 +99,9 @@ public struct BowlersList: Reducer {
 			}
 			Scope(state: /State.leagues, action: /Action.leagues) {
 				LeaguesList()
+			}
+			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+				SortOrder()
 			}
 		}
 	}
@@ -110,10 +115,6 @@ public struct BowlersList: Reducer {
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
-			SortOrder()
-		}
-
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList(fetchResources: bowlers.list)
 		}
@@ -124,6 +125,10 @@ public struct BowlersList: Reducer {
 				switch viewAction {
 				case .didTapConfigureStatisticsButton:
 					// TODO: handle configure statistics button press
+					return .none
+
+				case .didTapSortOrderButton:
+					state.destination = .sortOrder(.init(initialValue: state.list.query))
 					return .none
 
 				case let .didTapBowler(id):
@@ -164,10 +169,11 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
-				case let .sortOrder(.delegate(delegateAction)):
+				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .didTapOption:
-						return state.list.updateQuery(to: state.sortOrder.ordering)
+					case let .didTapOption(option):
+						state.ordering = option
+						return state.list.updateQuery(to: option)
 							.map { .internal(.list($0)) }
 					}
 
@@ -186,14 +192,13 @@ public struct BowlersList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .sortOrder(.internal), .sortOrder(.view):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.leagues(.internal))),
-						.destination(.presented(.leagues(.view))):
+						.destination(.presented(.leagues(.view))),
+						.destination(.presented(.sortOrder(.internal))),
+						.destination(.presented(.sortOrder(.view))):
 					return .none
 				}
 
@@ -204,11 +209,5 @@ public struct BowlersList: Reducer {
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
 		}
-	}
-}
-
-extension BowlersList.State {
-	mutating func updateQuery() {
-		list.query = sortOrder.ordering
 	}
 }

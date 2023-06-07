@@ -7,17 +7,15 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 	public struct State: Equatable {
 		public let options: [Ordering] = Array(Ordering.allCases)
 		public var ordering: Ordering
-		public var isSheetPresented = false
 
-		public init(initialValue: Ordering? = nil) {
-			self.ordering = initialValue ?? Ordering.allCases.first!
+		public init(initialValue: Ordering) {
+			self.ordering = initialValue
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapOption(Ordering)
-			case setSheetPresented(isPresented: Bool)
 		}
 		public enum InternalAction: Equatable {}
 		public enum DelegateAction: Equatable {
@@ -31,19 +29,19 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 
 	public init() {}
 
-	public var body: some Reducer<State, Action> {
+	@Dependency(\.dismiss) var dismiss
+
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapOption(ordering):
 					state.ordering = ordering
-					state.isSheetPresented = false
-					return .send(.delegate(.didTapOption(ordering)))
-
-				case let .setSheetPresented(isPresented):
-					state.isSheetPresented = isPresented
-					return .none
+					return .concatenate(
+						.send(.delegate(.didTapOption(ordering))),
+						.run { _ in await dismiss() }
+					)
 				}
 
 			case let .internal(internalAction):
