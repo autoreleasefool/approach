@@ -16,22 +16,22 @@ public struct LeagueEditor: Reducer {
 	public struct State: Equatable {
 		public let hasAlleysEnabled: Bool
 
-		@BindingState public var name: String
-		@BindingState public var recurrence: League.Recurrence
-		@BindingState public var numberOfGames: Int?
-		@BindingState public var additionalPinfall: Int?
-		@BindingState public var additionalGames: Int?
-		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics
+		public var name: String
+		public var recurrence: League.Recurrence
+		public var numberOfGames: Int?
+		public var additionalPinfall: Int?
+		public var additionalGames: Int?
+		public var excludeFromStatistics: League.ExcludeFromStatistics
 		public var location: Alley.Summary?
 
-		@BindingState public var gamesPerSeries: GamesPerSeries
-		@BindingState public var hasAdditionalPinfall: Bool
+		public var gamesPerSeries: GamesPerSeries
+		public var hasAdditionalPinfall: Bool
+		public var shouldShowLocationSection: Bool
 
 		public let initialValue: LeagueForm.Value
 		public var _form: LeagueForm.State
 
-		public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State
-		public var isAlleyPickerPresented = false
+		@PresentationState public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: LeagueForm.Value) {
 			let numberOfGames: Int?
@@ -60,12 +60,12 @@ public struct LeagueEditor: Reducer {
 			self.gamesPerSeries = numberOfGames == nil ? .dynamic : .static
 			self.hasAdditionalPinfall = (additionalGames ?? 0) > 0
 
-			self.alleyPicker = .init(
-				selected: Set([self.location?.id].compactMap { $0 }),
-				query: .init(()),
-				limit: 1,
-				showsCancelHeaderButton: false
-			)
+			switch recurrence {
+			case .repeating:
+				self.shouldShowLocationSection = false
+			case .once:
+				self.shouldShowLocationSection = true
+			}
 
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
@@ -79,20 +79,28 @@ public struct LeagueEditor: Reducer {
 		public var id: Int { rawValue }
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
+	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case setAlleyPicker(isPresented: Bool)
+			case didTapAlley
+			case didChangeName(String)
+			case didChangeRecurrence(League.Recurrence)
+			case didChangeNumberOfGames(Int)
+			case didChangeAdditionalPinfall(Int?)
+			case didChangeAdditionalGames(Int?)
+			case didChangeExcludeFromStatistics(League.ExcludeFromStatistics)
+			case didChangeGamesPerSeries(LeagueEditor.GamesPerSeries)
+			case didChangeHasAdditionalPinfall(Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
+			case setLocationSection(isShown: Bool)
 			case form(LeagueForm.Action)
-			case alleyPicker(ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action)
+			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 		}
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
-		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -102,9 +110,7 @@ public struct LeagueEditor: Reducer {
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.uuid) var uuid
 
-	public var body: some Reducer<State, Action> {
-		BindingReducer()
-
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			LeagueForm()
 				.dependency(\.records, .init(
@@ -114,22 +120,66 @@ public struct LeagueEditor: Reducer {
 				))
 		}
 
-		Scope(state: \.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
-			ResourcePicker { _ in alleys.list(ordered: .byName) }
-		}
-
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .setAlleyPicker(isPresented):
-					state.isAlleyPickerPresented = isPresented
+				case .didTapAlley:
+					state.alleyPicker = .init(
+						selected: Set([state.location?.id].compactMap { $0 }),
+						query: .init(()),
+						limit: 1,
+						showsCancelHeaderButton: false
+					)
+					return .none
+
+				case let .didChangeName(name):
+					state.name = name
+					return .none
+
+				case let .didChangeRecurrence(recurrence):
+					state.recurrence = recurrence
+					switch state.recurrence {
+					case .once:
+						state.gamesPerSeries = .static
+						return .run { send in await send(.internal(.setLocationSection(isShown: true)), animation: .easeInOut) }
+					case .repeating:
+						state.location = nil
+						return .run { send in await send(.internal(.setLocationSection(isShown: false)), animation: .easeInOut) }
+					}
+
+				case let .didChangeNumberOfGames(numberOfGames):
+					state.numberOfGames = numberOfGames
+					return .none
+
+				case let .didChangeAdditionalPinfall(pinFall):
+					state.additionalPinfall = pinFall
+					return .none
+
+				case let .didChangeAdditionalGames(games):
+					state.additionalGames = games
+					return .none
+
+				case let .didChangeExcludeFromStatistics(exclude):
+					state.excludeFromStatistics = exclude
+					return .none
+
+				case let .didChangeGamesPerSeries(gamesPerSeries):
+					state.gamesPerSeries = gamesPerSeries
+					return .none
+
+				case let .didChangeHasAdditionalPinfall(hasAdditionalPinfall):
+					state.hasAdditionalPinfall = hasAdditionalPinfall
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .alleyPicker(.delegate(delegateAction)):
+				case let .setLocationSection(isShown):
+					state.shouldShowLocationSection = isShown
+					return .none
+
+				case let .alleyPicker(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
@@ -157,22 +207,16 @@ public struct LeagueEditor: Reducer {
 				case .form(.internal), .form(.view):
 					return .none
 
-				case .alleyPicker(.internal), .alleyPicker(.view):
+				case .alleyPicker(.presented(.internal)), .alleyPicker(.presented(.view)), .alleyPicker(.dismiss):
 					return .none
 				}
 
-			case .binding(\.view.$recurrence):
-				switch state.recurrence {
-				case .once:
-					state.gamesPerSeries = .static
-				case .repeating:
-					state.location = nil
-				}
-				return .none
-
-			case .delegate, .binding:
+			case .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
+			ResourcePicker { _ in alleys.list(ordered: .byName) }
 		}
 	}
 }

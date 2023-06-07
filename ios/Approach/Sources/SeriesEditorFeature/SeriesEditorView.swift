@@ -25,6 +25,7 @@ public struct SeriesEditorView: View {
 		let hasAlleysEnabled: Bool
 
 		let isEditing: Bool
+		let isDismissDisabled: Bool
 
 		init(state: SeriesEditor.State) {
 			self.date = state.date
@@ -37,6 +38,7 @@ public struct SeriesEditorView: View {
 			self.excludeLeagueFromStatistics = state.league.excludeFromStatistics
 
 			self.hasAlleysEnabled = state.hasAlleysEnabled
+			self.isDismissDisabled = state.alleyPicker != nil
 
 			switch state._form.value {
 			case .create: self.isEditing = false
@@ -127,6 +129,7 @@ public struct SeriesEditorView: View {
 					Alley.View(alley: alley)
 				}
 			}
+			.interactiveDismissDisabled(viewStore.isDismissDisabled)
 		}
 	}
 

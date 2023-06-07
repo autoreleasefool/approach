@@ -225,7 +225,6 @@ public struct LeaguesList: Reducer {
 						.destination(.presented(.filters(.binding))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
-						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.sortOrder(.internal))),
 						.destination(.presented(.sortOrder(.view))):
 					return .none
