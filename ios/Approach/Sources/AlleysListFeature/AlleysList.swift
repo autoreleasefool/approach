@@ -142,7 +142,7 @@ public struct AlleysList: Reducer {
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .didFinishEditing:
+					case .never:
 						return .none
 					}
 

@@ -70,9 +70,7 @@ public struct AlleyEditor: Reducer {
 			case didTapAddressField
 			case didTapManageLanes
 		}
-		public enum DelegateAction: Equatable {
-			case didFinishEditing
-		}
+		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didCreateLanes(TaskResult<Alley.Create>)
 			case didUpdateLanes(TaskResult<Alley.Edit>)
