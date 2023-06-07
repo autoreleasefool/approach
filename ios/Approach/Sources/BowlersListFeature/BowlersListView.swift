@@ -8,22 +8,19 @@ import SortOrderLibrary
 import StatisticsWidgetsFeature
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
 	struct ViewState: Equatable {
-		let selection: Bowler.ID?
-
-		init(state: BowlersList.State) {
-			self.selection = state.selection?.id
-		}
+		init(state: BowlersList.State) {}
 	}
 
 	enum ViewAction {
 		case didTapConfigureStatisticsButton
-		case setNavigation(selection: Bowler.ID?)
+		case didTapBowler(Bowler.ID)
 	}
 
 	public init(store: StoreOf<BowlersList>) {
@@ -35,25 +32,10 @@ public struct BowlersListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
 			) { bowler in
-				NavigationLink(
-					destination: IfLetStore(
-						store.scope(state: \.selection?.value, action: /BowlersList.Action.InternalAction.leagues)
-					) {
-						LeaguesListView(store: $0)
-					},
-					tag: bowler.id,
-					selection: viewStore.binding(
-						get: \.selection,
-						send: BowlersListView.ViewAction.setNavigation(selection:)
-					)
-				) {
-					HStack {
-						Text(bowler.name)
-						Spacer()
-						Text(format(average: bowler.average))
-							.font(.caption)
-					}
+				Button { viewStore.send(.didTapBowler(bowler.id)) } label: {
+					LabeledContent(bowler.name, value: format(average: bowler.average))
 				}
+				.buttonStyle(.navigation)
 			} header: {
 				Section {
 					Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
@@ -70,10 +52,21 @@ public struct BowlersListView: View {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /BowlersList.Action.InternalAction.sortOrder))
 				}
 			}
-			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /BowlersList.Destination.State.editor,
+				action: BowlersList.Destination.Action.editor
+			) { store in
 				NavigationStack {
 					BowlerEditorView(store: store)
 				}
+			}
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /BowlersList.Destination.State.leagues,
+				action: BowlersList.Destination.Action.leagues
+			) { store in
+				LeaguesListView(store: store)
 			}
 		}
 	}
@@ -84,8 +77,8 @@ extension BowlersList.Action {
 		switch action {
 		case .didTapConfigureStatisticsButton:
 			self = .view(.didTapConfigureStatisticsButton)
-		case let .setNavigation(selection):
-			self = .view(.setNavigation(selection: selection))
+		case let .didTapBowler(id):
+			self = .view(.didTapBowler(id))
 		}
 	}
 }

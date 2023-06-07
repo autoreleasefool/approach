@@ -29,8 +29,7 @@ public struct BowlersList: Reducer {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var sortOrder: SortOrder<Bowler.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
-		@PresentationState public var editor: BowlerEditor.State?
-		public var selection: Identified<Bowler.ID, LeaguesList.State>?
+		@PresentationState public var destination: Destination.State?
 
 		public let hasAvatarsEnabled: Bool
 
@@ -64,7 +63,7 @@ public struct BowlersList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapConfigureStatisticsButton
-			case setNavigation(selection: Bowler.ID?)
+			case didTapBowler(Bowler.ID)
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -72,14 +71,34 @@ public struct BowlersList: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
-			case editor(PresentationAction<BowlerEditor.Action>)
-			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
+	}
+
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case editor(BowlerEditor.State)
+			case leagues(LeaguesList.State)
+		}
+
+		public enum Action: Equatable {
+			case editor(BowlerEditor.Action)
+			case leagues(LeaguesList.Action)
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.editor, action: /Action.editor) {
+				BowlerEditor()
+			}
+			Scope(state: /State.leagues, action: /Action.leagues) {
+				LeaguesList()
+			}
+		}
 	}
 
 	public init() {}
@@ -90,7 +109,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}
@@ -107,17 +126,22 @@ public struct BowlersList: Reducer {
 					// TODO: handle configure statistics button press
 					return .none
 
-				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, state: &state)
-
-				case .setNavigation(selection: .none):
-					return navigate(to: nil, state: &state)
+				case let .didTapBowler(id):
+					guard let bowler = state.list.resources?[id: id] else { return .none }
+					state.destination = .leagues(.init(bowler: bowler.summary))
+					return .merge(
+						.run { _ in
+							try await clock.sleep(for: .seconds(1))
+							recentlyUsed.didRecentlyUseResource(.bowlers, id)
+						},
+						.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString)) }
+					)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadEditableBowler(bowler):
-					state.editor = .init(value: .edit(bowler))
+					state.destination = .editor(.init(value: .edit(bowler)))
 					return .none
 
 				case let .list(.delegate(delegateAction)):
@@ -133,7 +157,7 @@ public struct BowlersList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.editor = .init(value: .create(.defaultBowler(withId: uuid())))
+						state.destination = .editor(.init(value: .create(.defaultBowler(withId: uuid()))))
 						return .none
 
 					case .didDelete, .didTap:
@@ -147,13 +171,13 @@ public struct BowlersList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case let .editor(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case let .leagues(.delegate(delegateAction)):
+				case let .destination(.presented(.leagues(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
@@ -162,13 +186,14 @@ public struct BowlersList: Reducer {
 				case .list(.internal), .list(.view):
 					return .none
 
-				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.dismiss):
-					return .none
-
-				case .leagues(.internal), .leagues(.view):
-					return .none
-
 				case .sortOrder(.internal), .sortOrder(.view):
+					return .none
+
+				case .destination(.dismiss),
+						.destination(.presented(.editor(.internal))),
+						.destination(.presented(.editor(.view))),
+						.destination(.presented(.leagues(.internal))),
+						.destination(.presented(.leagues(.view))):
 					return .none
 				}
 
@@ -176,29 +201,8 @@ public struct BowlersList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
-			BowlerEditor()
-		}
-		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.leagues) {
-			Scope(state: \Identified<Bowler.ID, LeaguesList.State>.value, action: /.self) {
-				LeaguesList()
-			}
-		}
-	}
-
-	private func navigate(to id: Bowler.ID?, state: inout State) -> Effect<Action> {
-		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(bowler: selection.summary), id: selection.id)
-			return .merge(
-				.run { _ in
-					try await clock.sleep(for: .seconds(1))
-					recentlyUsed.didRecentlyUseResource(.bowlers, selection.id)
-				},
-				.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString)) }
-			)
-		} else {
-			state.selection = nil
-			return .none
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
 	}
 }

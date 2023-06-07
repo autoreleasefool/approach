@@ -52,7 +52,7 @@ public struct SeriesListView: View {
 			}
 			.navigationTitle(viewStore.leagueName)
 			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
-				NavigationView {
+				NavigationStack {
 					SeriesEditorView(store: scopedStore)
 				}
 			}
