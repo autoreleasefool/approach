@@ -21,12 +21,13 @@ public struct GamesSettings: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable {
+			case didTapDone
+		}
 		public enum DelegateAction: Equatable {
 			case movedBowlers(source: IndexSet, destination: Int)
 			case switchedGame(to: Int)
 			case switchedBowler(to: Bowler.ID)
-			case didFinish
 		}
 		public enum InternalAction: Equatable {}
 
@@ -35,13 +36,15 @@ public struct GamesSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Dependency(\.dismiss) var dismiss
+
 	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
-					return .none
+				case .didTapDone:
+					return .run { _ in await dismiss() }
 				}
 
 			case let .internal(internalAction):
@@ -124,7 +127,7 @@ extension GamesSettings.Action {
 	init(action: GamesSettingsView.ViewAction) {
 		switch action {
 		case .didTapDone:
-			self = .delegate(.didFinish)
+			self = .view(.didTapDone)
 		case let .didMoveBowlers(source, destination):
 			self = .delegate(.movedBowlers(source: source, destination: destination))
 		case let .didSwitchGame(index):

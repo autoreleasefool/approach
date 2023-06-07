@@ -42,7 +42,8 @@ public struct GameDetails: Reducer {
 		public enum DelegateAction: Equatable {
 			case didRequestOpponentPicker
 			case didRequestGearPicker
-			case didEditGame
+			case didEditGame(Game.Edit)
+			case didEditMatchPlay(MatchPlay.Edit?)
 			case didClearManualScore
 		}
 		public enum InternalAction: Equatable {
@@ -70,15 +71,15 @@ public struct GameDetails: Reducer {
 				switch viewAction {
 				case .didToggleLock:
 					state.game.locked.toNext()
-					return .send(.delegate(.didEditGame))
+					return .send(.delegate(.didEditGame(state.game)))
 
 				case .didToggleExclude:
 					state.game.excludeFromStatistics.toNext()
-					return .send(.delegate(.didEditGame))
+					return .send(.delegate(.didEditGame(state.game)))
 
 				case let .didSetMatchPlayResult(result):
 					state.game.matchPlay?.result = result
-					return state.saveMatchPlay()
+					return .send(.delegate(.didEditMatchPlay(state.game.matchPlay)))
 
 				case .didToggleScoringMethod:
 					return toggleScoringMethod(in: &state)
@@ -90,7 +91,7 @@ public struct GameDetails: Reducer {
 
 				case .didTapSaveScore:
 					state.game.score = max(min(state.alertScore, 450), 0)
-					return .send(.delegate(.didEditGame))
+					return .send(.delegate(.didEditGame(state.game)))
 
 				case .didTapCancelScore:
 					if state.didJustToggleScoringMethod {
@@ -117,7 +118,7 @@ public struct GameDetails: Reducer {
 					} else {
 						state.game.matchPlay?.opponentScore = nil
 					}
-					return state.saveMatchPlay()
+					return .send(.delegate(.didEditMatchPlay(state.game.matchPlay)))
 
 				case .didToggleMatchPlay:
 					if state.game.matchPlay == nil {
@@ -128,7 +129,7 @@ public struct GameDetails: Reducer {
 
 				case let .didSwipeGear(.delete, id):
 					state.game.gear.remove(id: id)
-					return .send(.delegate(.didEditGame))
+					return .send(.delegate(.didEditGame(state.game)))
 				}
 
 			case let .internal(internalAction):
@@ -160,13 +161,17 @@ public struct GameDetails: Reducer {
 	private func createMatchPlay(state: inout State) -> Effect<Action> {
 		let matchPlay = MatchPlay.Edit(gameId: state.game.id, id: uuid())
 		state.game.matchPlay = matchPlay
-		return .run { send in
-			do {
-				try await matchPlays.create(matchPlay)
-			} catch {
-				await send(.internal(.didUpdateMatchPlay(.failure(error))))
-			}
-		}
+		return .concatenate(
+			.run { send in
+				do {
+					try await matchPlays.create(matchPlay)
+				} catch {
+					await send(.internal(.didUpdateMatchPlay(.failure(error))))
+				}
+			},
+			.send(.delegate(.didEditMatchPlay(matchPlay)))
+		)
+		.cancellable(id: CancelID.saveMatchPlay)
 	}
 
 	private func deleteMatchPlay(state: inout State) -> Effect<Action> {
@@ -345,34 +350,6 @@ public struct GameDetailsView: View {
 				Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
 			}
 		})
-	}
-}
-
-extension GameDetails.State {
-	mutating func setMatchPlay(opponent: Bowler.Summary?) -> Effect<GameDetails.Action> {
-		game.matchPlay?.opponent = opponent
-		return saveMatchPlay()
-	}
-
-	mutating func saveMatchPlay() -> Effect<GameDetails.Action> {
-		@Dependency(\.matchPlays) var matchPlays
-		@Dependency(\.continuousClock) var clock
-
-		guard let matchPlay = game.matchPlay else { return .none }
-		return .run { send in
-			do {
-				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
-				try await matchPlays.update(matchPlay)
-			} catch {
-				await send(.internal(.didUpdateMatchPlay(.failure(error))))
-			}
-		}
-		.cancellable(id: GameDetails.CancelID.saveMatchPlay)
-	}
-
-	mutating func setGear(_ gear: [Gear.Summary]) -> Effect<GameDetails.Action> {
-		game.gear = .init(uniqueElements: gear)
-		return .send(.delegate(.didEditGame))
 	}
 }
 

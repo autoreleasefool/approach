@@ -126,9 +126,8 @@ public struct SeriesEditor: Reducer {
 				switch internalAction {
 				case let .alleyPicker(.delegate(delegateAction)):
 					switch delegateAction {
-					case .didFinishEditing:
-						state.isAlleyPickerPresented = false
-						state.location = state.alleyPicker.selectedResources?.first
+					case let .didChangeSelection(alley):
+						state.location = alley.first
 						return .none
 					}
 

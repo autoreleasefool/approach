@@ -15,11 +15,16 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didCloseEditor:
-				// TODO: close the games editor
-				return .none
+				return .run { _ in await dismiss() }
 
 			case .didOpenSettings:
-				state.sheet.transition(to: .settings)
+				guard let bowlers = state.bowlers else { return .none }
+				state.destination = .settings(.init(
+					bowlers: bowlers,
+					currentBowlerId: state.currentBowlerId,
+					numberOfGames: state.numberOfGames,
+					gameIndex: state.currentGameIndex
+				))
 				return .none
 			}
 

@@ -25,7 +25,12 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didTapBall:
-				state.sheet.transition(to: .ballPicker)
+				let bowlingBall = state.frames?[state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall?.id
+				state.destination = .ballPicker(.init(
+					selected: Set([bowlingBall].compactMap { $0 }),
+					query: state.currentBowlerId,
+					limit: 1
+				))
 				return .none
 
 			case .didEditRoll:
@@ -40,3 +45,4 @@ extension GamesEditor {
 		}
 	}
 }
+

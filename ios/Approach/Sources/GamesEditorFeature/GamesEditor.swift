@@ -20,26 +20,16 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
+	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.frames) var frames
 	@Dependency(\.games) var games
 	@Dependency(\.gear) var gear
+	@Dependency(\.matchPlays) var matchPlays
 	@Dependency(\.scoring) var scoring
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
 			GamesHeader()
-		}
-
-		Scope(state: \.ballPicker, action: /Action.internal..Action.InternalAction.ballPicker) {
-			BallPicker()
-		}
-
-		Scope(state: \.opponentPicker, action: /Action.internal..Action.InternalAction.opponentPicker) {
-			ResourcePicker { _ in bowlers.opponents(ordered: .byName) }
-		}
-
-		Scope(state: \.gearPicker, action: /Action.internal..Action.InternalAction.gearPicker) {
-			ResourcePicker { _ in gear.list(ordered: .byName) }
 		}
 
 		Reduce<State, Action> { state, action in
@@ -68,34 +58,16 @@ public struct GamesEditor: Reducer {
 						try await clock.sleep(for: .milliseconds(25))
 						await send(.internal(.adjustBackdrop))
 					}
-
-				case .didDismissOpenSheet:
-					state.sheet.finishTransition()
-					return .none
-
-				case let .setGameDetails(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .gameDetails)
-					return .none
-
-				case let .setBallPicker(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .ballPicker)
-					return .none
-
-				case let .setGamesSettings(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .settings)
-					return .none
-
-				case let .setOpponentPicker(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .opponentPicker)
-					return .none
-
-				case let .setGearPicker(isPresented):
-					state.sheet.handle(isPresented: isPresented, for: .gearPicker)
-					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .didDismissOpenSheet:
+					if let game = state.game {
+						state.destination = .gameDetails(.init(game: game))
+					}
+					return .none
+
 				case let .bowlersResponse(.success(bowlers)):
 					state.elementsRefreshing.remove(.bowlers)
 					state.bowlers = .init(uniqueElements: bowlers)
@@ -137,7 +109,7 @@ public struct GamesEditor: Reducer {
 
 				case let .gameResponse(.success(game)):
 					guard state.currentGameId == game?.id, let game else { return .none }
-					state._gameDetails = .init(game: game)
+					state.destination = .gameDetails(.init(game: game))
 					state.game = game
 					state.elementsRefreshing.remove(.game)
 					return .none
@@ -149,6 +121,10 @@ public struct GamesEditor: Reducer {
 
 				case .didUpdateGame(.failure):
 					// TODO: handle error saving game
+					return .none
+
+				case .didUpdateMatchPlay(.failure):
+					// TODO: handle error saving match play
 					return .none
 
 				case let .calculatedScore(score):
@@ -165,17 +141,20 @@ public struct GamesEditor: Reducer {
 					state.willAdjustLaneLayoutAt = date()
 					return .none
 
-				case let .opponentPicker(action):
+				case let .destination(.presented(.opponentPicker(action))):
 					return reduce(into: &state, opponentPickerAction: action)
 
-				case let .gearPicker(action):
+				case let .destination(.presented(.gearPicker(action))):
 					return reduce(into: &state, gearPickerAction: action)
 
-				case let .gameDetails(action):
+				case let .destination(.presented(.gameDetails(action))):
 					return reduce(into: &state, gameDetailsAction: action)
 
-				case let .ballPicker(action):
+				case let .destination(.presented(.ballPicker(action))):
 					return reduce(into: &state, ballPickerAction: action)
+
+				case let .destination(.presented(.settings(action))):
+					return reduce(into: &state, gamesSettingsAction: action)
 
 				case let .frameEditor(action):
 					return reduce(into: &state, frameEditorAction: action)
@@ -189,41 +168,37 @@ public struct GamesEditor: Reducer {
 				case let .gamesHeader(action):
 					return reduce(into: &state, gamesHeaderAction: action)
 
-				case let .gamesSettings(action):
-					return reduce(into: &state, gamesSettingsAction: action)
-
 				case let .gameDetailsHeader(action):
 					return reduce(into: &state, gamesDetailsHeaderAction: action)
+
+				case .destination(.dismiss):
+					return .send(.internal(.didDismissOpenSheet))
 				}
 
 			case .delegate:
 				return .none
 			}
 		}
-		.ifLet(\.gameDetails, action: /Action.internal..Action.InternalAction.gameDetails) {
-			GameDetails()
-		}
-		.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
-			GameDetailsHeader()
-		}
-		.ifLet(\.gamesSettings, action: /Action.internal..Action.InternalAction.gamesSettings) {
-			GamesSettings()
-		}
-		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
-			FrameEditor()
-		}
-		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
-			RollEditor()
-		}
-		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
-			ScoreSheet()
-		}
+//		.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
+//			GameDetailsHeader()
+//		}
+//		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
+//			FrameEditor()
+//		}
+//		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
+//			RollEditor()
+//		}
+//		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
+//			ScoreSheet()
+//		}
+//		.ifLet(\.destination, action: /Action.internal..Action.InternalAction.destination) {
+//			Destination()
+//		}
 	}
 }
 
 extension GamesEditor {
 	public struct State: Equatable {
-		public var sheet: SheetState = .presenting(.gameDetails)
 		public var sheetDetent: PresentationDetent = .height(.zero)
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
@@ -252,12 +227,9 @@ extension GamesEditor {
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
 		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
 
-		public var _gameDetails: GameDetails.State?
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
-		public var _ballPicker: BallPicker.State
-		public var _opponentPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State
-		public var _gearPicker: ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State
+		@PresentationState public var destination: Destination.State?
 
 		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
 			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
@@ -267,15 +239,6 @@ extension GamesEditor {
 			let currentBowlerId = bowlerIds.first!
 			self.currentBowlerId = currentBowlerId
 			self.currentGameId = bowlerGameIds[currentBowlerId]!.first!
-			self._ballPicker = .init(forBowler: currentBowlerId, selected: nil)
-			self._opponentPicker = .init(
-				selected: [],
-				query: .init(()),
-				limit: 1,
-				showsCancelHeaderButton: false
-			)
-			self._gearPicker = .init(selected: [], query: .init(())
-			)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -289,12 +252,6 @@ extension GamesEditor {
 			case didAppear
 			case didChangeDetent(PresentationDetent)
 			case didAdjustBackdropSize(CGSize)
-			case didDismissOpenSheet
-			case setGameDetails(isPresented: Bool)
-			case setBallPicker(isPresented: Bool)
-			case setOpponentPicker(isPresented: Bool)
-			case setGearPicker(isPresented: Bool)
-			case setGamesSettings(isPresented: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -303,20 +260,18 @@ extension GamesEditor {
 			case gameResponse(TaskResult<Game.Edit?>)
 			case didUpdateFrame(TaskResult<Never>)
 			case didUpdateGame(TaskResult<Never>)
+			case didUpdateMatchPlay(TaskResult<Never>)
 
+			case didDismissOpenSheet
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
 
-			case gamesSettings(GamesSettings.Action)
+			case destination(PresentationAction<Destination.Action>)
 			case gamesHeader(GamesHeader.Action)
 			case gameDetailsHeader(GameDetailsHeader.Action)
-			case gameDetails(GameDetails.Action)
 			case frameEditor(FrameEditor.Action)
 			case rollEditor(RollEditor.Action)
 			case scoreSheet(ScoreSheet.Action)
-			case ballPicker(BallPicker.Action)
-			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
-			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 		}
 
 		case view(ViewAction)
@@ -393,6 +348,19 @@ extension GamesEditor {
 				await send(.internal(.didUpdateGame(.failure(error))))
 			}
 		}.cancellable(id: game.id, cancelInFlight: true)
+	}
+
+	func save(matchPlay: MatchPlay.Edit?) -> Effect<Action> {
+		guard let matchPlay else { return .none }
+		return .run { send in
+			do {
+				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+				try await matchPlays.update(matchPlay)
+			} catch {
+				await send(.internal(.didUpdateMatchPlay(.failure(error))))
+			}
+		}
+		.cancellable(id: matchPlay.id, cancelInFlight: true)
 	}
 }
 

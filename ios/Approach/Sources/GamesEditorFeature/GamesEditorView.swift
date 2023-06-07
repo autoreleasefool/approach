@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import EquatableLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
@@ -25,12 +26,6 @@ public struct GamesEditorView: View {
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
 
-		let isGameDetailsPresented: Bool
-		let isBallPickerPresented: Bool
-		let isOpponentPickerPresented: Bool
-		let isGearPickerPresented: Bool
-		let isSettingsPresented: Bool
-
 		let isScoreSheetVisible: Bool
 
 		let manualScore: Int?
@@ -42,11 +37,6 @@ public struct GamesEditorView: View {
 			self.sheetDetent = state.sheetDetent
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
 			self.backdropSize = state.backdropSize
-			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
-			self.isBallPickerPresented = state.sheet == .presenting(.ballPicker)
-			self.isOpponentPickerPresented = state.sheet == .presenting(.opponentPicker)
-			self.isSettingsPresented = state.sheet == .presenting(.settings)
-			self.isGearPickerPresented = state.sheet == .presenting(.gearPicker)
 			self.isScoreSheetVisible = state.isScoreSheetVisible
 			self.bowlerName = state.game?.bowler.name
 			self.leagueName = state.game?.league.name
@@ -67,18 +57,6 @@ public struct GamesEditorView: View {
 		case didAppear
 		case didChangeDetent(PresentationDetent)
 		case didAdjustBackdropSize(CGSize)
-
-		case setGameDetails(isPresented: Bool)
-		case setBallPicker(isPresented: Bool)
-		case setOpponentPicker(isPresented: Bool)
-		case setGearPicker(isPresented: Bool)
-		case setSettings(isPresented: Bool)
-
-		case didDismissGameDetails
-		case didDismissBallPicker
-		case didDismissOpponentPicker
-		case didDismissGearPicker
-		case didDismissGamesSettings
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -142,58 +120,40 @@ public struct GamesEditorView: View {
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(
-				isPresented: viewStore.binding(get: \.isBallPickerPresented, send: ViewAction.setBallPicker(isPresented:)),
-				onDismiss: { viewStore.send(.didDismissBallPicker) },
-				content: {
-					ballPicker
-						.presentationDetents([.medium])
-				}
-			)
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GamesEditor.Destination.State.ballPicker,
+				action: GamesEditor.Destination.Action.ballPicker
+			) { (store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) in
+				ballPicker(store: store)
+			}
 			.sheet(
-				isPresented: viewStore.binding(get: \.isOpponentPickerPresented, send: ViewAction.setOpponentPicker(isPresented:)),
-				onDismiss: { viewStore.send(.didDismissOpponentPicker) },
-				content: {
-					opponentPicker
-						.presentationDetents([.large])
-				}
-			)
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GamesEditor.Destination.State.opponentPicker,
+				action: GamesEditor.Destination.Action.opponentPicker
+			) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+				opponentPicker(store: store)
+			}
 			.sheet(
-				isPresented: viewStore.binding(get: \.isGearPickerPresented, send: ViewAction.setGearPicker(isPresented:)),
-				onDismiss: { viewStore.send(.didDismissGearPicker) },
-				content: {
-					gearPicker
-						.presentationDetents([.large])
-				}
-			)
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GamesEditor.Destination.State.gearPicker,
+				action: GamesEditor.Destination.Action.gearPicker
+			) { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
+				gearPicker(store: store)
+			}
 			.sheet(
-				isPresented: viewStore.binding(get: \.isSettingsPresented, send: ViewAction.setSettings(isPresented:)),
-				onDismiss: { viewStore.send(.didDismissGamesSettings) },
-				content: {
-					gamesSettings
-						.presentationDetents([.large])
-				}
-			)
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GamesEditor.Destination.State.settings,
+				action: GamesEditor.Destination.Action.settings
+			) { (store: StoreOf<GamesSettings>) in
+				gamesSettings(store: store)
+			}
 			.sheet(
-				isPresented: viewStore.binding(get: \.isGameDetailsPresented, send: ViewAction.setGameDetails(isPresented:)),
-				onDismiss: { viewStore.send(.didDismissGameDetails) },
-				content: {
-					gameDetails
-						.padding(.top, -sectionHeaderContentSize.height)
-						.frame(minHeight: 50)
-						.edgesIgnoringSafeArea(.bottom)
-						.presentationDetents(
-							[
-								.height(minimumSheetContentSize.height + 40),
-								.medium,
-								.large,
-							],
-							selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
-						)
-						.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-						.interactiveDismissDisabled(true)
-						.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
-				}
-			)
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GamesEditor.Destination.State.gameDetails,
+				action: GamesEditor.Destination.Action.gameDetails
+			) { (store: StoreOf<GameDetails>) in
+				gameDetails(viewStore: viewStore, gameDetailsStore: store)
+			}
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
@@ -206,6 +166,69 @@ public struct GamesEditorView: View {
 					}
 				}
 			}
+		}
+	}
+
+	private func gameDetails(
+		viewStore: ViewStore<ViewState, ViewAction>,
+		gameDetailsStore: StoreOf<GameDetails>
+	) -> some View {
+		Form {
+			Section {
+				IfLetStore(store.scope(state: \.gameDetailsHeader, action: /GamesEditor.Action.InternalAction.gameDetailsHeader)) {
+					GameDetailsHeaderView(store: $0)
+						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+				}
+			} header: {
+				Color.clear
+					.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
+			}
+
+			GameDetailsView(store: gameDetailsStore)
+		}
+		.padding(.top, -sectionHeaderContentSize.height)
+		.frame(minHeight: 50)
+		.edgesIgnoringSafeArea(.bottom)
+		.presentationDetents(
+			[
+				.height(minimumSheetContentSize.height + 40),
+				.medium,
+				.large,
+			],
+			selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
+		)
+		.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+		.interactiveDismissDisabled(true)
+		.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
+	}
+
+	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) -> some View {
+		NavigationStack {
+			ResourcePickerView(store: store) {
+				Gear.View(gear: $0)
+			}
+		}
+	}
+
+	private func opponentPicker(store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) -> some View {
+		NavigationStack {
+			ResourcePickerView(store: store) {
+				Text($0.name)
+			}
+		}
+	}
+
+	private func gearPicker(store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) -> some View {
+		NavigationStack {
+			ResourcePickerView(store: store) {
+				Gear.View(gear: $0)
+			}
+		}
+	}
+
+	private func gamesSettings(store: StoreOf<GamesSettings>) -> some View {
+		NavigationStack {
+			GamesSettingsView(store: store)
 		}
 	}
 
@@ -224,60 +247,6 @@ public struct GamesEditorView: View {
 	private var scoreSheet: some View {
 		IfLetStore(store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)) {
 			ScoreSheetView(store: $0)
-		}
-	}
-
-	private var ballPicker: some View {
-		NavigationView {
-			BallPickerView(
-				store: store.scope(state: \.ballPicker, action: /GamesEditor.Action.InternalAction.ballPicker)
-			)
-		}
-	}
-
-	private var opponentPicker: some View {
-		NavigationView {
-			ResourcePickerView(
-				store: store.scope(state: \.opponentPicker, action: /GamesEditor.Action.InternalAction.opponentPicker)
-			) {
-				Text($0.name)
-			}
-		}
-	}
-
-	private var gearPicker: some View {
-		NavigationView {
-			ResourcePickerView(
-				store: store.scope(state: \.gearPicker, action: /GamesEditor.Action.InternalAction.gearPicker)
-			) {
-				Gear.View(gear: $0)
-			}
-		}
-	}
-
-	private var gamesSettings: some View {
-		NavigationView {
-			IfLetStore(store.scope(state: \.gamesSettings, action: /GamesEditor.Action.InternalAction.gamesSettings)) {
-				GamesSettingsView(store: $0)
-			}
-		}
-	}
-
-	private var gameDetails: some View {
-		Form {
-			Section {
-				IfLetStore(store.scope(state: \.gameDetailsHeader, action: /GamesEditor.Action.InternalAction.gameDetailsHeader)) {
-					GameDetailsHeaderView(store: $0)
-						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
-				}
-			} header: {
-				Color.clear
-					.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
-			}
-
-			IfLetStore(store.scope(state: \.gameDetails, action: /GamesEditor.Action.InternalAction.gameDetails)) {
-				GameDetailsView(store: $0)
-			}
 		}
 	}
 
@@ -300,26 +269,6 @@ extension GamesEditor.Action {
 		switch action {
 		case .didAppear:
 			self = .view(.didAppear)
-		case let .setGameDetails(isPresented):
-			self = .view(.setGameDetails(isPresented: isPresented))
-		case let .setBallPicker(isPresented):
-			self = .view(.setBallPicker(isPresented: isPresented))
-		case let .setOpponentPicker(isPresented):
-			self = .view(.setOpponentPicker(isPresented: isPresented))
-		case let .setGearPicker(isPresented):
-			self = .view(.setGearPicker(isPresented: isPresented))
-		case let .setSettings(isPresented):
-			self = .view(.setGamesSettings(isPresented: isPresented))
-		case .didDismissGameDetails:
-			self = .view(.didDismissOpenSheet)
-		case .didDismissBallPicker:
-			self = .view(.didDismissOpenSheet)
-		case .didDismissOpponentPicker:
-			self = .view(.didDismissOpenSheet)
-		case .didDismissGamesSettings:
-			self = .view(.didDismissOpenSheet)
-		case .didDismissGearPicker:
-			self = .view(.didDismissOpenSheet)
 		case let .didChangeDetent(newDetent):
 			self = .view(.didChangeDetent(newDetent))
 		case let .didAdjustBackdropSize(newSize):

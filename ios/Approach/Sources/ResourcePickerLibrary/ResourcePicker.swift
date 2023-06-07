@@ -21,16 +21,17 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			return selected.compactMap { resources[id: $0] }
 		}
 
+		public var initiallySelectedResources: [Resource]? {
+			guard let resources else { return nil }
+			return initialSelection.compactMap { resources[id: $0] }
+		}
+
 		public init(selected: Set<Resource.ID>, query: Query, limit: Int = 0, showsCancelHeaderButton: Bool = true) {
 			self.selected = selected
 			self.initialSelection = selected
 			self.limit = limit
 			self.showsCancelHeaderButton = showsCancelHeaderButton
 			self.query = query
-		}
-
-		public mutating func updateInitialSelection() {
-			self.initialSelection = selected
 		}
 	}
 
@@ -42,7 +43,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			case didTapResource(Resource)
 		}
 		public enum DelegateAction: Equatable {
-			case didFinishEditing
+			case didChangeSelection([Resource])
 		}
 		public enum InternalAction: Equatable {
 			case observeData
@@ -60,6 +61,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		self.observeResources = observeResources
 	}
 
+	@Dependency(\.dismiss) var dismiss
 	let observeResources: (Query) -> AsyncThrowingStream<[Resource], Error>
 
 	public var body: some Reducer<State, Action> {
@@ -73,11 +75,13 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 				case .didTapCancelButton:
 					state.selected = state.initialSelection
-					return .send(.delegate(.didFinishEditing))
+					return .concatenate(
+						.send(.delegate(.didChangeSelection(state.initiallySelectedResources ?? []))),
+						.run { _ in await dismiss() }
+					)
 
 				case .didTapSaveButton:
-					state.updateInitialSelection()
-					return .send(.delegate(.didFinishEditing))
+					return .run { _ in await dismiss() }
 
 				case let .didTapResource(resource):
 					if state.selected.contains(resource.id) {
@@ -85,12 +89,14 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 					} else if state.limit == 1 {
 						state.selected.removeAll()
 						state.selected.insert(resource.id)
-						state.updateInitialSelection()
-						return .send(.delegate(.didFinishEditing))
+						return .concatenate(
+							.send(.delegate(.didChangeSelection([resource]))),
+							.run { _ in await dismiss() }
+						)
 					} else if state.selected.count < state.limit || state.limit <= 0 {
 						state.selected.insert(resource.id)
 					}
-					return .none
+					return .send(.delegate(.didChangeSelection(state.selectedResources ?? [])))
 				}
 
 			case let .internal(internalAction):
