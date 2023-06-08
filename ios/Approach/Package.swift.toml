@@ -110,9 +110,9 @@ features = [ "StatisticsDetails" ]
 services = [ "Preference" ]
 
 [features.StatisticsDetails]
-repositories = [ "Statistics" ]
+repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
 services = [ "Notifications" ]
-libraries = [ "Equatable", "ResourcePicker" ]
+libraries = [ "DateTime", "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgets]
 libraries = [ "Assets", "Strings" ]

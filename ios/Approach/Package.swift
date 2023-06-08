@@ -492,10 +492,16 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
+				"BowlersRepositoryInterface",
+				"DateTimeLibrary",
 				"EquatableLibrary",
+				"GamesRepositoryInterface",
+				"LeaguesRepositoryInterface",
 				"NotificationsServiceInterface",
 				"ResourcePickerLibrary",
+				"SeriesRepositoryInterface",
 				"StatisticsRepositoryInterface",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(

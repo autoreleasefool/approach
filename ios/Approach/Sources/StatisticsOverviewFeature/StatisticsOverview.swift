@@ -9,7 +9,7 @@ public struct StatisticsOverview: Reducer {
 		public var isShowingOverviewHint: Bool
 		public var isShowingDetailsHint: Bool
 
-		@PresentationState public var details: StatisticsDetails.State?
+		@PresentationState public var destination: Destination.State?
 
 		public init() {
 			@Dependency(\.preferences) var preferences
@@ -27,12 +27,33 @@ public struct StatisticsOverview: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case details(PresentationAction<StatisticsDetails.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+	}
+
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case filter(StatisticsDetailsFilter.State)
+			case details(StatisticsDetails.State)
+		}
+
+		public enum Action: Equatable {
+			case filter(StatisticsDetailsFilter.Action)
+			case details(StatisticsDetails.Action)
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.filter, action: /Action.filter) {
+				StatisticsDetailsFilter()
+			}
+			Scope(state: /State.details, action: /Action.details) {
+				StatisticsDetails()
+			}
+		}
 	}
 
 	public init() {}
@@ -53,19 +74,29 @@ public struct StatisticsOverview: Reducer {
 					return .run { _ in preferences.setKey(.statisticsOverviewHintHidden, toBool: true) }
 
 				case .didTapViewDetailedStatistics:
-					state.details = .init()
+					state.destination = .filter(.init())
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .details(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.filter(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return.none
+					}
+
+				case let .destination(.presented(.details(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case .details(.presented(.internal)), .details(.presented(.view)), .details(.dismiss):
+				case .destination(.dismiss),
+						.destination(.presented(.filter(.internal))),
+						.destination(.presented(.filter(.view))),
+						.destination(.presented(.details(.internal))),
+						.destination(.presented(.details(.view))):
 					return .none
 				}
 
@@ -73,8 +104,8 @@ public struct StatisticsOverview: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$details, action: /Action.internal..Action.InternalAction.details) {
-			StatisticsDetails()
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
 	}
 }

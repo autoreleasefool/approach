@@ -48,18 +48,39 @@ public struct StatisticsOverviewView: View {
 				}
 
 				Section {
-					NavigationLinkStore(
-						store.scope(state: \.$details, action: { .internal(.details($0)) })
-					) {
-						viewStore.send(.didTapViewDetailedStatistics)
-					} destination: {
-						StatisticsDetailsView(store: $0)
-					} label: {
-						Text(Strings.Statistics.Overview.viewDetailedStatistics)
+					Button { viewStore.send(.didTapViewDetailedStatistics) } label: {
+						HStack {
+							Text(Strings.Statistics.Overview.viewDetailedStatistics)
+							Spacer()
+							Image(systemName: "chevron.forward")
+								.resizable()
+								.scaledToFit()
+								.frame(width: .tinyIcon, height: .tinyIcon)
+								.foregroundColor(Color(uiColor: .secondaryLabel))
+						}
+						.contentShape(Rectangle())
 					}
+					.buttonStyle(TappableElement())
 				}
 			}
 			.navigationTitle(Strings.Statistics.title)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsOverview.Destination.State.filter,
+			action: StatisticsOverview.Destination.Action.filter
+		) { store in
+			NavigationStack {
+				StatisticsDetailsFilterView(store: store)
+			}
+			.presentationDetents([.medium, .large])
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsOverview.Destination.State.details,
+			action: StatisticsOverview.Destination.Action.details
+		) { store in
+			StatisticsDetailsView(store: store)
 		}
 	}
 
