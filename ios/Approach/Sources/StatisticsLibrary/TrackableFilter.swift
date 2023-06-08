@@ -1,7 +1,7 @@
 import Foundation
 import ModelsLibrary
 
-public struct TrackableFilter {
+public struct TrackableFilter: Equatable {
 	public var source: Source
 	public var leagueFilter: LeagueFilter
 	public var seriesFilter: SeriesFilter
@@ -24,7 +24,7 @@ public struct TrackableFilter {
 }
 
 extension TrackableFilter {
-	public enum Source {
+	public enum Source: Equatable {
 		case bowler(Bowler.ID)
 		case league(League.ID)
 		case series(Series.ID)
@@ -35,7 +35,7 @@ extension TrackableFilter {
 // MARK: - Leagues
 
 extension TrackableFilter {
-	public struct LeagueFilter {
+	public struct LeagueFilter: Equatable {
 		public var recurrence: League.Recurrence?
 
 		public init(recurrence: League.Recurrence? = nil) {
@@ -47,7 +47,7 @@ extension TrackableFilter {
 // MARK: - Series
 
 extension TrackableFilter {
-	public struct SeriesFilter {
+	public struct SeriesFilter: Equatable {
 		public var startDate: Date?
 		public var endDate: Date?
 		public var alley: Alley.ID?
@@ -61,7 +61,7 @@ extension TrackableFilter {
 }
 
 extension TrackableFilter.SeriesFilter {
-	public enum AlleyFilter {
+	public enum AlleyFilter: Equatable {
 		case alley(Alley.ID)
 		case properties(Properties)
 	}
@@ -88,11 +88,10 @@ extension TrackableFilter.SeriesFilter.AlleyFilter {
 	}
 }
 
-
 // MARK: - Games
 
 extension TrackableFilter {
-	public struct GameFilter {
+	public struct GameFilter: Equatable {
 		public var lanes: LaneFilter?
 		public var gearUsed: Set<Gear.ID>
 		public var opponent: Bowler.ID?
@@ -106,7 +105,7 @@ extension TrackableFilter {
 }
 
 extension TrackableFilter.GameFilter {
-	public enum LaneFilter {
+	public enum LaneFilter: Equatable {
 		case lanes(Set<Lane.ID>)
 		case positions(Set<Lane.Position>)
 	}
@@ -115,7 +114,7 @@ extension TrackableFilter.GameFilter {
 // MARK: - Frames
 
 extension TrackableFilter {
-	public struct FrameFilter {
+	public struct FrameFilter: Equatable {
 		public var bowlingBallsUsed: Set<Gear.ID>
 
 		public init(bowlingBallsUsed: Set<Gear.ID> = []) {
