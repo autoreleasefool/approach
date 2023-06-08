@@ -36,7 +36,7 @@ public struct Settings: Reducer {
 
 	public init() {}
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.helpSettings, action: /Action.internal..Action.InternalAction.helpSettings) {
 			HelpSettings()
 		}

@@ -91,7 +91,7 @@ public struct AccessoriesOverview: Reducer {
 	@Dependency(\.gear) var gear
 	@Dependency(\.uuid) var uuid
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

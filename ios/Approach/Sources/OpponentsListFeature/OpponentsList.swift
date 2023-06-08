@@ -93,7 +93,7 @@ public struct OpponentsList: Reducer {
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList(fetchResources: bowlers.opponents(ordered:))
 		}

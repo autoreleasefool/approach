@@ -90,7 +90,7 @@ public struct SeriesList: Reducer {
 	@Dependency(\.series) var series
 	@Dependency(\.uuid) var uuid
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList {
 				series.list(bowledIn: $0, ordering: .byDate)

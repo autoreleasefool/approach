@@ -19,7 +19,7 @@ public struct HelpSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):

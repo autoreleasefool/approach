@@ -107,7 +107,7 @@ public struct GearList: Reducer {
 	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.uuid) var uuid
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList {
 				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.sortOrder)

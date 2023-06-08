@@ -96,7 +96,7 @@ public struct AlleyEditor: Reducer {
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.lanes) var lanes
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {

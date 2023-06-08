@@ -31,7 +31,7 @@ public struct GearFilter: Reducer {
 
 	@Dependency(\.dismiss) var dismiss
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
 		Reduce<State, Action> { state, action in

@@ -49,7 +49,7 @@ public struct AddressLookup: Reducer {
 	@Dependency(\.addressLookup) var addressLookup
 	@Dependency(\.dismiss) var dismiss
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
 		Reduce<State, Action> { state, action in

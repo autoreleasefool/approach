@@ -51,7 +51,7 @@ public struct GamesList: Reducer {
 
 	@Dependency(\.games) var games
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList { series in games.seriesGames(forId: series, ordering: .byIndex) }
 		}

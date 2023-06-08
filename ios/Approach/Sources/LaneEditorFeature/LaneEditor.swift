@@ -47,7 +47,7 @@ public struct LaneEditor: Reducer {
 
 	public init() {}
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
 		Reduce<State, Action> { _, action in

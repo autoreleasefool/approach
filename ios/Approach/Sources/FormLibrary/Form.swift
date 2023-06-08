@@ -107,7 +107,7 @@ public struct Form<
 
 	@Dependency(\.records) var records
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 

@@ -64,7 +64,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 	@Dependency(\.dismiss) var dismiss
 	let observeResources: (Query) -> AsyncThrowingStream<[Resource], Error>
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

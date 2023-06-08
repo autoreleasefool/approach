@@ -61,7 +61,7 @@ public struct TabbedContent: Reducer {
 	@Dependency(\.analytics) var analytics
 	@Dependency(\.featureFlags) var featureFlags
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
 			BowlersList()
 		}

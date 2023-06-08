@@ -55,7 +55,7 @@ public struct BowlerEditor: Reducer {
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.uuid) var uuid
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			BowlerForm()
 				.dependency(\.records, .init(

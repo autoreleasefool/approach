@@ -95,7 +95,7 @@ public struct ResourceList<
 
 	let fetchResources: (Q) -> AsyncThrowingStream<[R], Swift.Error>
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Scope(state: \.emptyState, action: /Action.internal..Action.InternalAction.empty) {
 			ResourceListEmpty()
 		}

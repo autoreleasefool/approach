@@ -60,7 +60,7 @@ public struct StatisticsOverview: Reducer {
 
 	@Dependency(\.preferences) var preferences
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

@@ -35,7 +35,7 @@ public struct StatisticsDetails: Reducer {
 	@Dependency(\.statistics) var statistics
 	@Dependency(\.uiDeviceNotifications) var uiDevice
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

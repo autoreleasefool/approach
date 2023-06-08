@@ -30,7 +30,7 @@ public struct AddLaneForm: Reducer {
 
 	public init() {}
 
-	public var body: some Reducer<State, Action> {
+	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
 		Reduce<State, Action> { state, action in
