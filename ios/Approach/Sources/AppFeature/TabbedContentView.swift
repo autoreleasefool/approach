@@ -39,7 +39,7 @@ public struct TabbedContentView: View {
 					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.didSelectTab)
 				) {
 					ForEach(viewStore.tabs) { tab in
-						NavigationView {
+						NavigationStack {
 							switch tab {
 							case .overview:
 								BowlersListView(
