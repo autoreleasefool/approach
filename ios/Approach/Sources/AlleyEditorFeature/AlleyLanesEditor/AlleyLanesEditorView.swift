@@ -61,24 +61,24 @@ public struct AlleyLanesEditorView: View {
 				}
 			}
 			.navigationTitle(Strings.Lane.List.title)
-			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
-			.sheet(store: store.scope(state: \.$addLaneForm, action: { .internal(.addLaneForm($0)) })) {
-				AddLaneFormView(store: $0)
-					.padding()
-					.overlay {
-						GeometryReader { proxy in
-							Color.clear
-								.preference(
-									key: HeightPreferenceKey.self,
-									value: proxy.size.height + safeAreaInsets.bottom
-								)
-						}
+		}
+		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
+		.sheet(store: store.scope(state: \.$addLaneForm, action: { .internal(.addLaneForm($0)) })) {
+			AddLaneFormView(store: $0)
+				.padding()
+				.overlay {
+					GeometryReader { proxy in
+						Color.clear
+							.preference(
+								key: HeightPreferenceKey.self,
+								value: proxy.size.height + safeAreaInsets.bottom
+							)
 					}
-					.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
-						addLaneSheetHeight = newHeight
-					}
-					.presentationDetents([.height(addLaneSheetHeight), .medium])
-			}
+				}
+				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
+					addLaneSheetHeight = newHeight
+				}
+				.presentationDetents([.height(addLaneSheetHeight), .medium])
 		}
 	}
 }

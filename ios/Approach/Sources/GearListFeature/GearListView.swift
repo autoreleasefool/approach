@@ -48,35 +48,35 @@ public struct GearListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GearList.Destination.State.editor,
-				action: GearList.Destination.Action.editor
-			) { store in
-				NavigationStack {
-					GearEditorView(store: store)
-				}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GearList.Destination.State.editor,
+			action: GearList.Destination.Action.editor
+		) { store in
+			NavigationStack {
+				GearEditorView(store: store)
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GearList.Destination.State.filters,
-				action: GearList.Destination.Action.filters
-			) { store in
-				NavigationStack {
-					GearFilterView(store: store)
-				}
-				.presentationDetents([.medium, .large])
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GearList.Destination.State.filters,
+			action: GearList.Destination.Action.filters
+		) { store in
+			NavigationStack {
+				GearFilterView(store: store)
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GearList.Destination.State.sortOrder,
-				action: GearList.Destination.Action.sortOrder
-			) { store in
-				NavigationStack {
-					SortOrderView(store: store)
-				}
-				.presentationDetents([.medium])
+			.presentationDetents([.medium, .large])
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GearList.Destination.State.sortOrder,
+			action: GearList.Destination.Action.sortOrder
+		) { store in
+			NavigationStack {
+				SortOrderView(store: store)
 			}
+			.presentationDetents([.medium])
 		}
 	}
 }

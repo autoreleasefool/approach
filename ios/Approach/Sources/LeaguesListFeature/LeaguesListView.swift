@@ -54,42 +54,42 @@ public struct LeaguesListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /LeaguesList.Destination.State.editor,
-				action: LeaguesList.Destination.Action.editor
-			) { store in
-				NavigationStack {
-					LeagueEditorView(store: store)
-				}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /LeaguesList.Destination.State.editor,
+			action: LeaguesList.Destination.Action.editor
+		) { store in
+			NavigationStack {
+				LeagueEditorView(store: store)
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /LeaguesList.Destination.State.filters,
-				action: LeaguesList.Destination.Action.filters
-			) { store in
-				NavigationStack {
-					LeaguesFilterView(store: store)
-				}
-				.presentationDetents([.medium, .large])
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /LeaguesList.Destination.State.filters,
+			action: LeaguesList.Destination.Action.filters
+		) { store in
+			NavigationStack {
+				LeaguesFilterView(store: store)
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /LeaguesList.Destination.State.sortOrder,
-				action: LeaguesList.Destination.Action.sortOrder
-			) { store in
-				NavigationStack {
-					SortOrderView(store: store)
-				}
-				.presentationDetents([.medium])
+			.presentationDetents([.medium, .large])
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /LeaguesList.Destination.State.sortOrder,
+			action: LeaguesList.Destination.Action.sortOrder
+		) { store in
+			NavigationStack {
+				SortOrderView(store: store)
 			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /LeaguesList.Destination.State.series,
-				action: LeaguesList.Destination.Action.series
-			) { store in
-				SeriesListView(store: store)
-			}
+			.presentationDetents([.medium])
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /LeaguesList.Destination.State.series,
+			action: LeaguesList.Destination.Action.series
+		) { store in
+			SeriesListView(store: store)
 		}
 	}
 }

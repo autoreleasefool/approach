@@ -79,14 +79,14 @@ public struct LeagueEditorView: View {
 				gamesSection(viewStore)
 				additionalPinfallSection(viewStore)
 			}
-			.navigationDestination(
-				store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
-			) { store in
-				ResourcePickerView(store: store) { alley in
-					Alley.View(alley: alley)
-				}
-			}
 			.interactiveDismissDisabled(viewStore.isDismissDisabled)
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
+		) { store in
+			ResourcePickerView(store: store) { alley in
+				Alley.View(alley: alley)
+			}
 		}
 	}
 

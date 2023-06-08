@@ -39,9 +39,9 @@ public struct GamesListView: View {
 				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.title)
-			.navigationDestination(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
-				GamesEditorView(store: store)
-			}
+		}
+		.navigationDestination(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
+			GamesEditorView(store: store)
 		}
 	}
 }

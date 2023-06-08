@@ -363,6 +363,7 @@ let package = Package(
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -448,6 +449,7 @@ let package = Package(
 				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(

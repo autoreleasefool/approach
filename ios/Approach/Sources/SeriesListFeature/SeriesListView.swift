@@ -40,22 +40,22 @@ public struct SeriesListView: View {
 				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.leagueName)
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /SeriesList.Destination.State.editor,
-				action: SeriesList.Destination.Action.editor
-			) { store in
-				NavigationStack {
-					SeriesEditorView(store: store)
-				}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /SeriesList.Destination.State.editor,
+			action: SeriesList.Destination.Action.editor
+		) { store in
+			NavigationStack {
+				SeriesEditorView(store: store)
 			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /SeriesList.Destination.State.games,
-				action: SeriesList.Destination.Action.games
-			) { store in
-				GamesListView(store: store)
-			}
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /SeriesList.Destination.State.games,
+			action: SeriesList.Destination.Action.games
+		) { store in
+			GamesListView(store: store)
 		}
 	}
 }

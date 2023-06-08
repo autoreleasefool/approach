@@ -72,12 +72,12 @@ public struct GearEditorView: View {
 					.buttonStyle(.navigation)
 				}
 			}
-			.navigationDestination(
-				store: store.scope(state: \.$bowlerPicker, action: { .internal(.bowlerPicker($0)) })
-			) {
-				ResourcePickerView(store: $0) { bowler in
-					Text(bowler.name)
-				}
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$bowlerPicker, action: { .internal(.bowlerPicker($0)) })
+		) {
+			ResourcePickerView(store: $0) { bowler in
+				Text(bowler.name)
 			}
 		}
 	}

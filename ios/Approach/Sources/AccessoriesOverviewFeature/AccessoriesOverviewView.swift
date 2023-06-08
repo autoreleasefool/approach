@@ -131,39 +131,39 @@ public struct AccessoriesOverviewView: View {
 					}
 				}
 			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /AccessoriesOverview.Destination.State.gearList,
-				action: AccessoriesOverview.Destination.Action.gearList
-			) { (store: StoreOf<GearList>) in
-				GearListView(store: store)
-			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /AccessoriesOverview.Destination.State.alleysList,
-				action: AccessoriesOverview.Destination.Action.alleysList
-			) { (store: StoreOf<AlleysList>) in
-				AlleysListView(store: store)
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /AccessoriesOverview.Destination.State.alleyEditor,
-				action: AccessoriesOverview.Destination.Action.alleyEditor
-			) { (store: StoreOf<AlleyEditor>) in
-				NavigationStack {
-					AlleyEditorView(store: store)
-				}
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /AccessoriesOverview.Destination.State.gearEditor,
-				action: AccessoriesOverview.Destination.Action.gearEditor
-			) { (store: StoreOf<GearEditor>) in
-				NavigationStack {
-					GearEditorView(store: store)
-				}
-			}
 			.task { await viewStore.send(.didObserveData).finish() }
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /AccessoriesOverview.Destination.State.gearList,
+			action: AccessoriesOverview.Destination.Action.gearList
+		) { (store: StoreOf<GearList>) in
+			GearListView(store: store)
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /AccessoriesOverview.Destination.State.alleysList,
+			action: AccessoriesOverview.Destination.Action.alleysList
+		) { (store: StoreOf<AlleysList>) in
+			AlleysListView(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /AccessoriesOverview.Destination.State.alleyEditor,
+			action: AccessoriesOverview.Destination.Action.alleyEditor
+		) { (store: StoreOf<AlleyEditor>) in
+			NavigationStack {
+				AlleyEditorView(store: store)
+			}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /AccessoriesOverview.Destination.State.gearEditor,
+			action: AccessoriesOverview.Destination.Action.gearEditor
+		) { (store: StoreOf<GearEditor>) in
+			NavigationStack {
+				GearEditorView(store: store)
+			}
 		}
 	}
 }

@@ -121,34 +121,6 @@ public struct GamesEditorView: View {
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GamesEditor.Destination.State.ballPicker,
-				action: GamesEditor.Destination.Action.ballPicker
-			) { (store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) in
-				ballPicker(store: store)
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GamesEditor.Destination.State.opponentPicker,
-				action: GamesEditor.Destination.Action.opponentPicker
-			) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
-				opponentPicker(store: store)
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GamesEditor.Destination.State.gearPicker,
-				action: GamesEditor.Destination.Action.gearPicker
-			) { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
-				gearPicker(store: store)
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GamesEditor.Destination.State.settings,
-				action: GamesEditor.Destination.Action.settings
-			) { (store: StoreOf<GamesSettings>) in
-				gamesSettings(store: store)
-			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /GamesEditor.Destination.State.gameDetails,
 				action: GamesEditor.Destination.Action.gameDetails
 			) { (store: StoreOf<GameDetails>) in
@@ -166,6 +138,34 @@ public struct GamesEditorView: View {
 					}
 				}
 			}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesEditor.Destination.State.ballPicker,
+			action: GamesEditor.Destination.Action.ballPicker
+		) { (store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) in
+			ballPicker(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesEditor.Destination.State.opponentPicker,
+			action: GamesEditor.Destination.Action.opponentPicker
+		) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+			opponentPicker(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesEditor.Destination.State.gearPicker,
+			action: GamesEditor.Destination.Action.gearPicker
+		) { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
+			gearPicker(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesEditor.Destination.State.settings,
+			action: GamesEditor.Destination.Action.settings
+		) { (store: StoreOf<GamesSettings>) in
+			gamesSettings(store: store)
 		}
 	}
 

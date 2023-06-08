@@ -108,7 +108,7 @@ extension StatisticsOverview.Action {
 #if DEBUG
 struct StatisticsOverviewPreviews: PreviewProvider {
 	static var previews: some View {
-		NavigationView {
+		NavigationStack {
 			StatisticsOverviewView(
 				store: .init(initialState: .init()) {
 					StatisticsOverview()

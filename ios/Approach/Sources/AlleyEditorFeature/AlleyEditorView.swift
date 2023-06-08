@@ -65,18 +65,18 @@ public struct AlleyEditorView: View {
 				Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
 					.listRowInsets(EdgeInsets())
 			}
-			.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
-				NavigationStack {
-					AddressLookupView(store: scopedStore)
-						.navigationTitle(Strings.Alley.Editor.Fields.Address.editorTitle)
-						.navigationBarTitleDisplayMode(.inline)
-				}
+		}
+		.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
+			NavigationStack {
+				AddressLookupView(store: scopedStore)
+					.navigationTitle(Strings.Alley.Editor.Fields.Address.editorTitle)
+					.navigationBarTitleDisplayMode(.inline)
 			}
-			.navigationDestination(
-				store: store.scope(state: \.$alleyLanesEditor, action: { .internal(.alleyLanesEditor($0)) })
-			) {
-				AlleyLanesEditorView(store: $0)
-			}
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$alleyLanesEditor, action: { .internal(.alleyLanesEditor($0)) })
+		) {
+			AlleyLanesEditorView(store: $0)
 		}
 	}
 
