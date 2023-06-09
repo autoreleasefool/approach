@@ -224,6 +224,124 @@ final class LeaguesRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: - Pickable
+
+	func testPickable_ReturnsAllLeagues() async throws {
+		// Given a database with two leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+
+		// Fetching the leagues
+		let leagues = withDependencies {
+			$0.database.reader = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			self.leagues.pickable(bowledBy: UUID(0), ordering: .byName)
+		}
+		var iterator = leagues.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the leagues
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Majors"),
+			.init(id: UUID(1), name: "Minors"),
+		])
+	}
+
+	func testPickable_FilterByRecurrence_ReturnsMatchingLeagues() async throws {
+		// Given a database with two leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", recurrence: .once)
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors", recurrence: .repeating)
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+
+		// Fetching the leagues by recurrence
+		let leagues = withDependencies {
+			$0.database.reader = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			self.leagues.pickable(bowledBy: UUID(0), withRecurrence: .once, ordering: .byName)
+		}
+		var iterator = leagues.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns one league
+		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Majors")])
+	}
+
+	func testPickable_FilterByBowler_ReturnsBowlerLeagues() async throws {
+		// Given a database with two leagues
+		let league1 = League.Database.mock(bowlerId: UUID(0), id: UUID(0), name: "Majors")
+		let league2 = League.Database.mock(bowlerId: UUID(1), id: UUID(1), name: "Minors")
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+
+		// Fetching the leagues by bowler
+		let leagues = withDependencies {
+			$0.database.reader = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			self.leagues.pickable(bowledBy: UUID(0), ordering: .byName)
+		}
+		var iterator = leagues.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns one league
+		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Majors")])
+	}
+
+	func testPickable_SortsByName() async throws {
+		// Given a database with three leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "B League")
+		let league2 = League.Database.mock(id: UUID(1), name: "A League")
+		let league3 = League.Database.mock(id: UUID(2), name: "C League")
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2, league3]))
+
+		// Fetching the leagues
+		let leagues = withDependencies {
+			$0.database.reader = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			self.leagues.pickable(bowledBy: UUID(0), ordering: .byName)
+		}
+		var iterator = leagues.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the leagues sorted by name
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), name: "A League"),
+			.init(id: UUID(0), name: "B League"),
+			.init(id: UUID(2), name: "C League"),
+		])
+	}
+
+	func testPickable_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
+		// Given a database with two leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "B League")
+		let league2 = League.Database.mock(id: UUID(1), name: "A League")
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
+		recentContinuation.yield([UUID(0), UUID(1)])
+
+		// Fetching the leagues
+		let leagues = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
+			$0.leagues = .liveValue
+		} operation: {
+			self.leagues.pickable(bowledBy: UUID(0), ordering: .byRecentlyUsed)
+		}
+		var iterator = leagues.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the leagues sorted by recently used ids
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "B League"),
+			.init(id: UUID(1), name: "A League"),
+		])
+	}
+
 	// MARK: - Series Host
 
 	func testSeriesHost_WhenLeagueExists_ReturnsLeague() async throws {

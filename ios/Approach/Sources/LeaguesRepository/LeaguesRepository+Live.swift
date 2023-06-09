@@ -15,6 +15,18 @@ extension LeaguesRepository: DependencyKey {
 		@Dependency(\.uuid) var uuid
 		@Dependency(\.date) var date
 
+		@Sendable func requestList(
+			bowledBy: Bowler.ID,
+			withRecurrence: League.Recurrence?,
+			ordered: League.Ordering
+		) -> QueryInterfaceRequest<League.Database> {
+			League.Database
+				.all()
+				.orderByName()
+				.bowled(byBowler: bowledBy)
+				.filter(byRecurrence: withRecurrence)
+		}
+
 		return Self(
 			list: { bowler, recurrence, ordering in
 				let leagues = database.reader().observe {
@@ -23,13 +35,23 @@ extension LeaguesRepository: DependencyKey {
 					let averageScore = games
 						.average(Game.Database.Columns.score)
 						.forKey("average")
-					return try League.Database
-						.all()
-						.orderByName()
-						.bowled(byBowler: bowler)
-						.filter(byRecurrence: recurrence)
+					return try requestList(bowledBy: bowler, withRecurrence: recurrence, ordered: ordering)
 						.annotated(with: averageScore)
 						.asRequest(of: League.List.self)
+						.fetchAll($0)
+				}
+
+				switch ordering {
+				case .byName:
+					return leagues
+				case .byRecentlyUsed:
+					return sort(leagues, byIds: recentlyUsed.observeRecentlyUsedIds(.leagues))
+				}
+			},
+			pickable: { bowler, recurrence, ordering in
+				let leagues = database.reader().observe {
+					try requestList(bowledBy: bowler, withRecurrence: recurrence, ordered: ordering)
+						.asRequest(of: League.Summary.self)
 						.fetchAll($0)
 				}
 
