@@ -9,8 +9,11 @@ public struct StatisticsDetails: Reducer {
 	public struct State: Equatable {
 		public var isListSheetVisible = true
 		public var staticValues: IdentifiedArrayOf<StaticValueGroup> = []
+		public var filter: TrackableFilter
 
-		public init() {}
+		public init(filter: TrackableFilter) {
+			self.filter = filter
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -42,9 +45,9 @@ public struct StatisticsDetails: Reducer {
 				switch viewAction {
 				case .didAppear:
 					return .merge(
-						.run { send in
+						.run { [filter = state.filter] send in
 							await send(.internal(.didLoadStaticValues(TaskResult {
-								try await statistics.load(for: .init(source: .bowler(UUID(0)))).staticValueGroups()
+								try await statistics.load(for: filter).staticValueGroups()
 							})))
 						},
 						.run { send in

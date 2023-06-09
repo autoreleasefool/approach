@@ -3,11 +3,14 @@ import ModelsLibrary
 import StatisticsLibrary
 
 public struct StatisticsRepository: Sendable {
+	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?
 	public var loadStaticValues: @Sendable (TrackableFilter) async throws -> [any Statistic]
 
 	public init(
+		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?,
 		loadStaticValues: @escaping @Sendable (TrackableFilter) async throws -> [any Statistic]
 	) {
+		self.loadSources = loadSources
 		self.loadStaticValues = loadStaticValues
 	}
 
@@ -18,6 +21,7 @@ public struct StatisticsRepository: Sendable {
 
 extension StatisticsRepository: TestDependencyKey {
 	public static var testValue = Self(
+		loadSources: { _ in unimplemented("\(Self.self).loadSources") },
 		loadStaticValues: { _ in unimplemented("\(Self.self).loadStaticValues") }
 	)
 }

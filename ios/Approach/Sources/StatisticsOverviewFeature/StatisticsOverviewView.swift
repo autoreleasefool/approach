@@ -3,6 +3,7 @@ import ComposableArchitecture
 import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct StatisticsOverviewView: View {
@@ -49,29 +50,20 @@ public struct StatisticsOverviewView: View {
 
 				Section {
 					Button { viewStore.send(.didTapViewDetailedStatistics) } label: {
-						HStack {
-							Text(Strings.Statistics.Overview.viewDetailedStatistics)
-							Spacer()
-							Image(systemName: "chevron.forward")
-								.resizable()
-								.scaledToFit()
-								.frame(width: .tinyIcon, height: .tinyIcon)
-								.foregroundColor(Color(uiColor: .secondaryLabel))
-						}
-						.contentShape(Rectangle())
+						Text(Strings.Statistics.Overview.viewDetailedStatistics)
 					}
-					.buttonStyle(TappableElement())
+					.buttonStyle(.navigation)
 				}
 			}
 			.navigationTitle(Strings.Statistics.title)
 		}
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsOverview.Destination.State.filter,
-			action: StatisticsOverview.Destination.Action.filter
+			state: /StatisticsOverview.Destination.State.sourcePicker,
+			action: StatisticsOverview.Destination.Action.sourcePicker
 		) { store in
 			NavigationStack {
-				StatisticsDetailsFilterView(store: store)
+				StatisticsSourcePickerView(store: store)
 			}
 			.presentationDetents([.medium, .large])
 		}

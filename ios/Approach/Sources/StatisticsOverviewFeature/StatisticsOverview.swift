@@ -37,18 +37,18 @@ public struct StatisticsOverview: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
-			case filter(StatisticsDetailsFilter.State)
+			case sourcePicker(StatisticsSourcePicker.State)
 			case details(StatisticsDetails.State)
 		}
 
 		public enum Action: Equatable {
-			case filter(StatisticsDetailsFilter.Action)
+			case sourcePicker(StatisticsSourcePicker.Action)
 			case details(StatisticsDetails.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.filter, action: /Action.filter) {
-				StatisticsDetailsFilter()
+			Scope(state: /State.sourcePicker, action: /Action.sourcePicker) {
+				StatisticsSourcePicker()
 			}
 			Scope(state: /State.details, action: /Action.details) {
 				StatisticsDetails()
@@ -74,17 +74,18 @@ public struct StatisticsOverview: Reducer {
 					return .run { _ in preferences.setKey(.statisticsOverviewHintHidden, toBool: true) }
 
 				case .didTapViewDetailedStatistics:
-					state.destination = .filter(.init())
+					state.destination = .sourcePicker(.init(source: nil))
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .destination(.presented(.filter(.delegate(delegateAction)))):
+				case let .destination(.presented(.sourcePicker(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .never:
-						return.none
+					case let .didChangeSource(source):
+						state.destination = .details(.init(filter: .init(source: source)))
 					}
+					return .none
 
 				case let .destination(.presented(.details(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -93,8 +94,8 @@ public struct StatisticsOverview: Reducer {
 					}
 
 				case .destination(.dismiss),
-						.destination(.presented(.filter(.internal))),
-						.destination(.presented(.filter(.view))),
+						.destination(.presented(.sourcePicker(.internal))),
+						.destination(.presented(.sourcePicker(.view))),
 						.destination(.presented(.details(.internal))),
 						.destination(.presented(.details(.view))):
 					return .none
