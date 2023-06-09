@@ -55,7 +55,6 @@ extension Game {
 	}
 }
 
-
 extension Game {
 	public struct List: Identifiable, Equatable, Codable {
 		public let id: Game.ID

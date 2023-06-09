@@ -14,6 +14,13 @@ import ViewsLibrary
 public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
+	struct ViewState: Equatable {
+		public var ordering: Bowler.Ordering = .byRecentlyUsed
+		init(state: BowlersList.State) {
+			self.ordering = state.ordering
+		}
+	}
+
 	enum ViewAction {
 		case didTapConfigureStatisticsButton
 		case didTapSortOrderButton
@@ -25,27 +32,29 @@ public struct BowlersListView: View {
 	}
 
 	public var body: some View {
-		ResourceListView(
-			store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
-		) { bowler in
-			Button { ViewStore(store.stateless).send(.view(.didTapBowler(bowler.id))) } label: {
-				LabeledContent(bowler.name, value: format(average: bowler.average))
-			}
-			.buttonStyle(.navigation)
-		} header: {
-			Section {
-				Button { ViewStore(store.stateless).send(.view(.didTapConfigureStatisticsButton)) } label: {
-					PlaceholderWidget(size: .medium)
+		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
+			ResourceListView(
+				store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
+			) { bowler in
+				Button { viewStore.send(.didTapBowler(bowler.id)) } label: {
+					LabeledContent(bowler.name, value: format(average: bowler.average))
 				}
-				.buttonStyle(TappableElement())
+				.buttonStyle(.navigation)
+			} header: {
+				Section {
+					Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
+						PlaceholderWidget(size: .medium)
+					}
+					.buttonStyle(TappableElement())
+				}
+				.listRowSeparator(.hidden)
+				.listRowInsets(EdgeInsets())
 			}
-			.listRowSeparator(.hidden)
-			.listRowInsets(EdgeInsets())
-		}
-		.navigationTitle(Strings.Bowler.List.title)
-		.toolbar {
-			ToolbarItem(placement: .navigationBarTrailing) {
-				SortButton(isActive: false) { ViewStore(store.stateless).send(.view(.didTapSortOrderButton)) }
+			.navigationTitle(Strings.Bowler.List.title)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
+				}
 			}
 		}
 		.sheet(
@@ -73,6 +82,19 @@ public struct BowlersListView: View {
 			action: BowlersList.Destination.Action.leagues
 		) { store in
 			LeaguesListView(store: store)
+		}
+	}
+}
+
+extension BowlersList.Action {
+	init(action: BowlersListView.ViewAction) {
+		switch action {
+		case .didTapConfigureStatisticsButton:
+			self = .view(.didTapConfigureStatisticsButton)
+		case .didTapSortOrderButton:
+			self = .view(.didTapSortOrderButton)
+		case let .didTapBowler(id):
+			self = .view(.didTapBowler(id))
 		}
 	}
 }
