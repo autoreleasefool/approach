@@ -7,17 +7,11 @@ extension Game.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Game.Database.databaseTableName
 }
 
-extension Game.Edit.SeriesInfo: TableRecord, FetchableRecord {
-	public static let databaseTableName = Series.Database.databaseTableName
-}
+extension Game.Edit.SeriesInfo: FetchableRecord {}
 
-extension Game.Edit.AlleyInfo: TableRecord, FetchableRecord {
-	public static let databaseTableName = Alley.Database.databaseTableName
-}
+extension Game.Edit.AlleyInfo: FetchableRecord {}
 
-extension Game.Edit.LaneInfo: TableRecord, FetchableRecord {
-	public static let databaseTableName = Lane.Database.databaseTableName
-}
+extension Game.Edit.LaneInfo: FetchableRecord {}
 
 extension DerivableRequest<Game.Database> {
 	func orderByIndex() -> Self {

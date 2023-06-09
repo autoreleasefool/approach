@@ -51,6 +51,4 @@ extension Series.Database {
 	}
 }
 
-extension Series.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Series.Database.databaseTableName
-}
+extension Series.Summary: FetchableRecord {}

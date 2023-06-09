@@ -38,6 +38,4 @@ extension Gear.Database {
 	}
 }
 
-extension Gear.Summary: TableRecord, FetchableRecord, EncodableRecord {
-	public static let databaseTableName = Gear.Database.databaseTableName
-}
+extension Gear.Summary: FetchableRecord {}

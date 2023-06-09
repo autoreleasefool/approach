@@ -51,6 +51,4 @@ extension Lane.Database {
 	}
 }
 
-extension Lane.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Lane.Database.databaseTableName
-}
+extension Lane.Summary: FetchableRecord {}

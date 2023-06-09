@@ -48,6 +48,15 @@ extension Game {
 }
 
 extension Game {
+	public struct Summary: Identifiable, Equatable, Codable {
+		public let id: Game.ID
+		public let index: Int
+		public let score: Int
+	}
+}
+
+
+extension Game {
 	public struct List: Identifiable, Equatable, Codable {
 		public let id: Game.ID
 		public let bowlerId: Bowler.ID

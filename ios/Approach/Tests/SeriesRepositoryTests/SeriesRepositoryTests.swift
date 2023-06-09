@@ -224,7 +224,7 @@ final class SeriesRepositoryTests: XCTestCase {
 			.init(
 				leagueId: UUID(0),
 				id: UUID(0),
-				numberOfGames: 4,
+				numberOfGames: 3,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -252,7 +252,7 @@ final class SeriesRepositoryTests: XCTestCase {
 			.init(
 				leagueId: UUID(0),
 				id: UUID(0),
-				numberOfGames: 4,
+				numberOfGames: 3,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,

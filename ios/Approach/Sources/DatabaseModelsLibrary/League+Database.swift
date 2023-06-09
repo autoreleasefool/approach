@@ -55,10 +55,6 @@ extension League.Database {
 	}
 }
 
-extension League.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = League.Database.databaseTableName
-}
+extension League.Summary: FetchableRecord {}
 
-extension League.List: TableRecord, FetchableRecord {
-	public static let databaseTableName = League.Database.databaseTableName
-}
+extension League.List: FetchableRecord {}

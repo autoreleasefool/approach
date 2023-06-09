@@ -25,6 +25,4 @@ extension Avatar.Database {
 	}
 }
 
-extension Avatar.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Avatar.Database.databaseTableName
-}
+extension Avatar.Summary: FetchableRecord {}

@@ -36,11 +36,11 @@ extension League.Create: PersistableRecord {
 	}
 }
 
-// MARK: - Base
+// MARK: - SeriesHost
 
-extension League.SeriesHost: TableRecord, FetchableRecord {
-	public static let databaseTableName = League.Database.databaseTableName
-}
+extension League.SeriesHost: FetchableRecord {}
+
+// MARK: - Base
 
 extension DerivableRequest<League.Database> {
 	func orderByName() -> Self {

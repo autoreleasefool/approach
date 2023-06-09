@@ -19,11 +19,9 @@ extension Alley.Edit: PersistableRecord, FetchableRecord {
 	}
 }
 
-extension Alley.EditWithLanes: TableRecord, FetchableRecord, EncodableRecord {}
+extension Alley.EditWithLanes: FetchableRecord {}
 
-extension Lane.Edit: FetchableRecord {
-	public static let databaseTableName = Lane.Database.databaseTableName
-}
+extension Lane.Edit: FetchableRecord {}
 
 extension DerivableRequest<Alley.Database> {
 	func orderByName() -> Self {

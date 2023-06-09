@@ -34,6 +34,4 @@ extension Location.Database {
 	}
 }
 
-extension Location.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Location.Database.databaseTableName
-}
+extension Location.Summary: FetchableRecord {}

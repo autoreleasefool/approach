@@ -34,10 +34,6 @@ extension Bowler.Database {
 	}
 }
 
-extension Bowler.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Bowler.Database.databaseTableName
-}
+extension Bowler.Summary: FetchableRecord {}
 
-extension Bowler.List: TableRecord, FetchableRecord {
-	public static let databaseTableName = Bowler.Database.databaseTableName
-}
+extension Bowler.List: FetchableRecord {}

@@ -53,6 +53,4 @@ extension Alley.Database {
 	}
 }
 
-extension Alley.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Alley.Database.databaseTableName
-}
+extension Alley.Summary: FetchableRecord {}

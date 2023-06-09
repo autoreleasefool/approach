@@ -7,13 +7,9 @@ extension Frame.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Frame.Database.databaseTableName
 }
 
-extension Frame.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = Frame.Database.databaseTableName
-}
+extension Frame.Summary: FetchableRecord {}
 
-extension Gear.Rolled: TableRecord, FetchableRecord {
-	public static let databaseTableName = Gear.Database.databaseTableName
-}
+extension Gear.Rolled: FetchableRecord {}
 
 extension DerivableRequest<Frame.Database> {
 	func orderByIndex() -> Self {

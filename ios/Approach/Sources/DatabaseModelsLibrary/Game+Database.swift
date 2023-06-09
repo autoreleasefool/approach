@@ -52,6 +52,6 @@ extension Game.Database {
 	}
 }
 
-extension Game.List: TableRecord, FetchableRecord {
-	public static let databaseTableName = Game.Database.databaseTableName
-}
+extension Game.List: FetchableRecord {}
+
+extension Game.Summary: FetchableRecord {}

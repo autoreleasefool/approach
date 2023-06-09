@@ -43,6 +43,4 @@ extension MatchPlay.Database {
 	}
 }
 
-extension MatchPlay.Summary: TableRecord, FetchableRecord {
-	public static let databaseTableName = MatchPlay.Database.databaseTableName
-}
+extension MatchPlay.Summary: FetchableRecord {}
