@@ -7,7 +7,7 @@ public struct ContentView: View {
 	let store: Store = {
 		return .init(
 			initialState: App.State(),
-			reducer: App()//._printChanges()
+			reducer: App()._printChanges()
 		)
 	}()
 
