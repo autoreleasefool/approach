@@ -83,6 +83,76 @@ final class GamesRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: List Summaries
+
+	func testSummariesList_ReturnsAllGames() async throws {
+		// Given a database with two games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+
+		// Fetching the games
+		let games = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.seriesGamesSummaries(forId: UUID(0), ordering: .byIndex)
+		}
+		var iterator = games.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the games
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), index: 0, score: 0),
+			.init(id: UUID(1), index: 1, score: 0),
+		])
+	}
+
+	func testSummariesList_FilterBySeries_ReturnsSeriesGames() async throws {
+		// Given a database with two games
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1)
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+
+		// Fetching the games by series
+		let games = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.seriesGamesSummaries(forId: UUID(0), ordering: .byIndex)
+		}
+		var iterator = games.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns one game
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), index: 0, score: 0),
+		])
+	}
+
+	func testSummariesList_SortsByIndex() async throws {
+		// Given a database with two games
+		let game1 = Game.Database.mock(id: UUID(0), index: 1)
+		let game2 = Game.Database.mock(id: UUID(1), index: 0)
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+
+		// Fetching the games
+		let games = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.seriesGamesSummaries(forId: UUID(0), ordering: .byIndex)
+		}
+		var iterator = games.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the games sorted by index
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), index: 0, score: 0),
+			.init(id: UUID(0), index: 1, score: 0),
+		])
+	}
+
 	// MARK: Edit
 
 	func testEdit_WhenGameExists_ReturnsGame() async throws {

@@ -12,15 +12,29 @@ extension GamesRepository: DependencyKey {
 		@Dependency(\.database) var database
 		@Dependency(\.matchPlays) var matchPlays
 
+		@Sendable func requestList(forSeries: Series.ID, ordering: Game.Ordering) -> QueryInterfaceRequest<Game.Database> {
+			switch ordering {
+			case .byIndex:
+				return Game.Database
+					.all()
+					.filter(bySeries: forSeries)
+					.order(Game.Database.Columns.index.asc)
+			}
+		}
+
 		return Self(
-			list: { series, _ in
+			list: { series, ordering in
 				database.reader().observe {
-					try Game.Database
-						.all()
-						.orderByIndex()
-						.filter(bySeries: series)
+					try requestList(forSeries: series, ordering: ordering)
 						.annotated(withRequired: Game.Database.bowler.select(Bowler.Database.Columns.id.forKey("bowlerId")))
 						.asRequest(of: Game.List.self)
+						.fetchAll($0)
+				}
+			},
+			summariesList: { series, ordering in
+				database.reader().observe {
+					try requestList(forSeries: series, ordering: ordering)
+						.asRequest(of: Game.Summary.self)
 						.fetchAll($0)
 				}
 			},
