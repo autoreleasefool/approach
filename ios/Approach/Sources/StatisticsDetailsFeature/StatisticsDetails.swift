@@ -144,7 +144,10 @@ public struct StatisticsDetails: Reducer {
 					@unknown default:
 						state.destination = .list(.init(staticValues: state.staticValues))
 					}
-					return .none
+					return .run { send in
+						try await clock.sleep(for: .milliseconds(300))
+						await send(.internal(.adjustBackdrop))
+					}
 
 				case let .destination(.presented(.list(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -167,8 +170,9 @@ public struct StatisticsDetails: Reducer {
 					}
 
 				case .destination(.dismiss):
-					state.destination = .list(.init(staticValues: state.staticValues))
-					return .none
+					return .run { [values = state.staticValues] send in
+						await send(.internal(.didLoadStaticValues(.success(values.elements))))
+					}
 
 				case .destination(.presented(.list(.internal))),
 						.destination(.presented(.list(.view))),
