@@ -194,6 +194,29 @@
 /* Statistics */
 
 "statistics.title" = "Statistics";
+"statistics.filter.title" = "Filter Statistics";
+"statistics.filter.timeline" = "Timeline";
+"statistics.filter.timeline.perSeries" = "Per Series";
+"statistics.filter.timeline.allTime" = "All Time";
+"statistics.filter.series.filterByStartDate" = "Filter by start date?";
+"statistics.filter.series.filterByEndDate" = "Filter by end date?";
+"statistics.filter.series.startDate" = "Start Date";
+"statistics.filter.series.endDate" = "End Date";
+"statistics.filter.series.alleyFilter" = "Alley Filter";
+"statistics.filter.series.byAlley" = "By Alley";
+"statistics.filter.series.byProperties" = "By Properties";
+"statistics.filter.series.alley" = "Alley";
+"statistics.filter.series.alleyProperties" = "Alley Properties";
+"statistics.filter.game.laneFilter" = "Lane Filter";
+"statistics.filter.game.byLanes" = "By Lanes";
+"statistics.filter.game.byPosition" = "By Position";
+"statistics.filter.game.lanes" = "Lanes";
+"statistics.filter.game.lanePosition" = "Lane Position";
+"statistics.filter.game.gearUsed" = "Gear Used";
+"statistics.filter.game.gearUsed.noneSelected" = "You haven't selected any gear.";
+"statistics.filter.game.opponent" = "Opponent";
+"statistics.filter.frame.ballRolled" = "Ball Rolled";
+"statistics.filter.frame.ballRolled.noneSelected" = "You haven't selected any bowling balls.";
 "statistics.categories.overall.title" = "Overall";
 "statistics.categories.onFirstRoll.title" = "On First Roll";
 "statistics.categories.fouls.title" = "Fouls";

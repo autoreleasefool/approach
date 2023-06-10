@@ -13,6 +13,7 @@ import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import ViewsLibrary
 
 public struct StatisticsSourcePicker: Reducer {
 	public struct State: Equatable {
@@ -21,6 +22,7 @@ public struct StatisticsSourcePicker: Reducer {
 		public var league: League.Summary?
 		public var series: Series.Summary?
 		public var game: Game.Summary?
+		public var isLoadingSources = false
 
 		@PresentationState public var destination: Destination.State?
 
@@ -99,12 +101,13 @@ public struct StatisticsSourcePicker: Reducer {
 				switch viewAction {
 				case .onAppear:
 					guard let source = state.initialSource else { return .none }
+					state.isLoadingSources = true
 					return .run { send in
 						await send(.internal(.didLoadSources(TaskResult {
 							try await statistics.loadSources(source)
 						})))
 					}
-					
+
 				case .didTapBowler:
 					state.destination = .bowlerPicker(.init(
 						selected: Set([state.bowler?.id].compactMap { $0 }),
@@ -158,6 +161,7 @@ public struct StatisticsSourcePicker: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadSources(.success(sources)):
+					state.isLoadingSources = false
 					state.bowler = sources?.bowler
 					state.league = sources?.league
 					state.series = sources?.series
@@ -257,6 +261,8 @@ public struct StatisticsSourcePickerView: View {
 		let isShowingSeriesPicker: Bool
 		let isShowingGamePicker: Bool
 
+		let isLoadingSources: Bool
+
 		init(state: StatisticsSourcePicker.State) {
 			self.isFilterApplyable = state.source != nil
 			self.selectedBowlerName = state.bowler?.name
@@ -271,10 +277,13 @@ public struct StatisticsSourcePickerView: View {
 			self.isShowingLeaguePicker = selectedBowlerName != nil
 			self.isShowingSeriesPicker = selectedLeagueName != nil
 			self.isShowingGamePicker = selectedSeriesDate != nil
+
+			self.isLoadingSources = state.isLoadingSources
 		}
 	}
 
 	enum ViewAction {
+		case onAppear
 		case didTapBowler
 		case didTapLeague
 		case didTapSeries
@@ -289,31 +298,35 @@ public struct StatisticsSourcePickerView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsSourcePicker.Action.init) { viewStore in
 			List {
-				Section {
-					Button { viewStore.send(.didTapBowler) } label: {
-						LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
-					}
-					.buttonStyle(.navigation)
-
-					if viewStore.isShowingLeaguePicker {
-						Button { viewStore.send(.didTapLeague) } label: {
-							LabeledContent(Strings.League.title, value: viewStore.selectedLeagueName ?? Strings.none)
+				if viewStore.isLoadingSources {
+					ListProgressView()
+				} else {
+					Section {
+						Button { viewStore.send(.didTapBowler) } label: {
+							LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
 						}
 						.buttonStyle(.navigation)
-					}
 
-					if viewStore.isShowingSeriesPicker {
-						Button { viewStore.send(.didTapSeries) } label: {
-							LabeledContent(Strings.Series.title, value: viewStore.selectedSeriesDate ?? Strings.none)
+						if viewStore.isShowingLeaguePicker {
+							Button { viewStore.send(.didTapLeague) } label: {
+								LabeledContent(Strings.League.title, value: viewStore.selectedLeagueName ?? Strings.none)
+							}
+							.buttonStyle(.navigation)
 						}
-						.buttonStyle(.navigation)
-					}
 
-					if viewStore.isShowingGamePicker {
-						Button { viewStore.send(.didTapGame) } label: {
-							LabeledContent(Strings.Game.title, value: viewStore.selectedGameIndex ?? Strings.none)
+						if viewStore.isShowingSeriesPicker {
+							Button { viewStore.send(.didTapSeries) } label: {
+								LabeledContent(Strings.Series.title, value: viewStore.selectedSeriesDate ?? Strings.none)
+							}
+							.buttonStyle(.navigation)
 						}
-						.buttonStyle(.navigation)
+
+						if viewStore.isShowingGamePicker {
+							Button { viewStore.send(.didTapGame) } label: {
+								LabeledContent(Strings.Game.title, value: viewStore.selectedGameIndex ?? Strings.none)
+							}
+							.buttonStyle(.navigation)
+						}
 					}
 				}
 			}
@@ -324,6 +337,7 @@ public struct StatisticsSourcePickerView: View {
 				}
 			}
 			.navigationTitle(Strings.Statistics.Filter.title)
+			.onAppear { viewStore.send(.onAppear) }
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -377,30 +391,8 @@ extension StatisticsSourcePicker.Action {
 			self = .view(.didTapSeries)
 		case .didTapGame:
 			self = .view(.didTapGame)
+		case .onAppear:
+			self = .view(.onAppear)
 		}
-	}
-}
-
-extension Bowler.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Bowler.title : Strings.Bowler.List.title
-	}
-}
-
-extension League.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.League.title : Strings.League.List.title
-	}
-}
-
-extension Series.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Series.title : Strings.Series.List.title
-	}
-}
-
-extension Game.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Game.title : Strings.Game.List.title
 	}
 }

@@ -7,19 +7,22 @@ public struct TrackableFilter: Equatable {
 	public var seriesFilter: SeriesFilter
 	public var gameFilter: GameFilter
 	public var frameFilter: FrameFilter
+	public var timeline: Timeline
 
 	public init(
 		source: Source,
 		leagueFilter: LeagueFilter = .init(),
 		seriesFilter: SeriesFilter = .init(),
 		gameFilter: GameFilter = .init(),
-		frameFilter: FrameFilter = .init()
+		frameFilter: FrameFilter = .init(),
+		timeline: Timeline = .allTime
 	) {
 		self.source = source
 		self.leagueFilter = leagueFilter
 		self.seriesFilter = seriesFilter
 		self.gameFilter = gameFilter
 		self.frameFilter = frameFilter
+		self.timeline = timeline
 	}
 }
 
@@ -120,5 +123,16 @@ extension TrackableFilter {
 		public init(bowlingBallsUsed: Set<Gear.ID> = []) {
 			self.bowlingBallsUsed = bowlingBallsUsed
 		}
+	}
+}
+
+// MARK: - Timeline
+
+extension TrackableFilter {
+	public enum Timeline: Int, Equatable, Identifiable, CaseIterable {
+		case perSeries
+		case allTime
+
+		public var id: Int { rawValue }
 	}
 }

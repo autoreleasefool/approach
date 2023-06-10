@@ -819,6 +819,66 @@ public enum Strings {
         public static let source = Strings.tr("Localizable", "statistics.details.filter.source", fallback: "Source")
       }
     }
+    public enum Filter {
+      /// Timeline
+      public static let timeline = Strings.tr("Localizable", "statistics.filter.timeline", fallback: "Timeline")
+      /// Filter Statistics
+      public static let title = Strings.tr("Localizable", "statistics.filter.title", fallback: "Filter Statistics")
+      public enum Frame {
+        /// Ball Rolled
+        public static let ballRolled = Strings.tr("Localizable", "statistics.filter.frame.ballRolled", fallback: "Ball Rolled")
+        public enum BallRolled {
+          /// You haven't selected any bowling balls.
+          public static let noneSelected = Strings.tr("Localizable", "statistics.filter.frame.ballRolled.noneSelected", fallback: "You haven't selected any bowling balls.")
+        }
+      }
+      public enum Game {
+        /// By Lanes
+        public static let byLanes = Strings.tr("Localizable", "statistics.filter.game.byLanes", fallback: "By Lanes")
+        /// By Position
+        public static let byPosition = Strings.tr("Localizable", "statistics.filter.game.byPosition", fallback: "By Position")
+        /// Gear Used
+        public static let gearUsed = Strings.tr("Localizable", "statistics.filter.game.gearUsed", fallback: "Gear Used")
+        /// Lane Filter
+        public static let laneFilter = Strings.tr("Localizable", "statistics.filter.game.laneFilter", fallback: "Lane Filter")
+        /// Lane Position
+        public static let lanePosition = Strings.tr("Localizable", "statistics.filter.game.lanePosition", fallback: "Lane Position")
+        /// Lanes
+        public static let lanes = Strings.tr("Localizable", "statistics.filter.game.lanes", fallback: "Lanes")
+        /// Opponent
+        public static let opponent = Strings.tr("Localizable", "statistics.filter.game.opponent", fallback: "Opponent")
+        public enum GearUsed {
+          /// You haven't selected any gear.
+          public static let noneSelected = Strings.tr("Localizable", "statistics.filter.game.gearUsed.noneSelected", fallback: "You haven't selected any gear.")
+        }
+      }
+      public enum Series {
+        /// Alley
+        public static let alley = Strings.tr("Localizable", "statistics.filter.series.alley", fallback: "Alley")
+        /// Alley Filter
+        public static let alleyFilter = Strings.tr("Localizable", "statistics.filter.series.alleyFilter", fallback: "Alley Filter")
+        /// Alley Properties
+        public static let alleyProperties = Strings.tr("Localizable", "statistics.filter.series.alleyProperties", fallback: "Alley Properties")
+        /// By Alley
+        public static let byAlley = Strings.tr("Localizable", "statistics.filter.series.byAlley", fallback: "By Alley")
+        /// By Properties
+        public static let byProperties = Strings.tr("Localizable", "statistics.filter.series.byProperties", fallback: "By Properties")
+        /// End Date
+        public static let endDate = Strings.tr("Localizable", "statistics.filter.series.endDate", fallback: "End Date")
+        /// Filter by end date?
+        public static let filterByEndDate = Strings.tr("Localizable", "statistics.filter.series.filterByEndDate", fallback: "Filter by end date?")
+        /// Filter by start date?
+        public static let filterByStartDate = Strings.tr("Localizable", "statistics.filter.series.filterByStartDate", fallback: "Filter by start date?")
+        /// Start Date
+        public static let startDate = Strings.tr("Localizable", "statistics.filter.series.startDate", fallback: "Start Date")
+      }
+      public enum Timeline {
+        /// All Time
+        public static let allTime = Strings.tr("Localizable", "statistics.filter.timeline.allTime", fallback: "All Time")
+        /// Per Series
+        public static let perSeries = Strings.tr("Localizable", "statistics.filter.timeline.perSeries", fallback: "Per Series")
+      }
+    }
     public enum Overview {
       /// View Detailed Statistics
       public static let viewDetailedStatistics = Strings.tr("Localizable", "statistics.overview.viewDetailedStatistics", fallback: "View Detailed Statistics")

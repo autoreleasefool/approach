@@ -23,6 +23,7 @@ public struct StatisticsOverviewView: View {
 		case didTapDismissOverviewHint
 		case didTapDismissDetailsHint
 		case didTapViewDetailedStatistics
+		case sourcePickerDidDismiss
 	}
 
 	public init(store: StoreOf<StatisticsOverview>) {
@@ -56,23 +57,25 @@ public struct StatisticsOverviewView: View {
 				}
 			}
 			.navigationTitle(Strings.Statistics.title)
-		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsOverview.Destination.State.sourcePicker,
-			action: StatisticsOverview.Destination.Action.sourcePicker
-		) { store in
-			NavigationStack {
-				StatisticsSourcePickerView(store: store)
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /StatisticsOverview.Destination.State.sourcePicker,
+				action: StatisticsOverview.Destination.Action.sourcePicker,
+				onDismiss: { viewStore.send(.sourcePickerDidDismiss) },
+				content: { store in
+					NavigationStack {
+						StatisticsSourcePickerView(store: store)
+					}
+					.presentationDetents([.medium, .large])
+				}
+			)
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /StatisticsOverview.Destination.State.details,
+				action: StatisticsOverview.Destination.Action.details
+			) { store in
+				StatisticsDetailsView(store: store)
 			}
-			.presentationDetents([.medium, .large])
-		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsOverview.Destination.State.details,
-			action: StatisticsOverview.Destination.Action.details
-		) { store in
-			StatisticsDetailsView(store: store)
 		}
 	}
 
@@ -114,6 +117,8 @@ extension StatisticsOverview.Action {
 			self = .view(.didTapDismissDetailsHint)
 		case .didTapViewDetailedStatistics:
 			self = .view(.didTapViewDetailedStatistics)
+		case .sourcePickerDidDismiss:
+			self = .view(.sourcePickerDidDismiss)
 		}
 	}
 }

@@ -2,6 +2,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import PreferenceServiceInterface
 import StatisticsDetailsFeature
+import StatisticsLibrary
 import StatisticsRepositoryInterface
 
 public struct StatisticsOverview: Reducer {
@@ -9,6 +10,7 @@ public struct StatisticsOverview: Reducer {
 		public var isShowingOverviewHint: Bool
 		public var isShowingDetailsHint: Bool
 
+		public var filter: TrackableFilter?
 		@PresentationState public var destination: Destination.State?
 
 		public init() {
@@ -24,6 +26,7 @@ public struct StatisticsOverview: Reducer {
 			case didTapDismissOverviewHint
 			case didTapDismissDetailsHint
 			case didTapViewDetailedStatistics
+			case sourcePickerDidDismiss
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -65,6 +68,11 @@ public struct StatisticsOverview: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .sourcePickerDidDismiss:
+					guard let filter = state.filter else { return .none }
+					state.destination = .details(.init(filter: filter))
+					return .none
+
 				case .didTapDismissDetailsHint:
 					state.isShowingDetailsHint = false
 					return .run { _ in preferences.setKey(.statisticsDetailsHintHidden, toBool: true) }
@@ -83,9 +91,10 @@ public struct StatisticsOverview: Reducer {
 				case let .destination(.presented(.sourcePicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSource(source):
-						state.destination = .details(.init(filter: .init(source: source)))
+						state.filter = .init(source: source)
+						state.destination = nil
+						return .none
 					}
-					return .none
 
 				case let .destination(.presented(.details(.delegate(delegateAction)))):
 					switch delegateAction {

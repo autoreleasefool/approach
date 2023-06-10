@@ -1,26 +1,27 @@
+import AssetsLibrary
 import ComposableArchitecture
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct StatisticsDetailsView: View {
 	let store: StoreOf<StatisticsDetails>
 
+	@State private var sectionHeaderContentSize: CGSize = .zero
+
 	struct ViewState: Equatable {
-		let isListSheetVisible: Bool
-		let staticValues: IdentifiedArrayOf<StaticValueGroup>
+		let sources: TrackableFilter.Sources?
 
 		init(state: StatisticsDetails.State) {
-			self.isListSheetVisible = state.isListSheetVisible
-			self.staticValues = state.staticValues
+			self.sources = state.sources
 		}
 	}
 
 	enum ViewAction {
-		case didAppear
-		case didTapStaticValue(id: String)
-		case setListSheet(isPresented: Bool)
+		case onAppear
+		case didTapSourcePicker
 	}
 
 	public init(store: StoreOf<StatisticsDetails>) {
@@ -29,49 +30,88 @@ public struct StatisticsDetailsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsDetails.Action.init) { viewStore in
-			Text("Hello")
-				.toolbar(.hidden, for: .navigationBar)
-				.task { await viewStore.send(.didAppear).finish() }
-				.sheet(isPresented: viewStore.binding(
-					get: \.isListSheetVisible,
-					send: ViewAction.setListSheet(isPresented:))
-				) {
-					List {
-						ForEach(viewStore.staticValues) { group in
-							Section(group.category.title) {
-								ForEach(group.values) { staticValue in
-									Button { viewStore.send(.didTapStaticValue(id: staticValue.id)) } label: {
-										HStack {
-											LabeledContent(staticValue.title, value: staticValue.value)
-											Image(systemName: "chevron.forward")
-												.resizable()
-												.scaledToFit()
-												.frame(width: .tinyIcon, height: .tinyIcon)
-												.foregroundColor(Color(uiColor: .secondaryLabel))
-										}
-										.contentShape(Rectangle())
-									}
-									.buttonStyle(TappableElement())
-								}
-							}
-						}
+			StatisticsDetailsChartsView(
+				store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
+			)
+			.toolbar(.hidden, for: .tabBar)
+			.toolbar(.hidden, for: .navigationBar)
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /StatisticsDetails.Destination.State.list,
+				action: StatisticsDetails.Destination.Action.list
+			) { store in
+				List {
+					if let sources = viewStore.sources {
+						sourcesView(sources, viewStore)
 					}
-					.presentationDetents([.medium])
-					.interactiveDismissDisabled()
+
+					StatisticsDetailsListView(store: store)
 				}
+				.padding(.top, -sectionHeaderContentSize.height)
+				.presentationDragIndicator(.hidden)
+				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+				.presentationDetents([.medium, .large])
+				.interactiveDismissDisabled()
+			}
+			.sheet(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /StatisticsDetails.Destination.State.sourcePicker,
+				action: StatisticsDetails.Destination.Action.sourcePicker
+			) { store in
+				NavigationStack {
+					StatisticsSourcePickerView(store: store)
+				}
+				.presentationDetents([.medium, .large])
+			}
+			.task { await viewStore.send(.onAppear).finish() }
 		}
+	}
+
+	private func sourcesView(
+		_ sources: TrackableFilter.Sources,
+		_ viewStore: ViewStore<ViewState, ViewAction>
+	) -> some View {
+		Section {
+			HStack {
+				VStack {
+					if let bowler = sources.bowler {
+						Text(bowler.name)
+							.font(.headline)
+					}
+
+					if let league = sources.league {
+						Text(league.name)
+							.font(.subheadline)
+					}
+				}
+
+				Button { viewStore.send(.didTapSourcePicker) } label: {
+					Image(systemName: "chevron.down.circle")
+						.resizable()
+						.scaledToFit()
+						.frame(width: .tinyIcon, height: .tinyIcon)
+						.padding()
+				}
+				.buttonStyle(TappableElement())
+			}
+		} header: {
+			Color.clear
+				.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
+		}
+		.listRowInsets(EdgeInsets())
+		.listRowBackground(Color.clear)
 	}
 }
 
 extension StatisticsDetails.Action {
 	init(action: StatisticsDetailsView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
-		case let .didTapStaticValue(id):
-			self = .view(.didTapStaticValue(id: id))
-		case let .setListSheet(isPresented):
-			self = .view(.setListSheet(isPresented: isPresented))
+		case .onAppear:
+			self = .view(.onAppear)
+		case .didTapSourcePicker:
+			self = .view(.didTapSourcePicker)
 		}
 	}
 }
+
+private struct SectionHeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
