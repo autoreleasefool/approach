@@ -12,7 +12,6 @@ import SwiftUIExtensionsLibrary
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
 
-	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@State private var headerContentSize: CGSize = .zero
 	@State private var frameContentSize: CGSize = .zero
@@ -129,14 +128,8 @@ public struct GamesEditorView: View {
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
-			.onAppear {
-				viewStore.send(.didAppear)
-				Task.detached {
-					try await clock.sleep(for: .milliseconds(150))
-					Task.detached { @MainActor in
-						viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
-					}
-				}
+			.onChange(of: sheetContentSize) { _ in
+				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
 		}
 		.sheet(
