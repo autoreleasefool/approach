@@ -69,15 +69,19 @@ public struct StatisticsDetailsChartsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsDetailsCharts.Action.init) { viewStore in
-			Picker(
-				Strings.Statistics.Filter.timeline,
-				selection: viewStore.binding(get: \.timeline, send: ViewAction.didChangeTimeline)
-			) {
-				ForEach(TrackableFilter.Timeline.allCases) {
-					Text(String(describing: $0)).tag($0)
+			VStack {
+				Picker(
+					Strings.Statistics.Filter.timeline,
+					selection: viewStore.binding(get: \.timeline, send: ViewAction.didChangeTimeline)
+				) {
+					ForEach(TrackableFilter.Timeline.allCases) {
+						Text(String(describing: $0)).tag($0)
+					}
 				}
+				.pickerStyle(.segmented)
+
+				Spacer()
 			}
-			.pickerStyle(.segmented)
 		}
 	}
 }

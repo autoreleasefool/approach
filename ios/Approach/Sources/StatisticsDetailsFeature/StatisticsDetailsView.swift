@@ -9,19 +9,31 @@ import ViewsLibrary
 public struct StatisticsDetailsView: View {
 	let store: StoreOf<StatisticsDetails>
 
+	@Environment(\.continuousClock) private var clock
+	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@State private var sheetContentSize: CGSize = .zero
+	@State private var windowContentSize: CGSize = .zero
 	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
+		let sheetDetent: PresentationDetent
 		let sources: TrackableFilter.Sources?
+		let willAdjustLaneLayoutAt: Date
+		let backdropSize: CGSize
 
 		init(state: StatisticsDetails.State) {
+			self.sheetDetent = state.sheetDetent
 			self.sources = state.sources
+			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
+			self.backdropSize = state.backdropSize
 		}
 	}
 
 	enum ViewAction {
 		case onAppear
 		case didTapSourcePicker
+		case didChangeDetent(PresentationDetent)
+		case didAdjustBackdropSize(CGSize)
 	}
 
 	public init(store: StoreOf<StatisticsDetails>) {
@@ -30,11 +42,21 @@ public struct StatisticsDetailsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsDetails.Action.init) { viewStore in
-			StatisticsDetailsChartsView(
-				store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
-			)
-			.toolbar(.hidden, for: .tabBar)
-			.toolbar(.hidden, for: .navigationBar)
+			VStack {
+				StatisticsDetailsChartsView(
+					store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
+				)
+				.frame(
+					idealWidth: viewStore.backdropSize.width,
+					maxHeight: viewStore.backdropSize.height == .zero ? nil : viewStore.backdropSize.height
+				)
+				.background(Color.black)
+
+				Spacer()
+			}
+			.background(Color.red)
+			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
+			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /StatisticsDetails.Destination.State.list,
@@ -50,8 +72,15 @@ public struct StatisticsDetailsView: View {
 				.padding(.top, -sectionHeaderContentSize.height)
 				.presentationDragIndicator(.hidden)
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-				.presentationDetents([.medium, .large])
+				.presentationDetents(
+					[
+						.medium,
+						.large,
+					],
+					selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
+				)
 				.interactiveDismissDisabled()
+				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 			}
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -62,6 +91,12 @@ public struct StatisticsDetailsView: View {
 					StatisticsSourcePickerView(store: store)
 				}
 				.presentationDetents([.medium, .large])
+			}
+			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
+				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
+			}
+			.onChange(of: sheetContentSize) { _ in
+				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
 			.task { await viewStore.send(.onAppear).finish() }
 		}
@@ -101,6 +136,14 @@ public struct StatisticsDetailsView: View {
 		.listRowInsets(EdgeInsets())
 		.listRowBackground(Color.clear)
 	}
+
+	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
+		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
+		return .init(
+			width: windowContentSize.width,
+			height: windowContentSize.height - sheetContentSize.height - safeAreaInsets.bottom
+		)
+	}
 }
 
 extension StatisticsDetails.Action {
@@ -110,8 +153,14 @@ extension StatisticsDetails.Action {
 			self = .view(.onAppear)
 		case .didTapSourcePicker:
 			self = .view(.didTapSourcePicker)
+		case let .didChangeDetent(newDetent):
+			self = .view(.didChangeDetent(newDetent))
+		case let .didAdjustBackdropSize(newSize):
+			self = .view(.didAdjustBackdropSize(newSize))
 		}
 	}
 }
 
 private struct SectionHeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

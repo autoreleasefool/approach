@@ -12,10 +12,17 @@ public struct StatisticsDetails: Reducer {
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
 
+		public var sheetDetent: PresentationDetent = .medium
+		public var willAdjustLaneLayoutAt: Date
+		public var backdropSize: CGSize = .zero
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(filter: TrackableFilter) {
 			self.filter = filter
+
+			@Dependency(\.date) var date
+			self.willAdjustLaneLayoutAt = date()
 		}
 	}
 
@@ -23,12 +30,15 @@ public struct StatisticsDetails: Reducer {
 		public enum ViewAction: Equatable {
 			case onAppear
 			case didTapSourcePicker
+			case didChangeDetent(PresentationDetent)
+			case didAdjustBackdropSize(CGSize)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
 
+			case adjustBackdrop
 			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
 			case didLoadStaticValues(TaskResult<[StaticValueGroup]>)
 			case orientationChange(UIDeviceOrientation)
@@ -62,6 +72,8 @@ public struct StatisticsDetails: Reducer {
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
+	@Dependency(\.date) var date
 	@Dependency(\.statistics) var statistics
 	@Dependency(\.uiDeviceNotifications) var uiDevice
 
@@ -87,6 +99,17 @@ public struct StatisticsDetails: Reducer {
 				case .didTapSourcePicker:
 					state.destination = .sourcePicker(.init(source: state.filter.source))
 					return .none
+
+				case let .didAdjustBackdropSize(newSize):
+					state.backdropSize = newSize
+					return .none
+
+				case let .didChangeDetent(newDetent):
+					state.sheetDetent = newDetent
+					return .run { send in
+						try await clock.sleep(for: .milliseconds(25))
+						await send(.internal(.adjustBackdrop))
+					}
 				}
 
 			case let .internal(internalAction):
@@ -106,6 +129,10 @@ public struct StatisticsDetails: Reducer {
 
 				case .didLoadStaticValues(.failure):
 					// TODO: show statistics loading failure
+					return .none
+
+				case .adjustBackdrop:
+					state.willAdjustLaneLayoutAt = date()
 					return .none
 
 				case let .orientationChange(orientation):
