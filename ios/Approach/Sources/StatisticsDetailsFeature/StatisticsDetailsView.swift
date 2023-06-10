@@ -50,11 +50,9 @@ public struct StatisticsDetailsView: View {
 					idealWidth: viewStore.backdropSize.width,
 					maxHeight: viewStore.backdropSize.height == .zero ? nil : viewStore.backdropSize.height
 				)
-				.background(Color.black)
 
 				Spacer()
 			}
-			.background(Color.red)
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(

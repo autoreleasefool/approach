@@ -70,6 +70,8 @@ public struct StatisticsDetailsChartsView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsDetailsCharts.Action.init) { viewStore in
 			VStack {
+				Spacer()
+
 				Picker(
 					Strings.Statistics.Filter.timeline,
 					selection: viewStore.binding(get: \.timeline, send: ViewAction.didChangeTimeline)
@@ -79,8 +81,7 @@ public struct StatisticsDetailsChartsView: View {
 					}
 				}
 				.pickerStyle(.segmented)
-
-				Spacer()
+				.padding()
 			}
 		}
 	}
