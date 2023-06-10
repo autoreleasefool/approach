@@ -17,7 +17,7 @@ import ViewsLibrary
 
 public struct StatisticsSourcePicker: Reducer {
 	public struct State: Equatable {
-		public let initialSource: TrackableFilter.Source?
+		public var sourceToLoad: TrackableFilter.Source?
 		public var bowler: Bowler.Summary?
 		public var league: League.Summary?
 		public var series: Series.Summary?
@@ -27,7 +27,7 @@ public struct StatisticsSourcePicker: Reducer {
 		@PresentationState public var destination: Destination.State?
 
 		public init(source: TrackableFilter.Source?) {
-			self.initialSource = source
+			self.sourceToLoad = source
 		}
 	}
 
@@ -100,7 +100,8 @@ public struct StatisticsSourcePicker: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					guard let source = state.initialSource else { return .none }
+					guard let source = state.sourceToLoad else { return .none }
+					state.sourceToLoad = nil
 					state.isLoadingSources = true
 					return .run { send in
 						await send(.internal(.didLoadSources(TaskResult {
