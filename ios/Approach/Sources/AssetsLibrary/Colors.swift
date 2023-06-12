@@ -14,4 +14,10 @@ extension Color {
 	public static let appSuccess = Color("Colors/Success/Default", bundle: .module)
 
 	public static let appPinTint = Color("Colors/Frame/PinTint", bundle: .module)
+
+	public static let appFiltersAuburn = Color("Colors/Filters/Auburn", bundle: .module)
+	public static let appFiltersCeladon = Color("Colors/Filters/Celadon", bundle: .module)
+	public static let appFiltersEnglishViolet = Color("Colors/Filters/EnglishViolet", bundle: .module)
+	public static let appFiltersPuce = Color("Colors/Filters/Puce", bundle: .module)
+	public static let appFiltersSeaGreen = Color("Colors/Filters/SeaGreen", bundle: .module)
 }
