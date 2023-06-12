@@ -12,9 +12,10 @@ public struct StatisticsDetails: Reducer {
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
 
-		public var sheetDetent: PresentationDetent = .medium
+		public var sheetDetent: PresentationDetent = .fraction(0.25)
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
+		public var filtersSize: StatisticsFilterView.Size = .regular
 
 		@PresentationState public var destination: Destination.State?
 
@@ -31,7 +32,7 @@ public struct StatisticsDetails: Reducer {
 			case onAppear
 			case didTapSourcePicker
 			case didChangeDetent(PresentationDetent)
-			case didAdjustBackdropSize(CGSize)
+			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -100,8 +101,9 @@ public struct StatisticsDetails: Reducer {
 					state.destination = .sourcePicker(.init(source: state.filter.source))
 					return .none
 
-				case let .didAdjustBackdropSize(newSize):
-					state.backdropSize = newSize
+				case let .didAdjustChartSize(backdropSize, filtersSize):
+					state.backdropSize = backdropSize
+					state.filtersSize = filtersSize
 					return .none
 
 				case let .didChangeDetent(newDetent):

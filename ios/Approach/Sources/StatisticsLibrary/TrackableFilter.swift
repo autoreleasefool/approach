@@ -1,4 +1,5 @@
 import Foundation
+import IdentifiedCollections
 import ModelsLibrary
 
 public struct TrackableFilter: Equatable {
@@ -28,10 +29,10 @@ public struct TrackableFilter: Equatable {
 
 extension TrackableFilter {
 	public enum Source: Equatable {
-		case bowler(Bowler.ID, name: String)
-		case league(League.ID, name: String)
-		case series(Series.ID, date: Date)
-		case game(Game.ID, index: Int)
+		case bowler(Bowler.ID)
+		case league(League.ID)
+		case series(Series.ID)
+		case game(Game.ID)
 	}
 }
 
@@ -53,9 +54,9 @@ extension TrackableFilter {
 	public struct SeriesFilter: Equatable {
 		public var startDate: Date?
 		public var endDate: Date?
-		public var alley: Alley.ID?
+		public var alley: AlleyFilter?
 
-		public init(startDate: Date? = nil, endDate: Date? = nil, alley: Alley.ID? = nil) {
+		public init(startDate: Date? = nil, endDate: Date? = nil, alley: AlleyFilter? = nil) {
 			self.startDate = startDate
 			self.endDate = endDate
 			self.alley = alley
@@ -65,7 +66,7 @@ extension TrackableFilter {
 
 extension TrackableFilter.SeriesFilter {
 	public enum AlleyFilter: Equatable {
-		case alley(Alley.ID)
+		case alley(Alley.Named)
 		case properties(Properties)
 	}
 }
@@ -96,10 +97,10 @@ extension TrackableFilter.SeriesFilter.AlleyFilter {
 extension TrackableFilter {
 	public struct GameFilter: Equatable {
 		public var lanes: LaneFilter?
-		public var gearUsed: Set<Gear.ID>
-		public var opponent: Bowler.ID?
+		public var gearUsed: IdentifiedArrayOf<Gear.Named>
+		public var opponent: Bowler.Summary?
 
-		public init(lanes: LaneFilter? = nil, gearUsed: Set<Gear.ID> = [], opponent: Bowler.ID? = nil) {
+		public init(lanes: LaneFilter? = nil, gearUsed: IdentifiedArrayOf<Gear.Named> = [], opponent: Bowler.Summary? = nil) {
 			self.lanes = lanes
 			self.gearUsed = gearUsed
 			self.opponent = opponent
@@ -109,8 +110,8 @@ extension TrackableFilter {
 
 extension TrackableFilter.GameFilter {
 	public enum LaneFilter: Equatable {
-		case lanes(Set<Lane.ID>)
-		case positions(Set<Lane.Position>)
+		case lanes(IdentifiedArrayOf<Lane.Summary>)
+		case positions([Lane.Position])
 	}
 }
 
@@ -118,9 +119,9 @@ extension TrackableFilter.GameFilter {
 
 extension TrackableFilter {
 	public struct FrameFilter: Equatable {
-		public var bowlingBallsUsed: Set<Gear.ID>
+		public var bowlingBallsUsed: IdentifiedArrayOf<Gear.Named>
 
-		public init(bowlingBallsUsed: Set<Gear.ID> = []) {
+		public init(bowlingBallsUsed: IdentifiedArrayOf<Gear.Named> = []) {
 			self.bowlingBallsUsed = bowlingBallsUsed
 		}
 	}

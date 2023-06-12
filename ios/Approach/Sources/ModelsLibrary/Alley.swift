@@ -54,5 +54,21 @@ extension Alley {
 		public let mechanism: Mechanism?
 		public let pinBase: PinBase?
 		public let location: Location.Summary?
+
+		public var named: Named {
+			.init(id: id, name: name)
+		}
+	}
+}
+
+extension Alley {
+	public struct Named: Identifiable, Codable, Equatable {
+		public let id: Alley.ID
+		public let name: String
+
+		public init(id: Alley.ID, name: String) {
+			self.id = id
+			self.name = name
+		}
 	}
 }

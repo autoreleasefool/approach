@@ -1,6 +1,6 @@
 import DatabaseServiceInterface
 import Dependencies
-import ModelsLibrary
+@testable import ModelsLibrary
 import PreferenceServiceInterface
 @testable import StatisticsLibrary
 @testable import StatisticsRepository
@@ -170,10 +170,13 @@ final class TrackableFilterSourceTests: XCTestCase {
 				seriesFilter: .init(
 					startDate: Date(timeIntervalSince1970: 1662512400),
 					endDate: Date(timeIntervalSince1970: 1672189200), // 16 weeks
-					alley: UUID(1)
+					alley: .alley(.init(id: UUID(1), name: "Skyview"))
 				),
-				gameFilter: .init(lanes: .lanes([UUID(12)]), opponent: UUID(0)),
-				frameFilter: .init(bowlingBallsUsed: [UUID(1)])
+				gameFilter: .init(
+					lanes: .lanes([.init(id: UUID(12), label: "1", position: .noWall)]),
+					opponent: .init(id: UUID(0), name: "Joseph")
+				),
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
 			))
 		}
 
@@ -196,10 +199,13 @@ final class TrackableFilterSourceTests: XCTestCase {
 				seriesFilter: .init(
 					startDate: Date(timeIntervalSince1970: 1662512400),
 					endDate: Date(timeIntervalSince1970: 1672189200), // 16 weeks
-					alley: UUID(1)
+					alley: .alley(.init(id: UUID(1), name: "Skyview"))
 				),
-				gameFilter: .init(lanes: .lanes([UUID(12)]), opponent: UUID(0)),
-				frameFilter: .init(bowlingBallsUsed: [UUID(1)])
+				gameFilter: .init(
+					lanes: .lanes([.init(id: UUID(12), label: "1", position: .noWall)]),
+					opponent: .init(id: UUID(0), name: "Joseph")
+				),
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
 			))
 		}
 
@@ -219,8 +225,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .series(UUID(0)),
-				gameFilter: .init(lanes: .lanes([UUID(12)]), opponent: UUID(0)),
-				frameFilter: .init(bowlingBallsUsed: [UUID(1)])
+				gameFilter: .init(
+					lanes: .lanes([.init(id: UUID(12), label: "1", position: .noWall)]),
+					opponent: .init(id: UUID(0), name: "Joseph")
+				),
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
 			))
 		}
 
@@ -239,7 +248,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .game(UUID(0)),
-				frameFilter: .init(bowlingBallsUsed: [UUID(1)])
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
 			))
 		}
 

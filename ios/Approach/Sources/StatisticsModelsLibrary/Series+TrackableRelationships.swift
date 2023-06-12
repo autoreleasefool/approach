@@ -12,18 +12,18 @@ extension Series.Database {
 			if let opponent = filter.opponent {
 				association = association
 					.joining(required: Game.Database.matchPlay
-						.filter(MatchPlay.Database.Columns.opponentId == opponent))
+						.filter(MatchPlay.Database.Columns.opponentId == opponent.id))
 			}
 
 			if !filter.gearUsed.isEmpty {
 				association = association
-					.joining(required: Game.Database.gear.filter(ids: filter.gearUsed))
+					.joining(required: Game.Database.gear.filter(ids: filter.gearUsed.map(\.id)))
 			}
 
 			switch filter.lanes {
 			case let .lanes(lanes):
 				association = association
-					.joining(required: Game.Database.lanes.filter(ids: lanes))
+					.joining(required: Game.Database.lanes.filter(ids: lanes.map(\.id)))
 			case let .positions(positions):
 				association = association
 					.joining(required: Game.Database.lanes.filter(positions.contains(Lane.Database.Columns.position)))

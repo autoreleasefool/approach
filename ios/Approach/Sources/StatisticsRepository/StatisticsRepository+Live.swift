@@ -50,40 +50,48 @@ extension StatisticsRepository: DependencyKey {
 			loadSources: { source in
 				try database.reader().read {
 					switch source {
-					case let .bowler(id, _):
+					case let .bowler(id):
 						let request = Bowler.Database
 							.filter(id: id)
-						let sources = try TrackableFilter.SourcesByBowler
+						guard let sources = try TrackableFilter.SourcesByBowler
 							.fetchAll($0, request)
-							.first
-						return .init(bowler: sources?.bowler, league: nil, series: nil, game: nil)
-					case let .league(id, _):
+							.first else {
+							return nil
+						}
+						return .init(bowler: sources.bowler, league: nil, series: nil, game: nil)
+					case let .league(id):
 						let request = League.Database
 							.filter(id: id)
 							.including(required: League.Database.bowler)
-						let sources = try TrackableFilter.SourcesByLeague
+						guard let sources = try TrackableFilter.SourcesByLeague
 							.fetchAll($0, request)
-							.first
-						return .init(bowler: sources?.bowler, league: sources?.league, series: nil, game: nil)
-					case let .series(id, _):
+							.first else {
+							return nil
+						}
+						return .init(bowler: sources.bowler, league: sources.league, series: nil, game: nil)
+					case let .series(id):
 						let request = Series.Database
 							.filter(id: id)
 							.including(required: Series.Database.league)
 							.including(required: Series.Database.bowler)
-						let sources = try TrackableFilter.SourcesBySeries
+						guard let sources = try TrackableFilter.SourcesBySeries
 							.fetchAll($0, request)
-							.first
-						return .init(bowler: sources?.bowler, league: sources?.league, series: sources?.series, game: nil)
-					case let .game(id, _):
+							.first else {
+							return nil
+						}
+						return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: nil)
+					case let .game(id):
 						let request = Game.Database
 							.filter(id: id)
 							.including(required: Game.Database.series)
 							.including(required: Game.Database.league)
 							.including(required: Game.Database.bowler)
-						let sources = try TrackableFilter.SourcesByGame
+						guard let sources = try TrackableFilter.SourcesByGame
 							.fetchAll($0, request)
-							.first
-						return .init(bowler: sources?.bowler, league: sources?.league, series: sources?.series, game: sources?.game)
+							.first else {
+							return nil
+						}
+						return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: sources.game)
 					}
 				}
 			},

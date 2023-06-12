@@ -3,6 +3,7 @@ import FeatureActionLibrary
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct StatisticsDetailsList: Reducer {
@@ -75,17 +76,9 @@ public struct StatisticsDetailsListView: View {
 				Section(group.category.title) {
 					ForEach(group.values) { staticValue in
 						Button { viewStore.send(.didTapStaticValue(id: staticValue.id)) } label: {
-							HStack {
-								LabeledContent(staticValue.title, value: staticValue.value)
-								Image(systemName: "chevron.forward")
-									.resizable()
-									.scaledToFit()
-									.frame(width: .tinyIcon, height: .tinyIcon)
-									.foregroundColor(Color(uiColor: .secondaryLabel))
-							}
-							.contentShape(Rectangle())
+							LabeledContent(staticValue.title, value: staticValue.value)
 						}
-						.buttonStyle(TappableElement())
+						.buttonStyle(.navigation)
 					}
 				}
 			}

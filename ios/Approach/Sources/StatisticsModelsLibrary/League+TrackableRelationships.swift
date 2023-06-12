@@ -20,9 +20,34 @@ extension League.Database {
 				.filter(Series.Database.Columns.date <= endDate)
 		}
 
-		if let alley = filter?.alley {
-			association = association
-				.filter(Series.Database.Columns.alleyId == alley)
+		if let alleyFilter = filter?.alley {
+			switch alleyFilter {
+			case let .alley(alley):
+				association = association
+					.filter(Series.Database.Columns.alleyId == alley.id)
+			case let .properties(properties):
+				var filter: BelongsToAssociation<Series.Database, Alley.Database>?
+				if let material = properties.material {
+					if filter == nil { filter = Series.Database.alley }
+					filter = filter?.filter(Alley.Database.Columns.material == material)
+				}
+				if let mechanism = properties.mechanism {
+					if filter == nil { filter = Series.Database.alley }
+					filter = filter?.filter(Alley.Database.Columns.mechanism == mechanism)
+				}
+				if let pinBase = properties.pinBase {
+					if filter == nil { filter = Series.Database.alley }
+					filter = filter?.filter(Alley.Database.Columns.pinBase == pinBase)
+				}
+				if let pinFall = properties.pinFall {
+					if filter == nil { filter = Series.Database.alley }
+					filter = filter?.filter(Alley.Database.Columns.pinFall == pinFall)
+				}
+				if let filter {
+					association = association
+						.joining(required: filter)
+				}
+			}
 		}
 
 		return association

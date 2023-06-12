@@ -7,7 +7,8 @@ extension Game.Database {
 	public static func trackableFrames(filter: TrackableFilter.FrameFilter?) -> HasManyAssociation<Self, Frame.Database> {
 		var association = hasMany(Frame.Database.self)
 
-		if let bowlingBallsUsed = filter?.bowlingBallsUsed, !bowlingBallsUsed.isEmpty {
+		if let bowlingBallIds = filter?.bowlingBallsUsed.map(\.id), !bowlingBallIds.isEmpty {
+			let bowlingBallsUsed = Set(bowlingBallIds)
 			association = association
 				.filter(
 					bowlingBallsUsed.contains(Frame.Database.Columns.ball0) ||

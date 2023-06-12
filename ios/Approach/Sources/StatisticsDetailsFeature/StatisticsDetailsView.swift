@@ -13,7 +13,6 @@ public struct StatisticsDetailsView: View {
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
-	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
 		let filter: TrackableFilter
@@ -22,6 +21,7 @@ public struct StatisticsDetailsView: View {
 		let sources: TrackableFilter.Sources?
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
+		let filtersSize: StatisticsFilterView.Size
 
 		init(state: StatisticsDetails.State) {
 			self.filter = state.filter
@@ -29,6 +29,7 @@ public struct StatisticsDetailsView: View {
 			self.sources = state.sources
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
 			self.backdropSize = state.backdropSize
+			self.filtersSize = state.filtersSize
 		}
 	}
 
@@ -36,7 +37,7 @@ public struct StatisticsDetailsView: View {
 		case onAppear
 		case didTapSourcePicker
 		case didChangeDetent(PresentationDetent)
-		case didAdjustBackdropSize(CGSize)
+		case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 	}
 
 	public init(store: StoreOf<StatisticsDetails>) {
@@ -47,6 +48,14 @@ public struct StatisticsDetailsView: View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsDetails.Action.init) { viewStore in
 			VStack {
 				VStack {
+					if let sources = viewStore.sources {
+						StatisticsFilterView(
+							sources: sources,
+							filter: viewStore.filter,
+							size: viewStore.filtersSize
+						)
+					}
+
 					StatisticsDetailsChartsView(
 						store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
 					)
@@ -59,24 +68,30 @@ public struct StatisticsDetailsView: View {
 				Spacer()
 			}
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
-			.toolbar(.hidden, for: .tabBar, .navigationBar)
+			.toolbar(.hidden, for: .tabBar)
+			.navigationTitle(viewStore.sources?.bowler.name ?? "")
+			.navigationBarTitleDisplayMode(.inline)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					FilterButton(isActive: false) { viewStore.send(.didTapSourcePicker) }
+				}
+			}
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /StatisticsDetails.Destination.State.list,
 				action: StatisticsDetails.Destination.Action.list
 			) { store in
-				List {
-					if let sources = viewStore.sources {
-						sourcesView(sources, viewStore)
+				NavigationStack {
+					List {
+						StatisticsDetailsListView(store: store)
 					}
-
-					StatisticsDetailsListView(store: store)
+					.toolbar(.hidden, for: .navigationBar)
 				}
-				.padding(.top, -sectionHeaderContentSize.height)
 				.presentationDragIndicator(.hidden)
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.presentationDetents(
 					[
+						.fraction(0.25),
 						.medium,
 						.large,
 					],
@@ -96,48 +111,29 @@ public struct StatisticsDetailsView: View {
 				.presentationDetents([.medium, .large])
 			}
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
-				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
+				viewStore.send(
+					.didAdjustChartSize(
+						backdropSize: getMeasuredBackdropSize(viewStore),
+						filtersSize: getFilterViewSize(viewStore)
+					),
+					animation: .easeInOut
+				)
 			}
 			.onChange(of: sheetContentSize) { _ in
-				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
+				viewStore.send(
+					.didAdjustChartSize(
+						backdropSize: getMeasuredBackdropSize(viewStore),
+						filtersSize: getFilterViewSize(viewStore)
+					),
+					animation: .easeInOut
+				)
 			}
 			.task { await viewStore.send(.onAppear).finish() }
 		}
 	}
 
-	private func sourcesView(
-		_ sources: TrackableFilter.Sources,
-		_ viewStore: ViewStore<ViewState, ViewAction>
-	) -> some View {
-		Section {
-			HStack {
-				VStack {
-					if let bowler = sources.bowler {
-						Text(bowler.name)
-							.font(.headline)
-					}
-
-					if let league = sources.league {
-						Text(league.name)
-							.font(.subheadline)
-					}
-				}
-
-				Button { viewStore.send(.didTapSourcePicker) } label: {
-					Image(systemName: "chevron.down.circle")
-						.resizable()
-						.scaledToFit()
-						.frame(width: .tinyIcon, height: .tinyIcon)
-						.padding()
-				}
-				.buttonStyle(TappableElement())
-			}
-		} header: {
-			Color.clear
-				.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
-		}
-		.listRowInsets(EdgeInsets())
-		.listRowBackground(Color.clear)
+	private func getFilterViewSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> StatisticsFilterView.Size {
+		viewStore.sheetDetent == .medium ? .compact : .regular
 	}
 
 	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
@@ -158,12 +154,11 @@ extension StatisticsDetails.Action {
 			self = .view(.didTapSourcePicker)
 		case let .didChangeDetent(newDetent):
 			self = .view(.didChangeDetent(newDetent))
-		case let .didAdjustBackdropSize(newSize):
-			self = .view(.didAdjustBackdropSize(newSize))
+		case let .didAdjustChartSize(backdropSize, filtersSize):
+			self = .view(.didAdjustChartSize(backdropSize: backdropSize, filtersSize: filtersSize))
 		}
 	}
 }
 
-private struct SectionHeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

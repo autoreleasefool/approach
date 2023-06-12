@@ -31,8 +31,13 @@ extension Gear {
 }
 
 extension Gear {
-	public struct Rolled: Identifiable, Codable, Equatable, Sendable {
+	public struct Named: Identifiable, Codable, Equatable, Sendable {
 		public let id: Gear.ID
 		public let name: String
 	}
+}
+
+extension Gear {
+	@available(*, deprecated)
+	public typealias Rolled = Named
 }

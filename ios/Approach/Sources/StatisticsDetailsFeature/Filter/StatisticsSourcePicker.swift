@@ -232,13 +232,13 @@ public struct StatisticsSourcePicker: Reducer {
 extension StatisticsSourcePicker.State {
 	var source: TrackableFilter.Source? {
 		if let game {
-			return .game(game.id, index: game.index)
+			return .game(game.id)
 		} else if let series {
-			return .series(series.id, date: series.date)
+			return .series(series.id)
 		} else if let league {
-			return .league(league.id, name: league.name)
+			return .league(league.id)
 		} else if let bowler {
-			return .bowler(bowler.id, name: bowler.name)
+			return .bowler(bowler.id)
 		} else {
 			return nil
 		}

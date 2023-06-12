@@ -5,7 +5,7 @@ import StatisticsRepositoryInterface
 
 extension TrackableFilter {
 	struct SourcesByBowler: FetchableRecord {
-		var bowler: Bowler.Summary?
+		var bowler: Bowler.Summary
 
 		init(row: Row) throws {
 			bowler = try Bowler.Summary(row: row)
@@ -15,7 +15,7 @@ extension TrackableFilter {
 
 extension TrackableFilter {
 	struct SourcesByLeague: FetchableRecord {
-		var bowler: Bowler.Summary?
+		var bowler: Bowler.Summary
 		var league: League.Summary?
 
 		init(row: Row) throws {
@@ -27,7 +27,7 @@ extension TrackableFilter {
 
 extension TrackableFilter {
 	struct SourcesBySeries: FetchableRecord {
-		var bowler: Bowler.Summary?
+		var bowler: Bowler.Summary
 		var league: League.Summary?
 		var series: Series.Summary?
 
@@ -41,7 +41,7 @@ extension TrackableFilter {
 
 extension TrackableFilter {
 	struct SourcesByGame: FetchableRecord {
-		var bowler: Bowler.Summary?
+		var bowler: Bowler.Summary
 		var league: League.Summary?
 		var series: Series.Summary?
 		var game: Game.Summary?
