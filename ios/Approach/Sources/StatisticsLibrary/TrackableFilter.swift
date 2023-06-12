@@ -28,10 +28,10 @@ public struct TrackableFilter: Equatable {
 
 extension TrackableFilter {
 	public enum Source: Equatable {
-		case bowler(Bowler.ID)
-		case league(League.ID)
-		case series(Series.ID)
-		case game(Game.ID)
+		case bowler(Bowler.ID, name: String)
+		case league(League.ID, name: String)
+		case series(Series.ID, date: Date)
+		case game(Game.ID, index: Int)
 	}
 }
 

@@ -232,13 +232,13 @@ public struct StatisticsSourcePicker: Reducer {
 extension StatisticsSourcePicker.State {
 	var source: TrackableFilter.Source? {
 		if let game {
-			return .game(game.id)
+			return .game(game.id, index: game.index)
 		} else if let series {
-			return .series(series.id)
+			return .series(series.id, date: series.date)
 		} else if let league {
-			return .league(league.id)
+			return .league(league.id, name: league.name)
 		} else if let bowler {
-			return .bowler(bowler.id)
+			return .bowler(bowler.id, name: bowler.name)
 		} else {
 			return nil
 		}
@@ -270,7 +270,7 @@ public struct StatisticsSourcePickerView: View {
 			self.selectedLeagueName = state.league?.name
 			self.selectedSeriesDate = state.series?.date.longFormat
 			if let gameIndex = state.game?.index {
-				self.selectedGameIndex = Strings.Game.titleWithOrdinal(gameIndex)
+				self.selectedGameIndex = Strings.Game.titleWithOrdinal(gameIndex + 1)
 			} else {
 				self.selectedGameIndex = nil
 			}
@@ -373,7 +373,7 @@ public struct StatisticsSourcePickerView: View {
 			action: StatisticsSourcePicker.Destination.Action.gamePicker
 		) { store in
 			ResourcePickerView(store: store) { game in
-				Text(Strings.Game.titleWithOrdinal(game.index))
+				Text(Strings.Game.titleWithOrdinal(game.index + 1))
 			}
 		}
 	}

@@ -16,12 +16,15 @@ public struct StatisticsDetailsView: View {
 	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
+		let filter: TrackableFilter
+
 		let sheetDetent: PresentationDetent
 		let sources: TrackableFilter.Sources?
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
 
 		init(state: StatisticsDetails.State) {
+			self.filter = state.filter
 			self.sheetDetent = state.sheetDetent
 			self.sources = state.sources
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
@@ -43,9 +46,11 @@ public struct StatisticsDetailsView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: StatisticsDetails.Action.init) { viewStore in
 			VStack {
-				StatisticsDetailsChartsView(
-					store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
-				)
+				VStack {
+					StatisticsDetailsChartsView(
+						store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
+					)
+				}
 				.frame(
 					idealWidth: viewStore.backdropSize.width,
 					maxHeight: viewStore.backdropSize.height == .zero ? nil : viewStore.backdropSize.height

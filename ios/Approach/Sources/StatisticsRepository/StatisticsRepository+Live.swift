@@ -50,14 +50,14 @@ extension StatisticsRepository: DependencyKey {
 			loadSources: { source in
 				try database.reader().read {
 					switch source {
-					case let .bowler(id):
+					case let .bowler(id, _):
 						let request = Bowler.Database
 							.filter(id: id)
 						let sources = try TrackableFilter.SourcesByBowler
 							.fetchAll($0, request)
 							.first
 						return .init(bowler: sources?.bowler, league: nil, series: nil, game: nil)
-					case let .league(id):
+					case let .league(id, _):
 						let request = League.Database
 							.filter(id: id)
 							.including(required: League.Database.bowler)
@@ -65,7 +65,7 @@ extension StatisticsRepository: DependencyKey {
 							.fetchAll($0, request)
 							.first
 						return .init(bowler: sources?.bowler, league: sources?.league, series: nil, game: nil)
-					case let .series(id):
+					case let .series(id, _):
 						let request = Series.Database
 							.filter(id: id)
 							.including(required: Series.Database.league)
@@ -74,7 +74,7 @@ extension StatisticsRepository: DependencyKey {
 							.fetchAll($0, request)
 							.first
 						return .init(bowler: sources?.bowler, league: sources?.league, series: sources?.series, game: nil)
-					case let .game(id):
+					case let .game(id, _):
 						let request = Game.Database
 							.filter(id: id)
 							.including(required: Game.Database.series)
