@@ -1,3 +1,4 @@
+import Foundation
 import IdentifiedCollections
 import ModelsLibrary
 import StringsLibrary
@@ -11,7 +12,6 @@ public protocol Statistic: Identifiable, Equatable {
 	var value: String { get }
 	var category: StatisticCategory { get }
 	var staticValue: StaticValue { get }
-	var trackedValue: TrackedValue { get }
 
 	init()
 
@@ -59,13 +59,14 @@ public struct StaticValueGroup: Identifiable, Equatable {
 public struct StaticValue: Identifiable, Equatable {
 	public let title: String
 	public let value: String
+	public let isGraphable: Bool
 
 	public var id: String { title }
 }
 
 extension Statistic {
 	public var staticValue: StaticValue {
-		.init(title: Self.title, value: value)
+		.init(title: Self.title, value: value, isGraphable: self is (any GraphableStatistic))
 	}
 }
 
@@ -79,27 +80,42 @@ extension Collection where Element == any Statistic {
 	}
 }
 
-// MARK: - TrackedValue
+// MARK: - Graphable
 
 public struct TrackedValue: Equatable {
 	public let value: Int
-}
 
-extension Statistic {
-	public var trackedValue: TrackedValue {
-		.init(value: Int(value) ?? 0)
+	public init(_ value: Int) {
+		self.value = value
 	}
 }
 
-extension Collection where Element == any Statistic {
+public struct ChartEntry: Identifiable, Equatable {
+	public let id = UUID()
+	public let value: TrackedValue
+	public let date: Date
+
+	public init(value: TrackedValue, date: Date) {
+		self.value = value
+		self.date = date
+	}
+}
+
+public protocol GraphableStatistic: Statistic {
+	var trackedValue: TrackedValue { get }
+}
+
+extension GraphableStatistic {
+	public var trackedValue: TrackedValue {
+		.init(Int(value) ?? 0)
+	}
+}
+
+extension Collection where Element == any GraphableStatistic {
 	public func trackedValues() -> [TrackedValue] {
 		self.map(\.trackedValue)
 	}
 }
-
-// MARK: - Graphable
-
-public protocol GraphableStatistic {}
 
 // MARK: - Trackable
 

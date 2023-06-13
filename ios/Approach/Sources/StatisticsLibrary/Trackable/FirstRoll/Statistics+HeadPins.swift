@@ -2,12 +2,13 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HeadPins: Statistic, TrackablePerFrame {
+	public struct HeadPins: Statistic, GraphableStatistic, TrackablePerFrame {
 		public static let title = Strings.Statistics.Title.headPins
 		public static let category: StatisticCategory = .onFirstRoll
 
 		private var headPins: Int
 		public var value: String { String(headPins) }
+		public var trackedValue: TrackedValue { .init(headPins) }
 
 		public init() {
 			self.init(headPins: 0)
