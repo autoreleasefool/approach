@@ -75,10 +75,14 @@ public struct StatisticsDetailsListView: View {
 			ForEach(viewStore.staticValues) { group in
 				Section(group.category.title) {
 					ForEach(group.values) { staticValue in
-						Button { viewStore.send(.didTapStaticValue(id: staticValue.id)) } label: {
+						if staticValue.isGraphable {
+							Button { viewStore.send(.didTapStaticValue(id: staticValue.id)) } label: {
+								LabeledContent(staticValue.title, value: staticValue.value)
+							}
+							.buttonStyle(.navigation)
+						} else {
 							LabeledContent(staticValue.title, value: staticValue.value)
 						}
-						.buttonStyle(.navigation)
 					}
 				}
 			}
