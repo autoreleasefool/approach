@@ -213,7 +213,7 @@ public struct StatisticsDetails: Reducer {
 
 extension StatisticsDetails.State {
 	var charts: StatisticsDetailsCharts.State {
-		get { .init(timeline: filter.timeline) }
-		set { filter.timeline = newValue.timeline }
+		get { .init(timePrecision: filter.timePrecision) }
+		set { filter.timePrecision = newValue.timePrecision }
 	}
 }

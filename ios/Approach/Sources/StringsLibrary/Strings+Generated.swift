@@ -820,8 +820,8 @@ public enum Strings {
       }
     }
     public enum Filter {
-      /// Timeline
-      public static let timeline = Strings.tr("Localizable", "statistics.filter.timeline", fallback: "Timeline")
+      /// Time Precision
+      public static let timePrecision = Strings.tr("Localizable", "statistics.filter.timePrecision", fallback: "Time Precision")
       /// Filter Statistics
       public static let title = Strings.tr("Localizable", "statistics.filter.title", fallback: "Filter Statistics")
       public enum Frame {
@@ -872,11 +872,11 @@ public enum Strings {
         /// Start Date
         public static let startDate = Strings.tr("Localizable", "statistics.filter.series.startDate", fallback: "Start Date")
       }
-      public enum Timeline {
-        /// All Time
-        public static let allTime = Strings.tr("Localizable", "statistics.filter.timeline.allTime", fallback: "All Time")
-        /// Per Series
-        public static let perSeries = Strings.tr("Localizable", "statistics.filter.timeline.perSeries", fallback: "Per Series")
+      public enum TimePrecision {
+        /// Aggregate
+        public static let aggregate = Strings.tr("Localizable", "statistics.filter.timePrecision.aggregate", fallback: "Aggregate")
+        /// All
+        public static let all = Strings.tr("Localizable", "statistics.filter.timePrecision.all", fallback: "All")
       }
     }
     public enum Overview {

@@ -8,7 +8,7 @@ public struct TrackableFilter: Equatable {
 	public var seriesFilter: SeriesFilter
 	public var gameFilter: GameFilter
 	public var frameFilter: FrameFilter
-	public var timeline: Timeline
+	public var timePrecision: TimePrecision
 
 	public init(
 		source: Source,
@@ -16,14 +16,14 @@ public struct TrackableFilter: Equatable {
 		seriesFilter: SeriesFilter = .init(),
 		gameFilter: GameFilter = .init(),
 		frameFilter: FrameFilter = .init(),
-		timeline: Timeline = .allTime
+		timePrecision: TimePrecision = .aggregate
 	) {
 		self.source = source
 		self.leagueFilter = leagueFilter
 		self.seriesFilter = seriesFilter
 		self.gameFilter = gameFilter
 		self.frameFilter = frameFilter
-		self.timeline = timeline
+		self.timePrecision = timePrecision
 	}
 }
 
@@ -146,12 +146,12 @@ extension TrackableFilter {
 	}
 }
 
-// MARK: - Timeline
+// MARK: - TimePrecision
 
 extension TrackableFilter {
-	public enum Timeline: Int, Equatable, Identifiable, CaseIterable {
-		case perSeries
-		case allTime
+	public enum TimePrecision: Int, Equatable, Identifiable, CaseIterable {
+		case aggregate
+		case all
 
 		public var id: Int { rawValue }
 	}

@@ -6,16 +6,16 @@ import SwiftUI
 
 public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
-		public var timeline: TrackableFilter.Timeline
+		public var timePrecision: TrackableFilter.TimePrecision
 
-		init(timeline: TrackableFilter.Timeline) {
-			self.timeline = timeline
+		init(timePrecision: TrackableFilter.TimePrecision) {
+			self.timePrecision = timePrecision
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didChangeTimeline(TrackableFilter.Timeline)
+			case didChangeTimePrecision(TrackableFilter.TimePrecision)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {}
@@ -32,8 +32,8 @@ public struct StatisticsDetailsCharts: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didChangeTimeline(timeline):
-					state.timeline = timeline
+				case let .didChangeTimePrecision(timePrecision):
+					state.timePrecision = timePrecision
 					return .none
 				}
 
@@ -56,15 +56,15 @@ public struct StatisticsDetailsChartsView: View {
 	let store: StoreOf<StatisticsDetailsCharts>
 
 	struct ViewState: Equatable {
-		let timeline: TrackableFilter.Timeline
+		let timePrecision: TrackableFilter.TimePrecision
 
 		init(state: StatisticsDetailsCharts.State) {
-			self.timeline = state.timeline
+			self.timePrecision = state.timePrecision
 		}
 	}
 
 	enum ViewAction {
-		case didChangeTimeline(TrackableFilter.Timeline)
+		case didChangeTimePrecision(TrackableFilter.TimePrecision)
 	}
 
 	public var body: some View {
@@ -73,10 +73,10 @@ public struct StatisticsDetailsChartsView: View {
 				Spacer()
 
 				Picker(
-					Strings.Statistics.Filter.timeline,
-					selection: viewStore.binding(get: \.timeline, send: ViewAction.didChangeTimeline)
+					Strings.Statistics.Filter.timePrecision,
+					selection: viewStore.binding(get: \.timePrecision, send: ViewAction.didChangeTimePrecision)
 				) {
-					ForEach(TrackableFilter.Timeline.allCases) {
+					ForEach(TrackableFilter.TimePrecision.allCases) {
 						Text(String(describing: $0)).tag($0)
 					}
 				}
@@ -90,17 +90,17 @@ public struct StatisticsDetailsChartsView: View {
 extension StatisticsDetailsCharts.Action {
 	init(action: StatisticsDetailsChartsView.ViewAction) {
 		switch action {
-		case let .didChangeTimeline(timeline):
-			self = .view(.didChangeTimeline(timeline))
+		case let .didChangeTimePrecision(timePrecision):
+			self = .view(.didChangeTimePrecision(timePrecision))
 		}
 	}
 }
 
-extension TrackableFilter.Timeline: CustomStringConvertible {
+extension TrackableFilter.TimePrecision: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .perSeries: return Strings.Statistics.Filter.Timeline.perSeries
-		case .allTime: return Strings.Statistics.Filter.Timeline.allTime
+		case .aggregate: return Strings.Statistics.Filter.TimePrecision.aggregate
+		case .all: return Strings.Statistics.Filter.TimePrecision.all
 		}
 	}
 }

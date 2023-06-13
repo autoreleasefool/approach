@@ -195,9 +195,9 @@
 
 "statistics.title" = "Statistics";
 "statistics.filter.title" = "Filter Statistics";
-"statistics.filter.timeline" = "Timeline";
-"statistics.filter.timeline.perSeries" = "Per Series";
-"statistics.filter.timeline.allTime" = "All Time";
+"statistics.filter.timePrecision" = "Time Precision";
+"statistics.filter.timePrecision.aggregate" = "Aggregate";
+"statistics.filter.timePrecision.all" = "All";
 "statistics.filter.series.filterByStartDate" = "Filter by start date?";
 "statistics.filter.series.filterByEndDate" = "Filter by end date?";
 "statistics.filter.series.startDate" = "Start Date";
