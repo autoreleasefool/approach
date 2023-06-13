@@ -296,7 +296,9 @@ final class AddressLookupFeatureTests: XCTestCase {
 			$0.isLoadingAddress = true
 		}
 
-		await store.receive(.delegate(.didSelectAddress(editLocation)))
+		await store.receive(.internal(.didLoadAddress(.success(editLocation)))) {
+			$0.lookUpResult = editLocation
+		}
 
 		await fulfillment(of: [dismissed])
 
