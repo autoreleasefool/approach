@@ -2,12 +2,13 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HighSingle: Statistic, TrackablePerGame {
+	public struct HighSingle: Statistic, GraphableStatistic, TrackablePerGame {
 		public static let title = Strings.Statistics.Title.highSingle
 		public static let category: StatisticCategory = .overall
 
 		private var highSingle: Int
 		public var value: String { String(highSingle) }
+		public var trackedValue: TrackedValue { .init(highSingle) }
 
 		public init() {
 			self.init(highSingle: 0)
