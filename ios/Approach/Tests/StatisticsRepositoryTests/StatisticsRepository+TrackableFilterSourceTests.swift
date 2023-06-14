@@ -22,6 +22,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
@@ -41,6 +42,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
@@ -60,6 +62,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
@@ -78,6 +81,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
@@ -95,6 +99,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
@@ -112,6 +117,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
@@ -129,6 +135,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
@@ -145,6 +152,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
@@ -162,6 +170,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
@@ -192,6 +201,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
@@ -221,6 +231,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
@@ -244,6 +255,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
+			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(

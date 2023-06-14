@@ -91,11 +91,12 @@ public struct TrackedValue: Equatable {
 }
 
 public struct ChartEntry: Identifiable, Equatable {
-	public let id = UUID()
+	public let id: UUID
 	public let value: TrackedValue
 	public let date: Date
 
-	public init(value: TrackedValue, date: Date) {
+	public init(id: UUID, value: TrackedValue, date: Date) {
+		self.id = id
 		self.value = value
 		self.date = date
 	}
@@ -103,6 +104,7 @@ public struct ChartEntry: Identifiable, Equatable {
 
 public protocol GraphableStatistic: Statistic {
 	var trackedValue: TrackedValue { get }
+	mutating func accumulate(by: any GraphableStatistic)
 }
 
 extension GraphableStatistic {
@@ -123,6 +125,8 @@ public protocol TrackablePerFrame: Statistic {
 	mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration)
 }
 
+public protocol GraphablePerFrame: TrackablePerFrame, GraphableStatistic {}
+
 public struct TrackablePerFrameConfiguration {
 	public let countHeadPin2AsHeadPin: Bool
 
@@ -135,6 +139,8 @@ public protocol TrackablePerGame: Statistic {
 	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
 }
 
+public protocol GraphablePerGame: TrackablePerGame, GraphableStatistic {}
+
 public struct TrackablePerGameConfiguration {
 	public init() {}
 }
@@ -142,6 +148,8 @@ public struct TrackablePerGameConfiguration {
 public protocol TrackablePerSeries: Statistic {
 	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
 }
+
+public protocol GraphablePerSeries: TrackablePerSeries, GraphableStatistic {}
 
 public struct TrackablePerSeriesConfiguration {
 	public init() {}

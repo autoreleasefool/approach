@@ -12,39 +12,7 @@ extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.database) var database
 		@Dependency(\.preferences) var preferences
-
-		@Sendable func adjust(statistics: inout [any Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
-			let perSeries = preferences.perSeriesConfiguration()
-			while let series = try bySeries?.next() {
-				for index in statistics.startIndex..<statistics.endIndex {
-					guard var seriesTrackable = statistics[index] as? any TrackablePerSeries else { continue }
-					seriesTrackable.adjust(bySeries: series, configuration: perSeries)
-					statistics[index] = seriesTrackable
-				}
-			}
-		}
-
-		@Sendable func adjust(statistics: inout [any Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
-			let perGame = preferences.perGameConfiguration()
-			while let game = try byGames?.next() {
-				for index in statistics.startIndex..<statistics.endIndex {
-					guard var gameTrackable = statistics[index] as? any TrackablePerGame else { continue }
-					gameTrackable.adjust(byGame: game, configuration: perGame)
-					statistics[index] = gameTrackable
-				}
-			}
-		}
-
-		@Sendable func adjust(statistics: inout [any Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
-			let perFrame = preferences.perFrameConfiguration()
-			while let frame = try byFrames?.next() {
-				for index in statistics.startIndex..<statistics.endIndex {
-					guard var frameTrackable = statistics[index] as? any TrackablePerFrame else { continue }
-					frameTrackable.adjust(byFrame: frame, configuration: perFrame)
-					statistics[index] = frameTrackable
-				}
-			}
-		}
+		@Dependency(\.uuid) var uuid
 
 		return Self(
 			loadSources: { source in
@@ -105,18 +73,82 @@ extension StatisticsRepository: DependencyKey {
 						.asRequest(of: Series.TrackableEntry.self)
 						.fetchCursor($0)
 					let gamesCursor = try games?
-						.annotated(withRequired: Game.Database.series.select(Series.Database.Columns.date))
+						.annotated(withRequired: Game.Database.series.select(
+							Series.Database.Columns.id.forKey("seriesid"),
+							Series.Database.Columns.date
+						))
 						.asRequest(of: Game.TrackableEntry.self)
 						.fetchCursor($0)
 					let framesCursor = try frames?
-						.annotated(withRequired: Frame.Database.series.select(Series.Database.Columns.date))
+						.annotated(withRequired: Frame.Database.series.select(
+							Series.Database.Columns.id.forKey("seriesId"),
+							Series.Database.Columns.date
+						))
 						.asRequest(of: Frame.TrackableEntry.self)
 						.fetchCursor($0)
 
-					try adjust(statistics: &statistics, bySeries: seriesCursor)
-					try adjust(statistics: &statistics, byGames: gamesCursor)
-					try adjust(statistics: &statistics, byFrames: framesCursor)
+					let builder = StatisticsBuilder(
+						perSeriesConfiguration: preferences.perSeriesConfiguration(),
+						perGameConfiguration: preferences.perGameConfiguration(),
+						perFrameConfiguration: preferences.perFrameConfiguration(),
+						aggregator: nil
+					)
+
+					try builder.adjust(statistics: &statistics, bySeries: seriesCursor)
+					try builder.adjust(statistics: &statistics, byGames: gamesCursor)
+					try builder.adjust(statistics: &statistics, byFrames: framesCursor)
+
 					return statistics
+				}
+			},
+			loadChart: { statistic, filter in
+				guard statistic.supports(trackableSource: filter.source) else { return [] }
+
+				let builder = StatisticsBuilder(
+					perSeriesConfiguration: preferences.perSeriesConfiguration(),
+					perGameConfiguration: preferences.perGameConfiguration(),
+					perFrameConfiguration: preferences.perFrameConfiguration(),
+					aggregator: .init(uuid: uuid, aggregation: filter.aggregation)
+				)
+
+				return try database.reader().read { db in
+					let results: [ChartEntry]
+
+					if let graphable = statistic as? (any GraphablePerSeries.Type) {
+						let (series, _, _) = try filter.buildInitialQueries(db: db)
+						guard let series else { return [] }
+						let request = series
+							.annotated(with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total"))
+							.asRequest(of: Series.TrackableEntry.self)
+
+						results = try builder.buildChart(forStatistic: graphable, withSeries: request, in: db)
+					} else if let graphable = statistic as? (any GraphablePerGame.Type) {
+						let (_, games, _) = try filter.buildInitialQueries(db: db)
+						guard let games else { return [] }
+						let request = games
+							.annotated(withRequired: Game.Database.series.select(
+								Series.Database.Columns.id.forKey("seriesid"),
+								Series.Database.Columns.date
+							))
+							.asRequest(of: Game.TrackableEntry.self)
+
+						results = try builder.buildChart(forStatistic: graphable, withGames: request, in: db)
+					} else if let graphable = statistic as? (any GraphablePerFrame.Type) {
+						let (_, _, frames) = try filter.buildInitialQueries(db: db)
+						guard let frames else { return [] }
+						let request = frames
+							.annotated(withRequired: Frame.Database.series.select(
+								Series.Database.Columns.id.forKey("seriesId"),
+								Series.Database.Columns.date
+							))
+							.asRequest(of: Frame.TrackableEntry.self)
+
+						results = try builder.buildChart(forStatistic: graphable, withFrames: request, in: db)
+					} else {
+						return []
+					}
+
+					return results
 				}
 			}
 		)

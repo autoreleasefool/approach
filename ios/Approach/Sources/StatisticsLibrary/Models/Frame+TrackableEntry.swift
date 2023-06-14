@@ -3,6 +3,7 @@ import ModelsLibrary
 
 extension Frame {
 	public struct TrackableEntry: Identifiable, Decodable {
+		public let seriesId: Series.ID
 		public let gameId: Game.ID
 		public let index: Int
 		public let rolls: [OrderedRoll]
@@ -10,7 +11,8 @@ extension Frame {
 
 		public var id: String { Frame.buildId(game: gameId, index: index) }
 
-		init(gameId: Game.ID, index: Int, rolls: [OrderedRoll], date: Date) {
+		init(seriesId: Series.ID, gameId: Game.ID, index: Int, rolls: [OrderedRoll], date: Date) {
+			self.seriesId = seriesId
 			self.gameId = gameId
 			self.index = index
 			self.rolls = rolls
@@ -19,6 +21,7 @@ extension Frame {
 
 		public init(from decoder: Decoder) throws {
 			let container = try decoder.container(keyedBy: CodingKeys.self)
+			self.seriesId = try container.decode(Series.ID.self, forKey: CodingKeys.seriesId)
 			self.gameId = try container.decode(Game.ID.self, forKey: CodingKeys.gameId)
 			self.index = try container.decode(Int.self, forKey: CodingKeys.index)
 			self.date = try container.decode(Date.self, forKey: CodingKeys.date)
@@ -38,6 +41,7 @@ extension Frame {
 		}
 
 		enum CodingKeys: CodingKey {
+			case seriesId
 			case gameId
 			case index
 			case date

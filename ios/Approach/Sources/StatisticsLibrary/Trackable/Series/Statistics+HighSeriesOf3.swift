@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HighSeriesOf3: Statistic, GraphableStatistic, TrackablePerSeries {
+	public struct HighSeriesOf3: Statistic, GraphableStatistic, TrackablePerSeries, GraphablePerSeries {
 		public static let title = Strings.Statistics.Title.highSeriesOf3
 		public static let category: StatisticCategory = .series
 
@@ -21,6 +21,11 @@ extension Statistics {
 		public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {
 			guard bySeries.numberOfGames == 3 else { return }
 			highSeries = max(highSeries, bySeries.total)
+		}
+
+		public mutating func accumulate(by: any GraphableStatistic) {
+			guard let by = by as? Self else { return }
+			self.highSeries = max(by.highSeries, self.highSeries)
 		}
 
 		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {

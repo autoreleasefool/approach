@@ -1,3 +1,4 @@
+import Foundation
 import ModelsLibrary
 
 extension Series {
@@ -5,5 +6,6 @@ extension Series {
 		public let id: Series.ID
 		public let numberOfGames: Int
 		public let total: Int
+		public let date: Date
 	}
 }

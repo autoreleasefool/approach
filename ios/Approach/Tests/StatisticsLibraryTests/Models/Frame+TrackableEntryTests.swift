@@ -116,7 +116,7 @@ final class FrameTrackableEntryTests: XCTestCase {
 
 extension Frame.TrackableEntry {
 	init(index: Int, rolls: [Frame.OrderedRoll]) {
-		self.init(gameId: UUID(0), index: index, rolls: rolls, date: Date(timeIntervalSince1970: 123))
+		self.init(seriesId: UUID(0), gameId: UUID(0), index: index, rolls: rolls, date: Date(timeIntervalSince1970: 123))
 	}
 }
 

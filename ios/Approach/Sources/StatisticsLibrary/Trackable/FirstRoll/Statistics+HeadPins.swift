@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HeadPins: Statistic, GraphableStatistic, TrackablePerFrame {
+	public struct HeadPins: Statistic, GraphableStatistic, TrackablePerFrame, GraphablePerFrame {
 		public static let title = Strings.Statistics.Title.headPins
 		public static let category: StatisticCategory = .onFirstRoll
 
@@ -24,6 +24,11 @@ extension Statistics {
 					headPins += 1
 				}
 			}
+		}
+
+		public mutating func accumulate(by: any GraphableStatistic) {
+			guard let by = by as? Self else { return }
+			self.headPins += by.headPins
 		}
 
 		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {
