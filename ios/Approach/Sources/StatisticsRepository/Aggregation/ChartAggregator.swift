@@ -14,29 +14,34 @@ struct ChartAggregator {
 		switch aggregation {
 		case .accumulate:
 			let sortedEntries = allEntries.sorted { $0.key < $1.key }
-			guard let firstDate = sortedEntries.first?.key, let lastDate = sortedEntries.last?.key else { return [] }
-			let timePeriod = (lastDate.timeIntervalSince1970 - firstDate.timeIntervalSince1970) / Self.maxAggregateTimePeriods
+			guard let firstEntry = sortedEntries.first, let lastEntry = sortedEntries.last else { return [] }
+
+			let timePeriod =
+				(lastEntry.key.timeIntervalSince1970 - firstEntry.key.timeIntervalSince1970) / Self.maxAggregateTimePeriods
+			var aggregateEntries: [Date: any GraphableStatistic] = [:]
 
 			// If the length of a period equates to less than 1 week, just use all entries instead
 			if timePeriod < Self.minPeriodTimeInterval {
-				entries = allEntries
-				break
-			}
-
-			var aggregateDate = firstDate.addingTimeInterval(timePeriod)
-			var aggregateEntries: [Date: any GraphableStatistic] = [:]
-
-			for (date, entry) in sortedEntries {
-				if date > aggregateDate {
-					let nextAggregateDate = aggregateDate.addingTimeInterval(timePeriod)
-					aggregateEntries[nextAggregateDate] = aggregateEntries[aggregateDate]
-					aggregateDate = nextAggregateDate
+				var accumulator = firstEntry.value
+				aggregateEntries[firstEntry.key] = accumulator
+				for (date, entry) in sortedEntries.dropFirst() {
+					accumulator.accumulate(by: entry)
+					aggregateEntries[date] = accumulator
 				}
+			} else {
+				var aggregateDate = firstEntry.key.addingTimeInterval(timePeriod)
+				for (date, entry) in sortedEntries {
+					if date > aggregateDate {
+						let nextAggregateDate = aggregateDate.addingTimeInterval(timePeriod)
+						aggregateEntries[nextAggregateDate] = aggregateEntries[aggregateDate]
+						aggregateDate = nextAggregateDate
+					}
 
-				if aggregateEntries[aggregateDate] == nil {
-					aggregateEntries[aggregateDate] = entry
-				} else {
-					aggregateEntries[aggregateDate]?.accumulate(by: entry)
+					if aggregateEntries[aggregateDate] == nil {
+						aggregateEntries[aggregateDate] = entry
+					} else {
+						aggregateEntries[aggregateDate]?.accumulate(by: entry)
+					}
 				}
 			}
 

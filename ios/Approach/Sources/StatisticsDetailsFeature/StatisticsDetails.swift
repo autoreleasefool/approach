@@ -1,18 +1,24 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import NotificationsServiceInterface
+import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
 import SwiftUI
 
 public struct StatisticsDetails: Reducer {
+	static let chartLoadingAnimationTime: TimeInterval = 0.5
+	static let defaultSheetDetent: PresentationDetent = .fraction(0.25)
+
 	public struct State: Equatable {
 		public var staticValues: IdentifiedArrayOf<StaticValueGroup> = []
+		public var isLoadingNextChart = false
+		public var chartData: StatisticsChart.Data?
 
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
 
-		public var sheetDetent: PresentationDetent = .fraction(0.25)
+		public var sheetDetent: PresentationDetent = StatisticsDetails.defaultSheetDetent
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var filtersSize: StatisticsFilterView.Size = .regular
@@ -39,9 +45,11 @@ public struct StatisticsDetails: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
 
+			case didStartLoadingChart
 			case adjustBackdrop
 			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
 			case didLoadStaticValues(TaskResult<[StaticValueGroup]>)
+			case didLoadChart(TaskResult<StatisticsChart.Data>)
 			case orientationChange(UIDeviceOrientation)
 		}
 
@@ -69,6 +77,11 @@ public struct StatisticsDetails: Reducer {
 				StatisticsSourcePicker()
 			}
 		}
+	}
+
+	public enum CancelID {
+		case loadingStaticValues
+		case loadingChartValues
 	}
 
 	public init() {}
@@ -116,6 +129,10 @@ public struct StatisticsDetails: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .didStartLoadingChart:
+					state.isLoadingNextChart = true
+					return .none
+
 				case let .didLoadSources(.success(sources)):
 					state.sources = sources
 					return .none
@@ -130,6 +147,15 @@ public struct StatisticsDetails: Reducer {
 					return .none
 
 				case .didLoadStaticValues(.failure):
+					// TODO: show statistics loading failure
+					return .none
+
+				case let .didLoadChart(.success(chartData)):
+					state.chartData = chartData
+					state.isLoadingNextChart = false
+					return .none
+
+				case .didLoadChart(.failure):
 					// TODO: show statistics loading failure
 					return .none
 
@@ -154,8 +180,9 @@ public struct StatisticsDetails: Reducer {
 				case let .destination(.presented(.list(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didRequestStaticValue(id):
-						// TODO: show static value details
-						return .none
+						guard let statistic = Statistics.type(fromId: id) as? (any GraphableStatistic.Type) else { return .none }
+						state.sheetDetent = StatisticsDetails.defaultSheetDetent
+						return loadChart(forStatistic: statistic, withFilter: state.filter)
 					}
 
 				case let .destination(.presented(.sourcePicker(.delegate(delegateAction)))):
@@ -167,8 +194,14 @@ public struct StatisticsDetails: Reducer {
 
 				case let .charts(.delegate(delegateAction)):
 					switch delegateAction {
-					case .never:
-						return .none
+					case let .didChangeAggregation(aggregation):
+						guard let statisticId = state.chartData?.title,
+									let statistic = Statistics.type(fromId: statisticId) as? (any GraphableStatistic.Type)
+						else {
+							return .none
+						}
+						state.filter.aggregation = aggregation
+						return loadChart(forStatistic: statistic, withFilter: state.filter)
 					}
 
 				case .destination(.dismiss):
@@ -208,12 +241,41 @@ public struct StatisticsDetails: Reducer {
 				})))
 			}
 		)
+		.cancellable(id: CancelID.loadingStaticValues, cancelInFlight: true)
+	}
+
+	private func loadChart(forStatistic: any GraphableStatistic.Type, withFilter: TrackableFilter) -> Effect<Action> {
+		.concatenate(
+			.run { send in await send(.internal(.didStartLoadingChart), animation: .easeInOut) },
+			.run { send in
+				let startTime = date()
+				let result = await TaskResult {
+					let entries = try await self.statistics.chart(statistic: forStatistic, filter: withFilter)
+					return StatisticsChart.Data(title: forStatistic.title, entries: entries)
+				}
+				let timeSpent = date().timeIntervalSince(startTime)
+				if timeSpent < Self.chartLoadingAnimationTime {
+					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
+				}
+
+				await send(.internal(.didLoadChart(result)), animation: .easeInOut)
+			}
+		)
+		.cancellable(id: CancelID.loadingChartValues, cancelInFlight: true)
 	}
 }
 
 extension StatisticsDetails.State {
 	var charts: StatisticsDetailsCharts.State {
-		get { .init(aggregation: filter.aggregation) }
-		set { filter.aggregation = newValue.aggregation }
+		get {
+			.init(
+				chartData: chartData,
+				isLoadingNextChart: isLoadingNextChart,
+				aggregation: filter.aggregation
+			)
+		}
+		// We aren't observing any values from this reducer, so we ignore the setter
+		// swiftlint:disable:next unused_setter_value
+		set {}
 	}
 }

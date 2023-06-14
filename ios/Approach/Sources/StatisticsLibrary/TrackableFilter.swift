@@ -54,7 +54,6 @@ extension TrackableFilter {
 	}
 }
 
-
 // MARK: - Leagues
 
 extension TrackableFilter {

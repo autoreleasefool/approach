@@ -118,7 +118,10 @@ extension StatisticsRepository: DependencyKey {
 						let (series, _, _) = try filter.buildInitialQueries(db: db)
 						guard let series else { return [] }
 						let request = series
-							.annotated(with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total"))
+							.annotated(
+								with: Series.Database.trackableGames(filter: .init())
+									.sum(Game.Database.Columns.score).forKey("total")
+							)
 							.asRequest(of: Series.TrackableEntry.self)
 
 						results = try builder.buildChart(forStatistic: graphable, withSeries: request, in: db)

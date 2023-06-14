@@ -59,6 +59,8 @@ public struct StatisticsDetailsView: View {
 					StatisticsDetailsChartsView(
 						store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
 					)
+					.padding(.horizontal)
+					.layoutPriority(1)
 				}
 				.frame(
 					idealWidth: viewStore.backdropSize.width,
@@ -91,7 +93,7 @@ public struct StatisticsDetailsView: View {
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.presentationDetents(
 					[
-						.fraction(0.25),
+						StatisticsDetails.defaultSheetDetent,
 						.medium,
 						.large,
 					],

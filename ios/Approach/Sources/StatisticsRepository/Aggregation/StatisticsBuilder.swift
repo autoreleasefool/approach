@@ -41,7 +41,6 @@ struct StatisticsBuilder {
 		return aggregator?.accumulate(entries: allEntries) ?? []
 	}
 
-
 	// MARK: - Per Game
 
 	func adjust(statistics: inout [any Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {

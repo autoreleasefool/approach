@@ -501,6 +501,7 @@ let package = Package(
 				"NotificationsServiceInterface",
 				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
+				"StatisticsChartsLibrary",
 				"StatisticsRepositoryInterface",
 				"SwiftUIExtensionsLibrary",
 			]

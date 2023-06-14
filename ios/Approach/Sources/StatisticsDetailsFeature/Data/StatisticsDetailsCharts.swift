@@ -1,23 +1,22 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import StatisticsChartsLibrary
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
 
 public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
+		public var chartData: StatisticsChart.Data?
+		public var isLoadingNextChart: Bool
 		public var aggregation: TrackableFilter.Aggregation
-
-		init(aggregation: TrackableFilter.Aggregation) {
-			self.aggregation = aggregation
-		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: Equatable {}
+		public enum DelegateAction: Equatable {
 			case didChangeAggregation(TrackableFilter.Aggregation)
 		}
-		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
@@ -28,12 +27,11 @@ public struct StatisticsDetailsCharts: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didChangeAggregation(aggregation):
-					state.aggregation = aggregation
+				case .never:
 					return .none
 				}
 
@@ -55,26 +53,32 @@ public struct StatisticsDetailsCharts: Reducer {
 public struct StatisticsDetailsChartsView: View {
 	let store: StoreOf<StatisticsDetailsCharts>
 
-	struct ViewState: Equatable {
-		let aggregation: TrackableFilter.Aggregation
-
-		init(state: StatisticsDetailsCharts.State) {
-			self.aggregation = state.aggregation
-		}
-	}
-
-	enum ViewAction {
-		case didChangeAggregation(TrackableFilter.Aggregation)
-	}
-
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsDetailsCharts.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			VStack {
+				if let title = viewStore.chartData?.title {
+					HStack {
+						Text(title)
+							.font(.title3)
+							.frame(maxWidth: .infinity, alignment: .leading)
+
+						if viewStore.isLoadingNextChart {
+							ProgressView()
+						}
+					}
+				} else if viewStore.isLoadingNextChart {
+					ProgressView()
+				}
+
+				if let chartData = viewStore.chartData {
+					StatisticsChart(chartData)
+				}
+
 				Spacer()
 
 				Picker(
 					Strings.Statistics.Filter.aggregation,
-					selection: viewStore.binding(get: \.aggregation, send: ViewAction.didChangeAggregation)
+					selection: viewStore.binding(get: \.aggregation, send: { .delegate(.didChangeAggregation($0)) })
 				) {
 					ForEach(TrackableFilter.Aggregation.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -83,16 +87,7 @@ public struct StatisticsDetailsChartsView: View {
 				.pickerStyle(.segmented)
 				.padding()
 			}
-		}
-	}
-}
-
-extension StatisticsDetailsCharts.Action {
-	init(action: StatisticsDetailsChartsView.ViewAction) {
-		switch action {
-		case let .didChangeAggregation(aggregation):
-			self = .view(.didChangeAggregation(aggregation))
-		}
+		})
 	}
 }
 
