@@ -10,11 +10,11 @@ import ViewsLibrary
 
 public struct RollEditor: Reducer {
 	public struct State: Equatable {
-		public var ballRolled: Gear.Rolled?
+		public var ballRolled: Gear.Named?
 		public var didFoul: Bool
 		public var isGearEnabled: Bool
 
-		init(ballRolled: Gear.Rolled?, didFoul: Bool) {
+		init(ballRolled: Gear.Named?, didFoul: Bool) {
 			self.ballRolled = ballRolled
 			self.didFoul = didFoul
 

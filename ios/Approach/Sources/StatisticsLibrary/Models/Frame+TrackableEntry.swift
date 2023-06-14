@@ -29,9 +29,9 @@ extension Frame {
 			let roll0 = try container.decodeIfPresent(Roll.self, forKey: CodingKeys.roll0)
 			let roll1 = try container.decodeIfPresent(Roll.self, forKey: CodingKeys.roll1)
 			let roll2 = try container.decodeIfPresent(Roll.self, forKey: CodingKeys.roll2)
-			let ball0 = try container.decodeIfPresent(Gear.Rolled.self, forKey: CodingKeys.bowlingBall0)
-			let ball1 = try container.decodeIfPresent(Gear.Rolled.self, forKey: CodingKeys.bowlingBall1)
-			let ball2 = try container.decodeIfPresent(Gear.Rolled.self, forKey: CodingKeys.bowlingBall2)
+			let ball0 = try container.decodeIfPresent(Gear.Named.self, forKey: CodingKeys.bowlingBall0)
+			let ball1 = try container.decodeIfPresent(Gear.Named.self, forKey: CodingKeys.bowlingBall1)
+			let ball2 = try container.decodeIfPresent(Gear.Named.self, forKey: CodingKeys.bowlingBall2)
 			let rolls = [roll0, roll1, roll2]
 			let bowlingBalls = [ball0, ball1, ball2]
 			self.rolls = zip(rolls, bowlingBalls).enumerated().compactMap {

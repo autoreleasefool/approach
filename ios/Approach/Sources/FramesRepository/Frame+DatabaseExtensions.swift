@@ -9,7 +9,7 @@ extension Frame.Edit: PersistableRecord, FetchableRecord {
 
 extension Frame.Summary: FetchableRecord {}
 
-extension Gear.Rolled: FetchableRecord {}
+extension Gear.Named: FetchableRecord {}
 
 extension DerivableRequest<Frame.Database> {
 	func orderByIndex() -> Self {

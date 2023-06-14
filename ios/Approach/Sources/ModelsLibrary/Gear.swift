@@ -24,7 +24,7 @@ extension Gear {
 		public let kind: Kind
 		public let ownerName: String?
 
-		public var rolled: Rolled {
+		public var named: Named {
 			.init(id: id, name: name)
 		}
 	}
@@ -35,9 +35,4 @@ extension Gear {
 		public let id: Gear.ID
 		public let name: String
 	}
-}
-
-extension Gear {
-	@available(*, deprecated)
-	public typealias Rolled = Named
 }
