@@ -12,9 +12,19 @@ extension Date {
 		Self.longFormatter.string(from: self)
 	}
 
-	private static let shortFormatter: DateFormatter = {
+	private static let mediumFormatter: DateFormatter = {
 		let formatter = DateFormatter()
 		formatter.dateFormat = "eee, MMM d"
+		return formatter
+	}()
+
+	public var mediumFormat: String {
+		Self.mediumFormatter.string(from: self)
+	}
+
+	private static let shortFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "MMM d"
 		return formatter
 	}()
 

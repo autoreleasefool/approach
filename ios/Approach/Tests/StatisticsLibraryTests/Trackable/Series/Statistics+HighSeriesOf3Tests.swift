@@ -8,8 +8,8 @@ final class HighSeriesOf3Tests: XCTestCase {
 		var statistic = Statistics.HighSeriesOf3()
 
 		let seriesList = [
-			Series.TrackableEntry(id: UUID(0), numberOfGames: 3, total: 123),
-			Series.TrackableEntry(id: UUID(1), numberOfGames: 3, total: 456),
+			Series.TrackableEntry(id: UUID(0), numberOfGames: 3, total: 123, date: Date()),
+			Series.TrackableEntry(id: UUID(1), numberOfGames: 3, total: 456, date: Date()),
 		]
 
 		for series in seriesList {
@@ -23,8 +23,8 @@ final class HighSeriesOf3Tests: XCTestCase {
 		var statistic = Statistics.HighSeriesOf3()
 
 		let seriesList = [
-			Series.TrackableEntry(id: UUID(0), numberOfGames: 2, total: 123),
-			Series.TrackableEntry(id: UUID(1), numberOfGames: 4, total: 456),
+			Series.TrackableEntry(id: UUID(0), numberOfGames: 2, total: 123, date: Date()),
+			Series.TrackableEntry(id: UUID(1), numberOfGames: 4, total: 456, date: Date()),
 		]
 
 		for series in seriesList {

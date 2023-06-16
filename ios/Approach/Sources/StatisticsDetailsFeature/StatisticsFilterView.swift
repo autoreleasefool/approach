@@ -37,14 +37,14 @@ public struct StatisticsFilterView: View {
 
 	@ViewBuilder private var seriesFilters: some View {
 		if let series = sources.series {
-			filterLabel("Series", value: series.date.shortFormat, type: .seriesDate)
+			filterLabel("Series", value: series.date.mediumFormat, type: .seriesDate)
 		} else {
 			if let startDate = filter.seriesFilter.startDate {
-				filterLabel("Starts", value: startDate.shortFormat, type: .seriesDate)
+				filterLabel("Starts", value: startDate.mediumFormat, type: .seriesDate)
 			}
 
 			if let endDate = filter.seriesFilter.endDate {
-				filterLabel("Ends", value: endDate.shortFormat, type: .seriesDate)
+				filterLabel("Ends", value: endDate.mediumFormat, type: .seriesDate)
 			}
 
 			if let alley = filter.seriesFilter.alley {
