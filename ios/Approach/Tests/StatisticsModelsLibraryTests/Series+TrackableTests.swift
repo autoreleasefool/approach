@@ -1,6 +1,6 @@
 @testable import DatabaseModelsLibrary
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 @testable import StatisticsModelsLibrary
 import TestDatabaseUtilitiesLibrary
 import XCTest
@@ -54,7 +54,7 @@ final class SeriesTrackableTests: XCTestCase {
 
 		let result = try await database.read {
 			try series
-				.request(for: Series.Database.trackableGames(filter: .init(opponent: UUID(1))))
+				.request(for: Series.Database.trackableGames(filter: .init(opponent: .init(id: UUID(1), name: "Sarah"))))
 				.fetchAll($0)
 		}
 
@@ -90,7 +90,7 @@ final class SeriesTrackableTests: XCTestCase {
 
 		let result = try await database.read {
 			try series
-				.request(for: Series.Database.trackableGames(filter: .init(gearUsed: [UUID(0)])))
+				.request(for: Series.Database.trackableGames(filter: .init(gearUsed: [.init(id: UUID(0), name: "Shoes")])))
 				.fetchAll($0)
 		}
 
@@ -129,7 +129,10 @@ final class SeriesTrackableTests: XCTestCase {
 
 		let result = try await database.read {
 			try series
-				.request(for: Series.Database.trackableGames(filter: .init(lanes: .lanes([UUID(0), UUID(1)]))))
+				.request(for: Series.Database.trackableGames(filter: .init(lanes: .lanes([
+					.init(id: UUID(0), label: "1", position: .leftWall),
+					.init(id: UUID(1), label: "2", position: .rightWall),
+				]))))
 				.fetchAll($0)
 		}
 
@@ -160,6 +163,7 @@ final class SeriesTrackableTests: XCTestCase {
 		let database = try initializeDatabase(
 			withAlleys: .custom([alley]),
 			withLanes: .custom([lane1, lane2, lane3]),
+			withBowlers: .custom([bowler]),
 			withLeagues: .custom([league]),
 			withSeries: .custom([series]),
 			withGames: .custom([game1, game2, game3]),
@@ -234,7 +238,7 @@ final class SeriesTrackableTests: XCTestCase {
 			try series
 				.request(for: Series.Database.trackableFrames(
 					through: Series.Database.trackableGames(filter: .init()),
-					filter: .init(bowlingBallsUsed: [UUID(0), UUID(1)])
+					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Red"), .init(id: UUID(1), name: "Green")])
 				))
 				.fetchAll($0)
 		}
@@ -285,8 +289,12 @@ final class SeriesTrackableTests: XCTestCase {
 		let result1 = try await database.read {
 			try series
 				.request(for: Series.Database.trackableFrames(
-					through: Series.Database.trackableGames(filter: .init(lanes: .lanes([UUID(0)]), gearUsed: [UUID(1)], opponent: UUID(1))),
-					filter: .init(bowlingBallsUsed: [UUID(0)])
+					through: Series.Database.trackableGames(filter: .init(
+						lanes: .lanes([.init(id: UUID(0), label: "1", position: .noWall)]),
+						gearUsed: [.init(id: UUID(1), name: "Towel")],
+						opponent: .init(id: UUID(1), name: "Sarah")
+					)),
+					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Ball")])
 				))
 				.fetchAll($0)
 		}
@@ -296,8 +304,12 @@ final class SeriesTrackableTests: XCTestCase {
 		let result2 = try await database.read {
 			try series
 				.request(for: Series.Database.trackableFrames(
-					through: Series.Database.trackableGames(filter: .init(lanes: .positions([.noWall]), gearUsed: [UUID(1)], opponent: UUID(1))),
-					filter: .init(bowlingBallsUsed: [UUID(0)])
+					through: Series.Database.trackableGames(filter: .init(
+						lanes: .positions([.noWall]),
+						gearUsed: [.init(id: UUID(1), name: "Towel")],
+						opponent: .init(id: UUID(1), name: "Sarah")
+					)),
+					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Ball")])
 				))
 				.fetchAll($0)
 		}

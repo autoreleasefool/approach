@@ -1,6 +1,6 @@
 @testable import DatabaseModelsLibrary
 import GRDB
-import ModelsLibrary
+@testable import ModelsLibrary
 @testable import StatisticsModelsLibrary
 import TestDatabaseUtilitiesLibrary
 import XCTest
@@ -50,7 +50,9 @@ final class GameTrackableTests: XCTestCase {
 
 		let result = try await database.read {
 			try game
-				.request(for: Game.Database.trackableFrames(filter: .init(bowlingBallsUsed: [UUID(0), UUID(1)])))
+				.request(for: Game.Database.trackableFrames(
+					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Red"), .init(id: UUID(1), name: "Green")])
+				))
 				.fetchAll($0)
 		}
 
