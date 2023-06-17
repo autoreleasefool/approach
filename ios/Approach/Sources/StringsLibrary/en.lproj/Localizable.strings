@@ -235,6 +235,8 @@
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";
 "statistics.details.filter.source" = "Source";
+"statistics.charts.unavailable" = "There doesn't seem to be any data available.";
+"statistics.charts.axesLabels.date" = "Date";
 
 /* Settings */
 

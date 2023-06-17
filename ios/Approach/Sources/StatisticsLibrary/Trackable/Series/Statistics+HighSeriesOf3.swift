@@ -9,6 +9,7 @@ extension Statistics {
 		private var highSeries: Int
 		public var value: String { String(highSeries) }
 		public var trackedValue: TrackedValue { .init(highSeries) }
+		public var isEmpty: Bool { highSeries == 0 }
 
 		public init() {
 			self.init(highSeries: 0)

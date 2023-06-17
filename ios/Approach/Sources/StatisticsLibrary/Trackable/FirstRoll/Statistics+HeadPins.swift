@@ -9,6 +9,7 @@ extension Statistics {
 		private var headPins: Int
 		public var value: String { String(headPins) }
 		public var trackedValue: TrackedValue { .init(headPins) }
+		public var isEmpty: Bool { headPins == 0 }
 
 		public init() {
 			self.init(headPins: 0)

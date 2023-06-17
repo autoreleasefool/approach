@@ -13,7 +13,7 @@ public struct StatisticsDetails: Reducer {
 	public struct State: Equatable {
 		public var staticValues: IdentifiedArrayOf<StaticValueGroup> = []
 		public var isLoadingNextChart = false
-		public var chartData: StatisticsChart.Data?
+		public var chartContent: StatisticsDetailsCharts.ChartContent?
 
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
@@ -49,7 +49,7 @@ public struct StatisticsDetails: Reducer {
 			case adjustBackdrop
 			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
 			case didLoadStaticValues(TaskResult<[StaticValueGroup]>)
-			case didLoadChart(TaskResult<StatisticsChart.Data>)
+			case didLoadChart(TaskResult<AccumulatingChart.Data>)
 			case orientationChange(UIDeviceOrientation)
 		}
 
@@ -151,7 +151,11 @@ public struct StatisticsDetails: Reducer {
 					return .none
 
 				case let .didLoadChart(.success(chartData)):
-					state.chartData = chartData
+					if chartData.isEmpty {
+						state.chartContent = .chartUnavailable(statistic: chartData.title)
+					} else {
+						state.chartContent = .chart(chartData)
+					}
 					state.isLoadingNextChart = false
 					return .none
 
@@ -195,7 +199,7 @@ public struct StatisticsDetails: Reducer {
 				case let .charts(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didChangeAggregation(aggregation):
-						guard let statisticId = state.chartData?.title,
+						guard let statisticId = state.chartContent?.title,
 									let statistic = Statistics.type(fromId: statisticId) as? (any GraphableStatistic.Type)
 						else {
 							return .none
@@ -251,7 +255,7 @@ public struct StatisticsDetails: Reducer {
 				let startTime = date()
 				let result = await TaskResult {
 					let entries = try await self.statistics.chart(statistic: forStatistic, filter: withFilter)
-					return StatisticsChart.Data(title: forStatistic.title, entries: entries)
+					return AccumulatingChart.Data(title: forStatistic.title, entries: entries)
 				}
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {
@@ -269,7 +273,7 @@ extension StatisticsDetails.State {
 	var charts: StatisticsDetailsCharts.State {
 		get {
 			.init(
-				chartData: chartData,
+				chartContent: chartContent,
 				isLoadingNextChart: isLoadingNextChart,
 				aggregation: filter.aggregation
 			)

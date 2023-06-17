@@ -813,6 +813,14 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "statistics.categories.series.title", fallback: "Series")
       }
     }
+    public enum Charts {
+      /// There doesn't seem to be any data available.
+      public static let unavailable = Strings.tr("Localizable", "statistics.charts.unavailable", fallback: "There doesn't seem to be any data available.")
+      public enum AxesLabels {
+        /// Date
+        public static let date = Strings.tr("Localizable", "statistics.charts.axesLabels.date", fallback: "Date")
+      }
+    }
     public enum Details {
       public enum Filter {
         /// Source

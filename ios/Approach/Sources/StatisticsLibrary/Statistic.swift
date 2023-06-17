@@ -12,6 +12,7 @@ public protocol Statistic: Identifiable, Equatable {
 	var value: String { get }
 	var category: StatisticCategory { get }
 	var staticValue: StaticValue { get }
+	var isEmpty: Bool { get }
 
 	init()
 

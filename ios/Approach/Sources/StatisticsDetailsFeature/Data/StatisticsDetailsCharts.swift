@@ -7,7 +7,7 @@ import SwiftUI
 
 public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
-		public var chartData: StatisticsChart.Data?
+		public var chartContent: ChartContent?
 		public var isLoadingNextChart: Bool
 		public var aggregation: TrackableFilter.Aggregation
 	}
@@ -22,6 +22,18 @@ public struct StatisticsDetailsCharts: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+	}
+
+	public enum ChartContent: Equatable {
+		case chart(AccumulatingChart.Data)
+		case chartUnavailable(statistic: String)
+
+		var title: String {
+			switch self {
+			case let .chart(data): return data.title
+			case let .chartUnavailable(statistic): return statistic
+			}
+		}
 	}
 
 	public init() {}
@@ -56,22 +68,31 @@ public struct StatisticsDetailsChartsView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			VStack {
-				if let title = viewStore.chartData?.title {
-					HStack {
-						Text(title)
-							.font(.title3)
-							.frame(maxWidth: .infinity, alignment: .leading)
-
-						if viewStore.isLoadingNextChart {
-							ProgressView()
-						}
-					}
-				} else if viewStore.isLoadingNextChart {
+				if viewStore.isLoadingNextChart {
 					ProgressView()
+						.padding(.bottom)
 				}
 
-				if let chartData = viewStore.chartData {
-					StatisticsChart(chartData)
+				if let chartContent = viewStore.chartContent {
+					switch chartContent {
+					case let .chart(data):
+						AccumulatingChart(data)
+					case let .chartUnavailable(statistic):
+						VStack(alignment: .leading) {
+							Text(statistic)
+								.font(.headline)
+
+							Spacer()
+
+							Text(Strings.Statistics.Charts.unavailable)
+								.font(.body)
+								.fontWeight(.light)
+								.frame(maxWidth: .infinity)
+								.padding(.top, .standardSpacing)
+
+							Spacer()
+						}
+					}
 				}
 
 				Spacer()

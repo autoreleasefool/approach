@@ -3,13 +3,15 @@ import Foundation
 import StatisticsLibrary
 
 struct ChartAggregator {
-	static let maxAggregateTimePeriods: Double = 25
+	static let maxAggregateTimePeriods: Double = 20
 	static let minPeriodTimeInterval: TimeInterval = 604800
 
 	let uuid: UUIDGenerator
 	let aggregation: TrackableFilter.Aggregation
 
 	func accumulate(entries allEntries: [Date: any GraphableStatistic]) -> [ChartEntry] {
+		guard !allEntries.allSatisfy(\.value.isEmpty) else { return [] }
+
 		let entries: [Date: any GraphableStatistic]
 		switch aggregation {
 		case .accumulate:
