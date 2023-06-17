@@ -17,6 +17,6 @@ final class HighSingleTests: XCTestCase {
 			statistic.adjust(byGame: game, configuration: .init())
 		}
 
-		XCTAssertEqual(statistic.value, "120")
+		AssertHighestOf(statistic, equals: 120)
 	}
 }

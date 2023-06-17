@@ -16,7 +16,7 @@ final class HighSeriesOf3Tests: XCTestCase {
 			statistic.adjust(bySeries: series, configuration: .init())
 		}
 
-		XCTAssertEqual(statistic.value, "456")
+		AssertHighestOf(statistic, equals: 456)
 	}
 
 	func testAdjustBy_SeriesNotWith3Games_DoesNotAdjust() {
@@ -31,6 +31,6 @@ final class HighSeriesOf3Tests: XCTestCase {
 			statistic.adjust(bySeries: series, configuration: .init())
 		}
 
-		XCTAssertEqual(statistic.value, "0")
+		AssertHighestOf(statistic, equals: 0)
 	}
 }

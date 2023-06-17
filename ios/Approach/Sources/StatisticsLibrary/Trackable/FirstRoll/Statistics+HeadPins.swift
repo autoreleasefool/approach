@@ -2,22 +2,18 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HeadPins: Statistic, GraphableStatistic, TrackablePerFrame, GraphablePerFrame {
-		public static let title = Strings.Statistics.Title.headPins
-		public static let category: StatisticCategory = .onFirstRoll
+	public struct HeadPins: Statistic, GraphableStatistic, TrackablePerFrame, CountingStatistic {
+		public var title: String { Strings.Statistics.Title.headPins }
+		public var category: StatisticCategory { .onFirstRoll }
 
-		private var headPins: Int
-		public var value: String { String(headPins) }
-		public var trackedValue: TrackedValue { .init(headPins) }
-		public var isEmpty: Bool { headPins == 0 }
-
-		public init() {
-			self.init(headPins: 0)
+		private var headPins = 0
+		public var count: Int {
+			get { headPins }
+			set { headPins = newValue }
 		}
 
-		public init(headPins: Int) {
-			self.headPins = headPins
-		}
+		public init() {}
+		init(headPins: Int) { self.headPins = headPins }
 
 		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
 			for roll in byFrame.firstRolls {
@@ -25,11 +21,6 @@ extension Statistics {
 					headPins += 1
 				}
 			}
-		}
-
-		public mutating func accumulate(by: any GraphableStatistic) {
-			guard let by = by as? Self else { return }
-			self.headPins += by.headPins
 		}
 
 		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {

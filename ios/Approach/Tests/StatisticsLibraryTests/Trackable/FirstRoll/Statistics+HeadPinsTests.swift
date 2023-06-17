@@ -25,7 +25,7 @@ final class HeadPinsTests: XCTestCase {
 			statistic.adjust(byFrame: frame, configuration: .init(countHeadPin2AsHeadPin: false))
 		}
 
-		XCTAssertEqual(statistic.value, "1")
+		AssertCounting(statistic, equals: 1)
 	}
 
 	func testAdjust_ByFramesWithHeadPin2_WithHeadPin2Enabled_Adjusts() {
@@ -54,7 +54,7 @@ final class HeadPinsTests: XCTestCase {
 			statistic.adjust(byFrame: frame, configuration: .init(countHeadPin2AsHeadPin: true))
 		}
 
-		XCTAssertEqual(statistic.value, "3")
+		AssertCounting(statistic, equals: 3)
 	}
 
 	func testAdjust_ByFramesWithHeadPin2_WithHeadPin2Disabled_DoesNotAdjust() {
@@ -83,6 +83,6 @@ final class HeadPinsTests: XCTestCase {
 			statistic.adjust(byFrame: frame, configuration: .init(countHeadPin2AsHeadPin: false))
 		}
 
-		XCTAssertEqual(statistic.value, "1")
+		AssertCounting(statistic, equals: 1)
 	}
 }
