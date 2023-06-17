@@ -112,7 +112,7 @@ services = [ "Preference" ]
 [features.StatisticsDetails]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
 services = [ "Notifications" ]
-libraries = [ "DateTime", "Equatable", "ResourcePicker", "StatisticsCharts", "SwiftUIExtensions" ]
+libraries = [ "Equatable", "ResourcePicker", "StatisticsCharts", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgets]
 libraries = [ "Assets", "Strings" ]
@@ -270,7 +270,7 @@ dependencies = [ "IdentifiedCollections" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.StatisticsCharts]
-libraries = [ "Statistics" ]
+libraries = [ "Assets", "DateTime", "Statistics" ]
 
 [libraries.StatisticsModels]
 libraries = [ "DatabaseModels", "Statistics" ]

@@ -494,7 +494,6 @@ let package = Package(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
-				"DateTimeLibrary",
 				"EquatableLibrary",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
@@ -1240,6 +1239,8 @@ let package = Package(
 		.target(
 			name: "StatisticsChartsLibrary",
 			dependencies: [
+				"AssetsLibrary",
+				"DateTimeLibrary",
 				"StatisticsLibrary",
 			]
 		),
