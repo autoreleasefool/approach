@@ -21,7 +21,9 @@ extension Color {
 	public static let appFiltersPuce = Color("Colors/Filters/Puce", bundle: .module)
 	public static let appFiltersSeaGreen = Color("Colors/Filters/SeaGreen", bundle: .module)
 
-	public static let appChartsPrimary = Color("Colors/Charts/Primary", bundle: .module)
-	public static let appChartsSecondary = Color("Colors/Charts/Secondary", bundle: .module)
-	public static let appChartsBackground = Color("Colors/Charts/Background", bundle: .module)
+	public static let appChartsAccumulatingArea = Color("Colors/Charts/Accumulating/Area", bundle: .module)
+	public static let appChartsAccumulatingAxes = Color("Colors/Charts/Accumulating/Axes", bundle: .module)
+	public static let appChartsAccumulatingBackground = Color("Colors/Charts/Accumulating/Background", bundle: .module)
+	public static let appChartsAccumulatingLine = Color("Colors/Charts/Accumulating/Line", bundle: .module)
+	public static let appChartsAccumulatingText = Color("Colors/Charts/Accumulating/Text", bundle: .module)
 }
