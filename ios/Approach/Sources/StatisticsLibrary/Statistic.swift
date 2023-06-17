@@ -81,6 +81,19 @@ extension Collection where Element == any Statistic {
 	}
 }
 
+extension Collection where Element == StaticValueGroup {
+	public func firstGraphableStatistic() -> (any GraphableStatistic.Type)? {
+		for element in self {
+			for value in element.values {
+				guard let graphable = Statistics.type(fromId: value.id) as? (any GraphableStatistic.Type) else { continue }
+				return graphable
+			}
+		}
+
+		return nil
+	}
+}
+
 // MARK: - Graphable
 
 public struct TrackedValue: Equatable {

@@ -144,7 +144,11 @@ public struct StatisticsDetails: Reducer {
 				case let .didLoadStaticValues(.success(statistics)):
 					state.staticValues = .init(uniqueElements: statistics)
 					state.destination = .list(.init(staticValues: state.staticValues))
-					return .none
+					if state.chartContent == nil, let firstStatistic = state.staticValues.firstGraphableStatistic() {
+						return loadChart(forStatistic: firstStatistic, withFilter: state.filter)
+					} else {
+						return .none
+					}
 
 				case .didLoadStaticValues(.failure):
 					// TODO: show statistics loading failure
