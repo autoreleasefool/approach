@@ -210,6 +210,8 @@ libraries = [ "TestDatabaseUtilities" ]
 
 [libraries.Assets]
 skip_tests = true
+[libraries.Assets.resources]
+processed = [ "Resources" ]
 
 [libraries.Constants]
 skip_tests = true

@@ -1052,7 +1052,10 @@ let package = Package(
 		// MARK: - Libraries
 		.target(
 			name: "AssetsLibrary",
-			dependencies: []
+			dependencies: [],
+			resources: [
+				.process("Resources"),
+			]
 		),
 		.target(
 			name: "ConstantsLibrary",

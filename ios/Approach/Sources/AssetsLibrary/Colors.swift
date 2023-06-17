@@ -20,4 +20,8 @@ extension Color {
 	public static let appFiltersEnglishViolet = Color("Colors/Filters/EnglishViolet", bundle: .module)
 	public static let appFiltersPuce = Color("Colors/Filters/Puce", bundle: .module)
 	public static let appFiltersSeaGreen = Color("Colors/Filters/SeaGreen", bundle: .module)
+
+	public static let appChartsPrimary = Color("Colors/Charts/Primary", bundle: .module)
+	public static let appChartsSecondary = Color("Colors/Charts/Secondary", bundle: .module)
+	public static let appChartsBackground = Color("Colors/Charts/Background", bundle: .module)
 }
