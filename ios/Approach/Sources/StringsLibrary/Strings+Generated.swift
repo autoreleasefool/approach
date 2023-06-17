@@ -910,6 +910,8 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "statistics.placeholder.title", fallback: "Statistics at a glance")
     }
     public enum Title {
+      /// Average
+      public static let gameAverage = Strings.tr("Localizable", "statistics.title.gameAverage", fallback: "Average")
       /// Head Pins
       public static let headPins = Strings.tr("Localizable", "statistics.title.headPins", fallback: "Head Pins")
       /// High Series of 3

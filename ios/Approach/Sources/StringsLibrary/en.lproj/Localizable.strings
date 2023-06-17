@@ -231,6 +231,7 @@
 "statistics.overview.viewMoreDetailsHint.title" = "View more detailed statistics";
 "statistics.overview.viewMoreDetailsHint.message" = "You can look up detailed statistics for bowlers, leagues, and more. Select the filters you're interested in exploring and see how your bowling improves over time, and what you need to focus on.";
 "statistics.overview.viewDetailedStatistics" = "View Detailed Statistics";
+"statistics.title.gameAverage" = "Average";
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";

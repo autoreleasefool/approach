@@ -1,6 +1,7 @@
 extension Statistics {
 	public static let allCases: [Statistic.Type] = [
 		// Overall
+		Statistics.GameAverage.self,
 		Statistics.HighSingle.self,
 
 		// First Roll
