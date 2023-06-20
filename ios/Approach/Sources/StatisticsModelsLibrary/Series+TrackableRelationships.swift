@@ -7,6 +7,7 @@ extension Series.Database {
 	public static func trackableGames(filter: TrackableFilter.GameFilter?) -> HasManyAssociation<Self, Game.Database> {
 		var association = hasMany(Game.Database.self)
 			.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
+			.filter(Game.Database.Columns.score > 0)
 
 		if let filter {
 			if let opponent = filter.opponent {

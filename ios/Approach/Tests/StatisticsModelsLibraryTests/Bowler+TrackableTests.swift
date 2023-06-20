@@ -148,14 +148,14 @@ final class BowlerTrackableTests: XCTestCase {
 		let series3 = Series.Database.mock(leagueId: UUID(1), id: UUID(2), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .include)
 		let series4 = Series.Database.mock(leagueId: UUID(1), id: UUID(3), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .exclude)
 
-		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, excludeFromStatistics: .include)
-		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, excludeFromStatistics: .exclude)
-		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, excludeFromStatistics: .include)
-		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, excludeFromStatistics: .exclude)
-		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0, excludeFromStatistics: .include)
-		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, excludeFromStatistics: .exclude)
-		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0, excludeFromStatistics: .include)
-		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 1, excludeFromStatistics: .exclude)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 123, excludeFromStatistics: .include)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 123, excludeFromStatistics: .exclude)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 123, excludeFromStatistics: .include)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123, excludeFromStatistics: .exclude)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0, score: 123, excludeFromStatistics: .include)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 123, excludeFromStatistics: .exclude)
+		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0, score: 123, excludeFromStatistics: .include)
+		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 1, score: 123, excludeFromStatistics: .exclude)
 
 		let database = try initializeDatabase(
 			withLeagues: .custom([league1, league2]),
@@ -187,8 +187,8 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, score: 123)
 
 		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(1))
 		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: nil)
@@ -225,8 +225,8 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, score: 123)
 
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Shoes", kind: .shoes)
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Towel", kind: .towel)
@@ -265,9 +265,9 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let game2 = Game.Database.mock(id: UUID(1), index: 1)
-		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, score: 123)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2, score: 123)
 
 		let alley = Alley.Database.mock(id: UUID(0), name: "Skyview")
 
@@ -310,9 +310,9 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let game2 = Game.Database.mock(id: UUID(1), index: 1)
-		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, score: 123)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2, score: 123)
 
 		let alley = Alley.Database.mock(id: UUID(0), name: "Skyview")
 
@@ -361,14 +361,14 @@ final class BowlerTrackableTests: XCTestCase {
 		let series3 = Series.Database.mock(leagueId: UUID(1), id: UUID(2), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .include)
 		let series4 = Series.Database.mock(leagueId: UUID(1), id: UUID(3), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .exclude)
 
-		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, excludeFromStatistics: .include)
-		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, excludeFromStatistics: .exclude)
-		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, excludeFromStatistics: .include)
-		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, excludeFromStatistics: .exclude)
-		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0, excludeFromStatistics: .include)
-		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, excludeFromStatistics: .exclude)
-		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0, excludeFromStatistics: .include)
-		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 1, excludeFromStatistics: .exclude)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 123, excludeFromStatistics: .include)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 123, excludeFromStatistics: .exclude)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 123, excludeFromStatistics: .include)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123, excludeFromStatistics: .exclude)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0, score: 123, excludeFromStatistics: .include)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 123, excludeFromStatistics: .exclude)
+		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0, score: 123, excludeFromStatistics: .include)
+		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 1, score: 123, excludeFromStatistics: .exclude)
 
 		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
 		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
@@ -411,7 +411,7 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game = Game.Database.mock(id: UUID(0), index: 0)
+		let game = Game.Database.mock(id: UUID(0), index: 0, score: 123)
 
 		let ball1 = Gear.Database.mock(id: UUID(0), name: "Red", kind: .bowlingBall)
 		let ball2 = Gear.Database.mock(id: UUID(1), name: "Green", kind: .bowlingBall)
@@ -462,7 +462,7 @@ final class BowlerTrackableTests: XCTestCase {
 
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), alleyId: UUID(0))
 
-		let game = Game.Database.mock(id: UUID(0), index: 0)
+		let game = Game.Database.mock(id: UUID(0), index: 0, score: 123)
 
 		let ball = Gear.Database.mock(id: UUID(0), name: "Ball", kind: .bowlingBall)
 		let towel = Gear.Database.mock(id: UUID(1), name: "Towel", kind: .towel)
