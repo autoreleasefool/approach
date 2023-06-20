@@ -133,7 +133,7 @@ public struct GamesEditor: Reducer {
 					case .none, .manual:
 						return .none
 					case .byFrame:
-						state.game?.score = score.last?.score ?? 0
+						state.game?.score = score.gameScore() ?? 0
 						return save(game: state.game)
 					}
 

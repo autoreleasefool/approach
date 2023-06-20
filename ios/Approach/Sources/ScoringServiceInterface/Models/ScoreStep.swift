@@ -36,3 +36,9 @@ extension ScoreStep {
 		}
 	}
 }
+
+extension Collection where Element == ScoreStep {
+	public func gameScore() -> Int? {
+		reversed().first(where: { $0.score != nil })?.score
+	}
+}
