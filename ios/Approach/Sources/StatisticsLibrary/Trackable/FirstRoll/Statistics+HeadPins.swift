@@ -3,8 +3,8 @@ import StringsLibrary
 
 extension Statistics {
 	public struct HeadPins: Statistic, TrackablePerFrame, CountingStatistic {
-		public var title: String { Strings.Statistics.Title.headPins }
-		public var category: StatisticCategory { .onFirstRoll }
+		public static var title: String { Strings.Statistics.Title.headPins }
+		public static var category: StatisticCategory { .onFirstRoll }
 
 		private var headPins = 0
 		public var count: Int {

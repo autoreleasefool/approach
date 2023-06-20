@@ -14,4 +14,8 @@ extension Statistics {
 	public static func all(forSource trackableSource: TrackableFilter.Source) -> [Statistic.Type] {
 		allCases.filter { $0.supports(trackableSource: trackableSource) }
 	}
+
+	public static func type(of id: String) -> Statistic.Type? {
+		Self.allCases.first { $0.title == id }
+	}
 }

@@ -5,6 +5,9 @@ import StringsLibrary
 public enum Statistics {}
 
 public protocol Statistic {
+	static var title: String { get }
+	static var category: StatisticCategory { get }
+
 	var title: String { get }
 	var category: StatisticCategory { get }
 
@@ -19,6 +22,11 @@ public protocol Statistic {
 	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
 	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
 	mutating func aggregate(with: Statistic)
+}
+
+extension Statistic {
+	public var title: String { Self.title }
+	public var category: StatisticCategory { Self.category }
 }
 
 // MARK: - Category
@@ -68,7 +76,7 @@ public struct TrackablePerGameConfiguration {
 }
 
 public protocol TrackablePerGame: Statistic {}
-extension TrackablePerGame  {
+extension TrackablePerGame {
 	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
 	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
 }

@@ -3,8 +3,8 @@ import StringsLibrary
 
 extension Statistics {
 	public struct HighSeriesOf3: Statistic, TrackablePerSeries, HighestOfStatistic {
-		public var title: String { Strings.Statistics.Title.highSeriesOf3 }
-		public var category: StatisticCategory { .series }
+		public static var title: String { Strings.Statistics.Title.highSeriesOf3 }
+		public static var category: StatisticCategory { .series }
 
 		private var highSeries = 0
 		public var highest: Int {
