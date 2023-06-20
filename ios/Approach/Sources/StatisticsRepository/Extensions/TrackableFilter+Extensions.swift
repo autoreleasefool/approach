@@ -35,4 +35,30 @@ extension TrackableFilter {
 			return (nil, nil, game.request(for: frames))
 		}
 	}
+
+	func buildTrackableQueries(db: Database) throws -> (
+		QueryInterfaceRequest<Series.TrackableEntry>?,
+		QueryInterfaceRequest<Game.TrackableEntry>?,
+		QueryInterfaceRequest<Frame.TrackableEntry>?
+	) {
+		let (series, games, frames) = try buildInitialQueries(db: db)
+
+		return (
+			series?
+				.annotated(with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total"))
+				.asRequest(of: Series.TrackableEntry.self),
+			games?
+				.annotated(withRequired: Game.Database.series.select(
+					Series.Database.Columns.id.forKey("seriesid"),
+					Series.Database.Columns.date
+				))
+				.asRequest(of: Game.TrackableEntry.self),
+			frames?
+				.annotated(withRequired: Frame.Database.series.select(
+					Series.Database.Columns.id.forKey("seriesId"),
+					Series.Database.Columns.date
+				))
+				.asRequest(of: Frame.TrackableEntry.self)
+		)
+	}
 }

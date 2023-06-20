@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct GameAverage: Statistic, GraphableStatistic, TrackablePerGame, AveragingStatistic {
+	public struct GameAverage: Statistic, TrackablePerGame, AveragingStatistic {
 		public var title: String { Strings.Statistics.Title.gameAverage }
 		public var category: StatisticCategory { .overall }
 

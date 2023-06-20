@@ -1,36 +1,63 @@
 import Dependencies
+import Foundation
 import ModelsLibrary
+import StatisticsChartsLibrary
 import StatisticsLibrary
 
 public struct StatisticsRepository: Sendable {
 	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?
-	public var loadStaticValues: @Sendable (TrackableFilter) async throws -> [any Statistic]
-	public var loadChart: @Sendable (any GraphableStatistic.Type, TrackableFilter) async throws -> [ChartEntry]
+	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntry]
+	public var loadCountingChart: @Sendable (
+		CountingStatistic.Type, TrackableFilter
+	) async throws -> CountingChart.Data?
+	public var loadHighestOfChart: @Sendable(
+		HighestOfStatistic.Type, TrackableFilter
+	) async throws -> CountingChart.Data?
+	public var loadAveragingChart: @Sendable (
+		AveragingStatistic.Type, TrackableFilter
+	) async throws -> AveragingChart.Data?
 
 	public init(
 		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?,
-		loadStaticValues: @escaping @Sendable (TrackableFilter) async throws -> [any Statistic],
-		loadChart: @escaping @Sendable (any GraphableStatistic.Type, TrackableFilter) async throws -> [ChartEntry]
+		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntry],
+		loadCountingChart: @escaping @Sendable
+			(CountingStatistic.Type, TrackableFilter) async throws -> CountingChart.Data?,
+		loadHighestOfChart: @escaping @Sendable
+			(HighestOfStatistic.Type, TrackableFilter) async throws -> CountingChart.Data?,
+		loadAveragingChart: @escaping @Sendable
+			(AveragingStatistic.Type, TrackableFilter) async throws -> AveragingChart.Data?
 	) {
 		self.loadSources = loadSources
-		self.loadStaticValues = loadStaticValues
-		self.loadChart = loadChart
+		self.loadValues = loadValues
+		self.loadCountingChart = loadCountingChart
+		self.loadHighestOfChart = loadHighestOfChart
+		self.loadAveragingChart = loadAveragingChart
 	}
 
-	public func load(for filter: TrackableFilter) async throws -> [any Statistic] {
-		try await self.loadStaticValues(filter)
+	public func load(for filter: TrackableFilter) async throws -> [Statistics.ListEntry] {
+		try await self.loadValues(filter)
 	}
 
-	public func chart(statistic: any GraphableStatistic.Type, filter: TrackableFilter) async throws -> [ChartEntry] {
-		try await self.loadChart(statistic, filter)
+	public func chart(statistic: CountingStatistic.Type, filter: TrackableFilter) async throws -> CountingChart.Data? {
+		try await self.loadCountingChart(statistic, filter)
+	}
+
+	public func chart(statistic: HighestOfStatistic.Type, filter: TrackableFilter) async throws -> CountingChart.Data? {
+		try await self.loadHighestOfChart(statistic, filter)
+	}
+
+	public func chart(statistic: AveragingStatistic.Type, filter: TrackableFilter) async throws -> AveragingChart.Data? {
+		try await self.loadAveragingChart(statistic, filter)
 	}
 }
 
 extension StatisticsRepository: TestDependencyKey {
 	public static var testValue = Self(
 		loadSources: { _ in unimplemented("\(Self.self).loadSources") },
-		loadStaticValues: { _ in unimplemented("\(Self.self).loadStaticValues") },
-		loadChart: { _, _ in unimplemented("\(Self.self).loadChart") }
+		loadValues: { _ in unimplemented("\(Self.self).loadValues") },
+		loadCountingChart: { _, _ in unimplemented("\(Self.self).loadCountingChart") },
+		loadHighestOfChart: { _, _ in unimplemented("\(Self.self).loadHighestOfChart") },
+		loadAveragingChart: { _, _ in unimplemented("\(Self.self).loadAveragingChart") }
 	)
 }
 

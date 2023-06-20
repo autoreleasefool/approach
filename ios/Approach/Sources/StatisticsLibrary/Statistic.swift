@@ -14,6 +14,11 @@ public protocol Statistic {
 	init()
 
 	static func supports(trackableSource: TrackableFilter.Source) -> Bool
+
+	mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration)
+	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
+	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
+	mutating func aggregate(with: Statistic)
 }
 
 // MARK: - Category
@@ -38,4 +43,44 @@ public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 		case .series: return Strings.Statistics.Categories.Series.title
 		}
 	}
+}
+
+// MARK: - Trackable Per Frame
+
+public struct TrackablePerFrameConfiguration {
+	public let countHeadPin2AsHeadPin: Bool
+
+	public init(countHeadPin2AsHeadPin: Bool) {
+		self.countHeadPin2AsHeadPin = countHeadPin2AsHeadPin
+	}
+}
+
+public protocol TrackablePerFrame: Statistic {}
+extension TrackablePerFrame {
+	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
+	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
+}
+
+// MARK: - Trackable Per Game
+
+public struct TrackablePerGameConfiguration {
+	public init() {}
+}
+
+public protocol TrackablePerGame: Statistic {}
+extension TrackablePerGame  {
+	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
+	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
+}
+
+// MARK: - Trackable Per Series
+
+public struct TrackablePerSeriesConfiguration {
+	public init() {}
+}
+
+public protocol TrackablePerSeries: Statistic {}
+extension TrackablePerSeries {
+	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
+	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
 }

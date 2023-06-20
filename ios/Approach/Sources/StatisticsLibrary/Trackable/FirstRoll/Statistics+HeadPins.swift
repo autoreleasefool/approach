@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HeadPins: Statistic, GraphableStatistic, TrackablePerFrame, CountingStatistic {
+	public struct HeadPins: Statistic, TrackablePerFrame, CountingStatistic {
 		public var title: String { Strings.Statistics.Title.headPins }
 		public var category: StatisticCategory { .onFirstRoll }
 

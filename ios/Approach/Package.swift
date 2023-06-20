@@ -500,7 +500,6 @@ let package = Package(
 				"NotificationsServiceInterface",
 				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
-				"StatisticsChartsLibrary",
 				"StatisticsRepositoryInterface",
 				"SwiftUIExtensionsLibrary",
 			]
@@ -824,7 +823,7 @@ let package = Package(
 			name: "StatisticsRepositoryInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
-				"StatisticsLibrary",
+				"StatisticsChartsLibrary",
 			]
 		),
 		.testTarget(

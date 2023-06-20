@@ -28,10 +28,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "0", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "0", isGraphable: true),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
+			.init(title: Strings.Statistics.Title.headPins, value: "0"),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
 		])
 	}
 
@@ -48,10 +49,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "0", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "0", isGraphable: true),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
+			.init(title: Strings.Statistics.Title.headPins, value: "0"),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
 		])
 	}
 
@@ -68,9 +70,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "0", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
+			.init(title: Strings.Statistics.Title.headPins, value: "0"),
 		])
 	}
 
@@ -87,8 +90,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.headPins, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.headPins, value: "0"),
 		])
 	}
 
@@ -105,10 +108,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "269", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "183", isGraphable: true),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "626", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
+			.init(title: Strings.Statistics.Title.headPins, value: "183"),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "626"),
 		])
 	}
 
@@ -123,10 +127,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "269", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "96", isGraphable: true),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
+			.init(title: Strings.Statistics.Title.headPins, value: "96"),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
 		])
 	}
 
@@ -141,9 +146,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "269", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "3", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
+			.init(title: Strings.Statistics.Title.headPins, value: "3"),
 		])
 	}
 
@@ -158,8 +164,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.headPins, value: "1", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.headPins, value: "1"),
 		])
 	}
 
@@ -189,10 +195,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "192", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "6", isGraphable: true),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
+			.init(title: Strings.Statistics.Title.headPins, value: "6"),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
 		])
 	}
 
@@ -219,10 +226,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "192", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "6", isGraphable: true),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
+			.init(title: Strings.Statistics.Title.headPins, value: "6"),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
 		])
 	}
 
@@ -244,9 +252,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.highSingle, value: "192", isGraphable: true),
-			.init(title: Strings.Statistics.Title.headPins, value: "1", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
+			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
+			.init(title: Strings.Statistics.Title.headPins, value: "1"),
 		])
 	}
 
@@ -264,8 +273,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics.map(\.staticValue), [
-			.init(title: Strings.Statistics.Title.headPins, value: "1", isGraphable: true),
+		XCTAssertEqual(statistics, [
+			.init(title: Strings.Statistics.Title.headPins, value: "1"),
 		])
 	}
 }

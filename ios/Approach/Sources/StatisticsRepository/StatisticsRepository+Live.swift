@@ -14,6 +14,87 @@ extension StatisticsRepository: DependencyKey {
 		@Dependency(\.preferences) var preferences
 		@Dependency(\.uuid) var uuid
 
+		// MARK: - Per Series
+
+		@Sendable func adjust(statistics: inout [Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
+			let perSeriesConfiguration = preferences.perSeriesConfiguration()
+			while let series = try bySeries?.next() {
+				for index in statistics.startIndex..<statistics.endIndex {
+					statistics[index].adjust(bySeries: series, configuration: perSeriesConfiguration)
+				}
+			}
+		}
+
+		@Sendable func accumulate(
+			statistic: Statistic.Type,
+			bySeries: RecordCursor<Series.TrackableEntry>?
+		) throws -> [Date: Statistic] {
+			let perSeriesConfiguration = preferences.perSeriesConfiguration()
+			var allEntries: [Date: Statistic] = [:]
+			while let series = try bySeries?.next() {
+				if allEntries[series.date] == nil {
+					allEntries[series.date] = statistic.init()
+				}
+
+				allEntries[series.date]?.adjust(bySeries: series, configuration: perSeriesConfiguration)
+			}
+			return allEntries
+		}
+
+		// MARK: - Per Game
+
+		@Sendable func adjust(statistics: inout [Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
+			let perGameConfiguration = preferences.perGameConfiguration()
+			while let game = try byGames?.next() {
+				for index in statistics.startIndex..<statistics.endIndex {
+					statistics[index].adjust(byGame: game, configuration: perGameConfiguration)
+				}
+			}
+		}
+
+		@Sendable func accumulate(
+			statistic: Statistic.Type,
+			byGames: RecordCursor<Game.TrackableEntry>?
+		) throws -> [Date: Statistic] {
+			let perGameConfiguration = preferences.perGameConfiguration()
+			var allEntries: [Date: Statistic] = [:]
+			while let game = try byGames?.next() {
+				if allEntries[game.date] == nil {
+					allEntries[game.date] = statistic.init()
+				}
+
+				allEntries[game.date]?.adjust(byGame: game, configuration: perGameConfiguration)
+			}
+			return allEntries
+		}
+
+		// MARK: - Per Frame
+
+		@Sendable func adjust(statistics: inout [Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
+			let perFrameConfiguration = preferences.perFrameConfiguration()
+			while let frame = try byFrames?.next() {
+				for index in statistics.startIndex..<statistics.endIndex {
+					statistics[index].adjust(byFrame: frame, configuration: perFrameConfiguration)
+				}
+			}
+		}
+
+		@Sendable func accumulate(
+			statistic: Statistic.Type,
+			byFrames: RecordCursor<Frame.TrackableEntry>?
+		) throws -> [Date: Statistic] {
+			let perFrameConfiguration = preferences.perFrameConfiguration()
+			var allEntries: [Date: Statistic] = [:]
+			while let frame = try byFrames?.next() {
+				if allEntries[frame.date] == nil {
+					allEntries[frame.date] = statistic.init()
+				}
+
+				allEntries[frame.date]?.adjust(byFrame: frame, configuration: perFrameConfiguration)
+			}
+			return allEntries
+		}
+
 		return Self(
 			loadSources: { source in
 				try database.reader().read {
@@ -63,97 +144,83 @@ extension StatisticsRepository: DependencyKey {
 					}
 				}
 			},
-			loadStaticValues: { filter in
+			loadValues: { filter in
 				try database.reader().read {
 					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }
 
-					let (series, games, frames) = try filter.buildInitialQueries(db: $0)
-					let seriesCursor = try series?
-						.annotated(with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total"))
-						.asRequest(of: Series.TrackableEntry.self)
-						.fetchCursor($0)
-					let gamesCursor = try games?
-						.annotated(withRequired: Game.Database.series.select(
-							Series.Database.Columns.id.forKey("seriesid"),
-							Series.Database.Columns.date
-						))
-						.asRequest(of: Game.TrackableEntry.self)
-						.fetchCursor($0)
-					let framesCursor = try frames?
-						.annotated(withRequired: Frame.Database.series.select(
-							Series.Database.Columns.id.forKey("seriesId"),
-							Series.Database.Columns.date
-						))
-						.asRequest(of: Frame.TrackableEntry.self)
-						.fetchCursor($0)
+					let (series, games, frames) = try filter.buildTrackableQueries(db: $0)
+					let seriesCursor = try series?.fetchCursor($0)
+					let gamesCursor = try games?.fetchCursor($0)
+					let framesCursor = try frames?.fetchCursor($0)
 
-					let builder = StatisticsBuilder(
-						perSeriesConfiguration: preferences.perSeriesConfiguration(),
-						perGameConfiguration: preferences.perGameConfiguration(),
-						perFrameConfiguration: preferences.perFrameConfiguration(),
-						aggregator: nil
-					)
+					try adjust(statistics: &statistics, bySeries: seriesCursor)
+					try adjust(statistics: &statistics, byGames: gamesCursor)
+					try adjust(statistics: &statistics, byFrames: framesCursor)
 
-					try builder.adjust(statistics: &statistics, bySeries: seriesCursor)
-					try builder.adjust(statistics: &statistics, byGames: gamesCursor)
-					try builder.adjust(statistics: &statistics, byFrames: framesCursor)
-
-					return statistics
+					return statistics.map { .init(title: $0.title, value: $0.formattedValue) }
 				}
 			},
-			loadChart: { statistic, filter in
-				guard statistic.supports(trackableSource: filter.source) else { return [] }
-
-				let builder = StatisticsBuilder(
-					perSeriesConfiguration: preferences.perSeriesConfiguration(),
-					perGameConfiguration: preferences.perGameConfiguration(),
-					perFrameConfiguration: preferences.perFrameConfiguration(),
-					aggregator: .init(uuid: uuid, aggregation: filter.aggregation)
-				)
+			loadCountingChart: { statistic, filter in
+				guard statistic.supports(trackableSource: filter.source) else { return nil }
 
 				return try database.reader().read { db in
-					let results: [ChartEntry]
+					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
+					var output: ChartBuilder.Output?
 
-					if let graphable = statistic as? (any GraphablePerSeries.Type) {
-						let (series, _, _) = try filter.buildInitialQueries(db: db)
-						guard let series else { return [] }
-						let request = series
-							.annotated(
-								with: Series.Database.trackableGames(filter: .init())
-									.sum(Game.Database.Columns.score).forKey("total")
-							)
-							.asRequest(of: Series.TrackableEntry.self)
-
-						results = try builder.buildChart(forStatistic: graphable, withSeries: request, in: db)
-					} else if let graphable = statistic as? (any GraphablePerGame.Type) {
-						let (_, games, _) = try filter.buildInitialQueries(db: db)
-						guard let games else { return [] }
-						let request = games
-							.annotated(withRequired: Game.Database.series.select(
-								Series.Database.Columns.id.forKey("seriesid"),
-								Series.Database.Columns.date
-							))
-							.asRequest(of: Game.TrackableEntry.self)
-
-						results = try builder.buildChart(forStatistic: graphable, withGames: request, in: db)
-					} else if let graphable = statistic as? (any GraphablePerFrame.Type) {
-						let (_, _, frames) = try filter.buildInitialQueries(db: db)
-						guard let frames else { return [] }
-						let request = frames
-							.annotated(withRequired: Frame.Database.series.select(
-								Series.Database.Columns.id.forKey("seriesId"),
-								Series.Database.Columns.date
-							))
-							.asRequest(of: Frame.TrackableEntry.self)
-
-						results = try builder.buildChart(forStatistic: graphable, withFrames: request, in: db)
+					if statistic is TrackablePerSeries.Type {
+						let (series, _, _) = try filter.buildTrackableQueries(db: db)
+						guard let seriesCursor = try series?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, bySeries: seriesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else if statistic is TrackablePerGame.Type {
+						let (_, games, _) = try filter.buildTrackableQueries(db: db)
+						guard let gamesCursor = try games?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, byGames: gamesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else if statistic is TrackablePerFrame.Type {
+						let (_, _, frames) = try filter.buildTrackableQueries(db: db)
+						guard let framesCursor = try frames?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, byFrames: framesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
 					} else {
-						return []
+						output = nil
 					}
 
-					return results
+					switch output {
+					case .averaging: return nil
+					case let .counting(data): return data
+					case .none: return nil
+					}
 				}
+			},
+			loadHighestOfChart: { statistic, filter in
+				guard statistic.supports(trackableSource: filter.source) else { return nil }
+				return nil
+			},
+			loadAveragingChart: { statistic, filter in
+				guard statistic.supports(trackableSource: filter.source) else { return nil }
+				return nil
 			}
 		)
 	}()
 }
+
+
+//func buildChart(
+//		forStatistic: TrackablePerFrame.Type,
+//		withFrames: QueryInterfaceRequest<Frame.TrackableEntry>,
+//		in db: Database
+//	) throws -> [(Date, Statistic)] {
+//		var allEntries: [Date: TrackablePerFrame] = [:]
+//
+//		let allFrames = try withFrames.fetchCursor(db)
+//		while let frame = try allFrames.next() {
+//			if allEntries[frame.date] == nil {
+//				allEntries[frame.date] = forStatistic.init()
+//			}
+//
+//			allEntries[frame.date]?.adjust(byFrame: frame, configuration: perFrameConfiguration)
+//		}
+//
+//		return aggregator?.accumulate(entries: allEntries) ?? []
+//	}

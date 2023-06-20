@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HighSingle: Statistic, GraphableStatistic, TrackablePerGame, HighestOfStatistic {
+	public struct HighSingle: Statistic, TrackablePerGame, HighestOfStatistic {
 		public var title: String { Strings.Statistics.Title.highSingle }
 		public var category: StatisticCategory { .overall }
 

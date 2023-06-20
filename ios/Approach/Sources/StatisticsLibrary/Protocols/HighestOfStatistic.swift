@@ -1,26 +1,21 @@
 import Charts
 import ModelsLibrary
 
-public protocol HighestOfStatistic {
+public protocol HighestOfStatistic: Statistic {
 	var highest: Int { get set }
 }
 
-extension HighestOfStatistic where Self: Statistic {
+extension HighestOfStatistic {
+	public mutating func aggregate(with: Statistic) {
+		guard let with = with as? Self else { return }
+		self.highest = max(self.highest, with.highest)
+	}
+
 	public var formattedValue: String {
 		String(highest)
 	}
 
 	public var isEmpty: Bool {
 		highest == 0
-	}
-}
-
-extension HighestOfStatistic where Self: GraphableStatistic {
-	public var plottable: any Plottable {
-		highest
-	}
-
-	public mutating func accumulate(by: Self) {
-		self.highest = max(self.highest, by.highest)
 	}
 }

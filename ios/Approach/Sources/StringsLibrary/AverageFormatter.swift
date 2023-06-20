@@ -8,6 +8,6 @@ public let averageFormatter: NumberFormatter = {
 }()
 
 public func format(average: Double?) -> String {
-	guard let average, average > 0 else { return "" }
+	guard let average, average > 0 else { return "—" }
 	return averageFormatter.string(from: NSNumber(value: average)) ?? ""
 }
