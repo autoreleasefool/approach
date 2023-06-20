@@ -6,6 +6,10 @@ public protocol CountingStatistic: Statistic {
 }
 
 extension CountingStatistic {
+	public static var supportsAggregation: Bool {
+		true
+	}
+
 	public mutating func aggregate(with: Statistic) {
 		guard let with = with as? Self else { return }
 		self.count += with.count

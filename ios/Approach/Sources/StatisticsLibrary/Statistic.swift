@@ -7,6 +7,7 @@ public enum Statistics {}
 public protocol Statistic {
 	static var title: String { get }
 	static var category: StatisticCategory { get }
+	static var supportsAggregation: Bool { get }
 
 	var title: String { get }
 	var category: StatisticCategory { get }

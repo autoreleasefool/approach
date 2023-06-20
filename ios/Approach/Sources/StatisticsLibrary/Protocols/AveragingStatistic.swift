@@ -8,6 +8,10 @@ public protocol AveragingStatistic: Statistic {
 }
 
 extension AveragingStatistic {
+	public static var supportsAggregation: Bool {
+		false
+	}
+
 	public var average: Double {
 		return divisor > 0 ? Double(total) / Double(divisor) : 0
 	}

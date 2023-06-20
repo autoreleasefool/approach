@@ -36,6 +36,16 @@ public struct StatisticsDetailsCharts: Reducer {
 			case let .chartUnavailable(statistic): return statistic
 			}
 		}
+
+		var showsAggregationPicker: Bool {
+			switch self {
+			case .averagingChart: return false
+			case .countingChart: return true
+			case let .chartUnavailable(statistic):
+				let type = Statistics.type(of: statistic)
+				return type?.supportsAggregation ?? false
+			}
+		}
 	}
 
 	public init() {}
@@ -88,16 +98,18 @@ public struct StatisticsDetailsChartsView: View {
 
 				Spacer()
 
-				Picker(
-					Strings.Statistics.Filter.aggregation,
-					selection: viewStore.binding(get: \.aggregation, send: { .delegate(.didChangeAggregation($0)) })
-				) {
-					ForEach(TrackableFilter.Aggregation.allCases) {
-						Text(String(describing: $0)).tag($0)
+				if viewStore.chartContent?.showsAggregationPicker ?? false {
+					Picker(
+						Strings.Statistics.Filter.aggregation,
+						selection: viewStore.binding(get: \.aggregation, send: { .delegate(.didChangeAggregation($0)) })
+					) {
+						ForEach(TrackableFilter.Aggregation.allCases) {
+							Text(String(describing: $0)).tag($0)
+						}
 					}
+					.pickerStyle(.segmented)
+					.padding()
 				}
-				.pickerStyle(.segmented)
-				.padding()
 			}
 		})
 	}
