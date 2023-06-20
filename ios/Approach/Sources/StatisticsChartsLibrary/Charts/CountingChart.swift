@@ -87,6 +87,10 @@ extension CountingChart {
 		public let entries: [Entry]
 		public let isAccumulating: Bool
 
+		public var isEmpty: Bool {
+			entries.isEmpty || (isAccumulating && entries.count == 1)
+		}
+
 		public init(title: String, entries: [Entry], isAccumulating: Bool) {
 			self.title = title
 			self.entries = entries

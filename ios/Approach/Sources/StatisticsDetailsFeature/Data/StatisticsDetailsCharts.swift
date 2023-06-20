@@ -25,12 +25,14 @@ public struct StatisticsDetailsCharts: Reducer {
 	}
 
 	public enum ChartContent: Equatable {
-		case chart(AccumulatingChart.Data)
+		case countingChart(CountingChart.Data)
+		case averagingChart(AveragingChart.Data)
 		case chartUnavailable(statistic: String)
 
 		var title: String {
 			switch self {
-			case let .chart(data): return data.title
+			case let .averagingChart(data): return data.title
+			case let .countingChart(data): return data.title
 			case let .chartUnavailable(statistic): return statistic
 			}
 		}
@@ -75,23 +77,12 @@ public struct StatisticsDetailsChartsView: View {
 
 				if let chartContent = viewStore.chartContent {
 					switch chartContent {
-					case let .chart(data):
-						AccumulatingChart(data)
+					case let .countingChart(data):
+						CountingChart(data)
+					case let .averagingChart(data):
+						AveragingChart(data)
 					case let .chartUnavailable(statistic):
-						VStack(alignment: .leading) {
-							Text(statistic)
-								.font(.headline)
-
-							Spacer()
-
-							Text(Strings.Statistics.Charts.unavailable)
-								.font(.body)
-								.fontWeight(.light)
-								.frame(maxWidth: .infinity)
-								.padding(.top, .standardSpacing)
-
-							Spacer()
-						}
+						emptyChart(statistic)
 					}
 				}
 
@@ -109,6 +100,23 @@ public struct StatisticsDetailsChartsView: View {
 				.padding()
 			}
 		})
+	}
+
+	private func emptyChart(_ statistic: String) -> some View {
+		VStack(alignment: .leading) {
+			Text(statistic)
+				.font(.headline)
+
+			Spacer()
+
+			Text(Strings.Statistics.Charts.unavailable)
+				.font(.body)
+				.fontWeight(.light)
+				.frame(maxWidth: .infinity)
+				.padding(.top, .standardSpacing)
+
+			Spacer()
+		}
 	}
 }
 

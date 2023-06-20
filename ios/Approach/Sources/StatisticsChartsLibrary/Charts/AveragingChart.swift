@@ -65,6 +65,10 @@ extension AveragingChart {
 		public let minimumValue: Double
 		public let maximumValue: Double
 
+		public var isEmpty: Bool {
+			entries.count <= 1
+		}
+
 		public init(title: String, entries: [Entry]) {
 			self.title = title
 			self.entries = entries

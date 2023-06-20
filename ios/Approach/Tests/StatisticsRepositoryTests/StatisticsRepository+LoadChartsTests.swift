@@ -3,6 +3,7 @@ import Dependencies
 import GRDB
 @testable import ModelsLibrary
 import PreferenceServiceInterface
+@testable import StatisticsChartsLibrary
 @testable import StatisticsLibrary
 @testable import StatisticsRepository
 @testable import StatisticsRepositoryInterface
@@ -13,26 +14,21 @@ import XCTest
 final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	@Dependency(\.statistics) var statistics
 
-	let graphableStatistics: [any GraphableStatistic.Type] = [
-		Statistics.HighSingle.self,
-		Statistics.HeadPins.self,
-		Statistics.HighSeriesOf3.self,
-	]
-
 	// MARK: - Empty
 
 	func testBowler_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 		let db = try initializeDatabase(withBowlers: .custom([bowler]))
-		let expectedResults: [(first: ChartEntry?, last: ChartEntry?)] = [
+		let expectedResults: [((first: Entry?, last: Entry?))] = [
+			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 		]
 
-		for (graphable, expected) in zip(graphableStatistics, expectedResults) {
+		for (statistic, expected) in zip(Statistics.allCases, expectedResults) {
 			try await assertChart(
-				forStatistic: graphable,
+				forStatistic: statistic,
 				withFilter: .init(source: .bowler(UUID(0))),
 				withDb: db,
 				equals: expected
@@ -43,15 +39,16 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	func testLeague_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let league = League.Database.mock(id: UUID(0), name: "Majors")
 		let db = try initializeDatabase(withLeagues: .custom([league]))
-		let expectedResults: [(first: ChartEntry?, last: ChartEntry?)] = [
+		let expectedResults: [((first: Entry?, last: Entry?))] = [
+			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 		]
 
-		for (graphable, expected) in zip(graphableStatistics, expectedResults) {
+		for (statistic, expected) in zip(Statistics.allCases, expectedResults) {
 			try await assertChart(
-				forStatistic: graphable,
+				forStatistic: statistic,
 				withFilter: .init(source: .league(UUID(0))),
 				withDb: db,
 				equals: expected
@@ -62,15 +59,16 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	func testSeries_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let series = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
 		let db = try initializeDatabase(withSeries: .custom([series]))
-		let expectedResults: [(first: ChartEntry?, last: ChartEntry?)] = [
+		let expectedResults: [((first: Entry?, last: Entry?))] = [
+			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 		]
 
-		for (graphable, expected) in zip(graphableStatistics, expectedResults) {
+		for (statistic, expected) in zip(Statistics.allCases, expectedResults) {
 			try await assertChart(
-				forStatistic: graphable,
+				forStatistic: statistic,
 				withFilter: .init(source: .series(UUID(0))),
 				withDb: db,
 				equals: expected
@@ -81,15 +79,16 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	func testGame_WithEmptyDatabase_ReturnsNoValues() async throws {
 		let game = Game.Database.mock(id: UUID(0), index: 0)
 		let db = try initializeDatabase(withGames: .custom([game]))
-		let expectedResults: [(first: ChartEntry?, last: ChartEntry?)] = [
+		let expectedResults: [((first: Entry?, last: Entry?))] = [
+			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 			(nil, nil),
 		]
 
-		for (graphable, expected) in zip(graphableStatistics, expectedResults) {
+		for (statistic, expected) in zip(Statistics.allCases, expectedResults) {
 			try await assertChart(
-				forStatistic: graphable,
+				forStatistic: statistic,
 				withFilter: .init(source: .game(UUID(0))),
 				withDb: db,
 				equals: expected
@@ -101,15 +100,28 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 	func testBowler_NoFilters_AllTime_ReturnsValues() async throws {
 		let db = try generatePopulatedDatabase()
-		let expectedResults: [(first: ChartEntry?, last: ChartEntry?)] = [
-			(.init(id: UUID(0), value: .init(269), date: Date(timeIntervalSince1970: 1664530704)), .init(id: UUID(24), value: .init(269), date: Date(timeIntervalSince1970: 1712970000))),
-			(.init(id: UUID(0), value: .init(12), date: Date(timeIntervalSince1970: 1664530704)), .init(id: UUID(24), value: .init(183), date: Date(timeIntervalSince1970: 1712970000))),
-			(.init(id: UUID(0), value: .init(0), date: Date(timeIntervalSince1970: 1664530704)), .init(id: UUID(24), value: .init(626), date: Date(timeIntervalSince1970: 1712970000))),
+		let expectedResults: [(first: Entry?, last: Entry?)] = [
+			(
+				.averaging(.init(id: UUID(0), value: .init(197.25), date: Date(timeIntervalSince1970: 1665035280))),
+				.averaging(.init(id: UUID(19), value: .init(197.25), date: Date(timeIntervalSince1970: 1712970000)))
+			),
+			(
+				.counting(.init(id: UUID(0), value: .init(269), date: Date(timeIntervalSince1970: 1665035280), timeRange: 2522880.0)),
+				.counting(.init(id: UUID(19), value: .init(269), date: Date(timeIntervalSince1970: 1712970000), timeRange: 2522880.0))
+			),
+			(
+				.counting(.init(id: UUID(0), value: .init(15), date: Date(timeIntervalSince1970: 1665035280), timeRange: 2522880.0)),
+				.counting(.init(id: UUID(19), value: .init(183), date: Date(timeIntervalSince1970: 1712970000), timeRange: 2522880.0))
+			),
+			(
+				.counting(.init(id: UUID(0), value: .init(0), date: Date(timeIntervalSince1970: 1665035280), timeRange: 2522880.0)),
+				.counting(.init(id: UUID(19), value: .init(626), date: Date(timeIntervalSince1970: 1712970000), timeRange: 2522880.0))
+			),
 		]
 
-		for (graphable, expected) in zip(graphableStatistics, expectedResults) {
+		for (statistic, expected) in zip(Statistics.allCases, expectedResults) {
 			try await assertChart(
-				forStatistic: graphable,
+				forStatistic: statistic,
 				withFilter: .init(source: .bowler(UUID(0))),
 				withDb: db,
 				equals: expected
@@ -119,24 +131,49 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 	// MARK: - Assertion
 
+	enum Entry: Equatable {
+		case averaging(AveragingChart.Data.Entry?)
+		case counting(CountingChart.Data.Entry?)
+	}
+
 	private func assertChart(
-		forStatistic statistic: any GraphableStatistic.Type,
+		forStatistic statistic: Statistic.Type,
 		withFilter filter: TrackableFilter,
 		withDb db: any DatabaseWriter,
-		equals expectedEntries: (first: ChartEntry?, last: ChartEntry?),
+		equals expectedEntries: (first: Entry?, last: Entry?),
 		file: StaticString = #file,
 		line: UInt = #line
 	) async throws {
-		let entries = try await withDependencies {
+		let entries: (first: Entry?, last: Entry?) = try await withDependencies {
 			$0.database.reader = { db }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .incrementing
 			$0.statistics = .liveValue
 		} operation: {
-			try await self.statistics.chart(statistic: statistic, filter: filter)
+			if let counting = statistic as? CountingStatistic.Type {
+				guard let data = try await self.statistics.chart(statistic: counting, filter: filter),
+							let first = data.entries.first,
+							let last = data.entries.last
+				else { return (nil, nil) }
+				return (.counting(first), .counting(last))
+			} else if let highest = statistic as? HighestOfStatistic.Type {
+				guard let data = try await self.statistics.chart(statistic: highest, filter: filter),
+							let first = data.entries.first,
+							let last = data.entries.last
+				else { return (nil, nil) }
+				return (.counting(first), .counting(last))
+			} else if let averaging = statistic as? AveragingStatistic.Type {
+				guard let data = try await self.statistics.chart(statistic: averaging, filter: filter),
+							let first = data.entries.first,
+							let last = data.entries.last
+				else { return (nil, nil) }
+				return (.averaging(first), .averaging(last))
+			} else {
+				return (nil, nil)
+			}
 		}
 
-		XCTAssertEqual(entries.first, expectedEntries.first, file: file, line: line)
-		XCTAssertEqual(entries.last, expectedEntries.last, file: file, line: line)
+		XCTAssertEqual(entries.first, expectedEntries.first, "First \(statistic)", file: file, line: line)
+		XCTAssertEqual(entries.last, expectedEntries.last, "Last \(statistic)", file: file, line: line)
 	}
 }

@@ -11,7 +11,7 @@ public struct StatisticsDetails: Reducer {
 	static let defaultSheetDetent: PresentationDetent = .fraction(0.25)
 
 	public struct State: Equatable {
-		public var staticValues: IdentifiedArrayOf<StaticValueGroup> = []
+		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var isLoadingNextChart = false
 		public var chartContent: StatisticsDetailsCharts.ChartContent?
 
@@ -48,8 +48,8 @@ public struct StatisticsDetails: Reducer {
 			case didStartLoadingChart
 			case adjustBackdrop
 			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
-			case didLoadStaticValues(TaskResult<[StaticValueGroup]>)
-			case didLoadChart(TaskResult<AccumulatingChart.Data>)
+			case didLoadListEntries(TaskResult<[Statistics.ListEntryGroup]>)
+			case didLoadChartContent(TaskResult<StatisticsDetailsCharts.ChartContent>)
 			case orientationChange(UIDeviceOrientation)
 		}
 
@@ -141,29 +141,28 @@ public struct StatisticsDetails: Reducer {
 					// TODO: handle error loading sources
 					return .none
 
-				case let .didLoadStaticValues(.success(statistics)):
-					state.staticValues = .init(uniqueElements: statistics)
-					state.destination = .list(.init(staticValues: state.staticValues))
-					if state.chartContent == nil, let firstStatistic = state.staticValues.firstGraphableStatistic() {
+				case let .didLoadListEntries(.success(statistics)):
+					state.listEntries = .init(uniqueElements: statistics)
+					state.destination = .list(.init(listEntries: state.listEntries))
+					if state.chartContent == nil,
+						 let firstGroup = state.listEntries.first,
+						 let firstEntry = firstGroup.entries.first,
+						 let firstStatistic = Statistics.type(of: firstEntry.id) {
 						return loadChart(forStatistic: firstStatistic, withFilter: state.filter)
 					} else {
 						return .none
 					}
 
-				case .didLoadStaticValues(.failure):
+				case .didLoadListEntries(.failure):
 					// TODO: show statistics loading failure
 					return .none
 
-				case let .didLoadChart(.success(chartData)):
-					if chartData.isEmpty {
-						state.chartContent = .chartUnavailable(statistic: chartData.title)
-					} else {
-						state.chartContent = .chart(chartData)
-					}
+				case let .didLoadChartContent(.success(chartContent)):
+					state.chartContent = chartContent
 					state.isLoadingNextChart = false
 					return .none
 
-				case .didLoadChart(.failure):
+				case .didLoadChartContent(.failure):
 					// TODO: show statistics loading failure
 					return .none
 
@@ -174,11 +173,11 @@ public struct StatisticsDetails: Reducer {
 				case let .orientationChange(orientation):
 					switch orientation {
 					case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown:
-						state.destination = .list(.init(staticValues: state.staticValues))
+						state.destination = .list(.init(listEntries: state.listEntries))
 					case .landscapeLeft, .landscapeRight:
 						state.destination = nil
 					@unknown default:
-						state.destination = .list(.init(staticValues: state.staticValues))
+						state.destination = .list(.init(listEntries: state.listEntries))
 					}
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(300))
@@ -187,8 +186,8 @@ public struct StatisticsDetails: Reducer {
 
 				case let .destination(.presented(.list(.delegate(delegateAction)))):
 					switch delegateAction {
-					case let .didRequestStaticValue(id):
-						guard let statistic = Statistics.type(fromId: id) as? (any GraphableStatistic.Type) else { return .none }
+					case let .didRequestEntryDetails(id):
+						guard let statistic = Statistics.type(of: id) else { return .none }
 						state.sheetDetent = StatisticsDetails.defaultSheetDetent
 						return loadChart(forStatistic: statistic, withFilter: state.filter)
 					}
@@ -204,7 +203,7 @@ public struct StatisticsDetails: Reducer {
 					switch delegateAction {
 					case let .didChangeAggregation(aggregation):
 						guard let statisticId = state.chartContent?.title,
-									let statistic = Statistics.type(fromId: statisticId) as? (any GraphableStatistic.Type)
+									let statistic = Statistics.type(of: statisticId)
 						else {
 							return .none
 						}
@@ -213,8 +212,8 @@ public struct StatisticsDetails: Reducer {
 					}
 
 				case .destination(.dismiss):
-					return .run { [values = state.staticValues] send in
-						await send(.internal(.didLoadStaticValues(.success(values.elements))))
+					return .run { [entries = state.listEntries] send in
+						await send(.internal(.didLoadListEntries(.success(entries.elements))))
 					}
 
 				case .destination(.presented(.list(.internal))),
@@ -239,8 +238,8 @@ public struct StatisticsDetails: Reducer {
 	private func refreshStatistics(state: State) -> Effect<Action> {
 		.merge(
 			.run { [filter = state.filter] send in
-				await send(.internal(.didLoadStaticValues(TaskResult {
-					try await statistics.load(for: filter).staticValueGroups()
+				await send(.internal(.didLoadListEntries(TaskResult {
+					try await statistics.load(for: filter)
 				})))
 			},
 			.run { [source = state.filter.source] send in
@@ -252,21 +251,51 @@ public struct StatisticsDetails: Reducer {
 		.cancellable(id: CancelID.loadingStaticValues, cancelInFlight: true)
 	}
 
-	private func loadChart(forStatistic: any GraphableStatistic.Type, withFilter: TrackableFilter) -> Effect<Action> {
+	private func loadChart(forStatistic: Statistic.Type, withFilter: TrackableFilter) -> Effect<Action> {
 		.concatenate(
 			.run { send in await send(.internal(.didStartLoadingChart), animation: .easeInOut) },
 			.run { send in
 				let startTime = date()
-				let result = await TaskResult {
-					let entries = try await self.statistics.chart(statistic: forStatistic, filter: withFilter)
-					return AccumulatingChart.Data(title: forStatistic.title, entries: entries)
-				}
-				let timeSpent = date().timeIntervalSince(startTime)
-				if timeSpent < Self.chartLoadingAnimationTime {
-					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
+
+				func delay() -> TimeInterval? {
+					let timeSpent = date().timeIntervalSince(startTime)
+					return timeSpent < Self.chartLoadingAnimationTime ? (Self.chartLoadingAnimationTime - timeSpent) * 1000 : nil
 				}
 
-				await send(.internal(.didLoadChart(result)), animation: .easeInOut)
+				if let countingStatistic = forStatistic as? CountingStatistic.Type {
+					let result = await TaskResult<StatisticsDetailsCharts.ChartContent> {
+						if let data = try await self.statistics.chart(statistic: countingStatistic, filter: withFilter), !data.isEmpty {
+							return .countingChart(data)
+						} else {
+							return .chartUnavailable(statistic: countingStatistic.title)
+						}
+					}
+
+					if let delay = delay() { try await clock.sleep(for: .milliseconds(delay)) }
+					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
+				} else if let highestOfStatistic = forStatistic as? HighestOfStatistic.Type {
+					let result = await TaskResult<StatisticsDetailsCharts.ChartContent> {
+						if let data = try await self.statistics.chart(statistic: highestOfStatistic, filter: withFilter), !data.isEmpty {
+							return .countingChart(data)
+						} else {
+							return .chartUnavailable(statistic: highestOfStatistic.title)
+						}
+					}
+
+					if let delay = delay() { try await clock.sleep(for: .milliseconds(delay)) }
+					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
+				} else if let averagingStatistic = forStatistic as? AveragingStatistic.Type {
+					let result = await TaskResult<StatisticsDetailsCharts.ChartContent> {
+						if let data = try await self.statistics.chart(statistic: averagingStatistic, filter: withFilter), !data.isEmpty {
+							return .averagingChart(data)
+						} else {
+							return .chartUnavailable(statistic: averagingStatistic.title)
+						}
+					}
+
+					if let delay = delay() { try await clock.sleep(for: .milliseconds(delay)) }
+					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
+				}
 			}
 		)
 		.cancellable(id: CancelID.loadingChartValues, cancelInFlight: true)

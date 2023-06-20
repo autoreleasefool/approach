@@ -28,7 +28,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
 			.init(title: Strings.Statistics.Title.headPins, value: "0"),
@@ -49,7 +49,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
 			.init(title: Strings.Statistics.Title.headPins, value: "0"),
@@ -70,7 +70,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
 			.init(title: Strings.Statistics.Title.headPins, value: "0"),
@@ -90,7 +90,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.headPins, value: "0"),
 		])
 	}
@@ -108,7 +108,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
 			.init(title: Strings.Statistics.Title.headPins, value: "183"),
@@ -127,7 +127,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
 			.init(title: Strings.Statistics.Title.headPins, value: "96"),
@@ -146,7 +146,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
 			.init(title: Strings.Statistics.Title.headPins, value: "3"),
@@ -164,7 +164,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.headPins, value: "1"),
 		])
 	}
@@ -195,7 +195,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
 			.init(title: Strings.Statistics.Title.headPins, value: "6"),
@@ -226,7 +226,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
 			.init(title: Strings.Statistics.Title.headPins, value: "6"),
@@ -252,7 +252,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
 			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
 			.init(title: Strings.Statistics.Title.headPins, value: "1"),
@@ -273,7 +273,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 			))
 		}
 
-		XCTAssertEqual(statistics, [
+		XCTAssertEqual(statistics.flatMap { $0.entries }, [
 			.init(title: Strings.Statistics.Title.headPins, value: "1"),
 		])
 	}

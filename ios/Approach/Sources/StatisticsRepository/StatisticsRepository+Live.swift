@@ -157,7 +157,14 @@ extension StatisticsRepository: DependencyKey {
 					try adjust(statistics: &statistics, byGames: gamesCursor)
 					try adjust(statistics: &statistics, byFrames: framesCursor)
 
-					return statistics.map { .init(title: $0.title, value: $0.formattedValue) }
+					return StatisticCategory.allCases.compactMap { category in
+						let matchingStatistics = statistics.filter { $0.category == category }
+						guard !matchingStatistics.isEmpty else { return nil }
+						return .init(
+							category: category,
+							entries: .init(uniqueElements: matchingStatistics.map { .init(title: $0.title, value: $0.formattedValue) })
+						)
+					}
 				}
 			},
 			loadCountingChart: { statistic, filter in
@@ -195,11 +202,69 @@ extension StatisticsRepository: DependencyKey {
 			},
 			loadHighestOfChart: { statistic, filter in
 				guard statistic.supports(trackableSource: filter.source) else { return nil }
-				return nil
+
+				return try database.reader().read { db in
+					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
+					var output: ChartBuilder.Output?
+
+					if statistic is TrackablePerSeries.Type {
+						let (series, _, _) = try filter.buildTrackableQueries(db: db)
+						guard let seriesCursor = try series?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, bySeries: seriesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else if statistic is TrackablePerGame.Type {
+						let (_, games, _) = try filter.buildTrackableQueries(db: db)
+						guard let gamesCursor = try games?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, byGames: gamesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else if statistic is TrackablePerFrame.Type {
+						let (_, _, frames) = try filter.buildTrackableQueries(db: db)
+						guard let framesCursor = try frames?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, byFrames: framesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else {
+						output = nil
+					}
+
+					switch output {
+					case .averaging: return nil
+					case let .counting(data): return data
+					case .none: return nil
+					}
+				}
 			},
 			loadAveragingChart: { statistic, filter in
 				guard statistic.supports(trackableSource: filter.source) else { return nil }
-				return nil
+
+				return try database.reader().read { db in
+					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
+					var output: ChartBuilder.Output?
+
+					if statistic is TrackablePerSeries.Type {
+						let (series, _, _) = try filter.buildTrackableQueries(db: db)
+						guard let seriesCursor = try series?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, bySeries: seriesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else if statistic is TrackablePerGame.Type {
+						let (_, games, _) = try filter.buildTrackableQueries(db: db)
+						guard let gamesCursor = try games?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, byGames: gamesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else if statistic is TrackablePerFrame.Type {
+						let (_, _, frames) = try filter.buildTrackableQueries(db: db)
+						guard let framesCursor = try frames?.fetchCursor(db) else { return nil }
+						let entries = try accumulate(statistic: statistic, byFrames: framesCursor)
+						output = chartBuilder.buildChart(withEntries: entries)
+					} else {
+						output = nil
+					}
+
+					switch output {
+					case let .averaging(data): return data
+					case .counting: return nil
+					case .none: return nil
+					}
+				}
 			}
 		)
 	}()

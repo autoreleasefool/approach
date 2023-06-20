@@ -6,7 +6,7 @@ import StatisticsLibrary
 
 public struct StatisticsRepository: Sendable {
 	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?
-	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntry]
+	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup]
 	public var loadCountingChart: @Sendable (
 		CountingStatistic.Type, TrackableFilter
 	) async throws -> CountingChart.Data?
@@ -19,7 +19,7 @@ public struct StatisticsRepository: Sendable {
 
 	public init(
 		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?,
-		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntry],
+		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup],
 		loadCountingChart: @escaping @Sendable
 			(CountingStatistic.Type, TrackableFilter) async throws -> CountingChart.Data?,
 		loadHighestOfChart: @escaping @Sendable
@@ -34,7 +34,7 @@ public struct StatisticsRepository: Sendable {
 		self.loadAveragingChart = loadAveragingChart
 	}
 
-	public func load(for filter: TrackableFilter) async throws -> [Statistics.ListEntry] {
+	public func load(for filter: TrackableFilter) async throws -> [Statistics.ListEntryGroup] {
 		try await self.loadValues(filter)
 	}
 
