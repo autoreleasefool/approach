@@ -34,7 +34,7 @@ public struct GamesListView: View {
 				store: store.scope(state: \.list, action: /GamesList.Action.InternalAction.list)
 			) { game in
 				Button { viewStore.send(.didTapGame(game.id)) } label: {
-					Text(Strings.Game.titleWithOrdinal(game.index + 1))
+					LabeledContent(Strings.Game.titleWithOrdinal(game.index + 1), value: "\(game.score)")
 				}
 				.buttonStyle(.navigation)
 			}
