@@ -10,7 +10,7 @@ import StatisticsOverviewFeature
 
 public struct TabbedContent: Reducer {
 	public struct State: Equatable {
-		public var tabs: [Tab] = []
+		public var tabs: [Tab] = [.overview]
 		public var selectedTab: Tab = .overview
 		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
