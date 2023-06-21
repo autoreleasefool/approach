@@ -4,6 +4,7 @@ extension Statistics {
 		Statistics.HighSingle.self,
 		Statistics.GameAverage.self,
 		Statistics.MiddleHits.self,
+		Statistics.LeftOfMiddleHits.self,
 
 		// First Roll
 		Statistics.HeadPins.self,

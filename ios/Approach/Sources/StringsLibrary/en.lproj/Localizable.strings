@@ -240,6 +240,7 @@
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";
 "statistics.title.middleHits" = "Middle Hits";
+"statistics.title.leftOfMiddleHits" = "Left of Middle Hits";
 "statistics.title.totalRolls" = "Total Rolls";
 
 
