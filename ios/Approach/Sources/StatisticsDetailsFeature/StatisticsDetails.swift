@@ -6,6 +6,7 @@ import StatisticsLibrary
 import StatisticsRepositoryInterface
 import SwiftUI
 
+// swiftlint:disable:next type_body_length
 public struct StatisticsDetails: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 	static let defaultSheetDetent: PresentationDetent = .fraction(0.25)

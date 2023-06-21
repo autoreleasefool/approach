@@ -29,13 +29,11 @@ extension Statistics {
 		}
 
 		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
-			for roll in byFrame.firstRolls {
-				if roll.roll.pinsDowned.isMiddleHit {
-					denominator += 1
+			for roll in byFrame.firstRolls where roll.roll.pinsDowned.isMiddleHit {
+				denominator += 1
 
-					if roll.roll.pinsDowned.arePinsCleared {
-						numerator += 1
-					}
+				if roll.roll.pinsDowned.arePinsCleared {
+					numerator += 1
 				}
 			}
 		}

@@ -65,7 +65,7 @@ public struct PercentageChart: View {
 		.init(
 			gradient: Gradient(colors: [
 				Asset.Colors.Charts.Percentage.barMark.swiftUIColor.opacity(0.8),
-				Asset.Colors.Charts.Percentage.barMark.swiftUIColor.opacity(0.3)
+				Asset.Colors.Charts.Percentage.barMark.swiftUIColor.opacity(0.3),
 			]),
 			startPoint: .top,
 			endPoint: .bottom

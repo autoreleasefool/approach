@@ -64,7 +64,7 @@ public struct StatisticsDetailsListView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: StatisticsDetailsList.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, send: StatisticsDetailsList.Action.init, content: { viewStore in
 			ForEach(viewStore.listEntries) { group in
 				Section(String(describing: group.category)) {
 					ForEach(group.entries) { entry in
@@ -75,7 +75,7 @@ public struct StatisticsDetailsListView: View {
 					}
 				}
 			}
-		}
+		})
 	}
 }
 
