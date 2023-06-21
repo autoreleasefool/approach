@@ -7,7 +7,7 @@ final class LeftOfMiddleHitsTests: XCTestCase {
 	func testAdjust_ByFramesWithLeftOfMiddleHit_Adjusts() {
 		let statistic = create(
 			statistic: Statistics.LeftOfMiddleHits.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin]))]
@@ -28,7 +28,7 @@ final class LeftOfMiddleHitsTests: XCTestCase {
 	func testAdjust_ByFramesWithoutLeftOfMiddleHit_DoesNotAdjust() {
 		let statistic = create(
 			statistic: Statistics.LeftOfMiddleHits.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin]))]

@@ -7,7 +7,7 @@ final class HeadPinsTests: XCTestCase {
 	func testAdjust_ByFramesWithHeadPin_Adjusts() {
 		let statistic = create(
 			statistic: Statistics.HeadPins.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]
@@ -29,7 +29,7 @@ final class HeadPinsTests: XCTestCase {
 	func testAdjust_ByFramesWithHeadPin2_WithHeadPin2Enabled_Adjusts() {
 		let statistic = create(
 			statistic: Statistics.HeadPins.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]
@@ -56,7 +56,7 @@ final class HeadPinsTests: XCTestCase {
 	func testAdjust_ByFramesWithHeadPin2_WithHeadPin2Disabled_DoesNotAdjust() {
 		let statistic = create(
 			statistic: Statistics.HeadPins.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]

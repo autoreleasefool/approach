@@ -3,10 +3,10 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class StrikeMiddleHitsTests: XCTestCase {
-	func testAdjust_ByFramesWithStrikeMiddleHit_Adjusts() {
+final class StrikesTests: XCTestCase {
+	func testAdjust_ByFramesWithStrike_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.StrikeMiddleHits.self,
+			statistic: Statistics.Strikes.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -36,12 +36,12 @@ final class StrikeMiddleHitsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 2, formattedAs: "50%")
+		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 4, formattedAs: "25%")
 	}
 
-	func testAdjust_ByFramesWithoutStrikeMiddleHit_DoesNotAdjust() {
+	func testAdjust_ByFramesWithoutStrike_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.StrikeMiddleHits.self,
+			statistic: Statistics.Strikes.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -59,16 +59,16 @@ final class StrikeMiddleHitsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 1, formattedAs: "0%")
+		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 2, formattedAs: "0%")
 	}
 
 	func testAdjustBySeries_DoesNothing() {
-		let statistic = create(statistic: Statistics.StrikeMiddleHits.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.Strikes.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.StrikeMiddleHits.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.Strikes.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 }

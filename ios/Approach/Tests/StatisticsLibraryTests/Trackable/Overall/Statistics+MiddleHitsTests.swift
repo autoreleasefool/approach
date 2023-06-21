@@ -7,7 +7,7 @@ final class MiddleHitsTests: XCTestCase {
 	func testAdjust_ByFramesWithMiddleHit_Adjusts() {
 		let statistic = create(
 			statistic: Statistics.MiddleHits.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin]))]
@@ -28,7 +28,7 @@ final class MiddleHitsTests: XCTestCase {
 	func testAdjust_ByFramesWithoutMiddleHit_DoesNotAdjust() {
 		let statistic = create(
 			statistic: Statistics.MiddleHits.self,
-			adjustedByFrames:[
+			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))]

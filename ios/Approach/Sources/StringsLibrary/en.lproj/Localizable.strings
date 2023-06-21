@@ -243,6 +243,7 @@
 "statistics.title.leftOfMiddleHits" = "Left of Middle Hits";
 "statistics.title.rightOfMiddleHits" = "Right of Middle Hits";
 "statistics.title.strikeMiddleHits" = "Middle Hits which were Strikes";
+"statistics.title.strikes" = "Total Strikes";
 "statistics.title.totalRolls" = "Total Rolls";
 "statistics.title.numberOfGames" = "Number of Games";
 "statistics.title.totalPinfall" = "Total Pinfall";

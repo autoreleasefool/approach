@@ -9,6 +9,7 @@ extension Statistics {
 		Statistics.LeftOfMiddleHits.self,
 		Statistics.RightOfMiddleHits.self,
 		Statistics.StrikeMiddleHits.self,
+		Statistics.Strikes.self,
 
 		// First Roll
 		Statistics.HeadPins.self,

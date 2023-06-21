@@ -928,6 +928,8 @@ public enum Strings {
       public static let rightOfMiddleHits = Strings.tr("Localizable", "statistics.title.rightOfMiddleHits", fallback: "Right of Middle Hits")
       /// Middle Hits which were Strikes
       public static let strikeMiddleHits = Strings.tr("Localizable", "statistics.title.strikeMiddleHits", fallback: "Middle Hits which were Strikes")
+      /// Total Strikes
+      public static let strikes = Strings.tr("Localizable", "statistics.title.strikes", fallback: "Total Strikes")
       /// Total Pinfall
       public static let totalPinfall = Strings.tr("Localizable", "statistics.title.totalPinfall", fallback: "Total Pinfall")
       /// Total Rolls
