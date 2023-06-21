@@ -89,7 +89,6 @@ public struct StatisticsDetailsView: View {
 					}
 					.toolbar(.hidden, for: .navigationBar)
 				}
-				.presentationDragIndicator(.hidden)
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.presentationDetents(
 					[
