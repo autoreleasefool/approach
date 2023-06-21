@@ -244,6 +244,7 @@
 "statistics.title.rightOfMiddleHits" = "Right of Middle Hits";
 "statistics.title.totalRolls" = "Total Rolls";
 "statistics.title.numberOfGames" = "Number of Games";
+"statistics.title.totalPinfall" = "Total Pinfall";
 
 
 /* Settings */
