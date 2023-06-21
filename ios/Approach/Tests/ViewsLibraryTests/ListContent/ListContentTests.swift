@@ -1,3 +1,4 @@
+import AssetsLibrary
 import SnapshotTesting
 import SwiftUI
 @testable import ViewsLibrary
@@ -6,7 +7,7 @@ import XCTest
 final class ListContentTests: XCTestCase {
 	func testEmptyContentSnapshot() {
 		let emptyContent = ListEmptyContent(
-			.emptyBowlers,
+			Asset.Media.EmptyState.bowlers,
 			title: "A Relevant Title",
 			message: "An Irrelevant Message",
 			style: .empty
@@ -22,7 +23,7 @@ final class ListContentTests: XCTestCase {
 
 	func testEmptyErrorContentSnapshot() {
 		let emptyContent = ListEmptyContent(
-			.errorNotFound,
+			Asset.Media.Error.notFound,
 			title: "A Relevant Title",
 			message: "An Irrelevant Message",
 			style: .error

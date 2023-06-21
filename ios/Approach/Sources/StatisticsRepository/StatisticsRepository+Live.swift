@@ -158,11 +158,13 @@ extension StatisticsRepository: DependencyKey {
 					try adjust(statistics: &statistics, byFrames: framesCursor)
 
 					return StatisticCategory.allCases.compactMap { category in
-						let matchingStatistics = statistics.filter { $0.category == category }
+						let matchingStatistics = statistics.filter { type(of: $0).category == category }
 						guard !matchingStatistics.isEmpty else { return nil }
 						return .init(
 							category: category,
-							entries: .init(uniqueElements: matchingStatistics.map { .init(title: $0.title, value: $0.formattedValue) })
+							entries: .init(uniqueElements: matchingStatistics.map {
+								.init(title: type(of: $0).title, value: $0.formattedValue)
+							})
 						)
 					}
 				}
@@ -269,23 +271,3 @@ extension StatisticsRepository: DependencyKey {
 		)
 	}()
 }
-
-
-//func buildChart(
-//		forStatistic: TrackablePerFrame.Type,
-//		withFrames: QueryInterfaceRequest<Frame.TrackableEntry>,
-//		in db: Database
-//	) throws -> [(Date, Statistic)] {
-//		var allEntries: [Date: TrackablePerFrame] = [:]
-//
-//		let allFrames = try withFrames.fetchCursor(db)
-//		while let frame = try allFrames.next() {
-//			if allEntries[frame.date] == nil {
-//				allEntries[frame.date] = forStatistic.init()
-//			}
-//
-//			allEntries[frame.date]?.adjust(byFrame: frame, configuration: perFrameConfiguration)
-//		}
-//
-//		return aggregator?.accumulate(entries: allEntries) ?? []
-//	}

@@ -45,7 +45,7 @@ struct ChartBuilder {
 			}
 		}
 
-		let title = firstEntry.value.title
+		let title = type(of: firstEntry.value).title
 
 		if firstEntry.value is AveragingStatistic {
 			return .averaging(.init(

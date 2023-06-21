@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import StringsLibrary
 import SwiftUI
@@ -37,7 +38,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 								Image(systemName: viewStore.selected == ordering ? "checkmark.circle.fill" : "circle")
 									.resizable()
 									.frame(width: .smallIcon, height: .smallIcon)
-										.foregroundColor(.appAction)
+									.foregroundColor(Asset.Colors.Action.default)
 								Text(String(describing: ordering))
 									.frame(maxWidth: .infinity, alignment: .leading)
 							}

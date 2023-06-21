@@ -2,14 +2,14 @@ import AssetsLibrary
 import SwiftUI
 
 public struct ListEmptyContent: View {
-	public let image: UIImage
+	public let image: ImageAsset
 	public let title: String
 	public let message: String?
 	public let style: Style
 	public let action: EmptyContentAction
 
 	public init(
-		_ image: UIImage,
+		_ image: ImageAsset,
 		title: String,
 		message: String? = nil,
 		style: Style = .empty,
@@ -26,7 +26,7 @@ public struct ListEmptyContent: View {
 		VStack {
 			Spacer()
 
-			Image(uiImage: image)
+			image.swiftUIImage
 				.resizable()
 				.scaledToFit()
 				.padding(.bottom, .smallSpacing)
@@ -44,7 +44,7 @@ public struct ListEmptyContent: View {
 			}
 			.padding()
 			.frame(maxWidth: .infinity)
-			.background(style == .error ? Color.appErrorLight : Color.appPrimaryLight)
+			.background(style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
 			.cornerRadius(.standardRadius)
 			.padding(.bottom, .smallSpacing)
 
@@ -78,6 +78,6 @@ public struct EmptyContentAction: View {
 		.buttonStyle(.borderedProminent)
 		.controlSize(.large)
 		.foregroundColor(.white)
-		.tint(.appAction)
+		.tint(Asset.Colors.Action.default)
 	}
 }

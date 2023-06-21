@@ -1,10 +1,11 @@
+import AssetsLibrary
 import SwiftUI
 
 public struct TappableElement: ButtonStyle {
 	let mode: Mode
 
-	public init(_ background: Color, pressed: Color) {
-		self.mode = .color(background: background, pressed: pressed)
+	public init(_ background: ColorAsset, pressed: ColorAsset) {
+		self.mode = .color(background: background.swiftUIColor, pressed: pressed.swiftUIColor)
 	}
 
 	public init(opacity: Double = 0.6) {

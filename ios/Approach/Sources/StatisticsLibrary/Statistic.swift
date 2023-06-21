@@ -9,9 +9,6 @@ public protocol Statistic {
 	static var category: StatisticCategory { get }
 	static var supportsAggregation: Bool { get }
 
-	var title: String { get }
-	var category: StatisticCategory { get }
-
 	var formattedValue: String { get }
 	var isEmpty: Bool { get }
 
@@ -23,11 +20,6 @@ public protocol Statistic {
 	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
 	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
 	mutating func aggregate(with: Statistic)
-}
-
-extension Statistic {
-	public var title: String { Self.title }
-	public var category: StatisticCategory { Self.category }
 }
 
 // MARK: - Category

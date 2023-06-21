@@ -9,6 +9,6 @@ public struct PrimaryButton: ViewModifier {
 			.buttonStyle(.borderedProminent)
 			.controlSize(.large)
 			.foregroundColor(.white)
-			.tint(.appAction)
+			.tint(Asset.Colors.Action.default)
 	}
 }

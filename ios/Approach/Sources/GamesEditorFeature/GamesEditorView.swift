@@ -111,7 +111,7 @@ public struct GamesEditorView: View {
 			}
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
 			.background(alignment: .top) {
-				Image(uiImage: .laneBackdrop)
+				Asset.Media.Lane.backdrop.swiftUIImage
 					.resizable(resizingMode: .stretch)
 					.fixedSize(horizontal: true, vertical: false)
 					.frame(width: viewStore.backdropSize.width, height: getBackdropHeight(viewStore))

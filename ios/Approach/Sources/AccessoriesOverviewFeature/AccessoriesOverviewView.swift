@@ -88,7 +88,7 @@ public struct AccessoriesOverviewView: View {
 										}
 										.padding()
 									}
-									.buttonStyle(TappableElement(.appPrimary, pressed: .appPrimaryLight))
+									.buttonStyle(TappableElement(Asset.Colors.Primary.default, pressed: Asset.Colors.Primary.light))
 								}
 							}
 						}

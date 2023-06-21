@@ -36,7 +36,7 @@ public struct OnboardingView: View {
 					Text(Strings.Onboarding.Header.appName)
 						.font(.title)
 						.fontWeight(.heavy)
-						.foregroundColor(.appPrimary)
+						.foregroundColor(Asset.Colors.Primary.default)
 						.frame(maxWidth: .infinity, alignment: .leading)
 						.padding(.bottom, .standardSpacing)
 				}
@@ -63,7 +63,7 @@ public struct OnboardingView: View {
 					Text(Strings.Onboarding.getStarted)
 						.font(.headline)
 						.fontWeight(.heavy)
-						.foregroundColor(.appAction)
+						.foregroundColor(Asset.Colors.Action.default)
 						.textCase(.uppercase)
 				}
 				.padding(.bottom)

@@ -51,7 +51,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 							Image(systemName: viewStore.selected.contains(resource.id) ? "checkmark.circle.fill" : "circle")
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
-								.foregroundColor(.appAction)
+								.foregroundColor(Asset.Colors.Action.default)
 							row(resource)
 								.frame(maxWidth: .infinity, alignment: .leading)
 						}
@@ -62,7 +62,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				}
 			} empty: {
 				ListEmptyContent(
-					.emptyAlleys, // TODO: empty picker image
+					Asset.Media.EmptyState.alleys, // TODO: empty picker image
 					title: Strings.Picker.Empty.title
 				) {
 					EmptyContentAction(title: Strings.Action.cancel) {
@@ -71,7 +71,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				}
 			} error: { error in
 				ListEmptyContent(
-					.errorNotFound,
+					Asset.Media.Error.notFound,
 					title: error.title,
 					message: error.message,
 					style: .error

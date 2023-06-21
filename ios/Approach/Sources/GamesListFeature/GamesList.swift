@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
@@ -25,7 +26,7 @@ public struct GamesList: Reducer {
 				query: series.id,
 				listTitle: series.date.longFormat,
 				emptyContent: .init(
-					image: .emptyGames,
+					image: Asset.Media.EmptyState.games,
 					title: Strings.Error.Generic.title,
 					action: Strings.Action.reload
 				)

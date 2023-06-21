@@ -113,7 +113,7 @@ public struct FrameEditorView: View {
 				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.fullDeck) { pin in
 					ZStack {
-						Image(uiImage: viewStore.downPins.contains(pin) ? .pinDown : .pin)
+						(viewStore.downPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.shadow(color: .black, radius: 2)

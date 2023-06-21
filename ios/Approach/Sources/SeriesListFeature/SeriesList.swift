@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
@@ -36,7 +37,7 @@ public struct SeriesList: Reducer {
 				query: league.id,
 				listTitle: Strings.Series.List.title,
 				emptyContent: .init(
-					image: .emptySeries,
+					image: Asset.Media.EmptyState.series,
 					title: Strings.Series.Error.Empty.title,
 					message: Strings.Series.Error.Empty.message,
 					action: Strings.Series.List.add

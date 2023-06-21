@@ -22,7 +22,7 @@ public struct WidgetContainer<Content: View>: View {
 			content
 				.padding(.vertical)
 				.frame(maxWidth: .infinity)
-				.background(Color.appPrimary)
+				.foregroundColor(Asset.Colors.Primary.default)
 		}
 	}
 }

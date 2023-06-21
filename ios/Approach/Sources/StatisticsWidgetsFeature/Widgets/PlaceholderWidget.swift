@@ -21,7 +21,7 @@ public struct PlaceholderWidget: View {
 			}
 			.padding(.horizontal)
 			.background(alignment: .bottomTrailing) {
-				Image(uiImage: .iconAnalytics)
+				Asset.Media.Icons.analytics.swiftUIImage
 					.resizable()
 					.scaledToFit()
 					.opacity(0.4)

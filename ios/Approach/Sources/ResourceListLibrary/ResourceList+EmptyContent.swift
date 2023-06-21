@@ -6,12 +6,12 @@ import SwiftUI
 import ViewsLibrary
 
 public struct ResourceListEmptyContent: Equatable {
-	public let image: UIImage
+	public let image: ImageAsset
 	public let title: String
 	public let message: String?
 	public let action: String
 
-	public init(image: UIImage, title: String, message: String? = nil, action: String) {
+	public init(image: ImageAsset, title: String, message: String? = nil, action: String) {
 		self.image = image
 		self.title = title
 		self.message = message
@@ -19,14 +19,14 @@ public struct ResourceListEmptyContent: Equatable {
 	}
 
 	static let failedToLoad: Self = .init(
-		image: .errorNotFound,
+		image: Asset.Media.Error.notFound,
 		title: Strings.Error.Generic.title,
 		message: Strings.Error.loadingFailed,
 		action: Strings.Action.reload
 	)
 
 	static let failedToDelete: Self = .init(
-		image: .errorNotFound,
+		image: Asset.Media.Error.notFound,
 		title: Strings.Error.Generic.title,
 		action: Strings.Action.reload
 	)
@@ -112,7 +112,7 @@ public struct ResourceListEmptyView: View {
 				VStack {
 					Spacer()
 
-					Image(uiImage: viewStore.content.image)
+					viewStore.content.image.swiftUIImage
 						.resizable()
 						.scaledToFit()
 						.padding(.bottom, .smallSpacing)
@@ -130,7 +130,7 @@ public struct ResourceListEmptyView: View {
 					}
 					.padding()
 					.frame(maxWidth: .infinity)
-					.background(viewStore.style == .error ? Color.appErrorLight : Color.appPrimaryLight)
+					.background(viewStore.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
 					.cornerRadius(.standardRadius)
 					.padding(.bottom, .smallSpacing)
 					.layoutPriority(1)

@@ -137,12 +137,12 @@ public struct SeriesEditorView: View {
 		switch viewStore.excludeLeagueFromStatistics {
 		case .exclude:
 			Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
-				.foregroundColor(.appWarning)
+				.foregroundColor(Asset.Colors.Warning.default)
 		case .include:
 			switch viewStore.preBowl {
 			case .preBowl:
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenPreBowl)
-					.foregroundColor(.appWarning)
+					.foregroundColor(Asset.Colors.Warning.default)
 			case .regular:
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
 			}

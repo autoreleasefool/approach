@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
@@ -99,11 +100,11 @@ public struct RollEditorView: View {
 				Button { viewStore.send(.didToggleFoul) } label: {
 					HStack(spacing: .smallSpacing) {
 						Text(Strings.Roll.Properties.Foul.title)
-							.foregroundColor(viewStore.didFoul ? .appError : .white)
+							.foregroundColor(viewStore.didFoul ? Asset.Colors.Error.default.swiftUIColor : .white)
 						Image(systemName: viewStore.didFoul ? "f.cursive.circle.fill" : "f.cursive.circle")
 							.resizable()
 							.frame(width: .smallIcon, height: .smallIcon)
-							.foregroundColor(viewStore.didFoul ? .appError : .white)
+							.foregroundColor(viewStore.didFoul ? Asset.Colors.Error.default.swiftUIColor : .white)
 					}
 				}
 				.buttonStyle(TappableElement())

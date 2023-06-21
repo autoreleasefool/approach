@@ -90,7 +90,7 @@ public struct GearFilterView: View {
 
 				Section {
 					Button(Strings.Action.reset) { viewStore.send(.view(.didTapClearButton)) }
-						.tint(.appDestructive)
+						.tint(Asset.Colors.Destructive.default)
 				}
 			}
 			.navigationTitle(Strings.Gear.Filters.title)

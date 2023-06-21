@@ -1,5 +1,6 @@
 import AlleyEditorFeature
 import AlleysRepositoryInterface
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
@@ -30,7 +31,7 @@ public struct AlleysList: Reducer {
 				query: .init(filter: filter, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
-					image: .emptyAlleys,
+					image: Asset.Media.EmptyState.alleys,
 					title: Strings.Alley.Error.Empty.title,
 					message: Strings.Alley.Error.Empty.message,
 					action: Strings.Alley.List.add

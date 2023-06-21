@@ -43,7 +43,7 @@ public struct GearList: Reducer {
 				query: .init(kind: kindFilter, sortOrder: ordering),
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
-					image: .emptyGear,
+					image: Asset.Media.EmptyState.gear,
 					title: Strings.Gear.Error.Empty.title,
 					message: Strings.Gear.Error.Empty.message,
 					action: Strings.Gear.List.add

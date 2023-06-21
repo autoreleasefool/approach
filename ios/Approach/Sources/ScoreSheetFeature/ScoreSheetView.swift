@@ -85,7 +85,7 @@ public struct ScoreSheetView: View {
 						}
 					}
 				}
-				.background(Color.appPrimaryLight)
+				.background(Asset.Colors.Primary.light)
 				.cornerRadius(.standardRadius)
 				.scrollIndicators(.hidden)
 				.onChange(of: viewStore.rollId) { rollId in
@@ -104,7 +104,7 @@ public struct ScoreSheetView: View {
 				.frame(maxWidth: .infinity)
 				.padding(.horizontal, .smallSpacing)
 				.padding(.vertical, .smallSpacing)
-				.background(highlighted ? Color.appPrimary : Color.appPrimaryLight)
+				.background(highlighted ? Asset.Colors.Primary.default : Asset.Colors.Primary.light)
 		}
 		.contentShape(Rectangle())
 		.buttonStyle(TappableElement())
@@ -127,7 +127,7 @@ public struct ScoreSheetView: View {
 					.frame(width: contentSize.width / 12)
 					.padding(.horizontal, .smallSpacing)
 					.padding(.vertical, .smallSpacing)
-					.background(highlightRollIndex == roll.index ? Color.appPrimary : Color.appPrimaryLight)
+					.background(highlightRollIndex == roll.index ? Asset.Colors.Primary.default : Asset.Colors.Primary.light)
 			}
 			.id(RollID(frameIndex: frameIndex, rollIndex: roll.index))
 			.contentShape(Rectangle())

@@ -111,7 +111,7 @@ public struct AlleyEditorView: View {
 					interactionModes: [],
 					annotationItems: [location]
 				) { place in
-					MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Color.appAction)
+					MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Asset.Colors.Action.default.swiftUIColor)
 				}
 				.frame(maxWidth: .infinity)
 				.frame(height: 125)

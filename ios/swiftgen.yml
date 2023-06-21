@@ -8,3 +8,14 @@ strings:
         enumName: Strings
         publicAccess: true
         bundle: Bundle.module
+
+xcassets:
+  inputs:
+    - Approach/Sources/AssetsLibrary/Resources/Colors.xcassets
+    - Approach/Sources/AssetsLibrary/Resources/Media.xcassets
+  outputs:
+    - templateName: swift5
+      output: Approach/Sources/AssetsLibrary/Assets.swift
+      params:
+        publicAccess: true
+        bundle: Bundle.module

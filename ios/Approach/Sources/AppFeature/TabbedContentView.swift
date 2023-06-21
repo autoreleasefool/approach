@@ -65,7 +65,7 @@ public struct TabbedContentView: View {
 						}
 					}
 				}
-				.tint(.appAction)
+				.tint(Asset.Colors.Action.default)
 				.task { await viewStore.send(.didAppear).finish() }
 			} else {
 				// TODO: create sidebar for ipad size devices

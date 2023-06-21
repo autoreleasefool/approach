@@ -13,6 +13,6 @@ public struct EditButton: View {
 		Button(action: perform) {
 			Label(Strings.Action.edit, systemImage: "pencil")
 		}
-		.tint(.appAction)
+		.tint(Asset.Colors.Action.default)
 	}
 }

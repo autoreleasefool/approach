@@ -1,4 +1,5 @@
 import AnalyticsServiceInterface
+import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
@@ -48,7 +49,7 @@ public struct BowlersList: Reducer {
 				query: ordering,
 				listTitle: Strings.Bowler.List.title,
 				emptyContent: .init(
-					image: .emptyBowlers,
+					image: Asset.Media.EmptyState.bowlers,
 					title: Strings.Bowler.Error.Empty.title,
 					message: Strings.Bowler.Error.Empty.message,
 					action: Strings.Bowler.List.add

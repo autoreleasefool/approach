@@ -1,3 +1,4 @@
+import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
@@ -40,7 +41,7 @@ public struct OpponentsList: Reducer {
 				query: ordering,
 				listTitle: Strings.Opponent.List.title,
 				emptyContent: .init(
-					image: .emptyOpponents,
+					image: Asset.Media.EmptyState.opponents,
 					title: Strings.Opponent.Error.Empty.title,
 					message: Strings.Opponent.Error.Empty.message,
 					action: Strings.Opponent.List.add

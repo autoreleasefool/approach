@@ -20,39 +20,27 @@ public struct AveragingChart: View {
 						y: .value(data.title, $0.value)
 					)
 					.lineStyle(StrokeStyle(lineWidth: 3))
-					.foregroundStyle(Color.appChartsAccumulatingLine)
+					.foregroundStyle(Asset.Colors.Charts.Averaging.lineMark.swiftUIColor)
 					.interpolationMethod(.catmullRom)
 				}
 			}
 			.chartXAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisTick().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisValueLabel().foregroundStyle(Color.appChartsAccumulatingAxes)
+					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
 				}
 			}
 			.chartYAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisTick().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisValueLabel().foregroundStyle(Color.appChartsAccumulatingAxes)
+					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
 				}
 			}
 			.chartYScale(domain: [data.minimumValue, data.maximumValue])
 		}
 		.groupBoxStyle(ChartsGroupBoxStyle.averaging)
-	}
-
-	private var areaMarkGradient: LinearGradient {
-		.init(
-			gradient: Gradient(colors: [
-				.appChartsAccumulatingArea.opacity(0.8),
-				.appChartsAccumulatingArea.opacity(0.5),
-				.appChartsAccumulatingArea.opacity(0.2),
-			]),
-			startPoint: .top,
-			endPoint: .bottom
-		)
 	}
 }
 

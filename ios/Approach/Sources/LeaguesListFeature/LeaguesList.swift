@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import LeagueEditorFeature
@@ -50,7 +51,7 @@ public struct LeaguesList: Reducer {
 				),
 				listTitle: Strings.League.List.title,
 				emptyContent: .init(
-					image: .emptyLeagues,
+					image: Asset.Media.EmptyState.leagues,
 					title: Strings.League.Error.Empty.title,
 					message: Strings.League.Error.Empty.message,
 					action: Strings.League.List.add

@@ -15,7 +15,6 @@ public struct CountingChart: View {
 		GroupBox(data.title) {
 			Chart {
 				ForEach(data.entries) {
-
 					if data.isAccumulating {
 						AreaMark(
 							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
@@ -28,7 +27,7 @@ public struct CountingChart: View {
 							y: .value(data.title, $0.value)
 						)
 						.lineStyle(StrokeStyle(lineWidth: 2))
-						.foregroundStyle(Color.appChartsAccumulatingLine)
+						.foregroundStyle(Asset.Colors.Charts.Counting.lineMark.swiftUIColor)
 					} else {
 						BarMark(
 							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
@@ -40,16 +39,16 @@ public struct CountingChart: View {
 			}
 			.chartXAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisTick().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisValueLabel().foregroundStyle(Color.appChartsAccumulatingAxes)
+					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
+					AxisTick().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
+					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
 				}
 			}
 			.chartYAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisTick().foregroundStyle(Color.appChartsAccumulatingAxes)
-					AxisValueLabel().foregroundStyle(Color.appChartsAccumulatingAxes)
+					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
+					AxisTick().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
+					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
 				}
 			}
 		}
@@ -59,19 +58,20 @@ public struct CountingChart: View {
 	private var barMarkGradient: LinearGradient {
 		.init(
 			gradient: Gradient(colors: [
-				.appChartsAccumulatingArea.opacity(0.8),
-				.appChartsAccumulatingArea.opacity(0.3),
+				Asset.Colors.Charts.Counting.barMark.swiftUIColor.opacity(0.8),
+				Asset.Colors.Charts.Counting.barMark.swiftUIColor.opacity(0.3),
 			]),
 			startPoint: .top,
 			endPoint: .bottom
-		)	}
+		)
+	}
 
 	private var areaMarkGradient: LinearGradient {
 		.init(
 			gradient: Gradient(colors: [
-				.appChartsAccumulatingArea.opacity(0.8),
-				.appChartsAccumulatingArea.opacity(0.4),
-				.appChartsAccumulatingArea.opacity(0.2),
+				Asset.Colors.Charts.Counting.areaMark.swiftUIColor.opacity(0.8),
+				Asset.Colors.Charts.Counting.areaMark.swiftUIColor.opacity(0.4),
+				Asset.Colors.Charts.Counting.areaMark.swiftUIColor.opacity(0.2),
 			]),
 			startPoint: .top,
 			endPoint: .bottom

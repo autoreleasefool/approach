@@ -165,13 +165,13 @@ enum StatisticsFilterType {
 	case gear
 	case matchPlay
 
-	var backgroundColor: Color {
+	var backgroundColor: ColorAsset {
 		switch self {
-		case .league: return .appFiltersSeaGreen
-		case .seriesDate: return .appFiltersPuce
-		case .alley: return .appFiltersEnglishViolet
-		case .gear: return .appFiltersCeladon
-		case .matchPlay: return .appFiltersAuburn
+		case .league: return Asset.Colors.Filters.seaGreen
+		case .seriesDate: return Asset.Colors.Filters.puce
+		case .alley: return Asset.Colors.Filters.englishViolet
+		case .gear: return Asset.Colors.Filters.celadon
+		case .matchPlay: return Asset.Colors.Filters.auburn
 		}
 	}
 

@@ -124,7 +124,7 @@ public struct AlleysFilterView: View {
 
 				Section {
 					Button(Strings.Action.reset) { viewStore.send(.view(.didTapClearButton)) }
-						.tint(.appDestructive)
+						.tint(Asset.Colors.Destructive.default)
 				}
 			}
 			.navigationTitle(Strings.Alley.Filters.title)
