@@ -918,6 +918,10 @@ public enum Strings {
       public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.title.highSeriesOf3", fallback: "High Series of 3")
       /// High Single
       public static let highSingle = Strings.tr("Localizable", "statistics.title.highSingle", fallback: "High Single")
+      /// Middle Hits
+      public static let middleHits = Strings.tr("Localizable", "statistics.title.middleHits", fallback: "Middle Hits")
+      /// Total Rolls
+      public static let totalRolls = Strings.tr("Localizable", "statistics.title.totalRolls", fallback: "Total Rolls")
     }
   }
 }

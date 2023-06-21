@@ -1,8 +1,9 @@
 extension Statistics {
 	public static let allCases: [Statistic.Type] = [
 		// Overall
-		Statistics.GameAverage.self,
 		Statistics.HighSingle.self,
+		Statistics.GameAverage.self,
+		Statistics.MiddleHits.self,
 
 		// First Roll
 		Statistics.HeadPins.self,
