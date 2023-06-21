@@ -63,7 +63,7 @@ extension Frame.TrackableEntry {
 		guard let firstRoll = rolls.first else { return [] }
 
 		if Frame.isLast(index) {
-			var firstRolls: [Frame.OrderedRoll] = [firstRoll]
+			var firstRolls = [firstRoll]
 			var pinsDowned: Set<Pin> = []
 			for (index, roll) in rolls.enumerated() {
 				pinsDowned.formUnion(roll.roll.pinsDowned)
@@ -75,6 +75,31 @@ extension Frame.TrackableEntry {
 			return firstRolls
 		} else {
 			return [firstRoll]
+		}
+	}
+
+	public var secondRolls: [Frame.OrderedRoll] {
+		guard let secondRoll = rolls.dropFirst().first else { return [] }
+
+		if Frame.isLast(index) {
+			var secondRolls: [Frame.OrderedRoll] = []
+			var pinsDowned: Set<Pin> = []
+			var pinsJustDowned = true
+			for (index, roll) in rolls.enumerated() {
+				pinsDowned.formUnion(roll.roll.pinsDowned)
+				if pinsDowned.isFullDeck {
+					pinsJustDowned = true
+					pinsDowned = []
+				} else {
+					if pinsJustDowned && index < rolls.endIndex - 1 {
+						secondRolls.append(rolls[index + 1])
+					}
+					pinsJustDowned = false
+				}
+			}
+			return secondRolls
+		} else {
+			return [secondRoll]
 		}
 	}
 }

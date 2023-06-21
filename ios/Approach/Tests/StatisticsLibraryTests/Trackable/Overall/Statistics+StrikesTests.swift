@@ -30,7 +30,7 @@ final class StrikesTests: XCTestCase {
 					index: 2,
 					rolls: [
 						.init(index: 0, roll: .init(pinsDowned: [])),
-						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftTwoPin, .headPin, .rightTwoPin, .rightThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
 					]
 				),
 			]

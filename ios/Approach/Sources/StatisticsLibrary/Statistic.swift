@@ -62,6 +62,8 @@ extension TrackablePerFrame {
 	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
 }
 
+// MARK: Trackable Per First Roll
+
 public protocol TrackablePerFirstRoll: TrackablePerFrame {
 	mutating func adjust(byFirstRoll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration)
 }
@@ -70,6 +72,20 @@ extension TrackablePerFirstRoll {
 	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
 		for roll in byFrame.firstRolls {
 			adjust(byFirstRoll: roll, configuration: configuration)
+		}
+	}
+}
+
+// MARK: Trackable Per Second Roll
+
+public protocol TrackablePerSecondRoll: TrackablePerFrame {
+	mutating func adjust(bySecondRoll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration)
+}
+
+extension TrackablePerSecondRoll {
+	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
+		for roll in byFrame.secondRolls {
+			adjust(bySecondRoll: roll, configuration: configuration)
 		}
 	}
 }
