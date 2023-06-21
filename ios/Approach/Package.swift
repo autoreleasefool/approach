@@ -1289,6 +1289,13 @@ let package = Package(
 			name: "StringsLibrary",
 			dependencies: []
 		),
+		.testTarget(
+			name: "StringsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StringsLibrary",
+			]
+		),
 		.target(
 			name: "SwiftUIExtensionsLibrary",
 			dependencies: []

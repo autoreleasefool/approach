@@ -532,20 +532,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DatabaseModelsLibraryTests"
-               BuildableName = "DatabaseModelsLibraryTests"
-               BlueprintName = "DatabaseModelsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "StatisticsRepositoryTests"
                BuildableName = "StatisticsRepositoryTests"
                BlueprintName = "StatisticsRepositoryTests"
@@ -899,6 +885,20 @@
                BlueprintIdentifier = "StatisticsChartsLibraryTests"
                BuildableName = "StatisticsChartsLibraryTests"
                BlueprintName = "StatisticsChartsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StringsLibraryTests"
+               BuildableName = "StringsLibraryTests"
+               BlueprintName = "StringsLibraryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
@@ -1537,6 +1537,16 @@
                BlueprintIdentifier = "StatisticsModelsLibraryTests"
                BuildableName = "StatisticsModelsLibraryTests"
                BlueprintName = "StatisticsModelsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StringsLibraryTests"
+               BuildableName = "StringsLibraryTests"
+               BlueprintName = "StringsLibraryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

@@ -281,7 +281,6 @@ services = [ "Database" ]
 libraries = [ "TestDatabaseUtilities" ]
 
 [libraries.Strings]
-skip_tests = true
 
 [libraries.SwiftUIExtensions]
 
