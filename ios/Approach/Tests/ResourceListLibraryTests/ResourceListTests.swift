@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 @testable import ResourceListLibrary
 import XCTest
@@ -9,7 +10,7 @@ final class ResourceListTests: XCTestCase {
 			features: withFeatures,
 			query: .init(),
 			listTitle: "listTitle",
-			emptyContent: .init(image: .emptyBowlers, title: "title", action: "action")
+			emptyContent: .init(image: Asset.Media.EmptyState.bowlers, title: "title", action: "action")
 		)
 	}
 
