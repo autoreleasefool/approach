@@ -62,6 +62,18 @@ extension TrackablePerFrame {
 	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
 }
 
+public protocol TrackablePerFirstRoll: TrackablePerFrame {
+	mutating func adjust(byFirstRoll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration)
+}
+
+extension TrackablePerFirstRoll {
+	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
+		for roll in byFrame.firstRolls {
+			adjust(byFirstRoll: roll, configuration: configuration)
+		}
+	}
+}
+
 // MARK: - Trackable Per Game
 
 public struct TrackablePerGameConfiguration {

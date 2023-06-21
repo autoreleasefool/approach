@@ -27,24 +27,20 @@ public struct StatisticsDetailsCharts: Reducer {
 	public enum ChartContent: Equatable {
 		case countingChart(CountingChart.Data)
 		case averagingChart(AveragingChart.Data)
+		case percentageChart(PercentageChart.Data)
 		case chartUnavailable(statistic: String)
 
 		var title: String {
 			switch self {
 			case let .averagingChart(data): return data.title
 			case let .countingChart(data): return data.title
+			case let .percentageChart(data): return data.title
 			case let .chartUnavailable(statistic): return statistic
 			}
 		}
 
 		var showsAggregationPicker: Bool {
-			switch self {
-			case .averagingChart: return false
-			case .countingChart: return true
-			case let .chartUnavailable(statistic):
-				let type = Statistics.type(of: statistic)
-				return type?.supportsAggregation ?? false
-			}
+			return Statistics.type(of: title)?.supportsAggregation ?? false
 		}
 	}
 
@@ -91,6 +87,8 @@ public struct StatisticsDetailsChartsView: View {
 						CountingChart(data)
 					case let .averagingChart(data):
 						AveragingChart(data)
+					case let .percentageChart(data):
+						PercentageChart(data)
 					case let .chartUnavailable(statistic):
 						emptyChart(statistic)
 					}

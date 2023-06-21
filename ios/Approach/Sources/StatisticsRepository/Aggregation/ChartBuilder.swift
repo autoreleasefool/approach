@@ -45,29 +45,41 @@ struct ChartBuilder {
 			}
 		}
 
-		let title = type(of: firstEntry.value).title
+		return buildRelevantChartData(from: entries, timePeriod: timePeriod)
+	}
 
-		if firstEntry.value is AveragingStatistic {
+	private func buildRelevantChartData(from entries: [Date: Statistic], timePeriod: TimeInterval) -> Output? {
+		guard let firstStatistic = entries.first?.value else { return nil }
+		let statisticType = type(of: firstStatistic)
+		if statisticType is AveragingStatistic.Type {
 			return .averaging(.init(
-				title: title,
+				title: statisticType.title,
 				entries: entries.sortedByDate()
 					.compactMap(as: AveragingStatistic.self)
 					.map { .init(id: uuid(), value: $1.average, date: $0) }
 			))
-		} else if firstEntry.value is CountingStatistic {
+		} else if statisticType is CountingStatistic.Type {
 			return .counting(.init(
-				title: title,
+				title: statisticType.title,
 				entries: entries.sortedByDate()
 					.compactMap(as: CountingStatistic.self)
 					.map { .init(id: uuid(), value: $1.count, date: $0, timeRange: timePeriod) },
 				isAccumulating: aggregation == .accumulate
 			))
-		} else if firstEntry.value is HighestOfStatistic {
+		} else if statisticType is HighestOfStatistic.Type {
 			return .counting(.init(
-				title: title,
+				title: statisticType.title,
 				entries: entries.sortedByDate()
 					.compactMap(as: HighestOfStatistic.self)
 					.map { .init(id: uuid(), value: $1.highest, date: $0, timeRange: timePeriod) },
+				isAccumulating: aggregation == .accumulate
+			))
+		} else if statisticType is PercentageStatistic.Type {
+			return .percentage(.init(
+				title: statisticType.title,
+				entries: entries.sortedByDate()
+					.compactMap(as: PercentageStatistic.self)
+					.map { .init(id: uuid(), numerator: $1.numerator, denominator: $1.denominator, date: $0, timeRange: timePeriod) },
 				isAccumulating: aggregation == .accumulate
 			))
 		}
@@ -80,6 +92,7 @@ extension ChartBuilder {
 	enum Output {
 		case averaging(AveragingChart.Data)
 		case counting(CountingChart.Data)
+		case percentage(PercentageChart.Data)
 	}
 }
 

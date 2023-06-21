@@ -257,48 +257,85 @@ public struct StatisticsDetails: Reducer {
 			.run { send in
 				let startTime = date()
 
-				func delay() -> TimeInterval? {
-					let timeSpent = date().timeIntervalSince(startTime)
-					return timeSpent < Self.chartLoadingAnimationTime ? (Self.chartLoadingAnimationTime - timeSpent) * 1000 : nil
+				var result: TaskResult<StatisticsDetailsCharts.ChartContent>?
+				if let countingStatistic = forStatistic as? CountingStatistic.Type {
+					result = await loadChart(forCountingStatistic: countingStatistic, withFilter: withFilter)
+				} else if let highestOfStatistic = forStatistic as? HighestOfStatistic.Type {
+					result = await loadChart(forHighestOfStatistic: highestOfStatistic, withFilter: withFilter)
+				} else if let averagingStatistic = forStatistic as? AveragingStatistic.Type {
+					result = await loadChart(forAveragingStatistic: averagingStatistic, withFilter: withFilter)
+				} else if let percentageStatistic = forStatistic as? PercentageStatistic.Type {
+					result = await loadChart(forPercentageStatistic: percentageStatistic, withFilter: withFilter)
 				}
 
-				if let countingStatistic = forStatistic as? CountingStatistic.Type {
-					let result = await TaskResult<StatisticsDetailsCharts.ChartContent> {
-						if let data = try await self.statistics.chart(statistic: countingStatistic, filter: withFilter), !data.isEmpty {
-							return .countingChart(data)
-						} else {
-							return .chartUnavailable(statistic: countingStatistic.title)
-						}
-					}
+				let timeSpent = date().timeIntervalSince(startTime)
+				if timeSpent < Self.chartLoadingAnimationTime {
+					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
+				}
 
-					if let delay = delay() { try await clock.sleep(for: .milliseconds(delay)) }
+				if let result {
 					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
-				} else if let highestOfStatistic = forStatistic as? HighestOfStatistic.Type {
-					let result = await TaskResult<StatisticsDetailsCharts.ChartContent> {
-						if let data = try await self.statistics.chart(statistic: highestOfStatistic, filter: withFilter), !data.isEmpty {
-							return .countingChart(data)
-						} else {
-							return .chartUnavailable(statistic: highestOfStatistic.title)
-						}
-					}
-
-					if let delay = delay() { try await clock.sleep(for: .milliseconds(delay)) }
-					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
-				} else if let averagingStatistic = forStatistic as? AveragingStatistic.Type {
-					let result = await TaskResult<StatisticsDetailsCharts.ChartContent> {
-						if let data = try await self.statistics.chart(statistic: averagingStatistic, filter: withFilter), !data.isEmpty {
-							return .averagingChart(data)
-						} else {
-							return .chartUnavailable(statistic: averagingStatistic.title)
-						}
-					}
-
-					if let delay = delay() { try await clock.sleep(for: .milliseconds(delay)) }
-					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
+				} else {
+					await send(
+						.internal(.didLoadChartContent(.success(.chartUnavailable(statistic: forStatistic.title)))),
+						animation: .easeInOut
+					)
 				}
 			}
 		)
 		.cancellable(id: CancelID.loadingChartValues, cancelInFlight: true)
+	}
+
+	private func loadChart(
+		forCountingStatistic statistic: CountingStatistic.Type,
+		withFilter: TrackableFilter
+	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
+		await .init {
+			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
+				return .countingChart(data)
+			} else {
+				return .chartUnavailable(statistic: statistic.title)
+			}
+		}
+	}
+
+	private func loadChart(
+		forAveragingStatistic statistic: AveragingStatistic.Type,
+		withFilter: TrackableFilter
+	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
+		await .init {
+			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
+				return .averagingChart(data)
+			} else {
+				return .chartUnavailable(statistic: statistic.title)
+			}
+		}
+	}
+
+	private func loadChart(
+		forHighestOfStatistic statistic: HighestOfStatistic.Type,
+		withFilter: TrackableFilter
+	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
+		await .init {
+			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
+				return .countingChart(data)
+			} else {
+				return .chartUnavailable(statistic: statistic.title)
+			}
+		}
+	}
+
+	private func loadChart(
+		forPercentageStatistic statistic: PercentageStatistic.Type,
+		withFilter: TrackableFilter
+	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
+		await .init {
+			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
+				return .percentageChart(data)
+			} else {
+				return .chartUnavailable(statistic: statistic.title)
+			}
+		}
 	}
 }
 

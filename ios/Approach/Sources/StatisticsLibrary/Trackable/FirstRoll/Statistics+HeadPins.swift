@@ -2,7 +2,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct HeadPins: Statistic, TrackablePerFrame, CountingStatistic {
+	public struct HeadPins: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.headPins }
 		public static var category: StatisticCategory { .onFirstRoll }
 
@@ -15,11 +15,9 @@ extension Statistics {
 		public init() {}
 		init(headPins: Int) { self.headPins = headPins }
 
-		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
-			for roll in byFrame.firstRolls {
-				if roll.roll.pinsDowned.isHeadPin || (configuration.countHeadPin2AsHeadPin && roll.roll.pinsDowned.isHeadPin2) {
-					headPins += 1
-				}
+		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
+			if roll.roll.pinsDowned.isHeadPin || (configuration.countHeadPin2AsHeadPin && roll.roll.pinsDowned.isHeadPin2) {
+				headPins += 1
 			}
 		}
 
