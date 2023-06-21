@@ -5,6 +5,7 @@ extension Statistics {
 		Statistics.GameAverage.self,
 		Statistics.MiddleHits.self,
 		Statistics.LeftOfMiddleHits.self,
+		Statistics.RightOfMiddleHits.self,
 
 		// First Roll
 		Statistics.HeadPins.self,
