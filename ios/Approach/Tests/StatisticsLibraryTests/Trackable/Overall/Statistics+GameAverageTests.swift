@@ -5,34 +5,30 @@ import XCTest
 
 final class GameAverageTests: XCTestCase {
 	func testAdjustByGame() {
-		var statistic = Statistics.GameAverage()
+		let statistic = create(statistic: Statistics.GameAverage.self, adjustedByGames: Game.TrackableEntry.mocks)
+		AssertAveraging(statistic, hasTotal: 3213, withDivisor: 18, formattedAs: "178.5")
+	}
 
-		let gameList = [
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(0), score: 100, date: Date(timeIntervalSince1970: 123)),
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(1), score: 120, date: Date(timeIntervalSince1970: 123)),
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(2), score: 90, date: Date(timeIntervalSince1970: 123)),
-		]
+	func testAdjustBySeries_DoesNothing() {
+		let statistic = create(statistic: Statistics.GameAverage.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		AssertAveraging(statistic, hasTotal: 0, withDivisor: 0, formattedAs: "—")
+	}
 
-		for game in gameList {
-			statistic.adjust(byGame: game, configuration: .init())
-		}
-
-		AssertAveraging(statistic, hasTotal: 310, withDivisor: 3)
+	func testAdjustByFrame_DoesNothing() {
+		let statistic = create(statistic: Statistics.GameAverage.self, adjustedByFrames: Frame.TrackableEntry.mocks)
+		AssertAveraging(statistic, hasTotal: 0, withDivisor: 0, formattedAs: "—")
 	}
 
 	func testDoesNotAdjustByZeroGames() {
-		var statistic = Statistics.GameAverage()
+		let statistic = create(
+			statistic: Statistics.GameAverage.self,
+			adjustedByGames: [
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID(0), score: 100, date: Date(timeIntervalSince1970: 123)),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID(1), score: 120, date: Date(timeIntervalSince1970: 123)),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID(2), score: 0, date: Date(timeIntervalSince1970: 123)),
+			]
+		)
 
-		let gameList = [
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(0), score: 0, date: Date(timeIntervalSince1970: 123)),
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(1), score: 0, date: Date(timeIntervalSince1970: 123)),
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(2), score: 0, date: Date(timeIntervalSince1970: 123)),
-		]
-
-		for game in gameList {
-			statistic.adjust(byGame: game, configuration: .init())
-		}
-
-		AssertAveraging(statistic, hasTotal: 0, withDivisor: 0)
+		AssertAveraging(statistic, hasTotal: 220, withDivisor: 2, formattedAs: "110")
 	}
 }

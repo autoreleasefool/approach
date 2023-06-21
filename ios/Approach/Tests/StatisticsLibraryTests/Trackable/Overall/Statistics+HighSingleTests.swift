@@ -5,18 +5,17 @@ import XCTest
 
 final class HighSingleTests: XCTestCase {
 	func testAdjustByGame() {
-		var statistic = Statistics.HighSingle()
+		let statistic = create(statistic: Statistics.HighSingle.self, adjustedByGames: Game.TrackableEntry.mocks)
+		AssertHighestOf(statistic, equals: 234)
+	}
 
-		let gameList = [
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(0), score: 100, date: Date(timeIntervalSince1970: 123)),
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(1), score: 120, date: Date(timeIntervalSince1970: 123)),
-			Game.TrackableEntry(seriesId: UUID(0), id: UUID(2), score: 90, date: Date(timeIntervalSince1970: 123)),
-		]
+	func testAdjustBySeries_DoesNothing() {
+		let statistic = create(statistic: Statistics.HighSingle.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		AssertHighestOf(statistic, equals: 0)
+	}
 
-		for game in gameList {
-			statistic.adjust(byGame: game, configuration: .init())
-		}
-
-		AssertHighestOf(statistic, equals: 120)
+	func testAdjustByFrame_DoesNothing() {
+		let statistic = create(statistic: Statistics.HighSingle.self, adjustedByFrames: Frame.TrackableEntry.mocks)
+		AssertHighestOf(statistic, equals: 0)
 	}
 }
