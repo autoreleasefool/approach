@@ -44,7 +44,7 @@ final class RightChopOffsTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 2)
@@ -76,7 +76,7 @@ final class RightChopOffsTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 0)

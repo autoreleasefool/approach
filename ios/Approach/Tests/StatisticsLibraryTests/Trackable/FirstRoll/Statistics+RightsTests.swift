@@ -11,7 +11,7 @@ final class RightsTests: XCTestCase {
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin]))
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin])),
 					]
 				),
 				Frame.TrackableEntry(
@@ -22,7 +22,7 @@ final class RightsTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 1)
@@ -35,7 +35,7 @@ final class RightsTests: XCTestCase {
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin, .headPin, .leftThreePin]))
+						.init(index: 0, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin, .headPin, .leftThreePin])),
 					]
 				),
 				Frame.TrackableEntry(
@@ -46,7 +46,7 @@ final class RightsTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 0)

@@ -23,7 +23,7 @@ final class HeadPinsSparedTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 2, formattedAs: "50%")
@@ -57,11 +57,11 @@ final class HeadPinsSparedTests: XCTestCase {
 					index: 3,
 					rolls: [
 						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin])),
-						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .rightThreePin]))
+						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .rightThreePin])),
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: true)
+			withFrameConfiguration: .init(countHeadPin2AsHeadPin: true, countSplitWithBonusAsSplit: false)
 		)
 
 		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 2, formattedAs: "100%")
@@ -95,11 +95,11 @@ final class HeadPinsSparedTests: XCTestCase {
 					index: 3,
 					rolls: [
 						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin])),
-						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .rightThreePin]))
+						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .rightThreePin])),
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")

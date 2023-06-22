@@ -6,11 +6,11 @@ import Foundation
 func create<T: Statistic>(
 	statistic: T.Type,
 	adjustedBySeries: [Series.TrackableEntry] = [],
-	withSeriesConfiguration: TrackablePerSeriesConfiguration = .init(),
+	withSeriesConfiguration: TrackablePerSeriesConfiguration = .default,
 	adjustedByGames: [Game.TrackableEntry] = [],
-	withGameConfiguration: TrackablePerGameConfiguration = .init(),
+	withGameConfiguration: TrackablePerGameConfiguration = .default,
 	adjustedByFrames: [Frame.TrackableEntry] = [],
-	withFrameConfiguration: TrackablePerFrameConfiguration = .init(countHeadPin2AsHeadPin: true)
+	withFrameConfiguration: TrackablePerFrameConfiguration = .default
 ) -> T {
 	var stat = statistic.init()
 

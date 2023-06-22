@@ -23,7 +23,7 @@ final class AcesSparedTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 2, formattedAs: "50%")
@@ -56,7 +56,7 @@ final class AcesSparedTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 1, formattedAs: "0%")

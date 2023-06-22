@@ -20,7 +20,7 @@ final class HeadPinsTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 1)
@@ -47,7 +47,7 @@ final class HeadPinsTests: XCTestCase {
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin]))]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: true)
+			withFrameConfiguration: .init(countHeadPin2AsHeadPin: true, countSplitWithBonusAsSplit: false)
 		)
 
 		AssertCounting(statistic, equals: 3)
@@ -74,7 +74,7 @@ final class HeadPinsTests: XCTestCase {
 					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .leftTwoPin]))]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 1)

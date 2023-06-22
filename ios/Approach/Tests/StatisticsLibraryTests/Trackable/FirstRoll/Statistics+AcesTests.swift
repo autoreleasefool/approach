@@ -11,7 +11,7 @@ final class AcesTests: XCTestCase {
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin, .leftThreePin]))
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin, .leftThreePin])),
 					]
 				),
 				Frame.TrackableEntry(
@@ -22,7 +22,7 @@ final class AcesTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 1)
@@ -47,7 +47,7 @@ final class AcesTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertCounting(statistic, equals: 0)

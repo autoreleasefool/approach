@@ -50,9 +50,11 @@ public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 
 public struct TrackablePerFrameConfiguration {
 	public let countHeadPin2AsHeadPin: Bool
+	public let countSplitWithBonusAsSplit: Bool
 
-	public init(countHeadPin2AsHeadPin: Bool) {
+	public init(countHeadPin2AsHeadPin: Bool, countSplitWithBonusAsSplit: Bool) {
 		self.countHeadPin2AsHeadPin = countHeadPin2AsHeadPin
+		self.countSplitWithBonusAsSplit = countSplitWithBonusAsSplit
 	}
 }
 

@@ -44,7 +44,7 @@ final class ChopOffsSparedTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 4, formattedAs: "50%")
@@ -90,7 +90,7 @@ final class ChopOffsSparedTests: XCTestCase {
 					]
 				),
 			],
-			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false)
+			withFrameConfiguration: .default
 		)
 
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 2, formattedAs: "0%")
