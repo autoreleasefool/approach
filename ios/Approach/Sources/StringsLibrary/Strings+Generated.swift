@@ -776,10 +776,22 @@ public enum Strings {
       }
     }
     public enum Statistics {
-      /// Hide statistics with a value of zero?
-      public static let hideZeroStatistics = Strings.tr("Localizable", "settings.statistics.hideZeroStatistics", fallback: "Hide statistics with a value of zero?")
       /// Statistics
       public static let title = Strings.tr("Localizable", "settings.statistics.title", fallback: "Statistics")
+      public enum Overall {
+        /// Hide statistics with a value of zero?
+        public static let hideZeroStatistics = Strings.tr("Localizable", "settings.statistics.overall.hideZeroStatistics", fallback: "Hide statistics with a value of zero?")
+        /// Overall
+        public static let title = Strings.tr("Localizable", "settings.statistics.overall.title", fallback: "Overall")
+      }
+      public enum PerFrame {
+        /// Count H2 as Head Pins?
+        public static let countH2AsH = Strings.tr("Localizable", "settings.statistics.perFrame.countH2AsH", fallback: "Count H2 as Head Pins?")
+        /// Count S2 as Split?
+        public static let countSplitWithBonusAsSplit = Strings.tr("Localizable", "settings.statistics.perFrame.countSplitWithBonusAsSplit", fallback: "Count S2 as Split?")
+        /// Per Frame
+        public static let title = Strings.tr("Localizable", "settings.statistics.perFrame.title", fallback: "Per Frame")
+      }
     }
   }
   public enum SortOrder {

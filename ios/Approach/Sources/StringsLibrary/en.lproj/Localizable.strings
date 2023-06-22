@@ -298,7 +298,11 @@
 "settings.featureFlags.matchTest" = "Match flags to Test";
 "settings.featureFlags.matchDevelopment" = "Match flags to Development";
 "settings.statistics.title" = "Statistics";
-"settings.statistics.hideZeroStatistics" = "Hide statistics with a value of zero?";
+"settings.statistics.overall.title" = "Overall";
+"settings.statistics.overall.hideZeroStatistics" = "Hide statistics with a value of zero?";
+"settings.statistics.perFrame.countH2AsH" = "Count H2 as Head Pins?";
+"settings.statistics.perFrame.countSplitWithBonusAsSplit" = "Count S2 as Split?";
+"settings.statistics.perFrame.title" = "Per Frame";
 "settings.title" = "Settings";
 
 /* Ordering */
