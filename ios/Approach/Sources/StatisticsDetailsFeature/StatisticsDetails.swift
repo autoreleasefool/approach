@@ -23,6 +23,7 @@ public struct StatisticsDetails: Reducer {
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var filtersSize: StatisticsFilterView.Size = .regular
+		public var lastOrientation: UIDeviceOrientation?
 
 		@PresentationState public var destination: Destination.State?
 
@@ -144,7 +145,7 @@ public struct StatisticsDetails: Reducer {
 
 				case let .didLoadListEntries(.success(statistics)):
 					state.listEntries = .init(uniqueElements: statistics)
-					state.destination = .list(.init(listEntries: state.listEntries))
+					state.presentDestinationForLastOrientation()
 					if state.chartContent == nil,
 						 let firstGroup = state.listEntries.first,
 						 let firstEntry = firstGroup.entries.first,
@@ -172,14 +173,8 @@ public struct StatisticsDetails: Reducer {
 					return .none
 
 				case let .orientationChange(orientation):
-					switch orientation {
-					case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown:
-						state.destination = .list(.init(listEntries: state.listEntries))
-					case .landscapeLeft, .landscapeRight:
-						state.destination = nil
-					@unknown default:
-						state.destination = .list(.init(listEntries: state.listEntries))
-					}
+					state.lastOrientation = orientation
+					state.presentDestinationForLastOrientation()
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(300))
 						await send(.internal(.adjustBackdrop))
@@ -356,5 +351,18 @@ extension StatisticsDetails.State {
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
 		set {}
+	}
+}
+
+extension StatisticsDetails.State {
+	mutating func presentDestinationForLastOrientation() {
+		switch lastOrientation {
+		case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown, .none:
+			destination = .list(.init(listEntries: listEntries))
+		case .landscapeLeft, .landscapeRight:
+			destination = nil
+		@unknown default:
+			destination = .list(.init(listEntries: listEntries))
+		}
 	}
 }
