@@ -239,6 +239,10 @@
 "statistics.title.acesSpared" = "Aces Spared";
 "statistics.title.chopOffs" = "Chop Offs";
 "statistics.title.chopOffsSpared" = "Chop Offs Spared";
+"statistics.title.leftChopOffs" = "Left Chop Offs";
+"statistics.title.leftChopOffsSpared" = "Left Chop Offs Spared";
+"statistics.title.rightChopOffs" = "Right Chop Offs";
+"statistics.title.rightChopOffsSpared" = "Right Chop Offs Spared";
 "statistics.title.gameAverage" = "Average";
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
