@@ -982,6 +982,10 @@ public enum Strings {
       public static let spareChances = Strings.tr("Localizable", "statistics.title.spareChances", fallback: "Opportunities to Spare")
       /// Spare Conversions
       public static let spareConversions = Strings.tr("Localizable", "statistics.title.spareConversions", fallback: "Spare Conversions")
+      /// Splits
+      public static let splits = Strings.tr("Localizable", "statistics.title.splits", fallback: "Splits")
+      /// Splits Spared
+      public static let splitsSpared = Strings.tr("Localizable", "statistics.title.splitsSpared", fallback: "Splits Spared")
       /// Middle Hits which were Strikes
       public static let strikeMiddleHits = Strings.tr("Localizable", "statistics.title.strikeMiddleHits", fallback: "Middle Hits which were Strikes")
       /// Total Strikes

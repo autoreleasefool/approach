@@ -22,6 +22,8 @@ extension Statistics {
 		Statistics.AcesSpared.self,
 		Statistics.ChopOffs.self,
 		Statistics.ChopOffsSpared.self,
+		Statistics.Splits.self,
+		Statistics.SplitsSpared.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,
