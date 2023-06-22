@@ -235,6 +235,8 @@
 "statistics.charts.unavailable" = "There doesn't seem to be any data available.";
 "statistics.charts.axesLabels.date" = "Date";
 
+"statistics.title.aces" = "Aces";
+"statistics.title.acesSpared" = "Aces Spared";
 "statistics.title.gameAverage" = "Average";
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
