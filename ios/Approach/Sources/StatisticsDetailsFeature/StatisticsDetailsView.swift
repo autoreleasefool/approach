@@ -18,6 +18,7 @@ public struct StatisticsDetailsView: View {
 		let filter: TrackableFilter
 
 		let sheetDetent: PresentationDetent
+		let ignoreSheetSizeForBackdrop: Bool
 		let sources: TrackableFilter.Sources?
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
@@ -26,6 +27,7 @@ public struct StatisticsDetailsView: View {
 		init(state: StatisticsDetails.State) {
 			self.filter = state.filter
 			self.sheetDetent = state.sheetDetent
+			self.ignoreSheetSizeForBackdrop = state.destination == nil || state.sheetDetent == .large
 			self.sources = state.sources
 			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
 			self.backdropSize = state.backdropSize
@@ -138,7 +140,7 @@ public struct StatisticsDetailsView: View {
 	}
 
 	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
-		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
+		let sheetContentSize = viewStore.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
 			height: windowContentSize.height - sheetContentSize.height - safeAreaInsets.bottom
