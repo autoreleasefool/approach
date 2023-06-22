@@ -14,6 +14,8 @@ extension Statistics {
 		// First Roll
 		Statistics.HeadPins.self,
 		Statistics.HeadPinsSpared.self,
+		Statistics.Lefts.self,
+		Statistics.LeftsSpared.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,

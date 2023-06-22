@@ -240,6 +240,8 @@
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";
 "statistics.title.headPinsSpared" = "Head Pins Spared";
+"statistics.title.lefts" = "Lefts";
+"statistics.title.leftsSpared" = "Lefts Spared";
 "statistics.title.middleHits" = "Middle Hits";
 "statistics.title.leftOfMiddleHits" = "Left of Middle Hits";
 "statistics.title.rightOfMiddleHits" = "Right of Middle Hits";
