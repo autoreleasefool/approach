@@ -67,25 +67,25 @@ public struct OpponentsList: Reducer {
 	}
 
 	public struct Destination: Reducer {
-			public enum State: Equatable {
-				case editor(BowlerEditor.State)
-				case sortOrder(SortOrder<Bowler.Ordering>.State)
-			}
+		public enum State: Equatable {
+			case editor(BowlerEditor.State)
+			case sortOrder(SortOrder<Bowler.Ordering>.State)
+		}
 
-			public enum Action: Equatable {
-				case editor(BowlerEditor.Action)
-				case sortOrder(SortOrder<Bowler.Ordering>.Action)
-			}
+		public enum Action: Equatable {
+			case editor(BowlerEditor.Action)
+			case sortOrder(SortOrder<Bowler.Ordering>.Action)
+		}
 
-			public var body: some ReducerOf<Self> {
-				Scope(state: /State.editor, action: /Action.editor) {
-					BowlerEditor()
-				}
-				Scope(state: /State.sortOrder, action: /Action.sortOrder) {
-					SortOrder()
-				}
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.editor, action: /Action.editor) {
+				BowlerEditor()
+			}
+			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+				SortOrder()
 			}
 		}
+	}
 
 	public init() {}
 

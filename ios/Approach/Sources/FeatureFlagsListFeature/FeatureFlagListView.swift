@@ -49,6 +49,7 @@ public struct FeatureFlagsListView: View {
 					}
 				}
 			}
+			.navigationTitle(Strings.Settings.FeatureFlags.title)
 			.task { await viewStore.send(.didStartObservingFlags).finish() }
 		}
 	}

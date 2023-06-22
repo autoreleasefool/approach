@@ -9,4 +9,5 @@ public enum PreferenceKey: String {
 	case statisticsOverviewHintHidden
 	case statisticsDetailsHintHidden
 	case statisticsCountH2AsH
+	case statisticsHideZeroStatistics
 }

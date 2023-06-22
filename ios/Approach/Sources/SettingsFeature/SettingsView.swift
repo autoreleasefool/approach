@@ -4,6 +4,7 @@ import FeatureFlagsListFeature
 import OpponentsListFeature
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 
 public struct SettingsView: View {
 	let store: StoreOf<Settings>
@@ -18,32 +19,33 @@ public struct SettingsView: View {
 		}
 	}
 
+	enum ViewAction {
+		case didTapFeatureFlags
+		case didTapOpponents
+	}
+
 	public init(store: StoreOf<Settings>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: Settings.Action.init) { viewStore in
 			List {
 				if viewStore.showsFeatures {
 					Section {
-						NavigationLink(
-							Strings.Settings.FeatureFlags.title,
-							destination: FeatureFlagsListView(
-								store: store.scope(state: \.featureFlagsList, action: /Settings.Action.InternalAction.featureFlagsList)
-							)
-						)
+						Button { viewStore.send(.didTapFeatureFlags) } label: {
+							Text(Strings.Settings.FeatureFlags.title)
+						}
+						.buttonStyle(.navigation)
 					}
 				}
 
 				if viewStore.showsOpponents {
 					Section {
-						NavigationLink(
-							Strings.Opponent.List.title,
-							destination: OpponentsListView(
-								store: store.scope(state: \.opponentsList, action: /Settings.Action.InternalAction.opponentsList)
-							)
-						)
+						Button { viewStore.send(.didTapOpponents) } label: {
+							Text(Strings.Opponent.List.title)
+						}
+						.buttonStyle(.navigation)
 					}
 				}
 
@@ -51,6 +53,31 @@ public struct SettingsView: View {
 				VersionView()
 			}
 			.navigationTitle(Strings.Settings.title)
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /Settings.Destination.State.opponentsList,
+			action: Settings.Destination.Action.opponentsList
+		) { store in
+			OpponentsListView(store: store)
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /Settings.Destination.State.featureFlags,
+			action: Settings.Destination.Action.featureFlags
+		) { store in
+			FeatureFlagsListView(store: store)
+		}
+	}
+}
+
+extension Settings.Action {
+	init(action: SettingsView.ViewAction) {
+		switch action {
+		case .didTapFeatureFlags:
+			self = .view(.didTapFeatureFlags)
+		case .didTapOpponents:
+			self = .view(.didTapOpponents)
 		}
 	}
 }
