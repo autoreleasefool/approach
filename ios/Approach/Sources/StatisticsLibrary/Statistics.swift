@@ -18,6 +18,10 @@ extension Statistics {
 		Statistics.LeftsSpared.self,
 		Statistics.Rights.self,
 		Statistics.RightsSpared.self,
+		Statistics.Aces.self,
+		Statistics.AcesSpared.self,
+		Statistics.ChopOffs.self,
+		Statistics.ChopOffsSpared.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,

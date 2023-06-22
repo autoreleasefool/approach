@@ -237,6 +237,8 @@
 
 "statistics.title.aces" = "Aces";
 "statistics.title.acesSpared" = "Aces Spared";
+"statistics.title.chopOffs" = "Chop Offs";
+"statistics.title.chopOffsSpared" = "Chop Offs Spared";
 "statistics.title.gameAverage" = "Average";
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
