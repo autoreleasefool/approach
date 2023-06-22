@@ -82,7 +82,7 @@ final class SpareConversionsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 1, formattedAs: "0%")
+		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 1, formattedAs: "0%", overridingIsEmptyExpectation: true)
 	}
 
 	func testAdjustBySeries_DoesNothing() {

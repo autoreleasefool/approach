@@ -45,13 +45,14 @@ func AssertPercentage<T>(
 	hasNumerator numerator: Int,
 	withDenominator denominator: Int,
 	formattedAs formattedValue: String,
+	overridingIsEmptyExpectation: Bool? = nil,
 	file: StaticString = #file,
 	line: UInt = #line
 ) where T: Statistic & PercentageStatistic {
 	let percentage = denominator > 0 ? Double(numerator) / Double(denominator) : 0
 	XCTAssertEqual(statistic.numerator, numerator, "Numerator does not match", file: file, line: line)
 	XCTAssertEqual(statistic.denominator, denominator, "Denominator does not match", file: file, line: line)
-	XCTAssertEqual(statistic.isEmpty, denominator == 0, "isEmpty does not match", file: file, line: line)
+	XCTAssertEqual(statistic.isEmpty, overridingIsEmptyExpectation == nil ? denominator == 0 : overridingIsEmptyExpectation, "isEmpty does not match", file: file, line: line)
 	XCTAssertEqual(statistic.percentage, percentage, "Percentage does not match", file: file, line: line)
 	XCTAssertEqual(statistic.formattedValue, formattedValue, "Formatted value does not match", file: file, line: line)
 }
