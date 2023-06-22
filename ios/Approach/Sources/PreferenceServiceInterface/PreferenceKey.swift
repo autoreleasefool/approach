@@ -2,12 +2,12 @@ public enum PreferenceKey: String {
 
 	// MARK: - App
 
-	case appDidCompleteOnboarding
+	case appDidCompleteOnboarding                   // default: false
 
 	// MARK: - Statistics
 
-	case statisticsOverviewHintHidden
-	case statisticsDetailsHintHidden
-	case statisticsCountH2AsH
-	case statisticsHideZeroStatistics
+	case statisticsOverviewHintHidden               // default: false
+	case statisticsDetailsHintHidden                // default: false
+	case statisticsCountH2AsH                       // default: true
+	case statisticsHideZeroStatistics               // default: true
 }

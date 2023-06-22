@@ -169,7 +169,7 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadValues: { filter in
-				try database.reader().read {
+				let statistics = try database.reader().read {
 					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }
 
 					let (series, games, frames) = try filter.buildTrackableQueries(db: $0)
@@ -181,16 +181,24 @@ extension StatisticsRepository: DependencyKey {
 					try adjust(statistics: &statistics, byGames: gamesCursor)
 					try adjust(statistics: &statistics, byFrames: framesCursor)
 
-					return StatisticCategory.allCases.compactMap { category in
-						let matchingStatistics = statistics.filter { type(of: $0).category == category }
-						guard !matchingStatistics.isEmpty else { return nil }
-						return .init(
-							category: category,
-							entries: .init(uniqueElements: matchingStatistics.map {
-								.init(title: type(of: $0).title, value: $0.formattedValue)
-							})
-						)
-					}
+					return statistics
+				}
+
+				let isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
+
+				return StatisticCategory.allCases.compactMap { category in
+					var categoryStatistics = statistics
+						.filter { type(of: $0).category == category }
+						.filter { isHidingZeroStatistics ? !$0.isEmpty : true }
+
+					guard !categoryStatistics.isEmpty else { return nil }
+
+					return .init(
+						category: category,
+						entries: .init(uniqueElements: categoryStatistics.map {
+							.init(title: type(of: $0).title, value: $0.formattedValue)
+						})
+					)
 				}
 			},
 			loadCountingChart: { statistic, filter in

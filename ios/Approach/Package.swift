@@ -481,6 +481,7 @@ let package = Package(
 				"FeatureFlagsListFeature",
 				"FoundationExtensionsLibrary",
 				"OpponentsListFeature",
+				"PreferenceServiceInterface",
 			]
 		),
 		.testTarget(
@@ -498,6 +499,7 @@ let package = Package(
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
 				"NotificationsServiceInterface",
+				"PreferenceServiceInterface",
 				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
 				"StatisticsRepositoryInterface",
@@ -514,7 +516,6 @@ let package = Package(
 		.target(
 			name: "StatisticsOverviewFeature",
 			dependencies: [
-				"PreferenceServiceInterface",
 				"StatisticsDetailsFeature",
 			]
 		),

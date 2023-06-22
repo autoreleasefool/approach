@@ -22,6 +22,7 @@ public struct SettingsView: View {
 	enum ViewAction {
 		case didTapFeatureFlags
 		case didTapOpponents
+		case didTapStatistics
 	}
 
 	public init(store: StoreOf<Settings>) {
@@ -49,6 +50,13 @@ public struct SettingsView: View {
 					}
 				}
 
+				Section {
+					Button { viewStore.send(.didTapStatistics) } label: {
+						Text(Strings.Settings.Statistics.title)
+					}
+					.buttonStyle(.navigation)
+				}
+
 				HelpSettingsView(store: store.scope(state: \.helpSettings, action: /Settings.Action.InternalAction.helpSettings))
 				VersionView()
 			}
@@ -68,6 +76,13 @@ public struct SettingsView: View {
 		) { store in
 			FeatureFlagsListView(store: store)
 		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /Settings.Destination.State.statistics,
+			action: Settings.Destination.Action.statistics
+		) { store in
+			StatisticsSettingsView(store: store)
+		}
 	}
 }
 
@@ -78,6 +93,8 @@ extension Settings.Action {
 			self = .view(.didTapFeatureFlags)
 		case .didTapOpponents:
 			self = .view(.didTapOpponents)
+		case .didTapStatistics:
+			self = .view(.didTapStatistics)
 		}
 	}
 }

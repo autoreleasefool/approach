@@ -24,6 +24,7 @@ public struct Settings: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapFeatureFlags
 			case didTapOpponents
+			case didTapStatistics
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -40,11 +41,13 @@ public struct Settings: Reducer {
 		public enum State: Equatable {
 			case featureFlags(FeatureFlagsList.State)
 			case opponentsList(OpponentsList.State)
+			case statistics(StatisticsSettings.State)
 		}
 
 		public enum Action: Equatable {
 			case featureFlags(FeatureFlagsList.Action)
 			case opponentsList(OpponentsList.Action)
+			case statistics(StatisticsSettings.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -53,6 +56,9 @@ public struct Settings: Reducer {
 			}
 			Scope(state: /State.opponentsList, action: /Action.opponentsList) {
 				OpponentsList()
+			}
+			Scope(state: /State.statistics, action: /Action.statistics) {
+				StatisticsSettings()
 			}
 		}
 	}
@@ -74,6 +80,10 @@ public struct Settings: Reducer {
 
 				case .didTapFeatureFlags:
 					state.destination = .featureFlags(.init())
+					return .none
+
+				case .didTapStatistics:
+					state.destination = .statistics(.init())
 					return .none
 				}
 
@@ -97,9 +107,18 @@ public struct Settings: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.statistics(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.featureFlags(.internal))),
 						.destination(.presented(.featureFlags(.view))),
+						.destination(.presented(.statistics(.internal))),
+						.destination(.presented(.statistics(.view))),
+						.destination(.presented(.statistics(.binding))),
 						.destination(.presented(.opponentsList(.internal))),
 						.destination(.presented(.opponentsList(.view))):
 					return .none

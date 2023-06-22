@@ -234,6 +234,8 @@
 "statistics.details.filter.source" = "Source";
 "statistics.charts.unavailable" = "There doesn't seem to be any data available.";
 "statistics.charts.axesLabels.date" = "Date";
+"statistics.list.hideZeroStatistics" = "Hide statistics with a value of zero?";
+"statistics.list.hideZeroStatistics.help" = "Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.";
 
 "statistics.title.aces" = "Aces";
 "statistics.title.acesSpared" = "Aces Spared";
@@ -295,6 +297,8 @@
 "settings.featureFlags.matchRelease" = "Match flags to Release";
 "settings.featureFlags.matchTest" = "Match flags to Test";
 "settings.featureFlags.matchDevelopment" = "Match flags to Development";
+"settings.statistics.title" = "Statistics";
+"settings.statistics.hideZeroStatistics" = "Hide statistics with a value of zero?";
 "settings.title" = "Settings";
 
 /* Ordering */

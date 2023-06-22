@@ -103,15 +103,15 @@ features = [ "GamesList", "SeriesEditor" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
+services = [ "Preference" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
-services = [ "Preference" ]
 
 [features.StatisticsDetails]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
-services = [ "Notifications" ]
+services = [ "Notifications", "Preference" ]
 libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgets]

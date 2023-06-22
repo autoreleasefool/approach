@@ -775,6 +775,12 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "settings.help.development.title", fallback: "Development")
       }
     }
+    public enum Statistics {
+      /// Hide statistics with a value of zero?
+      public static let hideZeroStatistics = Strings.tr("Localizable", "settings.statistics.hideZeroStatistics", fallback: "Hide statistics with a value of zero?")
+      /// Statistics
+      public static let title = Strings.tr("Localizable", "settings.statistics.title", fallback: "Statistics")
+    }
   }
   public enum SortOrder {
     /// Sort Order
@@ -885,6 +891,14 @@ public enum Strings {
         public static let filterByStartDate = Strings.tr("Localizable", "statistics.filter.series.filterByStartDate", fallback: "Filter by start date?")
         /// Start Date
         public static let startDate = Strings.tr("Localizable", "statistics.filter.series.startDate", fallback: "Start Date")
+      }
+    }
+    public enum List {
+      /// Hide statistics with a value of zero?
+      public static let hideZeroStatistics = Strings.tr("Localizable", "statistics.list.hideZeroStatistics", fallback: "Hide statistics with a value of zero?")
+      public enum HideZeroStatistics {
+        /// Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.
+        public static let help = Strings.tr("Localizable", "statistics.list.hideZeroStatistics.help", fallback: "Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.")
       }
     }
     public enum Overview {

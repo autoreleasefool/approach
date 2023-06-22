@@ -191,6 +191,9 @@ public struct StatisticsDetails: Reducer {
 						guard let statistic = Statistics.type(of: id) else { return .none }
 						state.sheetDetent = StatisticsDetails.defaultSheetDetent
 						return loadChart(forStatistic: statistic, withFilter: state.filter)
+
+					case .listRequiresReload:
+						return refreshStatistics(state: state)
 					}
 
 				case let .destination(.presented(.sourcePicker(.delegate(delegateAction)))):
@@ -219,6 +222,7 @@ public struct StatisticsDetails: Reducer {
 
 				case .destination(.presented(.list(.internal))),
 						.destination(.presented(.list(.view))),
+						.destination(.presented(.list(.binding))),
 						.destination(.presented(.sourcePicker(.internal))),
 						.destination(.presented(.sourcePicker(.view))):
 					return .none
