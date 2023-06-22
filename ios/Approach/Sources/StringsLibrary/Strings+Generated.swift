@@ -914,6 +914,8 @@ public enum Strings {
       public static let gameAverage = Strings.tr("Localizable", "statistics.title.gameAverage", fallback: "Average")
       /// Head Pins
       public static let headPins = Strings.tr("Localizable", "statistics.title.headPins", fallback: "Head Pins")
+      /// Head Pins Spared
+      public static let headPinsSpared = Strings.tr("Localizable", "statistics.title.headPinsSpared", fallback: "Head Pins Spared")
       /// High Series of 3
       public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.title.highSeriesOf3", fallback: "High Series of 3")
       /// High Single
@@ -926,6 +928,8 @@ public enum Strings {
       public static let numberOfGames = Strings.tr("Localizable", "statistics.title.numberOfGames", fallback: "Number of Games")
       /// Right of Middle Hits
       public static let rightOfMiddleHits = Strings.tr("Localizable", "statistics.title.rightOfMiddleHits", fallback: "Right of Middle Hits")
+      /// Opportunities to Spare
+      public static let spareChances = Strings.tr("Localizable", "statistics.title.spareChances", fallback: "Opportunities to Spare")
       /// Spare Conversions
       public static let spareConversions = Strings.tr("Localizable", "statistics.title.spareConversions", fallback: "Spare Conversions")
       /// Middle Hits which were Strikes

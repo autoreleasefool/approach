@@ -13,6 +13,7 @@ extension Statistics {
 
 		// First Roll
 		Statistics.HeadPins.self,
+		Statistics.HeadPinsSpared.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,

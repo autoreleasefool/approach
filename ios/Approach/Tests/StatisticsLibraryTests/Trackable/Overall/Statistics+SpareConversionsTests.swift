@@ -34,10 +34,31 @@ final class SpareConversionsTests: XCTestCase {
 						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
 					]
 				),
+				Frame.TrackableEntry(
+					index: 4,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .rightThreePin])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 5,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 6,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+					]
+				),
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 2, formattedAs: "50%")
+		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 4, formattedAs: "75%")
 	}
 
 	func testAdjust_ByFramesWithoutSpare_DoesNotAdjust() {
