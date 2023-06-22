@@ -16,6 +16,8 @@ extension Statistics {
 		Statistics.HeadPinsSpared.self,
 		Statistics.Lefts.self,
 		Statistics.LeftsSpared.self,
+		Statistics.Rights.self,
+		Statistics.RightsSpared.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,

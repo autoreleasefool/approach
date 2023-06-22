@@ -932,6 +932,10 @@ public enum Strings {
       public static let numberOfGames = Strings.tr("Localizable", "statistics.title.numberOfGames", fallback: "Number of Games")
       /// Right of Middle Hits
       public static let rightOfMiddleHits = Strings.tr("Localizable", "statistics.title.rightOfMiddleHits", fallback: "Right of Middle Hits")
+      /// Rights
+      public static let rights = Strings.tr("Localizable", "statistics.title.rights", fallback: "Rights")
+      /// Rights Spared
+      public static let rightsSpared = Strings.tr("Localizable", "statistics.title.rightsSpared", fallback: "Rights Spared")
       /// Opportunities to Spare
       public static let spareChances = Strings.tr("Localizable", "statistics.title.spareChances", fallback: "Opportunities to Spare")
       /// Spare Conversions
