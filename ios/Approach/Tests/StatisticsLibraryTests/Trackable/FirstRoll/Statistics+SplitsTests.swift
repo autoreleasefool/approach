@@ -95,11 +95,93 @@ final class SplitsTests: XCTestCase {
 	}
 
 	func testAdjust_ByFramesWithSplitsWithBonus_WithBonusEnabled_Adjusts() {
-		XCTFail()
+		let statistic = create(
+			statistic: Statistics.Splits.self,
+			adjustedByFrames: [
+				Frame.TrackableEntry(
+					index: 0,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin, .leftTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftThreePin, .rightTwoPin])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin, .leftTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 2,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .rightThreePin])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 3,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 4,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+					]
+				),
+			],
+			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false, countSplitWithBonusAsSplit: true)
+		)
+
+		AssertCounting(statistic, equals: 4)
 	}
 
 	func testAdjust_ByFramesWithSplitsWithBonus_WithBonusDisabled_DoesNotAdjust() {
-		XCTFail()
+		let statistic = create(
+			statistic: Statistics.Splits.self,
+			adjustedByFrames: [
+				Frame.TrackableEntry(
+					index: 0,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin, .leftTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftThreePin, .rightTwoPin])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin, .leftTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 2,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .rightThreePin])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 3,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [])),
+					]
+				),
+				Frame.TrackableEntry(
+					index: 4,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+					]
+				),
+			],
+			withFrameConfiguration: .init(countHeadPin2AsHeadPin: false, countSplitWithBonusAsSplit: false)
+		)
+
+		AssertCounting(statistic, equals: 0)
 	}
 
 	func testAdjustBySeries_DoesNothing() {
