@@ -67,3 +67,21 @@ extension Frame.TrackableEntry {
 		}
 	}
 }
+
+extension Frame.TrackableEntry {
+	init(gameId: Game.ID = UUID(0), index: Int = 0, rolls: [Frame.OrderedRoll]) {
+		self.init(seriesId: UUID(0),gameId: gameId, index: index, rolls: rolls, date: Date())
+	}
+}
+
+extension Frame.OrderedRoll {
+		init(index: Int, roll: Frame.Roll) {
+				self.init(index: index, roll: roll, bowlingBall: nil)
+		}
+}
+
+extension Frame.Roll {
+		init(pinsDowned: Set<Pin>) {
+				self.init(pinsDowned: pinsDowned, didFoul: false)
+		}
+}

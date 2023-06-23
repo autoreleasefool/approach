@@ -35,6 +35,10 @@ extension Statistics {
 		// Fouls
 		Statistics.Fouls.self,
 
+		// Pins Left
+		Statistics.TotalPinsLeftOnDeck.self,
+		Statistics.AveragePinsLeftOnDeck.self,
+
 		// Series
 		Statistics.HighSeriesOf3.self,
 	]

@@ -940,6 +940,8 @@ public enum Strings {
       public static let aces = Strings.tr("Localizable", "statistics.title.aces", fallback: "Aces")
       /// Aces Spared
       public static let acesSpared = Strings.tr("Localizable", "statistics.title.acesSpared", fallback: "Aces Spared")
+      /// Average Pins Left on Deck
+      public static let averagePinsLeftOnDeck = Strings.tr("Localizable", "statistics.title.averagePinsLeftOnDeck", fallback: "Average Pins Left on Deck")
       /// Chop Offs
       public static let chopOffs = Strings.tr("Localizable", "statistics.title.chopOffs", fallback: "Chop Offs")
       /// Chop Offs Spared
@@ -1010,6 +1012,8 @@ public enum Strings {
       public static let strikes = Strings.tr("Localizable", "statistics.title.strikes", fallback: "Total Strikes")
       /// Total Pinfall
       public static let totalPinfall = Strings.tr("Localizable", "statistics.title.totalPinfall", fallback: "Total Pinfall")
+      /// Total Pins Left on Deck
+      public static let totalPinsLeftOnDeck = Strings.tr("Localizable", "statistics.title.totalPinsLeftOnDeck", fallback: "Total Pins Left on Deck")
       /// Total Rolls
       public static let totalRolls = Strings.tr("Localizable", "statistics.title.totalRolls", fallback: "Total Rolls")
       /// Twelves

@@ -277,6 +277,8 @@
 "statistics.title.rightTwelvesSpared" = "Right Twelves Spared";
 "statistics.title.numberOfGames" = "Number of Games";
 "statistics.title.totalPinfall" = "Total Pinfall";
+"statistics.title.totalPinsLeftOnDeck" = "Total Pins Left on Deck";
+"statistics.title.averagePinsLeftOnDeck" = "Average Pins Left on Deck";
 "statistics.title.totalRolls" = "Total Rolls";
 
 
