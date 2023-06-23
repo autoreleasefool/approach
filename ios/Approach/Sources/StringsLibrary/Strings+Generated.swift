@@ -968,6 +968,10 @@ public enum Strings {
       public static let leftSplitsSpared = Strings.tr("Localizable", "statistics.title.leftSplitsSpared", fallback: "Left Splits Spared")
       /// Lefts Spared
       public static let leftsSpared = Strings.tr("Localizable", "statistics.title.leftsSpared", fallback: "Lefts Spared")
+      /// Left Twelves
+      public static let leftTwelves = Strings.tr("Localizable", "statistics.title.leftTwelves", fallback: "Left Twelves")
+      /// Left Twelves Spared
+      public static let leftTwelvesSpared = Strings.tr("Localizable", "statistics.title.leftTwelvesSpared", fallback: "Left Twelves Spared")
       /// Middle Hits
       public static let middleHits = Strings.tr("Localizable", "statistics.title.middleHits", fallback: "Middle Hits")
       /// Number of Games
@@ -986,6 +990,10 @@ public enum Strings {
       public static let rightSplitsSpared = Strings.tr("Localizable", "statistics.title.rightSplitsSpared", fallback: "Right Splits Spared")
       /// Rights Spared
       public static let rightsSpared = Strings.tr("Localizable", "statistics.title.rightsSpared", fallback: "Rights Spared")
+      /// Right Twelves
+      public static let rightTwelves = Strings.tr("Localizable", "statistics.title.rightTwelves", fallback: "Right Twelves")
+      /// Right Twelves Spared
+      public static let rightTwelvesSpared = Strings.tr("Localizable", "statistics.title.rightTwelvesSpared", fallback: "Right Twelves Spared")
       /// Opportunities to Spare
       public static let spareChances = Strings.tr("Localizable", "statistics.title.spareChances", fallback: "Opportunities to Spare")
       /// Spare Conversions
@@ -1002,6 +1010,10 @@ public enum Strings {
       public static let totalPinfall = Strings.tr("Localizable", "statistics.title.totalPinfall", fallback: "Total Pinfall")
       /// Total Rolls
       public static let totalRolls = Strings.tr("Localizable", "statistics.title.totalRolls", fallback: "Total Rolls")
+      /// Twelves
+      public static let twelves = Strings.tr("Localizable", "statistics.title.twelves", fallback: "Twelves")
+      /// Twelves Spared
+      public static let twelvesSpared = Strings.tr("Localizable", "statistics.title.twelvesSpared", fallback: "Twelves Spared")
     }
   }
 }

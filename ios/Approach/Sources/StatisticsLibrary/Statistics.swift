@@ -28,6 +28,8 @@ extension Statistics {
 		Statistics.LeftSplitsSpared.self,
 		Statistics.RightSplits.self,
 		Statistics.RightSplitsSpared.self,
+		Statistics.Twelves.self,
+		Statistics.TwelvesSpared.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,
