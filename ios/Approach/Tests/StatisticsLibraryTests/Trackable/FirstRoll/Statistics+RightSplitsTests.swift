@@ -3,10 +3,10 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class SplitsTests: XCTestCase {
-	func testAdjust_ByFramesWithSplits_Adjusts() {
+final class RightSplitsTests: XCTestCase {
+	func testAdjust_ByFramesWithRightSplits_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.Splits.self,
+			statistic: Statistics.RightSplits.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -37,6 +37,13 @@ final class SplitsTests: XCTestCase {
 					]
 				),
 				Frame.TrackableEntry(
+					index: 3,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [])),
+					]
+				),
+				Frame.TrackableEntry(
 					index: 4,
 					rolls: [
 						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
@@ -46,12 +53,12 @@ final class SplitsTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertCounting(statistic, equals: 4)
+		AssertCounting(statistic, equals: 3)
 	}
 
-	func testAdjust_ByFramesWithoutSplits_DoesNotAdjust() {
+	func testAdjust_ByFramesWithoutRightSplits_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.Splits.self,
+			statistic: Statistics.RightSplits.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -94,21 +101,21 @@ final class SplitsTests: XCTestCase {
 		AssertCounting(statistic, equals: 0)
 	}
 
-	func testAdjust_ByFramesWithSplitsWithBonus_WithBonusEnabled_Adjusts() {
+	func testAdjust_ByFramesWithRightSplitsWithBonus_WithBonusEnabled_Adjusts() {
 		XCTFail()
 	}
 
-	func testAdjust_ByFramesWithSplitsWithBonus_WithBonusDisabled_DoesNotAdjust() {
+	func testAdjust_ByFramesWithRightSplitsWithBonus_WithBonusDisabled_DoesNotAdjust() {
 		XCTFail()
 	}
 
 	func testAdjustBySeries_DoesNothing() {
-		let statistic = create(statistic: Statistics.Splits.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.RightSplits.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertCounting(statistic, equals: 0)
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.Splits.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.RightSplits.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertCounting(statistic, equals: 0)
 	}
 }

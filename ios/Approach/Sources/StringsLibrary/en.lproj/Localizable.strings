@@ -263,6 +263,10 @@
 "statistics.title.spareConversions" = "Spare Conversions";
 "statistics.title.splits" = "Splits";
 "statistics.title.splitsSpared" = "Splits Spared";
+"statistics.title.leftSplits" = "Left Splits";
+"statistics.title.leftSplitsSpared" = "Left Splits Spared";
+"statistics.title.rightSplits" = "Right Splits";
+"statistics.title.rightSplitsSpared" = "Right Splits Spared";
 "statistics.title.totalRolls" = "Total Rolls";
 "statistics.title.numberOfGames" = "Number of Games";
 "statistics.title.totalPinfall" = "Total Pinfall";

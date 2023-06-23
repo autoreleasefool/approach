@@ -3,10 +3,10 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class SplitsSparedTests: XCTestCase {
-	func testAdjust_ByFramesWithSplitsSpared_Adjusts() {
+final class RightSplitsSparedTests: XCTestCase {
+	func testAdjust_ByFramesWithRightSplitsSpared_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.SplitsSpared.self,
+			statistic: Statistics.RightSplitsSpared.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -42,16 +42,23 @@ final class SplitsSparedTests: XCTestCase {
 						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
 					]
 				),
+				Frame.TrackableEntry(
+					index: 5,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin])),
+					]
+				),
 			],
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 4, formattedAs: "50%")
+		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 3, formattedAs: "66.7%")
 	}
 
-	func testAdjust_ByFramesWithoutSplitsSpared_DoesNotAdjust() {
+	func testAdjust_ByFramesWithoutRightSplitsSpared_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.SplitsSpared.self,
+			statistic: Statistics.RightSplitsSpared.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -89,28 +96,27 @@ final class SplitsSparedTests: XCTestCase {
 						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
 					]
 				),
+				Frame.TrackableEntry(
+					index: 5,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin, .leftThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .rightThreePin, .rightTwoPin])),
+					]
+				),
 			],
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 4, formattedAs: "0%", overridingIsEmptyExpectation: true)
-	}
-
-	func testAdjust_ByFramesWithSplitsWithBonusSpared_WithBonusEnabled_Adjusts() {
-		XCTFail()
-	}
-
-	func testAdjust_ByFramesWithSplitsWithBonusSpared_WithBonusDisabled_DoesNotAdjust() {
-		XCTFail()
+		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 2, formattedAs: "0%", overridingIsEmptyExpectation: true)
 	}
 
 	func testAdjustBySeries_DoesNothing() {
-		let statistic = create(statistic: Statistics.SplitsSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.RightSplitsSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.SplitsSpared.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.RightSplitsSpared.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 }

@@ -56,6 +56,14 @@ final class RightsSparedTests: XCTestCase {
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 2, formattedAs: "0%", overridingIsEmptyExpectation: true)
 	}
 
+	func testAdjust_ByFramesWithRightSplitsWithBonusSpared_WithBonusEnabled_Adjusts() {
+		XCTFail()
+	}
+
+	func testAdjust_ByFramesWithRightSplitsWithBonusSpared_WithBonusDisabled_DoesNotAdjust() {
+		XCTFail()
+	}
+
 	func testAdjustBySeries_DoesNothing() {
 		let statistic = create(statistic: Statistics.RightsSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")

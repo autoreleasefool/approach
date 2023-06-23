@@ -962,6 +962,10 @@ public enum Strings {
       public static let leftOfMiddleHits = Strings.tr("Localizable", "statistics.title.leftOfMiddleHits", fallback: "Left of Middle Hits")
       /// Lefts
       public static let lefts = Strings.tr("Localizable", "statistics.title.lefts", fallback: "Lefts")
+      /// Left Splits
+      public static let leftSplits = Strings.tr("Localizable", "statistics.title.leftSplits", fallback: "Left Splits")
+      /// Left Splits Spared
+      public static let leftSplitsSpared = Strings.tr("Localizable", "statistics.title.leftSplitsSpared", fallback: "Left Splits Spared")
       /// Lefts Spared
       public static let leftsSpared = Strings.tr("Localizable", "statistics.title.leftsSpared", fallback: "Lefts Spared")
       /// Middle Hits
@@ -976,6 +980,10 @@ public enum Strings {
       public static let rightOfMiddleHits = Strings.tr("Localizable", "statistics.title.rightOfMiddleHits", fallback: "Right of Middle Hits")
       /// Rights
       public static let rights = Strings.tr("Localizable", "statistics.title.rights", fallback: "Rights")
+      /// Right Splits
+      public static let rightSplits = Strings.tr("Localizable", "statistics.title.rightSplits", fallback: "Right Splits")
+      /// Right Splits Spared
+      public static let rightSplitsSpared = Strings.tr("Localizable", "statistics.title.rightSplitsSpared", fallback: "Right Splits Spared")
       /// Rights Spared
       public static let rightsSpared = Strings.tr("Localizable", "statistics.title.rightsSpared", fallback: "Rights Spared")
       /// Opportunities to Spare
