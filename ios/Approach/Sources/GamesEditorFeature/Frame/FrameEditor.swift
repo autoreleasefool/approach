@@ -91,7 +91,7 @@ public struct FrameEditorView: View {
 
 			let pinsDownLastFrame = state.currentRollIndex > 0 ? state.frame.deck(forRoll: state.currentRollIndex - 1) : []
 			if Frame.isLast(state.frame.index) {
-				self.inaccessiblePins = pinsDownLastFrame.isFullDeck ? [] : pinsDownLastFrame
+				self.inaccessiblePins = pinsDownLastFrame.arePinsCleared ? [] : pinsDownLastFrame
 			} else {
 				self.inaccessiblePins = pinsDownLastFrame
 			}
@@ -111,7 +111,7 @@ public struct FrameEditorView: View {
 		WithViewStore(store, observe: ViewState.init, send: FrameEditor.Action.init) { viewStore in
 			HStack(alignment: .center, spacing: .smallSpacing) {
 				Spacer(minLength: .standardSpacing)
-				ForEach(Pin.fullDeck) { pin in
+				ForEach(Pin.allCases) { pin in
 					ZStack {
 						(viewStore.downPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
 							.resizable()

@@ -50,7 +50,7 @@ extension Frame {
 		}
 
 		public func encode(to encoder: Encoder) throws {
-			let bools = [didFoul] + Pin.fullDeck.map { pinsDowned.contains($0) }
+			let bools = [didFoul] + Pin.allCases.map { pinsDowned.contains($0) }
 			let bitString = bools.map { $0 ? "1" : "0" }.joined()
 			var container = encoder.singleValueContainer()
 			try container.encode(bitString)
@@ -78,8 +78,67 @@ extension Frame {
 	}
 }
 
+// MARK: - InspectableFrame
+
+public protocol InspectableFrame {
+	var index: Int { get }
+	var rolls: [Frame.OrderedRoll] { get }
+
+	var firstRolls: [Frame.OrderedRoll] { get }
+	var secondRolls: [Frame.OrderedRoll] { get }
+	var pinsLeftOnDeck: Set<Pin> { get }
+}
+
+extension InspectableFrame {
+	public var firstRolls: [Frame.OrderedRoll] {
+		guard let firstRoll = rolls.first else { return [] }
+
+		if Frame.isLast(index) {
+			var firstRolls = [firstRoll]
+			var pinsDowned: Set<Pin> = []
+			for (index, roll) in rolls.enumerated() {
+				pinsDowned.formUnion(roll.roll.pinsDowned)
+				if pinsDowned.arePinsCleared && index < rolls.endIndex - 1 {
+					firstRolls.append(rolls[index + 1])
+					pinsDowned = []
+				}
+			}
+			return firstRolls
+		} else {
+			return [firstRoll]
+		}
+	}
+
+	public var secondRolls: [Frame.OrderedRoll] {
+		guard let secondRoll = rolls.dropFirst().first else { return [] }
+
+		if Frame.isLast(index) {
+			var secondRolls: [Frame.OrderedRoll] = []
+			var pinsDowned: Set<Pin> = []
+			var pinsJustCleared = true
+			for (index, roll) in rolls.enumerated() {
+				pinsDowned.formUnion(roll.roll.pinsDowned)
+				if pinsDowned.arePinsCleared {
+					pinsJustCleared = true
+					pinsDowned = []
+				} else {
+					if pinsJustCleared && index < rolls.endIndex - 1 {
+						secondRolls.append(rolls[index + 1])
+					}
+					pinsJustCleared = false
+				}
+			}
+			return secondRolls
+		} else {
+			return [secondRoll]
+		}
+	}
+}
+
+// MARK: - Summary
+
 extension Frame {
-	public struct Summary: Identifiable, Decodable, Sendable, Equatable {
+	public struct Summary: Identifiable, Decodable, Sendable, Equatable, InspectableFrame {
 		public let gameId: Game.ID
 		public let index: Int
 		public let rolls: [OrderedRoll]

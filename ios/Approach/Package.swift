@@ -1156,6 +1156,14 @@ let package = Package(
 			name: "ModelsLibrary",
 			dependencies: []
 		),
+		.testTarget(
+			name: "ModelsLibraryTests",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ModelsLibrary",
+			]
+		),
 		.target(
 			name: "ModelsViewsLibrary",
 			dependencies: [

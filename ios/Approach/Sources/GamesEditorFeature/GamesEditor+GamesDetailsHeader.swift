@@ -7,7 +7,7 @@ extension GamesEditor.State {
 			guard let game, let frames else { return nil }
 			let next: GameDetailsHeader.State.NextElement?
 			if !Frame.Roll.isLast(currentRollIndex) &&
-					(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).isFullDeck) {
+					(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).arePinsCleared) {
 				next = .roll(rollIndex: currentRollIndex + 1)
 			} else if bowlerIds.count > 1 {
 				let nextBowlerId = bowlerIds[(currentBowlerIndex + 1) % bowlerIds.count]

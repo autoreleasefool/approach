@@ -902,6 +902,20 @@
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ModelsLibraryTests"
+               BuildableName = "ModelsLibraryTests"
+               BlueprintName = "ModelsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -1547,6 +1561,16 @@
                BlueprintIdentifier = "StringsLibraryTests"
                BuildableName = "StringsLibraryTests"
                BlueprintName = "StringsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ModelsLibraryTests"
+               BuildableName = "ModelsLibraryTests"
+               BlueprintName = "ModelsLibraryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

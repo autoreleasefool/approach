@@ -245,7 +245,8 @@ dependencies = [ "Dependencies" ]
 skip_tests = true
 
 [libraries.Models]
-skip_tests = true
+[libraries.Models.tests]
+dependencies = [ "Dependencies" ]
 
 [libraries.ModelsViews]
 libraries = [ "Assets", "Models" ]

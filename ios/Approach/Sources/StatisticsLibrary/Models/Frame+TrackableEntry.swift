@@ -2,7 +2,7 @@ import Foundation
 import ModelsLibrary
 
 extension Frame {
-	public struct TrackableEntry: Identifiable, Decodable {
+	public struct TrackableEntry: Identifiable, Decodable, InspectableFrame {
 		public let seriesId: Series.ID
 		public let gameId: Game.ID
 		public let index: Int
@@ -54,52 +54,6 @@ extension Frame {
 			case bowlingBall0
 			case bowlingBall1
 			case bowlingBall2
-		}
-	}
-}
-
-extension Frame.TrackableEntry {
-	public var firstRolls: [Frame.OrderedRoll] {
-		guard let firstRoll = rolls.first else { return [] }
-
-		if Frame.isLast(index) {
-			var firstRolls = [firstRoll]
-			var pinsDowned: Set<Pin> = []
-			for (index, roll) in rolls.enumerated() {
-				pinsDowned.formUnion(roll.roll.pinsDowned)
-				if pinsDowned.isFullDeck && index < rolls.endIndex - 1 {
-					firstRolls.append(rolls[index + 1])
-					pinsDowned = []
-				}
-			}
-			return firstRolls
-		} else {
-			return [firstRoll]
-		}
-	}
-
-	public var secondRolls: [Frame.OrderedRoll] {
-		guard let secondRoll = rolls.dropFirst().first else { return [] }
-
-		if Frame.isLast(index) {
-			var secondRolls: [Frame.OrderedRoll] = []
-			var pinsDowned: Set<Pin> = []
-			var pinsJustDowned = true
-			for (index, roll) in rolls.enumerated() {
-				pinsDowned.formUnion(roll.roll.pinsDowned)
-				if pinsDowned.isFullDeck {
-					pinsJustDowned = true
-					pinsDowned = []
-				} else {
-					if pinsJustDowned && index < rolls.endIndex - 1 {
-						secondRolls.append(rolls[index + 1])
-					}
-					pinsJustDowned = false
-				}
-			}
-			return secondRolls
-		} else {
-			return [secondRoll]
 		}
 	}
 }

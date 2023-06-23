@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Pin: Int, Equatable, Sendable, Identifiable, Codable {
+public enum Pin: Int, Equatable, Sendable, Identifiable, Codable, CaseIterable {
 	case leftTwoPin = 0
 	case leftThreePin = 1
 	case headPin = 2
@@ -17,15 +17,11 @@ public enum Pin: Int, Equatable, Sendable, Identifiable, Codable {
 		}
 	}
 
-	public static let fullDeck: [Self] = [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin]
+	public static let fullDeck: Set<Self> = [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin]
 }
 
 extension Set where Element == Pin {
 	public var value: Int { reduce(0) { value, pin in value + pin.value } }
-	public var isFullDeck: Bool { count == 5 }
-}
-
-extension Set where Element == Pin {
 	public var isHeadPin: Bool { count == 1 && first == .headPin }
 	public var isHeadPin2: Bool { value == 7 && contains(.headPin) }
 	public var isLeft: Bool { count == 4 && !contains(.leftTwoPin) }
