@@ -133,6 +133,22 @@ extension InspectableFrame {
 			return [secondRoll]
 		}
 	}
+
+	public var pinsLeftOnDeck: Set<Pin> {
+		if Frame.isLast(index) {
+			var pinsStanding = Pin.fullDeck
+			for (index, roll) in rolls.enumerated() {
+				pinsStanding.subtract(roll.roll.pinsDowned)
+				if pinsStanding.isEmpty && index < Frame.NUMBER_OF_ROLLS - 1 {
+					pinsStanding = Pin.fullDeck
+				}
+			}
+
+			return pinsStanding
+		} else {
+			return rolls.reduce(into: Pin.fullDeck) { standing, roll in standing.subtract(roll.roll.pinsDowned) }
+		}
+	}
 }
 
 // MARK: - Summary
