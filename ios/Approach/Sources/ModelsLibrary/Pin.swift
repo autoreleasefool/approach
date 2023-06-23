@@ -44,8 +44,12 @@ extension Set where Element == Pin {
 	}
 	public var isSplit: Bool { isLeftSplit || isRightSplit }
 	public var isSplitWithBonus: Bool { isLeftSplitWithBonus || isRightSplitWithBonus }
-	public var isHitLeftOfMiddle: Bool { !contains(.headPin) && (contains(.leftTwoPin) || contains(.leftThreePin)) }
-	public var isHitRightOfMiddle: Bool { !contains(.headPin) && (contains(.rightTwoPin) || contains(.rightThreePin)) }
+	public var isHitLeftOfMiddle: Bool {
+		!contains(.headPin) && !contains(.rightThreePin) && (contains(.leftTwoPin) || contains(.leftThreePin))
+	}
+	public var isHitRightOfMiddle: Bool {
+		!contains(.headPin) && !contains(.leftThreePin) && (contains(.rightTwoPin) || contains(.rightThreePin))
+	}
 	public var isMiddleHit: Bool { contains(.headPin) }
 	public var isLeftTwelve: Bool { count == 4 && !contains(.rightThreePin) }
 	public var isRightTwelve: Bool { count == 4 && !contains(.leftThreePin) }
@@ -112,7 +116,7 @@ public enum RollOutcome: String {
 		case .left, .right: return "13"
 		case .ace: return "11"
 		case .chopOff, .splitWithBonus: return "10"
-		case .split: return "9"
+		case .split: return "8"
 		case .headPin2: return "7"
 		case .headPin: return "5"
 		case .none: return "-"
