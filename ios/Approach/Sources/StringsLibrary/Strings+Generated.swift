@@ -944,6 +944,8 @@ public enum Strings {
       public static let chopOffs = Strings.tr("Localizable", "statistics.title.chopOffs", fallback: "Chop Offs")
       /// Chop Offs Spared
       public static let chopOffsSpared = Strings.tr("Localizable", "statistics.title.chopOffsSpared", fallback: "Chop Offs Spared")
+      /// Fouls
+      public static let fouls = Strings.tr("Localizable", "statistics.title.fouls", fallback: "Fouls")
       /// Average
       public static let gameAverage = Strings.tr("Localizable", "statistics.title.gameAverage", fallback: "Average")
       /// Head Pins

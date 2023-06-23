@@ -5,6 +5,7 @@ extension Statistics {
 		Statistics.TotalPinfall.self,
 		Statistics.NumberOfGames.self,
 		Statistics.GameAverage.self,
+		Statistics.TotalRolls.self,
 		Statistics.MiddleHits.self,
 		Statistics.LeftOfMiddleHits.self,
 		Statistics.RightOfMiddleHits.self,
@@ -30,6 +31,9 @@ extension Statistics {
 		Statistics.RightSplitsSpared.self,
 		Statistics.Twelves.self,
 		Statistics.TwelvesSpared.self,
+
+		// Fouls
+		Statistics.Fouls.self,
 
 		// Series
 		Statistics.HighSeriesOf3.self,

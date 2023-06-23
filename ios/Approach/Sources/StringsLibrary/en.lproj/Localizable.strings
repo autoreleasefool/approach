@@ -245,6 +245,7 @@
 "statistics.title.leftChopOffsSpared" = "Left Chop Offs Spared";
 "statistics.title.rightChopOffs" = "Right Chop Offs";
 "statistics.title.rightChopOffsSpared" = "Right Chop Offs Spared";
+"statistics.title.fouls" = "Fouls";
 "statistics.title.gameAverage" = "Average";
 "statistics.title.highSeriesOf3" = "High Series of 3";
 "statistics.title.highSingle" = "High Single";
@@ -276,6 +277,7 @@
 "statistics.title.rightTwelvesSpared" = "Right Twelves Spared";
 "statistics.title.numberOfGames" = "Number of Games";
 "statistics.title.totalPinfall" = "Total Pinfall";
+"statistics.title.totalRolls" = "Total Rolls";
 
 
 /* Settings */
