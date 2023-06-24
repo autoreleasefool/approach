@@ -1,6 +1,7 @@
 # Most recent version
 
 ## v3.2.0
+
 ```
 A lot of users have been having issues with the current transfer functionality, so I've created a new process which will let you export and save the data wherever you'd like, and then import it on a new device. Hopefully this helps those with longstanding issues of being unable to move to new devices.
 
@@ -12,11 +13,13 @@ This update also comes with some quality of life fixes:
 # Legacy versions
 
 ## v3.1.2
+
 ```
 - Fixed a crash some users experienced when trying to open a game
 ```
 
 ## v3.1.1
+
 ```
 This version contains a bunch of bug fixes! Here's just a few:
 - Creating or opening an event should no longer crash the app
@@ -25,6 +28,7 @@ This version contains a bunch of bug fixes! Here's just a few:
 ```
 
 ## v3.1.0
+
 ```
 Thank you for using the app while some of the kinks in the new version are worked out!
 - See an overview of your games by tapping the list icon in the top right, or the overview menu item
@@ -48,6 +52,7 @@ This update contains a tonne of stability fixes for the new version.
 ```
 
 ## v3.0.0
+
 ```
 Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from scratch with all your favourite features and plenty of new ones.
 
@@ -61,6 +66,7 @@ Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from s
 ```
 
 ## v2.1.9
+
 ```
 - Stability fixes for Android Oreo
 - Fix bugs with "Combine Series"
@@ -73,28 +79,32 @@ Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from s
 ```
 
 ## v2.1.8
+
 ```
 - See your average with up to 1 decimal place by going to Settings > Statistics.
 ```
 
 ## v2.1.7
+
 ```
 - Transfer your data to a new device! By accessing the "Transfer data" option in the menu, you can transfer your data to a new device by uploading it to our servers and downloading it elsewhere with your unique code.
 - Adds missing attribution to Google Material Icons
 ```
 
 ## v2.1.6
+
 ```
 - Added an option in the settings under "Editing Games" that allows users to disable the new change that moved the pins above the floating buttons.
 ```
 
 ## v2.1.5
+
 ```
 - Fixed a bug that prevented new events from being made.
 ```
 
-
 ## v2.1.4
+
 ```
 What's new
 - Added THIS popup, to inform you of the newest changes each release.
@@ -108,21 +118,25 @@ Other changes
 ```
 
 ## v2.1.3
+
 ```
 - Fixed a bug introduced in v2.1.2 that caused some bowlers to not appear.
 ```
 
 ## v2.1.2
+
 ```
 - H2 and H32 (not chop off) are no longer counted as "spare chances".
 ```
 
 ## v2.1.1
+
 ```
 - Fixed a crash when checking the hi score possible
 ```
 
 ## v2.1
+
 ```
 - Games with a score of 0 are now excluded from your average and statistics
 - Strikes and spares are now highlighted in a game to be spotted more easily (you can disable this in the settings)
@@ -131,16 +145,19 @@ Other changes
 ```
 
 ## v2.0.5
+
 ```
 - Bug fixes
 ```
 
 ## v2.0.4
+
 ```
 - Bug fixes
 ```
 
 ## v2.0.3
+
 ```
 - Long click a bowler or league to edit its name
 - Improved match play recording (add your opponent's name and their score)
@@ -149,6 +166,7 @@ Other changes
 ```
 
 ## v2.0
+
 ```
 Features
 - Added a new tutorial on first startup
@@ -166,11 +184,13 @@ Design
 ```
 
 ## v1.2.1
+
 ```
 - Bug fixes
 ```
 
 ## v1.2
+
 ```
 - Larger button to move to next frame
 - Option to have frame auto advance after an interval of inactivity
@@ -178,12 +198,14 @@ Design
 ```
 
 ## v1.1.3
+
 ```
 - Added option to change header/stat fonts to black, for better readability
 - Bug fixes
 ```
 
 ## v1.1.2
+
 ```
 - Now returns to same game when phone comes off standby mode
 - Changed display method of future frames in a game
@@ -191,6 +213,7 @@ Design
 ```
 
 ## v1.1.1
+
 ```
 - Added link in menu to settings
 - Simplified settings screen
@@ -198,6 +221,7 @@ Design
 ```
 
 ## v1.1
+
 ```
 - Added new option to set results of match play
 - Added match play statistics to the list of stats
@@ -208,11 +232,13 @@ Design
 ```
 
 ## v1.0.4
+
 ```
 - Decreased memory when saving images, should reduce crashes when trying to save or share a series.
 ```
 
 ## v1.0.3
+
 ```
 - Bug fixing
 - Decreased memory used by background images.
@@ -220,11 +246,13 @@ Design
 ```
 
 ## v1.0.2
+
 ```
 - Fixing issues with user authentication
 ```
 
 ## v1.0.1
+
 ```
 - Fixing issues with user authentication
 ```
