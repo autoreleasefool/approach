@@ -226,7 +226,6 @@ final class PinTests: XCTestCase {
 		let deck4: Set<Pin> = [.leftTwoPin, .leftThreePin, .rightTwoPin]
 		XCTAssertTrue(deck4.isHitLeftOfMiddle)
 
-
 		let deck5: Set<Pin> = [.headPin, .leftThreePin]
 		XCTAssertFalse(deck5.isHitLeftOfMiddle)
 		let deck6: Set<Pin> = [.headPin, .rightThreePin]
@@ -259,7 +258,6 @@ final class PinTests: XCTestCase {
 		XCTAssertTrue(deck3.isHitRightOfMiddle)
 		let deck4: Set<Pin> = [.rightTwoPin, .rightThreePin, .leftTwoPin]
 		XCTAssertTrue(deck4.isHitRightOfMiddle)
-
 
 		let deck5: Set<Pin> = [.headPin, .rightThreePin]
 		XCTAssertFalse(deck5.isHitRightOfMiddle)

@@ -60,7 +60,7 @@ extension Frame.TrackableEntry {
 				index: $0,
 				rolls: [
 					.init(index: 0, roll: .default),
-					.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: true))
+					.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: true)),
 				],
 				date: Date(timeIntervalSince1970: 123)
 			)
@@ -70,7 +70,7 @@ extension Frame.TrackableEntry {
 
 extension Frame.TrackableEntry {
 	init(gameId: Game.ID = UUID(0), index: Int = 0, rolls: [Frame.OrderedRoll]) {
-		self.init(seriesId: UUID(0),gameId: gameId, index: index, rolls: rolls, date: Date())
+		self.init(seriesId: UUID(0), gameId: gameId, index: index, rolls: rolls, date: Date())
 	}
 }
 

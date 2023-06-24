@@ -12,7 +12,9 @@ extension UIDeviceNotifications: DependencyKey {
 			) { continuation in
 				let task = Task { @MainActor in
 					continuation.yield(UIDevice.current.orientation)
-					for await _ in NotificationCenter.default.notifications(named: UIDevice.orientationDidChangeNotification) {
+					for await _ in NotificationCenter.default
+						.notifications(named: UIDevice.orientationDidChangeNotification)
+						.map({ $0.name }) {
 						continuation.yield(UIDevice.current.orientation)
 					}
 				}

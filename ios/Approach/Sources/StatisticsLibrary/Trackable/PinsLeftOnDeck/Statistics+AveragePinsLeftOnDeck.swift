@@ -16,6 +16,7 @@ extension Statistics {
 
 		public var divisor: Int {
 			get { gamesPlayed.count }
+			// swiftlint:disable:next unused_setter_value
 			set { fatalError("Cannot set divisor for \(Self.self)") }
 		}
 

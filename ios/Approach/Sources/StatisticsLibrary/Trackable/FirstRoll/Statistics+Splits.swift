@@ -16,7 +16,8 @@ extension Statistics {
 		init(splits: Int) { self.splits = splits }
 
 		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
-			if roll.roll.pinsDowned.isSplit || (configuration.countSplitWithBonusAsSplit && roll.roll.pinsDowned.isSplitWithBonus) {
+			if roll.roll.pinsDowned.isSplit ||
+					(configuration.countSplitWithBonusAsSplit && roll.roll.pinsDowned.isSplitWithBonus) {
 				splits += 1
 			}
 		}
