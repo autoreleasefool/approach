@@ -3,6 +3,10 @@ plugins {
 	id 'org.jetbrains.kotlin.android'
 }
 
+def versionMajor = 4
+def versionMinor = 0
+def versionPatch = 0
+
 android {
 	namespace 'ca.josephroque.bowlingcompanion'
 	compileSdk 33
@@ -11,8 +15,8 @@ android {
 		applicationId "ca.josephroque.bowlingcompanion"
 		minSdk 24
 		targetSdk 33
-		versionCode 1
-		versionName "1.0"
+		versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
+		versionName "${versionMajor}.${versionMinor}.${versionPatch}"
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 		vectorDrawables {
@@ -21,6 +25,9 @@ android {
 	}
 
 	buildTypes {
+		debug {
+			applicationIdSuffix ".debug"
+		}
 		release {
 			minifyEnabled false
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
