@@ -5,6 +5,7 @@
 <p align="center">
 <a href="https://github.com/autoreleasefool/approach/actions/workflows/ios.yml"><img src="https://github.com/autoreleasefool/approach/actions/workflows/ios.yml/badge.svg"></a>
 <a href="https://github.com/autoreleasefool/approach/releases"><img src="https://img.shields.io/github/v/release/autoreleasefool/approach"></a>
+<a rel="me" href="https://indieapps.space/@approach"><img src="https://img.shields.io/badge/mastodon-%40approach%40indieapps.space-8881D7?logo=mastodon"></a>
 </p>
 
 Approach is the 5 Pin Bowling Companion, built for Android and iOS with native platform technologies, Compose and SwiftUI. Approach allows users to track multiple bowlers and leagues, providing in-depth statistics on their game. Find areas for improvement and become better attuned to your own bowling style.
