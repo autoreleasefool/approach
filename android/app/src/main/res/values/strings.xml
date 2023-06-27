@@ -1,3 +1,8 @@
 <resources>
 	<string name="app_name">Approach</string>
+
+	<string name="destination_overview">Overview</string>
+	<string name="destination_statistics">Statistics</string>
+	<string name="destination_accessories">Accessories</string>
+	<string name="destination_settings">Settings</string>
 </resources>
