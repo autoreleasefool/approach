@@ -104,6 +104,7 @@ let package = Package(
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StatisticsChartsLibrary", targets: ["StatisticsChartsLibrary"]),
+		.library(name: "StatisticsChartsMocksLibrary", targets: ["StatisticsChartsMocksLibrary"]),
 		.library(name: "StatisticsLibrary", targets: ["StatisticsLibrary"]),
 		.library(name: "StatisticsModelsLibrary", targets: ["StatisticsModelsLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
@@ -1259,6 +1260,13 @@ let package = Package(
 			name: "StatisticsChartsLibraryTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StatisticsChartsLibrary",
+			]
+		),
+		.target(
+			name: "StatisticsChartsMocksLibrary",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"StatisticsChartsLibrary",
 			]
 		),

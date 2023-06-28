@@ -86,7 +86,7 @@ public struct StatisticsDetailsChartsView: View {
 					case let .countingChart(data):
 						CountingChart(data)
 					case let .averagingChart(data):
-						AveragingChart(data)
+						AveragingChart.Default(data)
 					case let .percentageChart(data):
 						PercentageChart(data)
 					case let .chartUnavailable(statistic):

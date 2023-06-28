@@ -275,6 +275,11 @@ dependencies = [ "Dependencies" ]
 [libraries.StatisticsCharts]
 libraries = [ "Assets", "DateTime", "Statistics" ]
 
+[libraries.StatisticsChartsMocks]
+skip_tests = true
+libraries = [ "StatisticsCharts" ]
+dependencies = [ "Dependencies" ]
+
 [libraries.StatisticsModels]
 libraries = [ "DatabaseModels", "Statistics" ]
 [libraries.StatisticsModels.tests]

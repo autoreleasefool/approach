@@ -6,41 +6,42 @@ import SwiftUI
 
 public struct AveragingChart: View {
 	let data: Data
+	let style: Style
 
-	public init(_ data: Data) {
+	public init(_ data: Data, style: Style = .default) {
 		self.data = data
+		self.style = style
 	}
 
 	public var body: some View {
-		GroupBox(data.title) {
-			Chart {
-				ForEach(data.entries) {
-					LineMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-						y: .value(data.title, $0.value)
-					)
-					.lineStyle(StrokeStyle(lineWidth: 3))
-					.foregroundStyle(Asset.Colors.Charts.Averaging.lineMark.swiftUIColor)
-					.interpolationMethod(.catmullRom)
-				}
+		Chart {
+			ForEach(data.entries) {
+				LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
+					y: .value(data.title, $0.value)
+				)
+				.lineStyle(StrokeStyle(lineWidth: 3))
+				.foregroundStyle(Asset.Colors.Charts.Averaging.lineMark.swiftUIColor)
+				.interpolationMethod(.catmullRom)
 			}
-			.chartXAxis {
-				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-				}
-			}
-			.chartYAxis {
-				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-				}
-			}
-			.chartYScale(domain: [data.minimumValue, data.maximumValue])
 		}
-		.groupBoxStyle(ChartsGroupBoxStyle.averaging)
+		.chartXAxis {
+			if !style.hideXAxis {
+				AxisMarks {
+					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+				}
+			}
+		}
+		.chartYAxis {
+			AxisMarks {
+				AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+				AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+				AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+			}
+		}
+		.chartYScale(domain: [data.minimumValue, data.maximumValue])
 	}
 }
 
@@ -83,6 +84,22 @@ extension AveragingChart.Data {
 	}
 }
 
+// MARK: - Style
+
+extension AveragingChart {
+	public struct Style {
+		public let hideXAxis: Bool
+
+		public init(hideXAxis: Bool) {
+			self.hideXAxis = hideXAxis
+		}
+	}
+}
+
+extension AveragingChart.Style {
+	public static let `default` = Self(hideXAxis: false)
+}
+
 // MARK: - Previews
 
 #if DEBUG
@@ -91,21 +108,31 @@ struct AveragingChartPreview: PreviewProvider {
 
 	static var previews: some View {
 		VStack {
-			AveragingChart(
+			AveragingChart.Default(
 				.init(
 					title: "Head Pins",
 					entries: averagingData.enumerated().map { index, value in
-							.init(
-								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
-								value: value,
-								date: Date(timeIntervalSince1970: Double(index) * 604800.0)
-							)
+						.init(
+							id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
+							value: value,
+							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
+						)
 					}
 				)
 			)
-			.layoutPriority(0.5)
 
-			Spacer().layoutPriority(0.5)
+			AveragingChart.Compact(
+				.init(
+					title: "Head Pins",
+					entries: averagingData.enumerated().map { index, value in
+						.init(
+							id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
+							value: value,
+							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
+						)
+					}
+				)
+			)
 		}
 		.padding()
 	}
