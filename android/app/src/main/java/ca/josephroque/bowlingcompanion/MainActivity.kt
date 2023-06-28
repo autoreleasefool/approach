@@ -16,10 +16,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import ca.josephroque.bowlingcompanion.ui.ApproachApp
 import ca.josephroque.bowlingcompanion.ui.theme.ApproachTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 	private val viewModel: MainActivityViewModel by viewModels()
