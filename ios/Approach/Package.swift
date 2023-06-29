@@ -34,7 +34,6 @@ let package = Package(
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsDetailsFeature", targets: ["StatisticsDetailsFeature"]),
 		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
-		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 
 		// MARK: - Repositories
 		.library(name: "AlleysRepository", targets: ["AlleysRepository"]),
@@ -107,6 +106,7 @@ let package = Package(
 		.library(name: "StatisticsChartsMocksLibrary", targets: ["StatisticsChartsMocksLibrary"]),
 		.library(name: "StatisticsLibrary", targets: ["StatisticsLibrary"]),
 		.library(name: "StatisticsModelsLibrary", targets: ["StatisticsModelsLibrary"]),
+		.library(name: "StatisticsWidgetsLibrary", targets: ["StatisticsWidgetsLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
@@ -241,7 +241,7 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
-				"StatisticsWidgetsFeature",
+				"StatisticsWidgetsLibrary",
 			]
 		),
 		.testTarget(
@@ -525,20 +525,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"StatisticsOverviewFeature",
-			]
-		),
-		.target(
-			name: "StatisticsWidgetsFeature",
-			dependencies: [
-				"FeatureActionLibrary",
-				"StatisticsChartsMocksLibrary",
-			]
-		),
-		.testTarget(
-			name: "StatisticsWidgetsFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"StatisticsWidgetsFeature",
 			]
 		),
 
@@ -1300,6 +1286,19 @@ let package = Package(
 				"DatabaseService",
 				"StatisticsModelsLibrary",
 				"TestDatabaseUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "StatisticsWidgetsLibrary",
+			dependencies: [
+				"StatisticsChartsMocksLibrary",
+			]
+		),
+		.testTarget(
+			name: "StatisticsWidgetsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StatisticsWidgetsLibrary",
 			]
 		),
 		.target(
