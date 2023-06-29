@@ -138,7 +138,6 @@ libraries = [ "Extensions" ]
 repositories = [ "MatchPlays" ]
 dependencies = [ "IdentifiedCollections" ]
 
-
 [repositories.Gear]
 services = [ "RecentlyUsed" ]
 
@@ -160,7 +159,7 @@ dependencies = [ "IdentifiedCollections" ]
 services = [ "Preference" ]
 libraries = [ "StatisticsModels" ]
 [repositories.Statistics.interface]
-libraries = [ "StatisticsCharts" ]
+libraries = [ "Statistics", "StatisticsCharts" ]
 
 # Services
 
@@ -273,7 +272,7 @@ dependencies = [ "IdentifiedCollections" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.StatisticsCharts]
-libraries = [ "Assets", "DateTime", "Statistics" ]
+libraries = [ "Assets", "DateTime", "Strings" ]
 
 [libraries.StatisticsChartsMocks]
 skip_tests = true

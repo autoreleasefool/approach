@@ -825,6 +825,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"StatisticsChartsLibrary",
+				"StatisticsLibrary",
 			]
 		),
 		.testTarget(
@@ -1252,7 +1253,7 @@ let package = Package(
 			dependencies: [
 				"AssetsLibrary",
 				"DateTimeLibrary",
-				"StatisticsLibrary",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(
