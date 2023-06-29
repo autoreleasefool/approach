@@ -1,14 +1,16 @@
 import StringsLibrary
 
-public struct WidgetConfiguration: Equatable {
-	public let timeline: Timeline
+extension StatisticWidget {
+	public struct Configuration: Equatable {
+		public let timeline: Timeline
 
-	public init(timeline: Timeline) {
-		self.timeline = timeline
+		public init(timeline: Timeline) {
+			self.timeline = timeline
+		}
 	}
 }
 
-extension WidgetConfiguration {
+extension StatisticWidget.Configuration {
 	public enum Timeline: CustomStringConvertible {
 		case past1Month
 		case past3Months
