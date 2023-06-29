@@ -35,6 +35,12 @@ public enum Asset {
     public enum Charts {
       public enum Averaging {
         public static let axes = ColorAsset(name: "Charts/Averaging/Axes")
+        public enum Compact {
+          public static let axes = ColorAsset(name: "Charts/Averaging/Compact/Axes")
+          public static let lineMark = ColorAsset(name: "Charts/Averaging/Compact/LineMark")
+          public static let negativeChange = ColorAsset(name: "Charts/Averaging/Compact/NegativeChange")
+          public static let positiveChange = ColorAsset(name: "Charts/Averaging/Compact/PositiveChange")
+        }
         public static let lineMark = ColorAsset(name: "Charts/Averaging/LineMark")
       }
       public static let background = ColorAsset(name: "Charts/Background")

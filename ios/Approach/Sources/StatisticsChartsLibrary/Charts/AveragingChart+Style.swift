@@ -20,10 +20,11 @@ extension AveragingChart {
 extension AveragingChart {
 	public struct Compact: View {
 		let data: AveragingChart.Data
-		let style: AveragingChart.Style = .init(hideXAxis: true)
+		let style: AveragingChart.Style
 
-		public init(_ data: AveragingChart.Data) {
+		public init(_ data: AveragingChart.Data, style: AveragingChart.Style) {
 			self.data = data
+			self.style = style
 		}
 
 		public var body: some View {

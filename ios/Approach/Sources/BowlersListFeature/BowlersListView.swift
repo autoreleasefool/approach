@@ -43,7 +43,7 @@ public struct BowlersListView: View {
 			} header: {
 				Section {
 					Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
-						PlaceholderWidget(size: .medium)
+						PlaceholderWidget(size: .fullWidth)
 					}
 					.buttonStyle(TappableElement())
 				}

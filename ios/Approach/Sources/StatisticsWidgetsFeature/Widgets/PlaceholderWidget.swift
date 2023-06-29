@@ -3,14 +3,10 @@ import StringsLibrary
 import SwiftUI
 
 public struct PlaceholderWidget: View {
-	let size: WidgetSize
-
-	public init(size: WidgetSize) {
-		self.size = size
-	}
+	public init() {}
 
 	public var body: some View {
-		WidgetContainer(size: size) {
+		WidgetContainer {
 			VStack(alignment: .leading, spacing: .smallSpacing) {
 				Text(Strings.Statistics.Placeholder.title)
 					.font(.title)

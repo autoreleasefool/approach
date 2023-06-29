@@ -530,9 +530,8 @@ let package = Package(
 		.target(
 			name: "StatisticsWidgetsFeature",
 			dependencies: [
-				"AssetsLibrary",
 				"FeatureActionLibrary",
-				"StringsLibrary",
+				"StatisticsChartsMocksLibrary",
 			]
 		),
 		.testTarget(

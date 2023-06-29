@@ -115,7 +115,7 @@ services = [ "Notifications", "Preference" ]
 libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgets]
-libraries = [ "Assets", "Strings" ]
+libraries = [ "StatisticsChartsMocks" ]
 
 # Repositories
 

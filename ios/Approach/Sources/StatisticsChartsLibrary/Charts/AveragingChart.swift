@@ -8,7 +8,7 @@ public struct AveragingChart: View {
 	let data: Data
 	let style: Style
 
-	public init(_ data: Data, style: Style = .default) {
+	public init(_ data: Data, style: Style = .init()) {
 		self.data = data
 		self.style = style
 	}
@@ -21,24 +21,24 @@ public struct AveragingChart: View {
 					y: .value(data.title, $0.value)
 				)
 				.lineStyle(StrokeStyle(lineWidth: 3))
-				.foregroundStyle(Asset.Colors.Charts.Averaging.lineMark.swiftUIColor)
+				.foregroundStyle(style.lineMarkColor.swiftUIColor)
 				.interpolationMethod(.catmullRom)
 			}
 		}
 		.chartXAxis {
 			if !style.hideXAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+					AxisGridLine().foregroundStyle(style.axesColor.swiftUIColor)
+					AxisTick().foregroundStyle(style.axesColor.swiftUIColor)
+					AxisValueLabel().foregroundStyle(style.axesColor.swiftUIColor)
 				}
 			}
 		}
 		.chartYAxis {
 			AxisMarks {
-				AxisGridLine().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-				AxisTick().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
-				AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Averaging.axes.swiftUIColor)
+				AxisGridLine().foregroundStyle(style.axesColor.swiftUIColor)
+				AxisTick().foregroundStyle(style.axesColor.swiftUIColor)
+				AxisValueLabel().foregroundStyle(style.axesColor.swiftUIColor)
 			}
 		}
 		.chartYScale(domain: [data.minimumValue, data.maximumValue])
@@ -53,6 +53,7 @@ extension AveragingChart {
 		public let entries: [Entry]
 		public let minimumValue: Double
 		public let maximumValue: Double
+		public let percentDifferenceOverFullTimeSpan: Double
 
 		public var isEmpty: Bool {
 			entries.count <= 1
@@ -66,6 +67,12 @@ extension AveragingChart {
 			let padding = (maximumValue - minimumValue) / 10
 			self.minimumValue = minimumValue - padding
 			self.maximumValue = maximumValue + padding
+
+			let firstValue = entries.first?.value ?? 0
+			let lastValue = entries.last?.value ?? 0
+			self.percentDifferenceOverFullTimeSpan = firstValue > 0
+				? ((lastValue - firstValue) / abs(firstValue))
+				: 0
 		}
 	}
 }
@@ -88,16 +95,20 @@ extension AveragingChart.Data {
 
 extension AveragingChart {
 	public struct Style {
+		public let lineMarkColor: ColorAsset
+		public let axesColor: ColorAsset
 		public let hideXAxis: Bool
 
-		public init(hideXAxis: Bool) {
+		public init(
+			lineMarkColor: ColorAsset = Asset.Colors.Charts.Averaging.lineMark,
+			axesColor: ColorAsset = Asset.Colors.Charts.Averaging.axes,
+			hideXAxis: Bool = false
+		) {
+			self.lineMarkColor = lineMarkColor
+			self.axesColor = axesColor
 			self.hideXAxis = hideXAxis
 		}
 	}
-}
-
-extension AveragingChart.Style {
-	public static let `default` = Self(hideXAxis: false)
 }
 
 // MARK: - Previews
@@ -131,7 +142,8 @@ struct AveragingChartPreview: PreviewProvider {
 							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
 						)
 					}
-				)
+				),
+				style: .init(hideXAxis: true)
 			)
 		}
 		.padding()
