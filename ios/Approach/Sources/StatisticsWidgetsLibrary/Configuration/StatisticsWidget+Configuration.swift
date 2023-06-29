@@ -1,6 +1,6 @@
 import StringsLibrary
 
-extension StatisticWidget {
+extension StatisticsWidget {
 	public struct Configuration: Equatable {
 		public let timeline: Timeline
 
@@ -10,13 +10,15 @@ extension StatisticWidget {
 	}
 }
 
-extension StatisticWidget.Configuration {
-	public enum Timeline: CustomStringConvertible {
+extension StatisticsWidget.Configuration {
+	public enum Timeline: String, Identifiable, CaseIterable, CustomStringConvertible {
 		case past1Month
 		case past3Months
 		case past6Months
 		case pastYear
 		case allTime
+
+		public var id: String { rawValue }
 
 		public var description: String {
 			switch self {

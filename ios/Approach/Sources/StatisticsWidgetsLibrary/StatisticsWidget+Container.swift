@@ -1,7 +1,7 @@
 import AssetsLibrary
 import SwiftUI
 
-extension StatisticWidget {
+extension StatisticsWidget {
 	public struct Container<Content: View>: View {
 		let title: String?
 		let content: Content

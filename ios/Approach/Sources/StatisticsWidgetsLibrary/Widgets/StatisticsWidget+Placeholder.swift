@@ -2,12 +2,12 @@ import AssetsLibrary
 import StringsLibrary
 import SwiftUI
 
-extension StatisticWidget {
+extension StatisticsWidget {
 	public struct PlaceholderWidget: View {
 		public init() {}
 
 		public var body: some View {
-			WidgetContainer {
+			StatisticsWidget.Container {
 				VStack(alignment: .leading, spacing: .smallSpacing) {
 					Text(Strings.Statistics.Placeholder.title)
 						.font(.title)

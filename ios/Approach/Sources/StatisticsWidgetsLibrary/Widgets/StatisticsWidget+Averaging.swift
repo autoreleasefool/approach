@@ -4,12 +4,12 @@ import StatisticsChartsMocksLibrary
 import StringsLibrary
 import SwiftUI
 
-extension StatisticWidget {
+extension StatisticsWidget {
 	public struct AveragingWidget: View {
 		let data: AveragingChart.Data
-		let configuration: WidgetConfiguration
+		let configuration: StatisticsWidget.Configuration
 
-		public init(_ data: AveragingChart.Data, configuration: WidgetConfiguration) {
+		public init(_ data: AveragingChart.Data, configuration: StatisticsWidget.Configuration) {
 			self.data = data
 			self.configuration = configuration
 		}
@@ -54,14 +54,14 @@ struct AveragingWidgetPreview: PreviewProvider {
 	static var previews: some View {
 		Grid {
 			GridRow {
-				StatisticWidget.AveragingWidget(
+				StatisticsWidget.AveragingWidget(
 					AveragingChart.Data.bowlerAverageIncrementingMock,
 					configuration: .init(timeline: .past1Month)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)
 
-				StatisticWidget.AveragingWidget(
+				StatisticsWidget.AveragingWidget(
 					AveragingChart.Data.bowlerAverageDecrementingMock,
 					configuration: .init(timeline: .allTime)
 				)
