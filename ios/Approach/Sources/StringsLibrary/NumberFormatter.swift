@@ -30,11 +30,9 @@ public func format(percentage: Double?) -> String {
 public func format(percentageWithModifier: Double?) -> String {
 	guard let percentageWithModifier else { return emptyValue }
 	let formatted = format(percentage: percentageWithModifier)
-	if formatted == "0%" || formatted == emptyValue {
+	if formatted == "0%" || formatted == emptyValue || percentageWithModifier < 0 {
 		return formatted
-	} else if percentageWithModifier > 0 {
-		return "+\(formatted)"
 	} else {
-		return "-\(formatted)"
+		return "+\(formatted)"
 	}
 }

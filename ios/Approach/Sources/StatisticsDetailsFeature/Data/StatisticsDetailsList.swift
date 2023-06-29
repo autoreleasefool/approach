@@ -1,8 +1,8 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import PreferenceServiceInterface
-import StatisticsChartsLibrary
 import StatisticsLibrary
+import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary

@@ -1022,6 +1022,20 @@ public enum Strings {
       public static let twelvesSpared = Strings.tr("Localizable", "statistics.title.twelvesSpared", fallback: "Twelves Spared")
     }
   }
+  public enum Widget {
+    public enum Timeline {
+      /// All Time
+      public static let allTime = Strings.tr("Localizable", "widget.timeline.allTime", fallback: "All Time")
+      /// Widget
+      public static let past1Month = Strings.tr("Localizable", "widget.timeline.past1Month", fallback: "Past Month")
+      /// Past 3 Months
+      public static let past3Months = Strings.tr("Localizable", "widget.timeline.past3Months", fallback: "Past 3 Months")
+      /// Past 6 Months
+      public static let past6Months = Strings.tr("Localizable", "widget.timeline.past6Months", fallback: "Past 6 Months")
+      /// Past Year
+      public static let pastYear = Strings.tr("Localizable", "widget.timeline.pastYear", fallback: "Past Year")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

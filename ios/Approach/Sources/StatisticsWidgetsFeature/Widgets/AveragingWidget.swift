@@ -6,9 +6,11 @@ import SwiftUI
 
 public struct AveragingWidget: View {
 	let data: AveragingChart.Data
+	let configuration: WidgetConfiguration
 
-	public init(_ data: AveragingChart.Data) {
+	public init(_ data: AveragingChart.Data, configuration: WidgetConfiguration) {
 		self.data = data
+		self.configuration = configuration
 	}
 
 	public var body: some View {
@@ -29,13 +31,16 @@ public struct AveragingWidget: View {
 				)
 				.padding(.vertical, .unitSpacing)
 
-				LabeledContent("Past 30 Days", value: format(percentageWithModifier: data.percentDifferenceOverFullTimeSpan))
-					.labeledContentStyle(WidgetLabeledContentStyle(
-						labelColor: Asset.Colors.Charts.Averaging.Compact.axes,
-						contentColor: data.percentDifferenceOverFullTimeSpan > 0
-							? Asset.Colors.Charts.Averaging.Compact.positiveChange
-							: Asset.Colors.Charts.Averaging.Compact.negativeChange
-					))
+				LabeledContent(
+					String(describing: configuration.timeline),
+					value: format(percentageWithModifier: data.percentDifferenceOverFullTimeSpan)
+				)
+				.labeledContentStyle(WidgetLabeledContentStyle(
+					labelColor: Asset.Colors.Charts.Averaging.Compact.axes,
+					contentColor: data.percentDifferenceOverFullTimeSpan > 0
+						? Asset.Colors.Charts.Averaging.Compact.positiveChange
+						: Asset.Colors.Charts.Averaging.Compact.negativeChange
+				))
 			}
 			.padding(.standardSpacing)
 		}
@@ -48,13 +53,15 @@ struct AveragingWidgetPreview: PreviewProvider {
 		Grid {
 			GridRow {
 				AveragingWidget(
-					AveragingChart.Data.bowlerAverageIncrementingMock
+					AveragingChart.Data.bowlerAverageIncrementingMock,
+					configuration: .init(timeline: .past1Month)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)
 
 				AveragingWidget(
-					AveragingChart.Data.bowlerAverageDecrementingMock
+					AveragingChart.Data.bowlerAverageDecrementingMock,
+					configuration: .init(timeline: .allTime)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)

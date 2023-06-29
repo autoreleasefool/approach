@@ -281,6 +281,13 @@
 "statistics.title.averagePinsLeftOnDeck" = "Average Pins Left on Deck";
 "statistics.title.totalRolls" = "Total Rolls";
 
+/* Widget */
+
+"widget.timeline.past1Month" = "Past Month";
+"widget.timeline.past3Months" = "Past 3 Months";
+"widget.timeline.past6Months" = "Past 6 Months";
+"widget.timeline.pastYear" = "Past Year";
+"widget.timeline.allTime" = "All Time";
 
 /* Settings */
 
