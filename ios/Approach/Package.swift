@@ -536,7 +536,6 @@ let package = Package(
 				"LeaguesRepositoryInterface",
 				"ResourcePickerLibrary",
 				"StatisticsRepositoryInterface",
-				"StatisticsWidgetsLibrary",
 				"SwiftUIExtensionsLibrary",
 			]
 		),
@@ -829,9 +828,8 @@ let package = Package(
 		.target(
 			name: "StatisticsRepositoryInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"StatisticsChartsLibrary",
 				"StatisticsLibrary",
+				"StatisticsWidgetsLibrary",
 			]
 		),
 		.testTarget(

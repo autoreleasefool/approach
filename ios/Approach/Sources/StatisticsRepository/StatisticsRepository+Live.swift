@@ -230,6 +230,36 @@ extension StatisticsRepository: DependencyKey {
 						return unavailable()
 					}
 				}
+			},
+			loadWidgetSources: { source in
+				try database.reader().read {
+					switch source {
+					case let .bowler(id):
+						let request = Bowler.Database
+							.filter(id: id)
+						guard let sources = try StatisticsWidget.Configuration.Source.SourcesByBowler
+							.fetchAll($0, request)
+							.first else {
+							return nil
+						}
+						return .init(bowler: sources.bowler, league: nil)
+					case let .league(id):
+						let request = League.Database
+							.filter(id: id)
+							.including(required: League.Database.bowler)
+						guard let sources = try StatisticsWidget.Configuration.Source.SourcesByLeague
+							.fetchAll($0, request)
+							.first else {
+							return nil
+						}
+						return .init(bowler: sources.bowler, league: sources.league)
+					}
+				}
+			},
+			loadWidgetData: { configuration in
+				try database.reader().read { db in
+					.chartUnavailable(statistic: configuration.statistic.type.title)
+				}
 			}
 		)
 	}()

@@ -116,7 +116,7 @@ libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgetsBuilder]
 repositories = [ "Bowlers", "Leagues", "Statistics" ]
-libraries = [ "Equatable", "ResourcePicker", "StatisticsWidgets", "SwiftUIExtensions" ]
+libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 # Repositories
 
@@ -160,7 +160,7 @@ dependencies = [ "IdentifiedCollections" ]
 services = [ "Preference" ]
 libraries = [ "StatisticsModels" ]
 [repositories.Statistics.interface]
-libraries = [ "Statistics", "StatisticsCharts" ]
+libraries = [ "Statistics", "StatisticsWidgets" ]
 
 # Services
 
