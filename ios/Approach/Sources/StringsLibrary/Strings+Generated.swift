@@ -1023,10 +1023,18 @@ public enum Strings {
     }
   }
   public enum Widget {
+    public enum Builder {
+      /// Statistic to Display
+      public static let statistic = Strings.tr("Localizable", "widget.builder.statistic", fallback: "Statistic to Display")
+      /// Timeline
+      public static let timeline = Strings.tr("Localizable", "widget.builder.timeline", fallback: "Timeline")
+      /// Widget
+      public static let title = Strings.tr("Localizable", "widget.builder.title", fallback: "Create a Widget")
+    }
     public enum Timeline {
       /// All Time
       public static let allTime = Strings.tr("Localizable", "widget.timeline.allTime", fallback: "All Time")
-      /// Widget
+      /// Past Month
       public static let past1Month = Strings.tr("Localizable", "widget.timeline.past1Month", fallback: "Past Month")
       /// Past 3 Months
       public static let past3Months = Strings.tr("Localizable", "widget.timeline.past3Months", fallback: "Past 3 Months")

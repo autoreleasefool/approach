@@ -53,35 +53,35 @@ public struct AccessoriesOverview: Reducer {
 	}
 
 	public struct Destination: Reducer {
-			public enum State: Equatable {
-				case alleyEditor(AlleyEditor.State)
-				case alleysList(AlleysList.State)
-				case gearEditor(GearEditor.State)
-				case gearList(GearList.State)
-			}
+		public enum State: Equatable {
+			case alleyEditor(AlleyEditor.State)
+			case alleysList(AlleysList.State)
+			case gearEditor(GearEditor.State)
+			case gearList(GearList.State)
+		}
 
-			public enum Action: Equatable {
-				case alleyEditor(AlleyEditor.Action)
-				case alleysList(AlleysList.Action)
-				case gearEditor(GearEditor.Action)
-				case gearList(GearList.Action)
-			}
+		public enum Action: Equatable {
+			case alleyEditor(AlleyEditor.Action)
+			case alleysList(AlleysList.Action)
+			case gearEditor(GearEditor.Action)
+			case gearList(GearList.Action)
+		}
 
-			public var body: some ReducerOf<Self> {
-				Scope(state: /State.alleyEditor, action: /Action.alleyEditor) {
-					AlleyEditor()
-				}
-				Scope(state: /State.alleysList, action: /Action.alleysList) {
-					AlleysList()
-				}
-				Scope(state: /State.gearEditor, action: /Action.gearEditor) {
-					GearEditor()
-				}
-				Scope(state: /State.gearList, action: /Action.gearList) {
-					GearList()
-				}
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.alleyEditor, action: /Action.alleyEditor) {
+				AlleyEditor()
+			}
+			Scope(state: /State.alleysList, action: /Action.alleysList) {
+				AlleysList()
+			}
+			Scope(state: /State.gearEditor, action: /Action.gearEditor) {
+				GearEditor()
+			}
+			Scope(state: /State.gearList, action: /Action.gearList) {
+				GearList()
 			}
 		}
+	}
 
 	enum CancelID { case observe }
 

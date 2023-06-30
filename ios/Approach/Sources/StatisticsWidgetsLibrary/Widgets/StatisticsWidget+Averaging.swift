@@ -15,7 +15,7 @@ extension StatisticsWidget {
 		}
 
 		public var body: some View {
-			StatisticWidget.Container {
+			StatisticsWidget.Container {
 				VStack(alignment: .leading, spacing: 0) {
 					Text(data.title)
 						.font(.subheadline)
@@ -56,14 +56,14 @@ struct AveragingWidgetPreview: PreviewProvider {
 			GridRow {
 				StatisticsWidget.AveragingWidget(
 					AveragingChart.Data.bowlerAverageIncrementingMock,
-					configuration: .init(timeline: .past1Month)
+					configuration: .init(source: .bowler(.init()), timeline: .past1Month, statistic: .average)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)
 
 				StatisticsWidget.AveragingWidget(
 					AveragingChart.Data.bowlerAverageDecrementingMock,
-					configuration: .init(timeline: .allTime)
+					configuration: .init(source: .bowler(.init()), timeline: .allTime, statistic: .average)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)

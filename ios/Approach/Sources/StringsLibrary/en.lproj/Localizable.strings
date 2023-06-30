@@ -283,6 +283,9 @@
 
 /* Widget */
 
+"widget.builder.title" = "Create a Widget";
+"widget.builder.timeline" = "Timeline";
+"widget.builder.statistic" = "Statistic to Display";
 "widget.timeline.past1Month" = "Past Month";
 "widget.timeline.past3Months" = "Past 3 Months";
 "widget.timeline.past6Months" = "Past 6 Months";

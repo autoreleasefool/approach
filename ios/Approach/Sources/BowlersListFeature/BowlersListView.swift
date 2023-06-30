@@ -5,6 +5,7 @@ import LeaguesListFeature
 import ModelsLibrary
 import ResourceListLibrary
 import SortOrderLibrary
+import StatisticsWidgetsBuilderFeature
 import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
@@ -43,7 +44,7 @@ public struct BowlersListView: View {
 			} header: {
 				Section {
 					Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
-						PlaceholderWidget()
+						StatisticsWidget.PlaceholderWidget()
 					}
 					.buttonStyle(TappableElement())
 				}
@@ -61,7 +62,7 @@ public struct BowlersListView: View {
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /BowlersList.Destination.State.editor,
 			action: BowlersList.Destination.Action.editor
-		) { store in
+		) { (store: StoreOf<BowlerEditor>) in
 			NavigationStack {
 				BowlerEditorView(store: store)
 			}
@@ -70,7 +71,7 @@ public struct BowlersListView: View {
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /BowlersList.Destination.State.sortOrder,
 			action: BowlersList.Destination.Action.sortOrder
-		) { store in
+		) { (store: StoreOf<SortOrderLibrary.SortOrder<Bowler.Ordering>>) in
 			NavigationStack {
 				SortOrderView(store: store)
 			}
@@ -80,8 +81,17 @@ public struct BowlersListView: View {
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /BowlersList.Destination.State.leagues,
 			action: BowlersList.Destination.Action.leagues
-		) { store in
+		) { (store: StoreOf<LeaguesList>) in
 			LeaguesListView(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /BowlersList.Destination.State.widgetBuilder,
+			action: BowlersList.Destination.Action.widgetBuilder
+		) { (store: StoreOf<StatisticsWidgetLayoutBuilder>) in
+			NavigationStack {
+				StatisticsWidgetLayoutBuilderView(store: store)
+			}
 		}
 	}
 }

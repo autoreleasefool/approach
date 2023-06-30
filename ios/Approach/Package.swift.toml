@@ -41,8 +41,7 @@ libraries = [ "Form" ]
 services = [ "Analytics" ]
 
 [features.BowlersList]
-features = [ "BowlerEditor", "LeaguesList" ]
-libraries = [ "StatisticsWidgets" ]
+features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgetsBuilder" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -114,6 +113,10 @@ features = [ "StatisticsDetails" ]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
 services = [ "Notifications", "Preference" ]
 libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
+
+[features.StatisticsWidgetsBuilder]
+repositories = [ "Bowlers", "Leagues", "Statistics" ]
+libraries = [ "Equatable", "ResourcePicker", "StatisticsWidgets", "SwiftUIExtensions" ]
 
 # Repositories
 
@@ -284,7 +287,7 @@ services = [ "Database" ]
 libraries = [ "TestDatabaseUtilities" ]
 
 [libraries.StatisticsWidgets]
-libraries = [ "StatisticsChartsMocks" ]
+libraries = [ "Models", "StatisticsChartsMocks" ]
 
 [libraries.Strings]
 

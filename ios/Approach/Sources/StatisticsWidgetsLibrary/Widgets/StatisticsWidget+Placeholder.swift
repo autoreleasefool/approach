@@ -16,13 +16,13 @@ extension StatisticsWidget {
 					Text(Strings.Statistics.Placeholder.message)
 						.foregroundColor(.white)
 				}
-				.padding(.horizontal)
 				.background(alignment: .bottomTrailing) {
 					Asset.Media.Icons.analytics.swiftUIImage
 						.resizable()
 						.scaledToFit()
 						.opacity(0.4)
 				}
+				.padding()
 			}
 		}
 	}

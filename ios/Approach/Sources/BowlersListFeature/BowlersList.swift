@@ -11,6 +11,7 @@ import ModelsLibrary
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SortOrderLibrary
+import StatisticsWidgetsBuilderFeature
 import StringsLibrary
 import ViewsLibrary
 
@@ -86,12 +87,14 @@ public struct BowlersList: Reducer {
 			case editor(BowlerEditor.State)
 			case leagues(LeaguesList.State)
 			case sortOrder(SortOrder<Bowler.Ordering>.State)
+			case widgetBuilder(StatisticsWidgetLayoutBuilder.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
+			case widgetBuilder(StatisticsWidgetLayoutBuilder.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -103,6 +106,9 @@ public struct BowlersList: Reducer {
 			}
 			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
 				SortOrder()
+			}
+			Scope(state: /State.widgetBuilder, action: /Action.widgetBuilder) {
+				StatisticsWidgetLayoutBuilder()
 			}
 		}
 	}
@@ -125,7 +131,7 @@ public struct BowlersList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapConfigureStatisticsButton:
-					// TODO: handle configure statistics button press
+					state.destination = .widgetBuilder(.init())
 					return .none
 
 				case .didTapSortOrderButton:
@@ -190,6 +196,12 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.widgetBuilder(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view):
 					return .none
 
@@ -199,7 +211,9 @@ public struct BowlersList: Reducer {
 						.destination(.presented(.leagues(.internal))),
 						.destination(.presented(.leagues(.view))),
 						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))):
+						.destination(.presented(.sortOrder(.view))),
+						.destination(.presented(.widgetBuilder(.internal))),
+						.destination(.presented(.widgetBuilder(.view))):
 					return .none
 				}
 
