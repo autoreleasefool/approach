@@ -151,21 +151,21 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 			$0.statistics = .liveValue
 		} operation: {
 			if let counting = statistic as? CountingStatistic.Type {
-				guard let data = try await self.statistics.chart(statistic: counting, filter: filter),
-							let first = data.entries.first,
-							let last = data.entries.last
+				let data = try await self.statistics.chart(statistic: counting, filter: filter)
+				guard let first = data.countingEntries?.first,
+							let last = data.countingEntries?.last
 				else { return (nil, nil) }
 				return (.counting(first), .counting(last))
 			} else if let highest = statistic as? HighestOfStatistic.Type {
-				guard let data = try await self.statistics.chart(statistic: highest, filter: filter),
-							let first = data.entries.first,
-							let last = data.entries.last
+				let data = try await self.statistics.chart(statistic: highest, filter: filter)
+				guard let first = data.countingEntries?.first,
+							let last = data.countingEntries?.last
 				else { return (nil, nil) }
 				return (.counting(first), .counting(last))
 			} else if let averaging = statistic as? AveragingStatistic.Type {
-				guard let data = try await self.statistics.chart(statistic: averaging, filter: filter),
-							let first = data.entries.first,
-							let last = data.entries.last
+				let data = try await self.statistics.chart(statistic: averaging, filter: filter)
+				guard let first = data.averagingEntries?.first,
+							let last = data.averagingEntries?.last
 				else { return (nil, nil) }
 				return (.averaging(first), .averaging(last))
 			} else {
@@ -175,5 +175,34 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 
 		XCTAssertEqual(entries.first, expectedEntries.first, "First \(statistic)", file: file, line: line)
 		XCTAssertEqual(entries.last, expectedEntries.last, "Last \(statistic)", file: file, line: line)
+	}
+}
+
+extension Statistics.ChartContent {
+	var countingEntries: [CountingChart.Data.Entry]? {
+		switch self {
+		case .counting(let data):
+			return data.entries
+		case .averaging, .percentage, .chartUnavailable:
+			return nil
+		}
+	}
+
+	var averagingEntries: [AveragingChart.Data.Entry]? {
+		switch self {
+		case .averaging(let data):
+			return data.entries
+		case .counting, .percentage, .chartUnavailable:
+			return nil
+		}
+	}
+
+	var percentageEntries: [PercentageChart.Data.Entry]? {
+		switch self {
+		case .percentage(let data):
+			return data.entries
+		case .averaging, .counting, .chartUnavailable:
+			return nil
+		}
 	}
 }

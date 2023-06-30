@@ -1,5 +1,4 @@
 import DatabaseModelsLibrary
-import Foundation
 import GRDB
 import ModelsLibrary
 import StatisticsLibrary

@@ -2,6 +2,7 @@ import Dependencies
 import Foundation
 import StatisticsChartsLibrary
 import StatisticsLibrary
+import StatisticsRepositoryInterface
 
 struct ChartBuilder {
 	static let maxTimePeriods: Double = 20
@@ -10,7 +11,7 @@ struct ChartBuilder {
 	let uuid: UUIDGenerator
 	let aggregation: TrackableFilter.Aggregation
 
-	func buildChart(withEntries allEntries: [Date: Statistic]) -> Output? {
+	func buildChart(withEntries allEntries: [Date: Statistic]) -> Statistics.ChartContent? {
 		guard !allEntries.allSatisfy(\.value.isEmpty) else { return nil }
 
 		let sortedEntries = allEntries.sorted { $0.key < $1.key }
@@ -48,7 +49,10 @@ struct ChartBuilder {
 		return buildRelevantChartData(from: entries, timePeriod: timePeriod)
 	}
 
-	private func buildRelevantChartData(from entries: [Date: Statistic], timePeriod: TimeInterval) -> Output? {
+	private func buildRelevantChartData(
+		from entries: [Date: Statistic],
+		timePeriod: TimeInterval
+	) -> Statistics.ChartContent? {
 		guard let firstStatistic = entries.first?.value else { return nil }
 		let statisticType = type(of: firstStatistic)
 		if statisticType is AveragingStatistic.Type {
@@ -85,14 +89,6 @@ struct ChartBuilder {
 		}
 
 		return nil
-	}
-}
-
-extension ChartBuilder {
-	enum Output {
-		case averaging(AveragingChart.Data)
-		case counting(CountingChart.Data)
-		case percentage(PercentageChart.Data)
 	}
 }
 

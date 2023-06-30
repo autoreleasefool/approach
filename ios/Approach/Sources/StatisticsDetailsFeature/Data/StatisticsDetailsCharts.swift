@@ -2,12 +2,13 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import StatisticsChartsLibrary
 import StatisticsLibrary
+import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 
 public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
-		public var chartContent: ChartContent?
+		public var chartContent: Statistics.ChartContent?
 		public var isLoadingNextChart: Bool
 		public var aggregation: TrackableFilter.Aggregation
 	}
@@ -22,26 +23,6 @@ public struct StatisticsDetailsCharts: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-	}
-
-	public enum ChartContent: Equatable {
-		case countingChart(CountingChart.Data)
-		case averagingChart(AveragingChart.Data)
-		case percentageChart(PercentageChart.Data)
-		case chartUnavailable(statistic: String)
-
-		var title: String {
-			switch self {
-			case let .averagingChart(data): return data.title
-			case let .countingChart(data): return data.title
-			case let .percentageChart(data): return data.title
-			case let .chartUnavailable(statistic): return statistic
-			}
-		}
-
-		var showsAggregationPicker: Bool {
-			return Statistics.type(of: title)?.supportsAggregation ?? false
-		}
 	}
 
 	public init() {}
@@ -83,11 +64,11 @@ public struct StatisticsDetailsChartsView: View {
 
 				if let chartContent = viewStore.chartContent {
 					switch chartContent {
-					case let .countingChart(data):
+					case let .counting(data):
 						CountingChart(data)
-					case let .averagingChart(data):
+					case let .averaging(data):
 						AveragingChart.Default(data)
-					case let .percentageChart(data):
+					case let .percentage(data):
 						PercentageChart(data)
 					case let .chartUnavailable(statistic):
 						emptyChart(statistic)

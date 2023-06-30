@@ -7,6 +7,7 @@ import ModelsLibrary
 import PreferenceServiceInterface
 import StatisticsLibrary
 import StatisticsRepositoryInterface
+import StatisticsWidgetsLibrary
 
 extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self = {
@@ -201,71 +202,32 @@ extension StatisticsRepository: DependencyKey {
 					)
 				}
 			},
-			loadCountingChart: { statistic, filter in
-				guard statistic.supports(trackableSource: filter.source) else { return nil }
-
-				return try database.reader().read { db in
-					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
-					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db) else {
-						return nil
-					}
-
-					switch chartBuilder.buildChart(withEntries: entries) {
-					case let .counting(data):
-						return data
-					case .none, .averaging, .percentage:
-						return nil
-					}
+			loadChart: { statistic, filter in
+				func unavailable() -> Statistics.ChartContent {
+					.chartUnavailable(statistic: statistic.title)
 				}
-			},
-			loadHighestOfChart: { statistic, filter in
-				guard statistic.supports(trackableSource: filter.source) else { return nil }
 
-				return try database.reader().read { db in
-					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
-					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db) else {
-						return nil
-					}
-
-					switch chartBuilder.buildChart(withEntries: entries) {
-					case let .counting(data):
-						return data
-					case .none, .averaging, .percentage:
-						return nil
-					}
+				guard statistic.supports(trackableSource: filter.source) else {
+					return unavailable()
 				}
-			},
-			loadAveragingChart: { statistic, filter in
-				guard statistic.supports(trackableSource: filter.source) else { return nil }
 
 				return try database.reader().read { db in
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
-					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db) else {
-						return nil
+					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
+								let chart = chartBuilder.buildChart(withEntries: entries)
+					else {
+						return unavailable()
 					}
 
-					switch chartBuilder.buildChart(withEntries: entries) {
+					switch chart {
 					case let .averaging(data):
-						return data
-					case .none, .counting, .percentage:
-						return nil
-					}
-				}
-			},
-			loadPercentageChart: { statistic, filter in
-				guard statistic.supports(trackableSource: filter.source) else { return nil }
-
-				return try database.reader().read { db in
-					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
-					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db) else {
-						return nil
-					}
-
-					switch chartBuilder.buildChart(withEntries: entries) {
+						return data.isEmpty ? unavailable() : chart
+					case let .counting(data):
+						return data.isEmpty ? unavailable() : chart
 					case let .percentage(data):
-						return data
-					case .none, .counting, .averaging:
-						return nil
+						return data.isEmpty ? unavailable() : chart
+					case .chartUnavailable:
+						return unavailable()
 					}
 				}
 			}

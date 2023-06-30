@@ -14,7 +14,7 @@ public struct StatisticsDetails: Reducer {
 	public struct State: Equatable {
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var isLoadingNextChart = false
-		public var chartContent: StatisticsDetailsCharts.ChartContent?
+		public var chartContent: Statistics.ChartContent?
 
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
@@ -51,7 +51,7 @@ public struct StatisticsDetails: Reducer {
 			case adjustBackdrop
 			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
 			case didLoadListEntries(TaskResult<[Statistics.ListEntryGroup]>)
-			case didLoadChartContent(TaskResult<StatisticsDetailsCharts.ChartContent>)
+			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
 			case orientationChange(UIDeviceOrientation)
 		}
 
@@ -257,85 +257,17 @@ public struct StatisticsDetails: Reducer {
 			.run { send in
 				let startTime = date()
 
-				var result: TaskResult<StatisticsDetailsCharts.ChartContent>?
-				if let countingStatistic = forStatistic as? CountingStatistic.Type {
-					result = await loadChart(forCountingStatistic: countingStatistic, withFilter: withFilter)
-				} else if let highestOfStatistic = forStatistic as? HighestOfStatistic.Type {
-					result = await loadChart(forHighestOfStatistic: highestOfStatistic, withFilter: withFilter)
-				} else if let averagingStatistic = forStatistic as? AveragingStatistic.Type {
-					result = await loadChart(forAveragingStatistic: averagingStatistic, withFilter: withFilter)
-				} else if let percentageStatistic = forStatistic as? PercentageStatistic.Type {
-					result = await loadChart(forPercentageStatistic: percentageStatistic, withFilter: withFilter)
-				}
+				let result = await TaskResult { try await self.statistics.chart(statistic: forStatistic, filter: withFilter) }
 
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {
 					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
 				}
 
-				if let result {
-					await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
-				} else {
-					await send(
-						.internal(.didLoadChartContent(.success(.chartUnavailable(statistic: forStatistic.title)))),
-						animation: .easeInOut
-					)
-				}
+				await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
 			}
 		)
 		.cancellable(id: CancelID.loadingChartValues, cancelInFlight: true)
-	}
-
-	private func loadChart(
-		forCountingStatistic statistic: CountingStatistic.Type,
-		withFilter: TrackableFilter
-	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
-		await .init {
-			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
-				return .countingChart(data)
-			} else {
-				return .chartUnavailable(statistic: statistic.title)
-			}
-		}
-	}
-
-	private func loadChart(
-		forAveragingStatistic statistic: AveragingStatistic.Type,
-		withFilter: TrackableFilter
-	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
-		await .init {
-			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
-				return .averagingChart(data)
-			} else {
-				return .chartUnavailable(statistic: statistic.title)
-			}
-		}
-	}
-
-	private func loadChart(
-		forHighestOfStatistic statistic: HighestOfStatistic.Type,
-		withFilter: TrackableFilter
-	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
-		await .init {
-			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
-				return .countingChart(data)
-			} else {
-				return .chartUnavailable(statistic: statistic.title)
-			}
-		}
-	}
-
-	private func loadChart(
-		forPercentageStatistic statistic: PercentageStatistic.Type,
-		withFilter: TrackableFilter
-	) async -> TaskResult<StatisticsDetailsCharts.ChartContent> {
-		await .init {
-			if let data = try await self.statistics.chart(statistic: statistic, filter: withFilter), !data.isEmpty {
-				return .percentageChart(data)
-			} else {
-				return .chartUnavailable(statistic: statistic.title)
-			}
-		}
 	}
 }
 
