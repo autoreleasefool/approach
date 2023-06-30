@@ -2,14 +2,18 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
+import Foundation
 import LeaguesRepositoryInterface
 import ModelsLibrary
 import ResourcePickerLibrary
+import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StatisticsWidgetsLibrary
 import StringsLibrary
 
 public struct StatisticsWidgetEditor: Reducer {
+	static let chartLoadingAnimationTime: TimeInterval = 0.5
+
 	public struct State: Equatable {
 		public var source: StatisticsWidget.Configuration.Source?
 		public var timeline: StatisticsWidget.Configuration.Timeline = .past3Months
@@ -20,6 +24,8 @@ public struct StatisticsWidgetEditor: Reducer {
 		public var league: League.Summary?
 
 		public var isLoadingSources = false
+		public var isLoadingPreview = false
+		public var widgetPreviewData: Statistics.ChartContent?
 
 		@PresentationState public var destination: Destination.State?
 
@@ -47,7 +53,9 @@ public struct StatisticsWidgetEditor: Reducer {
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
 
+			case didStartLoadingPreview
 			case didLoadSources(TaskResult<StatisticsWidget.Configuration.Sources?>)
+			case didLoadChartContent(TaskResult<Statistics.ChartContent?>)
 		}
 
 		case view(ViewAction)
@@ -79,8 +87,14 @@ public struct StatisticsWidgetEditor: Reducer {
 		}
 	}
 
+	public enum CancelID {
+		case loadingPreview
+	}
+
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
+	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.statistics) var statistics
 	@Dependency(\.uuid) var uuid
@@ -113,12 +127,7 @@ public struct StatisticsWidgetEditor: Reducer {
 					return .none
 
 				case .didTapSaveButton:
-					guard let source = state.source else { return .none }
-					let configuration = StatisticsWidget.Configuration(
-						source: source,
-						timeline: state.timeline,
-						statistic: state.statistic
-					)
+					guard let configuration = state.configuration else { return .none }
 					// TODO: save configuration to database
 					return .concatenate(
 						.send(.delegate(.didCreateConfiguration(configuration))),
@@ -127,15 +136,20 @@ public struct StatisticsWidgetEditor: Reducer {
 
 				case let .didChangeTimeline(timeline):
 					state.timeline = timeline
-					return .none
+					return refreshChart(withConfiguration: state.configuration, state: &state)
 
 				case let .didChangeStatistic(statistic):
 					state.statistic = statistic
-					return .none
+					return refreshChart(withConfiguration: state.configuration, state: &state)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .didStartLoadingPreview:
+					state.isLoadingPreview = true
+					state.widgetPreviewData = nil
+					return .none
+
 				case let .didLoadSources(.success(sources)):
 					state.isLoadingSources = false
 					state.sources = sources
@@ -148,6 +162,14 @@ public struct StatisticsWidgetEditor: Reducer {
 					state.isLoadingSources = false
 					return .none
 
+				case let .didLoadChartContent(.success(content)):
+					state.widgetPreviewData = content
+					return .none
+
+				case .didLoadChartContent(.failure):
+					// TODO: handle failure loading chart preview
+					return .none
+
 				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSelection(bowler):
@@ -158,7 +180,7 @@ public struct StatisticsWidgetEditor: Reducer {
 						} else {
 							state.source = nil
 						}
-						return .none
+						return refreshChart(withConfiguration: state.configuration, state: &state)
 					}
 
 				case let .destination(.presented(.leaguePicker(.delegate(delegateAction)))):
@@ -172,7 +194,7 @@ public struct StatisticsWidgetEditor: Reducer {
 						} else {
 							state.source = nil
 						}
-						return .none
+						return refreshChart(withConfiguration: state.configuration, state: &state)
 					}
 
 				case .destination(.dismiss),
@@ -195,6 +217,39 @@ public struct StatisticsWidgetEditor: Reducer {
 	private func loadSources(_ state: inout State) -> Effect<Action> {
 		state.isLoadingSources = true
 		return .none
+	}
+
+	private func refreshChart(
+		withConfiguration configuration: StatisticsWidget.Configuration?,
+		state: inout State
+	) -> Effect<Action> {
+		guard let configuration else {
+			return .send(.internal(.didLoadChartContent(.success(nil))), animation: .easeInOut)
+		}
+
+		return .concatenate(
+			.run { send in await send(.internal(.didStartLoadingPreview), animation: .easeInOut) },
+			.run { send in
+				let startTime = date()
+
+				let result = await TaskResult { try await statistics.loadWidgetData(configuration) }
+
+				let timeSpent = date().timeIntervalSince(startTime)
+				if timeSpent < Self.chartLoadingAnimationTime {
+					try await clock.sleep(for: .milliseconds((Self.chartLoadingAnimationTime - timeSpent) * 1000))
+				}
+
+				await send(.internal(.didLoadChartContent(result)), animation: .easeInOut)
+			}
+		)
+		.cancellable(id: CancelID.loadingPreview, cancelInFlight: true)
+	}
+}
+
+extension StatisticsWidgetEditor.State {
+	var configuration: StatisticsWidget.Configuration? {
+		guard let source else { return nil }
+		return .init(source: source, timeline: timeline, statistic: statistic)
 	}
 }
 

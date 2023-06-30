@@ -283,6 +283,7 @@
 
 /* Widget */
 
+"widget.builder.preview" = "Preview";
 "widget.builder.title" = "Create a Widget";
 "widget.builder.timeline" = "Timeline";
 "widget.builder.statistic" = "Statistic to Display";

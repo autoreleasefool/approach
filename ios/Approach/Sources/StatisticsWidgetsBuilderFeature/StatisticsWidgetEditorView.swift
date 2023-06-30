@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import ModelsLibrary
 import ResourcePickerLibrary
+import StatisticsLibrary
 import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
@@ -21,7 +22,11 @@ public struct StatisticsWidgetEditorView: View {
 
 		let isShowingLeaguePicker: Bool
 		let isLoadingSources: Bool
+		let isLoadingPreview: Bool
 		let isSaveable: Bool
+
+		let widgetConfiguration: StatisticsWidget.Configuration?
+		let widgetPreviewData: Statistics.ChartContent?
 
 		init(state: StatisticsWidgetEditor.State) {
 			self.source = state.source
@@ -32,7 +37,10 @@ public struct StatisticsWidgetEditorView: View {
 			self.selectedLeagueName = state.league?.name
 			self.isShowingLeaguePicker = selectedBowlerName != nil
 			self.isLoadingSources = state.isLoadingSources
+			self.isLoadingPreview = state.isLoadingPreview
 			self.isSaveable = state.source != nil
+			self.widgetConfiguration = state.configuration
+			self.widgetPreviewData = state.widgetPreviewData
 		}
 	}
 
@@ -92,6 +100,25 @@ public struct StatisticsWidgetEditorView: View {
 						}
 						.pickerStyle(.navigationLink)
 					}
+
+					if viewStore.widgetConfiguration != nil || viewStore.isLoadingPreview {
+						Section(Strings.Widget.Builder.preview) {
+							if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
+								switch chartContent {
+								case let .averaging(data):
+									StatisticsWidget.AveragingWidget(data, configuration: configuration)
+								case let .counting(data):
+									emptyChart(data.title)
+								case let .percentage(data):
+									emptyChart(data.title)
+								case let .chartUnavailable(statistic):
+									emptyChart(statistic)
+								}
+							} else {
+								ProgressView()
+							}
+						}
+					}
 				}
 			}
 			.navigationTitle(Strings.Widget.Builder.title)
@@ -120,6 +147,10 @@ public struct StatisticsWidgetEditorView: View {
 				Text(league.name)
 			}
 		}
+	}
+
+	private func emptyChart(_ statistic: String) -> some View {
+		Text(Strings.Statistics.Charts.unavailable)
 	}
 }
 

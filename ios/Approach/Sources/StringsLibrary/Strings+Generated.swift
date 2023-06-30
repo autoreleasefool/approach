@@ -1024,11 +1024,13 @@ public enum Strings {
   }
   public enum Widget {
     public enum Builder {
+      /// Widget
+      public static let preview = Strings.tr("Localizable", "widget.builder.preview", fallback: "Preview")
       /// Statistic to Display
       public static let statistic = Strings.tr("Localizable", "widget.builder.statistic", fallback: "Statistic to Display")
       /// Timeline
       public static let timeline = Strings.tr("Localizable", "widget.builder.timeline", fallback: "Timeline")
-      /// Widget
+      /// Create a Widget
       public static let title = Strings.tr("Localizable", "widget.builder.title", fallback: "Create a Widget")
     }
     public enum Timeline {
