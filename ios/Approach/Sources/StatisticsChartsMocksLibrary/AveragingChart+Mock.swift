@@ -6,6 +6,7 @@ import SwiftUI
 extension AveragingChart.Data {
 	private static let bowlerAverageIncrementing: [Double] = [180.0, 181.2, 183.6, 185.2]
 	private static func createMockData(fromArray: [Double]) -> AveragingChart.Data {
+		// FIXME: Use @Dependency(\.calendar)
 		let startDate = Calendar.current.date(byAdding: .month, value: -1, to: Date.now)!
 		return .init(
 			title: "Your Average",

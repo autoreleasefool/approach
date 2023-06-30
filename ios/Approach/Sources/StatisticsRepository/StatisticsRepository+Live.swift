@@ -11,7 +11,9 @@ import StatisticsWidgetsLibrary
 
 extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Dependency(\.calendar) var calendar
 		@Dependency(\.database) var database
+		@Dependency(\.date) var date
 		@Dependency(\.preferences) var preferences
 		@Dependency(\.uuid) var uuid
 
@@ -257,8 +259,32 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadWidgetData: { configuration in
-				try database.reader().read { db in
-					.chartUnavailable(statistic: configuration.statistic.type.title)
+				let statistic = configuration.statistic.type
+				func unavailable() -> Statistics.ChartContent {
+					.chartUnavailable(statistic: statistic.title)
+				}
+
+				return try database.reader().read { db in
+					let filter = configuration.trackableFilter(relativeTo: date(), in: calendar)
+
+					// FIXME: should user be able to choose accumulate/periodic?
+					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: .accumulate)
+					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
+								let chart = chartBuilder.buildChart(withEntries: entries)
+					else {
+						return unavailable()
+					}
+
+					switch chart {
+					case let .averaging(data):
+						return data.isEmpty ? unavailable() : chart
+					case let .counting(data):
+						return data.isEmpty ? unavailable() : chart
+					case let .percentage(data):
+						return data.isEmpty ? unavailable() : chart
+					case .chartUnavailable:
+						return unavailable()
+					}
 				}
 			}
 		)
