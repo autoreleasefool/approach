@@ -10,16 +10,17 @@ public struct SettingsView: View {
 	let store: StoreOf<Settings>
 
 	struct ViewState: Equatable {
-		let showsFeatures: Bool
+		let isShowingDeveloperOptions: Bool
 		let showsOpponents: Bool
 
 		init(state: Settings.State) {
-			self.showsFeatures = state.showsFeatures
+			self.isShowingDeveloperOptions = state.isShowingDeveloperOptions
 			self.showsOpponents = state.hasOpponentsEnabled
 		}
 	}
 
 	enum ViewAction {
+		case didTapPopulateDatabase
 		case didTapFeatureFlags
 		case didTapOpponents
 		case didTapStatistics
@@ -32,12 +33,16 @@ public struct SettingsView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: Settings.Action.init) { viewStore in
 			List {
-				if viewStore.showsFeatures {
+				if viewStore.isShowingDeveloperOptions {
 					Section {
 						Button { viewStore.send(.didTapFeatureFlags) } label: {
 							Text(Strings.Settings.FeatureFlags.title)
 						}
 						.buttonStyle(.navigation)
+
+						Button { viewStore.send(.didTapPopulateDatabase) } label: {
+							Text(Strings.Settings.DeveloperOptions.populateDatabase)
+						}
 					}
 				}
 
@@ -89,6 +94,8 @@ public struct SettingsView: View {
 extension Settings.Action {
 	init(action: SettingsView.ViewAction) {
 		switch action {
+		case .didTapPopulateDatabase:
+			self = .view(.didTapPopulateDatabase)
 		case .didTapFeatureFlags:
 			self = .view(.didTapFeatureFlags)
 		case .didTapOpponents:

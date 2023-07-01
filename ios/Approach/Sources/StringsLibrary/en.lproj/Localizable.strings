@@ -308,6 +308,7 @@
 "settings.developer.blogTitle" = "Blog";
 "settings.developer.blog" = "https://runcode.blog";
 "settings.developer.title" = "Developer";
+"settings.developerOptions.populateDatabase" = "Mock database";
 "settings.help.title" = "Help";
 "settings.help.reportBug" = "Report Bug";
 "settings.help.sendFeedback" = "Send Feedback";

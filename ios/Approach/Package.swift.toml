@@ -103,7 +103,7 @@ features = [ "GamesList", "SeriesEditor" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
-services = [ "Preference" ]
+services = [ "DatabaseMocking", "Preference" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsOverview]
@@ -183,6 +183,9 @@ services = [ "FileManager" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
 dependencies = [ "GRDB" ]
+
+[services.DatabaseMocking]
+skip_tests = true
 
 [services.FeatureFlags]
 services = [ "Preference" ]

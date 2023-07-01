@@ -38,6 +38,8 @@
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
+		CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */; };
+		CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */; };
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
 		CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */ = {isa = PBXBuildFile; productRef = CACA8A5729C616850075A6C1 /* ScoringService */; };
@@ -91,12 +93,14 @@
 			files = (
 				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
 				CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */,
+				CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */,
 				CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */,
 				CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
+				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
@@ -280,6 +284,8 @@
 				CA2FCE922A1490910061A7FE /* MatchPlaysRepository */,
 				CA5952BA2A1FF51D0002494C /* StatisticsRepository */,
 				CA2FA1542A2559C3008341A5 /* NotificationsService */,
+				CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */,
+				CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -559,6 +565,14 @@
 		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AddressLookupService;
+		};
+		CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = DatabaseMockingService;
+		};
+		CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TestDatabaseUtilitiesLibrary;
 		};
 		CAC56850291F54A100192D12 /* PreferenceService */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -743,6 +743,10 @@ public enum Strings {
       /// Website
       public static let websiteTitle = Strings.tr("Localizable", "settings.developer.websiteTitle", fallback: "Website")
     }
+    public enum DeveloperOptions {
+      /// Mock database
+      public static let populateDatabase = Strings.tr("Localizable", "settings.developerOptions.populateDatabase", fallback: "Mock database")
+    }
     public enum FeatureFlags {
       /// Match flags to Development
       public static let matchDevelopment = Strings.tr("Localizable", "settings.featureFlags.matchDevelopment", fallback: "Match flags to Development")

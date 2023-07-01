@@ -5,7 +5,7 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
-public func generatePopulatedDatabase() throws -> any DatabaseWriter {
+public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws -> any DatabaseWriter {
 	let locations: [Location.Database] = [
 		.init(id: UUID(0), title: "Skyview", subtitle: "123 Fake Street", latitude: 1.0, longitude: 1.0),
 		.init(id: UUID(1), title: "Grandview", subtitle: "456 Real Street", latitude: 2.0, longitude: 2.0),
@@ -83,7 +83,8 @@ public func generatePopulatedDatabase() throws -> any DatabaseWriter {
 		withGameLanes: .custom(gameLanes),
 		withGameGear: .zero,
 		withFrames: .custom(frames),
-		withMatchPlays: .custom(matchPlays)
+		withMatchPlays: .custom(matchPlays),
+		to: db
 	)
 }
 

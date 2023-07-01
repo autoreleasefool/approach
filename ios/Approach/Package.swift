@@ -69,6 +69,8 @@ let package = Package(
 		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
 		.library(name: "AvatarService", targets: ["AvatarService"]),
 		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
+		.library(name: "DatabaseMockingService", targets: ["DatabaseMockingService"]),
+		.library(name: "DatabaseMockingServiceInterface", targets: ["DatabaseMockingServiceInterface"]),
 		.library(name: "DatabaseService", targets: ["DatabaseService"]),
 		.library(name: "DatabaseServiceInterface", targets: ["DatabaseServiceInterface"]),
 		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
@@ -480,6 +482,7 @@ let package = Package(
 			name: "SettingsFeature",
 			dependencies: [
 				"ConstantsLibrary",
+				"DatabaseMockingServiceInterface",
 				"FeatureFlagsListFeature",
 				"FoundationExtensionsLibrary",
 				"OpponentsListFeature",
@@ -908,6 +911,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AvatarService",
+			]
+		),
+		.target(
+			name: "DatabaseMockingService",
+			dependencies: [
+				"DatabaseMockingServiceInterface",
+			]
+		),
+		.target(
+			name: "DatabaseMockingServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
 			]
 		),
 		.target(

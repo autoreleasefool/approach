@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import DatabaseMockingServiceInterface
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsListFeature
@@ -7,7 +8,7 @@ import OpponentsListFeature
 
 public struct Settings: Reducer {
 	public struct State: Equatable {
-		public var showsFeatures: Bool
+		public var isShowingDeveloperOptions: Bool
 		public var helpSettings = HelpSettings.State()
 		public let hasOpponentsEnabled: Bool
 
@@ -15,13 +16,14 @@ public struct Settings: Reducer {
 
 		public init() {
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
-			self.showsFeatures = featureFlags.isEnabled(.developerOptions)
+			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 			self.hasOpponentsEnabled = featureFlags.isEnabled(.opponents)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didTapPopulateDatabase
 			case didTapFeatureFlags
 			case didTapOpponents
 			case didTapStatistics
@@ -63,6 +65,8 @@ public struct Settings: Reducer {
 		}
 	}
 
+	@Dependency(\.databaseMocking) var databaseMocking
+
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
@@ -74,6 +78,9 @@ public struct Settings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didTapPopulateDatabase:
+					return .run { _ in try await databaseMocking.mockDatabase() }
+
 				case .didTapOpponents:
 					state.destination = .opponentsList(.init())
 					return .none
