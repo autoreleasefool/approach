@@ -101,23 +101,23 @@ public struct StatisticsWidgetEditorView: View {
 						.pickerStyle(.navigationLink)
 					}
 
-					if viewStore.widgetConfiguration != nil || viewStore.isLoadingPreview {
-						Section(Strings.Widget.Builder.preview) {
-							if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
-								switch chartContent {
-								case let .averaging(data):
-									StatisticsWidget.AveragingWidget(data, configuration: configuration)
-								case let .counting(data):
-									emptyChart(data.title)
-								case let .percentage(data):
-									emptyChart(data.title)
-								case let .chartUnavailable(statistic):
-									emptyChart(statistic)
-								}
-							} else {
-								ProgressView()
+					if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
+						switch chartContent {
+						case let .averaging(data):
+							Section(Strings.Widget.Builder.preview) {
+								StatisticsWidget.AveragingWidget(data, configuration: configuration)
+									.aspectRatio(2, contentMode: .fit)
 							}
+							.listRowInsets(EdgeInsets())
+						case let .counting(data):
+							emptyChart(data.title)
+						case let .percentage(data):
+							emptyChart(data.title)
+						case let .chartUnavailable(statistic):
+							emptyChart(statistic)
 						}
+					} else if viewStore.isLoadingPreview {
+						ProgressView()
 					}
 				}
 			}
@@ -150,7 +150,9 @@ public struct StatisticsWidgetEditorView: View {
 	}
 
 	private func emptyChart(_ statistic: String) -> some View {
-		Text(Strings.Statistics.Charts.unavailable)
+		Section(Strings.Widget.Builder.preview) {
+			Text(Strings.Statistics.Charts.unavailable)
+		}
 	}
 }
 
