@@ -540,7 +540,7 @@ let package = Package(
 				"EquatableLibrary",
 				"LeaguesRepositoryInterface",
 				"ResourcePickerLibrary",
-				"StatisticsRepositoryInterface",
+				"StatisticsWidgetsRepositoryInterface",
 				"SwiftUIExtensionsLibrary",
 			]
 		),

@@ -115,7 +115,7 @@ services = [ "Notifications", "Preference" ]
 libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgetsBuilder]
-repositories = [ "Bowlers", "Leagues", "Statistics" ]
+repositories = [ "Bowlers", "Leagues", "StatisticsWidgets" ]
 libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 # Repositories

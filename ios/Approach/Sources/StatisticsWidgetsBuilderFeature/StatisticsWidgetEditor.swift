@@ -8,6 +8,7 @@ import ModelsLibrary
 import ResourcePickerLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
+import StatisticsWidgetsRepositoryInterface
 import StatisticsWidgetsLibrary
 import StringsLibrary
 
@@ -15,6 +16,7 @@ public struct StatisticsWidgetEditor: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 
 	public struct State: Equatable {
+		public let id: StatisticsWidget.ID
 		public var source: StatisticsWidget.Source?
 		public var timeline: StatisticsWidget.Timeline = .past3Months
 		public var statistic: StatisticsWidget.Statistic = .average
@@ -31,9 +33,13 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		public init(existingConfiguration: StatisticsWidget.Configuration?) {
 			if let existingConfiguration {
+				self.id = existingConfiguration.id
 				self.source = existingConfiguration.source
 				self.timeline = existingConfiguration.timeline
 				self.statistic = existingConfiguration.statistic
+			} else {
+				@Dependency(\.uuid) var uuid
+				self.id = uuid()
 			}
 		}
 	}
@@ -55,7 +61,8 @@ public struct StatisticsWidgetEditor: Reducer {
 
 			case didStartLoadingPreview
 			case didLoadSources(TaskResult<StatisticsWidget.Sources?>)
-			case didLoadChartContent(TaskResult<Statistics.ChartContent?>)
+			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
+			case hideChart
 		}
 
 		case view(ViewAction)
@@ -96,7 +103,7 @@ public struct StatisticsWidgetEditor: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.statistics) var statistics
+	@Dependency(\.statisticsWidgets) var statisticsWidgets
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -145,6 +152,11 @@ public struct StatisticsWidgetEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .hideChart:
+					state.isLoadingPreview = false
+					state.widgetPreviewData = nil
+					return .none
+
 				case .didStartLoadingPreview:
 					state.isLoadingPreview = true
 					state.widgetPreviewData = nil
@@ -224,7 +236,7 @@ public struct StatisticsWidgetEditor: Reducer {
 		state: inout State
 	) -> Effect<Action> {
 		guard let configuration else {
-			return .send(.internal(.didLoadChartContent(.success(nil))), animation: .easeInOut)
+			return .send(.internal(.hideChart), animation: .easeInOut)
 		}
 
 		return .concatenate(
@@ -232,7 +244,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			.run { send in
 				let startTime = date()
 
-				let result = await TaskResult { try await statistics.loadWidgetData(configuration) }
+				let result = await TaskResult { try await statisticsWidgets.chart(configuration) }
 
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {
@@ -249,7 +261,7 @@ public struct StatisticsWidgetEditor: Reducer {
 extension StatisticsWidgetEditor.State {
 	var configuration: StatisticsWidget.Configuration? {
 		guard let source else { return nil }
-		return .init(source: source, timeline: timeline, statistic: statistic)
+		return .init(id: id, source: source, timeline: timeline, statistic: statistic)
 	}
 }
 
