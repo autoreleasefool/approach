@@ -40,6 +40,7 @@
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */; };
 		CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */; };
+		CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C1D2A51412300A99164 /* StatisticsWidgetsRepository */; };
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
 		CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */ = {isa = PBXBuildFile; productRef = CACA8A5729C616850075A6C1 /* ScoringService */; };
@@ -106,6 +107,7 @@
 				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
 				CA2FCE932A1490910061A7FE /* MatchPlaysRepository in Frameworks */,
 				CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */,
+				CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */,
 				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
@@ -286,6 +288,7 @@
 				CA2FA1542A2559C3008341A5 /* NotificationsService */,
 				CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */,
 				CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */,
+				CAC51C1D2A51412300A99164 /* StatisticsWidgetsRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -573,6 +576,10 @@
 		CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestDatabaseUtilitiesLibrary;
+		};
+		CAC51C1D2A51412300A99164 /* StatisticsWidgetsRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StatisticsWidgetsRepository;
 		};
 		CAC56850291F54A100192D12 /* PreferenceService */ = {
 			isa = XCSwiftPackageProductDependency;
