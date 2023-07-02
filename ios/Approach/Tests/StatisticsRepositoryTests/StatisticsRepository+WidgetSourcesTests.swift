@@ -14,7 +14,7 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 
 	func testLoadsWidgetSources_ForBowler() async throws {
 		let db = try generatePopulatedDatabase()
-		let source: StatisticsWidget.Configuration.Source = .bowler(UUID(0))
+		let source: StatisticsWidget.Source = .bowler(UUID(0))
 
 		let sources = try await withDependencies {
 			$0.database.reader = { db }
@@ -31,7 +31,7 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 
 	func testLoadsWidgetSources_ForLeague() async throws {
 		let db = try generatePopulatedDatabase()
-		let source: StatisticsWidget.Configuration.Source = .league(UUID(0))
+		let source: StatisticsWidget.Source = .league(UUID(0))
 
 		let sources = try await withDependencies {
 			$0.database.reader = { db }

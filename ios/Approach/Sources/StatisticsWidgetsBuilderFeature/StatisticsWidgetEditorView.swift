@@ -12,10 +12,10 @@ public struct StatisticsWidgetEditorView: View {
 	let store: StoreOf<StatisticsWidgetEditor>
 
 	struct ViewState: Equatable {
-		let source: StatisticsWidget.Configuration.Source?
-		let sources: StatisticsWidget.Configuration.Sources?
-		let timeline: StatisticsWidget.Configuration.Timeline
-		let statistic: StatisticsWidget.Configuration.Statistic
+		let source: StatisticsWidget.Source?
+		let sources: StatisticsWidget.Sources?
+		let timeline: StatisticsWidget.Timeline
+		let statistic: StatisticsWidget.Statistic
 
 		let selectedBowlerName: String?
 		let selectedLeagueName: String?
@@ -49,8 +49,8 @@ public struct StatisticsWidgetEditorView: View {
 		case didTapBowler
 		case didTapLeague
 		case didTapSaveButton
-		case didChangeTimeline(StatisticsWidget.Configuration.Timeline)
-		case didChangeStatistic(StatisticsWidget.Configuration.Statistic)
+		case didChangeTimeline(StatisticsWidget.Timeline)
+		case didChangeStatistic(StatisticsWidget.Statistic)
 	}
 
 	public init(store: StoreOf<StatisticsWidgetEditor>) {
@@ -68,7 +68,7 @@ public struct StatisticsWidgetEditorView: View {
 							Strings.Widget.Builder.timeline,
 							selection: viewStore.binding(get: \.timeline, send: ViewAction.didChangeTimeline)
 						) {
-							ForEach(StatisticsWidget.Configuration.Timeline.allCases) {
+							ForEach(StatisticsWidget.Timeline.allCases) {
 								Text(String(describing: $0)).tag($0)
 							}
 						}
@@ -94,7 +94,7 @@ public struct StatisticsWidgetEditorView: View {
 							Strings.Widget.Builder.statistic,
 							selection: viewStore.binding(get: \.statistic, send: ViewAction.didChangeStatistic)
 						) {
-							ForEach(StatisticsWidget.Configuration.Statistic.allCases) {
+							ForEach(StatisticsWidget.Statistic.allCases) {
 								Text(String(describing: $0)).tag($0)
 							}
 						}

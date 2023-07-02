@@ -1,8 +1,9 @@
 import Foundation
+import ModelsLibrary
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
 
-extension StatisticsWidget.Configuration.Statistic {
+extension StatisticsWidget.Statistic {
 	var type: Statistic.Type {
 		switch self {
 		case .average:
@@ -15,7 +16,7 @@ extension StatisticsWidget.Configuration.Statistic {
 	}
 }
 
-extension StatisticsWidget.Configuration.Source {
+extension StatisticsWidget.Source {
 	var trackableSource: TrackableFilter.Source {
 		switch self {
 		case let .bowler(id): return .bowler(id)
@@ -24,7 +25,7 @@ extension StatisticsWidget.Configuration.Source {
 	}
 }
 
-extension StatisticsWidget.Configuration.Timeline {
+extension StatisticsWidget.Timeline {
 	func startDate(relativeTo: Date, in calendar: Calendar) -> Date? {
 		var date: Date?
 		switch self {

@@ -1,4 +1,5 @@
 import AssetsLibrary
+import ModelsLibrary
 import SwiftUI
 
 extension StatisticsWidget {

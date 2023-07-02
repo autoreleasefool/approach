@@ -916,6 +916,48 @@
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetsLibraryTests"
+               BuildableName = "StatisticsWidgetsLibraryTests"
+               BlueprintName = "StatisticsWidgetsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetsRepositoryTests"
+               BuildableName = "StatisticsWidgetsRepositoryTests"
+               BlueprintName = "StatisticsWidgetsRepositoryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetsBuilderFeatureTests"
+               BuildableName = "StatisticsWidgetsBuilderFeatureTests"
+               BlueprintName = "StatisticsWidgetsBuilderFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -1571,6 +1613,36 @@
                BlueprintIdentifier = "ModelsLibraryTests"
                BuildableName = "ModelsLibraryTests"
                BlueprintName = "ModelsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetsBuilderFeatureTests"
+               BuildableName = "StatisticsWidgetsBuilderFeatureTests"
+               BlueprintName = "StatisticsWidgetsBuilderFeatureTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetsLibraryTests"
+               BuildableName = "StatisticsWidgetsLibraryTests"
+               BlueprintName = "StatisticsWidgetsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "StatisticsWidgetsRepositoryTests"
+               BuildableName = "StatisticsWidgetsRepositoryTests"
+               BlueprintName = "StatisticsWidgetsRepositoryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

@@ -162,6 +162,12 @@ libraries = [ "StatisticsModels" ]
 [repositories.Statistics.interface]
 libraries = [ "Statistics", "StatisticsWidgets" ]
 
+[repositories.StatisticsWidgets]
+[repositories.StatisticsWidgets.interface]
+repositories = [ "Statistics" ]
+[repositories.StatisticsWidgets.tests]
+repositories = [ "Statistics" ]
+
 # Services
 
 [services.AddressLookup]

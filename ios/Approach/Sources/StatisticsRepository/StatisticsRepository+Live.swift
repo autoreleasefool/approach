@@ -239,7 +239,7 @@ extension StatisticsRepository: DependencyKey {
 					case let .bowler(id):
 						let request = Bowler.Database
 							.filter(id: id)
-						guard let sources = try StatisticsWidget.Configuration.Source.SourcesByBowler
+						guard let sources = try StatisticsWidget.Source.SourcesByBowler
 							.fetchAll($0, request)
 							.first else {
 							return nil
@@ -249,7 +249,7 @@ extension StatisticsRepository: DependencyKey {
 						let request = League.Database
 							.filter(id: id)
 							.including(required: League.Database.bowler)
-						guard let sources = try StatisticsWidget.Configuration.Source.SourcesByLeague
+						guard let sources = try StatisticsWidget.Source.SourcesByLeague
 							.fetchAll($0, request)
 							.first else {
 							return nil

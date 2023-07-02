@@ -15,11 +15,11 @@ public struct StatisticsWidgetEditor: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 
 	public struct State: Equatable {
-		public var source: StatisticsWidget.Configuration.Source?
-		public var timeline: StatisticsWidget.Configuration.Timeline = .past3Months
-		public var statistic: StatisticsWidget.Configuration.Statistic = .average
+		public var source: StatisticsWidget.Source?
+		public var timeline: StatisticsWidget.Timeline = .past3Months
+		public var statistic: StatisticsWidget.Statistic = .average
 
-		public var sources: StatisticsWidget.Configuration.Sources?
+		public var sources: StatisticsWidget.Sources?
 		public var bowler: Bowler.Summary?
 		public var league: League.Summary?
 
@@ -44,8 +44,8 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didTapBowler
 			case didTapLeague
 			case didTapSaveButton
-			case didChangeTimeline(StatisticsWidget.Configuration.Timeline)
-			case didChangeStatistic(StatisticsWidget.Configuration.Statistic)
+			case didChangeTimeline(StatisticsWidget.Timeline)
+			case didChangeStatistic(StatisticsWidget.Statistic)
 		}
 		public enum DelegateAction: Equatable {
 			case didCreateConfiguration(StatisticsWidget.Configuration)
@@ -54,7 +54,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 
 			case didStartLoadingPreview
-			case didLoadSources(TaskResult<StatisticsWidget.Configuration.Sources?>)
+			case didLoadSources(TaskResult<StatisticsWidget.Sources?>)
 			case didLoadChartContent(TaskResult<Statistics.ChartContent?>)
 		}
 

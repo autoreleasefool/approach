@@ -1,4 +1,5 @@
 import AssetsLibrary
+import ModelsLibrary
 import StatisticsChartsLibrary
 import StatisticsChartsMocksLibrary
 import StringsLibrary
@@ -56,14 +57,14 @@ struct AveragingWidgetPreview: PreviewProvider {
 			GridRow {
 				StatisticsWidget.AveragingWidget(
 					AveragingChart.Data.bowlerAverageIncrementingMock,
-					configuration: .init(source: .bowler(.init()), timeline: .past1Month, statistic: .average)
+					configuration: .init(id: .init(), source: .bowler(.init()), timeline: .past1Month, statistic: .average)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)
 
 				StatisticsWidget.AveragingWidget(
 					AveragingChart.Data.bowlerAverageDecrementingMock,
-					configuration: .init(source: .bowler(.init()), timeline: .allTime, statistic: .average)
+					configuration: .init(id: .init(), source: .bowler(.init()), timeline: .allTime, statistic: .average)
 				)
 				.cornerRadius(.largeRadius)
 				.aspectRatio(1, contentMode: .fit)
