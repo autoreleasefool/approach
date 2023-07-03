@@ -27,6 +27,8 @@ extension Bowler.Ordering: CustomStringConvertible {
 }
 
 public struct BowlersList: Reducer {
+	public static let widgetContext = "bowlersList"
+
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
@@ -131,7 +133,7 @@ public struct BowlersList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapConfigureStatisticsButton:
-					state.destination = .widgetBuilder(.init())
+					state.destination = .widgetBuilder(.init(context: Self.widgetContext))
 					return .none
 
 				case .didTapSortOrderButton:

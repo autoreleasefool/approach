@@ -90,6 +90,10 @@ public enum Asset {
     }
   }
   public enum Media {
+    public enum Charts {
+      public static let error = ImageAsset(name: "Charts/Error")
+      public static let noData = ImageAsset(name: "Charts/NoData")
+    }
     public enum EmptyState {
       public static let alleys = ImageAsset(name: "EmptyState/Alleys")
       public static let bowlers = ImageAsset(name: "EmptyState/Bowlers")

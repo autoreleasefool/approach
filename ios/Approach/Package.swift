@@ -102,6 +102,7 @@ let package = Package(
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
+		.library(name: "ReorderingLibrary", targets: ["ReorderingLibrary"]),
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
@@ -539,6 +540,7 @@ let package = Package(
 				"BowlersRepositoryInterface",
 				"EquatableLibrary",
 				"LeaguesRepositoryInterface",
+				"ReorderingLibrary",
 				"ResourcePickerLibrary",
 				"StatisticsWidgetsRepositoryInterface",
 				"SwiftUIExtensionsLibrary",
@@ -1224,6 +1226,20 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ModelsViewsLibrary",
+			]
+		),
+		.target(
+			name: "ReorderingLibrary",
+			dependencies: [
+				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+				"FeatureActionLibrary",
+			]
+		),
+		.testTarget(
+			name: "ReorderingLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ReorderingLibrary",
 			]
 		),
 		.target(

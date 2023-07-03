@@ -102,20 +102,11 @@ public struct StatisticsWidgetEditorView: View {
 					}
 
 					if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
-						switch chartContent {
-						case let .averaging(data):
-							Section(Strings.Widget.Builder.preview) {
-								StatisticsWidget.AveragingWidget(data, configuration: configuration)
-									.aspectRatio(2, contentMode: .fit)
-							}
-							.listRowInsets(EdgeInsets())
-						case let .counting(data):
-							emptyChart(data.title)
-						case let .percentage(data):
-							emptyChart(data.title)
-						case let .chartUnavailable(statistic):
-							emptyChart(statistic)
+						Section(Strings.Widget.Builder.preview) {
+							StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
+								.aspectRatio(2, contentMode: .fit)
 						}
+						.listRowInsets(EdgeInsets())
 					} else if viewStore.isLoadingPreview {
 						ProgressView()
 					}
@@ -146,12 +137,6 @@ public struct StatisticsWidgetEditorView: View {
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
-		}
-	}
-
-	private func emptyChart(_ statistic: String) -> some View {
-		Section(Strings.Widget.Builder.preview) {
-			Text(Strings.Statistics.Charts.unavailable)
 		}
 	}
 }

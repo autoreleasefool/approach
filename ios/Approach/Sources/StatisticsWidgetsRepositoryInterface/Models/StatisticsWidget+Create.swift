@@ -11,17 +11,19 @@ extension StatisticsWidget {
 		public var statistic: StatisticsWidget.Statistic
 		public var context: String
 		public var priority: Int
+	}
+}
 
-		public static func defaultWidget(withId: StatisticsWidget.ID, date: Date, source: Source) -> Self {
-			.init(
-				id: withId,
-				created: date,
-				source: source,
-				timeline: .past3Months,
-				statistic: .average,
-				context: "",
-				priority: 1
-			)
-		}
+extension StatisticsWidget.Configuration {
+	public func make(on created: Date, context: String, priority: Int) -> StatisticsWidget.Create {
+		.init(
+			id: id,
+			created: created,
+			source: source,
+			timeline: timeline,
+			statistic: statistic,
+			context: context,
+			priority: priority
+		)
 	}
 }

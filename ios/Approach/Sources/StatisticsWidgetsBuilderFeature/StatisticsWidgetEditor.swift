@@ -6,10 +6,10 @@ import Foundation
 import LeaguesRepositoryInterface
 import ModelsLibrary
 import ResourcePickerLibrary
+import StatisticsChartsLibrary
 import StatisticsLibrary
-import StatisticsRepositoryInterface
-import StatisticsWidgetsRepositoryInterface
 import StatisticsWidgetsLibrary
+import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
 
 public struct StatisticsWidgetEditor: Reducer {
@@ -17,6 +17,9 @@ public struct StatisticsWidgetEditor: Reducer {
 
 	public struct State: Equatable {
 		public let id: StatisticsWidget.ID
+		public let context: String
+		public let priority: Int
+
 		public var source: StatisticsWidget.Source?
 		public var timeline: StatisticsWidget.Timeline = .past3Months
 		public var statistic: StatisticsWidget.Statistic = .average
@@ -31,7 +34,9 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
-		public init(existingConfiguration: StatisticsWidget.Configuration?) {
+		public init(context: String, priority: Int, existingConfiguration: StatisticsWidget.Configuration?) {
+			self.context = context
+			self.priority = priority
 			if let existingConfiguration {
 				self.id = existingConfiguration.id
 				self.source = existingConfiguration.source
@@ -62,6 +67,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didStartLoadingPreview
 			case didLoadSources(TaskResult<StatisticsWidget.Sources?>)
 			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
+			case didFinishSavingConfiguration(TaskResult<StatisticsWidget.Configuration>)
 			case hideChart
 		}
 
@@ -135,11 +141,12 @@ public struct StatisticsWidgetEditor: Reducer {
 
 				case .didTapSaveButton:
 					guard let configuration = state.configuration else { return .none }
-					// TODO: save configuration to database
-					return .concatenate(
-						.send(.delegate(.didCreateConfiguration(configuration))),
-						.run { _ in await dismiss() }
-					)
+					return .run { [context = state.context, priority = state.priority] send in
+						await send(.internal(.didFinishSavingConfiguration(TaskResult {
+							try await self.statisticsWidgets.create(configuration.make(on: date(), context: context, priority: priority))
+							return configuration
+						})))
+					}
 
 				case let .didChangeTimeline(timeline):
 					state.timeline = timeline
@@ -180,6 +187,16 @@ public struct StatisticsWidgetEditor: Reducer {
 
 				case .didLoadChartContent(.failure):
 					// TODO: handle failure loading chart preview
+					return .none
+
+				case let .didFinishSavingConfiguration(.success(configuration)):
+					return .concatenate(
+						.send(.delegate(.didCreateConfiguration(configuration))),
+						.run { _ in await dismiss() }
+					)
+
+				case .didFinishSavingConfiguration(.failure):
+					// TODO: handle failure saving configuration
 					return .none
 
 				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):

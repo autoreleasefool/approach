@@ -209,6 +209,10 @@ extension StatisticsRepository: DependencyKey {
 					.chartUnavailable(statistic: statistic.title)
 				}
 
+				func dataMissing() -> Statistics.ChartContent {
+					.dataMissing(statistic: statistic.title)
+				}
+
 				guard statistic.supports(trackableSource: filter.source) else {
 					return unavailable()
 				}
@@ -223,13 +227,15 @@ extension StatisticsRepository: DependencyKey {
 
 					switch chart {
 					case let .averaging(data):
-						return data.isEmpty ? unavailable() : chart
+						return data.isEmpty ? dataMissing() : chart
 					case let .counting(data):
-						return data.isEmpty ? unavailable() : chart
+						return data.isEmpty ? dataMissing() : chart
 					case let .percentage(data):
-						return data.isEmpty ? unavailable() : chart
+						return data.isEmpty ? dataMissing() : chart
 					case .chartUnavailable:
 						return unavailable()
+					case .dataMissing:
+						return dataMissing()
 					}
 				}
 			},
@@ -264,6 +270,10 @@ extension StatisticsRepository: DependencyKey {
 					.chartUnavailable(statistic: statistic.title)
 				}
 
+				func dataMissing() -> Statistics.ChartContent {
+					.dataMissing(statistic: statistic.title)
+				}
+
 				return try database.reader().read { db in
 					let filter = configuration.trackableFilter(relativeTo: date(), in: calendar)
 
@@ -277,13 +287,15 @@ extension StatisticsRepository: DependencyKey {
 
 					switch chart {
 					case let .averaging(data):
-						return data.isEmpty ? unavailable() : chart
+						return data.isEmpty ? dataMissing() : chart
 					case let .counting(data):
-						return data.isEmpty ? unavailable() : chart
+						return data.isEmpty ? dataMissing() : chart
 					case let .percentage(data):
-						return data.isEmpty ? unavailable() : chart
+						return data.isEmpty ? dataMissing() : chart
 					case .chartUnavailable:
 						return unavailable()
+					case .dataMissing:
+						return dataMissing()
 					}
 				}
 			}

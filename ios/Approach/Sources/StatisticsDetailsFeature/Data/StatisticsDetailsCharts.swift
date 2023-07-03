@@ -70,7 +70,7 @@ public struct StatisticsDetailsChartsView: View {
 						AveragingChart.Default(data)
 					case let .percentage(data):
 						PercentageChart(data)
-					case let .chartUnavailable(statistic):
+					case let .chartUnavailable(statistic), let .dataMissing(statistic):
 						emptyChart(statistic)
 					}
 				}

@@ -3,19 +3,6 @@ import ModelsLibrary
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
 
-extension StatisticsWidget.Statistic {
-	var type: Statistic.Type {
-		switch self {
-		case .average:
-			return Statistics.GameAverage.self
-		case .middleHits:
-			return Statistics.MiddleHits.self
-		case .averagePinsLeftOnDeck:
-			return Statistics.AveragePinsLeftOnDeck.self
-		}
-	}
-}
-
 extension StatisticsWidget.Source {
 	var trackableSource: TrackableFilter.Source {
 		switch self {

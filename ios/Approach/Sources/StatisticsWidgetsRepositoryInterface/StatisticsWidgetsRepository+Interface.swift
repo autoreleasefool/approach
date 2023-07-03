@@ -1,5 +1,6 @@
 import Dependencies
 import ModelsLibrary
+import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StatisticsWidgetsLibrary

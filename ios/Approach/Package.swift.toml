@@ -116,7 +116,7 @@ libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgetsBuilder]
 repositories = [ "Bowlers", "Leagues", "StatisticsWidgets" ]
-libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
+libraries = [ "Equatable", "Reordering", "ResourcePicker", "SwiftUIExtensions" ]
 
 # Repositories
 
@@ -259,6 +259,10 @@ dependencies = [ "Dependencies" ]
 
 [libraries.ModelsViews]
 libraries = [ "Assets", "Models" ]
+
+[libraries.Reordering]
+libraries = [ "FeatureAction" ]
+dependencies = [ "IdentifiedCollections" ]
 
 [libraries.Repository]
 libraries = [ "Sorting" ]

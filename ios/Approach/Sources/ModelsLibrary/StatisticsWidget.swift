@@ -41,7 +41,6 @@ extension StatisticsWidget {
 	}
 }
 
-
 // MARK: - Source
 
 extension StatisticsWidget {

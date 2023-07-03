@@ -1037,6 +1037,18 @@ public enum Strings {
       /// Create a Widget
       public static let title = Strings.tr("Localizable", "widget.builder.title", fallback: "Create a Widget")
     }
+    public enum Chart {
+      /// Not enough data
+      public static let noData = Strings.tr("Localizable", "widget.chart.noData", fallback: "Not enough data")
+      /// Error
+      public static let unavailable = Strings.tr("Localizable", "widget.chart.unavailable", fallback: "Error")
+    }
+    public enum LayoutBuilder {
+      /// Tap and hold widgets to reorder
+      public static let instructions = Strings.tr("Localizable", "widget.layoutBuilder.instructions", fallback: "Tap and hold widgets to reorder")
+      /// Widgets
+      public static let title = Strings.tr("Localizable", "widget.layoutBuilder.title", fallback: "Widgets")
+    }
     public enum Timeline {
       /// All Time
       public static let allTime = Strings.tr("Localizable", "widget.timeline.allTime", fallback: "All Time")
