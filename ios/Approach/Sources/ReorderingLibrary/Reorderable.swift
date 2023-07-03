@@ -17,6 +17,7 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 		public enum ViewAction: Equatable {}
 		public enum DelegateAction: Equatable {
 			case itemDidMove(from: IndexSet, to: Int)
+			case didFinishReordering
 		}
 		public enum InternalAction: Equatable {}
 
@@ -79,7 +80,8 @@ public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: Vi
 						items: viewStore.items,
 						itemBeingDragged: $itemBeingDragged,
 						draggedItemHasMoved: $draggedItemHasMoved,
-						onMove: { viewStore.send(.delegate(.itemDidMove(from: $0, to: $1)), animation: .easeInOut) }
+						onMove: { viewStore.send(.delegate(.itemDidMove(from: $0, to: $1)), animation: .easeInOut) },
+						onDrop: { viewStore.send(.delegate(.didFinishReordering)) }
 					))
 			}
 		})
@@ -92,6 +94,7 @@ struct ReorderingDelegate<Item: Identifiable & Equatable>: DropDelegate {
 	@Binding var itemBeingDragged: Item?
 	@Binding var draggedItemHasMoved: Bool
 	var onMove: (IndexSet, Int) -> Void
+	var onDrop: () -> Void
 
 	func dropEntered(info: DropInfo) {
 		guard item != itemBeingDragged, let itemBeingDragged else { return }
@@ -111,6 +114,7 @@ struct ReorderingDelegate<Item: Identifiable & Equatable>: DropDelegate {
 	func performDrop(info: DropInfo) -> Bool {
 		draggedItemHasMoved = false
 		itemBeingDragged = nil
+		onDrop()
 		return true
 	}
 }

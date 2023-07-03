@@ -31,6 +31,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public enum InternalAction: Equatable {
 			case widgetsResponse(TaskResult<[StatisticsWidget.Configuration]>)
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
+			case didUpdatePriorities(TaskResult<Never>)
 
 			case editor(PresentationAction<StatisticsWidgetEditor.Action>)
 			case reordering(Reorderable<SquareWidget, StatisticsWidget.Configuration>.Action)
@@ -41,8 +42,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	enum CancelID { case updatePriorities }
+
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
@@ -93,6 +97,10 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					// TODO: handle failure loading chart
 					return .none
 
+				case .didUpdatePriorities(.failure):
+					// TODO: handle failure updating priorities
+					return .none
+
 				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case let .didCreateConfiguration(configuration):
@@ -105,6 +113,16 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					case let .itemDidMove(from, to):
 						state.widgets.move(fromOffsets: from, toOffset: to)
 						return .none
+
+					case .didFinishReordering:
+						return .run { [widgets = state.widgets] send in
+							do {
+								try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+								try await statisticsWidgets.updatePriorities(widgets.map(\.id))
+							} catch {
+								await send(.internal(.didUpdatePriorities(.failure(error))))
+							}
+						}.cancellable(id: CancelID.updatePriorities, cancelInFlight: true)
 					}
 
 				case .editor(.dismiss), .editor(.presented(.internal)), .editor(.presented(.view)):
