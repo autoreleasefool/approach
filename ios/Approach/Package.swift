@@ -835,7 +835,6 @@ let package = Package(
 		.target(
 			name: "StatisticsRepositoryInterface",
 			dependencies: [
-				"StatisticsLibrary",
 				"StatisticsWidgetsLibrary",
 			]
 		),
@@ -1316,7 +1315,7 @@ let package = Package(
 			dependencies: [
 				"AssetsLibrary",
 				"DateTimeLibrary",
-				"StringsLibrary",
+				"StatisticsLibrary",
 			]
 		),
 		.testTarget(
@@ -1368,7 +1367,6 @@ let package = Package(
 		.target(
 			name: "StatisticsWidgetsLibrary",
 			dependencies: [
-				"ModelsLibrary",
 				"StatisticsChartsMocksLibrary",
 			]
 		),

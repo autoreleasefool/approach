@@ -160,7 +160,7 @@ dependencies = [ "IdentifiedCollections" ]
 services = [ "Preference" ]
 libraries = [ "StatisticsModels" ]
 [repositories.Statistics.interface]
-libraries = [ "Statistics", "StatisticsWidgets" ]
+libraries = [ "StatisticsWidgets" ]
 
 [repositories.StatisticsWidgets]
 [repositories.StatisticsWidgets.interface]
@@ -286,7 +286,7 @@ dependencies = [ "IdentifiedCollections" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.StatisticsCharts]
-libraries = [ "Assets", "DateTime", "Strings" ]
+libraries = [ "Assets", "DateTime", "Statistics" ]
 
 [libraries.StatisticsChartsMocks]
 skip_tests = true
@@ -300,7 +300,7 @@ services = [ "Database" ]
 libraries = [ "TestDatabaseUtilities" ]
 
 [libraries.StatisticsWidgets]
-libraries = [ "Models", "StatisticsChartsMocks" ]
+libraries = [ "StatisticsChartsMocks" ]
 
 [libraries.Strings]
 
