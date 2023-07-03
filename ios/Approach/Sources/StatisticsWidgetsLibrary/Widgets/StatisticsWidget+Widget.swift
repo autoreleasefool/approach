@@ -28,12 +28,24 @@ extension StatisticsWidget {
 			case let .dataMissing(statistic):
 				dataMissing(statistic)
 			case .none:
-				chartUnavailable(configuration.statistic.type.title)
+				chartLoading(configuration.statistic.type.title)
+			}
+		}
+
+		private func chartLoading(_ statistic: String) -> some View {
+			HStack(alignment: .center) {
+				Spacer()
+				VStack(alignment: .center) {
+					Spacer()
+					ProgressView()
+					Spacer()
+				}
+				Spacer()
 			}
 		}
 
 		private func chartUnavailable(_ statistic: String) -> some View {
-			HStack {
+			HStack(alignment: .center) {
 				Spacer()
 				VStack(alignment: .center) {
 					Spacer()
@@ -52,7 +64,7 @@ extension StatisticsWidget {
 		}
 
 		private func dataMissing(_ statistic: String) -> some View {
-			HStack {
+			HStack(alignment: .center) {
 				Spacer()
 				VStack(alignment: .center) {
 					Spacer()

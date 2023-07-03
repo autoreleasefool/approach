@@ -31,6 +31,7 @@ public struct BowlersList: Reducer {
 
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
+		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext)
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
 
 		@PresentationState public var destination: Destination.State?
@@ -76,6 +77,7 @@ public struct BowlersList: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
+			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -128,6 +130,10 @@ public struct BowlersList: Reducer {
 			ResourceList(fetchResources: bowlers.list)
 		}
 
+		Scope(state: \.widgets, action: /Action.internal..Action.InternalAction.widgets) {
+			StatisticsWidgetLayout()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -178,6 +184,12 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
+				case let .widgets(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
@@ -205,6 +217,9 @@ public struct BowlersList: Reducer {
 					}
 
 				case .list(.internal), .list(.view):
+					return .none
+
+				case .widgets(.internal), .widgets(.view):
 					return .none
 
 				case .destination(.dismiss),

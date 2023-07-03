@@ -23,7 +23,6 @@ public struct BowlersListView: View {
 	}
 
 	enum ViewAction {
-		case didTapConfigureStatisticsButton
 		case didTapSortOrderButton
 		case didTapBowler(Bowler.ID)
 	}
@@ -43,13 +42,11 @@ public struct BowlersListView: View {
 				.buttonStyle(.navigation)
 			} header: {
 				Section {
-					Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
-						StatisticsWidget.PlaceholderWidget()
-					}
-					.buttonStyle(TappableElement())
+					StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))
 				}
 				.listRowSeparator(.hidden)
 				.listRowInsets(EdgeInsets())
+				.listRowBackground(Color.clear)
 			}
 			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
@@ -84,23 +81,12 @@ public struct BowlersListView: View {
 		) { (store: StoreOf<LeaguesList>) in
 			LeaguesListView(store: store)
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /BowlersList.Destination.State.widgetBuilder,
-			action: BowlersList.Destination.Action.widgetBuilder
-		) { (store: StoreOf<StatisticsWidgetLayoutBuilder>) in
-			NavigationStack {
-				StatisticsWidgetLayoutBuilderView(store: store)
-			}
-		}
 	}
 }
 
 extension BowlersList.Action {
 	init(action: BowlersListView.ViewAction) {
 		switch action {
-		case .didTapConfigureStatisticsButton:
-			self = .view(.didTapConfigureStatisticsButton)
 		case .didTapSortOrderButton:
 			self = .view(.didTapSortOrderButton)
 		case let .didTapBowler(id):

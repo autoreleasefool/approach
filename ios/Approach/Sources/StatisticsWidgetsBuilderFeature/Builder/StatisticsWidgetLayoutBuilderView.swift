@@ -40,7 +40,11 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 					ReorderableView(
 						store: store.scope(state: \.reordering, action: { .internal(.reordering($0)) })
 					) { widget in
-						SquareWidget(configuration: widget, chartContent: viewStore.widgetData[widget.id])
+						SquareWidget(
+							configuration: widget,
+							chartContent: viewStore.widgetData[widget.id],
+							onPress: nil
+						)
 					}
 				}
 				.padding(.horizontal, .largeSpacing)
@@ -80,15 +84,20 @@ extension StatisticsWidgetLayoutBuilder.Action {
 public struct SquareWidget: View {
 	let configuration: StatisticsWidget.Configuration
 	let chartContent: Statistics.ChartContent?
-
-	public init(configuration: StatisticsWidget.Configuration, chartContent: Statistics.ChartContent?) {
-		self.configuration = configuration
-		self.chartContent = chartContent
-	}
+	let onPress: (() -> Void)?
 
 	public var body: some View {
-		StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
-			.aspectRatio(1, contentMode: .fit)
-			.cornerRadius(.standardRadius)
+		if let onPress {
+			Button(action: onPress) {
+				StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
+					.aspectRatio(1, contentMode: .fit)
+					.cornerRadius(.standardRadius)
+			}
+			.buttonStyle(TappableElement())
+		} else {
+			StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
+				.aspectRatio(1, contentMode: .fit)
+				.cornerRadius(.standardRadius)
+		}
 	}
 }

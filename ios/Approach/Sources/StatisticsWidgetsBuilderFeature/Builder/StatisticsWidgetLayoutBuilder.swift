@@ -61,11 +61,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				case .didObserveData:
 					return .run { [context = state.context] send in
 						for try await widgets in self.statisticsWidgets.fetchAll(forContext: context) {
-							 await send(.internal(.widgetsResponse(.success(widgets))))
-						 }
-					 } catch: { error, send in
-						 await send(.internal(.widgetsResponse(.failure(error))))
-					 }
+							await send(.internal(.widgetsResponse(.success(widgets))))
+						}
+					} catch: { error, send in
+						await send(.internal(.widgetsResponse(.failure(error))))
+					}
 
 				case .didTapAddNew:
 					state.editor = .init(context: state.context, priority: 0, existingConfiguration: nil)
