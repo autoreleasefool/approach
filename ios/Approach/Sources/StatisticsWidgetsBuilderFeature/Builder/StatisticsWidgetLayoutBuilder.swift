@@ -15,6 +15,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
 		public var _reordering: Reorderable<SquareWidget, StatisticsWidget.Configuration>.State = .init(items: [])
 
+		public var isDeleting = false
+
 		@PresentationState public var editor: StatisticsWidgetEditor.State?
 
 		public init(context: String) {
@@ -26,12 +28,17 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public enum ViewAction: Equatable {
 			case didObserveData
 			case didTapAddNew
+			case didTapDeleteButton
+			case didTapCancelDeleteButton
+			case didTapWidget(id: StatisticsWidget.ID)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case widgetsResponse(TaskResult<[StatisticsWidget.Configuration]>)
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
 			case didUpdatePriorities(TaskResult<Never>)
+			case didDeleteWidget(TaskResult<Never>)
+			case deleteWidget(id: StatisticsWidget.ID)
 
 			case editor(PresentationAction<StatisticsWidgetEditor.Action>)
 			case reordering(Reorderable<SquareWidget, StatisticsWidget.Configuration>.Action)
@@ -70,10 +77,30 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				case .didTapAddNew:
 					state.editor = .init(context: state.context, priority: 0, existingConfiguration: nil)
 					return .none
+
+				case .didTapDeleteButton:
+					state.isDeleting = true
+					return .none
+
+				case .didTapCancelDeleteButton:
+					state.isDeleting = false
+					return .none
+
+				case let .didTapWidget(id):
+					guard state.isDeleting else { return .none }
+					return .send(.internal(.deleteWidget(id: id)), animation: .easeInOut)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .deleteWidget(id):
+					guard state.isDeleting else { return .none }
+					return .run { send in
+						try await self.statisticsWidgets.delete(id)
+					} catch: { error, send in
+						await send(.internal(.didDeleteWidget(.failure(error))))
+					}
+
 				case let .widgetsResponse(.success(widgets)):
 					state.widgets = .init(uniqueElements: widgets)
 					let chartTasks: [Effect<Action>] = state.widgets.map { widget in
@@ -99,6 +126,10 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 				case .didUpdatePriorities(.failure):
 					// TODO: handle failure updating priorities
+					return .none
+
+				case .didDeleteWidget(.failure):
+					// TODO: handle failure deleting widget
 					return .none
 
 				case let .editor(.presented(.delegate(delegateAction))):

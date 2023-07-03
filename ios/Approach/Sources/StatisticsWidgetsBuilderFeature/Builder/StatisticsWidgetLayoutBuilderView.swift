@@ -14,9 +14,11 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 	let store: StoreOf<StatisticsWidgetLayoutBuilder>
 
 	struct ViewState: Equatable {
-		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
+		let isDeleting: Bool
+		let widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
 
 		init(state: StatisticsWidgetLayoutBuilder.State) {
+			self.isDeleting = state.isDeleting
 			self.widgetData = state.widgetData
 		}
 	}
@@ -24,6 +26,9 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 	enum ViewAction {
 		case didObserveData
 		case didTapAddNew
+		case didTapDeleteButton
+		case didTapCancelDeleteButton
+		case didTapWidget(id: StatisticsWidget.ID)
 	}
 
 	public init(store: StoreOf<StatisticsWidgetLayoutBuilder>) {
@@ -43,7 +48,8 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 						SquareWidget(
 							configuration: widget,
 							chartContent: viewStore.widgetData[widget.id],
-							onPress: nil
+							onPress: nil,
+							onDelete: viewStore.isDeleting ? { viewStore.send(.didTapWidget(id: widget.id)) } : nil
 						)
 					}
 				}
@@ -55,8 +61,18 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 					.padding(.largeSpacing)
 			}
 			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.didTapAddNew) }
+				if viewStore.isDeleting {
+					ToolbarItem(placement: .navigationBarTrailing) {
+						Button(Strings.Action.done) { viewStore.send(.didTapCancelDeleteButton) }
+					}
+				} else {
+					ToolbarItem(placement: .navigationBarTrailing) {
+						AddButton { viewStore.send(.didTapAddNew) }
+					}
+
+					ToolbarItem(placement: .navigationBarLeading) {
+						DeleteButton { viewStore.send(.didTapDeleteButton) }
+					}
 				}
 			}
 			.navigationTitle(Strings.Widget.LayoutBuilder.title)
@@ -73,6 +89,12 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 extension StatisticsWidgetLayoutBuilder.Action {
 	init(action: StatisticsWidgetLayoutBuilderView.ViewAction) {
 		switch action {
+		case .didTapDeleteButton:
+			self = .view(.didTapDeleteButton)
+		case .didTapCancelDeleteButton:
+			self = .view(.didTapCancelDeleteButton)
+		case let .didTapWidget(id):
+			self = .view(.didTapWidget(id: id))
 		case .didObserveData:
 			self = .view(.didObserveData)
 		case .didTapAddNew:
@@ -85,19 +107,54 @@ public struct SquareWidget: View {
 	let configuration: StatisticsWidget.Configuration
 	let chartContent: Statistics.ChartContent?
 	let onPress: (() -> Void)?
+	let onDelete: (() -> Void)?
+
+	init(
+		configuration: StatisticsWidget.Configuration,
+		chartContent: Statistics.ChartContent?,
+		onPress: (() -> Void)?,
+		onDelete: (() -> Void)? = nil
+	) {
+		self.configuration = configuration
+		self.chartContent = chartContent
+		self.onPress = onPress
+		self.onDelete = onDelete
+	}
 
 	public var body: some View {
-		if let onPress {
-			Button(action: onPress) {
+		Group {
+			if let onPress {
+				Button(action: onPress) {
+					StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
+						.aspectRatio(1, contentMode: .fit)
+						.cornerRadius(.standardRadius)
+				}
+				.buttonStyle(TappableElement())
+			} else {
 				StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
 					.aspectRatio(1, contentMode: .fit)
 					.cornerRadius(.standardRadius)
 			}
-			.buttonStyle(TappableElement())
-		} else {
-			StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
-				.aspectRatio(1, contentMode: .fit)
-				.cornerRadius(.standardRadius)
+		}
+		.overlay(alignment: .topTrailing) {
+			if let onDelete {
+				Button { onDelete() } label: {
+					ZStack(alignment: .center) {
+						Circle()
+							.fill(Asset.Colors.Destructive.default.swiftUIColor)
+							.frame(width: .smallerIcon, height: .smallerIcon)
+
+						Image(systemName: "xmark")
+							.resizable()
+							.scaledToFit()
+							.frame(width: .tinyIcon, height: .tinyIcon)
+							.foregroundColor(.white)
+					}
+					.padding(.top, (.standardSpacing + .smallSpacing) * -1)
+					.padding(.trailing, (.standardSpacing + .smallSpacing) * -1)
+					.padding(.standardSpacing)
+				}
+			}
 		}
 	}
 }
