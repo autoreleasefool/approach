@@ -28,31 +28,31 @@ public struct MoveableWidget: View {
 	}
 
 	public var body: some View {
-		ZStack {
-			StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
-				.aspectRatio(1, contentMode: .fit)
-				.cornerRadius(.standardRadius)
+		StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
+			.aspectRatio(1, contentMode: .fit)
+			.cornerRadius(.standardRadius)
+			.wiggling(isWiggling: isWiggling)
+			.overlay(alignment: .topTrailing) {
+				if isShowingDelete.wrappedValue {
+					Button { onDelete() } label: {
+						ZStack(alignment: .center) {
+							Circle()
+								.fill(Asset.Colors.Destructive.default.swiftUIColor)
+								.frame(width: .smallerIcon, height: .smallerIcon)
 
-			if isShowingDelete.wrappedValue {
-				Button { onDelete() } label: {
-					ZStack(alignment: .center) {
-						Circle()
-							.fill(Asset.Colors.Destructive.default.swiftUIColor)
-							.frame(width: .smallerIcon, height: .smallerIcon)
-
-						Image(systemName: "xmark")
-							.resizable()
-							.scaledToFit()
-							.frame(width: .tinyIcon, height: .tinyIcon)
-							.foregroundColor(.white)
+							Image(systemName: "xmark")
+								.resizable()
+								.scaledToFit()
+								.frame(width: .tinyIcon, height: .tinyIcon)
+								.foregroundColor(.white)
+						}
+						.padding(.top, (.standardSpacing + .smallSpacing) * -1)
+						.padding(.trailing, (.standardSpacing + .smallSpacing) * -1)
+						.padding(.standardSpacing)
 					}
-					.padding(.top, (.standardSpacing + .smallSpacing) * -1)
-					.padding(.trailing, (.standardSpacing + .smallSpacing) * -1)
-					.padding(.standardSpacing)
+					.frame(alignment: .topTrailing)
+					.wiggling(isWiggling: isWiggling)
 				}
-				.frame(alignment: .topTrailing)
 			}
-		}
-		.wiggling(isWiggling: isWiggling)
 	}
 }

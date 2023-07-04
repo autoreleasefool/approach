@@ -16,6 +16,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public var _reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
 
 		public var isDeleting = false
+		public var isAnimatingWidgets = false
 
 		@PresentationState public var editor: StatisticsWidgetEditor.State?
 
@@ -30,7 +31,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case didTapAddNew
 			case didTapDeleteButton
 			case didTapCancelDeleteButton
-			case didTapWidget(id: StatisticsWidget.ID)
+			case didTapDoneButton
+			case didTapDeleteWidget(id: StatisticsWidget.ID)
+			case didFinishDismissingEditor
+			case setAnimateWidgets(Bool)
+			case setDelete(Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -38,7 +43,9 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
 			case didUpdatePriorities(TaskResult<Never>)
 			case didDeleteWidget(TaskResult<Never>)
-			case deleteWidget(id: StatisticsWidget.ID)
+
+			case startAnimatingWidgets
+			case stopAnimatingWidgets
 
 			case editor(PresentationAction<StatisticsWidgetEditor.Action>)
 			case reordering(Reorderable<MoveableWidget, StatisticsWidget.Configuration>.Action)
@@ -54,6 +61,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
+	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
@@ -66,17 +74,26 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didObserveData:
-					return .run { [context = state.context] send in
-						for try await widgets in self.statisticsWidgets.fetchAll(forContext: context) {
-							await send(.internal(.widgetsResponse(.success(widgets))))
+					return .merge(
+						.run { send in
+							try await self.clock.sleep(for: .milliseconds(300))
+							await send(.internal(.startAnimatingWidgets), animation: .easeInOut)
+						},
+						.run { [context = state.context] send in
+							for try await widgets in self.statisticsWidgets.fetchAll(forContext: context) {
+								await send(.internal(.widgetsResponse(.success(widgets))))
+							}
+						} catch: { error, send in
+							await send(.internal(.widgetsResponse(.failure(error))))
 						}
-					} catch: { error, send in
-						await send(.internal(.widgetsResponse(.failure(error))))
-					}
+					)
+
+				case .didTapDoneButton:
+					return .run { _ in await dismiss() }
 
 				case .didTapAddNew:
-					state.editor = .init(context: state.context, priority: 0, existingConfiguration: nil)
-					return .none
+					state.editor = .init(context: state.context, priority: state.widgets.count, existingConfiguration: nil)
+					return .send(.internal(.stopAnimatingWidgets), animation: .easeInOut)
 
 				case .didTapDeleteButton:
 					state.isDeleting = true
@@ -86,20 +103,37 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					state.isDeleting = false
 					return .none
 
-				case let .didTapWidget(id):
+				case let .didTapDeleteWidget(id):
 					guard state.isDeleting else { return .none }
-					return .send(.internal(.deleteWidget(id: id)), animation: .easeInOut)
-				}
-
-			case let .internal(internalAction):
-				switch internalAction {
-				case let .deleteWidget(id):
-					guard state.isDeleting else { return .none }
+					state.widgets.remove(id: id)
+					state.widgetData.removeValue(forKey: id)
 					return .run { _ in
 						try await self.statisticsWidgets.delete(id)
 					} catch: { error, send in
 						await send(.internal(.didDeleteWidget(.failure(error))))
 					}
+
+				case let .setAnimateWidgets(value):
+					state.isAnimatingWidgets = value
+					return .none
+
+				case let .setDelete(value):
+					state.isDeleting = value
+					return .none
+
+				case .didFinishDismissingEditor:
+					return .send(.internal(.startAnimatingWidgets), animation: .easeInOut)
+				}
+
+			case let .internal(internalAction):
+				switch internalAction {
+				case .startAnimatingWidgets:
+					state.isAnimatingWidgets = true
+					return .none
+
+				case .stopAnimatingWidgets:
+					state.isAnimatingWidgets = false
+					return .none
 
 				case let .widgetsResponse(.success(widgets)):
 					state.widgets = .init(uniqueElements: widgets)
@@ -143,8 +177,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
-					case let .didCreateConfiguration(configuration):
-						state.widgets.append(configuration)
+					case .didCreateConfiguration:
 						return .none
 					}
 
@@ -152,6 +185,9 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					switch delegateAction {
 					case let .itemDidMove(from, to):
 						state.widgets.move(fromOffsets: from, toOffset: to)
+						return .none
+
+					case .didStartReordering:
 						return .none
 
 					case .didFinishReordering:

@@ -15,10 +15,12 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 
 	struct ViewState: Equatable {
 		let isDeleting: Bool
+		let isAnimatingWidgets: Bool
 		let widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
 
 		init(state: StatisticsWidgetLayoutBuilder.State) {
 			self.isDeleting = state.isDeleting
+			self.isAnimatingWidgets = state.isAnimatingWidgets
 			self.widgetData = state.widgetData
 		}
 	}
@@ -28,7 +30,11 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 		case didTapAddNew
 		case didTapDeleteButton
 		case didTapCancelDeleteButton
-		case didTapWidget(id: StatisticsWidget.ID)
+		case didTapDoneButton
+		case didTapDeleteWidget(id: StatisticsWidget.ID)
+		case didFinishDismissingEditor
+		case setAnimateWidgets(Bool)
+		case setDelete(Bool)
 	}
 
 	public init(store: StoreOf<StatisticsWidgetLayoutBuilder>) {
@@ -44,13 +50,13 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 				) {
 					ReorderableView(
 						store: store.scope(state: \.reordering, action: { .internal(.reordering($0)) })
-					) { state in
+					) { widget in
 						MoveableWidget(
-							configuration: state.item,
-							chartContent: viewStore.widgetData[state.item.id],
-							isWiggling: .constant(true),
-							isShowingDelete: .constant(viewStore.isDeleting),
-							onDelete: { viewStore.send(.didTapWidget(id: state.item.id)) }
+							configuration: widget,
+							chartContent: viewStore.widgetData[widget.id],
+							isWiggling: viewStore.binding(get: \.isAnimatingWidgets, send: ViewAction.setAnimateWidgets),
+							isShowingDelete: viewStore.binding(get: \.isDeleting, send: ViewAction.setDelete),
+							onDelete: { viewStore.send(.didTapDeleteWidget(id: widget.id), animation: .easeInOut) }
 						)
 					}
 				}
@@ -74,23 +80,30 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 						Button(Strings.Action.done) { viewStore.send(.didTapCancelDeleteButton) }
 					}
 				} else {
+					if !viewStore.widgetData.isEmpty {
+						ToolbarItem(placement: .navigationBarTrailing) {
+							DeleteButton { viewStore.send(.didTapDeleteButton) }
+						}
+					}
+
 					ToolbarItem(placement: .navigationBarTrailing) {
 						AddButton { viewStore.send(.didTapAddNew) }
 					}
 
-					if !viewStore.widgetData.isEmpty {
-						ToolbarItem(placement: .navigationBarLeading) {
-							DeleteButton { viewStore.send(.didTapDeleteButton) }
-						}
+					ToolbarItem(placement: .navigationBarLeading) {
+						Button(Strings.Action.done) { viewStore.send(.didTapDoneButton) }
 					}
 				}
 			}
 			.navigationTitle(Strings.Widget.LayoutBuilder.title)
 			.task { await viewStore.send(.didObserveData).finish() }
-		}
-		.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
-			NavigationStack {
-				StatisticsWidgetEditorView(store: store)
+			.sheet(
+				store: store.scope(state: \.$editor, action: { .internal(.editor($0)) }),
+				onDismiss: { viewStore.send(.didFinishDismissingEditor) }
+			) { store in
+				NavigationStack {
+					StatisticsWidgetEditorView(store: store)
+				}
 			}
 		}
 	}
@@ -103,12 +116,20 @@ extension StatisticsWidgetLayoutBuilder.Action {
 			self = .view(.didTapDeleteButton)
 		case .didTapCancelDeleteButton:
 			self = .view(.didTapCancelDeleteButton)
-		case let .didTapWidget(id):
-			self = .view(.didTapWidget(id: id))
+		case let .didTapDeleteWidget(id):
+			self = .view(.didTapDeleteWidget(id: id))
 		case .didObserveData:
 			self = .view(.didObserveData)
 		case .didTapAddNew:
 			self = .view(.didTapAddNew)
+		case .didTapDoneButton:
+			self = .view(.didTapDoneButton)
+		case .didFinishDismissingEditor:
+			self = .view(.didFinishDismissingEditor)
+		case let .setAnimateWidgets(value):
+			self = .view(.setAnimateWidgets(value))
+		case let .setDelete(value):
+			self = .view(.setDelete(value))
 		}
 	}
 }
