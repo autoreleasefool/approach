@@ -290,7 +290,8 @@
 "widget.chart.unavailable" = "Error";
 "widget.chart.noData" = "Not enough data";
 "widget.layoutBuilder.title" = "Widgets";
-"widget.layoutBuilder.instructions" = "Tap and hold widgets to reorder";
+"widget.layoutBuilder.addNewInstructions" = "You don't have any widgets yet. Tap the '+' to add";
+"widget.layoutBuilder.reorderInstructions" = "Tap and hold widgets to reorder";
 "widget.timeline.past1Month" = "Past Month";
 "widget.timeline.past3Months" = "Past 3 Months";
 "widget.timeline.past6Months" = "Past 6 Months";

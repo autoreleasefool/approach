@@ -13,7 +13,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration> = []
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
-		public var _reordering: Reorderable<SquareWidget, StatisticsWidget.Configuration>.State = .init(items: [])
+		public var _reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
 
 		public var isDeleting = false
 
@@ -41,7 +41,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case deleteWidget(id: StatisticsWidget.ID)
 
 			case editor(PresentationAction<StatisticsWidgetEditor.Action>)
-			case reordering(Reorderable<SquareWidget, StatisticsWidget.Configuration>.Action)
+			case reordering(Reorderable<MoveableWidget, StatisticsWidget.Configuration>.Action)
 		}
 
 		case view(ViewAction)
@@ -95,7 +95,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				switch internalAction {
 				case let .deleteWidget(id):
 					guard state.isDeleting else { return .none }
-					return .run { send in
+					return .run { _ in
 						try await self.statisticsWidgets.delete(id)
 					} catch: { error, send in
 						await send(.internal(.didDeleteWidget(.failure(error))))
@@ -103,6 +103,15 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 				case let .widgetsResponse(.success(widgets)):
 					state.widgets = .init(uniqueElements: widgets)
+					if state.widgets.isEmpty {
+						state.isDeleting = false
+					}
+
+					let removed = state.widgetData.keys.filter { state.widgets[id: $0] == nil }
+					for id in removed {
+						state.widgetData.removeValue(forKey: id)
+					}
+
 					let chartTasks: [Effect<Action>] = state.widgets.map { widget in
 						.run { send in
 							await send(.internal(.didLoadChartContent(id: widget.id, TaskResult {
@@ -174,7 +183,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 }
 
 extension StatisticsWidgetLayoutBuilder.State {
-	var reordering: Reorderable<SquareWidget, StatisticsWidget.Configuration>.State {
+	var reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State {
 		get {
 			var reordering = _reordering
 			reordering.items = widgets

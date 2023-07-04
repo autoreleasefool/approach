@@ -1044,8 +1044,10 @@ public enum Strings {
       public static let unavailable = Strings.tr("Localizable", "widget.chart.unavailable", fallback: "Error")
     }
     public enum LayoutBuilder {
+      /// You don't have any widgets yet. Tap the '+' to add
+      public static let addNewInstructions = Strings.tr("Localizable", "widget.layoutBuilder.addNewInstructions", fallback: "You don't have any widgets yet. Tap the '+' to add")
       /// Tap and hold widgets to reorder
-      public static let instructions = Strings.tr("Localizable", "widget.layoutBuilder.instructions", fallback: "Tap and hold widgets to reorder")
+      public static let reorderInstructions = Strings.tr("Localizable", "widget.layoutBuilder.reorderInstructions", fallback: "Tap and hold widgets to reorder")
       /// Widgets
       public static let title = Strings.tr("Localizable", "widget.layoutBuilder.title", fallback: "Widgets")
     }

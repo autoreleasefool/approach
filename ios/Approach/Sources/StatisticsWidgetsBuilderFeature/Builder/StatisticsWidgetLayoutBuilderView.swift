@@ -44,21 +44,29 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 				) {
 					ReorderableView(
 						store: store.scope(state: \.reordering, action: { .internal(.reordering($0)) })
-					) { widget in
-						SquareWidget(
-							configuration: widget,
-							chartContent: viewStore.widgetData[widget.id],
-							onPress: nil,
-							onDelete: viewStore.isDeleting ? { viewStore.send(.didTapWidget(id: widget.id)) } : nil
+					) { state in
+						MoveableWidget(
+							configuration: state.item,
+							chartContent: viewStore.widgetData[state.item.id],
+							isWiggling: .constant(true),
+							isShowingDelete: .constant(viewStore.isDeleting),
+							onDelete: { viewStore.send(.didTapWidget(id: state.item.id)) }
 						)
 					}
 				}
 				.padding(.horizontal, .largeSpacing)
 
-				Text(Strings.Widget.LayoutBuilder.instructions)
-					.font(.caption)
-					.multilineTextAlignment(.center)
-					.padding(.largeSpacing)
+				if viewStore.widgetData.isEmpty {
+					Text(Strings.Widget.LayoutBuilder.addNewInstructions)
+						.font(.body)
+						.multilineTextAlignment(.center)
+						.padding()
+				} else {
+					Text(Strings.Widget.LayoutBuilder.reorderInstructions)
+						.font(.caption)
+						.multilineTextAlignment(.center)
+						.padding(.largeSpacing)
+				}
 			}
 			.toolbar {
 				if viewStore.isDeleting {
@@ -70,8 +78,10 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 						AddButton { viewStore.send(.didTapAddNew) }
 					}
 
-					ToolbarItem(placement: .navigationBarLeading) {
-						DeleteButton { viewStore.send(.didTapDeleteButton) }
+					if !viewStore.widgetData.isEmpty {
+						ToolbarItem(placement: .navigationBarLeading) {
+							DeleteButton { viewStore.send(.didTapDeleteButton) }
+						}
 					}
 				}
 			}
@@ -99,62 +109,6 @@ extension StatisticsWidgetLayoutBuilder.Action {
 			self = .view(.didObserveData)
 		case .didTapAddNew:
 			self = .view(.didTapAddNew)
-		}
-	}
-}
-
-public struct SquareWidget: View {
-	let configuration: StatisticsWidget.Configuration
-	let chartContent: Statistics.ChartContent?
-	let onPress: (() -> Void)?
-	let onDelete: (() -> Void)?
-
-	init(
-		configuration: StatisticsWidget.Configuration,
-		chartContent: Statistics.ChartContent?,
-		onPress: (() -> Void)?,
-		onDelete: (() -> Void)? = nil
-	) {
-		self.configuration = configuration
-		self.chartContent = chartContent
-		self.onPress = onPress
-		self.onDelete = onDelete
-	}
-
-	public var body: some View {
-		Group {
-			if let onPress {
-				Button(action: onPress) {
-					StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
-						.aspectRatio(1, contentMode: .fit)
-						.cornerRadius(.standardRadius)
-				}
-				.buttonStyle(TappableElement())
-			} else {
-				StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
-					.aspectRatio(1, contentMode: .fit)
-					.cornerRadius(.standardRadius)
-			}
-		}
-		.overlay(alignment: .topTrailing) {
-			if let onDelete {
-				Button { onDelete() } label: {
-					ZStack(alignment: .center) {
-						Circle()
-							.fill(Asset.Colors.Destructive.default.swiftUIColor)
-							.frame(width: .smallerIcon, height: .smallerIcon)
-
-						Image(systemName: "xmark")
-							.resizable()
-							.scaledToFit()
-							.frame(width: .tinyIcon, height: .tinyIcon)
-							.foregroundColor(.white)
-					}
-					.padding(.top, (.standardSpacing + .smallSpacing) * -1)
-					.padding(.trailing, (.standardSpacing + .smallSpacing) * -1)
-					.padding(.standardSpacing)
-				}
-			}
 		}
 	}
 }
