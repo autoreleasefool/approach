@@ -1110,6 +1110,9 @@ let package = Package(
 			name: "ConstantsLibrary",
 			dependencies: [
 				"StringsLibrary",
+			],
+			resources: [
+				.process("Resources"),
 			]
 		),
 		.target(

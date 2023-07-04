@@ -1,68 +1,36 @@
-// swiftlint:disable line_length
+import Foundation
 
 public struct Acknowledgement {
 	public let name: String
-	public let license: License
-	public let licenseContents: String
+	public let license: LicenseFile
+
+	public var licenseText: String? {
+		guard let path = Bundle.module.path(forResource: license.fileName, ofType: license.type),
+					let contents = try? String(contentsOfFile: path, encoding: .utf8) else {
+			return nil
+		}
+
+		return contents
+	}
 }
 
 extension Acknowledgement {
-	public enum License: CustomStringConvertible {
-		case mit
-		case apache2
-
-		public var description: String {
-			switch self {
-			case .mit: return "MIT"
-			case .apache2: return "Apache 2.0"
-			}
-		}
+	public struct LicenseFile {
+		public let fileName: String
+		public let type: String
 	}
 }
 
 extension Acknowledgement {
 	public static let all: [Acknowledgement] = [
-		.init(
-			name: "GRDB.swift",
-			license: .mit,
-			licenseContents: """
-Copyright (C) 2015-2020 Gwendal Roué
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-"""),
-		.init(
-			name: "The Composable Architecture",
-			license: .mit,
-			licenseContents: """
-MIT License
-
-Copyright (c) 2020 Point-Free, Inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-"""),
+		.init(name: "GRDB.swift", license: .init(fileName: "GRDB", type: "txt")),
+		.init(name: "SnapshotTesting", license: .init(fileName: "SnapshotTesting", type: "txt")),
+		.init(name: "Swift Algorithms", license: .init(fileName: "SwiftAlgorithms", type: "txt")),
+		.init(name: "Swift Async Algorithms", license: .init(fileName: "SwiftAsyncAlgorithms", type: "txt")),
+		.init(name: "Swift Dependencies", license: .init(fileName: "SwiftDependencies", type: "txt")),
+		.init(name: "Swift Identified Collections", license: .init(fileName: "SwiftIdentifiedCollections", type: "txt")),
+		.init(name: "The Composable Architecture", license: .init(fileName: "ComposableArchitecture", type: "txt")),
+		.init(name: "WiggleAnimationModifier", license: .init(fileName: "WiggleAnimationModifier", type: "txt")),
+		.init(name: "XCTestDynamicOverlay", license: .init(fileName: "XCTestDynamicOverlay", type: "txt")),
 	]
 }
-
-// swiftlint:enable line_length

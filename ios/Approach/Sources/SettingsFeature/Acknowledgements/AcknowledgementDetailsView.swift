@@ -6,7 +6,7 @@ public struct AcknowledgementDetailsView: View {
 
 	public var body: some View {
 		ScrollView {
-			Text(acknowledgement.licenseContents)
+			Text(acknowledgement.licenseText ?? "")
 				.padding(.horizontal)
 				.navigationTitle(acknowledgement.name)
 		}

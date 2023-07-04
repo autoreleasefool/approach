@@ -225,6 +225,8 @@ processed = [ "Resources" ]
 [libraries.Constants]
 skip_tests = true
 libraries = [ "Strings" ]
+[libraries.Constants.resources]
+processed = [ "Resources" ]
 
 [libraries.Database]
 dependencies = [ "GRDB" ]
