@@ -11,11 +11,16 @@ struct ChartBuilder {
 	let uuid: UUIDGenerator
 	let aggregation: TrackableFilter.Aggregation
 
-	func buildChart(withEntries allEntries: [Date: Statistic]) -> Statistics.ChartContent? {
-		guard !allEntries.allSatisfy(\.value.isEmpty) else { return nil }
+	func buildChart(
+		withEntries allEntries: [Date: Statistic],
+		forStatistic statistic: Statistic.Type
+	) -> Statistics.ChartContent? {
+		guard !allEntries.allSatisfy(\.value.isEmpty) else { return .dataMissing(statistic: statistic.title) }
 
 		let sortedEntries = allEntries.sorted { $0.key < $1.key }
-		guard let firstEntry = sortedEntries.first, let lastEntry = sortedEntries.last else { return nil }
+		guard let firstEntry = sortedEntries.first, let lastEntry = sortedEntries.last else {
+			return .dataMissing(statistic: statistic.title)
+		}
 
 		let timePeriod = max(
 			(lastEntry.key.timeIntervalSince1970 - firstEntry.key.timeIntervalSince1970) / Self.maxTimePeriods,

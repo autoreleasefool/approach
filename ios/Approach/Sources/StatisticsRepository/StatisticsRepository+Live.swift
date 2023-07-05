@@ -220,7 +220,7 @@ extension StatisticsRepository: DependencyKey {
 				return try database.reader().read { db in
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
 					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
-								let chart = chartBuilder.buildChart(withEntries: entries)
+								let chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
 					else {
 						return unavailable()
 					}
@@ -280,7 +280,7 @@ extension StatisticsRepository: DependencyKey {
 					// FIXME: should user be able to choose accumulate/periodic?
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: .accumulate)
 					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
-								let chart = chartBuilder.buildChart(withEntries: entries)
+								let chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
 					else {
 						return unavailable()
 					}
