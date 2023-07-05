@@ -25,7 +25,9 @@ extension League.Ordering: CustomStringConvertible {
 }
 
 public struct LeaguesList: Reducer {
-	public static let widgetContext = "leaguesList"
+	public static func widgetContext(forBowler: Bowler.ID) -> String {
+		"leaguesList-\(forBowler)"
+	}
 
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
@@ -43,7 +45,7 @@ public struct LeaguesList: Reducer {
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
 			self.filter = .init(bowler: bowler.id)
-			self.widgets = .init(context: LeaguesList.widgetContext, newWidgetSource: .bowler(bowler.id))
+			self.widgets = .init(context: LeaguesList.widgetContext(forBowler: bowler.id), newWidgetSource: .bowler(bowler.id))
 			self.list = .init(
 				features: [
 					.add,
