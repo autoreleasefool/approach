@@ -1,6 +1,13 @@
+import Combine
 import Dependencies
 import Foundation
 import PreferenceServiceInterface
+
+extension NSNotification.Name {
+	enum UserDefaults {
+		static let didChange = NSNotification.Name("UserDefaults.didChange")
+	}
+}
 
 extension PreferenceService: DependencyKey {
 	public static var liveValue: Self = {
@@ -12,19 +19,69 @@ extension PreferenceService: DependencyKey {
 
 		return Self(
 			getBool: { key in contains(key) ? userDefaults.value.bool(forKey: key) : nil },
-			setBool: { key, value in userDefaults.value.set(value, forKey: key) },
+			setBool: { key, value in
+				userDefaults.value.set(value, forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
 			getDouble: { key in contains(key) ? userDefaults.value.double(forKey: key) : nil },
-			setDouble: { key, value in userDefaults.value.set(value, forKey: key) },
+			setDouble: { key, value in
+				userDefaults.value.set(value, forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
 			getFloat: { key in contains(key) ? userDefaults.value.float(forKey: key) : nil },
-			setFloat: { key, value in userDefaults.value.set(value, forKey: key) },
+			setFloat: { key, value in
+				userDefaults.value.set(value, forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
 			getInt: { key in contains(key) ? userDefaults.value.integer(forKey: key) : nil },
-			setInt: { key, value in userDefaults.value.set(value, forKey: key) },
+			setInt: { key, value in
+				userDefaults.value.set(value, forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
 			getString: { key in contains(key) ? userDefaults.value.string(forKey: key) : nil },
-			setString: { key, value in userDefaults.value.set(value, forKey: key) },
+			setString: { key, value in
+				userDefaults.value.set(value, forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
 			getStringArray: { key in contains(key) ? userDefaults.value.stringArray(forKey: key) : nil },
-			setStringArray: { key, value in userDefaults.value.set(value, forKey: key) },
+			setStringArray: { key, value in
+				userDefaults.value.set(value, forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
 			contains: contains(_:),
-			remove: { key in userDefaults.value.removeObject(forKey: key) }
+			remove: { key in
+				userDefaults.value.removeObject(forKey: key)
+				if let preference = PreferenceKey(rawValue: key) {
+					NotificationCenter.default.post(name: .UserDefaults.didChange, object: preference)
+				}
+			},
+			observe: { keys in
+				.init { continuation in
+					let cancellable = NotificationCenter.default
+						.publisher(for: .UserDefaults.didChange)
+						.compactMap {
+							guard let preference = $0.object as? PreferenceKey, keys.contains(preference) else { return nil }
+							return preference
+						}
+						.sink { preference in
+							continuation.yield(preference)
+						}
+
+					continuation.onTermination = { _ in cancellable.cancel() }
+				}
+			}
 		)
 	}()
 }

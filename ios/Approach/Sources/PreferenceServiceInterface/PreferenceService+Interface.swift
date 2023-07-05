@@ -15,6 +15,7 @@ public struct PreferenceService: Sendable {
 	public var setStringArray: @Sendable (String, [String]) -> Void
 	public var contains: @Sendable (String) -> Bool
 	public var remove: @Sendable (String) -> Void
+	public var observe: @Sendable ([PreferenceKey]) -> AsyncStream<PreferenceKey>
 
 	public init(
 		getBool: @escaping @Sendable (String) -> Bool?,
@@ -30,7 +31,8 @@ public struct PreferenceService: Sendable {
 		getStringArray: @escaping @Sendable (String) -> [String]?,
 		setStringArray: @escaping @Sendable (String, [String]) -> Void,
 		contains: @escaping @Sendable (String) -> Bool,
-		remove: @escaping @Sendable (String) -> Void
+		remove: @escaping @Sendable (String) -> Void,
+		observe: @escaping @Sendable ([PreferenceKey]) -> AsyncStream<PreferenceKey>
 	) {
 		self.getBool = getBool
 		self.setBool = setBool
@@ -46,6 +48,7 @@ public struct PreferenceService: Sendable {
 		self.setStringArray = setStringArray
 		self.contains = contains
 		self.remove = remove
+		self.observe = observe
 	}
 
 	public func bool(forKey: PreferenceKey) -> Bool? { self.getBool(forKey.rawValue) }
@@ -60,6 +63,9 @@ public struct PreferenceService: Sendable {
 	public func setKey(_ key: PreferenceKey, toString: String) { self.setString(key.rawValue, toString) }
 	public func stringArray(forKey: PreferenceKey) -> [String]? { self.getStringArray(forKey.rawValue) }
 	public func setKey(_ key: PreferenceKey, toStringArray: [String]) { self.setStringArray(key.rawValue, toStringArray) }
+	public func observe(keys: [PreferenceKey]) -> AsyncStream<PreferenceKey> {
+		self.observe(keys)
+	}
 }
 
 extension PreferenceService: TestDependencyKey {
@@ -77,7 +83,8 @@ extension PreferenceService: TestDependencyKey {
 		getStringArray: { _ in unimplemented("\(Self.self).getStringArray") },
 		setStringArray: { _, _ in unimplemented("\(Self.self).setStringArray") },
 		contains: { _ in unimplemented("\(Self.self).contains") },
-		remove: { _ in unimplemented("\(Self.self).remove") }
+		remove: { _ in unimplemented("\(Self.self).remove") },
+		observe: { _ in unimplemented("\(Self.self).observe") }
 	)}()
 }
 

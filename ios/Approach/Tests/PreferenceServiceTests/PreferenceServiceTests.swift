@@ -1,108 +1,230 @@
+import Dependencies
 @testable import PreferenceService
 import PreferenceServiceInterface
 import XCTest
 
 final class PreferenceServiceTests: XCTestCase {
+	@Dependency(\.preferences) var preferences
 
 	func testRemovesKey() {
-		let key = "key"
-		let preferenceService: PreferenceService = .liveValue
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setString = liveValue.setString
+			$0.preferences.getString = liveValue.getString
+		} operation: {
+			let key = "key"
 
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getString(key))
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getString(key))
 
-		preferenceService.setString(key, "value")
+			preferences.setString(key, "value")
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertNotNil(preferenceService.getString(key))
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertNotNil(preferences.getString(key))
 
-		preferenceService.remove(key)
+			preferences.remove(key)
 
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getString(key))
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getString(key))
+		}
 	}
 
 	func testStoreAndRetrievesBool() {
-		let key = "bool"
-		let preferenceService: PreferenceService = .liveValue
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getBool(key))
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setBool = liveValue.setBool
+			$0.preferences.getBool = liveValue.getBool
+		} operation: {
+			let key = "bool"
 
-		preferenceService.setBool(key, true)
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getBool(key))
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertEqual(true, preferenceService.getBool(key))
+			preferences.setBool(key, true)
 
-		preferenceService.remove(key)
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertEqual(true, preferences.getBool(key))
+
+			preferences.remove(key)
+
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getBool(key))
+		}
 	}
 
 	func testStoreAndRetrievesInt() {
-		let key = "int"
-		let preferenceService: PreferenceService = .liveValue
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getInt(key))
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setInt = liveValue.setInt
+			$0.preferences.getInt = liveValue.getInt
+		} operation: {
+			let key = "int"
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getInt(key))
 
-		preferenceService.setInt(key, 101)
+			preferences.setInt(key, 101)
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertEqual(101, preferenceService.getInt(key))
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertEqual(101, preferences.getInt(key))
 
-		preferenceService.remove(key)
+			preferences.remove(key)
+
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getInt(key))
+		}
 	}
 
 	func testStoreAndRetrievesFloat() {
-		let key = "float"
-		let preferenceService: PreferenceService = .liveValue
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getFloat(key))
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setFloat = liveValue.setFloat
+			$0.preferences.getFloat = liveValue.getFloat
+		} operation: {
+			let key = "float"
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getFloat(key))
 
-		preferenceService.setFloat(key, 101.2)
+			preferences.setFloat(key, 101.2)
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertEqual(101.2, preferenceService.getFloat(key))
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertEqual(101.2, preferences.getFloat(key))
 
-		preferenceService.remove(key)
+			preferences.remove(key)
+
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getFloat(key))
+		}
 	}
 
 	func testStoreAndRetrievesDouble() {
-		let key = "double"
-		let preferenceService: PreferenceService = .liveValue
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getDouble(key))
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setDouble = liveValue.setDouble
+			$0.preferences.getDouble = liveValue.getDouble
+		} operation: {
+			let key = "double"
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getDouble(key))
 
-		preferenceService.setDouble(key, 101.2)
+			preferences.setDouble(key, 101.2)
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertEqual(101.2, preferenceService.getDouble(key))
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertEqual(101.2, preferences.getDouble(key))
 
-		preferenceService.remove(key)
+			preferences.remove(key)
+
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getDouble(key))
+		}
 	}
 
 	func testStoreAndRetrievesString() {
-		let key = "string"
-		let preferenceService: PreferenceService = .liveValue
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getString(key))
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setString = liveValue.setString
+			$0.preferences.getString = liveValue.getString
+		} operation: {
+			let key = "string"
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getString(key))
 
-		preferenceService.setString(key, "test value")
+			preferences.setString(key, "value")
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertEqual("test value", preferenceService.getString(key))
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertEqual("value", preferences.getString(key))
 
-		preferenceService.remove(key)
+			preferences.remove(key)
+
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getString(key))
+		}
 	}
 
 	func testStoreAndRetrievesStringArray() {
-		let key = "stringArray"
-		let preferenceService: PreferenceService = .liveValue
-		XCTAssertFalse(preferenceService.contains(key))
-		XCTAssertNil(preferenceService.getStringArray(key))
+		withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setStringArray = liveValue.setStringArray
+			$0.preferences.getStringArray = liveValue.getStringArray
+		} operation: {
+			let key = "stringArray"
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getStringArray(key))
 
-		preferenceService.setStringArray(key, ["test value", "another test"])
+			preferences.setStringArray(key, ["value1", "value2"])
 
-		XCTAssertTrue(preferenceService.contains(key))
-		XCTAssertEqual(["test value", "another test"], preferenceService.getStringArray(key))
+			XCTAssertTrue(preferences.contains(key))
+			XCTAssertEqual(["value1", "value2"], preferences.getStringArray(key))
 
-		preferenceService.remove(key)
+			preferences.remove(key)
+
+			XCTAssertFalse(preferences.contains(key))
+			XCTAssertNil(preferences.getStringArray(key))
+		}
+	}
+
+	func testSubscribe_ReceivesChanges() async {
+		await withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setString = liveValue.setString
+			$0.preferences.setBool = liveValue.setBool
+			$0.preferences.observe = liveValue.observe
+		} operation: {
+			var observations = preferences.observe(
+				keys: [.appDidCompleteOnboarding, .statisticsCountH2AsH]
+			).makeAsyncIterator()
+
+			preferences.setKey(.appDidCompleteOnboarding, toBool: true)
+			preferences.setKey(.statisticsCountH2AsH, toString: "test")
+			preferences.remove(PreferenceKey.appDidCompleteOnboarding.rawValue)
+
+			let firstObservation = await observations.next()
+			XCTAssertEqual(firstObservation, .appDidCompleteOnboarding)
+
+			let secondObservation = await observations.next()
+			XCTAssertEqual(secondObservation, .statisticsCountH2AsH)
+
+			let thirdObservation = await observations.next()
+			XCTAssertEqual(thirdObservation, .appDidCompleteOnboarding)
+		}
+	}
+
+	func testSubscribe_DoesNotReceiveUnrelatedChanges() async {
+		await withDependencies {
+			let liveValue = PreferenceService.liveValue
+			$0.preferences.contains = liveValue.contains
+			$0.preferences.remove = liveValue.remove
+			$0.preferences.setBool = liveValue.setBool
+			$0.preferences.observe = liveValue.observe
+		} operation: {
+			var observations = preferences.observe(
+				keys: [.appDidCompleteOnboarding]
+			).makeAsyncIterator()
+
+			preferences.setKey(.appDidCompleteOnboarding, toBool: true)
+			preferences.setKey(.statisticsCountH2AsH, toBool: false)
+			preferences.remove(PreferenceKey.appDidCompleteOnboarding.rawValue)
+
+			let firstObservation = await observations.next()
+			XCTAssertEqual(firstObservation, .appDidCompleteOnboarding)
+
+			let secondObservation = await observations.next()
+			XCTAssertEqual(secondObservation, .appDidCompleteOnboarding)
+		}
 	}
 }
