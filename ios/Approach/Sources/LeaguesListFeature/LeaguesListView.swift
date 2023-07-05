@@ -5,6 +5,7 @@ import ModelsLibrary
 import ResourceListLibrary
 import SeriesListFeature
 import SortOrderLibrary
+import StatisticsWidgetsLayoutFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary

@@ -12,7 +12,7 @@ import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SortOrderLibrary
-import StatisticsWidgetsBuilderFeature
+import StatisticsWidgetsLayoutFeature
 import StringsLibrary
 import ViewsLibrary
 

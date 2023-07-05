@@ -4,10 +4,12 @@ import FeatureActionLibrary
 import LeagueEditorFeature
 import LeaguesRepositoryInterface
 import ModelsLibrary
+import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SeriesListFeature
 import SortOrderLibrary
+import StatisticsWidgetsLayoutFeature
 import StringsLibrary
 import ViewsLibrary
 

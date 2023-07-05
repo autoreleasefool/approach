@@ -5,7 +5,7 @@ import LeaguesListFeature
 import ModelsLibrary
 import ResourceListLibrary
 import SortOrderLibrary
-import StatisticsWidgetsBuilderFeature
+import StatisticsWidgetsLayoutFeature
 import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI

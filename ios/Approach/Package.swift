@@ -34,7 +34,7 @@ let package = Package(
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsDetailsFeature", targets: ["StatisticsDetailsFeature"]),
 		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
-		.library(name: "StatisticsWidgetsBuilderFeature", targets: ["StatisticsWidgetsBuilderFeature"]),
+		.library(name: "StatisticsWidgetsLayoutFeature", targets: ["StatisticsWidgetsLayoutFeature"]),
 
 		// MARK: - Repositories
 		.library(name: "AlleysRepository", targets: ["AlleysRepository"]),
@@ -247,7 +247,6 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
-				"StatisticsWidgetsBuilderFeature",
 			]
 		),
 		.testTarget(
@@ -385,9 +384,11 @@ let package = Package(
 			name: "LeaguesListFeature",
 			dependencies: [
 				"LeagueEditorFeature",
+				"PreferenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
 				"SortOrderLibrary",
+				"StatisticsWidgetsLayoutFeature",
 			]
 		),
 		.testTarget(
@@ -535,7 +536,7 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "StatisticsWidgetsBuilderFeature",
+			name: "StatisticsWidgetsLayoutFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
 				"EquatableLibrary",
@@ -547,10 +548,10 @@ let package = Package(
 			]
 		),
 		.testTarget(
-			name: "StatisticsWidgetsBuilderFeatureTests",
+			name: "StatisticsWidgetsLayoutFeatureTests",
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"StatisticsWidgetsBuilderFeature",
+				"StatisticsWidgetsLayoutFeature",
 			]
 		),
 
