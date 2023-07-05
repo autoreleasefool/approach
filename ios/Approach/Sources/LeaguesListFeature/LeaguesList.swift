@@ -25,19 +25,25 @@ extension League.Ordering: CustomStringConvertible {
 }
 
 public struct LeaguesList: Reducer {
+	public static let widgetContext = "leaguesList"
+
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
 		public var list: ResourceList<League.List, League.List.FetchRequest>.State
+		public var widgets: StatisticsWidgetLayout.State
 
 		public var ordering: League.Ordering = .byRecentlyUsed
 		public var filter: League.List.FetchRequest.Filter
+
+		public var isShowingWidgets: Bool
 
 		@PresentationState public var destination: Destination.State?
 
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
 			self.filter = .init(bowler: bowler.id)
+			self.widgets = .init(context: LeaguesList.widgetContext, newWidgetSource: .bowler(bowler.id))
 			self.list = .init(
 				features: [
 					.add,
@@ -59,11 +65,15 @@ public struct LeaguesList: Reducer {
 					action: Strings.League.List.add
 				)
 			)
+
+			@Dependency(\.preferences) var preferences
+			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInLeagueList) != true
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didStartObserving
 			case didTapLeague(id: League.ID)
 			case didTapFilterButton
 			case didTapSortOrderButton
@@ -74,7 +84,10 @@ public struct LeaguesList: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadEditableLeague(League.Edit)
 			case didLoadSeriesLeague(League.SeriesHost)
+			case didSetIsShowingWidgets(Bool)
+
 			case list(ResourceList<League.List, League.List.FetchRequest>.Action)
+			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -119,6 +132,7 @@ public struct LeaguesList: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(\.preferences) var preferences
 	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.uuid) var uuid
 
@@ -133,10 +147,23 @@ public struct LeaguesList: Reducer {
 			}
 		}
 
+		Scope(state: \.widgets, action: /Action.internal..Action.InternalAction.widgets) {
+			StatisticsWidgetLayout()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didStartObserving:
+					return .run { send in
+						for await _ in preferences.observe(keys: [.statisticsWidgetHideInLeagueList]) {
+							await send(.internal(.didSetIsShowingWidgets(
+								preferences.bool(forKey: .statisticsWidgetHideInLeagueList) != true
+							)))
+						}
+					}
+
 				case .didTapFilterButton:
 					state.destination = .filters(.init(recurrence: state.filter.recurrence))
 					return .none
@@ -158,6 +185,10 @@ public struct LeaguesList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didSetIsShowingWidgets(isShowing):
+					state.isShowingWidgets = isShowing
+					return .none
+
 				case let .didLoadEditableLeague(league):
 					state.destination = .editor(.init(value: .edit(league)))
 					return .none
@@ -167,6 +198,12 @@ public struct LeaguesList: Reducer {
 					return .run { _ in
 						try await clock.sleep(for: .seconds(1))
 						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
+					}
+
+				case let .widgets(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
 					}
 
 				case let .list(.delegate(delegateAction)):
@@ -218,6 +255,9 @@ public struct LeaguesList: Reducer {
 					}
 
 				case .list(.internal), .list(.view):
+					return .none
+
+				case .widgets(.internal), .widgets(.view):
 					return .none
 
 				case .destination(.dismiss),

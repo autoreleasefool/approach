@@ -17,11 +17,11 @@ public struct BowlersListView: View {
 
 	struct ViewState: Equatable {
 		public let ordering: Bowler.Ordering
-		public let isHidingWidgets: Bool
+		public let isShowingWidgets: Bool
 
 		init(state: BowlersList.State) {
 			self.ordering = state.ordering
-			self.isHidingWidgets = state.isHidingWidgets
+			self.isShowingWidgets = state.isShowingWidgets
 		}
 	}
 
@@ -45,7 +45,7 @@ public struct BowlersListView: View {
 				}
 				.buttonStyle(.navigation)
 			} header: {
-				if !viewStore.isHidingWidgets {
+				if viewStore.isShowingWidgets {
 					Section {
 						StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))
 					}

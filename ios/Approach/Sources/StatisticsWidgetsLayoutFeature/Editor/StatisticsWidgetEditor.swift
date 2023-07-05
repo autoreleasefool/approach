@@ -19,6 +19,7 @@ public struct StatisticsWidgetEditor: Reducer {
 		public let id: StatisticsWidget.ID
 		public let context: String
 		public let priority: Int
+		public let initialSource: StatisticsWidget.Source?
 
 		public var source: StatisticsWidget.Source?
 		public var timeline: StatisticsWidget.Timeline = .past3Months
@@ -34,18 +35,13 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
-		public init(context: String, priority: Int, existingConfiguration: StatisticsWidget.Configuration?) {
+		public init(context: String, priority: Int, source: StatisticsWidget.Source?) {
+			@Dependency(\.uuid) var uuid
+			self.id = uuid()
 			self.context = context
 			self.priority = priority
-			if let existingConfiguration {
-				self.id = existingConfiguration.id
-				self.source = existingConfiguration.source
-				self.timeline = existingConfiguration.timeline
-				self.statistic = existingConfiguration.statistic
-			} else {
-				@Dependency(\.uuid) var uuid
-				self.id = uuid()
-			}
+			self.initialSource = source
+			self.source = source
 		}
 	}
 
@@ -121,6 +117,7 @@ public struct StatisticsWidgetEditor: Reducer {
 					return loadSources(&state)
 
 				case .didTapBowler:
+					guard state.isBowlerEditable else { return .none }
 					state.destination = .bowlerPicker(.init(
 						selected: Set([state.bowler?.id].compactMap { $0 }),
 						query: .init(()),
@@ -244,8 +241,13 @@ public struct StatisticsWidgetEditor: Reducer {
 	}
 
 	private func loadSources(_ state: inout State) -> Effect<Action> {
+		guard let source = state.source else { return .none }
 		state.isLoadingSources = true
-		return .none
+		return .run { send in
+			await send(.internal(.didLoadSources(TaskResult {
+				try await statisticsWidgets.loadSources(source)
+			})))
+		}
 	}
 
 	private func refreshChart(
@@ -279,6 +281,13 @@ extension StatisticsWidgetEditor.State {
 	var configuration: StatisticsWidget.Configuration? {
 		guard let source else { return nil }
 		return .init(id: id, source: source, timeline: timeline, statistic: statistic)
+	}
+
+	var isBowlerEditable: Bool {
+		switch initialSource {
+		case .bowler, .league: return false
+		case .none: return true
+		}
 	}
 }
 

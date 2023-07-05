@@ -10,6 +10,7 @@ import SwiftUI
 public struct StatisticsWidgetLayoutBuilder: Reducer {
 	public struct State: Equatable {
 		public let context: String
+		public let newWidgetSource: StatisticsWidget.Source?
 
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration> = []
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
@@ -20,8 +21,9 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 		@PresentationState public var editor: StatisticsWidgetEditor.State?
 
-		public init(context: String) {
+		public init(context: String, newWidgetSource: StatisticsWidget.Source?) {
 			self.context = context
+			self.newWidgetSource = newWidgetSource
 		}
 	}
 
@@ -92,7 +94,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					return .run { _ in await dismiss() }
 
 				case .didTapAddNew:
-					state.editor = .init(context: state.context, priority: state.widgets.count, existingConfiguration: nil)
+					state.editor = .init(context: state.context, priority: state.widgets.count, source: state.newWidgetSource)
 					return .send(.internal(.stopAnimatingWidgets), animation: .easeInOut)
 
 				case .didTapDeleteButton:

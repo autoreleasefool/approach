@@ -24,6 +24,7 @@ public struct StatisticsWidgetEditorView: View {
 		let isLoadingSources: Bool
 		let isLoadingPreview: Bool
 		let isSaveable: Bool
+		let isBowlerEditable: Bool
 
 		let widgetConfiguration: StatisticsWidget.Configuration?
 		let widgetPreviewData: Statistics.ChartContent?
@@ -39,6 +40,7 @@ public struct StatisticsWidgetEditorView: View {
 			self.isLoadingSources = state.isLoadingSources
 			self.isLoadingPreview = state.isLoadingPreview
 			self.isSaveable = state.source != nil
+			self.isBowlerEditable = state.isBowlerEditable
 			self.widgetConfiguration = state.configuration
 			self.widgetPreviewData = state.widgetPreviewData
 		}
@@ -76,10 +78,14 @@ public struct StatisticsWidgetEditorView: View {
 					}
 
 					Section {
-						Button { viewStore.send(.didTapBowler) } label: {
+						if viewStore.isBowlerEditable {
+							Button { viewStore.send(.didTapBowler) } label: {
+								LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
+							}
+							.buttonStyle(.navigation)
+						} else {
 							LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
 						}
-						.buttonStyle(.navigation)
 
 						if viewStore.isShowingLeaguePicker {
 							Button { viewStore.send(.didTapLeague) } label: {
@@ -119,6 +125,7 @@ public struct StatisticsWidgetEditorView: View {
 						.disabled(!viewStore.isSaveable)
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),

@@ -32,12 +32,12 @@ public struct BowlersList: Reducer {
 
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
-		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext)
+		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext, newWidgetSource: nil)
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
 
 		@PresentationState public var destination: Destination.State?
 
-		public var isHidingWidgets: Bool
+		public var isShowingWidgets: Bool
 		public let hasAvatarsEnabled: Bool
 
 		public init() {
@@ -66,7 +66,7 @@ public struct BowlersList: Reducer {
 			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 
 			@Dependency(\.preferences) var preferences
-			self.isHidingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
+			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
 		}
 	}
 
@@ -81,7 +81,7 @@ public struct BowlersList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
-			case didSetIsHidingWidgets(Bool)
+			case didSetIsShowingWidgets(Bool)
 
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
@@ -98,14 +98,12 @@ public struct BowlersList: Reducer {
 			case editor(BowlerEditor.State)
 			case leagues(LeaguesList.State)
 			case sortOrder(SortOrder<Bowler.Ordering>.State)
-			case widgetBuilder(StatisticsWidgetLayoutBuilder.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
-			case widgetBuilder(StatisticsWidgetLayoutBuilder.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -117,9 +115,6 @@ public struct BowlersList: Reducer {
 			}
 			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
 				SortOrder()
-			}
-			Scope(state: /State.widgetBuilder, action: /Action.widgetBuilder) {
-				StatisticsWidgetLayoutBuilder()
 			}
 		}
 	}
@@ -149,8 +144,8 @@ public struct BowlersList: Reducer {
 				case .didStartObserving:
 					return .run { send in
 						for await _ in preferences.observe(keys: [.statisticsWidgetHideInBowlerList]) {
-							await send(.internal(.didSetIsHidingWidgets(
-								preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
+							await send(.internal(.didSetIsShowingWidgets(
+								preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
 							)))
 						}
 					}
@@ -173,8 +168,8 @@ public struct BowlersList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didSetIsHidingWidgets(isHiding):
-					state.isHidingWidgets = isHiding
+				case let .didSetIsShowingWidgets(isShowing):
+					state.isShowingWidgets = isShowing
 					return .none
 
 				case let .didLoadEditableBowler(bowler):
@@ -227,12 +222,6 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.widgetBuilder(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
 				case .list(.internal), .list(.view):
 					return .none
 
@@ -245,9 +234,7 @@ public struct BowlersList: Reducer {
 						.destination(.presented(.leagues(.internal))),
 						.destination(.presented(.leagues(.view))),
 						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))),
-						.destination(.presented(.widgetBuilder(.internal))),
-						.destination(.presented(.widgetBuilder(.view))):
+						.destination(.presented(.sortOrder(.view))):
 					return .none
 				}
 

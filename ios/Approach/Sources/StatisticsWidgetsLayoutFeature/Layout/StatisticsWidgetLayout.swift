@@ -10,14 +10,16 @@ import ViewsLibrary
 public struct StatisticsWidgetLayout: Reducer {
 	public struct State: Equatable {
 		public let context: String
+		public let newWidgetSource: StatisticsWidget.Source?
 
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration>?
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
 
 		@PresentationState public var layoutBuilder: StatisticsWidgetLayoutBuilder.State?
 
-		public init(context: String) {
+		public init(context: String, newWidgetSource: StatisticsWidget.Source?) {
 			self.context = context
+			self.newWidgetSource = newWidgetSource
 		}
 	}
 
@@ -59,7 +61,7 @@ public struct StatisticsWidgetLayout: Reducer {
 					}
 
 				case .didTapConfigureStatisticsButton:
-					state.layoutBuilder = .init(context: state.context)
+					state.layoutBuilder = .init(context: state.context, newWidgetSource: state.newWidgetSource)
 					return .none
 
 				case .didTapWidget:

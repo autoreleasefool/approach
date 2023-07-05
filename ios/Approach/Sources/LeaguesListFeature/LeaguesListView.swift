@@ -17,14 +17,17 @@ public struct LeaguesListView: View {
 	struct ViewState: Equatable {
 		let bowlerName: String
 		let isAnyFilterActive: Bool
+		let isShowingWidgets: Bool
 
 		init(state: LeaguesList.State) {
 			self.bowlerName = state.bowler.name
 			self.isAnyFilterActive = state.filter != .init(bowler: state.bowler.id)
+			self.isShowingWidgets = state.isShowingWidgets
 		}
 	}
 
 	enum ViewAction {
+		case didStartObserving
 		case didTapFilterButton
 		case didTapSortOrderButton
 		case didTapLeague(League.ID)
@@ -43,6 +46,15 @@ public struct LeaguesListView: View {
 					LabeledContent(league.name, value: format(average: league.average))
 				}
 				.buttonStyle(.navigation)
+			} header: {
+				if viewStore.isShowingWidgets {
+					Section {
+						StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))
+					}
+					.listRowSeparator(.hidden)
+					.listRowInsets(EdgeInsets())
+					.listRowBackground(Color.clear)
+				}
 			}
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
@@ -55,6 +67,7 @@ public struct LeaguesListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
+			.task { viewStore.send(.didStartObserving) }
 		}
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -98,6 +111,8 @@ public struct LeaguesListView: View {
 extension LeaguesList.Action {
 	init(action: LeaguesListView.ViewAction) {
 		switch action {
+		case .didStartObserving:
+			self = .view(.didStartObserving)
 		case .didTapFilterButton:
 			self = .view(.didTapFilterButton)
 		case .didTapSortOrderButton:
