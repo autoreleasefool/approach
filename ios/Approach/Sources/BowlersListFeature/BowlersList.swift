@@ -8,6 +8,7 @@ import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import LeaguesListFeature
 import ModelsLibrary
+import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SortOrderLibrary
@@ -36,6 +37,7 @@ public struct BowlersList: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
+		public var isHidingWidgets: Bool
 		public let hasAvatarsEnabled: Bool
 
 		public init() {
@@ -62,12 +64,15 @@ public struct BowlersList: Reducer {
 
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
+
+			@Dependency(\.preferences) var preferences
+			self.isHidingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didTapConfigureStatisticsButton
+			case didStartObserving
 			case didTapSortOrderButton
 			case didTapBowler(Bowler.ID)
 		}
@@ -76,6 +81,8 @@ public struct BowlersList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Edit)
+			case didSetIsHidingWidgets(Bool)
+
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -122,8 +129,9 @@ public struct BowlersList: Reducer {
 	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.uuid) var uuid
+	@Dependency(\.preferences) var preferences
 	@Dependency(\.recentlyUsed) var recentlyUsed
+	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
@@ -138,9 +146,14 @@ public struct BowlersList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didTapConfigureStatisticsButton:
-					state.destination = .widgetBuilder(.init(context: Self.widgetContext))
-					return .none
+				case .didStartObserving:
+					return .run { send in
+						for await _ in preferences.observe(keys: [.statisticsWidgetHideInBowlerList]) {
+							await send(.internal(.didSetIsHidingWidgets(
+								preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
+							)))
+						}
+					}
 
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.list.query))
@@ -160,6 +173,10 @@ public struct BowlersList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didSetIsHidingWidgets(isHiding):
+					state.isHidingWidgets = isHiding
+					return .none
+
 				case let .didLoadEditableBowler(bowler):
 					state.destination = .editor(.init(value: .edit(bowler)))
 					return .none

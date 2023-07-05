@@ -10,11 +10,16 @@ public struct StatisticsSettings: Reducer {
 		@BindingState public var isCountingSplitWithBonusAsSplit: Bool
 		@BindingState public var isCountingH2AsH: Bool
 
+		@BindingState public var isHidingWidgetsInBowlerList: Bool
+		@BindingState public var isHidingWidgetsInLeagueList: Bool
+
 		init() {
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
 			self.isCountingH2AsH = preferences.bool(forKey: .statisticsCountH2AsH) ?? true
 			self.isCountingSplitWithBonusAsSplit = preferences.bool(forKey: .statisticsCountSplitWithBonusAsSplit) ?? true
+			self.isHidingWidgetsInBowlerList = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
+			self.isHidingWidgetsInLeagueList = preferences.bool(forKey: .statisticsWidgetHideInLeagueList) ?? false
 		}
 	}
 
@@ -66,6 +71,18 @@ public struct StatisticsSettings: Reducer {
 				}
 				.cancellable(id: PreferenceKey.statisticsCountSplitWithBonusAsSplit, cancelInFlight: true)
 
+			case .binding(\.$isHidingWidgetsInBowlerList):
+				return .run { [updatedValue = state.isHidingWidgetsInBowlerList] _ in
+					preferences.setKey(.statisticsWidgetHideInBowlerList, toBool: updatedValue)
+				}
+				.cancellable(id: PreferenceKey.statisticsWidgetHideInBowlerList, cancelInFlight: true)
+
+			case .binding(\.$isHidingWidgetsInLeagueList):
+				return .run { [updatedValue = state.isHidingWidgetsInLeagueList] _ in
+					preferences.setKey(.statisticsWidgetHideInLeagueList, toBool: updatedValue)
+				}
+				.cancellable(id: PreferenceKey.statisticsWidgetHideInLeagueList, cancelInFlight: true)
+
 			case .delegate, .binding:
 				return .none
 			}
@@ -95,6 +112,17 @@ public struct StatisticsSettingsView: View {
 					Toggle(
 						Strings.Settings.Statistics.Overall.hideZeroStatistics,
 						isOn: viewStore.binding(\.$isHidingZeroStatistics)
+					)
+				}
+
+				Section(Strings.Settings.Statistics.Widgets.title) {
+					Toggle(
+						Strings.Settings.Statistics.Widgets.hideInBowlerList,
+						isOn: viewStore.binding(\.$isHidingWidgetsInBowlerList)
+					)
+					Toggle(
+						Strings.Settings.Statistics.Widgets.hideInLeagueList,
+						isOn: viewStore.binding(\.$isHidingWidgetsInLeagueList)
 					)
 				}
 			}

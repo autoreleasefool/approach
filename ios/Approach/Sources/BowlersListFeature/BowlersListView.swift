@@ -16,13 +16,17 @@ public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
 	struct ViewState: Equatable {
-		public var ordering: Bowler.Ordering = .byRecentlyUsed
+		public let ordering: Bowler.Ordering
+		public let isHidingWidgets: Bool
+
 		init(state: BowlersList.State) {
 			self.ordering = state.ordering
+			self.isHidingWidgets = state.isHidingWidgets
 		}
 	}
 
 	enum ViewAction {
+		case didStartObserving
 		case didTapSortOrderButton
 		case didTapBowler(Bowler.ID)
 	}
@@ -41,12 +45,14 @@ public struct BowlersListView: View {
 				}
 				.buttonStyle(.navigation)
 			} header: {
-				Section {
-					StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))
+				if !viewStore.isHidingWidgets {
+					Section {
+						StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))
+					}
+					.listRowSeparator(.hidden)
+					.listRowInsets(EdgeInsets())
+					.listRowBackground(Color.clear)
 				}
-				.listRowSeparator(.hidden)
-				.listRowInsets(EdgeInsets())
-				.listRowBackground(Color.clear)
 			}
 			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
@@ -54,6 +60,7 @@ public struct BowlersListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
+			.task { viewStore.send(.didStartObserving) }
 		}
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -91,6 +98,8 @@ extension BowlersList.Action {
 			self = .view(.didTapSortOrderButton)
 		case let .didTapBowler(id):
 			self = .view(.didTapBowler(id))
+		case .didStartObserving:
+			self = .view(.didStartObserving)
 		}
 	}
 }

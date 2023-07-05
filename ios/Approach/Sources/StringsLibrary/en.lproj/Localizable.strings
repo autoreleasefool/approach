@@ -336,6 +336,9 @@
 "settings.statistics.perFrame.countH2AsH" = "Count H2 as Head Pins?";
 "settings.statistics.perFrame.countSplitWithBonusAsSplit" = "Count S2 as Split?";
 "settings.statistics.perFrame.title" = "Per Frame";
+"settings.statistics.widgets.title" = "Widgets";
+"settings.statistics.widgets.hideInBowlerList" = "Hide widgets for bowlers";
+"settings.statistics.widgets.hideInLeagueList" = "Hide widgets for leagues";
 "settings.title" = "Settings";
 
 /* Ordering */

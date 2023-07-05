@@ -796,6 +796,14 @@ public enum Strings {
         /// Per Frame
         public static let title = Strings.tr("Localizable", "settings.statistics.perFrame.title", fallback: "Per Frame")
       }
+      public enum Widgets {
+        /// Hide widgets for bowlers
+        public static let hideInBowlerList = Strings.tr("Localizable", "settings.statistics.widgets.hideInBowlerList", fallback: "Hide widgets for bowlers")
+        /// Hide widgets for leagues
+        public static let hideInLeagueList = Strings.tr("Localizable", "settings.statistics.widgets.hideInLeagueList", fallback: "Hide widgets for leagues")
+        /// Widgets
+        public static let title = Strings.tr("Localizable", "settings.statistics.widgets.title", fallback: "Widgets")
+      }
     }
   }
   public enum SortOrder {
