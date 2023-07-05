@@ -44,8 +44,8 @@ extension Game.TrackableEntry {
 	static var mocks: [Game.TrackableEntry] {
 		(1..<10).flatMap {
 			[
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), score: 123, date: Date(timeIntervalSince1970: 123)),
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), score: 234, date: Date(timeIntervalSince1970: 234)),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), score: 123, date: Date(timeIntervalSince1970: 123), matchPlay: nil),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), score: 234, date: Date(timeIntervalSince1970: 234), matchPlay: .init(id: UUID($0), result: [.lost, .tied, .won][$0 % 3])),
 			]
 		}
 	}

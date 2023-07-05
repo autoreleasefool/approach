@@ -256,6 +256,10 @@
 "statistics.title.middleHits" = "Middle Hits";
 "statistics.title.leftOfMiddleHits" = "Left of Middle Hits";
 "statistics.title.rightOfMiddleHits" = "Right of Middle Hits";
+"statistics.title.matchesPlayed" = "Matches Played";
+"statistics.title.matchesWon" = "Matches Won";
+"statistics.title.matchesLost" = "Matches Lost";
+"statistics.title.matchesTied" = "Matches Tied";
 "statistics.title.rights" = "Rights";
 "statistics.title.rightsSpared" = "Rights Spared";
 "statistics.title.strikeMiddleHits" = "Middle Hits which were Strikes";

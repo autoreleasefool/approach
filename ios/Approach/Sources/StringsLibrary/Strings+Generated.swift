@@ -988,6 +988,14 @@ public enum Strings {
       public static let leftTwelves = Strings.tr("Localizable", "statistics.title.leftTwelves", fallback: "Left Twelves")
       /// Left Twelves Spared
       public static let leftTwelvesSpared = Strings.tr("Localizable", "statistics.title.leftTwelvesSpared", fallback: "Left Twelves Spared")
+      /// Matches Lost
+      public static let matchesLost = Strings.tr("Localizable", "statistics.title.matchesLost", fallback: "Matches Lost")
+      /// Matches Played
+      public static let matchesPlayed = Strings.tr("Localizable", "statistics.title.matchesPlayed", fallback: "Matches Played")
+      /// Matches Tied
+      public static let matchesTied = Strings.tr("Localizable", "statistics.title.matchesTied", fallback: "Matches Tied")
+      /// Matches Won
+      public static let matchesWon = Strings.tr("Localizable", "statistics.title.matchesWon", fallback: "Matches Won")
       /// Middle Hits
       public static let middleHits = Strings.tr("Localizable", "statistics.title.middleHits", fallback: "Middle Hits")
       /// Number of Games

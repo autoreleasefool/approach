@@ -39,6 +39,12 @@ extension Statistics {
 		Statistics.TotalPinsLeftOnDeck.self,
 		Statistics.AveragePinsLeftOnDeck.self,
 
+		// Match Play
+		Statistics.MatchesPlayed.self,
+		Statistics.MatchesWon.self,
+		Statistics.MatchesLost.self,
+		Statistics.MatchesTied.self,
+
 		// Series
 		Statistics.HighSeriesOf3.self,
 	]

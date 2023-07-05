@@ -7,5 +7,6 @@ extension Game {
 		public let id: Game.ID
 		public let score: Int
 		public let date: Date
+		public let matchPlay: MatchPlay.TrackableEntry?
 	}
 }

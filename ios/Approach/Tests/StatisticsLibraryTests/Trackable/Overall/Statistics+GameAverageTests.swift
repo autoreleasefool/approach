@@ -23,9 +23,9 @@ final class GameAverageTests: XCTestCase {
 		let statistic = create(
 			statistic: Statistics.GameAverage.self,
 			adjustedByGames: [
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID(0), score: 100, date: Date(timeIntervalSince1970: 123)),
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID(1), score: 120, date: Date(timeIntervalSince1970: 123)),
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID(2), score: 0, date: Date(timeIntervalSince1970: 123)),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID(0), score: 100, date: Date(timeIntervalSince1970: 123), matchPlay: nil),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID(1), score: 120, date: Date(timeIntervalSince1970: 123), matchPlay: nil),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID(2), score: 0, date: Date(timeIntervalSince1970: 123), matchPlay: nil),
 			]
 		)
 

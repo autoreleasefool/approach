@@ -2,4 +2,4 @@ import GRDB
 import ModelsLibrary
 import StatisticsLibrary
 
-extension Series.TrackableEntry: FetchableRecord {}
+extension MatchPlay.TrackableEntry: FetchableRecord {}
