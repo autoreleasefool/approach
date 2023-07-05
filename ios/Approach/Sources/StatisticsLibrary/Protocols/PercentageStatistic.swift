@@ -4,6 +4,7 @@ import StringsLibrary
 public protocol PercentageStatistic: Statistic {
 	static var numeratorTitle: String { get }
 	static var denominatorTitle: String { get }
+	static var includeNumeratorInFormattedValue: Bool { get }
 
 	var numerator: Int { get set }
 	var denominator: Int { get set }
@@ -26,7 +27,11 @@ extension PercentageStatistic {
 	}
 
 	public var formattedValue: String {
-		format(percentage: percentage)
+		if Self.includeNumeratorInFormattedValue && numerator > 0 {
+			return "\(format(percentage: percentage)) (\(numerator))"
+		} else {
+			return format(percentage: percentage)
+		}
 	}
 
 	public var isEmpty: Bool {

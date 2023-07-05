@@ -8,6 +8,7 @@ extension Statistics {
 
 		public static var numeratorTitle: String { Strings.Statistics.Title.strikeMiddleHits }
 		public static var denominatorTitle: String { Strings.Statistics.Title.middleHits }
+		public static var includeNumeratorInFormattedValue: Bool { true }
 
 		private var middleHits = 0
 		private var strikes = 0

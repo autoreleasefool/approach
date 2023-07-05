@@ -54,7 +54,7 @@ final class LeftTwelvesSparedTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 3, formattedAs: "33.3%")
+		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 3, formattedAs: "33.3% (1)")
 	}
 
 	func testAdjust_ByFramesWithoutLeftTwelvesSpared_DoesNotAdjust() {

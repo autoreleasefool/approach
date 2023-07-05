@@ -53,7 +53,7 @@ final class RightSplitsSparedTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 3, formattedAs: "66.7%")
+		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 3, formattedAs: "66.7% (2)")
 	}
 
 	func testAdjust_ByFramesWithoutRightSplitsSpared_DoesNotAdjust() {

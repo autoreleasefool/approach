@@ -26,7 +26,7 @@ final class HeadPinsSparedTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 2, formattedAs: "50%")
+		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 2, formattedAs: "50% (1)")
 	}
 
 	func testAdjust_ByFramesWithHeadPin2Spared_WithHeadPin2Enabled_Adjusts() {
@@ -64,7 +64,7 @@ final class HeadPinsSparedTests: XCTestCase {
 			withFrameConfiguration: .init(countHeadPin2AsHeadPin: true, countSplitWithBonusAsSplit: false)
 		)
 
-		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 2, formattedAs: "100%")
+		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 2, formattedAs: "100% (2)")
 	}
 
 	func testAdjust_ByFramesWithHeadPin2Spared_WithHeadPin2Disabled_DoesNotAdjust() {

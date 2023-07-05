@@ -8,6 +8,7 @@ extension Statistics {
 
 		public static var numeratorTitle: String { Strings.Statistics.Title.fouls }
 		public static var denominatorTitle: String { Strings.Statistics.Title.totalRolls }
+		public static var includeNumeratorInFormattedValue: Bool { false }
 
 		private var totalRolls = 0
 		private var fouls = 0

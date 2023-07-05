@@ -58,7 +58,7 @@ final class SpareConversionsTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 4, formattedAs: "75%")
+		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 4, formattedAs: "75% (3)")
 	}
 
 	func testAdjust_ByFramesWithoutSpare_DoesNotAdjust() {

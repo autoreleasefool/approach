@@ -11,6 +11,7 @@ public protocol FirstRollStatistic: PercentageStatistic, TrackablePerFirstRoll {
 extension FirstRollStatistic {
 	public static var numeratorTitle: String { title }
 	public static var denominatorTitle: String { Strings.Statistics.Title.totalRolls }
+	public static var includeNumeratorInFormattedValue: Bool { true }
 
 	public var denominator: Int {
 		get { totalRolls }
