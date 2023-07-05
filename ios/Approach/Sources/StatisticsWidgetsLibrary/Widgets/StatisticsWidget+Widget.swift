@@ -33,53 +33,48 @@ extension StatisticsWidget {
 		}
 
 		private func chartLoading(_ statistic: String) -> some View {
-			HStack(alignment: .center) {
-				Spacer()
-				VStack(alignment: .center) {
-					Spacer()
-					ProgressView()
-					Spacer()
-				}
-				Spacer()
+			centered {
+				ProgressView()
 			}
 		}
 
 		private func chartUnavailable(_ statistic: String) -> some View {
-			HStack(alignment: .center) {
-				Spacer()
-				VStack(alignment: .center) {
-					Spacer()
-					Asset.Media.Charts.error.swiftUIImage
-						.resizable()
-						.renderingMode(.template)
-						.scaledToFit()
-						.foregroundColor(Asset.Colors.Error.default)
-						.frame(width: .smallIcon, height: .smallIcon)
+			centered {
+				Asset.Media.Charts.error.swiftUIImage
+					.resizable()
+					.renderingMode(.template)
+					.scaledToFit()
+					.foregroundColor(Asset.Colors.Error.default)
+					.frame(width: .smallIcon, height: .smallIcon)
 
-					Text(Strings.Widget.Chart.unavailable)
-					Spacer()
-				}
-				Spacer()
+				Text(Strings.Widget.Chart.unavailable)
 			}
 		}
 
 		private func dataMissing(_ statistic: String) -> some View {
+			centered {
+				Asset.Media.Charts.noData.swiftUIImage
+					.resizable()
+					.renderingMode(.template)
+					.scaledToFit()
+					.foregroundColor(Asset.Colors.Warning.default)
+					.frame(width: .smallIcon, height: .smallIcon)
+
+				Text(Strings.Widget.Chart.noData)
+			}
+		}
+
+		private func centered<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
 			HStack(alignment: .center) {
 				Spacer()
 				VStack(alignment: .center) {
 					Spacer()
-					Asset.Media.Charts.noData.swiftUIImage
-						.resizable()
-						.renderingMode(.template)
-						.scaledToFit()
-						.foregroundColor(Asset.Colors.Warning.default)
-						.frame(width: .smallIcon, height: .smallIcon)
-
-					Text(Strings.Widget.Chart.noData)
+					content()
 					Spacer()
 				}
 				Spacer()
 			}
+			.contentShape(Rectangle())
 		}
 	}
 }
