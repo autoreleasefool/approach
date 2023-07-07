@@ -11,6 +11,7 @@ public struct Settings: Reducer {
 		public var isShowingDeveloperOptions: Bool
 		public var helpSettings = HelpSettings.State()
 		public let hasOpponentsEnabled: Bool
+		public let hasAppIconConfigEnabled: Bool
 
 		@PresentationState public var destination: Destination.State?
 
@@ -18,6 +19,7 @@ public struct Settings: Reducer {
 			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 			self.hasOpponentsEnabled = featureFlags.isEnabled(.opponents)
+			self.hasAppIconConfigEnabled = featureFlags.isEnabled(.appIconConfig)
 		}
 	}
 
@@ -27,6 +29,7 @@ public struct Settings: Reducer {
 			case didTapFeatureFlags
 			case didTapOpponents
 			case didTapStatistics
+			case didTapAppIcon
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -41,18 +44,23 @@ public struct Settings: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
+			case appIcon(AppIconList.State)
 			case featureFlags(FeatureFlagsList.State)
 			case opponentsList(OpponentsList.State)
 			case statistics(StatisticsSettings.State)
 		}
 
 		public enum Action: Equatable {
+			case appIcon(AppIconList.Action)
 			case featureFlags(FeatureFlagsList.Action)
 			case opponentsList(OpponentsList.Action)
 			case statistics(StatisticsSettings.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
+			Scope(state: /State.appIcon, action: /Action.appIcon) {
+				AppIconList()
+			}
 			Scope(state: /State.featureFlags, action: /Action.featureFlags) {
 				FeatureFlagsList()
 			}
@@ -92,6 +100,10 @@ public struct Settings: Reducer {
 				case .didTapStatistics:
 					state.destination = .statistics(.init())
 					return .none
+
+				case .didTapAppIcon:
+					state.destination = .appIcon(.init())
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -120,12 +132,20 @@ public struct Settings: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.appIcon(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.featureFlags(.internal))),
 						.destination(.presented(.featureFlags(.view))),
 						.destination(.presented(.statistics(.internal))),
 						.destination(.presented(.statistics(.view))),
 						.destination(.presented(.statistics(.binding))),
+						.destination(.presented(.appIcon(.view))),
+						.destination(.presented(.appIcon(.internal))),
 						.destination(.presented(.opponentsList(.internal))),
 						.destination(.presented(.opponentsList(.view))):
 					return .none

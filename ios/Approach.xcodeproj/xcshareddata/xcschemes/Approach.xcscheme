@@ -280,20 +280,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "StatisticsWidgetsFeatureTests"
-               BuildableName = "StatisticsWidgetsFeatureTests"
-               BlueprintName = "StatisticsWidgetsFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "SortOrderLibraryTests"
                BuildableName = "SortOrderLibraryTests"
                BlueprintName = "SortOrderLibraryTests"
@@ -952,20 +938,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "StatisticsWidgetsBuilderFeatureTests"
-               BuildableName = "StatisticsWidgetsBuilderFeatureTests"
-               BlueprintName = "StatisticsWidgetsBuilderFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ReorderingLibraryTests"
                BuildableName = "ReorderingLibraryTests"
                BlueprintName = "ReorderingLibraryTests"
@@ -1564,16 +1536,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "StatisticsWidgetsFeatureTests"
-               BuildableName = "StatisticsWidgetsFeatureTests"
-               BlueprintName = "StatisticsWidgetsFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "SwiftUIExtensionsLibraryTests"
                BuildableName = "SwiftUIExtensionsLibraryTests"
                BlueprintName = "SwiftUIExtensionsLibraryTests"
@@ -1627,16 +1589,6 @@
                BlueprintIdentifier = "ModelsLibraryTests"
                BuildableName = "ModelsLibraryTests"
                BlueprintName = "ModelsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "StatisticsWidgetsBuilderFeatureTests"
-               BuildableName = "StatisticsWidgetsBuilderFeatureTests"
-               BlueprintName = "StatisticsWidgetsBuilderFeatureTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

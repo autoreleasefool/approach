@@ -326,6 +326,7 @@
 "settings.help.viewSource" = "View Source";
 "settings.help.development.title" = "Development";
 "settings.help.development.help" = "%@ is an open source project you can aid in the development of by using the links above";
+"settings.appIcon.title" = "App Icon";
 "settings.appInfo.title" = "App Info";
 "settings.appInfo.version" = "Version";
 "settings.appInfo.appVersion" = "%@ (%@)";
@@ -361,13 +362,27 @@
 "onboarding.logbook.name" = "Your Name";
 "onboarding.logbook.addBowler" = "Add Bowler";
 
-/* Tabs */
+/* App */
 
 "app.tabs.accessories" = "Accessories";
 "app.tabs.overview" = "Overview";
 "app.tabs.settings" = "Settings";
 "app.tabs.statistics" = "Statistics";
 "tab" = "Tab";
+"app.icon.category.pride" = "Pride";
+"app.icon.category.standard" = "Standard";
+"app.icon.primary" = "Primary";
+"app.icon.bisexual" = "Bisexual Pride";
+"app.icon.earth" = "Earth";
+"app.icon.ember" = "Ember";
+"app.icon.glacial" = "Glacial";
+"app.icon.hexed" = "Hexed";
+"app.icon.pink" = "Pink";
+"app.icon.pride" = "Pride";
+"app.icon.sage" = "Sage";
+"app.icon.trans" = "Trans Pride";
+"app.icon.current" = "Current icon";
+"app.icon.tapToReset" = "Tap to Reset";
 
 /* Editor & Forms */
 

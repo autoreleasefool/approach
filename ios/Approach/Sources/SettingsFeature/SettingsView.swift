@@ -12,10 +12,12 @@ public struct SettingsView: View {
 	struct ViewState: Equatable {
 		let isShowingDeveloperOptions: Bool
 		let showsOpponents: Bool
+		let isShowingAppIcon: Bool
 
 		init(state: Settings.State) {
 			self.isShowingDeveloperOptions = state.isShowingDeveloperOptions
 			self.showsOpponents = state.hasOpponentsEnabled
+			self.isShowingAppIcon = state.hasAppIconConfigEnabled
 		}
 	}
 
@@ -24,6 +26,7 @@ public struct SettingsView: View {
 		case didTapFeatureFlags
 		case didTapOpponents
 		case didTapStatistics
+		case didTapAppIcon
 	}
 
 	public init(store: StoreOf<Settings>) {
@@ -62,6 +65,15 @@ public struct SettingsView: View {
 					.buttonStyle(.navigation)
 				}
 
+				if viewStore.isShowingAppIcon {
+					Section {
+						Button { viewStore.send(.didTapAppIcon) } label: {
+							Text(Strings.Settings.AppIcon.title)
+						}
+						.buttonStyle(.navigation)
+					}
+				}
+
 				HelpSettingsView(store: store.scope(state: \.helpSettings, action: /Settings.Action.InternalAction.helpSettings))
 				VersionView()
 			}
@@ -69,23 +81,30 @@ public struct SettingsView: View {
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /Settings.Destination.State.appIcon,
+			action: Settings.Destination.Action.appIcon
+		) { (store: StoreOf<AppIconList>) in
+			AppIconListView(store: store)
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /Settings.Destination.State.opponentsList,
 			action: Settings.Destination.Action.opponentsList
-		) { store in
+		) { (store: StoreOf<OpponentsList>) in
 			OpponentsListView(store: store)
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /Settings.Destination.State.featureFlags,
 			action: Settings.Destination.Action.featureFlags
-		) { store in
+		) { (store: StoreOf<FeatureFlagsList>) in
 			FeatureFlagsListView(store: store)
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /Settings.Destination.State.statistics,
 			action: Settings.Destination.Action.statistics
-		) { store in
+		) { (store: StoreOf<StatisticsSettings>) in
 			StatisticsSettingsView(store: store)
 		}
 	}
@@ -102,6 +121,8 @@ extension Settings.Action {
 			self = .view(.didTapOpponents)
 		case .didTapStatistics:
 			self = .view(.didTapStatistics)
+		case .didTapAppIcon:
+			self = .view(.didTapAppIcon)
 		}
 	}
 }

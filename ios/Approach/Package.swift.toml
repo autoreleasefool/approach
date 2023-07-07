@@ -103,7 +103,7 @@ features = [ "GamesList", "SeriesEditor" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
-services = [ "DatabaseMocking", "Preference" ]
+services = [ "AppIcon", "DatabaseMocking", "Preference" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsOverview]
@@ -178,6 +178,11 @@ dependencies = [ "XCTestDynamicOverlay" ]
 [services.Analytics]
 libraries = [ "Constants" ]
 dependencies = [ "TelemetryClient" ]
+
+[services.AppIcon]
+skip_tests = true
+[services.AppIcon.interface]
+libraries = [ "Assets" ]
 
 [services.Avatar]
 [services.Avatar.interface]

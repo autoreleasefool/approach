@@ -99,12 +99,13 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 			.task { await viewStore.send(.didObserveData).finish() }
 			.sheet(
 				store: store.scope(state: \.$editor, action: { .internal(.editor($0)) }),
-				onDismiss: { viewStore.send(.didFinishDismissingEditor) }
-			) { store in
-				NavigationStack {
-					StatisticsWidgetEditorView(store: store)
+				onDismiss: { viewStore.send(.didFinishDismissingEditor) },
+				content: { store in
+					NavigationStack {
+						StatisticsWidgetEditorView(store: store)
+					}
 				}
-			}
+			)
 		}
 	}
 }

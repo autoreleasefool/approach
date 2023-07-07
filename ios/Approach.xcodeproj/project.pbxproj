@@ -28,6 +28,7 @@
 		CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3629EBBE4C00B3BAF7 /* GamesRepository */; };
 		CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3829EBBE4C00B3BAF7 /* GearRepository */; };
 		CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */; };
+		CA8847382A587D1D001AA48F /* AppIconService in Frameworks */ = {isa = PBXBuildFile; productRef = CA8847372A587D1D001AA48F /* AppIconService */; };
 		CA8BBC5928D59B8B00653A1E /* ApproachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
@@ -99,6 +100,7 @@
 				CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
+				CA8847382A587D1D001AA48F /* AppIconService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
 				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
@@ -289,6 +291,7 @@
 				CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */,
 				CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */,
 				CAC51C1D2A51412300A99164 /* StatisticsWidgetsRepository */,
+				CA8847372A587D1D001AA48F /* AppIconService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -544,6 +547,10 @@
 		CA6CBA3A29EBBE4C00B3BAF7 /* LanesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LanesRepository;
+		};
+		CA8847372A587D1D001AA48F /* AppIconService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppIconService;
 		};
 		CA94DD632900B3AC00B81A87 /* FileManagerService */ = {
 			isa = XCSwiftPackageProductDependency;

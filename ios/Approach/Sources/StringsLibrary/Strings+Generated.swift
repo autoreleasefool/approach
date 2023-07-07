@@ -181,8 +181,40 @@ public enum Strings {
     }
   }
   public enum App {
+    public enum Icon {
+      /// Bisexual Pride
+      public static let bisexual = Strings.tr("Localizable", "app.icon.bisexual", fallback: "Bisexual Pride")
+      /// Current icon
+      public static let current = Strings.tr("Localizable", "app.icon.current", fallback: "Current icon")
+      /// Earth
+      public static let earth = Strings.tr("Localizable", "app.icon.earth", fallback: "Earth")
+      /// Ember
+      public static let ember = Strings.tr("Localizable", "app.icon.ember", fallback: "Ember")
+      /// Glacial
+      public static let glacial = Strings.tr("Localizable", "app.icon.glacial", fallback: "Glacial")
+      /// Hexed
+      public static let hexed = Strings.tr("Localizable", "app.icon.hexed", fallback: "Hexed")
+      /// Pink
+      public static let pink = Strings.tr("Localizable", "app.icon.pink", fallback: "Pink")
+      /// Pride
+      public static let pride = Strings.tr("Localizable", "app.icon.pride", fallback: "Pride")
+      /// Primary
+      public static let primary = Strings.tr("Localizable", "app.icon.primary", fallback: "Primary")
+      /// Sage
+      public static let sage = Strings.tr("Localizable", "app.icon.sage", fallback: "Sage")
+      /// Tap to Reset
+      public static let tapToReset = Strings.tr("Localizable", "app.icon.tapToReset", fallback: "Tap to Reset")
+      /// Trans Pride
+      public static let trans = Strings.tr("Localizable", "app.icon.trans", fallback: "Trans Pride")
+      public enum Category {
+        /// Pride
+        public static let pride = Strings.tr("Localizable", "app.icon.category.pride", fallback: "Pride")
+        /// Standard
+        public static let standard = Strings.tr("Localizable", "app.icon.category.standard", fallback: "Standard")
+      }
+    }
     public enum Tabs {
-      /// Tabs
+      /// App
       public static let accessories = Strings.tr("Localizable", "app.tabs.accessories", fallback: "Accessories")
       /// Overview
       public static let overview = Strings.tr("Localizable", "app.tabs.overview", fallback: "Overview")
@@ -704,6 +736,10 @@ public enum Strings {
     public enum Acknowledgements {
       /// Settings
       public static let title = Strings.tr("Localizable", "settings.acknowledgements.title", fallback: "Acknowledgements")
+    }
+    public enum AppIcon {
+      /// App Icon
+      public static let title = Strings.tr("Localizable", "settings.appIcon.title", fallback: "App Icon")
     }
     public enum AppInfo {
       /// %@ (%@)
