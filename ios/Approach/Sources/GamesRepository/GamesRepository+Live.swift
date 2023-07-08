@@ -38,6 +38,21 @@ extension GamesRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
+			matchesAgainstOpponent: { opponent in
+				database.reader().observe {
+					let seriesAlias = TableAlias()
+					return try Game.Database
+						.all()
+						.annotated(withRequired: Game.Database.matchPlay
+							.filter(MatchPlay.Database.Columns.opponentId == opponent)
+							.select(MatchPlay.Database.Columns.opponentScore, MatchPlay.Database.Columns.result)
+						)
+						.joining(required: Game.Database.series.aliased(seriesAlias))
+						.order(seriesAlias[Series.Database.Columns.date.desc])
+						.asRequest(of: Game.ListMatch.self)
+						.fetchAll($0)
+				}
+			},
 			edit: { id in
 				try await database.reader().read {
 					try Game.Database

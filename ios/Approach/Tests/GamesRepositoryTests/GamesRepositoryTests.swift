@@ -153,6 +153,69 @@ final class GamesRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: Matches Against Opponent
+
+	func testMatchesAgainstOpponent_ReturnsGamesAgainstOpponent() async throws {
+		// Given a database with two games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 1, result: .won)
+		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(1), opponentScore: 2, result: .lost)
+		let db = try initializeDatabase(
+			withGames: .custom([game1, game2, game3]),
+			withMatchPlays: .custom([matchPlay1, matchPlay2])
+		)
+
+		// Fetching the games
+		let games = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.matches(against: UUID(0))
+		}
+		var iterator = games.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the games
+		XCTAssertEqual(fetched, [.init(id: UUID(0), score: 0, opponentScore: 1, result: .won)])
+	}
+
+	func testMatchesAgainstOpponent_OrdersByMostRecent() async throws {
+		// Given a database with two games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 2))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1))
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 3))
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 2)
+		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 1, result: .won)
+		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(0), opponentScore: 2, result: .lost)
+		let matchPlay3 = MatchPlay.Database.mock(gameId: UUID(2), id: UUID(2), opponentId: UUID(0), opponentScore: 3, result: .tied)
+		let db = try initializeDatabase(
+			withSeries: .custom([series1, series2, series3]),
+			withGames: .custom([game1, game2, game3]),
+			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3])
+		)
+
+		// Fetching the games
+		let games = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.matches(against: UUID(0))
+		}
+		var iterator = games.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the games
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(2), score: 0, opponentScore: 3, result: .tied),
+			.init(id: UUID(0), score: 0, opponentScore: 1, result: .won),
+			.init(id: UUID(1), score: 0, opponentScore: 2, result: .lost),
+		])
+	}
+
 	// MARK: Edit
 
 	func testEdit_WhenGameExists_ReturnsGame() async throws {

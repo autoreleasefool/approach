@@ -63,3 +63,12 @@ extension Game {
 		public let score: Int
 	}
 }
+
+extension Game {
+	public struct ListMatch: Identifiable, Equatable, Codable {
+		public let id: Game.ID
+		public let score: Int
+		public let opponentScore: Int?
+		public let result: MatchPlay.Result?
+	}
+}
