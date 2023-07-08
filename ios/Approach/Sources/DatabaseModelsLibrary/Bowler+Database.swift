@@ -37,3 +37,5 @@ extension Bowler.Database {
 extension Bowler.Summary: FetchableRecord {}
 
 extension Bowler.List: FetchableRecord {}
+
+extension Bowler.OpponentDetails: FetchableRecord {}

@@ -12,6 +12,7 @@ public struct BowlersRepository: Sendable {
 	public var list: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>
 	public var summaries: @Sendable (Bowler.Status?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
 	public var fetchSummaries: @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary]
+	public var opponentRecord: @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?
 	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit?
 	public var create: @Sendable (Bowler.Create) async throws -> Void
 	public var update: @Sendable (Bowler.Edit) async throws -> Void
@@ -21,6 +22,7 @@ public struct BowlersRepository: Sendable {
 		list: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>,
 		summaries: @escaping @Sendable (Bowler.Status?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
 		fetchSummaries: @escaping @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary],
+		opponentRecord: @escaping @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?,
 		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit?,
 		create: @escaping @Sendable (Bowler.Create) async throws -> Void,
 		update: @escaping @Sendable (Bowler.Edit) async throws -> Void,
@@ -29,6 +31,7 @@ public struct BowlersRepository: Sendable {
 		self.list = list
 		self.summaries = summaries
 		self.fetchSummaries = fetchSummaries
+		self.opponentRecord = opponentRecord
 		self.edit = edit
 		self.create = create
 		self.update = update
@@ -50,6 +53,11 @@ public struct BowlersRepository: Sendable {
 	public func list(ordered: Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error> {
 		self.list(ordered)
 	}
+
+	// TODO: allow filtering by bowler vs opponent
+	public func record(againstOpponent: Bowler.ID) async throws -> Bowler.OpponentDetails? {
+		try await self.opponentRecord(againstOpponent)
+	}
 }
 
 extension BowlersRepository: TestDependencyKey {
@@ -57,6 +65,7 @@ extension BowlersRepository: TestDependencyKey {
 		list: { _ in unimplemented("\(Self.self).list") },
 		summaries: { _, _ in unimplemented("\(Self.self).summaries") },
 		fetchSummaries: { _ in unimplemented("\(Self.self).fetchSummaries") },
+		opponentRecord: { _ in unimplemented("\(Self.self).opponentRecord") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },
 		update: { _ in unimplemented("\(Self.self).update") },

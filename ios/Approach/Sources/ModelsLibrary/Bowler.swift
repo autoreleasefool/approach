@@ -1,4 +1,5 @@
 import Foundation
+import IdentifiedCollections
 
 public enum Bowler {}
 
@@ -34,5 +35,17 @@ extension Bowler {
 		public var summary: Summary {
 			.init(id: id, name: name)
 		}
+	}
+}
+
+extension Bowler {
+	public struct OpponentDetails: Identifiable, Decodable, Equatable {
+		public let id: Bowler.ID
+		public let name: String
+		public let matchesAgainst: IdentifiedArrayOf<Game.ListMatch>
+		public let gamesPlayed: Int
+		public let gamesWon: Int
+		public let gamesLost: Int
+		public let gamesTied: Int
 	}
 }

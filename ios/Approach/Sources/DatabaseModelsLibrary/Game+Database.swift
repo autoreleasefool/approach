@@ -53,5 +53,7 @@ extension Game.Database {
 }
 
 extension Game.List: FetchableRecord {}
+
 extension Game.ListMatch: FetchableRecord {}
+
 extension Game.Summary: FetchableRecord {}

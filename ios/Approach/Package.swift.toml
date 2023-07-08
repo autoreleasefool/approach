@@ -124,7 +124,6 @@ libraries = [ "Equatable", "Reordering", "ResourcePicker", "SwiftUIExtensions" ]
 services = [ "RecentlyUsed" ]
 [repositories.Alleys.interface]
 repositories = [ "Lanes", "Locations" ]
-dependencies = [ "IdentifiedCollections" ]
 
 [repositories.Bowlers]
 services = [ "RecentlyUsed" ]
@@ -137,7 +136,6 @@ libraries = [ "Extensions" ]
 [repositories.Games]
 [repositories.Games.interface]
 repositories = [ "MatchPlays" ]
-dependencies = [ "IdentifiedCollections" ]
 
 [repositories.Gear]
 services = [ "RecentlyUsed" ]
@@ -154,7 +152,6 @@ libraries = [ "StatisticsModels" ]
 
 [repositories.Series]
 [repositories.Series.interface]
-dependencies = [ "IdentifiedCollections" ]
 
 [repositories.Statistics]
 services = [ "Preference" ]
@@ -261,6 +258,7 @@ dependencies = [ "Dependencies" ]
 skip_tests = true
 
 [libraries.Models]
+dependencies = [ "IdentifiedCollections" ]
 [libraries.Models.tests]
 dependencies = [ "Dependencies" ]
 
@@ -288,7 +286,6 @@ libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
 
 [libraries.Statistics]
 libraries = [ "Models", "Strings" ]
-dependencies = [ "IdentifiedCollections" ]
 [libraries.Statistics.tests]
 dependencies = [ "Dependencies" ]
 

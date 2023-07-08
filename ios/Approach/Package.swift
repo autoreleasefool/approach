@@ -572,7 +572,6 @@ let package = Package(
 		.target(
 			name: "AlleysRepositoryInterface",
 			dependencies: [
-				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"LanesRepositoryInterface",
 				"LocationsRepositoryInterface",
 			]
@@ -653,7 +652,6 @@ let package = Package(
 		.target(
 			name: "GamesRepositoryInterface",
 			dependencies: [
-				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"MatchPlaysRepositoryInterface",
 			]
 		),
@@ -812,7 +810,6 @@ let package = Package(
 			name: "SeriesRepositoryInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
-				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"ModelsLibrary",
 			]
 		),
@@ -1223,7 +1220,9 @@ let package = Package(
 		),
 		.target(
 			name: "ModelsLibrary",
-			dependencies: []
+			dependencies: [
+				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+			]
 		),
 		.testTarget(
 			name: "ModelsLibraryTests",
@@ -1355,7 +1354,6 @@ let package = Package(
 		.target(
 			name: "StatisticsLibrary",
 			dependencies: [
-				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
 				"ModelsLibrary",
 				"StringsLibrary",
 			]

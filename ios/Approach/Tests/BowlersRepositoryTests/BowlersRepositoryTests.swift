@@ -290,6 +290,131 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph"), .init(id: UUID(1), name: "Audriana")])
 	}
 
+	// MARK: Opponent Record
+
+	func testOpponentRecord_ReturnsOpponentRecord() async throws {
+		// Given a database with an opponent
+		let bowler = Bowler.Database.mock(id: UUID(0), name: "Sarah")
+		let opponent = Bowler.Database(id: UUID(1), name: "Joseph", status: .opponent)
+		let league = League.Database.mock(id: UUID(0), name: "Majors")
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 2))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1))
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 3))
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 0, score: 2)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 0, score: 3)
+		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(1), result: .won)
+		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(1), result: .lost)
+		let matchPlay3 = MatchPlay.Database.mock(gameId: UUID(2), id: UUID(2), opponentId: UUID(1), result: .tied)
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler, opponent]),
+			withLeagues: .custom([league]),
+			withSeries: .custom([series1, series2, series3]),
+			withGames: .custom([game1, game2, game3]),
+			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3])
+		)
+
+		// Fetching the opponent
+		let record = try await withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			try await self.bowlers.record(againstOpponent: UUID(1))
+		}
+
+		XCTAssertEqual(
+			record,
+			.init(
+				id: UUID(1),
+				name: "Joseph",
+				matchesAgainst: [
+					.init(id: UUID(2), score: 3, opponentScore: 123, result: .tied),
+					.init(id: UUID(0), score: 1, opponentScore: 123, result: .won),
+					.init(id: UUID(1), score: 2, opponentScore: 123, result: .lost),
+				],
+				gamesPlayed: 3,
+				gamesWon: 1,
+				gamesLost: 1,
+				gamesTied: 1
+			)
+		)
+	}
+
+	func testOpponentRecord_WhenGameExcluded_DoesNotIncludeInMatches() async throws {
+		// Given a database with an opponent and some excluded leagues
+		let bowler = Bowler.Database.mock(id: UUID(0), name: "Sarah")
+		let opponent = Bowler.Database(id: UUID(1), name: "Joseph", status: .opponent)
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", excludeFromStatistics: .include)
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors", excludeFromStatistics: .exclude)
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .include)
+		let series2 = Series.Database.mock(leagueId: UUID(0), id: UUID(1), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .exclude)
+		let series3 = Series.Database.mock(leagueId: UUID(1), id: UUID(2), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .include)
+		let series4 = Series.Database.mock(leagueId: UUID(1), id: UUID(3), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .exclude)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, excludeFromStatistics: .include)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 0, excludeFromStatistics: .exclude)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, excludeFromStatistics: .include)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 0, excludeFromStatistics: .exclude)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0, excludeFromStatistics: .include)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 0, excludeFromStatistics: .exclude)
+		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0, excludeFromStatistics: .include)
+		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 0, excludeFromStatistics: .exclude)
+		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(1), result: .won)
+		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(1), result: .won)
+		let matchPlay3 = MatchPlay.Database.mock(gameId: UUID(2), id: UUID(2), opponentId: UUID(1), result: .won)
+		let matchPlay4 = MatchPlay.Database.mock(gameId: UUID(3), id: UUID(3), opponentId: UUID(1), result: .won)
+		let matchPlay5 = MatchPlay.Database.mock(gameId: UUID(4), id: UUID(4), opponentId: UUID(1), result: .won)
+		let matchPlay6 = MatchPlay.Database.mock(gameId: UUID(5), id: UUID(5), opponentId: UUID(1), result: .won)
+		let matchPlay7 = MatchPlay.Database.mock(gameId: UUID(6), id: UUID(6), opponentId: UUID(1), result: .won)
+		let matchPlay8 = MatchPlay.Database.mock(gameId: UUID(7), id: UUID(7), opponentId: UUID(1), result: .won)
+
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler, opponent]),
+			withLeagues: .custom([league1, league2]),
+			withSeries: .custom([series1, series2, series3, series4]),
+			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]),
+			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3, matchPlay4, matchPlay5, matchPlay6, matchPlay7, matchPlay8])
+		)
+
+		// Fetching the opponent
+		let record = try await withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			try await self.bowlers.record(againstOpponent: UUID(1))
+		}
+
+		XCTAssertEqual(
+			record,
+			.init(
+				id: UUID(1),
+				name: "Joseph",
+				matchesAgainst: [
+					.init(id: UUID(0), score: 1, opponentScore: 123, result: .won),
+				],
+				gamesPlayed: 1,
+				gamesWon: 1,
+				gamesLost: 0,
+				gamesTied: 0
+			)
+		)
+	}
+
+	func testOpponentRecord_WhenOpponentNotExists_ReturnsNil() async throws {
+		// Given a database without an opponent
+		let bowler = Bowler.Database.mock(id: UUID(0), name: "Sarah")
+		let db = try initializeDatabase(withBowlers: .custom([bowler]))
+
+		// Fetching the opponent
+		let record = try await withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			try await self.bowlers.record(againstOpponent: UUID(1))
+		}
+
+		XCTAssertNil(record)
+	}
+
 	// MARK: Summaries
 
 	func testSummaries_ReturnsMatchingBowlers() async throws {
