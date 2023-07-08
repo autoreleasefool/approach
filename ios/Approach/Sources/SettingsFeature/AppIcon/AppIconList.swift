@@ -79,12 +79,12 @@ public struct AppIconList: Reducer {
 					state.currentAppIcon = icon
 					return .none
 
-				case .didUpdateIcon(.failure):
-					state.alert = AlertState { TextState("Could not change icon. Please try again.") }
-					return .none
-
 				case .didFetchIcon(.failure):
 					state.alert = AlertState { TextState("Could not find icon. Please try again.") }
+					return .none
+
+				case .didUpdateIcon(.failure):
+					state.alert = AlertState { TextState("Could not change icon. Please try again.") }
 					return .none
 
 				case .alert(.dismiss), .alert(.presented):
@@ -113,23 +113,16 @@ public struct AppIconListView: View {
 			List {
 				Section {
 					Button { viewStore.send(.view(.didTapReset)) } label: {
-						HStack {
-							iconImage(for: viewStore.appIconImage)
-							Text(Strings.App.Icon.current)
-								.font(.headline)
-								.foregroundColor(.black)
-						}
+						AppIconView(Strings.App.Icon.current, icon: .image(viewStore.appIconImage))
 					}
+					.buttonStyle(.plain)
 				}
 
 				ForEach(AppIcon.Category.allCases) { category in
 					Section(String(describing: category)) {
 						ForEach(category.matchingIcons) { icon in
 							Button { viewStore.send(.view(.didTapIcon(icon))) } label: {
-								HStack {
-									iconImage(for: UIImage(named: icon.rawValue) ?? UIImage())
-									Text(String(describing: icon))
-								}
+								AppIconView(String(describing: icon), icon: .appIcon(icon))
 							}
 						}
 					}
@@ -139,17 +132,6 @@ public struct AppIconListView: View {
 			.onAppear { viewStore.send(.view(.onAppear)) }
 			.alert(store: self.store.scope(state: \.$alert, action: { .internal(.alert($0)) }))
 		})
-	}
-
-	private func iconImage(for image: UIImage) -> some View {
-		Image(uiImage: image)
-			.resizable()
-			.scaledToFit()
-			.frame(width: .standardIcon)
-			.cornerRadius(.standardRadius)
-			.shadow(radius: .standardRadius)
-			.padding(.horizontal, .smallSpacing)
-			.padding(.vertical, .standardSpacing)
 	}
 }
 

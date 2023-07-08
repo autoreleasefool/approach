@@ -1,3 +1,5 @@
+import AppIconServiceInterface
+import AssetsLibrary
 import ComposableArchitecture
 import DatabaseMockingServiceInterface
 import FeatureActionLibrary
@@ -11,6 +13,9 @@ public struct Settings: Reducer {
 		public var isShowingDeveloperOptions: Bool
 		public var helpSettings = HelpSettings.State()
 		public let hasOpponentsEnabled: Bool
+
+		public var isLoadingAppIcon: Bool
+		public var currentAppIcon: AppIcon?
 		public let hasAppIconConfigEnabled: Bool
 
 		@PresentationState public var destination: Destination.State?
@@ -20,11 +25,13 @@ public struct Settings: Reducer {
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 			self.hasOpponentsEnabled = featureFlags.isEnabled(.opponents)
 			self.hasAppIconConfigEnabled = featureFlags.isEnabled(.appIconConfig)
+			self.isLoadingAppIcon = self.hasAppIconConfigEnabled
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapPopulateDatabase
 			case didTapFeatureFlags
 			case didTapOpponents
@@ -33,6 +40,8 @@ public struct Settings: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
+			case didFetchIcon(TaskResult<AppIcon?>)
+
 			case helpSettings(HelpSettings.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -73,6 +82,7 @@ public struct Settings: Reducer {
 		}
 	}
 
+	@Dependency(\.appIcon) var appIcon
 	@Dependency(\.databaseMocking) var databaseMocking
 
 	public init() {}
@@ -86,6 +96,13 @@ public struct Settings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .run { send in
+						await send(.internal(.didFetchIcon(TaskResult {
+							AppIcon(rawValue: await appIcon.getAppIconName() ?? "")
+						})))
+					}
+
 				case .didTapPopulateDatabase:
 					return .run { _ in try await databaseMocking.mockDatabase() }
 
@@ -108,6 +125,15 @@ public struct Settings: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didFetchIcon(.success(icon)):
+					state.isLoadingAppIcon = false
+					state.currentAppIcon = icon
+					return .none
+
+				case .didFetchIcon(.failure):
+					state.isLoadingAppIcon = false
+					return .none
+
 				case let .helpSettings(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:

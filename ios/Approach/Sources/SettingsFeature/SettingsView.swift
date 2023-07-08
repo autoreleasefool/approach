@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsListFeature
@@ -12,16 +13,28 @@ public struct SettingsView: View {
 	struct ViewState: Equatable {
 		let isShowingDeveloperOptions: Bool
 		let showsOpponents: Bool
+
 		let isShowingAppIcon: Bool
+		let currentAppIcon: AppIcon?
+
+		var appIconImage: UIImage {
+			if let currentAppIcon {
+				return UIImage(named: currentAppIcon.rawValue) ?? UIImage()
+			} else {
+				return UIImage(named: "AppIcon") ?? UIImage()
+			}
+		}
 
 		init(state: Settings.State) {
 			self.isShowingDeveloperOptions = state.isShowingDeveloperOptions
 			self.showsOpponents = state.hasOpponentsEnabled
-			self.isShowingAppIcon = state.hasAppIconConfigEnabled
+			self.isShowingAppIcon = state.hasAppIconConfigEnabled && !state.isLoadingAppIcon
+			self.currentAppIcon = state.currentAppIcon
 		}
 	}
 
 	enum ViewAction {
+		case onAppear
 		case didTapPopulateDatabase
 		case didTapFeatureFlags
 		case didTapOpponents
@@ -68,7 +81,11 @@ public struct SettingsView: View {
 				if viewStore.isShowingAppIcon {
 					Section {
 						Button { viewStore.send(.didTapAppIcon) } label: {
-							Text(Strings.Settings.AppIcon.title)
+							AppIconView(
+								Strings.Settings.AppIcon.title,
+								icon: .image(viewStore.appIconImage),
+								isCompact: true
+							)
 						}
 						.buttonStyle(.navigation)
 					}
@@ -78,6 +95,7 @@ public struct SettingsView: View {
 				VersionView()
 			}
 			.navigationTitle(Strings.Settings.title)
+			.onAppear { viewStore.send(.onAppear) }
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -113,6 +131,8 @@ public struct SettingsView: View {
 extension Settings.Action {
 	init(action: SettingsView.ViewAction) {
 		switch action {
+		case .onAppear:
+			self = .view(.onAppear)
 		case .didTapPopulateDatabase:
 			self = .view(.didTapPopulateDatabase)
 		case .didTapFeatureFlags:
