@@ -815,7 +815,13 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "settings.help.development.title", fallback: "Development")
       }
     }
+    public enum Opponents {
+      /// Logs of all your past opponents and a record of your match play.
+      public static let footer = Strings.tr("Localizable", "settings.opponents.footer", fallback: "Logs of all your past opponents and a record of your match play.")
+    }
     public enum Statistics {
+      /// Fine-tune your preferences when it comes to which statistics to show.
+      public static let footer = Strings.tr("Localizable", "settings.statistics.footer", fallback: "Fine-tune your preferences when it comes to which statistics to show.")
       /// Statistics
       public static let title = Strings.tr("Localizable", "settings.statistics.title", fallback: "Statistics")
       public enum Overall {

@@ -336,6 +336,7 @@
 "settings.featureFlags.matchTest" = "Match flags to Test";
 "settings.featureFlags.matchDevelopment" = "Match flags to Development";
 "settings.statistics.title" = "Statistics";
+"settings.statistics.footer" = "Fine-tune your preferences when it comes to which statistics to show.";
 "settings.statistics.overall.title" = "Overall";
 "settings.statistics.overall.hideZeroStatistics" = "Hide statistics with a value of zero?";
 "settings.statistics.perFrame.countH2AsH" = "Count H2 as Head Pins?";
@@ -344,6 +345,7 @@
 "settings.statistics.widgets.title" = "Widgets";
 "settings.statistics.widgets.hideInBowlerList" = "Hide widgets for bowlers";
 "settings.statistics.widgets.hideInLeagueList" = "Hide widgets for leagues";
+"settings.opponents.footer" = "Logs of all your past opponents and a record of your match play.";
 "settings.title" = "Settings";
 
 /* Ordering */

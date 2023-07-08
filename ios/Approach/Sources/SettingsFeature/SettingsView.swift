@@ -68,6 +68,8 @@ public struct SettingsView: View {
 							Text(Strings.Opponent.List.title)
 						}
 						.buttonStyle(.navigation)
+					} footer: {
+						Text(Strings.Settings.Opponents.footer)
 					}
 				}
 
@@ -76,6 +78,8 @@ public struct SettingsView: View {
 						Text(Strings.Settings.Statistics.title)
 					}
 					.buttonStyle(.navigation)
+				} footer: {
+					Text(Strings.Settings.Statistics.footer)
 				}
 
 				if viewStore.isShowingAppIcon {
