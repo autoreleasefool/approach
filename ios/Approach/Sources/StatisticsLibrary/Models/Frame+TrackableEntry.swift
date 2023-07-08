@@ -2,7 +2,7 @@ import Foundation
 import ModelsLibrary
 
 extension Frame {
-	public struct TrackableEntry: Identifiable, Decodable, InspectableFrame {
+	public struct TrackableEntry: Identifiable, Decodable, Equatable, InspectableFrame {
 		public let seriesId: Series.ID
 		public let gameId: Game.ID
 		public let index: Int

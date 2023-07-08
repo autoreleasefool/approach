@@ -183,7 +183,7 @@ extension Statistics.ChartContent {
 		switch self {
 		case .counting(let data):
 			return data.entries
-		case .averaging, .percentage, .chartUnavailable:
+		case .averaging, .percentage, .chartUnavailable, .dataMissing:
 			return nil
 		}
 	}
@@ -192,7 +192,7 @@ extension Statistics.ChartContent {
 		switch self {
 		case .averaging(let data):
 			return data.entries
-		case .counting, .percentage, .chartUnavailable:
+		case .counting, .percentage, .chartUnavailable, .dataMissing:
 			return nil
 		}
 	}
@@ -201,7 +201,7 @@ extension Statistics.ChartContent {
 		switch self {
 		case .percentage(let data):
 			return data.entries
-		case .averaging, .counting, .chartUnavailable:
+		case .averaging, .counting, .chartUnavailable, .dataMissing:
 			return nil
 		}
 	}

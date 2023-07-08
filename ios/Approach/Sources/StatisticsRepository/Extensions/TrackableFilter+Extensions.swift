@@ -52,6 +52,7 @@ extension TrackableFilter {
 					Series.Database.Columns.id.forKey("seriesid"),
 					Series.Database.Columns.date
 				))
+				.including(optional: Game.Database.matchPlay)
 				.asRequest(of: Game.TrackableEntry.self),
 			frames?
 				.annotated(withRequired: Frame.Database.series.select(
