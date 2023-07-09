@@ -3,6 +3,7 @@ import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct OpponentDetailsView: View {
 	let store: StoreOf<OpponentDetails>
@@ -28,17 +29,26 @@ public struct OpponentDetailsView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: OpponentDetails.Action.init) { viewStore in
 			List {
-//				Section(Strings.Opponent.record) {
-//
-//				}
-
 				if let details = viewStore.details {
+					Section(Strings.Opponent.record) {
+						LabeledContent(Strings.Opponent.Record.matchesPlayed, value: String(details.gamesPlayed))
+						LabeledContent(Strings.Opponent.Record.matchesWon, value: String(details.gamesWon))
+						LabeledContent(Strings.Opponent.Record.matchesLost, value: String(details.gamesLost))
+						LabeledContent(Strings.Opponent.Record.matchesTied, value: String(details.gamesTied))
+					}
+
 					Section(Strings.Opponent.matches) {
-						ForEach(details.matchesAgainst) {
-							LabeledContent(String($0.score), value: String($0.opponentScore ?? 0))
-								.listRowBackground($0.result.listBackgroundColor)
+						if details.matchesAgainst.isEmpty {
+							Text(Strings.Opponent.Matches.none)
+						} else {
+							ForEach(details.matchesAgainst) {
+								LabeledContent(String($0.score), value: String($0.opponentScore ?? 0))
+									.listRowBackground($0.result.listBackgroundColor)
+							}
 						}
 					}
+				} else {
+					ListProgressView()
 				}
 			}
 			.navigationTitle(viewStore.opponentName)

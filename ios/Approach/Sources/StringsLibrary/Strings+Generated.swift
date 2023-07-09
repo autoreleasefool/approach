@@ -623,6 +623,20 @@ public enum Strings {
       /// Opponents
       public static let title = Strings.tr("Localizable", "opponent.list.title", fallback: "Opponents")
     }
+    public enum Matches {
+      /// No matches played. Try recording a match against this bowler in the game details.
+      public static let `none` = Strings.tr("Localizable", "opponent.matches.none", fallback: "No matches played. Try recording a match against this bowler in the game details.")
+    }
+    public enum Record {
+      /// Matches Lost
+      public static let matchesLost = Strings.tr("Localizable", "opponent.record.matchesLost", fallback: "Matches Lost")
+      /// Total Matches Played
+      public static let matchesPlayed = Strings.tr("Localizable", "opponent.record.matchesPlayed", fallback: "Total Matches Played")
+      /// Matches Tied
+      public static let matchesTied = Strings.tr("Localizable", "opponent.record.matchesTied", fallback: "Matches Tied")
+      /// Matches Won
+      public static let matchesWon = Strings.tr("Localizable", "opponent.record.matchesWon", fallback: "Matches Won")
+    }
   }
   public enum Ordering {
     /// Ordering

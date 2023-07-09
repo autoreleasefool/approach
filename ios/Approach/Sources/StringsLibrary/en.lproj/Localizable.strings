@@ -55,7 +55,12 @@
 "opponent.error.empty.title" = "No opponents found";
 "opponent.error.empty.message" = "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.";
 "opponent.record" = "Record";
+"opponent.record.matchesWon" = "Matches Won";
+"opponent.record.matchesTied" = "Matches Tied";
+"opponent.record.matchesLost" = "Matches Lost";
+"opponent.record.matchesPlayed" = "Total Matches Played";
 "opponent.matches" = "Matches";
+"opponent.matches.none" = "No matches played. Try recording a match against this bowler in the game details.";
 
 /* Match Play */
 "matchPlay.title" = "Match Play";
