@@ -3,6 +3,7 @@ import BowlerEditorFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
+import OpponentDetailsFeature
 import ResourceListLibrary
 import SortOrderLibrary
 import StringsLibrary
@@ -21,7 +22,10 @@ public struct OpponentsListView: View {
 		ResourceListView(
 			store: store.scope(state: \.list, action: /OpponentsList.Action.InternalAction.list)
 		) { opponent in
-			Text(opponent.name)
+			Button { ViewStore(store.stateless).send(.view(.didTapOpponent(opponent.id))) } label: {
+				Text(opponent.name)
+			}
+			.buttonStyle(.navigation)
 		}
 		.navigationTitle(Strings.Opponent.List.title)
 		.toolbar {
@@ -29,11 +33,18 @@ public struct OpponentsListView: View {
 				SortButton(isActive: false) { ViewStore(store.stateless).send(.view(.didTapSortOrderButton)) }
 			}
 		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /OpponentsList.Destination.State.details,
+			action: OpponentsList.Destination.Action.details
+		) { (store: StoreOf<OpponentDetails>) in
+			OpponentDetailsView(store: store)
+		}
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /OpponentsList.Destination.State.editor,
 			action: OpponentsList.Destination.Action.editor
-		) { store in
+		) { (store: StoreOf<BowlerEditor>) in
 			NavigationStack {
 				BowlerEditorView(store: store)
 			}

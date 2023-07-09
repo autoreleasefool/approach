@@ -4,6 +4,7 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
+import OpponentDetailsFeature
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SortOrderLibrary
@@ -53,6 +54,7 @@ public struct OpponentsList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapSortOrderButton
+			case didTapOpponent(Bowler.ID)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -68,16 +70,21 @@ public struct OpponentsList: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
+			case details(OpponentDetails.State)
 			case editor(BowlerEditor.State)
 			case sortOrder(SortOrder<Bowler.Ordering>.State)
 		}
 
 		public enum Action: Equatable {
+			case details(OpponentDetails.Action)
 			case editor(BowlerEditor.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
+			Scope(state: /State.details, action: /Action.details) {
+				OpponentDetails()
+			}
 			Scope(state: /State.editor, action: /Action.editor) {
 				BowlerEditor()
 			}
@@ -103,6 +110,11 @@ public struct OpponentsList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case let .didTapOpponent(id):
+					guard let opponent = state.list.resources?[id: id] else { return .none }
+					state.destination = .details(.init(opponent: opponent))
+					return .none
+
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.ordering))
 					return .none
@@ -148,10 +160,18 @@ public struct OpponentsList: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.details(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view):
 					return .none
 
 				case .destination(.dismiss),
+						.destination(.presented(.details(.internal))),
+						.destination(.presented(.details(.view))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.sortOrder(.internal))),

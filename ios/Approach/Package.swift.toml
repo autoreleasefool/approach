@@ -80,10 +80,15 @@ features = [ "LeagueEditor", "SeriesList", "StatisticsWidgetsLayout" ]
 services = [ "Preference", "RecentlyUsed" ]
 libraries = [ "SortOrder" ]
 
-[features.OpponentsList]
+[features.OpponentDetails]
 features = [ "BowlerEditor" ]
+repositories = [ "Games" ]
+libraries = [ "ResourceList" ]
+
+[features.OpponentsList]
+features = [ "OpponentDetails" ]
 services = [ "RecentlyUsed" ]
-libraries = [ "ResourceList", "SortOrder" ]
+libraries = [ "SortOrder" ]
 
 [features.Onboarding]
 repositories = [ "Bowlers" ]

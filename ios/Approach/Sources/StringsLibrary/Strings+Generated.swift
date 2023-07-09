@@ -603,6 +603,10 @@ public enum Strings {
     }
   }
   public enum Opponent {
+    /// Matches
+    public static let matches = Strings.tr("Localizable", "opponent.matches", fallback: "Matches")
+    /// Record
+    public static let record = Strings.tr("Localizable", "opponent.record", fallback: "Record")
     /// Opponents
     public static let title = Strings.tr("Localizable", "opponent.title", fallback: "Opponent")
     public enum Error {
