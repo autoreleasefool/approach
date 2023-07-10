@@ -90,22 +90,22 @@ public struct BowlerEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case let .didFinishCreating(bowler):
+					case .didFinishCreating:
 						return .merge(
 							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Bowler.Created(id: bowler.id.uuidString)) }
+							.run { _ in await analytics.trackEvent(Analytics.Bowler.Created()) }
 						)
 
-					case let .didFinishUpdating(bowler):
+					case .didFinishUpdating:
 						return .merge(
 							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Bowler.Updated(id: bowler.id.uuidString)) }
+							.run { _ in await analytics.trackEvent(Analytics.Bowler.Updated()) }
 						)
 
-					case let .didFinishDeleting(bowler):
+					case .didFinishDeleting:
 						return .merge(
 							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted(id: bowler.id.uuidString)) }
+							.run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted()) }
 						)
 
 					case .didDiscard:

@@ -162,7 +162,7 @@ public struct BowlersList: Reducer {
 							try await clock.sleep(for: .seconds(1))
 							recentlyUsed.didRecentlyUseResource(.bowlers, id)
 						},
-						.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(id: id.uuidString)) }
+						.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed()) }
 					)
 				}
 
