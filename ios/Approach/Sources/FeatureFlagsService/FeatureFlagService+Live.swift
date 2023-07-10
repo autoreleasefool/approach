@@ -13,7 +13,7 @@ extension NSNotification.Name {
 
 extension FeatureFlagsService: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.featureFlagsQueue) var queue: DispatchQueue
+		@Dependency(\.featureFlagsQueue) var queue
 
 		let flagManager = FeatureFlagOverrides(queue: queue)
 

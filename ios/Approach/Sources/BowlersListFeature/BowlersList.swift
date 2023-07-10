@@ -47,7 +47,7 @@ public struct BowlersList: Reducer {
 					.swipeToEdit,
 					.swipeToDelete(
 						onDelete: .init {
-							@Dependency(\.bowlers) var bowlers: BowlersRepository
+							@Dependency(\.bowlers) var bowlers
 							try await bowlers.delete($0.id)
 						}
 					),
@@ -62,7 +62,7 @@ public struct BowlersList: Reducer {
 				)
 			)
 
-			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			@Dependency(\.featureFlags) var featureFlags
 			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 
 			@Dependency(\.preferences) var preferences

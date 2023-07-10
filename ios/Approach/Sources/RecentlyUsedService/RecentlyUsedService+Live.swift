@@ -12,7 +12,7 @@ extension Notification.Name {
 extension RecentlyUsedService: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.preferences) var preferences
-		@Dependency(\.date) var date: DateGenerator
+		@Dependency(\.date) var date
 
 		let encoder = JSONEncoder()
 		let decoder = JSONDecoder()

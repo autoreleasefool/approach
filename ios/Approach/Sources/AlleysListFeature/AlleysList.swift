@@ -24,7 +24,7 @@ public struct AlleysList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.alleys) var alleys: AlleysRepository
+						@Dependency(\.alleys) var alleys
 						try await alleys.delete($0.id)
 					}),
 				],

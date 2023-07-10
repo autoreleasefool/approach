@@ -68,7 +68,7 @@ public struct LeagueEditor: Reducer {
 				self.shouldShowLocationSection = true
 			}
 
-			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			@Dependency(\.featureFlags) var featureFlags
 			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
 		}
 	}

@@ -36,7 +36,7 @@ public struct GearList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.gear) var gear: GearRepository
+						@Dependency(\.gear) var gear
 						try await gear.delete($0.id)
 					}),
 				],

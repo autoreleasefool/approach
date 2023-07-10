@@ -41,7 +41,7 @@ public struct GearEditor: Reducer {
 				self.owner = existing.owner
 			}
 
-			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			@Dependency(\.featureFlags) var featureFlags
 			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
 	}

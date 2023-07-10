@@ -30,7 +30,7 @@ public struct SeriesList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.series) var series: SeriesRepository
+						@Dependency(\.series) var series
 						try await series.delete($0.id)
 					}),
 				],
@@ -87,7 +87,7 @@ public struct SeriesList: Reducer {
 	public init() {}
 
 	@Dependency(\.date) var date
-	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(\.series) var series
 	@Dependency(\.uuid) var uuid
 

@@ -21,7 +21,7 @@ public struct Settings: Reducer {
 		@PresentationState public var destination: Destination.State?
 
 		public init() {
-			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			@Dependency(\.featureFlags) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 			self.hasOpponentsEnabled = featureFlags.isEnabled(.opponents)
 			self.hasAppIconConfigEnabled = featureFlags.isEnabled(.appIconConfig)

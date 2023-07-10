@@ -15,7 +15,7 @@ public struct App: Reducer {
 		case content(TabbedContent.State)
 
 		public init() {
-			@Dependency(\.preferences) var preferences: PreferenceService
+			@Dependency(\.preferences) var preferences
 			if preferences.bool(forKey: .appDidCompleteOnboarding) == true {
 				self = .content(.init())
 			} else {

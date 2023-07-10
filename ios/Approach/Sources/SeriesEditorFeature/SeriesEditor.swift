@@ -51,7 +51,7 @@ public struct SeriesEditor: Reducer {
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
 
-			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			@Dependency(\.featureFlags) var featureFlags
 			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
 		}
 	}

@@ -14,7 +14,7 @@ public struct ApproachApp: App {
 	}
 
 	public init() {
-		@Dependency(\.analytics) var analytics: AnalyticsService
+		@Dependency(\.analytics) var analytics
 		analytics.initialize()
 		Task.detached {
 			await analytics.trackEvent(Analytics.App.Launched())

@@ -52,7 +52,7 @@ public struct LeaguesList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.leagues) var leagues: LeaguesRepository
+						@Dependency(\.leagues) var leagues
 						try await leagues.delete($0.id)
 					}),
 				],

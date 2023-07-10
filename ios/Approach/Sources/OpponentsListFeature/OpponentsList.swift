@@ -35,7 +35,7 @@ public struct OpponentsList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.bowlers) var bowlers: BowlersRepository
+						@Dependency(\.bowlers) var bowlers
 						try await bowlers.delete($0.id)
 					}),
 				],
