@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import Foundation
 import ModelsLibrary
@@ -25,7 +26,8 @@ extension GamesEditor {
 				await send(.internal(.gameResponse(TaskResult {
 					try await games.edit(gameId)
 				})))
-			}
+			},
+			.run { [gameId = state.currentGameId] _ in await gameAnalytics.didView(gameId: gameId.uuidString) }
 		)
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
@@ -40,26 +42,32 @@ extension GamesEditor {
 
 	func save(frame: Frame.Edit?) -> Effect<Action> {
 		guard let frame else { return .none }
-		return .run { send in
-			do {
-				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
-				try await frames.update(frame)
-			} catch {
-				await send(.internal(.didUpdateFrame(.failure(error))))
-			}
-		}.cancellable(id: frame.id, cancelInFlight: true)
+		return .merge(
+			.run { send in
+				do {
+					try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+					try await frames.update(frame)
+				} catch {
+					await send(.internal(.didUpdateFrame(.failure(error))))
+				}
+			}.cancellable(id: frame.id, cancelInFlight: true),
+			.run { _ in await gameAnalytics.didUpdate(gameId: frame.gameId.uuidString) }
+		)
 	}
 
 	func save(game: Game.Edit?) -> Effect<Action> {
 		guard let game else { return .none }
-		return .run { send in
-			do {
-				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
-				try await games.update(game)
-			} catch {
-				await send(.internal(.didUpdateGame(.failure(error))))
-			}
-		}.cancellable(id: game.id, cancelInFlight: true)
+		return .merge(
+			.run { send in
+				do {
+					try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+					try await games.update(game)
+				} catch {
+					await send(.internal(.didUpdateGame(.failure(error))))
+				}
+			}.cancellable(id: game.id, cancelInFlight: true),
+			.run { _ in await gameAnalytics.didUpdate(gameId: game.id.uuidString) }
+		)
 	}
 
 	func save(matchPlay: MatchPlay.Edit?) -> Effect<Action> {

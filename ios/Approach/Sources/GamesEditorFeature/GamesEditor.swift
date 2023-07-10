@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import Dependencies
@@ -17,6 +18,7 @@ import SwiftUI
 public struct GamesEditor: Reducer {
 	public init() {}
 
+	@Dependency(\.gameAnalytics) var gameAnalytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
