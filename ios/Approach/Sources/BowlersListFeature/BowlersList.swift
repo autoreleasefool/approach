@@ -162,7 +162,7 @@ public struct BowlersList: Reducer {
 							try await clock.sleep(for: .seconds(1))
 							recentlyUsed.didRecentlyUseResource(.bowlers, id)
 						},
-						.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed()) }
+						.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(kind: Bowler.Kind.playable.rawValue)) }
 					)
 				}
 
@@ -193,7 +193,7 @@ public struct BowlersList: Reducer {
 						return .none
 
 					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted()) }
+						return .run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted(kind: Bowler.Kind.playable.rawValue)) }
 
 					case .didTap:
 						return .none

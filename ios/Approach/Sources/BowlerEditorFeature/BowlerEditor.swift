@@ -12,12 +12,14 @@ public typealias BowlerForm = Form<Bowler.Create, Bowler.Edit>
 public struct BowlerEditor: Reducer {
 	public struct State: Equatable {
 		public var name: String
+		public let kind: Bowler.Kind
 
 		public let initialValue: BowlerForm.Value
 		public var _form: BowlerForm.State
 
 		public init(value: BowlerForm.Value) {
 			let isCreatingOpponent = (value.record as? Bowler.Create)?.kind == .opponent
+			self.kind = isCreatingOpponent ? .opponent : .playable
 			self.initialValue = value
 			self._form = .init(
 				initialValue: value,
@@ -93,19 +95,19 @@ public struct BowlerEditor: Reducer {
 					case .didFinishCreating:
 						return .merge(
 							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Bowler.Created()) }
+							.run { [kind = state.kind] _ in await analytics.trackEvent(Analytics.Bowler.Created(kind: kind.rawValue)) }
 						)
 
 					case .didFinishUpdating:
 						return .merge(
 							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Bowler.Updated()) }
+							.run { [kind = state.kind] _ in await analytics.trackEvent(Analytics.Bowler.Updated(kind: kind.rawValue)) }
 						)
 
 					case .didFinishDeleting:
 						return .merge(
 							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted()) }
+							.run { [kind = state.kind] _ in await analytics.trackEvent(Analytics.Bowler.Deleted(kind: kind.rawValue)) }
 						)
 
 					case .didDiscard:

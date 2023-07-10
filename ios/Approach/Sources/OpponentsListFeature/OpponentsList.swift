@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
@@ -96,6 +97,7 @@ public struct OpponentsList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
@@ -113,7 +115,7 @@ public struct OpponentsList: Reducer {
 				case let .didTapOpponent(id):
 					guard let opponent = state.list.resources?[id: id] else { return .none }
 					state.destination = .details(.init(opponent: opponent))
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(kind: Bowler.Kind.opponent.rawValue)) }
 
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.ordering))
@@ -142,7 +144,10 @@ public struct OpponentsList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultOpponent(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didDelete:
+						return .run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted(kind: Bowler.Kind.opponent.rawValue)) }
+
+					case .didTap:
 						return .none
 					}
 
