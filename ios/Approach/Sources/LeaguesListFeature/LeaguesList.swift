@@ -229,7 +229,10 @@ public struct LeaguesList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid(), forBowler: state.bowler.id))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didDelete:
+						return .run { _ in await analytics.trackEvent(Analytics.League.Deleted()) }
+
+					case .didTap:
 						return .none
 					}
 

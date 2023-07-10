@@ -1,5 +1,6 @@
 import AlleyEditorFeature
 import AlleysRepositoryInterface
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -82,6 +83,7 @@ public struct AlleysList: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(\.uuid) var uuid
 
@@ -129,7 +131,10 @@ public struct AlleysList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didDelete:
+						return .run { _ in await analytics.trackEvent(Analytics.Alley.Deleted()) }
+
+					case .didTap:
 						return .none
 					}
 

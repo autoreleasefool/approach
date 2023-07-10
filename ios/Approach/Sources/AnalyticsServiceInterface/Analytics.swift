@@ -17,6 +17,7 @@ extension Analytics {
 	public enum Bowler {}
 	public enum Feature {}
 	public enum Game {}
+	public enum Gear {}
 	public enum League {}
 	public enum MatchPlay {}
 	public enum Series {}

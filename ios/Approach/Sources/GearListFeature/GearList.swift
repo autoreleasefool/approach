@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -102,6 +103,7 @@ public struct GearList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.gear) var gear
 	@Dependency(\.recentlyUsed) var recentlyUsed
@@ -149,7 +151,10 @@ public struct GearList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didDelete:
+						return .run { _ in await analytics.trackEvent(Analytics.Gear.Deleted()) }
+
+					case .didTap:
 						return .none
 					}
 

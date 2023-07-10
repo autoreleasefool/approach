@@ -192,7 +192,10 @@ public struct BowlersList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultBowler(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didDelete:
+						return .run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted()) }
+
+					case .didTap:
 						return .none
 					}
 
