@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
@@ -86,6 +87,7 @@ public struct SeriesList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.date) var date
 	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(\.series) var series
@@ -106,7 +108,7 @@ public struct SeriesList: Reducer {
 					if let series = state.list.resources?[id: id] {
 						state.destination = .games(.init(series: series))
 					}
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Series.Viewed()) }
 				}
 
 			case let .internal(internalAction):

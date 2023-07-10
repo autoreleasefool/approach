@@ -1,4 +1,5 @@
 import AlleysRepositoryInterface
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import DateTimeLibrary
 import EquatableLibrary
@@ -83,6 +84,7 @@ public struct SeriesEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.series) var series
@@ -151,8 +153,26 @@ public struct SeriesEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
-						return .run { _ in await self.dismiss() }
+					case .didFinishCreating:
+						return .merge(
+							.run { _ in await dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Series.Created()) }
+						)
+
+					case .didFinishUpdating:
+						return .merge(
+							.run { _ in await dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Series.Updated()) }
+						)
+
+					case .didFinishDeleting:
+						return .merge(
+							.run { _ in await dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Series.Deleted()) }
+						)
+
+					case .didDiscard:
+						return .run { _ in await dismiss() }
 					}
 
 				case .form(.view), .form(.internal):
