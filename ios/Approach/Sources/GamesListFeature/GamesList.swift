@@ -51,6 +51,7 @@ public struct GamesList: Reducer {
 	public init() {}
 
 	@Dependency(\.games) var games
+	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
@@ -95,6 +96,7 @@ public struct GamesList: Reducer {
 		}
 		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			GamesEditor()
+				.dependency(\.analyticsGameSessionId, uuid())
 		}
 	}
 }

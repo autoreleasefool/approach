@@ -27,7 +27,7 @@ extension GamesEditor {
 					try await games.edit(gameId)
 				})))
 			},
-			.run { [gameId = state.currentGameId] _ in await gameAnalytics.didView(gameId: gameId.uuidString) }
+			.run { [gameId = state.currentGameId] _ in await analytics.trackEvent(Analytics.Game.Updated(gameId: gameId)) }
 		)
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
@@ -51,7 +51,7 @@ extension GamesEditor {
 					await send(.internal(.didUpdateFrame(.failure(error))))
 				}
 			}.cancellable(id: frame.id, cancelInFlight: true),
-			.run { _ in await gameAnalytics.didUpdate(gameId: frame.gameId.uuidString) }
+			.run { _ in await analytics.trackEvent(Analytics.Game.Updated(gameId: frame.gameId)) }
 		)
 	}
 
@@ -66,7 +66,7 @@ extension GamesEditor {
 					await send(.internal(.didUpdateGame(.failure(error))))
 				}
 			}.cancellable(id: game.id, cancelInFlight: true),
-			.run { _ in await gameAnalytics.didUpdate(gameId: game.id.uuidString) }
+			.run { _ in await analytics.trackEvent(Analytics.Game.Updated(gameId: game.id)) }
 		)
 	}
 

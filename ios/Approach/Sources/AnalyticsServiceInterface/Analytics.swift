@@ -1,8 +1,14 @@
+import Foundation
+
 public enum Analytics {}
 
 public protocol TrackableEvent {
 	var name: String { get }
 	var payload: [String: String]? { get }
+}
+
+public protocol GameSessionTrackableEvent: TrackableEvent {
+	var eventId: UUID { get }
 }
 
 extension Analytics {

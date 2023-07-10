@@ -1,4 +1,5 @@
 import Dependencies
+import Foundation
 
 public struct AnalyticsService: Sendable {
 	public var initialize: @Sendable () -> Void
@@ -34,3 +35,23 @@ extension DependencyValues {
 		set { self[AnalyticsService.self] = newValue }
 	}
 }
+
+public enum AnalyticsGameSessionID: DependencyKey {
+	public static var liveValue = {
+		@Dependency(\.uuid) var uuid
+		return uuid()
+	}()
+
+	public static var testValue = {
+		@Dependency(\.uuid) var uuid
+		return uuid()
+	}()
+}
+
+extension DependencyValues {
+	public var analyticsGameSessionId: UUID {
+		get { self[AnalyticsGameSessionID.self]  }
+		set { self[AnalyticsGameSessionID.self] = newValue }
+	}
+}
+

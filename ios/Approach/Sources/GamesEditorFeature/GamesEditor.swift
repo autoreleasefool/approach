@@ -105,7 +105,7 @@ public struct GamesEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.gameAnalytics) var gameAnalytics
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date

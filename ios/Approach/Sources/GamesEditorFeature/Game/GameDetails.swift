@@ -62,7 +62,7 @@ public struct GameDetails: Reducer {
 		case delete
 	}
 
-	@Dependency(\.gameAnalytics) var gameAnalytics
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.matchPlays) var matchPlays
 	@Dependency(\.uuid) var uuid
 
@@ -95,7 +95,7 @@ public struct GameDetails: Reducer {
 					state.game.score = max(min(state.alertScore, 450), 0)
 					return .merge(
 						.send(.delegate(.didEditGame(state.game))),
-						.run { [gameId = state.game.id] _ in await gameAnalytics.didSetManualScore(forGameId: gameId.uuidString) }
+						.run { [gameId = state.game.id] _ in await analytics.trackEvent(Analytics.Game.ManualScoreSet(gameId: gameId)) }
 					)
 
 				case .didTapCancelScore:
