@@ -41,10 +41,10 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 		.init(alleyId: UUID(1), id: UUID(23), label: "12", position: .rightWall),
 	]
 	let bowlers: [Bowler.Database] = [
-		.init(id: UUID(0), name: "Joseph", status: .playable),
-		.init(id: UUID(1), name: "Sarah", status: .playable),
-		.init(id: UUID(2), name: "Audriana", status: .opponent),
-		.init(id: UUID(3), name: "Jordan", status: .opponent),
+		.init(id: UUID(0), name: "Joseph", kind: .playable),
+		.init(id: UUID(1), name: "Sarah", kind: .playable),
+		.init(id: UUID(2), name: "Audriana", kind: .opponent),
+		.init(id: UUID(3), name: "Jordan", kind: .opponent),
 	]
 	let gear: [Gear.Database] = [
 		.init(id: UUID(0), name: "Joseph's Shoes", kind: .shoes, bowlerId: UUID(0)),

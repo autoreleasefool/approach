@@ -6,16 +6,16 @@ extension Bowler {
 	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public var name: String
-		public var status: Status
+		public var kind: Kind
 
 		public init(
 			id: Bowler.ID,
 			name: String,
-			status: Status
+			kind: Kind
 		) {
 			self.id = id
 			self.name = name
-			self.status = status
+			self.kind = kind
 		}
 	}
 }
@@ -24,13 +24,13 @@ extension Bowler.Database: TableRecord, FetchableRecord, PersistableRecord {
 	public static let databaseTableName = "bowler"
 }
 
-extension Bowler.Status: DatabaseValueConvertible {}
+extension Bowler.Kind: DatabaseValueConvertible {}
 
 extension Bowler.Database {
 	public enum Columns {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)
-		public static let status = Column(CodingKeys.status)
+		public static let kind = Column(CodingKeys.kind)
 	}
 }
 

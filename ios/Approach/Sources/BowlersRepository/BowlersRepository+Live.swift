@@ -29,7 +29,7 @@ extension BowlersRepository: DependencyKey {
 					return try Bowler.Database
 						.all()
 						.orderByName()
-						.filter(byStatus: .playable)
+						.filter(byKind: .playable)
 						.annotated(with: averageScore)
 						.asRequest(of: Bowler.List.self)
 						.fetchAll($0)
@@ -42,12 +42,12 @@ extension BowlersRepository: DependencyKey {
 					return sort(bowlers, byIds: recentlyUsed.observeRecentlyUsedIds(.bowlers))
 				}
 			},
-			summaries: { status, ordering in
+			summaries: { kind, ordering in
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
 						.orderByName()
-						.filter(byStatus: status)
+						.filter(byKind: kind)
 						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 				}

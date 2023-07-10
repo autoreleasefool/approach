@@ -10,7 +10,7 @@ extension Bowler {
 
 public struct BowlersRepository: Sendable {
 	public var list: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>
-	public var summaries: @Sendable (Bowler.Status?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
+	public var summaries: @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
 	public var fetchSummaries: @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary]
 	public var opponentRecord: @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?
 	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit?
@@ -20,7 +20,7 @@ public struct BowlersRepository: Sendable {
 
 	public init(
 		list: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>,
-		summaries: @escaping @Sendable (Bowler.Status?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
+		summaries: @escaping @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
 		fetchSummaries: @escaping @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary],
 		opponentRecord: @escaping @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?,
 		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit?,

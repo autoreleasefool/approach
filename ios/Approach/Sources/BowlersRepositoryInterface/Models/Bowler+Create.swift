@@ -5,14 +5,14 @@ extension Bowler {
 	public struct Create: Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public var name: String
-		public let status: Bowler.Status
+		public let kind: Bowler.Kind
 
 		public static func defaultBowler(withId: UUID) -> Self {
-			.init(id: withId, name: "", status: .playable)
+			.init(id: withId, name: "", kind: .playable)
 		}
 
 		public static func defaultOpponent(withId: UUID) -> Self {
-			.init(id: withId, name: "", status: .opponent)
+			.init(id: withId, name: "", kind: .opponent)
 		}
 	}
 }

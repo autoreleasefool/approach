@@ -17,7 +17,7 @@ public struct BowlerEditor: Reducer {
 		public var _form: BowlerForm.State
 
 		public init(value: BowlerForm.Value) {
-			let isCreatingOpponent = (value.record as? Bowler.Create)?.status == .opponent
+			let isCreatingOpponent = (value.record as? Bowler.Create)?.kind == .opponent
 			self.initialValue = value
 			self._form = .init(
 				initialValue: value,

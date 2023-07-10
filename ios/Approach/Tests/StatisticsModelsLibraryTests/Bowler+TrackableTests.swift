@@ -452,7 +452,7 @@ final class BowlerTrackableTests: XCTestCase {
 	func testTrackableFrames_WithAllFilters_ReturnsFrames() async throws {
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Joseph")
 
-		let opponent = Bowler.Database.mock(id: UUID(1), name: "Sarah", status: .opponent)
+		let opponent = Bowler.Database.mock(id: UUID(1), name: "Sarah", kind: .opponent)
 
 		let league = League.Database.mock(id: UUID(0), name: "Majors", recurrence: .once)
 
