@@ -177,7 +177,10 @@ public struct GameDetails: Reducer {
 				},
 				.send(.delegate(.didEditMatchPlay(matchPlay)))
 			).cancellable(id: CancelID.saveMatchPlay),
-			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Created(matchPlayId: matchPlay.id)) }
+			.run { _ in
+				await analytics.trackEvent(Analytics.MatchPlay.Created())
+
+			}
 		)
 	}
 
@@ -195,7 +198,7 @@ public struct GameDetails: Reducer {
 					}
 				}
 			),
-			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Deleted(matchPlayId: matchPlay.id)) }
+			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Deleted()) }
 		)
 	}
 }

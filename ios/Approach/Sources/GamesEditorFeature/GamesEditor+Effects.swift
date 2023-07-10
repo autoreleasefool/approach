@@ -81,7 +81,14 @@ extension GamesEditor {
 					await send(.internal(.didUpdateMatchPlay(.failure(error))))
 				}
 			}.cancellable(id: matchPlay.id, cancelInFlight: true),
-			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Updated(matchPlayId: matchPlay.id)) }
+			.run { _ in
+				let event = Analytics.MatchPlay.Updated(
+					withOpponent: matchPlay.opponent != nil,
+					withScore: matchPlay.opponentScore != nil,
+					withResult: matchPlay.result?.rawValue ?? ""
+				)
+				await analytics.trackEvent(event)
+			}
 		)
 	}
 }
