@@ -8,5 +8,6 @@ public protocol TrackableEvent {
 extension Analytics {
 	public enum App {}
 	public enum Bowler {}
+	public enum League {}
 	public enum Feature {}
 }

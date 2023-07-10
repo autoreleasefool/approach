@@ -1,4 +1,5 @@
 import AlleysRepositoryInterface
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
@@ -106,6 +107,7 @@ public struct LeagueEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.uuid) var uuid
@@ -200,8 +202,26 @@ public struct LeagueEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
-						return .run { _ in await self.dismiss() }
+					case .didFinishCreating:
+						return .merge(
+							.run { _ in await dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.League.Created()) }
+						)
+
+					case .didFinishUpdating:
+						return .merge(
+							.run { _ in await dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.League.Updated()) }
+						)
+
+					case .didFinishDeleting:
+						return .merge(
+							.run { _ in await dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.League.Deleted()) }
+						)
+
+					case .didDiscard:
+						return .run { _ in await dismiss() }
 					}
 
 				case .form(.internal), .form(.view):

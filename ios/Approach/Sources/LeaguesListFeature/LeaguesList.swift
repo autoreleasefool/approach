@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -131,6 +132,7 @@ public struct LeaguesList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.featureFlags) var featureFlags
@@ -197,10 +199,13 @@ public struct LeaguesList: Reducer {
 
 				case let .didLoadSeriesLeague(league):
 					state.destination = .series(.init(league: league))
-					return .run { _ in
-						try await clock.sleep(for: .seconds(1))
-						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
-					}
+					return .merge(
+						.run { _ in
+							try await clock.sleep(for: .seconds(1))
+							recentlyUsed.didRecentlyUseResource(.leagues, league.id)
+						},
+						.run { _ in await analytics.trackEvent(Analytics.League.Viewed()) }
+					)
 
 				case let .widgets(.delegate(delegateAction)):
 					switch delegateAction {
