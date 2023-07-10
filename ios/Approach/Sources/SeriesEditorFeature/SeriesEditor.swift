@@ -203,6 +203,7 @@ extension SeriesEditor.State {
 
 extension Series.Create: CreateableRecord {
 	public static var modelName = Strings.Series.title
+	public static var isSaveableWithoutChanges: Bool { true }
 
 	public var isSaveable: Bool { true }
 	public var name: String { date.longFormat }

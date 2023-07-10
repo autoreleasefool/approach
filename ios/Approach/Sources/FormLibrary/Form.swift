@@ -3,6 +3,7 @@ import FeatureActionLibrary
 import StringsLibrary
 
 public protocol FormRecord: Identifiable, Equatable {
+	static var isSaveableWithoutChanges: Bool { get }
 	var name: String { get }
 	var isSaveable: Bool { get }
 	var saveButtonText: String { get }
@@ -19,6 +20,10 @@ public protocol EditableRecord: FormRecord {
 extension FormRecord {
 	public var saveButtonText: String {
 		Strings.Action.save
+	}
+
+	public static var isSaveableWithoutChanges: Bool {
+		false
 	}
 }
 
@@ -50,8 +55,15 @@ public struct Form<
 			initialValue != value
 		}
 
+		public var isSaveableWithoutChanges: Bool {
+			switch value {
+			case .create: return New.isSaveableWithoutChanges
+			case .edit: return Existing.isSaveableWithoutChanges
+			}
+		}
+
 		public var isSaveable: Bool {
-			!isLoading && hasChanges && (value.record?.isSaveable ?? false)
+			!isLoading && (hasChanges || isSaveableWithoutChanges) && (value.record?.isSaveable ?? false)
 		}
 
 		public var isDeleteable: Bool {
