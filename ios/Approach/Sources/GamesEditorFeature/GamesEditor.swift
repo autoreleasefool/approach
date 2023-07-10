@@ -16,6 +16,93 @@ import StringsLibrary
 import SwiftUI
 
 public struct GamesEditor: Reducer {
+	public struct State: Equatable {
+		public var sheetDetent: PresentationDetent = .height(.zero)
+		public var willAdjustLaneLayoutAt: Date
+		public var backdropSize: CGSize = .zero
+		public var isScoreSheetVisible = true
+
+		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
+		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
+
+		// IDs for games being edited (and their corresponding bowlers)
+		public var bowlerIds: [Bowler.ID]
+		public var bowlerGameIds: [Bowler.ID: [Game.ID]]
+
+		// ID Details for the current entity being edited
+		public var currentBowlerId: Bowler.ID
+		public var currentGameId: Game.ID
+		public var currentFrameIndex: Int = 0
+		public var currentRollIndex: Int = 0
+
+		// Loaded details for the current entity being edited
+		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
+		public var game: Game.Edit?
+		public var frames: [Frame.Edit]?
+		public var score: [ScoreStep]?
+
+		var numberOfGames: Int { bowlerGameIds.first!.value.count }
+		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
+		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
+
+		public var _frameEditor: FrameEditor.State?
+		public var _rollEditor: RollEditor.State?
+		@PresentationState public var destination: Destination.State?
+
+		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
+			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
+			self.bowlerIds = bowlerIds
+			self.bowlerGameIds = bowlerGameIds
+
+			let currentBowlerId = bowlerIds.first!
+			self.currentBowlerId = currentBowlerId
+			self.currentGameId = bowlerGameIds[currentBowlerId]!.first!
+
+			@Dependency(\.date) var date
+			self.willAdjustLaneLayoutAt = date()
+		}
+	}
+
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+			case didChangeDetent(PresentationDetent)
+			case didAdjustBackdropSize(CGSize)
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case bowlersResponse(TaskResult<[Bowler.Summary]>)
+			case framesResponse(TaskResult<[Frame.Edit]>)
+			case gameResponse(TaskResult<Game.Edit?>)
+			case didUpdateFrame(TaskResult<Never>)
+			case didUpdateGame(TaskResult<Never>)
+			case didUpdateMatchPlay(TaskResult<Never>)
+
+			case didDismissOpenSheet
+			case calculatedScore([ScoreStep])
+			case adjustBackdrop
+
+			case destination(PresentationAction<Destination.Action>)
+			case gamesHeader(GamesHeader.Action)
+			case gameDetailsHeader(GameDetailsHeader.Action)
+			case frameEditor(FrameEditor.Action)
+			case rollEditor(RollEditor.Action)
+			case scoreSheet(ScoreSheet.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
+	}
+
+	public enum RefreshableElements {
+		case bowlers
+		case game
+		case frames
+	}
+
+	enum CancelID { case observation }
+
 	public init() {}
 
 	@Dependency(\.gameAnalytics) var gameAnalytics
@@ -197,99 +284,6 @@ public struct GamesEditor: Reducer {
 			Destination()
 		}
 	}
-}
-
-extension GamesEditor {
-	public struct State: Equatable {
-		public var sheetDetent: PresentationDetent = .height(.zero)
-		public var willAdjustLaneLayoutAt: Date
-		public var backdropSize: CGSize = .zero
-		public var isScoreSheetVisible = true
-
-		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
-		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
-
-		// IDs for games being edited (and their corresponding bowlers)
-		public var bowlerIds: [Bowler.ID]
-		public var bowlerGameIds: [Bowler.ID: [Game.ID]]
-
-		// ID Details for the current entity being edited
-		public var currentBowlerId: Bowler.ID
-		public var currentGameId: Game.ID
-		public var currentFrameIndex: Int = 0
-		public var currentRollIndex: Int = 0
-
-		// Loaded details for the current entity being edited
-		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
-		public var game: Game.Edit?
-		public var frames: [Frame.Edit]?
-		public var score: [ScoreStep]?
-
-		var numberOfGames: Int { bowlerGameIds.first!.value.count }
-		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
-		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
-
-		public var _frameEditor: FrameEditor.State?
-		public var _rollEditor: RollEditor.State?
-		@PresentationState public var destination: Destination.State?
-
-		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
-			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
-			self.bowlerIds = bowlerIds
-			self.bowlerGameIds = bowlerGameIds
-
-			let currentBowlerId = bowlerIds.first!
-			self.currentBowlerId = currentBowlerId
-			self.currentGameId = bowlerGameIds[currentBowlerId]!.first!
-
-			@Dependency(\.date) var date
-			self.willAdjustLaneLayoutAt = date()
-		}
-	}
-}
-
-extension GamesEditor {
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
-			case didAppear
-			case didChangeDetent(PresentationDetent)
-			case didAdjustBackdropSize(CGSize)
-		}
-		public enum DelegateAction: Equatable {}
-		public enum InternalAction: Equatable {
-			case bowlersResponse(TaskResult<[Bowler.Summary]>)
-			case framesResponse(TaskResult<[Frame.Edit]>)
-			case gameResponse(TaskResult<Game.Edit?>)
-			case didUpdateFrame(TaskResult<Never>)
-			case didUpdateGame(TaskResult<Never>)
-			case didUpdateMatchPlay(TaskResult<Never>)
-
-			case didDismissOpenSheet
-			case calculatedScore([ScoreStep])
-			case adjustBackdrop
-
-			case destination(PresentationAction<Destination.Action>)
-			case gamesHeader(GamesHeader.Action)
-			case gameDetailsHeader(GameDetailsHeader.Action)
-			case frameEditor(FrameEditor.Action)
-			case rollEditor(RollEditor.Action)
-			case scoreSheet(ScoreSheet.Action)
-		}
-
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
-	}
-}
-
-extension GamesEditor {
-	public enum RefreshableElements {
-		case bowlers
-		case game
-		case frames
-	}
-
-	enum CancelID { case observation }
 }
 
 extension Bowler.Summary: PickableResource {
