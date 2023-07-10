@@ -1,6 +1,8 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import NotificationsServiceInterface
+import PreferenceServiceInterface
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
@@ -87,8 +89,10 @@ public struct StatisticsDetails: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
+	@Dependency(\.preferences) var preferences
 	@Dependency(\.statistics) var statistics
 	@Dependency(\.uiDeviceNotifications) var uiDevice
 
@@ -184,7 +188,17 @@ public struct StatisticsDetails: Reducer {
 					case let .didRequestEntryDetails(id):
 						guard let statistic = Statistics.type(of: id) else { return .none }
 						state.sheetDetent = StatisticsDetails.defaultSheetDetent
-						return loadChart(forStatistic: statistic, withFilter: state.filter)
+						return .merge(
+							loadChart(forStatistic: statistic, withFilter: state.filter),
+							.run { _ in
+								await analytics.trackEvent(Analytics.Statistic.Viewed(
+									statisticName: statistic.title,
+									countsH2AsH: preferences.bool(forKey: .statisticsCountH2AsH) ?? true,
+									countsS2AsS: preferences.bool(forKey: .statisticsCountSplitWithBonusAsSplit) ?? true,
+									hidesZeroStatistics: preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
+								))
+							}
+						)
 
 					case .listRequiresReload:
 						return refreshStatistics(state: state)
