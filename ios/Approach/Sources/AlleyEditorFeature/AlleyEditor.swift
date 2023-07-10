@@ -1,5 +1,6 @@
 import AddressLookupFeature
 import AlleysRepositoryInterface
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
@@ -93,6 +94,7 @@ public struct AlleyEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.lanes) var lanes
 
@@ -179,7 +181,35 @@ public struct AlleyEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case let .didFinishCreating(alley):
+						return .merge(
+							.run { _ in await self.dismiss() },
+							.run { [numberOfLanes = state.newLanes.count + state.existingLanes.count] _ in
+								await analytics.trackEvent(Analytics.Alley.Created(
+									withLocation: alley.location != nil,
+									numberOfLanes: numberOfLanes
+								))
+							}
+						)
+
+					case let .didFinishUpdating(alley):
+						return .merge(
+							.run { _ in await self.dismiss() },
+							.run { [numberOfLanes = state.newLanes.count + state.existingLanes.count] _ in
+								await analytics.trackEvent(Analytics.Alley.Updated(
+									withLocation: alley.location != nil,
+									numberOfLanes: numberOfLanes
+								))
+							}
+						)
+
+					case .didFinishDeleting:
+						return .merge(
+							.run { _ in await self.dismiss() },
+							.run { _ in await analytics.trackEvent(Analytics.Alley.Deleted()) }
+						)
+
+					case .didDiscard:
 						return .run { _ in await self.dismiss() }
 					}
 

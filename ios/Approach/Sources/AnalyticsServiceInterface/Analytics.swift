@@ -12,6 +12,7 @@ public protocol GameSessionTrackableEvent: TrackableEvent {
 }
 
 extension Analytics {
+	public enum Alley {}
 	public enum App {}
 	public enum Bowler {}
 	public enum Feature {}

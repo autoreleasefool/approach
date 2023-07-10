@@ -110,7 +110,6 @@ public struct BowlerEditor: Reducer {
 
 					case .didDiscard:
 						return .run { _ in await self.dismiss() }
-
 					}
 
 				case .form(.view), .form(.internal):
