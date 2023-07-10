@@ -166,31 +166,36 @@ public struct GameDetails: Reducer {
 	private func createMatchPlay(state: inout State) -> Effect<Action> {
 		let matchPlay = MatchPlay.Edit(gameId: state.game.id, id: uuid())
 		state.game.matchPlay = matchPlay
-		return .concatenate(
-			.run { send in
-				do {
-					try await matchPlays.create(matchPlay)
-				} catch {
-					await send(.internal(.didUpdateMatchPlay(.failure(error))))
-				}
-			},
-			.send(.delegate(.didEditMatchPlay(matchPlay)))
+		return .merge(
+			.concatenate(
+				.run { send in
+					do {
+						try await matchPlays.create(matchPlay)
+					} catch {
+						await send(.internal(.didUpdateMatchPlay(.failure(error))))
+					}
+				},
+				.send(.delegate(.didEditMatchPlay(matchPlay)))
+			).cancellable(id: CancelID.saveMatchPlay),
+			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Created(matchPlayId: matchPlay.id)) }
 		)
-		.cancellable(id: CancelID.saveMatchPlay)
 	}
 
 	private func deleteMatchPlay(state: inout State) -> Effect<Action> {
 		guard let matchPlay = state.game.matchPlay else { return .none }
 		state.game.matchPlay = nil
-		return .concatenate(
-			.cancel(id: CancelID.saveMatchPlay),
-			.run { send in
-				do {
-					try await matchPlays.delete(matchPlay.id)
-				} catch {
-					await send(.internal(.didUpdateMatchPlay(.failure(error))))
+		return .merge(
+			.concatenate(
+				.cancel(id: CancelID.saveMatchPlay),
+				.run { send in
+					do {
+						try await matchPlays.delete(matchPlay.id)
+					} catch {
+						await send(.internal(.didUpdateMatchPlay(.failure(error))))
+					}
 				}
-			}
+			),
+			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Deleted(matchPlayId: matchPlay.id)) }
 		)
 	}
 }

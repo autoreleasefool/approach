@@ -72,14 +72,16 @@ extension GamesEditor {
 
 	func save(matchPlay: MatchPlay.Edit?) -> Effect<Action> {
 		guard let matchPlay else { return .none }
-		return .run { send in
-			do {
-				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
-				try await matchPlays.update(matchPlay)
-			} catch {
-				await send(.internal(.didUpdateMatchPlay(.failure(error))))
-			}
-		}
-		.cancellable(id: matchPlay.id, cancelInFlight: true)
+		return .merge(
+			.run { send in
+				do {
+					try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+					try await matchPlays.update(matchPlay)
+				} catch {
+					await send(.internal(.didUpdateMatchPlay(.failure(error))))
+				}
+			}.cancellable(id: matchPlay.id, cancelInFlight: true),
+			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Updated(matchPlayId: matchPlay.id)) }
+		)
 	}
 }

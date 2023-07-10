@@ -17,5 +17,6 @@ extension Analytics {
 	public enum Feature {}
 	public enum Game {}
 	public enum League {}
+	public enum MatchPlay {}
 	public enum Series {}
 }
