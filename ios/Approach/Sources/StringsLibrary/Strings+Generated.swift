@@ -788,10 +788,6 @@ public enum Strings {
       public static let name = Strings.tr("Localizable", "settings.developer.name", fallback: "Joseph Roque")
       /// Developer
       public static let title = Strings.tr("Localizable", "settings.developer.title", fallback: "Developer")
-      /// @autoreleasefool
-      public static let twitterHandle = Strings.tr("Localizable", "settings.developer.twitterHandle", fallback: "@autoreleasefool")
-      /// https://twitter.com/@autoreleasefool
-      public static let twitterUrl = Strings.tr("Localizable", "settings.developer.twitterUrl", fallback: "https://twitter.com/@autoreleasefool")
       /// https://josephroque.dev
       public static let website = Strings.tr("Localizable", "settings.developer.website", fallback: "https://josephroque.dev")
       /// Website

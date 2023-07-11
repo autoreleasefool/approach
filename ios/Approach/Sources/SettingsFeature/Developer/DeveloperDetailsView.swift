@@ -7,7 +7,6 @@ public struct DeveloperDetailsView: View {
 		List {
 			Section(Strings.Settings.Developer.contact) {
 				Text(DeveloperConstants.name)
-				Link(DeveloperConstants.twitterHandle, destination: DeveloperConstants.twitterUrl)
 				Link(DeveloperConstants.mastodonHandle, destination: DeveloperConstants.mastodonUrl)
 			}
 

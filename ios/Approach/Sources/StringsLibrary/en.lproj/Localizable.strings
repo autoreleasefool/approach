@@ -314,8 +314,6 @@
 "settings.acknowledgements.title" = "Acknowledgements";
 "settings.developer.name" = "Joseph Roque";
 "settings.developer.contact" = "Contact";
-"settings.developer.twitterHandle" = "@autoreleasefool";
-"settings.developer.twitterUrl" = "https://twitter.com/@autoreleasefool";
 "settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";
 "settings.developer.mastodonUrl" = "https://iosdev.space/@autoreleasefool";
 "settings.developer.learnMore" = "Learn More";
