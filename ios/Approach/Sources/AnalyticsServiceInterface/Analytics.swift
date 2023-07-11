@@ -23,4 +23,5 @@ extension Analytics {
 	public enum Series {}
 	public enum Settings {}
 	public enum Statistic {}
+	public enum Widget {}
 }

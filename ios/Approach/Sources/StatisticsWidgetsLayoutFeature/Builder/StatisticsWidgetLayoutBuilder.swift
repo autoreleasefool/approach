@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
@@ -62,6 +63,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
@@ -91,7 +93,12 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					)
 
 				case .didTapDoneButton:
-					return .run { _ in await dismiss() }
+					return .merge(
+						.run { _ in await dismiss() },
+						.run { [context = state.context, numberOfWidgets = state.widgets.count] _ in
+							await analytics.trackEvent(Analytics.Widget.LayoutUpdated(context: context, numberOfWidgets: numberOfWidgets))
+						}
+					)
 
 				case .didTapAddNew:
 					state.editor = .init(context: state.context, priority: state.widgets.count, source: state.newWidgetSource)
@@ -109,11 +116,14 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					guard state.isDeleting else { return .none }
 					state.widgets.remove(id: id)
 					state.widgetData.removeValue(forKey: id)
-					return .run { _ in
-						try await self.statisticsWidgets.delete(id)
-					} catch: { error, send in
-						await send(.internal(.didDeleteWidget(.failure(error))))
-					}
+					return .merge(
+						.run { _ in
+							try await self.statisticsWidgets.delete(id)
+						} catch: { error, send in
+							await send(.internal(.didDeleteWidget(.failure(error))))
+						},
+						.run { [context = state.context] _ in await analytics.trackEvent(Analytics.Widget.Deleted(context: context)) }
+					)
 
 				case let .setAnimateWidgets(value):
 					state.isAnimatingWidgets = value
@@ -179,8 +189,15 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
-					case .didCreateConfiguration:
-						return .none
+					case let .didCreateConfiguration(configuration):
+						return .run { [context = state.context, numberOfWidgets = state.widgets.count] _ in
+							await analytics.trackEvent(Analytics.Widget.Created(
+								context: context,
+								source: configuration.source.analyticsString,
+								statistic: configuration.statistic.rawValue,
+								timeline: configuration.timeline.rawValue
+							))
+						}
 					}
 
 				case let .reordering(.delegate(delegateAction)):
@@ -229,6 +246,15 @@ extension StatisticsWidgetLayoutBuilder.State {
 		}
 		set {
 			self.widgets = newValue.items
+		}
+	}
+}
+
+extension StatisticsWidget.Source {
+	var analyticsString: String {
+		switch self {
+		case .bowler: return "bowler"
+		case .league: return "league"
 		}
 	}
 }
