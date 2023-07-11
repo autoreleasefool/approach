@@ -190,7 +190,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case let .didCreateConfiguration(configuration):
-						return .run { [context = state.context, numberOfWidgets = state.widgets.count] _ in
+						return .run { [context = state.context] _ in
 							await analytics.trackEvent(Analytics.Widget.Created(
 								context: context,
 								source: configuration.source.analyticsString,

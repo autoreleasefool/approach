@@ -171,6 +171,7 @@ let package = Package(
 			dependencies: [
 				"AddressLookupFeature",
 				"AlleysRepositoryInterface",
+				"AnalyticsServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
 				"LaneEditorFeature",
@@ -277,6 +278,7 @@ let package = Package(
 		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"DateTimeLibrary",
 				"EquatableLibrary",
@@ -313,6 +315,7 @@ let package = Package(
 		.target(
 			name: "GearEditorFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"AvatarServiceInterface",
 				"BowlersRepositoryInterface",
 				"EquatableLibrary",
@@ -367,6 +370,7 @@ let package = Package(
 			name: "LeagueEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
+				"AnalyticsServiceInterface",
 				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormLibrary",
@@ -468,6 +472,7 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
+				"AnalyticsServiceInterface",
 				"DateTimeLibrary",
 				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",
@@ -521,6 +526,7 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"EquatableLibrary",
 				"GamesRepositoryInterface",
@@ -556,6 +562,7 @@ let package = Package(
 		.target(
 			name: "StatisticsWidgetsLayoutFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"EquatableLibrary",
 				"LeaguesRepositoryInterface",

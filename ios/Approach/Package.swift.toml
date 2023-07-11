@@ -21,7 +21,7 @@ libraries = [ "Views" ]
 [features.AlleyEditor]
 features = [ "AddressLookup", "LaneEditor" ]
 repositories = [ "Alleys" ]
-services = [ "FeatureFlags" ]
+services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "Form", "ModelsViews" ]
 
 [features.AlleysList]
@@ -50,7 +50,7 @@ libraries = [ "Strings" ]
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
 repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
-services = [ "FeatureFlags" ]
+services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "Equatable", "ModelsViews", "ResourcePicker" ]
 
 [features.GamesList]
@@ -59,7 +59,7 @@ libraries = [ "ResourceList" ]
 
 [features.GearEditor]
 repositories = [ "Bowlers", "Gear" ]
-services = [ "Avatar", "FeatureFlags" ]
+services = [ "Analytics", "Avatar", "FeatureFlags" ]
 libraries = [ "Equatable", "Form", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.GearList]
@@ -72,7 +72,7 @@ libraries = [ "Models", "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
 repositories = [ "Alleys", "Leagues" ]
-services = [ "FeatureFlags" ]
+services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "Equatable", "Form", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.LeaguesList]
@@ -100,7 +100,7 @@ libraries = [ "SwiftUIExtensions", "Views" ]
 
 [features.SeriesEditor]
 repositories = [ "Alleys", "Series" ]
-services = [ "FeatureFlags" ]
+services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "Equatable", "Form", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.SeriesList]
@@ -116,11 +116,12 @@ features = [ "StatisticsDetails" ]
 
 [features.StatisticsDetails]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
-services = [ "Notifications", "Preference" ]
+services = [ "Analytics", "Notifications", "Preference" ]
 libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgetsLayout]
 repositories = [ "Bowlers", "Leagues", "StatisticsWidgets" ]
+services = [ "Analytics" ]
 libraries = [ "Equatable", "Reordering", "ResourcePicker", "SwiftUIExtensions" ]
 
 # Repositories
