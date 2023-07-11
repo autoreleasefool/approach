@@ -1,4 +1,6 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
+import ConstantsLibrary
 import FeatureActionLibrary
 
 public struct HelpSettings: Reducer {
@@ -10,6 +12,9 @@ public struct HelpSettings: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapReportBugButton
 			case didTapSendFeedbackButton
+			case didShowAcknowledgements
+			case didShowDeveloperDetails
+			case didTapViewSource
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {}
@@ -19,6 +24,9 @@ public struct HelpSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Dependency(\.analytics) var analytics
+	@Dependency(\.openURL) var openURL
+
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { _, action in
 			switch action {
@@ -26,11 +34,23 @@ public struct HelpSettings: Reducer {
 				switch viewAction {
 				case .didTapReportBugButton:
 					// TODO: send bug report email
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.ReportedBug()) }
 
 				case .didTapSendFeedbackButton:
 					// TODO: send feedback email
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.SentFeedback()) }
+
+				case .didShowAcknowledgements:
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedAcknowledgements()) }
+
+				case .didShowDeveloperDetails:
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedDeveloper()) }
+
+				case .didTapViewSource:
+					return .merge(
+						.run { _ in await openURL(AppConstants.openSourceRepositoryUrl) },
+						.run { _ in await analytics.trackEvent(Analytics.Settings.ViewedSource()) }
+					)
 				}
 
 			case let .internal(internalAction):

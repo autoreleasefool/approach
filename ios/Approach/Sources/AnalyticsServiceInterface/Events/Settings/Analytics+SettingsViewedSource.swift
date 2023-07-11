@@ -1,6 +1,6 @@
 extension Analytics.Settings {
-	public struct ViewedOpponents: TrackableEvent {
-		public let name = "Settings.ViewedOpponents"
+	public struct ViewedSource: TrackableEvent {
+		public let name = "Settings.ViewedSource"
 		public var payload: [String: String]? { nil }
 
 		public init() {}

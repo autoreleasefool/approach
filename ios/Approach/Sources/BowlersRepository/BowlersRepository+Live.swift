@@ -78,8 +78,14 @@ extension BowlersRepository: DependencyKey {
 					let allMatches = Bowler.Database.matchesAsOpponent
 					let allGames = Bowler.Database.gamesAsOpponent
 						.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
-						.joining(required: Game.Database.series.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include))
-						.joining(required: Game.Database.league.filter(League.Database.Columns.excludeFromStatistics == League.ExcludeFromStatistics.include))
+						.joining(
+							required: Game.Database.series
+								.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
+						)
+						.joining(
+							required: Game.Database.league
+								.filter(League.Database.Columns.excludeFromStatistics == League.ExcludeFromStatistics.include)
+						)
 
 					let matchesAgainst = allGames
 						.annotated(withRequired: Game.Database.matchPlay.select(

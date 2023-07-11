@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
@@ -33,6 +34,7 @@ public struct AppIconList: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.appIcon) var appIcon
 
 	public var body: some ReducerOf<Self> {
@@ -48,27 +50,35 @@ public struct AppIconList: Reducer {
 						return .none
 					}
 
-					return .concatenate(
-						.run { _ in
-							if icon == .primary {
-								try await appIcon.resetAppIcon()
-							} else {
-								try await appIcon.setAppIcon(icon)
-							}
-						} catch: { error, send in
-							await send(.internal(.didUpdateIcon(.failure(error))))
-						},
-						fetchCurrentAppIcon()
+					return .merge(
+						.concatenate(
+							.run { _ in
+								if icon == .primary {
+									try await appIcon.resetAppIcon()
+								} else {
+									try await appIcon.setAppIcon(icon)
+								}
+							} catch: { error, send in
+								await send(.internal(.didUpdateIcon(.failure(error))))
+							},
+							fetchCurrentAppIcon()
+						),
+						.run { _ in await analytics.trackEvent(Analytics.Settings.ChangedAppIcon(appIconName: icon.rawValue)) }
 					)
 
 				case .didTapReset:
-					return .concatenate(
+					return .merge(
+						.concatenate(
+							.run { _ in
+								try await appIcon.resetAppIcon()
+							} catch: { error, send in
+								await send(.internal(.didUpdateIcon(.failure(error))))
+							},
+							fetchCurrentAppIcon()
+						),
 						.run { _ in
-							try await appIcon.resetAppIcon()
-						} catch: { error, send in
-							await send(.internal(.didUpdateIcon(.failure(error))))
-						},
-						fetchCurrentAppIcon()
+							await analytics.trackEvent(Analytics.Settings.ChangedAppIcon(appIconName: AppIcon.primary.rawValue))
+						}
 					)
 				}
 

@@ -6,7 +6,7 @@ extension Analytics.Gear {
 
 		public var payload: [String: String]? {
 			[
-				"Kind": kind
+				"Kind": kind,
 			]
 		}
 

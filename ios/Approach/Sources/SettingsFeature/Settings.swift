@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
@@ -82,6 +83,7 @@ public struct Settings: Reducer {
 		}
 	}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.appIcon) var appIcon
 	@Dependency(\.databaseMocking) var databaseMocking
 
@@ -108,7 +110,7 @@ public struct Settings: Reducer {
 
 				case .didTapOpponents:
 					state.destination = .opponentsList(.init())
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedOpponents()) }
 
 				case .didTapFeatureFlags:
 					state.destination = .featureFlags(.init())
@@ -116,11 +118,11 @@ public struct Settings: Reducer {
 
 				case .didTapStatistics:
 					state.destination = .statistics(.init())
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedStatistics()) }
 
 				case .didTapAppIcon:
 					state.destination = .appIcon(.init())
-					return .none
+					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedAppIcons()) }
 				}
 
 			case let .internal(internalAction):

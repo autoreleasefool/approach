@@ -13,6 +13,9 @@ public struct HelpSettingsView: View {
 	public enum ViewAction {
 		case didTapReportBugButton
 		case didTapSendFeedbackButton
+		case didShowAcknowledgements
+		case didShowDeveloperDetails
+		case didTapViewSource
 	}
 
 	public var body: some View {
@@ -20,12 +23,20 @@ public struct HelpSettingsView: View {
 			Section(Strings.Settings.Help.title) {
 				Button(Strings.Settings.Help.reportBug) { viewStore.send(.didTapReportBugButton) }
 				Button(Strings.Settings.Help.sendFeedback) { viewStore.send(.didTapSendFeedbackButton) }
-				NavigationLink(Strings.Settings.Help.acknowledgements, destination: AcknowledgementsView())
+				NavigationLink(
+					Strings.Settings.Help.acknowledgements,
+					destination: AcknowledgementsView()
+						.onAppear { viewStore.send(.didShowAcknowledgements) }
+				)
 			}
 
 			Section {
-				NavigationLink(Strings.Settings.Help.developer, destination: DeveloperDetailsView())
-				Link(Strings.Settings.Help.viewSource, destination: AppConstants.openSourceRepositoryUrl)
+				NavigationLink(
+					Strings.Settings.Help.developer,
+					destination: DeveloperDetailsView()
+						.onAppear { viewStore.send(.didShowDeveloperDetails) }
+				)
+				Button(Strings.Settings.Help.viewSource) { viewStore.send(.didTapViewSource) }
 				// TODO: enable tip jar
 //				NavigationLink("Tip Jar", destination: TipJarView())
 			} header: {
@@ -44,6 +55,12 @@ extension HelpSettings.Action {
 			self = .view(.didTapReportBugButton)
 		case .didTapSendFeedbackButton:
 			self = .view(.didTapSendFeedbackButton)
+		case .didShowAcknowledgements:
+			self = .view(.didShowAcknowledgements)
+		case .didShowDeveloperDetails:
+			self = .view(.didShowDeveloperDetails)
+		case .didTapViewSource:
+			self = .view(.didTapViewSource)
 		}
 	}
 }
