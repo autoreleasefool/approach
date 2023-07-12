@@ -12,17 +12,17 @@ fun RowScope.ApproachNavigationBarItem(
 	icon: @Composable () -> Unit,
 	modifier: Modifier = Modifier,
 	selectedIcon: @Composable () -> Unit = icon,
-	enabled: Boolean = true,
+	isEnabled: Boolean = true,
 	label: @Composable (() -> Unit)? = null,
-	alwaysShowLabel: Boolean = true
+	alwaysShowLabel: Boolean = true,
 ) {
 	NavigationBarItem(
 		selected = isSelected,
 		onClick = onClick,
 		icon = if (isSelected) selectedIcon else icon,
 		modifier = modifier,
-		enabled = enabled,
+		enabled = isEnabled,
 		label = label,
-		alwaysShowLabel = alwaysShowLabel
+		alwaysShowLabel = alwaysShowLabel,
 	)
 }

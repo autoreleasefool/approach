@@ -15,10 +15,6 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavig
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToSettings
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.navigateToStatistics
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
-import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination.ACCESSORIES
-import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination.OVERVIEW
-import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination.SETTINGS
-import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination.STATISTICS
 
 @Composable
 fun rememberApproachAppState(
@@ -33,14 +29,13 @@ fun rememberApproachAppState(
 class ApproachAppState(
 	val navController: NavHostController,
 ) {
-
 	val currentDestination: NavDestination?
 		@Composable get() = navController
 			.currentBackStackEntryAsState().value?.destination
 
 	val currentTopLevelDestination: TopLevelDestination?
 		@Composable get() = when(currentDestination?.route) {
-			overviewNavigationRoute -> OVERVIEW
+			overviewNavigationRoute -> TopLevelDestination.OVERVIEW
 			else -> null
 		}
 
@@ -57,10 +52,10 @@ class ApproachAppState(
 		}
 
 		when (topLevelDestination) {
-			OVERVIEW -> navController.navigateToOverview(topLevelNavOptions)
-			STATISTICS -> navController.navigateToStatistics(topLevelNavOptions)
-			ACCESSORIES -> navController.navigateToAccessories(topLevelNavOptions)
-			SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
+			TopLevelDestination.OVERVIEW -> navController.navigateToOverview(topLevelNavOptions)
+			TopLevelDestination.STATISTICS -> navController.navigateToStatistics(topLevelNavOptions)
+			TopLevelDestination.ACCESSORIES -> navController.navigateToAccessories(topLevelNavOptions)
+			TopLevelDestination.SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
 		}
 	}
 }

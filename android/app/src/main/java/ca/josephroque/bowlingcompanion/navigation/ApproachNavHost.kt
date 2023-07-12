@@ -20,7 +20,7 @@ fun ApproachNavHost(
 	NavHost(
 		navController = navController,
 		startDestination = startDestination,
-		modifier = modifier
+		modifier = modifier,
 	) {
 		overviewScreen()
 		statisticsScreen()

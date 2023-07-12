@@ -1,7 +1,6 @@
-package ca.josephroque.bowlingcompanion.feature.overview.bowlerslist
+package ca.josephroque.bowlingcompanion.feature.bowlerslist
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -16,14 +15,14 @@ import ca.josephroque.bowlingcompanion.core.data.models.Bowler
 @Composable
 fun BowlerCard(
 	bowler: Bowler,
-	onClick: () -> Unit
+	onClick: () -> Unit,
 ) {
 	Card(
 		onClick = onClick,
 		shape = RoundedCornerShape(16.dp),
 	) {
 		Box(modifier = Modifier.padding(16.dp)) {
-			Text(bowler.name)
+			Text(text = bowler.name)
 		}
 	}
 }

@@ -8,14 +8,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ca.josephroque.bowlingcompanion.feature.overview.bowlerslist.BowlersListUiState
-import ca.josephroque.bowlingcompanion.feature.overview.bowlerslist.bowlersList
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.bowlersList
 import java.util.UUID
 
 @Composable
 internal fun OverviewRoute(
 	modifier: Modifier = Modifier,
-	viewModel: OverviewViewModel = hiltViewModel()
+	viewModel: OverviewViewModel = hiltViewModel(),
 ) {
 	val bowlersListState by viewModel.bowlersListState.collectAsStateWithLifecycle()
 
@@ -37,11 +37,11 @@ internal fun OverviewScreen(
 	modifier: Modifier = Modifier,
 ) {
 	LazyColumn(
-		modifier = modifier.fillMaxSize()
+		modifier = modifier.fillMaxSize(),
 	) {
 		bowlersList(
 			bowlersListState = bowlersListState,
-			onBowlerClick = onBowlerClick
+			onBowlerClick = onBowlerClick,
 		)
 	}
 }

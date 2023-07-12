@@ -11,7 +11,7 @@ import ca.josephroque.bowlingcompanion.R
 internal fun AccessoriesRoute(
 	modifier: Modifier = Modifier,
 ) {
-	Text(stringResource(R.string.destination_accessories))
+	Text(text = stringResource(id = R.string.destination_accessories))
 }
 
 @Preview

@@ -10,5 +10,5 @@ import ca.josephroque.bowlingcompanion.R
 internal fun StatisticsRoute(
 	modifier: Modifier = Modifier,
 ) {
-	Text(stringResource(R.string.destination_statistics))
+	Text(text = stringResource(R.string.destination_statistics))
 }
