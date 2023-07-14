@@ -250,7 +250,6 @@ public struct AccessoriesOverview: Reducer {
 				case .destination(.dismiss),
 						.destination(.presented(.gearEditor(.view))),
 						.destination(.presented(.gearEditor(.internal))),
-						.destination(.presented(.alleyEditor(.binding))),
 						.destination(.presented(.alleyEditor(.view))),
 						.destination(.presented(.alleyEditor(.internal))),
 						.destination(.presented(.alleysList(.internal))),

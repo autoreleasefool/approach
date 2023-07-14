@@ -13,37 +13,19 @@ import ViewsLibrary
 
 public struct AlleyEditorView: View {
 	let store: StoreOf<AlleyEditor>
+	typealias AlleyEditorViewStore = ViewStore<ViewState, AlleyEditor.Action.ViewAction>
 
 	struct ViewState: Equatable {
-		@BindingState public var name: String
-		@BindingState public var material: Alley.Material?
-		@BindingState public var pinFall: Alley.PinFall?
-		@BindingState public var mechanism: Alley.Mechanism?
-		@BindingState public var pinBase: Alley.PinBase?
+		@BindingViewState public var name: String
+		@BindingViewState public var material: Alley.Material?
+		@BindingViewState public var pinFall: Alley.PinFall?
+		@BindingViewState public var mechanism: Alley.Mechanism?
+		@BindingViewState public var pinBase: Alley.PinBase?
 		public let location: Location.Edit?
 
 		let hasLanesEnabled: Bool
 		let newLanes: IdentifiedArrayOf<Lane.Create>
 		let existingLanes: IdentifiedArrayOf<Lane.Edit>
-
-		init(state: AlleyEditor.State) {
-			self.name = state.name
-			self.material = state.material
-			self.pinFall = state.pinFall
-			self.mechanism = state.mechanism
-			self.pinBase = state.pinBase
-			self.location = state.location
-			self.hasLanesEnabled = state.hasLanesEnabled
-			self.newLanes = state.newLanes
-			self.existingLanes = state.existingLanes
-		}
-	}
-
-	enum ViewAction: BindableAction {
-		case didTapAddressField
-		case didTapRemoveAddressButton
-		case didTapManageLanes
-		case binding(BindingAction<ViewState>)
 	}
 
 	public init(store: StoreOf<AlleyEditor>) {
@@ -51,7 +33,7 @@ public struct AlleyEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: AlleyEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			FormView(store: store.scope(state: \.form, action: /AlleyEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				mapSection(viewStore)
@@ -65,7 +47,7 @@ public struct AlleyEditorView: View {
 				Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
 					.listRowInsets(EdgeInsets())
 			}
-		}
+		})
 		.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
 			NavigationStack {
 				AddressLookupView(store: scopedStore)
@@ -80,11 +62,11 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func detailsSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		Section(Strings.Editor.Fields.Details.title) {
 			TextField(
 				Strings.Editor.Fields.Details.name,
-				text: viewStore.binding(\.$name)
+				text: viewStore.$name
 			)
 			HStack {
 				Button { viewStore.send(.didTapAddressField) } label: {
@@ -100,7 +82,7 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	@ViewBuilder private func mapSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	@ViewBuilder private func mapSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		if let location = viewStore.location {
 			Section {
 				Map(
@@ -121,11 +103,11 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	private func materialSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func materialSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.material,
-				selection: viewStore.binding(\.$material)
+				selection: viewStore.$material
 			) {
 				Text("").tag(nil as Alley.Material?)
 				ForEach(Alley.Material.allCases) {
@@ -137,11 +119,11 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	private func pinFallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func pinFallSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.pinFall,
-				selection: viewStore.binding(\.$pinFall)
+				selection: viewStore.$pinFall
 			) {
 				Text("").tag(nil as Alley.PinFall?)
 				ForEach(Alley.PinFall.allCases) {
@@ -153,11 +135,11 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	private func mechanismSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func mechanismSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.mechanism,
-				selection: viewStore.binding(\.$mechanism)
+				selection: viewStore.$mechanism
 			) {
 				Text("").tag(nil as Alley.Mechanism?)
 				ForEach(Alley.Mechanism.allCases) {
@@ -169,11 +151,11 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	private func pinBaseSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func pinBaseSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.pinBase,
-				selection: viewStore.binding(\.$pinBase)
+				selection: viewStore.$pinBase
 			) {
 				Text("").tag(nil as Alley.PinBase?)
 				ForEach(Alley.PinBase.allCases) {
@@ -185,7 +167,7 @@ public struct AlleyEditorView: View {
 		}
 	}
 
-	private func lanesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func lanesSection(_ viewStore: AlleyEditorViewStore) -> some View {
 		Section {
 			Group {
 				if viewStore.newLanes.isEmpty && viewStore.existingLanes.isEmpty {
@@ -212,30 +194,16 @@ public struct AlleyEditorView: View {
 	}
 }
 
-extension AlleyEditor.State {
-	var view: AlleyEditorView.ViewState {
-		get { .init(state: self) }
-		set {
-			self.name = newValue.name
-			self.material = newValue.material
-			self.pinFall = newValue.pinFall
-			self.mechanism = newValue.mechanism
-			self.pinBase = newValue.pinBase
-		}
-	}
-}
-
-extension AlleyEditor.Action {
-	init(action: AlleyEditorView.ViewAction) {
-		switch action {
-		case .didTapRemoveAddressButton:
-			self = .view(.didTapRemoveAddressButton)
-		case .didTapAddressField:
-			self = .view(.didTapAddressField)
-		case .didTapManageLanes:
-			self = .view(.didTapManageLanes)
-		case let .binding(action):
-			self = .binding(action.pullback(\AlleyEditor.State.view))
-		}
+extension AlleyEditorView.ViewState {
+	init(store: BindingViewStore<AlleyEditor.State>) {
+		self._name = store.$name
+		self._material = store.$material
+		self._pinFall = store.$pinFall
+		self._pinBase = store.$pinBase
+		self._mechanism = store.$mechanism
+		self.location = store.location
+		self.hasLanesEnabled = store.hasLanesEnabled
+		self.newLanes = store.newLanes
+		self.existingLanes = store.existingLanes
 	}
 }

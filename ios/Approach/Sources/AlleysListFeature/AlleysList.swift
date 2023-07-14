@@ -160,8 +160,7 @@ public struct AlleysList: Reducer {
 						.destination(.presented(.filters(.view))),
 						.destination(.presented(.filters(.binding))),
 						.destination(.presented(.editor(.internal))),
-						.destination(.presented(.editor(.view))),
-						.destination(.presented(.editor(.binding))):
+						.destination(.presented(.editor(.view))):
 					return .none
 				}
 

@@ -56,7 +56,7 @@ public struct AddressLookupView: View {
 				}
 			}
 			.searchable(
-				text: viewStore.binding(\.$query),
+				text: viewStore.$query,
 				prompt: Text(Strings.Action.search)
 			)
 			.toolbar {

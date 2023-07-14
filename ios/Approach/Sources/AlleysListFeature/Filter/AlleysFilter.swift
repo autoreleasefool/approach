@@ -83,7 +83,7 @@ public struct AlleysFilterView: View {
 				Section(Strings.Alley.Properties.title) {
 					Picker(
 						Strings.Alley.Properties.material,
-						selection: viewStore.binding(\.$filter.material)
+						selection: viewStore.$filter.material
 					) {
 						Text("").tag(nil as Alley.Material?)
 						ForEach(Alley.Material.allCases) {
@@ -93,7 +93,7 @@ public struct AlleysFilterView: View {
 
 					Picker(
 						Strings.Alley.Properties.mechanism,
-						selection: viewStore.binding(\.$filter.mechanism)
+						selection: viewStore.$filter.mechanism
 					) {
 						Text("").tag(nil as Alley.Mechanism?)
 						ForEach(Alley.Mechanism.allCases) {
@@ -103,7 +103,7 @@ public struct AlleysFilterView: View {
 
 					Picker(
 						Strings.Alley.Properties.pinFall,
-						selection: viewStore.binding(\.$filter.pinFall)
+						selection: viewStore.$filter.pinFall
 					) {
 						Text("").tag(nil as Alley.PinFall?)
 						ForEach(Alley.PinFall.allCases) {
@@ -113,7 +113,7 @@ public struct AlleysFilterView: View {
 
 					Picker(
 						Strings.Alley.Properties.pinBase,
-						selection: viewStore.binding(\.$filter.pinBase)
+						selection: viewStore.$filter.pinBase
 					) {
 						Text("").tag(nil as Alley.PinBase?)
 						ForEach(Alley.PinBase.allCases) {

@@ -65,11 +65,12 @@ public struct AlleyEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapRemoveAddressButton
 			case didTapAddressField
 			case didTapManageLanes
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -83,7 +84,6 @@ public struct AlleyEditor: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
 	}
 
 	public enum InitialValue {
@@ -99,7 +99,7 @@ public struct AlleyEditor: Reducer {
 	@Dependency(\.lanes) var lanes
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			AlleyForm()
@@ -131,6 +131,9 @@ public struct AlleyEditor: Reducer {
 						existingLanes: state.existingLanes,
 						newLanes: state.newLanes
 					)
+					return .none
+
+				case .binding:
 					return .none
 				}
 
@@ -256,7 +259,7 @@ public struct AlleyEditor: Reducer {
 					return .none
 				}
 
-			case .binding, .delegate:
+			case .delegate:
 				return .none
 			}
 		}
