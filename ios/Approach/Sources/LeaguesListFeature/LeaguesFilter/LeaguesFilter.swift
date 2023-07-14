@@ -69,10 +69,6 @@ public struct LeaguesFilter: Reducer {
 public struct LeaguesFilterView: View {
 	let store: StoreOf<LeaguesFilter>
 
-	init(store: StoreOf<LeaguesFilter>) {
-		self.store = store
-	}
-
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			List {

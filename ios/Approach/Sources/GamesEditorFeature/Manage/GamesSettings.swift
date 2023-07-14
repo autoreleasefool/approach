@@ -72,10 +72,6 @@ public struct GamesSettingsView: View {
 		case didSwitchBowler(Bowler.ID)
 	}
 
-	init(store: StoreOf<GamesSettings>) {
-		self.store = store
-	}
-
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: GamesSettings.Action.init, content: { viewStore in
 			List {

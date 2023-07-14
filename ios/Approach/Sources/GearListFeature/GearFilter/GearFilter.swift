@@ -69,10 +69,6 @@ public struct GearFilter: Reducer {
 public struct GearFilterView: View {
 	let store: StoreOf<GearFilter>
 
-	init(store: StoreOf<GearFilter>) {
-		self.store = store
-	}
-
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			List {

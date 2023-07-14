@@ -74,10 +74,6 @@ public struct RollEditorView: View {
 		case didToggleFoul
 	}
 
-	init(store: StoreOf<RollEditor>) {
-		self.store = store
-	}
-
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: RollEditor.Action.init, content: { viewStore in
 			HStack(alignment: .bottom) {

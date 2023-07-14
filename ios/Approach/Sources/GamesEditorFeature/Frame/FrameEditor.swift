@@ -103,10 +103,6 @@ public struct FrameEditorView: View {
 		case didStopDraggingPins
 	}
 
-	init(store: StoreOf<FrameEditor>) {
-		self.store = store
-	}
-
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: FrameEditor.Action.init) { viewStore in
 			HStack(alignment: .center, spacing: .smallSpacing) {

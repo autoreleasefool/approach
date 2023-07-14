@@ -73,10 +73,6 @@ public struct AlleysFilter: Reducer {
 public struct AlleysFilterView: View {
 	let store: StoreOf<AlleysFilter>
 
-	init(store: StoreOf<AlleysFilter>) {
-		self.store = store
-	}
-
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			List {
