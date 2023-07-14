@@ -16,7 +16,10 @@ public struct GamesHeader: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable {
+			case didTapCloseButton
+			case didTapSettingsButton
+		}
 		public enum DelegateAction: Equatable {
 			case didCloseEditor
 			case didOpenSettings
@@ -33,8 +36,11 @@ public struct GamesHeader: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
-					return .none
+				case .didTapCloseButton:
+					return .send(.delegate(.didCloseEditor))
+
+				case .didTapSettingsButton:
+					return .send(.delegate(.didOpenSettings))
 				}
 
 			case let .internal(internalAction):
@@ -55,25 +61,16 @@ public struct GamesHeader: Reducer {
 public struct GamesHeaderView: View {
 	let store: StoreOf<GamesHeader>
 
-	enum ViewAction {
-		case didTapClose
-		case didTapSettings
-	}
-
-	init(store: StoreOf<GamesHeader>) {
-		self.store = store
-	}
-
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GamesHeader.Action.init, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack {
-				headerButton(systemName: "chevron.backward") { viewStore.send(.didTapClose) }
+				headerButton(systemName: "chevron.backward") { viewStore.send(.didTapCloseButton) }
 				Spacer()
 				Text(Strings.Game.titleWithOrdinal(viewStore.currentGameIndex + 1))
 					.font(.caption)
 					.foregroundColor(.white)
 				Spacer()
-				headerButton(systemName: "gear") { viewStore.send(.didTapSettings) }
+				headerButton(systemName: "gear") { viewStore.send(.didTapSettingsButton) }
 			}
 		})
 	}
@@ -86,17 +83,6 @@ public struct GamesHeaderView: View {
 				.frame(width: .smallIcon, height: .smallIcon)
 				.foregroundColor(.white)
 				.padding()
-		}
-	}
-}
-
-extension GamesHeader.Action {
-	init(action: GamesHeaderView.ViewAction) {
-		switch action {
-		case .didTapClose:
-			self = .delegate(.didCloseEditor)
-		case .didTapSettings:
-			self = .delegate(.didOpenSettings)
 		}
 	}
 }

@@ -77,7 +77,7 @@ public struct AddLaneFormView: View {
 
 				Stepper(
 					Strings.Lane.Editor.Fields.addLanes(viewStore.lanesToAdd),
-					value: viewStore.binding(\.$lanesToAdd),
+					value: viewStore.$lanesToAdd,
 					in: Alley.NUMBER_OF_LANES_RANGE
 				)
 			}
