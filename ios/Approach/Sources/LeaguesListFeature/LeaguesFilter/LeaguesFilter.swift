@@ -11,17 +11,17 @@ public struct LeaguesFilter: Reducer {
 		@BindingState public var recurrence: League.Recurrence?
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapClearButton
 			case didTapApplyButton
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case didChangeFilters(League.Recurrence?)
 		}
 		public enum InternalAction: Equatable {}
 
-		case binding(BindingAction<State>)
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
@@ -32,7 +32,7 @@ public struct LeaguesFilter: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -46,10 +46,10 @@ public struct LeaguesFilter: Reducer {
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
-				}
 
-			case .binding:
-				return .send(.delegate(.didChangeFilters(state.recurrence)))
+				case .binding:
+					return .send(.delegate(.didChangeFilters(state.recurrence)))
+				}
 
 			case let .internal(internalAction):
 				switch internalAction {
@@ -70,12 +70,12 @@ public struct LeaguesFilterView: View {
 	let store: StoreOf<LeaguesFilter>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
 					Picker(
 						Strings.League.Properties.recurrence,
-						selection: viewStore.binding(\.$recurrence)
+						selection: viewStore.$recurrence
 					) {
 						Text("").tag(nil as League.Recurrence?)
 						ForEach(League.Recurrence.allCases) {
@@ -85,7 +85,7 @@ public struct LeaguesFilterView: View {
 				}
 
 				Section {
-					Button(Strings.Action.reset) { viewStore.send(.view(.didTapClearButton)) }
+					Button(Strings.Action.reset) { viewStore.send(.didTapClearButton) }
 						.tint(Asset.Colors.Destructive.default)
 				}
 			}
@@ -93,7 +93,7 @@ public struct LeaguesFilterView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { viewStore.send(.view(.didTapApplyButton)) }
+					Button(Strings.Action.apply) { viewStore.send(.didTapApplyButton) }
 				}
 			}
 		})
