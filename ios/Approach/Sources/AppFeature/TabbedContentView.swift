@@ -15,17 +15,7 @@ public struct TabbedContentView: View {
 
 	struct ViewState: Equatable {
 		let tabs: [TabbedContent.Tab]
-		let selectedTab: TabbedContent.Tab
-
-		init(state: TabbedContent.State) {
-			self.tabs = state.tabs
-			self.selectedTab = state.selectedTab
-		}
-	}
-
-	enum ViewAction {
-		case didAppear
-		case didSelectTab(TabbedContent.Tab)
+		@BindingViewState var selectedTab: TabbedContent.Tab
 	}
 
 	public init(store: StoreOf<TabbedContent>) {
@@ -33,11 +23,9 @@ public struct TabbedContentView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: TabbedContent.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			if horizontalSizeClass == .compact {
-				TabView(
-					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.didSelectTab)
-				) {
+				TabView(selection: viewStore.$selectedTab) {
 					ForEach(viewStore.tabs) { tab in
 						NavigationStack {
 							switch tab {
@@ -71,7 +59,14 @@ public struct TabbedContentView: View {
 				// TODO: create sidebar for ipad size devices
 				EmptyView()
 			}
-		}
+		})
+	}
+}
+
+extension TabbedContentView.ViewState {
+	init(store: BindingViewStore<TabbedContent.State>) {
+		self._selectedTab = store.$selectedTab
+		self.tabs = store.tabs
 	}
 }
 
@@ -99,17 +94,6 @@ extension TabbedContent.Tab {
 			return "figure.bowling"
 		case .statistics:
 			return "chart.bar"
-		}
-	}
-}
-
-extension TabbedContent.Action {
-	init(action: TabbedContentView.ViewAction) {
-		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
-		case let .didSelectTab(tab):
-			self = .view(.didSelectTab(tab))
 		}
 	}
 }

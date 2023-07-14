@@ -11,7 +11,7 @@ import StatisticsOverviewFeature
 public struct TabbedContent: Reducer {
 	public struct State: Equatable {
 		public var tabs: [Tab] = [.overview]
-		public var selectedTab: Tab = .overview
+		@BindingState public var selectedTab: Tab = .overview
 		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
 		public var statistics = StatisticsOverview.State()
@@ -21,9 +21,9 @@ public struct TabbedContent: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didAppear
-			case didSelectTab(Tab)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -62,6 +62,8 @@ public struct TabbedContent: Reducer {
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
 			BowlersList()
 		}
@@ -90,9 +92,13 @@ public struct TabbedContent: Reducer {
 						}
 					}
 
-				case let .didSelectTab(tab):
-					state.selectedTab = tab
-					return .run { _ in await analytics.trackEvent(Analytics.App.TabSwitched(tab: String(describing: tab))) }
+				case .binding(\.$selectedTab):
+					return .run { [tab = state.selectedTab] _ in
+						await analytics.trackEvent(Analytics.App.TabSwitched(tab: String(describing: tab)))
+					}
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
