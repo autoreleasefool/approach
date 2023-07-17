@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.feature.overview
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,10 +17,6 @@ internal fun OverviewRoute(
 	viewModel: OverviewViewModel = hiltViewModel(),
 ) {
 	val bowlersListState by viewModel.bowlersListState.collectAsStateWithLifecycle()
-
-	LaunchedEffect(Unit) {
-		viewModel.loadBowlers()
-	}
 
 	OverviewScreen(
 		bowlersListState = bowlersListState,

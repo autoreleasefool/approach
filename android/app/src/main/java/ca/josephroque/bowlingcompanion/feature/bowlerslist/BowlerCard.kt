@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.data.models.Bowler
+import ca.josephroque.bowlingcompanion.core.model.Bowler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

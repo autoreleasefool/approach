@@ -3,6 +3,7 @@ plugins {
 	id("org.jetbrains.kotlin.android")
 	kotlin("kapt")
 	id("com.google.dagger.hilt.android")
+	id("com.google.devtools.ksp")
 }
 
 android {
@@ -42,13 +43,17 @@ android {
 		compose = true
 	}
 	composeOptions {
-		kotlinCompilerExtensionVersion = "1.4.3"
+		kotlinCompilerExtensionVersion = "1.4.8"
 	}
 	packaging {
 		resources {
 			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
+}
+
+ksp {
+	arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
 }
 
 dependencies {
@@ -63,8 +68,11 @@ dependencies {
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 	implementation("androidx.navigation:navigation-compose:2.6.0")
 	implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-	implementation("com.google.dagger:hilt-android:2.44")
-	kapt("com.google.dagger:hilt-android-compiler:2.44")
+	implementation("androidx.room:room-runtime:2.5.2")
+	implementation("androidx.room:room-ktx:2.5.2")
+	implementation("com.google.dagger:hilt-android:2.47")
+	ksp("androidx.room:room-compiler:2.5.2")
+	kapt("com.google.dagger:hilt-android-compiler:2.47")
 
 	debugImplementation("androidx.compose.ui:ui-tooling")
 	debugImplementation("androidx.compose.ui:ui-test-manifest")
@@ -79,4 +87,14 @@ dependencies {
 
 kapt {
 	correctErrorTypes = true
+}
+
+class RoomSchemaArgProvider(
+	@get:InputDirectory
+	@get:PathSensitive(PathSensitivity.RELATIVE)
+	val schemaDir: File
+) : CommandLineArgumentProvider {
+	override fun asArguments(): Iterable<String> {
+		return listOf("room.schemaLocation=${schemaDir.path}")
+	}
 }

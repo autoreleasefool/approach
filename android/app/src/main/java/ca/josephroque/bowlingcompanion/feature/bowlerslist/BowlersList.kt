@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.bowlerslist
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import ca.josephroque.bowlingcompanion.core.data.models.Bowler
+import ca.josephroque.bowlingcompanion.core.model.Bowler
 import java.util.UUID
 
 fun LazyListScope.bowlersList(
