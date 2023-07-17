@@ -11,7 +11,7 @@ public typealias BowlerForm = Form<Bowler.Create, Bowler.Edit>
 
 public struct BowlerEditor: Reducer {
 	public struct State: Equatable {
-		public var name: String
+		@BindingState public var name: String
 		public let kind: Bowler.Kind
 
 		public let initialValue: BowlerForm.Value
@@ -37,8 +37,8 @@ public struct BowlerEditor: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
-			case didChangeName(String)
+		public enum ViewAction: BindableAction, Equatable {
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -58,6 +58,8 @@ public struct BowlerEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			BowlerForm()
 				.dependency(\.records, .init(
@@ -71,8 +73,7 @@ public struct BowlerEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didChangeName(name):
-					state.name = name
+				case .binding:
 					return .none
 				}
 

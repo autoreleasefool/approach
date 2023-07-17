@@ -11,6 +11,7 @@ import SwiftUIExtensionsLibrary
 
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
+	typealias GamesEditorViewStore = ViewStore<ViewState, GamesEditor.Action.ViewAction>
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -22,7 +23,7 @@ public struct GamesEditorView: View {
 	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
-		let sheetDetent: PresentationDetent
+		@BindingViewState var sheetDetent: PresentationDetent
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
 
@@ -32,31 +33,6 @@ public struct GamesEditorView: View {
 
 		let bowlerName: String?
 		let leagueName: String?
-
-		init(state: GamesEditor.State) {
-			self.sheetDetent = state.sheetDetent
-			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
-			self.backdropSize = state.backdropSize
-			self.isScoreSheetVisible = state.isScoreSheetVisible
-			self.bowlerName = state.game?.bowler.name
-			self.leagueName = state.game?.league.name
-			if let game = state.game {
-				switch game.scoringMethod {
-				case .byFrame:
-					self.manualScore = nil
-				case .manual:
-					self.manualScore = game.score
-				}
-			} else {
-				self.manualScore = nil
-			}
-		}
-	}
-
-	enum ViewAction {
-		case didAppear
-		case didChangeDetent(PresentationDetent)
-		case didAdjustBackdropSize(CGSize)
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -64,7 +40,7 @@ public struct GamesEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			VStack {
 				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: /GamesEditor.Action.InternalAction.gamesHeader))
 					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
@@ -138,7 +114,7 @@ public struct GamesEditorView: View {
 					}
 				}
 			}
-		}
+		})
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.ballPicker,
@@ -170,7 +146,7 @@ public struct GamesEditorView: View {
 	}
 
 	private func gameDetails(
-		viewStore: ViewStore<ViewState, ViewAction>,
+		viewStore: GamesEditorViewStore,
 		gameDetailsStore: StoreOf<GameDetails>
 	) -> some View {
 		Form {
@@ -195,7 +171,7 @@ public struct GamesEditorView: View {
 				.medium,
 				.large,
 			],
-			selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
+			selection: viewStore.$sheetDetent
 		)
 		.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 		.interactiveDismissDisabled(true)
@@ -250,7 +226,7 @@ public struct GamesEditorView: View {
 		}
 	}
 
-	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
+	private func getMeasuredBackdropSize(_ viewStore: GamesEditorViewStore) -> CGSize {
 		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
@@ -259,20 +235,28 @@ public struct GamesEditorView: View {
 		)
 	}
 
-	private func getBackdropHeight(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGFloat {
+	private func getBackdropHeight(_ viewStore: GamesEditorViewStore) -> CGFloat {
 		max(viewStore.backdropSize.height - (viewStore.isScoreSheetVisible ? frameContentSize.height : 0), 0)
 	}
 }
 
-extension GamesEditor.Action {
-	init(action: GamesEditorView.ViewAction) {
-		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
-		case let .didChangeDetent(newDetent):
-			self = .view(.didChangeDetent(newDetent))
-		case let .didAdjustBackdropSize(newSize):
-			self = .view(.didAdjustBackdropSize(newSize))
+extension GamesEditorView.ViewState {
+	init(store: BindingViewStore<GamesEditor.State>) {
+		self._sheetDetent = store.$sheetDetent
+		self.willAdjustLaneLayoutAt = store.willAdjustLaneLayoutAt
+		self.backdropSize = store.backdropSize
+		self.isScoreSheetVisible = store.isScoreSheetVisible
+		self.bowlerName = store.game?.bowler.name
+		self.leagueName = store.game?.league.name
+		if let game = store.game {
+			switch game.scoringMethod {
+			case .byFrame:
+				self.manualScore = nil
+			case .manual:
+				self.manualScore = game.score
+			}
+		} else {
+			self.manualScore = nil
 		}
 	}
 }

@@ -28,20 +28,13 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 		}
 	}
 
-	enum ViewAction {
-		case didObserveData
-		case didTapSaveButton
-		case didTapCancelButton
-		case didTapResource(Resource)
-	}
-
 	public init(store: StoreOf<ResourcePicker<Resource, Query>>, @ViewBuilder row: @escaping (Resource) -> Row) {
 		self.store = store
 		self.row = row
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: map(viewAction:)) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ListContent(viewStore.listState) { resources in
 				ForEach(resources) { resource in
 					Button {
@@ -99,19 +92,6 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 			}
 			.navigationBarBackButtonHidden(viewStore.isCancellable)
 			.task { await viewStore.send(.didObserveData).finish() }
-		}
-	}
-
-	private func map(viewAction: ViewAction) -> ResourcePicker<Resource, Query>.Action {
-		switch viewAction {
-		case .didObserveData:
-			return .view(.didObserveData)
-		case .didTapSaveButton:
-			return .view(.didTapSaveButton)
-		case .didTapCancelButton:
-			return .view(.didTapCancelButton)
-		case let .didTapResource(resource):
-			return .view(.didTapResource(resource))
-		}
+		})
 	}
 }

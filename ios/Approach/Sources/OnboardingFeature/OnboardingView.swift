@@ -10,20 +10,12 @@ public struct OnboardingView: View {
 
 	@State private var minimumSheetSize: CGSize = .zero
 
-	enum ViewAction {
-		case didAppear
-		case didTapGetStarted
-		case didTapAddBowler
-		case didChangeBowlerName(String)
-		case setSheet(isShowing: Bool)
-	}
-
 	public init(store: StoreOf<Onboarding>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: Onboarding.Action.init, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			VStack(spacing: 0) {
 				Group {
 					Text(Strings.Onboarding.Header.welcomeTo)
@@ -70,7 +62,7 @@ public struct OnboardingView: View {
 				.opacity(viewStore.step.isShowingGetStarted ? 1 : 0)
 			}
 			.padding(.horizontal)
-			.sheet(isPresented: viewStore.binding(get: \.isShowingSheet, send: ViewAction.setSheet(isShowing:))) {
+			.sheet(isPresented: viewStore.$isShowingSheet) {
 				VStack {
 					Text(Strings.Onboarding.Logbook.belongsTo)
 						.font(.subheadline)
@@ -80,7 +72,7 @@ public struct OnboardingView: View {
 
 					TextField(
 						Strings.Onboarding.Logbook.name,
-						text: viewStore.binding(get: \.bowlerName, send: ViewAction.didChangeBowlerName)
+						text: viewStore.$bowlerName
 					)
 					.textContentType(.name)
 					.multilineTextAlignment(.center)
@@ -110,23 +102,6 @@ public struct OnboardingView: View {
 			.onAppear { viewStore.send(.didAppear) }
 			.toolbar(.hidden, for: .navigationBar)
 		})
-	}
-}
-
-extension Onboarding.Action {
-	init(action: OnboardingView.ViewAction) {
-		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
-		case .didTapAddBowler:
-			self = .view(.didTapAddBowler)
-		case .didTapGetStarted:
-			self = .view(.didTapGetStarted)
-		case let .didChangeBowlerName(text):
-			self = .view(.didChangeBowlerName(text))
-		case let .setSheet(isShowing):
-			self = .view(.setSheet(isShowing: isShowing))
-		}
 	}
 }
 

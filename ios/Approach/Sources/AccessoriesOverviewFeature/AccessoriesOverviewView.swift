@@ -30,23 +30,12 @@ public struct AccessoriesOverviewView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didObserveData
-		case didTapViewAllAlleys
-		case didTapViewAllGear
-		case didTapAddAlley
-		case didTapAddGear
-		case didTapGearKind(Gear.Kind)
-		case didSwipeAlley(AccessoriesOverview.SwipeAction, Alley.ID)
-		case didSwipeGear(AccessoriesOverview.SwipeAction, Gear.ID)
-	}
-
 	public init(store: StoreOf<AccessoriesOverview>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: AccessoriesOverview.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
 					if viewStore.alleys.isEmpty {
@@ -132,7 +121,7 @@ public struct AccessoriesOverviewView: View {
 				}
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
-		}
+		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /AccessoriesOverview.Destination.State.gearList,
@@ -164,29 +153,6 @@ public struct AccessoriesOverviewView: View {
 			NavigationStack {
 				GearEditorView(store: store)
 			}
-		}
-	}
-}
-
-extension AccessoriesOverview.Action {
-	init(action: AccessoriesOverviewView.ViewAction) {
-		switch action {
-		case .didObserveData:
-			self = .view(.didObserveData)
-		case .didTapViewAllGear:
-			self = .view(.didTapViewAllGear)
-		case .didTapViewAllAlleys:
-			self = .view(.didTapViewAllAlleys)
-		case let .didTapGearKind(kind):
-			self = .view(.didTapGearKind(kind))
-		case .didTapAddGear:
-			self = .view(.didTapAddGear)
-		case .didTapAddAlley:
-			self = .view(.didTapAddAlley)
-		case let .didSwipeGear(action, gear):
-			self = .view(.didSwipeGear(action, gear))
-		case let .didSwipeAlley(action, alley):
-			self = .view(.didSwipeAlley(action, alley))
 		}
 	}
 }

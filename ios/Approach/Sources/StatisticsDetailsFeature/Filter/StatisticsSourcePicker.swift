@@ -283,21 +283,12 @@ public struct StatisticsSourcePickerView: View {
 		}
 	}
 
-	enum ViewAction {
-		case onAppear
-		case didTapBowler
-		case didTapLeague
-		case didTapSeries
-		case didTapGame
-		case didTapConfirmButton
-	}
-
 	public init(store: StoreOf<StatisticsSourcePicker>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsSourcePicker.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				if viewStore.isLoadingSources {
 					ListProgressView()
@@ -339,7 +330,7 @@ public struct StatisticsSourcePickerView: View {
 			}
 			.navigationTitle(Strings.Statistics.Filter.title)
 			.onAppear { viewStore.send(.onAppear) }
-		}
+		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /StatisticsSourcePicker.Destination.State.bowlerPicker,
@@ -375,25 +366,6 @@ public struct StatisticsSourcePickerView: View {
 			ResourcePickerView(store: store) { game in
 				Text(Strings.Game.titleWithOrdinal(game.index + 1))
 			}
-		}
-	}
-}
-
-extension StatisticsSourcePicker.Action {
-	init(action: StatisticsSourcePickerView.ViewAction) {
-		switch action {
-		case .didTapConfirmButton:
-			self = .view(.didTapConfirmButton)
-		case .didTapBowler:
-			self = .view(.didTapBowler)
-		case .didTapLeague:
-			self = .view(.didTapLeague)
-		case .didTapSeries:
-			self = .view(.didTapSeries)
-		case .didTapGame:
-			self = .view(.didTapGame)
-		case .onAppear:
-			self = .view(.onAppear)
 		}
 	}
 }

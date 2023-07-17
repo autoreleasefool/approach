@@ -52,8 +52,7 @@ public struct ResourceList<
 		public enum ViewAction: Equatable {
 			case didObserveData
 			case didTapAddButton
-			case didSwipeToDelete(R)
-			case didSwipeToEdit(R)
+			case didSwipe(SwipeAction, R)
 			case didTap(R)
 			case alert(AlertAction)
 		}
@@ -87,6 +86,11 @@ public struct ResourceList<
 		case add
 	}
 
+	public enum SwipeAction: Equatable {
+		case edit
+		case delete
+	}
+
 	enum CancelID { case observation }
 
 	public init(fetchResources: @escaping (Q) -> AsyncThrowingStream<[R], Swift.Error>) {
@@ -108,7 +112,7 @@ public struct ResourceList<
 					state.errorState = nil
 					return beginObservation(query: state.query)
 
-				case let .didSwipeToDelete(resource):
+				case let .didSwipe(.delete, resource):
 					guard state.hasDeleteFeature else {
 						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
 					}
@@ -116,7 +120,7 @@ public struct ResourceList<
 					state.alert = Self.alert(toDelete: resource)
 					return .none
 
-				case let .didSwipeToEdit(resource):
+				case let .didSwipe(.edit, resource):
 					guard state.features.contains(.swipeToEdit) else {
 						fatalError("\(Self.self) did not specify `swipeToEdit` feature")
 					}

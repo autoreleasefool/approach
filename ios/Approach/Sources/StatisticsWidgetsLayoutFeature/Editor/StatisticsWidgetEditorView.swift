@@ -14,8 +14,8 @@ public struct StatisticsWidgetEditorView: View {
 	struct ViewState: Equatable {
 		let source: StatisticsWidget.Source?
 		let sources: StatisticsWidget.Sources?
-		let timeline: StatisticsWidget.Timeline
-		let statistic: StatisticsWidget.Statistic
+		@BindingViewState var timeline: StatisticsWidget.Timeline
+		@BindingViewState var statistic: StatisticsWidget.Statistic
 
 		let selectedBowlerName: String?
 		let selectedLeagueName: String?
@@ -28,31 +28,6 @@ public struct StatisticsWidgetEditorView: View {
 
 		let widgetConfiguration: StatisticsWidget.Configuration?
 		let widgetPreviewData: Statistics.ChartContent?
-
-		init(state: StatisticsWidgetEditor.State) {
-			self.source = state.source
-			self.sources = state.sources
-			self.timeline = state.timeline
-			self.statistic = state.statistic
-			self.selectedBowlerName = state.bowler?.name
-			self.selectedLeagueName = state.league?.name
-			self.isShowingLeaguePicker = selectedBowlerName != nil
-			self.isLoadingSources = state.isLoadingSources
-			self.isLoadingPreview = state.isLoadingPreview
-			self.isSaveable = state.source != nil
-			self.isBowlerEditable = state.isBowlerEditable
-			self.widgetConfiguration = state.configuration
-			self.widgetPreviewData = state.widgetPreviewData
-		}
-	}
-
-	enum ViewAction {
-		case onAppear
-		case didTapBowler
-		case didTapLeague
-		case didTapSaveButton
-		case didChangeTimeline(StatisticsWidget.Timeline)
-		case didChangeStatistic(StatisticsWidget.Statistic)
 	}
 
 	public init(store: StoreOf<StatisticsWidgetEditor>) {
@@ -60,7 +35,7 @@ public struct StatisticsWidgetEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsWidgetEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Form {
 				if viewStore.isLoadingSources {
 					ListProgressView()
@@ -68,7 +43,7 @@ public struct StatisticsWidgetEditorView: View {
 					Section {
 						Picker(
 							Strings.Widget.Builder.timeline,
-							selection: viewStore.binding(get: \.timeline, send: ViewAction.didChangeTimeline)
+							selection: viewStore.$timeline
 						) {
 							ForEach(StatisticsWidget.Timeline.allCases) {
 								Text(String(describing: $0)).tag($0)
@@ -98,7 +73,7 @@ public struct StatisticsWidgetEditorView: View {
 					Section {
 						Picker(
 							Strings.Widget.Builder.statistic,
-							selection: viewStore.binding(get: \.statistic, send: ViewAction.didChangeStatistic)
+							selection: viewStore.$statistic
 						) {
 							ForEach(StatisticsWidget.Statistic.allCases) {
 								Text(String(describing: $0)).tag($0)
@@ -126,7 +101,7 @@ public struct StatisticsWidgetEditorView: View {
 				}
 			}
 			.onAppear { viewStore.send(.onAppear) }
-		}
+		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /StatisticsWidgetEditor.Destination.State.bowlerPicker,
@@ -148,21 +123,20 @@ public struct StatisticsWidgetEditorView: View {
 	}
 }
 
-extension StatisticsWidgetEditor.Action {
-	init(action: StatisticsWidgetEditorView.ViewAction) {
-		switch action {
-		case .onAppear:
-			self = .view(.onAppear)
-		case .didTapBowler:
-			self = .view(.didTapBowler)
-		case .didTapLeague:
-			self = .view(.didTapLeague)
-		case .didTapSaveButton:
-			self = .view(.didTapSaveButton)
-		case let .didChangeTimeline(timeline):
-			self = .view(.didChangeTimeline(timeline))
-		case let .didChangeStatistic(statistic):
-			self = .view(.didChangeStatistic(statistic))
-		}
+extension StatisticsWidgetEditorView.ViewState {
+	init(store: BindingViewStore<StatisticsWidgetEditor.State>) {
+		self._timeline = store.$timeline
+		self._statistic = store.$statistic
+		self.source = store.source
+		self.sources = store.sources
+		self.selectedBowlerName = store.bowler?.name
+		self.selectedLeagueName = store.league?.name
+		self.isShowingLeaguePicker = selectedBowlerName != nil
+		self.isLoadingSources = store.isLoadingSources
+		self.isLoadingPreview = store.isLoadingPreview
+		self.isSaveable = store.source != nil
+		self.isBowlerEditable = store.isBowlerEditable
+		self.widgetConfiguration = store.configuration
+		self.widgetPreviewData = store.widgetPreviewData
 	}
 }

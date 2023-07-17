@@ -131,18 +131,12 @@ public struct StatisticsWidgetLayoutView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didObserveData
-		case didTapConfigureStatisticsButton
-		case didTapWidget(id: StatisticsWidget.ID)
-	}
-
 	public init(store: StoreOf<StatisticsWidgetLayout>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsWidgetLayout.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Group {
 				if let widgets = viewStore.widgets {
 					if widgets.isEmpty {
@@ -171,25 +165,12 @@ public struct StatisticsWidgetLayoutView: View {
 				}
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
-		}
+		})
 		.sheet(store: store.scope(state: \.$layoutBuilder, action: { .internal(.layoutBuilder($0)) })) { store in
 			NavigationStack {
 				StatisticsWidgetLayoutBuilderView(store: store)
 			}
 			.interactiveDismissDisabled()
-		}
-	}
-}
-
-extension StatisticsWidgetLayout.Action {
-	init(action: StatisticsWidgetLayoutView.ViewAction) {
-		switch action {
-		case .didObserveData:
-			self = .view(.didObserveData)
-		case .didTapConfigureStatisticsButton:
-			self = .view(.didTapConfigureStatisticsButton)
-		case let .didTapWidget(id):
-			self = .view(.didTapWidget(id: id))
 		}
 	}
 }

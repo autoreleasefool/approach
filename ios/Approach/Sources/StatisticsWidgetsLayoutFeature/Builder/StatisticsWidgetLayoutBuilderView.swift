@@ -14,27 +14,9 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 	let store: StoreOf<StatisticsWidgetLayoutBuilder>
 
 	struct ViewState: Equatable {
-		let isDeleting: Bool
-		let isAnimatingWidgets: Bool
+		@BindingViewState var isDeleting: Bool
+		@BindingViewState var isAnimatingWidgets: Bool
 		let widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
-
-		init(state: StatisticsWidgetLayoutBuilder.State) {
-			self.isDeleting = state.isDeleting
-			self.isAnimatingWidgets = state.isAnimatingWidgets
-			self.widgetData = state.widgetData
-		}
-	}
-
-	enum ViewAction {
-		case didObserveData
-		case didTapAddNew
-		case didTapDeleteButton
-		case didTapCancelDeleteButton
-		case didTapDoneButton
-		case didTapDeleteWidget(id: StatisticsWidget.ID)
-		case didFinishDismissingEditor
-		case setAnimateWidgets(Bool)
-		case setDelete(Bool)
 	}
 
 	public init(store: StoreOf<StatisticsWidgetLayoutBuilder>) {
@@ -42,7 +24,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsWidgetLayoutBuilder.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ScrollView {
 				LazyVGrid(
 					columns: [.init(spacing: .largeSpacing), .init(spacing: .largeSpacing)],
@@ -54,8 +36,8 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 						MoveableWidget(
 							configuration: widget,
 							chartContent: viewStore.widgetData[widget.id],
-							isWiggling: viewStore.binding(get: \.isAnimatingWidgets, send: ViewAction.setAnimateWidgets),
-							isShowingDelete: viewStore.binding(get: \.isDeleting, send: ViewAction.setDelete),
+							isWiggling: viewStore.$isAnimatingWidgets,
+							isShowingDelete: viewStore.$isDeleting,
 							onDelete: { viewStore.send(.didTapDeleteWidget(id: widget.id), animation: .easeInOut) }
 						)
 					}
@@ -106,31 +88,14 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 					}
 				}
 			)
-		}
+		})
 	}
 }
 
-extension StatisticsWidgetLayoutBuilder.Action {
-	init(action: StatisticsWidgetLayoutBuilderView.ViewAction) {
-		switch action {
-		case .didTapDeleteButton:
-			self = .view(.didTapDeleteButton)
-		case .didTapCancelDeleteButton:
-			self = .view(.didTapCancelDeleteButton)
-		case let .didTapDeleteWidget(id):
-			self = .view(.didTapDeleteWidget(id: id))
-		case .didObserveData:
-			self = .view(.didObserveData)
-		case .didTapAddNew:
-			self = .view(.didTapAddNew)
-		case .didTapDoneButton:
-			self = .view(.didTapDoneButton)
-		case .didFinishDismissingEditor:
-			self = .view(.didFinishDismissingEditor)
-		case let .setAnimateWidgets(value):
-			self = .view(.setAnimateWidgets(value))
-		case let .setDelete(value):
-			self = .view(.setDelete(value))
-		}
+extension StatisticsWidgetLayoutBuilderView.ViewState {
+	init(store: BindingViewStore<StatisticsWidgetLayoutBuilder.State>) {
+		self._isDeleting = store.$isDeleting
+		self._isAnimatingWidgets = store.$isAnimatingWidgets
+		self.widgetData = store.widgetData
 	}
 }

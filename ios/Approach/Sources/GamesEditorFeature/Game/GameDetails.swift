@@ -32,6 +32,8 @@ public struct GameDetails: Reducer {
 			case didToggleMatchPlay
 			case didToggleScoringMethod
 			case didTapManualScore
+			case didTapGear
+			case didTapOpponent
 			case didDismissScoreAlert
 			case didTapSaveScore
 			case didTapCancelScore
@@ -78,6 +80,12 @@ public struct GameDetails: Reducer {
 				case .didToggleExclude:
 					state.game.excludeFromStatistics.toNext()
 					return .send(.delegate(.didEditGame(state.game)))
+
+				case .didTapGear:
+					return .send(.delegate(.didRequestGearPicker))
+
+				case .didTapOpponent:
+					return .send(.delegate(.didRequestOpponentPicker))
 
 				case let .didSetMatchPlayResult(result):
 					state.game.matchPlay?.result = result

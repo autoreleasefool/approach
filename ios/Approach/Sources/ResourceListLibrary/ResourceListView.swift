@@ -33,14 +33,6 @@ public struct ResourceListView<
 		}
 	}
 
-	enum ViewAction {
-		case didObserveData
-		case didTapAddButton
-		case didTap(R)
-		case didSwipeToDelete(R)
-		case didSwipeToEdit(R)
-	}
-
 	let row: (R) -> Row
 	let header: () -> Header
 	let footer: () -> Footer
@@ -81,7 +73,7 @@ public struct ResourceListView<
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: map(viewAction:)) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Group {
 				switch viewStore.listContent {
 				case .notLoaded, .loading:
@@ -113,11 +105,11 @@ public struct ResourceListView<
 									}
 									.swipeActions(allowsFullSwipe: true) {
 										if viewStore.features.contains(.swipeToEdit) {
-											EditButton { viewStore.send(.didSwipeToEdit(element)) }
+											EditButton { viewStore.send(.didSwipe(.edit, element)) }
 										}
 
 										if viewStore.hasDeleteFeature {
-											DeleteButton { viewStore.send(.didSwipeToDelete(element)) }
+											DeleteButton { viewStore.send(.didSwipe(.delete, element)) }
 										}
 									}
 								}
@@ -151,22 +143,7 @@ public struct ResourceListView<
 				dismiss: .didTapDismissButton
 			)
 			.task { await viewStore.send(.didObserveData).finish() }
-		}
-	}
-
-	private func map(viewAction: ViewAction) -> ResourceList<R, Q>.Action {
-		switch viewAction {
-		case .didObserveData:
-			return .view(.didObserveData)
-		case .didTapAddButton:
-			return .view(.didTapAddButton)
-		case let .didSwipeToEdit(r):
-			return .view(.didSwipeToEdit(r))
-		case let .didSwipeToDelete(r):
-			return .view(.didSwipeToDelete(r))
-		case let .didTap(r):
-			return .view(.didTap(r))
-		}
+		})
 	}
 }
 

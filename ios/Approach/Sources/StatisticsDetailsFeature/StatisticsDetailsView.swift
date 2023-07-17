@@ -8,6 +8,7 @@ import ViewsLibrary
 
 public struct StatisticsDetailsView: View {
 	let store: StoreOf<StatisticsDetails>
+	typealias StatisticsDetailsViewStore = ViewStore<ViewState, StatisticsDetails.Action.ViewAction>
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -17,29 +18,12 @@ public struct StatisticsDetailsView: View {
 	struct ViewState: Equatable {
 		let filter: TrackableFilter
 
-		let sheetDetent: PresentationDetent
+		@BindingViewState var sheetDetent: PresentationDetent
 		let ignoreSheetSizeForBackdrop: Bool
 		let sources: TrackableFilter.Sources?
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
 		let filtersSize: StatisticsFilterView.Size
-
-		init(state: StatisticsDetails.State) {
-			self.filter = state.filter
-			self.sheetDetent = state.sheetDetent
-			self.ignoreSheetSizeForBackdrop = state.destination == nil || state.sheetDetent == .large
-			self.sources = state.sources
-			self.willAdjustLaneLayoutAt = state.willAdjustLaneLayoutAt
-			self.backdropSize = state.backdropSize
-			self.filtersSize = state.filtersSize
-		}
-	}
-
-	enum ViewAction {
-		case onAppear
-		case didTapSourcePicker
-		case didChangeDetent(PresentationDetent)
-		case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 	}
 
 	public init(store: StoreOf<StatisticsDetails>) {
@@ -47,7 +31,7 @@ public struct StatisticsDetailsView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsDetails.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			VStack {
 				VStack {
 					if let sources = viewStore.sources {
@@ -98,7 +82,7 @@ public struct StatisticsDetailsView: View {
 						.medium,
 						.large,
 					],
-					selection: viewStore.binding(get: \.sheetDetent, send: ViewAction.didChangeDetent)
+					selection: viewStore.$sheetDetent
 				)
 				.interactiveDismissDisabled()
 				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
@@ -132,14 +116,14 @@ public struct StatisticsDetailsView: View {
 				)
 			}
 			.task { await viewStore.send(.onAppear).finish() }
-		}
+		})
 	}
 
-	private func getFilterViewSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> StatisticsFilterView.Size {
+	private func getFilterViewSize(_ viewStore: StatisticsDetailsViewStore) -> StatisticsFilterView.Size {
 		viewStore.sheetDetent == .medium ? .compact : .regular
 	}
 
-	private func getMeasuredBackdropSize(_ viewStore: ViewStore<ViewState, ViewAction>) -> CGSize {
+	private func getMeasuredBackdropSize(_ viewStore: StatisticsDetailsViewStore) -> CGSize {
 		let sheetContentSize = viewStore.ignoreSheetSizeForBackdrop ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
@@ -148,18 +132,15 @@ public struct StatisticsDetailsView: View {
 	}
 }
 
-extension StatisticsDetails.Action {
-	init(action: StatisticsDetailsView.ViewAction) {
-		switch action {
-		case .onAppear:
-			self = .view(.onAppear)
-		case .didTapSourcePicker:
-			self = .view(.didTapSourcePicker)
-		case let .didChangeDetent(newDetent):
-			self = .view(.didChangeDetent(newDetent))
-		case let .didAdjustChartSize(backdropSize, filtersSize):
-			self = .view(.didAdjustChartSize(backdropSize: backdropSize, filtersSize: filtersSize))
-		}
+extension StatisticsDetailsView.ViewState {
+	init(store: BindingViewStore<StatisticsDetails.State>) {
+		self._sheetDetent = store.$sheetDetent
+		self.filter = store.filter
+		self.ignoreSheetSizeForBackdrop = store.destination == nil || store.sheetDetent == .large
+		self.sources = store.sources
+		self.willAdjustLaneLayoutAt = store.willAdjustLaneLayoutAt
+		self.backdropSize = store.backdropSize
+		self.filtersSize = store.filtersSize
 	}
 }
 

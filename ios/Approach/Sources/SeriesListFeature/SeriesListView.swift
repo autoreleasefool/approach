@@ -21,26 +21,22 @@ public struct SeriesListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapSeres(Series.ID)
-	}
-
 	public init(store: StoreOf<SeriesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: SeriesList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /SeriesList.Action.InternalAction.list)
 			) { series in
-				Button { viewStore.send(.didTapSeres(series.id)) } label: {
+				Button { viewStore.send(.didTapSeries(series.id)) } label: {
 					Text(series.name)
 				}
 				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.leagueName)
-		}
+		})
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /SeriesList.Destination.State.editor,
@@ -56,15 +52,6 @@ public struct SeriesListView: View {
 			action: SeriesList.Destination.Action.games
 		) { store in
 			GamesListView(store: store)
-		}
-	}
-}
-
-extension SeriesList.Action {
-	init(action: SeriesListView.ViewAction) {
-		switch action {
-		case let .didTapSeres(id):
-			self = .view(.didTapSeries(id))
 		}
 	}
 }

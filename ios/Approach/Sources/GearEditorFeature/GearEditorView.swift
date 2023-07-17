@@ -13,28 +13,11 @@ public struct GearEditorView: View {
 	let store: StoreOf<GearEditor>
 
 	struct ViewState: Equatable {
-		let name: String
-		let kind: Gear.Kind
+		@BindingViewState var name: String
+		@BindingViewState var kind: Gear.Kind
 		let owner: Bowler.Summary?
 		let hasAvatarsEnabled: Bool
 		let isEditing: Bool
-
-		init(state: GearEditor.State) {
-			self.name = state.name
-			self.kind = state.kind
-			self.owner = state.owner
-			self.hasAvatarsEnabled = state.hasAvatarsEnabled
-			switch state._form.value {
-			case .create: self.isEditing = false
-			case .edit: self.isEditing = true
-			}
-		}
-	}
-
-	enum ViewAction {
-		case didTapOwner
-		case didChangeName(String)
-		case didChangeKind(Gear.Kind)
 	}
 
 	public init(store: StoreOf<GearEditor>) {
@@ -42,18 +25,18 @@ public struct GearEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GearEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			FormView(store: store.scope(state: \.form, action: /GearEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.binding(get: \.name, send: ViewAction.didChangeName)
+						text: viewStore.$name
 					)
 					.textContentType(.name)
 
 					Picker(
 						Strings.Gear.Properties.kind,
-						selection: viewStore.binding(get: \.kind, send: ViewAction.didChangeKind)
+						selection: viewStore.$kind
 					) {
 						ForEach(Gear.Kind.allCases) {
 							Text(String(describing: $0)).tag($0)
@@ -72,13 +55,26 @@ public struct GearEditorView: View {
 					.buttonStyle(.navigation)
 				}
 			}
-		}
+		})
 		.navigationDestination(
 			store: store.scope(state: \.$bowlerPicker, action: { .internal(.bowlerPicker($0)) })
 		) {
 			ResourcePickerView(store: $0) { bowler in
 				Text(bowler.name)
 			}
+		}
+	}
+}
+
+extension GearEditorView.ViewState {
+	init(store: BindingViewStore<GearEditor.State>) {
+		self._name = store.$name
+		self._kind = store.$kind
+		self.owner = store.owner
+		self.hasAvatarsEnabled = store.hasAvatarsEnabled
+		switch store._form.value {
+		case .create: self.isEditing = false
+		case .edit: self.isEditing = true
 		}
 	}
 }
@@ -90,19 +86,6 @@ extension Gear.Kind: CustomStringConvertible {
 		case .bowlingBall: return Strings.Gear.Properties.Kind.bowlingBall
 		case .towel: return Strings.Gear.Properties.Kind.towel
 		case .other: return Strings.other
-		}
-	}
-}
-
-extension GearEditor.Action {
-	init(action: GearEditorView.ViewAction) {
-		switch action {
-		case .didTapOwner:
-			self = .view(.didTapOwner)
-		case let .didChangeName(name):
-			self = .view(.didChangeName(name))
-		case let .didChangeKind(kind):
-			self = .view(.didChangeKind(kind))
 		}
 	}
 }

@@ -19,19 +19,12 @@ public struct StatisticsOverviewView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapDismissOverviewHint
-		case didTapDismissDetailsHint
-		case didTapViewDetailedStatistics
-		case sourcePickerDidDismiss
-	}
-
 	public init(store: StoreOf<StatisticsOverview>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: StatisticsOverview.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				if viewStore.isShowingOverviewHint {
 					hintView(
@@ -69,13 +62,13 @@ public struct StatisticsOverviewView: View {
 					.presentationDetents([.medium, .large])
 				}
 			)
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /StatisticsOverview.Destination.State.details,
-				action: StatisticsOverview.Destination.Action.details
-			) { store in
-				StatisticsDetailsView(store: store)
-			}
+		})
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsOverview.Destination.State.details,
+			action: StatisticsOverview.Destination.Action.details
+		) { store in
+			StatisticsDetailsView(store: store)
 		}
 	}
 
@@ -105,21 +98,6 @@ public struct StatisticsOverviewView: View {
 			.padding(.bottom)
 		}
 		.listRowInsets(EdgeInsets())
-	}
-}
-
-extension StatisticsOverview.Action {
-	init(action: StatisticsOverviewView.ViewAction) {
-		switch action {
-		case .didTapDismissOverviewHint:
-			self = .view(.didTapDismissOverviewHint)
-		case .didTapDismissDetailsHint:
-			self = .view(.didTapDismissDetailsHint)
-		case .didTapViewDetailedStatistics:
-			self = .view(.didTapViewDetailedStatistics)
-		case .sourcePickerDidDismiss:
-			self = .view(.sourcePickerDidDismiss)
-		}
 	}
 }
 

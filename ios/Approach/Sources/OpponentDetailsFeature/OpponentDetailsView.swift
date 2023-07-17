@@ -18,16 +18,12 @@ public struct OpponentDetailsView: View {
 		}
 	}
 
-	enum ViewAction {
-		case onAppear
-	}
-
 	public init(store: StoreOf<OpponentDetails>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: OpponentDetails.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				if let details = viewStore.details {
 					Section(Strings.Opponent.record) {
@@ -53,16 +49,7 @@ public struct OpponentDetailsView: View {
 			}
 			.navigationTitle(viewStore.opponentName)
 			.onAppear { viewStore.send(.onAppear) }
-		}
-	}
-}
-
-extension OpponentDetails.Action {
-	init(action: OpponentDetailsView.ViewAction) {
-		switch action {
-		case .onAppear:
-			self = .view(.onAppear)
-		}
+		})
 	}
 }
 

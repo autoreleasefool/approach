@@ -98,13 +98,8 @@ public struct FrameEditorView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didDragOverPin(Pin)
-		case didStopDraggingPins
-	}
-
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: FrameEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			HStack(alignment: .center, spacing: .smallSpacing) {
 				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.allCases) { pin in
@@ -127,10 +122,13 @@ public struct FrameEditorView: View {
 					.updating($dragLocation) { (value, state, _) in state = value.location }
 					.onEnded { _ in viewStore.send(.didStopDraggingPins) }
 			)
-		}
+		})
 	}
 
-	private func dragReader(for pin: Pin, withViewStore viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func dragReader(
+		for pin: Pin,
+		withViewStore viewStore: ViewStore<ViewState, FrameEditor.Action.ViewAction>
+	) -> some View {
 		GeometryReader { proxy in
 			if !viewStore.inaccessiblePins.contains(pin) && proxy.frame(in: .global).contains(dragLocation) {
 				Task.detached { @MainActor in viewStore.send(.didDragOverPin(pin)) }
@@ -155,17 +153,6 @@ public struct FrameEditorView: View {
 			return availableWidth * 108 / 530
 		case .headPin:
 			return availableWidth * 114 / 530
-		}
-	}
-}
-
-extension FrameEditor.Action {
-	init(action: FrameEditorView.ViewAction) {
-		switch action {
-		case let .didDragOverPin(pin):
-			self = .view(.didDragOverPin(pin))
-		case .didStopDraggingPins:
-			self = .view(.didStopDraggingPins)
 		}
 	}
 }

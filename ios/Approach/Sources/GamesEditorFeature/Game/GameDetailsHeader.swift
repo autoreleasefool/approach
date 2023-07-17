@@ -21,7 +21,9 @@ public struct GameDetailsHeader: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable {
+			case didTapNext(State.NextElement)
+		}
 		public enum InternalAction: Equatable {}
 		public enum DelegateAction: Equatable {
 			case didProceed(to: State.NextElement)
@@ -37,8 +39,8 @@ public struct GameDetailsHeader: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
-					return .none
+				case let .didTapNext(next):
+					return .send(.delegate(.didProceed(to: next)))
 				}
 
 			case let .internal(internalAction):
@@ -81,12 +83,8 @@ extension GameDetailsHeader.State {
 public struct GameDetailsHeaderView: View {
 	let store: StoreOf<GameDetailsHeader>
 
-	enum ViewAction {
-		case didTapNext(GameDetailsHeader.State.NextElement)
-	}
-
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GameDetailsHeader.Action.init, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack(alignment: .top) {
 				VStack(alignment: .leading) {
 					Text(viewStore.currentBowlerName)
@@ -117,14 +115,5 @@ public struct GameDetailsHeaderView: View {
 			.listRowInsets(EdgeInsets())
 			.listRowBackground(Color.clear)
 		})
-	}
-}
-
-extension GameDetailsHeader.Action {
-	init(action: GameDetailsHeaderView.ViewAction) {
-		switch action {
-		case let .didTapNext(next):
-			self = .delegate(.didProceed(to: next))
-		}
 	}
 }

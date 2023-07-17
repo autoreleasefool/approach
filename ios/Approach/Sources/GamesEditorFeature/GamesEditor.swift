@@ -17,7 +17,7 @@ import SwiftUI
 
 public struct GamesEditor: Reducer {
 	public struct State: Equatable {
-		public var sheetDetent: PresentationDetent = .height(.zero)
+		@BindingState public var sheetDetent: PresentationDetent = .height(.zero)
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var isScoreSheetVisible = true
@@ -64,10 +64,10 @@ public struct GamesEditor: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didAppear
-			case didChangeDetent(PresentationDetent)
 			case didAdjustBackdropSize(CGSize)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -117,6 +117,8 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.scoring) var scoring
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
 			GamesHeader()
 		}
@@ -141,12 +143,14 @@ public struct GamesEditor: Reducer {
 					}
 					return .none
 
-				case let .didChangeDetent(newDetent):
-					state.sheetDetent = newDetent
+				case .binding(\.$sheetDetent):
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(25))
 						await send(.internal(.adjustBackdrop))
 					}
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):

@@ -17,16 +17,16 @@ public struct LeagueEditor: Reducer {
 	public struct State: Equatable {
 		public let hasAlleysEnabled: Bool
 
-		public var name: String
-		public var recurrence: League.Recurrence
-		public var numberOfGames: Int?
-		public var additionalPinfall: Int?
-		public var additionalGames: Int?
-		public var excludeFromStatistics: League.ExcludeFromStatistics
+		@BindingState public var name: String
+		@BindingState public var recurrence: League.Recurrence
+		@BindingState public var numberOfGames: Int
+		@BindingState public var additionalPinfall: String
+		@BindingState public var additionalGames: String
+		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics
 		public var location: Alley.Summary?
 
-		public var gamesPerSeries: GamesPerSeries
-		public var hasAdditionalPinfall: Bool
+		@BindingState public var gamesPerSeries: GamesPerSeries
+		@BindingState public var hasAdditionalPinfall: Bool
 		public var shouldShowLocationSection: Bool
 
 		public let initialValue: LeagueForm.Value
@@ -35,38 +35,37 @@ public struct LeagueEditor: Reducer {
 		@PresentationState public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: LeagueForm.Value) {
-			let numberOfGames: Int?
-			let additionalGames: Int?
+			let numberOfGames: Int
+			let additionalGames: Int
 			switch value {
 			case let .create(new):
 				self.name = new.name
 				self.recurrence = new.recurrence
-				self.additionalPinfall = new.additionalPinfall
+				let additionalPinfall = new.additionalPinfall ?? 0
+				self.additionalPinfall = additionalPinfall > 0 ? String(additionalPinfall) : ""
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
-				numberOfGames = new.numberOfGames
-				additionalGames = new.additionalGames
+				numberOfGames = new.numberOfGames ?? 0
+				additionalGames = new.additionalGames ?? 0
+				self.shouldShowLocationSection = new.recurrence.shouldShowLocationSection
 				self.initialValue = .create(new)
 			case let .edit(existing):
 				self.name = existing.name
 				self.recurrence = existing.recurrence
-				self.additionalPinfall = existing.additionalPinfall
+				let additionalPinfall = existing.additionalPinfall ?? 0
+				self.additionalPinfall = additionalPinfall > 0 ? String(additionalPinfall) : ""
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
-				numberOfGames = existing.numberOfGames
-				additionalGames = existing.additionalGames
+				numberOfGames = existing.numberOfGames ?? 0
+				additionalGames = existing.additionalGames ?? 0
+				self.shouldShowLocationSection = existing.recurrence.shouldShowLocationSection
 				self.initialValue = .edit(existing)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
-			self.gamesPerSeries = numberOfGames == nil ? .dynamic : .static
-			self.hasAdditionalPinfall = (additionalGames ?? 0) > 0
-
-			switch recurrence {
-			case .repeating:
-				self.shouldShowLocationSection = false
-			case .once:
-				self.shouldShowLocationSection = true
-			}
+			self.gamesPerSeries = numberOfGames == 0 ? .dynamic : .static
+			self.hasAdditionalPinfall = additionalGames > 0
+			self.numberOfGames = numberOfGames
+			self.additionalGames = additionalGames > 0 ? String(additionalGames) : ""
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
@@ -81,16 +80,9 @@ public struct LeagueEditor: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapAlley
-			case didChangeName(String)
-			case didChangeRecurrence(League.Recurrence)
-			case didChangeNumberOfGames(Int)
-			case didChangeAdditionalPinfall(Int?)
-			case didChangeAdditionalGames(Int?)
-			case didChangeExcludeFromStatistics(League.ExcludeFromStatistics)
-			case didChangeGamesPerSeries(LeagueEditor.GamesPerSeries)
-			case didChangeHasAdditionalPinfall(Bool)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -113,6 +105,8 @@ public struct LeagueEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			LeagueForm()
 				.dependency(\.records, .init(
@@ -135,12 +129,7 @@ public struct LeagueEditor: Reducer {
 					)
 					return .none
 
-				case let .didChangeName(name):
-					state.name = name
-					return .none
-
-				case let .didChangeRecurrence(recurrence):
-					state.recurrence = recurrence
+				case .binding(\.$recurrence):
 					switch state.recurrence {
 					case .once:
 						state.gamesPerSeries = .static
@@ -150,28 +139,7 @@ public struct LeagueEditor: Reducer {
 						return .run { send in await send(.internal(.setLocationSection(isShown: false)), animation: .easeInOut) }
 					}
 
-				case let .didChangeNumberOfGames(numberOfGames):
-					state.numberOfGames = numberOfGames
-					return .none
-
-				case let .didChangeAdditionalPinfall(pinFall):
-					state.additionalPinfall = pinFall
-					return .none
-
-				case let .didChangeAdditionalGames(games):
-					state.additionalGames = games
-					return .none
-
-				case let .didChangeExcludeFromStatistics(exclude):
-					state.excludeFromStatistics = exclude
-					return .none
-
-				case let .didChangeGamesPerSeries(gamesPerSeries):
-					state.gamesPerSeries = gamesPerSeries
-					return .none
-
-				case let .didChangeHasAdditionalPinfall(hasAdditionalPinfall):
-					state.hasAdditionalPinfall = hasAdditionalPinfall
+				case .binding:
 					return .none
 				}
 
@@ -249,16 +217,17 @@ extension LeagueEditor.State {
 			case var .create(new):
 				new.name = name
 				new.recurrence = recurrence
-				new.numberOfGames = gamesPerSeries == .static ? numberOfGames : nil
-				new.additionalGames = hasAdditionalPinfall ? additionalGames : nil
-				new.additionalPinfall = hasAdditionalPinfall && (additionalGames ?? 0) > 0 ? additionalPinfall : nil
+				new.numberOfGames = gamesPerSeries == .static ? Int(numberOfGames) : nil
+				new.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
+				new.additionalPinfall = hasAdditionalPinfall && (new.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
 				new.excludeFromStatistics = excludeFromStatistics
 				new.location = location
 				form.value = .create(new)
 			case var .edit(existing):
 				existing.name = name
-				existing.additionalGames = hasAdditionalPinfall ? additionalGames : nil
-				existing.additionalPinfall = hasAdditionalPinfall && (additionalGames ?? 0) > 0 ? additionalPinfall : nil
+				existing.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
+				existing.additionalPinfall =
+					hasAdditionalPinfall && (existing.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
 				existing.excludeFromStatistics = excludeFromStatistics
 				existing.location = location
 				form.value = .edit(existing)
@@ -297,6 +266,24 @@ extension League.Recurrence: CustomStringConvertible {
 		switch self {
 		case .repeating: return Strings.League.Properties.Recurrence.repeats
 		case .once: return Strings.League.Properties.Recurrence.never
+		}
+	}
+
+	var shouldShowLocationSection: Bool {
+		switch self {
+		case .repeating:
+			return false
+		case .once:
+			return true
+		}
+	}
+}
+
+extension League.ExcludeFromStatistics: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .include: return Strings.League.Properties.ExcludeFromStatistics.include
+		case .exclude: return Strings.League.Properties.ExcludeFromStatistics.exclude
 		}
 	}
 }

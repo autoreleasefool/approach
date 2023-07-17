@@ -20,7 +20,7 @@ public struct StatisticsDetails: Reducer {
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
 
-		public var sheetDetent: PresentationDetent = StatisticsDetails.defaultSheetDetent
+		@BindingState public var sheetDetent: PresentationDetent = StatisticsDetails.defaultSheetDetent
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var filtersSize: StatisticsFilterView.Size = .regular
@@ -37,11 +37,11 @@ public struct StatisticsDetails: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case onAppear
 			case didTapSourcePicker
-			case didChangeDetent(PresentationDetent)
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -97,6 +97,8 @@ public struct StatisticsDetails: Reducer {
 	@Dependency(\.uiDeviceNotifications) var uiDevice
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.charts, action: /Action.internal..Action.InternalAction.charts) {
 			StatisticsDetailsCharts()
 		}
@@ -124,12 +126,14 @@ public struct StatisticsDetails: Reducer {
 					state.filtersSize = filtersSize
 					return .none
 
-				case let .didChangeDetent(newDetent):
-					state.sheetDetent = newDetent
+				case .binding(\.$sheetDetent):
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(25))
 						await send(.internal(.adjustBackdrop))
 					}
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):

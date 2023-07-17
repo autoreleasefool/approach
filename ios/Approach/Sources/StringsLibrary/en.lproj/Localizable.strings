@@ -126,8 +126,8 @@
 "league.properties.numberOfGames" = "Number of games";
 "league.properties.additionalPinfall" = "Additional Pinfall";
 "league.properties.additionalGames" = "Additional Games";
-"league.properties.excludeFromStatistics.include" = "Include in statistics";
-"league.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"league.properties.excludeFromStatistics.include" = "Include";
+"league.properties.excludeFromStatistics.exclude" = "Exclude";
 "league.editor.fields.gamesPerSeries.constant" = "Constant";
 "league.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";
 "league.editor.fields.alley.title" = "Alley";
@@ -152,8 +152,8 @@
 "series.properties.date" = "Date";
 "series.properties.preBowl.preBowl" = "Pre-Bowl";
 "series.properties.preBowl.regular" = "Regular";
-"series.properties.excludeFromStatistics.include" = "Include in statistics";
-"series.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"series.properties.excludeFromStatistics.include" = "Include";
+"series.properties.excludeFromStatistics.exclude" = "Exclude";
 "series.editor.fields.alley.lanes" = "Lanes";
 "series.editor.fields.preBowl.title" = "Pre-Bowl";
 "series.editor.fields.preBowl.label" = "This is a pre-bowl";

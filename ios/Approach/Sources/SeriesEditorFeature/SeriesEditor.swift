@@ -21,10 +21,10 @@ public struct SeriesEditor: Reducer {
 		public let hasAlleysEnabled: Bool
 		public let league: League.SeriesHost
 
-		public var numberOfGames: Int
-		public var date: Date
-		public var preBowl: Series.PreBowl
-		public var excludeFromStatistics: Series.ExcludeFromStatistics
+		@BindingState public var numberOfGames: Int
+		@BindingState public var date: Date
+		@BindingState public var preBowl: Series.PreBowl
+		@BindingState public var excludeFromStatistics: Series.ExcludeFromStatistics
 		public var location: Alley.Summary?
 
 		public let initialValue: SeriesForm.Value
@@ -58,12 +58,9 @@ public struct SeriesEditor: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapAlley
-			case didChangeDate(Date)
-			case didChangeNumberOfGames(Int)
-			case didChangePreBowl(Series.PreBowl)
-			case didChangeExcludeFromStatistics(Series.ExcludeFromStatistics)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -91,6 +88,8 @@ public struct SeriesEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			SeriesForm()
 				.dependency(\.records, .init(
@@ -113,20 +112,18 @@ public struct SeriesEditor: Reducer {
 					)
 					return .none
 
-				case let .didChangeDate(date):
-					state.date = date
+				case .binding(\.$excludeFromStatistics):
+					switch (state.league.excludeFromStatistics, state.preBowl) {
+					case (.exclude, _):
+						state.excludeFromStatistics = .exclude
+					case (_, .preBowl):
+						state.excludeFromStatistics = .exclude
+					case (.include, .regular):
+						break
+					}
 					return .none
 
-				case let .didChangePreBowl(preBowl):
-					state.preBowl = preBowl
-					return .none
-
-				case let .didChangeNumberOfGames(numberOfGames):
-					state.numberOfGames = numberOfGames
-					return .none
-
-				case let .didChangeExcludeFromStatistics(exclude):
-					state.excludeFromStatistics = exclude
+				case .binding:
 					return .none
 				}
 

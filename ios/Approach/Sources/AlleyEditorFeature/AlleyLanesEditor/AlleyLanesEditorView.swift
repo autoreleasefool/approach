@@ -23,17 +23,12 @@ public struct AlleyLanesEditorView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapAddLaneButton
-		case didTapAddMultipleLanesButton
-	}
-
 	public init(store: StoreOf<AlleyLanesEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: AlleyLanesEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
 					ForEachStore(
@@ -61,7 +56,7 @@ public struct AlleyLanesEditorView: View {
 				}
 			}
 			.navigationTitle(Strings.Lane.List.title)
-		}
+		})
 		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 		.sheet(store: store.scope(state: \.$addLaneForm, action: { .internal(.addLaneForm($0)) })) {
 			AddLaneFormView(store: $0)
@@ -79,17 +74,6 @@ public struct AlleyLanesEditorView: View {
 					addLaneSheetHeight = newHeight
 				}
 				.presentationDetents([.height(addLaneSheetHeight), .medium])
-		}
-	}
-}
-
-extension AlleyLanesEditor.Action {
-	init(action: AlleyLanesEditorView.ViewAction) {
-		switch action {
-		case .didTapAddLaneButton:
-			self = .view(.didTapAddLaneButton)
-		case .didTapAddMultipleLanesButton:
-			self = .view(.didTapAddMultipleLanesButton)
 		}
 	}
 }

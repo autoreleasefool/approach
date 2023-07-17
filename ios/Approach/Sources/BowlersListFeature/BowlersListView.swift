@@ -25,18 +25,12 @@ public struct BowlersListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didStartObserving
-		case didTapSortOrderButton
-		case didTapBowler(Bowler.ID)
-	}
-
 	public init(store: StoreOf<BowlersList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
 			) { bowler in
@@ -61,7 +55,7 @@ public struct BowlersListView: View {
 				}
 			}
 			.task { viewStore.send(.didStartObserving) }
-		}
+		})
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /BowlersList.Destination.State.editor,
@@ -87,19 +81,6 @@ public struct BowlersListView: View {
 			action: BowlersList.Destination.Action.leagues
 		) { (store: StoreOf<LeaguesList>) in
 			LeaguesListView(store: store)
-		}
-	}
-}
-
-extension BowlersList.Action {
-	init(action: BowlersListView.ViewAction) {
-		switch action {
-		case .didTapSortOrderButton:
-			self = .view(.didTapSortOrderButton)
-		case let .didTapBowler(id):
-			self = .view(.didTapBowler(id))
-		case .didStartObserving:
-			self = .view(.didStartObserving)
 		}
 	}
 }

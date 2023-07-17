@@ -18,8 +18,8 @@ public struct GearEditor: Reducer {
 	public struct State: Equatable {
 		public let hasAvatarsEnabled: Bool
 
-		public var name: String
-		public var kind: Gear.Kind
+		@BindingState public var name: String
+		@BindingState public var kind: Gear.Kind
 		public var owner: Bowler.Summary?
 
 		public var initialValue: GearForm.Value
@@ -48,10 +48,9 @@ public struct GearEditor: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapOwner
-			case didChangeName(String)
-			case didChangeKind(Gear.Kind)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -73,6 +72,8 @@ public struct GearEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			GearForm()
 				.dependency(\.records, .init(
@@ -86,14 +87,6 @@ public struct GearEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didChangeKind(kind):
-					state.kind = kind
-					return .none
-
-				case let .didChangeName(name):
-					state.name = name
-					return .none
-
 				case .didTapOwner:
 					state.bowlerPicker = .init(
 						selected: Set([state.owner?.id].compactMap { $0 }),
@@ -101,6 +94,9 @@ public struct GearEditor: Reducer {
 						limit: 1,
 						showsCancelHeaderButton: false
 					)
+					return .none
+
+				case .binding:
 					return .none
 				}
 

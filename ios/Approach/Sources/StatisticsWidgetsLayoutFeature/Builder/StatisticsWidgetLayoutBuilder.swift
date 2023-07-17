@@ -17,8 +17,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
 		public var _reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
 
-		public var isDeleting = false
-		public var isAnimatingWidgets = false
+		@BindingState public var isDeleting = false
+		@BindingState public var isAnimatingWidgets = false
 
 		@PresentationState public var editor: StatisticsWidgetEditor.State?
 
@@ -29,7 +29,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didObserveData
 			case didTapAddNew
 			case didTapDeleteButton
@@ -37,8 +37,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case didTapDoneButton
 			case didTapDeleteWidget(id: StatisticsWidget.ID)
 			case didFinishDismissingEditor
-			case setAnimateWidgets(Bool)
-			case setDelete(Bool)
+			case binding(BindingAction<State>)
+
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -69,6 +69,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.reordering, action: /Action.internal..Action.InternalAction.reordering) {
 			Reorderable()
 		}
@@ -125,16 +127,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 						.run { [context = state.context] _ in await analytics.trackEvent(Analytics.Widget.Deleted(context: context)) }
 					)
 
-				case let .setAnimateWidgets(value):
-					state.isAnimatingWidgets = value
-					return .none
-
-				case let .setDelete(value):
-					state.isDeleting = value
-					return .none
-
 				case .didFinishDismissingEditor:
 					return .send(.internal(.startAnimatingWidgets), animation: .easeInOut)
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):

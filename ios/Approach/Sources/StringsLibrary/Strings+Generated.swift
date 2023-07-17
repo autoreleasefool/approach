@@ -537,10 +537,10 @@ public enum Strings {
       /// Repeat?
       public static let recurrence = Strings.tr("Localizable", "league.properties.recurrence", fallback: "Repeat?")
       public enum ExcludeFromStatistics {
-        /// Exclude from statistics
-        public static let exclude = Strings.tr("Localizable", "league.properties.excludeFromStatistics.exclude", fallback: "Exclude from statistics")
-        /// Include in statistics
-        public static let include = Strings.tr("Localizable", "league.properties.excludeFromStatistics.include", fallback: "Include in statistics")
+        /// Exclude
+        public static let exclude = Strings.tr("Localizable", "league.properties.excludeFromStatistics.exclude", fallback: "Exclude")
+        /// Include
+        public static let include = Strings.tr("Localizable", "league.properties.excludeFromStatistics.include", fallback: "Include")
       }
       public enum Recurrence {
         /// Never
@@ -735,10 +735,10 @@ public enum Strings {
       /// Number of games
       public static let numberOfGames = Strings.tr("Localizable", "series.properties.numberOfGames", fallback: "Number of games")
       public enum ExcludeFromStatistics {
-        /// Exclude from statistics
-        public static let exclude = Strings.tr("Localizable", "series.properties.excludeFromStatistics.exclude", fallback: "Exclude from statistics")
-        /// Include in statistics
-        public static let include = Strings.tr("Localizable", "series.properties.excludeFromStatistics.include", fallback: "Include in statistics")
+        /// Exclude
+        public static let exclude = Strings.tr("Localizable", "series.properties.excludeFromStatistics.exclude", fallback: "Exclude")
+        /// Include
+        public static let include = Strings.tr("Localizable", "series.properties.excludeFromStatistics.include", fallback: "Include")
       }
       public enum PreBowl {
         /// Pre-Bowl

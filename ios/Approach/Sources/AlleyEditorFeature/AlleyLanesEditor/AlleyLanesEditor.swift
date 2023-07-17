@@ -127,7 +127,6 @@ public struct AlleyLanesEditor: Reducer {
 
 				case .addLaneForm(.presented(.internal)),
 						.addLaneForm(.presented(.view)),
-						.addLaneForm(.presented(.binding)),
 						.addLaneForm(.dismiss):
 					return .none
 				}

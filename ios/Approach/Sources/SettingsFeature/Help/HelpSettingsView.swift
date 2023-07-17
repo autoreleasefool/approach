@@ -10,16 +10,8 @@ public struct HelpSettingsView: View {
 		init(state: HelpSettings.State) {}
 	}
 
-	public enum ViewAction {
-		case didTapReportBugButton
-		case didTapSendFeedbackButton
-		case didShowAcknowledgements
-		case didShowDeveloperDetails
-		case didTapViewSource
-	}
-
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: HelpSettings.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Section(Strings.Settings.Help.title) {
 				Button(Strings.Settings.Help.reportBug) { viewStore.send(.didTapReportBugButton) }
 				Button(Strings.Settings.Help.sendFeedback) { viewStore.send(.didTapSendFeedbackButton) }
@@ -44,23 +36,6 @@ public struct HelpSettingsView: View {
 			} footer: {
 				Text(Strings.Settings.Help.Development.help(AppConstants.appName))
 			}
-		}
-	}
-}
-
-extension HelpSettings.Action {
-	init(action: HelpSettingsView.ViewAction) {
-		switch action {
-		case .didTapReportBugButton:
-			self = .view(.didTapReportBugButton)
-		case .didTapSendFeedbackButton:
-			self = .view(.didTapSendFeedbackButton)
-		case .didShowAcknowledgements:
-			self = .view(.didShowAcknowledgements)
-		case .didShowDeveloperDetails:
-			self = .view(.didShowDeveloperDetails)
-		case .didTapViewSource:
-			self = .view(.didTapViewSource)
-		}
+		})
 	}
 }

@@ -26,23 +26,16 @@ public struct LeaguesListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didStartObserving
-		case didTapFilterButton
-		case didTapSortOrderButton
-		case didTapLeague(League.ID)
-	}
-
 	public init(store: StoreOf<LeaguesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: LeaguesList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /LeaguesList.Action.InternalAction.list)
 			) { league in
-				Button { viewStore.send(.didTapLeague(league.id)) } label: {
+				Button { viewStore.send(.didTapLeague(id: league.id)) } label: {
 					LabeledContent(league.name, value: format(average: league.average))
 				}
 				.buttonStyle(.navigation)
@@ -68,7 +61,7 @@ public struct LeaguesListView: View {
 				}
 			}
 			.task { viewStore.send(.didStartObserving) }
-		}
+		})
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /LeaguesList.Destination.State.editor,
@@ -104,21 +97,6 @@ public struct LeaguesListView: View {
 			action: LeaguesList.Destination.Action.series
 		) { store in
 			SeriesListView(store: store)
-		}
-	}
-}
-
-extension LeaguesList.Action {
-	init(action: LeaguesListView.ViewAction) {
-		switch action {
-		case .didStartObserving:
-			self = .view(.didStartObserving)
-		case .didTapFilterButton:
-			self = .view(.didTapFilterButton)
-		case .didTapSortOrderButton:
-			self = .view(.didTapSortOrderButton)
-		case let .didTapLeague(id):
-			self = .view(.didTapLeague(id: id))
 		}
 	}
 }

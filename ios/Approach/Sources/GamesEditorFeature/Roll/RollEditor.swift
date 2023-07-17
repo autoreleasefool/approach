@@ -26,6 +26,7 @@ public struct RollEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didTapBall
 			case didToggleFoul
 		}
 		public enum InternalAction: Equatable {}
@@ -49,6 +50,9 @@ public struct RollEditor: Reducer {
 				case .didToggleFoul:
 					state.didFoul.toggle()
 					return .send(.delegate(.didEditRoll))
+
+				case .didTapBall:
+					return .send(.delegate(.didTapBall))
 				}
 
 			case let .internal(internalAction):
@@ -69,13 +73,8 @@ public struct RollEditor: Reducer {
 public struct RollEditorView: View {
 	let store: StoreOf<RollEditor>
 
-	enum ViewAction {
-		case didTapBall
-		case didToggleFoul
-	}
-
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: RollEditor.Action.init, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack(alignment: .bottom) {
 				if viewStore.isGearEnabled {
 					Button { viewStore.send(.didTapBall) } label: {
@@ -106,16 +105,5 @@ public struct RollEditorView: View {
 				.buttonStyle(TappableElement())
 			}
 		})
-	}
-}
-
-extension RollEditor.Action {
-	init(action: RollEditorView.ViewAction) {
-		switch action {
-		case .didToggleFoul:
-			self = .view(.didToggleFoul)
-		case .didTapBall:
-			self = .delegate(.didTapBall)
-		}
 	}
 }

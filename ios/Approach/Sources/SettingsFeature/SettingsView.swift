@@ -33,21 +33,12 @@ public struct SettingsView: View {
 		}
 	}
 
-	enum ViewAction {
-		case onAppear
-		case didTapPopulateDatabase
-		case didTapFeatureFlags
-		case didTapOpponents
-		case didTapStatistics
-		case didTapAppIcon
-	}
-
 	public init(store: StoreOf<Settings>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: Settings.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				if viewStore.isShowingDeveloperOptions {
 					Section {
@@ -100,7 +91,7 @@ public struct SettingsView: View {
 			}
 			.navigationTitle(Strings.Settings.title)
 			.onAppear { viewStore.send(.onAppear) }
-		}
+		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /Settings.Destination.State.appIcon,
@@ -128,25 +119,6 @@ public struct SettingsView: View {
 			action: Settings.Destination.Action.statistics
 		) { (store: StoreOf<StatisticsSettings>) in
 			StatisticsSettingsView(store: store)
-		}
-	}
-}
-
-extension Settings.Action {
-	init(action: SettingsView.ViewAction) {
-		switch action {
-		case .onAppear:
-			self = .view(.onAppear)
-		case .didTapPopulateDatabase:
-			self = .view(.didTapPopulateDatabase)
-		case .didTapFeatureFlags:
-			self = .view(.didTapFeatureFlags)
-		case .didTapOpponents:
-			self = .view(.didTapOpponents)
-		case .didTapStatistics:
-			self = .view(.didTapStatistics)
-		case .didTapAppIcon:
-			self = .view(.didTapAppIcon)
 		}
 	}
 }

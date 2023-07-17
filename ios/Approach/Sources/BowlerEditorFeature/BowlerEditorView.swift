@@ -11,15 +11,7 @@ public struct BowlerEditorView: View {
 	let store: StoreOf<BowlerEditor>
 
 	struct ViewState: Equatable {
-		let name: String
-
-		init(state: BowlerEditor.State) {
-			self.name = state.name
-		}
-	}
-
-	enum ViewAction {
-		case didChangeName(String)
+		@BindingViewState var name: String
 	}
 
 	public init(store: StoreOf<BowlerEditor>) {
@@ -27,26 +19,23 @@ public struct BowlerEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			FormView(store: store.scope(state: \.form, action: /BowlerEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.binding(get: \.name, send: ViewAction.didChangeName)
+						text: viewStore.$name
 					)
 					.textContentType(.name)
 				}
 			}
-		}
+		})
 	}
 }
 
-extension BowlerEditor.Action {
-	init(action: BowlerEditorView.ViewAction) {
-		switch action {
-		case let .didChangeName(name):
-			self = .view(.didChangeName(name))
-		}
+extension BowlerEditorView.ViewState {
+	init(store: BindingViewStore<BowlerEditor.State>) {
+		self._name = store.$name
 	}
 }
 

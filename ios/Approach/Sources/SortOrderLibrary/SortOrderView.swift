@@ -18,16 +18,12 @@ public struct SortOrderView<Ordering: Orderable>: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapOption(Ordering)
-	}
-
 	public init(store: StoreOf<SortOrder<Ordering>>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: SortOrder<Ordering>.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				Section(Strings.SortOrder.title) {
 					ForEach(viewStore.options, id: \.self) { ordering in
@@ -49,15 +45,6 @@ public struct SortOrderView<Ordering: Orderable>: View {
 					}
 				}
 			}
-		}
-	}
-}
-
-extension SortOrder.Action {
-	init(action: SortOrderView<Ordering>.ViewAction) {
-		switch action {
-		case let .didTapOption(option):
-			self = .view(.didTapOption(option))
-		}
+		})
 	}
 }

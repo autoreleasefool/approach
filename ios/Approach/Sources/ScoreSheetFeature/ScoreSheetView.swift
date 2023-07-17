@@ -30,10 +30,6 @@ public struct ScoreSheetView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapFrame(index: Int, rollIndex: Int?)
-	}
-
 	struct FrameID: Hashable {
 		let index: Int
 	}
@@ -49,7 +45,7 @@ public struct ScoreSheetView: View {
 
 	public var body: some View {
 		ScrollViewReader { proxy in
-			WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
+			WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 				ScrollView(.horizontal) {
 					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
 						GridRow {
@@ -93,7 +89,7 @@ public struct ScoreSheetView: View {
 						proxy.scrollTo(rollId, anchor: .leading)
 					}
 				}
-			}
+			})
 			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
 	}
@@ -132,15 +128,6 @@ public struct ScoreSheetView: View {
 			.id(RollID(frameIndex: frameIndex, rollIndex: roll.index))
 			.contentShape(Rectangle())
 			.buttonStyle(TappableElement())
-		}
-	}
-}
-
-extension ScoreSheet.Action {
-	init(action: ScoreSheetView.ViewAction) {
-		switch action {
-		case let .didTapFrame(frameIndex, rollIndex):
-			self = .view(.didTapFrame(index: frameIndex, rollIndex: rollIndex))
 		}
 	}
 }

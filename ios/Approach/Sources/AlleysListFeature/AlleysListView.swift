@@ -21,16 +21,12 @@ public struct AlleysListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapFiltersButton
-	}
-
 	public init(store: StoreOf<AlleysList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: AlleysList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
 			) {
@@ -44,7 +40,7 @@ public struct AlleysListView: View {
 					}
 				}
 			}
-		}
+		})
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /AlleysList.Destination.State.editor,
@@ -63,15 +59,6 @@ public struct AlleysListView: View {
 				AlleysFilterView(store: store)
 			}
 			.presentationDetents([.medium, .large])
-		}
-	}
-}
-
-extension AlleysList.Action {
-	init(action: AlleysListView.ViewAction) {
-		switch action {
-		case .didTapFiltersButton:
-			self = .view(.didTapFiltersButton)
 		}
 	}
 }

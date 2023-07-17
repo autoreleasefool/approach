@@ -40,12 +40,6 @@ public struct FormView<
 		}
 	}
 
-	enum ViewAction {
-		case didTapSaveButton
-		case didTapDeleteButton
-		case didTapDiscardButton
-	}
-
 	public init(
 		store: StoreOf<Form<New, Existing>>,
 		@ViewBuilder content: @escaping () -> Content
@@ -55,7 +49,7 @@ public struct FormView<
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: map(viewAction:)) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			SwiftUI.Form {
 				content()
 					.disabled(viewStore.isLoading)
@@ -81,17 +75,6 @@ public struct FormView<
 				}
 			}
 			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
-		}
-	}
-
-	private func map(viewAction: ViewAction) -> Form<New, Existing>.Action {
-		switch viewAction {
-		case .didTapSaveButton:
-			return .view(.didTapSaveButton)
-		case .didTapDeleteButton:
-			return .view(.didTapDeleteButton)
-		case .didTapDiscardButton:
-			return .view(.didTapDiscardButton)
-		}
+		})
 	}
 }

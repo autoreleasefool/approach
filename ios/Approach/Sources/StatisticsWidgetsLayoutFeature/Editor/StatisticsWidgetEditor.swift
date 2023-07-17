@@ -22,8 +22,8 @@ public struct StatisticsWidgetEditor: Reducer {
 		public let initialSource: StatisticsWidget.Source?
 
 		public var source: StatisticsWidget.Source?
-		public var timeline: StatisticsWidget.Timeline = .past3Months
-		public var statistic: StatisticsWidget.Statistic = .average
+		@BindingState public var timeline: StatisticsWidget.Timeline = .past3Months
+		@BindingState public var statistic: StatisticsWidget.Statistic = .average
 
 		public var sources: StatisticsWidget.Sources?
 		public var bowler: Bowler.Summary?
@@ -46,13 +46,12 @@ public struct StatisticsWidgetEditor: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case onAppear
 			case didTapBowler
 			case didTapLeague
 			case didTapSaveButton
-			case didChangeTimeline(StatisticsWidget.Timeline)
-			case didChangeStatistic(StatisticsWidget.Statistic)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case didCreateConfiguration(StatisticsWidget.Configuration)
@@ -109,6 +108,8 @@ public struct StatisticsWidgetEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -145,13 +146,14 @@ public struct StatisticsWidgetEditor: Reducer {
 						})))
 					}
 
-				case let .didChangeTimeline(timeline):
-					state.timeline = timeline
+				case .binding(\.$timeline):
 					return refreshChart(withConfiguration: state.configuration, state: &state)
 
-				case let .didChangeStatistic(statistic):
-					state.statistic = statistic
+				case .binding(\.$statistic):
 					return refreshChart(withConfiguration: state.configuration, state: &state)
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):

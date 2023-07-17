@@ -11,17 +11,18 @@ import ViewsLibrary
 
 public struct LeagueEditorView: View {
 	let store: StoreOf<LeagueEditor>
+	typealias LeagueEditorViewStore = ViewStore<ViewState, LeagueEditor.Action.ViewAction>
 
 	struct ViewState: Equatable {
-		let name: String
-		let recurrence: League.Recurrence
-		let numberOfGames: Int?
-		let additionalPinfall: Int?
-		let additionalGames: Int?
-		let excludeFromStatistics: League.ExcludeFromStatistics
+		@BindingViewState var name: String
+		@BindingViewState var recurrence: League.Recurrence
+		@BindingViewState var numberOfGames: Int
+		@BindingViewState var additionalPinfall: String
+		@BindingViewState var additionalGames: String
+		@BindingViewState var excludeFromStatistics: League.ExcludeFromStatistics
 
-		let gamesPerSeries: LeagueEditor.GamesPerSeries
-		let hasAdditionalPinfall: Bool
+		@BindingViewState var gamesPerSeries: LeagueEditor.GamesPerSeries
+		@BindingViewState var hasAdditionalPinfall: Bool
 
 		let shouldShowLocationSection: Bool
 		let location: Alley.Summary?
@@ -29,40 +30,6 @@ public struct LeagueEditorView: View {
 
 		let isEditing: Bool
 		let isDismissDisabled: Bool
-
-		init(state: LeagueEditor.State) {
-			self.name = state.name
-			self.recurrence = state.recurrence
-			self.numberOfGames = state.numberOfGames
-			self.additionalGames = state.additionalGames
-			self.additionalPinfall = state.additionalPinfall
-			self.excludeFromStatistics = state.excludeFromStatistics
-
-			self.gamesPerSeries = state.gamesPerSeries
-			self.hasAdditionalPinfall = state.hasAdditionalPinfall
-
-			self.hasAlleysEnabled = state.hasAlleysEnabled
-			self.isDismissDisabled = state.alleyPicker != nil
-			self.location = state.location
-			self.shouldShowLocationSection = state.shouldShowLocationSection
-
-			switch state._form.value {
-			case .create: self.isEditing = false
-			case .edit: self.isEditing = true
-			}
-		}
-	}
-
-	enum ViewAction {
-		case didTapAlley
-		case didChangeName(String)
-		case didChangeRecurrence(League.Recurrence)
-		case didChangeNumberOfGames(Int)
-		case didChangeAdditionalPinfall(Int?)
-		case didChangeAdditionalGames(Int?)
-		case didChangeExcludeFromStatistics(League.ExcludeFromStatistics)
-		case didChangeGamesPerSeries(LeagueEditor.GamesPerSeries)
-		case didChangeHasAdditionalPinfall(Bool)
 	}
 
 	public init(store: StoreOf<LeagueEditor>) {
@@ -70,7 +37,7 @@ public struct LeagueEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: LeagueEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			FormView(store: store.scope(state: \.form, action: /LeagueEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
@@ -80,7 +47,7 @@ public struct LeagueEditorView: View {
 				additionalPinfallSection(viewStore)
 			}
 			.interactiveDismissDisabled(viewStore.isDismissDisabled)
-		}
+		})
 		.navigationDestination(
 			store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
 		) { store in
@@ -90,21 +57,21 @@ public struct LeagueEditorView: View {
 		}
 	}
 
-	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func detailsSection(_ viewStore: LeagueEditorViewStore) -> some View {
 		Section(Strings.Editor.Fields.Details.title) {
 			TextField(
 				Strings.Editor.Fields.Details.name,
-				text: viewStore.binding(get: \.name, send: ViewAction.didChangeName)
+				text: viewStore.$name
 			)
 		}
 	}
 
-	@ViewBuilder private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	@ViewBuilder private func recurrenceSection(_ viewStore: LeagueEditorViewStore) -> some View {
 		if !viewStore.isEditing {
 			Section {
 				Picker(
 					Strings.League.Properties.recurrence,
-					selection: viewStore.binding(get: \.recurrence, send: ViewAction.didChangeRecurrence)
+					selection: viewStore.$recurrence
 				) {
 					ForEach(League.Recurrence.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -116,7 +83,7 @@ public struct LeagueEditorView: View {
 		}
 	}
 
-	@ViewBuilder private func locationSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	@ViewBuilder private func locationSection(_ viewStore: LeagueEditorViewStore) -> some View {
 		// TODO: better show the location section when recurrence is toggled
 		if viewStore.hasAlleysEnabled && viewStore.shouldShowLocationSection {
 			Section {
@@ -135,15 +102,16 @@ public struct LeagueEditorView: View {
 		}
 	}
 
-	private func statisticsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func statisticsSection(_ viewStore: LeagueEditorViewStore) -> some View {
 		Section {
-			Toggle(
+			Picker(
 				Strings.League.Editor.Fields.ExcludeFromStatistics.label,
-				isOn: viewStore.binding(
-					get: { $0.excludeFromStatistics == .exclude },
-					send: { ViewAction.didChangeExcludeFromStatistics($0 ? .exclude : .include) }
-				)
-			)
+				selection: viewStore.$excludeFromStatistics
+			) {
+				ForEach(League.ExcludeFromStatistics.allCases) {
+					Text(String(describing: $0)).tag($0)
+				}
+			}
 		} header: {
 			Text(Strings.League.Editor.Fields.ExcludeFromStatistics.title)
 		} footer: {
@@ -151,12 +119,12 @@ public struct LeagueEditorView: View {
 		}
 	}
 
-	@ViewBuilder private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	@ViewBuilder private func gamesSection(_ viewStore: LeagueEditorViewStore) -> some View {
 		if !viewStore.isEditing {
 			Section {
 				Picker(
 					Strings.League.Properties.numberOfGames,
-					selection: viewStore.binding(get: \.gamesPerSeries, send: ViewAction.didChangeGamesPerSeries)
+					selection: viewStore.$gamesPerSeries
 				) {
 					ForEach(LeagueEditor.GamesPerSeries.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -166,11 +134,8 @@ public struct LeagueEditorView: View {
 
 				if viewStore.gamesPerSeries == .static {
 					Stepper(
-						"\(viewStore.numberOfGames ?? 1)",
-						value: viewStore.binding(
-							get: { $0.numberOfGames ?? 1 },
-							send: ViewAction.didChangeNumberOfGames
-						),
+						"\(viewStore.numberOfGames)",
+						value: viewStore.$numberOfGames,
 						in: League.NUMBER_OF_GAMES_RANGE
 					)
 				}
@@ -185,30 +150,24 @@ public struct LeagueEditorView: View {
 		}
 	}
 
-	private func additionalPinfallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+	private func additionalPinfallSection(_ viewStore: LeagueEditorViewStore) -> some View {
 		Section {
 			Toggle(
 				Strings.League.Editor.Fields.AdditionalPinfall.title,
-				isOn: viewStore.binding(get: \.hasAdditionalPinfall, send: ViewAction.didChangeHasAdditionalPinfall)
+				isOn: viewStore.$hasAdditionalPinfall
 			)
 			.toggleStyle(SwitchToggleStyle())
 
 			if viewStore.hasAdditionalPinfall {
 				TextField(
 					Strings.League.Properties.additionalPinfall,
-					text: viewStore.binding(
-						get: { String($0.additionalPinfall ?? 0) },
-						send: { ViewAction.didChangeAdditionalPinfall(Int($0)) }
-					)
+					text: viewStore.$additionalPinfall
 				)
 				.keyboardType(.numberPad)
 
 				TextField(
 					Strings.League.Properties.additionalGames,
-					text: viewStore.binding(
-						get: { String($0.additionalGames ?? 0) },
-						send: { ViewAction.didChangeAdditionalGames(Int($0)) }
-					)
+					text: viewStore.$additionalGames
 				)
 				.keyboardType(.numberPad)
 			}
@@ -218,27 +177,26 @@ public struct LeagueEditorView: View {
 	}
 }
 
-extension LeagueEditor.Action {
-	init(action: LeagueEditorView.ViewAction) {
-		switch action {
-		case .didTapAlley:
-			self = .view(.didTapAlley)
-		case let .didChangeName(name):
-			self = .view(.didChangeName(name))
-		case let .didChangeRecurrence(recurrence):
-			self = .view(.didChangeRecurrence(recurrence))
-		case let .didChangeNumberOfGames(numberOfGames):
-			self = .view(.didChangeNumberOfGames(numberOfGames))
-		case let .didChangeAdditionalPinfall(pinFall):
-			self = .view(.didChangeAdditionalPinfall(pinFall))
-		case let .didChangeAdditionalGames(games):
-			self = .view(.didChangeAdditionalGames(games))
-		case let .didChangeExcludeFromStatistics(exclude):
-			self = .view(.didChangeExcludeFromStatistics(exclude))
-		case let .didChangeGamesPerSeries(gamesPerSeries):
-			self = .view(.didChangeGamesPerSeries(gamesPerSeries))
-		case let .didChangeHasAdditionalPinfall(hasAdditionalPinfall):
-			self = .view(.didChangeHasAdditionalPinfall(hasAdditionalPinfall))
+extension LeagueEditorView.ViewState {
+	init(store: BindingViewStore<LeagueEditor.State>) {
+		self._name = store.$name
+		self._recurrence = store.$recurrence
+		self._numberOfGames = store.$numberOfGames
+		self._additionalGames = store.$additionalGames
+		self._additionalPinfall = store.$additionalPinfall
+		self._excludeFromStatistics = store.$excludeFromStatistics
+
+		self._gamesPerSeries = store.$gamesPerSeries
+		self._hasAdditionalPinfall = store.$hasAdditionalPinfall
+
+		self.hasAlleysEnabled = store.hasAlleysEnabled
+		self.isDismissDisabled = store.alleyPicker != nil
+		self.location = store.location
+		self.shouldShowLocationSection = store.shouldShowLocationSection
+
+		switch store._form.value {
+		case .create: self.isEditing = false
+		case .edit: self.isEditing = true
 		}
 	}
 }

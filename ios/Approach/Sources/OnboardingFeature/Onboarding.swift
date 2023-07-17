@@ -7,20 +7,20 @@ import ModelsLibrary
 public struct Onboarding: Reducer {
 	public struct State: Equatable {
 		public var step: Step = .empty
-		public var isShowingSheet = false
-		public var bowlerName = ""
 		public var isAddingBowler = false
+
+		@BindingState public var isShowingSheet = false
+		@BindingState public var bowlerName = ""
 
 		public init() {}
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didAppear
 			case didTapGetStarted
 			case didTapAddBowler
-			case didChangeBowlerName(String)
-			case setSheet(isShowing: Bool)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case didFinishOnboarding
@@ -50,6 +50,8 @@ public struct Onboarding: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -82,12 +84,7 @@ public struct Onboarding: Reducer {
 						}
 					}
 
-				case let .didChangeBowlerName(text):
-					state.bowlerName = text
-					return .none
-
-				case let .setSheet(isShowing):
-					state.isShowingSheet = isShowing
+				case .binding:
 					return .none
 				}
 

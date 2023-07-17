@@ -17,17 +17,12 @@ public struct AvatarEditorView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapCancel
-		case didTapDone
-	}
-
 	public init(store: StoreOf<AvatarEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: AvatarEditor.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			VStack {
 				AvatarView(viewStore.avatar, size: .extraLargeIcon)
 				LazyVGrid(columns: [.init(), .init(), .init()]) {
@@ -56,17 +51,6 @@ public struct AvatarEditorView: View {
 						.disabled(!viewStore.hasChanges)
 				}
 			}
-		}
-	}
-}
-
-extension AvatarEditor.Action {
-	init(action: AvatarEditorView.ViewAction) {
-		switch action {
-		case .didTapCancel:
-			self = .view(.didTapCancel)
-		case .didTapDone:
-			self = .view(.didTapDone)
-		}
+		})
 	}
 }

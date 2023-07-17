@@ -21,17 +21,12 @@ public struct GearListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapFilterButton
-		case didTapSortOrderButton
-	}
-
 	public init(store: StoreOf<GearList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GearList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /GearList.Action.InternalAction.list)
 			) {
@@ -48,7 +43,7 @@ public struct GearListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
-		}
+		})
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GearList.Destination.State.editor,
@@ -77,17 +72,6 @@ public struct GearListView: View {
 				SortOrderView(store: store)
 			}
 			.presentationDetents([.medium])
-		}
-	}
-}
-
-extension GearList.Action {
-	init(action: GearListView.ViewAction) {
-		switch action {
-		case .didTapFilterButton:
-			self = .view(.didTapFilterButton)
-		case .didTapSortOrderButton:
-			self = .view(.didTapSortOrderButton)
 		}
 	}
 }

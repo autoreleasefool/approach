@@ -10,28 +10,27 @@ public struct AddLaneForm: Reducer {
 		@BindingState var lanesToAdd = 1
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapSaveButton
 			case didTapCancelButton
+			case binding(BindingAction<State>)
 		}
-
 		public enum DelegateAction: Equatable {
 			case didFinishAddingLanes(Int?)
 		}
-
 		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
+
 	}
 
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -42,6 +41,9 @@ public struct AddLaneForm: Reducer {
 
 				case .didTapCancelButton:
 					return .send(.delegate(.didFinishAddingLanes(nil)))
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -50,7 +52,7 @@ public struct AddLaneForm: Reducer {
 					return .none
 				}
 
-			case .delegate, .binding:
+			case .delegate:
 				return .none
 			}
 		}
@@ -63,15 +65,15 @@ public struct AddLaneFormView: View {
 	let store: StoreOf<AddLaneForm>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			VStack(spacing: .standardSpacing) {
 				HStack {
 					Button(Strings.Action.cancel) {
-						viewStore.send(.view(.didTapCancelButton))
+						viewStore.send(.didTapCancelButton)
 					}
 					Spacer()
 					Button(Strings.Action.add) {
-						viewStore.send(.view(.didTapSaveButton))
+						viewStore.send(.didTapSaveButton)
 					}
 				}
 

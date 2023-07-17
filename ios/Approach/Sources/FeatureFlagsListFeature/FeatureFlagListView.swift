@@ -14,21 +14,12 @@ public struct FeatureFlagsListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didStartObservingFlags
-		case didToggle(flag: FeatureFlag)
-		case didTapResetOverridesButton
-		case didTapMatchReleaseButton
-		case didTapMatchTestButton
-		case didTapMatchDevelopmentButton
-	}
-
 	public init(store: StoreOf<FeatureFlagsList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: FeatureFlagsList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
 					Button(Strings.Action.reset) { viewStore.send(.didTapResetOverridesButton) }
@@ -43,7 +34,7 @@ public struct FeatureFlagsListView: View {
 							item.flag.name,
 							isOn: viewStore.binding(
 								get: { _ in item.enabled },
-								send: { _ in ViewAction.didToggle(flag: item.flag) }
+								send: { _ in .didToggle(item.flag) }
 							)
 						).disabled(!item.flag.isOverridable)
 					}
@@ -51,25 +42,6 @@ public struct FeatureFlagsListView: View {
 			}
 			.navigationTitle(Strings.Settings.FeatureFlags.title)
 			.task { await viewStore.send(.didStartObservingFlags).finish() }
-		}
-	}
-}
-
-extension FeatureFlagsList.Action {
-	init(action: FeatureFlagsListView.ViewAction) {
-		switch action {
-		case .didStartObservingFlags:
-			self = .view(.didStartObservingFlags)
-		case let .didToggle(featureFlag):
-			self = .view(.didToggle(featureFlag))
-		case .didTapResetOverridesButton:
-			self = .view(.didTapResetOverridesButton)
-		case .didTapMatchReleaseButton:
-			self = .view(.didTapMatchReleaseButton)
-		case .didTapMatchTestButton:
-			self = .view(.didTapMatchTestButton)
-		case .didTapMatchDevelopmentButton:
-			self = .view(.didTapMatchDevelopmentButton)
-		}
+		})
 	}
 }

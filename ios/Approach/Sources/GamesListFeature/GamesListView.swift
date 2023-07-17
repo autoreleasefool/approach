@@ -20,16 +20,12 @@ public struct GamesListView: View {
 		}
 	}
 
-	enum ViewAction {
-		case didTapGame(Game.ID)
-	}
-
 	public init(store: StoreOf<GamesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: GamesList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /GamesList.Action.InternalAction.list)
 			) { game in
@@ -39,18 +35,9 @@ public struct GamesListView: View {
 				.buttonStyle(.navigation)
 			}
 			.navigationTitle(viewStore.title)
-		}
+		})
 		.navigationDestination(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
 			GamesEditorView(store: store)
-		}
-	}
-}
-
-extension GamesList.Action {
-	init(action: GamesListView.ViewAction) {
-		switch action {
-		case let .didTapGame(id):
-			self = .view(.didTapGame(id))
 		}
 	}
 }
