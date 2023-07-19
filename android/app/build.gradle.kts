@@ -8,12 +8,12 @@ plugins {
 
 android {
 	namespace = "ca.josephroque.bowlingcompanion"
-	compileSdk = 33
+	compileSdk = 34
 
 	defaultConfig {
 		applicationId = "ca.josephroque.bowlingcompanion"
 		minSdk = 24
-		targetSdk = 33
+		targetSdk = 34
 		versionCode = 321
 		versionName = "4.0.0"
 
