@@ -29,6 +29,10 @@ class OverviewViewModel @Inject constructor(
 				initialValue = BowlersListUiState.Loading
 			)
 
+	fun deleteBowler(id: UUID) {
+		// TODO: prompt delete bowler
+	}
+
 	fun navigateToBowler(id: UUID) {
 		// TODO: navigate to bowler
 	}

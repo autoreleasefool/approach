@@ -17,9 +17,9 @@ fun LazyListScope.bowlersList(
 				key = { it.id },
 				contentType = { "bowler" },
 			) { bowler ->
-				BowlerCard(
+				BowlerItemRow(
 					bowler = bowler,
-					onClick = { onBowlerClick(bowler.id) }
+					onClick = { onBowlerClick(bowler.id) },
 				)
 			}
 		}
