@@ -21,5 +21,8 @@ interface BowlerDao {
 	fun getBowler(bowlerId: UUID): Flow<BowlerEntity>
 
 	@Upsert
-	fun upsertBowlers(entities: List<BowlerEntity>)
+	suspend fun upsertBowlers(entities: List<BowlerEntity>)
+
+	@Query("DELETE FROM bowlers WHERE id = :id")
+	suspend fun deleteBowler(id: UUID)
 }

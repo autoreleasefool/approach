@@ -54,9 +54,9 @@ private fun ApproachBottomBar(
 			ApproachNavigationBarItem(
 				isSelected = isSelected,
 				onClick = { onNavigateToDestination(destination) },
-				icon = { Icon(imageVector = destination.unselectedIcon, contentDescription = null) },
-				selectedIcon = { Icon(imageVector = destination.selectedIcon, contentDescription = null) },
-				label = { Text(text = stringResource(destination.iconTextId)) }
+				icon = { Icon(destination.unselectedIcon, contentDescription = null) },
+				selectedIcon = { Icon(destination.selectedIcon, contentDescription = null) },
+				label = { Text(stringResource(destination.iconTextId)) }
 			)
 		}
 	}

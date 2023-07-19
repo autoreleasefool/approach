@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
-	private val bowlersRepository: BowlersRepository
+	bowlersRepository: BowlersRepository
 ): ViewModel() {
 	val bowlersListState: StateFlow<BowlersListUiState> =
 		bowlersRepository.getBowlers()

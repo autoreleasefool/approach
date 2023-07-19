@@ -10,5 +10,8 @@ import ca.josephroque.bowlingcompanion.R
 internal fun SettingsRoute(
 	modifier: Modifier = Modifier,
 ) {
-	Text(text = stringResource(R.string.destination_settings))
+	Text(
+		stringResource(R.string.destination_settings),
+		modifier = modifier,
+	)
 }

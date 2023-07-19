@@ -5,4 +5,13 @@
 	<string name="destination_statistics">Statistics</string>
 	<string name="destination_accessories">Accessories</string>
 	<string name="destination_settings">Settings</string>
+
+	<string name="bowlers_list_add">Add Bowler</string>
+	<string name="bowler_form_new">New Bowler</string>
+	<string name="bowler_form_edit">Edit %1$s</string>
+	<string name="bowler_form_name">Name</string>
+	<string name="bowler_form_name_missing">Name cannot be blank</string>
+
+	<string name="action_save">Save</string>
+	<string name="action_delete">Delete</string>
 </resources>

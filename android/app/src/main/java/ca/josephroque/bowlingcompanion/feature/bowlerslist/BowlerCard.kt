@@ -16,13 +16,15 @@ import ca.josephroque.bowlingcompanion.core.model.Bowler
 fun BowlerCard(
 	bowler: Bowler,
 	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
 ) {
 	Card(
 		onClick = onClick,
 		shape = RoundedCornerShape(16.dp),
+		modifier = modifier,
 	) {
 		Box(modifier = Modifier.padding(16.dp)) {
-			Text(text = bowler.name)
+			Text(bowler.name)
 		}
 	}
 }
