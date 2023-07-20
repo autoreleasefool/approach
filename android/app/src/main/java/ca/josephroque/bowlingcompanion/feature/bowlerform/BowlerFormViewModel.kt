@@ -12,6 +12,8 @@ import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -23,7 +25,8 @@ class BowlerFormViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 ) : ViewModel() {
 
-	val uiState: MutableStateFlow<BowlerFormUiState> = MutableStateFlow(BowlerFormUiState.Loading)
+	private val _uiState: MutableStateFlow<BowlerFormUiState> = MutableStateFlow(BowlerFormUiState.Loading)
+	val uiState: StateFlow<BowlerFormUiState> = _uiState.asStateFlow()
 
 	private val kind = savedStateHandle.get<String>(BOWLER_KIND)
 		.asBowlerKind()
@@ -44,7 +47,7 @@ class BowlerFormViewModel @Inject constructor(
 	private suspend fun loadBowler() {
 		val bowlerId = savedStateHandle.get<UUID?>(BOWLER_ID)
 		if (bowlerId == null) {
-			uiState.value = BowlerFormUiState.Create(
+			_uiState.value = BowlerFormUiState.Create(
 				name = "",
 				kind = kind,
 				fieldErrors = BowlerFormFieldErrors()
@@ -53,7 +56,7 @@ class BowlerFormViewModel @Inject constructor(
 			val bowler = bowlersRepository.getBowler(bowlerId)
 				.first()
 
-			uiState.value = BowlerFormUiState.Edit(
+			_uiState.value = BowlerFormUiState.Edit(
 				name = bowler.name,
 				initialValue = bowler,
 				fieldErrors = BowlerFormFieldErrors()
@@ -62,13 +65,13 @@ class BowlerFormViewModel @Inject constructor(
 	}
 
 	private fun updateName(name: String) {
-		when (val state = uiState.value) {
+		when (val state = _uiState.value) {
 			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
-			is BowlerFormUiState.Edit -> uiState.value = state.copy(
+			is BowlerFormUiState.Edit -> _uiState.value = state.copy(
 				name = name,
 				fieldErrors = state.fieldErrors.copy(nameErrorId = null)
 			)
-			is BowlerFormUiState.Create -> uiState.value = state.copy(
+			is BowlerFormUiState.Create -> _uiState.value = state.copy(
 				name = name,
 				fieldErrors = state.fieldErrors.copy(nameErrorId = null)
 			)
@@ -77,7 +80,7 @@ class BowlerFormViewModel @Inject constructor(
 
 	private fun saveBowler() {
 		viewModelScope.launch {
-			when (val state = uiState.value) {
+			when (val state = _uiState.value) {
 				 BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 				is BowlerFormUiState.Create ->
 					if (state.isSavable()) {
@@ -88,9 +91,9 @@ class BowlerFormViewModel @Inject constructor(
 								kind = state.kind
 							)
 						)
-						uiState.value = BowlerFormUiState.Dismissed
+						_uiState.value = BowlerFormUiState.Dismissed
 					} else {
-						uiState.value = state.copy(
+						_uiState.value = state.copy(
 							fieldErrors = BowlerFormFieldErrors(
 								nameErrorId = if (state.name.isBlank()) R.string.bowler_form_name_missing else null
 							)
@@ -99,9 +102,9 @@ class BowlerFormViewModel @Inject constructor(
 				is BowlerFormUiState.Edit ->
 					if (state.isSavable()) {
 						bowlersRepository.upsertBowler(state.initialValue.copy(name = state.name))
-						uiState.value = BowlerFormUiState.Dismissed
+						_uiState.value = BowlerFormUiState.Dismissed
 					} else {
-						uiState.value = state.copy(
+						_uiState.value = state.copy(
 							fieldErrors = BowlerFormFieldErrors(
 								nameErrorId = if (state.name.isBlank()) R.string.bowler_form_name_missing else null
 							)
@@ -113,14 +116,14 @@ class BowlerFormViewModel @Inject constructor(
 
 	private fun deleteBowler() {
 		viewModelScope.launch {
-			when (val state = uiState.value) {
+			when (val state = _uiState.value) {
 				BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
 				is BowlerFormUiState.Edit ->
 					bowlersRepository.deleteBowler(state.initialValue.id)
 			}
 		}
 
-		uiState.value = BowlerFormUiState.Dismissed
+		_uiState.value = BowlerFormUiState.Dismissed
 	}
 }
 
