@@ -1,5 +1,6 @@
-package ca.josephroque.bowlingcompanion.core.database
+package ca.josephroque.bowlingcompanion.core.database.di
 
+import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import dagger.Module
 import dagger.Provides

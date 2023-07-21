@@ -1,7 +1,7 @@
-package ca.josephroque.bowlingcompanion.core.database
+package ca.josephroque.bowlingcompanion.core.database.di
 
 import android.content.Context
-import androidx.room.Room
+import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,9 +16,7 @@ object DatabaseModule {
 	@Singleton
 	fun providesApproachDatabase(
 		@ApplicationContext context: Context,
-	): ApproachDatabase = Room.databaseBuilder(
-		context,
-		ApproachDatabase::class.java,
-		"approach-database"
-	).build()
+	): ApproachDatabase {
+		return ApproachDatabase.getInstance(context)
+	}
 }
