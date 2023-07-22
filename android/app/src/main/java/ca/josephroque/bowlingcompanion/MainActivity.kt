@@ -29,11 +29,11 @@ class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Success)
+		var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
 
 		lifecycleScope.launch {
 			lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-				viewModel.uiState
+				viewModel.mainActivityUiState
 					.onEach { uiState = it }
 					.collect()
 			}
@@ -45,7 +45,13 @@ class MainActivity : ComponentActivity() {
 					modifier = Modifier.fillMaxSize(),
 					color = MaterialTheme.colorScheme.background
 				) {
-					ApproachApp()
+					ApproachApp(
+						isOnboardingComplete = when (val state = uiState) {
+							MainActivityUiState.Loading -> false
+							is MainActivityUiState.Success -> state.isOnboardingComplete
+						},
+						finishActivity = { finish() },
+					)
 				}
 			}
 		}

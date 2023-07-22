@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.overview.navigation
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -14,12 +16,22 @@ fun NavController.navigateToOverview(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.overviewScreen(
+	shouldShowOnboarding: State<Boolean>,
+	showOnboarding: () -> Unit,
 	onEditBowler: (UUID) -> Unit,
 	onAddBowler: () -> Unit,
 ) {
 	composable(
 		route = overviewNavigationRoute,
 	) {
-		OverviewRoute(onEditBowler, onAddBowler)
+		LaunchedEffect(shouldShowOnboarding) {
+			if (shouldShowOnboarding.value) {
+				showOnboarding()
+			}
+		}
+
+		if (!shouldShowOnboarding.value) {
+			OverviewRoute(onEditBowler, onAddBowler)
+		}
 	}
 }

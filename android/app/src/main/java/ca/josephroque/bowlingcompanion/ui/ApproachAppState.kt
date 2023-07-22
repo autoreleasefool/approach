@@ -9,11 +9,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import ca.josephroque.bowlingcompanion.feature.accessories.navigation.accessoriesNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.accessories.navigation.navigateToAccessories
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToOverview
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToSettings
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.navigateToStatistics
+import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsNavigationRoute
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
 @Composable
@@ -36,6 +39,9 @@ class ApproachAppState(
 	val currentTopLevelDestination: TopLevelDestination?
 		@Composable get() = when(currentDestination?.route) {
 			overviewNavigationRoute -> TopLevelDestination.OVERVIEW
+			accessoriesNavigationRoute -> TopLevelDestination.ACCESSORIES
+			settingsNavigationRoute -> TopLevelDestination.SETTINGS
+			statisticsNavigationRoute -> TopLevelDestination.STATISTICS
 			else -> null
 		}
 

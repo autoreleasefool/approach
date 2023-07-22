@@ -9,17 +9,23 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import ca.josephroque.bowlingcompanion.core.components.ApproachNavigationBarItem
+import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingNavigationRoute
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApproachApp(
+	isOnboardingComplete: Boolean,
+	finishActivity: () -> Unit,
 	appState: ApproachAppState = rememberApproachAppState(),
 ) {
 	Scaffold(
@@ -36,7 +42,10 @@ fun ApproachApp(
 				.fillMaxSize()
 				.padding(padding)
 		) {
-			ApproachNavHost(appState = appState)
+			ApproachNavHost(
+				appState = appState,
+				isOnboardingComplete = isOnboardingComplete,
+			)
 		}
 	}
 }
@@ -47,17 +56,19 @@ private fun ApproachBottomBar(
 	onNavigateToDestination: (TopLevelDestination) -> Unit,
 	currentDestination: NavDestination?
 ) {
-	NavigationBar {
-		destinations.forEach { destination ->
-			val isSelected = currentDestination.isTopLevelDestinationInHierarchy(destination)
+	if (currentDestination?.route != onboardingNavigationRoute) {
+		NavigationBar {
+			destinations.forEach { destination ->
+				val isSelected = currentDestination.isTopLevelDestinationInHierarchy(destination)
 
-			ApproachNavigationBarItem(
-				isSelected = isSelected,
-				onClick = { onNavigateToDestination(destination) },
-				icon = { Icon(destination.unselectedIcon, contentDescription = null) },
-				selectedIcon = { Icon(destination.selectedIcon, contentDescription = null) },
-				label = { Text(stringResource(destination.iconTextId)) }
-			)
+				ApproachNavigationBarItem(
+					isSelected = isSelected,
+					onClick = { onNavigateToDestination(destination) },
+					icon = { Icon(destination.unselectedIcon, contentDescription = null) },
+					selectedIcon = { Icon(destination.selectedIcon, contentDescription = null) },
+					label = { Text(stringResource(destination.iconTextId)) }
+				)
+			}
 		}
 	}
 }
