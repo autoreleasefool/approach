@@ -1,13 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.LegacyUserOnboardingScreen
+import ca.josephroque.bowlingcompanion.feature.onboarding.newuser.NewUserOnboardingScreen
 
 @Composable
 internal fun OnboardingRoute(
@@ -33,9 +34,13 @@ internal fun OnboardingScreen(
 	onboardingUiState: OnboardingUiState,
 	modifier: Modifier = Modifier,
 ) {
-	Column (
+	Row (
 		modifier = modifier.fillMaxSize()
 	) {
-		Text(text = "onboarding")
+		when (onboardingUiState) {
+			OnboardingUiState.Loading, OnboardingUiState.Completed -> Unit
+			OnboardingUiState.NewUser -> NewUserOnboardingScreen()
+			OnboardingUiState.LegacyUser -> LegacyUserOnboardingScreen()
+		}
 	}
 }
