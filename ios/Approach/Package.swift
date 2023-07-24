@@ -131,7 +131,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "0.7.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.1"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "0.8.5"),
-		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.2"),
+		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.4"),
 	],
 	targets: [
 		// MARK: - Features
