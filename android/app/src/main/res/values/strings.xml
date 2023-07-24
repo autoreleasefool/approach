@@ -14,4 +14,23 @@
 
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
+
+	<string name="onboarding_new_user_title_welcome">Welcome</string>
+	<string name="onboarding_new_user_title_to_your_new">to your new</string>
+	<string name="onboarding_new_user_title_approach">Approach</string>
+	<string name="onboarding_new_user_description_arrived">Your 5 Pin Bowling Companion has arrived, with all the tracking, stats, and charts you could have ever wanted.</string>
+	<string name="onboarding_new_user_description_wish">Arrive is the 5 pin bowling app I always wish existed, and I hope you feel the same.</string>
+	<string name="onboarding_new_user_description_vancouver">Lovingly crafted in Vancouver</string>
+	<string name="onboarding_new_user_get_started">Get started</string>
+	<string name="onboarding_new_user_logbook">This logbook belongs to</string>
+	<string name="onboarding_new_user_add_bowler">Add bowler</string>
+	
+	<string name="onboarding_legacy_user_title_your_bowling_companion">Your 5 Pin Bowling Companion</string>
+	<string name="onboarding_legacy_user_title_is_taking_a_new">is taking a new</string>
+	<string name="onboarding_legacy_user_title_approach">Approach</string>
+	<string name="onboarding_legacy_user_description_updated">The 5 Pin Bowling Companion has been updated with better charts, better stats, and an all new design.</string>
+	<string name="onboarding_legacy_user_description_wish">Approach is the 5 pin bowling app I always wish existed, and I hope you feel the same.</string>
+	<string name="onboarding_legacy_user_description_vancouver">Lovingly crafted in Vancouver</string>
+	<string name="onboarding_legacy_user_get_started">Get started</string>
+	<string name="onboarding_legacy_user_importing_data">Importing data…</string>
 </resources>

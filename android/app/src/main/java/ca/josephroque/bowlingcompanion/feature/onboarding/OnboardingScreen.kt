@@ -25,6 +25,7 @@ internal fun OnboardingRoute(
 
 	OnboardingScreen(
 		onboardingUiState = onboardingUiState,
+		onCompleteOnboarding = onCompleteOnboarding,
 		modifier = modifier,
 	)
 }
@@ -32,6 +33,7 @@ internal fun OnboardingRoute(
 @Composable
 internal fun OnboardingScreen(
 	onboardingUiState: OnboardingUiState,
+	onCompleteOnboarding: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Row (
@@ -39,7 +41,9 @@ internal fun OnboardingScreen(
 	) {
 		when (onboardingUiState) {
 			OnboardingUiState.Loading, OnboardingUiState.Completed -> Unit
-			OnboardingUiState.NewUser -> NewUserOnboardingScreen()
+			OnboardingUiState.NewUser -> NewUserOnboardingScreen(
+				onCompleteOnboarding = onCompleteOnboarding,
+			)
 			OnboardingUiState.LegacyUser -> LegacyUserOnboardingScreen()
 		}
 	}
