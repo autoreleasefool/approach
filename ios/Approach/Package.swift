@@ -125,7 +125,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
-		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.15.0"),
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "605394caf50a4b7c451bc2b4837c25ef513b770c"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.6.0"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "0.7.0"),
