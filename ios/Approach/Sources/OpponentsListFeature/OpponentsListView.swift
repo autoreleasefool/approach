@@ -22,7 +22,7 @@ public struct OpponentsListView: View {
 		ResourceListView(
 			store: store.scope(state: \.list, action: /OpponentsList.Action.InternalAction.list)
 		) { opponent in
-			Button { ViewStore(store.stateless).send(.view(.didTapOpponent(opponent.id))) } label: {
+			Button { store.send(.view(.didTapOpponent(opponent.id))) } label: {
 				Text(opponent.name)
 			}
 			.buttonStyle(.navigation)
@@ -30,7 +30,7 @@ public struct OpponentsListView: View {
 		.navigationTitle(Strings.Opponent.List.title)
 		.toolbar {
 			ToolbarItem(placement: .navigationBarTrailing) {
-				SortButton(isActive: false) { ViewStore(store.stateless).send(.view(.didTapSortOrderButton)) }
+				SortButton(isActive: false) { store.send(.view(.didTapSortOrderButton)) }
 			}
 		}
 		.navigationDestination(

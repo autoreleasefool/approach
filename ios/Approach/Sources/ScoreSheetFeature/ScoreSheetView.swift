@@ -153,7 +153,7 @@ struct ScoreSheetViewPreviews: PreviewProvider {
 				currentFrameIndex: 0,
 				currentRollIndex: 0
 			),
-			reducer: ScoreSheet()
+			reducer: ScoreSheet.init
 		))
 	}
 }

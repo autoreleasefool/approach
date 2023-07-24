@@ -23,27 +23,58 @@ public struct StatisticsSettings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {}
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
+			case binding(BindingAction<State>)
+		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
 	}
 
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
+				case .binding(\.$isHidingZeroStatistics):
+					return .run { [updatedValue = state.isHidingZeroStatistics] _ in
+						preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.statisticsHideZeroStatistics, cancelInFlight: true)
+
+				case .binding(\.$isCountingH2AsH):
+					return .run { [updatedValue = state.isCountingH2AsH] _ in
+						preferences.setKey(.statisticsCountH2AsH, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.statisticsCountH2AsH, cancelInFlight: true)
+
+				case .binding(\.$isCountingSplitWithBonusAsSplit):
+					return .run { [updatedValue = state.isCountingSplitWithBonusAsSplit] _ in
+						preferences.setKey(.statisticsCountSplitWithBonusAsSplit, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.statisticsCountSplitWithBonusAsSplit, cancelInFlight: true)
+
+				case .binding(\.$isHidingWidgetsInBowlerList):
+					return .run { [updatedValue = state.isHidingWidgetsInBowlerList] _ in
+						preferences.setKey(.statisticsWidgetHideInBowlerList, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.statisticsWidgetHideInBowlerList, cancelInFlight: true)
+
+				case .binding(\.$isHidingWidgetsInLeagueList):
+					return .run { [updatedValue = state.isHidingWidgetsInLeagueList] _ in
+						preferences.setKey(.statisticsWidgetHideInLeagueList, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.statisticsWidgetHideInLeagueList, cancelInFlight: true)
+
+				case .binding:
 					return .none
 				}
 
@@ -53,37 +84,7 @@ public struct StatisticsSettings: Reducer {
 					return .none
 				}
 
-			case .binding(\.$isHidingZeroStatistics):
-				return .run { [updatedValue = state.isHidingZeroStatistics] _ in
-					preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
-				}
-				.cancellable(id: PreferenceKey.statisticsHideZeroStatistics, cancelInFlight: true)
-
-			case .binding(\.$isCountingH2AsH):
-				return .run { [updatedValue = state.isCountingH2AsH] _ in
-					preferences.setKey(.statisticsCountH2AsH, toBool: updatedValue)
-				}
-				.cancellable(id: PreferenceKey.statisticsCountH2AsH, cancelInFlight: true)
-
-			case .binding(\.$isCountingSplitWithBonusAsSplit):
-				return .run { [updatedValue = state.isCountingSplitWithBonusAsSplit] _ in
-					preferences.setKey(.statisticsCountSplitWithBonusAsSplit, toBool: updatedValue)
-				}
-				.cancellable(id: PreferenceKey.statisticsCountSplitWithBonusAsSplit, cancelInFlight: true)
-
-			case .binding(\.$isHidingWidgetsInBowlerList):
-				return .run { [updatedValue = state.isHidingWidgetsInBowlerList] _ in
-					preferences.setKey(.statisticsWidgetHideInBowlerList, toBool: updatedValue)
-				}
-				.cancellable(id: PreferenceKey.statisticsWidgetHideInBowlerList, cancelInFlight: true)
-
-			case .binding(\.$isHidingWidgetsInLeagueList):
-				return .run { [updatedValue = state.isHidingWidgetsInLeagueList] _ in
-					preferences.setKey(.statisticsWidgetHideInLeagueList, toBool: updatedValue)
-				}
-				.cancellable(id: PreferenceKey.statisticsWidgetHideInLeagueList, cancelInFlight: true)
-
-			case .delegate, .binding:
+			case .delegate:
 				return .none
 			}
 		}
@@ -94,35 +95,35 @@ public struct StatisticsSettingsView: View {
 	let store: StoreOf<StatisticsSettings>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			List {
 				Section(Strings.Settings.Statistics.PerFrame.title) {
 					Toggle(
 						Strings.Settings.Statistics.PerFrame.countH2AsH,
-						isOn: viewStore.binding(\.$isCountingH2AsH)
+						isOn: viewStore.$isCountingH2AsH
 					)
 
 					Toggle(
 						Strings.Settings.Statistics.PerFrame.countSplitWithBonusAsSplit,
-						isOn: viewStore.binding(\.$isCountingSplitWithBonusAsSplit)
+						isOn: viewStore.$isCountingSplitWithBonusAsSplit
 					)
 				}
 
 				Section(Strings.Settings.Statistics.Overall.title) {
 					Toggle(
 						Strings.Settings.Statistics.Overall.hideZeroStatistics,
-						isOn: viewStore.binding(\.$isHidingZeroStatistics)
+						isOn: viewStore.$isHidingZeroStatistics
 					)
 				}
 
 				Section(Strings.Settings.Statistics.Widgets.title) {
 					Toggle(
 						Strings.Settings.Statistics.Widgets.hideInBowlerList,
-						isOn: viewStore.binding(\.$isHidingWidgetsInBowlerList)
+						isOn: viewStore.$isHidingWidgetsInBowlerList
 					)
 					Toggle(
 						Strings.Settings.Statistics.Widgets.hideInLeagueList,
-						isOn: viewStore.binding(\.$isHidingWidgetsInLeagueList)
+						isOn: viewStore.$isHidingWidgetsInLeagueList
 					)
 				}
 			}

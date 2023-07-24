@@ -122,7 +122,7 @@ public struct AlleyLanesEditor: Reducer {
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
-				case .laneEditor(_, .binding), .laneEditor(_, .view), .laneEditor(_, .internal):
+				case .laneEditor(_, .view), .laneEditor(_, .internal):
 					return .none
 
 				case .addLaneForm(.presented(.internal)),

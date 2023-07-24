@@ -171,7 +171,6 @@ public struct Settings: Reducer {
 						.destination(.presented(.featureFlags(.view))),
 						.destination(.presented(.statistics(.internal))),
 						.destination(.presented(.statistics(.view))),
-						.destination(.presented(.statistics(.binding))),
 						.destination(.presented(.appIcon(.view))),
 						.destination(.presented(.appIcon(.internal))),
 						.destination(.presented(.opponentsList(.internal))),

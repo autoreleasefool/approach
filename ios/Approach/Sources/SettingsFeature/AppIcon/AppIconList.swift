@@ -119,10 +119,10 @@ public struct AppIconListView: View {
 	let store: StoreOf<AppIconList>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0}, content: { viewStore in
+		WithViewStore(store, observe: { $0}, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
-					Button { viewStore.send(.view(.didTapReset)) } label: {
+					Button { viewStore.send(.didTapReset) } label: {
 						AppIconView(Strings.App.Icon.current, icon: .image(viewStore.appIconImage))
 					}
 					.buttonStyle(.plain)
@@ -131,7 +131,7 @@ public struct AppIconListView: View {
 				ForEach(AppIcon.Category.allCases) { category in
 					Section(String(describing: category)) {
 						ForEach(category.matchingIcons) { icon in
-							Button { viewStore.send(.view(.didTapIcon(icon))) } label: {
+							Button { viewStore.send(.didTapIcon(icon)) } label: {
 								AppIconView(String(describing: icon), icon: .appIcon(icon))
 							}
 						}
@@ -139,7 +139,7 @@ public struct AppIconListView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.AppIcon.title)
-			.onAppear { viewStore.send(.view(.onAppear)) }
+			.onAppear { viewStore.send(.onAppear) }
 			.alert(store: self.store.scope(state: \.$alert, action: { .internal(.alert($0)) }))
 		})
 	}

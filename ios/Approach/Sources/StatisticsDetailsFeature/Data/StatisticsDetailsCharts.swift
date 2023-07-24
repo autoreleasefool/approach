@@ -8,13 +8,15 @@ import SwiftUI
 
 public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
+		@BindingState public var aggregation: TrackableFilter.Aggregation
 		public var chartContent: Statistics.ChartContent?
 		public var isLoadingNextChart: Bool
-		public var aggregation: TrackableFilter.Aggregation
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: BindableAction, Equatable {
+			case binding(BindingAction<State>)
+		}
 		public enum DelegateAction: Equatable {
 			case didChangeAggregation(TrackableFilter.Aggregation)
 		}
@@ -28,11 +30,14 @@ public struct StatisticsDetailsCharts: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { _, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
+				case .binding(\.$aggregation):
+					return .send(.delegate(.didChangeAggregation(state.aggregation)))
+
+				case .binding:
 					return .none
 				}
 
@@ -55,7 +60,7 @@ public struct StatisticsDetailsChartsView: View {
 	let store: StoreOf<StatisticsDetailsCharts>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			VStack {
 				if viewStore.isLoadingNextChart {
 					ProgressView()
@@ -80,7 +85,7 @@ public struct StatisticsDetailsChartsView: View {
 				if viewStore.chartContent?.showsAggregationPicker ?? false {
 					Picker(
 						Strings.Statistics.Filter.aggregation,
-						selection: viewStore.binding(get: \.aggregation, send: { .delegate(.didChangeAggregation($0)) })
+						selection: viewStore.$aggregation
 					) {
 						ForEach(TrackableFilter.Aggregation.allCases) {
 							Text(String(describing: $0)).tag($0)

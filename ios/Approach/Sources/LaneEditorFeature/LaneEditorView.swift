@@ -14,18 +14,18 @@ public struct LaneEditorView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			VStack {
 				HStack {
 					TextField(
 						Strings.Lane.Properties.label,
-						text: viewStore.binding(\.$label)
+						text: viewStore.$label
 					)
 				}
 
 				Picker(
 					Strings.Lane.Properties.position,
-					selection: viewStore.binding(\.$position)
+					selection: viewStore.$position
 				) {
 					ForEach(Lane.Position.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -33,7 +33,7 @@ public struct LaneEditorView: View {
 				}
 			}
 			.swipeActions(allowsFullSwipe: true) {
-				DeleteButton { viewStore.send(.view(.didSwipe(.delete))) }
+				DeleteButton { viewStore.send(.didSwipe(.delete)) }
 			}
 		})
 	}

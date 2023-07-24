@@ -21,9 +21,10 @@ public struct StatisticsDetailsList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapEntry(id: String)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case didRequestEntryDetails(id: String)
@@ -34,7 +35,6 @@ public struct StatisticsDetailsList: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
 	}
 
 	enum CancelID { case setHidingZeroStatistics }
@@ -44,7 +44,7 @@ public struct StatisticsDetailsList: Reducer {
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -52,6 +52,18 @@ public struct StatisticsDetailsList: Reducer {
 				switch viewAction {
 				case let .didTapEntry(id):
 					return .send(.delegate(.didRequestEntryDetails(id: id)))
+
+				case .binding(\.$isHidingZeroStatistics):
+					return .concatenate(
+						.run { [updatedValue = state.isHidingZeroStatistics] _ in
+							preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
+						},
+						.send(.delegate(.listRequiresReload))
+					)
+					.cancellable(id: CancelID.setHidingZeroStatistics, cancelInFlight: true)
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -60,16 +72,7 @@ public struct StatisticsDetailsList: Reducer {
 					return .none
 				}
 
-			case .binding(\.$isHidingZeroStatistics):
-				return .concatenate(
-					.run { [updatedValue = state.isHidingZeroStatistics] _ in
-						preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
-					},
-					.send(.delegate(.listRequiresReload))
-				)
-				.cancellable(id: CancelID.setHidingZeroStatistics, cancelInFlight: true)
-
-			case .delegate, .binding:
+			case .delegate:
 				return .none
 			}
 		}
@@ -82,11 +85,11 @@ public struct StatisticsDetailsListView: View {
 	let store: StoreOf<StatisticsDetailsList>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			ForEach(viewStore.listEntries) { group in
 				Section(String(describing: group.category)) {
 					ForEach(group.entries) { entry in
-						Button { viewStore.send(.view(.didTapEntry(id: entry.id))) } label: {
+						Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
 							LabeledContent(entry.title, value: entry.value)
 						}
 						.buttonStyle(.navigation)
@@ -95,7 +98,10 @@ public struct StatisticsDetailsListView: View {
 			}
 
 			Section {
-				Toggle(Strings.Statistics.List.hideZeroStatistics, isOn: viewStore.binding(\.$isHidingZeroStatistics))
+				Toggle(
+					Strings.Statistics.List.hideZeroStatistics,
+					isOn: viewStore.$isHidingZeroStatistics
+				)
 			} footer: {
 				if viewStore.isHidingZeroStatistics {
 					Text(Strings.Statistics.List.HideZeroStatistics.help)

@@ -107,7 +107,7 @@ public struct ResourceListEmptyView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			VStack {
 				VStack {
 					Spacer()
@@ -137,7 +137,7 @@ public struct ResourceListEmptyView: View {
 				}
 
 				Button {
-					viewStore.send(.view(.didTapActionButton))
+					viewStore.send(.didTapActionButton)
 				} label: {
 					Text(viewStore.content.action)
 						.frame(maxWidth: .infinity)

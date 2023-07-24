@@ -14,10 +14,12 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable {
+			case didMoveItem(from: IndexSet, to: Int)
+			case didFinishReordering
+		}
 		public enum DelegateAction: Equatable {
 			case itemDidMove(from: IndexSet, to: Int)
-			case didStartReordering
 			case didFinishReordering
 		}
 		public enum InternalAction: Equatable {}
@@ -34,8 +36,11 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
-					return .none
+				case let .didMoveItem(from, to):
+					return .send(.delegate(.itemDidMove(from: from, to: to)))
+
+				case .didFinishReordering:
+					return .send(.delegate(.didFinishReordering))
 				}
 
 			case let .internal(internalAction):
@@ -64,7 +69,7 @@ public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: Vi
 	@State private var draggedItemHasMoved = false
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			ForEach(viewStore.items) { item in
 				content(item)
 				.opacity(
@@ -81,8 +86,8 @@ public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: Vi
 					items: viewStore.items,
 					itemBeingDragged: $itemBeingDragged,
 					draggedItemHasMoved: $draggedItemHasMoved,
-					onMove: { viewStore.send(.delegate(.itemDidMove(from: $0, to: $1)), animation: .easeInOut) },
-					onDrop: { viewStore.send(.delegate(.didFinishReordering)) }
+					onMove: { viewStore.send(.didMoveItem(from: $0, to: $1), animation: .easeInOut) },
+					onDrop: { viewStore.send(.didFinishReordering) }
 				))
 			}
 		})

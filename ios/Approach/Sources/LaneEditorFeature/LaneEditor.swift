@@ -26,9 +26,10 @@ public struct LaneEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didSwipe(SwipeAction)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case didDeleteLane
@@ -38,7 +39,6 @@ public struct LaneEditor: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -48,7 +48,7 @@ public struct LaneEditor: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Reduce<State, Action> { _, action in
 			switch action {
@@ -59,6 +59,9 @@ public struct LaneEditor: Reducer {
 					case .delete:
 						return .send(.delegate(.didDeleteLane))
 					}
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -67,7 +70,7 @@ public struct LaneEditor: Reducer {
 					return .none
 				}
 
-			case .binding, .delegate:
+			case .delegate:
 				return .none
 			}
 		}

@@ -234,7 +234,6 @@ public struct StatisticsDetails: Reducer {
 
 				case .destination(.presented(.list(.internal))),
 						.destination(.presented(.list(.view))),
-						.destination(.presented(.list(.binding))),
 						.destination(.presented(.sourcePicker(.internal))),
 						.destination(.presented(.sourcePicker(.view))):
 					return .none
@@ -292,9 +291,9 @@ extension StatisticsDetails.State {
 	var charts: StatisticsDetailsCharts.State {
 		get {
 			.init(
+				aggregation: filter.aggregation,
 				chartContent: chartContent,
-				isLoadingNextChart: isLoadingNextChart,
-				aggregation: filter.aggregation
+				isLoadingNextChart: isLoadingNextChart
 			)
 		}
 		// We aren't observing any values from this reducer, so we ignore the setter

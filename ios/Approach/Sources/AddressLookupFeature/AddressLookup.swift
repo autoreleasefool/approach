@@ -21,11 +21,12 @@ public struct AddressLookup: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didAppear
 			case didTapCancelButton
 			case didTapResult(AddressLookupResult.ID)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -36,7 +37,6 @@ public struct AddressLookup: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-		case binding(BindingAction<State>)
 	}
 
 	enum SearchID { case lookup }
@@ -50,7 +50,7 @@ public struct AddressLookup: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		BindingReducer(action: /Action.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -91,6 +91,16 @@ public struct AddressLookup: Reducer {
 							)
 						})))
 					}
+
+				case .binding(\.$query):
+					state.loadingAddressError = nil
+					state.loadingResultsError = nil
+					return .run { [query = state.query] _ in
+						await addressLookup.updateSearchQuery(SearchID.lookup, query)
+					}
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -113,14 +123,7 @@ public struct AddressLookup: Reducer {
 					return .none
 				}
 
-			case .binding(\.$query):
-				state.loadingAddressError = nil
-				state.loadingResultsError = nil
-				return .run { [query = state.query] _ in
-					await addressLookup.updateSearchQuery(SearchID.lookup, query)
-				}
-
-			case .binding, .delegate:
+			case .delegate:
 				return .none
 			}
 		}

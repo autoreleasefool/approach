@@ -15,7 +15,7 @@ public struct ContentView: View {
 		#if DEBUG
 		return .init(
 			initialState: App.State(),
-			reducer:
+			reducer: {
 				App()
 					._printChanges()
 					.dependency(\.databaseMocking, .init(mockDatabase: {
@@ -23,6 +23,7 @@ public struct ContentView: View {
 						let writer = database.writer()
 						_ = try generatePopulatedDatabase(db: writer)
 					}))
+			}
 		)
 		#else
 		return .init(

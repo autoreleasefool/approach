@@ -14,7 +14,7 @@ public struct AddressLookupView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			List {
 				if viewStore.isLoadingAddress {
 					Section {
@@ -38,7 +38,7 @@ public struct AddressLookupView: View {
 								.multilineTextAlignment(.center)
 						} else {
 							ForEach(viewStore.results) { result in
-								Button { viewStore.send(.view(.didTapResult(result.id))) } label: {
+								Button { viewStore.send(.didTapResult(result.id)) } label: {
 									VStack(alignment: .leading, spacing: .tinySpacing) {
 										Text(result.completion.wrapped.title)
 											.font(.body)
@@ -61,10 +61,10 @@ public struct AddressLookupView: View {
 			)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.cancel) { viewStore.send(.view(.didTapCancelButton)) }
+					Button(Strings.Action.cancel) { viewStore.send(.didTapCancelButton) }
 				}
 			}
-			.onAppear { viewStore.send(.view(.didAppear)) }
+			.onAppear { viewStore.send(.didAppear) }
 		})
 	}
 }
