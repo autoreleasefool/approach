@@ -62,7 +62,7 @@ dependencies {
 	implementation("androidx.compose.ui:ui")
 	implementation("androidx.compose.ui:ui-graphics")
 	implementation("androidx.compose.ui:ui-tooling-preview")
-	implementation("androidx.compose.material3:material3")
+	implementation("androidx.compose.material3:material3:1.1.1")
 	implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 	implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
