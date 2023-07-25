@@ -44,7 +44,9 @@ internal fun OnboardingScreen(
 			OnboardingUiState.NewUser -> NewUserOnboardingScreen(
 				onCompleteOnboarding = onCompleteOnboarding,
 			)
-			OnboardingUiState.LegacyUser -> LegacyUserOnboardingScreen()
+			OnboardingUiState.LegacyUser -> LegacyUserOnboardingScreen(
+				onCompleteOnboarding = onCompleteOnboarding,
+			)
 		}
 	}
 }

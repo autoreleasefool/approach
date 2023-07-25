@@ -47,10 +47,6 @@ class OnboardingViewModel @Inject constructor(
 			started = SharingStarted.WhileSubscribed(5_000),
 			initialValue = OnboardingUiState.Loading,
 		)
-
-	fun handleEvent(event: OnboardingUiEvent) {
-
-	}
 }
 
 sealed interface OnboardingUiState {
@@ -63,8 +59,4 @@ sealed interface OnboardingUiState {
 sealed interface UserDataUiState {
 	object Loading: UserDataUiState
 	data class Success(val userData: UserData): UserDataUiState
-}
-
-sealed interface OnboardingUiEvent {
-
 }

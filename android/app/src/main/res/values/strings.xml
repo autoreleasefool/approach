@@ -26,6 +26,7 @@
 	<string name="onboarding_new_user_add_bowler">Add bowler</string>
 	
 	<string name="onboarding_legacy_user_title_your_bowling_companion">Your 5 Pin Bowling Companion</string>
+	<string name="onboarding_legacy_user_content_description_next">Next</string>
 	<string name="onboarding_legacy_user_title_is_taking_a_new">is taking a new</string>
 	<string name="onboarding_legacy_user_title_approach">Approach</string>
 	<string name="onboarding_legacy_user_description_updated">The 5 Pin Bowling Companion has been updated with better charts, better stats, and an all new design.</string>
