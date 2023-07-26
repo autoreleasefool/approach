@@ -3,10 +3,16 @@ package ca.josephroque.bowlingcompanion.core.database.util
 import androidx.room.TypeConverter
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.asBowlerKind
 import ca.josephroque.bowlingcompanion.core.model.asExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.asGameLockState
+import ca.josephroque.bowlingcompanion.core.model.asGameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.asGearKind
 import ca.josephroque.bowlingcompanion.core.model.asLeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.asSeriesPreBowl
 import kotlinx.datetime.Instant
@@ -49,6 +55,36 @@ class SeriesPreBowlConverter {
 	@TypeConverter
 	fun stringToSeriesPreBowl(name: String?): SeriesPreBowl? =
 		name.asSeriesPreBowl()
+}
+
+class GameLockStateConverter {
+	@TypeConverter
+	fun gameLockStateToString(value: GameLockState?): String? =
+		value?.let(GameLockState::name)
+
+	@TypeConverter
+	fun stringToGameLockState(name: String?): GameLockState? =
+		name.asGameLockState()
+}
+
+class GameScoringMethodConverter {
+	@TypeConverter
+	fun gameScoringMethodToString(value: GameScoringMethod?): String? =
+		value?.let(GameScoringMethod::name)
+
+	@TypeConverter
+	fun stringToGameScoringMethod(name: String?): GameScoringMethod? =
+		name.asGameScoringMethod()
+}
+
+class GearKindConverter {
+	@TypeConverter
+	fun gearKindToString(value: GearKind?): String? =
+		value?.let(GearKind::name)
+
+	@TypeConverter
+	fun stringToGearKind(name: String?): GearKind? =
+		name.asGearKind()
 }
 
 class InstantConverter {

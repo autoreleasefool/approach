@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.database.di
 
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import dagger.Module
@@ -26,4 +27,9 @@ object DaosModule {
 	fun providesSeriesDao(
 		database: ApproachDatabase,
 	): SeriesDao = database.seriesDao()
+
+	@Provides
+	fun providesGamesDao(
+		database: ApproachDatabase,
+	): GameDao = database.gameDao()
 }
