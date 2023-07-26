@@ -6,8 +6,7 @@ enum class BowlerKind {
 }
 
 fun String?.asBowlerKind() = when (this) {
-	null -> BowlerKind.PLAYABLE
+	null -> null
 	else -> BowlerKind.values()
 		.firstOrNull { it.name == this }
-		?: BowlerKind.PLAYABLE
 }

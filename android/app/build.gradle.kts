@@ -71,6 +71,7 @@ dependencies {
 	implementation("androidx.room:room-runtime:2.5.2")
 	implementation("androidx.room:room-ktx:2.5.2")
 	implementation("com.google.dagger:hilt-android:2.47")
+	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
 	ksp("androidx.room:room-compiler:2.5.2")
 	kapt("com.google.dagger:hilt-android-compiler:2.47")
 

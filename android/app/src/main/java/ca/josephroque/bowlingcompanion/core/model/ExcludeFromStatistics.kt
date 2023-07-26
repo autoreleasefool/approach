@@ -6,8 +6,7 @@ enum class ExcludeFromStatistics {
 }
 
 fun String?.asExcludeFromStatistics() = when (this) {
-	null -> ExcludeFromStatistics.INCLUDE
+	null -> null
 	else -> ExcludeFromStatistics.values()
 		.firstOrNull { it.name == this }
-		?: ExcludeFromStatistics.INCLUDE
 }

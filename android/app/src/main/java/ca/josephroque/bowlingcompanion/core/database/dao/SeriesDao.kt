@@ -3,16 +3,16 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerWithLeagues
+import ca.josephroque.bowlingcompanion.core.database.model.LeagueWithSeries
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
-interface LeagueDao {
+interface SeriesDao {
 	@Transaction
 	@Query("""
-		SELECT * FROM bowlers
-		WHERE id = :bowlerId
+		SELECT * FROM leagues
+		WHERE id = :leagueId
 	""")
-	abstract fun getBowlerLeagues(bowlerId: UUID): Flow<BowlerWithLeagues>
+	abstract fun getLeagueSeries(leagueId: UUID): Flow<LeagueWithSeries>
 }

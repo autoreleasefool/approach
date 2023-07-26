@@ -29,7 +29,7 @@ class BowlerFormViewModel @Inject constructor(
 	val uiState: StateFlow<BowlerFormUiState> = _uiState.asStateFlow()
 
 	private val kind = savedStateHandle.get<String>(BOWLER_KIND)
-		.asBowlerKind()
+		.asBowlerKind() ?: BowlerKind.PLAYABLE
 
 	fun handleEvent(event: BowlerFormUiEvent) {
 		when (event) {

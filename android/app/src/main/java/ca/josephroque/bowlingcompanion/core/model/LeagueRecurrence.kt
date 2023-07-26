@@ -6,8 +6,7 @@ enum class LeagueRecurrence {
 }
 
 fun String?.asLeagueRecurrence() = when (this) {
-	null -> LeagueRecurrence.REPEATING
+	null -> null
 	else -> LeagueRecurrence.values()
 		.firstOrNull { it.name == this }
-		?: LeagueRecurrence.REPEATING
 }
