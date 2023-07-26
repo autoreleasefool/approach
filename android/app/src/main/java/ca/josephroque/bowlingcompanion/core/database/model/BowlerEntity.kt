@@ -9,7 +9,6 @@ import java.util.UUID
 @Entity(
 	tableName = "bowlers"
 )
-
 data class BowlerEntity(
 	@PrimaryKey val id: UUID,
 	val name: String,
