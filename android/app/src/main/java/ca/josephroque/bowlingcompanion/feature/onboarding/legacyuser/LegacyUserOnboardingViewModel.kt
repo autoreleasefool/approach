@@ -16,23 +16,28 @@ class LegacyUserOnboardingViewModel @Inject constructor(): ViewModel() {
 	fun handleEvent(event: LegacyUserOnboardingUiEvent) {
 		when (event) {
 			LegacyUserOnboardingUiEvent.ApproachIconClicked ->
+				showApproachHeader()
+			LegacyUserOnboardingUiEvent.ApproachHeaderAnimationFinished ->
 				showApproachDetails()
 			LegacyUserOnboardingUiEvent.GetStartedClicked ->
 				startDataImport()
 		}
 	}
 
+	private fun showApproachHeader() {
+		_uiState.value = LegacyUserOnboardingUiState.ShowingApproachHeader(isDetailsVisible = false)
+	}
+
 	private fun showApproachDetails() {
-		_uiState.value = LegacyUserOnboardingUiState.ShowingApproachDetails
+		_uiState.value = LegacyUserOnboardingUiState.ShowingApproachHeader(isDetailsVisible = true)
 	}
 
 	private fun startDataImport() {
-		when (_uiState.value) {
-			LegacyUserOnboardingUiState.Started,
-			LegacyUserOnboardingUiState.ImportingData,
-			LegacyUserOnboardingUiState.Complete -> return
-			LegacyUserOnboardingUiState.ShowingApproachDetails -> Unit
+		if (_uiState.value == LegacyUserOnboardingUiState.ImportingData) {
+			return
 		}
+
+		_uiState.value = LegacyUserOnboardingUiState.ImportingData
 
 		// TODO: start importing data
 	}
@@ -40,12 +45,15 @@ class LegacyUserOnboardingViewModel @Inject constructor(): ViewModel() {
 
 sealed interface LegacyUserOnboardingUiState {
 	object Started: LegacyUserOnboardingUiState
-	object ShowingApproachDetails: LegacyUserOnboardingUiState
+	data class ShowingApproachHeader(
+		val isDetailsVisible: Boolean
+	): LegacyUserOnboardingUiState
 	object ImportingData: LegacyUserOnboardingUiState
 	object Complete: LegacyUserOnboardingUiState
 }
 
 sealed interface LegacyUserOnboardingUiEvent {
 	object ApproachIconClicked: LegacyUserOnboardingUiEvent
+	object ApproachHeaderAnimationFinished: LegacyUserOnboardingUiEvent
 	object GetStartedClicked: LegacyUserOnboardingUiEvent
 }
