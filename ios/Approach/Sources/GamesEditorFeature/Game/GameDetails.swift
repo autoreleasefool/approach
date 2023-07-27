@@ -21,13 +21,16 @@ public struct GameDetails: Reducer {
 		public var isScoreAlertPresented = false
 		public var didJustToggleScoringMethod = false
 		public var alertScore: Int = 0
+
 		public let isGearEnabled: Bool
+		public let isOpponentsEnabled: Bool
 
 		init(game: Game.Edit) {
 			self.game = game
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.isGearEnabled = featureFlags.isEnabled(.gear)
+			self.isOpponentsEnabled = featureFlags.isEnabled(.opponents)
 		}
 	}
 

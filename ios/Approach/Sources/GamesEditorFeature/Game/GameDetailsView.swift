@@ -44,21 +44,23 @@ public struct GameDetailsView: View {
 				)
 
 				if let matchPlay = viewStore.game.matchPlay {
-					Button { viewStore.send(.didTapOpponent) } label: {
-						HStack {
-							LabeledContent(
-								Strings.Opponent.title,
-								value: viewStore.game.matchPlay?.opponent?.name ?? Strings.none
-							)
-							Image(systemName: "chevron.forward")
-								.resizable()
-								.scaledToFit()
-								.frame(width: .tinyIcon, height: .tinyIcon)
-								.foregroundColor(Color(uiColor: .secondaryLabel))
+					if viewStore.isOpponentsEnabled {
+						Button { viewStore.send(.didTapOpponent) } label: {
+							HStack {
+								LabeledContent(
+									Strings.Opponent.title,
+									value: viewStore.game.matchPlay?.opponent?.name ?? Strings.none
+								)
+								Image(systemName: "chevron.forward")
+									.resizable()
+									.scaledToFit()
+									.frame(width: .tinyIcon, height: .tinyIcon)
+									.foregroundColor(Color(uiColor: .secondaryLabel))
+							}
+							.contentShape(Rectangle())
 						}
-						.contentShape(Rectangle())
+						.buttonStyle(TappableElement())
 					}
-					.buttonStyle(TappableElement())
 
 					TextField(
 						Strings.MatchPlay.Properties.opponentScore,
