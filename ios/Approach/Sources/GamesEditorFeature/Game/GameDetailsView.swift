@@ -9,29 +9,31 @@ public struct GameDetailsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
-			Section {
-				if viewStore.game.gear.isEmpty {
-					Text(Strings.Game.Editor.Fields.Gear.help)
-				} else {
-					ForEach(viewStore.game.gear) { gear in
-						Gear.View(gear: gear)
-							.swipeActions(allowsFullSwipe: false) {
-								DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
-							}
+			if viewStore.isGearEnabled {
+				Section {
+					if viewStore.game.gear.isEmpty {
+						Text(Strings.Game.Editor.Fields.Gear.help)
+					} else {
+						ForEach(viewStore.game.gear) { gear in
+							Gear.View(gear: gear)
+								.swipeActions(allowsFullSwipe: false) {
+									DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
+								}
+						}
 					}
-				}
-			} header: {
-				HStack(alignment: .firstTextBaseline) {
-					Text(Strings.Gear.List.title)
-					Spacer()
-					Button { viewStore.send(.didTapGear) } label: {
-						Text(Strings.Action.select)
-							.font(.caption)
+				} header: {
+					HStack(alignment: .firstTextBaseline) {
+						Text(Strings.Gear.List.title)
+						Spacer()
+						Button { viewStore.send(.didTapGear) } label: {
+							Text(Strings.Action.select)
+								.font(.caption)
+						}
 					}
-				}
-			} footer: {
-				if !viewStore.game.gear.isEmpty {
-					Text(Strings.Game.Editor.Fields.Gear.help)
+				} footer: {
+					if !viewStore.game.gear.isEmpty {
+						Text(Strings.Game.Editor.Fields.Gear.help)
+					}
 				}
 			}
 

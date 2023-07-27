@@ -4,6 +4,8 @@ import ComposableArchitecture
 import DateTimeLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
@@ -19,9 +21,13 @@ public struct GameDetails: Reducer {
 		public var isScoreAlertPresented = false
 		public var didJustToggleScoringMethod = false
 		public var alertScore: Int = 0
+		public let isGearEnabled: Bool
 
 		init(game: Game.Edit) {
 			self.game = game
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isGearEnabled = featureFlags.isEnabled(.gear)
 		}
 	}
 

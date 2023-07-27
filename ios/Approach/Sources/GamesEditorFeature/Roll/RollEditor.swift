@@ -13,7 +13,7 @@ public struct RollEditor: Reducer {
 	public struct State: Equatable {
 		public var ballRolled: Gear.Named?
 		public var didFoul: Bool
-		public var isGearEnabled: Bool
+		public let isGearEnabled: Bool
 
 		init(ballRolled: Gear.Named?, didFoul: Bool) {
 			self.ballRolled = ballRolled
