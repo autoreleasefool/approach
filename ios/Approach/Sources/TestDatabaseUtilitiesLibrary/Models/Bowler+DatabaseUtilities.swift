@@ -3,7 +3,6 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
-#if DEBUG
 extension Bowler.Database {
 	public static func mock(
 		id: Bowler.ID,
@@ -35,4 +34,3 @@ func insert(
 		try bowler.insert(db)
 	}
 }
-#endif

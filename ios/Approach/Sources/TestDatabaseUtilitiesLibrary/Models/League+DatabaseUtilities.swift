@@ -2,8 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
-#if DEBUG
-@testable import ModelsLibrary
+import ModelsLibrary
 
 extension League.Database {
 	public static func mock(
@@ -77,4 +76,3 @@ func insert(
 		try league.insert(db)
 	}
 }
-#endif

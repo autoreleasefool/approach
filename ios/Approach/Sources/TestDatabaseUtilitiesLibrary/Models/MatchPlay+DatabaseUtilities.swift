@@ -2,7 +2,6 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
-#if DEBUG
 import ModelsLibrary
 
 extension MatchPlay.Database {
@@ -39,4 +38,3 @@ func insert(
 		try matchPlay.insert(db)
 	}
 }
-#endif

@@ -2,8 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
-#if DEBUG
-@testable import ModelsLibrary
+import ModelsLibrary
 
 extension Gear.Database {
 	public static func mock(
@@ -46,4 +45,3 @@ func insert(
 		try gear.insert(db)
 	}
 }
-#endif

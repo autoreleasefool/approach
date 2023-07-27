@@ -3,7 +3,6 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
-#if DEBUG
 func insert(
 	gameLanes initial: InitialValue<GameLane.Database>?,
 	into db: Database
@@ -30,4 +29,3 @@ func insert(
 		try lane.insert(db)
 	}
 }
-#endif

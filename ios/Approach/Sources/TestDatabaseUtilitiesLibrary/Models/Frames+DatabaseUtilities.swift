@@ -2,8 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
-#if DEBUG
-@testable import ModelsLibrary
+import ModelsLibrary
 
 extension Frame.Database {
 	public static func mock(
@@ -65,4 +64,3 @@ func insert(
 		try frame.insert(db)
 	}
 }
-#endif

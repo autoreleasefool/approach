@@ -2,8 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
-#if DEBUG
-@testable import ModelsLibrary
+import ModelsLibrary
 
 extension Game.Database {
 	public static func mock(
@@ -52,4 +51,3 @@ func insert(
 		try game.insert(db)
 	}
 }
-#endif

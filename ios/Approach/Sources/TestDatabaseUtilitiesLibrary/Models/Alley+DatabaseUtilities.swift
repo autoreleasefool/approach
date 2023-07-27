@@ -1,8 +1,7 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
-#if DEBUG
-@testable import ModelsLibrary
+import ModelsLibrary
 
 extension Alley.Database {
 	public static func mock(
@@ -77,4 +76,3 @@ func insert(
 		try alley.insert(db)
 	}
 }
-#endif

@@ -5,7 +5,6 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
-#if DEBUG
 public enum InitialValue<T> {
 	case `default`
 	case custom([T])
@@ -88,4 +87,3 @@ func coallesce<T>(_ value: InitialValue<T>?, ifHasOneOf: Any?...) -> InitialValu
 		return value == nil ? .default : value
 	}
 }
-#endif

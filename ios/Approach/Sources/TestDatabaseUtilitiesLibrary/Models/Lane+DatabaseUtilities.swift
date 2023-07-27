@@ -1,7 +1,6 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
-#if DEBUG
 import ModelsLibrary
 
 func insert(
@@ -29,4 +28,3 @@ func insert(
 		try lane.insert(db)
 	}
 }
-#endif

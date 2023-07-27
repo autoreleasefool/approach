@@ -2,8 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
-#if DEBUG
-@testable import ModelsLibrary
+import ModelsLibrary
 
 extension Series.Database {
 	public static func mock(
@@ -89,4 +88,3 @@ func insert(
 
 	try series.forEach { try $0.insert(db) }
 }
-#endif

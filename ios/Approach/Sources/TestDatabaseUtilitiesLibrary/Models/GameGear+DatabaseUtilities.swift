@@ -1,7 +1,6 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
-#if DEBUG
 import ModelsLibrary
 
 func insert(
@@ -33,4 +32,3 @@ func insert(
 		try gear.insert(db)
 	}
 }
-#endif

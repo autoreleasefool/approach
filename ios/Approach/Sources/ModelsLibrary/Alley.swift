@@ -58,6 +58,24 @@ extension Alley {
 		public var named: Named {
 			.init(id: id, name: name)
 		}
+
+		public init(
+			id: Alley.ID,
+			name: String,
+			material: Material?,
+			pinFall: PinFall?,
+			mechanism: Mechanism?,
+			pinBase: PinBase?,
+			location: Location.Summary?
+		) {
+			self.id = id
+			self.name = name
+			self.material = material
+			self.pinFall = pinFall
+			self.mechanism = mechanism
+			self.pinBase = pinBase
+			self.location = location
+		}
 	}
 }
 
