@@ -1,5 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
@@ -12,11 +14,16 @@ public struct GamesSettings: Reducer {
 		public let numberOfGames: Int
 		public let gameIndex: Int
 
+		public let isTeamsEnabled: Bool
+
 		init(bowlers: IdentifiedArrayOf<Bowler.Summary>, currentBowlerId: Bowler.ID, numberOfGames: Int, gameIndex: Int) {
 			self.bowlers = bowlers
 			self.currentBowlerId = currentBowlerId
 			self.numberOfGames = numberOfGames
 			self.gameIndex = gameIndex
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isTeamsEnabled = featureFlags.isEnabled(.teams)
 		}
 	}
 
@@ -91,26 +98,30 @@ public struct GamesSettingsView: View {
 						}
 					}
 
-					Picker(
-						Strings.Bowler.title,
-						selection: viewStore.binding(get: \.currentBowlerId, send: { .didSwitchBowler(to: $0) })
-					) {
-						ForEach(viewStore.bowlers) { bowler in
-							Text(bowler.name)
-								.tag(bowler.id)
+					if viewStore.isTeamsEnabled {
+						Picker(
+							Strings.Bowler.title,
+							selection: viewStore.binding(get: \.currentBowlerId, send: { .didSwitchBowler(to: $0) })
+						) {
+							ForEach(viewStore.bowlers) { bowler in
+								Text(bowler.name)
+									.tag(bowler.id)
+							}
 						}
 					}
 				}
 
-				Section {
-					ForEach(viewStore.bowlers) { bowler in
-						Text(bowler.name)
+				if viewStore.isTeamsEnabled {
+					Section {
+						ForEach(viewStore.bowlers) { bowler in
+							Text(bowler.name)
+						}
+						.onMove { viewStore.send(.didMoveBowlers(source: $0, destination: $1)) }
+					} header: {
+						Text(Strings.Bowler.List.title)
+					} footer: {
+						Text(Strings.Game.Editor.Bowlers.dragToReorder)
 					}
-					.onMove { viewStore.send(.didMoveBowlers(source: $0, destination: $1)) }
-				} header: {
-					Text(Strings.Bowler.List.title)
-				} footer: {
-					Text(Strings.Game.Editor.Bowlers.dragToReorder)
 				}
 			}
 			.environment(\.editMode, .constant(.active))
