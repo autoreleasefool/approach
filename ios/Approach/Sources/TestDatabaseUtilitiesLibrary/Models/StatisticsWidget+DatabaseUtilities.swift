@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+#if DEBUG
 import ModelsLibrary
 
 extension StatisticsWidget.Database {
@@ -39,3 +40,4 @@ func insert(
 		try statisticWidget.insert(db)
 	}
 }
+#endif

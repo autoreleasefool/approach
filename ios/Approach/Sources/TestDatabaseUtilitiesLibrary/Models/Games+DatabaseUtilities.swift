@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+#if DEBUG
 @testable import ModelsLibrary
 
 extension Game.Database {
@@ -51,3 +52,4 @@ func insert(
 		try game.insert(db)
 	}
 }
+#endif

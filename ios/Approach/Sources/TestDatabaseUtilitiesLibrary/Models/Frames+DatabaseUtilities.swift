@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+#if DEBUG
 @testable import ModelsLibrary
 
 extension Frame.Database {
@@ -64,3 +65,4 @@ func insert(
 		try frame.insert(db)
 	}
 }
+#endif

@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+#if DEBUG
 @testable import ModelsLibrary
 
 extension League.Database {
@@ -76,3 +77,4 @@ func insert(
 		try league.insert(db)
 	}
 }
+#endif

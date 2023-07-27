@@ -203,9 +203,6 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 						state.widgets.move(fromOffsets: from, toOffset: to)
 						return .none
 
-					case .didStartReordering:
-						return .none
-
 					case .didFinishReordering:
 						return .run { [widgets = state.widgets] send in
 							do {

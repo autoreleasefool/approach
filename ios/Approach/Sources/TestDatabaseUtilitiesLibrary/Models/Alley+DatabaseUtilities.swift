@@ -1,6 +1,7 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
+#if DEBUG
 @testable import ModelsLibrary
 
 extension Alley.Database {
@@ -76,3 +77,4 @@ func insert(
 		try alley.insert(db)
 	}
 }
+#endif

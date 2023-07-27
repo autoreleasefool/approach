@@ -429,6 +429,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 3UBRXR267C;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 			};
 			name = Debug;
 		};
@@ -436,6 +438,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
+				DEVELOPMENT_TEAM = 3UBRXR267C;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 			};
 			name = Release;
 		};

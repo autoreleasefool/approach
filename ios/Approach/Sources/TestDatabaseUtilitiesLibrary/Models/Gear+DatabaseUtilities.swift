@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import Foundation
 import GRDB
+#if DEBUG
 @testable import ModelsLibrary
 
 extension Gear.Database {
@@ -45,3 +46,4 @@ func insert(
 		try gear.insert(db)
 	}
 }
+#endif

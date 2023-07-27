@@ -5,6 +5,7 @@ import Foundation
 import GRDB
 import ModelsLibrary
 
+#if DEBUG
 public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws -> any DatabaseWriter {
 	let locations: [Location.Database] = [
 		.init(id: UUID(0), title: "Skyview", subtitle: "123 Fake Street", latitude: 1.0, longitude: 1.0),
@@ -238,3 +239,4 @@ private func generateMatchPlay(forGames: [Game.Database]) -> [MatchPlay.Database
 	}
 	return matchPlays
 }
+#endif

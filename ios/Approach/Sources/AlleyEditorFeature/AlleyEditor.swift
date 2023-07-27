@@ -253,8 +253,7 @@ public struct AlleyEditor: Reducer {
 				case .form(.view), .form(.internal):
 					return .none
 
-				case .addressLookup(.presented(.binding)),
-						.addressLookup(.presented(.internal)),
+				case .addressLookup(.presented(.internal)),
 						.addressLookup(.presented(.view)):
 					return .none
 				}

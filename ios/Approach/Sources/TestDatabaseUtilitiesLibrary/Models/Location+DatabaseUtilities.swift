@@ -1,6 +1,7 @@
 import DatabaseModelsLibrary
 import Foundation
 import GRDB
+#if DEBUG
 import ModelsLibrary
 
 extension Location.Database {
@@ -54,3 +55,4 @@ func insert(
 		try location.insert(db)
 	}
 }
+#endif
