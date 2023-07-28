@@ -10,3 +10,13 @@ data class Game(
 	val scoringMethod: GameScoringMethod,
 	val excludeFromStatistics: ExcludeFromStatistics,
 )
+
+enum class GameLockState {
+	LOCKED,
+	UNLOCKED,
+}
+
+enum class GameScoringMethod {
+	MANUAL,
+	BY_FRAME,
+}

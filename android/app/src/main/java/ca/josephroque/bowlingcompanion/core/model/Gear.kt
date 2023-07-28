@@ -8,3 +8,10 @@ data class Gear(
 	val kind: GearKind,
 	val ownerId: UUID?,
 )
+
+enum class GearKind {
+	SHOES,
+	BOWLING_BALL,
+	TOWEL,
+	OTHER,
+}

@@ -11,3 +11,8 @@ data class League(
 	val additionalGames: Int?,
 	val excludeFromStatistics: ExcludeFromStatistics,
 )
+
+enum class LeagueRecurrence {
+	REPEATING,
+	ONCE,
+}

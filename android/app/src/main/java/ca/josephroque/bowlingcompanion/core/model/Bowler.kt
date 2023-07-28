@@ -7,3 +7,8 @@ data class Bowler(
 	val name: String,
 	val kind: BowlerKind,
 )
+
+enum class BowlerKind {
+	PLAYABLE,
+	OPPONENT,
+}

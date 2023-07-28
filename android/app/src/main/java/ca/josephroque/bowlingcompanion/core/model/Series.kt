@@ -10,3 +10,8 @@ data class Series(
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
 )
+
+enum class SeriesPreBowl {
+	REGULAR,
+	PRE_BOWL,
+}
