@@ -13,15 +13,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
-import ca.josephroque.bowlingcompanion.core.database.util.BowlerKindConverter
-import ca.josephroque.bowlingcompanion.core.database.util.ExcludeFromStatisticsConverter
-import ca.josephroque.bowlingcompanion.core.database.util.GameLockStateConverter
-import ca.josephroque.bowlingcompanion.core.database.util.GameScoringMethodConverter
-import ca.josephroque.bowlingcompanion.core.database.util.GearKindConverter
 import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
-import ca.josephroque.bowlingcompanion.core.database.util.LeagueRecurrenceConverter
-import ca.josephroque.bowlingcompanion.core.database.util.SeriesPreBowlConverter
-import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 
 @Database(
 	entities = [
@@ -34,13 +26,6 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 	version = 5,
 )
 @TypeConverters(
-	BowlerKindConverter::class,
-	ExcludeFromStatisticsConverter::class,
-	LeagueRecurrenceConverter::class,
-	SeriesPreBowlConverter::class,
-	GameLockStateConverter::class,
-	GameScoringMethodConverter::class,
-	GearKindConverter::class,
 	InstantConverter::class,
 )
 abstract class ApproachDatabase : RoomDatabase() {

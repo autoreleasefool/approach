@@ -7,7 +7,6 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.model.Bowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
-import ca.josephroque.bowlingcompanion.core.model.asBowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,8 +27,10 @@ class BowlerFormViewModel @Inject constructor(
 	private val _uiState: MutableStateFlow<BowlerFormUiState> = MutableStateFlow(BowlerFormUiState.Loading)
 	val uiState: StateFlow<BowlerFormUiState> = _uiState.asStateFlow()
 
-	private val kind = savedStateHandle.get<String>(BOWLER_KIND)
-		.asBowlerKind() ?: BowlerKind.PLAYABLE
+	private val kind = savedStateHandle.get<String>(BOWLER_KIND).let { string ->
+		BowlerKind.values()
+			.firstOrNull { it.name == string }
+	} ?: BowlerKind.PLAYABLE
 
 	fun handleEvent(event: BowlerFormUiEvent) {
 		when (event) {

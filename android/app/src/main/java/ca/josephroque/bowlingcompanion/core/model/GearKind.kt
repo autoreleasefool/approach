@@ -6,9 +6,3 @@ enum class GearKind {
 	TOWEL,
 	OTHER,
 }
-
-fun String?.asGearKind() = when (this) {
-	null -> null
-	else -> GearKind.values()
-		.firstOrNull { it.name == this }
-}
