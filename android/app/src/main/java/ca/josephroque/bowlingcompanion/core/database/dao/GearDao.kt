@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerWithGear
+import ca.josephroque.bowlingcompanion.core.database.relationship.BowlerWithGear
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID

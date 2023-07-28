@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import ca.josephroque.bowlingcompanion.core.database.model.AlleyWithLanes
+import ca.josephroque.bowlingcompanion.core.database.relationship.AlleyWithLanes
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
