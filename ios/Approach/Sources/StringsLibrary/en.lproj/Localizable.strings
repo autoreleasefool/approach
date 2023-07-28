@@ -325,7 +325,10 @@
 "settings.developerOptions.populateDatabase" = "Mock database";
 "settings.help.title" = "Help";
 "settings.help.reportBug" = "Report Bug";
+"settings.help.reportBug.email" = "approach@josephroque.ca";
+"settings.help.reportBug.subject" = "Approach Bug Report (%@)";
 "settings.help.sendFeedback" = "Send Feedback";
+"settings.help.sendFeedback.email" = "approach@josephroque.ca";
 "settings.help.acknowledgements" = "Acknowledgements";
 "settings.help.developer" = "Developer";
 "settings.help.viewSource" = "View Source";
