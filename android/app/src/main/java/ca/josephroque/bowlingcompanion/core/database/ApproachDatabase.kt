@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
@@ -12,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
@@ -30,8 +32,9 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 		LocationEntity::class,
 		AlleyEntity::class,
 		LaneEntity::class,
+		FrameEntity::class,
 	],
-	version = 6,
+	version = 7,
 )
 @TypeConverters(
 	InstantConverter::class,
@@ -44,4 +47,5 @@ abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun gearDao(): GearDao
 	abstract fun alleyDao(): AlleyDao
 	abstract fun laneDao(): LaneDao
+	abstract fun frameDao(): FrameDao
 }
