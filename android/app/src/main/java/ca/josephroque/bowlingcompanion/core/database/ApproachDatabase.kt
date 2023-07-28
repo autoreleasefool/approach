@@ -15,6 +15,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
+import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
@@ -35,8 +37,10 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 		LaneEntity::class,
 		FrameEntity::class,
 		MatchPlayEntity::class,
+		GameGearCrossRef::class,
+		GameLaneCrossRef::class,
 	],
-	version = 8,
+	version = 9,
 )
 @TypeConverters(
 	InstantConverter::class,
