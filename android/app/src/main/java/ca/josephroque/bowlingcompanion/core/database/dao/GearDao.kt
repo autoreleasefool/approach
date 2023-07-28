@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerWithGear
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ interface GearDao {
 	@Query(value = "SELECT * from gear")
 	fun getGearEntities(): Flow<List<GearEntity>>
 
+	@Transaction
 	@Query(value = """
 		SELECT * from bowlers
 		WHERE id = :ownerId
