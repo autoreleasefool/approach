@@ -23,6 +23,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LocationEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
+import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 
 @Database(
@@ -39,8 +41,10 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 		MatchPlayEntity::class,
 		GameGearCrossRef::class,
 		GameLaneCrossRef::class,
+		TeamEntity::class,
+		TeamBowlerCrossRef::class,
 	],
-	version = 9,
+	version = 10,
 )
 @TypeConverters(
 	InstantConverter::class,
