@@ -2,7 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.overview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.data.repository.BowlerQuery
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +23,7 @@ class OverviewViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository
 ): ViewModel() {
 	val bowlersListState: StateFlow<BowlersListUiState> =
-		bowlersRepository.getBowlers()
+		bowlersRepository.getBowlers(BowlerQuery(kind = BowlerKind.PLAYABLE))
 			.map(BowlersListUiState::Success)
 			.stateIn(
 				scope = viewModelScope,

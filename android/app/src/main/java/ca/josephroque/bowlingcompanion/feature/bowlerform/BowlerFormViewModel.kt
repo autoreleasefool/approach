@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.model.Bowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -85,7 +86,7 @@ class BowlerFormViewModel @Inject constructor(
 				 BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 				is BowlerFormUiState.Create ->
 					if (state.isSavable()) {
-						bowlersRepository.upsertBowler(
+						bowlersRepository.insertBowler(
 							Bowler(
 								id = UUID.randomUUID(),
 								name = state.name,
@@ -102,7 +103,7 @@ class BowlerFormViewModel @Inject constructor(
 					}
 				is BowlerFormUiState.Edit ->
 					if (state.isSavable()) {
-						bowlersRepository.upsertBowler(state.initialValue.copy(name = state.name))
+						bowlersRepository.updateBowler(state.bowler())
 						_uiState.value = BowlerFormUiState.Dismissed
 					} else {
 						_uiState.value = state.copy(
@@ -152,6 +153,11 @@ sealed interface BowlerFormUiState {
 		}
 	}
 }
+
+fun BowlerFormUiState.Edit.bowler() = BowlerUpdate(
+	id = initialValue.id,
+	name = name,
+)
 
 data class BowlerFormFieldErrors(
 	val nameErrorId: Int? = null

@@ -8,6 +8,11 @@ data class Bowler(
 	val kind: BowlerKind,
 )
 
+data class BowlerUpdate(
+	val id: UUID,
+	val name: String,
+)
+
 enum class BowlerKind {
 	PLAYABLE,
 	OPPONENT,

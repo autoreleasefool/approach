@@ -39,7 +39,7 @@ class NewUserOnboardingViewModel @Inject constructor(
 			is NewUserOnboardingUiState.ShowingLogbook -> {
 				if (state.name.isNotBlank()) {
 					viewModelScope.launch {
-						bowlersRepository.upsertBowler(Bowler(
+						bowlersRepository.insertBowler(Bowler(
 							id = UUID.randomUUID(),
 							name = state.name,
 							kind = BowlerKind.PLAYABLE,
