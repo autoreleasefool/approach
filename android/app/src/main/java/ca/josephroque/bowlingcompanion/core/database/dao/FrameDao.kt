@@ -11,5 +11,5 @@ import java.util.UUID
 interface FrameDao {
 	@Transaction
 	@Query(value = "SELECT * FROM games WHERE id = :gameId")
-	abstract fun getGameFrames(gameId: UUID): Flow<GameWithFrames>
+	fun getGameFrames(gameId: UUID): Flow<GameWithFrames>
 }

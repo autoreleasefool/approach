@@ -14,5 +14,5 @@ interface LeagueDao {
 		SELECT * FROM bowlers
 		WHERE id = :bowlerId
 	""")
-	abstract fun getBowlerLeagues(bowlerId: UUID): Flow<BowlerWithLeagues>
+	fun getBowlerLeagues(bowlerId: UUID): Flow<BowlerWithLeagues>
 }

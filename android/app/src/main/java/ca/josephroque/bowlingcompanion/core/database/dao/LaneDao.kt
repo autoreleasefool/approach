@@ -14,5 +14,5 @@ interface LaneDao {
 		SELECT * from alleys
 		WHERE id = :alleyId
 	""")
-	abstract fun getAlleyLanes(alleyId: UUID): Flow<AlleyWithLanes>
+	fun getAlleyLanes(alleyId: UUID): Flow<AlleyWithLanes>
 }

@@ -14,5 +14,5 @@ interface GameDao {
 		SELECT * from series
 		WHERE id = :seriesId
 	""")
-	abstract fun getSeriesGames(seriesId: UUID): Flow<SeriesWithGames>
+	fun getSeriesGames(seriesId: UUID): Flow<SeriesWithGames>
 }

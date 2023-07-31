@@ -8,7 +8,5 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AlleyDao {
 	@Query(value = "SELECT * from alleys")
-	abstract fun getAlleyEntities(): Flow<List<AlleyEntity>>
-
-
+	fun getAlleyEntities(): Flow<List<AlleyEntity>>
 }

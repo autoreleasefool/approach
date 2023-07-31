@@ -14,5 +14,5 @@ interface SeriesDao {
 		SELECT * FROM leagues
 		WHERE id = :leagueId
 	""")
-	abstract fun getLeagueSeries(leagueId: UUID): Flow<LeagueWithSeries>
+	fun getLeagueSeries(leagueId: UUID): Flow<LeagueWithSeries>
 }
