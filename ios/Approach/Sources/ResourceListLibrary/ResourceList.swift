@@ -23,7 +23,7 @@ public struct ResourceList<
 		public var emptyState: ResourceListEmpty.State
 		public var errorState: ResourceListEmpty.State?
 
-		public var alert: AlertState<AlertAction>?
+		@PresentationState public var alert: AlertState<AlertAction>?
 
 		public init(
 			features: [Feature],
@@ -54,7 +54,7 @@ public struct ResourceList<
 			case didTapAddButton
 			case didSwipe(SwipeAction, R)
 			case didTap(R)
-			case alert(AlertAction)
+			case alert(PresentationAction<AlertAction>)
 		}
 
 		public enum DelegateAction: Equatable {
@@ -141,7 +141,7 @@ public struct ResourceList<
 
 					return .send(.delegate(.didAddNew))
 
-				case let .alert(.didTapDeleteButton(resource)):
+				case let .alert(.presented(.didTapDeleteButton(resource))):
 					state.alert = nil
 					guard let onDelete = state.onDelete else {
 						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
@@ -153,8 +153,11 @@ public struct ResourceList<
 						})))
 					}
 
-				case .alert(.didTapDismissButton):
+				case .alert(.presented(.didTapDismissButton)):
 					state.alert = nil
+					return .none
+
+				case .alert(.dismiss):
 					return .none
 				}
 

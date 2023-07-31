@@ -346,15 +346,15 @@ from = "6.16.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-revision = "605394caf50a4b7c451bc2b4837c25ef513b770c"
+from = "1.0.0"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "0.6.0"
+from = "1.0.0"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
-from = "0.7.0"
+from = "1.0.0"
 
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
@@ -367,7 +367,7 @@ from = "1.4.4"
 
 [dependencies.XCTestDynamicOverlay]
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
-from = "0.8.5"
+from = "1.0.0"
 
 # Default Imports
 

@@ -138,10 +138,7 @@ public struct ResourceListView<
 					}
 				}
 			}
-			.alert(
-				self.store.scope(state: \.alert, action: { ResourceList<R, Q>.Action.view(.alert($0)) }),
-				dismiss: .didTapDismissButton
-			)
+			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
 	}
