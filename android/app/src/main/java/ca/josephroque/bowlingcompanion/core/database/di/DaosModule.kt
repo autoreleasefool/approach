@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.database.di
 
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunnerDao
@@ -22,6 +23,11 @@ object DaosModule {
 	fun providesTeamsDao(
 		database: ApproachDatabase,
 	): TeamDao = database.teamDao()
+
+	@Provides
+	fun providesLegacyIDMappingsDao(
+		database: ApproachDatabase,
+	): LegacyIDMappingDao = database.legacyIDMappingDao()
 
 	@Provides
 	fun providesTransactionRunnersDao(
