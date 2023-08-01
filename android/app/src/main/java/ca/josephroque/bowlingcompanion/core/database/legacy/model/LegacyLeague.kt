@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.database.legacy
+package ca.josephroque.bowlingcompanion.core.database.legacy.model
 
 class LegacyLeague {
 	companion object {

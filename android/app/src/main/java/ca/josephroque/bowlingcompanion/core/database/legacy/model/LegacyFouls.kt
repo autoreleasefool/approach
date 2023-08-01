@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.database.legacy
+package ca.josephroque.bowlingcompanion.core.database.legacy.model
 
 /**
  * Copyright (C) 2018 Joseph Roque
