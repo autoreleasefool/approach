@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
@@ -44,4 +45,5 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 )
 abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun bowlerDao(): BowlerDao
+	abstract fun teamDao(): TeamDao
 }
