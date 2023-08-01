@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunnerDao
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
@@ -15,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LocationEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
@@ -38,8 +40,9 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 		GameLaneCrossRef::class,
 		TeamEntity::class,
 		TeamBowlerCrossRef::class,
+		LegacyIDMappingEntity::class,
 	],
-	version = 10,
+	version = 11,
 )
 @TypeConverters(
 	InstantConverter::class,
@@ -47,5 +50,6 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun bowlerDao(): BowlerDao
 	abstract fun teamDao(): TeamDao
+	abstract fun legacyIDMappingDao(): LegacyIDMappingDao
 	abstract fun transactionRunnerDao(): TransactionRunnerDao
 }
