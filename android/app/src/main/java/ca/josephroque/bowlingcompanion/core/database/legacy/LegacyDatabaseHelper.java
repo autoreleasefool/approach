@@ -16,6 +16,8 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract.Match
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract.TeamBowlerEntry;
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract.TeamEntry;
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyFouls;
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague;
 
 /**
  * Copyright (C) 2015 Joseph Roque
