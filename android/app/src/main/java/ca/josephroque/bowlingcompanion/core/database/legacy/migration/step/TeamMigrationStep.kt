@@ -1,7 +1,8 @@
-package ca.josephroque.bowlingcompanion.core.database.legacy.migration
+package ca.josephroque.bowlingcompanion.core.database.legacy.migration.step
 
 import android.database.sqlite.SQLiteDatabase
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.SQLiteMigrationManager
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
 
 suspend fun SQLiteMigrationManager.migrateTeams(legacyDb: SQLiteDatabase) {
