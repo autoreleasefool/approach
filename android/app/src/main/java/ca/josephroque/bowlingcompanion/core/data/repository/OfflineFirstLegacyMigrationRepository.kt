@@ -4,6 +4,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
+import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
@@ -12,12 +13,16 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingKey
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacySeries
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import kotlinx.datetime.Instant
 import java.util.UUID
 import javax.inject.Inject
 
@@ -25,6 +30,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	private val teamDao: TeamDao,
 	private val leagueDao: LeagueDao,
+	private val seriesDao: SeriesDao,
 	private val legacyIDMappingDao: LegacyIDMappingDao,
 	private val checkpointDao: CheckpointDao,
 	private val transactionRunner: TransactionRunner,
@@ -107,6 +113,38 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 
 		legacyIDMappingDao.insertAll(idMappings)
 		leagueDao.insertAll(migratedLeagues)
+	}
+
+	override suspend fun migrateSeries(series: List<LegacySeries>) {
+		val migratedSeries = mutableListOf<SeriesEntity>()
+		val idMappings = mutableListOf<LegacyIDMappingEntity>()
+
+		val legacyLeagueIds = series.map(LegacySeries::leagueId)
+		val leagueIdMappings = legacyIDMappingDao.getLegacyIDMappings(
+			legacyIds = legacyLeagueIds,
+			key = LegacyIDMappingKey.LEAGUE,
+		).associateBy({ it.legacyId }, { it.id })
+
+		for (legacySeries in series) {
+			val id = UUID.randomUUID()
+			idMappings.add(LegacyIDMappingEntity(
+				id = id,
+				legacyId = legacySeries.id,
+				key = LegacyIDMappingKey.SERIES,
+			))
+
+			migratedSeries.add(SeriesEntity(
+				id = id,
+				date = Instant.fromEpochMilliseconds(legacySeries.date.time),
+				numberOfGames = legacySeries.numberOfGames,
+				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+				preBowl = SeriesPreBowl.REGULAR,
+				leagueId = leagueIdMappings[legacySeries.leagueId]!!
+			))
+		}
+
+		legacyIDMappingDao.insertAll(idMappings)
+		seriesDao.insertAll(migratedSeries)
 	}
 
 	override suspend fun recordCheckpoint() {
