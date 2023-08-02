@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.di
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
+import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
@@ -16,22 +17,27 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object DaosModule {
 	@Provides
-	fun providesBowlersDao(
+	fun providesBowlerDao(
 		database: ApproachDatabase,
 	): BowlerDao = database.bowlerDao()
 
 	@Provides
-	fun providesTeamsDao(
+	fun providesTeamDao(
 		database: ApproachDatabase,
 	): TeamDao = database.teamDao()
 
 	@Provides
-	fun providesLegacyIDMappingsDao(
+	fun providesLeagueDao(
+		database: ApproachDatabase,
+	): LeagueDao = database.leagueDao()
+
+	@Provides
+	fun providesLegacyIDMappingDao(
 		database: ApproachDatabase,
 	): LegacyIDMappingDao = database.legacyIDMappingDao()
 
 	@Provides
-	fun providesTransactionRunnersDao(
+	fun providesTransactionRunnerDao(
 		database: ApproachDatabase,
 	): TransactionRunnerDao = database.transactionRunnerDao()
 
