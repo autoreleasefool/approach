@@ -18,4 +18,8 @@ class OfflineFirstUserDataRepository @Inject constructor(): UserDataRepository {
 	override suspend fun didCompleteOnboarding() {
 		_userData.tryEmit(currentUserData.copy(isOnboardingComplete = true))
 	}
+
+	override suspend fun didCompleteLegacyMigration() {
+		_userData.tryEmit(currentUserData.copy(isLegacyMigrationComplete = true))
+	}
 }
