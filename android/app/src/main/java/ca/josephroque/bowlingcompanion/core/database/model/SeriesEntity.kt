@@ -1,6 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.database.model
 
+import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.Series
@@ -10,14 +14,24 @@ import java.util.UUID
 
 @Entity(
 	tableName = "series",
+	foreignKeys = [
+		ForeignKey(
+			entity = LeagueEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["league_id"],
+			onUpdate = ForeignKey.CASCADE,
+			onDelete = ForeignKey.CASCADE,
+		),
+	],
 )
+@Immutable
 data class SeriesEntity(
-	@PrimaryKey val id: UUID,
-	val leagueId: UUID,
-	val date: Instant,
-	val numberOfGames: Int,
-	val preBowl: SeriesPreBowl,
-	val excludeFromStatistics: ExcludeFromStatistics,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@ColumnInfo(name = "league_id", index = true) val leagueId: UUID,
+	@ColumnInfo(name = "date") val date: Instant,
+	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
+	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )
 
 fun SeriesEntity.asExternalModel() = Series(

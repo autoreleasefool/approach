@@ -1,6 +1,9 @@
 package ca.josephroque.bowlingcompanion.core.database.model
 
+import androidx.compose.runtime.Immutable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.Alley
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
@@ -11,15 +14,25 @@ import java.util.UUID
 
 @Entity(
 	tableName = "alleys",
+	foreignKeys = [
+		ForeignKey(
+			entity = LocationEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["location_id"],
+			onUpdate = ForeignKey.CASCADE,
+			onDelete = ForeignKey.CASCADE,
+		)
+	],
 )
+@Immutable
 data class AlleyEntity(
-	@PrimaryKey val id: UUID,
-	val name: String,
-	val material: AlleyMaterial?,
-	val pinFall: AlleyPinFall?,
-	val mechanism: AlleyMechanism?,
-	val pinBase: AlleyPinBase?,
-	val locationId: UUID?,
+	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
+	@ColumnInfo(name = "name") val name: String,
+	@ColumnInfo(name = "material") val material: AlleyMaterial?,
+	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
+	@ColumnInfo(name = "mechanism") val mechanism: AlleyMechanism?,
+	@ColumnInfo(name = "pin_base") val pinBase: AlleyPinBase?,
+	@ColumnInfo(name = "location_id", index = true) val locationId: UUID?,
 )
 
 fun AlleyEntity.asExternalModel() = Alley(
