@@ -42,7 +42,7 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 		TeamBowlerCrossRef::class,
 		LegacyIDMappingEntity::class,
 	],
-	version = 11,
+	version = 1,
 )
 @TypeConverters(
 	InstantConverter::class,
