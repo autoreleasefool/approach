@@ -20,4 +20,5 @@ enum class LegacyIDMappingKey {
 	TEAM,
 	BOWLER,
 	LEAGUE,
+	SERIES,
 }
