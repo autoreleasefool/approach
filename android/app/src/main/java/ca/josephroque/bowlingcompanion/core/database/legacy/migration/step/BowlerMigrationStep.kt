@@ -1,7 +1,8 @@
-package ca.josephroque.bowlingcompanion.core.database.legacy.migration
+package ca.josephroque.bowlingcompanion.core.database.legacy.migration.step
 
 import android.database.sqlite.SQLiteDatabase
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.SQLiteMigrationManager
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyBowler
 
 suspend fun SQLiteMigrationManager.migrateBowlers(legacyDb: SQLiteDatabase) {
@@ -24,7 +25,7 @@ suspend fun SQLiteMigrationManager.migrateBowlers(legacyDb: SQLiteDatabase) {
 
 				bowlers.add(LegacyBowler(id = id, name = name))
 			}
-			
+
 			cursor.moveToNext()
 		}
 	}

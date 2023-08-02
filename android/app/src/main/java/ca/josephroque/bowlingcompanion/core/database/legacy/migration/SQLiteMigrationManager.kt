@@ -6,6 +6,8 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepos
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateBowlers
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateTeams
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
