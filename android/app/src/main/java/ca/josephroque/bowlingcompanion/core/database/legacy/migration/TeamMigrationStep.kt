@@ -5,15 +5,16 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyContract
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
 
 suspend fun SQLiteMigrationManager.migrateTeams(legacyDb: SQLiteDatabase) {
-	val cursor = legacyDb.rawQuery("""
-			SELECT ${LegacyContract.TeamEntry._ID}, ${LegacyContract.TeamEntry.COLUMN_TEAM_NAME}
-			FROM ${LegacyContract.TeamEntry.TABLE_NAME}
+	val cursor = legacyDb.rawQuery(
+		"""
+		SELECT ${LegacyContract.TeamEntry._ID}, ${LegacyContract.TeamEntry.COLUMN_TEAM_NAME}
+		FROM ${LegacyContract.TeamEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
 	)
 
 	val teams = mutableListOf<LegacyTeam>()
 	if (cursor.moveToFirst()) {
-		while(!cursor.isAfterLast) {
+		while (!cursor.isAfterLast) {
 			val teamIdIndex = cursor.getColumnIndex(LegacyContract.TeamEntry._ID)
 			val teamNameIndex = cursor.getColumnIndex(LegacyContract.TeamEntry.COLUMN_TEAM_NAME)
 

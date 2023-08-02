@@ -18,4 +18,5 @@ data class LegacyIDMappingEntity(
 
 enum class LegacyIDMappingKey {
 	TEAM,
+	BOWLER,
 }

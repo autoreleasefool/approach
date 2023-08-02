@@ -42,6 +42,7 @@ class SQLiteMigrationManager @Inject constructor(
 	private suspend fun run(step: MigrationStep, legacyDb: SQLiteDatabase) {
 		when (step) {
 			MigrationStep.TEAMS -> migrateTeams(legacyDb)
+			MigrationStep.BOWLERS -> migrateBowlers(legacyDb)
 		}
 	}
 }
