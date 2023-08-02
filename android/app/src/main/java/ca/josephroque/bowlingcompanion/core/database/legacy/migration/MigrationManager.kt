@@ -10,4 +10,5 @@ interface MigrationManager {
 
 enum class MigrationStep {
 	TEAMS,
+	BOWLERS,
 }
