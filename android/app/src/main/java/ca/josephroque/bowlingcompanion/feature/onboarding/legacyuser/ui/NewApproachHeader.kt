@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.onboarding.newuser.ui
+package ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
@@ -68,7 +68,7 @@ internal fun NewApproachHeader(
 				is LegacyUserOnboardingUiState.ShowingApproachHeader -> headerState = HeaderState.AtTop
 				LegacyUserOnboardingUiState.Started,
 				LegacyUserOnboardingUiState.Complete,
-				LegacyUserOnboardingUiState.ImportingData -> Unit
+				is LegacyUserOnboardingUiState.ImportingData -> Unit
 			}
 		}
 

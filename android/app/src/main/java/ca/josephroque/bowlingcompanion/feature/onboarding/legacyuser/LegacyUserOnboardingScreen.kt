@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ca.josephroque.bowlingcompanion.feature.onboarding.newuser.ui.ApproachAppDescription
-import ca.josephroque.bowlingcompanion.feature.onboarding.newuser.ui.LegacyCompanionHeader
-import ca.josephroque.bowlingcompanion.feature.onboarding.newuser.ui.NewApproachHeader
+import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui.ApproachAppDescription
+import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui.LegacyCompanionHeader
+import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui.NewApproachHeader
 
 @Composable
 internal fun LegacyUserOnboardingScreen(
@@ -20,6 +20,13 @@ internal fun LegacyUserOnboardingScreen(
 	viewModel: LegacyUserOnboardingViewModel = hiltViewModel(),
 ) {
 	val legacyUserOnboardingUiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	when (legacyUserOnboardingUiState) {
+		LegacyUserOnboardingUiState.Complete -> onCompleteOnboarding()
+		is LegacyUserOnboardingUiState.ImportingData,
+		is LegacyUserOnboardingUiState.ShowingApproachHeader,
+		LegacyUserOnboardingUiState.Started -> Unit
+	}
 
 	LegacyUserOnboarding(
 		legacyUserOnboardingUiState = legacyUserOnboardingUiState,

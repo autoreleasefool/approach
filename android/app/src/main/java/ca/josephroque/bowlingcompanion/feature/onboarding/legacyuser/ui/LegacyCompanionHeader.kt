@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.onboarding.newuser.ui
+package ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -41,7 +41,7 @@ internal fun LegacyCompanionHeader(
 		when (uiState) {
 			LegacyUserOnboardingUiState.Started -> visibleState.targetState = true
 			is LegacyUserOnboardingUiState.ShowingApproachHeader -> visibleState.targetState = false
-			LegacyUserOnboardingUiState.ImportingData, LegacyUserOnboardingUiState.Complete -> Unit
+			is LegacyUserOnboardingUiState.ImportingData, LegacyUserOnboardingUiState.Complete -> Unit
 		}
 	}
 
