@@ -181,6 +181,8 @@ dependencies = [ "XCTestDynamicOverlay" ]
 [services.Analytics]
 libraries = [ "Constants" ]
 dependencies = [ "TelemetryClient" ]
+[services.Analytics.interface]
+dependencies = [ "ComposableArchitecture" ]
 
 [services.AppIcon]
 skip_tests = true

@@ -94,7 +94,6 @@ public struct AlleyEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.lanes) var lanes
 
@@ -184,35 +183,7 @@ public struct AlleyEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case let .didFinishCreating(alley):
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { [numberOfLanes = state.newLanes.count + state.existingLanes.count] _ in
-								await analytics.trackEvent(Analytics.Alley.Created(
-									withLocation: alley.location != nil,
-									numberOfLanes: numberOfLanes
-								))
-							}
-						)
-
-					case let .didFinishUpdating(alley):
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { [numberOfLanes = state.newLanes.count + state.existingLanes.count] _ in
-								await analytics.trackEvent(Analytics.Alley.Updated(
-									withLocation: alley.location != nil,
-									numberOfLanes: numberOfLanes
-								))
-							}
-						)
-
-					case .didFinishDeleting:
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Alley.Deleted()) }
-						)
-
-					case .didDiscard:
+					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating, .didDiscard:
 						return .run { _ in await self.dismiss() }
 					}
 
@@ -267,6 +238,21 @@ public struct AlleyEditor: Reducer {
 		}
 		.ifLet(\.$alleyLanesEditor, action: /Action.internal..Action.InternalAction.alleyLanesEditor) {
 			AlleyLanesEditor()
+		}
+
+		AnalyticsReducer<State, Action> { state, action in
+			switch action {
+			case let .internal(.form(.delegate(.didFinishCreating(alley)))):
+				let numberOfLanes = state.newLanes.count + state.existingLanes.count
+				return Analytics.Alley.Created(withLocation: alley.location != nil, numberOfLanes: numberOfLanes)
+			case let .internal(.form(.delegate(.didFinishUpdating(alley)))):
+				let numberOfLanes = state.newLanes.count + state.existingLanes.count
+				return Analytics.Alley.Updated(withLocation: alley.location != nil, numberOfLanes: numberOfLanes)
+			case .internal(.form(.delegate(.didFinishDeleting))):
+				return Analytics.Alley.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

@@ -89,7 +89,6 @@ public struct AccessoriesOverview: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.gear) var gear
 	@Dependency(\.uuid) var uuid
 
@@ -127,14 +126,11 @@ public struct AccessoriesOverview: Reducer {
 						}
 
 					case .delete:
-						return .merge(
-							.run { _ in
-								try await self.gear.delete(id)
-							} catch: { error, send in
-								await send(.internal(.didDeleteGear(.failure(error))))
-							},
-							.run { _ in await analytics.trackEvent(Analytics.Gear.Deleted()) }
-						)
+						return .run { _ in
+							try await self.gear.delete(id)
+						} catch: { error, send in
+							await send(.internal(.didDeleteGear(.failure(error))))
+						}
 					}
 
 				case let .didSwipeAlley(action, id):
@@ -147,15 +143,11 @@ public struct AccessoriesOverview: Reducer {
 						}
 
 					case .delete:
-						return .merge(
-							.run { _ in
-								try await self.alleys.delete(id)
-
-							} catch: { error, send in
-								await send(.internal(.didDeleteAlley(.failure(error))))
-							},
-							.run { _ in await analytics.trackEvent(Analytics.Alley.Deleted()) }
-						)
+						return .run { _ in
+							try await self.alleys.delete(id)
+						} catch: { error, send in
+							await send(.internal(.didDeleteAlley(.failure(error))))
+						}
 					}
 
 				case .didTapViewAllGear:
@@ -265,6 +257,17 @@ public struct AccessoriesOverview: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didSwipeGear(.delete, _)):
+				return Analytics.Gear.Deleted()
+			case .view(.didSwipeAlley(.delete, _)):
+				return Analytics.Alley.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }
