@@ -3,23 +3,32 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import androidx.sqlite.db.SimpleSQLiteQuery
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
+import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
+import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyBowler
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyGame
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingKey
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlayResult
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacySeries
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.asMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
+import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import kotlinx.datetime.Instant
@@ -31,6 +40,8 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 	private val teamDao: TeamDao,
 	private val leagueDao: LeagueDao,
 	private val seriesDao: SeriesDao,
+	private val gameDao: GameDao,
+	private val matchPlayDao: MatchPlayDao,
 	private val legacyIDMappingDao: LegacyIDMappingDao,
 	private val checkpointDao: CheckpointDao,
 	private val transactionRunner: TransactionRunner,
@@ -107,7 +118,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 				additionalPinFall = if (legacyLeague.additionalGames == 0 || legacyLeague.additionalPinFall == 0) null else legacyLeague.additionalPinFall,
 				excludeFromStatistics = if (legacyLeague.name == LegacyLeague.PRACTICE_LEAGUE_NAME || legacyLeague.name == LegacyLeague.OPEN_LEAGUE_NAME) ExcludeFromStatistics.EXCLUDE else ExcludeFromStatistics.INCLUDE,
 				numberOfGames = if (legacyLeague.gamesPerSeries == 0) null else legacyLeague.gamesPerSeries,
-				bowlerId = bowlerIdMappings[legacyLeague.bowlerId]!!
+				bowlerId = bowlerIdMappings[legacyLeague.bowlerId]!!,
 			))
 		}
 
@@ -139,12 +150,62 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 				numberOfGames = legacySeries.numberOfGames,
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				preBowl = SeriesPreBowl.REGULAR,
-				leagueId = leagueIdMappings[legacySeries.leagueId]!!
+				leagueId = leagueIdMappings[legacySeries.leagueId]!!,
 			))
 		}
 
 		legacyIDMappingDao.insertAll(idMappings)
 		seriesDao.insertAll(migratedSeries)
+	}
+
+	override suspend fun migrateGames(games: List<LegacyGame>) {
+		val migratedGames = mutableListOf<GameEntity>()
+		val migratedMatchPlays = mutableListOf<MatchPlayEntity>()
+
+		val gameIdMappings = mutableListOf<LegacyIDMappingEntity>()
+		val matchPlayIdMappings = mutableListOf<LegacyIDMappingEntity>()
+
+		val legacySeriesIds = games.map(LegacyGame::seriesId)
+		val seriesIdMappings = legacyIDMappingDao.getLegacyIDMappings(
+			legacyIds = legacySeriesIds,
+			key = LegacyIDMappingKey.SERIES,
+		).associateBy({ it.legacyId }, { it.id })
+
+		for (legacyGame in games) {
+			val gameId = UUID.randomUUID()
+			gameIdMappings.add(LegacyIDMappingEntity(
+				id = gameId,
+				legacyId = legacyGame.id,
+				key = LegacyIDMappingKey.GAME,
+			))
+
+			migratedGames.add(GameEntity(
+				id = gameId,
+				index = legacyGame.gameNumber - 1,
+				score = legacyGame.score,
+				locked = if (legacyGame.isLocked) GameLockState.LOCKED else GameLockState.UNLOCKED,
+				scoringMethod = if (legacyGame.isManual) GameScoringMethod.MANUAL else GameScoringMethod.BY_FRAME,
+				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+				seriesId = seriesIdMappings[legacyGame.seriesId]!!,
+			))
+
+			if (legacyGame.matchPlayResult != LegacyMatchPlayResult.NONE) {
+				val matchPlayId = UUID.randomUUID()
+
+				migratedMatchPlays.add(MatchPlayEntity(
+					id = matchPlayId,
+					gameId = gameId,
+					opponentId = null,
+					opponentScore = null,
+					result = legacyGame.matchPlayResult.asMatchPlay(),
+				))
+			}
+		}
+
+		legacyIDMappingDao.insertAll(gameIdMappings)
+		legacyIDMappingDao.insertAll(matchPlayIdMappings)
+		gameDao.insertAll(migratedGames)
+		matchPlayDao.insertAll(migratedMatchPlays)
 	}
 
 	override suspend fun recordCheckpoint() {

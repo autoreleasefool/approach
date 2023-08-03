@@ -7,7 +7,7 @@ data class MatchPlay(
 )
 
 enum class MatchPlayResult {
-	TIED,
-	LOST,
 	WON,
+	LOST,
+	TIED,
 }
