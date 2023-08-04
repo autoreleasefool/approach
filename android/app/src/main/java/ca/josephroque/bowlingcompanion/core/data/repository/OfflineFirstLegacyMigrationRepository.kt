@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingKey
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlayResult
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacySeries
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.asMatchPlay
@@ -163,7 +164,6 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		val migratedMatchPlays = mutableListOf<MatchPlayEntity>()
 
 		val gameIdMappings = mutableListOf<LegacyIDMappingEntity>()
-		val matchPlayIdMappings = mutableListOf<LegacyIDMappingEntity>()
 
 		val legacySeriesIds = games.map(LegacyGame::seriesId)
 		val seriesIdMappings = legacyIDMappingDao.getLegacyIDMappings(
@@ -198,13 +198,54 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 					opponentId = null,
 					opponentScore = null,
 					result = legacyGame.matchPlayResult.asMatchPlay(),
-				))
+				)
+				)
 			}
 		}
 
 		legacyIDMappingDao.insertAll(gameIdMappings)
-		legacyIDMappingDao.insertAll(matchPlayIdMappings)
 		gameDao.insertAll(migratedGames)
+		matchPlayDao.insertAll(migratedMatchPlays)
+	}
+
+	override suspend fun migrateMatchPlays(matchPlays: List<LegacyMatchPlay>) {
+		val migratedMatchPlays = mutableListOf<MatchPlayEntity>()
+		val matchPlayIdMappings = mutableListOf<LegacyIDMappingEntity>()
+
+		val legacyGameIds = matchPlays.map(LegacyMatchPlay::gameId)
+		val gameIdMappings = legacyIDMappingDao.getLegacyIDMappings(
+			legacyIds = legacyGameIds,
+			key = LegacyIDMappingKey.GAME,
+		).associateBy({ it.legacyId }, { it.id })
+		val existingMatchPlays = matchPlayDao
+			.getMatchPlaysForGames(gameIdMappings.values)
+			.associateBy { it.gameId }
+
+		for (legacyMatchPlay in matchPlays) {
+			if (legacyMatchPlay.opponentScore == 0 && legacyMatchPlay.opponentName.isNullOrBlank()) {
+				continue
+			}
+
+			val gameId = gameIdMappings[legacyMatchPlay.gameId]!!
+			val existingMatchPlay = existingMatchPlays[gameId]
+			val matchPlayId = existingMatchPlay?.id ?: UUID.randomUUID()
+
+			matchPlayIdMappings.add(LegacyIDMappingEntity(
+				id = matchPlayId,
+				legacyId = legacyMatchPlay.id,
+				key = LegacyIDMappingKey.MATCH_PLAY,
+			))
+
+			migratedMatchPlays.add(MatchPlayEntity(
+				id =  matchPlayId,
+				opponentId = existingMatchPlay?.opponentId,
+				opponentScore = existingMatchPlay?.opponentScore ?: legacyMatchPlay.opponentScore,
+				result = existingMatchPlay?.result,
+				gameId = gameId,
+			))
+		}
+
+		legacyIDMappingDao.insertAll(matchPlayIdMappings)
 		matchPlayDao.insertAll(migratedMatchPlays)
 	}
 

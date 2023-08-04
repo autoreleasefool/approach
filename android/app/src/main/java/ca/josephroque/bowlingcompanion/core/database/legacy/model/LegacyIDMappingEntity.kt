@@ -22,4 +22,5 @@ enum class LegacyIDMappingKey {
 	LEAGUE,
 	SERIES,
 	GAME,
+	MATCH_PLAY,
 }

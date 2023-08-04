@@ -14,4 +14,5 @@ enum class MigrationStep {
 	LEAGUES,
 	SERIES,
 	GAMES,
+	MATCH_PLAYS,
 }

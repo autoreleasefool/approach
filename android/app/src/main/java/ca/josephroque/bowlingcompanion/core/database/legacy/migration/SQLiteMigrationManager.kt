@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateBowlers
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateGames
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateLeagues
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateMatchPlays
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateSeries
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateTeams
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -51,6 +52,7 @@ class SQLiteMigrationManager @Inject constructor(
 			MigrationStep.LEAGUES -> migrateLeagues(legacyDb)
 			MigrationStep.SERIES -> migrateSeries(legacyDb)
 			MigrationStep.GAMES -> migrateGames(legacyDb)
+			MigrationStep.MATCH_PLAYS -> migrateMatchPlays(legacyDb)
 		}
 	}
 }
