@@ -22,6 +22,7 @@
 		CA59011D2A05AD81000261C9 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011C2A05AD81000261C9 /* PreferenceService */; };
 		CA5952BB2A1FF51D0002494C /* StatisticsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA5952BA2A1FF51D0002494C /* StatisticsRepository */; };
 		CA626E2F2A842032002BCC13 /* TipsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E2E2A842032002BCC13 /* TipsService */; };
+		CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA626E262A821846002BCC13 /* StoreKit.framework */; };
 		CA632F5829BD26E200272ADB /* GameEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */; };
 		CA632F5C29BD26E300272ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA632F5B29BD26E300272ADB /* Assets.xcassets */; };
 		CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA632F6529BD293E00272ADB /* GamesEditorFeature */; };
@@ -65,6 +66,7 @@
 		CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppApproach.xcconfig; sourceTree = "<group>"; };
 		CA5F86F22A01E5AF0092F519 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppGameEditorPreview.xcconfig; sourceTree = "<group>"; };
+		CA626E262A821846002BCC13 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		CA632F5529BD26E200272ADB /* GameEditorPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameEditorPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEditorPreviewApp.swift; sourceTree = "<group>"; };
 		CA632F5B29BD26E300272ADB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */,
 				CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
+				CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */,
 				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
 				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
 				CA626E2F2A842032002BCC13 /* TipsService in Frameworks */,
@@ -138,6 +141,7 @@
 		CA2890DC28F87FF2003C1EE9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CA626E262A821846002BCC13 /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
