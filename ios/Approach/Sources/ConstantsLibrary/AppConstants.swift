@@ -23,5 +23,9 @@ extension AppConstants {
 		public static let telemetryDeck: String = {
 			(try? Configuration.value(for: "TELEMETRY_DECK_API_KEY")) ?? ""
 		}()
+
+		public static let revenueCat: String = {
+			(try? Configuration.value(for: "REVENUE_CAT_API_KEY")) ?? AppConstants.ApiKey.disable
+		}()
 	}
 }
