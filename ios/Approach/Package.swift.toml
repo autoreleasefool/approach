@@ -406,6 +406,10 @@ from = "1.0.0"
 url = "https://github.com/exyte/PopupView.git"
 from = "2.6.0"
 
+[dependencies.RevenueCat]
+url = "https://github.com/RevenueCat/purchases-ios.git"
+from = "4.25.9"
+
 [dependencies.SFSafeSymbols]
 url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"
 from = "4.1.1"
