@@ -243,6 +243,12 @@ dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.Preference]
 
+[services.Products]
+libraries = [ "Constants" ]
+dependencies = [ "RevenueCat" ]
+[services.Products.interface]
+libraries = [ "Products" ]
+
 [services.RecentlyUsed]
 services = [ "Preference" ]
 
@@ -299,6 +305,9 @@ libraries = [ "Assets", "Models", "Strings" ]
 
 [libraries.PickableModels]
 libraries = [ "Models", "ResourcePicker" ]
+
+[libraries.Products]
+skip_tests = true
 
 [libraries.Reordering]
 libraries = [ "FeatureAction" ]

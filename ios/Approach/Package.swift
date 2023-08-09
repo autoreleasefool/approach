@@ -96,6 +96,8 @@ let package = Package(
 		.library(name: "PasteboardServiceInterface", targets: ["PasteboardServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
+		.library(name: "ProductsService", targets: ["ProductsService"]),
+		.library(name: "ProductsServiceInterface", targets: ["ProductsServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 		.library(name: "TipsService", targets: ["TipsService"]),
@@ -115,6 +117,7 @@ let package = Package(
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
 		.library(name: "PickableModelsLibrary", targets: ["PickableModelsLibrary"]),
+		.library(name: "ProductsLibrary", targets: ["ProductsLibrary"]),
 		.library(name: "ReorderingLibrary", targets: ["ReorderingLibrary"]),
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
@@ -1229,6 +1232,28 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "ProductsService",
+			dependencies: [
+				.product(name: "RevenueCat", package: "purchases-ios"),
+				"ConstantsLibrary",
+				"ProductsServiceInterface",
+			]
+		),
+		.target(
+			name: "ProductsServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ProductsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ProductsServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ProductsService",
+			]
+		),
+		.target(
 			name: "RecentlyUsedService",
 			dependencies: [
 				"PreferenceServiceInterface",
@@ -1415,6 +1440,10 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"PickableModelsLibrary",
 			]
+		),
+		.target(
+			name: "ProductsLibrary",
+			dependencies: []
 		),
 		.target(
 			name: "ReorderingLibrary",

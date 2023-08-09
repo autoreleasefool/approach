@@ -1,0 +1,45 @@
+import Dependencies
+import ProductsLibrary
+
+public struct ProductsService: Sendable {
+	public var initialize: @Sendable () -> Void
+	public var isAvailable: @Sendable (Product) async -> Bool
+	public var observe: @Sendable (Product) -> AsyncStream<Bool>
+	public var fetchVariants: @Sendable (Product) async throws -> [ProductVariant]
+	public var enableVariant: @Sendable (ProductVariant) async throws -> Bool
+	public var restore: @Sendable () async throws -> Void
+
+	public init(
+		initialize: @escaping @Sendable () -> Void,
+		isAvailable: @escaping @Sendable (Product) async -> Bool,
+		observe: @escaping @Sendable (Product) -> AsyncStream<Bool>,
+		fetchVariants: @escaping @Sendable (Product) async throws -> [ProductVariant],
+		enableVariant: @escaping @Sendable (ProductVariant) async throws -> Bool,
+		restore: @escaping @Sendable () async throws -> Void
+	) {
+		self.initialize = initialize
+		self.isAvailable = isAvailable
+		self.observe = observe
+		self.fetchVariants = fetchVariants
+		self.enableVariant = enableVariant
+		self.restore = restore
+	}
+}
+
+extension ProductsService: TestDependencyKey {
+	public static var testValue = Self(
+		initialize: { unimplemented("\(Self.self).initialize") },
+		isAvailable: { _ in unimplemented("\(Self.self).isAvailable") },
+		observe: { _ in unimplemented("\(Self.self).observe") },
+		fetchVariants: { _ in unimplemented("\(Self.self).fetchVariants") },
+		enableVariant: { _ in unimplemented("\(Self.self).enableVariant") },
+		restore: { unimplemented("\(Self.self).restore") }
+	)
+}
+
+extension DependencyValues {
+	public var products: ProductsService {
+		get { self[ProductsService.self] }
+		set { self[ProductsService.self] = newValue }
+	}
+}

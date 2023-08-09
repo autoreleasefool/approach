@@ -1,5 +1,6 @@
 import AnalyticsServiceInterface
 import Dependencies
+import ProductsServiceInterface
 import SwiftUI
 import XCTestDynamicOverlay
 
@@ -14,6 +15,9 @@ public struct ApproachApp: App {
 	}
 
 	public init() {
+		@Dependency(\.products) var products
+		products.initialize()
+
 		@Dependency(\.analytics) var analytics
 		analytics.initialize()
 		Task.detached {

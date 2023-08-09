@@ -23,6 +23,7 @@
 		CA5952BB2A1FF51D0002494C /* StatisticsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA5952BA2A1FF51D0002494C /* StatisticsRepository */; };
 		CA626E2F2A842032002BCC13 /* TipsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E2E2A842032002BCC13 /* TipsService */; };
 		CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA626E262A821846002BCC13 /* StoreKit.framework */; };
+		CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E282A821B9A002BCC13 /* ProductsService */; };
 		CA632F5829BD26E200272ADB /* GameEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */; };
 		CA632F5C29BD26E300272ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA632F5B29BD26E300272ADB /* Assets.xcassets */; };
 		CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA632F6529BD293E00272ADB /* GamesEditorFeature */; };
@@ -109,6 +110,7 @@
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
 				CA8847382A587D1D001AA48F /* AppIconService in Frameworks */,
+				CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
@@ -311,6 +313,7 @@
 				CAA668BD2A8F29A800DF3E75 /* EmailService */,
 				CAA668BF2A8F2A2E00DF3E75 /* PasteboardService */,
 				CA2B78202AABC9EC0044487E /* ScoresRepository */,
+				CA626E282A821B9A002BCC13 /* ProductsService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -554,6 +557,10 @@
 		CA626E2E2A842032002BCC13 /* TipsService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TipsService;
+		};
+		CA626E282A821B9A002BCC13 /* ProductsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProductsService;
 		};
 		CA632F6529BD293E00272ADB /* GamesEditorFeature */ = {
 			isa = XCSwiftPackageProductDependency;
