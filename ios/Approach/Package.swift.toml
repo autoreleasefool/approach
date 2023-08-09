@@ -335,6 +335,7 @@ suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
 
 [libraries.Tips]
+libraries = [ "Views" ]
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]

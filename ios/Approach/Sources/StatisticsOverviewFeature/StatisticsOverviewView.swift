@@ -4,6 +4,7 @@ import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import TipsLibrary
 import ViewsLibrary
 
 public struct StatisticsOverviewView: View {
@@ -27,19 +28,15 @@ public struct StatisticsOverviewView: View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				if viewStore.isShowingOverviewTip {
-					hintView(
-						title: Strings.Statistics.Overview.GetAnOverviewHint.title,
-						message: Strings.Statistics.Overview.GetAnOverviewHint.message,
-						onDismiss: { viewStore.send(.didTapDismissOverviewTip, animation: .default) }
-					)
+					Section {
+						BasicTipView(tip: .statisticsOverview) { viewStore.send(.didTapDismissOverviewTip, animation: .default) }
+					}
 				}
 
 				if viewStore.isShowingDetailsTip {
-					hintView(
-						title: Strings.Statistics.Overview.ViewMoreDetailsHint.title,
-						message: Strings.Statistics.Overview.ViewMoreDetailsHint.message,
-						onDismiss: { viewStore.send(.didTapDismissDetailsTip, animation: .default) }
-					)
+					Section {
+						BasicTipView(tip: .statisticsDetails) { viewStore.send(.didTapDismissDetailsTip, animation: .default) }
+					}
 				}
 
 				Section {
@@ -70,34 +67,6 @@ public struct StatisticsOverviewView: View {
 		) { store in
 			StatisticsDetailsView(store: store)
 		}
-	}
-
-	private func hintView(title: String, message: String, onDismiss: @escaping () -> Void) -> some View {
-		Section {
-			VStack(alignment: .leading, spacing: 0) {
-				HStack(alignment: .center, spacing: 0) {
-					Text(title)
-						.font(.headline)
-						.frame(maxWidth: .infinity, alignment: .leading)
-					Button(action: onDismiss) {
-						Image(systemName: "xmark")
-							.resizable()
-							.scaledToFit()
-							.frame(width: .smallIcon, height: .smallSpacing)
-							.padding(.vertical)
-							.padding(.leading)
-					}
-					.buttonStyle(TappableElement())
-				}
-				.frame(maxWidth: .infinity)
-
-				Text(message)
-					.frame(maxWidth: .infinity, alignment: .leading)
-			}
-			.padding(.horizontal)
-			.padding(.bottom)
-		}
-		.listRowInsets(EdgeInsets())
 	}
 }
 

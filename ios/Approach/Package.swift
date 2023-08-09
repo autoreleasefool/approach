@@ -1479,7 +1479,9 @@ let package = Package(
 		),
 		.target(
 			name: "TipsLibrary",
-			dependencies: []
+			dependencies: [
+				"ViewsLibrary",
+			]
 		),
 		.testTarget(
 			name: "TipsLibraryTests",
