@@ -24,6 +24,7 @@
 		CA626E2F2A842032002BCC13 /* TipsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E2E2A842032002BCC13 /* TipsService */; };
 		CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA626E262A821846002BCC13 /* StoreKit.framework */; };
 		CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA626E282A821B9A002BCC13 /* ProductsService */; };
+		CA626E2B2A836881002BCC13 /* Configuration.storekit in Resources */ = {isa = PBXBuildFile; fileRef = CA626E2A2A836881002BCC13 /* Configuration.storekit */; };
 		CA632F5829BD26E200272ADB /* GameEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */; };
 		CA632F5C29BD26E300272ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA632F5B29BD26E300272ADB /* Assets.xcassets */; };
 		CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA632F6529BD293E00272ADB /* GamesEditorFeature */; };
@@ -68,6 +69,7 @@
 		CA5F86F22A01E5AF0092F519 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
 		CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppGameEditorPreview.xcconfig; sourceTree = "<group>"; };
 		CA626E262A821846002BCC13 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		CA626E2A2A836881002BCC13 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		CA632F5529BD26E200272ADB /* GameEditorPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GameEditorPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEditorPreviewApp.swift; sourceTree = "<group>"; };
 		CA632F5B29BD26E300272ADB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 		CA8BBC5728D59B8B00653A1E /* ApproachIOS */ = {
 			isa = PBXGroup;
 			children = (
+				CA626E2A2A836881002BCC13 /* Configuration.storekit */,
 				CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */,
 				CA8BBC5E28D59B8C00653A1E /* Preview Content */,
 				CA2F033828F8797100030BFE /* Source */,
@@ -370,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */,
+				CA626E2B2A836881002BCC13 /* Configuration.storekit in Resources */,
 				CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

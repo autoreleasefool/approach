@@ -1,0 +1,89 @@
+{
+  "identifier" : "0E3E835B",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6453685981",
+    "_developerTeamID" : "3UBRXR267C",
+    "_lastSynchronizedDate" : 713255045.61805403
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21371148",
+      "localizations" : [
+
+      ],
+      "name" : "Approach Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6459227258",
+          "introductoryOffer" : {
+            "internalID" : "1C6EF6BB",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited access to all pro features",
+              "displayName" : "Approach Pro",
+              "locale" : "en_CA"
+            }
+          ],
+          "productID" : "approach_1999_1y_2wf",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual, $19.99, 2-weeks free",
+          "subscriptionGroupID" : "21371148",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6459355618",
+          "introductoryOffer" : {
+            "internalID" : "46ABF54F",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P2W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited access to all pro features",
+              "displayName" : "Approach Pro",
+              "locale" : "en_CA"
+            }
+          ],
+          "productID" : "approach_299_1m_2wf",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly, $2.99, 2-weeks free",
+          "subscriptionGroupID" : "21371148",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
