@@ -90,6 +90,8 @@ let package = Package(
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 		.library(name: "ScoringService", targets: ["ScoringService"]),
 		.library(name: "ScoringServiceInterface", targets: ["ScoringServiceInterface"]),
+		.library(name: "TipsService", targets: ["TipsService"]),
+		.library(name: "TipsServiceInterface", targets: ["TipsServiceInterface"]),
 
 		// MARK: - Libraries
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
@@ -120,6 +122,7 @@ let package = Package(
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
 		.library(name: "TestUtilitiesLibrary", targets: ["TestUtilitiesLibrary"]),
+		.library(name: "TipsLibrary", targets: ["TipsLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
 	dependencies: [
@@ -550,6 +553,7 @@ let package = Package(
 			name: "StatisticsOverviewFeature",
 			dependencies: [
 				"StatisticsDetailsFeature",
+				"TipsServiceInterface",
 			]
 		),
 		.testTarget(
@@ -1134,6 +1138,27 @@ let package = Package(
 				"TestDatabaseUtilitiesLibrary",
 			]
 		),
+		.target(
+			name: "TipsService",
+			dependencies: [
+				"PreferenceServiceInterface",
+				"TipsServiceInterface",
+			]
+		),
+		.target(
+			name: "TipsServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"TipsLibrary",
+			]
+		),
+		.testTarget(
+			name: "TipsServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"TipsService",
+			]
+		),
 
 		// MARK: - Libraries
 		.target(
@@ -1451,6 +1476,17 @@ let package = Package(
 		.target(
 			name: "TestUtilitiesLibrary",
 			dependencies: []
+		),
+		.target(
+			name: "TipsLibrary",
+			dependencies: []
+		),
+		.testTarget(
+			name: "TipsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"TipsLibrary",
+			]
 		),
 		.target(
 			name: "ViewsLibrary",

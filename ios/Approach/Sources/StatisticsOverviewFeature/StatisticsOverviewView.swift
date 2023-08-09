@@ -10,12 +10,12 @@ public struct StatisticsOverviewView: View {
 	let store: StoreOf<StatisticsOverview>
 
 	struct ViewState: Equatable {
-		let isShowingOverviewHint: Bool
-		let isShowingDetailsHint: Bool
+		let isShowingOverviewTip: Bool
+		let isShowingDetailsTip: Bool
 
 		init(state: StatisticsOverview.State) {
-			self.isShowingOverviewHint = state.isShowingOverviewHint
-			self.isShowingDetailsHint = state.isShowingDetailsHint
+			self.isShowingOverviewTip = state.isShowingOverviewTip
+			self.isShowingDetailsTip = state.isShowingDetailsTip
 		}
 	}
 
@@ -26,19 +26,19 @@ public struct StatisticsOverviewView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
-				if viewStore.isShowingOverviewHint {
+				if viewStore.isShowingOverviewTip {
 					hintView(
 						title: Strings.Statistics.Overview.GetAnOverviewHint.title,
 						message: Strings.Statistics.Overview.GetAnOverviewHint.message,
-						onDismiss: { viewStore.send(.didTapDismissOverviewHint, animation: .default) }
+						onDismiss: { viewStore.send(.didTapDismissOverviewTip, animation: .default) }
 					)
 				}
 
-				if viewStore.isShowingDetailsHint {
+				if viewStore.isShowingDetailsTip {
 					hintView(
 						title: Strings.Statistics.Overview.ViewMoreDetailsHint.title,
 						message: Strings.Statistics.Overview.ViewMoreDetailsHint.message,
-						onDismiss: { viewStore.send(.didTapDismissDetailsHint, animation: .default) }
+						onDismiss: { viewStore.send(.didTapDismissDetailsTip, animation: .default) }
 					)
 				}
 

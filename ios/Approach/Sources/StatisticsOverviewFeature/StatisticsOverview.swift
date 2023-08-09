@@ -1,30 +1,30 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import PreferenceServiceInterface
 import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsRepositoryInterface
+import TipsServiceInterface
 
 public struct StatisticsOverview: Reducer {
 	public struct State: Equatable {
-		public var isShowingOverviewHint: Bool
-		public var isShowingDetailsHint: Bool
+		public var isShowingOverviewTip: Bool
+		public var isShowingDetailsTip: Bool
 
 		public var filter: TrackableFilter?
 		@PresentationState public var destination: Destination.State?
 
 		public init() {
-			@Dependency(\.preferences) var preferences
+			@Dependency(\.tips) var tips
 
-			self.isShowingOverviewHint = preferences.bool(forKey: .statisticsOverviewHintHidden) != true
-			self.isShowingDetailsHint = preferences.bool(forKey: .statisticsDetailsHintHidden) != true
+			self.isShowingOverviewTip = tips.shouldShow(tipFor: .statisticsOverview)
+			self.isShowingDetailsTip = tips.shouldShow(tipFor: .statisticsDetails)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didTapDismissOverviewHint
-			case didTapDismissDetailsHint
+			case didTapDismissOverviewTip
+			case didTapDismissDetailsTip
 			case didTapViewDetailedStatistics
 			case sourcePickerDidDismiss
 		}
@@ -61,7 +61,7 @@ public struct StatisticsOverview: Reducer {
 
 	public init() {}
 
-	@Dependency(\.preferences) var preferences
+	@Dependency(\.tips) var tips
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -73,13 +73,13 @@ public struct StatisticsOverview: Reducer {
 					state.destination = .details(.init(filter: filter))
 					return .none
 
-				case .didTapDismissDetailsHint:
-					state.isShowingDetailsHint = false
-					return .run { _ in preferences.setKey(.statisticsDetailsHintHidden, toBool: true) }
+				case .didTapDismissDetailsTip:
+					state.isShowingDetailsTip = false
+					return .run { _ in await tips.hide(tipFor: .statisticsDetails) }
 
-				case .didTapDismissOverviewHint:
-					state.isShowingOverviewHint = false
-					return .run { _ in preferences.setKey(.statisticsOverviewHintHidden, toBool: true) }
+				case .didTapDismissOverviewTip:
+					state.isShowingOverviewTip = false
+					return .run { _ in await tips.hide(tipFor: .statisticsOverview)}
 
 				case .didTapViewDetailedStatistics:
 					state.destination = .sourcePicker(.init(source: nil))

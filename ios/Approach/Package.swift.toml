@@ -113,6 +113,7 @@ libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
+services = [ "Tips" ]
 
 [features.StatisticsDetails]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
@@ -225,6 +226,11 @@ repositories = [ "Frames" ]
 services = [ "Database" ]
 libraries = [ "TestDatabaseUtilities" ]
 
+[services.Tips]
+services = [ "Preference" ]
+[services.Tips.interface]
+libraries = [ "Tips" ]
+
 # Libraries
 
 [libraries.Assets]
@@ -327,6 +333,8 @@ dependencies = [ "Dependencies" ]
 [libraries.TestUtilities]
 suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
+
+[libraries.Tips]
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]

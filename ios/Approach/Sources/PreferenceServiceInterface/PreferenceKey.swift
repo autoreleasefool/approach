@@ -6,8 +6,6 @@ public enum PreferenceKey: String {
 
 	// MARK: - Statistics
 
-	case statisticsOverviewHintHidden               // default: false
-	case statisticsDetailsHintHidden                // default: false
 	case statisticsCountH2AsH                       // default: true
 	case statisticsCountSplitWithBonusAsSplit       // default: true
 	case statisticsHideZeroStatistics               // default: true
