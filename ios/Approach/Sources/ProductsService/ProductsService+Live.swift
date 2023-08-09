@@ -9,7 +9,14 @@ extension ProductsService: DependencyKey {
 			initialize: {
 				let apiKey = AppConstants.ApiKey.revenueCat
 
+				if apiKey == AppConstants.ApiKey.disable {
+					print("Products disabled")
+					return
+				}
+
+				// TODO: Remove for release builds
 				Purchases.logLevel = .debug
+
 				Purchases.configure(
 					with: Configuration.Builder(withAPIKey: apiKey)
 				)
