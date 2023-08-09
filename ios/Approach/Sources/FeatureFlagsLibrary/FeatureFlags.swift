@@ -17,6 +17,7 @@ extension FeatureFlag {
 	public static let sharingGame = Self(name: "sharingGame", introduced: "2023-08-29", stage: .development)
 	public static let sharingSeries = Self(name: "sharingSeries", introduced: "2023-08-29", stage: .development)
 	public static let alleyAndGearAverages = Self(name: "alleyAndGearAverages", introduced: "2023-09-12", stage: .development)
+	public static let proSubscription = Self(name: "proSubscription", introduced: "2023-08-08", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.accessoriesTab,
@@ -30,6 +31,7 @@ extension FeatureFlag {
 		.opponents,
 		.opponentDetails,
 		.overviewTab,
+		.proSubscription,
 		.settingsTab,
 		.sharingGame,
 		.sharingSeries,
