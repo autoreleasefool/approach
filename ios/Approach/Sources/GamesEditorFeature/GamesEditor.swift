@@ -8,6 +8,7 @@ import Foundation
 import FramesRepositoryInterface
 import GamesRepositoryInterface
 import GearRepositoryInterface
+import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import ResourcePickerLibrary
 import ScoreSheetFeature
@@ -74,9 +75,10 @@ public struct GamesEditor: Reducer {
 			case bowlersResponse(TaskResult<[Bowler.Summary]>)
 			case framesResponse(TaskResult<[Frame.Edit]>)
 			case gameResponse(TaskResult<Game.Edit?>)
-			case didUpdateFrame(TaskResult<Never>)
-			case didUpdateGame(TaskResult<Never>)
-			case didUpdateMatchPlay(TaskResult<Never>)
+
+			case didUpdateFrame(TaskResult<Frame.Edit>)
+			case didUpdateGame(TaskResult<Game.Edit>)
+			case didUpdateMatchPlay(TaskResult<MatchPlay.Edit>)
 
 			case didDismissOpenSheet
 			case calculatedScore([ScoreStep])
@@ -105,7 +107,6 @@ public struct GamesEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
@@ -220,6 +221,9 @@ public struct GamesEditor: Reducer {
 					// TODO: handle error saving match play
 					return .none
 
+				case .didUpdateFrame(.success), .didUpdateGame(.success), .didUpdateMatchPlay(.success):
+					return .none
+
 				case let .calculatedScore(score):
 					state.score = score
 					switch state.game?.scoringMethod {
@@ -286,6 +290,35 @@ public struct GamesEditor: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		GamesEditorAnalyticsReducer()
+	}
+}
+
+public struct GamesEditorAnalyticsReducer: Reducer {
+	public var body: some ReducerOf<GamesEditor> {
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.destination(.presented(.gameDetails(.delegate(.didEditMatchPlay(matchPlay)))))):
+				if matchPlay == nil {
+					return Analytics.MatchPlay.Deleted()
+				} else {
+					return Analytics.MatchPlay.Created()
+				}
+			case let .internal(.didUpdateFrame(.success(frame))):
+				return Analytics.Game.Updated(gameId: frame.gameId)
+			case let .internal(.didUpdateGame(.success(game))):
+				return Analytics.Game.Updated(gameId: game.id)
+			case let .internal(.didUpdateMatchPlay(.success(matchPlay))):
+				return Analytics.MatchPlay.Updated(
+					withOpponent: matchPlay.opponent != nil,
+					withScore: matchPlay.opponentScore != nil,
+					withResult: matchPlay.result?.rawValue ?? ""
+				)
+			default:
+				return nil
+			}
 		}
 	}
 }

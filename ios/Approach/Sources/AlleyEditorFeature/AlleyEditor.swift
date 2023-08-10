@@ -184,7 +184,7 @@ public struct AlleyEditor: Reducer {
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating, .didDiscard:
-						return .run { _ in await self.dismiss() }
+						return .run { _ in await dismiss() }
 					}
 
 				case let .alleyLanesEditor(.presented(.delegate(delegateAction))):

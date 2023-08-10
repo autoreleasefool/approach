@@ -73,7 +73,6 @@ public struct GameDetails: Reducer {
 		case delete
 	}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.matchPlays) var matchPlays
 	@Dependency(\.uuid) var uuid
 
@@ -110,10 +109,7 @@ public struct GameDetails: Reducer {
 
 				case .didTapSaveScore:
 					state.game.score = max(min(state.alertScore, 450), 0)
-					return .merge(
-						.send(.delegate(.didEditGame(state.game))),
-						.run { [gameId = state.game.id] _ in await analytics.trackEvent(Analytics.Game.ManualScoreSet(gameId: gameId)) }
-					)
+					return .send(.delegate(.didEditGame(state.game)))
 
 				case .didTapCancelScore:
 					if state.didJustToggleScoringMethod {
@@ -165,6 +161,15 @@ public struct GameDetails: Reducer {
 				return .none
 			}
 		}
+
+		AnalyticsReducer<State, Action> { state, action in
+			switch action {
+			case .view(.didTapSaveScore):
+				return Analytics.Game.ManualScoreSet(gameId: state.game.id)
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func toggleScoringMethod(in state: inout State) -> Effect<Action> {
@@ -183,39 +188,31 @@ public struct GameDetails: Reducer {
 	private func createMatchPlay(state: inout State) -> Effect<Action> {
 		let matchPlay = MatchPlay.Edit(gameId: state.game.id, id: uuid())
 		state.game.matchPlay = matchPlay
-		return .merge(
-			.concatenate(
-				.run { send in
-					do {
-						try await matchPlays.create(matchPlay)
-					} catch {
-						await send(.internal(.didUpdateMatchPlay(.failure(error))))
-					}
-				},
-				.send(.delegate(.didEditMatchPlay(matchPlay)))
-			).cancellable(id: CancelID.saveMatchPlay),
-			.run { _ in
-				await analytics.trackEvent(Analytics.MatchPlay.Created())
-
-			}
-		)
+		return .concatenate(
+			.run { send in
+				do {
+					try await matchPlays.create(matchPlay)
+				} catch {
+					await send(.internal(.didUpdateMatchPlay(.failure(error))))
+				}
+			},
+			.send(.delegate(.didEditMatchPlay(matchPlay)))
+		).cancellable(id: CancelID.saveMatchPlay)
 	}
 
 	private func deleteMatchPlay(state: inout State) -> Effect<Action> {
 		guard let matchPlay = state.game.matchPlay else { return .none }
 		state.game.matchPlay = nil
-		return .merge(
-			.concatenate(
-				.cancel(id: CancelID.saveMatchPlay),
-				.run { send in
-					do {
-						try await matchPlays.delete(matchPlay.id)
-					} catch {
-						await send(.internal(.didUpdateMatchPlay(.failure(error))))
-					}
+		return .concatenate(
+			.cancel(id: CancelID.saveMatchPlay),
+			.run { send in
+				do {
+					try await matchPlays.delete(matchPlay.id)
+				} catch {
+					await send(.internal(.didUpdateMatchPlay(.failure(error))))
 				}
-			),
-			.run { _ in await analytics.trackEvent(Analytics.MatchPlay.Deleted()) }
+				await send(.delegate(.didEditMatchPlay(nil)))
+			}
 		)
 	}
 }

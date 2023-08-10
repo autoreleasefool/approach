@@ -72,7 +72,7 @@ public struct AddressLookup: Reducer {
 					)
 
 				case .didTapCancelButton:
-					return .run { _ in await self.dismiss() }
+					return .run { _ in await dismiss() }
 
 				case let .didTapResult(id):
 					guard let address = state.results[id: id] else { return .none }

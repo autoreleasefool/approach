@@ -103,7 +103,6 @@ public struct GearList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.gear) var gear
 	@Dependency(\.recentlyUsed) var recentlyUsed
@@ -151,10 +150,7 @@ public struct GearList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.Gear.Deleted()) }
-
-					case .didTap:
+					case .didDelete, .didTap:
 						return .none
 					}
 
@@ -199,6 +195,15 @@ public struct GearList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.list(.delegate(.didDelete))):
+				return Analytics.Gear.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

@@ -52,7 +52,6 @@ public struct BowlerEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.uuid) var uuid
@@ -93,26 +92,8 @@ public struct BowlerEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating:
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { [kind = state.kind] _ in await analytics.trackEvent(Analytics.Bowler.Created(kind: kind.rawValue)) }
-						)
-
-					case .didFinishUpdating:
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { [kind = state.kind] _ in await analytics.trackEvent(Analytics.Bowler.Updated(kind: kind.rawValue)) }
-						)
-
-					case .didFinishDeleting:
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { [kind = state.kind] _ in await analytics.trackEvent(Analytics.Bowler.Deleted(kind: kind.rawValue)) }
-						)
-
-					case .didDiscard:
-						return .run { _ in await self.dismiss() }
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+						return .run { _ in await dismiss() }
 					}
 
 				case .form(.view), .form(.internal):
@@ -121,6 +102,19 @@ public struct BowlerEditor: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		AnalyticsReducer<State, Action> { state, action in
+			switch action {
+			case .internal(.form(.delegate(.didFinishCreating))):
+				return Analytics.Bowler.Created(kind: state.kind.rawValue)
+			case .internal(.form(.delegate(.didFinishUpdating))):
+				return Analytics.Bowler.Updated(kind: state.kind.rawValue)
+			case .internal(.form(.delegate(.didFinishDeleting))):
+				return Analytics.Bowler.Deleted(kind: state.kind.rawValue)
+			default:
+				return nil
 			}
 		}
 	}

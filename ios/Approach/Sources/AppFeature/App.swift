@@ -36,7 +36,6 @@ public struct App: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.preferences) var preferences
 
 	public init() {}
@@ -62,10 +61,7 @@ public struct App: Reducer {
 					switch delegateAction {
 					case .didFinishOnboarding:
 						state = .content(.init())
-						return .merge(
-							.run { _ in preferences.setKey(.appDidCompleteOnboarding, toBool: true) },
-							.run { _ in await analytics.trackEvent(Analytics.App.OnboardingCompleted()) }
-						)
+						return .run { _ in preferences.setKey(.appDidCompleteOnboarding, toBool: true) }
 					}
 
 				case .content(.internal), .content(.view):
@@ -84,6 +80,15 @@ public struct App: Reducer {
 		}
 		.ifCaseLet(/State.onboarding, action: /Action.internal..Action.InternalAction.onboarding) {
 			Onboarding()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.onboarding(.delegate(.didFinishOnboarding))):
+				return Analytics.App.OnboardingCompleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

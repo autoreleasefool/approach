@@ -87,7 +87,6 @@ public struct SeriesList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.date) var date
 	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(\.series) var series
@@ -108,7 +107,7 @@ public struct SeriesList: Reducer {
 					if let series = state.list.resources?[id: id] {
 						state.destination = .games(.init(series: series))
 					}
-					return .run { _ in await analytics.trackEvent(Analytics.Series.Viewed()) }
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -136,10 +135,7 @@ public struct SeriesList: Reducer {
 						))
 						return .none
 
-					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.Series.Deleted()) }
-
-					case .didTap:
+					case .didDelete, .didTap:
 						return .none
 					}
 
@@ -172,6 +168,17 @@ public struct SeriesList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapSeries):
+				return Analytics.Series.Viewed()
+			case .internal(.list(.delegate(.didDelete))):
+				return Analytics.Series.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

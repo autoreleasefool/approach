@@ -1,4 +1,3 @@
-import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
@@ -45,7 +44,6 @@ public struct StatisticsWidgetLayout: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {

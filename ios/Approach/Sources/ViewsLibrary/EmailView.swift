@@ -1,6 +1,6 @@
+import MessageUI
 import SwiftUI
 import UIKit
-import MessageUI
 
 public struct EmailView: UIViewControllerRepresentable {
 

@@ -99,7 +99,6 @@ public struct LeagueEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.uuid) var uuid
@@ -170,25 +169,7 @@ public struct LeagueEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating:
-						return .merge(
-							.run { _ in await dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.League.Created()) }
-						)
-
-					case .didFinishUpdating:
-						return .merge(
-							.run { _ in await dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.League.Updated()) }
-						)
-
-					case .didFinishDeleting:
-						return .merge(
-							.run { _ in await dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.League.Deleted()) }
-						)
-
-					case .didDiscard:
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
 						return .run { _ in await dismiss() }
 					}
 
@@ -205,6 +186,19 @@ public struct LeagueEditor: Reducer {
 		}
 		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
 			ResourcePicker { _ in alleys.list(ordered: .byName) }
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.form(.delegate(.didFinishCreating))):
+				return Analytics.League.Created()
+			case .internal(.form(.delegate(.didFinishUpdating))):
+				return Analytics.League.Updated()
+			case .internal(.form(.delegate(.didFinishDeleting))):
+				return Analytics.League.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

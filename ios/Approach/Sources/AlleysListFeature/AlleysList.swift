@@ -83,7 +83,6 @@ public struct AlleysList: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(\.uuid) var uuid
 
@@ -131,10 +130,7 @@ public struct AlleysList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.Alley.Deleted()) }
-
-					case .didTap:
+					case .didDelete, .didTap:
 						return .none
 					}
 
@@ -169,6 +165,15 @@ public struct AlleysList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.list(.delegate(.didDelete))):
+				return Analytics.Alley.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

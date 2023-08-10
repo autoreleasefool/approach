@@ -97,7 +97,6 @@ public struct OpponentsList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
@@ -115,7 +114,7 @@ public struct OpponentsList: Reducer {
 				case let .didTapOpponent(id):
 					guard let opponent = state.list.resources?[id: id] else { return .none }
 					state.destination = .details(.init(opponent: opponent))
-					return .run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(kind: Bowler.Kind.opponent.rawValue)) }
+					return .none
 
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.ordering))
@@ -144,10 +143,7 @@ public struct OpponentsList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultOpponent(withId: uuid()))))
 						return .none
 
-					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted(kind: Bowler.Kind.opponent.rawValue)) }
-
-					case .didTap:
+					case .didDelete, .didTap:
 						return .none
 					}
 
@@ -190,6 +186,17 @@ public struct OpponentsList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapOpponent):
+				return Analytics.Bowler.Viewed(kind: Bowler.Kind.opponent.rawValue)
+			case .internal(.list(.delegate(.didDelete))):
+				return Analytics.Bowler.Deleted(kind: Bowler.Kind.opponent.rawValue)
+			default:
+				return nil
+			}
 		}
 	}
 }

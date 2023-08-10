@@ -81,7 +81,6 @@ public struct SeriesEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.series) var series
@@ -150,25 +149,7 @@ public struct SeriesEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating:
-						return .merge(
-							.run { _ in await dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Series.Created()) }
-						)
-
-					case .didFinishUpdating:
-						return .merge(
-							.run { _ in await dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Series.Updated()) }
-						)
-
-					case .didFinishDeleting:
-						return .merge(
-							.run { _ in await dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Series.Deleted()) }
-						)
-
-					case .didDiscard:
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
 						return .run { _ in await dismiss() }
 					}
 
@@ -186,6 +167,19 @@ public struct SeriesEditor: Reducer {
 		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
 			ResourcePicker { _ in
 				alleys.list(ordered: .byRecentlyUsed)
+			}
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.form(.delegate(.didFinishCreating))):
+				return Analytics.Series.Created()
+			case .internal(.form(.delegate(.didFinishUpdating))):
+				return Analytics.Series.Updated()
+			case .internal(.form(.delegate(.didFinishDeleting))):
+				return Analytics.Series.Deleted()
+			default:
+				return nil
 			}
 		}
 	}

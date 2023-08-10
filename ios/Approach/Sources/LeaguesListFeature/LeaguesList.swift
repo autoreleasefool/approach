@@ -132,7 +132,6 @@ public struct LeaguesList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.featureFlags) var featureFlags
@@ -199,13 +198,10 @@ public struct LeaguesList: Reducer {
 
 				case let .didLoadSeriesLeague(league):
 					state.destination = .series(.init(league: league))
-					return .merge(
-						.run { _ in
-							try await clock.sleep(for: .seconds(1))
-							recentlyUsed.didRecentlyUseResource(.leagues, league.id)
-						},
-						.run { _ in await analytics.trackEvent(Analytics.League.Viewed()) }
-					)
+					return .run { _ in
+						try await clock.sleep(for: .seconds(1))
+						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
+					}
 
 				case let .widgets(.delegate(delegateAction)):
 					switch delegateAction {
@@ -229,10 +225,7 @@ public struct LeaguesList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid(), forBowler: state.bowler.id))))
 						return .none
 
-					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.League.Deleted()) }
-
-					case .didTap:
+					case .didDelete, .didTap:
 						return .none
 					}
 
@@ -288,6 +281,17 @@ public struct LeaguesList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapLeague):
+				return Analytics.League.Viewed()
+			case .internal(.list(.delegate(.didDelete))):
+				return Analytics.League.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

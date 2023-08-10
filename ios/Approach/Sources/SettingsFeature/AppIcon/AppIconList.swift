@@ -35,7 +35,6 @@ public struct AppIconList: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.appIcon) var appIcon
 
 	public var body: some ReducerOf<Self> {
@@ -51,35 +50,27 @@ public struct AppIconList: Reducer {
 						return .none
 					}
 
-					return .merge(
-						.concatenate(
-							.run { _ in
-								if icon == .primary {
-									try await appIcon.resetAppIcon()
-								} else {
-									try await appIcon.setAppIcon(icon)
-								}
-							} catch: { error, send in
-								await send(.internal(.didUpdateIcon(.failure(error))))
-							},
-							fetchCurrentAppIcon()
-						),
-						.run { _ in await analytics.trackEvent(Analytics.Settings.ChangedAppIcon(appIconName: icon.rawValue)) }
+					return .concatenate(
+						.run { _ in
+							if icon == .primary {
+								try await appIcon.resetAppIcon()
+							} else {
+								try await appIcon.setAppIcon(icon)
+							}
+						} catch: { error, send in
+							await send(.internal(.didUpdateIcon(.failure(error))))
+						},
+						fetchCurrentAppIcon()
 					)
 
 				case .didTapReset:
-					return .merge(
-						.concatenate(
-							.run { _ in
-								try await appIcon.resetAppIcon()
-							} catch: { error, send in
-								await send(.internal(.didUpdateIcon(.failure(error))))
-							},
-							fetchCurrentAppIcon()
-						),
+					return .concatenate(
 						.run { _ in
-							await analytics.trackEvent(Analytics.Settings.ChangedAppIcon(appIconName: AppIcon.primary.rawValue))
-						}
+							try await appIcon.resetAppIcon()
+						} catch: { error, send in
+							await send(.internal(.didUpdateIcon(.failure(error))))
+						},
+						fetchCurrentAppIcon()
 					)
 				}
 
@@ -107,6 +98,17 @@ public struct AppIconList: Reducer {
 			}
 		}
 		.ifLet(\.$alert, action: /Action.internal..Action.InternalAction.alert)
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case let .view(.didTapIcon(icon)):
+				return Analytics.Settings.ChangedAppIcon(appIconName: icon.rawValue)
+			case .view(.didTapReset):
+				return Analytics.Settings.ChangedAppIcon(appIconName: AppIcon.primary.rawValue)
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func fetchCurrentAppIcon() -> Effect<Action> {

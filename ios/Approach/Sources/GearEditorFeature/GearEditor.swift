@@ -65,7 +65,6 @@ public struct GearEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.gear) var gear
@@ -116,26 +115,8 @@ public struct GearEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case let .didFinishCreating(gear):
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Gear.Created(kind: gear.kind.rawValue)) }
-						)
-
-					case .didFinishUpdating:
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Gear.Updated()) }
-						)
-
-					case .didFinishDeleting:
-						return .merge(
-							.run { _ in await self.dismiss() },
-							.run { _ in await analytics.trackEvent(Analytics.Gear.Deleted()) }
-						)
-
-					case .didDiscard:
-						return .run { _ in await self.dismiss() }
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+						return .run { _ in await dismiss() }
 					}
 
 				case let .bowlerPicker(.presented(.delegate(delegateAction))):
@@ -162,6 +143,19 @@ public struct GearEditor: Reducer {
 		}
 		.ifLet(\.$bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
 			ResourcePicker { _ in bowlers.pickable() }
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.form(.delegate(.didFinishCreating(gear)))):
+				return Analytics.Gear.Created(kind: gear.kind.rawValue)
+			case .internal(.form(.delegate(.didFinishUpdating))):
+				return Analytics.Gear.Updated()
+			case .internal(.form(.delegate(.didFinishDeleting))):
+				return Analytics.Gear.Deleted()
+			default:
+				return nil
+			}
 		}
 	}
 }

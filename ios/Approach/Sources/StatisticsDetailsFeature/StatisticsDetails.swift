@@ -89,7 +89,6 @@ public struct StatisticsDetails: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.preferences) var preferences
@@ -192,17 +191,7 @@ public struct StatisticsDetails: Reducer {
 					case let .didRequestEntryDetails(id):
 						guard let statistic = Statistics.type(of: id) else { return .none }
 						state.sheetDetent = StatisticsDetails.defaultSheetDetent
-						return .merge(
-							loadChart(forStatistic: statistic, withFilter: state.filter),
-							.run { _ in
-								await analytics.trackEvent(Analytics.Statistic.Viewed(
-									statisticName: statistic.title,
-									countsH2AsH: preferences.bool(forKey: .statisticsCountH2AsH) ?? true,
-									countsS2AsS: preferences.bool(forKey: .statisticsCountSplitWithBonusAsSplit) ?? true,
-									hidesZeroStatistics: preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
-								))
-							}
-						)
+						return loadChart(forStatistic: statistic, withFilter: state.filter)
 
 					case .listRequiresReload:
 						return refreshStatistics(state: state)
@@ -248,6 +237,21 @@ public struct StatisticsDetails: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.destination(.presented(.list(.delegate(.didRequestEntryDetails(id)))))):
+				guard let statistic = Statistics.type(of: id) else { return nil }
+				return Analytics.Statistic.Viewed(
+					statisticName: statistic.title,
+					countsH2AsH: preferences.bool(forKey: .statisticsCountH2AsH) ?? true,
+					countsS2AsS: preferences.bool(forKey: .statisticsCountSplitWithBonusAsSplit) ?? true,
+					hidesZeroStatistics: preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
+				)
+			default:
+				return nil
+			}
 		}
 	}
 

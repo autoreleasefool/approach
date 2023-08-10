@@ -121,7 +121,6 @@ public struct BowlersList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.preferences) var preferences
@@ -157,13 +156,10 @@ public struct BowlersList: Reducer {
 				case let .didTapBowler(id):
 					guard let bowler = state.list.resources?[id: id] else { return .none }
 					state.destination = .leagues(.init(bowler: bowler.summary))
-					return .merge(
-						.run { _ in
-							try await clock.sleep(for: .seconds(1))
-							recentlyUsed.didRecentlyUseResource(.bowlers, id)
-						},
-						.run { _ in await analytics.trackEvent(Analytics.Bowler.Viewed(kind: Bowler.Kind.playable.rawValue)) }
-					)
+					return .run { _ in
+						try await clock.sleep(for: .seconds(1))
+						recentlyUsed.didRecentlyUseResource(.bowlers, id)
+					}
 				}
 
 			case let .internal(internalAction):
@@ -192,10 +188,7 @@ public struct BowlersList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultBowler(withId: uuid()))))
 						return .none
 
-					case .didDelete:
-						return .run { _ in await analytics.trackEvent(Analytics.Bowler.Deleted(kind: Bowler.Kind.playable.rawValue)) }
-
-					case .didTap:
+					case .didDelete, .didTap:
 						return .none
 					}
 
@@ -247,6 +240,17 @@ public struct BowlersList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapBowler):
+				return Analytics.Bowler.Viewed(kind: Bowler.Kind.playable.rawValue)
+			case .internal(.list(.delegate(.didDelete))):
+				return Analytics.Bowler.Deleted(kind: Bowler.Kind.playable.rawValue)
+			default:
+				return nil
+			}
 		}
 	}
 }

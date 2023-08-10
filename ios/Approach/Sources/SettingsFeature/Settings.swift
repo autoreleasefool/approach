@@ -83,7 +83,6 @@ public struct Settings: Reducer {
 		}
 	}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.appIcon) var appIcon
 	@Dependency(\.databaseMocking) var databaseMocking
 
@@ -110,7 +109,7 @@ public struct Settings: Reducer {
 
 				case .didTapOpponents:
 					state.destination = .opponentsList(.init())
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedOpponents()) }
+					return .none
 
 				case .didTapFeatureFlags:
 					state.destination = .featureFlags(.init())
@@ -118,11 +117,11 @@ public struct Settings: Reducer {
 
 				case .didTapStatistics:
 					state.destination = .statistics(.init())
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedStatistics()) }
+					return .none
 
 				case .didTapAppIcon:
 					state.destination = .appIcon(.init())
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedAppIcons()) }
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -187,6 +186,19 @@ public struct Settings: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapOpponents):
+				return Analytics.Settings.ViewedOpponents()
+			case .view(.didTapStatistics):
+				return Analytics.Settings.ViewedStatistics()
+			case .view(.didTapAppIcon):
+				return Analytics.Settings.ViewedAppIcons()
+			default:
+				return nil
+			}
 		}
 	}
 }

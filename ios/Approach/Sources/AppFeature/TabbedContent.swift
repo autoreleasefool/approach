@@ -58,7 +58,6 @@ public struct TabbedContent: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerOf<Self> {
@@ -90,11 +89,6 @@ public struct TabbedContent: Reducer {
 						for await flags in featureFlags.observeAll(expectedFlags) {
 							await send(.internal(.didChangeTabs(zip(TabbedContent.Tab.allCases, flags).filter(\.1).map(\.0))))
 						}
-					}
-
-				case .binding(\.$selectedTab):
-					return .run { [tab = state.selectedTab] _ in
-						await analytics.trackEvent(Analytics.App.TabSwitched(tab: String(describing: tab)))
 					}
 
 				case .binding:
@@ -146,6 +140,15 @@ public struct TabbedContent: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		AnalyticsReducer<State, Action> { state, action in
+			switch action {
+			case .view(.binding(\.$selectedTab)):
+				return Analytics.App.TabSwitched(tab: String(describing: state.selectedTab))
+			default:
+				return nil
 			}
 		}
 	}
