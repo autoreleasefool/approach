@@ -752,8 +752,26 @@ public enum Strings {
     /// Settings
     public static let title = Strings.tr("Localizable", "settings.title", fallback: "Settings")
     public enum Acknowledgements {
-      /// Settings
+      /// Acknowledgements
       public static let title = Strings.tr("Localizable", "settings.acknowledgements.title", fallback: "Acknowledgements")
+    }
+    public enum Analytics {
+      /// Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold. You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.
+      public static let info = Strings.tr("Localizable", "settings.analytics.info", fallback: "Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold. You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.")
+      /// Opt in
+      public static let optIn = Strings.tr("Localizable", "settings.analytics.optIn", fallback: "Opt in")
+      /// Opt out
+      public static let optOut = Strings.tr("Localizable", "settings.analytics.optOut", fallback: "Opt out")
+      /// Settings
+      public static let title = Strings.tr("Localizable", "settings.analytics.title", fallback: "Analytics")
+      public enum OptedIn {
+        /// You're currently opted into sharing anonymous analytics.
+        public static let message = Strings.tr("Localizable", "settings.analytics.optedIn.message", fallback: "You're currently opted into sharing anonymous analytics.")
+      }
+      public enum OptedOut {
+        /// You're opted out from sharing anonymous analytics.
+        public static let message = Strings.tr("Localizable", "settings.analytics.optedOut.message", fallback: "You're opted out from sharing anonymous analytics.")
+      }
     }
     public enum AppIcon {
       /// App Icon
