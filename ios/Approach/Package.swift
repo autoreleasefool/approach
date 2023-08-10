@@ -159,6 +159,7 @@ let package = Package(
 				"AddressLookupServiceInterface",
 				"FeatureActionLibrary",
 				"LocationsRepositoryInterface",
+				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -431,6 +432,7 @@ let package = Package(
 				"BowlerEditorFeature",
 				"GamesRepositoryInterface",
 				"ResourceListLibrary",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
