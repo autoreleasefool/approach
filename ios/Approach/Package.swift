@@ -933,6 +933,7 @@ let package = Package(
 				.product(name: "TelemetryClient", package: "SwiftClient"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
+				"PreferenceServiceInterface",
 			]
 		),
 		.target(

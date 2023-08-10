@@ -17,4 +17,7 @@ public enum PreferenceKey: String {
 
 	case statisticsWidgetDidConfigureLeagues        // default: false
 	case statisticsWidgetHideInLeagueList           // default: false
+
+	// MARK: - Analytics
+	case analyticsOptInStatus                       // default: "optIn"
 }

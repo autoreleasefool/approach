@@ -2,6 +2,7 @@ import AnalyticsServiceInterface
 import ConstantsLibrary
 import Dependencies
 import Foundation
+import PreferenceServiceInterface
 import TelemetryClient
 
 extension AnalyticsService: DependencyKey {
@@ -9,17 +10,27 @@ extension AnalyticsService: DependencyKey {
 		@Dependency(\.analyticsGameSessionId) var analyticsGameSessionId
 		let properties = PropertyManager()
 
-		return Self(
-			initialize: {
-				let apiKey = AppConstants.ApiKey.telemetryDeck
-				let configuration = TelemetryManagerConfiguration(appID: apiKey)
-				if apiKey == AppConstants.ApiKey.disable {
-					print("Analytics disabled")
-					configuration.analyticsDisabled = true
-				}
+		@Sendable func getOptInStatus() -> Analytics.OptInStatus {
+			@Dependency(\.preferences) var preferences
+			return Analytics.OptInStatus(rawValue: preferences.string(forKey: .analyticsOptInStatus) ?? "") ?? .optedIn
+		}
 
-				TelemetryManager.initialize(with: configuration)
-			},
+		@Sendable func initialize() {
+			let apiKey = AppConstants.ApiKey.telemetryDeck
+			let configuration = TelemetryManagerConfiguration(appID: apiKey)
+			if apiKey == AppConstants.ApiKey.disable {
+				print("Analytics disabled")
+				configuration.analyticsDisabled = true
+			} else if getOptInStatus() == .optedOut {
+				print("Analytics opted out")
+				configuration.analyticsDisabled = true
+			}
+
+			TelemetryManager.initialize(with: configuration)
+		}
+
+		return Self(
+			initialize: initialize,
 			setGlobalProperty: { value, key in
 				if let value {
 					await properties.setProperty(value: value, forKey: key)
@@ -36,6 +47,16 @@ extension AnalyticsService: DependencyKey {
 				}
 
 				TelemetryManager.send(event.name, with: payload)
+			},
+			getOptInStatus: getOptInStatus,
+			setOptInStatus: { newValue in
+				@Dependency(\.preferences) var preferences
+				preferences.setKey(.analyticsOptInStatus, toString: newValue.rawValue)
+
+				TelemetryManager.terminate()
+				initialize()
+
+				return getOptInStatus()
 			}
 		)
 	}()

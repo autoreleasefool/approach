@@ -180,6 +180,7 @@ libraries = [ "Equatable", "Models" ]
 dependencies = [ "XCTestDynamicOverlay" ]
 
 [services.Analytics]
+services = [ "Preference" ]
 libraries = [ "Constants" ]
 dependencies = [ "TelemetryClient" ]
 [services.Analytics.interface]

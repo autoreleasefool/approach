@@ -2,6 +2,13 @@ import Foundation
 
 public enum Analytics {}
 
+extension Analytics {
+	public enum OptInStatus: String {
+		case optedIn
+		case optedOut
+	}
+}
+
 public protocol TrackableEvent {
 	var name: String { get }
 	var payload: [String: String]? { get }
