@@ -312,7 +312,8 @@
 /* Settings */
 
 "settings.analytics.title" = "Analytics";
-"settings.analytics.info" = "Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold. You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.";
+"settings.analytics.info.paragraphOne" = "Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold.";
+"settings.analytics.info.paragraphTwo" = "You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.";
 "settings.analytics.optedIn.message" = "You're currently opted into sharing anonymous analytics.";
 "settings.analytics.optIn" = "Opt in";
 "settings.analytics.optedOut.message" = "You're opted out from sharing anonymous analytics.";

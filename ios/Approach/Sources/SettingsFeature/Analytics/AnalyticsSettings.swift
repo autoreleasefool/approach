@@ -1,8 +1,11 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
+import ConstantsLibrary
 import FeatureActionLibrary
+import FoundationExtensionsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct AnalyticsSettings: Reducer {
 	public struct State: Equatable {
@@ -69,8 +72,11 @@ public struct AnalyticsSettingsView: View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
-					Text(Strings.Settings.Analytics.info)
+					Text(Strings.Settings.Analytics.Info.paragraphOne)
+					Text(Strings.Settings.Analytics.Info.paragraphTwo)
 				}
+				.listRowBackground(Color.clear)
+				.listRowSeparator(.hidden)
 
 				Section {
 					switch viewStore.analyticsOptInStatus {

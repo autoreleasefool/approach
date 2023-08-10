@@ -16,11 +16,11 @@ public struct AlleyEditorView: View {
 	typealias AlleyEditorViewStore = ViewStore<ViewState, AlleyEditor.Action.ViewAction>
 
 	struct ViewState: Equatable {
-		@BindingViewState public var name: String
-		@BindingViewState public var material: Alley.Material?
-		@BindingViewState public var pinFall: Alley.PinFall?
-		@BindingViewState public var mechanism: Alley.Mechanism?
-		@BindingViewState public var pinBase: Alley.PinBase?
+		@BindingViewState var name: String
+		@BindingViewState var material: Alley.Material?
+		@BindingViewState var pinFall: Alley.PinFall?
+		@BindingViewState var mechanism: Alley.Mechanism?
+		@BindingViewState var pinBase: Alley.PinBase?
 		public let location: Location.Edit?
 
 		let hasLanesEnabled: Bool
