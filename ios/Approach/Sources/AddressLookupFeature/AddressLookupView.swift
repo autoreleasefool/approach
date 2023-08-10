@@ -4,6 +4,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct AddressLookupView: View {
@@ -64,7 +65,7 @@ public struct AddressLookupView: View {
 					Button(Strings.Action.cancel) { viewStore.send(.didTapCancelButton) }
 				}
 			}
-			.onAppear { viewStore.send(.didAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 	}
 }

@@ -5,6 +5,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 
 public struct AppIconList: Reducer {
 	public struct State: Equatable {
@@ -17,7 +18,7 @@ public struct AppIconList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case onAppear
+			case didFirstAppear
 			case didTapIcon(AppIcon)
 			case didTapReset
 		}
@@ -42,7 +43,7 @@ public struct AppIconList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .didFirstAppear:
 					return fetchCurrentAppIcon()
 
 				case let .didTapIcon(icon):
@@ -139,7 +140,7 @@ public struct AppIconListView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.AppIcon.title)
-			.onAppear { viewStore.send(.onAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.alert(store: self.store.scope(state: \.$alert, action: { .internal(.alert($0)) }))
 		})
 	}

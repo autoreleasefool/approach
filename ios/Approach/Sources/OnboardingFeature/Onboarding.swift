@@ -17,7 +17,7 @@ public struct Onboarding: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case didAppear
+			case didFirstAppear
 			case didTapGetStarted
 			case didTapAddBowler
 			case binding(BindingAction<State>)
@@ -56,7 +56,7 @@ public struct Onboarding: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
+				case .didFirstAppear:
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(300))
 						for _ in Step.allCases.dropFirst() {

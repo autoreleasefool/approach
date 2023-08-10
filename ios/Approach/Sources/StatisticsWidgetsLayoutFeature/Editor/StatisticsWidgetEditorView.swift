@@ -100,7 +100,7 @@ public struct StatisticsWidgetEditorView: View {
 						.disabled(!viewStore.isSaveable)
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),

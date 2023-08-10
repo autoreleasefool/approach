@@ -99,7 +99,7 @@ public struct OnboardingView: View {
 				.presentationBackgroundInteraction(.enabled(upThrough: .height(minimumSheetSize.height)))
 				.presentationDetents([.height(minimumSheetSize.height == 0 ? 50 : minimumSheetSize.height)])
 			}
-			.onAppear { viewStore.send(.didAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.toolbar(.hidden, for: .navigationBar)
 		})
 	}

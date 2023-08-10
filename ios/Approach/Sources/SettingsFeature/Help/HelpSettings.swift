@@ -5,6 +5,7 @@ import FeatureActionLibrary
 import MessageUI
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct HelpSettings: Reducer {
@@ -124,7 +125,7 @@ public struct HelpSettingsView: View {
 				NavigationLink(
 					Strings.Settings.Help.acknowledgements,
 					destination: AcknowledgementsView()
-						.onAppear { viewStore.send(.didShowAcknowledgements) }
+						.onFirstAppear { viewStore.send(.didShowAcknowledgements) }
 				)
 				Button(Strings.Settings.Analytics.title) { viewStore.send(.didTapAnalyticsButton) }
 					.buttonStyle(.navigation)
@@ -134,7 +135,7 @@ public struct HelpSettingsView: View {
 				NavigationLink(
 					Strings.Settings.Help.developer,
 					destination: DeveloperDetailsView()
-						.onAppear { viewStore.send(.didShowDeveloperDetails) }
+						.onFirstAppear { viewStore.send(.didShowDeveloperDetails) }
 				)
 				Button(Strings.Settings.Help.viewSource) { viewStore.send(.didTapViewSource) }
 				// TODO: enable tip jar

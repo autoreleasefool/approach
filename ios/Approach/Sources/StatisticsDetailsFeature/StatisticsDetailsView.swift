@@ -115,7 +115,7 @@ public struct StatisticsDetailsView: View {
 					animation: .easeInOut
 				)
 			}
-			.task { await viewStore.send(.onAppear).finish() }
+			.task { await viewStore.send(.didFirstAppear).finish() }
 		})
 	}
 

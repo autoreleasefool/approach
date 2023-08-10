@@ -3,6 +3,7 @@ import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct OpponentDetailsView: View {
@@ -48,7 +49,7 @@ public struct OpponentDetailsView: View {
 				}
 			}
 			.navigationTitle(viewStore.opponentName)
-			.onAppear { viewStore.send(.onAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 	}
 }

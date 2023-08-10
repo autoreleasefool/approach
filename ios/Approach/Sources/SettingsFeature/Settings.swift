@@ -32,7 +32,7 @@ public struct Settings: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case onAppear
+			case didFirstAppear
 			case didTapPopulateDatabase
 			case didTapFeatureFlags
 			case didTapOpponents
@@ -98,7 +98,7 @@ public struct Settings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .didFirstAppear:
 					return .run { send in
 						await send(.internal(.didFetchIcon(TaskResult {
 							AppIcon(rawValue: await appIcon.getAppIconName() ?? "")

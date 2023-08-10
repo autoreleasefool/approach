@@ -38,7 +38,7 @@ public struct StatisticsDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case onAppear
+			case didFirstAppear
 			case didTapSourcePicker
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 			case binding(BindingAction<State>)
@@ -107,7 +107,7 @@ public struct StatisticsDetails: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .didFirstAppear:
 					return .merge(
 						refreshStatistics(state: state),
 						.run { send in

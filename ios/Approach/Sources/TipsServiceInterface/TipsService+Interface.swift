@@ -17,7 +17,7 @@ public struct TipsService: Sendable {
 		self.shouldShowTip(tipFor)
 	}
 
-	public func hide(tipFor: Tip) async -> Void {
+	public func hide(tipFor: Tip) async {
 		await self.hideTip(tipFor)
 	}
 }

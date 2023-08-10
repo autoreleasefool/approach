@@ -90,7 +90,7 @@ public struct SettingsView: View {
 				VersionView()
 			}
 			.navigationTitle(Strings.Settings.title)
-			.onAppear { viewStore.send(.onAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),

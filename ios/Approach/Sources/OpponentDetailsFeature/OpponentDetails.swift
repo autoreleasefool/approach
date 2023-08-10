@@ -21,7 +21,7 @@ public struct OpponentDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case onAppear
+			case didFirstAppear
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -44,7 +44,7 @@ public struct OpponentDetails: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .didFirstAppear:
 					return refreshDetails(forOpponent: state.opponent.id)
 				}
 

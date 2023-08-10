@@ -33,7 +33,7 @@ public struct StatisticsSourcePicker: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case onAppear
+			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
 			case didTapSeries
@@ -99,7 +99,7 @@ public struct StatisticsSourcePicker: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .didFirstAppear:
 					guard let source = state.sourceToLoad else { return .none }
 					state.sourceToLoad = nil
 					state.isLoadingSources = true
@@ -329,7 +329,7 @@ public struct StatisticsSourcePickerView: View {
 				}
 			}
 			.navigationTitle(Strings.Statistics.Filter.title)
-			.onAppear { viewStore.send(.onAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),

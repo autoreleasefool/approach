@@ -23,7 +23,7 @@ public struct AddressLookup: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case didAppear
+			case didFirstAppear
 			case didTapCancelButton
 			case didTapResult(AddressLookupResult.ID)
 			case binding(BindingAction<State>)
@@ -56,7 +56,7 @@ public struct AddressLookup: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
+				case .didFirstAppear:
 					return .merge(
 						.run { send in
 							for try await results in await addressLookup.beginSearch(SearchID.lookup) {

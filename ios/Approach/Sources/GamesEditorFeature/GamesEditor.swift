@@ -65,7 +65,7 @@ public struct GamesEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case didAppear
+			case didFirstAppear
 			case didAdjustBackdropSize(CGSize)
 			case binding(BindingAction<State>)
 		}
@@ -127,7 +127,7 @@ public struct GamesEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didAppear:
+				case .didFirstAppear:
 					return .merge(
 						loadBowlers(state: &state),
 						loadGameDetails(state: &state)

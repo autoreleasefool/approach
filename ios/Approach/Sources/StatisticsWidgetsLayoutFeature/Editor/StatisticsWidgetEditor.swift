@@ -47,7 +47,7 @@ public struct StatisticsWidgetEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case onAppear
+			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
 			case didTapSaveButton
@@ -114,7 +114,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .didFirstAppear:
 					return loadSources(&state)
 
 				case .didTapBowler:
