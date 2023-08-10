@@ -756,10 +756,8 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "settings.acknowledgements.title", fallback: "Acknowledgements")
     }
     public enum Analytics {
-      /// Opt in
-      public static let optIn = Strings.tr("Localizable", "settings.analytics.optIn", fallback: "Opt in")
-      /// Opt out
-      public static let optOut = Strings.tr("Localizable", "settings.analytics.optOut", fallback: "Opt out")
+      /// Share anonymous analytics?
+      public static let shareAnonymousAnalytics = Strings.tr("Localizable", "settings.analytics.shareAnonymousAnalytics", fallback: "Share anonymous analytics?")
       /// Settings
       public static let title = Strings.tr("Localizable", "settings.analytics.title", fallback: "Analytics")
       public enum Info {
@@ -768,13 +766,9 @@ public enum Strings {
         /// You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.
         public static let paragraphTwo = Strings.tr("Localizable", "settings.analytics.info.paragraphTwo", fallback: "You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.")
       }
-      public enum OptedIn {
-        /// You're currently opted into sharing anonymous analytics.
-        public static let message = Strings.tr("Localizable", "settings.analytics.optedIn.message", fallback: "You're currently opted into sharing anonymous analytics.")
-      }
-      public enum OptedOut {
-        /// You're opted out from sharing anonymous analytics.
-        public static let message = Strings.tr("Localizable", "settings.analytics.optedOut.message", fallback: "You're opted out from sharing anonymous analytics.")
+      public enum ShareAnonymousAnalytics {
+        /// You can opt out from sharing analytics anytime. When you do, you're anonymized activity stops being shared immediately.
+        public static let footer = Strings.tr("Localizable", "settings.analytics.shareAnonymousAnalytics.footer", fallback: "You can opt out from sharing analytics anytime. When you do, you're anonymized activity stops being shared immediately.")
       }
     }
     public enum AppIcon {
