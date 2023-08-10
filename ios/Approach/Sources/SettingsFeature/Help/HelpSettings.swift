@@ -38,7 +38,6 @@ public struct HelpSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	@Dependency(\.analytics) var analytics
 	@Dependency(\.openURL) var openURL
 
 	public var body: some ReducerOf<Self> {
@@ -51,33 +50,29 @@ public struct HelpSettings: Reducer {
 				case .didTapReportBugButton:
 					if MFMailComposeViewController.canSendMail() {
 						state.isShowingBugReportEmail = true
+						return .none
 					} else {
 						guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.ReportBug.email)") else { return .none }
 						return .run { _ in await openURL(mailto) }
 					}
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.ReportedBug()) }
 
 				case .didTapSendFeedbackButton:
 					if MFMailComposeViewController.canSendMail() {
 						state.isShowingSendFeedbackEmail = true
+						return .none
 					} else {
 						guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.SendFeedback.email)") else { return .none }
 						return .run { _ in await openURL(mailto) }
 					}
 
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.SentFeedback()) }
-
 				case .didShowAcknowledgements:
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedAcknowledgements()) }
+					return .none
 
 				case .didShowDeveloperDetails:
-					return .run { _ in await analytics.trackEvent(Analytics.Settings.ViewedDeveloper()) }
+					return .none
 
 				case .didTapViewSource:
-					return .merge(
-						.run { _ in await openURL(AppConstants.openSourceRepositoryUrl) },
-						.run { _ in await analytics.trackEvent(Analytics.Settings.ViewedSource()) }
-					)
+					return .run { _ in await openURL(AppConstants.openSourceRepositoryUrl) }
 
 				case .didTapAnalyticsButton:
 					state.analytics = .init()
@@ -105,6 +100,25 @@ public struct HelpSettings: Reducer {
 		}
 		.ifLet(\.$analytics, action: /Action.internal..Action.InternalAction.analytics) {
 			AnalyticsSettings()
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapReportBugButton):
+				return Analytics.Settings.ReportedBug()
+			case .view(.didTapSendFeedbackButton):
+				return Analytics.Settings.SentFeedback()
+			case .view(.didShowAcknowledgements):
+				return Analytics.Settings.ViewedAcknowledgements()
+			case .view(.didShowDeveloperDetails):
+				return Analytics.Settings.ViewedDeveloper()
+			case .view(.didTapViewSource):
+				return Analytics.Settings.ViewedSource()
+			case .view(.didTapAnalyticsButton):
+				return Analytics.Settings.ViewedAnalytics()
+			default:
+				return nil
+			}
 		}
 	}
 }
