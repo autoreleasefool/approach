@@ -64,20 +64,20 @@ public struct GamesHeaderView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack {
-				headerButton(systemName: "chevron.backward") { viewStore.send(.didTapCloseButton) }
+				headerButton(systemSymbol: .chevronBackward) { viewStore.send(.didTapCloseButton) }
 				Spacer()
 				Text(Strings.Game.titleWithOrdinal(viewStore.currentGameIndex + 1))
 					.font(.caption)
 					.foregroundColor(.white)
 				Spacer()
-				headerButton(systemName: "gear") { viewStore.send(.didTapSettingsButton) }
+				headerButton(systemSymbol: .gear) { viewStore.send(.didTapSettingsButton) }
 			}
 		})
 	}
 
-	private func headerButton(systemName: String, action: @escaping () -> Void) -> some View {
+	private func headerButton(systemSymbol: SFSymbol, action: @escaping () -> Void) -> some View {
 		Button(action: action) {
-			Image(systemName: systemName)
+			Image(systemSymbol: systemSymbol)
 				.resizable()
 				.scaledToFit()
 				.frame(width: .smallIcon, height: .smallIcon)

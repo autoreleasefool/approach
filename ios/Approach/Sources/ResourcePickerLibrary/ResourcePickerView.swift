@@ -41,7 +41,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 						viewStore.send(.didTapResource(resource))
 					} label: {
 						HStack(alignment: .center, spacing: .standardSpacing) {
-							Image(systemName: viewStore.selected.contains(resource.id) ? "checkmark.circle.fill" : "circle")
+							Image(systemSymbol: viewStore.selected.contains(resource.id) ? .checkmarkCircleFill : .circle)
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
 								.foregroundColor(Asset.Colors.Action.default)

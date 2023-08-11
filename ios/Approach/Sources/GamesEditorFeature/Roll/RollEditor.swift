@@ -96,7 +96,7 @@ public struct RollEditorView: View {
 					HStack(spacing: .smallSpacing) {
 						Text(Strings.Roll.Properties.Foul.title)
 							.foregroundColor(viewStore.didFoul ? Asset.Colors.Error.default.swiftUIColor : .white)
-						Image(systemName: viewStore.didFoul ? "f.cursive.circle.fill" : "f.cursive.circle")
+						Image(systemSymbol: viewStore.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
 							.resizable()
 							.frame(width: .smallIcon, height: .smallIcon)
 							.foregroundColor(viewStore.didFoul ? Asset.Colors.Error.default.swiftUIColor : .white)

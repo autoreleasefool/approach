@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import LaneEditorFeature
@@ -47,11 +48,11 @@ public struct AlleyLanesEditorView: View {
 
 				Section {
 					Button { viewStore.send(.didTapAddLaneButton) } label: {
-						Label(Strings.Lane.List.add, systemImage: "plus.square")
+						Label(Strings.Lane.List.add, systemSymbol: .plusSquare)
 					}
 
 					Button { viewStore.send(.didTapAddMultipleLanesButton) } label: {
-						Label(Strings.Lane.List.addMultiple, systemImage: "plus.square.on.square")
+						Label(Strings.Lane.List.addMultiple, systemSymbol: .plusSquareOnSquare)
 					}
 				}
 			}

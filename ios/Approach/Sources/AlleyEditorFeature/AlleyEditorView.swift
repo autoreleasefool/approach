@@ -75,7 +75,7 @@ public struct AlleyEditorView: View {
 				Spacer()
 				if viewStore.location != nil {
 					Button { viewStore.send(.didTapRemoveAddressButton) } label: {
-						Image(systemName: "x.circle.fill")
+						Image(systemSymbol: .xCircleFill)
 					}
 				}
 			}

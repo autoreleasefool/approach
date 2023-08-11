@@ -11,7 +11,7 @@ public struct EditButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Label(Strings.Action.edit, systemImage: "pencil")
+			Label(Strings.Action.edit, systemSymbol: .pencil)
 		}
 		.tint(Asset.Colors.Action.default)
 	}

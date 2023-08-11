@@ -1,3 +1,4 @@
+import AssetsLibrary
 import SwiftUI
 import ViewsLibrary
 
@@ -17,7 +18,7 @@ public struct BasicTipView: View {
 					.font(.headline)
 					.frame(maxWidth: .infinity, alignment: .leading)
 				Button(action: onDismiss) {
-					Image(systemName: "xmark")
+					Image(systemSymbol: .xmark)
 						.resizable()
 						.scaledToFit()
 						.frame(width: .smallIcon, height: .smallSpacing)

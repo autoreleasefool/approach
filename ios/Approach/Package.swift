@@ -134,6 +134,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.1"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.0.0"),
+		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "4.1.1"),
 		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.4"),
 	],
 	targets: [
@@ -398,7 +399,6 @@ let package = Package(
 				"PreferenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
-				"SortOrderLibrary",
 				"StatisticsWidgetsLayoutFeature",
 			]
 		),
@@ -500,6 +500,7 @@ let package = Package(
 			dependencies: [
 				"GamesListFeature",
 				"SeriesEditorFeature",
+				"SortOrderLibrary",
 			]
 		),
 		.testTarget(
@@ -1166,7 +1167,9 @@ let package = Package(
 		// MARK: - Libraries
 		.target(
 			name: "AssetsLibrary",
-			dependencies: [],
+			dependencies: [
+				.product(name: "SFSafeSymbols", package: "SFSafeSymbols"),
+			],
 			resources: [
 				.process("Resources"),
 			]

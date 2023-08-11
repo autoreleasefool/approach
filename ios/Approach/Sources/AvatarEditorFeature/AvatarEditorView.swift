@@ -1,3 +1,4 @@
+import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import ModelsLibrary
@@ -26,7 +27,7 @@ public struct AvatarEditorView: View {
 			VStack {
 				AvatarView(viewStore.avatar, size: .extraLargeIcon)
 				LazyVGrid(columns: [.init(), .init(), .init()]) {
-					Image(systemName: "camera")
+					Image(systemSymbol: .camera)
 						.resizable()
 						.aspectRatio(contentMode: .fit)
 						.frame(width: .smallIcon, height: .smallIcon)
@@ -36,7 +37,7 @@ public struct AvatarEditorView: View {
 								.frame(width: .largeIcon, height: .largeIcon)
 						}
 
-					Image(systemName: "photo.on.rectangle")
+					Image(systemSymbol: .photoOnRectangle)
 						.resizable()
 						.frame(width: .standardIcon, height: .standardIcon)
 				}

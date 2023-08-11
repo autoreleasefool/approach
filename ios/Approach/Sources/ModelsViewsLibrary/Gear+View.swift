@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ModelsLibrary
 import SwiftUI
 
@@ -10,18 +11,18 @@ extension Gear {
 		}
 
 		public var body: some SwiftUI.View {
-			Label(gear.name, systemImage: gear.kind.systemImage)
+			Label(gear.name, systemSymbol: gear.kind.systemSymbol)
 		}
 	}
 }
 
 extension Gear.Kind {
-	public var systemImage: String {
+	public var systemSymbol: SFSymbol {
 		switch self {
-		case .bowlingBall: return "poweroutlet.type.h"
-		case .shoes: return "shoeprints.fill"
-		case .towel: return "square.split.bottomrightquarter"
-		case .other: return "questionmark.app"
+		case .bowlingBall: return .poweroutletTypeH
+		case .shoes: return .shoeprintsFill
+		case .towel: return .squareSplitBottomrightquarter
+		case .other: return .questionmarkApp
 		}
 	}
 }

@@ -1,3 +1,4 @@
+import AssetsLibrary
 import SwiftUI
 
 public struct AddButton: View {
@@ -9,7 +10,7 @@ public struct AddButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemName: "plus")
+			Image(systemSymbol: .plus)
 		}
 	}
 }

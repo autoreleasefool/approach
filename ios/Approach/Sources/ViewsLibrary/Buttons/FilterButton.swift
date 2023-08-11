@@ -1,3 +1,4 @@
+import AssetsLibrary
 import SwiftUI
 
 public struct FilterButton: View {
@@ -11,7 +12,7 @@ public struct FilterButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemName: isActive ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle")
+			Image(systemSymbol: isActive ? .line3HorizontalDecreaseCircleFill : .line3HorizontalDecreaseCircle)
 		}
 	}
 }

@@ -69,13 +69,13 @@ public struct SeriesListItem: View {
 
 				VStack(spacing: .standardSpacing) {
 					HStack {
-						Label(series.date.longFormat, systemImage: "calendar")
+						Label(series.date.longFormat, systemSymbol: .calendar)
 							.font(.subheadline)
 							.labelStyle(.titleAndIcon)
 
 						Spacer()
 
-						Image(systemName: "chevron.right")
+						Image(systemSymbol: .chevronForward)
 							.scaledToFit()
 							.frame(width: .tinyIcon, height: .tinyIcon)
 					}

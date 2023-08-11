@@ -51,7 +51,7 @@ public struct GameDetailsView: View {
 									Strings.Opponent.title,
 									value: viewStore.game.matchPlay?.opponent?.name ?? Strings.none
 								)
-								Image(systemName: "chevron.forward")
+								Image(systemSymbol: .chevronForward)
 									.resizable()
 									.scaledToFit()
 									.frame(width: .tinyIcon, height: .tinyIcon)

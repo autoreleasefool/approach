@@ -1,3 +1,4 @@
+import AssetsLibrary
 import SwiftUI
 
 public struct SortButton: View {
@@ -11,7 +12,7 @@ public struct SortButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Image(systemName: isActive ? "arrow.up.arrow.down.square.fill" : "arrow.up.arrow.down.square")
+			Image(systemSymbol: isActive ? .arrowUpArrowDownSquareFill : .arrowUpArrowDownSquare)
 		}
 	}
 }

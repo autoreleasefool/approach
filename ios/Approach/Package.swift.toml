@@ -78,7 +78,6 @@ libraries = [ "Equatable", "Form", "ModelsViews", "ResourcePicker", "SwiftUIExte
 [features.LeaguesList]
 features = [ "LeagueEditor", "SeriesList", "StatisticsWidgetsLayout" ]
 services = [ "Preference", "RecentlyUsed" ]
-libraries = [ "SortOrder" ]
 
 [features.OpponentDetails]
 features = [ "BowlerEditor" ]
@@ -105,6 +104,7 @@ libraries = [ "DateTime", "Equatable", "Form", "ModelsViews", "ResourcePicker", 
 
 [features.SeriesList]
 features = [ "GamesList", "SeriesEditor" ]
+libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
@@ -236,6 +236,7 @@ libraries = [ "Tips" ]
 
 [libraries.Assets]
 skip_tests = true
+dependencies = [ "SFSafeSymbols" ]
 [libraries.Assets.resources]
 processed = [ "Resources" ]
 
@@ -367,6 +368,10 @@ from = "1.0.0"
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
 from = "1.0.0"
+
+[dependencies.SFSafeSymbols]
+url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"
+from = "4.1.1"
 
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"

@@ -31,7 +31,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 							viewStore.send(.didTapOption(ordering))
 						} label: {
 							HStack(alignment: .center, spacing: .standardSpacing) {
-								Image(systemName: viewStore.selected == ordering ? "checkmark.circle.fill" : "circle")
+								Image(systemSymbol: viewStore.selected == ordering ? .checkmarkCircleFill : .circle)
 									.resizable()
 									.frame(width: .smallIcon, height: .smallIcon)
 									.foregroundColor(Asset.Colors.Action.default)
