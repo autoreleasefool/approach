@@ -18,6 +18,23 @@ extension SeriesRepository: DependencyKey {
 						.all()
 						.orderByDate()
 						.bowled(inLeague: league)
+						.annotated(with: Series.Database.games.sum(Game.Database.Columns.score).forKey("total"))
+						.including(
+							all: Series.Database.games
+								.order(Game.Database.Columns.index)
+								.select(Game.Database.Columns.score)
+								.forKey("scores")
+						)
+						.asRequest(of: Series.List.self)
+						.fetchAll($0)
+				}
+			},
+			summaries: { league in
+				database.reader().observe {
+					try Series.Database
+						.all()
+						.orderByDate()
+						.bowled(inLeague: league)
 						.asRequest(of: Series.Summary.self)
 						.fetchAll($0)
 				}

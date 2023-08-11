@@ -52,3 +52,4 @@ extension Series.Database {
 }
 
 extension Series.Summary: FetchableRecord {}
+extension Series.List: FetchableRecord {}

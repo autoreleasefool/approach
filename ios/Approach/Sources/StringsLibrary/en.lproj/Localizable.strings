@@ -145,6 +145,7 @@
 /* Series */
 
 "series.title" = "Series";
+"series.preBowl.title" = "Pre-Bowls";
 "series.list.title" = "Series";
 "series.list.add" = "Add Series";
 "series.properties.numberOfGames" = "Number of games";

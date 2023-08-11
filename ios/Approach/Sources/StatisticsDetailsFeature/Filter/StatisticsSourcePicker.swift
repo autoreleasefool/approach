@@ -81,7 +81,7 @@ public struct StatisticsSourcePicker: Reducer {
 				ResourcePicker { bowler in leagues.pickable(bowledBy: bowler, ordering: .byName) }
 			}
 			Scope(state: /State.seriesPicker, action: /Action.seriesPicker) {
-				ResourcePicker { league in series.list(bowledIn: league, ordering: .byDate) }
+				ResourcePicker { league in series.summaries(bowledIn: league) }
 			}
 			Scope(state: /State.gamePicker, action: /Action.gamePicker) {
 				ResourcePicker { series in games.seriesGamesSummaries(forId: series, ordering: .byIndex) }

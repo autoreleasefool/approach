@@ -727,6 +727,10 @@ public enum Strings {
       /// Series
       public static let title = Strings.tr("Localizable", "series.list.title", fallback: "Series")
     }
+    public enum PreBowl {
+      /// Pre-Bowls
+      public static let title = Strings.tr("Localizable", "series.preBowl.title", fallback: "Pre-Bowls")
+    }
     public enum Properties {
       /// Bowling Alley
       public static let alley = Strings.tr("Localizable", "series.properties.alley", fallback: "Bowling Alley")

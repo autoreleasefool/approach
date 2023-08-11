@@ -18,7 +18,13 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with two series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 2)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -31,14 +37,23 @@ final class SeriesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns all the series
-		XCTAssertEqual(fetched, [.init(series1), .init(series2)])
+		XCTAssertEqual(fetched, [
+			.init(series1, withScores: [1, 2], withTotal: 3),
+			.init(series2, withScores: [456, 123], withTotal: 579),
+		])
 	}
 
 	func testList_FilterByLeague_ReturnsLeagueSeries() async throws {
 		// Given a database with two series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 2)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Fetching the series by league
 		let series = withDependencies {
@@ -51,7 +66,9 @@ final class SeriesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns one series
-		XCTAssertEqual(fetched, [.init(series1)])
+		XCTAssertEqual(fetched, [
+			.init(series1, withScores: [1, 2], withTotal: 3),
+		])
 	}
 
 	func testList_SortsByDate() async throws {
@@ -59,7 +76,16 @@ final class SeriesRepositoryTests: XCTestCase {
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_002))
 		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000))
-		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]))
+
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 2)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 2, score: 450)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 321)
+		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -72,7 +98,84 @@ final class SeriesRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns all the series sorted by date
-		XCTAssertEqual(fetched, [.init(series2), .init(series1), .init(series3)])
+		XCTAssertEqual(fetched, [
+			.init(series2, withScores: [456, 123], withTotal: 579),
+			.init(series1, withScores: [1, 2], withTotal: 3),
+			.init(series3, withScores: [0, 321, 450], withTotal: 771),
+		])
+	}
+
+	// MARK: Summaries
+
+	func testSummaries_ReturnsAllSeries() async throws {
+		// Given a database with two series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+
+		// Fetching the series
+		let series = withDependencies {
+			$0.database.reader = { db }
+			$0.series = .liveValue
+		} operation: {
+			self.series.summaries(bowledIn: UUID(0))
+		}
+		var iterator = series.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the series
+		XCTAssertEqual(fetched, [
+			.init(series1),
+			.init(series2),
+		])
+	}
+
+	func testSummaries_FilterByLeague_ReturnsLeagueSeries() async throws {
+		// Given a database with two series
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+
+		// Fetching the series by league
+		let series = withDependencies {
+			$0.database.reader = { db }
+			$0.series = .liveValue
+		} operation: {
+			self.series.summaries(bowledIn: UUID(0))
+		}
+		var iterator = series.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns one series
+		XCTAssertEqual(fetched, [.init(series1)])
+	}
+
+	func testSummaries_SortsByDate() async throws {
+		// Given a database with three series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_002))
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000))
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]))
+
+		// Fetching the series
+		let series = withDependencies {
+			$0.database.reader = { db }
+			$0.series = .liveValue
+		} operation: {
+			self.series.summaries(bowledIn: UUID(0))
+		}
+		var iterator = series.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the series sorted by date
+		XCTAssertEqual(fetched, [
+			.init(series2),
+			.init(series1),
+			.init(series3),
+		])
 	}
 
 	// MARK: Create

@@ -6,54 +6,35 @@ import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import GamesListFeature
 import ModelsLibrary
-import ResourceListLibrary
 import SeriesEditorFeature
 import SeriesRepositoryInterface
 import StringsLibrary
 import ViewsLibrary
 
-extension Series.Summary: ResourceListItem {
-	public var name: String { date.longFormat }
-}
-
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
 		public let league: League.SeriesHost
-
-		public var list: ResourceList<Series.Summary, League.ID>.State
+		public var series: IdentifiedArrayOf<Series.List> = []
 
 		@PresentationState public var destination: Destination.State?
 
 		public init(league: League.SeriesHost) {
 			self.league = league
-			self.list = .init(
-				features: [
-					.add,
-					.swipeToEdit,
-					.swipeToDelete(onDelete: .init {
-						@Dependency(\.series) var series
-						try await series.delete($0.id)
-					}),
-				],
-				query: league.id,
-				listTitle: Strings.Series.List.title,
-				emptyContent: .init(
-					image: Asset.Media.EmptyState.series,
-					title: Strings.Series.Error.Empty.title,
-					message: Strings.Series.Error.Empty.message,
-					action: Strings.Series.List.add
-				))
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didObserveData
+			case didTapAddButton
 			case didTapSeries(Series.ID)
+			case didSwipeSeries(SwipeAction, Series.ID)
 		}
 
 		public enum InternalAction: Equatable {
+			case seriesResponse(TaskResult<[Series.List]>)
+			case didDeleteSeries(TaskResult<Series.ID>)
 			case didLoadEditableSeries(Series.Edit)
-			case list(ResourceList<Series.Summary, League.ID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -64,15 +45,27 @@ public struct SeriesList: Reducer {
 		case delegate(DelegateAction)
 	}
 
+	public enum SwipeAction: Equatable {
+		case edit
+		case delete
+	}
+
+	public enum AlertAction: Equatable {
+		case didTapDeleteButton(Series.ID)
+		case didTapDismissButton
+	}
+
 	public struct Destination: Reducer {
 			public enum State: Equatable {
 				case editor(SeriesEditor.State)
 				case games(GamesList.State)
+				case alert(AlertState<AlertAction>)
 			}
 
 			public enum Action: Equatable {
 				case editor(SeriesEditor.Action)
 				case games(GamesList.Action)
+				case alert(AlertAction)
 			}
 
 			public var body: some ReducerOf<Self> {
@@ -93,53 +86,81 @@ public struct SeriesList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList {
-				series.list(bowledIn: $0, ordering: .byDate)
-			}
-		}
-
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didObserveData:
+					return .run { [leagueId = state.league.id] send in
+						for try await series in self.series.list(bowledIn: leagueId, ordering: .byDate) {
+							await send(.internal(.seriesResponse(.success(series))))
+						}
+					} catch: { error, send in
+						await send(.internal(.seriesResponse(.failure(error))))
+					}
+
 				case let .didTapSeries(id):
-					if let series = state.list.resources?[id: id] {
-						state.destination = .games(.init(series: series))
+					if let series = state.series[id: id] {
+						state.destination = .games(.init(series: series.asSummary))
 					}
 					return .none
+
+				case .didTapAddButton:
+					state.destination = .editor(.init(
+						value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
+						inLeague: state.league
+					))
+					return .none
+
+				case let .didSwipeSeries(.delete, id):
+					guard let series = state.series[id: id] else { return .none }
+					state.destination = .alert(.init(
+						title: TextState(Strings.Form.Prompt.delete(series.date.longFormat)),
+						primaryButton: .destructive(
+							TextState(Strings.Action.delete),
+							action: .send(.didTapDeleteButton(series.id))
+						),
+						secondaryButton: .cancel(
+							TextState(Strings.Action.cancel),
+							action: .send(.didTapDismissButton)
+						)
+					))
+					return .none
+
+				case let .didSwipeSeries(.edit, id):
+					return .run { send in
+						guard let editable = try await self.series.edit(id) else {
+							// TODO: report series not found
+							return
+						}
+
+						await send(.internal(.didLoadEditableSeries(editable)))
+					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .seriesResponse(.success(series)):
+					state.series = .init(uniqueElements: series)
+					return .none
+
 				case let .didLoadEditableSeries(series):
 					state.destination = .editor(.init(value: .edit(series), inLeague: state.league))
 					return .none
 
-				case let .list(.delegate(delegateAction)):
-					switch delegateAction {
-					case let .didEdit(series):
-						return .run { send in
-							guard let editable = try await self.series.edit(series.id) else {
-								// TODO: report series not found
-								return
-							}
+				case .didDeleteSeries(.success):
+					return .none
 
-							await send(.internal(.didLoadEditableSeries(editable)))
-						}
+				case .seriesResponse(.failure):
+					// TODO: handle error loading series
+					return .none
 
-					case .didAddNew, .didTapEmptyStateButton:
-						state.destination = .editor(.init(
-							value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
-							inLeague: state.league
-						))
-						return .none
-
-					case .didDelete, .didTap:
-						return .none
-					}
+				case .didDeleteSeries(.failure):
+					// TODO: handle error deleting series
+					return .none
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
+					// TODO: navigate to new series
 					switch delegateAction {
 					case .never:
 						return .none
@@ -151,14 +172,20 @@ public struct SeriesList: Reducer {
 						return .none
 					}
 
-				case .list(.view), .list(.internal):
-					return .none
+				case let .destination(.presented(.alert(.didTapDeleteButton(id)))):
+					return .run { send in
+						try await self.series.delete(id)
+						await send(.internal(.didDeleteSeries(.success(id))))
+					} catch: { error, send in
+						await send(.internal(.didDeleteSeries(.failure(error))))
+					}
 
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.games(.view))),
-						.destination(.presented(.games(.internal))):
+						.destination(.presented(.games(.internal))),
+						.destination(.presented(.alert(.didTapDismissButton))):
 					return .none
 				}
 
@@ -174,7 +201,7 @@ public struct SeriesList: Reducer {
 			switch action {
 			case .view(.didTapSeries):
 				return Analytics.Series.Viewed()
-			case .internal(.list(.delegate(.didDelete))):
+			case .internal(.didDeleteSeries(.success)):
 				return Analytics.Series.Deleted()
 			default:
 				return nil

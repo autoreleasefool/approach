@@ -28,7 +28,7 @@ public struct ResourceListView<
 			} else if let resources = state.resources {
 				self.listContent = .loaded(resources)
 			} else {
-				self.listContent = .loading
+				self.listContent = .notLoaded
 			}
 		}
 	}
@@ -76,7 +76,13 @@ public struct ResourceListView<
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Group {
 				switch viewStore.listContent {
-				case .notLoaded, .loading:
+				case .notLoaded:
+					List {
+						Color.clear
+					}
+					.listStyle(.insetGrouped)
+
+				case .loading:
 					List {
 						ListProgressView()
 					}

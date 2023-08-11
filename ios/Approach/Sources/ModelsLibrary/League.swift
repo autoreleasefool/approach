@@ -46,6 +46,20 @@ extension League {
 		public let numberOfGames: Int?
 		public let alley: Alley.Summary?
 		public let excludeFromStatistics: League.ExcludeFromStatistics
+
+		public init(
+			id: League.ID,
+			name: String,
+			numberOfGames: Int?,
+			alley: Alley.Summary?,
+			excludeFromStatistics: League.ExcludeFromStatistics
+		) {
+			self.id = id
+			self.name = name
+			self.numberOfGames = numberOfGames
+			self.alley = alley
+			self.excludeFromStatistics = excludeFromStatistics
+		}
 	}
 }
 

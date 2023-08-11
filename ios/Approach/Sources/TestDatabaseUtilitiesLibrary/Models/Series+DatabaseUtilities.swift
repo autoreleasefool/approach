@@ -35,6 +35,18 @@ extension Series.Summary {
 	}
 }
 
+extension Series.List {
+	public init(_ from: Series.Database, withScores: [Int], withTotal: Int) {
+		self.init(
+			id: from.id,
+			date: from.date,
+			scores: withScores,
+			total: withTotal,
+			preBowl: from.preBowl
+		)
+	}
+}
+
 func insert(
 	series initial: InitialValue<Series.Database>?,
 	into db: Database
