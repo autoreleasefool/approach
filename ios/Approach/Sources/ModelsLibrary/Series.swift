@@ -49,11 +49,11 @@ extension Series {
 	public struct List: Identifiable, Codable, Equatable {
 		public let id: Series.ID
 		public let date: Date
-		public let scores: [Int]
+		public let scores: [Series.List.Score]
 		public let total: Int
 		public let preBowl: Series.PreBowl
 
-		public init(id: Series.ID, date: Date, scores: [Int], total: Int, preBowl: Series.PreBowl) {
+		public init(id: Series.ID, date: Date, scores: [Series.List.Score], total: Int, preBowl: Series.PreBowl) {
 			self.id = id
 			self.date = date
 			self.scores = scores
@@ -63,6 +63,20 @@ extension Series {
 
 		public var asSummary: Summary {
 			.init(id: id, date: date)
+		}
+	}
+}
+
+extension Series.List {
+	public struct Score: Identifiable, Equatable, Codable {
+		public let index: Int
+		public let score: Int
+
+		public var id: Int { index }
+
+		public init(index: Int, score: Int) {
+			self.index = index
+			self.score = score
 		}
 	}
 }

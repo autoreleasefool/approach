@@ -38,8 +38,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Returns all the series
 		XCTAssertEqual(fetched, [
-			.init(series1, withScores: [1, 2], withTotal: 3),
-			.init(series2, withScores: [456, 123], withTotal: 579),
+			.init(series1, withScores: [.init(index: 0, score: 1), .init(index: 1, score: 2)], withTotal: 3),
+			.init(series2, withScores: [.init(index: 0, score: 456), .init(index: 1, score: 123)], withTotal: 579),
 		])
 	}
 
@@ -67,7 +67,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Returns one series
 		XCTAssertEqual(fetched, [
-			.init(series1, withScores: [1, 2], withTotal: 3),
+			.init(series1, withScores: [.init(index: 0, score: 1), .init(index: 1, score: 2)], withTotal: 3),
 		])
 	}
 
@@ -99,9 +99,9 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Returns all the series sorted by date
 		XCTAssertEqual(fetched, [
-			.init(series2, withScores: [456, 123], withTotal: 579),
-			.init(series1, withScores: [1, 2], withTotal: 3),
-			.init(series3, withScores: [0, 321, 450], withTotal: 771),
+			.init(series2, withScores: [.init(index: 0, score: 456), .init(index: 1, score: 123)], withTotal: 579),
+			.init(series1, withScores: [.init(index: 0, score: 1), .init(index: 1, score: 2)], withTotal: 3),
+			.init(series3, withScores: [.init(index: 0, score: 0), .init(index: 1, score: 321), .init(index: 2, score: 450)], withTotal: 771),
 		])
 	}
 

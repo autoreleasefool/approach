@@ -36,7 +36,7 @@ extension Series.Summary {
 }
 
 extension Series.List {
-	public init(_ from: Series.Database, withScores: [Int], withTotal: Int) {
+	public init(_ from: Series.Database, withScores: [Series.List.Score], withTotal: Int) {
 		self.init(
 			id: from.id,
 			date: from.date,

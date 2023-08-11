@@ -57,6 +57,10 @@ public enum Asset {
         public static let denominatorLineMark = ColorAsset(name: "Charts/Percentage/DenominatorLineMark")
         public static let numeratorLineMark = ColorAsset(name: "Charts/Percentage/NumeratorLineMark")
       }
+      public enum Series {
+        public static let areaMark = ColorAsset(name: "Charts/Series/AreaMark")
+        public static let lineMark = ColorAsset(name: "Charts/Series/LineMark")
+      }
     }
     public enum Destructive {
       public static let `default` = ColorAsset(name: "Destructive/Default")

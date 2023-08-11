@@ -724,8 +724,24 @@ public enum Strings {
     public enum List {
       /// Add Series
       public static let add = Strings.tr("Localizable", "series.list.add", fallback: "Add Series")
+      /// Plural format key: "%#@numberOfGames@"
+      public static func numberOfGames(_ p1: Int) -> String {
+        return Strings.tr("Localizable", "series.list.numberOfGames", p1, fallback: "Plural format key: \"%#@numberOfGames@\"")
+      }
       /// Series
       public static let title = Strings.tr("Localizable", "series.list.title", fallback: "Series")
+      public enum Scores {
+        /// %d — %d
+        public static func range(_ p1: Int, _ p2: Int) -> String {
+          return Strings.tr("Localizable", "series.list.scores.range", p1, p2, fallback: "%d — %d")
+        }
+        public enum Chart {
+          /// Game
+          public static let xAxisLabel = Strings.tr("Localizable", "series.list.scores.chart.xAxisLabel", fallback: "Game")
+          /// Score
+          public static let yAxisLabel = Strings.tr("Localizable", "series.list.scores.chart.yAxisLabel", fallback: "Score")
+        }
+      }
     }
     public enum PreBowl {
       /// Pre-Bowls

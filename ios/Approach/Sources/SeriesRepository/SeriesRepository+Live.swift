@@ -22,7 +22,7 @@ extension SeriesRepository: DependencyKey {
 						.including(
 							all: Series.Database.games
 								.order(Game.Database.Columns.index)
-								.select(Game.Database.Columns.score)
+								.select(Game.Database.Columns.index, Game.Database.Columns.score)
 								.forKey("scores")
 						)
 						.asRequest(of: Series.List.self)
