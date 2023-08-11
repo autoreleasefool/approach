@@ -12,11 +12,10 @@ extension SeriesRepository: DependencyKey {
 		@Dependency(\.uuid) var uuid
 
 		return Self(
-			list: { league, _ in
+			list: { league, ordering in
 				database.reader().observe {
-					try Series.Database
+					var request = Series.Database
 						.all()
-						.orderByDate()
 						.bowled(inLeague: league)
 						.annotated(with: Series.Database.games.sum(Game.Database.Columns.score).forKey("total"))
 						.including(
@@ -25,6 +24,25 @@ extension SeriesRepository: DependencyKey {
 								.select(Game.Database.Columns.index, Game.Database.Columns.score)
 								.forKey("scores")
 						)
+
+					switch ordering {
+					case .oldestFirst:
+						request = request.order(Series.Database.Columns.date.asc)
+					case .newestFirst:
+						request = request.order(Series.Database.Columns.date.desc)
+					case .highestToLowest:
+						request = request.order(
+							Column("total").detached.desc,
+							Series.Database.Columns.date.asc
+						)
+					case .lowestToHighest:
+						request = request.order(
+							Column("total").detached.asc,
+							Series.Database.Columns.date.asc
+						)
+					}
+
+					return try request
 						.asRequest(of: Series.List.self)
 						.fetchAll($0)
 				}

@@ -3,7 +3,10 @@ import ModelsLibrary
 
 extension Series {
 	public enum Ordering: Hashable, CaseIterable {
-		case byDate
+		case oldestFirst
+		case newestFirst
+		case lowestToHighest
+		case highestToLowest
 	}
 }
 
@@ -31,8 +34,8 @@ public struct SeriesRepository: Sendable {
 		self.delete = delete
 	}
 
-	public func list(bowledIn: League.ID, ordering: Series.Ordering) -> AsyncThrowingStream<[Series.List], Error> {
-		self.list(bowledIn, ordering)
+	public func list(bowledIn: League.ID, orderedBy: Series.Ordering) -> AsyncThrowingStream<[Series.List], Error> {
+		self.list(bowledIn, orderedBy)
 	}
 
 	public func summaries(bowledIn: League.ID) -> AsyncThrowingStream<[Series.Summary], Error> {

@@ -92,7 +92,7 @@ public struct SeriesList: Reducer {
 				switch viewAction {
 				case .didObserveData:
 					return .run { [leagueId = state.league.id] send in
-						for try await series in self.series.list(bowledIn: leagueId, ordering: .byDate) {
+						for try await series in self.series.list(bowledIn: leagueId, orderedBy: .newestFirst) {
 							await send(.internal(.seriesResponse(.success(series))))
 						}
 					} catch: { error, send in
