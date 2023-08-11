@@ -62,7 +62,9 @@ public struct SeriesEditor: Reducer {
 			case didTapAlley
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable {
+			case didFinishCreating(Series.Create)
+		}
 		public enum InternalAction: Equatable {
 			case form(SeriesForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
@@ -149,7 +151,13 @@ public struct SeriesEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case let .didFinishCreating(series):
+						return .concatenate(
+							.send(.delegate(.didFinishCreating(series))),
+							.run { _ in await dismiss() }
+						)
+
+					case .didFinishUpdating, .didFinishDeleting, .didDiscard:
 						return .run { _ in await dismiss() }
 					}
 

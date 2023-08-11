@@ -29,6 +29,8 @@ public struct SeriesList: Reducer {
 		public var series: IdentifiedArrayOf<Series.List> = []
 		public var ordering: Series.Ordering = .newestFirst
 
+		public var seriesToNavigate: Series.ID?
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(league: League.SeriesHost) {
@@ -159,6 +161,14 @@ public struct SeriesList: Reducer {
 				switch internalAction {
 				case let .seriesResponse(.success(series)):
 					state.series = .init(uniqueElements: series)
+					if let seriesToNavigate = state.seriesToNavigate {
+						if let destination = state.series[id: seriesToNavigate] {
+							state.seriesToNavigate = nil
+							state.destination = .games(.init(series: destination.asSummary))
+						} else {
+							// TODO: handle error missing series for navigation
+						}
+					}
 					return .none
 
 				case let .didLoadEditableSeries(series):
@@ -179,7 +189,12 @@ public struct SeriesList: Reducer {
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					// TODO: navigate to new series
 					switch delegateAction {
-					case .never:
+					case let .didFinishCreating(created):
+						if let series = state.series[id: created.id] {
+							state.destination = .games(.init(series: series.asSummary))
+						} else {
+							state.seriesToNavigate = created.id
+						}
 						return .none
 					}
 
