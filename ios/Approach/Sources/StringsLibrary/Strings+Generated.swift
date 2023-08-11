@@ -641,8 +641,16 @@ public enum Strings {
   public enum Ordering {
     /// Ordering
     public static let alphabetical = Strings.tr("Localizable", "ordering.alphabetical", fallback: "Alphabetical")
+    /// Highest to Lowest
+    public static let highestToLowest = Strings.tr("Localizable", "ordering.highestToLowest", fallback: "Highest to Lowest")
+    /// Lowest to Highest
+    public static let lowestToHighest = Strings.tr("Localizable", "ordering.lowestToHighest", fallback: "Lowest to Highest")
     /// Most Recently Used
     public static let mostRecentlyUsed = Strings.tr("Localizable", "ordering.mostRecentlyUsed", fallback: "Most Recently Used")
+    /// Newest to Oldest
+    public static let newestFirst = Strings.tr("Localizable", "ordering.newestFirst", fallback: "Newest to Oldest")
+    /// Oldest to Newest
+    public static let oldestFirst = Strings.tr("Localizable", "ordering.oldestFirst", fallback: "Oldest to Newest")
   }
   public enum Picker {
     /// Picking %@

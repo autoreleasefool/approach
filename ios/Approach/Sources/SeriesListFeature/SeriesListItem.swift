@@ -145,7 +145,6 @@ enum ScoreDisplay {
 	case single(Int)
 }
 
-
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 #if DEBUG

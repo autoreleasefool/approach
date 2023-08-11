@@ -369,6 +369,10 @@
 
 "ordering.alphabetical" = "Alphabetical";
 "ordering.mostRecentlyUsed" = "Most Recently Used";
+"ordering.newestFirst" = "Newest to Oldest";
+"ordering.oldestFirst" = "Oldest to Newest";
+"ordering.lowestToHighest" = "Lowest to Highest";
+"ordering.highestToLowest" = "Highest to Lowest";
 
 /* Onboarding */
 

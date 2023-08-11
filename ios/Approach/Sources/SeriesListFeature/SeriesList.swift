@@ -8,13 +8,26 @@ import GamesListFeature
 import ModelsLibrary
 import SeriesEditorFeature
 import SeriesRepositoryInterface
+import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
+
+extension Series.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .oldestFirst: return Strings.Ordering.oldestFirst
+		case .newestFirst: return Strings.Ordering.newestFirst
+		case .highestToLowest: return Strings.Ordering.highestToLowest
+		case .lowestToHighest: return Strings.Ordering.lowestToHighest
+		}
+	}
+}
 
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
 		public let league: League.SeriesHost
 		public var series: IdentifiedArrayOf<Series.List> = []
+		public var ordering: Series.Ordering = .newestFirst
 
 		@PresentationState public var destination: Destination.State?
 
@@ -27,6 +40,7 @@ public struct SeriesList: Reducer {
 		public enum ViewAction: Equatable {
 			case didObserveData
 			case didTapAddButton
+			case didTapSortOrderButton
 			case didTapSeries(Series.ID)
 			case didSwipeSeries(SwipeAction, Series.ID)
 		}
@@ -59,12 +73,14 @@ public struct SeriesList: Reducer {
 			public enum State: Equatable {
 				case editor(SeriesEditor.State)
 				case games(GamesList.State)
+				case sortOrder(SortOrder<Series.Ordering>.State)
 				case alert(AlertState<AlertAction>)
 			}
 
 			public enum Action: Equatable {
 				case editor(SeriesEditor.Action)
 				case games(GamesList.Action)
+				case sortOrder(SortOrder<Series.Ordering>.Action)
 				case alert(AlertAction)
 			}
 
@@ -74,6 +90,9 @@ public struct SeriesList: Reducer {
 				}
 				Scope(state: /State.games, action: /Action.games) {
 					GamesList()
+				}
+				Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+					SortOrder()
 				}
 			}
 		}
@@ -91,13 +110,7 @@ public struct SeriesList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didObserveData:
-					return .run { [leagueId = state.league.id] send in
-						for try await series in self.series.list(bowledIn: leagueId, orderedBy: .newestFirst) {
-							await send(.internal(.seriesResponse(.success(series))))
-						}
-					} catch: { error, send in
-						await send(.internal(.seriesResponse(.failure(error))))
-					}
+					return startObservingSeries(forLeague: state.league.id, orderedBy: state.ordering)
 
 				case let .didTapSeries(id):
 					if let series = state.series[id: id] {
@@ -110,6 +123,10 @@ public struct SeriesList: Reducer {
 						value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
 						inLeague: state.league
 					))
+					return .none
+
+				case .didTapSortOrderButton:
+					state.destination = .sortOrder(.init(initialValue: state.ordering))
 					return .none
 
 				case let .didSwipeSeries(.delete, id):
@@ -180,12 +197,21 @@ public struct SeriesList: Reducer {
 						await send(.internal(.didDeleteSeries(.failure(error))))
 					}
 
+				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didTapOption(option):
+						state.ordering = option
+						return startObservingSeries(forLeague: state.league.id, orderedBy: state.ordering)
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.games(.view))),
 						.destination(.presented(.games(.internal))),
-						.destination(.presented(.alert(.didTapDismissButton))):
+						.destination(.presented(.alert(.didTapDismissButton))),
+						.destination(.presented(.sortOrder(.internal))),
+						.destination(.presented(.sortOrder(.view))):
 					return .none
 				}
 
@@ -206,6 +232,16 @@ public struct SeriesList: Reducer {
 			default:
 				return nil
 			}
+		}
+	}
+
+	private func startObservingSeries(forLeague: League.ID, orderedBy: Series.Ordering) -> Effect<Action> {
+		return .run { send in
+			for try await series in self.series.list(bowledIn: forLeague, orderedBy: orderedBy) {
+				await send(.internal(.seriesResponse(.success(series))))
+			}
+		} catch: { error, send in
+			await send(.internal(.seriesResponse(.failure(error))))
 		}
 	}
 }

@@ -4,6 +4,7 @@ import DateTimeLibrary
 import GamesListFeature
 import ModelsLibrary
 import SeriesEditorFeature
+import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -14,22 +15,31 @@ public struct SeriesListView: View {
 
 	struct ViewState: Equatable {
 		let leagueName: String
+		let ordering: Series.Ordering
 		let preBowlSeries: IdentifiedArrayOf<Series.List>
 		let regularSeries: IdentifiedArrayOf<Series.List>
 
 		init(state: SeriesList.State) {
 			self.leagueName = state.league.name
-			self.preBowlSeries = state.series.filter {
-				switch $0.preBowl {
-				case .preBowl: return true
-				case .regular: return false
+			self.ordering = state.ordering
+
+			switch state.ordering {
+			case .newestFirst:
+				self.preBowlSeries = state.series.filter {
+					switch $0.preBowl {
+					case .preBowl: return true
+					case .regular: return false
+					}
 				}
-			}
-			self.regularSeries = state.series.filter {
-				switch $0.preBowl {
-				case .preBowl: return false
-				case .regular: return true
+				self.regularSeries = state.series.filter {
+					switch $0.preBowl {
+					case .preBowl: return false
+					case .regular: return true
+					}
 				}
+			case .oldestFirst, .highestToLowest, .lowestToHighest:
+				self.preBowlSeries = []
+				self.regularSeries = state.series
 			}
 		}
 	}
@@ -74,6 +84,10 @@ public struct SeriesListView: View {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.didTapAddButton) }
 				}
+
+				ToolbarItem(placement: .navigationBarTrailing) {
+					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
+				}
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
@@ -90,6 +104,16 @@ public struct SeriesListView: View {
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /SeriesList.Destination.State.sortOrder,
+			action: SeriesList.Destination.Action.sortOrder
+		) { (store: StoreOf<SortOrderLibrary.SortOrder<Series.Ordering>>) in
+			NavigationStack {
+				SortOrderView(store: store)
+			}
+			.presentationDetents([.medium])
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),

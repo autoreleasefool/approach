@@ -16,8 +16,8 @@ public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
 	struct ViewState: Equatable {
-		public let ordering: Bowler.Ordering
-		public let isShowingWidgets: Bool
+		let ordering: Bowler.Ordering
+		let isShowingWidgets: Bool
 
 		init(state: BowlersList.State) {
 			self.ordering = state.ordering

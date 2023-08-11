@@ -3,8 +3,8 @@ import ModelsLibrary
 
 extension Series {
 	public enum Ordering: Hashable, CaseIterable {
-		case oldestFirst
 		case newestFirst
+		case oldestFirst
 		case lowestToHighest
 		case highestToLowest
 	}
