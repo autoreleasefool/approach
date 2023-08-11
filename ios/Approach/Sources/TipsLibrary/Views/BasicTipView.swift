@@ -31,7 +31,17 @@ public struct BasicTipView: View {
 			Text(tip.message)
 				.frame(maxWidth: .infinity, alignment: .leading)
 		}
-		.padding(.horizontal)
-		.padding(.bottom)
 	}
 }
+
+#if DEBUG
+struct BasicTipViewPreview: PreviewProvider {
+	static var previews: some View {
+		List {
+			Section {
+				BasicTipView(tip: .statisticsDetails) { }
+			}
+		}
+	}
+}
+#endif
