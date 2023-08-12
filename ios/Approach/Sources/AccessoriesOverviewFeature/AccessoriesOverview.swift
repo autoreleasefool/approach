@@ -84,7 +84,10 @@ public struct AccessoriesOverview: Reducer {
 		}
 	}
 
-	enum CancelID { case observe }
+	enum CancelID {
+		case observeAlleys
+		case observeGear
+	}
 
 	public init() {}
 
@@ -99,22 +102,9 @@ public struct AccessoriesOverview: Reducer {
 				switch viewAction {
 				case .didObserveData:
 					return .merge(
-						.run { send in
-							for try await alleys in self.alleys.overview() {
-								await send(.internal(.alleysResponse(.success(alleys))))
-							}
-						} catch: { error, send in
-							await send(.internal(.alleysResponse(.failure(error))))
-						},
-						.run { send in
-							for try await gear in self.gear.overview() {
-								await send(.internal(.gearResponse(.success(gear))))
-							}
-						} catch: { error, send in
-							await send(.internal(.gearResponse(.failure(error))))
-						}
+						observeAlleys(),
+						observeGear()
 					)
-					.cancellable(id: CancelID.observe)
 
 				case let .didSwipeGear(action, id):
 					switch action {
@@ -269,5 +259,27 @@ public struct AccessoriesOverview: Reducer {
 				return nil
 			}
 		}
+	}
+
+	private func observeAlleys() -> Effect<Action> {
+		.run { send in
+			for try await alleys in self.alleys.overview() {
+				await send(.internal(.alleysResponse(.success(alleys))))
+			}
+		} catch: { error, send in
+			await send(.internal(.alleysResponse(.failure(error))))
+		}
+		.cancellable(id: CancelID.observeAlleys)
+	}
+
+	private func observeGear() -> Effect<Action> {
+		.run { send in
+			for try await gear in self.gear.overview() {
+				await send(.internal(.gearResponse(.success(gear))))
+			}
+		} catch: { error, send in
+			await send(.internal(.gearResponse(.failure(error))))
+		}
+		.cancellable(id: CancelID.observeGear)
 	}
 }
