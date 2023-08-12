@@ -222,23 +222,28 @@ final class ResourceListTests: XCTestCase {
 	}
 
 	func _testSwipeToDeleteWhenNoDeleteFeatureThrowsError() async {
-		// TODO: enable _testSwipeToDeleteWhenNoDeleteFeatureThrowsError
+		// FIXME: enable _testSwipeToDeleteWhenNoDeleteFeatureThrowsError
+		XCTFail("TODO")
 	}
 
 	func _testDeleteButtonWhenNoDeleteFeatureThrowsError() async {
-		// TODO: enable testDeleteButtonWhenNoDeleteFeatureThrowsError
+		// FIXME: enable testDeleteButtonWhenNoDeleteFeatureThrowsError
+		XCTFail("TODO")
 	}
 
 	func _testSwipeToEditWhenNoEditFeatureThrowsError() async {
-		// TODO: enable _testSwipeToEditWhenNoEditFeatureThrowsError
+		// FIXME: enable _testSwipeToEditWhenNoEditFeatureThrowsError
+		XCTFail("TODO")
 	}
 
 	func _testAddButtonWhenNoAddFeatureThrowsError() async {
-		// TODO: enable _testAddButtonWhenNoAddFeatureThrowsError
+		// FIXME: enable _testAddButtonWhenNoAddFeatureThrowsError
+		XCTFail("TODO")
 	}
 
 	func _testTappingRowWhenNoTappableFeatureThrowsError() async {
-		// TODO: enable _testTappingRowWhenNoTappableFeatureThrowsError
+		// FIXME: enable _testTappingRowWhenNoTappableFeatureThrowsError
+		XCTFail("TODO")
 	}
 }
 

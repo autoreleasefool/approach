@@ -36,6 +36,4 @@ final class ListContentTests: XCTestCase {
 
 		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
 	}
-
-	// TODO: ListContentSnapshotTest
 }

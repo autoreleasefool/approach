@@ -223,32 +223,32 @@ final class ScoringServiceTests: XCTestCase {
 	}
 
 	func testScoresStrikeCorrectly() {
-		// TODO: testScoresStrikeCorrectly
+		// FIXME: testScoresStrikeCorrectly
 		XCTFail("TODO")
 	}
 
 	func testScoresSpareCorrectly() {
-		// TODO: testScoresSpareCorrectly
+		// FIXME: testScoresSpareCorrectly
 		XCTFail("TODO")
 	}
 
 	func testScoresStrikeInLastFrameCorrectly() {
-		// TODO: testScoresStrikeInLastFrameCorrectly
+		// FIXME: testScoresStrikeInLastFrameCorrectly
 		XCTFail("TODO")
 	}
 
 	func testScoresSpareInLastFrameCorrectly() {
-		// TODO: testScoresSpareInLastFrameCorrectly
+		// FIXME: testScoresSpareInLastFrameCorrectly
 		XCTFail("TODO")
 	}
 
 	func testScoresOpenFrameCorrectly() {
-		// TODO: testScoresOpenFrameCorrectly
+		// FIXME: testScoresOpenFrameCorrectly
 		XCTFail("TODO")
 	}
 
 	func testScoreCannotGoNegative() {
-		// TODO: testScoreCannotGoNegative
+		// FIXME: testScoreCannotGoNegative
 		XCTFail("TODO")
 	}
 
