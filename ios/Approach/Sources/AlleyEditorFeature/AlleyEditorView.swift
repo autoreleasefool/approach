@@ -21,6 +21,7 @@ public struct AlleyEditorView: View {
 		@BindingViewState var pinFall: Alley.PinFall?
 		@BindingViewState var mechanism: Alley.Mechanism?
 		@BindingViewState var pinBase: Alley.PinBase?
+		@BindingViewState var coordinate: CoordinateRegion
 		public let location: Location.Edit?
 
 		let hasLanesEnabled: Bool
@@ -74,9 +75,7 @@ public struct AlleyEditorView: View {
 				}
 				Spacer()
 				if viewStore.location != nil {
-					Button { viewStore.send(.didTapRemoveAddressButton) } label: {
-						Image(systemSymbol: .xCircleFill)
-					}
+					Image(systemSymbol: .xCircleFill)
 				}
 			}
 		}
@@ -86,10 +85,7 @@ public struct AlleyEditorView: View {
 		if let location = viewStore.location {
 			Section {
 				Map(
-					coordinateRegion: .constant(.init(
-						center: location.coordinate.mapCoordinate,
-						span: .init(latitudeDelta: 0.005, longitudeDelta: 0.005)
-					)),
+					coordinateRegion: viewStore.$coordinate.mkCoordinateRegion,
 					interactionModes: [],
 					annotationItems: [location]
 				) { place in
@@ -201,9 +197,26 @@ extension AlleyEditorView.ViewState {
 		self._pinFall = store.$pinFall
 		self._pinBase = store.$pinBase
 		self._mechanism = store.$mechanism
+		self._coordinate = store.$coordinate
 		self.location = store.location
 		self.hasLanesEnabled = store.hasLanesEnabled
 		self.newLanes = store.newLanes
 		self.existingLanes = store.existingLanes
+	}
+}
+
+public struct CoordinateRegion: Equatable {
+	public var mkCoordinateRegion: MKCoordinateRegion
+
+	init(coordinate: CLLocationCoordinate2D) {
+		self.mkCoordinateRegion = .init(
+			center: coordinate,
+			span: .init(latitudeDelta: 0.005, longitudeDelta: 0.005)
+		)
+	}
+
+	public static func == (lhs: Self, rhs: Self) -> Bool {
+		lhs.mkCoordinateRegion.center.latitude == rhs.mkCoordinateRegion.center.latitude &&
+		lhs.mkCoordinateRegion.center.longitude == rhs.mkCoordinateRegion.center.longitude
 	}
 }

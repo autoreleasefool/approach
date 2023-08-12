@@ -23,6 +23,7 @@ public struct AlleyEditor: Reducer {
 		@BindingState public var pinFall: Alley.PinFall?
 		@BindingState public var mechanism: Alley.Mechanism?
 		@BindingState public var pinBase: Alley.PinBase?
+		@BindingState public var coordinate: CoordinateRegion
 		public var location: Location.Edit?
 
 		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
@@ -44,6 +45,7 @@ public struct AlleyEditor: Reducer {
 				self.pinFall = new.pinFall
 				self.mechanism = new.mechanism
 				self.pinBase = new.pinBase
+				self.coordinate = .init(coordinate: .init())
 				self.existingLanes = []
 				self.newLanes = []
 				self.initialValue = .create(new)
@@ -55,6 +57,7 @@ public struct AlleyEditor: Reducer {
 				self.pinBase = existing.alley.pinBase
 				self.existingLanes = existing.lanes
 				self.location = existing.alley.location
+				self.coordinate = .init(coordinate: existing.alley.location?.coordinate.mapCoordinate ?? .init())
 				self.newLanes = []
 				self.initialValue = .edit(existing.alley)
 			}
@@ -67,7 +70,6 @@ public struct AlleyEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case didTapRemoveAddressButton
 			case didTapAddressField
 			case didTapManageLanes
 			case binding(BindingAction<State>)
@@ -113,15 +115,13 @@ public struct AlleyEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didTapRemoveAddressButton:
-					state.location = nil
-					// TODO: Fix bug with .didTapRemoveAddressButton needing to set `addressLookup` to nil
-					// The problem is the buttons overlap in AlleyEditorView
-					state.addressLookup = nil
-					return .none
-
 				case .didTapAddressField:
-					state.addressLookup = .init(initialQuery: state.location?.title ?? "")
+					if state.location == nil {
+						state.addressLookup = .init(initialQuery: state.location?.title ?? "")
+					} else {
+						state.location = nil
+						state.coordinate = .init(coordinate: .init())
+					}
 					return .none
 
 				case .didTapManageLanes:
@@ -209,6 +209,7 @@ public struct AlleyEditor: Reducer {
 					} else {
 						state.location?.updateProperties(with: result)
 					}
+					state.coordinate = .init(coordinate: state.location?.coordinate.mapCoordinate ?? .init())
 					return .none
 
 				case let .addressLookup(.presented(.delegate(delegateAction))):
