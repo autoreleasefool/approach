@@ -55,7 +55,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				}
 			} empty: {
 				ListEmptyContent(
-					Asset.Media.EmptyState.alleys, // TODO: empty picker image
+					Asset.Media.EmptyState.picker,
 					title: Strings.Picker.Empty.title
 				) {
 					EmptyContentAction(title: Strings.Action.cancel) {

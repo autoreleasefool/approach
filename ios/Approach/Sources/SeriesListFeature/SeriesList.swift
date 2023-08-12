@@ -187,7 +187,6 @@ public struct SeriesList: Reducer {
 					return .none
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
-					// TODO: navigate to new series
 					switch delegateAction {
 					case let .didFinishCreating(created):
 						if let series = state.series[id: created.id] {

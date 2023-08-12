@@ -105,6 +105,7 @@ public enum Asset {
       public static let gear = ImageAsset(name: "EmptyState/Gear")
       public static let leagues = ImageAsset(name: "EmptyState/Leagues")
       public static let opponents = ImageAsset(name: "EmptyState/Opponents")
+      public static let picker = ImageAsset(name: "EmptyState/Picker")
       public static let series = ImageAsset(name: "EmptyState/Series")
       public static let teams = ImageAsset(name: "EmptyState/Teams")
     }
