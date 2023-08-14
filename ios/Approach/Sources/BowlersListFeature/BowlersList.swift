@@ -14,6 +14,7 @@ import ResourceListLibrary
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
+import ToastLibrary
 import ViewsLibrary
 
 extension Bowler.List: ResourceListItem {}
@@ -34,6 +35,7 @@ public struct BowlersList: Reducer {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext, newWidgetSource: nil)
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
+		public var toast: ToastState<ToastAction>?
 
 		@PresentationState public var destination: Destination.State?
 
@@ -80,17 +82,26 @@ public struct BowlersList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableBowler(Bowler.Edit)
+			case didLoadEditableBowler(TaskResult<Bowler.Edit?>)
 			case didSetIsShowingWidgets(Bool)
 
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
+			case toast(ToastAction)
 		}
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
+	}
+
+	public enum ToastAction: ToastableAction, Equatable {
+		case dismiss
+
+		public static func didDismiss() -> Self {
+			.dismiss
+		}
 	}
 
 	public struct Destination: Reducer {
@@ -164,24 +175,34 @@ public struct BowlersList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .toast(.dismiss):
+					state.toast = nil
+					return .none
+
 				case let .didSetIsShowingWidgets(isShowing):
 					state.isShowingWidgets = isShowing
 					return .none
 
-				case let .didLoadEditableBowler(bowler):
-					state.destination = .editor(.init(value: .edit(bowler)))
+				case let .didLoadEditableBowler(.success(bowler)):
+					if let bowler {
+						state.destination = .editor(.init(value: .edit(bowler)))
+					} else {
+						state.toast = .bowlerNotFound
+					}
+					return .none
+
+				case .didLoadEditableBowler(.failure):
+					// TODO: log error
+					state.toast = .bowlerNotFound
 					return .none
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(bowler):
 						return .run { send in
-							guard let editable = try await bowlers.edit(bowler.id) else {
-								// TODO: report bowler not found
-								return
-							}
-
-							await send(.internal(.didLoadEditableBowler(editable)))
+							await send(.internal(.didLoadEditableBowler(TaskResult {
+								try await bowlers.edit(bowler.id)
+							})))
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
@@ -252,5 +273,15 @@ public struct BowlersList: Reducer {
 				return nil
 			}
 		}
+	}
+}
+
+extension ToastState where Action == BowlersList.ToastAction {
+	static var bowlerNotFound: Self {
+		.init(
+			message: .init("Unable to load"),
+			icon: .exclamationmarkTriangle,
+			style: .error
+		)
 	}
 }

@@ -10,6 +10,7 @@ import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import ToastLibrary
 import ViewsLibrary
 
 public struct BowlersListView: View {
@@ -56,6 +57,7 @@ public struct BowlersListView: View {
 			}
 			.task { viewStore.send(.didStartObserving) }
 		})
+		.toast(store.scope(state: \.toast, action: { .internal(.toast($0)) }))
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /BowlersList.Destination.State.editor,
