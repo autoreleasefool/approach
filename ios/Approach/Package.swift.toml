@@ -42,6 +42,7 @@ services = [ "Analytics" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList" ]
+libraries = [ "Toast" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -339,6 +340,10 @@ skip_tests = true
 [libraries.Tips]
 libraries = [ "Views" ]
 
+[libraries.Toast]
+libraries = [ "Assets" ]
+dependencies = [ "ComposableArchitecture", "PopupView" ]
+
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
 dependencies = [ "ComposableArchitecture" ]
@@ -368,6 +373,10 @@ from = "1.0.0"
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
 from = "1.0.0"
+
+[dependencies.PopupView]
+url = "https://github.com/exyte/PopupView.git"
+from = "2.6.0"
 
 [dependencies.SFSafeSymbols]
 url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"

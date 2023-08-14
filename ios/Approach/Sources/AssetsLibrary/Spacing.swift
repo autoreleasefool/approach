@@ -8,6 +8,7 @@ extension CGFloat {
 	public static let largeSpacing: CGFloat = unitSpacing * 8
 	public static let extraLargeSpacing: CGFloat = unitSpacing * 12
 
+	public static let smallRadius: CGFloat = unitSpacing
 	public static let standardRadius: CGFloat = unitSpacing * 2
 	public static let largeRadius: CGFloat = unitSpacing * 4
 

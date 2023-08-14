@@ -123,11 +123,13 @@ let package = Package(
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
 		.library(name: "TestUtilitiesLibrary", targets: ["TestUtilitiesLibrary"]),
 		.library(name: "TipsLibrary", targets: ["TipsLibrary"]),
+		.library(name: "ToastLibrary", targets: ["ToastLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
+		.package(url: "https://github.com/exyte/PopupView.git", from: "2.6.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.0.0"),
@@ -256,6 +258,7 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
+				"ToastLibrary",
 			]
 		),
 		.testTarget(
@@ -1494,6 +1497,21 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TipsLibrary",
+			]
+		),
+		.target(
+			name: "ToastLibrary",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				.product(name: "PopupView", package: "PopupView"),
+				"AssetsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ToastLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ToastLibrary",
 			]
 		),
 		.target(
