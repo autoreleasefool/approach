@@ -4,7 +4,7 @@ import PopupView
 import SwiftUI
 
 public protocol ToastableAction {
-	static func didDismiss() -> Self
+	static var didDismiss: Self { get }
 }
 
 public struct ToastState<Action: ToastableAction> {
@@ -98,7 +98,7 @@ extension View {
 					set: { state, transaction in
 						withAnimation(transaction.disablesAnimations ? nil : transaction.animation) {
 							if state == nil {
-								store.send(.didDismiss())
+								store.send(.didDismiss)
 							}
 						}
 					}

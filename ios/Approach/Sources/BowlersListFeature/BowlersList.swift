@@ -97,11 +97,7 @@ public struct BowlersList: Reducer {
 	}
 
 	public enum ToastAction: ToastableAction, Equatable {
-		case dismiss
-
-		public static func didDismiss() -> Self {
-			.dismiss
-		}
+		case didDismiss
 	}
 
 	public struct Destination: Reducer {
@@ -175,7 +171,7 @@ public struct BowlersList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .toast(.dismiss):
+				case .toast(.didDismiss):
 					state.toast = nil
 					return .none
 
