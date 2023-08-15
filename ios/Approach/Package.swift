@@ -129,6 +129,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
+		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.0"),
 		.package(url: "https://github.com/exyte/PopupView.git", from: "2.6.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.0.0"),

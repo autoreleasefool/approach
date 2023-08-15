@@ -358,6 +358,14 @@ from = "1.0.0"
 url = "https://github.com/apple/swift-async-algorithms.git"
 from = "0.1.0"
 
+[dependencies.CocoaLumberjack]
+url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
+from = "3.8.0"
+
+[dependencies.CocoaLumberjackSwift]
+url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
+from = "3.8.0"
+
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
 from = "6.16.0"
