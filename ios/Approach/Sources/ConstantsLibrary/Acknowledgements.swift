@@ -35,5 +35,6 @@ extension Acknowledgement {
 		.init(name: "The Composable Architecture", license: .init(fileName: "ComposableArchitecture", type: "txt")),
 		.init(name: "WiggleAnimationModifier", license: .init(fileName: "WiggleAnimationModifier", type: "txt")),
 		.init(name: "XCTestDynamicOverlay", license: .init(fileName: "XCTestDynamicOverlay", type: "txt")),
+		.init(name: "ZIPFoundation", license: .init(fileName: "ZIPFoundation", type: "txt")),
 	]
 }

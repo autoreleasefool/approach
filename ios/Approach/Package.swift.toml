@@ -403,6 +403,10 @@ from = "1.4.4"
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
 from = "1.0.0"
 
+[dependencies.ZIPFoundation]
+url = "https://github.com/weichsel/ZIPFoundation.git"
+from = "0.9.16"
+
 # Default Imports
 
 [defaults.features]
