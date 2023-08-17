@@ -35,6 +35,7 @@
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
+		CA9C5D7D2A8C032100E484E2 /* LoggingService in Frameworks */ = {isa = PBXBuildFile; productRef = CA9C5D7C2A8C032100E484E2 /* LoggingService */; };
 		CA9E25F12A0FA03400BA216C /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F02A0FA03400BA216C /* FeatureFlagsService */; };
 		CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F22A0FA66B00BA216C /* BowlersRepository */; };
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
@@ -108,6 +109,7 @@
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
+				CA9C5D7D2A8C032100E484E2 /* LoggingService in Frameworks */,
 				CA2FCE932A1490910061A7FE /* MatchPlaysRepository in Frameworks */,
 				CAD15BB729FB91270015E4CB /* LocationsRepository in Frameworks */,
 				CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */,
@@ -295,6 +297,7 @@
 				CAC51C1D2A51412300A99164 /* StatisticsWidgetsRepository */,
 				CA8847372A587D1D001AA48F /* AppIconService */,
 				CA626E2E2A842032002BCC13 /* TipsService */,
+				CA9C5D7C2A8C032100E484E2 /* LoggingService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -566,6 +569,10 @@
 		CA94DD632900B3AC00B81A87 /* FileManagerService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FileManagerService;
+		};
+		CA9C5D7C2A8C032100E484E2 /* LoggingService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LoggingService;
 		};
 		CA9E25F02A0FA03400BA216C /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;

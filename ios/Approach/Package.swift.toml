@@ -212,6 +212,11 @@ services = [ "Preference" ]
 libraries = [ "FeatureFlags" ]
 
 [services.FileManager]
+dependencies = [ "ZIPFoundation" ]
+
+[services.Logging]
+services = [ "FileManager" ]
+dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.Notifications]
 

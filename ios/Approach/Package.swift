@@ -82,6 +82,8 @@ let package = Package(
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
+		.library(name: "LoggingService", targets: ["LoggingService"]),
+		.library(name: "LoggingServiceInterface", targets: ["LoggingServiceInterface"]),
 		.library(name: "NotificationsService", targets: ["NotificationsService"]),
 		.library(name: "NotificationsServiceInterface", targets: ["NotificationsServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
@@ -1064,6 +1066,29 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FileManagerService",
+			]
+		),
+		.target(
+			name: "LoggingService",
+			dependencies: [
+				.product(name: "CocoaLumberjack", package: "CocoaLumberjack"),
+				.product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+				.product(name: "ZIPFoundation", package: "ZIPFoundation"),
+				"FileManagerServiceInterface",
+				"LoggingServiceInterface",
+			]
+		),
+		.target(
+			name: "LoggingServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "LoggingServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"LoggingService",
 			]
 		),
 		.target(
