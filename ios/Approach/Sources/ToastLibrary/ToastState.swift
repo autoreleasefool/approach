@@ -5,6 +5,7 @@ import SwiftUI
 
 public protocol ToastableAction {
 	static var didDismiss: Self { get }
+	static var didFinishDismissing: Self { get }
 }
 
 public struct ToastState<Action: ToastableAction> {
@@ -64,11 +65,13 @@ extension ToastState {
 	public enum Style: Equatable {
 		case primary
 		case error
+		case success
 
 		var foregroundColor: Color {
 			switch self {
 			case .primary: return Asset.Colors.Primary.default.swiftUIColor
 			case .error: return .white
+			case .success: return .black
 			}
 		}
 
@@ -76,6 +79,7 @@ extension ToastState {
 			switch self {
 			case .primary: return Asset.Colors.Primary.light.swiftUIColor
 			case .error: return Asset.Colors.Error.default.swiftUIColor
+			case .success: return Asset.Colors.Success.default.swiftUIColor
 			}
 		}
 	}
@@ -145,6 +149,7 @@ extension View {
 						.position(.bottom)
 						.animation(.spring())
 						.autohideIn(2)
+						.dismissCallback({ viewStore.send(.didFinishDismissing) })
 				}
 			)
 		})

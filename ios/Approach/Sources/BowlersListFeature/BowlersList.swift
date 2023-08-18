@@ -98,10 +98,6 @@ public struct BowlersList: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	public enum ToastAction: ToastableAction, Equatable {
-		case didDismiss
-	}
-
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case editor(BowlerEditor.State)

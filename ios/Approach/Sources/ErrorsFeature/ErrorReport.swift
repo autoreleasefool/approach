@@ -65,6 +65,7 @@ public struct ErrorReport: Reducer {
 
 	public enum ToastAction: ToastableAction, Equatable {
 		case didDismiss
+		case didFinishDismissing
 	}
 
 	@Dependency(\.dismiss) var dismiss
@@ -98,7 +99,6 @@ public struct ErrorReport: Reducer {
 						}
 					}
 
-
 				case .binding:
 					return .none
 				}
@@ -108,12 +108,16 @@ public struct ErrorReport: Reducer {
 				case .didCopyToClipboard:
 					state.toast = .init(
 						message: .init(Strings.copiedToClipboard),
-						icon: .checkmarkCircleFill
+						icon: .checkmarkCircleFill,
+						style: .success
 					)
 					return .none
 
 				case .toast(.didDismiss):
 					state.toast = nil
+					return .none
+
+				case .toast(.didFinishDismissing):
 					return .none
 				}
 

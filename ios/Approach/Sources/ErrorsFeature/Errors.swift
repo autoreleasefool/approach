@@ -1,7 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
-import EquatableLibrary
 import EmailServiceInterface
+import EquatableLibrary
 import FeatureActionLibrary
 import Foundation
 import LoggingServiceInterface
@@ -42,6 +42,7 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 	public enum ToastAction: ToastableAction, Equatable {
 		case didReportFeedback(AlwaysEqual<Error>)
 		case didDismiss
+		case didFinishDismissing
 	}
 
 	public init() {}
@@ -98,6 +99,11 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 						}
 
 					case .didDismiss:
+						state.currentToast = nil
+						return .none
+
+					case .didFinishDismissing:
+						guard state.report == nil else { return .none }
 						state.currentToast = state.toastQueue.popLast()
 						return .none
 					}
@@ -109,6 +115,9 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 			case .delegate:
 				return .none
 			}
+		}
+		.ifLet(\.$report, action: /Action.internal..Action.InternalAction.report) {
+			ErrorReport()
 		}
 	}
 }
