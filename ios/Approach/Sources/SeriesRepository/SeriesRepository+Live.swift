@@ -64,7 +64,7 @@ extension SeriesRepository: DependencyKey {
 						.filter(id: id)
 						.including(optional: Series.Database.alley.forKey("location"))
 						.asRequest(of: Series.Edit.self)
-						.fetchOne($0)
+						.fetchOneGuaranteed($0)
 				}
 			},
 			create: { series in

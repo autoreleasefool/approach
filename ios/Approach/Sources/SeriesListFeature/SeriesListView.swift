@@ -1,6 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
+import ErrorsFeature
 import GamesListFeature
 import ModelsLibrary
 import SeriesEditorFeature
@@ -91,6 +92,7 @@ public struct SeriesListView: View {
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.alert(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /SeriesList.Destination.State.alert,

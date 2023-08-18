@@ -155,6 +155,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				"AlleysListFeature",
+				"ErrorsFeature",
 				"GearListFeature",
 			]
 		),
@@ -266,7 +267,6 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerEditorFeature",
-				"ErrorsFeature",
 				"LeaguesListFeature",
 			]
 		),
@@ -531,6 +531,7 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
+				"ErrorsFeature",
 				"GamesListFeature",
 				"SeriesEditorFeature",
 				"SortOrderLibrary",

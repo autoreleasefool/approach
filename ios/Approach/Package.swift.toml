@@ -10,7 +10,7 @@ supported = [ "\"16.4\"" ]
 # Features
 
 [features.AccessoriesOverview]
-features = [ "AlleysList", "GearList" ]
+features = [ "AlleysList", "Errors", "GearList" ]
 dependencies = [ "Algorithms" ]
 
 [features.AddressLookup]
@@ -41,7 +41,7 @@ libraries = [ "Form" ]
 services = [ "Analytics" ]
 
 [features.BowlersList]
-features = [ "BowlerEditor", "Errors", "LeaguesList" ]
+features = [ "BowlerEditor", "LeaguesList" ]
 
 [features.Errors]
 services = [ "Email", "FileManager", "Logging", "Pasteboard" ]
@@ -107,7 +107,7 @@ services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "Equatable", "Form", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.SeriesList]
-features = [ "GamesList", "SeriesEditor" ]
+features = [ "Errors", "GamesList", "SeriesEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]

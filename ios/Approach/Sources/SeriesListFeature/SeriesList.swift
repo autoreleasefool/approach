@@ -2,8 +2,10 @@ import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
+import Foundation
 import GamesListFeature
 import ModelsLibrary
 import SeriesEditorFeature
@@ -31,6 +33,8 @@ public struct SeriesList: Reducer {
 
 		public var seriesToNavigate: Series.ID?
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(league: League.SeriesHost) {
@@ -50,7 +54,9 @@ public struct SeriesList: Reducer {
 		public enum InternalAction: Equatable {
 			case seriesResponse(TaskResult<[Series.List]>)
 			case didDeleteSeries(TaskResult<Series.ID>)
-			case didLoadEditableSeries(Series.Edit)
+			case didLoadEditableSeries(TaskResult<Series.Edit>)
+
+			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -71,18 +77,24 @@ public struct SeriesList: Reducer {
 		case didTapDismissButton
 	}
 
+	public enum ErrorID: Hashable {
+		case seriesNotFound
+		case seriesNotLoaded
+		case failedToDeleteSeries
+	}
+
 	public struct Destination: Reducer {
 			public enum State: Equatable {
 				case editor(SeriesEditor.State)
 				case games(GamesList.State)
-				case sortOrder(SortOrder<Series.Ordering>.State)
+				case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
 				case alert(AlertState<AlertAction>)
 			}
 
 			public enum Action: Equatable {
 				case editor(SeriesEditor.Action)
 				case games(GamesList.Action)
-				case sortOrder(SortOrder<Series.Ordering>.Action)
+				case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.Action)
 				case alert(AlertAction)
 			}
 
@@ -107,6 +119,10 @@ public struct SeriesList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -148,12 +164,9 @@ public struct SeriesList: Reducer {
 
 				case let .didSwipeSeries(.edit, id):
 					return .run { send in
-						guard let editable = try await self.series.edit(id) else {
-							// TODO: report series not found
-							return
-						}
-
-						await send(.internal(.didLoadEditableSeries(editable)))
+						await send(.internal(.didLoadEditableSeries(TaskResult {
+							try await self.series.edit(id)
+						})))
 					}
 				}
 
@@ -166,25 +179,32 @@ public struct SeriesList: Reducer {
 							state.seriesToNavigate = nil
 							state.destination = .games(.init(series: destination.asSummary))
 						} else {
-							// TODO: handle error missing series for navigation
+							return .send(.internal(.didLoadEditableSeries(.failure(SeriesListError.seriesNotFound(seriesToNavigate)))))
 						}
 					}
 					return .none
 
-				case let .didLoadEditableSeries(series):
+				case let .didLoadEditableSeries(.success(series)):
 					state.destination = .editor(.init(value: .edit(series), inLeague: state.league))
 					return .none
 
 				case .didDeleteSeries(.success):
 					return .none
 
-				case .seriesResponse(.failure):
-					// TODO: handle error loading series
-					return .none
+				case let .seriesResponse(.failure(error)):
+					return state.errors
+						.enqueue(.seriesNotLoaded, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
-				case .didDeleteSeries(.failure):
-					// TODO: handle error deleting series
-					return .none
+				case let .didDeleteSeries(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteSeries, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
+
+				case let .didLoadEditableSeries(.failure(error)):
+					return state.errors
+						.enqueue(.seriesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -218,6 +238,12 @@ public struct SeriesList: Reducer {
 						return startObservingSeries(forLeague: state.league.id, orderedBy: state.ordering)
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.editor(.internal))),
@@ -225,7 +251,9 @@ public struct SeriesList: Reducer {
 						.destination(.presented(.games(.internal))),
 						.destination(.presented(.alert(.didTapDismissButton))),
 						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))):
+						.destination(.presented(.sortOrder(.view))),
+						.errors(.view),
+						.errors(.internal):
 					return .none
 				}
 
@@ -266,4 +294,15 @@ extension ListErrorContent {
 		message: Strings.Series.Error.FailedToCreate.message,
 		action: Strings.Action.tryAgain
 	)
+}
+
+public enum SeriesListError: LocalizedError {
+	case seriesNotFound(Series.ID)
+
+	public var errorDescription: String? {
+		switch self {
+		case let .seriesNotFound(id):
+			return "Could not find Series with ID '\(id)'"
+		}
+	}
 }

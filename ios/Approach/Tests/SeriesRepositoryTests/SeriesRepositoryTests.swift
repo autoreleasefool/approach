@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import ModelsLibrary
@@ -480,20 +481,19 @@ final class SeriesRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testEdit_WhenSeriesNotExists_ReturnsNil() async throws {
+	func testEdit_WhenSeriesNotExists_ThrowsError() async throws {
 		// Given a database with no series
 		let db = try initializeDatabase(withSeries: nil)
 
 		// Editing the series
-		let series = try await withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
-		} operation: {
-			try await self.series.edit(UUID(0))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.series = .liveValue
+			} operation: {
+				_ = try await self.series.edit(UUID(0))
+			}
 		}
-
-		// Returns nil
-		XCTAssertNil(series)
 	}
 
 	// MARK: Delete
