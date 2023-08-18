@@ -87,7 +87,7 @@ extension ToastState.ToastAction: Equatable where Action: Equatable {}
 
 extension View {
 	public func toast<Action>(
-		_ store: Store<ToastState<Action>?, Action>
+		store: Store<ToastState<Action>?, Action>
 	) -> some View where Action: Equatable {
 		WithViewStore(store, observe: { $0 }, content: { viewStore in
 			self.popup(
@@ -115,14 +115,18 @@ extension View {
 						Text(toast.message)
 
 						if let button = toast.button {
-							Text(button.title)
-								.font(.caption)
-								.textCase(.uppercase)
-								.padding(.smallSpacing)
-								.background(
-									Material.ultraThinMaterial,
-									in: RoundedRectangle(cornerRadius: .smallRadius)
-								)
+							Button {
+								viewStore.send(button.action.action)
+							} label: {
+								Text(button.title)
+									.font(.caption)
+									.textCase(.uppercase)
+									.padding(.smallSpacing)
+									.background(
+										Material.ultraThinMaterial,
+										in: RoundedRectangle(cornerRadius: .smallRadius)
+									)
+							}
 						}
 					}
 					.padding(.horizontal, .standardSpacing)
@@ -140,7 +144,6 @@ extension View {
 						.type(.floater())
 						.position(.bottom)
 						.animation(.spring())
-						.closeOnTapOutside(true)
 						.autohideIn(2)
 				}
 			)
