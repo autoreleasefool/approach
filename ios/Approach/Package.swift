@@ -18,6 +18,7 @@ let package = Package(
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
+		.library(name: "ErrorsFeature", targets: ["ErrorsFeature"]),
 		.library(name: "FeatureFlagsListFeature", targets: ["FeatureFlagsListFeature"]),
 		.library(name: "GamesEditorFeature", targets: ["GamesEditorFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
@@ -265,8 +266,8 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerEditorFeature",
+				"ErrorsFeature",
 				"LeaguesListFeature",
-				"ToastLibrary",
 			]
 		),
 		.testTarget(
@@ -274,6 +275,27 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersListFeature",
+			]
+		),
+		.target(
+			name: "ErrorsFeature",
+			dependencies: [
+				"EmailServiceInterface",
+				"EquatableLibrary",
+				"FeatureActionLibrary",
+				"FileManagerServiceInterface",
+				"FoundationExtensionsLibrary",
+				"LoggingServiceInterface",
+				"PasteboardServiceInterface",
+				"ToastLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ErrorsFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ErrorsFeature",
 			]
 		),
 		.target(
@@ -1076,6 +1098,7 @@ let package = Package(
 		.target(
 			name: "FileManagerService",
 			dependencies: [
+				.product(name: "ZIPFoundation", package: "ZIPFoundation"),
 				"FileManagerServiceInterface",
 			]
 		),
@@ -1097,7 +1120,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "CocoaLumberjack", package: "CocoaLumberjack"),
 				.product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-				.product(name: "ZIPFoundation", package: "ZIPFoundation"),
 				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
 			]

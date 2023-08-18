@@ -10,6 +10,8 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 public enum Strings {
+  /// Copied to clipboard
+  public static let copiedToClipboard = Strings.tr("Localizable", "copiedToClipboard", fallback: "Copied to clipboard")
   /// No
   public static let no = Strings.tr("Localizable", "no", fallback: "No")
   /// None
@@ -53,6 +55,8 @@ public enum Strings {
     public static let manage = Strings.tr("Localizable", "action.manage", fallback: "Manage")
     /// Reload
     public static let reload = Strings.tr("Localizable", "action.reload", fallback: "Reload")
+    /// Report
+    public static let report = Strings.tr("Localizable", "action.report", fallback: "Report")
     /// Reset
     public static let reset = Strings.tr("Localizable", "action.reset", fallback: "Reset")
     /// Save
@@ -281,9 +285,34 @@ public enum Strings {
   public enum Error {
     /// We couldn't load your data.
     public static let loadingFailed = Strings.tr("Localizable", "error.loadingFailed", fallback: "We couldn't load your data.")
+    /// Unable to load
+    public static let unableToLoad = Strings.tr("Localizable", "error.unableToLoad", fallback: "Unable to load")
     public enum Generic {
       /// Errors
       public static let title = Strings.tr("Localizable", "error.generic.title", fallback: "Something went wrong!")
+    }
+  }
+  public enum ErrorReport {
+    /// Errors:
+    /// %@
+    public static func emailBody(_ p1: Any) -> String {
+      return Strings.tr("Localizable", "errorReport.emailBody", String(describing: p1), fallback: "Errors:\n%@")
+    }
+    /// Email report
+    public static let emailReport = Strings.tr("Localizable", "errorReport.emailReport", fallback: "Email report")
+    /// Include device logs?
+    public static let includeDeviceLogs = Strings.tr("Localizable", "errorReport.includeDeviceLogs", fallback: "Include device logs?")
+    /// Maybe we can help.
+    public static let maybeWeCanHelp = Strings.tr("Localizable", "errorReport.maybeWeCanHelp", fallback: "Maybe we can help.")
+    /// Reporting an error?
+    public static let reportingAnError = Strings.tr("Localizable", "errorReport.reportingAnError", fallback: "Reporting an error?")
+    /// Share report
+    public static let shareReport = Strings.tr("Localizable", "errorReport.shareReport", fallback: "Share report")
+    /// You've encountered the following error a couple times:
+    public static let youveEncountered = Strings.tr("Localizable", "errorReport.youveEncountered", fallback: "You've encountered the following error a couple times:")
+    public enum IncludeDeviceLogs {
+      /// Your logs contain no identifying information, and will only be used to diagnose your issue. Including your device logs makes this process much easier!
+      public static let disclaimer = Strings.tr("Localizable", "errorReport.includeDeviceLogs.disclaimer", fallback: "Your logs contain no identifying information, and will only be used to diagnose your issue. Including your device logs makes this process much easier!")
     }
   }
   public enum Form {

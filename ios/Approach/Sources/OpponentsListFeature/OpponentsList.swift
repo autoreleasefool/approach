@@ -59,7 +59,7 @@ public struct OpponentsList: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case didLoadEditableBowler(Bowler.Edit)
+			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
 			case list(ResourceList<Bowler.Summary, Bowler.Ordering>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -123,20 +123,21 @@ public struct OpponentsList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didLoadEditableBowler(bowler):
+				case let .didLoadEditableBowler(.success(bowler)):
 					state.destination = .editor(.init(value: .edit(bowler)))
+					return .none
+
+				case .didLoadEditableBowler(.failure):
+					// TODO: report error loading opponent
 					return .none
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(opponent):
 						return .run { send in
-							guard let editable = try await bowlers.edit(opponent.id) else {
-								// TODO: report bowler not found
-								return
-							}
-
-							await send(.internal(.didLoadEditableBowler(editable)))
+							await send(.internal(.didLoadEditableBowler(TaskResult {
+								try await bowlers.edit(opponent.id)
+							})))
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:

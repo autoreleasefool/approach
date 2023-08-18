@@ -13,7 +13,7 @@ public struct BowlersRepository: Sendable {
 	public var summaries: @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
 	public var fetchSummaries: @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary]
 	public var opponentRecord: @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?
-	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit?
+	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit
 	public var create: @Sendable (Bowler.Create) async throws -> Void
 	public var update: @Sendable (Bowler.Edit) async throws -> Void
 	public var delete: @Sendable (Bowler.ID) async throws -> Void
@@ -23,7 +23,7 @@ public struct BowlersRepository: Sendable {
 		summaries: @escaping @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
 		fetchSummaries: @escaping @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary],
 		opponentRecord: @escaping @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?,
-		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit?,
+		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit,
 		create: @escaping @Sendable (Bowler.Create) async throws -> Void,
 		update: @escaping @Sendable (Bowler.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Bowler.ID) async throws -> Void

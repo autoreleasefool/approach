@@ -1,6 +1,7 @@
 import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
+import ErrorsFeature
 import LeaguesListFeature
 import ModelsLibrary
 import ResourceListLibrary
@@ -57,7 +58,7 @@ public struct BowlersListView: View {
 			}
 			.task { viewStore.send(.didStartObserving) }
 		})
-		.toast(store.scope(state: \.toast, action: { .internal(.toast($0)) }))
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /BowlersList.Destination.State.editor,

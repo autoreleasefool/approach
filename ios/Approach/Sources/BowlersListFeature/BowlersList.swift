@@ -3,6 +3,7 @@ import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
@@ -35,7 +36,8 @@ public struct BowlersList: Reducer {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext, newWidgetSource: nil)
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
-		public var toast: ToastState<ToastAction>?
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var destination: Destination.State?
 
@@ -82,13 +84,13 @@ public struct BowlersList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableBowler(TaskResult<Bowler.Edit?>)
+			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
 			case didSetIsShowingWidgets(Bool)
 
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
-			case toast(ToastAction)
+			case errors(Errors<ErrorID>.Action)
 		}
 
 		case view(ViewAction)
@@ -126,6 +128,10 @@ public struct BowlersList: Reducer {
 		}
 	}
 
+	public enum ErrorID {
+		case bowlerNotFound
+	}
+
 	public init() {}
 
 	@Dependency(\.bowlers) var bowlers
@@ -141,6 +147,10 @@ public struct BowlersList: Reducer {
 
 		Scope(state: \.widgets, action: /Action.internal..Action.InternalAction.widgets) {
 			StatisticsWidgetLayout()
+		}
+
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -171,26 +181,27 @@ public struct BowlersList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .toast(.didDismiss):
-					state.toast = nil
-					return .none
-
 				case let .didSetIsShowingWidgets(isShowing):
 					state.isShowingWidgets = isShowing
 					return .none
 
 				case let .didLoadEditableBowler(.success(bowler)):
-					if let bowler {
-						state.destination = .editor(.init(value: .edit(bowler)))
-					} else {
-						state.toast = .bowlerNotFound
-					}
+					state.destination = .editor(.init(value: .edit(bowler)))
 					return .none
 
-				case .didLoadEditableBowler(.failure):
-					// TODO: log error
-					state.toast = .bowlerNotFound
-					return .none
+				case let .didLoadEditableBowler(.failure(error)):
+					return state.errors.enqueue(.init(
+						id: .bowlerNotFound,
+						thrownError: error,
+						message: .init(Strings.Error.unableToLoad),
+						icon: .exclamationmarkTriangle
+					)).map { .internal(.errors($0)) }
+
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
@@ -241,6 +252,9 @@ public struct BowlersList: Reducer {
 				case .widgets(.internal), .widgets(.view):
 					return .none
 
+				case .errors(.view), .errors(.internal):
+					return .none
+
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
@@ -269,15 +283,5 @@ public struct BowlersList: Reducer {
 				return nil
 			}
 		}
-	}
-}
-
-extension ToastState where Action == BowlersList.ToastAction {
-	static var bowlerNotFound: Self {
-		.init(
-			message: .init("Unable to load"),
-			icon: .exclamationmarkTriangle,
-			style: .error
-		)
 	}
 }

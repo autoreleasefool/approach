@@ -428,6 +428,16 @@
 
 "error.generic.title" = "Something went wrong!";
 "error.loadingFailed" = "We couldn't load your data.";
+"error.unableToLoad" = "Unable to load";
+
+"errorReport.reportingAnError" = "Reporting an error?";
+"errorReport.youveEncountered" = "You've encountered the following error a couple times:";
+"errorReport.maybeWeCanHelp" = "Maybe we can help.";
+"errorReport.includeDeviceLogs" = "Include device logs?";
+"errorReport.includeDeviceLogs.disclaimer" = "Your logs contain no identifying information, and will only be used to diagnose your issue. Including your device logs makes this process much easier!";
+"errorReport.emailReport" = "Email report";
+"errorReport.shareReport" = "Share report";
+"errorReport.emailBody" = "Errors:\n%@";
 
 /* Actions */
 
@@ -450,6 +460,7 @@
 "action.viewAll" = "View All";
 "action.skip" = "Skip";
 "action.select" = "Select";
+"action.report" = "Report";
 
 /* Other */
 
@@ -458,3 +469,4 @@
 "none" = "None";
 "yes" = "Yes";
 "no" = "No";
+"copiedToClipboard" = "Copied to clipboard";
