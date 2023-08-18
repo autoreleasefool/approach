@@ -222,6 +222,8 @@ dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.Notifications]
 
+[services.Pasteboard]
+
 [services.Preference]
 
 [services.RecentlyUsed]

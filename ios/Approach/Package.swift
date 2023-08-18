@@ -88,6 +88,8 @@ let package = Package(
 		.library(name: "LoggingServiceInterface", targets: ["LoggingServiceInterface"]),
 		.library(name: "NotificationsService", targets: ["NotificationsService"]),
 		.library(name: "NotificationsServiceInterface", targets: ["NotificationsServiceInterface"]),
+		.library(name: "PasteboardService", targets: ["PasteboardService"]),
+		.library(name: "PasteboardServiceInterface", targets: ["PasteboardServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
@@ -1130,6 +1132,25 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"NotificationsService",
+			]
+		),
+		.target(
+			name: "PasteboardService",
+			dependencies: [
+				"PasteboardServiceInterface",
+			]
+		),
+		.target(
+			name: "PasteboardServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "PasteboardServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"PasteboardService",
 			]
 		),
 		.target(
