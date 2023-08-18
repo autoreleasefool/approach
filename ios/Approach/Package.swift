@@ -78,6 +78,8 @@ let package = Package(
 		.library(name: "DatabaseMockingServiceInterface", targets: ["DatabaseMockingServiceInterface"]),
 		.library(name: "DatabaseService", targets: ["DatabaseService"]),
 		.library(name: "DatabaseServiceInterface", targets: ["DatabaseServiceInterface"]),
+		.library(name: "EmailService", targets: ["EmailService"]),
+		.library(name: "EmailServiceInterface", targets: ["EmailServiceInterface"]),
 		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
@@ -523,6 +525,7 @@ let package = Package(
 				"AppIconServiceInterface",
 				"ConstantsLibrary",
 				"DatabaseMockingServiceInterface",
+				"EmailServiceInterface",
 				"FeatureFlagsListFeature",
 				"FoundationExtensionsLibrary",
 				"OpponentsListFeature",
@@ -1026,6 +1029,25 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
+			]
+		),
+		.target(
+			name: "EmailService",
+			dependencies: [
+				"EmailServiceInterface",
+			]
+		),
+		.target(
+			name: "EmailServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "EmailServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"EmailService",
 			]
 		),
 		.target(

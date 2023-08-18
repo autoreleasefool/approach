@@ -64,6 +64,12 @@ public struct EmailView: UIViewControllerRepresentable {
 		if let subject = content.subject {
 			vc.setSubject(subject)
 		}
+		if let body = content.body {
+			vc.setMessageBody(body, isHTML: false)
+		}
+		if let attachment = content.attachment {
+			vc.addAttachmentData(attachment.data, mimeType: attachment.mimeType, fileName: attachment.fileName)
+		}
 		return vc
 	}
 
@@ -78,13 +84,33 @@ extension EmailView {
 	public struct Content {
 		let recipients: [String]?
 		let subject: String?
+		let body: String?
+		let attachment: Attachment?
 
 		public init(
 			recipients: [String]?,
-			subject: String? = nil
+			subject: String? = nil,
+			body: String? = nil,
+			attachment: Attachment? = nil
 		) {
 			self.recipients = recipients
 			self.subject = subject
+			self.body = body
+			self.attachment = attachment
+		}
+	}
+}
+
+extension EmailView.Content {
+	public struct Attachment {
+		let data: Data
+		let mimeType: String
+		let fileName: String
+
+		public init(data: Data, mimeType: String, fileName: String) {
+			self.data = data
+			self.mimeType = mimeType
+			self.fileName = fileName
 		}
 	}
 }

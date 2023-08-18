@@ -109,7 +109,7 @@ libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
-services = [ "AppIcon", "DatabaseMocking", "Preference" ]
+services = [ "AppIcon", "Email", "DatabaseMocking", "Preference" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsOverview]
@@ -205,6 +205,8 @@ dependencies = [ "GRDB" ]
 
 [services.DatabaseMocking]
 skip_tests = true
+
+[services.Email]
 
 [services.FeatureFlags]
 services = [ "Preference" ]

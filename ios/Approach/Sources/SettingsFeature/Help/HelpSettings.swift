@@ -1,8 +1,8 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
 import ConstantsLibrary
+import EmailServiceInterface
 import FeatureActionLibrary
-import MessageUI
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -38,6 +38,7 @@ public struct HelpSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Dependency(\.email) var email
 	@Dependency(\.openURL) var openURL
 
 	public var body: some ReducerOf<Self> {
@@ -48,21 +49,23 @@ public struct HelpSettings: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapReportBugButton:
-					if MFMailComposeViewController.canSendMail() {
-						state.isShowingBugReportEmail = true
-						return .none
-					} else {
-						guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.ReportBug.email)") else { return .none }
-						return .run { _ in await openURL(mailto) }
+					return .run { send in
+						if await email.canSendEmail() {
+							await send(.view(.binding(.set(\.$isShowingBugReportEmail, true))))
+						} else {
+							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.ReportBug.email)") else { return }
+							await openURL(mailto)
+						}
 					}
 
 				case .didTapSendFeedbackButton:
-					if MFMailComposeViewController.canSendMail() {
-						state.isShowingSendFeedbackEmail = true
-						return .none
-					} else {
-						guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.SendFeedback.email)") else { return .none }
-						return .run { _ in await openURL(mailto) }
+					return .run { send in
+						if await email.canSendEmail() {
+							await send(.view(.binding(.set(\.$isShowingSendFeedbackEmail, true))))
+						} else {
+							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.SendFeedback.email)") else { return }
+							await openURL(mailto)
+						}
 					}
 
 				case .didShowAcknowledgements:
