@@ -311,7 +311,7 @@ final class GearRepositoryTests: XCTestCase {
 				$0.database.reader = { db }
 				$0.gear = .liveValue
 			} operation: {
-				let _ = try await self.gear.edit(UUID(0))
+				_ = try await self.gear.edit(UUID(0))
 			}
 		}
 	}

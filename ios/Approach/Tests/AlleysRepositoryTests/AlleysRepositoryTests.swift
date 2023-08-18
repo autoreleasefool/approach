@@ -563,7 +563,7 @@ final class AlleysRepositoryTests: XCTestCase {
 				$0.database.reader = { db }
 				$0.alleys = .liveValue
 			} operation: {
-				let _ = try await self.alleys.edit(UUID(0))
+				_ = try await self.alleys.edit(UUID(0))
 			}
 		}
 	}

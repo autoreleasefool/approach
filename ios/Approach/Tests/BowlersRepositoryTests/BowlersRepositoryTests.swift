@@ -594,7 +594,7 @@ final class BowlersRepositoryTests: XCTestCase {
 				$0.database.reader = { db }
 				$0.bowlers = .liveValue
 			} operation: {
-				let _ = try await self.bowlers.edit(UUID(0))
+				_ = try await self.bowlers.edit(UUID(0))
 			}
 		}
 	}
