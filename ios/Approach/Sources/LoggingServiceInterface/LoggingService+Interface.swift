@@ -12,12 +12,12 @@ public enum LogLevel {
 public struct LoggingService: Sendable {
 	public var initialize: @Sendable () -> Void
 	public var log: @Sendable (Any, LogLevel) -> Void
-	public var fetchLogData: @Sendable () -> Data?
+	public var fetchLogData: @Sendable () async throws -> URL
 
 	public init(
 		initialize: @escaping @Sendable () -> Void,
 		log: @escaping @Sendable (Any, LogLevel) -> Void,
-		fetchLogData: @escaping @Sendable () -> Data?
+		fetchLogData: @escaping @Sendable () async throws -> URL
 	) {
 		self.initialize = initialize
 		self.log = log

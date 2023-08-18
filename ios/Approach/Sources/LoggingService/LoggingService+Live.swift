@@ -31,8 +31,7 @@ extension LoggingService: DependencyKey {
 			fetchLogData: {
 				@Dependency(\.fileManager) var fileManager
 				let urls = logFileManager.unsortedLogFileNames.compactMap(URL.init)
-				guard let archivePath = try? fileManager.getZip(urls) else { return nil }
-				return try? fileManager.getFileContents(archivePath)
+				return try fileManager.zipContents(ofUrls: urls, to: "approach_logs.zip")
 			}
 		)
 	}()

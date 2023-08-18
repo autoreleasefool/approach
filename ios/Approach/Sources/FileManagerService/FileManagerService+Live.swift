@@ -29,8 +29,8 @@ extension FileManagerService: DependencyKey {
 				FileManager.default
 					.fileExists(atPath: url.absoluteString)
 			},
-			getZip: { urls in
-				let archivePath = FileManager.default.temporaryDirectory.appending(path: "approach_logs.zip")
+			getZip: { urls, fileName in
+				let archivePath = FileManager.default.temporaryDirectory.appending(path: fileName)
 				guard let archive = Archive(url: archivePath, accessMode: .create) else {
 					throw FileManagerServiceError.failedToCreateArchive
 				}
