@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 @testable import GearRepository
 @testable import GearRepositoryInterface
@@ -300,20 +301,19 @@ final class GearRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testEdit_WhenGearNotExists_ReturnsNil() async throws {
+	func testEdit_WhenGearNotExists_ThrowsError() async throws {
 		// Given a database with no gear
 		let db = try initializeDatabase(withGear: nil)
 
 		// Editing a gear
-		let editable = try await withDependencies {
-			$0.database.reader = { db }
-			$0.gear = .liveValue
-		} operation: {
-			try await self.gear.edit(UUID(0))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.gear = .liveValue
+			} operation: {
+				let _ = try await self.gear.edit(UUID(0))
+			}
 		}
-
-		// Returns nil
-		XCTAssertNil(editable)
 	}
 
 	// MARK: - Delete

@@ -1,6 +1,7 @@
 @testable import AlleysRepository
 @testable import AlleysRepositoryInterface
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import LanesRepositoryInterface
@@ -552,20 +553,19 @@ final class AlleysRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testEdit_WhenAlleyNotExists_ReturnsNil() async throws {
+	func testEdit_WhenAlleyNotExists_ThrowsError() async throws {
 		// Given a database with no alleys
 		let db = try initializeDatabase(withAlleys: nil)
 
 		// Editing the alley
-		let alley = try await withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
-		} operation: {
-			try await self.alleys.edit(UUID(0))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.alleys = .liveValue
+			} operation: {
+				let _ = try await self.alleys.edit(UUID(0))
+			}
 		}
-
-		// Returns nil
-		XCTAssertNil(alley)
 	}
 
 	// MARK: - Delete

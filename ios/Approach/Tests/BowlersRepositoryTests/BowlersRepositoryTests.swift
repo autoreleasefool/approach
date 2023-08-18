@@ -1,6 +1,7 @@
 @testable import BowlersRepository
 @testable import BowlersRepositoryInterface
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import ModelsLibrary
@@ -383,6 +384,7 @@ final class BowlersRepositoryTests: XCTestCase {
 			try await self.bowlers.record(againstOpponent: UUID(1))
 		}
 
+		// FIXME: test failing due to gamesPlayed not being filtered by excludeFromStatistics
 		XCTAssertEqual(
 			record,
 			.init(
@@ -582,20 +584,19 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(editable, .init(id: UUID(0), name: "Joseph"))
 	}
 
-	func testEdit_WhenBowlerNotExists_ReturnsNil() async throws {
+	func testEdit_WhenBowlerNotExists_ThrowsError() async throws {
 		// Given a database with no bowlers
 		let db = try initializeDatabase(withBowlers: nil)
 
 		// Editing a bowler
-		let editable = try await withDependencies {
-			$0.database.reader = { db }
-			$0.bowlers = .liveValue
-		} operation: {
-			try await self.bowlers.edit(UUID(0))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.bowlers = .liveValue
+			} operation: {
+				let _ = try await self.bowlers.edit(UUID(0))
+			}
 		}
-
-		// Returns nil
-		XCTAssertNil(editable)
 	}
 
 	// MARK: Delete
