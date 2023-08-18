@@ -285,11 +285,17 @@ public enum Strings {
   public enum Error {
     /// We couldn't load your data.
     public static let loadingFailed = Strings.tr("Localizable", "error.loadingFailed", fallback: "We couldn't load your data.")
-    /// Unable to load
-    public static let unableToLoad = Strings.tr("Localizable", "error.unableToLoad", fallback: "Unable to load")
     public enum Generic {
       /// Errors
       public static let title = Strings.tr("Localizable", "error.generic.title", fallback: "Something went wrong!")
+    }
+    public enum Toast {
+      /// Data missing
+      public static let dataNotFound = Strings.tr("Localizable", "error.toast.dataNotFound", fallback: "Data missing")
+      /// Error deleting data
+      public static let failedToDelete = Strings.tr("Localizable", "error.toast.failedToDelete", fallback: "Error deleting data")
+      /// Error loading data
+      public static let failedToLoad = Strings.tr("Localizable", "error.toast.failedToLoad", fallback: "Error loading data")
     }
   }
   public enum ErrorReport {

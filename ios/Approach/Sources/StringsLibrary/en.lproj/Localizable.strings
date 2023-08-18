@@ -428,7 +428,9 @@
 
 "error.generic.title" = "Something went wrong!";
 "error.loadingFailed" = "We couldn't load your data.";
-"error.unableToLoad" = "Unable to load";
+"error.toast.dataNotFound" = "Data missing";
+"error.toast.failedToLoad" = "Error loading data";
+"error.toast.failedToDelete" = "Error deleting data";
 
 "errorReport.reportingAnError" = "Reporting an error?";
 "errorReport.youveEncountered" = "You've encountered the following error a couple times:";

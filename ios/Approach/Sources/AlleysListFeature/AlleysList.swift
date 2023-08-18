@@ -118,7 +118,7 @@ public struct AlleysList: Reducer {
 					switch delegateAction {
 					case let .didEdit(alley):
 						return .run { send in
-							guard let editable = try await alleys.edit(alley.id) else {
+							guard let editable = try? await alleys.edit(alley.id) else {
 								// TODO: report alley not found
 								return
 							}

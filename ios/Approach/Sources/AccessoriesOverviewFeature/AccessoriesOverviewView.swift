@@ -3,6 +3,7 @@ import AlleyEditorFeature
 import AlleysListFeature
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import GearEditorFeature
 import GearListFeature
 import ModelsLibrary
@@ -121,6 +122,7 @@ public struct AccessoriesOverviewView: View {
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /AccessoriesOverview.Destination.State.gearList,

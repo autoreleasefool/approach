@@ -59,7 +59,7 @@ extension GearRepository: DependencyKey {
 						.filter(Gear.Database.Columns.id == id)
 						.including(optional: Gear.Database.bowler.forKey("owner"))
 						.asRequest(of: Gear.Edit.self)
-						.fetchOne($0)
+						.fetchOneGuaranteed($0)
 				}
 			},
 			create: { gear in

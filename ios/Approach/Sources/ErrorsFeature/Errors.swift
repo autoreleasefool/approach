@@ -166,6 +166,10 @@ extension Errors.State {
 
 		return .none
 	}
+
+	public mutating func enqueue(_ errorId: ErrorID, thrownError: Error, toastMessage: String) -> Effect<Errors.Action> {
+		enqueue(.init(id: errorId, thrownError: thrownError, message: .init(toastMessage), icon: .exclamationmarkTriangle))
+	}
 }
 
 extension ToastState {

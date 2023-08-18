@@ -186,12 +186,9 @@ public struct BowlersList: Reducer {
 					return .none
 
 				case let .didLoadEditableBowler(.failure(error)):
-					return state.errors.enqueue(.init(
-						id: .bowlerNotFound,
-						thrownError: error,
-						message: .init(Strings.Error.unableToLoad),
-						icon: .exclamationmarkTriangle
-					)).map { .internal(.errors($0)) }
+					return state.errors
+						.enqueue(.bowlerNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
 
 				case let .errors(.delegate(delegateAction)):
 					switch delegateAction {

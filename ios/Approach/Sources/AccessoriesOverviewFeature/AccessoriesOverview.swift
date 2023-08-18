@@ -3,16 +3,20 @@ import AlleysListFeature
 import AlleysRepositoryInterface
 import AnalyticsServiceInterface
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import GearEditorFeature
 import GearListFeature
 import GearRepositoryInterface
 import ModelsLibrary
+import StringsLibrary
 
 public struct AccessoriesOverview: Reducer {
 	public struct State: Equatable {
 		public var recentAlleys: IdentifiedArrayOf<Alley.Summary> = []
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var destination: Destination.State?
 
@@ -33,13 +37,14 @@ public struct AccessoriesOverview: Reducer {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case alleysResponse(TaskResult<[Alley.Summary]>)
-			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes?>)
+			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes>)
 			case didDeleteAlley(TaskResult<Never>)
 
 			case gearResponse(TaskResult<[Gear.Summary]>)
-			case didLoadEditableGear(TaskResult<Gear.Edit?>)
+			case didLoadEditableGear(TaskResult<Gear.Edit>)
 			case didDeleteGear(TaskResult<Never>)
 
+			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -89,6 +94,15 @@ public struct AccessoriesOverview: Reducer {
 		case observeGear
 	}
 
+	public enum ErrorID: Hashable {
+		case alleyNotFound
+		case loadingAlleysFailed
+		case failedToDeleteAlley
+		case gearNotFound
+		case loadingGearFailed
+		case failedToDeleteGear
+	}
+
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
@@ -96,6 +110,10 @@ public struct AccessoriesOverview: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -167,43 +185,47 @@ public struct AccessoriesOverview: Reducer {
 					state.recentAlleys = .init(uniqueElements: alleys)
 					return .none
 
-				case .alleysResponse(.failure):
-					// TODO: handle alley loading failure
-					return .none
-
 				case let .didLoadEditableAlley(.success(alley)):
-					guard let alley else { return .none } // TODO: show error failed to load alley
 					state.destination = .alleyEditor(.init(value: .edit(alley)))
-					return .none
-
-				case .didLoadEditableAlley(.failure):
-					// TODO: show error failed to load alley
-					return .none
-
-				case .didDeleteAlley(.failure):
-					// TODO: show error deleting alley
 					return .none
 
 				case let .gearResponse(.success(gear)):
 					state.recentGear = .init(uniqueElements: gear)
 					return .none
 
-				case .gearResponse(.failure):
-					// TODO: handle gear loading failure
-					return .none
-
 				case let .didLoadEditableGear(.success(gear)):
-					guard let gear else { return .none } // TODO: show error failed to load gear
 					state.destination = .gearEditor(.init(value: .edit(gear)))
 					return .none
 
-				case .didLoadEditableGear(.failure):
-					// TODO: show error failed to load gear
-					return .none
+				case let .alleysResponse(.failure(error)):
+					return state.errors
+						.enqueue(.loadingAlleysFailed, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
-				case .didDeleteGear(.failure):
-					// TODO: show error deleting gear
-					return .none
+				case let .didLoadEditableAlley(.failure(error)):
+					return state.errors
+						.enqueue(.alleyNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteAlley(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteAlley, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
+
+				case let .gearResponse(.failure(error)):
+					return state.errors
+						.enqueue(.loadingGearFailed, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .didLoadEditableGear(.failure(error)):
+					return state.errors
+						.enqueue(.gearNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteGear(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteGear, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .destination(.presented(.alleyEditor(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -229,6 +251,12 @@ public struct AccessoriesOverview: Reducer {
 						return .none
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.gearEditor(.view))),
 						.destination(.presented(.gearEditor(.internal))),
@@ -237,7 +265,9 @@ public struct AccessoriesOverview: Reducer {
 						.destination(.presented(.alleysList(.internal))),
 						.destination(.presented(.alleysList(.view))),
 						.destination(.presented(.gearList(.internal))),
-						.destination(.presented(.gearList(.view))):
+						.destination(.presented(.gearList(.view))),
+						.errors(.internal),
+						.errors(.view):
 					return .none
 				}
 

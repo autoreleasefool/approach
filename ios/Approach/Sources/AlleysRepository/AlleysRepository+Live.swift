@@ -66,7 +66,7 @@ extension AlleysRepository: DependencyKey {
 								.aliased(lanesAlias)
 						)
 						.asRequest(of: Alley.EditWithLanes.self)
-						.fetchOne($0)
+						.fetchOneGuaranteed($0)
 				}
 			},
 			create: { alley in

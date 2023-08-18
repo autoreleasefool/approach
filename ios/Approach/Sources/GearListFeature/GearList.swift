@@ -138,7 +138,7 @@ public struct GearList: Reducer {
 					switch delegateAction {
 					case let .didEdit(gear):
 						return .run { send in
-							guard let editable = try await self.gear.edit(gear.id) else {
+							guard let editable = try? await self.gear.edit(gear.id) else {
 								// TODO: report gear not found
 								return
 							}
