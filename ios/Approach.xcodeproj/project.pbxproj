@@ -40,6 +40,7 @@
 		CA9E25F32A0FA66B00BA216C /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA9E25F22A0FA66B00BA216C /* BowlersRepository */; };
 		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
+		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */; };
 		CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */; };
@@ -105,6 +106,7 @@
 				CA8847382A587D1D001AA48F /* AppIconService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
+				CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */,
 				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
@@ -298,6 +300,7 @@
 				CA8847372A587D1D001AA48F /* AppIconService */,
 				CA626E2E2A842032002BCC13 /* TipsService */,
 				CA9C5D7C2A8C032100E484E2 /* LoggingService */,
+				CAA668BD2A8F29A800DF3E75 /* EmailService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -589,6 +592,10 @@
 		CAA3D74E29CFB49200876EDC /* DatabaseService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DatabaseService;
+		};
+		CAA668BD2A8F29A800DF3E75 /* EmailService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = EmailService;
 		};
 		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
 			isa = XCSwiftPackageProductDependency;
