@@ -126,7 +126,7 @@ extension BowlersRepository: DependencyKey {
 			},
 			edit: { id in
 				try await database.reader().read {
-					try Bowler.Edit.fetchOne($0, id: id)
+					try Bowler.Edit.fetchOneGuaranteed($0, id: id)
 				}
 			},
 			create: { bowler in
