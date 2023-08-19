@@ -108,40 +108,7 @@ extension View {
 					}
 				),
 				itemView: { toast in
-					HStack(alignment: .center, spacing: .smallSpacing) {
-						if let icon = toast.icon {
-							Image(systemSymbol: icon)
-								.resizable()
-								.scaledToFit()
-								.frame(width: .extraTinyIcon, height: .extraTinyIcon)
-						}
-
-						Text(toast.message)
-
-						if let button = toast.button {
-							Button {
-								viewStore.send(button.action.action)
-							} label: {
-								Text(button.title)
-									.font(.caption)
-									.textCase(.uppercase)
-									.padding(.smallSpacing)
-									.background(
-										Material.ultraThinMaterial,
-										in: RoundedRectangle(cornerRadius: .smallRadius)
-									)
-							}
-						}
-					}
-					.padding(.horizontal, .standardSpacing)
-					.padding(.vertical, .smallSpacing)
-					.foregroundColor(toast.style.foregroundColor)
-					.background(
-						RoundedRectangle(cornerRadius: .standardRadius)
-							.fill(toast.style.backgroundColor)
-					)
-					.padding(.horizontal, .standardSpacing)
-					.padding(.bottom, .standardSpacing)
+					ToastState<Action>.View(toast: toast, viewStore: viewStore)
 				},
 				customize: {
 					$0
@@ -153,5 +120,49 @@ extension View {
 				}
 			)
 		})
+	}
+}
+
+extension ToastState {
+	public struct View: SwiftUI.View {
+		let toast: ToastState<Action>
+		let viewStore: ViewStore<ToastState<Action>?, Action>
+
+		public var body: some SwiftUI.View {
+			HStack(alignment: .center, spacing: .smallSpacing) {
+				if let icon = toast.icon {
+					Image(systemSymbol: icon)
+						.resizable()
+						.scaledToFit()
+						.frame(width: .extraTinyIcon, height: .extraTinyIcon)
+				}
+
+				Text(toast.message)
+
+				if let button = toast.button {
+					SwiftUI.Button {
+						viewStore.send(button.action.action)
+					} label: {
+						Text(button.title)
+							.font(.caption)
+							.textCase(.uppercase)
+							.padding(.smallSpacing)
+							.background(
+								Material.ultraThinMaterial,
+								in: RoundedRectangle(cornerRadius: .smallRadius)
+							)
+					}
+				}
+			}
+			.padding(.horizontal, .standardSpacing)
+			.padding(.vertical, .smallSpacing)
+			.foregroundColor(toast.style.foregroundColor)
+			.background(
+				RoundedRectangle(cornerRadius: .standardRadius)
+					.fill(toast.style.backgroundColor)
+			)
+			.padding(.horizontal, .standardSpacing)
+			.padding(.bottom, .standardSpacing)
+		}
 	}
 }
