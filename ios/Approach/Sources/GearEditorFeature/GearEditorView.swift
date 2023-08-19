@@ -1,7 +1,7 @@
 import AvatarServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
-import FormLibrary
+import FormFeature
 import ModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary

@@ -1,11 +1,11 @@
 import ComposableArchitecture
-@testable import FormLibrary
+@testable import FormFeature
 import XCTest
 
 typealias TestForm = Form<Createable, Editable>
 
 @MainActor
-final class FormLibraryTests: XCTestCase {
+final class FormFeatureTests: XCTestCase {
 
 	// MARK: Saving
 

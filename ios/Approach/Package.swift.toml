@@ -10,7 +10,7 @@ supported = [ "\"16.4\"" ]
 # Features
 
 [features.AccessoriesOverview]
-features = [ "AlleysList", "Errors", "GearList" ]
+features = [ "AlleysList", "GearList" ]
 dependencies = [ "Algorithms" ]
 
 [features.AddressLookup]
@@ -19,10 +19,10 @@ services = [ "AddressLookup" ]
 libraries = [ "SwiftUIExtensions", "Views" ]
 
 [features.AlleyEditor]
-features = [ "AddressLookup", "LaneEditor" ]
+features = [ "AddressLookup", "Form", "LaneEditor" ]
 repositories = [ "Alleys" ]
 services = [ "Analytics", "FeatureFlags" ]
-libraries = [ "Form", "ModelsViews" ]
+libraries = [ "ModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
@@ -36,8 +36,8 @@ services = [ "Avatar" ]
 libraries = [ "Strings" ]
 
 [features.BowlerEditor]
+features = [ "Form" ]
 repositories = [ "Bowlers" ]
-libraries = [ "Form" ]
 services = [ "Analytics" ]
 
 [features.BowlersList]
@@ -51,6 +51,9 @@ libraries = [ "Equatable", "FoundationExtensions", "Toast", "Views" ]
 services = [ "FeatureFlags" ]
 libraries = [ "Strings" ]
 
+[features.Form]
+features = [ "Errors" ]
+
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
 repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
@@ -62,9 +65,10 @@ features = [ "GamesEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.GearEditor]
+features = [ "Form" ]
 repositories = [ "Bowlers", "Gear" ]
 services = [ "Analytics", "Avatar", "FeatureFlags" ]
-libraries = [ "Equatable", "Form", "ResourcePicker", "SwiftUIExtensions" ]
+libraries = [ "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.GearList]
 features = [ "GearEditor" ]
@@ -75,9 +79,10 @@ libraries = [ "ResourceList", "SortOrder", "ModelsViews" ]
 libraries = [ "Models", "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
+features = [ "Form" ]
 repositories = [ "Alleys", "Leagues" ]
 services = [ "Analytics", "FeatureFlags" ]
-libraries = [ "Equatable", "Form", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
+libraries = [ "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.LeaguesList]
 features = [ "LeagueEditor", "SeriesList", "StatisticsWidgetsLayout" ]
@@ -102,18 +107,19 @@ services = [ "Scoring" ]
 libraries = [ "SwiftUIExtensions", "Views" ]
 
 [features.SeriesEditor]
+features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
 services = [ "Analytics", "FeatureFlags" ]
-libraries = [ "DateTime", "Equatable", "Form", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
+libraries = [ "DateTime", "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.SeriesList]
-features = [ "Errors", "GamesList", "SeriesEditor" ]
+features = [ "GamesList", "SeriesEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
-services = [ "AppIcon", "Email", "DatabaseMocking", "Preference" ]
-libraries = [ "Constants", "FoundationExtensions" ]
+services = [ "AppIcon", "DatabaseMocking", "Preference" ]
+libraries = [ "Constants" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
@@ -278,10 +284,6 @@ skip_tests = true
 dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureFlags]
-
-[libraries.Form]
-libraries = [ "FeatureAction", "Views" ]
-dependencies = [ "Dependencies" ]
 
 [libraries.FoundationExtensions]
 skip_tests = true

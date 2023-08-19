@@ -1176,16 +1176,6 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FormLibraryTests"
-               BuildableName = "FormLibraryTests"
-               BlueprintName = "FormLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "FramesRepositoryTests"
                BuildableName = "FramesRepositoryTests"
                BlueprintName = "FramesRepositoryTests"

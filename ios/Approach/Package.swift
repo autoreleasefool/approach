@@ -20,6 +20,7 @@ let package = Package(
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "ErrorsFeature", targets: ["ErrorsFeature"]),
 		.library(name: "FeatureFlagsListFeature", targets: ["FeatureFlagsListFeature"]),
+		.library(name: "FormFeature", targets: ["FormFeature"]),
 		.library(name: "GamesEditorFeature", targets: ["GamesEditorFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "GearEditorFeature", targets: ["GearEditorFeature"]),
@@ -110,7 +111,6 @@ let package = Package(
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
-		.library(name: "FormLibrary", targets: ["FormLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
@@ -155,7 +155,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				"AlleysListFeature",
-				"ErrorsFeature",
 				"GearListFeature",
 			]
 		),
@@ -190,7 +189,7 @@ let package = Package(
 				"AlleysRepositoryInterface",
 				"AnalyticsServiceInterface",
 				"FeatureFlagsServiceInterface",
-				"FormLibrary",
+				"FormFeature",
 				"LaneEditorFeature",
 				"ModelsViewsLibrary",
 			]
@@ -253,7 +252,7 @@ let package = Package(
 			dependencies: [
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
-				"FormLibrary",
+				"FormFeature",
 			]
 		),
 		.testTarget(
@@ -314,6 +313,19 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "FormFeature",
+			dependencies: [
+				"ErrorsFeature",
+			]
+		),
+		.testTarget(
+			name: "FormFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"FormFeature",
+			]
+		),
+		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"AnalyticsServiceInterface",
@@ -356,9 +368,8 @@ let package = Package(
 				"AnalyticsServiceInterface",
 				"AvatarServiceInterface",
 				"BowlersRepositoryInterface",
-				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",
-				"FormLibrary",
+				"FormFeature",
 				"GearRepositoryInterface",
 				"ResourcePickerLibrary",
 				"SwiftUIExtensionsLibrary",
@@ -409,9 +420,8 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"AnalyticsServiceInterface",
-				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",
-				"FormLibrary",
+				"FormFeature",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
@@ -512,9 +522,8 @@ let package = Package(
 				"AlleysRepositoryInterface",
 				"AnalyticsServiceInterface",
 				"DateTimeLibrary",
-				"EquatableLibrary",
 				"FeatureFlagsServiceInterface",
-				"FormLibrary",
+				"FormFeature",
 				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
@@ -531,7 +540,6 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
-				"ErrorsFeature",
 				"GamesListFeature",
 				"SeriesEditorFeature",
 				"SortOrderLibrary",
@@ -550,9 +558,7 @@ let package = Package(
 				"AppIconServiceInterface",
 				"ConstantsLibrary",
 				"DatabaseMockingServiceInterface",
-				"EmailServiceInterface",
 				"FeatureFlagsListFeature",
-				"FoundationExtensionsLibrary",
 				"OpponentsListFeature",
 				"PreferenceServiceInterface",
 			]
@@ -1347,21 +1353,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsLibrary",
-			]
-		),
-		.target(
-			name: "FormLibrary",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"FeatureActionLibrary",
-				"ViewsLibrary",
-			]
-		),
-		.testTarget(
-			name: "FormLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"FormLibrary",
 			]
 		),
 		.target(
