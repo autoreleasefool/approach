@@ -21,10 +21,15 @@ extension Lane {
 			HStack(alignment: .center, spacing: .standardSpacing) {
 				Text(label)
 					.frame(maxWidth: .infinity, alignment: .leading)
-				// TODO: choose a better icon for the wall indicator
-				if position != .noWall {
-					Image(systemSymbol: .decreaseQuotelevel)
-						.opacity(0.7)
+				switch position {
+				case .leftWall:
+					Image(systemSymbol: .arrowLeftToLineCompact)
+						.foregroundColor(.gray)
+				case .rightWall:
+					Image(systemSymbol: .arrowRightToLineCompact)
+						.foregroundColor(.gray)
+				case .noWall:
+					EmptyView()
 				}
 			}
 		}

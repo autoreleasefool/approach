@@ -155,7 +155,7 @@ public struct HelpSettingsView: View {
 						.onFirstAppear { viewStore.send(.didShowDeveloperDetails) }
 				)
 				Button(Strings.Settings.Help.viewSource) { viewStore.send(.didTapViewSource) }
-				// TODO: enable tip jar
+				// FIXME: enable tip jar
 //				NavigationLink("Tip Jar", destination: TipJarView())
 			} header: {
 				Text(Strings.Settings.Help.Development.title)
