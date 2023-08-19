@@ -3,6 +3,7 @@ import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import OpponentDetailsFeature
@@ -28,6 +29,8 @@ public struct OpponentsList: Reducer {
 		public var list: ResourceList<Bowler.Summary, Bowler.Ordering>.State
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init() {
@@ -35,10 +38,7 @@ public struct OpponentsList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete(onDelete: .init {
-						@Dependency(\.bowlers) var bowlers
-						try await bowlers.delete($0.id)
-					}),
+					.swipeToDelete,
 				],
 				query: ordering,
 				listTitle: Strings.Opponent.List.title,
@@ -60,7 +60,10 @@ public struct OpponentsList: Reducer {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
+			case didDeleteBowler(TaskResult<Bowler.Summary>)
+
 			case list(ResourceList<Bowler.Summary, Bowler.Ordering>.Action)
+			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -95,6 +98,11 @@ public struct OpponentsList: Reducer {
 		}
 	}
 
+	public enum ErrorID: Hashable {
+		case opponentNotFound
+		case failedToDeleteOpponent
+	}
+
 	public init() {}
 
 	@Dependency(\.bowlers) var bowlers
@@ -103,6 +111,10 @@ public struct OpponentsList: Reducer {
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList(fetchResources: bowlers.opponents(ordered:))
 		}
@@ -127,9 +139,18 @@ public struct OpponentsList: Reducer {
 					state.destination = .editor(.init(value: .edit(bowler)))
 					return .none
 
-				case .didLoadEditableBowler(.failure):
-					// TODO: report error loading opponent
+				case .didDeleteBowler(.success):
 					return .none
+
+				case let .didLoadEditableBowler(.failure(error)):
+					return state.errors
+						.enqueue(.opponentNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteBowler(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteOpponent, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
@@ -140,11 +161,19 @@ public struct OpponentsList: Reducer {
 							})))
 						}
 
+					case let .didDelete(bowler):
+						return .run { send in
+							await send(.internal(.didDeleteBowler(TaskResult {
+								try await bowlers.delete(bowler.id)
+								return bowler
+							})))
+						}
+
 					case .didAddNew, .didTapEmptyStateButton:
 						state.destination = .editor(.init(value: .create(.defaultOpponent(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didTap:
 						return .none
 					}
 
@@ -168,7 +197,16 @@ public struct OpponentsList: Reducer {
 						return .none
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view):
+					return .none
+
+				case .errors(.internal), .errors(.view):
 					return .none
 
 				case .destination(.dismiss),

@@ -1,6 +1,7 @@
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import GearEditorFeature
 import GearRepositoryInterface
@@ -28,6 +29,8 @@ public struct GearList: Reducer {
 		public var ordering: Gear.Ordering = .byRecentlyUsed
 		public var kindFilter: Gear.Kind?
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(kind: Gear.Kind?) {
@@ -36,10 +39,7 @@ public struct GearList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete(onDelete: .init {
-						@Dependency(\.gear) var gear
-						try await gear.delete($0.id)
-					}),
+					.swipeToDelete,
 				],
 				query: .init(kind: kindFilter, sortOrder: ordering),
 				listTitle: Strings.Gear.List.title,
@@ -60,8 +60,11 @@ public struct GearList: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case didLoadEditableGear(Gear.Edit)
+			case didLoadEditableGear(TaskResult<Gear.Edit>)
+			case didDeleteGear(TaskResult<Gear.Summary>)
+
 			case list(ResourceList<Gear.Summary, Query>.Action)
+			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -101,6 +104,11 @@ public struct GearList: Reducer {
 		}
 	}
 
+	public enum ErrorID: Hashable {
+		case gearNotFound
+		case failedToDeleteGear
+	}
+
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
@@ -109,6 +117,10 @@ public struct GearList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList {
 				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.sortOrder)
@@ -130,27 +142,45 @@ public struct GearList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didLoadEditableGear(gear):
+				case let .didLoadEditableGear(.success(gear)):
 					state.destination = .editor(.init(value: .edit(gear)))
 					return .none
+
+				case .didDeleteGear(.success):
+					return .none
+
+				case let .didLoadEditableGear(.failure(error)):
+					return state.errors
+						.enqueue(.gearNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteGear(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteGear, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(gear):
 						return .run { send in
-							guard let editable = try? await self.gear.edit(gear.id) else {
-								// TODO: report gear not found
-								return
-							}
+							await send(.internal(.didLoadEditableGear(TaskResult {
+								try await self.gear.edit(gear.id)
+							})))
+						}
 
-							await send(.internal(.didLoadEditableGear(editable)))
+					case let .didDelete(gear):
+						return .run { send in
+							await send(.internal(.didDeleteGear(TaskResult {
+								try await self.gear.delete(gear.id)
+								return gear
+							})))
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didTap:
 						return .none
 					}
 
@@ -176,6 +206,12 @@ public struct GearList: Reducer {
 						return .none
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view):
 					return .none
 
@@ -185,7 +221,9 @@ public struct GearList: Reducer {
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))):
+						.destination(.presented(.sortOrder(.view))),
+						.errors(.internal),
+						.errors(.view):
 					return .none
 				}
 

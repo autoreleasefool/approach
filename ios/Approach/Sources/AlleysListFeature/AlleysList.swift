@@ -3,6 +3,7 @@ import AlleysRepositoryInterface
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import ModelsLibrary
@@ -17,6 +18,8 @@ public struct AlleysList: Reducer {
 		public var list: ResourceList<Alley.Summary, Alley.Summary.FetchRequest>.State
 		public var filter: Alley.Summary.FetchRequest.Filter = .init()
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init() {
@@ -24,10 +27,7 @@ public struct AlleysList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete(onDelete: .init {
-						@Dependency(\.alleys) var alleys
-						try await alleys.delete($0.id)
-					}),
+					.swipeToDelete,
 				],
 				query: .init(filter: filter, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
@@ -49,7 +49,10 @@ public struct AlleysList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableAlley(Alley.EditWithLanes)
+			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes>)
+			case didDeleteAlley(TaskResult<Alley.Summary>)
+
+			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Alley.Summary, Alley.Summary.FetchRequest>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -80,6 +83,11 @@ public struct AlleysList: Reducer {
 		}
 	}
 
+	public enum ErrorID: Hashable {
+		case failedToDeleteAlley
+		case alleyNotFound
+	}
+
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
@@ -87,6 +95,10 @@ public struct AlleysList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList { request in
 				alleys.filteredList(
@@ -110,27 +122,45 @@ public struct AlleysList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .didLoadEditableAlley(alley):
+				case let .didLoadEditableAlley(.success(alley)):
 					state.destination = .editor(.init(value: .edit(alley)))
 					return .none
+
+				case .didDeleteAlley(.success):
+					return .none
+
+				case let .didLoadEditableAlley(.failure(error)):
+					return state.errors
+						.enqueue(.alleyNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteAlley(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteAlley, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(alley):
 						return .run { send in
-							guard let editable = try? await alleys.edit(alley.id) else {
-								// TODO: report alley not found
-								return
-							}
+							await send(.internal(.didLoadEditableAlley(TaskResult {
+								try await alleys.edit(alley.id)
+							})))
+						}
 
-							await send(.internal(.didLoadEditableAlley(editable)))
+					case let .didDelete(alley):
+						return .run { send in
+							await send(.internal(.didDeleteAlley(TaskResult {
+								try await alleys.delete(alley.id)
+								return alley
+							})))
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didTap:
 						return .none
 					}
 
@@ -148,6 +178,12 @@ public struct AlleysList: Reducer {
 						return .none
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view):
 					return .none
 
@@ -155,7 +191,9 @@ public struct AlleysList: Reducer {
 						.destination(.presented(.filters(.internal))),
 						.destination(.presented(.filters(.view))),
 						.destination(.presented(.editor(.internal))),
-						.destination(.presented(.editor(.view))):
+						.destination(.presented(.editor(.view))),
+						.errors(.internal),
+						.errors(.view):
 					return .none
 				}
 

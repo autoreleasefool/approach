@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import GearEditorFeature
 import ModelsLibrary
@@ -44,6 +45,7 @@ public struct GearListView: View {
 				}
 			}
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GearList.Destination.State.editor,

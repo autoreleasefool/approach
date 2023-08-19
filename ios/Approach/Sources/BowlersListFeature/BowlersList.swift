@@ -49,12 +49,7 @@ public struct BowlersList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete(
-						onDelete: .init {
-							@Dependency(\.bowlers) var bowlers
-							try await bowlers.delete($0.id)
-						}
-					),
+					.swipeToDelete,
 				],
 				query: ordering,
 				listTitle: Strings.Bowler.List.title,
@@ -85,6 +80,7 @@ public struct BowlersList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
+			case didDeleteBowler(TaskResult<Bowler.List>)
 			case didSetIsShowingWidgets(Bool)
 
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
@@ -126,6 +122,7 @@ public struct BowlersList: Reducer {
 
 	public enum ErrorID {
 		case bowlerNotFound
+		case failedToDeleteBowler
 	}
 
 	public init() {}
@@ -185,9 +182,17 @@ public struct BowlersList: Reducer {
 					state.destination = .editor(.init(value: .edit(bowler)))
 					return .none
 
+				case .didDeleteBowler(.success):
+					return .none
+
 				case let .didLoadEditableBowler(.failure(error)):
 					return state.errors
 						.enqueue(.bowlerNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteBowler(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteBowler, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
 						.map { .internal(.errors($0)) }
 
 				case let .errors(.delegate(delegateAction)):
@@ -205,11 +210,19 @@ public struct BowlersList: Reducer {
 							})))
 						}
 
+					case let .didDelete(bowler):
+						return .run { send in
+							await send(.internal(.didDeleteBowler(TaskResult {
+								try await bowlers.delete(bowler.id)
+								return bowler
+							})))
+						}
+
 					case .didAddNew, .didTapEmptyStateButton:
 						state.destination = .editor(.init(value: .create(.defaultBowler(withId: uuid()))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didTap:
 						return .none
 					}
 

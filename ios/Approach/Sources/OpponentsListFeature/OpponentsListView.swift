@@ -1,6 +1,7 @@
 import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import OpponentDetailsFeature
@@ -33,6 +34,7 @@ public struct OpponentsListView: View {
 				SortButton(isActive: false) { store.send(.view(.didTapSortOrderButton)) }
 			}
 		}
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /OpponentsList.Destination.State.details,

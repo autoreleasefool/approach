@@ -1,6 +1,7 @@
 import AlleyEditorFeature
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import ModelsViewsLibrary
@@ -41,6 +42,7 @@ public struct AlleysListView: View {
 				}
 			}
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /AlleysList.Destination.State.editor,

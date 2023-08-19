@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import LeaguesRepository
@@ -370,20 +371,19 @@ final class LeaguesRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testSeriesHost_WhenLeagueNotExists_ReturnsNil() async throws {
+	func testSeriesHost_WhenLeagueNotExists_ThrowsError() async throws {
 		// Given a database with no leagues
 		let db = try initializeDatabase(withLeagues: nil)
 
 		// Fetching the league
-		let league = try await withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
-		} operation: {
-			try await self.leagues.seriesHost(UUID(0))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.leagues = .liveValue
+			} operation: {
+				_ = try await self.leagues.seriesHost(UUID(0))
+			}
 		}
-
-		// Returns nothing
-		XCTAssertNil(league)
 	}
 
 	// MARK: - Create
@@ -554,20 +554,19 @@ final class LeaguesRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testEdit_WhenLeagueNotExists_ReturnsNil() async throws {
+	func testEdit_WhenLeagueNotExists_ThrowsError() async throws {
 		// Given a database with no leagues
 		let db = try initializeDatabase(withLeagues: nil)
 
 		// Editing the league
-		let league = try await withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
-		} operation: {
-			try await self.leagues.edit(UUID(0))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.leagues = .liveValue
+			} operation: {
+				_ = try await self.leagues.edit(UUID(0))
+			}
 		}
-
-		// Returns nil
-		XCTAssertNil(league)
 	}
 
 	// MARK: - Delete

@@ -67,7 +67,7 @@ extension LeaguesRepository: DependencyKey {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
 						.asRequest(of: League.SeriesHost.self)
-						.fetchOne($0)
+						.fetchOneGuaranteed($0)
 				}
 			},
 			edit: { id in
@@ -76,7 +76,7 @@ extension LeaguesRepository: DependencyKey {
 						.filter(League.Database.Columns.id == id)
 						.including(optional: League.Database.alleys.forKey("location"))
 						.asRequest(of: League.Edit.self)
-						.fetchOne($0)
+						.fetchOneGuaranteed($0)
 				}
 			},
 			create: { league in

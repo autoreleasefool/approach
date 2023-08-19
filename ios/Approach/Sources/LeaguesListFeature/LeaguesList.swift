@@ -1,6 +1,7 @@
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import LeagueEditorFeature
 import LeaguesRepositoryInterface
@@ -41,6 +42,8 @@ public struct LeaguesList: Reducer {
 
 		public var isShowingWidgets: Bool
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(bowler: Bowler.Summary) {
@@ -51,10 +54,7 @@ public struct LeaguesList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete(onDelete: .init {
-						@Dependency(\.leagues) var leagues
-						try await leagues.delete($0.id)
-					}),
+					.swipeToDelete,
 				],
 				query: .init(
 					filter: filter,
@@ -85,10 +85,12 @@ public struct LeaguesList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableLeague(League.Edit)
-			case didLoadSeriesLeague(League.SeriesHost)
+			case didLoadEditableLeague(TaskResult<League.Edit>)
+			case didDeleteLeague(TaskResult<League.List>)
+			case didLoadSeriesLeague(TaskResult<League.SeriesHost>)
 			case didSetIsShowingWidgets(Bool)
 
+			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<League.List, League.List.FetchRequest>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -130,6 +132,11 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
+	public enum ErrorID: Hashable {
+		case leagueNotFound
+		case failedToDeleteLeague
+	}
+
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
@@ -140,6 +147,10 @@ public struct LeaguesList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList { request in
 				leagues.list(
@@ -177,12 +188,9 @@ public struct LeaguesList: Reducer {
 
 				case let .didTapLeague(id):
 					return .run { send in
-						guard let league = try await leagues.seriesHost(id) else {
-							// TODO: report league not found
-							return
-						}
-
-						await send(.internal(.didLoadSeriesLeague(league)))
+						await send(.internal(.didLoadSeriesLeague(TaskResult {
+							try await leagues.seriesHost(id)
+						})))
 					}
 				}
 
@@ -192,16 +200,29 @@ public struct LeaguesList: Reducer {
 					state.isShowingWidgets = isShowing
 					return .none
 
-				case let .didLoadEditableLeague(league):
+				case let .didLoadEditableLeague(.success(league)):
 					state.destination = .editor(.init(value: .edit(league)))
 					return .none
 
-				case let .didLoadSeriesLeague(league):
+				case let .didLoadSeriesLeague(.success(league)):
 					state.destination = .series(.init(league: league))
 					return .run { _ in
 						try await clock.sleep(for: .seconds(1))
 						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
 					}
+
+				case .didDeleteLeague(.success):
+					return .none
+
+				case let .didLoadSeriesLeague(.failure(error)), let .didLoadEditableLeague(.failure(error)):
+					return state.errors
+						.enqueue(.leagueNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteLeague(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteLeague, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .widgets(.delegate(delegateAction)):
 					switch delegateAction {
@@ -213,19 +234,24 @@ public struct LeaguesList: Reducer {
 					switch delegateAction {
 					case let .didEdit(league):
 						return .run { send in
-							guard let editable = try await leagues.edit(league.id) else {
-								// TODO: report league not found
-								return
-							}
+							await send(.internal(.didLoadEditableLeague(TaskResult {
+								try await leagues.edit(league.id)
+							})))
+						}
 
-							await send(.internal(.didLoadEditableLeague(editable)))
+					case let .didDelete(league):
+						return .run { send in
+							await send(.internal(.didDeleteLeague(TaskResult {
+								try await leagues.delete(league.id)
+								return league
+							})))
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						state.destination = .editor(.init(value: .create(.default(withId: uuid(), forBowler: state.bowler.id))))
 						return .none
 
-					case .didDelete, .didTap:
+					case .didTap:
 						return .none
 					}
 
@@ -257,10 +283,19 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view):
 					return .none
 
 				case .widgets(.internal), .widgets(.view):
+					return .none
+
+				case .errors(.internal), .errors(.view):
 					return .none
 
 				case .destination(.dismiss),
