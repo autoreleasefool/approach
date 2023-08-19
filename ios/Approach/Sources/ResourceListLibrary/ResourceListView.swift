@@ -17,12 +17,10 @@ public struct ResourceListView<
 		let listContent: ListContent
 		let listTitle: String?
 		let features: [ResourceList<R, Q>.Feature]
-		let hasDeleteFeature: Bool
 
 		init(state: ResourceList<R, Q>.State) {
 			self.features = state.features
 			self.listTitle = state.listTitle
-			self.hasDeleteFeature = state.hasDeleteFeature
 			if state.errorState != nil {
 				self.listContent = .error
 			} else if let resources = state.resources {
@@ -114,7 +112,7 @@ public struct ResourceListView<
 											EditButton { viewStore.send(.didSwipe(.edit, element)) }
 										}
 
-										if viewStore.hasDeleteFeature {
+										if viewStore.features.contains(.swipeToDelete) {
 											DeleteButton { viewStore.send(.didSwipe(.delete, element)) }
 										}
 									}

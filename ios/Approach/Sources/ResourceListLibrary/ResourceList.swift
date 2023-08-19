@@ -36,16 +36,6 @@ public struct ResourceList<
 			self.listTitle = listTitle
 			self.emptyState = .init(content: emptyContent, style: .empty)
 		}
-
-		var hasDeleteFeature: Bool { onDelete != nil }
-		var onDelete: OnDelete? {
-			features.compactMap {
-				guard case let .swipeToDelete(onDelete) = $0 else {
-					return nil
-				}
-				return onDelete.wrapped
-			}.first
-		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -69,7 +59,6 @@ public struct ResourceList<
 			case observeData
 			case cancelObservation
 			case resourcesResponse(TaskResult<[R]>)
-			case deleteResponse(TaskResult<R>)
 			case empty(ResourceListEmpty.Action)
 			case error(ResourceListEmpty.Action)
 		}
@@ -80,7 +69,7 @@ public struct ResourceList<
 	}
 
 	public enum Feature: Equatable {
-		case swipeToDelete(onDelete: AlwaysEqual<(R) async throws -> Void>)
+		case swipeToDelete
 		case swipeToEdit
 		case tappable
 		case add
@@ -113,7 +102,7 @@ public struct ResourceList<
 					return beginObservation(query: state.query)
 
 				case let .didSwipe(.delete, resource):
-					guard state.hasDeleteFeature else {
+					guard state.features.contains(.swipeToDelete) else {
 						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
 					}
 
@@ -143,19 +132,11 @@ public struct ResourceList<
 
 				case let .alert(.presented(.didTapDeleteButton(resource))):
 					state.alert = nil
-					guard let onDelete = state.onDelete else {
-						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
-					}
-					return .run { send in
-						await send(.internal(.deleteResponse(TaskResult {
-							try await onDelete(resource)
-							return resource
-						})))
-					}
+					return .send(.delegate(.didDelete(resource)))
 
 				case .alert(.presented(.didTapDismissButton)):
 					state.alert = nil
-					return .none
+					return beginObservation(query: state.query)
 
 				case .alert(.dismiss):
 					return .none
@@ -176,13 +157,6 @@ public struct ResourceList<
 
 				case .resourcesResponse(.failure):
 					state.errorState = .failedToLoad
-					return .none
-
-				case let .deleteResponse(.success(resource)):
-					return .send(.delegate(.didDelete(resource)))
-
-				case .deleteResponse(.failure):
-					state.errorState = .failedToDelete
 					return .none
 
 				case .empty(.delegate(.didTapActionButton)):
