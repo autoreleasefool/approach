@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import LaneEditorFeature
 import LanesRepositoryInterface
@@ -59,6 +60,7 @@ public struct AlleyLanesEditorView: View {
 			.navigationTitle(Strings.Lane.List.title)
 		})
 		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(store: store.scope(state: \.$addLaneForm, action: { .internal(.addLaneForm($0)) })) {
 			AddLaneFormView(store: $0)
 				.padding()

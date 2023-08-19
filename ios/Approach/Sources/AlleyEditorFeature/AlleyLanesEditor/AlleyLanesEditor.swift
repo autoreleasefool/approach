@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import LaneEditorFeature
 import LanesRepositoryInterface
@@ -11,6 +12,8 @@ public struct AlleyLanesEditor: Reducer {
 		public var alley: Alley.ID
 		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
 		public var newLanes: IdentifiedArrayOf<Lane.Create>
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var alert: AlertState<AlertAction>?
 		@PresentationState public var addLaneForm: AddLaneForm.State?
@@ -37,6 +40,8 @@ public struct AlleyLanesEditor: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didDeleteLane(TaskResult<Lane.ID>)
+
+			case errors(Errors<ErrorID>.Action)
 			case laneEditor(id: LaneEditor.State.ID, action: LaneEditor.Action)
 			case addLaneForm(PresentationAction<AddLaneForm.Action>)
 		}
@@ -51,12 +56,24 @@ public struct AlleyLanesEditor: Reducer {
 		case didTapDismissButton
 	}
 
+	public enum ErrorID: Hashable {
+		case failedToDeleteLane
+	}
+
+	public enum Field: Hashable {
+		case lane(Lane.ID)
+	}
+
 	public init() {}
 
 	@Dependency(\.lanes) var lanes
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -95,9 +112,10 @@ public struct AlleyLanesEditor: Reducer {
 					state.newLanes.removeAll { $0.id == id }
 					return .none
 
-				case .didDeleteLane(.failure):
-					// TODO: handle fail to delete lane
-					return .none
+				case let .didDeleteLane(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteLane, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .laneEditor(id, .delegate(delegateAction)):
 					switch delegateAction {
@@ -122,7 +140,16 @@ public struct AlleyLanesEditor: Reducer {
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .laneEditor(_, .view), .laneEditor(_, .internal):
+					return .none
+
+				case .errors(.internal), .errors(.view):
 					return .none
 
 				case .addLaneForm(.presented(.internal)),

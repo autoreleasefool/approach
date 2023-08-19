@@ -55,12 +55,10 @@ public struct GameDetails: Reducer {
 			case didRequestOpponentPicker
 			case didRequestGearPicker
 			case didEditGame(Game.Edit)
-			case didEditMatchPlay(MatchPlay.Edit?)
+			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
 			case didClearManualScore
 		}
-		public enum InternalAction: Equatable {
-			case didUpdateMatchPlay(TaskResult<Never>)
-		}
+		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -97,7 +95,7 @@ public struct GameDetails: Reducer {
 
 				case let .didSetMatchPlayResult(result):
 					state.game.matchPlay?.result = result
-					return .send(.delegate(.didEditMatchPlay(state.game.matchPlay)))
+					return .send(.delegate(.didEditMatchPlay(.success(state.game.matchPlay))))
 
 				case .didToggleScoringMethod:
 					return toggleScoringMethod(in: &state)
@@ -136,7 +134,7 @@ public struct GameDetails: Reducer {
 					} else {
 						state.game.matchPlay?.opponentScore = nil
 					}
-					return .send(.delegate(.didEditMatchPlay(state.game.matchPlay)))
+					return .send(.delegate(.didEditMatchPlay(.success(state.game.matchPlay))))
 
 				case .didToggleMatchPlay:
 					if state.game.matchPlay == nil {
@@ -152,8 +150,7 @@ public struct GameDetails: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .didUpdateMatchPlay(.failure):
-					// TODO: handle error updating match play
+				case .never:
 					return .none
 				}
 
@@ -188,16 +185,12 @@ public struct GameDetails: Reducer {
 	private func createMatchPlay(state: inout State) -> Effect<Action> {
 		let matchPlay = MatchPlay.Edit(gameId: state.game.id, id: uuid())
 		state.game.matchPlay = matchPlay
-		return .concatenate(
-			.run { send in
-				do {
-					try await matchPlays.create(matchPlay)
-				} catch {
-					await send(.internal(.didUpdateMatchPlay(.failure(error))))
-				}
-			},
-			.send(.delegate(.didEditMatchPlay(matchPlay)))
-		).cancellable(id: CancelID.saveMatchPlay)
+		return .run { send in
+			await send(.delegate(.didEditMatchPlay(TaskResult {
+				try await matchPlays.create(matchPlay)
+				return matchPlay
+			})))
+		}.cancellable(id: CancelID.saveMatchPlay)
 	}
 
 	private func deleteMatchPlay(state: inout State) -> Effect<Action> {
@@ -206,12 +199,10 @@ public struct GameDetails: Reducer {
 		return .concatenate(
 			.cancel(id: CancelID.saveMatchPlay),
 			.run { send in
-				do {
+				await send(.delegate(.didEditMatchPlay(TaskResult {
 					try await matchPlays.delete(matchPlay.id)
-				} catch {
-					await send(.internal(.didUpdateMatchPlay(.failure(error))))
-				}
-				await send(.delegate(.didEditMatchPlay(nil)))
+					return nil
+				})))
 			}
 		)
 	}

@@ -3,6 +3,7 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import Dependencies
 import EquatableLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import Foundation
 import FramesRepositoryInterface
@@ -50,6 +51,8 @@ public struct GamesEditor: Reducer {
 		public var _rollEditor: RollEditor.State?
 		@PresentationState public var destination: Destination.State?
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
 			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
 			self.bowlerIds = bowlerIds
@@ -84,6 +87,7 @@ public struct GamesEditor: Reducer {
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
 
+			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case gamesHeader(GamesHeader.Action)
 			case gameDetailsHeader(GameDetailsHeader.Action)
@@ -105,6 +109,15 @@ public struct GamesEditor: Reducer {
 
 	enum CancelID { case observation }
 
+	public enum ErrorID: Hashable {
+		case failedToLoadBowler
+		case failedToLoadFrames
+		case failedToLoadGame
+		case failedToSaveGame
+		case failedToSaveFrame
+		case failedToSaveMatchPlay
+	}
+
 	public init() {}
 
 	@Dependency(\.bowlers) var bowlers
@@ -119,6 +132,10 @@ public struct GamesEditor: Reducer {
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
+
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
 
 		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
 			GamesHeader()
@@ -167,10 +184,11 @@ public struct GamesEditor: Reducer {
 					state.bowlers = .init(uniqueElements: bowlers)
 					return .none
 
-				case .bowlersResponse(.failure):
-					// TODO: handle failure loading bowler
+				case let .bowlersResponse(.failure(error)):
 					state.elementsRefreshing.remove(.bowlers)
-					return .none
+					return state.errors
+						.enqueue(.failedToLoadBowler, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
 				case let .framesResponse(.success(frames)):
 					guard frames.first?.gameId == state.currentGameId else {
@@ -192,14 +210,16 @@ public struct GamesEditor: Reducer {
 					state.elementsRefreshing.remove(.frames)
 					return updateScoreSheet(from: state)
 
-				case .framesResponse(.failure):
-					// TODO: handle error loading frames
+				case let .framesResponse(.failure(error)):
 					state.elementsRefreshing.remove(.frames)
-					return .none
+					return state.errors
+						.enqueue(.failedToLoadFrames, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
-				case .didUpdateFrame(.failure):
-					// TODO: handle error saving frame
-					return .none
+				case let .didUpdateFrame(.failure(error)):
+					return state.errors
+						.enqueue(.failedToSaveFrame, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
 
 				case let .gameResponse(.success(game)):
 					guard state.currentGameId == game?.id, let game else { return .none }
@@ -208,18 +228,21 @@ public struct GamesEditor: Reducer {
 					state.elementsRefreshing.remove(.game)
 					return .none
 
-				case .gameResponse(.failure):
-					// TODO: handle error loading game
+				case let .gameResponse(.failure(error)):
 					state.elementsRefreshing.remove(.game)
-					return .none
+					return state.errors
+						.enqueue(.failedToLoadGame, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
-				case .didUpdateGame(.failure):
-					// TODO: handle error saving game
-					return .none
+				case let .didUpdateGame(.failure(error)):
+					return state.errors
+						.enqueue(.failedToSaveGame, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
 
-				case .didUpdateMatchPlay(.failure):
-					// TODO: handle error saving match play
-					return .none
+				case let .didUpdateMatchPlay(.failure(error)):
+					return state.errors
+						.enqueue(.failedToSaveMatchPlay, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
 
 				case .didUpdateFrame(.success), .didUpdateGame(.success), .didUpdateMatchPlay(.success):
 					return .none
@@ -268,6 +291,9 @@ public struct GamesEditor: Reducer {
 				case let .gameDetailsHeader(action):
 					return reduce(into: &state, gamesDetailsHeaderAction: action)
 
+				case let .errors(action):
+					return reduce(into: &state, errorsAction: action)
+
 				case .destination(.dismiss):
 					return .send(.internal(.didDismissOpenSheet))
 				}
@@ -300,7 +326,7 @@ public struct GamesEditorAnalyticsReducer: Reducer {
 	public var body: some ReducerOf<GamesEditor> {
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {
-			case let .internal(.destination(.presented(.gameDetails(.delegate(.didEditMatchPlay(matchPlay)))))):
+			case let .internal(.destination(.presented(.gameDetails(.delegate(.didEditMatchPlay(.success(matchPlay))))))):
 				if matchPlay == nil {
 					return Analytics.MatchPlay.Deleted()
 				} else {

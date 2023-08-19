@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
+import StringsLibrary
 
 extension GamesEditor {
 	func reduce(into state: inout State, gameDetailsAction: GameDetails.Action) -> Effect<Action> {
@@ -25,9 +26,14 @@ extension GamesEditor {
 				))
 				return .none
 
-			case let .didEditMatchPlay(matchPlay):
+			case let .didEditMatchPlay(.success(matchPlay)):
 				state.game?.matchPlay = matchPlay
 				return save(matchPlay: state.game?.matchPlay)
+
+			case let .didEditMatchPlay(.failure(error)):
+				return state.errors
+					.enqueue(.failedToSaveMatchPlay, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+					.map { .internal(.errors($0)) }
 
 			case let .didEditGame(game):
 				state.game = game

@@ -27,10 +27,6 @@ extension League.Ordering: CustomStringConvertible {
 }
 
 public struct LeaguesList: Reducer {
-	public static func widgetContext(forBowler: Bowler.ID) -> String {
-		"leaguesList-\(forBowler)"
-	}
-
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
@@ -289,15 +285,6 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
-				case .list(.internal), .list(.view):
-					return .none
-
-				case .widgets(.internal), .widgets(.view):
-					return .none
-
-				case .errors(.internal), .errors(.view):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.series(.internal))),
 						.destination(.presented(.series(.view))),
@@ -306,7 +293,10 @@ public struct LeaguesList: Reducer {
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))):
+						.destination(.presented(.sortOrder(.view))),
+						.list(.internal), .list(.view),
+						.widgets(.internal), .widgets(.view),
+						.errors(.internal), .errors(.view):
 					return .none
 				}
 
@@ -328,6 +318,12 @@ public struct LeaguesList: Reducer {
 				return nil
 			}
 		}
+	}
+}
+
+extension LeaguesList {
+	public static func widgetContext(forBowler: Bowler.ID) -> String {
+		"leaguesList-\(forBowler)"
 	}
 }
 

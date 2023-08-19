@@ -1,6 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
@@ -115,6 +116,7 @@ public struct GamesEditorView: View {
 				}
 			}
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.ballPicker,
