@@ -296,6 +296,14 @@ public enum Strings {
       public static let failedToDelete = Strings.tr("Localizable", "error.toast.failedToDelete", fallback: "Error deleting data")
       /// Error loading data
       public static let failedToLoad = Strings.tr("Localizable", "error.toast.failedToLoad", fallback: "Error loading data")
+      /// %@ not created
+      public static func itemNotCreated(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "error.toast.itemNotCreated", String(describing: p1), fallback: "%@ not created")
+      }
+      /// %@ not updated
+      public static func itemNotUpdated(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "error.toast.itemNotUpdated", String(describing: p1), fallback: "%@ not updated")
+      }
     }
   }
   public enum ErrorReport {

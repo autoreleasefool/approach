@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import StringsLibrary
 
@@ -51,6 +52,8 @@ public struct Form<
 		public let initialValue: Value
 		public var value: Value
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		public var hasChanges: Bool {
 			initialValue != value
 		}
@@ -92,7 +95,9 @@ public struct Form<
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case errors(Errors<ErrorID>.Action)
+		}
 
 		public enum DelegateAction: Equatable {
 			case didCreate(TaskResult<New>)
@@ -115,11 +120,21 @@ public struct Form<
 		case didTapCancelButton
 	}
 
+	public enum ErrorID: Hashable {
+		case failedToCreate
+		case failedToUpdate
+		case failedToDelete
+	}
+
 	public init() {}
 
 	@Dependency(\.records) var records
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 
@@ -190,7 +205,13 @@ public struct Form<
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .never:
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .errors(.internal), .errors(.view):
 					return .none
 				}
 
@@ -212,9 +233,10 @@ extension Form.State {
 		switch record {
 		case let .success(new):
 			return .send(.delegate(.didFinishCreating(new)))
-		case .failure:
-			// TODO: handle failure creating record
-			return .none
+		case let .failure(error):
+			return errors
+				.enqueue(.failedToCreate, thrownError: error, toastMessage: Strings.Error.Toast.itemNotCreated(New.modelName))
+				.map { .internal(.errors($0)) }
 		}
 	}
 
@@ -223,9 +245,10 @@ extension Form.State {
 		switch record {
 		case let .success(existing):
 			return .send(.delegate(.didFinishUpdating(existing)))
-		case .failure:
-			// TODO: handle failure updating record
-			return .none
+		case let .failure(error):
+			return errors
+				.enqueue(.failedToUpdate, thrownError: error, toastMessage: Strings.Error.Toast.itemNotUpdated(New.modelName))
+				.map { .internal(.errors($0)) }
 		}
 	}
 
@@ -234,9 +257,10 @@ extension Form.State {
 		switch record {
 		case let .success(existing):
 			return .send(.delegate(.didFinishDeleting(existing)))
-		case .failure:
-			// TODO: handle failure deleting record
-			return .none
+		case let .failure(error):
+			return errors
+				.enqueue(.failedToDelete, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+				.map { .internal(.errors($0)) }
 		}
 	}
 }

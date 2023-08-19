@@ -11,6 +11,7 @@ import GearRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
 
+// swiftlint:disable:next type_body_length
 public struct AccessoriesOverview: Reducer {
 	public struct State: Equatable {
 		public var recentAlleys: IdentifiedArrayOf<Alley.Summary> = []

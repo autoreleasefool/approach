@@ -431,6 +431,8 @@
 "error.toast.dataNotFound" = "Data missing";
 "error.toast.failedToLoad" = "Error loading data";
 "error.toast.failedToDelete" = "Error deleting data";
+"error.toast.itemNotCreated" = "%@ not created";
+"error.toast.itemNotUpdated" = "%@ not updated";
 
 "errorReport.reportingAnError" = "Reporting an error?";
 "errorReport.youveEncountered" = "You've encountered the following error a couple times:";

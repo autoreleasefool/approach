@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
@@ -74,7 +75,8 @@ public struct FormView<
 					}
 				}
 			}
-			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 	}
 }

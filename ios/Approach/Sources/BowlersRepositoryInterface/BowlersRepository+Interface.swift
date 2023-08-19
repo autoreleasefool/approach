@@ -54,7 +54,7 @@ public struct BowlersRepository: Sendable {
 		self.list(ordered)
 	}
 
-	// TODO: allow filtering by bowler vs opponent
+	// FIXME: allow filtering by bowler vs opponent
 	public func record(againstOpponent: Bowler.ID) async throws -> Bowler.OpponentDetails? {
 		try await self.opponentRecord(againstOpponent)
 	}
