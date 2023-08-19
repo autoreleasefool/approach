@@ -7,11 +7,9 @@ import XCTest
 final class RecentlyUsedServiceTests: XCTestCase {
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
-	func testUpdatesRecentlyUsedResource() {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+	func testDidRecentlyUseResource_UpdatesEntries() {
+		let cache = LockIsolated<String?>(nil)
 		let now = Date(timeIntervalSince1970: 1672519204)
-
-		let expectation = self.expectation(description: "updated recently used")
 
 		withDependencies {
 			$0.recentlyUsed = .liveValue
@@ -19,28 +17,55 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				return nil
+				return cache.value
 			}
 
 			$0.preferences.setString = { key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				XCTAssertEqual(Self.entriesString(ids: [id0]), value)
-				expectation.fulfill()
+				cache.setValue(value)
+			}
+		} operation: {
+			self.recentlyUsed.didRecentlyUseResource(.bowlers, UUID(0))
+		}
+
+		XCTAssertEqual(Self.entriesString(ids: [UUID(0)]), cache.value)
+	}
+
+	func testDidRecentlyUseResource_RemovesOldEntries() {
+		let cache = LockIsolated<String?>(nil)
+		let now = Date(timeIntervalSince1970: 1672519204)
+
+		withDependencies {
+			$0.recentlyUsed = .liveValue
+			$0.date = .constant(now)
+
+			$0.preferences.getString = { _ in
+				return cache.value
+			}
+
+			$0.preferences.setString = { _, value in
+				cache.setValue(value)
 			}
 
 		} operation: {
-			self.recentlyUsed.didRecentlyUseResource(.bowlers, id0)
+			for i in 0...RecentlyUsedService.maximumEntries * 2 {
+				self.recentlyUsed.didRecentlyUseResource(.bowlers, UUID(i))
+			}
 		}
 
-		waitForExpectations(timeout: 1)
+		XCTAssertEqual(
+			Self.entriesString(
+				ids: (RecentlyUsedService.maximumEntries + 1...RecentlyUsedService.maximumEntries * 2)
+					.reversed()
+					.map(UUID.init)
+			),
+			cache.value
+		)
 	}
 
 	func testReplacesRecentlyUsedResourceIfExists() {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0), UUID(1)]))
 		let now = Date(timeIntervalSince1970: 1672519204)
-
-		let expectation = self.expectation(description: "updated recently used")
 
 		withDependencies {
 			$0.recentlyUsed = .liveValue
@@ -48,58 +73,50 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				return Self.entriesString(ids: [id0, id1])
+				return cache.value
 			}
 
 			$0.preferences.setString = { key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				XCTAssertEqual(Self.entriesString(ids: [id1, id0]), value)
-				expectation.fulfill()
+				cache.setValue(value)
 			}
 		} operation: {
-			self.recentlyUsed.didRecentlyUseResource(.bowlers, id1)
+			self.recentlyUsed.didRecentlyUseResource(.bowlers, UUID(1))
 		}
 
-		waitForExpectations(timeout: 1)
+		XCTAssertEqual(Self.entriesString(ids: [UUID(1), UUID(0)]), cache.value)
 	}
 
-	func testResetsResource() {
-		let expectation = self.expectation(description: "reset recently used")
+	func testResetRecentlyUsed_ResetsEntries() {
+		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0), UUID(1)]))
 
 		withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.preferences.remove = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				expectation.fulfill()
+				cache.setValue(nil)
 			}
 		} operation: {
 			self.recentlyUsed.resetRecentlyUsed(.bowlers)
 		}
 
-		waitForExpectations(timeout: 1)
+		XCTAssertNil(cache.value)
 	}
 
-	func testObservesChanges() async {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+	func testObserve_ReceivesChanges() async {
+		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0)]))
 		let now = Date(timeIntervalSince1970: 1672519204)
-
-		let getExpectation = self.expectation(description: "got recently used")
-		getExpectation.expectedFulfillmentCount = 3
-		let updateExpectation = self.expectation(description: "updated recently used")
 
 		await withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				getExpectation.fulfill()
-				return Self.entriesString(ids: [id0])
+				return cache.value
 			}
 
 			$0.preferences.setString = { key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				XCTAssertEqual(Self.entriesString(ids: [id1, id0]), value)
-				updateExpectation.fulfill()
+				cache.setValue(value)
 			}
 
 			$0.date = .constant(now)
@@ -108,21 +125,20 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			var recentlyUsedIterator = recentlyUsed.makeAsyncIterator()
 
 			let firstValue = await recentlyUsedIterator.next()
-			XCTAssertEqual([RecentlyUsedService.Entry(id: id0, lastUsedAt: now)], firstValue)
+			XCTAssertEqual([RecentlyUsedService.Entry(id: UUID(0), lastUsedAt: now)], firstValue)
 
-			self.recentlyUsed.didRecentlyUseResource(.bowlers, id1)
+			self.recentlyUsed.didRecentlyUseResource(.bowlers, UUID(1))
 
 			let secondValue = await recentlyUsedIterator.next()
-			XCTAssertEqual([RecentlyUsedService.Entry(id: id0, lastUsedAt: now)], secondValue)
+			XCTAssertEqual([
+				RecentlyUsedService.Entry(id: UUID(1), lastUsedAt: now),
+				RecentlyUsedService.Entry(id: UUID(0), lastUsedAt: now),
+			], secondValue)
 		}
-
-		await fulfillment(of: [getExpectation, updateExpectation])
 	}
 
-	func testDoesNotObserveUnrelatedChanges() async {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
-		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+	func testObserve_DoesNotReceiveUnrelatedChanges() async {
+		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0)]))
 		let now = Date(timeIntervalSince1970: 1672519204)
 
 		var recentlyUsed: AsyncStream<[RecentlyUsedService.Entry]>?
@@ -132,15 +148,17 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0.recentlyUsed = .liveValue
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				return Self.entriesString(ids: [id0])
+				return cache.value
 			}
 		} operation: {
 			recentlyUsed = self.recentlyUsed.observeRecentlyUsed(.bowlers)
 			recentlyUsedIterator = recentlyUsed!.makeAsyncIterator()
 
 			let firstValue = await recentlyUsedIterator!.next()
-			XCTAssertEqual([RecentlyUsedService.Entry(id: id0, lastUsedAt: now)], firstValue)
+			XCTAssertEqual([RecentlyUsedService.Entry(id: UUID(0), lastUsedAt: now)], firstValue)
 		}
+
+		cache.setValue(Self.entriesString(ids: [UUID(1)]))
 
 		withDependencies {
 			$0.recentlyUsed = .liveValue
@@ -148,16 +166,20 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
-				return Self.entriesString(ids: [id1])
+				return cache.value
 			}
 
 			$0.preferences.setString = { key, value in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
-				XCTAssertEqual(Self.entriesString(ids: [id1]), value)
+				cache.setValue(value)
 			}
 		} operation: {
-			self.recentlyUsed.didRecentlyUseResource(.alleys, id1)
+			self.recentlyUsed.didRecentlyUseResource(.alleys, UUID(1))
 		}
+
+		XCTAssertEqual(Self.entriesString(ids: [UUID(1)]), cache.value)
+
+		cache.setValue(Self.entriesString(ids: [UUID(2)]))
 
 		await withDependencies {
 			$0.recentlyUsed = .liveValue
@@ -165,20 +187,22 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				return Self.entriesString(ids: [id2])
+				return cache.value
 			}
 
 			$0.preferences.setString = { key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
-				XCTAssertEqual(Self.entriesString(ids: [id2]), value)
+				cache.setValue(value)
 			}
 		} operation: {
-			self.recentlyUsed.didRecentlyUseResource(.bowlers, id2)
+			self.recentlyUsed.didRecentlyUseResource(.bowlers, UUID(2))
 
-			// We shouldn't see id1 ever surfaced here
+			// We shouldn't see UUID(1) ever surfaced here
 			let secondValue = await recentlyUsedIterator!.next()
-			XCTAssertEqual([RecentlyUsedService.Entry(id: id2, lastUsedAt: now)], secondValue)
+			XCTAssertEqual([RecentlyUsedService.Entry(id: UUID(2), lastUsedAt: now)], secondValue)
 		}
+
+		XCTAssertEqual(Self.entriesString(ids: [UUID(2)]), cache.value)
 	}
 
 	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1672519204)) -> String {

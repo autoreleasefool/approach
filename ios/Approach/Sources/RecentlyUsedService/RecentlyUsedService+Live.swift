@@ -10,6 +10,8 @@ extension Notification.Name {
 }
 
 extension RecentlyUsedService: DependencyKey {
+	public static var maximumEntries: Int { 20 }
+
 	public static var liveValue: Self = {
 		@Dependency(\.preferences) var preferences
 		@Dependency(\.date) var date
@@ -38,11 +40,8 @@ extension RecentlyUsedService: DependencyKey {
 				var recentlyUsed = entries(forCategory: category)
 				let entry = Entry(id: uuid, lastUsedAt: date())
 
-				if let index = recentlyUsed.firstIndex(where: { $0.id == entry.id }) {
-					recentlyUsed.remove(at: index)
-				}
-
-				// TODO: eject outdated ids / at limit
+				recentlyUsed.removeAll { $0.id == entry.id }
+				recentlyUsed = Array(recentlyUsed.prefix(maximumEntries - 1))
 				recentlyUsed.insert(entry, at: 0)
 
 				guard let recentlyUsedData = try? encoder.encode(recentlyUsed),
