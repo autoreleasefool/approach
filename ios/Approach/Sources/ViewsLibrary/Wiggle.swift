@@ -8,8 +8,7 @@ struct AnimationUtils {
 	}
 
 	static func randomize(interval: TimeInterval, withVariance variance: Double) -> TimeInterval {
-		let random = (Double(arc4random_uniform(1000)) - 500.0) / 500.0
-		return interval + variance * random
+		interval + variance * Double.random(in: -1...1)
 	}
 }
 
