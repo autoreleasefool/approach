@@ -15,19 +15,33 @@ import ViewsLibrary
 public struct OpponentsListView: View {
 	let store: StoreOf<OpponentsList>
 
+	struct ViewState: Equatable {
+		let isOpponentDetailsEnabled: Bool
+
+		init(state: OpponentsList.State) {
+			self.isOpponentDetailsEnabled = state.isOpponentDetailsEnabled
+		}
+	}
+
 	public init(store: StoreOf<OpponentsList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		ResourceListView(
-			store: store.scope(state: \.list, action: /OpponentsList.Action.InternalAction.list)
-		) { opponent in
-			Button { store.send(.view(.didTapOpponent(opponent.id))) } label: {
-				Text(opponent.name)
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+			ResourceListView(
+				store: store.scope(state: \.list, action: /OpponentsList.Action.InternalAction.list)
+			) { opponent in
+				if viewStore.isOpponentDetailsEnabled {
+					Button { store.send(.view(.didTapOpponent(opponent.id))) } label: {
+						Text(opponent.name)
+					}
+					.buttonStyle(.navigation)
+				} else {
+					Text(opponent.name)
+				}
 			}
-			.buttonStyle(.navigation)
-		}
+		})
 		.navigationTitle(Strings.Opponent.List.title)
 		.toolbar {
 			ToolbarItem(placement: .navigationBarTrailing) {

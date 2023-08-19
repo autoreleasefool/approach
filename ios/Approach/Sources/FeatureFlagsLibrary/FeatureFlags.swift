@@ -13,6 +13,7 @@ extension FeatureFlag {
 	public static let statisticsTab = Self(name: "statisticsTab", introduced: "2023-05-18", stage: .release)
 	public static let accessoriesTab = Self(name: "accessoriesTab", introduced: "2023-05-18", stage: .development)
 	public static let appIconConfig = Self(name: "appIconConfig", introduced: "2023-07-07", stage: .release)
+	public static let opponentDetails = Self(name: "opponentDetails", introduced: "2023-08-18", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.accessoriesTab,
@@ -23,6 +24,7 @@ extension FeatureFlag {
 		.gear,
 		.lanes,
 		.opponents,
+		.opponentDetails,
 		.overviewTab,
 		.settingsTab,
 		.statisticsTab,
