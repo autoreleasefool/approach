@@ -401,20 +401,20 @@ final class BowlersRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testOpponentRecord_WhenOpponentNotExists_ReturnsNil() async throws {
+	func testOpponentRecord_WhenOpponentNotExists_ThrowsError() async throws {
 		// Given a database without an opponent
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Sarah")
 		let db = try initializeDatabase(withBowlers: .custom([bowler]))
 
 		// Fetching the opponent
-		let record = try await withDependencies {
-			$0.database.reader = { db }
-			$0.bowlers = .liveValue
-		} operation: {
-			try await self.bowlers.record(againstOpponent: UUID(1))
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.bowlers = .liveValue
+			} operation: {
+				_ = try await self.bowlers.record(againstOpponent: UUID(1))
+			}
 		}
-
-		XCTAssertNil(record)
 	}
 
 	// MARK: Summaries

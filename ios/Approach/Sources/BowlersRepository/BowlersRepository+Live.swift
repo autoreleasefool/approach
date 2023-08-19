@@ -121,7 +121,7 @@ extension BowlersRepository: DependencyKey {
 						.including(all: matchesAgainst)
 						.annotated(with: gamesPlayed, gamesWon, gamesTied, gamesLost)
 						.asRequest(of: Bowler.OpponentDetails.self)
-						.fetchOne($0)
+						.fetchOneGuaranteed($0)
 				}
 			},
 			edit: { id in

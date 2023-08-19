@@ -2,6 +2,7 @@ import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import ModelsLibrary
@@ -14,6 +15,8 @@ public struct OpponentDetails: Reducer {
 		public let opponent: Bowler.Summary
 		public var opponentDetails: Bowler.OpponentDetails?
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		public init(opponent: Bowler.Summary) {
 			self.opponent = opponent
 		}
@@ -25,7 +28,8 @@ public struct OpponentDetails: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case didLoadDetails(TaskResult<Bowler.OpponentDetails?>)
+			case didLoadDetails(TaskResult<Bowler.OpponentDetails>)
+			case errors(Errors<ErrorID>.Action)
 		}
 
 		case view(ViewAction)
@@ -34,6 +38,7 @@ public struct OpponentDetails: Reducer {
 	}
 
 	public enum CancelID { case details }
+	public enum ErrorID { case failedToLoadDetails }
 
 	public init() {}
 
@@ -54,8 +59,18 @@ public struct OpponentDetails: Reducer {
 					state.opponentDetails = details
 					return.none
 
-				case .didLoadDetails(.failure):
-					// TODO: handle error loading opponent details
+				case let .didLoadDetails(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadDetails, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .errors(.internal), .errors(.view):
 					return .none
 				}
 

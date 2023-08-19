@@ -12,7 +12,7 @@ public struct BowlersRepository: Sendable {
 	public var list: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>
 	public var summaries: @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
 	public var fetchSummaries: @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary]
-	public var opponentRecord: @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?
+	public var opponentRecord: @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails
 	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit
 	public var create: @Sendable (Bowler.Create) async throws -> Void
 	public var update: @Sendable (Bowler.Edit) async throws -> Void
@@ -22,7 +22,7 @@ public struct BowlersRepository: Sendable {
 		list: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>,
 		summaries: @escaping @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
 		fetchSummaries: @escaping @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary],
-		opponentRecord: @escaping @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails?,
+		opponentRecord: @escaping @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails,
 		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit,
 		create: @escaping @Sendable (Bowler.Create) async throws -> Void,
 		update: @escaping @Sendable (Bowler.Edit) async throws -> Void,
@@ -55,7 +55,7 @@ public struct BowlersRepository: Sendable {
 	}
 
 	// FIXME: allow filtering by bowler vs opponent
-	public func record(againstOpponent: Bowler.ID) async throws -> Bowler.OpponentDetails? {
+	public func record(againstOpponent: Bowler.ID) async throws -> Bowler.OpponentDetails {
 		try await self.opponentRecord(againstOpponent)
 	}
 }

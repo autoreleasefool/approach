@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -51,6 +52,7 @@ public struct OpponentDetailsView: View {
 			.navigationTitle(viewStore.opponentName)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}
 }
 
