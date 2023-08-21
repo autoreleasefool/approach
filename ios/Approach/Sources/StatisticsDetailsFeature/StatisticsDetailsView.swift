@@ -87,16 +87,6 @@ public struct StatisticsDetailsView: View {
 				.interactiveDismissDisabled()
 				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 			}
-			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /StatisticsDetails.Destination.State.sourcePicker,
-				action: StatisticsDetails.Destination.Action.sourcePicker
-			) { store in
-				NavigationStack {
-					StatisticsSourcePickerView(store: store)
-				}
-				.presentationDetents([.medium, .large])
-			}
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(
 					.didAdjustChartSize(
@@ -117,6 +107,17 @@ public struct StatisticsDetailsView: View {
 			}
 			.task { await viewStore.send(.didFirstAppear).finish() }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsDetails.Destination.State.sourcePicker,
+			action: StatisticsDetails.Destination.Action.sourcePicker
+		) { store in
+			NavigationStack {
+				StatisticsSourcePickerView(store: store)
+			}
+			.presentationDetents([.medium, .large])
+		}
 	}
 
 	private func getFilterViewSize(_ viewStore: StatisticsDetailsViewStore) -> StatisticsFilterView.Size {

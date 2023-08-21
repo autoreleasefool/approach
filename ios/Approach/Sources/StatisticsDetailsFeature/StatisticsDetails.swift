@@ -1,11 +1,13 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import NotificationsServiceInterface
 import PreferenceServiceInterface
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
+import StringsLibrary
 import SwiftUI
 
 public struct StatisticsDetails: Reducer {
@@ -19,6 +21,8 @@ public struct StatisticsDetails: Reducer {
 
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@BindingState public var sheetDetent: PresentationDetent = StatisticsDetails.defaultSheetDetent
 		public var willAdjustLaneLayoutAt: Date
@@ -47,6 +51,7 @@ public struct StatisticsDetails: Reducer {
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
+			case errors(Errors<ErrorID>.Action)
 
 			case didStartLoadingChart
 			case adjustBackdrop
@@ -85,6 +90,12 @@ public struct StatisticsDetails: Reducer {
 	public enum CancelID {
 		case loadingStaticValues
 		case loadingChartValues
+	}
+
+	public enum ErrorID: Hashable {
+		case failedToLoadSources
+		case failedToLoadList
+		case failedToLoadChart
 	}
 
 	public init() {}
@@ -145,10 +156,6 @@ public struct StatisticsDetails: Reducer {
 					state.sources = sources
 					return .none
 
-				case .didLoadSources(.failure):
-					// TODO: handle error loading sources
-					return .none
-
 				case let .didLoadListEntries(.success(statistics)):
 					state.listEntries = .init(uniqueElements: statistics)
 					state.presentDestinationForLastOrientation()
@@ -161,18 +168,25 @@ public struct StatisticsDetails: Reducer {
 						return .none
 					}
 
-				case .didLoadListEntries(.failure):
-					// TODO: show statistics loading failure
-					return .none
-
 				case let .didLoadChartContent(.success(chartContent)):
 					state.chartContent = chartContent
 					state.isLoadingNextChart = false
 					return .none
 
-				case .didLoadChartContent(.failure):
-					// TODO: show statistics loading failure
-					return .none
+				case let .didLoadSources(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadSources, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .didLoadListEntries(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadList, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .didLoadChartContent(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
@@ -221,13 +235,18 @@ public struct StatisticsDetails: Reducer {
 						await send(.internal(.didLoadListEntries(.success(entries.elements))))
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.presented(.list(.internal))),
 						.destination(.presented(.list(.view))),
 						.destination(.presented(.sourcePicker(.internal))),
-						.destination(.presented(.sourcePicker(.view))):
-					return .none
-
-				case .charts(.internal), .charts(.view):
+						.destination(.presented(.sourcePicker(.view))),
+						.errors(.internal), .errors(.view),
+						.charts(.internal), .charts(.view):
 					return .none
 				}
 
