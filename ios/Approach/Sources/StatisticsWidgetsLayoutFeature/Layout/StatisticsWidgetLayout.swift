@@ -1,9 +1,11 @@
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
+import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
@@ -14,6 +16,8 @@ public struct StatisticsWidgetLayout: Reducer {
 
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration>?
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var layoutBuilder: StatisticsWidgetLayoutBuilder.State?
 
@@ -34,12 +38,18 @@ public struct StatisticsWidgetLayout: Reducer {
 			case widgetsResponse(TaskResult<[StatisticsWidget.Configuration]>)
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
 
+			case errors(Errors<ErrorID>.Action)
 			case layoutBuilder(PresentationAction<StatisticsWidgetLayoutBuilder.Action>)
 		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+	}
+
+	public enum ErrorID: Hashable {
+		case failedToLoadWidgets
+		case failedToLoadChart
 	}
 
 	public init() {}
@@ -84,17 +94,19 @@ public struct StatisticsWidgetLayout: Reducer {
 					guard let chartTasks else { return .none }
 					return .merge(chartTasks)
 
-				case .widgetsResponse(.failure):
-					// TODO: handle failure loading widgets
-					return .none
-
 				case let .didLoadChartContent(id, .success(chartContent)):
 					state.widgetData[id] = chartContent
 					return .none
 
-				case .didLoadChartContent(_, .failure):
-					// TODO: handle failure loading chart
-					return .none
+				case let .widgetsResponse(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadWidgets, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .didLoadChartContent(_, .failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
 				case let .layoutBuilder(.presented(.delegate(delegateAction))):
 					switch delegateAction {
@@ -102,7 +114,8 @@ public struct StatisticsWidgetLayout: Reducer {
 						return .none
 					}
 
-				case .layoutBuilder(.dismiss), .layoutBuilder(.presented(.internal)), .layoutBuilder(.presented(.view)):
+				case .layoutBuilder(.dismiss), .layoutBuilder(.presented(.internal)), .layoutBuilder(.presented(.view)),
+						.errors(.internal), .errors(.view):
 					return .none
 				}
 
@@ -164,6 +177,7 @@ public struct StatisticsWidgetLayoutView: View {
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(store: store.scope(state: \.$layoutBuilder, action: { .internal(.layoutBuilder($0)) })) { store in
 			NavigationStack {
 				StatisticsWidgetLayoutBuilderView(store: store)
