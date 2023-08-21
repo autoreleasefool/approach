@@ -1,4 +1,5 @@
 import AssetsLibrary
+import ErrorsFeature
 import ComposableArchitecture
 import ModelsLibrary
 import ReorderingLibrary
@@ -89,6 +90,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 				}
 			)
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}
 }
 

@@ -1,11 +1,13 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
+import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import ReorderingLibrary
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct StatisticsWidgetLayoutBuilder: Reducer {
@@ -19,6 +21,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 		@BindingState public var isDeleting = false
 		@BindingState public var isAnimatingWidgets = false
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var editor: StatisticsWidgetEditor.State?
 
@@ -50,6 +54,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case startAnimatingWidgets
 			case stopAnimatingWidgets
 
+			case errors(Errors<ErrorID>.Action)
 			case editor(PresentationAction<StatisticsWidgetEditor.Action>)
 			case reordering(Reorderable<MoveableWidget, StatisticsWidget.Configuration>.Action)
 		}
@@ -60,6 +65,13 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	}
 
 	enum CancelID { case updatePriorities }
+
+	public enum ErrorID: Hashable {
+		case failedToLoadWidgets
+		case failedToLoadChart
+		case failedToSaveOrder
+		case failedToDeleteWidget
+	}
 
 	public init() {}
 
@@ -155,25 +167,29 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					}
 					return .merge(chartTasks)
 
-				case .widgetsResponse(.failure):
-					// TODO: handle failure loading widgets
-					return .none
-
 				case let .didLoadChartContent(id, .success(chartContent)):
 					state.widgetData[id] = chartContent
 					return .none
 
-				case .didLoadChartContent(_, .failure):
-					// TODO: handle failure loading chart
-					return .none
+				case let .widgetsResponse(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadWidgets, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
-				case .didUpdatePriorities(.failure):
-					// TODO: handle failure updating priorities
-					return .none
+				case let .didLoadChartContent(_, .failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
-				case .didDeleteWidget(.failure):
-					// TODO: handle failure deleting widget
-					return .none
+				case let .didUpdatePriorities(.failure(error)):
+					return state.errors
+						.enqueue(.failedToSaveOrder, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
+
+				case let .didDeleteWidget(.failure(error)):
+					return state.errors
+						.enqueue(.failedToDeleteWidget, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.map { .internal(.errors($0)) }
 
 				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
@@ -198,10 +214,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 						}.cancellable(id: CancelID.updatePriorities, cancelInFlight: true)
 					}
 
-				case .editor(.dismiss), .editor(.presented(.internal)), .editor(.presented(.view)):
-					return .none
-
-				case .reordering(.internal), .reordering(.view):
+				case .editor(.dismiss),
+						.editor(.presented(.internal)),
+						.editor(.presented(.view)),
+						.reordering(.internal), .reordering(.view),
+						.errors(.internal), .errors(.view):
 					return .none
 				}
 
