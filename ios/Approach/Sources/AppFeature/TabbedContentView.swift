@@ -24,41 +24,37 @@ public struct TabbedContentView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			if horizontalSizeClass == .compact {
-				TabView(selection: viewStore.$selectedTab) {
-					ForEach(viewStore.tabs) { tab in
-						NavigationStack {
-							switch tab {
-							case .overview:
-								BowlersListView(
-									store: store.scope(state: \.bowlersList, action: /TabbedContent.Action.InternalAction.bowlersList)
-								)
-							case .statistics:
-								StatisticsOverviewView(
-									store: store.scope(state: \.statistics, action: /TabbedContent.Action.InternalAction.statistics)
-								)
-							case .accessories:
-								AccessoriesOverviewView(
-									store: store.scope(state: \.accessories, action: /TabbedContent.Action.InternalAction.accessories)
-								)
-							case .settings:
-								SettingsView(
-									store: store.scope(state: \.settings, action: /TabbedContent.Action.InternalAction.settings)
-								)
-							}
-						}
-						.tag(tab)
-						.tabItem {
-							Label(tab.name, systemSymbol: tab.symbol)
+			// FIXME: create sidebar for ipad size devices
+			TabView(selection: viewStore.$selectedTab) {
+				ForEach(viewStore.tabs) { tab in
+					NavigationStack {
+						switch tab {
+						case .overview:
+							BowlersListView(
+								store: store.scope(state: \.bowlersList, action: /TabbedContent.Action.InternalAction.bowlersList)
+							)
+						case .statistics:
+							StatisticsOverviewView(
+								store: store.scope(state: \.statistics, action: /TabbedContent.Action.InternalAction.statistics)
+							)
+						case .accessories:
+							AccessoriesOverviewView(
+								store: store.scope(state: \.accessories, action: /TabbedContent.Action.InternalAction.accessories)
+							)
+						case .settings:
+							SettingsView(
+								store: store.scope(state: \.settings, action: /TabbedContent.Action.InternalAction.settings)
+							)
 						}
 					}
+					.tag(tab)
+					.tabItem {
+						Label(tab.name, systemSymbol: tab.symbol)
+					}
 				}
-				.tint(Asset.Colors.Action.default)
-				.task { await viewStore.send(.didAppear).finish() }
-			} else {
-				// TODO: create sidebar for ipad size devices
-				EmptyView()
 			}
+			.tint(Asset.Colors.Action.default)
+			.task { await viewStore.send(.didAppear).finish() }
 		})
 	}
 }
