@@ -6,17 +6,17 @@ import StatisticsLibrary
 import StatisticsWidgetsLibrary
 
 public struct StatisticsRepository: Sendable {
-	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?
+	public var loadSources: @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources
 	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup]
 	public var loadChart: @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent
-	public var loadWidgetSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources?
+	public var loadWidgetSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
 	public var loadWidgetData: @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
 
 	public init(
-		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources?,
+		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources,
 		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup],
 		loadChart: @escaping @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent,
-		loadWidgetSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources?,
+		loadWidgetSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,
 		loadWidgetData: @escaping @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
 	) {
 		self.loadSources = loadSources

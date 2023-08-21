@@ -1,3 +1,4 @@
+import DatabaseServiceInterface
 import GRDB
 import ModelsLibrary
 @testable import StatisticsLibrary

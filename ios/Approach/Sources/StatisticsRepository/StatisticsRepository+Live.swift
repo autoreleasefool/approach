@@ -129,32 +129,23 @@ extension StatisticsRepository: DependencyKey {
 					case let .bowler(id):
 						let request = Bowler.Database
 							.filter(id: id)
-						guard let sources = try TrackableFilter.SourcesByBowler
-							.fetchAll($0, request)
-							.first else {
-							return nil
-						}
+						let sources = try TrackableFilter.SourcesByBowler
+							.fetchOneGuaranteed($0, request)
 						return .init(bowler: sources.bowler, league: nil, series: nil, game: nil)
 					case let .league(id):
 						let request = League.Database
 							.filter(id: id)
 							.including(required: League.Database.bowler)
-						guard let sources = try TrackableFilter.SourcesByLeague
-							.fetchAll($0, request)
-							.first else {
-							return nil
-						}
+						let sources = try TrackableFilter.SourcesByLeague
+							.fetchOneGuaranteed($0, request)
 						return .init(bowler: sources.bowler, league: sources.league, series: nil, game: nil)
 					case let .series(id):
 						let request = Series.Database
 							.filter(id: id)
 							.including(required: Series.Database.league)
 							.including(required: Series.Database.bowler)
-						guard let sources = try TrackableFilter.SourcesBySeries
-							.fetchAll($0, request)
-							.first else {
-							return nil
-						}
+						let sources = try TrackableFilter.SourcesBySeries
+							.fetchOneGuaranteed($0, request)
 						return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: nil)
 					case let .game(id):
 						let request = Game.Database
@@ -162,11 +153,8 @@ extension StatisticsRepository: DependencyKey {
 							.including(required: Game.Database.series)
 							.including(required: Game.Database.league)
 							.including(required: Game.Database.bowler)
-						guard let sources = try TrackableFilter.SourcesByGame
-							.fetchAll($0, request)
-							.first else {
-							return nil
-						}
+						let sources = try TrackableFilter.SourcesByGame
+							.fetchOneGuaranteed($0, request)
 						return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: sources.game)
 					}
 				}
@@ -245,21 +233,15 @@ extension StatisticsRepository: DependencyKey {
 					case let .bowler(id):
 						let request = Bowler.Database
 							.filter(id: id)
-						guard let sources = try StatisticsWidget.Source.SourcesByBowler
-							.fetchAll($0, request)
-							.first else {
-							return nil
-						}
+						let sources = try StatisticsWidget.Source.SourcesByBowler
+							.fetchOneGuaranteed($0, request)
 						return .init(bowler: sources.bowler, league: nil)
 					case let .league(id):
 						let request = League.Database
 							.filter(id: id)
 							.including(required: League.Database.bowler)
-						guard let sources = try StatisticsWidget.Source.SourcesByLeague
-							.fetchAll($0, request)
-							.first else {
-							return nil
-						}
+						let sources = try StatisticsWidget.Source.SourcesByLeague
+							.fetchOneGuaranteed($0, request)
 						return .init(bowler: sources.bowler, league: sources.league)
 					}
 				}

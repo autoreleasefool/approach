@@ -24,11 +24,21 @@ extension FetchableRecord where Self: TableRecord & Identifiable, ID: DatabaseVa
 	}
 }
 
+extension FetchableRecord {
+	public static func fetchOneGuaranteed(_ db: Database, _ request: some FetchRequest) throws -> Self {
+		guard let result = try Self.fetchOne(db, request) else {
+			let request = try request.makePreparedRequest(db, forSingleResult: true)
+			throw FetchableError.fetchRequestFailed(type: Self.self, statement: request.statement.description)
+		}
+		return result
+	}
+}
+
 extension FetchRequest where RowDecoder: FetchableRecord {
 	public func fetchOneGuaranteed(_ db: Database) throws -> RowDecoder {
 		guard let result = try RowDecoder.fetchOne(db, self) else {
 			let request = try self.makePreparedRequest(db, forSingleResult: true)
-			throw FetchableError.fetchRequestFailed(type: Self.self, statement: request.statement.description)
+			throw FetchableError.fetchRequestFailed(type: RowDecoder.self, statement: request.statement.description)
 		}
 		return result
 	}
