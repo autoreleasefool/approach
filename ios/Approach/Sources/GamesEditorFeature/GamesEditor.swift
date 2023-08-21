@@ -17,6 +17,7 @@ import ScoringServiceInterface
 import StringsLibrary
 import SwiftUI
 
+// swiftlint:disable:next type_body_length
 public struct GamesEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var sheetDetent: PresentationDetent = .height(.zero)

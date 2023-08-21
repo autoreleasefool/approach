@@ -205,7 +205,6 @@ public struct StatisticsWidgetEditor: Reducer {
 					return state.errors
 						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
-					return .none
 
 				case let .didFinishSavingConfiguration(.failure(error)):
 					return state.errors
