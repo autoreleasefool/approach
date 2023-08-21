@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ErrorsFeature
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI

@@ -6,7 +6,7 @@ import StatisticsRepositoryInterface
 import StatisticsWidgetsLibrary
 
 public struct StatisticsWidgetsRepository: Sendable {
-	public var loadSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources?
+	public var loadSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
 	public var loadChart: @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
 	public var fetchAll: @Sendable (String?) -> AsyncThrowingStream<[StatisticsWidget.Configuration], Error>
 	public var updatePriorities: @Sendable ([StatisticsWidget.ID]) async throws -> Void
@@ -14,7 +14,7 @@ public struct StatisticsWidgetsRepository: Sendable {
 	public var delete: @Sendable (StatisticsWidget.ID) async throws -> Void
 
 	public init(
-		loadSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources?,
+		loadSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,
 		loadChart: @escaping @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent,
 		fetchAll: @escaping @Sendable (String?) -> AsyncThrowingStream<[StatisticsWidget.Configuration], Error>,
 		updatePriorities: @escaping @Sendable ([StatisticsWidget.ID]) async throws -> Void,

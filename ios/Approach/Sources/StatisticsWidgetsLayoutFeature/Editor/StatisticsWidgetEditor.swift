@@ -1,6 +1,7 @@
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import Foundation
 import LeaguesRepositoryInterface
@@ -33,6 +34,8 @@ public struct StatisticsWidgetEditor: Reducer {
 		public var isLoadingPreview = false
 		public var widgetPreviewData: Statistics.ChartContent?
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(context: String, priority: Int, source: StatisticsWidget.Source?) {
@@ -58,9 +61,10 @@ public struct StatisticsWidgetEditor: Reducer {
 		}
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
+			case errors(Errors<ErrorID>.Action)
 
 			case didStartLoadingPreview
-			case didLoadSources(TaskResult<StatisticsWidget.Sources?>)
+			case didLoadSources(TaskResult<StatisticsWidget.Sources>)
 			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
 			case didFinishSavingConfiguration(TaskResult<StatisticsWidget.Configuration>)
 			case hideChart
@@ -97,6 +101,12 @@ public struct StatisticsWidgetEditor: Reducer {
 
 	public enum CancelID {
 		case loadingPreview
+	}
+
+	public enum ErrorID: Hashable {
+		case failedToLoadSources
+		case failedToLoadChart
+		case failedToSaveConfiguration
 	}
 
 	public init() {}
@@ -171,21 +181,12 @@ public struct StatisticsWidgetEditor: Reducer {
 				case let .didLoadSources(.success(sources)):
 					state.isLoadingSources = false
 					state.sources = sources
-					state.bowler = sources?.bowler
-					state.league = sources?.league
-					return .none
-
-				case .didLoadSources(.failure):
-					// TODO: handle failure loading sources
-					state.isLoadingSources = false
+					state.bowler = sources.bowler
+					state.league = sources.league
 					return .none
 
 				case let .didLoadChartContent(.success(content)):
 					state.widgetPreviewData = content
-					return .none
-
-				case .didLoadChartContent(.failure):
-					// TODO: handle failure loading chart preview
 					return .none
 
 				case let .didFinishSavingConfiguration(.success(configuration)):
@@ -194,9 +195,22 @@ public struct StatisticsWidgetEditor: Reducer {
 						.run { _ in await dismiss() }
 					)
 
-				case .didFinishSavingConfiguration(.failure):
-					// TODO: handle failure saving configuration
+				case let .didLoadSources(.failure(error)):
+					state.isLoadingSources = false
+					return state.errors
+						.enqueue(.failedToLoadSources, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .didLoadChartContent(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 					return .none
+
+				case let .didFinishSavingConfiguration(.failure(error)):
+					return state.errors
+						.enqueue(.failedToSaveConfiguration, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
 
 				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -225,11 +239,18 @@ public struct StatisticsWidgetEditor: Reducer {
 						return refreshChart(withConfiguration: state.configuration, state: &state)
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.bowlerPicker(.internal))),
 						.destination(.presented(.bowlerPicker(.view))),
 						.destination(.presented(.leaguePicker(.internal))),
-						.destination(.presented(.leaguePicker(.view))):
+						.destination(.presented(.leaguePicker(.view))),
+						.errors(.internal), .errors(.view):
 					return .none
 				}
 

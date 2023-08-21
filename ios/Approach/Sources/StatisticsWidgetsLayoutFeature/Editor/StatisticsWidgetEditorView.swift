@@ -1,3 +1,4 @@
+import ErrorsFeature
 import ComposableArchitecture
 import ModelsLibrary
 import ResourcePickerLibrary
@@ -102,6 +103,7 @@ public struct StatisticsWidgetEditorView: View {
 			}
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /StatisticsWidgetEditor.Destination.State.bowlerPicker,
