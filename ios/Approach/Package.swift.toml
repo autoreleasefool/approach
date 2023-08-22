@@ -55,10 +55,10 @@ libraries = [ "Strings" ]
 features = [ "Errors" ]
 
 [features.GamesEditor]
-features = [ "ScoreSheet" ]
+features = [ "Errors", "ScoreSheet" ]
 repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
 services = [ "Analytics", "FeatureFlags" ]
-libraries = [ "DateTime", "Equatable", "ModelsViews", "ResourcePicker" ]
+libraries = [ "DateTime", "ModelsViews", "ResourcePicker" ]
 
 [features.GamesList]
 features = [ "GamesEditor" ]
@@ -86,7 +86,7 @@ libraries = [ "ModelsViews", "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.LeaguesList]
 features = [ "LeagueEditor", "SeriesList", "StatisticsWidgetsLayout" ]
-services = [ "Preference", "RecentlyUsed" ]
+services = [ "RecentlyUsed" ]
 
 [features.OpponentDetails]
 features = [ "BowlerEditor" ]
@@ -95,7 +95,7 @@ libraries = [ "ResourceList", "SwiftUIExtensions" ]
 
 [features.OpponentsList]
 features = [ "OpponentDetails" ]
-services = [ "RecentlyUsed" ]
+services = [ "FeatureFlags", "RecentlyUsed" ]
 libraries = [ "SortOrder" ]
 
 [features.Onboarding]
@@ -126,14 +126,15 @@ features = [ "StatisticsDetails" ]
 services = [ "Tips" ]
 
 [features.StatisticsDetails]
+features = [ "Errors" ]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
 services = [ "Analytics", "Notifications", "Preference" ]
-libraries = [ "Equatable", "ResourcePicker", "SwiftUIExtensions" ]
+libraries = [ "ResourcePicker", "SwiftUIExtensions" ]
 
 [features.StatisticsWidgetsLayout]
-repositories = [ "Bowlers", "Leagues", "StatisticsWidgets" ]
-services = [ "Analytics" ]
-libraries = [ "Equatable", "Reordering", "ResourcePicker", "SwiftUIExtensions" ]
+features = [ "StatisticsDetails" ]
+repositories = [ "StatisticsWidgets" ]
+libraries = [ "Reordering" ]
 
 # Repositories
 
@@ -378,7 +379,7 @@ from = "3.8.0"
 
 [dependencies.CocoaLumberjackSwift]
 url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
-from = "3.8.0"
+from = "3.8.1"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
@@ -386,7 +387,7 @@ from = "6.16.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-from = "1.0.0"
+from = "1.2.0"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
@@ -415,7 +416,7 @@ from = "1.4.4"
 
 [dependencies.XCTestDynamicOverlay]
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
-from = "1.0.0"
+from = "1.0.2"
 
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"

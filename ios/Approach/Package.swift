@@ -139,11 +139,11 @@ let package = Package(
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.0"),
 		.package(url: "https://github.com/exyte/PopupView.git", from: "2.6.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.0.0"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.2.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.11.1"),
-		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.0.0"),
+		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.0.2"),
 		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "4.1.1"),
 		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.4"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.16"),
@@ -331,7 +331,7 @@ let package = Package(
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"DateTimeLibrary",
-				"EquatableLibrary",
+				"ErrorsFeature",
 				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GamesRepositoryInterface",
@@ -439,7 +439,6 @@ let package = Package(
 			name: "LeaguesListFeature",
 			dependencies: [
 				"LeagueEditorFeature",
-				"PreferenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
 				"StatisticsWidgetsLayoutFeature",
@@ -488,6 +487,7 @@ let package = Package(
 		.target(
 			name: "OpponentsListFeature",
 			dependencies: [
+				"FeatureFlagsServiceInterface",
 				"OpponentDetailsFeature",
 				"RecentlyUsedServiceInterface",
 				"SortOrderLibrary",
@@ -575,7 +575,7 @@ let package = Package(
 			dependencies: [
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
-				"EquatableLibrary",
+				"ErrorsFeature",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
 				"NotificationsServiceInterface",
@@ -610,14 +610,9 @@ let package = Package(
 		.target(
 			name: "StatisticsWidgetsLayoutFeature",
 			dependencies: [
-				"AnalyticsServiceInterface",
-				"BowlersRepositoryInterface",
-				"EquatableLibrary",
-				"LeaguesRepositoryInterface",
 				"ReorderingLibrary",
-				"ResourcePickerLibrary",
+				"StatisticsDetailsFeature",
 				"StatisticsWidgetsRepositoryInterface",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
