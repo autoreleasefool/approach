@@ -22,6 +22,7 @@ public struct StatisticsDetails: Reducer {
 
 		public var filter: TrackableFilter
 		public var sources: TrackableFilter.Sources?
+		public var selectedStatistic: Statistics.ListEntry.ID?
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -33,8 +34,9 @@ public struct StatisticsDetails: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
-		public init(filter: TrackableFilter) {
+		public init(filter: TrackableFilter, withInitialStatistic: Statistics.ListEntry.ID? = nil) {
 			self.filter = filter
+			self.selectedStatistic = withInitialStatistic
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -119,8 +121,16 @@ public struct StatisticsDetails: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didFirstAppear:
+					let loadingChartEffect: Effect<Action>
+					if let statisticId = state.selectedStatistic, let statisticToLoad = Statistics.type(of: statisticId) {
+						loadingChartEffect = loadChart(forStatistic: statisticToLoad, withFilter: state.filter)
+					} else {
+						loadingChartEffect = .none
+					}
+
 					return .merge(
 						refreshStatistics(state: state),
+						loadingChartEffect,
 						.run { send in
 							for await orientation in uiDevice.orientationDidChange() {
 								await send(.internal(.orientationChange(orientation)))
@@ -159,14 +169,27 @@ public struct StatisticsDetails: Reducer {
 
 				case let .didLoadListEntries(.success(statistics)):
 					state.listEntries = .init(uniqueElements: statistics)
-					state.presentDestinationForLastOrientation()
-					if state.chartContent == nil,
-						 let firstGroup = state.listEntries.first,
-						 let firstEntry = firstGroup.entries.first,
-						 let firstStatistic = Statistics.type(of: firstEntry.id) {
-						return loadChart(forStatistic: firstStatistic, withFilter: state.filter)
+					let presentEffect = state.presentDestinationForLastOrientation(scrollingTo: state.selectedStatistic)
+
+					let statisticChartToLoad: Statistic.Type?
+					if let statisticId = state.selectedStatistic,
+						 let statisticToLoad = Statistics.type(of: statisticId) {
+						statisticChartToLoad = statisticToLoad
+					} else if let firstGroup = state.listEntries.first,
+										let firstEntry = firstGroup.entries.first,
+										let firstStatistic = Statistics.type(of: firstEntry.id) {
+						statisticChartToLoad = firstStatistic
 					} else {
-						return .none
+						statisticChartToLoad = nil
+					}
+
+					if state.chartContent == nil, !state.isLoadingNextChart, let statisticChartToLoad {
+						return .merge(
+							loadChart(forStatistic: statisticChartToLoad, withFilter: state.filter),
+							presentEffect
+						)
+					} else {
+						return presentEffect
 					}
 
 				case let .didLoadChartContent(.success(chartContent)):
@@ -191,22 +214,27 @@ public struct StatisticsDetails: Reducer {
 
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
-					return .none
+					return state.presentDestinationForLastOrientation(scrollingTo: state.selectedStatistic)
 
 				case let .orientationChange(orientation):
 					state.lastOrientation = orientation
-					state.presentDestinationForLastOrientation()
-					return .run { send in
-						try await clock.sleep(for: .milliseconds(300))
-						await send(.internal(.adjustBackdrop))
-					}
+					return .merge(
+						state.presentDestinationForLastOrientation(scrollingTo: state.selectedStatistic),
+						.run { send in
+							try await clock.sleep(for: .milliseconds(300))
+							await send(.internal(.adjustBackdrop))
+						}
+					)
 
 				case let .destination(.presented(.list(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didRequestEntryDetails(id):
 						guard let statistic = Statistics.type(of: id) else { return .none }
-						state.sheetDetent = StatisticsDetails.defaultSheetDetent
-						return loadChart(forStatistic: statistic, withFilter: state.filter)
+						state.selectedStatistic = id
+						return .merge(
+							loadChart(forStatistic: statistic, withFilter: state.filter),
+							.send(.view(.binding(.set(\.$sheetDetent, StatisticsDetails.defaultSheetDetent))))
+						)
 
 					case .listRequiresReload:
 						return refreshStatistics(state: state)
@@ -327,14 +355,33 @@ extension StatisticsDetails.State {
 }
 
 extension StatisticsDetails.State {
-	mutating func presentDestinationForLastOrientation() {
+	mutating func presentDestinationForLastOrientation(
+		scrollingTo entryId: Statistics.ListEntry.ID? = nil
+	) -> Effect<StatisticsDetails.Action> {
+		var list: StatisticsDetailsList.State?
 		switch lastOrientation {
 		case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown, .none:
-			destination = .list(.init(listEntries: listEntries))
+			list = .init(listEntries: listEntries)
 		case .landscapeLeft, .landscapeRight:
-			destination = nil
+			list = nil
 		@unknown default:
-			destination = .list(.init(listEntries: listEntries))
+			list = .init(listEntries: listEntries)
+		}
+
+		switch destination {
+		case let .list(existingState):
+			list?.entryToHighlight = existingState.entryToHighlight
+		case .sourcePicker, .none:
+			break
+		}
+
+		if let list {
+			destination = .list(list)
+			return list.scrollTo(id: entryId)
+				.map { .internal(.destination(.presented(.list($0)))) }
+		} else {
+			destination = nil
+			return .none
 		}
 	}
 }

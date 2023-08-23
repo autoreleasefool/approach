@@ -51,6 +51,9 @@ public enum Asset {
         public static let lineMark = ColorAsset(name: "Charts/Counting/LineMark")
       }
       public static let foreground = ColorAsset(name: "Charts/Foreground")
+      public enum List {
+        public static let background = ColorAsset(name: "Charts/List/Background")
+      }
       public enum Percentage {
         public static let axes = ColorAsset(name: "Charts/Percentage/Axes")
         public static let barMark = ColorAsset(name: "Charts/Percentage/BarMark")

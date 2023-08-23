@@ -8,6 +8,7 @@ import LeaguesRepositoryInterface
 import ModelsLibrary
 import ResourcePickerLibrary
 import StatisticsChartsLibrary
+import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
@@ -310,17 +311,5 @@ extension StatisticsWidgetEditor.State {
 		case .bowler, .league: return false
 		case .none: return true
 		}
-	}
-}
-
-extension Bowler.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Bowler.title : Strings.Bowler.List.title
-	}
-}
-
-extension League.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.League.title : Strings.League.List.title
 	}
 }

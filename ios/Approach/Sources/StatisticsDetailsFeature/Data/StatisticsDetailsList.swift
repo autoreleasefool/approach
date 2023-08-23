@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import PreferenceServiceInterface
@@ -12,6 +13,7 @@ public struct StatisticsDetailsList: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isHidingZeroStatistics: Bool
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
+		public var entryToHighlight: Statistics.ListEntry.ID?
 
 		init(listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup>) {
 			self.listEntries = listEntries
@@ -30,7 +32,9 @@ public struct StatisticsDetailsList: Reducer {
 			case didRequestEntryDetails(id: String)
 			case listRequiresReload
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case scrollToEntry(id: Statistics.ListEntry.ID?)
+		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -68,7 +72,8 @@ public struct StatisticsDetailsList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .never:
+				case let .scrollToEntry(id):
+					state.entryToHighlight = id
 					return .none
 				}
 
@@ -79,6 +84,12 @@ public struct StatisticsDetailsList: Reducer {
 	}
 }
 
+extension StatisticsDetailsList.State {
+	func scrollTo(id: Statistics.ListEntry.ID?) -> Effect<StatisticsDetailsList.Action> {
+		return .send(.internal(.scrollToEntry(id: id)), animation: .easeInOut)
+	}
+}
+
 // MARK: - View
 
 public struct StatisticsDetailsListView: View {
@@ -86,25 +97,39 @@ public struct StatisticsDetailsListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
-			ForEach(viewStore.listEntries) { group in
-				Section(String(describing: group.category)) {
-					ForEach(group.entries) { entry in
-						Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
-							LabeledContent(entry.title, value: entry.value)
+			ScrollViewReader { scrollViewProxy in
+				List {
+					ForEach(viewStore.listEntries) { group in
+						Section(String(describing: group.category)) {
+							ForEach(group.entries) { entry in
+								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
+									LabeledContent(entry.title, value: entry.value)
+								}
+								.buttonStyle(.navigation)
+								.listRowBackground(
+									entry.id == viewStore.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
+								)
+								.id(entry.id)
+							}
 						}
-						.buttonStyle(.navigation)
+					}
+
+					Section {
+						Toggle(
+							Strings.Statistics.List.hideZeroStatistics,
+							isOn: viewStore.$isHidingZeroStatistics
+						)
+					} footer: {
+						if viewStore.isHidingZeroStatistics {
+							Text(Strings.Statistics.List.HideZeroStatistics.help)
+						}
 					}
 				}
-			}
-
-			Section {
-				Toggle(
-					Strings.Statistics.List.hideZeroStatistics,
-					isOn: viewStore.$isHidingZeroStatistics
-				)
-			} footer: {
-				if viewStore.isHidingZeroStatistics {
-					Text(Strings.Statistics.List.HideZeroStatistics.help)
+				.onChange(of: viewStore.entryToHighlight) {
+					guard let id = $0 else { return }
+					withAnimation {
+						scrollViewProxy.scrollTo(id, anchor: .center)
+					}
 				}
 			}
 		})

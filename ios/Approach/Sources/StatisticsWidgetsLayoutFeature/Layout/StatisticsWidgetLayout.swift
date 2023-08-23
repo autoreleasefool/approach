@@ -3,6 +3,7 @@ import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import StatisticsChartsLibrary
+import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
 import StringsLibrary
@@ -19,7 +20,7 @@ public struct StatisticsWidgetLayout: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var layoutBuilder: StatisticsWidgetLayoutBuilder.State?
+		@PresentationState public var destination: Destination.State?
 
 		public init(context: String, newWidgetSource: StatisticsWidget.Source?) {
 			self.context = context
@@ -39,7 +40,7 @@ public struct StatisticsWidgetLayout: Reducer {
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
 
 			case errors(Errors<ErrorID>.Action)
-			case layoutBuilder(PresentationAction<StatisticsWidgetLayoutBuilder.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
@@ -47,13 +48,37 @@ public struct StatisticsWidgetLayout: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case details(StatisticsDetails.State)
+			case layout(StatisticsWidgetLayoutBuilder.State)
+		}
+
+		public enum Action: Equatable {
+			case details(StatisticsDetails.Action)
+			case layout(StatisticsWidgetLayoutBuilder.Action)
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.details, action: /Action.details) {
+				StatisticsDetails()
+			}
+			Scope(state: /State.layout, action: /Action.layout) {
+				StatisticsWidgetLayoutBuilder()
+			}
+		}
+	}
+
 	public enum ErrorID: Hashable {
+		case widgetNotFound
 		case failedToLoadWidgets
 		case failedToLoadChart
 	}
 
 	public init() {}
 
+	@Dependency(\.calendar) var calendar
+	@Dependency(\.date) var date
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
@@ -71,11 +96,24 @@ public struct StatisticsWidgetLayout: Reducer {
 					}
 
 				case .didTapConfigureStatisticsButton:
-					state.layoutBuilder = .init(context: state.context, newWidgetSource: state.newWidgetSource)
+					state.destination = .layout(.init(context: state.context, newWidgetSource: state.newWidgetSource))
 					return .none
 
-				case .didTapWidget:
-					// TODO: handle tapped widget
+				case let .didTapWidget(id):
+					guard let widget = state.widgets?[id: id] else {
+						return state.errors
+							.enqueue(
+								.widgetNotFound,
+								thrownError: StatisticsWidgetLayoutError.widgetNotFound(id),
+								toastMessage: Strings.Error.Toast.dataNotFound
+							)
+							.map { .internal(.errors($0)) }
+					}
+
+					state.destination = .details(.init(
+						filter: .init(widget: widget, relativeToDate: date(), inCalendar: calendar),
+						withInitialStatistic: widget.statistic.type.title
+					))
 					return .none
 				}
 
@@ -108,13 +146,21 @@ public struct StatisticsWidgetLayout: Reducer {
 						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .layoutBuilder(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.details(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case .layoutBuilder(.dismiss), .layoutBuilder(.presented(.internal)), .layoutBuilder(.presented(.view)),
+				case let .destination(.presented(.layout(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .destination(.dismiss),
+						.destination(.presented(.layout(.internal))), .destination(.presented(.layout(.view))),
+						.destination(.presented(.details(.internal))), .destination(.presented(.details(.view))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}
@@ -123,8 +169,8 @@ public struct StatisticsWidgetLayout: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$layoutBuilder, action: /Action.internal..Action.InternalAction.layoutBuilder) {
-			StatisticsWidgetLayoutBuilder()
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
 	}
 }
@@ -178,11 +224,33 @@ public struct StatisticsWidgetLayoutView: View {
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(store: store.scope(state: \.$layoutBuilder, action: { .internal(.layoutBuilder($0)) })) { store in
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsWidgetLayout.Destination.State.details,
+			action: StatisticsWidgetLayout.Destination.Action.details
+		) { (store: StoreOf<StatisticsDetails>) in
+			StatisticsDetailsView(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsWidgetLayout.Destination.State.layout,
+			action: StatisticsWidgetLayout.Destination.Action.layout
+		) { (store: StoreOf<StatisticsWidgetLayoutBuilder>) in
 			NavigationStack {
 				StatisticsWidgetLayoutBuilderView(store: store)
 			}
 			.interactiveDismissDisabled()
+		}
+	}
+}
+
+public enum StatisticsWidgetLayoutError: LocalizedError {
+	case widgetNotFound(StatisticsWidget.ID)
+
+	public var errorDescription: String? {
+		switch self {
+		case let .widgetNotFound(id):
+			return "Could not find StatisticsWidget with ID '\(id)'"
 		}
 	}
 }

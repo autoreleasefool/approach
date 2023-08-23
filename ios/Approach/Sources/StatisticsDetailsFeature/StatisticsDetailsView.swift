@@ -71,10 +71,8 @@ public struct StatisticsDetailsView: View {
 				action: StatisticsDetails.Destination.Action.list
 			) { store in
 				NavigationStack {
-					List {
-						StatisticsDetailsListView(store: store)
-					}
-					.toolbar(.hidden, for: .navigationBar)
+					StatisticsDetailsListView(store: store)
+						.toolbar(.hidden, for: .navigationBar)
 				}
 				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 				.presentationDetents(
