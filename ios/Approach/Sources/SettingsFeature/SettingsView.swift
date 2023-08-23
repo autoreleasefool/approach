@@ -1,11 +1,13 @@
 import AssetsLibrary
 import ComposableArchitecture
+import ConstantsLibrary
 import FeatureActionLibrary
 import FeatureFlagsListFeature
 import OpponentsListFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import ViewsLibrary
 
 public struct SettingsView: View {
 	let store: StoreOf<Settings>
@@ -87,11 +89,26 @@ public struct SettingsView: View {
 				}
 
 				HelpSettingsView(store: store.scope(state: \.helpSettings, action: /Settings.Action.InternalAction.helpSettings))
-				VersionView()
+
+				Section {
+					Button {
+						viewStore.send(.didTapVersionNumber)
+					} label: {
+						LabeledContent(Strings.Settings.AppInfo.version, value: AppConstants.appVersionReadable)
+							.contentShape(Rectangle())
+					}
+					.buttonStyle(.plain)
+				} header: {
+					Text(Strings.Settings.AppInfo.title)
+				} footer: {
+					Text(Strings.Settings.AppInfo.copyright)
+						.font(.caption)
+				}
 			}
 			.navigationTitle(Strings.Settings.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
+		.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /Settings.Destination.State.appIcon,

@@ -2,12 +2,15 @@ import AnalyticsServiceInterface
 import AppIconServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ConstantsLibrary
 import DatabaseMockingServiceInterface
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsListFeature
 import FeatureFlagsServiceInterface
 import OpponentsListFeature
+import StringsLibrary
+import ToastLibrary
 
 public struct Settings: Reducer {
 	public struct State: Equatable {
@@ -19,6 +22,7 @@ public struct Settings: Reducer {
 		public var currentAppIcon: AppIcon?
 		public let hasAppIconConfigEnabled: Bool
 
+		public var toast: ToastState<ToastAction>?
 		@PresentationState public var destination: Destination.State?
 
 		public init() {
@@ -38,11 +42,14 @@ public struct Settings: Reducer {
 			case didTapOpponents
 			case didTapStatistics
 			case didTapAppIcon
+			case didTapVersionNumber
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didFetchIcon(TaskResult<AppIcon?>)
+			case didCopyToClipboard
 
+			case toast(ToastAction)
 			case helpSettings(HelpSettings.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -83,8 +90,14 @@ public struct Settings: Reducer {
 		}
 	}
 
+	public enum ToastAction: ToastableAction, Equatable {
+		case didDismiss
+		case didFinishDismissing
+	}
+
 	@Dependency(\.appIcon) var appIcon
 	@Dependency(\.databaseMocking) var databaseMocking
+	@Dependency(\.pasteboard) var pasteboard
 
 	public init() {}
 
@@ -122,10 +135,24 @@ public struct Settings: Reducer {
 				case .didTapAppIcon:
 					state.destination = .appIcon(.init())
 					return .none
+
+				case .didTapVersionNumber:
+					return .run { send in
+						pasteboard.copyToClipboard(AppConstants.appVersionReadable)
+						await send(.internal(.didCopyToClipboard))
+					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .didCopyToClipboard:
+					state.toast = .init(
+						message: .init(Strings.copiedToClipboard),
+						icon: .checkmarkCircleFill,
+						style: .success
+					)
+					return .none
+
 				case let .didFetchIcon(.success(icon)):
 					state.isLoadingAppIcon = false
 					state.currentAppIcon = icon
@@ -138,6 +165,16 @@ public struct Settings: Reducer {
 				case let .helpSettings(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:
+						return .none
+					}
+
+				case let .toast(toastAction):
+					switch toastAction {
+					case .didDismiss:
+						state.toast = nil
+						return .none
+
+					case .didFinishDismissing:
 						return .none
 					}
 
@@ -173,10 +210,8 @@ public struct Settings: Reducer {
 						.destination(.presented(.appIcon(.view))),
 						.destination(.presented(.appIcon(.internal))),
 						.destination(.presented(.opponentsList(.internal))),
-						.destination(.presented(.opponentsList(.view))):
-					return .none
-
-				case .helpSettings(.internal), .helpSettings(.view):
+						.destination(.presented(.opponentsList(.view))),
+						.helpSettings(.internal), .helpSettings(.view):
 					return .none
 				}
 
