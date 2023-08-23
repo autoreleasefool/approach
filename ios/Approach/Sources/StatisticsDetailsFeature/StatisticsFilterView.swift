@@ -41,11 +41,11 @@ public struct StatisticsFilterView: View {
 			filterLabel(Strings.Statistics.Filter.Label.Series.title, value: series.date.mediumFormat, type: .seriesDate)
 		} else {
 			if let startDate = filter.seriesFilter.startDate {
-				filterLabel(Strings.Statistics.Filter.Label.Series.starts, value: startDate.mediumFormat, type: .seriesDate)
+				filterLabel(Strings.Statistics.Filter.Label.Series.starts, value: startDate.longFormat, type: .seriesDate)
 			}
 
 			if let endDate = filter.seriesFilter.endDate {
-				filterLabel(Strings.Statistics.Filter.Label.Series.ends, value: endDate.mediumFormat, type: .seriesDate)
+				filterLabel(Strings.Statistics.Filter.Label.Series.ends, value: endDate.longFormat, type: .seriesDate)
 			}
 
 			if let alley = filter.seriesFilter.alley {
