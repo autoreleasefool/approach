@@ -121,6 +121,10 @@ public struct StatisticsWidgetEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
 
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

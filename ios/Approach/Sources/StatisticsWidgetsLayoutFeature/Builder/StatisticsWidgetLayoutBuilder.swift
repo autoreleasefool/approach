@@ -82,6 +82,10 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
 
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Scope(state: \.reordering, action: /Action.internal..Action.InternalAction.reordering) {
 			Reorderable()
 		}

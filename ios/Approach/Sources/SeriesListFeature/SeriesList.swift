@@ -84,32 +84,32 @@ public struct SeriesList: Reducer {
 	}
 
 	public struct Destination: Reducer {
-			public enum State: Equatable {
-				case editor(SeriesEditor.State)
-				case games(GamesList.State)
-				case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
-				case alert(AlertState<AlertAction>)
-			}
+		public enum State: Equatable {
+			case editor(SeriesEditor.State)
+			case games(GamesList.State)
+			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
+			case alert(AlertState<AlertAction>)
+		}
 
-			public enum Action: Equatable {
-				case editor(SeriesEditor.Action)
-				case games(GamesList.Action)
-				case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.Action)
-				case alert(AlertAction)
-			}
+		public enum Action: Equatable {
+			case editor(SeriesEditor.Action)
+			case games(GamesList.Action)
+			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.Action)
+			case alert(AlertAction)
+		}
 
-			public var body: some ReducerOf<Self> {
-				Scope(state: /State.editor, action: /Action.editor) {
-					SeriesEditor()
-				}
-				Scope(state: /State.games, action: /Action.games) {
-					GamesList()
-				}
-				Scope(state: /State.sortOrder, action: /Action.sortOrder) {
-					SortOrder()
-				}
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.editor, action: /Action.editor) {
+				SeriesEditor()
+			}
+			Scope(state: /State.games, action: /Action.games) {
+				GamesList()
+			}
+			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+				SortOrder()
 			}
 		}
+	}
 
 	public init() {}
 

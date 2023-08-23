@@ -112,6 +112,10 @@ public struct StatisticsDetails: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
 
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Scope(state: \.charts, action: /Action.internal..Action.InternalAction.charts) {
 			StatisticsDetailsCharts()
 		}

@@ -45,6 +45,10 @@ public struct OpponentDetails: Reducer {
 	@Dependency(\.bowlers) var bowlers
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
