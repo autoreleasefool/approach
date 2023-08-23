@@ -2,6 +2,7 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import DateTimeLibrary
 import EquatableLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import LeaguesRepositoryInterface
@@ -24,6 +25,8 @@ public struct StatisticsSourcePicker: Reducer {
 		public var game: Game.Summary?
 		public var isLoadingSources = false
 
+		public var errors: Errors<ErrorID>.State = .init()
+
 		@PresentationState public var destination: Destination.State?
 
 		public init(source: TrackableFilter.Source?) {
@@ -44,8 +47,9 @@ public struct StatisticsSourcePicker: Reducer {
 			case didChangeSource(TrackableFilter.Source)
 		}
 		public enum InternalAction: Equatable {
-			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
+			case didLoadSources(TaskResult<TrackableFilter.Sources>)
 			case destination(PresentationAction<Destination.Action>)
+			case errors(Errors<ErrorID>.Action)
 		}
 
 		case view(ViewAction)
@@ -89,12 +93,20 @@ public struct StatisticsSourcePicker: Reducer {
 		}
 	}
 
+	public enum ErrorID: Hashable {
+		case failedToLoadSources
+	}
+
 	public init() {}
 
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.statistics) var statistics
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -163,15 +175,16 @@ public struct StatisticsSourcePicker: Reducer {
 				switch internalAction {
 				case let .didLoadSources(.success(sources)):
 					state.isLoadingSources = false
-					state.bowler = sources?.bowler
-					state.league = sources?.league
-					state.series = sources?.series
-					state.game = sources?.game
+					state.bowler = sources.bowler
+					state.league = sources.league
+					state.series = sources.series
+					state.game = sources.game
 					return .none
 
-				case .didLoadSources(.failure):
-					// TODO: handle error loading sources
-					return .none
+				case let .didLoadSources(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadSources, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
 
 				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -207,6 +220,12 @@ public struct StatisticsSourcePicker: Reducer {
 						return .none
 					}
 
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.bowlerPicker(.internal))),
 						.destination(.presented(.bowlerPicker(.view))),
@@ -215,7 +234,8 @@ public struct StatisticsSourcePicker: Reducer {
 						.destination(.presented(.seriesPicker(.internal))),
 						.destination(.presented(.seriesPicker(.view))),
 						.destination(.presented(.gamePicker(.internal))),
-						.destination(.presented(.gamePicker(.view))):
+						.destination(.presented(.gamePicker(.view))),
+						.errors(.internal), .errors(.view):
 					return .none
 				}
 
@@ -331,6 +351,7 @@ public struct StatisticsSourcePickerView: View {
 			.navigationTitle(Strings.Statistics.Filter.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /StatisticsSourcePicker.Destination.State.bowlerPicker,
