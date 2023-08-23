@@ -111,7 +111,6 @@ let package = Package(
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
-		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
 		.library(name: "ReorderingLibrary", targets: ["ReorderingLibrary"]),
@@ -279,11 +278,11 @@ let package = Package(
 		.target(
 			name: "ErrorsFeature",
 			dependencies: [
+				"ConstantsLibrary",
 				"EmailServiceInterface",
 				"EquatableLibrary",
 				"FeatureActionLibrary",
 				"FileManagerServiceInterface",
-				"FoundationExtensionsLibrary",
 				"LoggingServiceInterface",
 				"PasteboardServiceInterface",
 				"ToastLibrary",
@@ -556,7 +555,6 @@ let package = Package(
 			name: "SettingsFeature",
 			dependencies: [
 				"AppIconServiceInterface",
-				"ConstantsLibrary",
 				"DatabaseMockingServiceInterface",
 				"FeatureFlagsListFeature",
 				"OpponentsListFeature",
@@ -1349,10 +1347,6 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsLibrary",
 			]
-		),
-		.target(
-			name: "FoundationExtensionsLibrary",
-			dependencies: []
 		),
 		.target(
 			name: "ModelsLibrary",

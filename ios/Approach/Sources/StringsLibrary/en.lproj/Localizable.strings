@@ -35,6 +35,7 @@
 "alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
 
 /* Address */
+"address.title" = "Address";
 "address.error.empty.title" = "No suggestions found";
 "address.error.notFound" = "We were unable to gather details for the chosen location. Please try again.";
 
@@ -228,6 +229,22 @@
 "statistics.filter.game.opponent" = "Opponent";
 "statistics.filter.frame.ballRolled" = "Ball Rolled";
 "statistics.filter.frame.ballRolled.noneSelected" = "You haven't selected any bowling balls.";
+"statistics.filter.label.league.title" = "League";
+"statistics.filter.label.league.repeats" = "Repeats?";
+"statistics.filter.label.series.title" = "Series";
+"statistics.filter.label.series.starts" = "Starts";
+"statistics.filter.label.series.ends" = "Ends";
+"statistics.filter.label.series.alley.title" = "Alley";
+"statistics.filter.label.series.alley.material" = "Material";
+"statistics.filter.label.series.alley.mechanism" = "Mechanism";
+"statistics.filter.label.series.alley.pinFall" = "Pin Fall";
+"statistics.filter.label.series.alley.pinBase" = "Pin Base";
+"statistics.filter.label.game.title" = "Game";
+"statistics.filter.label.game.lanes.title" = "Lanes";
+"statistics.filter.label.game.lanes.positions" = "Lane Positions";
+"statistics.filter.label.gear.title" = "Gear";
+"statistics.filter.label.gear.ballsRolled" = "Balls Rolled";
+"statistics.filter.label.opponent.title" = "Opponent";
 "statistics.categories.overall.title" = "Overall";
 "statistics.categories.onFirstRoll.title" = "On First Roll";
 "statistics.categories.fouls.title" = "Fouls";
@@ -331,6 +348,7 @@
 "settings.developer.blogTitle" = "Blog";
 "settings.developer.blog" = "https://runcode.blog";
 "settings.developer.title" = "Developer";
+"settings.developer.openSourceRepositoryUrl" = "https://github.com/autoreleasefool/approach";
 "settings.developerOptions.populateDatabase" = "Mock database";
 "settings.help.title" = "Help";
 "settings.help.reportBug" = "Report Bug";
@@ -345,6 +363,8 @@
 "settings.help.development.help" = "%@ is an open source project you can aid in the development of by using the links above";
 "settings.appIcon.title" = "App Icon";
 "settings.appInfo.title" = "App Info";
+"settings.appIcon.list.error.notFound" = "Could not find icon. Please try again.";
+"settings.appIcon.list.error.failedToChange" = "Could not change icon. Please try again.";
 "settings.appInfo.version" = "Version";
 "settings.appInfo.appVersion" = "%@ (%@)";
 "settings.appInfo.copyright" = "©2023, Joseph Roque";
@@ -387,6 +407,7 @@
 
 /* App */
 
+"app.name" = "Approach";
 "app.tabs.accessories" = "Accessories";
 "app.tabs.overview" = "Overview";
 "app.tabs.settings" = "Settings";

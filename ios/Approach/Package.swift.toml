@@ -45,7 +45,7 @@ features = [ "BowlerEditor", "LeaguesList" ]
 
 [features.Errors]
 services = [ "Email", "FileManager", "Logging", "Pasteboard" ]
-libraries = [ "Equatable", "FoundationExtensions", "Toast", "Views" ]
+libraries = [ "Constants", "Equatable", "Toast", "Views" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -119,7 +119,6 @@ libraries = [ "SortOrder" ]
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
 services = [ "AppIcon", "DatabaseMocking", "Preference" ]
-libraries = [ "Constants" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
@@ -285,9 +284,6 @@ skip_tests = true
 dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureFlags]
-
-[libraries.FoundationExtensions]
-skip_tests = true
 
 [libraries.Models]
 dependencies = [ "IdentifiedCollections" ]

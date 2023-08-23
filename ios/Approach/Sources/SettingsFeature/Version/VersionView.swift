@@ -1,5 +1,5 @@
+import ConstantsLibrary
 import Foundation
-import FoundationExtensionsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -8,7 +8,7 @@ public struct VersionView: View {
 		Section {
 			LabeledContent(
 				Strings.Settings.AppInfo.version,
-				value: Strings.Settings.AppInfo.appVersion(Bundle.main.appVersionLong, Bundle.main.appBuild)
+				value: AppConstants.appVersionReadable
 			)
 		} header: {
 			Text(Strings.Settings.AppInfo.title)

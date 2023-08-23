@@ -166,9 +166,7 @@ public struct HelpSettingsView: View {
 				EmailView(
 					content: .init(
 						recipients: [Strings.Settings.Help.ReportBug.email],
-						subject: Strings.Settings.Help.ReportBug.subject(
-							Strings.Settings.AppInfo.appVersion(Bundle.main.appVersionLong, Bundle.main.appBuild)
-						)
+						subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable)
 					)
 				)
 			}

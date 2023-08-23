@@ -1,8 +1,21 @@
 import Foundation
+import StringsLibrary
 
 public enum AppConstants {
-	public static let appName = "Approach"
-	public static let openSourceRepositoryUrl = URL(string: "https://github.com/autoreleasefool/approach")!
+	public static let appName = Strings.App.name
+	public static let openSourceRepositoryUrl = URL(string: Strings.Settings.Developer.openSourceRepositoryUrl)!
+
+	public static let appBuild: String = {
+		(try? Configuration.value(for: "CFBundleVersion")) ?? "⚠️"
+	}()
+
+	public static let appVersionLong: String = {
+		(try? Configuration.value(for: "CFBundleShortVersionString")) ?? "⚠️"
+	}()
+
+	public static let appVersionReadable: String = {
+		Strings.Settings.AppInfo.appVersion(appVersionLong, appBuild)
+	}()
 }
 
 extension AppConstants {

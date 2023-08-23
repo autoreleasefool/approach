@@ -75,11 +75,13 @@ public enum Strings {
     public static let viewAll = Strings.tr("Localizable", "action.viewAll", fallback: "View All")
   }
   public enum Address {
+    /// Address
+    public static let title = Strings.tr("Localizable", "address.title", fallback: "Address")
     public enum Error {
       /// We were unable to gather details for the chosen location. Please try again.
       public static let notFound = Strings.tr("Localizable", "address.error.notFound", fallback: "We were unable to gather details for the chosen location. Please try again.")
       public enum Empty {
-        /// Address
+        /// No suggestions found
         public static let title = Strings.tr("Localizable", "address.error.empty.title", fallback: "No suggestions found")
       }
     }
@@ -185,6 +187,8 @@ public enum Strings {
     }
   }
   public enum App {
+    /// App
+    public static let name = Strings.tr("Localizable", "app.name", fallback: "Approach")
     public enum Icon {
       /// Bisexual Pride
       public static let bisexual = Strings.tr("Localizable", "app.icon.bisexual", fallback: "Bisexual Pride")
@@ -218,7 +222,7 @@ public enum Strings {
       }
     }
     public enum Tabs {
-      /// App
+      /// Accessories
       public static let accessories = Strings.tr("Localizable", "app.tabs.accessories", fallback: "Accessories")
       /// Overview
       public static let overview = Strings.tr("Localizable", "app.tabs.overview", fallback: "Overview")
@@ -847,6 +851,14 @@ public enum Strings {
     public enum AppIcon {
       /// App Icon
       public static let title = Strings.tr("Localizable", "settings.appIcon.title", fallback: "App Icon")
+      public enum List {
+        public enum Error {
+          /// Could not change icon. Please try again.
+          public static let failedToChange = Strings.tr("Localizable", "settings.appIcon.list.error.failedToChange", fallback: "Could not change icon. Please try again.")
+          /// Could not find icon. Please try again.
+          public static let notFound = Strings.tr("Localizable", "settings.appIcon.list.error.notFound", fallback: "Could not find icon. Please try again.")
+        }
+      }
     }
     public enum AppInfo {
       /// %@ (%@)
@@ -875,6 +887,8 @@ public enum Strings {
       public static let mastodonUrl = Strings.tr("Localizable", "settings.developer.mastodonUrl", fallback: "https://iosdev.space/@autoreleasefool")
       /// Joseph Roque
       public static let name = Strings.tr("Localizable", "settings.developer.name", fallback: "Joseph Roque")
+      /// https://github.com/autoreleasefool/approach
+      public static let openSourceRepositoryUrl = Strings.tr("Localizable", "settings.developer.openSourceRepositoryUrl", fallback: "https://github.com/autoreleasefool/approach")
       /// Developer
       public static let title = Strings.tr("Localizable", "settings.developer.title", fallback: "Developer")
       /// https://josephroque.dev
@@ -1051,6 +1065,54 @@ public enum Strings {
         public enum GearUsed {
           /// You haven't selected any gear.
           public static let noneSelected = Strings.tr("Localizable", "statistics.filter.game.gearUsed.noneSelected", fallback: "You haven't selected any gear.")
+        }
+      }
+      public enum Label {
+        public enum Game {
+          /// Game
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.game.title", fallback: "Game")
+          public enum Lanes {
+            /// Lane Positions
+            public static let positions = Strings.tr("Localizable", "statistics.filter.label.game.lanes.positions", fallback: "Lane Positions")
+            /// Lanes
+            public static let title = Strings.tr("Localizable", "statistics.filter.label.game.lanes.title", fallback: "Lanes")
+          }
+        }
+        public enum Gear {
+          /// Balls Rolled
+          public static let ballsRolled = Strings.tr("Localizable", "statistics.filter.label.gear.ballsRolled", fallback: "Balls Rolled")
+          /// Gear
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.gear.title", fallback: "Gear")
+        }
+        public enum League {
+          /// Repeats?
+          public static let repeats = Strings.tr("Localizable", "statistics.filter.label.league.repeats", fallback: "Repeats?")
+          /// League
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.league.title", fallback: "League")
+        }
+        public enum Opponent {
+          /// Opponent
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.opponent.title", fallback: "Opponent")
+        }
+        public enum Series {
+          /// Ends
+          public static let ends = Strings.tr("Localizable", "statistics.filter.label.series.ends", fallback: "Ends")
+          /// Starts
+          public static let starts = Strings.tr("Localizable", "statistics.filter.label.series.starts", fallback: "Starts")
+          /// Series
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.series.title", fallback: "Series")
+          public enum Alley {
+            /// Material
+            public static let material = Strings.tr("Localizable", "statistics.filter.label.series.alley.material", fallback: "Material")
+            /// Mechanism
+            public static let mechanism = Strings.tr("Localizable", "statistics.filter.label.series.alley.mechanism", fallback: "Mechanism")
+            /// Pin Base
+            public static let pinBase = Strings.tr("Localizable", "statistics.filter.label.series.alley.pinBase", fallback: "Pin Base")
+            /// Pin Fall
+            public static let pinFall = Strings.tr("Localizable", "statistics.filter.label.series.alley.pinFall", fallback: "Pin Fall")
+            /// Alley
+            public static let title = Strings.tr("Localizable", "statistics.filter.label.series.alley.title", fallback: "Alley")
+          }
         }
       }
       public enum Series {

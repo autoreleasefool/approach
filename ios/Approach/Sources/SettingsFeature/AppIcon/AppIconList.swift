@@ -82,11 +82,11 @@ public struct AppIconList: Reducer {
 					return .none
 
 				case .didFetchIcon(.failure):
-					state.alert = AlertState { TextState("Could not find icon. Please try again.") }
+					state.alert = AlertState { TextState(Strings.Settings.AppIcon.List.Error.notFound) }
 					return .none
 
 				case .didUpdateIcon(.failure):
-					state.alert = AlertState { TextState("Could not change icon. Please try again.") }
+					state.alert = AlertState { TextState(Strings.Settings.AppIcon.List.Error.failedToChange) }
 					return .none
 
 				case .alert(.dismiss), .alert(.presented):

@@ -71,7 +71,7 @@ public struct AlleyEditorView: View {
 			)
 			HStack {
 				Button { viewStore.send(.didTapAddressField) } label: {
-					Text(viewStore.location?.title ?? "Address")
+					Text(viewStore.location?.title ?? Strings.Address.title)
 				}
 				Spacer()
 				if viewStore.location != nil {

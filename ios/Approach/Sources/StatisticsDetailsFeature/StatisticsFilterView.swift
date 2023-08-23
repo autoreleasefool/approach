@@ -2,6 +2,7 @@ import AssetsLibrary
 import DateTimeLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
+import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
@@ -29,40 +30,56 @@ public struct StatisticsFilterView: View {
 
 	@ViewBuilder private var leagueFilters: some View {
 		if let league = sources.league {
-			filterLabel("League", value: league.name, type: .league)
+			filterLabel(Strings.Statistics.Filter.Label.League.title, value: league.name, type: .league)
 		} else if let recurrence = filter.leagueFilter.recurrence {
-			filterLabel("Repeats?", value: String(describing: recurrence), type: .league)
+			filterLabel(Strings.Statistics.Filter.Label.League.repeats, value: String(describing: recurrence), type: .league)
 		}
 	}
 
 	@ViewBuilder private var seriesFilters: some View {
 		if let series = sources.series {
-			filterLabel("Series", value: series.date.mediumFormat, type: .seriesDate)
+			filterLabel(Strings.Statistics.Filter.Label.Series.title, value: series.date.mediumFormat, type: .seriesDate)
 		} else {
 			if let startDate = filter.seriesFilter.startDate {
-				filterLabel("Starts", value: startDate.mediumFormat, type: .seriesDate)
+				filterLabel(Strings.Statistics.Filter.Label.Series.starts, value: startDate.mediumFormat, type: .seriesDate)
 			}
 
 			if let endDate = filter.seriesFilter.endDate {
-				filterLabel("Ends", value: endDate.mediumFormat, type: .seriesDate)
+				filterLabel(Strings.Statistics.Filter.Label.Series.ends, value: endDate.mediumFormat, type: .seriesDate)
 			}
 
 			if let alley = filter.seriesFilter.alley {
 				switch alley {
 				case let .alley(alley):
-					filterLabel("Alley", value: alley.name, type: .alley)
+					filterLabel(Strings.Statistics.Filter.Label.Series.Alley.title, value: alley.name, type: .alley)
 				case let .properties(properties):
 					if let material = properties.material {
-						filterLabel("Material", value: String(describing: material), type: .alley)
+						filterLabel(
+							Strings.Statistics.Filter.Label.Series.Alley.material,
+							value: String(describing: material),
+							type: .alley
+						)
 					}
 					if let mechanism = properties.mechanism {
-						filterLabel("Mechanism", value: String(describing: mechanism), type: .alley)
+						filterLabel(
+							Strings.Statistics.Filter.Label.Series.Alley.mechanism,
+							value: String(describing: mechanism),
+							type: .alley
+						)
 					}
 					if let pinFall = properties.pinFall {
-						filterLabel("Pin Fall", value: String(describing: pinFall), type: .alley)
+						filterLabel(
+							Strings.Statistics.Filter.Label.Series.Alley.pinFall,
+							value: String(describing: pinFall),
+							type: .alley
+						)
 					}
 					if let pinBase = properties.pinBase {
-						filterLabel("Pin Base", value: String(describing: pinBase), type: .alley)
+						filterLabel(
+							Strings.Statistics.Filter.Label.Series.Alley.pinBase,
+							value: String(describing: pinBase),
+							type: .alley
+						)
 					}
 				}
 			}
@@ -72,15 +89,19 @@ public struct StatisticsFilterView: View {
 
 	@ViewBuilder private var gameFilters: some View {
 		if let game = sources.game {
-			filterLabel("Game", value: String(game.index), type: .matchPlay)
+			filterLabel(Strings.Statistics.Filter.Label.Game.title, value: String(game.index), type: .matchPlay)
 		} else {
 			if let lanesFilter = filter.gameFilter.lanes {
 				switch lanesFilter {
 				case let .lanes(lanes):
-					filterLabel("Lanes", value: lanes.map(\.label).joined(separator: ", "), type: .alley)
+					filterLabel(
+						Strings.Statistics.Filter.Label.Game.Lanes.title,
+						value: lanes.map(\.label).joined(separator: ", "),
+						type: .alley
+					)
 				case let .positions(positions):
 					filterLabel(
-						"Lane Positions",
+						Strings.Statistics.Filter.Label.Game.Lanes.positions,
 						value: positions.map { String(describing: $0) }.joined(separator: ", "),
 						type: .alley
 					)
@@ -88,11 +109,15 @@ public struct StatisticsFilterView: View {
 			}
 
 			if !filter.gameFilter.gearUsed.isEmpty {
-				filterLabel("Gear", value: filter.gameFilter.gearUsed.map(\.name).joined(separator: ", "), type: .gear)
+				filterLabel(
+					Strings.Statistics.Filter.Label.Gear.title,
+					value: filter.gameFilter.gearUsed.map(\.name).joined(separator: ", "),
+					type: .gear
+				)
 			}
 
 			if let opponent = filter.gameFilter.opponent {
-				filterLabel("Opponent", value: opponent.name, type: .matchPlay)
+				filterLabel(Strings.Statistics.Filter.Label.Opponent.title, value: opponent.name, type: .matchPlay)
 			}
 		}
 	}
@@ -100,7 +125,7 @@ public struct StatisticsFilterView: View {
 	@ViewBuilder private var frameFilters: some View {
 		if !filter.frameFilter.bowlingBallsUsed.isEmpty {
 			filterLabel(
-				"Balls Rolled",
+				Strings.Statistics.Filter.Label.Gear.ballsRolled,
 				value: filter.frameFilter.bowlingBallsUsed.map(\.name).joined(separator: ", "),
 				type: .gear
 			)
