@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import AnalyticsServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
@@ -58,6 +59,7 @@ public struct StatisticsDetails: Reducer {
 
 			case didStartLoadingChart
 			case adjustBackdrop
+			case scrollListToEntry(Statistics.ListEntry.ID)
 			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
 			case didLoadListEntries(TaskResult<[Statistics.ListEntryGroup]>)
 			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
@@ -173,7 +175,7 @@ public struct StatisticsDetails: Reducer {
 
 				case let .didLoadListEntries(.success(statistics)):
 					state.listEntries = .init(uniqueElements: statistics)
-					let presentEffect = state.presentDestinationForLastOrientation(scrollingTo: state.selectedStatistic)
+					let presentEffect = presentDestinationForLastOrientation(withState: &state, scrollingTo: state.selectedStatistic)
 
 					let statisticChartToLoad: Statistic.Type?
 					if let statisticId = state.selectedStatistic,
@@ -218,12 +220,27 @@ public struct StatisticsDetails: Reducer {
 
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
-					return state.presentDestinationForLastOrientation(scrollingTo: state.selectedStatistic)
+					return presentDestinationForLastOrientation(
+						withState: &state,
+						scrollingTo: state.listEntries.isEmpty ? nil : state.selectedStatistic
+					)
+
+				case let .scrollListToEntry(id):
+					switch state.destination {
+					case let .list(list):
+						return list.scrollTo(id: id)
+							.map { .internal(.destination(.presented(.list($0)))) }
+					case .sourcePicker, .none:
+						return .none
+					}
 
 				case let .orientationChange(orientation):
 					state.lastOrientation = orientation
 					return .merge(
-						state.presentDestinationForLastOrientation(scrollingTo: state.selectedStatistic),
+						presentDestinationForLastOrientation(
+							withState: &state,
+							scrollingTo: state.listEntries.isEmpty ? nil : state.selectedStatistic
+						),
 						.run { send in
 							try await clock.sleep(for: .milliseconds(300))
 							await send(.internal(.adjustBackdrop))
@@ -341,6 +358,40 @@ public struct StatisticsDetails: Reducer {
 		)
 		.cancellable(id: CancelID.loadingChartValues, cancelInFlight: true)
 	}
+
+	private func presentDestinationForLastOrientation(
+		withState state: inout State,
+		scrollingTo entryId: Statistics.ListEntry.ID? = nil
+	) -> Effect<StatisticsDetails.Action> {
+		var list: StatisticsDetailsList.State?
+		switch state.lastOrientation {
+		case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown, .none:
+			list = .init(listEntries: state.listEntries)
+		case .landscapeLeft, .landscapeRight:
+			list = nil
+		@unknown default:
+			list = .init(listEntries: state.listEntries)
+		}
+
+		switch state.destination {
+		case let .list(existingState):
+			list?.entryToHighlight = existingState.entryToHighlight
+		case .sourcePicker, .none:
+			break
+		}
+
+		if let list {
+			state.destination = .list(list)
+		} else {
+			state.destination = nil
+		}
+
+		guard let entryId else { return .none }
+		return .run { send in
+			try await clock.sleep(for: .milliseconds(25))
+			await send(.internal(.scrollListToEntry(entryId)))
+		}
+	}
 }
 
 extension StatisticsDetails.State {
@@ -355,37 +406,5 @@ extension StatisticsDetails.State {
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
 		set {}
-	}
-}
-
-extension StatisticsDetails.State {
-	mutating func presentDestinationForLastOrientation(
-		scrollingTo entryId: Statistics.ListEntry.ID? = nil
-	) -> Effect<StatisticsDetails.Action> {
-		var list: StatisticsDetailsList.State?
-		switch lastOrientation {
-		case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown, .none:
-			list = .init(listEntries: listEntries)
-		case .landscapeLeft, .landscapeRight:
-			list = nil
-		@unknown default:
-			list = .init(listEntries: listEntries)
-		}
-
-		switch destination {
-		case let .list(existingState):
-			list?.entryToHighlight = existingState.entryToHighlight
-		case .sourcePicker, .none:
-			break
-		}
-
-		if let list {
-			destination = .list(list)
-			return list.scrollTo(id: entryId)
-				.map { .internal(.destination(.presented(.list($0)))) }
-		} else {
-			destination = nil
-			return .none
-		}
 	}
 }
