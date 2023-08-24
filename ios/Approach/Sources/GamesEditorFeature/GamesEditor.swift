@@ -11,6 +11,7 @@ import GamesRepositoryInterface
 import GearRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 import ScoreSheetFeature
 import ScoringServiceInterface
@@ -350,14 +351,8 @@ public struct GamesEditorAnalyticsReducer: Reducer {
 	}
 }
 
-extension Bowler.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
+extension Bowler.Summary {
+	public static func pickableModelName(forCount count: Int) -> String {
 		count == 1 ? Strings.Opponent.title : Strings.Opponent.List.title
-	}
-}
-
-extension Gear.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Gear.title : Strings.Gear.List.title
 	}
 }

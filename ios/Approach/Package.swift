@@ -113,6 +113,7 @@ let package = Package(
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
+		.library(name: "PickableModelsLibrary", targets: ["PickableModelsLibrary"]),
 		.library(name: "ReorderingLibrary", targets: ["ReorderingLibrary"]),
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
@@ -336,7 +337,7 @@ let package = Package(
 				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
 				"ModelsViewsLibrary",
-				"ResourcePickerLibrary",
+				"PickableModelsLibrary",
 				"ScoreSheetFeature",
 			]
 		),
@@ -370,7 +371,7 @@ let package = Package(
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"GearRepositoryInterface",
-				"ResourcePickerLibrary",
+				"PickableModelsLibrary",
 				"SwiftUIExtensionsLibrary",
 			]
 		),
@@ -423,7 +424,7 @@ let package = Package(
 				"FormFeature",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
-				"ResourcePickerLibrary",
+				"PickableModelsLibrary",
 				"SwiftUIExtensionsLibrary",
 			]
 		),
@@ -524,7 +525,7 @@ let package = Package(
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"ModelsViewsLibrary",
-				"ResourcePickerLibrary",
+				"PickableModelsLibrary",
 				"SeriesRepositoryInterface",
 				"SwiftUIExtensionsLibrary",
 			]
@@ -577,8 +578,8 @@ let package = Package(
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
 				"NotificationsServiceInterface",
+				"PickableModelsLibrary",
 				"PreferenceServiceInterface",
-				"ResourcePickerLibrary",
 				"SeriesRepositoryInterface",
 				"StatisticsRepositoryInterface",
 				"SwiftUIExtensionsLibrary",
@@ -1374,6 +1375,20 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ModelsViewsLibrary",
+			]
+		),
+		.target(
+			name: "PickableModelsLibrary",
+			dependencies: [
+				"ModelsLibrary",
+				"ResourcePickerLibrary",
+			]
+		),
+		.testTarget(
+			name: "PickableModelsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"PickableModelsLibrary",
 			]
 		),
 		.target(

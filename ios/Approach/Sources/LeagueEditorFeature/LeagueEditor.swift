@@ -8,6 +8,7 @@ import FeatureFlagsServiceInterface
 import FormFeature
 import LeaguesRepositoryInterface
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 
@@ -246,12 +247,6 @@ extension League.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
 	public var isSaveable: Bool {
 		!name.isEmpty
-	}
-}
-
-extension Alley.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
 	}
 }
 

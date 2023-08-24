@@ -9,6 +9,7 @@ import FormFeature
 import Foundation
 import GearRepositoryInterface
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 
@@ -195,11 +196,5 @@ extension Gear.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
 	public var isSaveable: Bool {
 		!name.isEmpty
-	}
-}
-
-extension Bowler.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Bowler.title : Strings.Bowler.List.title
 	}
 }

@@ -7,6 +7,7 @@ import FeatureActionLibrary
 import GamesRepositoryInterface
 import LeaguesRepositoryInterface
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 import SeriesRepositoryInterface
 import StatisticsLibrary

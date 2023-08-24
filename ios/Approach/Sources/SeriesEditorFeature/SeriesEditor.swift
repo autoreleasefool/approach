@@ -10,6 +10,7 @@ import FormFeature
 import Foundation
 import LanesRepositoryInterface
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 import SeriesRepositoryInterface
 import StringsLibrary
@@ -233,10 +234,4 @@ extension Series.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
 	public var isSaveable: Bool { true }
 	public var name: String { date.longFormat }
-}
-
-extension Alley.Summary: PickableResource {
-	static public func pickableModelName(forCount count: Int) -> String {
-		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
-	}
 }
