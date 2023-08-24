@@ -171,6 +171,7 @@ let package = Package(
 				"AddressLookupServiceInterface",
 				"FeatureActionLibrary",
 				"LocationsRepositoryInterface",
+				"LoggingServiceInterface",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
@@ -237,6 +238,7 @@ let package = Package(
 			dependencies: [
 				"AvatarServiceInterface",
 				"FeatureActionLibrary",
+				"LoggingServiceInterface",
 				"StringsLibrary",
 			]
 		),
@@ -302,6 +304,7 @@ let package = Package(
 			dependencies: [
 				"FeatureActionLibrary",
 				"FeatureFlagsServiceInterface",
+				"LoggingServiceInterface",
 				"StringsLibrary",
 			]
 		),
@@ -403,6 +406,7 @@ let package = Package(
 			name: "LaneEditorFeature",
 			dependencies: [
 				"FeatureActionLibrary",
+				"LoggingServiceInterface",
 				"ModelsLibrary",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
@@ -457,6 +461,7 @@ let package = Package(
 				"BowlersRepositoryInterface",
 				"ExtensionsLibrary",
 				"FeatureActionLibrary",
+				"LoggingServiceInterface",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
@@ -504,6 +509,7 @@ let package = Package(
 			name: "ScoreSheetFeature",
 			dependencies: [
 				"FeatureActionLibrary",
+				"LoggingServiceInterface",
 				"ScoringServiceInterface",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",

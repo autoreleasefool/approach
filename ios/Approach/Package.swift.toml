@@ -424,6 +424,7 @@ from = "0.9.16"
 # Default Imports
 
 [defaults.features]
+services = [ "Logging" ]
 libraries = [ "FeatureAction" ]
 dependencies = [ "ComposableArchitecture" ]
 
