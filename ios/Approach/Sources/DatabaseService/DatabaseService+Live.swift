@@ -24,7 +24,7 @@ extension DatabaseService: DependencyKey {
 			migrator.registerDBMigrations()
 			try migrator.migrate(writer)
 		} catch {
-			// TODO: should notify user of failure to open DB
+			// FIXME: should notify user of failure to open DB
 			fatalError("Unable to access database service: \(error)")
 		}
 
