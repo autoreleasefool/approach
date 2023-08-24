@@ -488,6 +488,7 @@
 "action.skip" = "Skip";
 "action.select" = "Select";
 "action.report" = "Report";
+"action.deselectAll" = "Deselect all";
 
 /* Other */
 

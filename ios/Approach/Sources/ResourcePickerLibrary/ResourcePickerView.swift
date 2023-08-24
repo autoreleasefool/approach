@@ -36,22 +36,33 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ListContent(viewStore.listState) { resources in
-				ForEach(resources) { resource in
-					Button {
-						viewStore.send(.didTapResource(resource))
-					} label: {
-						HStack(alignment: .center, spacing: .standardSpacing) {
-							Image(systemSymbol: viewStore.selected.contains(resource.id) ? .checkmarkCircleFill : .circle)
-								.resizable()
-								.frame(width: .smallIcon, height: .smallIcon)
-								.foregroundColor(Asset.Colors.Action.default)
-							row(resource)
-								.frame(maxWidth: .infinity, alignment: .leading)
+				Section {
+					ForEach(resources) { resource in
+						Button {
+							viewStore.send(.didTapResource(resource))
+						} label: {
+							HStack(alignment: .center, spacing: .standardSpacing) {
+								Image(systemSymbol: viewStore.selected.contains(resource.id) ? .checkmarkCircleFill : .circle)
+									.resizable()
+									.frame(width: .smallIcon, height: .smallIcon)
+									.foregroundColor(Asset.Colors.Action.default)
+								row(resource)
+									.frame(maxWidth: .infinity, alignment: .leading)
+							}
+							.frame(maxWidth: .infinity)
+							.contentShape(Rectangle())
 						}
-						.frame(maxWidth: .infinity)
-						.contentShape(Rectangle())
+						.buttonStyle(TappableElement())
 					}
-					.buttonStyle(TappableElement())
+				}
+
+				Section {
+					Button(role: .destructive) {
+						viewStore.send(.didTapDeselectAllButton)
+					} label: {
+						Label(Strings.Action.deselectAll, systemSymbol: .trash)
+					}
+					.disabled(viewStore.selected.isEmpty)
 				}
 			} empty: {
 				ListEmptyContent(

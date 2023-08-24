@@ -41,6 +41,8 @@ public enum Strings {
     public static let cancel = Strings.tr("Localizable", "action.cancel", fallback: "Cancel")
     /// Delete
     public static let delete = Strings.tr("Localizable", "action.delete", fallback: "Delete")
+    /// Deselect all
+    public static let deselectAll = Strings.tr("Localizable", "action.deselectAll", fallback: "Deselect all")
     /// Discard
     public static let discard = Strings.tr("Localizable", "action.discard", fallback: "Discard")
     /// Dismiss

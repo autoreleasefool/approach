@@ -41,6 +41,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			case didTapCancelButton
 			case didTapSaveButton
 			case didTapResource(Resource)
+			case didTapDeselectAllButton
 		}
 		public enum DelegateAction: Equatable {
 			case didChangeSelection([Resource])
@@ -77,6 +78,13 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 					state.selected = state.initialSelection
 					return .concatenate(
 						.send(.delegate(.didChangeSelection(state.initiallySelectedResources ?? []))),
+						.run { _ in await dismiss() }
+					)
+
+				case .didTapDeselectAllButton:
+					state.selected.removeAll()
+					return .concatenate(
+						.send(.delegate(.didChangeSelection([]))),
 						.run { _ in await dismiss() }
 					)
 
