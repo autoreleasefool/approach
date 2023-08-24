@@ -47,11 +47,11 @@ public struct LeagueEditor: Reducer {
 				self.additionalPinfall = additionalPinfall > 0 ? String(additionalPinfall) : ""
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
+				self.coordinate = .init(coordinate: .init())
 				numberOfGames = new.numberOfGames ?? 0
 				additionalGames = new.additionalGames ?? 0
 				self.shouldShowLocationSection = new.recurrence.shouldShowLocationSection
 				self.initialValue = .create(new)
-				self.coordinate = .init(coordinate: .init())
 			case let .edit(existing):
 				self.name = existing.name
 				self.recurrence = existing.recurrence

@@ -2,6 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import FormFeature
+import MapKit
 import ModelsLibrary
 import ModelsViewsLibrary
 import ResourcePickerLibrary
@@ -18,6 +19,7 @@ public struct SeriesEditorView: View {
 		@BindingViewState var numberOfGames: Int
 		@BindingViewState var preBowl: Series.PreBowl
 		@BindingViewState var excludeFromStatistics: Series.ExcludeFromStatistics
+		@BindingViewState var coordinate: CoordinateRegion
 		let location: Alley.Summary?
 
 		let hasSetNumberOfGames: Bool
@@ -52,17 +54,7 @@ public struct SeriesEditorView: View {
 					.datePickerStyle(.graphical)
 				}
 
-				if viewStore.hasAlleysEnabled {
-					Section(Strings.Series.Properties.alley) {
-						Button { viewStore.send(.didTapAlley) } label: {
-							LabeledContent(
-								Strings.Series.Properties.alley,
-								value: viewStore.location?.name ?? Strings.none
-							)
-						}
-						.buttonStyle(.navigation)
-					}
-				}
+				locationSection(viewStore)
 
 				Section {
 					Picker(
@@ -105,6 +97,39 @@ public struct SeriesEditorView: View {
 		}
 	}
 
+	@ViewBuilder private func locationSection(_ viewStore: SeriesEditorViewStore) -> some View {
+		if viewStore.hasAlleysEnabled {
+			Section {
+				Button { viewStore.send(.didTapAlley) } label: {
+					LabeledContent(
+						Strings.Series.Properties.alley,
+						value: viewStore.location?.name ?? Strings.none
+					)
+				}
+				.buttonStyle(.navigation)
+
+				if let location = viewStore.location?.location {
+					Map(
+						coordinateRegion: viewStore.$coordinate.mkCoordinateRegion,
+						interactionModes: [],
+						annotationItems: [location]
+					) { place in
+						MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Asset.Colors.Action.default.swiftUIColor)
+					}
+					.frame(maxWidth: .infinity)
+					.frame(height: 125)
+					.padding(0)
+					.listRowInsets(EdgeInsets())
+				}
+			} header: {
+				Text(Strings.Series.Editor.Fields.Alley.title)
+			} footer: {
+				Text(Strings.Series.Editor.Fields.Alley.help)
+			}
+			.listRowSeparator(.hidden)
+		}
+	}
+
 	@ViewBuilder private func excludeFromStatisticsHelp(_ viewStore: SeriesEditorViewStore) -> some View {
 		switch viewStore.excludeLeagueFromStatistics {
 		case .exclude:
@@ -128,6 +153,7 @@ extension SeriesEditorView.ViewState {
 		self._numberOfGames = store.$numberOfGames
 		self._preBowl = store.$preBowl
 		self._excludeFromStatistics = store.$excludeFromStatistics
+		self._coordinate = store.$coordinate
 		self.location = store.location
 
 		self.hasSetNumberOfGames = store.league.numberOfGames != nil

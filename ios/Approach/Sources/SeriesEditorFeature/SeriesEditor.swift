@@ -26,6 +26,7 @@ public struct SeriesEditor: Reducer {
 		@BindingState public var date: Date
 		@BindingState public var preBowl: Series.PreBowl
 		@BindingState public var excludeFromStatistics: Series.ExcludeFromStatistics
+		@BindingState public var coordinate: CoordinateRegion
 		public var location: Alley.Summary?
 
 		public let initialValue: SeriesForm.Value
@@ -42,6 +43,7 @@ public struct SeriesEditor: Reducer {
 				self.preBowl = new.preBowl
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
+				self.coordinate = .init(coordinate: .init())
 				self.initialValue = .create(new)
 			case let .edit(existing):
 				self.numberOfGames = existing.numberOfGames
@@ -49,6 +51,7 @@ public struct SeriesEditor: Reducer {
 				self.preBowl = existing.preBowl
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
+				self.coordinate = .init(coordinate: existing.location?.location?.coordinate.mapCoordinate ?? .init())
 				self.initialValue = .edit(existing)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
@@ -135,6 +138,7 @@ public struct SeriesEditor: Reducer {
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
+						state.coordinate = .init(coordinate: state.location?.location?.coordinate.mapCoordinate ?? .init())
 						return .none
 					}
 

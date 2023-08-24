@@ -743,8 +743,12 @@ public enum Strings {
           return Strings.tr("Localizable", "series.editor.fields.numberOfGames", p1, fallback: "Plural format key: \"%#@numberOfGames@\"")
         }
         public enum Alley {
+          /// This is where you plan on bowling this series.
+          public static let help = Strings.tr("Localizable", "series.editor.fields.alley.help", fallback: "This is where you plan on bowling this series.")
           /// Lanes
           public static let lanes = Strings.tr("Localizable", "series.editor.fields.alley.lanes", fallback: "Lanes")
+          /// Alley
+          public static let title = Strings.tr("Localizable", "series.editor.fields.alley.title", fallback: "Alley")
         }
         public enum ExcludeFromStatistics {
           /// All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.

@@ -159,6 +159,8 @@
 "series.properties.preBowl.regular" = "Regular";
 "series.properties.excludeFromStatistics.include" = "Include";
 "series.properties.excludeFromStatistics.exclude" = "Exclude";
+"series.editor.fields.alley.title" = "Alley";
+"series.editor.fields.alley.help" = "This is where you plan on bowling this series.";
 "series.editor.fields.alley.lanes" = "Lanes";
 "series.editor.fields.preBowl.title" = "Pre-Bowl";
 "series.editor.fields.preBowl.label" = "This is a pre-bowl";
