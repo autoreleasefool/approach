@@ -2,22 +2,18 @@ import Dependencies
 import ModelsLibrary
 
 public struct LocationsRepository: Sendable {
-	public var create: @Sendable (Location.Create) async throws -> Void
-	public var update: @Sendable (Location.Edit) async throws -> Void
+	public var insertOrUpdate: @Sendable (Location.Create) async throws -> Void
 
 	public init(
-		create: @escaping @Sendable (Location.Create) async throws -> Void,
-		update: @escaping @Sendable (Location.Edit) async throws -> Void
+		insertOrUpdate: @escaping @Sendable (Location.Create) async throws -> Void
 	) {
-		self.create = create
-		self.update = update
+		self.insertOrUpdate = insertOrUpdate
 	}
 }
 
 extension LocationsRepository: TestDependencyKey {
 	public static var testValue = Self(
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") }
+		insertOrUpdate: { _ in unimplemented("\(Self.self).insertOrUpdate") }
 	)
 }
 

@@ -71,7 +71,7 @@ extension AlleysRepository: DependencyKey {
 			},
 			create: { alley in
 				if let location = alley.location {
-					try await locations.create(location)
+					try await locations.insertOrUpdate(location)
 				}
 				try await database.writer().write {
 					try alley.insert($0)
@@ -79,7 +79,7 @@ extension AlleysRepository: DependencyKey {
 			},
 			update: { alley in
 				if let location = alley.location {
-					try await locations.update(location)
+					try await locations.insertOrUpdate(location)
 				}
 				try await database.writer().write {
 					try alley.update($0)

@@ -10,14 +10,14 @@ extension LocationsRepository: DependencyKey {
 		@Dependency(\.database) var database
 
 		return Self(
-			create: { location in
+			insertOrUpdate: { location in
 				try await database.writer().write {
-					try location.insert($0)
-				}
-			},
-			update: { location in
-				try await database.writer().write {
-					try location.update($0)
+					let exists = try location.exists($0)
+					if exists {
+						try location.update($0)
+					} else {
+						try location.insert($0)
+					}
 				}
 			}
 		)
