@@ -20,78 +20,109 @@ struct GearKindGroup: Identifiable {
 public struct AccessoriesOverviewView: View {
 	let store: StoreOf<AccessoriesOverview>
 
-	static let gearKinds = Gear.Kind.allCases.chunks(ofCount: 2).map { GearKindGroup(group: Array($0)) }
+	struct ViewState: Equatable {
+		let alleys: IdentifiedArrayOf<Alley.Summary>
+		let gear: IdentifiedArrayOf<Gear.Summary>
+		static let gearKinds = Gear.Kind.allCases.chunks(ofCount: 2).map { GearKindGroup(group: Array($0)) }
+
+		init(state: AccessoriesOverview.State) {
+			self.alleys = state.recentAlleys
+			self.gear = state.recentGear
+		}
+	}
 
 	public init(store: StoreOf<AccessoriesOverview>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		List {
-			Section {
-				AlleysOverviewView(
-					store: store.scope(state: \.alleysOverview, action: /AccessoriesOverview.Action.InternalAction.alleysOverview)
-				)
-			} header: {
-				HStack(alignment: .firstTextBaseline) {
-					Text(Strings.Alley.List.title)
-					Spacer()
-					Button { store.send(.view(.didTapViewAllAlleys)) } label: {
-						Text(Strings.Action.viewAll)
-							.font(.caption)
-					}
-				}
-			}
-
-			Section {
-				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-					ForEach(Self.gearKinds) { row in
-						GridRow {
-							ForEach(row.group) { kind in
-								Button { store.send(.view(.didTapGearKind(kind))) } label: {
-									HStack {
-										Image(systemSymbol: kind.systemSymbol)
-											.scaledToFit()
-											.frame(width: .smallIcon, height: .smallIcon)
-										Text(kind.pluralDescription)
-											.frame(maxWidth: .infinity, alignment: .leading)
-									}
-									.padding()
+		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+			List {
+				Section {
+					if viewStore.alleys.isEmpty {
+						Text(Strings.Alley.Error.Empty.message)
+					} else {
+						// TODO: show empty state for no alleys
+						ForEach(viewStore.alleys) { alley in
+							Alley.View(alley: alley)
+								.swipeActions(allowsFullSwipe: true) {
+									EditButton { viewStore.send(.didSwipe(.edit, .alley(alley))) }
+									DeleteButton { viewStore.send(.didSwipe(.delete, .alley(alley))) }
 								}
-								.buttonStyle(TappableElement(Asset.Colors.Primary.default, pressed: Asset.Colors.Primary.light))
-							}
+						}
+					}
+				} header: {
+					HStack(alignment: .firstTextBaseline) {
+						Text(Strings.Alley.List.title)
+						Spacer()
+						Button { viewStore.send(.didTapViewAllAlleys) } label: {
+							Text(Strings.Action.viewAll)
+								.font(.caption)
 						}
 					}
 				}
-				.listRowInsets(EdgeInsets())
-			} header: {
-				HStack(alignment: .firstTextBaseline) {
-					Text(Strings.Gear.List.title)
-					Spacer()
-					Button { store.send(.view(.didTapViewAllGear)) } label: {
-						Text(Strings.Action.viewAll)
-							.font(.caption)
+
+				Section {
+					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+						ForEach(ViewState.gearKinds) { row in
+							GridRow {
+								ForEach(row.group) { kind in
+									Button { viewStore.send(.didTapGearKind(kind)) } label: {
+										HStack {
+											Image(systemSymbol: kind.systemSymbol)
+												.scaledToFit()
+												.frame(width: .smallIcon, height: .smallIcon)
+											Text(kind.pluralDescription)
+												.frame(maxWidth: .infinity, alignment: .leading)
+										}
+										.padding()
+									}
+									.buttonStyle(TappableElement(Asset.Colors.Primary.default, pressed: Asset.Colors.Primary.light))
+								}
+							}
+						}
+
+					}
+					.listRowInsets(EdgeInsets())
+				} header: {
+					HStack(alignment: .firstTextBaseline) {
+						Text(Strings.Gear.List.title)
+						Spacer()
+						Button { viewStore.send(.didTapViewAllGear) } label: {
+							Text(Strings.Action.viewAll)
+								.font(.caption)
+						}
+					}
+				}
+
+				Section {
+					if viewStore.gear.isEmpty {
+						Text(Strings.Gear.Error.Empty.message)
+					} else {
+						ForEach(viewStore.gear) { gear in
+							Gear.View(gear: gear)
+								.swipeActions(allowsFullSwipe: true) {
+									EditButton { viewStore.send(.didSwipe(.edit, .gear(gear))) }
+									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }
+								}
+						}
 					}
 				}
 			}
-
-			Section {
-				GearOverviewView(
-					store: store.scope(state: \.gearOverview, action: /AccessoriesOverview.Action.InternalAction.gearOverview)
-				)
-			}
-		}
-		.navigationBarTitle(Strings.Accessory.Overview.title)
-		.toolbar {
-			ToolbarItem(placement: .navigationBarTrailing) {
-				Menu {
-					Button(Strings.Alley.List.add) { store.send(.view(.didTapAddAlley)) }
-					Button(Strings.Gear.List.add) { store.send(.view(.didTapAddGear)) }
-				} label: {
-					Image(systemSymbol: .plus)
+			.navigationBarTitle(Strings.Accessory.Overview.title)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					Menu {
+						Button(Strings.Alley.List.add) { viewStore.send(.didTapAddAlley) }
+						Button(Strings.Gear.List.add) { viewStore.send(.didTapAddGear) }
+					} label: {
+						Image(systemSymbol: .plus)
+					}
 				}
 			}
-		}
+			.task { await viewStore.send(.didObserveData).finish() }
+		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /AccessoriesOverview.Destination.State.gearList,
