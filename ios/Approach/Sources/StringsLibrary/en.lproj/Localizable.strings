@@ -186,6 +186,7 @@
 "game.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
 "game.editor.fields.excludeFromStatistics.help" = "This game will not count towards any statistics. It will still appear in the app, but won't affect your overall average or other statistics. This can be useful for practice or incomplete games.";
 "game.editor.fields.excludeFromStatistics.excludedWhenSeriesExcluded" = "All of this series' games have been excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics.";
+"game.editor.fields.excludeFromStatistics.excludedWhenSeriesPreBowl" = "This series is a pre-bowl and all of its games are automatically excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics.";
 "game.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.";
 "game.editor.fields.lock.label" = "Lock for editing";
 "game.editor.fields.lock.help" = "Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.";

@@ -247,6 +247,7 @@ final class GamesRepositoryTests: XCTestCase {
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
 					excludeFromStatistics: .include,
 					alley: .init(name: "Skyview")
 				)
@@ -296,6 +297,7 @@ final class GamesRepositoryTests: XCTestCase {
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
 					excludeFromStatistics: .include,
 					alley: .init(name: "Skyview")
 				)
@@ -340,6 +342,7 @@ final class GamesRepositoryTests: XCTestCase {
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
 					excludeFromStatistics: .include,
 					alley: .init(name: "Skyview")
 				)
@@ -384,6 +387,7 @@ final class GamesRepositoryTests: XCTestCase {
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
+				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alley: .init(name: "Skyview")
 			)
@@ -434,6 +438,7 @@ final class GamesRepositoryTests: XCTestCase {
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
+				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alley: .init(name: "Skyview")
 			)
@@ -487,6 +492,7 @@ final class GamesRepositoryTests: XCTestCase {
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
+				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alley: .init(name: "Skyview")
 			)
@@ -523,6 +529,7 @@ final class GamesRepositoryTests: XCTestCase {
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
 					excludeFromStatistics: .include,
 					alley: .init(name: "Skyview")
 				)

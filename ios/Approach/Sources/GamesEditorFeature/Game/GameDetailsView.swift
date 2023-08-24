@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
@@ -141,10 +142,39 @@ public struct GameDetailsView: View {
 					isOn: viewStore.binding(get: { $0.game.excludeFromStatistics == .exclude }, send: { _ in .didToggleExclude })
 				)
 			} footer: {
-				// TODO: check if series or league is locked and display different help message
-				Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
+				excludeFromStatisticsHelp(
+					excludeLeagueFromStatistics: viewStore.game.league.excludeFromStatistics,
+					seriesPreBowl: viewStore.game.series.preBowl,
+					excludeSeriesFromStatistics: viewStore.game.series.excludeFromStatistics
+				)
 			}
 		})
+	}
+
+	@ViewBuilder private func excludeFromStatisticsHelp(
+		excludeLeagueFromStatistics: League.ExcludeFromStatistics,
+		seriesPreBowl: Series.PreBowl,
+		excludeSeriesFromStatistics: Series.ExcludeFromStatistics
+	) -> some View {
+		switch excludeLeagueFromStatistics {
+		case .exclude:
+			Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
+				.foregroundColor(Asset.Colors.Warning.default)
+		case .include:
+			switch seriesPreBowl {
+			case .preBowl:
+				Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenSeriesPreBowl)
+					.foregroundColor(Asset.Colors.Warning.default)
+			case .regular:
+				switch excludeSeriesFromStatistics {
+				case .exclude:
+					Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenSeriesExcluded)
+						.foregroundColor(Asset.Colors.Warning.default)
+				case .include:
+					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
+				}
+			}
+		}
 	}
 }
 
