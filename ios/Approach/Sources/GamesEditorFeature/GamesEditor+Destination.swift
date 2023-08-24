@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import EquatableLibrary
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 
 extension GamesEditor {

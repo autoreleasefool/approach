@@ -112,6 +112,7 @@ public struct GamesEditor: Reducer {
 	enum CancelID { case observation }
 
 	public enum ErrorID: Hashable {
+		case outdatedFramesLoaded
 		case failedToLoadBowler
 		case failedToLoadFrames
 		case failedToLoadGame
@@ -194,8 +195,16 @@ public struct GamesEditor: Reducer {
 
 				case let .framesResponse(.success(frames)):
 					guard frames.first?.gameId == state.currentGameId else {
-						// TODO: log error that unexpected frames loaded (should be cancelled in flight)
-						return .none
+						return state.errors
+							.enqueue(
+								.outdatedFramesLoaded,
+								thrownError: GamesEditorError.outdatedFrames(
+									forGame: frames.first?.gameId,
+									expectedGame: state.currentGameId
+								),
+								toastMessage: Strings.Error.Toast.failedToLoad
+							)
+							.map { .internal(.errors($0)) }
 					}
 
 					state.currentFrameIndex = frames.firstIndex { $0.hasUntouchedRoll } ?? 0

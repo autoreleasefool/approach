@@ -6,6 +6,7 @@ import FeatureActionLibrary
 import Foundation
 import LeaguesRepositoryInterface
 import ModelsLibrary
+import PickableModelsLibrary
 import ResourcePickerLibrary
 import StatisticsChartsLibrary
 import StatisticsDetailsFeature
