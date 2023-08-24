@@ -1,6 +1,8 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import FormFeature
+import MapKit
 import ModelsLibrary
 import ModelsViewsLibrary
 import ResourcePickerLibrary
@@ -23,6 +25,8 @@ public struct LeagueEditorView: View {
 
 		@BindingViewState var gamesPerSeries: LeagueEditor.GamesPerSeries
 		@BindingViewState var hasAdditionalPinfall: Bool
+
+		@BindingViewState var coordinate: CoordinateRegion
 
 		let shouldShowLocationSection: Bool
 		let location: Alley.Summary?
@@ -84,7 +88,6 @@ public struct LeagueEditorView: View {
 	}
 
 	@ViewBuilder private func locationSection(_ viewStore: LeagueEditorViewStore) -> some View {
-		// TODO: better show the location section when recurrence is toggled
 		if viewStore.hasAlleysEnabled && viewStore.shouldShowLocationSection {
 			Section {
 				Button { viewStore.send(.didTapAlley) } label: {
@@ -94,11 +97,26 @@ public struct LeagueEditorView: View {
 					)
 				}
 				.buttonStyle(.navigation)
+
+				if let location = viewStore.location?.location {
+					Map(
+						coordinateRegion: viewStore.$coordinate.mkCoordinateRegion,
+						interactionModes: [],
+						annotationItems: [location]
+					) { place in
+						MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Asset.Colors.Action.default.swiftUIColor)
+					}
+					.frame(maxWidth: .infinity)
+					.frame(height: 125)
+					.padding(0)
+					.listRowInsets(EdgeInsets())
+				}
 			} header: {
 				Text(Strings.League.Editor.Fields.Alley.title)
 			} footer: {
 				Text(Strings.League.Editor.Fields.Alley.help)
 			}
+			.listRowSeparator(.hidden)
 		}
 	}
 
@@ -185,6 +203,7 @@ extension LeagueEditorView.ViewState {
 		self._additionalGames = store.$additionalGames
 		self._additionalPinfall = store.$additionalPinfall
 		self._excludeFromStatistics = store.$excludeFromStatistics
+		self._coordinate = store.$coordinate
 
 		self._gamesPerSeries = store.$gamesPerSeries
 		self._hasAdditionalPinfall = store.$hasAdditionalPinfall

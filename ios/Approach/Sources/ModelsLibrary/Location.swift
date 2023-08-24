@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import MapKit
 
 public enum Location {}
 
@@ -63,5 +64,21 @@ extension Location {
 			case latitude
 			case longitude
 		}
+	}
+}
+
+public struct CoordinateRegion: Equatable {
+	public var mkCoordinateRegion: MKCoordinateRegion
+
+	public init(coordinate: CLLocationCoordinate2D) {
+		self.mkCoordinateRegion = .init(
+			center: coordinate,
+			span: .init(latitudeDelta: 0.005, longitudeDelta: 0.005)
+		)
+	}
+
+	public static func == (lhs: Self, rhs: Self) -> Bool {
+		lhs.mkCoordinateRegion.center.latitude == rhs.mkCoordinateRegion.center.latitude &&
+		lhs.mkCoordinateRegion.center.longitude == rhs.mkCoordinateRegion.center.longitude
 	}
 }

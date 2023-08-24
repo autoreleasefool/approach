@@ -525,8 +525,8 @@ public enum Strings {
           public static let title = Strings.tr("Localizable", "league.editor.fields.additionalPinfall.title", fallback: "Include additional pinfall?")
         }
         public enum Alley {
-          /// This is where you'll usually bowl this league. You can always change it for specific series later.
-          public static let help = Strings.tr("Localizable", "league.editor.fields.alley.help", fallback: "This is where you'll usually bowl this league. You can always change it for specific series later.")
+          /// This is where you plan on bowling this league or event.
+          public static let help = Strings.tr("Localizable", "league.editor.fields.alley.help", fallback: "This is where you plan on bowling this league or event.")
           /// Alley
           public static let title = Strings.tr("Localizable", "league.editor.fields.alley.title", fallback: "Alley")
         }

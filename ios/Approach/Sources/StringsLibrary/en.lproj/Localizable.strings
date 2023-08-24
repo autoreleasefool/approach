@@ -132,7 +132,7 @@
 "league.editor.fields.gamesPerSeries.constant" = "Constant";
 "league.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";
 "league.editor.fields.alley.title" = "Alley";
-"league.editor.fields.alley.help" = "This is where you'll usually bowl this league. You can always change it for specific series later.";
+"league.editor.fields.alley.help" = "This is where you plan on bowling this league or event.";
 "league.editor.fields.recurrence.help" = "Choose '%@' for leagues that happen semi-frequently, such as once a week, or choose '%@' for tournaments and one-off events.";
 "league.editor.fields.numberOfGames.help" = "Choose '%@' if you always play the same number of games each series, or '%@' to choose the number of games each time you bowl.";
 "league.editor.fields.additionalPinfall.title" = "Include additional pinfall?";

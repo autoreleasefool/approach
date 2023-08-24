@@ -22,7 +22,7 @@ public struct AlleyEditorView: View {
 		@BindingViewState var mechanism: Alley.Mechanism?
 		@BindingViewState var pinBase: Alley.PinBase?
 		@BindingViewState var coordinate: CoordinateRegion
-		public let location: Location.Edit?
+		let location: Location.Edit?
 
 		let hasLanesEnabled: Bool
 		let newLanes: IdentifiedArrayOf<Lane.Create>
@@ -202,21 +202,5 @@ extension AlleyEditorView.ViewState {
 		self.hasLanesEnabled = store.hasLanesEnabled
 		self.newLanes = store.newLanes
 		self.existingLanes = store.existingLanes
-	}
-}
-
-public struct CoordinateRegion: Equatable {
-	public var mkCoordinateRegion: MKCoordinateRegion
-
-	init(coordinate: CLLocationCoordinate2D) {
-		self.mkCoordinateRegion = .init(
-			center: coordinate,
-			span: .init(latitudeDelta: 0.005, longitudeDelta: 0.005)
-		)
-	}
-
-	public static func == (lhs: Self, rhs: Self) -> Bool {
-		lhs.mkCoordinateRegion.center.latitude == rhs.mkCoordinateRegion.center.latitude &&
-		lhs.mkCoordinateRegion.center.longitude == rhs.mkCoordinateRegion.center.longitude
 	}
 }

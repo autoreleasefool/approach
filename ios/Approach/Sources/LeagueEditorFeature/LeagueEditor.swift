@@ -24,6 +24,7 @@ public struct LeagueEditor: Reducer {
 		@BindingState public var additionalPinfall: String
 		@BindingState public var additionalGames: String
 		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics
+		@BindingState public var coordinate: CoordinateRegion
 		public var location: Alley.Summary?
 
 		@BindingState public var gamesPerSeries: GamesPerSeries
@@ -50,6 +51,7 @@ public struct LeagueEditor: Reducer {
 				additionalGames = new.additionalGames ?? 0
 				self.shouldShowLocationSection = new.recurrence.shouldShowLocationSection
 				self.initialValue = .create(new)
+				self.coordinate = .init(coordinate: .init())
 			case let .edit(existing):
 				self.name = existing.name
 				self.recurrence = existing.recurrence
@@ -57,6 +59,7 @@ public struct LeagueEditor: Reducer {
 				self.additionalPinfall = additionalPinfall > 0 ? String(additionalPinfall) : ""
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
+				self.coordinate = .init(coordinate: existing.location?.location?.coordinate.mapCoordinate ?? .init())
 				numberOfGames = existing.numberOfGames ?? 0
 				additionalGames = existing.additionalGames ?? 0
 				self.shouldShowLocationSection = existing.recurrence.shouldShowLocationSection
@@ -153,6 +156,7 @@ public struct LeagueEditor: Reducer {
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
+						state.coordinate = .init(coordinate: state.location?.location?.coordinate.mapCoordinate ?? .init())
 						return .none
 					}
 
