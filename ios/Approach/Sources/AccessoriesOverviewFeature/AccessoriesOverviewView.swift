@@ -42,7 +42,6 @@ public struct AccessoriesOverviewView: View {
 					if viewStore.alleys.isEmpty {
 						Text(Strings.Alley.Error.Empty.message)
 					} else {
-						// TODO: show empty state for no alleys
 						ForEach(viewStore.alleys) { alley in
 							Alley.View(alley: alley)
 								.swipeActions(allowsFullSwipe: true) {
