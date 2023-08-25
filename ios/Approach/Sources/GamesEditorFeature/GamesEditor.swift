@@ -240,7 +240,12 @@ public struct GamesEditor: Reducer {
 
 				case let .gameResponse(.success(game)):
 					guard state.currentGameId == game?.id, let game else { return .none }
-					state.destination = .gameDetails(.init(game: game))
+					switch state.destination {
+					case .gameDetails, .none:
+						state.destination = .gameDetails(.init(game: game))
+					case .ballPicker, .lanePicker, .gearPicker, .settings, .opponentPicker:
+						state.destination = nil
+					}
 					state.game = game
 					state.elementsRefreshing.remove(.game)
 					return .none
