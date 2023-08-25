@@ -339,6 +339,7 @@ let package = Package(
 				"FramesRepositoryInterface",
 				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
+				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
 				"ScoreSheetFeature",

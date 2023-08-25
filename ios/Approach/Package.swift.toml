@@ -56,7 +56,7 @@ features = [ "Errors" ]
 
 [features.GamesEditor]
 features = [ "Errors", "ScoreSheet" ]
-repositories = [ "Bowlers", "Frames", "Games", "Gear" ]
+repositories = [ "Bowlers", "Frames", "Games", "Gear", "Lanes" ]
 services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 

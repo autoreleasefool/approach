@@ -140,11 +140,6 @@ extension Series.List {
 	}
 }
 
-enum ScoreDisplay {
-	case range(Int, Int)
-	case single(Int)
-}
-
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 #if DEBUG

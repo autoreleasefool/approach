@@ -24,7 +24,7 @@ public struct GamesList: Reducer {
 			self.list = .init(
 				features: [],
 				query: series.id,
-				listTitle: series.date.longFormat,
+				listTitle: nil,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.games,
 					title: Strings.Error.Generic.title,

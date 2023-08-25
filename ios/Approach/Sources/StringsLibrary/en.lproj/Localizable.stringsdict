@@ -34,6 +34,22 @@
 			<string>%d games</string>
 		</dict>
 	</dict>
+	<key>game.list.header.numberOfGames</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@numberOfGames@</string>
+		<key>numberOfGames</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d game</string>
+			<key>other</key>
+			<string>%d games</string>
+		</dict>
+	</dict>
 	<key>lane.editor.fields.addLanes</key>
 	<dict>
 		<key>NSStringLocalizedFormatKey</key>

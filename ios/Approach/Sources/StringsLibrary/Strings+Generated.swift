@@ -429,6 +429,28 @@ public enum Strings {
     public enum List {
       /// Games
       public static let title = Strings.tr("Localizable", "game.list.title", fallback: "Games")
+      public enum Header {
+        /// High of %d
+        public static func highGame(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "game.list.header.highGame", p1, fallback: "High of %d")
+        }
+        /// Low of %d
+        public static func lowGame(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "game.list.header.lowGame", p1, fallback: "Low of %d")
+        }
+        /// Plural format key: "%#@numberOfGames@"
+        public static func numberOfGames(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "game.list.header.numberOfGames", p1, fallback: "Plural format key: \"%#@numberOfGames@\"")
+        }
+        /// Series total
+        public static let seriesTotal = Strings.tr("Localizable", "game.list.header.seriesTotal", fallback: "Series total")
+        public enum Chart {
+          /// Game
+          public static let xAxisLabel = Strings.tr("Localizable", "game.list.header.chart.xAxisLabel", fallback: "Game")
+          /// Score
+          public static let yAxisLabel = Strings.tr("Localizable", "game.list.header.chart.yAxisLabel", fallback: "Score")
+        }
+      }
     }
     public enum Properties {
       public enum ExcludeFromStatistics {

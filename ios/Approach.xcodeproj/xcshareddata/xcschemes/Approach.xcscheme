@@ -98,20 +98,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FormLibraryTests"
-               BuildableName = "FormLibraryTests"
-               BlueprintName = "FormLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ScoreSheetFeatureTests"
                BuildableName = "ScoreSheetFeatureTests"
                BlueprintName = "ScoreSheetFeatureTests"

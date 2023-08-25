@@ -180,6 +180,11 @@
 "game.title" = "Game";
 "game.titleWithOrdinal" = "Game %d";
 "game.list.title" = "Games";
+"game.list.header.chart.xAxisLabel" = "Game";
+"game.list.header.chart.yAxisLabel" = "Score";
+"game.list.header.lowGame" = "Low of %d";
+"game.list.header.highGame" = "High of %d";
+"game.list.header.seriesTotal" = "Series total";
 "game.settings.title" = "Game Settings";
 "game.settings.current" = "Currently Editing";
 "game.properties.excludeFromStatistics.include" = "Include in statistics";

@@ -14,9 +14,11 @@ public struct GamesListView: View {
 
 	struct ViewState: Equatable {
 		let title: String
+		let scores: [GamesListHeaderView.Score]
 
 		init(state: GamesList.State) {
 			self.title = state.series.date.longFormat
+			self.scores = state.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
 		}
 	}
 
@@ -33,6 +35,8 @@ public struct GamesListView: View {
 					LabeledContent(Strings.Game.titleWithOrdinal(game.index + 1), value: "\(game.score)")
 				}
 				.buttonStyle(.navigation)
+			} header: {
+				GamesListHeaderView(scores: viewStore.scores)
 			}
 			.navigationTitle(viewStore.title)
 		})
