@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import DateTimeLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import GamesEditorFeature
 import ModelsLibrary
@@ -40,6 +41,7 @@ public struct GamesListView: View {
 			}
 			.navigationTitle(viewStore.title)
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { store in
 			GamesEditorView(store: store)
 		}

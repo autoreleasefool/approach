@@ -55,14 +55,19 @@ public struct GamesEditor: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		public init(bowlerIds: [Bowler.ID], bowlerGameIds: [Bowler.ID: [Game.ID]]) {
+		public init(
+			bowlerIds: [Bowler.ID],
+			bowlerGameIds: [Bowler.ID: [Game.ID]],
+			initialBowlerId: Bowler.ID?,
+			initialGameId: Game.ID?
+		) {
 			precondition(bowlerGameIds.allSatisfy { $0.value.count == bowlerGameIds.first!.value.count })
 			self.bowlerIds = bowlerIds
 			self.bowlerGameIds = bowlerGameIds
 
-			let currentBowlerId = bowlerIds.first!
+			let currentBowlerId = initialBowlerId ?? bowlerIds.first!
 			self.currentBowlerId = currentBowlerId
-			self.currentGameId = bowlerGameIds[currentBowlerId]!.first!
+			self.currentGameId = initialGameId ?? bowlerGameIds[currentBowlerId]!.first!
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()

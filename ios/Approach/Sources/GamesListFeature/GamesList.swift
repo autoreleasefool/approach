@@ -1,7 +1,9 @@
 import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
+import ErrorsFeature
 import FeatureActionLibrary
+import Foundation
 import GamesEditorFeature
 import GamesRepositoryInterface
 import ModelsLibrary
@@ -16,6 +18,8 @@ public struct GamesList: Reducer {
 	public struct State: Equatable {
 		public let series: Series.Summary
 		public var list: ResourceList<Game.List, Series.ID>.State
+
+		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var editor: GamesEditor.State?
 
@@ -40,12 +44,18 @@ public struct GamesList: Reducer {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
+			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
 			case editor(PresentationAction<GamesEditor.Action>)
 		}
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
+	}
+
+	public enum ErrorID: Hashable {
+		case gamesNotFound
+		case gameNotFound
 	}
 
 	public init() {}
@@ -58,14 +68,42 @@ public struct GamesList: Reducer {
 			ResourceList { series in games.seriesGames(forId: series, ordering: .byIndex) }
 		}
 
+		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+			Errors()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapGame(id):
-					if let game = state.list.resources?[id: id] {
-						state.editor = .init(bowlerIds: [game.bowlerId], bowlerGameIds: [game.bowlerId: [id]])
+					guard let games = state.list.resources else {
+						return state.errors
+							.enqueue(
+								.gamesNotFound,
+								thrownError: GamesListError.gamesNotFound,
+								toastMessage: Strings.Error.Toast.dataNotFound
+							)
+							.map { .internal(.errors($0)) }
 					}
+
+					guard let game = games[id: id] else {
+						return state.errors
+							.enqueue(
+								.gameNotFound,
+								thrownError: GamesListError.gameNotFound(id),
+								toastMessage: Strings.Error.Toast.dataNotFound
+							)
+							.map { .internal(.errors($0)) }
+					}
+
+					state.editor = .init(
+						bowlerIds: [game.bowlerId],
+						bowlerGameIds: [game.bowlerId: games.map(\.id)],
+						initialBowlerId: game.bowlerId,
+						initialGameId: id
+					)
+
 					return .none
 				}
 
@@ -83,10 +121,15 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
-				case .list(.internal), .list(.view):
-					return .none
+				case let .errors(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
 
-				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.dismiss):
+				case .list(.internal), .list(.view),
+						.editor(.presented(.internal)), .editor(.presented(.view)), .editor(.dismiss),
+						.errors(.internal), .errors(.view):
 					return .none
 				}
 
@@ -97,6 +140,20 @@ public struct GamesList: Reducer {
 		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			GamesEditor()
 				.dependency(\.analyticsGameSessionId, uuid())
+		}
+	}
+}
+
+public enum GamesListError: LocalizedError {
+	case gameNotFound(Game.ID)
+	case gamesNotFound
+
+	public var errorDescription: String? {
+		switch self {
+		case let .gameNotFound(id):
+			return "Could not find Game with ID '\(id)'"
+		case .gamesNotFound:
+			return "Games were not loaded in List"
 		}
 	}
 }
