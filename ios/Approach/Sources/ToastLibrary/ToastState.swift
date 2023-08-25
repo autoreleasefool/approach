@@ -9,21 +9,24 @@ public protocol ToastableAction {
 }
 
 public struct ToastState<Action: ToastableAction> {
-	public var message: TextState
-	public var icon: SFSymbol?
-	public var button: Button?
-	public var style: Style
+	public let message: TextState
+	public let icon: SFSymbol?
+	public let button: Button?
+	public let style: Style
+	public let appearance: Appearance
 
 	public init(
 		message: TextState,
 		icon: SFSymbol? = nil,
 		button: Button? = nil,
-		style: Style = .primary
+		style: Style = .primary,
+		appearance: Appearance = .toast
 	) {
 		self.button = button
 		self.icon = icon
 		self.message = message
 		self.style = style
+		self.appearance = appearance
 	}
 }
 
@@ -85,6 +88,13 @@ extension ToastState {
 	}
 }
 
+extension ToastState {
+	public enum Appearance: Equatable {
+		case toast
+		case hud
+	}
+}
+
 extension ToastState: Equatable where Action: Equatable {}
 extension ToastState.Button: Equatable where Action: Equatable {}
 extension ToastState.ToastAction: Equatable where Action: Equatable {}
@@ -108,61 +118,30 @@ extension View {
 					}
 				),
 				itemView: { toast in
-					ToastState<Action>.View(toast: toast, viewStore: viewStore)
+					BaseToastView(toast: toast, viewStore: viewStore)
 				},
 				customize: {
-					$0
-						.type(.floater())
-						.position(.bottom)
+					let parameters = $0
+						.autohideIn(1)
 						.animation(.spring())
-						.autohideIn(2)
 						.dismissCallback({ viewStore.send(.didFinishDismissing) })
+
+					switch viewStore.state?.appearance {
+					case .toast:
+						return parameters
+							.type(.floater())
+							.position(.bottom)
+							.autohideIn(2)
+					case .hud:
+						return parameters
+							.isOpaque(true)
+							.closeOnTap(true)
+							.closeOnTapOutside(true)
+					case .none:
+						return parameters
+					}
 				}
 			)
 		})
-	}
-}
-
-extension ToastState {
-	public struct View: SwiftUI.View {
-		let toast: ToastState<Action>
-		let viewStore: ViewStore<ToastState<Action>?, Action>
-
-		public var body: some SwiftUI.View {
-			HStack(alignment: .center, spacing: .smallSpacing) {
-				if let icon = toast.icon {
-					Image(systemSymbol: icon)
-						.resizable()
-						.scaledToFit()
-						.frame(width: .extraTinyIcon, height: .extraTinyIcon)
-				}
-
-				Text(toast.message)
-
-				if let button = toast.button {
-					SwiftUI.Button {
-						viewStore.send(button.action.action)
-					} label: {
-						Text(button.title)
-							.font(.caption)
-							.textCase(.uppercase)
-							.padding(.smallSpacing)
-							.background(
-								Material.ultraThinMaterial,
-								in: RoundedRectangle(cornerRadius: .smallRadius)
-							)
-					}
-				}
-			}
-			.padding(.horizontal, .standardSpacing)
-			.padding(.vertical, .smallSpacing)
-			.foregroundColor(toast.style.foregroundColor)
-			.background(
-				RoundedRectangle(cornerRadius: .standardRadius)
-					.fill(toast.style.backgroundColor)
-			)
-			.padding(.horizontal, .standardSpacing)
-			.padding(.bottom, .standardSpacing)
-		}
 	}
 }
