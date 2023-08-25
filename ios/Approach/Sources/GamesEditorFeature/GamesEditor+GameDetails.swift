@@ -9,6 +9,7 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didRequestOpponentPicker:
+				guard state.isEditable else { return .none }
 				let opponent = Set([state.game?.matchPlay?.opponent?.id].compactMap { $0 })
 				state.destination = .opponentPicker(.init(
 					selected: opponent,
@@ -19,6 +20,7 @@ extension GamesEditor {
 				return .none
 
 			case .didRequestGearPicker:
+				guard state.isEditable else { return .none }
 				let gear = Set(state.game?.gear.map(\.id) ?? [])
 				state.destination = .gearPicker(.init(
 					selected: gear,
@@ -27,6 +29,7 @@ extension GamesEditor {
 				return .none
 
 			case .didRequestLanePicker:
+				guard state.isEditable else { return .none }
 				guard let alleyId = state.game?.series.alley?.id else { return .none }
 				let lanes = Set(state.game?.lanes.map(\.id) ?? [])
 				state.destination = .lanePicker(.init(

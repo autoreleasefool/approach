@@ -5,6 +5,7 @@ extension GamesEditor.State {
 		get {
 			guard let _frameEditor, let frames else { return nil }
 			var frameEditor = _frameEditor
+			frameEditor.isEditable = isEditable
 			frameEditor.currentRollIndex = currentRollIndex
 			frameEditor.frame = frames[currentFrameIndex]
 			return frameEditor

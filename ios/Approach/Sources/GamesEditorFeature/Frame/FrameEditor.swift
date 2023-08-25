@@ -11,10 +11,12 @@ public struct FrameEditor: Reducer {
 		public var currentRollIndex: Int
 		public var frame: Frame.Edit
 		public var draggedPinNewState: Bool?
+		public var isEditable: Bool
 
 		public init(currentRollIndex: Int, frame: Frame.Edit) {
 			self.currentRollIndex = currentRollIndex
 			self.frame = frame
+			self.isEditable = true
 		}
 	}
 
@@ -41,6 +43,7 @@ public struct FrameEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didDragOverPin(pin):
+					guard state.isEditable else { return .none }
 					let existingState = state
 					if let newState = state.draggedPinNewState {
 						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
@@ -54,6 +57,7 @@ public struct FrameEditor: Reducer {
 					return existingState != state ? .send(.delegate(.didEditFrame)) : .none
 
 				case .didStopDraggingPins:
+					guard state.isEditable else { return .none }
 					state.draggedPinNewState = nil
 					return .none
 				}

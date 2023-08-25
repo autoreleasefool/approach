@@ -25,6 +25,7 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didTapBall:
+				guard state.isEditable else { return .none }
 				let bowlingBall = state.frames?[state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall?.id
 				state.destination = .ballPicker(.init(
 					selected: Set([bowlingBall].compactMap { $0 }),
