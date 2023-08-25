@@ -2,6 +2,7 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
 import GearRepositoryInterface
+import LanesRepositoryInterface
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
@@ -14,6 +15,7 @@ extension GamesEditor {
 			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case ballPicker(ResourcePicker<Gear.Summary, Bowler.ID>.State)
+			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 		}
 
 		public enum Action: Equatable {
@@ -22,10 +24,12 @@ extension GamesEditor {
 			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, Bowler.ID>.Action)
+			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 		}
 
 		@Dependency(\.bowlers) var bowlers
 		@Dependency(\.gear) var gear
+		@Dependency(\.lanes) var lanes
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: /State.gameDetails, action: /Action.gameDetails) {
@@ -42,6 +46,9 @@ extension GamesEditor {
 			}
 			Scope(state: /State.ballPicker, action: /Action.ballPicker) {
 				ResourcePicker { bowler in gear.list(ownedBy: bowler, ofKind: .bowlingBall, ordered: .byName) }
+			}
+			Scope(state: /State.lanePicker, action: /Action.lanePicker) {
+				ResourcePicker { alley in lanes.list(alley) }
 			}
 		}
 	}

@@ -288,6 +288,9 @@ public struct GamesEditor: Reducer {
 				case let .destination(.presented(.settings(action))):
 					return reduce(into: &state, gamesSettingsAction: action)
 
+				case let .destination(.presented(.lanePicker(action))):
+					return reduce(into: &state, lanePickerAction: action)
+
 				case let .frameEditor(action):
 					return reduce(into: &state, frameEditorAction: action)
 

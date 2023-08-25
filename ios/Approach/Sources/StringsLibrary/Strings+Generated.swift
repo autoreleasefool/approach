@@ -374,6 +374,14 @@ public enum Strings {
         public static let dragToReorder = Strings.tr("Localizable", "game.editor.bowlers.dragToReorder", fallback: "Drag to reorder")
       }
       public enum Fields {
+        public enum Alley {
+          public enum Lanes {
+            /// Manage lanes
+            public static let manageLanes = Strings.tr("Localizable", "game.editor.fields.alley.lanes.manageLanes", fallback: "Manage lanes")
+            /// Set specific lanes?
+            public static let selectLanes = Strings.tr("Localizable", "game.editor.fields.alley.lanes.selectLanes", fallback: "Set specific lanes?")
+          }
+        }
         public enum ExcludeFromStatistics {
           /// All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.
           public static let excludedWhenLeagueExcluded = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded", fallback: "All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.")

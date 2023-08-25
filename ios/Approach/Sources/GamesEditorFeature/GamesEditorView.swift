@@ -128,6 +128,15 @@ public struct GamesEditorView: View {
 		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesEditor.Destination.State.lanePicker,
+			action: GamesEditor.Destination.Action.lanePicker,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
+			content: { (store: StoreOf<ResourcePicker<Lane.Summary, Alley.ID>>) in
+				lanePicker(store: store)
+			}
+		)
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.opponentPicker,
 			action: GamesEditor.Destination.Action.opponentPicker,
 			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
@@ -208,6 +217,14 @@ public struct GamesEditorView: View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
 				Gear.View(gear: $0)
+			}
+		}
+	}
+
+	private func lanePicker(store: StoreOf<ResourcePicker<Lane.Summary, Alley.ID>>) -> some View {
+		NavigationStack {
+			ResourcePickerView(store: store) {
+				Lane.View(lane: $0)
 			}
 		}
 	}

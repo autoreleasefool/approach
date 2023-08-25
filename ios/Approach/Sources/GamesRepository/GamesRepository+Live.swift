@@ -63,20 +63,19 @@ extension GamesRepository: DependencyKey {
 							optional: Game.Database.matchPlay
 								.including(optional: MatchPlay.Database.opponent.forKey("opponent"))
 						)
-						// FIXME: should use game lanes, not series lanes
 						.including(
 							required: Game.Database.series
 								.including(optional: Series.Database.alley)
-								.including(
-									all: Series.Database.lanes
-										.orderByLabel()
-								)
 						)
 						.including(
 							all: Game.Database.gear
 								.order(Gear.Database.Columns.kind)
 								.order(Gear.Database.Columns.name)
 								.forKey("gear")
+						)
+						.including(
+							all: Game.Database.lanes
+								.orderByLabel()
 						)
 						.asRequest(of: Game.Edit.self)
 						.fetchOne($0)
@@ -92,7 +91,16 @@ extension GamesRepository: DependencyKey {
 						.deleteAll($0)
 					for gear in game.gear {
 						let gameGear = GameGear.Database(gameId: game.id, gearId: gear.id)
-						try gameGear.save($0)
+						try gameGear.insert($0)
+					}
+
+					// FIXME: Rather than deleting all associations, should only add new/remove old
+					try GameLane.Database
+						.filter(GameLane.Database.Columns.gameId == game.id)
+						.deleteAll($0)
+					for lane in game.lanes {
+						let gameLane = GameLane.Database(gameId: game.id, laneId: lane.id)
+						try gameLane.insert($0)
 					}
 				}
 

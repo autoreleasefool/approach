@@ -243,13 +243,14 @@ final class GamesRepositoryTests: XCTestCase {
 				excludeFromStatistics: .include,
 				matchPlay: nil,
 				gear: [],
+				lanes: [],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview")
+					alley: .init(id: UUID(0), name: "Skyview")
 				)
 			)
 		)
@@ -293,13 +294,14 @@ final class GamesRepositoryTests: XCTestCase {
 					result: .lost
 				),
 				gear: [],
+				lanes: [],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview")
+					alley: .init(id: UUID(0), name: "Skyview")
 				)
 			)
 		)
@@ -338,13 +340,60 @@ final class GamesRepositoryTests: XCTestCase {
 					.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil),
 					.init(id: UUID(0), name: "Towel", kind: .towel, ownerName: nil),
 				],
+				lanes: [],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview")
+					alley: .init(id: UUID(0), name: "Skyview")
+				)
+			)
+		)
+	}
+
+	func testEdit_WhenGameHasLanes_ReturnsGameWithLanes() async throws {
+		// Given a database with one game and 3 gear
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let lane1 = Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: UUID(0), id: UUID(1), label: "2", position: .noWall)
+		let lane3 = Lane.Database(alleyId: UUID(0), id: UUID(2), label: "3", position: .rightWall)
+		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
+		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
+		let db = try initializeDatabase(withLanes: .custom([lane1, lane2, lane3]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1, gameLane2]))
+
+		// Editing the game
+		let game = try await withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.edit(UUID(0))
+		}
+
+		// Returns the game
+		XCTAssertEqual(
+			game,
+			.init(
+				id: UUID(0),
+				index: 0,
+				score: 0,
+				locked: .open,
+				scoringMethod: .byFrame,
+				excludeFromStatistics: .include,
+				matchPlay: nil,
+				gear: [],
+				lanes: [
+					.init(id: UUID(0), label: "1"),
+					.init(id: UUID(1), label: "2"),
+				],
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors", excludeFromStatistics: .include),
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					preBowl: .regular,
+					excludeFromStatistics: .include,
+					alley: .init(id: UUID(0), name: "Skyview")
 				)
 			)
 		)
@@ -383,13 +432,14 @@ final class GamesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			gear: [],
+			lanes: [],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alley: .init(name: "Skyview")
+				alley: .init(id: UUID(0), name: "Skyview")
 			)
 		)
 		try await withDependencies {
@@ -434,13 +484,14 @@ final class GamesRepositoryTests: XCTestCase {
 				result: .lost
 			),
 			gear: [],
+			lanes: [],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alley: .init(name: "Skyview")
+				alley: .init(id: UUID(0), name: "Skyview")
 			)
 		)
 
@@ -488,13 +539,14 @@ final class GamesRepositoryTests: XCTestCase {
 			gear: [
 				.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil),
 			],
+			lanes: [],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				alley: .init(name: "Skyview")
+				alley: .init(id: UUID(0), name: "Skyview")
 			)
 		)
 
@@ -508,6 +560,49 @@ final class GamesRepositoryTests: XCTestCase {
 		// It deletes the old GameGear and creates the new association
 		let gameGear = try await db.read { try GameGear.Database.fetchAll($0 ) }
 		XCTAssertEqual(gameGear, [.init(gameId: UUID(0), gearId: UUID(1))])
+	}
+
+	func testUpdate_WhenHasLanes_UpdatesLanes() async throws {
+		// Given a database with a game and lanes
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let lane1 = Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: UUID(0), id: UUID(1), label: "2", position: .noWall)
+		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
+		let db = try initializeDatabase(withLanes: .custom([lane1, lane2]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1]))
+
+		// Editing the game with a different gear
+		let editable = Game.Edit(
+			id: UUID(0),
+			index: 0,
+			score: 0,
+			locked: .open,
+			scoringMethod: .byFrame,
+			excludeFromStatistics: .include,
+			matchPlay: nil,
+			gear: [],
+			lanes: [
+				.init(id: UUID(1), label: "2"),
+			],
+			bowler: .init(name: "Joseph"),
+			league: .init(name: "Majors", excludeFromStatistics: .include),
+			series: .init(
+				date: Date(timeIntervalSince1970: 123_456_000),
+				preBowl: .regular,
+				excludeFromStatistics: .include,
+				alley: .init(id: UUID(0), name: "Skyview")
+			)
+		)
+
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games.update = GamesRepository.liveValue.update
+		} operation: {
+			try await self.games.update(editable)
+		}
+
+		// It deletes the old GameLane and creates the new association
+		let gameLane = try await db.read { try GameLane.Database.fetchAll($0 ) }
+		XCTAssertEqual(gameLane, [.init(gameId: UUID(0), laneId: UUID(1))])
 	}
 
 	func testUpdate_WhenGameNotExists_ThrowError() async throws {
@@ -525,13 +620,14 @@ final class GamesRepositoryTests: XCTestCase {
 				excludeFromStatistics: .exclude,
 				matchPlay: nil,
 				gear: [],
+				lanes: [],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
-					alley: .init(name: "Skyview")
+					alley: .init(id: UUID(0), name: "Skyview")
 				)
 			)
 			try await withDependencies {

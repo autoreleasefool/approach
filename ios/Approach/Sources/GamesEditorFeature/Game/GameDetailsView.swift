@@ -52,6 +52,7 @@ public struct GameDetailsView: View {
 									Strings.Opponent.title,
 									value: viewStore.game.matchPlay?.opponent?.name ?? Strings.none
 								)
+								// We don't use .navigation button style because it appears disabled in this context
 								Image(systemSymbol: .chevronForward)
 									.resizable()
 									.scaledToFit()
@@ -93,7 +94,30 @@ public struct GameDetailsView: View {
 			if let alley = viewStore.game.series.alley?.name {
 				Section(Strings.Alley.title) {
 					LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
-					// TODO: add lane picker for game
+
+					Toggle(
+						Strings.Game.Editor.Fields.Alley.Lanes.selectLanes,
+						isOn: viewStore.$isSelectingLanes
+					)
+
+					if viewStore.isSelectingLanes {
+						Button { viewStore.send(.didTapManageLanes) } label: {
+							HStack {
+								LabeledContent(
+									Strings.Game.Editor.Fields.Alley.Lanes.manageLanes,
+									value: viewStore.laneLabels
+								)
+								// We don't use .navigation button style because it appears disabled in this context
+								Image(systemSymbol: .chevronForward)
+									.resizable()
+									.scaledToFit()
+									.frame(width: .tinyIcon, height: .tinyIcon)
+									.foregroundColor(Color(uiColor: .secondaryLabel))
+							}
+							.contentShape(Rectangle())
+						}
+						.buttonStyle(TappableElement())
+					}
 				}
 			}
 

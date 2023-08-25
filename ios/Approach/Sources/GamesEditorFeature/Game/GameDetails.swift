@@ -25,8 +25,15 @@ public struct GameDetails: Reducer {
 		public let isGearEnabled: Bool
 		public let isOpponentsEnabled: Bool
 
+		@BindingState public var isSelectingLanes: Bool
+
+		var laneLabels: String {
+			game.lanes.isEmpty ? Strings.none : game.lanes.map(\.label).joined(separator: ", ")
+		}
+
 		init(game: Game.Edit) {
 			self.game = game
+			self.isSelectingLanes = !game.lanes.isEmpty
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.isGearEnabled = featureFlags.isEnabled(.gear)
@@ -35,7 +42,7 @@ public struct GameDetails: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didToggleLock
 			case didToggleExclude
 			case didToggleMatchPlay
@@ -46,14 +53,17 @@ public struct GameDetails: Reducer {
 			case didDismissScoreAlert
 			case didTapSaveScore
 			case didTapCancelScore
+			case didTapManageLanes
 			case didSetMatchPlayResult(MatchPlay.Result?)
 			case didSetMatchPlayScore(String)
 			case didSetAlertScore(String)
 			case didSwipeGear(SwipeAction, id: Gear.ID)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case didRequestOpponentPicker
 			case didRequestGearPicker
+			case didRequestLanePicker
 			case didEditGame(Game.Edit)
 			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
 			case didClearManualScore
@@ -75,6 +85,8 @@ public struct GameDetails: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -92,6 +104,9 @@ public struct GameDetails: Reducer {
 
 				case .didTapOpponent:
 					return .send(.delegate(.didRequestOpponentPicker))
+
+				case .didTapManageLanes:
+					return .send(.delegate(.didRequestLanePicker))
 
 				case let .didSetMatchPlayResult(result):
 					state.game.matchPlay?.result = result
@@ -146,6 +161,16 @@ public struct GameDetails: Reducer {
 				case let .didSwipeGear(.delete, id):
 					state.game.gear.remove(id: id)
 					return .send(.delegate(.didEditGame(state.game)))
+
+				case .binding(\.$isSelectingLanes):
+					if !state.isSelectingLanes {
+						state.game.lanes.removeAll()
+						return .send(.delegate(.didEditGame(state.game)))
+					}
+					return .none
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):

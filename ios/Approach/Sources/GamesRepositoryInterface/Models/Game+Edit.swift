@@ -17,6 +17,7 @@ extension Game {
 		public var excludeFromStatistics: Game.ExcludeFromStatistics
 		public var matchPlay: MatchPlay.Edit?
 		public var gear: IdentifiedArrayOf<Gear.Summary>
+		public var lanes: IdentifiedArrayOf<LaneInfo>
 
 		public init(
 			id: Game.ID,
@@ -27,6 +28,7 @@ extension Game {
 			excludeFromStatistics: Game.ExcludeFromStatistics,
 			matchPlay: MatchPlay.Edit?,
 			gear: IdentifiedArrayOf<Gear.Summary>,
+			lanes: IdentifiedArrayOf<LaneInfo>,
 			bowler: BowlerInfo,
 			league: LeagueInfo,
 			series: SeriesInfo
@@ -39,6 +41,7 @@ extension Game {
 			self.excludeFromStatistics = excludeFromStatistics
 			self.matchPlay = matchPlay
 			self.gear = gear
+			self.lanes = lanes
 			self.series = series
 			self.bowler = bowler
 			self.league = league
@@ -56,7 +59,8 @@ extension Game.Edit {
 }
 
 extension Game.Edit {
-	public struct AlleyInfo: Codable, Equatable {
+	public struct AlleyInfo: Identifiable, Codable, Equatable {
+		public let id: Alley.ID
 		public let name: String
 	}
 }
@@ -65,6 +69,12 @@ extension Game.Edit {
 	public struct LaneInfo: Identifiable, Codable, Equatable {
 		public let id: Lane.ID
 		public let label: String
+	}
+}
+
+extension Lane.Summary {
+	public var asLaneInfo: Game.Edit.LaneInfo {
+		.init(id: id, label: label)
 	}
 }
 

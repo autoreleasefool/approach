@@ -26,6 +26,15 @@ extension GamesEditor {
 				))
 				return .none
 
+			case .didRequestLanePicker:
+				guard let alleyId = state.game?.series.alley?.id else { return .none }
+				let lanes = Set(state.game?.lanes.map(\.id) ?? [])
+				state.destination = .lanePicker(.init(
+					selected: lanes,
+					query: alleyId
+				))
+				return .none
+
 			case let .didEditMatchPlay(.success(matchPlay)):
 				state.game?.matchPlay = matchPlay
 				return save(matchPlay: state.game?.matchPlay)
