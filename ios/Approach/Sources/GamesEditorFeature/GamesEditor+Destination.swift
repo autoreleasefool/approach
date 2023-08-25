@@ -1,5 +1,7 @@
+import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
+import GearRepositoryInterface
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary

@@ -178,6 +178,7 @@ public struct GamesEditor: Reducer {
 				switch internalAction {
 				case .didDismissOpenSheet:
 					if let game = state.game {
+						state.sheetDetent = .medium
 						state.destination = .gameDetails(.init(game: game))
 					}
 					return .none
@@ -306,7 +307,7 @@ public struct GamesEditor: Reducer {
 					return reduce(into: &state, errorsAction: action)
 
 				case .destination(.dismiss):
-					return .send(.internal(.didDismissOpenSheet))
+					return .none
 				}
 
 			case .delegate:

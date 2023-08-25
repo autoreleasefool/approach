@@ -120,31 +120,39 @@ public struct GamesEditorView: View {
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.ballPicker,
-			action: GamesEditor.Destination.Action.ballPicker
-		) { (store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) in
-			ballPicker(store: store)
-		}
+			action: GamesEditor.Destination.Action.ballPicker,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
+			content: { (store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) in
+				ballPicker(store: store)
+			}
+		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.opponentPicker,
-			action: GamesEditor.Destination.Action.opponentPicker
-		) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
-			opponentPicker(store: store)
-		}
+			action: GamesEditor.Destination.Action.opponentPicker,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
+			content: { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+				opponentPicker(store: store)
+			}
+		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.gearPicker,
-			action: GamesEditor.Destination.Action.gearPicker
-		) { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
-			gearPicker(store: store)
-		}
+			action: GamesEditor.Destination.Action.gearPicker,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
+			content: { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
+				gearPicker(store: store)
+			}
+		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.settings,
-			action: GamesEditor.Destination.Action.settings
-		) { (store: StoreOf<GamesSettings>) in
-			gamesSettings(store: store)
-		}
+			action: GamesEditor.Destination.Action.settings,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
+			content: { (store: StoreOf<GamesSettings>) in
+				gamesSettings(store: store)
+			}
+		)
 	}
 
 	private func gameDetails(
