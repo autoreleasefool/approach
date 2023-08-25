@@ -29,6 +29,9 @@ extension GamesEditor {
 					save(frame: state.frames?[state.currentFrameIndex]),
 					updateScoreSheet(from: state)
 				)
+
+			case .didProvokeLock:
+				return state.presentLockedToast()
 			}
 
 		case .view, .internal:

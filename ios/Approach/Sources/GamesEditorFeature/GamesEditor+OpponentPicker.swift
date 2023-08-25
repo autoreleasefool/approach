@@ -12,7 +12,6 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .didChangeSelection(opponent):
-				guard state.isEditable else { return .none }
 				state.game?.matchPlay?.opponent = opponent.first
 				return save(matchPlay: state.game?.matchPlay)
 			}

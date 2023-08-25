@@ -79,6 +79,7 @@ public struct SeriesListItem: View {
 							.scaledToFit()
 							.frame(width: .tinyIcon, height: .tinyIcon)
 					}
+					.contentShape(Rectangle())
 
 					HStack(alignment: .lastTextBaseline) {
 						VStack(alignment: .leading, spacing: 0) {

@@ -26,6 +26,7 @@ public struct FrameEditor: Reducer {
 			case didStopDraggingPins
 		}
 		public enum DelegateAction: Equatable {
+			case didProvokeLock
 			case didEditFrame
 		}
 		public enum InternalAction: Equatable {}
@@ -43,7 +44,7 @@ public struct FrameEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didDragOverPin(pin):
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					let existingState = state
 					if let newState = state.draggedPinNewState {
 						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
@@ -57,7 +58,7 @@ public struct FrameEditor: Reducer {
 					return existingState != state ? .send(.delegate(.didEditFrame)) : .none
 
 				case .didStopDraggingPins:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.draggedPinNewState = nil
 					return .none
 				}

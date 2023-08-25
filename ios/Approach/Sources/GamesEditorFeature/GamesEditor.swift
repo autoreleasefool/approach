@@ -17,6 +17,7 @@ import ScoreSheetFeature
 import ScoringServiceInterface
 import StringsLibrary
 import SwiftUI
+import ToastLibrary
 
 // swiftlint:disable:next type_body_length
 public struct GamesEditor: Reducer {
@@ -53,6 +54,7 @@ public struct GamesEditor: Reducer {
 		public var _rollEditor: RollEditor.State?
 		@PresentationState public var destination: Destination.State?
 
+		public var toast: ToastState<ToastAction>?
 		public var errors: Errors<ErrorID>.State = .init()
 
 		public init(
@@ -94,6 +96,7 @@ public struct GamesEditor: Reducer {
 			case calculatedScore([ScoreStep])
 			case adjustBackdrop
 
+			case toast(ToastAction)
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case gamesHeader(GamesHeader.Action)
@@ -315,6 +318,9 @@ public struct GamesEditor: Reducer {
 
 				case let .gameDetailsHeader(action):
 					return reduce(into: &state, gamesDetailsHeaderAction: action)
+
+				case let .toast(action):
+					return reduce(into: &state, toastAction: action)
 
 				case let .errors(action):
 					return reduce(into: &state, errorsAction: action)

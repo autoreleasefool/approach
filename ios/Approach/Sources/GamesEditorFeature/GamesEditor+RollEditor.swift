@@ -8,6 +8,7 @@ extension GamesEditor.State {
 			let currentRoll = frames[currentFrameIndex].rolls[currentRollIndex]
 			rollEditor.ballRolled = currentRoll.bowlingBall
 			rollEditor.didFoul = currentRoll.roll.didFoul
+			rollEditor.isEditable = isEditable
 			return rollEditor
 		}
 		set {
@@ -25,7 +26,6 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didTapBall:
-				guard state.isEditable else { return .none }
 				let bowlingBall = state.frames?[state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall?.id
 				state.destination = .ballPicker(.init(
 					selected: Set([bowlingBall].compactMap { $0 }),
@@ -39,6 +39,9 @@ extension GamesEditor {
 					save(frame: state.frames?[state.currentFrameIndex]),
 					updateScoreSheet(from: state)
 				)
+
+			case .didProvokeLock:
+				return state.presentLockedToast()
 			}
 
 		case .view, .internal:

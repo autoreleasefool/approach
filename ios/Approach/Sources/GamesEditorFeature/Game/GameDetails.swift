@@ -69,6 +69,7 @@ public struct GameDetails: Reducer {
 			case didEditGame(Game.Edit)
 			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
 			case didClearManualScore
+			case didProvokeLock
 		}
 		public enum InternalAction: Equatable {}
 
@@ -98,29 +99,29 @@ public struct GameDetails: Reducer {
 					return .send(.delegate(.didEditGame(state.game)))
 
 				case .didToggleExclude:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.game.excludeFromStatistics.toNext()
 					return .send(.delegate(.didEditGame(state.game)))
 
 				case .didTapGear:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didRequestGearPicker))
 
 				case .didTapOpponent:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didRequestOpponentPicker))
 
 				case .didTapManageLanes:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didRequestLanePicker))
 
 				case let .didSetMatchPlayResult(result):
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.game.matchPlay?.result = result
 					return .send(.delegate(.didEditMatchPlay(.success(state.game.matchPlay))))
 
 				case .didToggleScoringMethod:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return toggleScoringMethod(in: &state)
 
 				case .didDismissScoreAlert:
@@ -129,12 +130,12 @@ public struct GameDetails: Reducer {
 					return .none
 
 				case .didTapSaveScore:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.game.score = max(min(state.alertScore, 450), 0)
 					return .send(.delegate(.didEditGame(state.game)))
 
 				case .didTapCancelScore:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					if state.didJustToggleScoringMethod {
 						state.didJustToggleScoringMethod = false
 						return toggleScoringMethod(in: &state)
@@ -143,20 +144,20 @@ public struct GameDetails: Reducer {
 					}
 
 				case .didTapManualScore:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.alertScore = state.game.score
 					state.isScoreAlertPresented = true
 					return .none
 
 				case let .didSetAlertScore(string):
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					if !string.isEmpty, let score = Int(string) {
 						state.alertScore = max(min(score, 450), 0)
 					}
 					return .none
 
 				case let .didSetMatchPlayScore(string):
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					if !string.isEmpty, let score = Int(string) {
 						state.game.matchPlay?.opponentScore = score
 					} else {
@@ -165,7 +166,7 @@ public struct GameDetails: Reducer {
 					return .send(.delegate(.didEditMatchPlay(.success(state.game.matchPlay))))
 
 				case .didToggleMatchPlay:
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					if state.game.matchPlay == nil {
 						return createMatchPlay(state: &state)
 					} else {
@@ -173,7 +174,7 @@ public struct GameDetails: Reducer {
 					}
 
 				case let .didSwipeGear(.delete, id):
-					guard state.isEditable else { return .none }
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.game.gear.remove(id: id)
 					return .send(.delegate(.didEditGame(state.game)))
 
@@ -184,7 +185,7 @@ public struct GameDetails: Reducer {
 						} else {
 							state.isSelectingLanes = true
 						}
-						return .none
+						return .send(.delegate(.didProvokeLock))
 					}
 
 					if !state.isSelectingLanes {

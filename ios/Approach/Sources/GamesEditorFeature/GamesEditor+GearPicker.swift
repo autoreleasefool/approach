@@ -12,7 +12,6 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .didChangeSelection(gear):
-				guard state.isEditable else { return .none }
 				state.game?.gear = .init(uniqueElements: gear)
 				return save(game: state.game)
 			}

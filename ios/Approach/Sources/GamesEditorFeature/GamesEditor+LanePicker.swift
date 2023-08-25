@@ -13,7 +13,6 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .didChangeSelection(lanes):
-				guard state.isEditable else { return .none }
 				state.game?.lanes = .init(uniqueElements: lanes.map(\.asLaneInfo))
 				return save(game: state.game)
 			}

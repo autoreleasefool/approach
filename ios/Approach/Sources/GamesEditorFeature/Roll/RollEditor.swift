@@ -14,6 +14,7 @@ public struct RollEditor: Reducer {
 		public var ballRolled: Gear.Named?
 		public var didFoul: Bool
 		public let isGearEnabled: Bool
+		public var isEditable: Bool = true
 
 		init(ballRolled: Gear.Named?, didFoul: Bool) {
 			self.ballRolled = ballRolled
@@ -33,6 +34,7 @@ public struct RollEditor: Reducer {
 		public enum DelegateAction: Equatable {
 			case didEditRoll
 			case didTapBall
+			case didProvokeLock
 		}
 
 		case view(ViewAction)
@@ -48,10 +50,12 @@ public struct RollEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didToggleFoul:
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					state.didFoul.toggle()
 					return .send(.delegate(.didEditRoll))
 
 				case .didTapBall:
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didTapBall))
 				}
 

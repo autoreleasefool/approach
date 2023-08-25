@@ -369,6 +369,8 @@ public enum Strings {
       return Strings.tr("Localizable", "game.titleWithOrdinal", p1, fallback: "Game %d")
     }
     public enum Editor {
+      /// Locked
+      public static let locked = Strings.tr("Localizable", "game.editor.locked", fallback: "Locked")
       public enum Bowlers {
         /// Drag to reorder
         public static let dragToReorder = Strings.tr("Localizable", "game.editor.bowlers.dragToReorder", fallback: "Drag to reorder")
