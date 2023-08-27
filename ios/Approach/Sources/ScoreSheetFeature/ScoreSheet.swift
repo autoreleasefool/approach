@@ -66,7 +66,7 @@ extension ScoreStep {
 		} else if rolls.dropFirst().first?.display == "/" {
 			return 1
 		} else {
-			return rollIndex
+			return rolls.first(where: { $0.display?.isEmpty ?? true })?.index ?? rollIndex
 		}
 	}
 }
