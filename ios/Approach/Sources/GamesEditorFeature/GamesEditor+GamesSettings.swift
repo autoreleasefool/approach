@@ -6,12 +6,13 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .switchedGame(to):
-				state.currentGameId = state.bowlerGameIds[state.currentBowlerId]![to]
+				let newGameId = state.bowlerGameIds[state.currentBowlerId]![to]
+				state.setCurrent(gameId: newGameId)
 				return loadGameDetails(state: &state)
 
 			case let .switchedBowler(to):
-				state.currentGameId = state.bowlerGameIds[to]![state.currentGameIndex]
-				state.currentBowlerId = to
+				let newGameId = state.bowlerGameIds[to]![state.currentGameIndex]
+				state.setCurrent(gameId: newGameId, bowlerId: to)
 				return loadGameDetails(state: &state)
 
 			case let .movedBowlers(source, destination):

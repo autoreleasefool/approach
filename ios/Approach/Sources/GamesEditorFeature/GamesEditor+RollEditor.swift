@@ -15,6 +15,8 @@ extension GamesEditor.State {
 			guard isEditable else { return }
 			_rollEditor = newValue
 			guard let newValue else { return }
+			let currentFrameIndex = self.currentFrameIndex
+			let currentRollIndex = self.currentRollIndex
 			frames?[currentFrameIndex].setDidFoul(newValue.didFoul, forRoll: currentRollIndex)
 		}
 	}

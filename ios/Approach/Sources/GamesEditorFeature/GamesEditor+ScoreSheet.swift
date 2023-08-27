@@ -13,8 +13,9 @@ extension GamesEditor.State {
 		}
 		set {
 			guard let newValue else { return }
-			currentRollIndex = newValue.currentRollIndex
-			currentFrameIndex = newValue.currentFrameIndex
+			setCurrent(rollIndex: newValue.currentRollIndex, frameIndex: newValue.currentFrameIndex)
+			let currentFrameIndex = self.currentFrameIndex
+			let currentRollIndex = self.currentRollIndex
 			frames?[currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
 		}
 	}

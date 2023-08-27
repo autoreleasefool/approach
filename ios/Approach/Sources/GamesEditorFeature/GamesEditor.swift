@@ -35,10 +35,18 @@ public struct GamesEditor: Reducer {
 		public var bowlerGameIds: [Bowler.ID: [Game.ID]]
 
 		// ID Details for the current entity being edited
-		public var currentBowlerId: Bowler.ID
-		public var currentGameId: Game.ID
-		public var currentFrameIndex: Int = 0
-		public var currentRollIndex: Int = 0
+		public var _currentBowlerId: Bowler.ID
+		public var _currentGameId: Game.ID
+		public var _currentFrameIndex: Int = 0
+		public var _currentRollIndex: Int = 0
+		public var _nextHeaderElement: GameDetailsHeader.State.NextElement?
+
+		public var currentBowlerId: Bowler.ID { _currentBowlerId }
+		public var currentGameId: Game.ID { _currentGameId }
+		public var currentFrameIndex: Int { _currentFrameIndex }
+		public var currentRollIndex: Int { _currentRollIndex }
+		public var nextHeaderElement: GameDetailsHeader.State.NextElement? { _nextHeaderElement }
+		public var forceNextHeaderElementNil: Bool = false
 
 		// Loaded details for the current entity being edited
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
@@ -68,8 +76,8 @@ public struct GamesEditor: Reducer {
 			self.bowlerGameIds = bowlerGameIds
 
 			let currentBowlerId = initialBowlerId ?? bowlerIds.first!
-			self.currentBowlerId = currentBowlerId
-			self.currentGameId = initialGameId ?? bowlerGameIds[currentBowlerId]!.first!
+			self._currentBowlerId = currentBowlerId
+			self._currentGameId = initialGameId ?? bowlerGameIds[currentBowlerId]!.first!
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -216,10 +224,13 @@ public struct GamesEditor: Reducer {
 							.map { .internal(.errors($0)) }
 					}
 
-					state.currentFrameIndex = frames.firstIndex { $0.hasUntouchedRoll } ?? 0
-					state.currentRollIndex = frames[state.currentFrameIndex].firstUntouchedRoll ?? 0
-
 					state.frames = frames
+
+					let newFrameIndex = frames.firstIndex { $0.hasUntouchedRoll }
+					let newRollIndex = frames[newFrameIndex ?? 0].firstUntouchedRoll ?? 0
+					state.forceNextHeaderElementNil = newFrameIndex == nil
+					state.setCurrent(rollIndex: newRollIndex, frameIndex: newFrameIndex ?? 0)
+
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 					state._frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
 

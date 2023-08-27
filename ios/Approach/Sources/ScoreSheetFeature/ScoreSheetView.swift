@@ -17,9 +17,21 @@ public struct ScoreSheetView: View {
 		let currentRollIndex: Int
 
 		var rollId: RollID {
-			.init(
-				frameIndex: currentFrameIndex > 0 ? currentFrameIndex - 1 : 0,
-				rollIndex: currentFrameIndex == 0 ? 0 : 1
+			let rollIndex: Int
+			let frameIndex: Int
+			if currentFrameIndex == 0 {
+				frameIndex = 0
+				rollIndex = 0
+			} else if Frame.isLast(currentFrameIndex) {
+				frameIndex = currentFrameIndex
+				rollIndex = 2
+			} else {
+				frameIndex = currentFrameIndex - 1
+				rollIndex = 1
+			}
+			return .init(
+				frameIndex: frameIndex,
+				rollIndex: rollIndex
 			)
 		}
 
@@ -37,6 +49,8 @@ public struct ScoreSheetView: View {
 	struct RollID: Hashable {
 		let frameIndex: Int
 		let rollIndex: Int
+
+		var isLast: Bool { Frame.isLast(frameIndex) }
 	}
 
 	public init(store: StoreOf<ScoreSheet>) {
@@ -86,7 +100,21 @@ public struct ScoreSheetView: View {
 				.scrollIndicators(.hidden)
 				.onChange(of: viewStore.rollId) { rollId in
 					withAnimation(.easeInOut(duration: 300)) {
-						proxy.scrollTo(rollId, anchor: .leading)
+						if rollId.isLast {
+							proxy.scrollTo(rollId, anchor: .trailing)
+						} else {
+							proxy.scrollTo(rollId, anchor: .leading)
+						}
+					}
+				}
+				.onAppear {
+					withAnimation(.easeInOut(duration: 300)) {
+						let rollId = viewStore.rollId
+						if rollId.isLast {
+							proxy.scrollTo(rollId, anchor: .trailing)
+						} else {
+							proxy.scrollTo(rollId, anchor: .leading)
+						}
 					}
 				}
 			})

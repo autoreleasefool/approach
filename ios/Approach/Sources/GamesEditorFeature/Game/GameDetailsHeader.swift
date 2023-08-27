@@ -13,9 +13,9 @@ public struct GameDetailsHeader: Reducer {
 		public let currentLeagueName: String
 		public let next: NextElement?
 
-		init(game: Game.Edit, next: NextElement?) {
-			self.currentBowlerName = game.bowler.name
-			self.currentLeagueName = game.league.name
+		init(currentBowlerName: String, currentLeagueName: String, next: NextElement?) {
+			self.currentBowlerName = currentBowlerName
+			self.currentLeagueName = currentLeagueName
 			self.next = next
 		}
 	}

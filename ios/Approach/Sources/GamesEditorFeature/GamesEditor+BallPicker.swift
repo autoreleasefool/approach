@@ -11,7 +11,9 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .didChangeSelection(bowlingBalls):
-				state.frames?[state.currentFrameIndex].setBowlingBall(bowlingBalls.first?.named, forRoll: state.currentRollIndex)
+				let currentFrameIndex = state.currentFrameIndex
+				let currentRollIndex = state.currentRollIndex
+				state.frames?[currentFrameIndex].setBowlingBall(bowlingBalls.first?.named, forRoll: currentRollIndex)
 				return save(frame: state.frames?[state.currentFrameIndex])
 			}
 

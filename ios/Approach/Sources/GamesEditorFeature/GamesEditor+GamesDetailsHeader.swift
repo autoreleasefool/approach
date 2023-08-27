@@ -4,22 +4,11 @@ import ModelsLibrary
 extension GamesEditor.State {
 	var gameDetailsHeader: GameDetailsHeader.State? {
 		get {
-			guard let game, let frames else { return nil }
-			let next: GameDetailsHeader.State.NextElement?
-			if !Frame.Roll.isLast(currentRollIndex) &&
-					(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).arePinsCleared) {
-				next = .roll(rollIndex: currentRollIndex + 1)
-			} else if bowlerIds.count > 1 {
-				let nextBowlerId = bowlerIds[(currentBowlerIndex + 1) % bowlerIds.count]
-				next = .bowler(name: bowlers![id: nextBowlerId]!.name, id: nextBowlerId)
-			} else if !Frame.isLast(currentFrameIndex) {
-				next = .frame(frameIndex: currentFrameIndex + 1)
-			} else {
-				next = nil
-				// TODO: figure out when to show next game
-			}
-
-			return .init(game: game, next: next)
+			.init(
+				currentBowlerName: game?.bowler.name ?? "",
+				currentLeagueName: game?.league.name ?? "",
+				next: nextHeaderElement
+			)
 		}
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
@@ -36,21 +25,19 @@ extension GamesEditor {
 				switch next {
 				case let .bowler(_, id):
 					let gameIndex = state.currentGameIndex
-					state.currentBowlerId = id
-					state.currentGameId = state.bowlerGameIds[id]![gameIndex]
+					state.setCurrent(gameId: state.bowlerGameIds[id]![gameIndex], bowlerId: id)
 					return loadGameDetails(state: &state)
 				case let .frame(frameIndex):
-					state.currentFrameIndex = frameIndex
-					state.currentRollIndex = 0
+					state.setCurrent(rollIndex: 0, frameIndex: frameIndex)
 					state.frames?[frameIndex].guaranteeRollExists(upTo: 0)
 					return save(frame: state.frames?[frameIndex])
 				case let .roll(rollIndex):
-					state.currentRollIndex = rollIndex
-					state.frames?[state.currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
+					state.setCurrent(rollIndex: rollIndex)
+					let currentFrameIndex = state.currentFrameIndex
+					state.frames?[currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
 					return save(frame: state.frames?[state.currentFrameIndex])
 				case let .game(_, bowler, game):
-					state.currentBowlerId = bowler
-					state.currentGameId = game
+					state.setCurrent(gameId: game, bowlerId: bowler)
 					return loadGameDetails(state: &state)
 				}
 			}

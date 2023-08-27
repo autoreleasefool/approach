@@ -14,7 +14,8 @@ extension GamesEditor.State {
 			guard isEditable else { return }
 			_frameEditor = newValue
 			guard let newValue else { return }
-			self.frames?[self.currentFrameIndex] = newValue.frame
+			let currentFrameIndex = self.currentFrameIndex
+			self.frames?[currentFrameIndex] = newValue.frame
 		}
 	}
 }
