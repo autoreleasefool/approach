@@ -9,7 +9,6 @@ extension GamesEditor.State {
 	) {
 		guard let frames else { return }
 
-		// TODO: Recording a strike or spare does not update _nextHeaderElement
 		// TODO: Tapping nextHeaderElement at the end of a game should lock the game
 
 		_currentRollIndex = newRollIndex ?? _currentRollIndex

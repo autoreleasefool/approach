@@ -16,6 +16,7 @@ extension GamesEditor.State {
 			guard let newValue else { return }
 			let currentFrameIndex = self.currentFrameIndex
 			self.frames?[currentFrameIndex] = newValue.frame
+			self.setCurrent()
 		}
 	}
 }
