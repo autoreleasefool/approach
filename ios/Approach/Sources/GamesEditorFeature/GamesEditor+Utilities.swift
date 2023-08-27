@@ -9,8 +9,6 @@ extension GamesEditor.State {
 	) {
 		guard let frames else { return }
 
-		// TODO: Tapping nextHeaderElement at the end of a game should lock the game
-
 		_currentRollIndex = newRollIndex ?? _currentRollIndex
 		_currentFrameIndex = newFrameIndex ?? _currentFrameIndex
 		_currentGameId = newGameId ?? _currentGameId
