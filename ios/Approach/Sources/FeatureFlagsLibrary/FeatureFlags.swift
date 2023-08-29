@@ -1,7 +1,7 @@
 // swiftlint:disable line_length
 
 extension FeatureFlag {
-	public static let alleys = Self(name: "alleys", introduced: "2022-11-09", stage: .development)
+	public static let alleys = Self(name: "alleys", introduced: "2022-11-09", stage: .release)
 	public static let gear = Self(name: "gear", introduced: "2022-11-09", stage: .development)
 	public static let settingsTab = Self(name: "settingsTab", introduced: "2022-11-09", stage: .release, isOverridable: false)
 	public static let lanes = Self(name: "lanes", introduced: "2022-12-09", stage: .development)
