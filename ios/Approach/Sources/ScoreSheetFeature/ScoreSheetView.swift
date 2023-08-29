@@ -153,24 +153,24 @@ public struct ScoreSheetView: View {
 					.font(.caption)
 					.minimumScaleFactor(0.2)
 					.lineLimit(1)
-					.frame(width: contentSize.width / 12)
-					.padding(.horizontal, .smallSpacing)
-					.padding(.vertical, .smallSpacing)
-					.foregroundColor(
-						highlightRollIndex == roll.index
-						? Asset.Colors.ScoreSheet.Text.highlight.swiftUIColor
-						: Asset.Colors.ScoreSheet.Text.default.swiftUIColor
-					)
-					.background(
-						highlightRollIndex == roll.index
-						? Asset.Colors.ScoreSheet.Background.highlight.swiftUIColor
-						: Asset.Colors.ScoreSheet.Background.default.swiftUIColor
-					)
-					.applyCornerRadius(
-						isFirstFrame: frameIndex == 0 && roll.index == 0,
-						isLastFrame: Frame.isLast(frameIndex) && Frame.Roll.isLast(roll.index),
-						toTop: true
-					)
+				.frame(width: contentSize.width / 12)
+				.padding(.horizontal, .smallSpacing)
+				.padding(.vertical, .smallSpacing)
+				.foregroundColor(
+					highlightRollIndex == roll.index
+					? roll.didFoul ? Asset.Colors.ScoreSheet.Text.highlightFoul : Asset.Colors.ScoreSheet.Text.highlight
+					: roll.didFoul ? Asset.Colors.ScoreSheet.Text.foul : Asset.Colors.ScoreSheet.Text.default
+				)
+				.background(
+					highlightRollIndex == roll.index
+					? Asset.Colors.ScoreSheet.Background.highlight.swiftUIColor
+					: Asset.Colors.ScoreSheet.Background.default.swiftUIColor
+				)
+				.applyCornerRadius(
+					isFirstFrame: frameIndex == 0 && roll.index == 0,
+					isLastFrame: Frame.isLast(frameIndex) && Frame.Roll.isLast(roll.index),
+					toTop: true
+				)
 			}
 			.id(RollID(frameIndex: frameIndex, rollIndex: roll.index))
 			.contentShape(Rectangle())
@@ -221,7 +221,7 @@ struct ScoreSheetViewPreviews: PreviewProvider {
 						.init(
 							index: $0,
 							rolls: [
-								.init(index: 0, display: "1", didFoul: false),
+								.init(index: 0, display: "1", didFoul: true),
 								.init(index: 1, display: "2", didFoul: false),
 								.init(index: 2, display: "3", didFoul: false),
 							],

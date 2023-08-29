@@ -108,7 +108,9 @@ public enum Asset {
       }
       public enum Text {
         public static let `default` = ColorAsset(name: "ScoreSheet/Text/Default")
+        public static let foul = ColorAsset(name: "ScoreSheet/Text/Foul")
         public static let highlight = ColorAsset(name: "ScoreSheet/Text/Highlight")
+        public static let highlightFoul = ColorAsset(name: "ScoreSheet/Text/HighlightFoul")
       }
     }
     public enum Secondary {
