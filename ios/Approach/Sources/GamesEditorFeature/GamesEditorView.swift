@@ -17,6 +17,7 @@ public struct GamesEditorView: View {
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@State private var headerContentSize: CGSize = .zero
+	@State private var rollEditorSize: CGSize = .zero
 	@State private var frameContentSize: CGSize = .zero
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
@@ -72,6 +73,7 @@ public struct GamesEditorView: View {
 						Spacer()
 
 						rollEditor
+							.measure(key: RollEditorSizeKey.self, to: $rollEditorSize)
 							.padding(.horizontal)
 
 						if viewStore.isScoreSheetVisible {
@@ -88,11 +90,18 @@ public struct GamesEditorView: View {
 			}
 			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
 			.background(alignment: .top) {
-				Asset.Media.Lane.backdrop.swiftUIImage
-					.resizable(resizingMode: .stretch)
-					.fixedSize(horizontal: true, vertical: false)
-					.frame(width: viewStore.backdropSize.width, height: getBackdropHeight(viewStore))
-					.padding(.top, headerContentSize.height)
+				VStack(spacing: 0) {
+					Asset.Media.Lane.galaxy.swiftUIImage
+						.resizable()
+						.scaledToFill()
+					Asset.Media.Lane.wood.swiftUIImage
+						.resizable()
+						.scaledToFill()
+				}
+				.frame(width: viewStore.backdropSize.width, height: getBackdropImageHeight(viewStore))
+				.faded()
+				.clipped()
+				.padding(.top, headerContentSize.height)
 			}
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
@@ -258,13 +267,22 @@ public struct GamesEditorView: View {
 		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
-			height: windowContentSize.height - sheetContentSize.height - headerContentSize.height
-				- safeAreaInsets.bottom - CGFloat.largeSpacing
+			height: windowContentSize.height
+				- sheetContentSize.height
+				- headerContentSize.height
+				- safeAreaInsets.bottom
+				- CGFloat.largeSpacing
 		)
 	}
 
-	private func getBackdropHeight(_ viewStore: GamesEditorViewStore) -> CGFloat {
-		max(viewStore.backdropSize.height - (viewStore.isScoreSheetVisible ? frameContentSize.height : 0), 0)
+	private func getBackdropImageHeight(_ viewStore: GamesEditorViewStore) -> CGFloat {
+		max(
+			viewStore.backdropSize.height
+				- (viewStore.isScoreSheetVisible ? frameContentSize.height : 0)
+				- headerContentSize.height
+				+ rollEditorSize.height,
+			0
+		)
 	}
 }
 
@@ -294,4 +312,5 @@ private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct HeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct FrameContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+private struct RollEditorSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct SectionHeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

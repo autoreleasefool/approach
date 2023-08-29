@@ -73,7 +73,7 @@ public struct ScoreSheetView: View {
 								}
 							}
 						}
-						Divider()
+
 						GridRow {
 							ForEach(viewStore.steps, id: \.index) { step in
 								stepView(step, highlighted: viewStore.currentFrameIndex == step.index) {
@@ -86,16 +86,11 @@ public struct ScoreSheetView: View {
 
 						GridRow {
 							ForEach(viewStore.steps, id: \.index) { step in
-								Text(String(step.index + 1))
-									.font(.caption2)
-									.foregroundColor(step.index == viewStore.currentFrameIndex ? .black : .gray)
-									.padding(.bottom, .tinySpacing)
-									.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+								railLabel(step, highlighted: viewStore.currentFrameIndex == step.index)
 							}
 						}
 					}
 				}
-				.background(Asset.Colors.Primary.light)
 				.cornerRadius(.standardRadius)
 				.scrollIndicators(.hidden)
 				.onChange(of: viewStore.rollId) { rollId in
@@ -128,10 +123,20 @@ public struct ScoreSheetView: View {
 				.frame(maxWidth: .infinity)
 				.padding(.horizontal, .smallSpacing)
 				.padding(.vertical, .smallSpacing)
-				.background(highlighted ? Asset.Colors.Primary.default : Asset.Colors.Primary.light)
+				.foregroundColor(
+					highlighted
+					? Asset.Colors.ScoreSheet.Text.highlight.swiftUIColor
+					: Asset.Colors.ScoreSheet.Text.default.swiftUIColor
+				)
+				.background(
+					highlighted
+					? Asset.Colors.ScoreSheet.Background.highlight.swiftUIColor
+					: Asset.Colors.ScoreSheet.Background.default.swiftUIColor
+				)
 		}
 		.contentShape(Rectangle())
 		.buttonStyle(TappableElement())
+		.leadingBorder(visible: step.index != 0)
 	}
 
 	private func rollViews(
@@ -151,38 +156,86 @@ public struct ScoreSheetView: View {
 					.frame(width: contentSize.width / 12)
 					.padding(.horizontal, .smallSpacing)
 					.padding(.vertical, .smallSpacing)
-					.background(highlightRollIndex == roll.index ? Asset.Colors.Primary.default : Asset.Colors.Primary.light)
+					.foregroundColor(
+						highlightRollIndex == roll.index
+						? Asset.Colors.ScoreSheet.Text.highlight.swiftUIColor
+						: Asset.Colors.ScoreSheet.Text.default.swiftUIColor
+					)
+					.background(
+						highlightRollIndex == roll.index
+						? Asset.Colors.ScoreSheet.Background.highlight.swiftUIColor
+						: Asset.Colors.ScoreSheet.Background.default.swiftUIColor
+					)
+					.applyCornerRadius(
+						isFirstFrame: frameIndex == 0 && roll.index == 0,
+						isLastFrame: Frame.isLast(frameIndex) && Frame.Roll.isLast(roll.index),
+						toTop: true
+					)
 			}
 			.id(RollID(frameIndex: frameIndex, rollIndex: roll.index))
 			.contentShape(Rectangle())
 			.buttonStyle(TappableElement())
+			.bottomBorder()
+			.trailingBorder(visible: !Frame.Roll.isLast(roll.index))
+			.leadingBorder(visible: roll.index == 0 && frameIndex != 0)
 		}
+	}
+
+	private func railLabel(_ step: ScoreStep, highlighted: Bool) -> some View {
+		Text(String(step.index + 1))
+			.font(.caption2)
+			.foregroundColor(
+				highlighted
+				? Asset.Colors.ScoreSheet.Label.highlight.swiftUIColor
+				: Asset.Colors.ScoreSheet.Label.default.swiftUIColor
+			)
+			.frame(maxWidth: .infinity)
+			.foregroundColor(.white)
+			.padding(.vertical, .unitSpacing)
+			.gridCellColumns(Frame.NUMBER_OF_ROLLS)
+			.background(
+				highlighted
+				? Asset.Colors.ScoreSheet.Rail.highlight.swiftUIColor
+				: Asset.Colors.ScoreSheet.Rail.default.swiftUIColor
+			)
+			.leadingBorder(visible: step.index != 0)
+			.applyCornerRadius(
+				isFirstFrame: step.index == 0,
+				isLastFrame: Frame.isLast(step.index),
+				toTop: false
+			)
 	}
 }
 
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
+
 #if DEBUG
 struct ScoreSheetViewPreviews: PreviewProvider {
 	static var previews: some View {
-		ScoreSheetView(store: .init(
-			initialState: .init(
-				steps: Game.FRAME_INDICES.map {
-					.init(
-						index: $0,
-						rolls: [
-							.init(index: 0, display: "1", didFoul: false),
-							.init(index: 0, display: "2", didFoul: false),
-							.init(index: 0, display: "3", didFoul: false),
-						],
-						score: nil
-					)
-				},
-				currentFrameIndex: 0,
-				currentRollIndex: 0
-			),
-			reducer: ScoreSheet.init
-		))
+		VStack {
+			Spacer()
+			ScoreSheetView(store: .init(
+				initialState: .init(
+					steps: Game.FRAME_INDICES.map {
+						.init(
+							index: $0,
+							rolls: [
+								.init(index: 0, display: "1", didFoul: false),
+								.init(index: 1, display: "2", didFoul: false),
+								.init(index: 2, display: "3", didFoul: false),
+							],
+							score: 32
+						)
+					},
+					currentFrameIndex: 0,
+					currentRollIndex: 0
+				),
+				reducer: ScoreSheet.init
+			))
+			Spacer()
+		}
+		.background(.black)
 	}
 }
 #endif

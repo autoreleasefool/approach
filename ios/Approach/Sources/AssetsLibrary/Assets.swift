@@ -90,6 +90,27 @@ public enum Asset {
       public static let `default` = ColorAsset(name: "Primary/Default")
       public static let light = ColorAsset(name: "Primary/Light")
     }
+    public enum ScoreSheet {
+      public enum Background {
+        public static let `default` = ColorAsset(name: "ScoreSheet/Background/Default")
+        public static let highlight = ColorAsset(name: "ScoreSheet/Background/Highlight")
+      }
+      public enum Border {
+        public static let `default` = ColorAsset(name: "ScoreSheet/Border/Default")
+      }
+      public enum Label {
+        public static let `default` = ColorAsset(name: "ScoreSheet/Label/Default")
+        public static let highlight = ColorAsset(name: "ScoreSheet/Label/Highlight")
+      }
+      public enum Rail {
+        public static let `default` = ColorAsset(name: "ScoreSheet/Rail/Default")
+        public static let highlight = ColorAsset(name: "ScoreSheet/Rail/Highlight")
+      }
+      public enum Text {
+        public static let `default` = ColorAsset(name: "ScoreSheet/Text/Default")
+        public static let highlight = ColorAsset(name: "ScoreSheet/Text/Highlight")
+      }
+    }
     public enum Secondary {
       public static let `default` = ColorAsset(name: "Secondary/Default")
     }
@@ -127,7 +148,8 @@ public enum Asset {
       public static let analytics = ImageAsset(name: "Icons/Analytics")
     }
     public enum Lane {
-      public static let backdrop = ImageAsset(name: "Lane/Backdrop")
+      public static let galaxy = ImageAsset(name: "Lane/Galaxy")
+      public static let wood = ImageAsset(name: "Lane/Wood")
     }
   }
 }
