@@ -7,7 +7,7 @@ extension FeatureFlag {
 	public static let lanes = Self(name: "lanes", introduced: "2022-12-09", stage: .release)
 	public static let developerOptions = Self(name: "developerOptions", introduced: "2022-11-10", stage: .development, isOverridable: false)
 	public static let teams = Self(name: "teams", introduced: "2023-01-03", stage: .development)
-	public static let opponents = Self(name: "opponents", introduced: "2023-01-08", stage: .development)
+	public static let opponents = Self(name: "opponents", introduced: "2023-01-08", stage: .release)
 	public static let avatars = Self(name: "avatars", introduced: "2023-03-11", stage: .disabled)
 	public static let overviewTab = Self(name: "overviewTab", introduced: "2023-05-18", stage: .release)
 	public static let statisticsTab = Self(name: "statisticsTab", introduced: "2023-05-18", stage: .release)
