@@ -1,5 +1,4 @@
 #include "./Base/App.xcconfig"
-#include? "./Secrets.xcconfig"
 
 DEVELOPMENT_ASSET_PATHS = "ApproachIOS/Preview Content"
 INFOPLIST_FILE = Approach/Info.plist
@@ -24,3 +23,5 @@ FACEBOOK_URL_SCHEME_Release=
 REVENUE_CAT_API_KEY = $(REVENUE_CAT_API_KEY_$(CONFIGURATION))
 REVENUE_CAT_API_KEY_Debug=
 REVENUE_CAT_API_KEY_Release=
+
+#include? "./Secrets.xcconfig"
