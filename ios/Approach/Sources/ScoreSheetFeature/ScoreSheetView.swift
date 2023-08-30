@@ -209,7 +209,6 @@ public struct ScoreSheetView: View {
 
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
-
 #if DEBUG
 struct ScoreSheetViewPreviews: PreviewProvider {
 	static var previews: some View {

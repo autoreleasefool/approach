@@ -12,12 +12,6 @@ public struct GameDetailsHeader: Reducer {
 		public let currentBowlerName: String
 		public let currentLeagueName: String
 		public let next: NextElement?
-
-		init(currentBowlerName: String, currentLeagueName: String, next: NextElement?) {
-			self.currentBowlerName = currentBowlerName
-			self.currentLeagueName = currentLeagueName
-			self.next = next
-		}
 	}
 
 	public enum Action: FeatureAction, Equatable {

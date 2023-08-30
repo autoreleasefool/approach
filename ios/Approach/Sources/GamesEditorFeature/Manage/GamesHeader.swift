@@ -9,10 +9,6 @@ import ViewsLibrary
 public struct GamesHeader: Reducer {
 	public struct State: Equatable {
 		public let currentGameIndex: Int
-
-		init(currentGameIndex: Int) {
-			self.currentGameIndex = currentGameIndex
-		}
 	}
 
 	public enum Action: FeatureAction, Equatable {

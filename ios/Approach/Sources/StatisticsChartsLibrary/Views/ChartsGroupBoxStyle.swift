@@ -20,14 +20,6 @@ public struct ChartsGroupBoxStyle: GroupBoxStyle {
 	let backgroundColor: Color
 	let labelColor: Color
 
-	init(
-		backgroundColor: Color,
-		labelColor: Color
-	) {
-		self.backgroundColor = backgroundColor
-		self.labelColor = labelColor
-	}
-
 	public func makeBody(configuration: Configuration) -> some View {
 		configuration.content
 			.padding(.top, .largeSpacing)

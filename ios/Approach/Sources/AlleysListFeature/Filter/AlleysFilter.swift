@@ -9,10 +9,6 @@ import SwiftUI
 public struct AlleysFilter: Reducer {
 	public struct State: Equatable {
 		@BindingState public var filter: Alley.Summary.FetchRequest.Filter
-
-		init(filter: Alley.Summary.FetchRequest.Filter) {
-			self.filter = filter
-		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
