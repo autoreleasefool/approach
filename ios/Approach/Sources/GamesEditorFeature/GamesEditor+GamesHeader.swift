@@ -2,7 +2,9 @@ import ComposableArchitecture
 
 extension GamesEditor.State {
 	var gamesHeader: GamesHeader.State {
-		get { .init(currentGameIndex: currentGameIndex) }
+		get {
+			.init(currentGameIndex: currentGameIndex, isSharingGameEnabled: isSharingGameEnabled)
+		}
 		// We aren't observing any values from this reducer, so we ignore the setter
 		// swiftlint:disable:next unused_setter_value
 		set {}
@@ -25,6 +27,10 @@ extension GamesEditor {
 					numberOfGames: state.numberOfGames,
 					gameIndex: state.currentGameIndex
 				))
+				return .none
+
+			case .didShareGame:
+				state.destination = .sharing(.init(games: [state.currentGameId]))
 				return .none
 			}
 

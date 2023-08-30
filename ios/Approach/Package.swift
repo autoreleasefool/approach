@@ -35,6 +35,7 @@ let package = Package(
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+		.library(name: "SharingFeature", targets: ["SharingFeature"]),
 		.library(name: "StatisticsDetailsFeature", targets: ["StatisticsDetailsFeature"]),
 		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
 		.library(name: "StatisticsWidgetsLayoutFeature", targets: ["StatisticsWidgetsLayoutFeature"]),
@@ -342,7 +343,7 @@ let package = Package(
 				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
-				"ScoreSheetFeature",
+				"SharingFeature",
 			]
 		),
 		.testTarget(
@@ -574,6 +575,19 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SettingsFeature",
+			]
+		),
+		.target(
+			name: "SharingFeature",
+			dependencies: [
+				"ScoreSheetFeature",
+			]
+		),
+		.testTarget(
+			name: "SharingFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharingFeature",
 			]
 		),
 		.target(

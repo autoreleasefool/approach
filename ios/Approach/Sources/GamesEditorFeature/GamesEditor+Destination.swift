@@ -6,6 +6,7 @@ import LanesRepositoryInterface
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
+import SharingFeature
 
 extension GamesEditor {
 	public struct Destination: Reducer {
@@ -16,6 +17,7 @@ extension GamesEditor {
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case ballPicker(ResourcePicker<Gear.Summary, Bowler.ID>.State)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
+			case sharing(Sharing.State)
 		}
 
 		public enum Action: Equatable {
@@ -25,6 +27,7 @@ extension GamesEditor {
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, Bowler.ID>.Action)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
+			case sharing(Sharing.Action)
 		}
 
 		@Dependency(\.bowlers) var bowlers
@@ -49,6 +52,9 @@ extension GamesEditor {
 			}
 			Scope(state: /State.lanePicker, action: /Action.lanePicker) {
 				ResourcePicker { alley in lanes.list(alley) }
+			}
+			Scope(state: /State.sharing, action: /Action.sharing) {
+				Sharing()
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import FeatureActionLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
 import ScoreSheetFeature
+import SharingFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -171,6 +172,15 @@ public struct GamesEditorView: View {
 				gamesSettings(store: store)
 			}
 		)
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesEditor.Destination.State.sharing,
+			action: GamesEditor.Destination.Action.sharing,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
+			content: { (store: StoreOf<Sharing>) in
+				sharing(store: store)
+			}
+		)
 	}
 
 	private func gameDetails(
@@ -242,6 +252,12 @@ public struct GamesEditorView: View {
 	private func gamesSettings(store: StoreOf<GamesSettings>) -> some View {
 		NavigationStack {
 			GamesSettingsView(store: store)
+		}
+	}
+
+	private func sharing(store: StoreOf<Sharing>) -> some View {
+		NavigationStack {
+			SharingView(store: store)
 		}
 	}
 

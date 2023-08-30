@@ -26,6 +26,7 @@ public struct GamesEditor: Reducer {
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var isScoreSheetVisible = true
+		public let isSharingGameEnabled: Bool
 
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
 		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
@@ -78,6 +79,9 @@ public struct GamesEditor: Reducer {
 			let currentBowlerId = initialBowlerId ?? bowlerIds.first!
 			self._currentBowlerId = currentBowlerId
 			self._currentGameId = initialGameId ?? bowlerGameIds[currentBowlerId]!.first!
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
@@ -257,7 +261,7 @@ public struct GamesEditor: Reducer {
 					switch state.destination {
 					case .gameDetails, .none:
 						state.destination = .gameDetails(.init(game: game))
-					case .ballPicker, .lanePicker, .gearPicker, .settings, .opponentPicker:
+					case .ballPicker, .lanePicker, .gearPicker, .settings, .opponentPicker, .sharing:
 						state.destination = nil
 					}
 					state.game = game
@@ -314,6 +318,9 @@ public struct GamesEditor: Reducer {
 
 				case let .destination(.presented(.lanePicker(action))):
 					return reduce(into: &state, lanePickerAction: action)
+
+				case let .destination(.presented(.sharing(action))):
+					return reduce(into: &state, sharingAction: action)
 
 				case let .frameEditor(action):
 					return reduce(into: &state, frameEditorAction: action)

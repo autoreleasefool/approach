@@ -9,16 +9,19 @@ import ViewsLibrary
 public struct GamesHeader: Reducer {
 	public struct State: Equatable {
 		public let currentGameIndex: Int
+		public let isSharingGameEnabled: Bool
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapCloseButton
 			case didTapSettingsButton
+			case didTapShareButton
 		}
 		public enum DelegateAction: Equatable {
 			case didCloseEditor
 			case didOpenSettings
+			case didShareGame
 		}
 		public enum InternalAction: Equatable {}
 
@@ -37,6 +40,9 @@ public struct GamesHeader: Reducer {
 
 				case .didTapSettingsButton:
 					return .send(.delegate(.didOpenSettings))
+
+				case .didTapShareButton:
+					return .send(.delegate(.didShareGame))
 				}
 
 			case let .internal(internalAction):
@@ -66,6 +72,11 @@ public struct GamesHeaderView: View {
 					.font(.caption)
 					.foregroundColor(.white)
 				Spacer()
+
+				if viewStore.isSharingGameEnabled {
+					headerButton(systemSymbol: .squareAndArrowUp) { viewStore.send(.didTapShareButton) }
+				}
+
 				headerButton(systemSymbol: .gear) { viewStore.send(.didTapSettingsButton) }
 			}
 		})
