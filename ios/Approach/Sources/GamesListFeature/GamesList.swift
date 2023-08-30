@@ -3,11 +3,14 @@ import ComposableArchitecture
 import EquatableLibrary
 import ErrorsFeature
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import Foundation
 import GamesEditorFeature
 import GamesRepositoryInterface
 import ModelsLibrary
 import ResourceListLibrary
+import SharingFeature
 import StringsLibrary
 
 extension Game.List: ResourceListItem {
@@ -21,7 +24,9 @@ public struct GamesList: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var editor: GamesEditor.State?
+		@PresentationState public var destination: Destination.State?
+
+		public let isSeriesSharingEnabled: Bool
 
 		public init(series: Series.Summary) {
 			self.series = series
@@ -35,22 +40,47 @@ public struct GamesList: Reducer {
 					action: Strings.Action.reload
 				)
 			)
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isSeriesSharingEnabled = featureFlags.isEnabled(.sharingSeries)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapGame(Game.ID)
+			case didTapShareButton
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
-			case editor(PresentationAction<GamesEditor.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
+	}
+
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case sharing(Sharing.State)
+			case editor(GamesEditor.State)
+		}
+
+		public enum Action: Equatable {
+			case sharing(Sharing.Action)
+			case editor(GamesEditor.Action)
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.sharing, action: /Action.sharing) {
+				Sharing()
+			}
+			Scope(state: /State.editor, action: /Action.editor) {
+				GamesEditor()
+			}
+		}
 	}
 
 	public enum ErrorID: Hashable {
@@ -76,6 +106,10 @@ public struct GamesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didTapShareButton:
+					state.destination = .sharing(.init(series: state.series.id))
+					return .none
+
 				case let .didTapGame(id):
 					guard let games = state.list.resources else {
 						return state.errors
@@ -97,12 +131,12 @@ public struct GamesList: Reducer {
 							.map { .internal(.errors($0)) }
 					}
 
-					state.editor = .init(
+					state.destination = .editor(.init(
 						bowlerIds: [game.bowlerId],
 						bowlerGameIds: [game.bowlerId: games.map(\.id)],
 						initialBowlerId: game.bowlerId,
 						initialGameId: id
-					)
+					))
 
 					return .none
 				}
@@ -115,7 +149,13 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
-				case let .editor(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.editor(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .destination(.presented(.sharing(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
@@ -128,7 +168,9 @@ public struct GamesList: Reducer {
 					}
 
 				case .list(.internal), .list(.view),
-						.editor(.presented(.internal)), .editor(.presented(.view)), .editor(.dismiss),
+						.destination(.dismiss),
+						.destination(.presented(.editor(.internal))), .destination(.presented(.editor(.view))),
+						.destination(.presented(.sharing(.internal))), .destination(.presented(.sharing(.view))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}
@@ -137,8 +179,8 @@ public struct GamesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
-			GamesEditor()
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 				.dependency(\.analyticsGameSessionId, uuid())
 		}
 	}
