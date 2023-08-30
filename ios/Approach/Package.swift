@@ -335,10 +335,8 @@ let package = Package(
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"DateTimeLibrary",
-				"ErrorsFeature",
 				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
-				"GamesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
@@ -580,6 +578,8 @@ let package = Package(
 		.target(
 			name: "SharingFeature",
 			dependencies: [
+				"ErrorsFeature",
+				"GamesRepositoryInterface",
 				"ScoreSheetFeature",
 			]
 		),

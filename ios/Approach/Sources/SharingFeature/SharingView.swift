@@ -12,5 +12,6 @@ public struct SharingView: View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			EmptyView()
 		})
+		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}
 }

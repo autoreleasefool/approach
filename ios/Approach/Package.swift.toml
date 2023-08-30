@@ -55,8 +55,8 @@ libraries = [ "Strings" ]
 features = [ "Errors" ]
 
 [features.GamesEditor]
-features = [ "Errors", "Sharing" ]
-repositories = [ "Bowlers", "Frames", "Games", "Gear", "Lanes" ]
+features = [ "Sharing" ]
+repositories = [ "Bowlers", "Frames", "Gear", "Lanes" ]
 services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 
@@ -121,7 +121,8 @@ features = [ "FeatureFlagsList", "OpponentsList" ]
 services = [ "AppIcon", "DatabaseMocking", "Preference" ]
 
 [features.Sharing]
-features = [ "ScoreSheet" ]
+features = [ "Errors", "ScoreSheet" ]
+repositories = [ "Games" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
