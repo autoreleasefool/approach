@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 @testable import GamesRepository
 @testable import GamesRepositoryInterface
@@ -214,6 +215,171 @@ final class GamesRepositoryTests: XCTestCase {
 			.init(id: UUID(0), score: 0, opponentScore: 1, result: .won),
 			.init(id: UUID(1), score: 0, opponentScore: 2, result: .lost),
 		])
+	}
+
+	// MARK: Share Games
+
+	func testShareGames_WhenGamesExist_ReturnsGames() async throws {
+		// Given a database with two games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, score: 234, scoringMethod: .manual)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", roll1: "111000", roll2: "000011", ball1: UUID(0))
+		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1, roll0: "001111", roll1: "000000", roll2: "010000", ball0: UUID(0))
+		let frame3 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: "000100", roll1: "011000", roll2: "000011", ball0: UUID(0))
+		let db = try initializeDatabase(withGames: .custom([game1, game2]), withGameLanes: .zero, withGameGear: .zero, withFrames: .custom([frame1, frame2, frame3]))
+
+		// Fetching the games
+		let games = try await withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.shareGames([UUID(0), UUID(1)])
+		}
+
+		// Returns all the games
+		XCTAssertEqual(games, [
+			.init(
+				id: UUID(0),
+				index: 0,
+				score: 123,
+				scoringMethod: .byFrame,
+				frames: [
+					.init(
+						gameId: UUID(0),
+						index: 0,
+						rolls: [
+							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
+							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
+						]
+					),
+					.init(
+						gameId: UUID(0),
+						index: 1,
+						rolls: [
+							.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
+							.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin], didFoul: false), bowlingBall: nil),
+						]
+					),
+				],
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors"),
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					alley: .init(name: "Skyview")
+				)
+			),
+			.init(
+				id: UUID(1),
+				index: 1,
+				score: 234,
+				scoringMethod: .manual,
+				frames: [
+					.init(
+						gameId: UUID(1),
+						index: 0,
+						rolls: [
+							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false), bowlingBall: nil),
+							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
+						]
+					),
+				],
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors"),
+				series: .init(
+					date: Date(timeIntervalSince1970: 123_456_000),
+					alley: .init(name: "Skyview")
+				)
+			),
+		])
+	}
+
+	func testShareGames_WhenGamesNotExist_ThrowsError() async throws {
+		// Given a database with one game
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let db = try initializeDatabase(withGames: .custom([game1]))
+
+		// Fetching the games throws an error
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.games = .liveValue
+			} operation: {
+				_ = try await self.games.shareGames([UUID(0), UUID(1)])
+			}
+		}
+	}
+
+	// MARK: Share Series
+
+	func testShareSeries_WhenSeriesExists_ReturnsGames() async throws {
+		// Given a database with a series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1234))
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, score: 123)
+		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1)
+		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", roll1: "111000", roll2: "000011", ball1: UUID(0))
+		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1, roll0: "001111", roll1: "000000", roll2: "010000", ball0: UUID(0))
+		let frame3 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: "000100", roll1: "011000", roll2: "000011", ball0: UUID(0))
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2]), withGameLanes: .zero, withGameGear: .zero, withFrames: .custom([frame1, frame2, frame3]))
+
+		// Fetching the games
+		let games = try await withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.shareSeries(UUID(0))
+		}
+
+		// Returns all the games
+		XCTAssertEqual(games, [
+			.init(
+				id: UUID(0),
+				index: 0,
+				score: 123,
+				scoringMethod: .byFrame,
+				frames: [
+					.init(
+						gameId: UUID(0),
+						index: 0,
+						rolls: [
+							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
+							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
+						]
+					),
+					.init(
+						gameId: UUID(0),
+						index: 1,
+						rolls: [
+							.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
+							.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin], didFoul: false), bowlingBall: nil),
+						]
+					),
+				],
+				bowler: .init(name: "Joseph"),
+				league: .init(name: "Majors"),
+				series: .init(date: Date(timeIntervalSince1970: 123), alley: nil)
+			),
+		])
+	}
+
+	func testShareSeries_WhenSeriesNotExists_ThrowsError() async throws {
+		// Given a database with no series
+		let db = try initializeDatabase(withSeries: .zero)
+
+		// Fetching the series throws an error
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.reader = { db }
+				$0.games = .liveValue
+			} operation: {
+				_ = try await self.games.shareSeries(UUID(0))
+			}
+		}
 	}
 
 	// MARK: Edit

@@ -3,12 +3,15 @@ import GRDB
 
 public enum FetchableError: Error, LocalizedError {
 	case recordNotFound(type: Any.Type, id: Any)
+	case allRecordsNotFound(type: Any.Type, allIds: Any, foundIds: Any)
 	case fetchRequestFailed(type: Any.Type, statement: String)
 
 	public var errorDescription: String? {
 		switch self {
 		case let .recordNotFound(type, id):
 			return "Could not find ID '\(id)' for \(type)"
+		case let .allRecordsNotFound(type, allIds, foundIds):
+			return "Could not find all IDs '\(allIds)' for \(type). Found '\(foundIds)"
 		case let .fetchRequestFailed(type, statement):
 			return "Failed to resolve request for \(type): \(statement)"
 		}

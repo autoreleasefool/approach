@@ -22,6 +22,24 @@ extension GamesRepository: DependencyKey {
 			}
 		}
 
+		@Sendable func share(request: QueryInterfaceRequest<Game.Database>) -> QueryInterfaceRequest<Game.Shareable> {
+			request
+				.including(required: Game.Database.bowler)
+				.including(required: Game.Database.league)
+				.including(
+					required: Game.Database.series
+						.including(optional: Series.Database.alley)
+				)
+				.including(
+					all: Game.Database.frames
+						.order(Frame.Database.Columns.index)
+						.including(optional: Frame.Database.bowlingBall0.forKey("bowlingBall0"))
+						.including(optional: Frame.Database.bowlingBall1.forKey("bowlingBall1"))
+						.including(optional: Frame.Database.bowlingBall2.forKey("bowlingBall2"))
+				)
+				.asRequest(of: Game.Shareable.self)
+		}
+
 		return Self(
 			list: { series, ordering in
 				database.reader().observe {
@@ -51,6 +69,35 @@ extension GamesRepository: DependencyKey {
 						.order(seriesAlias[Series.Database.Columns.date.desc])
 						.asRequest(of: Game.ListMatch.self)
 						.fetchAll($0)
+				}
+			},
+			shareGames: { gameIds in
+				let games = try await database.reader().read {
+					try share(
+						request: Game.Database
+							.filter(ids: gameIds)
+					)
+					.fetchAll($0)
+				}
+
+				guard games.count == gameIds.count else {
+					throw FetchableError.allRecordsNotFound(type: Game.Shareable.self, allIds: gameIds, foundIds: games.map(\.id))
+				}
+
+				return games.sortBy(ids: gameIds)
+			},
+			shareSeries: { seriesId in
+				try await database.reader().read {
+					guard try Series.Database.exists($0, id: seriesId) else {
+						throw FetchableError.recordNotFound(type: Series.self, id: seriesId)
+					}
+
+					return try share(
+						request: Game.Database
+							.filter(Game.Database.Columns.seriesId == seriesId)
+							.orderByIndex()
+					)
+					.fetchAll($0)
 				}
 			},
 			edit: { id in

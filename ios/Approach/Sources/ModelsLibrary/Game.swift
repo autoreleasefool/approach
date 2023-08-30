@@ -73,3 +73,62 @@ extension Game {
 		public let result: MatchPlay.Result?
 	}
 }
+
+extension Game {
+	public struct Shareable: Identifiable, Equatable, Decodable {
+		public let id: Game.ID
+		public let index: Int
+		public let score: Int
+		public let scoringMethod: Game.ScoringMethod
+		public let frames: [Frame.Summary]
+
+		public let bowler: ShareableBowler
+		public let league: ShareableLeague
+		public let series: ShareableSeries
+
+		public init(
+			id: Game.ID,
+			index: Int,
+			score: Int,
+			scoringMethod: Game.ScoringMethod,
+			frames: [Frame.Summary],
+			bowler: ShareableBowler,
+			league: ShareableLeague,
+			series: ShareableSeries
+		) {
+			self.id = id
+			self.index = index
+			self.score = score
+			self.scoringMethod = scoringMethod
+			self.frames = frames
+			self.bowler = bowler
+			self.league = league
+			self.series = series
+		}
+	}
+}
+
+extension Game.Shareable {
+	public struct ShareableBowler: Equatable, Decodable {
+		public let name: String
+	}
+}
+
+extension Game.Shareable {
+	public struct ShareableLeague: Equatable, Decodable {
+		public let name: String
+	}
+}
+
+extension Game.Shareable {
+	public struct ShareableSeries: Equatable, Decodable {
+		public let date: Date
+		public let alley: ShareableAlley?
+	}
+}
+
+extension Game.Shareable {
+	public struct ShareableAlley: Equatable, Decodable {
+		public let name: String
+	}
+}

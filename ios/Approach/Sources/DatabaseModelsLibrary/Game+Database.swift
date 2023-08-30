@@ -57,3 +57,5 @@ extension Game.List: FetchableRecord {}
 extension Game.ListMatch: FetchableRecord {}
 
 extension Game.Summary: FetchableRecord {}
+
+extension Game.Shareable: FetchableRecord {}
