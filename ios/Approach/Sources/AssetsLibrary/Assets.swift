@@ -99,6 +99,7 @@ public enum Asset {
       public enum Border {
         public static let bold = ColorAsset(name: "ScoreSheet/Border/Bold")
         public static let `default` = ColorAsset(name: "ScoreSheet/Border/Default")
+        public static let defaultBold = ColorAsset(name: "ScoreSheet/Border/DefaultBold")
         public static let plain = ColorAsset(name: "ScoreSheet/Border/Plain")
       }
       public enum Label {

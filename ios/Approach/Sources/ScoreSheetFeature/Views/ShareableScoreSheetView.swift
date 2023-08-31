@@ -43,7 +43,7 @@ public struct ShareableScoreSheetView: View {
 						)
 						.borders(
 							bottom: game.id != games.last?.id,
-							color: Asset.Colors.ScoreSheet.Border.bold,
+							color: Asset.Colors.ScoreSheet.Border.defaultBold,
 							thickness: 2
 						)
 
@@ -69,6 +69,7 @@ public struct ShareableScoreSheetView: View {
 	private func gameView(forGame game: SteppedGame) -> some View {
 		HStack(spacing: 0) {
 			Text("Game \(game.index)")
+				.foregroundColor(style.text)
 				.padding()
 				.matchWidth(byKey: GameHeaderWidthKey.self, to: $headerWidth)
 				.frame(width: headerWidth > 0 ? headerWidth : nil)
@@ -144,6 +145,14 @@ extension ShareableScoreSheetView {
 		let rail: ColorAsset
 		let border: ColorAsset
 
+		public static let `default` = Self(
+			text: Asset.Colors.ScoreSheet.Text.default,
+			label: Asset.Colors.ScoreSheet.Label.default,
+			background: Asset.Colors.ScoreSheet.Background.default,
+			rail: Asset.Colors.ScoreSheet.Rail.default,
+			border: Asset.Colors.ScoreSheet.Border.default
+		)
+
 		public static let plain = Self(
 			text: Asset.Colors.ScoreSheet.Text.plain,
 			label: Asset.Colors.ScoreSheet.Label.plain,
@@ -188,7 +197,7 @@ struct ShareableScoreSheetViewPreviews: PreviewProvider {
 					)
 				})
 			},
-			style: .plain
+			style: .default
 		)
 		.padding()
 	}
