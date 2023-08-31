@@ -121,22 +121,21 @@ public struct ScoreSheetView: View {
 		Button(action: action) {
 			Text(step.display ?? " ")
 				.frame(maxWidth: .infinity)
-				.padding(.horizontal, .smallSpacing)
-				.padding(.vertical, .smallSpacing)
+				.padding(.smallSpacing)
 				.foregroundColor(
 					highlighted
-					? Asset.Colors.ScoreSheet.Text.highlight.swiftUIColor
-					: Asset.Colors.ScoreSheet.Text.default.swiftUIColor
+					? Asset.Colors.ScoreSheet.Text.highlight
+					: Asset.Colors.ScoreSheet.Text.default
 				)
 				.background(
 					highlighted
-					? Asset.Colors.ScoreSheet.Background.highlight.swiftUIColor
-					: Asset.Colors.ScoreSheet.Background.default.swiftUIColor
+					? Asset.Colors.ScoreSheet.Background.highlight
+					: Asset.Colors.ScoreSheet.Background.default
 				)
 		}
 		.contentShape(Rectangle())
 		.buttonStyle(TappableElement())
-		.leadingBorder(visible: step.index != 0)
+		.borders(leading: step.index != 0)
 	}
 
 	private func rollViews(
@@ -154,8 +153,7 @@ public struct ScoreSheetView: View {
 					.minimumScaleFactor(0.2)
 					.lineLimit(1)
 				.frame(width: contentSize.width / 12)
-				.padding(.horizontal, .smallSpacing)
-				.padding(.vertical, .smallSpacing)
+				.padding(.smallSpacing)
 				.foregroundColor(
 					highlightRollIndex == roll.index
 					? roll.didFoul ? Asset.Colors.ScoreSheet.Text.highlightFoul : Asset.Colors.ScoreSheet.Text.highlight
@@ -163,21 +161,18 @@ public struct ScoreSheetView: View {
 				)
 				.background(
 					highlightRollIndex == roll.index
-					? Asset.Colors.ScoreSheet.Background.highlight.swiftUIColor
-					: Asset.Colors.ScoreSheet.Background.default.swiftUIColor
+					? Asset.Colors.ScoreSheet.Background.highlight
+					: Asset.Colors.ScoreSheet.Background.default
 				)
-				.applyCornerRadius(
-					isFirstFrame: frameIndex == 0 && roll.index == 0,
-					isLastFrame: Frame.isLast(frameIndex) && Frame.Roll.isLast(roll.index),
-					toTop: true
+				.roundCorners(
+					topLeading: frameIndex == 0 && roll.index == 0,
+					topTrailing: Frame.isLast(frameIndex) && Frame.Roll.isLast(roll.index)
 				)
 			}
 			.id(RollID(frameIndex: frameIndex, rollIndex: roll.index))
 			.contentShape(Rectangle())
 			.buttonStyle(TappableElement())
-			.bottomBorder()
-			.trailingBorder(visible: !Frame.Roll.isLast(roll.index))
-			.leadingBorder(visible: roll.index == 0 && frameIndex != 0)
+			.borders(trailing: !Frame.Roll.isLast(roll.index), bottom: true, leading: frameIndex != 0 && roll.index == 0)
 		}
 	}
 
@@ -186,8 +181,8 @@ public struct ScoreSheetView: View {
 			.font(.caption2)
 			.foregroundColor(
 				highlighted
-				? Asset.Colors.ScoreSheet.Label.highlight.swiftUIColor
-				: Asset.Colors.ScoreSheet.Label.default.swiftUIColor
+				? Asset.Colors.ScoreSheet.Label.highlight
+				: Asset.Colors.ScoreSheet.Label.default
 			)
 			.frame(maxWidth: .infinity)
 			.foregroundColor(.white)
@@ -195,14 +190,13 @@ public struct ScoreSheetView: View {
 			.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 			.background(
 				highlighted
-				? Asset.Colors.ScoreSheet.Rail.highlight.swiftUIColor
-				: Asset.Colors.ScoreSheet.Rail.default.swiftUIColor
+				? Asset.Colors.ScoreSheet.Rail.highlight
+				: Asset.Colors.ScoreSheet.Rail.default
 			)
-			.leadingBorder(visible: step.index != 0)
-			.applyCornerRadius(
-				isFirstFrame: step.index == 0,
-				isLastFrame: Frame.isLast(step.index),
-				toTop: false
+			.borders(leading: step.index != 0)
+			.roundCorners(
+				bottomLeading: step.index == 0,
+				bottomTrailing: Frame.isLast(step.index)
 			)
 	}
 }

@@ -4,7 +4,7 @@ public struct RoundedCorner: Shape {
 	let radius: CGFloat
 	let corners: UIRectCorner
 
-	public init(_ radius: CGFloat = .infinity, corners: UIRectCorner = .allCorners) {
+	public init(_ radius: CGFloat = .standardRadius, corners: UIRectCorner = .allCorners) {
 		self.radius = radius
 		self.corners = corners
 	}

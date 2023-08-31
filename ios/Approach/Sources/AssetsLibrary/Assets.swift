@@ -94,23 +94,29 @@ public enum Asset {
       public enum Background {
         public static let `default` = ColorAsset(name: "ScoreSheet/Background/Default")
         public static let highlight = ColorAsset(name: "ScoreSheet/Background/Highlight")
+        public static let plain = ColorAsset(name: "ScoreSheet/Background/Plain")
       }
       public enum Border {
+        public static let bold = ColorAsset(name: "ScoreSheet/Border/Bold")
         public static let `default` = ColorAsset(name: "ScoreSheet/Border/Default")
+        public static let plain = ColorAsset(name: "ScoreSheet/Border/Plain")
       }
       public enum Label {
         public static let `default` = ColorAsset(name: "ScoreSheet/Label/Default")
         public static let highlight = ColorAsset(name: "ScoreSheet/Label/Highlight")
+        public static let plain = ColorAsset(name: "ScoreSheet/Label/Plain")
       }
       public enum Rail {
         public static let `default` = ColorAsset(name: "ScoreSheet/Rail/Default")
         public static let highlight = ColorAsset(name: "ScoreSheet/Rail/Highlight")
+        public static let plain = ColorAsset(name: "ScoreSheet/Rail/Plain")
       }
       public enum Text {
         public static let `default` = ColorAsset(name: "ScoreSheet/Text/Default")
         public static let foul = ColorAsset(name: "ScoreSheet/Text/Foul")
         public static let highlight = ColorAsset(name: "ScoreSheet/Text/Highlight")
         public static let highlightFoul = ColorAsset(name: "ScoreSheet/Text/HighlightFoul")
+        public static let plain = ColorAsset(name: "ScoreSheet/Text/Plain")
       }
     }
     public enum Secondary {
