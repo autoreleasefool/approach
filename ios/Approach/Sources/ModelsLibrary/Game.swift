@@ -111,12 +111,20 @@ extension Game {
 extension Game.Shareable {
 	public struct ShareableBowler: Equatable, Decodable {
 		public let name: String
+
+		public init(name: String) {
+			self.name = name
+		}
 	}
 }
 
 extension Game.Shareable {
 	public struct ShareableLeague: Equatable, Decodable {
 		public let name: String
+
+		public init(name: String) {
+			self.name = name
+		}
 	}
 }
 
@@ -124,11 +132,20 @@ extension Game.Shareable {
 	public struct ShareableSeries: Equatable, Decodable {
 		public let date: Date
 		public let alley: ShareableAlley?
+
+		public init(date: Date, alley: ShareableAlley?) {
+			self.date = date
+			self.alley = alley
+		}
 	}
 }
 
 extension Game.Shareable {
 	public struct ShareableAlley: Equatable, Decodable {
 		public let name: String
+
+		public init(name: String) {
+			self.name = name
+		}
 	}
 }

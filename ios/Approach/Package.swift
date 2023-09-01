@@ -334,7 +334,6 @@ let package = Package(
 			dependencies: [
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
-				"DateTimeLibrary",
 				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
@@ -508,6 +507,7 @@ let package = Package(
 		.target(
 			name: "ScoreSheetFeature",
 			dependencies: [
+				"DateTimeLibrary",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
 				"ScoringServiceInterface",
@@ -578,6 +578,7 @@ let package = Package(
 		.target(
 			name: "SharingFeature",
 			dependencies: [
+				.product(name: "Algorithms", package: "swift-algorithms"),
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
 				"ScoreSheetFeature",

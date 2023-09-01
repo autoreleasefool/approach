@@ -30,7 +30,7 @@ extension GamesEditor {
 				return .none
 
 			case .didShareGame:
-				state.destination = .sharing(.init(games: [state.currentGameId]))
+				state.destination = .sharing(.init(dataSource: .games([state.currentGameId])))
 				return .none
 			}
 

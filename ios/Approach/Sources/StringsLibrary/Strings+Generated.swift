@@ -67,6 +67,8 @@ public enum Strings {
     public static let search = Strings.tr("Localizable", "action.search", fallback: "Search")
     /// Select
     public static let select = Strings.tr("Localizable", "action.select", fallback: "Select")
+    /// Share
+    public static let share = Strings.tr("Localizable", "action.share", fallback: "Share")
     /// Skip
     public static let skip = Strings.tr("Localizable", "action.skip", fallback: "Skip")
     /// Start
@@ -1015,6 +1017,36 @@ public enum Strings {
         /// Widgets
         public static let title = Strings.tr("Localizable", "settings.statistics.widgets.title", fallback: "Widgets")
       }
+    }
+  }
+  public enum Sharing {
+    /// Share Game
+    public static let sharingGame = Strings.tr("Localizable", "sharing.sharingGame", fallback: "Share Game")
+    /// Share Games
+    public static let sharingGames = Strings.tr("Localizable", "sharing.sharingGames", fallback: "Share Games")
+    /// Share Series
+    public static let sharingSeries = Strings.tr("Localizable", "sharing.sharingSeries", fallback: "Share Series")
+    /// Sharing
+    public static let title = Strings.tr("Localizable", "sharing.title", fallback: "Share")
+    public enum Preview {
+      /// Preview
+      public static let title = Strings.tr("Localizable", "sharing.preview.title", fallback: "Preview")
+    }
+    public enum ScoreSheet {
+      /// Score
+      public static let score = Strings.tr("Localizable", "sharing.scoreSheet.score", fallback: "Score")
+      public enum Style {
+        /// Default
+        public static let `default` = Strings.tr("Localizable", "sharing.scoreSheet.style.default", fallback: "Default")
+        /// Plain
+        public static let plain = Strings.tr("Localizable", "sharing.scoreSheet.style.plain", fallback: "Plain")
+        /// Pride
+        public static let pride = Strings.tr("Localizable", "sharing.scoreSheet.style.pride", fallback: "Pride")
+      }
+    }
+    public enum Style {
+      /// Style
+      public static let title = Strings.tr("Localizable", "sharing.style.title", fallback: "Style")
     }
   }
   public enum SortOrder {

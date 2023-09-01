@@ -324,6 +324,19 @@
 "statistics.title.averagePinsLeftOnDeck" = "Average Pins Left on Deck";
 "statistics.title.totalRolls" = "Total Rolls";
 
+/* Sharing */
+"sharing.title" = "Share";
+"sharing.sharingSeries" = "Share Series";
+"sharing.sharingGame" = "Share Game";
+"sharing.sharingGames" = "Share Games";
+"sharing.style.title" = "Style";
+"sharing.preview.title" = "Preview";
+"sharing.scoreSheet.score" = "Score";
+
+"sharing.scoreSheet.style.default" = "Default";
+"sharing.scoreSheet.style.plain" = "Plain";
+"sharing.scoreSheet.style.pride" = "Pride";
+
 /* Widget */
 
 "widget.builder.preview" = "Preview";
@@ -499,6 +512,7 @@
 "action.select" = "Select";
 "action.report" = "Report";
 "action.deselectAll" = "Deselect all";
+"action.share" = "Share";
 
 /* Other */
 

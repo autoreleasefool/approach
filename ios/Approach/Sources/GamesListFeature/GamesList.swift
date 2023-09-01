@@ -107,7 +107,7 @@ public struct GamesList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didTapShareButton:
-					state.destination = .sharing(.init(series: state.series.id))
+					state.destination = .sharing(.init(dataSource: .series(state.series.id)))
 					return .none
 
 				case let .didTapGame(id):

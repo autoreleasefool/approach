@@ -1,3 +1,4 @@
+import AssetsLibrary
 import SwiftUI
 
 public struct RoundedCorner: Shape {

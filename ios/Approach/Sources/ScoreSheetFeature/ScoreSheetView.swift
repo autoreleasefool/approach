@@ -124,8 +124,8 @@ public struct ScoreSheetView: View {
 				.padding(.smallSpacing)
 				.foregroundColor(
 					highlighted
-					? Asset.Colors.ScoreSheet.Text.highlight
-					: Asset.Colors.ScoreSheet.Text.default
+					? Asset.Colors.ScoreSheet.Text.OnBackground.highlight
+					: Asset.Colors.ScoreSheet.Text.OnBackground.default
 				)
 				.background(
 					highlighted
@@ -156,8 +156,12 @@ public struct ScoreSheetView: View {
 				.padding(.smallSpacing)
 				.foregroundColor(
 					highlightRollIndex == roll.index
-					? roll.didFoul ? Asset.Colors.ScoreSheet.Text.highlightFoul : Asset.Colors.ScoreSheet.Text.highlight
-					: roll.didFoul ? Asset.Colors.ScoreSheet.Text.foul : Asset.Colors.ScoreSheet.Text.default
+						? roll.didFoul
+							? Asset.Colors.ScoreSheet.Text.OnBackground.highlightFoul
+							: Asset.Colors.ScoreSheet.Text.OnBackground.highlight
+						: roll.didFoul
+							? Asset.Colors.ScoreSheet.Text.OnBackground.foul
+							: Asset.Colors.ScoreSheet.Text.OnBackground.default
 				)
 				.background(
 					highlightRollIndex == roll.index
@@ -181,8 +185,8 @@ public struct ScoreSheetView: View {
 			.font(.caption2)
 			.foregroundColor(
 				highlighted
-				? Asset.Colors.ScoreSheet.Label.highlight
-				: Asset.Colors.ScoreSheet.Label.default
+				? Asset.Colors.ScoreSheet.Text.OnRail.highlight
+				: Asset.Colors.ScoreSheet.Text.OnRail.default
 			)
 			.frame(maxWidth: .infinity)
 			.foregroundColor(.white)

@@ -58,11 +58,12 @@ public struct GamesListView: View {
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesList.Destination.State.sharing,
-			action: GamesList.Destination.Action.sharing,
-			content: { store in
+			action: GamesList.Destination.Action.sharing
+		) { store in
+			NavigationStack {
 				SharingView(store: store)
 			}
-		)
+		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesList.Destination.State.editor,
