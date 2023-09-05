@@ -140,6 +140,7 @@ let package = Package(
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.0"),
 		.package(url: "https://github.com/exyte/PopupView.git", from: "2.6.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
+		.package(url: "https://github.com/markiv/SwiftUI-Shimmer.git", from: "1.4.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.2.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
@@ -507,6 +508,7 @@ let package = Package(
 		.target(
 			name: "ScoreSheetFeature",
 			dependencies: [
+				.product(name: "Shimmer", package: "SwiftUI-Shimmer"),
 				"DateTimeLibrary",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",

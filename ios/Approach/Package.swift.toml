@@ -105,6 +105,7 @@ libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
 [features.ScoreSheet]
 services = [ "Scoring" ]
 libraries = [ "DateTime", "SwiftUIExtensions", "Views" ]
+dependencies = [ "Shimmer" ]
 
 [features.SeriesEditor]
 features = [ "Form" ]
@@ -408,6 +409,10 @@ from = "2.6.0"
 [dependencies.SFSafeSymbols]
 url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"
 from = "4.1.1"
+
+[dependencies.Shimmer]
+url = "https://github.com/markiv/SwiftUI-Shimmer.git"
+from = "1.4.0"
 
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
