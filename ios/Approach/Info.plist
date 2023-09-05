@@ -6,5 +6,20 @@
 	<false/>
 	<key>TELEMETRY_DECK_API_KEY</key>
 	<string>$(TELEMETRY_DECK_API_KEY)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>$(FACEBOOK_URL_SCHEME)</string>
+		</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>$(FACEBOOK_APP_ID)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>instagram-stories</string>
+	</array>
 </dict>
 </plist>
