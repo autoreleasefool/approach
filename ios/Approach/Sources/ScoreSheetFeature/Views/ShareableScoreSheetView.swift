@@ -20,79 +20,81 @@ public struct ShareableScoreSheetView: View {
 	}
 
 	public var body: some View {
-		ScrollView(.horizontal, showsIndicators: false) {
-			HStack(alignment: .bottom, spacing: 0) {
-				if config.hasLabels(onSide: .left) {
+		HStack(alignment: .bottom, spacing: 0) {
+			if config.hasLabels(onSide: .left) {
+				labels
+					.padding(.trailing, .smallSpacing)
+			}
+
+			VStack(alignment: .leading, spacing: 0) {
+				if config.hasLabels(onSide: .top) {
 					labels
-						.padding(.trailing, .smallSpacing)
+						.padding(.bottom, .smallSpacing)
 				}
 
-				VStack(alignment: .leading, spacing: 0) {
-					if config.hasLabels(onSide: .top) {
-						labels
-							.padding(.bottom, .smallSpacing)
-					}
-
-					ForEach(games) { game in
-						if game.id == games.first?.id && config.showFrameLabels {
-							if config.showFrameDetails {
-								HStack(spacing: 0) {
-									Spacer(minLength: headerWidth)
-
-									ForEach(game.steps, id: \.index) { step in
-										railView(label: String(step.index + 1))
-											.borders(leading: step.index != 0, color: config.style.border)
+				ScrollView(.horizontal, showsIndicators: false) {
+					VStack(alignment: .leading, spacing: 0) {
+						ForEach(games) { game in
+							if game.id == games.first?.id && config.showFrameLabels {
+								if config.showFrameDetails {
+									HStack(spacing: 0) {
+										Spacer(minLength: headerWidth)
+										
+										ForEach(game.steps, id: \.index) { step in
+											railView(label: String(step.index + 1))
+												.borders(leading: step.index != 0, color: config.style.border)
+												.background(config.style.railBackground)
+												.roundCorners(topLeading: step.index == 0)
+												.borders(trailing: Frame.isLast(step.index), color: config.style.border, thickness: 2)
+										}
+										
+										railView(label: Strings.Sharing.ScoreSheet.score)
+											.italic()
 											.background(config.style.railBackground)
-											.roundCorners(topLeading: step.index == 0)
-											.borders(trailing: Frame.isLast(step.index), color: config.style.border, thickness: 2)
+											.roundCorners(topTrailing: true)
+											.frame(width: scoreWidth > 0 ? scoreWidth : nil)
 									}
-
-									railView(label: Strings.Sharing.ScoreSheet.score)
-										.italic()
-										.background(config.style.railBackground)
-										.roundCorners(topTrailing: true)
-										.frame(width: scoreWidth > 0 ? scoreWidth : nil)
-								}
-							} else {
-								HStack(spacing: 0) {
-									Spacer()
-										.frame(minWidth: headerWidth, maxWidth: headerWidth)
-
-									railView(label: Strings.Sharing.ScoreSheet.score)
-										.background(config.style.railBackground)
-										.roundCorners(topLeading: true, topTrailing: true)
-										.frame(width: scoreWidth > 0 ? scoreWidth : nil)
-
-									Spacer()
+								} else {
+									HStack(spacing: 0) {
+										Spacer()
+											.frame(minWidth: headerWidth, maxWidth: headerWidth)
+										
+										railView(label: Strings.Sharing.ScoreSheet.score)
+											.background(config.style.railBackground)
+											.roundCorners(topLeading: true, topTrailing: true)
+											.frame(width: scoreWidth > 0 ? scoreWidth : nil)
+										
+										Spacer()
+									}
 								}
 							}
+							
+							gameView(forGame: game)
+								.background(config.style.background)
+								.roundCorners(
+									topLeading: game.id == games.first?.id,
+									topTrailing: game.id == games.first?.id && !config.showFrameLabels,
+									bottomLeading: game.id == games.last?.id,
+									bottomTrailing: game.id == games.last?.id
+								)
+								.borders(
+									bottom: game.id != games.last?.id,
+									color: config.style.strongBorder,
+									thickness: 2
+								)
 						}
-
-						gameView(forGame: game)
-							.background(config.style.background)
-							.roundCorners(
-								topLeading: game.id == games.first?.id,
-								topTrailing: game.id == games.first?.id && !config.showFrameLabels,
-								bottomLeading: game.id == games.last?.id,
-								bottomTrailing: game.id == games.last?.id
-							)
-							.borders(
-								bottom: game.id != games.last?.id,
-								color: config.style.strongBorder,
-								thickness: 2
-							)
-					}
-
-					if config.hasLabels(onSide: .bottom) {
-						labels
-							.padding(.top, .smallSpacing)
 					}
 				}
 
-				if config.hasLabels(onSide: .right) {
+				if config.hasLabels(onSide: .bottom) {
 					labels
-						.padding(.leading, .smallSpacing)
+						.padding(.top, .smallSpacing)
 				}
+			}
+
+			if config.hasLabels(onSide: .right) {
+				labels
+					.padding(.leading, .smallSpacing)
 			}
 		}
 		.measure(key: ContentSizeKey.self, to: $contentSize)

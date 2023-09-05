@@ -331,6 +331,21 @@
 "sharing.sharingGames" = "Share Games";
 "sharing.style.title" = "Style";
 "sharing.preview.title" = "Preview";
+"sharing.labels.title" = "Labels";
+"sharing.labels.footer" = "Show or hide your name and other details to share.";
+"sharing.labels.includeBowler" = "Include bowler?";
+"sharing.labels.includeLeague" = "Include league?";
+"sharing.labels.includeSeries" = "Include series?";
+"sharing.labels.includeAlley" = "Include alley?";
+"sharing.frames.title" = "Frames";
+"sharing.frames.includeDetails" = "Show full game details?";
+"sharing.frames.includeLabels" = "Include frame labels?";
+"sharing.layout.title" = "Layout";
+"sharing.layout.labelPosition" = "Label Position";
+"sharing.layout.labelPosition.top" = "Top";
+"sharing.layout.labelPosition.left" = "Left";
+"sharing.layout.labelPosition.right" = "Right";
+"sharing.layout.labelPosition.bottom" = "Bottom";
 "sharing.scoreSheet.score" = "Score";
 
 "sharing.scoreSheet.style.default" = "Default";

@@ -1028,6 +1028,44 @@ public enum Strings {
     public static let sharingSeries = Strings.tr("Localizable", "sharing.sharingSeries", fallback: "Share Series")
     /// Sharing
     public static let title = Strings.tr("Localizable", "sharing.title", fallback: "Share")
+    public enum Frames {
+      /// Show full game details?
+      public static let includeDetails = Strings.tr("Localizable", "sharing.frames.includeDetails", fallback: "Show full game details?")
+      /// Include frame labels?
+      public static let includeLabels = Strings.tr("Localizable", "sharing.frames.includeLabels", fallback: "Include frame labels?")
+      /// Frames
+      public static let title = Strings.tr("Localizable", "sharing.frames.title", fallback: "Frames")
+    }
+    public enum Labels {
+      /// Show or hide your name and other details to share.
+      public static let footer = Strings.tr("Localizable", "sharing.labels.footer", fallback: "Show or hide your name and other details to share.")
+      /// Include alley?
+      public static let includeAlley = Strings.tr("Localizable", "sharing.labels.includeAlley", fallback: "Include alley?")
+      /// Include bowler?
+      public static let includeBowler = Strings.tr("Localizable", "sharing.labels.includeBowler", fallback: "Include bowler?")
+      /// Include league?
+      public static let includeLeague = Strings.tr("Localizable", "sharing.labels.includeLeague", fallback: "Include league?")
+      /// Include series?
+      public static let includeSeries = Strings.tr("Localizable", "sharing.labels.includeSeries", fallback: "Include series?")
+      /// Labels
+      public static let title = Strings.tr("Localizable", "sharing.labels.title", fallback: "Labels")
+    }
+    public enum Layout {
+      /// Label Position
+      public static let labelPosition = Strings.tr("Localizable", "sharing.layout.labelPosition", fallback: "Label Position")
+      /// Layout
+      public static let title = Strings.tr("Localizable", "sharing.layout.title", fallback: "Layout")
+      public enum LabelPosition {
+        /// Bottom
+        public static let bottom = Strings.tr("Localizable", "sharing.layout.labelPosition.bottom", fallback: "Bottom")
+        /// Left
+        public static let `left` = Strings.tr("Localizable", "sharing.layout.labelPosition.left", fallback: "Left")
+        /// Right
+        public static let `right` = Strings.tr("Localizable", "sharing.layout.labelPosition.right", fallback: "Right")
+        /// Top
+        public static let top = Strings.tr("Localizable", "sharing.layout.labelPosition.top", fallback: "Top")
+      }
+    }
     public enum Preview {
       /// Preview
       public static let title = Strings.tr("Localizable", "sharing.preview.title", fallback: "Preview")

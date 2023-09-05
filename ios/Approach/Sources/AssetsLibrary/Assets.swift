@@ -86,6 +86,9 @@ public enum Asset {
     public enum Frame {
       public static let pinTint = ColorAsset(name: "Frame/PinTint")
     }
+    public enum List {
+      public static let selection = ColorAsset(name: "List/Selection")
+    }
     public enum Primary {
       public static let `default` = ColorAsset(name: "Primary/Default")
       public static let light = ColorAsset(name: "Primary/Light")
@@ -107,7 +110,6 @@ public enum Asset {
       }
       public enum Card {
         public static let `default` = ColorAsset(name: "ScoreSheet/Card/Default")
-        public static let highlight = ColorAsset(name: "ScoreSheet/Card/Highlight")
         public static let plain = ColorAsset(name: "ScoreSheet/Card/Plain")
         public static let pride = ColorAsset(name: "ScoreSheet/Card/Pride")
       }

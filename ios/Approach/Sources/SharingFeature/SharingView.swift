@@ -1,4 +1,5 @@
 import Algorithms
+import AssetsLibrary
 import ComposableArchitecture
 import Foundation
 import ModelsLibrary
@@ -17,9 +18,13 @@ public struct SharingView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			VStack(spacing: 0) {
+				preview(viewStore)
+
 				List {
-					preview(viewStore)
-					styles(viewStore)
+					styleOptions(viewStore)
+					frameOptions(viewStore)
+					labelOptions(viewStore)
+					layoutOptions(viewStore)
 				}
 
 				Divider()
@@ -45,49 +50,98 @@ public struct SharingView: View {
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}
 
-	private func preview(_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>) -> some View {
-		Section(Strings.Sharing.Preview.title) {
-			if viewStore.scores.isEmpty {
-				ListProgressView()
-			} else {
-				ShareableScoreSheetView(
-					games: Array(viewStore.shareableGames.prefix(2)),
-					style: viewStore.scoreSheetStyle
-				)
-			}
-		}
+	@MainActor private func preview(
+		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
+	) -> some View {
+		ShareableScoreSheetView(
+			games: Array(viewStore.shareableGames.prefix(1)),
+			configuration: viewStore.configuration
+		)
+		.scrollDisabled(true)
 		.cornerRadius(.standardRadius)
-		.listRowBackground(Color.clear)
+		.padding(.smallSpacing)
+		.background(
+			RoundedRectangle(cornerRadius: .standardRadius)
+				.fill(viewStore.style.cardBackground.swiftUIColor)
+				.shadow(radius: .standardShadowRadius)
+		)
+		.padding(.standardSpacing)
 	}
 
-	private func styles(_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>) -> some View {
+	@MainActor private func styleOptions(
+		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
+	) -> some View {
 		Section(Strings.Sharing.Style.title) {
-			Grid(horizontalSpacing: .standardSpacing, verticalSpacing: .standardSpacing) {
+			Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .smallSpacing) {
 				ForEach(ShareableScoreSheetStyleGroup.scoreSheetStyles) { group in
 					GridRow {
 						ForEach(group.styles) { style in
 							Button { viewStore.send(.didTapStyle(style)) } label: {
 								PreviewingShareableScoreSheetView(style: style)
+									.padding(.unitSpacing)
+									.background(
+										style.id == viewStore.style.id
+											? RoundedRectangle(cornerRadius: .standardRadius)
+												.fill(Asset.Colors.List.selection.swiftUIColor)
+											: nil
+									)
 							}
 							.buttonStyle(TappableElement())
 						}
 					}
+					.frame(maxWidth: .infinity)
 				}
 			}
 		}
 		.listRowBackground(Color.clear)
 	}
+
+	@MainActor private func frameOptions(_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>) -> some View {
+		Section(Strings.Sharing.Frames.title) {
+			Toggle(Strings.Sharing.Frames.includeDetails, isOn: viewStore.$isShowingFrameDetails)
+			Toggle(Strings.Sharing.Frames.includeLabels, isOn: viewStore.$isShowingFrameLabels)
+		}
+	}
+
+	@MainActor private func labelOptions(_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>) -> some View {
+		Section {
+			Toggle(Strings.Sharing.Labels.includeBowler, isOn: viewStore.$isShowingBowlerName)
+			Toggle(Strings.Sharing.Labels.includeLeague, isOn: viewStore.$isShowingLeagueName)
+			Toggle(Strings.Sharing.Labels.includeSeries, isOn: viewStore.$isShowingSeriesDate)
+			Toggle(Strings.Sharing.Labels.includeAlley, isOn: viewStore.$isShowingAlleyName)
+				.disabled(!viewStore.hasAlley)
+		} header: {
+			Text(Strings.Sharing.Labels.title)
+		} footer: {
+			Text(Strings.Sharing.Labels.footer)
+		}
+	}
+
+	@MainActor private func layoutOptions(
+		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
+	) -> some View {
+		Section(Strings.Sharing.Layout.title) {
+			Picker(
+				Strings.Sharing.Layout.labelPosition,
+				selection: viewStore.$labelPosition
+			) {
+				ForEach(ShareableScoreSheetConfiguration.LabelPosition.allCases) {
+					Text(String(describing: $0)).tag($0)
+				}
+			}
+		}
+	}
 }
 
-extension ShareableScoreSheetView.Style: Identifiable {
+extension ShareableScoreSheetConfiguration.Style: Identifiable {
 	public var id: String { title }
 }
 
 struct ShareableScoreSheetStyleGroup: Identifiable {
 	let id = UUID()
-	let styles: [ShareableScoreSheetView.Style]
+	let styles: [ShareableScoreSheetConfiguration.Style]
 
-	static let scoreSheetStyles = ShareableScoreSheetView.Style
+	static let scoreSheetStyles = ShareableScoreSheetConfiguration.Style
 		.allStyles
 		.chunks(ofCount: 3)
 		.map { ShareableScoreSheetStyleGroup(styles: Array($0)) }
@@ -111,7 +165,8 @@ struct SharingViewPreview: PreviewProvider {
 							league: .init(name: "Majors"),
 							series: .init(
 								date: Date(),
-								alley: .init(name: "Skyview Lanes")
+								alley: nil
+//								alley: .init(name: "Skyview Lanes")
 							)
 						),
 						.init(
@@ -124,7 +179,8 @@ struct SharingViewPreview: PreviewProvider {
 							league: .init(name: "Majors"),
 							series: .init(
 								date: Date(),
-								alley: .init(name: "Skyview Lanes")
+								alley: nil
+//								alley: .init(name: "Skyview Lanes")
 							)
 						),
 					])

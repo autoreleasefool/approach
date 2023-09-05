@@ -4,21 +4,32 @@ import StringsLibrary
 
 public struct ShareableScoreSheetConfiguration: Equatable {
 	public var style: Style
-	public var labelPosition: LabelPosition = .bottom
-	public var showFrameLabels: Bool = true
-	public var showFrameDetails: Bool = true
+	public var labelPosition: LabelPosition
+	public var showFrameLabels: Bool
+	public var showFrameDetails: Bool
 	public var bowlerName: String?
 	public var leagueName: String?
 	public var seriesDate: Date?
 	public var alleyName: String?
 
-	public init(style: Style = .default) {
+	public init(
+		style: ShareableScoreSheetConfiguration.Style = .default,
+		labelPosition: ShareableScoreSheetConfiguration.LabelPosition = .bottom,
+		showFrameLabels: Bool = true,
+		showFrameDetails: Bool = true,
+		bowlerName: String? = nil,
+		leagueName: String? = nil,
+		seriesDate: Date? = nil,
+		alleyName: String? = nil
+	) {
 		self.style = style
-
-		self.bowlerName = "Joseph"
-		self.leagueName = "Majors, 2022-2023"
-		self.seriesDate = Date()
-		self.alleyName = "Skyview Lanes"
+		self.labelPosition = labelPosition
+		self.showFrameLabels = showFrameLabels
+		self.showFrameDetails = showFrameDetails
+		self.bowlerName = bowlerName
+		self.leagueName = leagueName
+		self.seriesDate = seriesDate
+		self.alleyName = alleyName
 	}
 
 	var hasLabels: Bool {
@@ -44,25 +55,35 @@ public struct ShareableScoreSheetConfiguration: Equatable {
 }
 
 extension ShareableScoreSheetConfiguration {
-	public enum LabelPosition: Equatable {
+	public enum LabelPosition: String, Equatable, CaseIterable, Identifiable, CustomStringConvertible {
 		case top
 		case right
 		case bottom
 		case left
+
+		public var id: String { rawValue }
+		public var description: String {
+			switch self {
+			case .top: return Strings.Sharing.Layout.LabelPosition.top
+			case .bottom: return Strings.Sharing.Layout.LabelPosition.bottom
+			case .left: return Strings.Sharing.Layout.LabelPosition.left
+			case .right: return Strings.Sharing.Layout.LabelPosition.right
+			}
+		}
 	}
 }
 
 extension ShareableScoreSheetConfiguration {
 	public struct Style: Equatable {
 		public let title: String
-		let textOnBackground: ColorAsset
-		let textOnRail: ColorAsset
-		let textOnCard: ColorAsset
-		let background: ColorAsset
-		let railBackground: ColorAsset
-		let cardBackground: ColorAsset
-		let border: ColorAsset
-		let strongBorder: ColorAsset
+		public let textOnBackground: ColorAsset
+		public let textOnRail: ColorAsset
+		public let textOnCard: ColorAsset
+		public let background: ColorAsset
+		public let railBackground: ColorAsset
+		public let cardBackground: ColorAsset
+		public let border: ColorAsset
+		public let strongBorder: ColorAsset
 
 		public static let `default` = Self(
 			title: Strings.Sharing.ScoreSheet.Style.default,

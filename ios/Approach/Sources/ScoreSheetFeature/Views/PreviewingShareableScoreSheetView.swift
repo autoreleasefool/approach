@@ -1,13 +1,14 @@
 import AssetsLibrary
 import ModelsLibrary
 import ScoringServiceInterface
+import Shimmer
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
 public struct PreviewingShareableScoreSheetView: View {
 	let style: ShareableScoreSheetConfiguration.Style
 	private static let rolls = ["L", "/", "8"]
-
+ 
 	@State private var contentSize: CGSize = .zero
 	@State private var headerWidth: CGFloat = .zero
 	@State private var rowHeight: CGFloat = .zero
@@ -88,6 +89,13 @@ public struct PreviewingShareableScoreSheetView: View {
 			color: style.strongBorder,
 			thickness: 2
 		)
+		.modifier(Shimmer(gradient: Gradient(
+			colors: [
+				.black,
+				.black.opacity(0.8),
+				.black,
+			]
+		)))
 	}
 }
 
