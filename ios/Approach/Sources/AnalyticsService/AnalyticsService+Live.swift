@@ -18,7 +18,7 @@ extension AnalyticsService: DependencyKey {
 		@Sendable func initialize() {
 			let apiKey = AppConstants.ApiKey.telemetryDeck
 			let configuration = TelemetryManagerConfiguration(appID: apiKey)
-			if apiKey == AppConstants.ApiKey.disable {
+			if apiKey.isEmpty {
 				print("Analytics disabled")
 				configuration.analyticsDisabled = true
 			} else if getOptInStatus() == .optedOut {

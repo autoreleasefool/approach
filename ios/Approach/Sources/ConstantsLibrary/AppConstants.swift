@@ -20,10 +20,8 @@ public enum AppConstants {
 
 extension AppConstants {
 	public enum ApiKey {
-		public static let disable = "DISABLE"
-
 		public static let telemetryDeck: String = {
-			(try? Configuration.value(for: "TELEMETRY_DECK_API_KEY")) ?? AppConstants.ApiKey.disable
+			(try? Configuration.value(for: "TELEMETRY_DECK_API_KEY")) ?? ""
 		}()
 	}
 }
