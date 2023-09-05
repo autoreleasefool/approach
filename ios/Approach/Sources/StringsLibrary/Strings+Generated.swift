@@ -67,8 +67,10 @@ public enum Strings {
     public static let search = Strings.tr("Localizable", "action.search", fallback: "Search")
     /// Select
     public static let select = Strings.tr("Localizable", "action.select", fallback: "Select")
-    /// Share
-    public static let share = Strings.tr("Localizable", "action.share", fallback: "Share")
+    /// Other
+    public static let shareToOther = Strings.tr("Localizable", "action.shareToOther", fallback: "Other")
+    /// Share to Stories
+    public static let shareToStories = Strings.tr("Localizable", "action.shareToStories", fallback: "Share to Stories")
     /// Skip
     public static let skip = Strings.tr("Localizable", "action.skip", fallback: "Skip")
     /// Start

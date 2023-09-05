@@ -64,7 +64,8 @@ public struct Sharing: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
 			case didFirstAppear
-			case didTapShareButton
+			case didTapShareToStoriesButton
+			case didTapShareToOtherButton
 			case didTapStyle(ShareableScoreSheetConfiguration.Style)
 			case didTapDoneButton
 			case binding(BindingAction<State>)
@@ -124,7 +125,10 @@ public struct Sharing: Reducer {
 					state.style = style
 					return .none
 
-				case .didTapShareButton:
+				case .didTapShareToStoriesButton:
+					return .none
+
+				case .didTapShareToOtherButton:
 					return .none
 
 				case .didTapDoneButton:

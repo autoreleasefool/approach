@@ -147,6 +147,10 @@ public enum Asset {
     public enum Success {
       public static let `default` = ColorAsset(name: "Success/Default")
     }
+    public enum Text {
+      public static let onBackground = ColorAsset(name: "Text/OnBackground")
+      public static let onSecondaryBackground = ColorAsset(name: "Text/OnSecondaryBackground")
+    }
     public enum Warning {
       public static let `default` = ColorAsset(name: "Warning/Default")
     }
@@ -176,6 +180,9 @@ public enum Asset {
     }
     public enum Icons {
       public static let analytics = ImageAsset(name: "Icons/Analytics")
+      public enum Social {
+        public static let instagram = ImageAsset(name: "Icons/Social/Instagram")
+      }
     }
     public enum Lane {
       public static let galaxy = ImageAsset(name: "Lane/Galaxy")

@@ -527,7 +527,8 @@
 "action.select" = "Select";
 "action.report" = "Report";
 "action.deselectAll" = "Deselect all";
-"action.share" = "Share";
+"action.shareToStories" = "Share to Stories";
+"action.shareToOther" = "Other";
 
 /* Other */
 

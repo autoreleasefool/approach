@@ -29,14 +29,7 @@ public struct SharingView: View {
 
 				Divider()
 
-				Button {
-					viewStore.send(.didTapShareButton)
-				} label: {
-					Text(Strings.Action.share)
-						.frame(maxWidth: .infinity)
-				}
-				.modifier(PrimaryButton())
-				.padding()
+				shareButtons(viewStore)
 			}
 			.navigationTitle(viewStore.navigationTitle)
 			.navigationBarTitleDisplayMode(.inline)
@@ -130,6 +123,39 @@ public struct SharingView: View {
 				}
 			}
 		}
+	}
+
+	@MainActor private func shareButtons(
+		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
+	) -> some View {
+		HStack {
+			Button {
+				viewStore.send(.didTapShareToStoriesButton)
+			} label: {
+				HStack {
+					Asset.Media.Icons.Social.instagram.swiftUIImage
+						.renderingMode(.template)
+						.resizable()
+						.scaledToFit()
+						.frame(width: .smallIcon)
+						.foregroundColor(.white)
+					Text(Strings.Action.shareToStories)
+				}
+					.frame(maxWidth: .infinity)
+			}
+			.modifier(PrimaryButton())
+
+			Button {
+				viewStore.send(.didTapShareToOtherButton)
+			} label: {
+				Text(Strings.Action.shareToOther)
+			}
+			.buttonStyle(.borderedProminent)
+			.controlSize(.large)
+			.foregroundColor(Asset.Colors.Text.onSecondaryBackground)
+			.tint(Asset.Colors.Background.secondary)
+		}
+		.padding()
 	}
 }
 
