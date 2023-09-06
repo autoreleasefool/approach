@@ -11,6 +11,8 @@ import ViewsLibrary
 public struct SharingView: View {
 	let store: StoreOf<Sharing>
 
+	@Environment(\.displayScale) var displayScale
+
 	public init(store: StoreOf<Sharing>) {
 		self.store = store
 	}
@@ -38,7 +40,13 @@ public struct SharingView: View {
 					Button(Strings.Action.done) { viewStore.send(.didTapDoneButton) }
 				}
 			}
-//			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onFirstAppear {
+				viewStore.send(.binding(.set(\.$displayScale, displayScale)))
+			}
+			.onChange(of: displayScale) {
+				viewStore.send(.binding(.set(\.$displayScale, $0)))
+			}
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}
@@ -129,25 +137,32 @@ public struct SharingView: View {
 		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
 	) -> some View {
 		HStack {
-			Button {
-				viewStore.send(.didTapShareToStoriesButton)
-			} label: {
-				HStack {
-					Asset.Media.Icons.Social.instagram.swiftUIImage
-						.renderingMode(.template)
-						.resizable()
-						.scaledToFit()
-						.frame(width: .smallIcon)
-						.foregroundColor(.white)
-					Text(Strings.Action.shareToStories)
-				}
-					.frame(maxWidth: .infinity)
-			}
-			.modifier(PrimaryButton())
+//			Button {
+//				viewStore.send(.didTapShareToStoriesButton)
+//			} label: {
+//				HStack {
+//					Asset.Media.Icons.Social.instagram.swiftUIImage
+//						.renderingMode(.template)
+//						.resizable()
+//						.scaledToFit()
+//						.frame(width: .smallIcon)
+//						.foregroundColor(.white)
+//					Text(Strings.Action.shareToStories)
+//				}
+//				.frame(maxWidth: .infinity)
+//			}
+//			.modifier(PrimaryButton())
 
-			Button {
-				viewStore.send(.didTapShareToOtherButton)
-			} label: {
+//			ShareLi
+
+			ShareLink(
+				item: ShareableGame(
+					games: viewStore.shareableGames,
+					configuration: viewStore.configuration,
+					scale: viewStore.displayScale
+				),
+				preview: SharePreview("Image")
+			) {
 				Text(Strings.Action.shareToOther)
 			}
 			.buttonStyle(.borderedProminent)

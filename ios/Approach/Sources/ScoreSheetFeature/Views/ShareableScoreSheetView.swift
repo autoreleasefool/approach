@@ -39,7 +39,7 @@ public struct ShareableScoreSheetView: View {
 								if config.showFrameDetails {
 									HStack(spacing: 0) {
 										Spacer(minLength: headerWidth)
-										
+
 										ForEach(game.steps, id: \.index) { step in
 											railView(label: String(step.index + 1))
 												.borders(leading: step.index != 0, color: config.style.border)
@@ -47,7 +47,7 @@ public struct ShareableScoreSheetView: View {
 												.roundCorners(topLeading: step.index == 0)
 												.borders(trailing: Frame.isLast(step.index), color: config.style.border, thickness: 2)
 										}
-										
+
 										railView(label: Strings.Sharing.ScoreSheet.score)
 											.italic()
 											.background(config.style.railBackground)
@@ -58,17 +58,17 @@ public struct ShareableScoreSheetView: View {
 									HStack(spacing: 0) {
 										Spacer()
 											.frame(minWidth: headerWidth, maxWidth: headerWidth)
-										
+
 										railView(label: Strings.Sharing.ScoreSheet.score)
 											.background(config.style.railBackground)
 											.roundCorners(topLeading: true, topTrailing: true)
 											.frame(width: scoreWidth > 0 ? scoreWidth : nil)
-										
+
 										Spacer()
 									}
 								}
 							}
-							
+
 							gameView(forGame: game)
 								.background(config.style.background)
 								.roundCorners(
@@ -272,7 +272,7 @@ extension ShareableScoreSheetView {
 		}
 	}
 }
- 
+
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct GameHeaderWidthKey: PreferenceKey, MatchWidthPreferenceKey {}
 private struct ScoreWidthKey: PreferenceKey, MatchWidthPreferenceKey {}

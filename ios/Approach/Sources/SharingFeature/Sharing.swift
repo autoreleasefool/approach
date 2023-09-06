@@ -6,6 +6,7 @@ import ModelsLibrary
 import ScoreSheetFeature
 import ScoringServiceInterface
 import StringsLibrary
+import SwiftUI
 
 public struct Sharing: Reducer {
 	public struct State: Equatable {
@@ -22,6 +23,7 @@ public struct Sharing: Reducer {
 		@BindingState public var isShowingLeagueName = true
 		@BindingState public var isShowingSeriesDate = true
 		@BindingState public var isShowingAlleyName = true
+		@BindingState public var displayScale: CGFloat = .zero
 
 		public var errors: Errors<ErrorID>.State = .init()
 

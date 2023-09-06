@@ -8,7 +8,7 @@ import SwiftUIExtensionsLibrary
 public struct PreviewingShareableScoreSheetView: View {
 	let style: ShareableScoreSheetConfiguration.Style
 	private static let rolls = ["L", "/", "8"]
- 
+
 	@State private var contentSize: CGSize = .zero
 	@State private var headerWidth: CGFloat = .zero
 	@State private var rowHeight: CGFloat = .zero
