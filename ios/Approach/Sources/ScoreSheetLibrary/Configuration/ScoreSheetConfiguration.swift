@@ -1,8 +1,9 @@
 import AssetsLibrary
 import Foundation
+import ModelsLibrary
 import StringsLibrary
 
-public struct ShareableScoreSheetConfiguration: Equatable {
+public struct ScoreSheetConfiguration: Equatable {
 	public var style: Style
 	public var labelPosition: LabelPosition
 	public var showFrameLabels: Bool
@@ -13,8 +14,8 @@ public struct ShareableScoreSheetConfiguration: Equatable {
 	public var alleyName: String?
 
 	public init(
-		style: ShareableScoreSheetConfiguration.Style = .default,
-		labelPosition: ShareableScoreSheetConfiguration.LabelPosition = .bottom,
+		style: Style = .default,
+		labelPosition: LabelPosition = .bottom,
 		showFrameLabels: Bool = true,
 		showFrameDetails: Bool = true,
 		bowlerName: String? = nil,
@@ -54,7 +55,7 @@ public struct ShareableScoreSheetConfiguration: Equatable {
 	}
 }
 
-extension ShareableScoreSheetConfiguration {
+extension ScoreSheetConfiguration {
 	public enum LabelPosition: String, Equatable, CaseIterable, Identifiable, CustomStringConvertible {
 		case top
 		case right
@@ -73,7 +74,7 @@ extension ShareableScoreSheetConfiguration {
 	}
 }
 
-extension ShareableScoreSheetConfiguration {
+extension ScoreSheetConfiguration {
 	public struct Style: Equatable {
 		public let title: String
 		public let textOnBackground: ColorAsset

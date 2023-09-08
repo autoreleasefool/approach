@@ -120,6 +120,7 @@ let package = Package(
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
+		.library(name: "ScoreSheetLibrary", targets: ["ScoreSheetLibrary"]),
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StatisticsChartsLibrary", targets: ["StatisticsChartsLibrary"]),
@@ -509,13 +510,10 @@ let package = Package(
 		.target(
 			name: "ScoreSheetFeature",
 			dependencies: [
-				.product(name: "Shimmer", package: "SwiftUI-Shimmer"),
-				"DateTimeLibrary",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
+				"ScoreSheetLibrary",
 				"ScoringServiceInterface",
-				"SwiftUIExtensionsLibrary",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -1485,6 +1483,22 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ResourcePickerLibrary",
+			]
+		),
+		.target(
+			name: "ScoreSheetLibrary",
+			dependencies: [
+				"DateTimeLibrary",
+				"ModelsLibrary",
+				"SwiftUIExtensionsLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ScoreSheetLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ScoreSheetLibrary",
 			]
 		),
 		.target(

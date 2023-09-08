@@ -104,8 +104,7 @@ libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
 
 [features.ScoreSheet]
 services = [ "Scoring" ]
-libraries = [ "DateTime", "SwiftUIExtensions", "Views" ]
-dependencies = [ "Shimmer" ]
+libraries = [ "ScoreSheet" ]
 
 [features.SeriesEditor]
 features = [ "Form" ]
@@ -319,6 +318,9 @@ libraries = [ "Equatable", "FeatureAction", "ListContent" ]
 
 [libraries.ResourcePicker]
 libraries = [ "FeatureAction", "ListContent" ]
+
+[libraries.ScoreSheet]
+libraries = [ "DateTime", "Models", "SwiftUIExtensions", "Views" ]
 
 [libraries.Sorting]
 

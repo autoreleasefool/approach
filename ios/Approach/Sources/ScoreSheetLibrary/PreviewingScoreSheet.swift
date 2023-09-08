@@ -1,20 +1,18 @@
 import AssetsLibrary
 import ModelsLibrary
-import ScoringServiceInterface
-import Shimmer
+import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
-public struct PreviewingShareableScoreSheetView: View {
-	let style: ShareableScoreSheetConfiguration.Style
+public struct PreviewingScoreSheet: View {
+	let style: ScoreSheetConfiguration.Style
 	private static let rolls = ["L", "/", "8"]
 
-	@State private var contentSize: CGSize = .zero
 	@State private var headerWidth: CGFloat = .zero
 	@State private var rowHeight: CGFloat = .zero
 	@State private var frameWidth: CGFloat = .zero
 
-	public init(style: ShareableScoreSheetConfiguration.Style) {
+	public init(style: ScoreSheetConfiguration.Style) {
 		self.style = style
 	}
 
@@ -29,13 +27,12 @@ public struct PreviewingShareableScoreSheetView: View {
 					.padding(.unitSpacing)
 					.foregroundColor(style.textOnRail)
 					.matchWidth(byKey: FrameWidthKey.self, to: $frameWidth)
-					.frame(width: frameWidth > 0 ? frameWidth : nil)
 					.background(style.railBackground)
 					.roundCorners(topLeading: true)
 			}
 
 			GridRow {
-				Text("Game 1")
+				Text(Strings.Game.titleWithOrdinal(1))
 					.font(.caption)
 					.minimumScaleFactor(0.2)
 					.lineLimit(1)
@@ -43,10 +40,6 @@ public struct PreviewingShareableScoreSheetView: View {
 					.padding(.smallSpacing)
 					.matchWidth(byKey: GameHeaderWidthKey.self, to: $headerWidth)
 					.matchHeight(byKey: RowHeightKey.self, to: $rowHeight)
-					.frame(
-						width: headerWidth > 0 ? headerWidth : nil,
-						height: rowHeight > 0 ? rowHeight : nil
-					)
 					.background(style.background)
 					.roundCorners(topLeading: true)
 
@@ -75,55 +68,45 @@ public struct PreviewingShareableScoreSheetView: View {
 							.gridCellColumns(Frame.NUMBER_OF_ROLLS)
 					}
 				}
-				.frame(height: rowHeight > 0 ? rowHeight : nil)
 				.matchHeight(byKey: RowHeightKey.self, to: $rowHeight)
 				.matchWidth(byKey: FrameWidthKey.self, to: $frameWidth)
 				.background(style.background)
 			}
 		}
 		.dynamicTypeSize(.medium)
-		.measure(key: ContentSizeKey.self, to: $contentSize)
 		.borders(
 			trailing: true,
 			bottom: true,
 			color: style.strongBorder,
 			thickness: 2
 		)
-		.modifier(Shimmer(gradient: Gradient(
-			colors: [
-				.black,
-				.black.opacity(0.8),
-				.black,
-			]
-		)))
 	}
 }
 
-private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
-private struct GameHeaderWidthKey: PreferenceKey, MatchWidthPreferenceKey {}
-private struct FrameWidthKey: PreferenceKey, MatchWidthPreferenceKey {}
-private struct RowHeightKey: PreferenceKey, MatchHeightPreferenceKey {}
+private struct GameHeaderWidthKey: PreferenceKey, MatchDimensionPreferenceKey {}
+private struct FrameWidthKey: PreferenceKey, MatchDimensionPreferenceKey {}
+private struct RowHeightKey: PreferenceKey, MatchDimensionPreferenceKey {}
 
 #if DEBUG
 struct PreviewingShareableScoreSheetPreviews: PreviewProvider {
 	static var previews: some View {
 		Grid(horizontalSpacing: .standardSpacing, verticalSpacing: .standardSpacing) {
 			GridRow {
-				PreviewingShareableScoreSheetView(style: .plain)
-				PreviewingShareableScoreSheetView(style: .default)
-				PreviewingShareableScoreSheetView(style: .pride)
+				PreviewingScoreSheet(style: .plain)
+				PreviewingScoreSheet(style: .default)
+				PreviewingScoreSheet(style: .pride)
 			}
 
 			GridRow {
-				PreviewingShareableScoreSheetView(style: .default)
-				PreviewingShareableScoreSheetView(style: .plain)
-				PreviewingShareableScoreSheetView(style: .pride)
+				PreviewingScoreSheet(style: .default)
+				PreviewingScoreSheet(style: .plain)
+				PreviewingScoreSheet(style: .pride)
 			}
 
 			GridRow {
-				PreviewingShareableScoreSheetView(style: .plain)
-				PreviewingShareableScoreSheetView(style: .default)
-				PreviewingShareableScoreSheetView(style: .pride)
+				PreviewingScoreSheet(style: .plain)
+				PreviewingScoreSheet(style: .default)
+				PreviewingScoreSheet(style: .pride)
 			}
 		}
 		.padding()
