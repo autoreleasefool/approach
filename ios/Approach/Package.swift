@@ -112,6 +112,7 @@ let package = Package(
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
+		.library(name: "ListContentLibrary", targets: ["ListContentLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
 		.library(name: "PickableModelsLibrary", targets: ["PickableModelsLibrary"]),
@@ -1374,6 +1375,20 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "ListContentLibrary",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ListContentLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ListContentLibrary",
+			]
+		),
+		.target(
 			name: "ModelsLibrary",
 			dependencies: [
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
@@ -1448,7 +1463,7 @@ let package = Package(
 			dependencies: [
 				"EquatableLibrary",
 				"FeatureActionLibrary",
-				"ViewsLibrary",
+				"ListContentLibrary",
 			]
 		),
 		.testTarget(
@@ -1462,7 +1477,7 @@ let package = Package(
 			name: "ResourcePickerLibrary",
 			dependencies: [
 				"FeatureActionLibrary",
-				"ViewsLibrary",
+				"ListContentLibrary",
 			]
 		),
 		.testTarget(
@@ -1629,7 +1644,6 @@ let package = Package(
 		.target(
 			name: "ViewsLibrary",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"AssetsLibrary",
 				"StringsLibrary",
 			]

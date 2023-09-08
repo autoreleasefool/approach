@@ -1,7 +1,7 @@
 import AssetsLibrary
+@testable import ListContentLibrary
 import SnapshotTesting
 import SwiftUI
-@testable import ViewsLibrary
 import XCTest
 
 final class ListContentTests: XCTestCase {

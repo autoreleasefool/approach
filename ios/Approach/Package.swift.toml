@@ -291,6 +291,10 @@ dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureFlags]
 
+[libraries.ListContent]
+libraries = [ "Views" ]
+dependencies = [ "ComposableArchitecture" ]
+
 [libraries.Models]
 dependencies = [ "IdentifiedCollections" ]
 [libraries.Models.tests]
@@ -311,10 +315,10 @@ libraries = [ "Sorting" ]
 dependencies = [ "AsyncAlgorithms" ]
 
 [libraries.ResourceList]
-libraries = [ "Equatable", "FeatureAction", "Views" ]
+libraries = [ "Equatable", "FeatureAction", "ListContent" ]
 
 [libraries.ResourcePicker]
-libraries = [ "FeatureAction", "Views" ]
+libraries = [ "FeatureAction", "ListContent" ]
 
 [libraries.Sorting]
 
@@ -366,7 +370,6 @@ dependencies = [ "ComposableArchitecture", "PopupView" ]
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
-dependencies = [ "ComposableArchitecture" ]
 
 # External Dependencies
 
