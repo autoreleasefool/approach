@@ -14,7 +14,7 @@ import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
 import ScoreSheetFeature
-import ScoringServiceInterface
+import ScoresRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import ToastLibrary

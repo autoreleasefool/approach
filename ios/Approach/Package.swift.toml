@@ -172,6 +172,11 @@ libraries = [ "StatisticsModels" ]
 
 [repositories.MatchPlays]
 
+[repositories.Scores]
+repositories = [ "Frames", "Games" ]
+[repositories.Scores.tests]
+repositories = [ "Frames", "Games" ]
+
 [repositories.Series]
 [repositories.Series.interface]
 
@@ -242,14 +247,6 @@ dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.RecentlyUsed]
 services = [ "Preference" ]
-
-[services.Scoring]
-[services.Scoring.interface]
-libraries = [ "Models" ]
-[services.Scoring.tests]
-repositories = [ "Frames" ]
-services = [ "Database" ]
-libraries = [ "TestDatabaseUtilities" ]
 
 [services.Tips]
 services = [ "Preference" ]

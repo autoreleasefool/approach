@@ -12,98 +12,9 @@ import XCTest
 final class FramesRepositoryTests: XCTestCase {
 	@Dependency(\.frames) var frames
 
-	// MARK: - Load
+	// MARK: - Observe
 
-	func testLoad_ReturnsFramesForOneGame() async throws {
-		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", ball0: UUID(0))
-		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0)
-		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
-
-		// Editing the frames
-		let frames = try await withDependencies {
-			$0.database.reader = { db }
-			$0.frames = .liveValue
-		} operation: {
-			try await self.frames.load(UUID(0))
-		}
-
-		// Returns one frame
-		XCTAssertEqual(
-			frames,
-			[
-				.init(
-					gameId: UUID(0),
-					index: 0,
-					rolls: [
-						.init(
-							index: 0,
-							roll: .init(pinsDowned: [.headPin], didFoul: false),
-							bowlingBall: .init(id: UUID(0), name: "Yellow")
-						),
-					]
-				),
-			]
-		)
-	}
-
-	func testLoad_WhenGameExists_ReturnsFrames() async throws {
-		// Given a database with frames
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "100110", ball0: UUID(1))
-		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
-		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
-
-		// Editing the frames
-		let frames = try await withDependencies {
-			$0.database.reader = { db }
-			$0.frames = .liveValue
-		} operation: {
-			try await self.frames.load(UUID(0))
-		}
-
-		// Returns the game
-		XCTAssertEqual(
-			frames,
-			[
-				.init(
-					gameId: UUID(0),
-					index: 0,
-					rolls: [
-						.init(
-							index: 0,
-							roll: .init(pinsDowned: [.headPin, .rightThreePin], didFoul: true),
-							bowlingBall: .init(id: UUID(1), name: "Blue")
-						),
-					]
-				),
-				.init(
-					gameId: UUID(0),
-					index: 1,
-					rolls: []
-				),
-			]
-		)
-	}
-
-	func testLoad_WhenGameNotExists_ReturnsNil() async throws {
-		// Given a database with no frames
-		let db = try initializeDatabase(withFrames: nil)
-
-		// Editing the game
-		let frames = try await withDependencies {
-			$0.database.reader = { db }
-			$0.frames = .liveValue
-		} operation: {
-			try await self.frames.load(UUID(0))
-		}
-
-		// Returns nil
-		XCTAssertNil(frames)
-	}
-
-	// MARK: - Edit
-
-	func testEdit_ReturnsFramesForOneGame() async throws {
+	func testObserve_ReturnsFramesForOneGame() async throws {
 		// Given a database with frames
 		let frame1 = Frame.Database
 			.mock(gameId: UUID(0), index: 0, roll0: "110100", roll1: "011000", ball0: UUID(0), ball1: UUID(1))
@@ -111,16 +22,19 @@ final class FramesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
-		let frames = try await withDependencies {
+		let frames = withDependencies {
 			$0.database.reader = { db }
 			$0.frames = .liveValue
 		} operation: {
-			try await self.frames.edit(UUID(0))
+			self.frames.observe(UUID(0))
 		}
+
+		var iterator = frames.makeAsyncIterator()
+		let fetched = try await iterator.next()
 
 		// Returns one frame
 		XCTAssertEqual(
-			frames,
+			fetched,
 			[
 				.init(
 					gameId: UUID(0),
@@ -142,23 +56,26 @@ final class FramesRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testEdit_WhenGameExists_ReturnsFrames() async throws {
+	func testObserve_WhenGameExists_ReturnsFrames() async throws {
 		// Given a database with frames
 		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000101")
 		let frame2 = Frame.Database.mock(gameId: UUID(0), index: 1)
 		let db = try initializeDatabase(withFrames: .custom([frame1, frame2]))
 
 		// Editing the frames
-		let frames = try await withDependencies {
+		let frames = withDependencies {
 			$0.database.reader = { db }
 			$0.frames = .liveValue
 		} operation: {
-			try await self.frames.edit(UUID(0))
+			self.frames.observe(UUID(0))
 		}
+
+		var iterator = frames.makeAsyncIterator()
+		let fetched = try await iterator.next()
 
 		// Returns the game
 		XCTAssertEqual(
-			frames,
+			fetched,
 			[
 				.init(
 					gameId: UUID(0),
@@ -170,20 +87,23 @@ final class FramesRepositoryTests: XCTestCase {
 		)
 	}
 
-	func testEdit_WhenGameNotExists_ReturnsNil() async throws {
+	func testObserve_WhenGameNotExists_ReturnsEmptyArray() async throws {
 		// Given a database with no frames
 		let db = try initializeDatabase(withFrames: nil)
 
 		// Editing the game
-		let frames = try await withDependencies {
+		let frames = withDependencies {
 			$0.database.reader = { db }
 			$0.frames = .liveValue
 		} operation: {
-			try await self.frames.edit(UUID(0))
+			self.frames.observe(UUID(0))
 		}
 
+		var iterator = frames.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
 		// Returns nil
-		XCTAssertNil(frames)
+		XCTAssertEqual(fetched, [])
 	}
 
 	// MARK: - Update

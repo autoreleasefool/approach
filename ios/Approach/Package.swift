@@ -59,6 +59,8 @@ let package = Package(
 		.library(name: "LocationsRepositoryInterface", targets: ["LocationsRepositoryInterface"]),
 		.library(name: "MatchPlaysRepository", targets: ["MatchPlaysRepository"]),
 		.library(name: "MatchPlaysRepositoryInterface", targets: ["MatchPlaysRepositoryInterface"]),
+		.library(name: "ScoresRepository", targets: ["ScoresRepository"]),
+		.library(name: "ScoresRepositoryInterface", targets: ["ScoresRepositoryInterface"]),
 		.library(name: "SeriesRepository", targets: ["SeriesRepository"]),
 		.library(name: "SeriesRepositoryInterface", targets: ["SeriesRepositoryInterface"]),
 		.library(name: "StatisticsRepository", targets: ["StatisticsRepository"]),
@@ -97,8 +99,6 @@ let package = Package(
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
-		.library(name: "ScoringService", targets: ["ScoringService"]),
-		.library(name: "ScoringServiceInterface", targets: ["ScoringServiceInterface"]),
 		.library(name: "TipsService", targets: ["TipsService"]),
 		.library(name: "TipsServiceInterface", targets: ["TipsServiceInterface"]),
 
@@ -513,7 +513,7 @@ let package = Package(
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
 				"ScoreSheetLibrary",
-				"ScoringServiceInterface",
+				"ScoresRepositoryInterface",
 			]
 		),
 		.testTarget(
@@ -885,6 +885,36 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "ScoresRepository",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"FramesRepositoryInterface",
+				"GamesRepositoryInterface",
+				"RepositoryLibrary",
+				"ScoresRepositoryInterface",
+			]
+		),
+		.target(
+			name: "ScoresRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ScoresRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"FramesRepository",
+				"GamesRepository",
+				"ScoresRepository",
+				"TestDatabaseUtilitiesLibrary",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
 			name: "SeriesRepository",
 			dependencies: [
 				"DatabaseModelsLibrary",
@@ -1236,29 +1266,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
-			]
-		),
-		.target(
-			name: "ScoringService",
-			dependencies: [
-				"ScoringServiceInterface",
-			]
-		),
-		.target(
-			name: "ScoringServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"ModelsLibrary",
-			]
-		),
-		.testTarget(
-			name: "ScoringServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"DatabaseService",
-				"FramesRepository",
-				"ScoringService",
-				"TestDatabaseUtilitiesLibrary",
 			]
 		),
 		.target(

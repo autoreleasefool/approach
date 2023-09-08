@@ -17,9 +17,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ScoringServiceTests"
-               BuildableName = "ScoringServiceTests"
-               BlueprintName = "ScoringServiceTests"
+               BlueprintIdentifier = "ScoresRepositoryTests"
+               BuildableName = "ScoresRepositoryTests"
+               BlueprintName = "ScoresRepositoryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

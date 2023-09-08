@@ -1,6 +1,8 @@
 import Dependencies
 import ModelsLibrary
-import ScoringServiceInterface
+import FramesRepositoryInterface
+import GamesRepositoryInterface
+import ScoresRepositoryInterface
 
 struct SequencedRoll {
 	let frameIndex: Int
@@ -8,22 +10,22 @@ struct SequencedRoll {
 	let roll: Frame.Roll
 }
 
-extension ScoringService: DependencyKey {
+extension ScoresRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Sendable func padRolls(_ rolls: [ScoreStep.RollStep], displayValue: String?) -> [ScoreStep.RollStep] {
+		@Sendable func padRolls(_ rolls: [ScoredRoll], displayValue: String?) -> [ScoredRoll] {
 			rolls + Frame.rollIndices(after: rolls.endIndex - 1)
-				.map { .init(index: $0, display: displayValue, didFoul: false) }
+				.map { .init(index: $0, displayValue: displayValue, didFoul: false) }
 		}
 
-		@Sendable func padSteps(_ steps: [ScoreStep]) -> [ScoreStep] {
-			steps + Game.frameIndices(after: steps.endIndex - 1)
+		@Sendable func padFrames(_ frames: [ScoredFrame]) -> [ScoredFrame] {
+			frames + Game.frameIndices(after: frames.endIndex - 1)
 				.map { .init(index: $0, rolls: padRolls([], displayValue: nil), score: nil)}
 		}
 
 		// swiftlint:disable function_body_length
-		@Sendable func calculateScore(for frames: [[Frame.OrderedRoll]]) async -> [ScoreStep] {
+		@Sendable func calculateScore(for frames: [[Frame.OrderedRoll]]) -> [ScoredFrame] {
 			// The output is a step indicating the score and status of the game after each frame
-			var steps: [ScoreStep] = []
+			var steps: [ScoredFrame] = []
 
 			let lastValidFrame = frames.lastIndex { !$0.isEmpty } ?? 0
 
@@ -53,7 +55,7 @@ extension ScoringService: DependencyKey {
 					.init(
 						index: index,
 						rolls: Frame.ROLL_INDICES.map { rollIndex in
-							.init(index: rollIndex, display: nil, didFoul: false)
+							.init(index: rollIndex, displayValue: nil, didFoul: false)
 						},
 						score: nil
 					)
@@ -63,7 +65,7 @@ extension ScoringService: DependencyKey {
 			// Cumulative set of pins downed in the frame
 			var pinsDown: Set<Pin> = []
 			// Each roll to be displayed in the final output
-			var rollSteps: [ScoreStep.RollStep] = []
+			var rollSteps: [ScoredRoll] = []
 			var accruedScore = 0
 
 			// Calculate all except the final frame
@@ -78,7 +80,7 @@ extension ScoringService: DependencyKey {
 					// Append a roll with the full deck cleared
 					rollSteps.append(.init(
 						index: rollSteps.count,
-						display: pinsDown.displayValue(rollIndex: roll.rollIndex),
+						displayValue: pinsDown.displayValue(rollIndex: roll.rollIndex),
 						didFoul: roll.roll.didFoul
 					))
 
@@ -90,7 +92,11 @@ extension ScoringService: DependencyKey {
 						for addedRollIndex in 1...rollsToAdd where index + addedRollIndex < rolls.endIndex {
 							let pinsToAdd = rolls[index + addedRollIndex].roll.pinsDowned
 							stepScore += pinsToAdd.value
-							rollSteps.append(.init(index: rollSteps.count, display: pinsToAdd.displayValue(rollIndex: -1), didFoul: false))
+							rollSteps.append(.init(
+								index: rollSteps.count,
+								displayValue: pinsToAdd.displayValue(rollIndex: -1),
+								didFoul: false
+							))
 						}
 					}
 
@@ -106,7 +112,7 @@ extension ScoringService: DependencyKey {
 					// Append the value of pins downed this roll
 					rollSteps.append(.init(
 						index: rollSteps.count,
-						display: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex),
+						displayValue: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex),
 						didFoul: roll.roll.didFoul
 					))
 
@@ -140,7 +146,7 @@ extension ScoringService: DependencyKey {
 					pinsDownedOnce = true
 					rollSteps.append(.init(
 						index: rollSteps.count,
-						display: pinsDown.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
+						displayValue: pinsDown.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
 						didFoul: roll.roll.didFoul
 					))
 
@@ -151,7 +157,7 @@ extension ScoringService: DependencyKey {
 					// Append the value of pins downed this roll
 					rollSteps.append(.init(
 						index: rollSteps.count,
-						display: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
+						displayValue: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
 						didFoul: roll.roll.didFoul
 					))
 
@@ -171,16 +177,35 @@ extension ScoringService: DependencyKey {
 				))
 			}
 
-			return padSteps(steps)
+			return padFrames(steps)
 		}
 		// swiftlint:enable function_body_length
 
 		return Self(
-			calculateScoreForFrames: { frames in
-				let steps = await calculateScore(for: frames)
-				return steps.reversed().first(where: { $0.score != nil })?.score
-			},
-			calculateScoreForFramesWithSteps: calculateScore(for:)
+			observeScore: { gameId in
+				@Dependency(\.frames) var framesRepository
+				@Dependency(\.games) var gamesRepository
+				return .init { continuation in
+					let task = Task {
+						do {
+							guard let game = try await gamesRepository.edit(gameId) else {
+								continuation.finish()
+								return
+							}
+
+							for try await frames in framesRepository.observe(gameId) {
+								let scoredFrames = calculateScore(for: frames.map(\.rolls))
+								let scoredGame = ScoredGame(id: gameId, index: game.index, frames: scoredFrames)
+								continuation.yield(scoredGame)
+							}
+						} catch {
+							continuation.finish(throwing: error)
+						}
+					}
+
+					continuation.onTermination = { _ in task.cancel() }
+				}
+			}
 		)
 	}()
 }
