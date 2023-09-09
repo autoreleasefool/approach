@@ -65,19 +65,24 @@ public struct GamesHeaderView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
-			HStack {
-				headerButton(systemSymbol: .chevronBackward) { viewStore.send(.didTapCloseButton) }
-				Spacer()
-				Text(Strings.Game.titleWithOrdinal(viewStore.currentGameIndex + 1))
-					.font(.caption)
-					.foregroundColor(.white)
-				Spacer()
-
-				if viewStore.isSharingGameEnabled {
-					headerButton(systemSymbol: .squareAndArrowUp) { viewStore.send(.didTapShareButton) }
+			ZStack {
+				HStack {
+					Text(Strings.Game.titleWithOrdinal(viewStore.currentGameIndex + 1))
+						.font(.caption)
+						.foregroundColor(.white)
 				}
 
-				headerButton(systemSymbol: .gear) { viewStore.send(.didTapSettingsButton) }
+				HStack {
+					headerButton(systemSymbol: .chevronBackward) { viewStore.send(.didTapCloseButton) }
+
+					Spacer()
+
+					if viewStore.isSharingGameEnabled {
+						headerButton(systemSymbol: .squareAndArrowUp) { viewStore.send(.didTapShareButton) }
+					}
+
+					headerButton(systemSymbol: .gear) { viewStore.send(.didTapSettingsButton) }
+				}
 			}
 		})
 	}
@@ -93,3 +98,15 @@ public struct GamesHeaderView: View {
 		}
 	}
 }
+
+#if DEBUG
+struct GamesHeaderPreview: PreviewProvider {
+	static var previews: some View {
+		GamesHeaderView(store: .init(
+			initialState: GamesHeader.State(currentGameIndex: 0, isSharingGameEnabled: true),
+			reducer: GamesHeader.init
+		))
+		.background(.black)
+	}
+}
+#endif
