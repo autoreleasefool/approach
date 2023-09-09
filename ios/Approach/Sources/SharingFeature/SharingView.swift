@@ -3,7 +3,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import Foundation
 import ModelsLibrary
-import ScoreSheetFeature
+import ScoreSheetLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -54,7 +54,7 @@ public struct SharingView: View {
 	@MainActor private func preview(
 		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
 	) -> some View {
-		ShareableScoreSheetView(
+		CompactScoreSheets(
 			games: Array(viewStore.shareableGames.prefix(1)),
 			configuration: viewStore.configuration
 		)
@@ -74,11 +74,11 @@ public struct SharingView: View {
 	) -> some View {
 		Section(Strings.Sharing.Style.title) {
 			Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .smallSpacing) {
-				ForEach(ShareableScoreSheetStyleGroup.scoreSheetStyles) { group in
+				ForEach(ScoreSheetStyleGroup.scoreSheetStyles) { group in
 					GridRow {
 						ForEach(group.styles) { style in
 							Button { viewStore.send(.didTapStyle(style)) } label: {
-								PreviewingShareableScoreSheetView(style: style)
+								PreviewingScoreSheet(style: style)
 									.padding(.unitSpacing)
 									.background(
 										style.id == viewStore.style.id
@@ -126,7 +126,7 @@ public struct SharingView: View {
 				Strings.Sharing.Layout.labelPosition,
 				selection: viewStore.$labelPosition
 			) {
-				ForEach(ShareableScoreSheetConfiguration.LabelPosition.allCases) {
+				ForEach(ScoreSheetConfiguration.LabelPosition.allCases) {
 					Text(String(describing: $0)).tag($0)
 				}
 			}
@@ -156,7 +156,7 @@ public struct SharingView: View {
 //			ShareLi
 
 			ShareLink(
-				item: ShareableGame(
+				item: ShareableGameSet(
 					games: viewStore.shareableGames,
 					configuration: viewStore.configuration,
 					scale: viewStore.displayScale
@@ -174,18 +174,18 @@ public struct SharingView: View {
 	}
 }
 
-extension ShareableScoreSheetConfiguration.Style: Identifiable {
+extension ScoreSheetConfiguration.Style: Identifiable {
 	public var id: String { title }
 }
 
-struct ShareableScoreSheetStyleGroup: Identifiable {
+struct ScoreSheetStyleGroup: Identifiable {
 	let id = UUID()
-	let styles: [ShareableScoreSheetConfiguration.Style]
+	let styles: [ScoreSheetConfiguration.Style]
 
-	static let scoreSheetStyles = ShareableScoreSheetConfiguration.Style
+	static let scoreSheetStyles = ScoreSheetConfiguration.Style
 		.allStyles
 		.chunks(ofCount: 3)
-		.map { ShareableScoreSheetStyleGroup(styles: Array($0)) }
+		.map { ScoreSheetStyleGroup(styles: Array($0)) }
 }
 
 #if DEBUG
@@ -227,28 +227,36 @@ struct SharingViewPreview: PreviewProvider {
 					])
 
 					state.scores = [
-						UUID(0): Game.FRAME_INDICES.map {
-							.init(
-								index: $0,
-								rolls: [
-									.init(index: 0, display: "10", didFoul: true),
-									.init(index: 1, display: "HP", didFoul: false),
-									.init(index: 2, display: "3", didFoul: false),
-								],
-								score: 32
-							)
-						},
-						UUID(1): Game.FRAME_INDICES.map {
-							.init(
-								index: $0,
-								rolls: [
-									.init(index: 0, display: "10", didFoul: true),
-									.init(index: 1, display: "HP", didFoul: false),
-									.init(index: 2, display: "3", didFoul: false),
-								],
-								score: 32
-							)
-						},
+						UUID(0): .init(
+							id: UUID(0),
+							index: 0,
+							frames: Game.FRAME_INDICES.map {
+								.init(
+									index: $0,
+									rolls: [
+										.init(index: 0, displayValue: "10", didFoul: true),
+										.init(index: 1, displayValue: "HP", didFoul: false),
+										.init(index: 2, displayValue: "3", didFoul: false),
+									],
+									score: 32
+								)
+							}
+						),
+						UUID(1): .init(
+							id: UUID(1),
+							index: 1,
+							frames: Game.FRAME_INDICES.map {
+								.init(
+									index: $0,
+									rolls: [
+										.init(index: 0, displayValue: "10", didFoul: true),
+										.init(index: 1, displayValue: "HP", didFoul: false),
+										.init(index: 2, displayValue: "3", didFoul: false),
+									],
+									score: 32
+								)
+							}
+						),
 					]
 
 					return state

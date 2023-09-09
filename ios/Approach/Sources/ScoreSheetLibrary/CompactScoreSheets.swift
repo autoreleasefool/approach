@@ -5,7 +5,7 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
-public struct CompactScoreSheet: View {
+public struct CompactScoreSheets: View {
 	public typealias Configuration = ScoreSheetConfiguration
 
 	let games: [ScoredGame]
@@ -116,9 +116,9 @@ public struct CompactScoreSheet: View {
 private struct RollHeightKey: PreferenceKey, MatchDimensionPreferenceKey {}
 
 #if DEBUG
-struct CompactShareableScoreSheetViewPreviews: PreviewProvider {
+struct CompactScoreSheetsPreviews: PreviewProvider {
 	static var previews: some View {
-		CompactScoreSheet(
+		CompactScoreSheets(
 			games: (0...2).map { index in
 				.init(
 					id: UUID(uuidString: "00000000-0000-0000-0000-00000000000\(index)")!,

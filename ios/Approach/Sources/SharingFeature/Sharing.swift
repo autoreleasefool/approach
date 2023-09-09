@@ -3,7 +3,8 @@ import ErrorsFeature
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import ModelsLibrary
-import ScoreSheetFeature
+import ScoreSheetLibrary
+import ScoresRepositoryInterface
 import StringsLibrary
 import SwiftUI
 
@@ -12,10 +13,10 @@ public struct Sharing: Reducer {
 		public let dataSource: DataSource
 
 		public var games: IdentifiedArrayOf<Game.Shareable> = []
-		public var scores: [Game.ID: [ScoreStep]] = [:]
+		public var scores: [Game.ID: ScoredGame] = [:]
 
-		@BindingState public var style: ShareableScoreSheetConfiguration.Style = .default
-		@BindingState public var labelPosition: ShareableScoreSheetConfiguration.LabelPosition = .bottom
+		@BindingState public var style: ScoreSheetConfiguration.Style = .default
+		@BindingState public var labelPosition: ScoreSheetConfiguration.LabelPosition = .bottom
 		@BindingState public var isShowingFrameLabels = true
 		@BindingState public var isShowingFrameDetails = true
 		@BindingState public var isShowingBowlerName = true
@@ -26,11 +27,8 @@ public struct Sharing: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		var shareableGames: [ShareableScoreSheetView.SteppedGame] {
-			games.compactMap {
-				guard let steps = scores[$0.id] else { return nil }
-				return .init(id: $0.id, index: $0.index, score: $0.score, steps: steps)
-			}
+		var shareableGames: [ScoredGame] {
+			games.compactMap { scores[$0.id] }
 		}
 
 		var navigationTitle: String {
@@ -44,7 +42,7 @@ public struct Sharing: Reducer {
 
 		var hasAlley: Bool { games.first?.series.alley != nil }
 
-		var configuration: ShareableScoreSheetConfiguration {
+		var configuration: ScoreSheetConfiguration {
 			.init(
 				style: style,
 				labelPosition: labelPosition,
@@ -67,14 +65,14 @@ public struct Sharing: Reducer {
 			case didFirstAppear
 			case didTapShareToStoriesButton
 			case didTapShareToOtherButton
-			case didTapStyle(ShareableScoreSheetConfiguration.Style)
+			case didTapStyle(ScoreSheetConfiguration.Style)
 			case didTapDoneButton
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadGames(TaskResult<[Game.Shareable]>)
-			case didLoadScore(Game.ID, [ScoreStep])
+			case didLoadScore(ScoredGame)
 
 			case errors(Errors<ErrorID>.Action)
 		}
@@ -97,7 +95,7 @@ public struct Sharing: Reducer {
 
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.games) var games
-	@Dependency(\.scoring) var scoring
+	@Dependency(\.scores) var scores
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
@@ -146,16 +144,16 @@ public struct Sharing: Reducer {
 					return .merge(
 						state.games.map { game in
 							.run { send in
-								await send(.internal(.didLoadScore(
-									game.id,
-									scoring.calculateScoreWithSteps(for: game.frames.map(\.rolls))
-								)))
+								for try await score in self.scores.observeScore(for: game.id) {
+									await send(.internal(.didLoadScore(score)))
+									break
+								}
 							}
 						}
 					)
 
-				case let .didLoadScore(gameId, score):
-					state.scores[gameId] = score
+				case let .didLoadScore(score):
+					state.scores[score.id] = score
 					return .none
 
 				case let .didLoadGames(.failure(error)):

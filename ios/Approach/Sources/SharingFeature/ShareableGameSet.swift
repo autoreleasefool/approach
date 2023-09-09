@@ -1,4 +1,5 @@
-import ScoreSheetFeature
+import ModelsLibrary
+import ScoreSheetLibrary
 import SwiftUI
 
 public enum ShareableError: Error, LocalizedError {
@@ -15,15 +16,15 @@ public enum ShareableError: Error, LocalizedError {
 	}
 }
 
-public struct ShareableGame: Transferable {
-	let games: [ShareableScoreSheetView.SteppedGame]
-	let configuration: ShareableScoreSheetConfiguration
+public struct ShareableGameSet: Transferable {
+	let games: [ScoredGame]
+	let configuration: ScoreSheetConfiguration
 	let scale: CGFloat
 
 	public static var transferRepresentation: some TransferRepresentation {
 		DataRepresentation(exportedContentType: .png) { @MainActor shareable in
 			let renderer = ImageRenderer(
-				content: ShareableScoreSheetView(games: shareable.games, configuration: shareable.configuration)
+				content: CompactScoreSheets(games: shareable.games, configuration: shareable.configuration)
 			)
 
 			renderer.scale = shareable.scale
