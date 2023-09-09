@@ -56,7 +56,7 @@ features = [ "Errors" ]
 
 [features.GamesEditor]
 features = [ "Sharing" ]
-repositories = [ "Bowlers", "Frames", "Gear", "Lanes" ]
+repositories = [ "Bowlers", "Frames", "Gear", "Lanes", "Scores" ]
 services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 
@@ -102,10 +102,6 @@ libraries = [ "SortOrder" ]
 repositories = [ "Bowlers" ]
 libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
 
-[features.ScoreSheet]
-services = [ "Scoring" ]
-libraries = [ "ScoreSheet" ]
-
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
@@ -121,8 +117,9 @@ features = [ "FeatureFlagsList", "OpponentsList" ]
 services = [ "AppIcon", "DatabaseMocking", "Preference" ]
 
 [features.Sharing]
-features = [ "Errors", "ScoreSheet" ]
+features = [ "Errors" ]
 repositories = [ "Games" ]
+libraries = [ "ScoreSheet" ]
 dependencies = [ "Algorithms" ]
 
 [features.StatisticsOverview]

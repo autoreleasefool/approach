@@ -31,7 +31,6 @@ let package = Package(
 		.library(name: "OnboardingFeature", targets: ["OnboardingFeature"]),
 		.library(name: "OpponentDetailsFeature", targets: ["OpponentDetailsFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
-		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
@@ -343,6 +342,7 @@ let package = Package(
 				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
+				"ScoresRepositoryInterface",
 				"SharingFeature",
 			]
 		),
@@ -508,22 +508,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "ScoreSheetFeature",
-			dependencies: [
-				"FeatureActionLibrary",
-				"LoggingServiceInterface",
-				"ScoreSheetLibrary",
-				"ScoresRepositoryInterface",
-			]
-		),
-		.testTarget(
-			name: "ScoreSheetFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"ScoreSheetFeature",
-			]
-		),
-		.target(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
@@ -582,7 +566,7 @@ let package = Package(
 				.product(name: "Algorithms", package: "swift-algorithms"),
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
-				"ScoreSheetFeature",
+				"ScoreSheetLibrary",
 			]
 		),
 		.testTarget(
