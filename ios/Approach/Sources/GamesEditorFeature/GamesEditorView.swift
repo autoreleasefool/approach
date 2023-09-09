@@ -5,7 +5,7 @@ import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
-import ScoreSheetFeature
+import ScoreSheetLibrary
 import SharingFeature
 import StringsLibrary
 import SwiftUI
@@ -31,6 +31,8 @@ public struct GamesEditorView: View {
 		let backdropSize: CGSize
 
 		let isScoreSheetVisible: Bool
+		let score: ScoredGame?
+		@BindingViewState var currentFrame: ScoreSheet.Selection
 
 		let manualScore: Int?
 
@@ -78,7 +80,7 @@ public struct GamesEditorView: View {
 							.padding(.horizontal)
 
 						if viewStore.isScoreSheetVisible {
-							scoreSheet
+							scoreSheet(viewStore)
 								.padding(.top)
 								.padding(.horizontal)
 								.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
@@ -273,9 +275,11 @@ public struct GamesEditorView: View {
 		}
 	}
 
-	private var scoreSheet: some View {
-		IfLetStore(store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)) {
-			ScoreSheetView(store: $0)
+	@MainActor @ViewBuilder private func scoreSheet(
+		_ viewStore: ViewStore<ViewState, GamesEditor.Action.ViewAction>
+	) -> some View {
+		if let game = viewStore.score {
+			ScoreSheet(game: game, selection: viewStore.$currentFrame)
 		}
 	}
 
@@ -305,9 +309,11 @@ public struct GamesEditorView: View {
 extension GamesEditorView.ViewState {
 	init(store: BindingViewStore<GamesEditor.State>) {
 		self._sheetDetent = store.$sheetDetent
+		self._currentFrame = store.$currentFrame
 		self.willAdjustLaneLayoutAt = store.willAdjustLaneLayoutAt
 		self.backdropSize = store.backdropSize
 		self.isScoreSheetVisible = store.isScoreSheetVisible
+		self.score = store.score
 		self.bowlerName = store.game?.bowler.name
 		self.leagueName = store.game?.league.name
 		if let game = store.game {

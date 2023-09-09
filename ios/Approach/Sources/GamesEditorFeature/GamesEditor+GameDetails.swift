@@ -46,10 +46,12 @@ extension GamesEditor {
 
 			case let .didEditGame(game):
 				state.game = game
+				state.hideNextHeaderIfNecessary()
 				return save(game: state.game)
 
 			case .didClearManualScore:
-				return updateScoreSheet(from: state)
+				state.hideNextHeaderIfNecessary()
+				return .none
 
 			case .didProvokeLock:
 				return state.presentLockedToast()

@@ -27,10 +27,7 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case .didEditFrame:
-				return .merge(
-					save(frame: state.frames?[state.currentFrameIndex]),
-					updateScoreSheet(from: state)
-				)
+				return save(frame: state.frames?[state.currentFrameIndex])
 
 			case .didProvokeLock:
 				return state.presentLockedToast()

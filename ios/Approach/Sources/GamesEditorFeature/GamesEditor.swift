@@ -13,7 +13,7 @@ import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
-import ScoreSheetFeature
+import ScoreSheetLibrary
 import ScoresRepositoryInterface
 import StringsLibrary
 import SwiftUI
@@ -38,14 +38,13 @@ public struct GamesEditor: Reducer {
 		// ID Details for the current entity being edited
 		public var _currentBowlerId: Bowler.ID
 		public var _currentGameId: Game.ID
-		public var _currentFrameIndex: Int = 0
-		public var _currentRollIndex: Int = 0
+		@BindingState public var currentFrame: ScoreSheet.Selection = .init(frameIndex: 0, rollIndex: 0)
 		public var _nextHeaderElement: GameDetailsHeader.State.NextElement?
 
 		public var currentBowlerId: Bowler.ID { _currentBowlerId }
 		public var currentGameId: Game.ID { _currentGameId }
-		public var currentFrameIndex: Int { _currentFrameIndex }
-		public var currentRollIndex: Int { _currentRollIndex }
+		public var currentFrameIndex: Int { currentFrame.frameIndex  }
+		public var currentRollIndex: Int { currentFrame.rollIndex }
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement? { _nextHeaderElement }
 		public var forceNextHeaderElementNil: Bool = false
 
@@ -53,7 +52,7 @@ public struct GamesEditor: Reducer {
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
 		public var game: Game.Edit?
 		public var frames: [Frame.Edit]?
-		public var score: [ScoreStep]?
+		public var score: ScoredGame?
 
 		var numberOfGames: Int { bowlerGameIds.first!.value.count }
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
@@ -105,7 +104,7 @@ public struct GamesEditor: Reducer {
 			case didUpdateMatchPlay(TaskResult<MatchPlay.Edit>)
 
 			case didDismissOpenSheet
-			case calculatedScore([ScoreStep])
+			case calculatedScore(ScoredGame)
 			case adjustBackdrop
 
 			case toast(ToastAction)
@@ -115,7 +114,6 @@ public struct GamesEditor: Reducer {
 			case gameDetailsHeader(GameDetailsHeader.Action)
 			case frameEditor(FrameEditor.Action)
 			case rollEditor(RollEditor.Action)
-			case scoreSheet(ScoreSheet.Action)
 		}
 
 		case view(ViewAction)
@@ -151,10 +149,20 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.games) var games
 	@Dependency(\.gear) var gear
 	@Dependency(\.matchPlays) var matchPlays
-	@Dependency(\.scoring) var scoring
+	@Dependency(\.scores) var scores
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
+
+		// We explicitly handle this action before all others so that we can guarantee we are on a valid frame/roll
+		Reduce<State, Action> { state, action in
+			guard case .view(.binding(\.$currentFrame)) = action else { return .none }
+			state.setCurrent(rollIndex: state.currentFrame.rollIndex, frameIndex: state.currentFrame.frameIndex)
+			let currentFrameIndex = state.currentFrameIndex
+			let currentRollIndex = state.currentRollIndex
+			state.frames?[currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
+			return .none
+		}
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
 			Errors()
@@ -232,8 +240,7 @@ public struct GamesEditor: Reducer {
 
 					let newFrameIndex = frames.firstIndex { $0.hasUntouchedRoll }
 					let newRollIndex = frames[newFrameIndex ?? 0].firstUntouchedRoll ?? 0
-					state.forceNextHeaderElementNil = newFrameIndex == nil
-					state.setCurrent(rollIndex: newRollIndex, frameIndex: newFrameIndex ?? 0)
+					state.hideNextHeaderIfNecessary(updatingRollIndexTo: newRollIndex, frameIndex: newFrameIndex ?? 0)
 
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 					state._frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
@@ -243,7 +250,7 @@ public struct GamesEditor: Reducer {
 						didFoul: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.didFoul
 					)
 					state.elementsRefreshing.remove(.frames)
-					return updateScoreSheet(from: state)
+					return .none
 
 				case let .framesResponse(.failure(error)):
 					state.elementsRefreshing.remove(.frames)
@@ -266,6 +273,7 @@ public struct GamesEditor: Reducer {
 					}
 					state.game = game
 					state.elementsRefreshing.remove(.game)
+					state.hideNextHeaderIfNecessary()
 					return .none
 
 				case let .gameResponse(.failure(error)):
@@ -293,7 +301,7 @@ public struct GamesEditor: Reducer {
 					case .none, .manual:
 						return .none
 					case .byFrame:
-						state.game?.score = score.gameScore() ?? 0
+						state.game?.score = score.frames.gameScore() ?? 0
 						return save(game: state.game)
 					}
 
@@ -324,9 +332,6 @@ public struct GamesEditor: Reducer {
 
 				case let .frameEditor(action):
 					return reduce(into: &state, frameEditorAction: action)
-
-				case let .scoreSheet(action):
-					return reduce(into: &state, scoreSheetAction: action)
 
 				case let .rollEditor(action):
 					return reduce(into: &state, rollEditorAction: action)
@@ -359,9 +364,6 @@ public struct GamesEditor: Reducer {
 		}
 		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
 			RollEditor()
-		}
-		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
-			ScoreSheet()
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()

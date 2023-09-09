@@ -9,8 +9,8 @@ extension GamesEditor.State {
 	) {
 		guard let frames else { return }
 
-		_currentRollIndex = newRollIndex ?? _currentRollIndex
-		_currentFrameIndex = newFrameIndex ?? _currentFrameIndex
+		currentFrame.rollIndex = newRollIndex ?? currentFrame.rollIndex
+		currentFrame.frameIndex = newFrameIndex ?? currentFrame.frameIndex
 		_currentGameId = newGameId ?? _currentGameId
 		_currentBowlerId = newBowlerId ?? _currentBowlerId
 
@@ -71,5 +71,13 @@ extension GamesEditor.State {
 				}
 			}
 		}
+	}
+
+	mutating func hideNextHeaderIfNecessary(
+		updatingRollIndexTo: Int? = nil,
+		frameIndex: Int? = nil
+	) {
+		forceNextHeaderElementNil = game?.scoringMethod == .manual || frames?.first(where: { $0.hasUntouchedRoll }) == nil
+		setCurrent(rollIndex: updatingRollIndexTo, frameIndex: frameIndex)
 	}
 }

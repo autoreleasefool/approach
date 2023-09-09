@@ -18,9 +18,17 @@ extension GamesEditor {
 		state.elementsRefreshing.insert(.game)
 		return .merge(
 			.run { [gameId = state.currentGameId] send in
-				await send(.internal(.framesResponse(TaskResult {
-					try await frames.frames(forGame: gameId) ?? []
-				})))
+				for try await scoredGame in self.scores.observeScore(for: gameId) {
+					await send(.internal(.calculatedScore(scoredGame)))
+				}
+			},
+			.run { [gameId = state.currentGameId] send in
+				for try await frames in self.frames.observe(gameId) {
+					await send(.internal(.framesResponse(.success(frames))))
+					break
+				}
+			} catch: { error, send in
+				await send(.internal(.framesResponse(.failure(error))))
 			},
 			.run { [gameId = state.currentGameId] send in
 				await send(.internal(.gameResponse(TaskResult {
@@ -29,14 +37,6 @@ extension GamesEditor {
 			}
 		)
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
-	}
-
-	func updateScoreSheet(from state: State) -> Effect<Action> {
-		guard let frames = state.frames else { return .none }
-		return .run { send in
-			let steps = await scoring.calculateScoreWithSteps(for: frames.map { $0.rolls })
-			await send(.internal(.calculatedScore(steps)))
-		}
 	}
 
 	func save(frame: Frame.Edit?) -> Effect<Action> {
