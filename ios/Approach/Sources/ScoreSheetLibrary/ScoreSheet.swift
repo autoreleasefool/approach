@@ -16,10 +16,20 @@ public struct ScoreSheet: View {
 	}
 
 	public struct Selection: Hashable {
-		let frameIndex: Int
-		let rollIndex: Int
+		public var frameIndex: Int
+		public var rollIndex: Int
+
+		public init(frameIndex: Int, rollIndex: Int) {
+			self.frameIndex = frameIndex
+			self.rollIndex = rollIndex
+		}
 
 		var isLast: Bool { Frame.isLast(frameIndex) }
+		var frameId: FrameID { .init(frameIndex: frameIndex) }
+	}
+
+	struct FrameID: Hashable {
+		let frameIndex: Int
 	}
 
 	public var body: some View {
@@ -50,12 +60,12 @@ public struct ScoreSheet: View {
 			.cornerRadius(.standardRadius)
 			.onChange(of: selection) { selection in
 				withAnimation(.easeInOut(duration: 300)) {
-					proxy.scrollTo(selection, anchor: selection.isLast ? .trailing : .leading)
+					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
 				}
 			}
 			.onAppear {
 				withAnimation(.easeInOut(duration: 300)) {
-					proxy.scrollTo(selection, anchor: selection.isLast ? .trailing : .leading)
+					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
 				}
 			}
 			.measure(key: ContentSizeKey.self, to: $contentSize)
@@ -70,6 +80,7 @@ public struct ScoreSheet: View {
 				.foregroundColor(foreground(forFrameIndex: frame.index))
 				.background(background(forFrameIndex: frame.index))
 		}
+		.id(FrameID(frameIndex: frame.index))
 		.buttonStyle(TappableElement())
 		.borders(leading: frame.index != 0)
 	}
@@ -109,7 +120,7 @@ public struct ScoreSheet: View {
 			.background(background(forRailInFrame: frame.index))
 			.borders(leading: frame.index != 0)
 			.roundCorners(
-				bottomLeading: frame.index != 0,
+				bottomLeading: frame.index == 0,
 				bottomTrailing: Frame.isLast(frame.index)
 			)
 	}
