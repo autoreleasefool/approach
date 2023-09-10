@@ -22,4 +22,6 @@ extension CGFloat {
 	public static let largeIcon: CGFloat = unitSpacing * 16
 	public static let extraLargeIcon: CGFloat = unitSpacing * 20
 	public static let extraExtraLargeIcon: CGFloat = unitSpacing * 32
+
+	public static let standardBorder: CGFloat = 1
 }

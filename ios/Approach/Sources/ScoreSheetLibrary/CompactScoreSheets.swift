@@ -4,6 +4,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import ViewsLibrary
 
 public struct CompactScoreSheets: View {
 	public typealias Configuration = ScoreSheetConfiguration
@@ -78,8 +79,12 @@ public struct CompactScoreSheets: View {
 			.padding(.smallSpacing)
 			.frame(maxWidth: .infinity)
 			.foregroundColor(config.style.textOnBackground)
-			.borders(leading: true, color: config.style.border)
-			.borders(trailing: Frame.isLast(frame.index), color: config.style.border, thickness: 2)
+			.border(edges: [.leading], color: config.style.border)
+			.border(
+				edges: Frame.isLast(frame.index) ? [.trailing] : [],
+				width: .standardBorder * 2,
+				color: config.style.border
+			)
 			.background(config.style.background)
 	}
 
@@ -92,13 +97,14 @@ public struct CompactScoreSheets: View {
 				.padding(.smallSpacing)
 				.foregroundColor(config.style.textOnBackground)
 				.matchHeight(byKey: RollHeightKey.self, to: $rollHeight)
-				.borders(
-					trailing: !Frame.Roll.isLast(roll.index),
-					bottom: true,
-					leading: roll.index == 0,
+				.border(
+					edges: [
+						Frame.Roll.isLast(roll.index) ? nil : .trailing,
+						.bottom,
+						roll.index == 0 ? .leading : nil,
+					].compactMap { $0 },
 					color: config.style.border
 				)
-				.borders(trailing: Frame.isLast(frame.index), color: config.style.border, thickness: 2)
 				.background(config.style.background)
 		}
 	}

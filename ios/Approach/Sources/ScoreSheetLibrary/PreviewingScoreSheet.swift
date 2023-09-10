@@ -3,6 +3,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import ViewsLibrary
 
 public struct PreviewingScoreSheet: View {
 	let style: ScoreSheetConfiguration.Style
@@ -52,11 +53,7 @@ public struct PreviewingScoreSheet: View {
 								.lineLimit(1)
 								.padding(.unitSpacing)
 								.foregroundColor(style.textOnBackground)
-								.borders(
-									trailing: true,
-									bottom: true,
-									color: style.border
-								)
+								.border(edges: [.trailing, .bottom], color: style.border)
 						}
 					}
 
@@ -74,12 +71,7 @@ public struct PreviewingScoreSheet: View {
 			}
 		}
 		.dynamicTypeSize(.medium)
-		.borders(
-			trailing: true,
-			bottom: true,
-			color: style.strongBorder,
-			thickness: 2
-		)
+		.border(edges: [.trailing, .bottom], width: .standardRadius * 2, color: style.strongBorder)
 	}
 }
 

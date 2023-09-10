@@ -82,7 +82,7 @@ public struct ScoreSheet: View {
 		}
 		.id(FrameID(frameIndex: frame.index))
 		.buttonStyle(TappableElement())
-		.borders(leading: frame.index != 0)
+		.border(edges: frame.index == 0 ? [] : [.leading])
 	}
 
 	private func rollViews(forFrame frame: ScoredFrame) -> some View {
@@ -103,10 +103,12 @@ public struct ScoreSheet: View {
 			}
 			.id(Selection(frameIndex: frame.index, rollIndex: roll.index))
 			.buttonStyle(TappableElement())
-			.borders(
-				trailing: !Frame.Roll.isLast(roll.index),
-				bottom: true,
-				leading: frame.index != 0 && roll.index == 0
+			.border(
+				edges: [
+					.bottom,
+					Frame.Roll.isLast(roll.index) ? nil : .trailing,
+					frame.index != 0 && roll.index == 0 ? .leading : nil
+				].compactMap { $0 }
 			)
 		}
 	}
@@ -118,7 +120,7 @@ public struct ScoreSheet: View {
 			.padding(.vertical, .unitSpacing)
 			.foregroundColor(foreground(forRailInFrame: frame.index))
 			.background(background(forRailInFrame: frame.index))
-			.borders(leading: frame.index != 0)
+			.border(edges: frame.index == 0 ? [] : [.leading])
 			.roundCorners(
 				bottomLeading: frame.index == 0,
 				bottomTrailing: Frame.isLast(frame.index)

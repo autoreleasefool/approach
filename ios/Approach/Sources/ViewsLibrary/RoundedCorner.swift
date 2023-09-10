@@ -1,6 +1,22 @@
 import AssetsLibrary
 import SwiftUI
 
+extension View {
+	public func roundCorners(
+		topLeading: Bool = false,
+		topTrailing: Bool = false,
+		bottomLeading: Bool = false,
+		bottomTrailing: Bool = false
+	) -> some View {
+		var corners: UIRectCorner = []
+		if topLeading { corners.insert(.topLeft) }
+		if topTrailing { corners.insert(.topRight) }
+		if bottomLeading { corners.insert(.bottomLeft) }
+		if bottomTrailing { corners.insert(.bottomRight) }
+		return clipShape(RoundedCorner(corners: corners))
+	}
+}
+
 public struct RoundedCorner: Shape {
 	let radius: CGFloat
 	let corners: UIRectCorner
