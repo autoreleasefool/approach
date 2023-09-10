@@ -24,7 +24,13 @@ extension GamesEditor {
 
 extension GamesEditor.State {
 	mutating func presentLockedToast() -> Effect<GamesEditor.Action> {
-		self.toast = .init(message: .init(Strings.Game.Editor.locked), icon: .lockSlash, style: .error, appearance: .hud)
+		self.toast = .init(
+			content: .hud(.init(
+				message: .init(Strings.Game.Editor.locked),
+				icon: .lockSlash
+			)),
+			style: .error
+		)
 		return .none
 	}
 }

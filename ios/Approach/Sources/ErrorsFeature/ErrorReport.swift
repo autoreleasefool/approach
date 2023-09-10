@@ -107,8 +107,10 @@ public struct ErrorReport: Reducer {
 				switch internalAction {
 				case .didCopyToClipboard:
 					state.toast = .init(
-						message: .init(Strings.copiedToClipboard),
-						icon: .checkmarkCircleFill,
+						content: .toast(.init(
+							message: .init(Strings.copiedToClipboard),
+							icon: .checkmarkCircleFill
+						)),
 						style: .success
 					)
 					return .none

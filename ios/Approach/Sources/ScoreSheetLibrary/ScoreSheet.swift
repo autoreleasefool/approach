@@ -107,7 +107,7 @@ public struct ScoreSheet: View {
 				edges: [
 					.bottom,
 					Frame.Roll.isLast(roll.index) ? nil : .trailing,
-					frame.index != 0 && roll.index == 0 ? .leading : nil
+					frame.index != 0 && roll.index == 0 ? .leading : nil,
 				].compactMap { $0 }
 			)
 		}

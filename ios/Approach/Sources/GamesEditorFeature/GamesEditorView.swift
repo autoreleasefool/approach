@@ -11,6 +11,7 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
+// swiftlint:disable:next type_body_length
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
 	typealias GamesEditorViewStore = ViewStore<ViewState, GamesEditor.Action.ViewAction>

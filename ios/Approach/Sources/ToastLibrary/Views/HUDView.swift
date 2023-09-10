@@ -2,28 +2,52 @@ import AssetsLibrary
 import ComposableArchitecture
 import SwiftUI
 
-public struct HUDView<Action: ToastableAction>: View {
-	let toast: ToastState<Action>
-	let viewStore: ViewStore<ToastState<Action>?, Action>
+public struct HUDContent: Equatable {
+	public let message: TextState
+	public let icon: SFSymbol?
+
+	public init(message: TextState, icon: SFSymbol?) {
+		self.message = message
+		self.icon = icon
+	}
+}
+
+public struct HUDView: View {
+	let content: HUDContent
+	let style: ToastStyle
 
 	public var body: some View {
 		VStack(spacing: .standardSpacing) {
-			if let icon = toast.icon {
+			if let icon = content.icon {
 				Image(systemSymbol: icon)
 					.resizable()
 					.scaledToFit()
 					.frame(width: .standardIcon, height: .standardIcon)
 			}
 
-			Text(toast.message)
+			Text(content.message)
 				.font(.headline)
 		}
 		.padding(.largeSpacing)
-		.foregroundColor(toast.style.foregroundColor)
+		.foregroundColor(style.foregroundColor)
 		.background(
 			RoundedRectangle(cornerRadius: .standardRadius)
-				.fill(toast.style.backgroundColor.opacity(0.6))
+				.fill(style.backgroundColor.swiftUIColor.opacity(0.6))
 		)
 		.padding(.standardSpacing)
 	}
 }
+
+#if DEBUG
+struct HUDViewPreview: PreviewProvider {
+	static var previews: some View {
+		HUDView(
+			content: .init(
+				message: .init("Toast!"),
+				icon: .exclamationmarkCircle
+			),
+			style: .success
+		)
+	}
+}
+#endif

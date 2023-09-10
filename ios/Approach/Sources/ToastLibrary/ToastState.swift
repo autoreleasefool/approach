@@ -9,24 +9,15 @@ public protocol ToastableAction {
 }
 
 public struct ToastState<Action: ToastableAction> {
-	public let message: TextState
-	public let icon: SFSymbol?
-	public let button: Button?
-	public let style: Style
-	public let appearance: Appearance
+	public let content: Content
+	public let style: ToastStyle
 
 	public init(
-		message: TextState,
-		icon: SFSymbol? = nil,
-		button: Button? = nil,
-		style: Style = .primary,
-		appearance: Appearance = .toast
+		content: Content,
+		style: ToastStyle = .primary
 	) {
-		self.button = button
-		self.icon = icon
-		self.message = message
+		self.content = content
 		self.style = style
-		self.appearance = appearance
 	}
 }
 
@@ -64,40 +55,54 @@ extension ToastState {
 	}
 }
 
-extension ToastState {
-	public enum Style: Equatable {
+public struct ToastStyle: Equatable {
+	public let id: ID
+	public let foregroundColor: ColorAsset
+	public let backgroundColor: ColorAsset
+
+	public static let primary = Self(
+		id: .primary,
+		foregroundColor: Asset.Colors.Text.onPrimary,
+		backgroundColor: Asset.Colors.Primary.default
+	)
+
+	public static let error = Self(
+		id: .error,
+		foregroundColor: Asset.Colors.Text.onError,
+		backgroundColor: Asset.Colors.Error.default
+	)
+
+	public static let success = Self(
+		id: .success,
+		foregroundColor: Asset.Colors.Text.onSuccess,
+		backgroundColor: Asset.Colors.Success.default
+	)
+
+	public static func == (lhs: Self, rhs: Self) -> Bool {
+		lhs.id == rhs.id
+	}
+}
+
+extension ToastStyle {
+	public enum ID {
 		case primary
 		case error
 		case success
-
-		var foregroundColor: Color {
-			switch self {
-			case .primary: return Asset.Colors.Primary.default.swiftUIColor
-			case .error: return .white
-			case .success: return .black
-			}
-		}
-
-		var backgroundColor: Color {
-			switch self {
-			case .primary: return Asset.Colors.Primary.light.swiftUIColor
-			case .error: return Asset.Colors.Error.default.swiftUIColor
-			case .success: return Asset.Colors.Success.default.swiftUIColor
-			}
-		}
 	}
 }
 
 extension ToastState {
-	public enum Appearance: Equatable {
-		case toast
-		case hud
+	public enum Content {
+		case toast(ToastContent<Action>)
+		case hud(HUDContent)
+		case stackedNotification(StackedNotificationContent)
 	}
 }
 
 extension ToastState: Equatable where Action: Equatable {}
 extension ToastState.Button: Equatable where Action: Equatable {}
 extension ToastState.ToastAction: Equatable where Action: Equatable {}
+extension ToastState.Content: Equatable where Action: Equatable {}
 
 extension View {
 	public func toast<Action>(
@@ -126,7 +131,12 @@ extension View {
 						.animation(.spring())
 						.dismissCallback({ viewStore.send(.didFinishDismissing) })
 
-					switch viewStore.state?.appearance {
+					switch viewStore.state?.content {
+					case .stackedNotification:
+						return parameters
+							.type(.floater())
+							.position(.top)
+							.autohideIn(1)
 					case .toast:
 						return parameters
 							.type(.floater())

@@ -19,6 +19,7 @@ import StringsLibrary
 import SwiftUI
 import ToastLibrary
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 public struct GamesEditor: Reducer {
 	public struct State: Equatable {

@@ -292,7 +292,6 @@ let package = Package(
 				"LoggingServiceInterface",
 				"PasteboardServiceInterface",
 				"ToastLibrary",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -342,7 +341,6 @@ let package = Package(
 				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
-				"ScoresRepositoryInterface",
 				"SharingFeature",
 			]
 		),
@@ -377,7 +375,6 @@ let package = Package(
 				"FormFeature",
 				"GearRepositoryInterface",
 				"PickableModelsLibrary",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -431,7 +428,6 @@ let package = Package(
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -481,7 +477,6 @@ let package = Package(
 				"BowlerEditorFeature",
 				"GamesRepositoryInterface",
 				"ResourceListLibrary",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -518,7 +513,6 @@ let package = Package(
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
 				"SeriesRepositoryInterface",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -567,6 +561,7 @@ let package = Package(
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
 				"ScoreSheetLibrary",
+				"ScoresRepositoryInterface",
 			]
 		),
 		.testTarget(
@@ -589,7 +584,6 @@ let package = Package(
 				"PreferenceServiceInterface",
 				"SeriesRepositoryInterface",
 				"StatisticsRepositoryInterface",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -1636,7 +1630,8 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "PopupView", package: "PopupView"),
-				"AssetsLibrary",
+				"SwiftUIExtensionsLibrary",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(

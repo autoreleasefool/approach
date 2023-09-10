@@ -15,6 +15,7 @@ import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
 
+// swiftlint:disable:next type_body_length
 public struct StatisticsWidgetEditor: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 

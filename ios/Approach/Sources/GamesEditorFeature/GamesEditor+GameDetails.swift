@@ -4,6 +4,7 @@ import ModelsLibrary
 import StringsLibrary
 
 extension GamesEditor {
+	// swiftlint:disable:next function_body_length
 	func reduce(into state: inout State, gameDetailsAction: GameDetails.Action) -> Effect<Action> {
 		switch gameDetailsAction {
 		case let .delegate(delegateAction):

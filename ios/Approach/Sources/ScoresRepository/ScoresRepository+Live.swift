@@ -1,7 +1,7 @@
 import Dependencies
-import ModelsLibrary
 import FramesRepositoryInterface
 import GamesRepositoryInterface
+import ModelsLibrary
 import ScoresRepositoryInterface
 
 struct SequencedRoll {

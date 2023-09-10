@@ -98,37 +98,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ScoreSheetFeatureTests"
-               BuildableName = "ScoreSheetFeatureTests"
-               BlueprintName = "ScoreSheetFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ModelsViewsLibraryTests"
                BuildableName = "ModelsViewsLibraryTests"
                BlueprintName = "ModelsViewsLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ScoringServiceTests"
-               BuildableName = "ScoringServiceTests"
-               BlueprintName = "ScoringServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
@@ -1385,26 +1357,6 @@
                BlueprintIdentifier = "ResourcePickerLibraryTests"
                BuildableName = "ResourcePickerLibraryTests"
                BlueprintName = "ResourcePickerLibraryTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ScoreSheetFeatureTests"
-               BuildableName = "ScoreSheetFeatureTests"
-               BlueprintName = "ScoreSheetFeatureTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ScoringServiceTests"
-               BuildableName = "ScoringServiceTests"
-               BlueprintName = "ScoringServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

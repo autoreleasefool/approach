@@ -178,12 +178,14 @@ extension ToastState {
 		withReportButton: Bool
 	) where Action == Errors<ErrorID>.ToastAction {
 		self.init(
-			message: error.message,
-			icon: error.icon,
-			button: withReportButton ? .init(
-				title: .init(Strings.Action.report),
-				action: .init(action: .didReportFeedback(error.thrownError))
-			) : nil,
+			content: .toast(.init(
+				message: error.message,
+				icon: error.icon,
+				button: withReportButton ? .init(
+					title: .init(Strings.Action.report),
+					action: .init(action: .didReportFeedback(error.thrownError))
+				) : nil
+			)),
 			style: .error
 		)
 	}

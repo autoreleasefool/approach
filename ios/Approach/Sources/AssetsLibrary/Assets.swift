@@ -149,7 +149,10 @@ public enum Asset {
     }
     public enum Text {
       public static let onBackground = ColorAsset(name: "Text/OnBackground")
+      public static let onError = ColorAsset(name: "Text/OnError")
+      public static let onPrimary = ColorAsset(name: "Text/OnPrimary")
       public static let onSecondaryBackground = ColorAsset(name: "Text/OnSecondaryBackground")
+      public static let onSuccess = ColorAsset(name: "Text/OnSuccess")
     }
     public enum Warning {
       public static let `default` = ColorAsset(name: "Warning/Default")
