@@ -27,7 +27,6 @@ public struct GamesEditor: Reducer {
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var isScoreSheetVisible = true
-		public let isSharingGameEnabled: Bool
 
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
 		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
@@ -61,6 +60,9 @@ public struct GamesEditor: Reducer {
 
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
+		public var _gamesHeader: GamesHeader.State = .init()
+		public var _gameDetailsHeader: GameDetailsHeader.State? =
+			.init(currentBowlerName: "", currentLeagueName: "", next: nil)
 		@PresentationState public var destination: Destination.State?
 
 		public var toast: ToastState<ToastAction>?
@@ -79,9 +81,6 @@ public struct GamesEditor: Reducer {
 			let currentBowlerId = initialBowlerId ?? bowlerIds.first!
 			self._currentBowlerId = currentBowlerId
 			self._currentGameId = initialGameId ?? bowlerGameIds[currentBowlerId]!.first!
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()

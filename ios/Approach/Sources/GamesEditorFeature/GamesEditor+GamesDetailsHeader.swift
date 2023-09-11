@@ -4,15 +4,17 @@ import ModelsLibrary
 extension GamesEditor.State {
 	var gameDetailsHeader: GameDetailsHeader.State? {
 		get {
-			.init(
-				currentBowlerName: game?.bowler.name ?? "",
-				currentLeagueName: game?.league.name ?? "",
-				next: nextHeaderElement
-			)
+			guard let _gameDetailsHeader else { return nil }
+
+			var gameDetailsHeader = _gameDetailsHeader
+			gameDetailsHeader.currentBowlerName = game?.bowler.name ?? ""
+			gameDetailsHeader.currentLeagueName = game?.league.name ?? ""
+			gameDetailsHeader.next = nextHeaderElement
+			return gameDetailsHeader
 		}
-		// We aren't observing any values from this reducer, so we ignore the setter
-		// swiftlint:disable:next unused_setter_value
-		set { }
+		set {
+			_gameDetailsHeader = newValue
+		}
 	}
 
 	var currentBowler: Bowler.Summary? { bowlers?[id: currentBowlerId] }

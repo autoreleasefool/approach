@@ -9,16 +9,19 @@ import ViewsLibrary
 
 public struct GameDetailsHeader: Reducer {
 	public struct State: Equatable {
-		public let currentBowlerName: String
-		public let currentLeagueName: String
-		public let next: NextElement?
+		public var currentBowlerName: String
+		public var currentLeagueName: String
+		public var shimmerColor: Color?
+		public var next: NextElement?
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapNext(State.NextElement)
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case setShimmerColor(Color?)
+		}
 		public enum DelegateAction: Equatable {
 			case didProceed(to: State.NextElement)
 		}
@@ -28,18 +31,48 @@ public struct GameDetailsHeader: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	enum CancelID { case shimmering }
+
+
+	@Dependency(\.continuousClock) var clock
+
 	public var body: some ReducerOf<Self> {
-		Reduce { _, action in
+		Reduce { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapNext(next):
-					return .send(.delegate(.didProceed(to: next)))
+					var shimmeringEffect: Effect<Action>?
+					switch next {
+					case .bowler:
+						shimmeringEffect = .run { send in
+							for color in [
+								Asset.Colors.Primary.light.swiftUIColor,
+								Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+								Asset.Colors.Primary.light.swiftUIColor,
+								Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+								nil
+							] {
+								guard !Task.isCancelled else { return }
+								await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
+								try await clock.sleep(for: .milliseconds(500))
+							}
+						}
+						.cancellable(id: CancelID.shimmering, cancelInFlight: true)
+					case .frame, .game, .roll:
+						break
+					}
+
+					return .merge([
+						shimmeringEffect,
+						.send(.delegate(.didProceed(to: next))),
+					].compactMap { $0 })
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .never:
+				case let .setShimmerColor(color):
+					state.shimmerColor = color
 					return .none
 				}
 
@@ -80,13 +113,22 @@ public struct GameDetailsHeaderView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack(alignment: .top) {
-				VStack(alignment: .leading) {
+				VStack(alignment: .leading, spacing: .tinySpacing) {
 					Text(viewStore.currentBowlerName)
 						.font(.headline)
-						.frame(maxWidth: .infinity, alignment: .leading)
+						.padding(.tinySpacing)
+						.background(
+							RoundedRectangle(cornerRadius: .smallRadius)
+								.fill(viewStore.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
+						)
+
 					Text(viewStore.currentLeagueName)
 						.font(.subheadline)
-						.frame(maxWidth: .infinity, alignment: .leading)
+						.padding(.tinySpacing)
+						.background(
+							RoundedRectangle(cornerRadius: .smallRadius)
+								.fill(viewStore.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
+						)
 				}
 
 				Spacer()
@@ -106,8 +148,23 @@ public struct GameDetailsHeaderView: View {
 					.buttonStyle(TappableElement())
 				}
 			}
-			.listRowInsets(EdgeInsets())
-			.listRowBackground(Color.clear)
 		})
 	}
 }
+
+#if DEBUG
+struct GameDetailsHeaderPreview: PreviewProvider {
+	static var previews: some View {
+		GameDetailsHeaderView(
+			store: .init(
+				initialState: GameDetailsHeader.State(
+					currentBowlerName: "Joseph Roque",
+					currentLeagueName: "Majors",
+					next: .bowler(name: "Sarah", id: .init(0))
+				),
+				reducer: GameDetailsHeader.init
+			)
+		)
+	}
+}
+#endif

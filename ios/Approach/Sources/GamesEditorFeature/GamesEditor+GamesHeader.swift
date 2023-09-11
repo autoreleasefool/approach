@@ -3,11 +3,13 @@ import ComposableArchitecture
 extension GamesEditor.State {
 	var gamesHeader: GamesHeader.State {
 		get {
-			.init(currentGameIndex: currentGameIndex, isSharingGameEnabled: isSharingGameEnabled)
+			var gamesHeader = _gamesHeader
+			gamesHeader.currentGameIndex = currentGameIndex
+			return gamesHeader
 		}
-		// We aren't observing any values from this reducer, so we ignore the setter
-		// swiftlint:disable:next unused_setter_value
-		set {}
+		set {
+			_gamesHeader = newValue
+		}
 	}
 }
 

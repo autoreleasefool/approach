@@ -1,6 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -8,8 +9,14 @@ import ViewsLibrary
 
 public struct GamesHeader: Reducer {
 	public struct State: Equatable {
-		public let currentGameIndex: Int
+		public var currentGameIndex: Int = 0
 		public let isSharingGameEnabled: Bool
+		public var shimmerColor: Color?
+
+		init() {
+			@Dependency(\.featureFlags) var featureFlags
+			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -17,21 +24,28 @@ public struct GamesHeader: Reducer {
 			case didTapCloseButton
 			case didTapSettingsButton
 			case didTapShareButton
+			case didStartShimmering
 		}
 		public enum DelegateAction: Equatable {
 			case didCloseEditor
 			case didOpenSettings
 			case didShareGame
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case setShimmerColor(Color?)
+		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
 	}
 
+	enum CancelID { case shimmering }
+
+	@Dependency(\.continuousClock) var clock
+
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { _, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
@@ -43,11 +57,28 @@ public struct GamesHeader: Reducer {
 
 				case .didTapShareButton:
 					return .send(.delegate(.didShareGame))
+
+				case .didStartShimmering:
+					return .run { send in
+						for color in [
+							Asset.Colors.Primary.default.swiftUIColor.opacity(0.6),
+							Asset.Colors.Primary.default.swiftUIColor.opacity(0),
+							Asset.Colors.Primary.default.swiftUIColor.opacity(0.6),
+							Asset.Colors.Primary.default.swiftUIColor.opacity(0),
+							nil
+						] {
+							guard !Task.isCancelled else { return }
+							await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
+							try await clock.sleep(for: .milliseconds(500))
+						}
+					}
+					.cancellable(id: CancelID.shimmering, cancelInFlight: true)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .never:
+				case let .setShimmerColor(color):
+					state.shimmerColor = color
 					return .none
 				}
 
@@ -70,6 +101,11 @@ public struct GamesHeaderView: View {
 					Text(Strings.Game.titleWithOrdinal(viewStore.currentGameIndex + 1))
 						.font(.caption)
 						.foregroundColor(.white)
+						.padding(.tinySpacing)
+						.background(
+							RoundedRectangle(cornerRadius: .smallRadius)
+								.fill(viewStore.shimmerColor ?? Asset.Colors.Primary.default.swiftUIColor.opacity(0))
+						)
 				}
 
 				HStack {
@@ -83,6 +119,9 @@ public struct GamesHeaderView: View {
 
 					headerButton(systemSymbol: .gear) { viewStore.send(.didTapSettingsButton) }
 				}
+			}
+			.onChange(of: viewStore.currentGameIndex) { _ in
+				viewStore.send(.didStartShimmering)
 			}
 		})
 	}
@@ -103,8 +142,11 @@ public struct GamesHeaderView: View {
 struct GamesHeaderPreview: PreviewProvider {
 	static var previews: some View {
 		GamesHeaderView(store: .init(
-			initialState: GamesHeader.State(currentGameIndex: 0, isSharingGameEnabled: true),
-			reducer: GamesHeader.init
+			initialState: GamesHeader.State(),
+			reducer: {
+				GamesHeader()
+					.dependency(\.featureFlags.isEnabled, { _ in true })
+			}
 		))
 		.background(.black)
 	}

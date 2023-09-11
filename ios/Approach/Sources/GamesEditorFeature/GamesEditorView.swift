@@ -194,6 +194,8 @@ public struct GamesEditorView: View {
 			Section {
 				IfLetStore(store.scope(state: \.gameDetailsHeader, action: /GamesEditor.Action.InternalAction.gameDetailsHeader)) {
 					GameDetailsHeaderView(store: $0)
+						.listRowInsets(EdgeInsets())
+						.listRowBackground(Color.clear)
 						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
 				}
 			} header: {
