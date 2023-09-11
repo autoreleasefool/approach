@@ -207,6 +207,9 @@
 "game.editor.fields.alley.lanes.selectLanes" = "Set specific lanes?";
 "game.editor.fields.alley.lanes.manageLanes" = "Manage lanes";
 "game.editor.picker.switch" = "Switch game";
+"game.editor.preferences.title" = "Preferences";
+"game.editor.preferences.flashEditorChanges" = "Flash editor changes?";
+"game.editor.preferences.flashEditorChanges.footer" = "Quickly highlight changes to the current bowler or game, so you don't lose track.";
 "game.editor.bowlers.dragToReorder" = "Drag to reorder";
 "game.editor.toast.switchedFrame" = "Switched frame";
 

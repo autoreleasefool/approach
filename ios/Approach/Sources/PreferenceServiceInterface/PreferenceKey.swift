@@ -4,6 +4,10 @@ public enum PreferenceKey: String {
 
 	case appDidCompleteOnboarding                   // default: false
 
+	// MARK: - Game
+
+	case gameShouldNotifyEditorChanges              // default: true
+
 	// MARK: - Statistics
 
 	case statisticsCountH2AsH                       // default: true

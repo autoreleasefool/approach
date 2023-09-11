@@ -4,6 +4,7 @@ import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
 import ModelsLibrary
+import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 
@@ -16,6 +17,8 @@ public struct GamesSettings: Reducer {
 
 		public let isTeamsEnabled: Bool
 
+		@BindingState public var isFlashEditorChangesEnabled: Bool
+
 		init(bowlers: IdentifiedArrayOf<Bowler.Summary>, currentBowlerId: Bowler.ID, numberOfGames: Int, gameIndex: Int) {
 			self.bowlers = bowlers
 			self.currentBowlerId = currentBowlerId
@@ -24,15 +27,19 @@ public struct GamesSettings: Reducer {
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.isTeamsEnabled = featureFlags.isEnabled(.teams)
+
+			@Dependency(\.preferences) var preferences
+			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapDone
 			case didSwitchGame(to: Int)
 			case didSwitchBowler(to: Bowler.ID)
 			case didMoveBowlers(source: IndexSet, destination: Int)
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
 			case movedBowlers(source: IndexSet, destination: Int)
@@ -47,9 +54,12 @@ public struct GamesSettings: Reducer {
 	}
 
 	@Dependency(\.dismiss) var dismiss
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { _, action in
+		BindingReducer(action: /Action.view)
+
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
@@ -64,6 +74,15 @@ public struct GamesSettings: Reducer {
 
 				case let .didMoveBowlers(source, destination):
 					return .send(.delegate(.movedBowlers(source: source, destination: destination)))
+
+				case .binding(\.$isFlashEditorChangesEnabled):
+					return .run { [updatedValue = state.isFlashEditorChangesEnabled] _ in
+						preferences.setKey(.gameShouldNotifyEditorChanges, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.gameShouldNotifyEditorChanges, cancelInFlight: true)
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -122,6 +141,17 @@ public struct GamesSettingsView: View {
 					} footer: {
 						Text(Strings.Game.Editor.Bowlers.dragToReorder)
 					}
+				}
+
+				Section {
+					Toggle(
+						Strings.Game.Editor.Preferences.flashEditorChanges,
+						isOn: viewStore.$isFlashEditorChangesEnabled
+					)
+				} header: {
+					Text(Strings.Game.Editor.Preferences.title)
+				} footer: {
+					Text(Strings.Game.Editor.Preferences.FlashEditorChanges.footer)
 				}
 			}
 			.environment(\.editMode, .constant(.active))

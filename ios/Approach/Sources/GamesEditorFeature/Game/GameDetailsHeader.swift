@@ -3,6 +3,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import ModelsLibrary
+import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -13,14 +14,27 @@ public struct GameDetailsHeader: Reducer {
 		public var currentLeagueName: String
 		public var shimmerColor: Color?
 		public var next: NextElement?
+
+		public var isFlashEditorChangesEnabled: Bool
+
+		init(currentBowlerName: String = "", currentLeagueName: String = "", nextElement: NextElement? = nil) {
+			self.currentBowlerName = currentBowlerName
+			self.currentLeagueName = currentLeagueName
+			self.next = nextElement
+
+			@Dependency(\.preferences) var preferences
+			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didFirstAppear
 			case didTapNext(State.NextElement)
 		}
 		public enum InternalAction: Equatable {
 			case setShimmerColor(Color?)
+			case setFlashEditorChangesEnabled(Bool)
 		}
 		public enum DelegateAction: Equatable {
 			case didProceed(to: State.NextElement)
@@ -33,25 +47,32 @@ public struct GameDetailsHeader: Reducer {
 
 	enum CancelID { case shimmering }
 
-
 	@Dependency(\.continuousClock) var clock
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didFirstAppear:
+					return .run { send in
+						for await key in preferences.observe(keys: [.gameShouldNotifyEditorChanges]) {
+							await send(.internal(.setFlashEditorChangesEnabled(preferences.bool(forKey: key) ?? true)))
+						}
+					}
+
 				case let .didTapNext(next):
-					var shimmeringEffect: Effect<Action>?
+					let shimmeringEffect: Effect<Action>
 					switch next {
 					case .bowler:
-						shimmeringEffect = .run { send in
+						shimmeringEffect = state.isFlashEditorChangesEnabled ? .none : .run { send in
 							for color in [
 								Asset.Colors.Primary.light.swiftUIColor,
 								Asset.Colors.Primary.light.swiftUIColor.opacity(0),
 								Asset.Colors.Primary.light.swiftUIColor,
 								Asset.Colors.Primary.light.swiftUIColor.opacity(0),
-								nil
+								nil,
 							] {
 								guard !Task.isCancelled else { return }
 								await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
@@ -60,19 +81,23 @@ public struct GameDetailsHeader: Reducer {
 						}
 						.cancellable(id: CancelID.shimmering, cancelInFlight: true)
 					case .frame, .game, .roll:
-						break
+						shimmeringEffect = .none
 					}
 
 					return .merge([
 						shimmeringEffect,
 						.send(.delegate(.didProceed(to: next))),
-					].compactMap { $0 })
+					])
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .setShimmerColor(color):
 					state.shimmerColor = color
+					return .none
+
+				case let .setFlashEditorChangesEnabled(enabled):
+					state.isFlashEditorChangesEnabled = enabled
 					return .none
 				}
 
@@ -148,6 +173,7 @@ public struct GameDetailsHeaderView: View {
 					.buttonStyle(TappableElement())
 				}
 			}
+			.task { await viewStore.send(.didFirstAppear).finish() }
 		})
 	}
 }
@@ -160,7 +186,7 @@ struct GameDetailsHeaderPreview: PreviewProvider {
 				initialState: GameDetailsHeader.State(
 					currentBowlerName: "Joseph Roque",
 					currentLeagueName: "Majors",
-					next: .bowler(name: "Sarah", id: .init(0))
+					nextElement: .bowler(name: "Sarah", id: .init(0))
 				),
 				reducer: GameDetailsHeader.init
 			)

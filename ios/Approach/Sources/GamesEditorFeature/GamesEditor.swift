@@ -61,8 +61,7 @@ public struct GamesEditor: Reducer {
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _gamesHeader: GamesHeader.State = .init()
-		public var _gameDetailsHeader: GameDetailsHeader.State? =
-			.init(currentBowlerName: "", currentLeagueName: "", next: nil)
+		public var _gameDetailsHeader: GameDetailsHeader.State? = .init()
 		@PresentationState public var destination: Destination.State?
 
 		public var toast: ToastState<ToastAction>?

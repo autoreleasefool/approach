@@ -431,6 +431,16 @@ public enum Strings {
         /// Switch game
         public static let `switch` = Strings.tr("Localizable", "game.editor.picker.switch", fallback: "Switch game")
       }
+      public enum Preferences {
+        /// Flash editor changes?
+        public static let flashEditorChanges = Strings.tr("Localizable", "game.editor.preferences.flashEditorChanges", fallback: "Flash editor changes?")
+        /// Preferences
+        public static let title = Strings.tr("Localizable", "game.editor.preferences.title", fallback: "Preferences")
+        public enum FlashEditorChanges {
+          /// Quickly highlight changes to the current bowler or game, so you don't lose track.
+          public static let footer = Strings.tr("Localizable", "game.editor.preferences.flashEditorChanges.footer", fallback: "Quickly highlight changes to the current bowler or game, so you don't lose track.")
+        }
+      }
       public enum Toast {
         /// Switched frame
         public static let switchedFrame = Strings.tr("Localizable", "game.editor.toast.switchedFrame", fallback: "Switched frame")

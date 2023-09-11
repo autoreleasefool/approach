@@ -3,6 +3,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import ModelsLibrary
+import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -13,14 +14,20 @@ public struct GamesHeader: Reducer {
 		public let isSharingGameEnabled: Bool
 		public var shimmerColor: Color?
 
+		public var isFlashEditorChangesEnabled: Bool
+
 		init() {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
+
+			@Dependency(\.preferences) var preferences
+			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didFirstAppear
 			case didTapCloseButton
 			case didTapSettingsButton
 			case didTapShareButton
@@ -33,6 +40,7 @@ public struct GamesHeader: Reducer {
 		}
 		public enum InternalAction: Equatable {
 			case setShimmerColor(Color?)
+			case setFlashEditorChangesEnabled(Bool)
 		}
 
 		case view(ViewAction)
@@ -43,12 +51,20 @@ public struct GamesHeader: Reducer {
 	enum CancelID { case shimmering }
 
 	@Dependency(\.continuousClock) var clock
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didFirstAppear:
+					return .run { send in
+						for await key in preferences.observe(keys: [.gameShouldNotifyEditorChanges]) {
+							await send(.internal(.setFlashEditorChangesEnabled(preferences.bool(forKey: key) ?? true)))
+						}
+					}
+
 				case .didTapCloseButton:
 					return .send(.delegate(.didCloseEditor))
 
@@ -59,13 +75,15 @@ public struct GamesHeader: Reducer {
 					return .send(.delegate(.didShareGame))
 
 				case .didStartShimmering:
+					guard state.isFlashEditorChangesEnabled else { return .none }
+
 					return .run { send in
 						for color in [
 							Asset.Colors.Primary.default.swiftUIColor.opacity(0.6),
 							Asset.Colors.Primary.default.swiftUIColor.opacity(0),
 							Asset.Colors.Primary.default.swiftUIColor.opacity(0.6),
 							Asset.Colors.Primary.default.swiftUIColor.opacity(0),
-							nil
+							nil,
 						] {
 							guard !Task.isCancelled else { return }
 							await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
@@ -79,6 +97,10 @@ public struct GamesHeader: Reducer {
 				switch internalAction {
 				case let .setShimmerColor(color):
 					state.shimmerColor = color
+					return .none
+
+				case let .setFlashEditorChangesEnabled(enabled):
+					state.isFlashEditorChangesEnabled = enabled
 					return .none
 				}
 
@@ -123,6 +145,7 @@ public struct GamesHeaderView: View {
 			.onChange(of: viewStore.currentGameIndex) { _ in
 				viewStore.send(.didStartShimmering)
 			}
+			.task { await viewStore.send(.didFirstAppear).finish() }
 		})
 	}
 
