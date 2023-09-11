@@ -45,11 +45,11 @@ public struct StackedNotificationView: View {
 				}
 
 				Text(content.title.message)
+					.lineLimit(1)
+					.frame(maxWidth: .infinity, alignment: .leading)
 			}
-			.padding(.horizontal, .standardSpacing)
-			.padding(.bottom, .smallSpacing)
-			.matchWidth(byKey: WidthKey.self, to: $itemWidth)
-			.border(edges: [.bottom], color: Asset.Colors.Primary.default)
+			.padding(.smallSpacing)
+			.background(Material.thickMaterial)
 
 			VStack(alignment: .leading, spacing: .unitSpacing) {
 				ForEach(content.items) { item in
@@ -65,20 +65,19 @@ public struct StackedNotificationView: View {
 						}
 
 						Text(item.message)
+							.lineLimit(1)
+							.frame(maxWidth: .infinity, alignment: .leading)
 					}
-					.padding(.horizontal, .standardSpacing)
+					.padding(.horizontal, .smallSpacing)
 				}
 			}
-			.matchWidth(byKey: WidthKey.self, to: $itemWidth)
+			.padding(.vertical, .smallSpacing)
+			.background(Material.regularMaterial)
 		}
-		.padding(.vertical, .smallSpacing)
-		.foregroundColor(style.foregroundColor)
-		.background(
-			RoundedRectangle(cornerRadius: .standardRadius)
-				.fill(style.backgroundColor.swiftUIColor)
-		)
-		.padding(.horizontal, .standardSpacing)
-		.padding(.top, .standardSpacing)
+		.fixedSize(horizontal: true, vertical: false)
+		.cornerRadius(.standardRadius)
+		.shadow(radius: .standardShadowRadius)
+		.padding(.standardSpacing)
 	}
 }
 
@@ -89,7 +88,7 @@ struct StackedNotificationViewPreview: PreviewProvider {
 	static var previews: some View {
 		StackedNotificationView(
 			content: .init(
-				title: .init(message: .init("Toast!"), icon: .exclamationmarkCircle),
+				title: .init(message: .init("Title!"), icon: .exclamationmarkCircle),
 				items: [
 					.init(message: .init("Item #1"), icon: ._1Circle),
 					.init(message: .init("Item #2"), icon: nil),
@@ -97,6 +96,7 @@ struct StackedNotificationViewPreview: PreviewProvider {
 			),
 			style: .success
 		)
+		.background(.black)
 	}
 }
 #endif

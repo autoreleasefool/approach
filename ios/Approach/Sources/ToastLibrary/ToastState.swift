@@ -57,25 +57,29 @@ extension ToastState {
 
 public struct ToastStyle: Equatable {
 	public let id: ID
-	public let foregroundColor: ColorAsset
-	public let backgroundColor: ColorAsset
+	public let foreground: ColorAsset
+	public let background: ColorAsset
+	public let border: ColorAsset
 
 	public static let primary = Self(
 		id: .primary,
-		foregroundColor: Asset.Colors.Text.onPrimary,
-		backgroundColor: Asset.Colors.Primary.default
+		foreground: Asset.Colors.Text.onPrimary,
+		background: Asset.Colors.Primary.default,
+		border: Asset.Colors.Background.default
 	)
 
 	public static let error = Self(
 		id: .error,
-		foregroundColor: Asset.Colors.Text.onError,
-		backgroundColor: Asset.Colors.Error.default
+		foreground: Asset.Colors.Text.onError,
+		background: Asset.Colors.Error.default,
+		border: Asset.Colors.Background.default
 	)
 
 	public static let success = Self(
 		id: .success,
-		foregroundColor: Asset.Colors.Text.onSuccess,
-		backgroundColor: Asset.Colors.Success.default
+		foreground: Asset.Colors.Text.onSuccess,
+		background: Asset.Colors.Success.default,
+		border: Asset.Colors.Background.default
 	)
 
 	public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -135,12 +139,11 @@ extension View {
 					case .stackedNotification:
 						return parameters
 							.type(.floater())
-							.position(.top)
-							.autohideIn(1)
+							.closeOnTap(true)
 					case .toast:
 						return parameters
-							.type(.floater())
 							.position(.bottom)
+							.type(.floater())
 							.autohideIn(2)
 					case .hud:
 						return parameters

@@ -29,10 +29,10 @@ public struct HUDView: View {
 				.font(.headline)
 		}
 		.padding(.largeSpacing)
-		.foregroundColor(style.foregroundColor)
+		.foregroundColor(style.foreground)
 		.background(
 			RoundedRectangle(cornerRadius: .standardRadius)
-				.fill(style.backgroundColor.swiftUIColor.opacity(0.6))
+				.fill(style.background.swiftUIColor.opacity(0.6))
 		)
 		.padding(.standardSpacing)
 	}

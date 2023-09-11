@@ -208,6 +208,7 @@
 "game.editor.fields.alley.lanes.manageLanes" = "Manage lanes";
 "game.editor.picker.switch" = "Switch game";
 "game.editor.bowlers.dragToReorder" = "Drag to reorder";
+"game.editor.toast.switchedFrame" = "Switched frame";
 
 "frame.title" = "Frame %d";
 "ball.title" = "Ball %d";

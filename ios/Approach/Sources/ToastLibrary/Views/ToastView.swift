@@ -47,10 +47,10 @@ public struct ToastView<Action: ToastableAction>: View {
 		}
 		.padding(.horizontal, .standardSpacing)
 		.padding(.vertical, .smallSpacing)
-		.foregroundColor(style.foregroundColor)
+		.foregroundColor(style.foreground)
 		.background(
 			RoundedRectangle(cornerRadius: .standardRadius)
-				.fill(style.backgroundColor.swiftUIColor)
+				.fill(style.background.swiftUIColor)
 		)
 		.padding(.horizontal, .standardSpacing)
 		.padding(.bottom, .standardSpacing)

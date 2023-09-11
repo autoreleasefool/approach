@@ -14,6 +14,8 @@ extension GamesEditor.State {
 		// swiftlint:disable:next unused_setter_value
 		set { }
 	}
+
+	var currentBowler: Bowler.Summary? { bowlers?[id: currentBowlerId] }
 }
 
 extension GamesEditor {
@@ -22,32 +24,54 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .didProceed(next):
+				var effects: [Effect<Action>] = []
+
+				let previousBowler = state.currentBowler
+				let previousGameIndex = state.currentGameIndex
+				let previousFrameIndex = state.currentFrameIndex
+				let previousRollIndex = state.currentRollIndex
+
 				switch next {
 				case let .bowler(_, id):
 					let saveGameEffect = lockGameIfFinished(in: &state)
 					let gameIndex = state.currentGameIndex
 					state.setCurrent(gameId: state.bowlerGameIds[id]![gameIndex], bowlerId: id)
-					return .merge(
-						saveGameEffect,
-						loadGameDetails(state: &state)
-					)
+					effects.append(saveGameEffect)
+					effects.append(loadGameDetails(state: &state))
 				case let .frame(frameIndex):
 					state.setCurrent(rollIndex: 0, frameIndex: frameIndex)
 					state.frames?[frameIndex].guaranteeRollExists(upTo: 0)
-					return save(frame: state.frames?[frameIndex])
+					effects.append(save(frame: state.frames?[frameIndex]))
 				case let .roll(rollIndex):
 					state.setCurrent(rollIndex: rollIndex)
 					let currentFrameIndex = state.currentFrameIndex
 					state.frames?[currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
-					return save(frame: state.frames?[state.currentFrameIndex])
+					effects.append(save(frame: state.frames?[state.currentFrameIndex]))
 				case let .game(_, bowler, game):
 					let saveGameEffect = lockGameIfFinished(in: &state)
 					state.setCurrent(gameId: game, bowlerId: bowler)
-					return .merge(
-						saveGameEffect,
-						loadGameDetails(state: &state)
-					)
+					effects.append(saveGameEffect)
+					effects.append(loadGameDetails(state: &state))
 				}
+
+				var editorChanges: [EditorSelectionChange] = []
+				if let currentBowler = state.currentBowler, let previousBowler, currentBowler != previousBowler {
+					editorChanges.append(.didChangeBowler(from: previousBowler.name, to: currentBowler.name))
+				}
+				if state.currentGameIndex != previousGameIndex {
+					editorChanges.append(.didChangeGameIndex(from: previousGameIndex, to: state.currentGameIndex))
+				}
+				if state.currentFrameIndex != previousFrameIndex {
+					editorChanges.append(.didChangeFrameIndex(from: previousFrameIndex, to: state.currentFrameIndex))
+				}
+				if state.currentRollIndex != previousRollIndex {
+					editorChanges.append(.didChangeRollIndex(from: previousRollIndex, to: state.currentRollIndex))
+				}
+				if !editorChanges.isEmpty {
+					effects.append(state.presentToast(forSelectionChanges: editorChanges))
+				}
+
+				return .merge(effects)
 			}
 
 		case .view, .internal:

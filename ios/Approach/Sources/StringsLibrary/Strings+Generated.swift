@@ -431,6 +431,10 @@ public enum Strings {
         /// Switch game
         public static let `switch` = Strings.tr("Localizable", "game.editor.picker.switch", fallback: "Switch game")
       }
+      public enum Toast {
+        /// Switched frame
+        public static let switchedFrame = Strings.tr("Localizable", "game.editor.toast.switchedFrame", fallback: "Switched frame")
+      }
     }
     public enum List {
       /// Games
