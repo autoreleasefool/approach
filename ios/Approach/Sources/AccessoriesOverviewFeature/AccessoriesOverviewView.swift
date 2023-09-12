@@ -43,7 +43,7 @@ public struct AccessoriesOverviewView: View {
 						Text(Strings.Alley.Error.Empty.message)
 					} else {
 						ForEach(viewStore.alleys) { alley in
-							Alley.View(alley: alley)
+							Alley.View(alley)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .alley(alley))) }
 									DeleteButton { viewStore.send(.didSwipe(.delete, .alley(alley))) }
@@ -99,7 +99,7 @@ public struct AccessoriesOverviewView: View {
 						Text(Strings.Gear.Error.Empty.message)
 					} else {
 						ForEach(viewStore.gear) { gear in
-							Gear.View(gear: gear)
+							Gear.View(gear)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .gear(gear))) }
 									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }

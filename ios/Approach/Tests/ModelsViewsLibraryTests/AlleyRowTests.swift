@@ -8,7 +8,7 @@ final class AlleyRowTests: XCTestCase {
 	func testAlleyRowUnknownPropertiesSnapshot() {
 		let rows = List {
 			Section {
-				Alley.View(alley: .init(
+				Alley.View(.init(
 					id: UUID(),
 					name: "Skyview Lanes",
 					material: nil,
@@ -17,7 +17,7 @@ final class AlleyRowTests: XCTestCase {
 					pinBase: nil,
 					location: nil
 				))
-				Alley.View(alley: .init(
+				Alley.View(.init(
 					id: UUID(),
 					name: "Skyview Lanes",
 					material: .synthetic,

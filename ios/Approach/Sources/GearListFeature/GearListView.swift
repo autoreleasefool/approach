@@ -31,7 +31,7 @@ public struct GearListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /GearList.Action.InternalAction.list)
 			) {
-				Gear.View(gear: $0)
+				Gear.View($0)
 			}
 			.navigationTitle(Strings.Gear.List.title)
 			.toolbar {

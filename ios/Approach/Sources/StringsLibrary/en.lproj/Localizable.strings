@@ -85,6 +85,7 @@
 "gear.properties.kind.towel" = "Towel";
 "gear.properties.kind.towels" = "Towels";
 "gear.properties.owner" = "Owner";
+"gear.ownedBy" = "Owned by %@";
 "gear.list.add" = "Add Gear";
 "gear.error.empty.title" = "No gear found";
 "gear.error.empty.message" = "You haven't added any gear yet. Track usage stats for your shoes, balls, or more.";

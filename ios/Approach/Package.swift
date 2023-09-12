@@ -341,6 +341,7 @@ let package = Package(
 				"LanesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
+				"PreferenceServiceInterface",
 				"SharingFeature",
 			]
 		),
@@ -1390,6 +1391,7 @@ let package = Package(
 			dependencies: [
 				"AssetsLibrary",
 				"ModelsLibrary",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(

@@ -31,7 +31,7 @@ public struct AlleysListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
 			) {
-				Alley.View(alley: $0)
+				Alley.View($0)
 			}
 			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {

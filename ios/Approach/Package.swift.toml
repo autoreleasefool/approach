@@ -57,7 +57,7 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing" ]
 repositories = [ "Bowlers", "Frames", "Gear", "Lanes" ]
-services = [ "Analytics", "FeatureFlags" ]
+services = [ "Analytics", "FeatureFlags", "Preference" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 
 [features.GamesList]
@@ -294,7 +294,7 @@ dependencies = [ "IdentifiedCollections" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.ModelsViews]
-libraries = [ "Assets", "Models" ]
+libraries = [ "Assets", "Models", "Strings" ]
 
 [libraries.PickableModels]
 libraries = [ "Models", "ResourcePicker" ]

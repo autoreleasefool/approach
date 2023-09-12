@@ -7,9 +7,8 @@ extension Lane {
 		let label: String
 		let position: Lane.Position
 
-		public init(lane: Lane.Summary) {
-			self.label = lane.label
-			self.position = lane.position
+		public init(_ lane: Lane.Summary) {
+			self.init(label: lane.label, position: lane.position)
 		}
 
 		public init(label: String, position: Lane.Position) {
@@ -35,3 +34,16 @@ extension Lane {
 		}
 	}
 }
+
+#if DEBUG
+struct LaneViewPreview: PreviewProvider {
+	static var previews: some View {
+		List {
+			Lane.View(label: "1", position: .leftWall)
+			Lane.View(label: "2", position: .noWall)
+			Lane.View(label: "3", position: .noWall)
+			Lane.View(label: "4", position: .rightWall)
+		}
+	}
+}
+#endif

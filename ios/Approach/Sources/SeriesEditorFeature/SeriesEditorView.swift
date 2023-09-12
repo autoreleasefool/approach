@@ -92,7 +92,7 @@ public struct SeriesEditorView: View {
 			store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
 		) { store in
 			ResourcePickerView(store: store) { alley in
-				Alley.View(alley: alley)
+				Alley.View(alley)
 			}
 		}
 	}

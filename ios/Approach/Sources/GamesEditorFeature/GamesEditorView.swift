@@ -225,7 +225,7 @@ public struct GamesEditorView: View {
 	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
-				Gear.View(gear: $0)
+				Gear.View($0)
 			}
 		}
 	}
@@ -241,7 +241,7 @@ public struct GamesEditorView: View {
 	private func gearPicker(store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
-				Gear.View(gear: $0)
+				Gear.View($0)
 			}
 		}
 	}
@@ -249,7 +249,7 @@ public struct GamesEditorView: View {
 	private func lanePicker(store: StoreOf<ResourcePicker<Lane.Summary, Alley.ID>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
-				Lane.View(lane: $0)
+				Lane.View($0)
 			}
 		}
 	}

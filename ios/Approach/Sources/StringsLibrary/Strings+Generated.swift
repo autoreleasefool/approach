@@ -488,6 +488,10 @@ public enum Strings {
     }
   }
   public enum Gear {
+    /// Owned by %@
+    public static func ownedBy(_ p1: Any) -> String {
+      return Strings.tr("Localizable", "gear.ownedBy", String(describing: p1), fallback: "Owned by %@")
+    }
     /// Gear
     public static let title = Strings.tr("Localizable", "gear.title", fallback: "Gear")
     public enum Error {
