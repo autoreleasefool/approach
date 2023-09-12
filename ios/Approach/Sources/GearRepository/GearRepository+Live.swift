@@ -41,6 +41,19 @@ extension GearRepository: DependencyKey {
 				}
 				return sortGear(gear, ordering)
 			},
+			preferred: { bowler in
+				database.reader().observe {
+					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
+					return try Gear.Database
+						.having(
+							Gear.Database.bowlerPreferredGear.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
+						)
+						.orderByName()
+						.annotated(withOptional: Gear.Database.bowler.select(ownerName))
+						.asRequest(of: Gear.Summary.self)
+						.fetchAll($0)
+				}
+			},
 			overview: {
 				let gear = database.reader().observe {
 					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")

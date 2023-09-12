@@ -10,6 +10,7 @@ extension Gear {
 
 public struct GearRepository: Sendable {
 	public var list: @Sendable (Bowler.ID?, Gear.Kind?, Gear.Ordering) -> AsyncThrowingStream<[Gear.Summary], Error>
+	public var preferred: @Sendable (Bowler.ID) -> AsyncThrowingStream<[Gear.Summary], Error>
 	public var overview: @Sendable () -> AsyncThrowingStream<[Gear.Summary], Error>
 	public var edit: @Sendable (Gear.ID) async throws -> Gear.Edit
 	public var create: @Sendable (Gear.Create) async throws -> Void
@@ -18,6 +19,7 @@ public struct GearRepository: Sendable {
 
 	public init(
 		list: @escaping @Sendable (Bowler.ID?, Gear.Kind?, Gear.Ordering) -> AsyncThrowingStream<[Gear.Summary], Error>,
+		preferred: @escaping @Sendable (Bowler.ID) -> AsyncThrowingStream<[Gear.Summary], Error>,
 		overview: @escaping @Sendable () -> AsyncThrowingStream<[Gear.Summary], Error>,
 		edit: @escaping @Sendable (Gear.ID) async throws -> Gear.Edit,
 		create: @escaping @Sendable (Gear.Create) async throws -> Void,
@@ -25,6 +27,7 @@ public struct GearRepository: Sendable {
 		delete: @escaping @Sendable (Gear.ID) async throws -> Void
 	) {
 		self.list = list
+		self.preferred = preferred
 		self.overview = overview
 		self.edit = edit
 		self.create = create
@@ -39,11 +42,16 @@ public struct GearRepository: Sendable {
 	) -> AsyncThrowingStream<[Gear.Summary], Error> {
 		self.list(ownedBy, ofKind, ordered)
 	}
+
+	public func preferredGear(forBowler: Bowler.ID) -> AsyncThrowingStream<[Gear.Summary], Error> {
+		self.preferred(forBowler)
+	}
 }
 
 extension GearRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _, _ in unimplemented("\(Self.self).list") },
+		preferred: { _ in unimplemented("\(Self.self).preferred") },
 		overview: { unimplemented("\(Self.self).overview") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },

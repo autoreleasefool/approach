@@ -56,7 +56,8 @@ final class TrackableFiltersTests: XCTestCase {
 			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8]),
 			withGameGear: .zero,
 			withFrames: .custom([frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8]),
-			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3, matchPlay4, matchPlay5, matchPlay6, matchPlay7, matchPlay8])
+			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3, matchPlay4, matchPlay5, matchPlay6, matchPlay7, matchPlay8]),
+			withBowlerPreferredGear: .zero
 		)
 	}
 

@@ -481,7 +481,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let gear3 = Gear.Database.mock(id: UUID(2), name: "Other", kind: .other)
 		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
 		let gameGear2 = GameGear.Database(gameId: UUID(0), gearId: UUID(1))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]), withGames: .custom([game1]), withGameGear: .custom([gameGear1, gameGear2]))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]), withGames: .custom([game1]), withGameGear: .custom([gameGear1, gameGear2]), withBowlerPreferredGear: .zero)
 
 		// Editing the game
 		let game = try await withDependencies {
@@ -694,7 +694,7 @@ final class GamesRepositoryTests: XCTestCase {
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Towel", kind: .towel)
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Shoes", kind: .shoes)
 		let gameGear1 = GameGear.Database(gameId: UUID(0), gearId: UUID(0))
-		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withGames: .custom([game1]), withGameGear: .custom([gameGear1]))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2]), withGames: .custom([game1]), withGameGear: .custom([gameGear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the game with a different gear
 		let editable = Game.Edit(

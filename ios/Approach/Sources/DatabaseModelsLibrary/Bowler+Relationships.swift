@@ -17,6 +17,12 @@ extension Bowler.Database {
 	)
 
 	public static let gear = hasMany(Gear.Database.self)
+	public static let bowlerPreferredGear = hasMany(BowlerPreferredGear.Database.self)
+	public static let preferredGear = hasMany(
+		Gear.Database.self,
+		through: bowlerPreferredGear,
+		using: BowlerPreferredGear.Database.gear
+	)
 
 	public static let matchOpponentKey = ForeignKey(["opponentId"])
 	public static let matchesAsOpponent = hasMany(

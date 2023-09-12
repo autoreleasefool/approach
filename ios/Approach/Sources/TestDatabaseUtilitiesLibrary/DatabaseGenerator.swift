@@ -70,6 +70,7 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 	let (games, gameLanes) = generateGames(forSeries: series)
 	let frames = generateFrames(forGames: games)
 	let matchPlays = generateMatchPlay(forGames: games)
+	let bowlerPreferredGear = generateBowlerPreferredGear(forBowlers: bowlers, withGear: gear)
 
 	return try initializeDatabase(
 		withLocations: .custom(locations),
@@ -84,6 +85,7 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 		withGameGear: .zero,
 		withFrames: .custom(frames),
 		withMatchPlays: .custom(matchPlays),
+		withBowlerPreferredGear: .custom(bowlerPreferredGear),
 		to: db
 	)
 }
@@ -237,4 +239,12 @@ private func generateMatchPlay(forGames: [Game.Database]) -> [MatchPlay.Database
 		matchPlays.append(.init(gameId: game.id, id: UUID(index), opponentId: UUID(index % 3), opponentScore: scores[index % scores.count], result: results[index % results.count]))
 	}
 	return matchPlays
+}
+
+private func generateBowlerPreferredGear(forBowlers: [Bowler.Database], withGear: [Gear.Database]) -> [BowlerPreferredGear.Database] {
+	forBowlers.flatMap { bowler in
+		withGear.map { gear in
+			BowlerPreferredGear.Database(bowlerId: bowler.id, gearId: gear.id)
+		}
+	}
 }

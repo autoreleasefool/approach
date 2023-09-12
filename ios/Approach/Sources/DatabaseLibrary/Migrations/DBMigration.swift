@@ -32,6 +32,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230531GameLanes.self)
 		registerMigration(Migration20230602AddGearToGame.self)
 		registerMigration(Migration20230630CreateStatisticsWidget.self)
+		registerMigration(Migration20230912CreateBowlerPreferredGear.self)
 	}
 
 	mutating func registerMigration(_ migration: DBMigration.Type) {
