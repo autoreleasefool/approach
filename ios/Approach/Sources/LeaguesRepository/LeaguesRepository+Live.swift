@@ -96,6 +96,33 @@ extension LeaguesRepository: DependencyKey {
 									alleyId: league.location?.id
 								)
 								try series.insert(db)
+
+								for index in (0..<series.numberOfGames) {
+									let game = Game.Database(
+										seriesId: series.id,
+										id: uuid(),
+										index: index,
+										score: 0,
+										locked: .open,
+										scoringMethod: .byFrame,
+										excludeFromStatistics: .init(from: series.excludeFromStatistics)
+									)
+									try game.insert(db)
+
+									for frameIndex in Game.FRAME_INDICES {
+										let frame = Frame.Database(
+											gameId: game.id,
+											index: frameIndex,
+											roll0: nil,
+											roll1: nil,
+											roll2: nil,
+											ball0: nil,
+											ball1: nil,
+											ball2: nil
+										)
+										try frame.insert(db)
+									}
+								}
 							}
 						}
 					}

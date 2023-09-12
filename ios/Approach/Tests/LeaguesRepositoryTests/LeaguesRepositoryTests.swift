@@ -458,6 +458,76 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(created?.numberOfGames, 1)
 	}
 
+	func testCreate_WhenLeagueRepeats_DoesNotCreateGames() async throws {
+		// Given a database with no leagues
+		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
+
+		// Creating a league
+		let new = League.Create(
+			bowlerId: UUID(0),
+			id: UUID(0),
+			name: "Minors",
+			recurrence: .repeating,
+			numberOfGames: 1,
+			additionalPinfall: 123,
+			additionalGames: 123,
+			excludeFromStatistics: .exclude
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
+			$0.leagues = .liveValue
+		} operation: {
+			try await self.leagues.create(new)
+		}
+
+		// Does not insert any series, games, or frames
+		let numberOfSeries = try await db.read { try Series.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfSeries, 0)
+
+		let numberOfGames = try await db.read { try Game.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGames, 0)
+
+		let numberOfFrames = try await db.read { try Frame.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfFrames, 0)
+	}
+
+	func testCreate_WhenLeagueDoesNotRepeat_CreatesGames() async throws {
+		// Given a database with no leagues
+		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)
+
+		// Creating a league
+		let new = League.Create(
+			bowlerId: UUID(0),
+			id: UUID(0),
+			name: "Minors",
+			recurrence: .once,
+			numberOfGames: 2,
+			additionalPinfall: 123,
+			additionalGames: 123,
+			excludeFromStatistics: .exclude
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
+			$0.leagues = .liveValue
+		} operation: {
+			try await self.leagues.create(new)
+		}
+
+		// Inserts series, games, and frames
+		let numberOfSeries = try await db.read { try Series.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfSeries, 1)
+
+		let numberOfGames = try await db.read { try Game.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGames, 2)
+
+		let numberOfFrames = try await db.read { try Frame.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfFrames, 20)
+	}
+
 	// MARK: - Update
 
 	func testUpdate_WhenLeagueExists_UpdatesLeague() async throws {
