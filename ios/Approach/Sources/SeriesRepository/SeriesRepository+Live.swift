@@ -70,6 +70,13 @@ extension SeriesRepository: DependencyKey {
 			create: { series in
 				try await withEscapedDependencies { dependencies in
 					try await database.writer().write { db in
+						let bowler = try Bowler.Database
+							.having(Bowler.Database.leagues.filter(League.Database.Columns.id == series.leagueId).isEmpty == false)
+							.fetchOneGuaranteed(db)
+						let preferredGear = try bowler
+							.request(for: Bowler.Database.preferredGear)
+							.fetchAll(db)
+
 						try series.insert(db)
 
 						try dependencies.yield {
@@ -97,6 +104,10 @@ extension SeriesRepository: DependencyKey {
 										ball2: nil
 									)
 									try frame.insert(db)
+								}
+
+								for gear in preferredGear {
+									try GameGear.Database(gameId: game.id, gearId: gear.id).insert(db)
 								}
 							}
 						}

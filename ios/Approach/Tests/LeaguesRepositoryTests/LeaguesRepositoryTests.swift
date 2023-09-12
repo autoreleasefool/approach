@@ -493,6 +493,35 @@ final class LeaguesRepositoryTests: XCTestCase {
 		XCTAssertEqual(numberOfFrames, 0)
 	}
 
+	func testCreate_WhenLeagueRepeats_WithPreferredGear_InsertsGear() async throws {
+		// Given a database with no leagues
+		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil, withBowlerPreferredGear: .default)
+
+		// Creating a league
+		let new = League.Create(
+			bowlerId: UUID(0),
+			id: UUID(0),
+			name: "Minors",
+			recurrence: .once,
+			numberOfGames: 1,
+			additionalPinfall: 123,
+			additionalGames: 123,
+			excludeFromStatistics: .exclude
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
+			$0.leagues = .liveValue
+		} operation: {
+			try await self.leagues.create(new)
+		}
+
+		// Inserts game gear
+		let numberOfGameGear = try await db.read { try GameGear.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGameGear, 2)
+	}
+
 	func testCreate_WhenLeagueDoesNotRepeat_CreatesGames() async throws {
 		// Given a database with no leagues
 		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil)

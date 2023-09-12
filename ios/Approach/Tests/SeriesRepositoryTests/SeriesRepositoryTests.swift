@@ -353,6 +353,61 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123_456_001))
 	}
 
+	func testCreate_WhenSeriesNotExists_CreatesGames() async throws {
+		// Given a database with no series
+		let db = try initializeDatabase(withLeagues: .default, withSeries: nil)
+
+		// Creating the series throws an error
+		let create = Series.Create(
+			leagueId: UUID(0),
+			id: UUID(0),
+			date: Date(timeIntervalSince1970: 123_456_001),
+			preBowl: .regular,
+			excludeFromStatistics: .exclude,
+			numberOfGames: 1
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			$0.series = .liveValue
+		} operation: {
+			try await self.series.create(create)
+		}
+
+		// Inserted the games and frames
+		let numberOfGames = try await db.read { try Game.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGames, 1)
+
+		let numberOfFrames = try await db.read { try Frame.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfFrames, 10)
+	}
+
+	func testCreate_WhenSeriesNotExists_WithPreferredGear_AddsPreferredGear() async throws {
+		// Given a database with no series
+		let db = try initializeDatabase(withGear: .default, withLeagues: .default, withSeries: nil, withBowlerPreferredGear: .default)
+
+		// Creating the series throws an error
+		let create = Series.Create(
+			leagueId: UUID(0),
+			id: UUID(0),
+			date: Date(timeIntervalSince1970: 123_456_001),
+			preBowl: .regular,
+			excludeFromStatistics: .exclude,
+			numberOfGames: 1
+		)
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			$0.series = .liveValue
+		} operation: {
+			try await self.series.create(create)
+		}
+
+		// Inserts game gear
+		let numberOfGameGear = try await db.read { try GameGear.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGameGear, 2)
+	}
+
 	// MARK: Update
 
 	func testUpdate_WhenSeriesExists_UpdatesSeries() async throws {
