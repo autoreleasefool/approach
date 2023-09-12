@@ -82,7 +82,7 @@ extension AlleysRepository: DependencyKey {
 						.including(optional: Alley.Database.location)
 						.including(
 							all: Alley.Database.lanes
-								.order(Lane.Database.Columns.label.collating(.localizedCaseInsensitiveCompare))
+								.orderByLabel()
 								.aliased(lanesAlias)
 						)
 						.asRequest(of: Alley.EditWithLanes.self)

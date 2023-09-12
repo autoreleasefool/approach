@@ -523,11 +523,13 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with one game and 3 gear
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let lane1 = Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall)
-		let lane2 = Lane.Database(alleyId: UUID(0), id: UUID(1), label: "2", position: .noWall)
-		let lane3 = Lane.Database(alleyId: UUID(0), id: UUID(2), label: "3", position: .rightWall)
+		let lane2 = Lane.Database(alleyId: UUID(0), id: UUID(1), label: "10", position: .noWall)
+		let lane3 = Lane.Database(alleyId: UUID(0), id: UUID(2), label: "2", position: .rightWall)
+		let lane4 = Lane.Database(alleyId: UUID(0), id: UUID(3), label: "3", position: .noWall)
 		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
 		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
-		let db = try initializeDatabase(withLanes: .custom([lane1, lane2, lane3]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1, gameLane2]))
+		let gameLane3 = GameLane.Database(gameId: UUID(0), laneId: UUID(2))
+		let db = try initializeDatabase(withLanes: .custom([lane1, lane2, lane3, lane4]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
 
 		// Editing the game
 		let game = try await withDependencies {
@@ -551,7 +553,8 @@ final class GamesRepositoryTests: XCTestCase {
 				gear: [],
 				lanes: [
 					.init(id: UUID(0), label: "1"),
-					.init(id: UUID(1), label: "2"),
+					.init(id: UUID(2), label: "2"),
+					.init(id: UUID(1), label: "10"),
 				],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),

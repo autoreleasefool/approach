@@ -611,8 +611,9 @@ final class AlleysRepositoryTests: XCTestCase {
 			withAlleys: .custom([alley1]),
 			withLanes: .custom([
 				Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall),
-			 Lane.Database(alleyId: UUID(0), id: UUID(1), label: "2", position: .noWall),
-		 ])
+				Lane.Database(alleyId: UUID(0), id: UUID(1), label: "10", position: .noWall),
+				Lane.Database(alleyId: UUID(0), id: UUID(2), label: "2", position: .noWall),
+			])
 		)
 
 		// Editing the alley
@@ -638,7 +639,8 @@ final class AlleysRepositoryTests: XCTestCase {
 				),
 				lanes: [
 					.init(id: UUID(0), label: "1", position: .leftWall),
-					.init(id: UUID(1), label: "2", position: .noWall),
+					.init(id: UUID(2), label: "2", position: .noWall),
+					.init(id: UUID(1), label: "10", position: .noWall),
 				]
 			)
 		)

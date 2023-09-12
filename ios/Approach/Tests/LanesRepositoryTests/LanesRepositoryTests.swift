@@ -43,6 +43,39 @@ final class LanesRepositoryTests: XCTestCase {
 		)
 	}
 
+	func testList_ReturnsLanes_SortedByName() async throws {
+		// Given a database with 4 lanes
+		let lane1 = Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall)
+		let lane2 = Lane.Database(alleyId: UUID(0), id: UUID(1), label: "10", position: .noWall)
+		let lane3 = Lane.Database(alleyId: UUID(1), id: UUID(2), label: "2", position: .noWall)
+		let lane4 = Lane.Database(alleyId: UUID(1), id: UUID(3), label: "a", position: .noWall)
+		let lane5 = Lane.Database(alleyId: UUID(1), id: UUID(4), label: "A", position: .noWall)
+		let db = try initializeDatabase(withLanes: .custom([lane1, lane2, lane3, lane4, lane5]))
+
+		// Getting the lanes
+		let lanes = withDependencies {
+			$0.database.reader = { db }
+			$0.lanes = .liveValue
+		} operation: {
+			self.lanes.list(nil)
+		}
+
+		var iterator = lanes.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the alley lanes
+		XCTAssertEqual(
+			fetched,
+			[
+				.init(id: UUID(3), label: "a", position: .noWall),
+				.init(id: UUID(4), label: "A", position: .noWall),
+				.init(id: UUID(0), label: "1", position: .leftWall),
+				.init(id: UUID(2), label: "2", position: .noWall),
+				.init(id: UUID(1), label: "10", position: .noWall),
+			]
+		)
+	}
+
 	func testList_ReturnsLanesMatchingAlley() async throws {
 		// Given a database with three lanes
 		let lane1 = Lane.Database(alleyId: UUID(0), id: UUID(0), label: "1", position: .leftWall)
