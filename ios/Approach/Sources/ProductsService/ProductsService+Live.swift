@@ -9,7 +9,7 @@ extension ProductsService: DependencyKey {
 			initialize: {
 				let apiKey = AppConstants.ApiKey.revenueCat
 
-				if apiKey == AppConstants.ApiKey.disable {
+				if apiKey.isEmpty {
 					print("Products disabled")
 					return
 				}

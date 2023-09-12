@@ -25,7 +25,7 @@ extension AppConstants {
 		}()
 
 		public static let revenueCat: String = {
-			(try? Configuration.value(for: "REVENUE_CAT_API_KEY")) ?? AppConstants.ApiKey.disable
+			(try? Configuration.value(for: "REVENUE_CAT_API_KEY")) ?? ""
 		}()
 	}
 }
