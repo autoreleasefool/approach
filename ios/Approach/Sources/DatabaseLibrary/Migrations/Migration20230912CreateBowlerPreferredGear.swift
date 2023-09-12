@@ -1,5 +1,6 @@
 import GRDB
 
+// swiftlint:disable:next type_name
 struct Migration20230912CreateBowlerPreferredGear: DBMigration {
 	static func migrate(_ db: Database) throws {
 		try db.create(table: "bowlerPreferredGear") { t in
