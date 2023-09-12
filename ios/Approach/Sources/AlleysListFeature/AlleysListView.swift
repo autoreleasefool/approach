@@ -15,10 +15,14 @@ public struct AlleysListView: View {
 	let store: StoreOf<AlleysList>
 
 	struct ViewState: Equatable {
+		let bowlerNameForAverages: String?
 		let isAnyFilterActive: Bool
+		let isShowingAverages: Bool
 
 		init(state: AlleysList.State) {
+			self.bowlerNameForAverages = state.bowlerForAverages?.name
 			self.isAnyFilterActive = state.filter != .init()
+			self.isShowingAverages = state.isAlleyAndGearAveragesEnabled
 		}
 	}
 
@@ -31,7 +35,17 @@ public struct AlleysListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
 			) { alley in
-				Alley.View(alley)
+				if viewStore.isShowingAverages {
+					VStack {
+						Alley.View(alley)
+						Text(format(average: alley.average))
+							.font(.caption)
+					}
+				} else {
+					Alley.View(alley)
+				}
+			} header: {
+				header(viewStore)
 			}
 			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {
@@ -61,6 +75,24 @@ public struct AlleysListView: View {
 				AlleysFilterView(store: store)
 			}
 			.presentationDetents([.medium, .large])
+		}
+	}
+
+	@MainActor @ViewBuilder private func header(
+		_ viewStore: ViewStore<ViewState, AlleysList.Action.ViewAction>
+	) -> some View {
+		if viewStore.isShowingAverages {
+			Section {
+				Button { viewStore.send(.didTapBowler) } label: {
+					LabeledContent(
+						Strings.List.Averages.showAverages,
+						value: viewStore.bowlerNameForAverages ?? Strings.List.Averages.allBowlers
+					)
+				}
+				.buttonStyle(.navigation)
+			}
+		} else {
+			EmptyView()
 		}
 	}
 }

@@ -660,6 +660,12 @@ public enum Strings {
   public enum List {
     /// List
     public static let results = Strings.tr("Localizable", "list.results", fallback: "Results")
+    public enum Averages {
+      /// Show averages
+      public static let showAverages = Strings.tr("Localizable", "list..averages.showAverages", fallback: "Show averages")
+      /// All bowlers
+      public static let allBowlers = Strings.tr("Localizable", "list.averages.allBowlers", fallback: "All bowlers")
+    }
   }
   public enum MatchPlay {
     /// Record results?

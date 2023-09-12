@@ -17,6 +17,9 @@ public struct AlleysList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Alley.List, Alley.List.FetchRequest>.State
 		public var filter: Alley.List.FetchRequest.Filter = .init()
+		public var bowlerForAverages: Bowler.Summary?
+
+		public let isAlleyAndGearAveragesEnabled: Bool
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -38,12 +41,16 @@ public struct AlleysList: Reducer {
 					action: Strings.Alley.List.add
 				)
 			)
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isAlleyAndGearAveragesEnabled = featureFlags.isEnabled(.alleyAndGearAverages)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapFiltersButton
+			case didTapBowler
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -115,6 +122,10 @@ public struct AlleysList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didTapBowler:
+					// FIXME: Present picker for bowler to control averages shown
+					return .none
+
 				case .didTapFiltersButton:
 					state.destination = .filters(.init(filter: state.filter))
 					return .none

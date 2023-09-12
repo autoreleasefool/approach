@@ -488,6 +488,8 @@
 
 /* List */
 "list.results" = "Results";
+"list..averages.showAverages" = "Show averages";
+"list.averages.allBowlers" = "All bowlers";
 
 /* Errors */
 
