@@ -40,6 +40,17 @@ extension Alley {
 			)
 		}
 
+		public init(_ alley: Alley.List) {
+			self.init(
+				name: alley.name,
+				locationName: alley.location?.subtitle,
+				material: alley.material,
+				pinFall: alley.pinFall,
+				mechanism: alley.mechanism,
+				pinBase: alley.pinBase
+			)
+		}
+
 		public var body: some SwiftUI.View {
 			HStack {
 				VStack(alignment: .leading) {
@@ -54,19 +65,28 @@ extension Alley {
 
 				Spacer()
 
-				LazyVGrid(columns: Self.columns) {
-					if let material {
-						Image(systemSymbol: material.systemSymbol)
+				LazyVGrid(columns: Self.columns, spacing: 0) {
+					Group {
+						if let material {
+							Image(systemSymbol: material.systemSymbol)
+								.resizable()
+						}
+						if let pinFall {
+							Image(systemSymbol: pinFall.systemSymbol)
+								.resizable()
+						}
+						if let mechanism {
+							Image(systemSymbol: mechanism.systemSymbol)
+								.resizable()
+						}
+						if let pinBase {
+							Image(systemSymbol: pinBase.systemSymbol)
+								.resizable()
+						}
 					}
-					if let pinFall {
-						Image(systemSymbol: pinFall.systemSymbol)
-					}
-					if let mechanism {
-						Image(systemSymbol: mechanism.systemSymbol)
-					}
-					if let pinBase {
-						Image(systemSymbol: pinBase.systemSymbol)
-					}
+					.scaledToFit()
+					.frame(width: .tinyIcon, height: .tinyIcon)
+					.padding(.tinySpacing)
 				}
 				.fixedSize(horizontal: true, vertical: false)
 			}

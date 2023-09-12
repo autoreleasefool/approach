@@ -30,8 +30,8 @@ public struct AlleysListView: View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
 				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
-			) {
-				Alley.View($0)
+			) { alley in
+				Alley.View(alley)
 			}
 			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {

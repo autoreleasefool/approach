@@ -54,3 +54,5 @@ extension Alley.Database {
 }
 
 extension Alley.Summary: FetchableRecord {}
+
+extension Alley.List: FetchableRecord {}

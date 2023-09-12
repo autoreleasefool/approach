@@ -7,6 +7,7 @@ import LocationsRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
 import RepositoryLibrary
+import StatisticsModelsLibrary
 
 extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
@@ -17,12 +18,19 @@ extension AlleysRepository: DependencyKey {
 		return Self(
 			list: { material, pinFall, mechanism, pinBase, ordering in
 				let alleys = database.reader().observe {
-					try Alley.Database
+					let series = Alley.Database.trackableSeries(filter: nil)
+					let games = Alley.Database.trackableGames(through: series, filter: nil)
+					let averageScore = games
+						.average(Game.Database.Columns.score)
+						.forKey("average")
+
+					return try Alley.Database
 						.all()
 						.orderByName()
 						.filter(material, pinFall, mechanism, pinBase)
 						.including(optional: Alley.Database.location)
-						.asRequest(of: Alley.Summary.self)
+						.annotated(with: averageScore)
+						.asRequest(of: Alley.List.self)
 						.fetchAll($0)
 				}
 
@@ -44,6 +52,18 @@ extension AlleysRepository: DependencyKey {
 				}
 
 				return prefix(sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys)), ofSize: 3)
+			},
+			pickable: {
+				let alleys = database.reader().observe {
+					try Alley.Database
+						.all()
+						.orderByName()
+						.including(optional: Alley.Database.location)
+						.asRequest(of: Alley.Summary.self)
+						.fetchAll($0)
+				}
+
+				return sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys))
 			},
 			load: { id in
 				database.reader().observeOne {

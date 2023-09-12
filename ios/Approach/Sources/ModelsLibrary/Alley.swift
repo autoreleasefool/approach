@@ -80,6 +80,43 @@ extension Alley {
 }
 
 extension Alley {
+	public struct List: Identifiable, Codable, Equatable {
+		public let id: Alley.ID
+		public let name: String
+		public let material: Material?
+		public let pinFall: PinFall?
+		public let mechanism: Mechanism?
+		public let pinBase: PinBase?
+		public let location: Location.Summary?
+		public let average: Double?
+
+		public var named: Named {
+			.init(id: id, name: name)
+		}
+
+		public init(
+			id: Alley.ID,
+			name: String,
+			material: Material?,
+			pinFall: PinFall?,
+			mechanism: Mechanism?,
+			pinBase: PinBase?,
+			location: Location.Summary?,
+			average: Double?
+		) {
+			self.id = id
+			self.name = name
+			self.material = material
+			self.pinFall = pinFall
+			self.mechanism = mechanism
+			self.pinBase = pinBase
+			self.location = location
+			self.average = average
+		}
+	}
+}
+
+extension Alley {
 	public struct Named: Identifiable, Codable, Equatable {
 		public let id: Alley.ID
 		public let name: String

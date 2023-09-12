@@ -11,12 +11,12 @@ import ResourceListLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension Alley.Summary: ResourceListItem {}
+extension Alley.List: ResourceListItem {}
 
 public struct AlleysList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Alley.Summary, Alley.Summary.FetchRequest>.State
-		public var filter: Alley.Summary.FetchRequest.Filter = .init()
+		public var list: ResourceList<Alley.List, Alley.List.FetchRequest>.State
+		public var filter: Alley.List.FetchRequest.Filter = .init()
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -50,10 +50,10 @@ public struct AlleysList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes>)
-			case didDeleteAlley(TaskResult<Alley.Summary>)
+			case didDeleteAlley(TaskResult<Alley.List>)
 
 			case errors(Errors<ErrorID>.Action)
-			case list(ResourceList<Alley.Summary, Alley.Summary.FetchRequest>.Action)
+			case list(ResourceList<Alley.List, Alley.List.FetchRequest>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 

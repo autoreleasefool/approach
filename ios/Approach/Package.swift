@@ -629,10 +629,10 @@ let package = Package(
 			name: "AlleysRepository",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",
+				"StatisticsModelsLibrary",
 			]
 		),
 		.target(

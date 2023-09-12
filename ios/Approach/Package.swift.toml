@@ -141,6 +141,7 @@ libraries = [ "Reordering" ]
 
 [repositories.Alleys]
 services = [ "RecentlyUsed" ]
+libraries = [ "StatisticsModels" ]
 [repositories.Alleys.interface]
 repositories = [ "Lanes", "Locations" ]
 

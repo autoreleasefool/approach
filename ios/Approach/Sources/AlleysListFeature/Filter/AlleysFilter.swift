@@ -8,7 +8,7 @@ import SwiftUI
 
 public struct AlleysFilter: Reducer {
 	public struct State: Equatable {
-		@BindingState public var filter: Alley.Summary.FetchRequest.Filter
+		@BindingState public var filter: Alley.List.FetchRequest.Filter
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -18,7 +18,7 @@ public struct AlleysFilter: Reducer {
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
-			case didChangeFilters(Alley.Summary.FetchRequest.Filter)
+			case didChangeFilters(Alley.List.FetchRequest.Filter)
 		}
 		public enum InternalAction: Equatable {}
 

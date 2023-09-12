@@ -39,6 +39,21 @@ extension Alley.Summary {
 	}
 }
 
+extension Alley.List {
+	public init(_ from: Alley.Database, average: Double? = nil) {
+		self.init(
+			id: from.id,
+			name: from.name,
+			material: from.material,
+			pinFall: from.pinFall,
+			mechanism: from.mechanism,
+			pinBase: from.pinBase,
+			location: nil,
+			average: average
+		)
+	}
+}
+
 func insert(
 	alleys initial: InitialValue<Alley.Database>?,
 	into db: Database

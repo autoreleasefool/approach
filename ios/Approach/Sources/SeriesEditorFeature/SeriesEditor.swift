@@ -179,7 +179,7 @@ public struct SeriesEditor: Reducer {
 		}
 		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
 			ResourcePicker { _ in
-				alleys.list(ordered: .byRecentlyUsed)
+				alleys.pickable()
 			}
 		}
 

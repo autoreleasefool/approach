@@ -65,7 +65,8 @@ final class AlleysRepositoryTests: XCTestCase {
 					title: "321 Real Street",
 					subtitle: "Viewgrand",
 					coordinate: .init(latitude: 321, longitude: 321)
-				)
+				),
+				average: nil
 			),
 			.init(
 				id: UUID(0),
@@ -79,7 +80,8 @@ final class AlleysRepositoryTests: XCTestCase {
 					title: "123 Fake Street",
 					subtitle: "Grandview",
 					coordinate: .init(latitude: 123, longitude: 123)
-				)
+				),
+				average: nil
 			),
 		])
 	}
@@ -170,6 +172,37 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(alley1), .init(alley2)])
 	}
 
+	func testList_WithGames_CalculatesAverages() async throws {
+		// Given a database with 2 alleys
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
+		// and 2 games each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 200)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 0, score: 250)
+		let game4 = Game.Database.mock(seriesId: UUID(2), id: UUID(3), index: 1, score: 300)
+		let db = try initializeDatabase(
+			withAlleys: .custom([alley1, alley2]),
+			withGames: .custom([game1, game2, game3, game4])
+		)
+
+		// Fetching the alleys
+		let alleys = withDependencies {
+			$0.database.reader = { db }
+			$0.alleys = .liveValue
+		} operation: {
+			self.alleys.list(ordered: .byName)
+		}
+		var iterator = alleys.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the alleys with averages
+		XCTAssertEqual(fetched, [
+			.init(alley2, average: 275),
+			.init(alley1, average: 150),
+		])
+	}
+
 	// MARK: - Overview
 
 	func testOverview_ReturnsAlleys() async throws {
@@ -232,6 +265,64 @@ final class AlleysRepositoryTests: XCTestCase {
 			.init(alley1),
 			.init(alley2),
 		])
+	}
+
+	// MARK: Summaries
+
+	func testPickable_ReturnsMatchingAlleys() async throws {
+		// Given a database with four alleys
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
+		let alley3 = Alley.Database.mock(id: UUID(2), name: "Homeview", pinBase: .black)
+		let alley4 = Alley.Database.mock(id: UUID(3), name: "Worldview", pinFall: .freefall)
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2, alley3, alley4]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
+		recentContinuation.yield([])
+
+		// Fetching the alleys
+		let alleys = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
+			$0.alleys = .liveValue
+		} operation: {
+			self.alleys.pickable()
+		}
+
+		var iterator = alleys.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the expected alleys
+		XCTAssertEqual(fetched, [.init(alley2), .init(alley3), .init(alley1), .init(alley4)])
+	}
+
+	func testPickable_SortsByMostRecent() async throws {
+		// Given a database with 4 alleys
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
+		let alley3 = Alley.Database.mock(id: UUID(2), name: "Homeview", pinBase: .black)
+		let alley4 = Alley.Database.mock(id: UUID(3), name: "Worldview", pinFall: .freefall)
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2, alley3, alley4]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
+		recentContinuation.yield([UUID(3), UUID(0)])
+
+		// Fetching the alleys
+		let alleys = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
+			$0.alleys = .liveValue
+		} operation: {
+			self.alleys.pickable()
+		}
+
+		var iterator = alleys.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the alleys in order
+		XCTAssertEqual(fetched, [.init(alley4), .init(alley1), .init(alley2), .init(alley3)])
 	}
 
 	// MARK: - Load

@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 import StatisticsLibrary
 
-extension League.Database {
+extension Alley.Database {
 	public static func trackableSeries(
 		filter: TrackableFilter.SeriesFilter?
 	) -> HasManyAssociation<Self, Series.Database> {

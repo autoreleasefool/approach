@@ -190,7 +190,7 @@ public struct LeagueEditor: Reducer {
 			}
 		}
 		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
-			ResourcePicker { _ in alleys.list(ordered: .byName) }
+			ResourcePicker { _ in alleys.pickable() }
 		}
 
 		AnalyticsReducer<State, Action> { _, action in

@@ -15,8 +15,9 @@ public struct AlleysRepository: Sendable {
 		Alley.Mechanism?,
 		Alley.PinBase?,
 		Alley.Ordering
-	) -> AsyncThrowingStream<[Alley.Summary], Error>
+	) -> AsyncThrowingStream<[Alley.List], Error>
 	public var overview: @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>
+	public var pickable: @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>
 	public var load: @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>
 	public var edit: @Sendable (Alley.ID) async throws -> Alley.EditWithLanes
 	public var create: @Sendable (Alley.Create) async throws -> Void
@@ -30,8 +31,9 @@ public struct AlleysRepository: Sendable {
 			Alley.Mechanism?,
 			Alley.PinBase?,
 			Alley.Ordering
-		) -> AsyncThrowingStream<[Alley.Summary], Error>,
+		) -> AsyncThrowingStream<[Alley.List], Error>,
 		overview: @escaping @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>,
+		pickable: @escaping @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>,
 		load: @escaping @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>,
 		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.EditWithLanes,
 		create: @escaping @Sendable (Alley.Create) async throws -> Void,
@@ -40,6 +42,7 @@ public struct AlleysRepository: Sendable {
 	) {
 		self.list = list
 		self.overview = overview
+		self.pickable = pickable
 		self.load = load
 		self.edit = edit
 		self.create = create
@@ -47,7 +50,7 @@ public struct AlleysRepository: Sendable {
 		self.delete = delete
 	}
 
-	public func list(ordered: Alley.Ordering) -> AsyncThrowingStream<[Alley.Summary], Error> {
+	public func list(ordered: Alley.Ordering) -> AsyncThrowingStream<[Alley.List], Error> {
 		self.list(nil, nil, nil, nil, ordered)
 	}
 
@@ -57,7 +60,7 @@ public struct AlleysRepository: Sendable {
 		withMechanism: Alley.Mechanism? = nil,
 		withPinBase: Alley.PinBase? = nil,
 		ordered: Alley.Ordering
-	) -> AsyncThrowingStream<[Alley.Summary], Error> {
+	) -> AsyncThrowingStream<[Alley.List], Error> {
 		self.list(withMaterial, withPinFall, withMechanism, withPinBase, ordered)
 	}
 }
@@ -66,6 +69,7 @@ extension AlleysRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
 		overview: { unimplemented("\(Self.self).overview") },
+		pickable: { unimplemented("\(Self.self).pickable") },
 		load: { _ in unimplemented("\(Self.self).load") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },

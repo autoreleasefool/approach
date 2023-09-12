@@ -1,7 +1,7 @@
 import AlleysRepositoryInterface
 import ModelsLibrary
 
-extension Alley.Summary {
+extension Alley.List {
 	public struct FetchRequest: Equatable {
 		public let filter: Filter
 		public let ordering: Alley.Ordering
@@ -13,7 +13,7 @@ extension Alley.Summary {
 	}
 }
 
-extension Alley.Summary.FetchRequest {
+extension Alley.List.FetchRequest {
 	public struct Filter: Hashable {
 		public var material: Alley.Material?
 		public var pinFall: Alley.PinFall?
