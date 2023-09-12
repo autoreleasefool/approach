@@ -42,11 +42,12 @@ extension GearRepository: DependencyKey {
 				return sortGear(gear, ordering)
 			},
 			preferred: { bowler in
-				database.reader().observe {
+				try await database.reader().read {
 					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
 					return try Gear.Database
 						.having(
-							Gear.Database.bowlerPreferredGear.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
+							Gear.Database.bowlerPreferredGear
+								.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
 						)
 						.orderByName()
 						.annotated(withOptional: Gear.Database.bowler.select(ownerName))
@@ -88,6 +89,18 @@ extension GearRepository: DependencyKey {
 			delete: { id in
 				_ = try await database.writer().write {
 					try Gear.Database.deleteOne($0, id: id)
+				}
+			},
+			updatePreferredGear: { bowler, gear in
+				try await database.writer().write {
+					// FIXME: Rather than deleting all associations, should only add new/remove old
+					try BowlerPreferredGear.Database
+						.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler)
+						.deleteAll($0)
+					for gear in gear {
+						let bowlerPreferredGear = BowlerPreferredGear.Database(bowlerId: bowler, gearId: gear)
+						try bowlerPreferredGear.insert($0)
+					}
 				}
 			}
 		)

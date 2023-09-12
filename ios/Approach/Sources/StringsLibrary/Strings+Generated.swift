@@ -266,8 +266,14 @@ public enum Strings {
     public enum List {
       /// Add Bowler
       public static let add = Strings.tr("Localizable", "bowler.list.add", fallback: "Add Bowler")
+      /// Preferred Gear
+      public static let preferredGear = Strings.tr("Localizable", "bowler.list.preferredGear", fallback: "Preferred Gear")
       /// Bowlers
       public static let title = Strings.tr("Localizable", "bowler.list.title", fallback: "Bowlers")
+      public enum PreferredGear {
+        /// Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.
+        public static let footer = Strings.tr("Localizable", "bowler.list.preferredGear.footer", fallback: "Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.")
+      }
     }
   }
   public enum BowlingBall {

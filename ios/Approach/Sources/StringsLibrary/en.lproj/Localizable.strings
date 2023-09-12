@@ -45,6 +45,8 @@
 "bowler.current" = "Current bowler";
 "bowler.list.title" = "Bowlers";
 "bowler.list.add" = "Add Bowler";
+"bowler.list.preferredGear" = "Preferred Gear";
+"bowler.list.preferredGear.footer" = "Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.";
 "bowler.error.empty.title" = "No bowlers found";
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
 

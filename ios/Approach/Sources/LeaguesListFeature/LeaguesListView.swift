@@ -49,6 +49,10 @@ public struct LeaguesListView: View {
 					.listRowInsets(EdgeInsets())
 					.listRowBackground(Color.clear)
 				}
+			} footer: {
+				PreferredGearView(
+					store: store.scope(state: \.preferredGear, action: /LeaguesList.Action.InternalAction.preferredGear)
+				)
 			}
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {

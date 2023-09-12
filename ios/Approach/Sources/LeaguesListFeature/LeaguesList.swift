@@ -3,6 +3,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
+import GearRepositoryInterface
 import LeagueEditorFeature
 import LeaguesRepositoryInterface
 import ModelsLibrary
@@ -26,11 +27,13 @@ extension League.Ordering: CustomStringConvertible {
 	}
 }
 
+// swiftlint:disable:next type_body_length
 public struct LeaguesList: Reducer {
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
 		public var list: ResourceList<League.List, League.List.FetchRequest>.State
+		public var preferredGear: PreferredGear.State
 		public var widgets: StatisticsWidgetLayout.State
 
 		public var ordering: League.Ordering = .byRecentlyUsed
@@ -46,6 +49,7 @@ public struct LeaguesList: Reducer {
 			self.bowler = bowler
 			self.filter = .init(bowler: bowler.id)
 			self.widgets = .init(context: LeaguesList.widgetContext(forBowler: bowler.id), newWidgetSource: .bowler(bowler.id))
+			self.preferredGear = .init(bowler: bowler.id)
 			self.list = .init(
 				features: [
 					.add,
@@ -87,6 +91,7 @@ public struct LeaguesList: Reducer {
 			case didSetIsShowingWidgets(Bool)
 
 			case errors(Errors<ErrorID>.Action)
+			case preferredGear(PreferredGear.Action)
 			case list(ResourceList<League.List, League.List.FetchRequest>.Action)
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -131,13 +136,16 @@ public struct LeaguesList: Reducer {
 	public enum ErrorID: Hashable {
 		case leagueNotFound
 		case failedToDeleteLeague
+		case failedToLoadPreferredGear
+		case failedToSavePreferredGear
 	}
 
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.leagues) var leagues
 	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(\.gear) var gear
+	@Dependency(\.leagues) var leagues
 	@Dependency(\.preferences) var preferences
 	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.uuid) var uuid
@@ -155,6 +163,10 @@ public struct LeaguesList: Reducer {
 					ordering: request.ordering
 				)
 			}
+		}
+
+		Scope(state: \.preferredGear, action: /Action.internal..Action.InternalAction.preferredGear) {
+			PreferredGear()
 		}
 
 		Scope(state: \.widgets, action: /Action.internal..Action.InternalAction.widgets) {
@@ -226,6 +238,19 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
+				case let .preferredGear(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .errorUpdatingPreferredGear(.failure(error)):
+						return state.errors
+							.enqueue(.failedToSavePreferredGear, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+							.map { .internal(.errors($0)) }
+
+					case let .errorLoadingGear(.failure(error)):
+						return state.errors
+							.enqueue(.failedToLoadPreferredGear, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+							.map { .internal(.errors($0)) }
+					}
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(league):
@@ -294,6 +319,7 @@ public struct LeaguesList: Reducer {
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.sortOrder(.internal))),
 						.destination(.presented(.sortOrder(.view))),
+						.preferredGear(.internal), .preferredGear(.view),
 						.list(.internal), .list(.view),
 						.widgets(.internal), .widgets(.view),
 						.errors(.internal), .errors(.view):

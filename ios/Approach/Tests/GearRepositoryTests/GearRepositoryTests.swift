@@ -129,17 +129,15 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]), withGear: .custom([gear1, gear2, gear3]), withBowlerPreferredGear: .custom([bowlerGear1, bowlerGear2, bowlerGear3, bowlerGear4]))
 
 		// Fetching the gear
-		let gear = withDependencies {
+		let gear = try await withDependencies {
 			$0.database.reader = { db }
 			$0.gear = .liveValue
 		} operation: {
-			self.gear.preferredGear(forBowler: UUID(0))
+			try await self.gear.preferredGear(forBowler: UUID(0))
 		}
-		var iterator = gear.makeAsyncIterator()
-		let fetched = try await iterator.next()
 
 		// Returns all the gear
-		XCTAssertEqual(fetched, [
+		XCTAssertEqual(gear, [
 			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph"),
 			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
 		])
