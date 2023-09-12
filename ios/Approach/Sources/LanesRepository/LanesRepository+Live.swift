@@ -15,6 +15,7 @@ extension LanesRepository: DependencyKey {
 					try Lane.Database
 						.all()
 						.filter(byAlley: alley)
+						.orderByLabel()
 						.asRequest(of: Lane.Summary.self)
 						.fetchAll($0)
 				}

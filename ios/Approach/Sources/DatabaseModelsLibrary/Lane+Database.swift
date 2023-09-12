@@ -31,8 +31,9 @@ extension Lane.Position: DatabaseValueConvertible {}
 
 extension DerivableRequest<Lane.Database> {
 	public func orderByLabel() -> Self {
-		let label = Lane.Database.Columns.label
-		return order(label.collating(.localizedCaseInsensitiveCompare))
+		// FIXME: Remove janky alphanumeric label ordering
+		// Source: https://stackoverflow.com/a/5189719
+		order(sql: "\(Lane.Database.Columns.label.name) * 1")
 	}
 
 	public func filter(byAlley: Alley.ID?) -> Self {
