@@ -10,7 +10,7 @@ extension Gear.Database {
 		name: String,
 		kind: Gear.Kind = .bowlingBall,
 		bowlerId: Bowler.ID? = UUID(0),
-		avatarId: Avatar.ID? = nil
+		avatarId: Avatar.ID = UUID(0)
 	) -> Self {
 		.init(
 			id: id,

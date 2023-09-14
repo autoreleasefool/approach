@@ -16,6 +16,12 @@ extension Avatar.Database {
 	}
 }
 
+extension Avatar.Summary {
+	public static func mock(id: ID, value: Avatar.Value = .mock) -> Self {
+		.init(id: id, value: value)
+	}
+}
+
 extension Avatar.Value {
 	public static var mock: Self {
 		.text("YB", .rgb(134 / 255.0, 128 / 255.0, 223 / 255.0))

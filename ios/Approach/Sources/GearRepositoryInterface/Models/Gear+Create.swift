@@ -7,10 +7,16 @@ extension Gear {
 		public var name: String
 		public var kind: Kind
 		public var owner: Bowler.Summary?
-		public var avatar: Avatar.Summary?
+		public var avatar: Avatar.Summary
 
-		public static func `default`(withId: UUID) -> Self {
-			.init(id: withId, name: "", kind: .bowlingBall, owner: nil, avatar: nil)
+		public static func `default`(withId: Gear.ID, andAvatarId: Avatar.ID) -> Self {
+			.init(
+				id: withId,
+				name: "",
+				kind: .bowlingBall,
+				owner: nil,
+				avatar: .init(id: andAvatarId, value: .text("", .default))
+			)
 		}
 	}
 }

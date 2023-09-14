@@ -39,13 +39,13 @@ public func initializeDatabase(
 		try migrator.migrate(dbQueue)
 	}
 
-	let avatars = withAvatars
 	let matchPlays = withMatchPlays
 	let frames = withFrames
 	let games = coallesce(withGames, ifHasOneOf: frames, matchPlays)
 	let series = coallesce(withSeries, ifHasOneOf: games)
 	let leagues = coallesce(withLeagues, ifHasOneOf: series)
 	let gear = coallesce(withGear, ifHasOneOf: frames)
+	let avatars = coallesce(withAvatars, ifHasOneOf: gear)
 	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear, matchPlays)
 	let lanes = withLanes
 	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)

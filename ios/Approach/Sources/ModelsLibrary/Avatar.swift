@@ -36,6 +36,10 @@ extension Avatar {
 				return "rgb(\(red),\(green),\(blue))"
 			}
 		}
+
+		public static var `default`: Self {
+			.rgb(134 / 255.0, 128 / 255.0, 223 / 255.0)
+		}
 	}
 }
 

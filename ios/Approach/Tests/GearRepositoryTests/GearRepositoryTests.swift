@@ -18,7 +18,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testList_ReturnsAllGear() async throws {
 		// Given a database with two gear
-		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", avatarId: UUID(0))
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow")
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue")
 		let db = try initializeDatabase(withAvatars: .default, withGear: .custom([gear1, gear2]), withBowlerPreferredGear: .zero)
 
@@ -34,7 +34,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns all the gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
 			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .init(id: UUID(0), value: .mock)),
 		])
 	}
@@ -57,7 +57,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the matching gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -79,7 +79,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the matching gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -107,9 +107,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the gear ordered by ids
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(2), name: "Green", kind: .towel, ownerName: "Sarah", avatar: nil),
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
-			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: nil),
+			.init(id: UUID(2), name: "Green", kind: .towel, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -138,8 +138,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns all the gear
 		XCTAssertEqual(gear, [
-			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -170,9 +170,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the expected gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: nil),
-			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: nil),
-			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: nil),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -201,9 +201,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the expected gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: nil),
-			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: nil),
-			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: nil),
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -216,7 +216,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Create the gear
 		await assertThrowsError(ofType: DatabaseError.self) {
-			let create = Gear.Create(id: UUID(0), name: "Blue", kind: .towel, owner: .init(id: UUID(1), name: "Sarah"))
+			let create = Gear.Create(id: UUID(0), name: "Blue", kind: .towel, owner: .init(id: UUID(1), name: "Sarah"), avatar: .mock(id: UUID(0)))
 			try await withDependencies {
 				$0.database.writer = { db }
 				$0.gear = .liveValue
@@ -242,7 +242,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGear: nil)
 
 		// Creating a gear
-		let create = Gear.Create(id: UUID(0), name: "Yellow", kind: .bowlingBall, owner: nil)
+		let create = Gear.Create(id: UUID(0), name: "Yellow", kind: .bowlingBall, owner: nil, avatar: .mock(id: UUID(0)))
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.gear = .liveValue
@@ -292,7 +292,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear
-		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"))
+		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .mock(id: UUID(0)))
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.gear = .liveValue
@@ -306,6 +306,7 @@ final class GearRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.name, "Blue")
 		XCTAssertEqual(updated?.kind, .bowlingBall)
 		XCTAssertEqual(updated?.bowlerId, UUID(0))
+		XCTAssertEqual(updated?.avatarId, UUID(0))
 
 		// Does not insert any records
 		let count = try await db.read { try Gear.Database.fetchCount($0) }
@@ -318,7 +319,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Updating a gear
 		await assertThrowsError(ofType: RecordError.self) {
-			let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: nil)
+			let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: nil, avatar: .mock(id: UUID(0)))
 			try await withDependencies {
 				$0.database.writer = { db }
 				$0.gear = .liveValue
@@ -354,27 +355,9 @@ final class GearRepositoryTests: XCTestCase {
 		// Does not insert any records
 		let count = try await db.read { try Avatar.Database.fetchCount($0) }
 		XCTAssertEqual(count, 1)
-	}
 
-	func testUpdate_WhenGearDoesNotHaveAvatar_DeletesAvatar() async throws {
-		// Given a database with an existing gear
-		let avatar1 = Avatar.Database.mock(id: UUID(0))
-		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", avatarId: UUID(0))
-		let db = try initializeDatabase(withAvatars: .custom([avatar1]), withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
-
-		// Editing the gear
-		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: nil)
-		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
-		} operation: {
-			try await self.gear.update(editable)
-		}
-
-		// Removes the avatar
-		let count = try await db.read { try Avatar.Database.fetchCount($0) }
-		// FIXME: Re-enable test when removing Gear Avatar actually deletes the value from the database
-//		XCTAssertEqual(count, 0)
+		let updatedGear = try await db.read { try Gear.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updatedGear?.avatarId, UUID(0))
 	}
 
 	// MARK: - Edit

@@ -8,14 +8,14 @@ extension Gear {
 		public var name: String
 		public var kind: Kind
 		public var bowlerId: Bowler.ID?
-		public var avatarId: Avatar.ID?
+		public var avatarId: Avatar.ID
 
 		public init(
 			id: Gear.ID,
 			name: String,
 			kind: Kind,
 			bowlerId: Bowler.ID?,
-			avatarId: Avatar.ID?
+			avatarId: Avatar.ID
 		) {
 			self.id = id
 			self.name = name
@@ -49,7 +49,7 @@ extension DerivableRequest<Gear.Database> {
 	}
 
 	public func includingAvatar() -> Self {
-		including(optional: Gear.Database.avatar)
+		including(required: Gear.Database.avatar)
 	}
 }
 

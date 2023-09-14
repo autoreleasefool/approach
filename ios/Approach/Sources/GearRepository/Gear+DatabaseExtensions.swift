@@ -12,6 +12,7 @@ extension Gear.Edit: PersistableRecord, FetchableRecord {
 		container[Gear.Database.Columns.id] = id
 		container[Gear.Database.Columns.name] = name
 		container[Gear.Database.Columns.bowlerId] = owner?.id
+		container[Gear.Database.Columns.avatarId] = avatar.id
 	}
 }
 
@@ -25,6 +26,7 @@ extension Gear.Create: PersistableRecord {
 		container[Gear.Database.Columns.name] = name
 		container[Gear.Database.Columns.kind] = kind
 		container[Gear.Database.Columns.bowlerId] = owner?.id
+		container[Gear.Database.Columns.avatarId] = avatar.id
 	}
 }
 
