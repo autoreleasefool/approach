@@ -14,8 +14,15 @@ extension GamesEditor {
 			case let .didChangeSelection(bowlingBalls):
 				let currentFrameIndex = state.currentFrameIndex
 				let currentRollIndex = state.currentRollIndex
-				state.frames?[currentFrameIndex].setBowlingBall(bowlingBalls.first?.named, forRoll: currentRollIndex)
-				return save(frame: state.frames?[state.currentFrameIndex])
+				let rolledBall = bowlingBalls.first
+				state.frames?[currentFrameIndex].setBowlingBall(rolledBall, forRoll: currentRollIndex)
+				return .merge(
+					save(frame: state.frames?[state.currentFrameIndex]),
+					.run { [id = rolledBall?.id] _ in
+						guard let id else { return }
+						recentlyUsed.didRecentlyUseResource(.gear, id)
+					}
+				)
 			}
 
 		case .view, .internal:

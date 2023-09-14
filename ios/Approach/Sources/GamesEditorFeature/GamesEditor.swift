@@ -12,6 +12,7 @@ import GearRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import PickableModelsLibrary
+import RecentlyUsedServiceInterface
 import ResourcePickerLibrary
 import ScoreSheetLibrary
 import ScoresRepositoryInterface
@@ -148,6 +149,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.games) var games
 	@Dependency(\.gear) var gear
 	@Dependency(\.matchPlays) var matchPlays
+	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.scores) var scores
 
 	public var body: some ReducerOf<Self> {

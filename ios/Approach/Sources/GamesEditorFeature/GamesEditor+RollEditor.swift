@@ -27,11 +27,17 @@ extension GamesEditor {
 		switch rollEditorAction {
 		case let .delegate(delegateAction):
 			switch delegateAction {
-			case .didTapBall:
+			case let .didChangeBall(ball):
+				let currentFrameIndex = state.currentFrameIndex
+				let currentRollIndex = state.currentRollIndex
+				state.frames?[currentFrameIndex].setBowlingBall(ball, forRoll: currentRollIndex)
+				return save(frame: state.frames?[state.currentFrameIndex])
+
+			case .didRequestBallPicker:
 				let bowlingBall = state.frames?[state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall?.id
 				state.destination = .ballPicker(.init(
 					selected: Set([bowlingBall].compactMap { $0 }),
-					query: state.currentBowlerId,
+					query: .init(()),
 					limit: 1
 				))
 				return .none
