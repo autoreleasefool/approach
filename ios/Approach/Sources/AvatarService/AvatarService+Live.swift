@@ -67,7 +67,11 @@ extension AvatarService: DependencyKey {
 }
 
 private actor Cache {
-	var imageCache: NSCache<NSString, UIImage> = NSCache()
+	var imageCache: NSCache<NSString, UIImage> = {
+		var cache = NSCache<NSString, UIImage>()
+		cache.countLimit = 300
+		return cache
+	}()
 
 	func fetch(_ avatar: Avatar.Value) async -> UIImage? {
 		return imageCache.object(forKey: NSString(string: String(describing: avatar)))
