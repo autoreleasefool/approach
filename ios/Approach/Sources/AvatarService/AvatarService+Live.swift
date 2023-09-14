@@ -9,15 +9,33 @@ extension AvatarService: DependencyKey {
 	public static var liveValue: Self = {
 		let cache = Cache()
 
-		@Sendable func render(text: String, color: Avatar.Background) -> UIImage {
+		@Sendable func render(text: String, background: Avatar.Background) -> UIImage {
 			let imageSize: CGFloat = 256
 			let renderer = UIGraphicsImageRenderer(size: CGSize(width: imageSize, height: imageSize))
 			return renderer.image { ctx in
-				let backgroundColor = color.uiColor
 				let rect = CGRect(x: 0, y: 0, width: imageSize, height: imageSize)
+				let backgroundColor: UIColor
 
-				backgroundColor.setFill()
-				ctx.cgContext.fillEllipse(in: rect)
+				switch background {
+				case let .rgb(solid):
+					backgroundColor = solid.uiColor
+					backgroundColor.setFill()
+					ctx.cgContext.fillEllipse(in: rect)
+				case let .gradient(first, second):
+					backgroundColor = first.uiColor.averaged(with: second.uiColor)
+
+					let gradientColors = [first.uiColor.cgColor, second.uiColor.cgColor] as CFArray
+					let colorSpace = CGColorSpaceCreateDeviceRGB()
+					let locations: [CGFloat] = [0, 1]
+					if let gradient = CGGradient(colorsSpace: colorSpace, colors: gradientColors, locations: locations) {
+						ctx.cgContext.drawLinearGradient(
+							gradient,
+							start: .zero,
+							end: .init(x: rect.width, y: rect.height),
+							options: []
+						)
+					}
+				}
 
 				let font = UIFont.boldSystemFont(ofSize: imageSize / 2)
 				let paragraphStyle = NSMutableParagraphStyle()
@@ -48,8 +66,8 @@ extension AvatarService: DependencyKey {
 				}
 			case let .data(data):
 				image = UIImage(data: data)
-			case let .text(text, color):
-				image = render(text: text, color: color)
+			case let .text(text, background):
+				image = render(text: text, background: background)
 			}
 
 			guard let image else { return nil }

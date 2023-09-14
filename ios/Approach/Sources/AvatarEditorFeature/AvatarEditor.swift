@@ -3,6 +3,7 @@ import ComposableArchitecture
 import ExtensionsLibrary
 import FeatureActionLibrary
 import ModelsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct AvatarEditor: Reducer {
@@ -12,27 +13,47 @@ public struct AvatarEditor: Reducer {
 
 		@BindingState public var label: String
 		@BindingState public var backgroundColor: Color
+		@BindingState public var secondaryBackgroundColor: Color
+		@BindingState public var backgroundStyle: AvatarBackgroundStyle
 
 		public init(avatar: Avatar.Summary?) {
 			@Dependency(\.uuid) var uuid
 			self.id = avatar?.id ?? uuid()
 			self.initialAvatar = avatar
+
+			self.backgroundColor = Asset.Colors.Primary.default.swiftUIColor
+			self.secondaryBackgroundColor = Asset.Colors.Primary.light.swiftUIColor
 			switch initialAvatar?.value {
 			case .data, .url, .none:
 				self.label = ""
-				self.backgroundColor = Asset.Colors.Primary.default.swiftUIColor
+				self.backgroundStyle = .solid
 			case let .text(label, background):
 				self.label = label
-				self.backgroundColor = Color(uiColor: background.uiColor)
+				switch background {
+				case let .rgb(solid):
+					self.backgroundColor = solid.color
+					self.backgroundStyle = .solid
+				case let .gradient(first, second):
+					self.backgroundColor = first.color
+					self.secondaryBackgroundColor = second.color
+					self.backgroundStyle = .gradient
+				}
 			}
 		}
 
 		var avatar: Avatar.Summary {
-			.init(id: id, value: .text(label, backgroundColor.avatarBackground))
+			.init(id: id, value: .text(label, avatarBackground))
 		}
 
 		var hasChanges: Bool {
 			initialAvatar?.value != avatar.value
+		}
+
+		var avatarBackground: Avatar.Background {
+			switch backgroundStyle {
+			case .solid: return .rgb(backgroundColor.rgb)
+			case .gradient: return .gradient(backgroundColor.rgb, secondaryBackgroundColor.rgb)
+			}
 		}
 	}
 
@@ -41,6 +62,7 @@ public struct AvatarEditor: Reducer {
 			case didTapCancel
 			case didTapDone
 			case didTapRandomColorButton
+			case didTapSwapColorsButton
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
@@ -51,6 +73,18 @@ public struct AvatarEditor: Reducer {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+	}
+
+	public enum AvatarBackgroundStyle: Int, CaseIterable, CustomStringConvertible {
+		case solid
+		case gradient
+
+		public var description: String {
+			switch self {
+			case .solid: return Strings.Avatar.Editor.Properties.BackgroundColor.Style.solid
+			case .gradient: return Strings.Avatar.Editor.Properties.BackgroundColor.Style.gradient
+			}
+		}
 	}
 
 	public init() {}
@@ -65,6 +99,12 @@ public struct AvatarEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didTapSwapColorsButton:
+					let tempColor = state.backgroundColor
+					state.backgroundColor = state.secondaryBackgroundColor
+					state.secondaryBackgroundColor = tempColor
+					return .none
+
 				case .didTapCancel:
 					return .concatenate(
 						.send(.delegate(.didFinishEditing(state.initialAvatar))),
@@ -79,6 +119,7 @@ public struct AvatarEditor: Reducer {
 
 				case .didTapRandomColorButton:
 					state.backgroundColor = Color(uiColor: .random)
+					state.secondaryBackgroundColor = Color(uiColor: .random)
 					return .none
 
 				case .binding:
@@ -99,8 +140,8 @@ public struct AvatarEditor: Reducer {
 }
 
 extension Color {
-	var avatarBackground: Avatar.Background {
+	var rgb: Avatar.Background.RGB {
 		let (red, green, blue, _) = UIColor(self).rgba
-		return .rgb(red, green, blue)
+		return .init(red, green, blue)
 	}
 }

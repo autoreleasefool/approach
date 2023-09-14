@@ -18,6 +18,12 @@ extension UIColor {
 		return UIColor(red: red, green: green, blue: blue, alpha: 1)
 	}
 
+	public func averaged(with other: UIColor) -> UIColor {
+		let (r1, g1, b1, _) = rgba
+		let (r2, g2, b2, _) = other.rgba
+		return UIColor(red: (r1 + r2) / 2, green: (g1 + g2) / 2, blue: (b1 + b2) / 2, alpha: 1)
+	}
+
 	// For determining the best color to use for foreground text when this color is the background
 	// Source: https://stackoverflow.com/a/3943023
 

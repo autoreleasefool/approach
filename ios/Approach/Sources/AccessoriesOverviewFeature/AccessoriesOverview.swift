@@ -169,7 +169,7 @@ public struct AccessoriesOverview: Reducer {
 					return .none
 
 				case .didTapAddGear:
-					let avatar = Avatar.Summary(id: uuid(), value: .text("", UIColor.random.avatarBackground))
+					let avatar = Avatar.Summary(id: uuid(), value: .text("", .default))
 					state.destination = .gearEditor(.init(value: .create(.default(withId: uuid(), avatar: avatar))))
 					return .none
 
@@ -348,12 +348,5 @@ extension AccessoriesOverview {
 				action: .send(.didTapDismissButton)
 			)
 		)
-	}
-}
-
-extension UIColor {
-	var avatarBackground: Avatar.Background {
-		let (red, green, blue, _) = rgba
-		return .rgb(red, green, blue)
 	}
 }

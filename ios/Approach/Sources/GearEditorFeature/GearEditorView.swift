@@ -125,7 +125,10 @@ struct GearEditorViewPreviews: PreviewProvider {
 		NavigationStack {
 			GearEditorView(store:
 				.init(
-					initialState: .init(value: .create(.default(withId: UUID(), avatar: .init(id: UUID(), value: .text("", .default))))),
+					initialState: .init(value: .create(.default(
+						withId: UUID(),
+						avatar: .init(id: UUID(), value: .text("", .default))
+					))),
 					reducer: GearEditor.init
 				) {
 					$0.featureFlags.isEnabled = { _ in true }

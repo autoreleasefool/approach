@@ -179,7 +179,7 @@ public struct GearList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						let avatar = Avatar.Summary(id: uuid(), value: .text("", UIColor.random.avatarBackground))
+						let avatar = Avatar.Summary(id: uuid(), value: .text("", .default))
 						state.destination = .editor(.init(value: .create(.default(withId: uuid(), avatar: avatar))))
 						return .none
 
@@ -246,12 +246,5 @@ public struct GearList: Reducer {
 				return nil
 			}
 		}
-	}
-}
-
-extension UIColor {
-	var avatarBackground: Avatar.Background {
-		let (red, green, blue, _) = rgba
-		return .rgb(red, green, blue)
 	}
 }

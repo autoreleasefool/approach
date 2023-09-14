@@ -30,11 +30,25 @@ public struct AvatarEditorView: View {
 				}
 
 				Section(Strings.Avatar.Editor.Properties.BackgroundColor.title) {
-					ColorPicker(Strings.Avatar.Editor.Properties.BackgroundColor.chooseNewColor, selection: viewStore.$backgroundColor)
-					Button(Strings.Avatar.Editor.Properties.BackgroundColor.randomColor) {
-						viewStore.send(.didTapRandomColorButton)
+					Picker(
+						Strings.Avatar.Editor.Properties.BackgroundColor.Style.title,
+						selection: viewStore.$backgroundStyle
+					) {
+						ForEach(AvatarEditor.AvatarBackgroundStyle.allCases, id: \.rawValue) {
+							Text(String(describing: $0)).tag($0)
+						}
 					}
+					.pickerStyle(.segmented)
+
+					colorPicker(viewStore)
+
+					Button { viewStore.send(.didTapRandomColorButton) } label: {
+						Text(Strings.Avatar.Editor.Properties.BackgroundColor.randomColor)
+							.frame(maxWidth: .infinity, alignment: .center)
+					}
+					.buttonStyle(.borderless)
 				}
+				.listRowSeparator(.hidden)
 			}
 			.navigationTitle(Strings.Avatar.Editor.title)
 			.navigationBarBackButtonHidden(true)
@@ -50,6 +64,44 @@ public struct AvatarEditorView: View {
 			}
 		})
 	}
+
+	@MainActor @ViewBuilder private func colorPicker(
+		_ viewStore: ViewStore<AvatarEditor.State, AvatarEditor.Action.ViewAction>
+	) -> some View {
+		HStack(spacing: .standardSpacing) {
+			ColorPicker(
+				Strings.Avatar.Editor.Properties.BackgroundColor.backgroundColor,
+				selection: viewStore.$backgroundColor
+			)
+			.labelsHidden()
+
+			switch viewStore.backgroundStyle {
+			case .solid:
+				Spacer()
+					.frame(height: .largeSpacing)
+					.background(viewStore.backgroundColor)
+					.clipShape(RoundedRectangle(cornerRadius: .standardRadius))
+			case .gradient:
+				Spacer()
+					.frame(height: .largeSpacing)
+					.background(LinearGradient(
+						colors: [
+							viewStore.backgroundColor,
+							viewStore.secondaryBackgroundColor,
+						],
+						startPoint: .leading,
+						endPoint: .trailing
+					))
+					.clipShape(RoundedRectangle(cornerRadius: .standardRadius))
+
+				ColorPicker(
+					Strings.Avatar.Editor.Properties.BackgroundColor.secondaryColor,
+					selection: viewStore.$secondaryBackgroundColor
+				)
+				.labelsHidden()
+			}
+		}
+	}
 }
 
 #if DEBUG
@@ -57,7 +109,7 @@ struct AvatarEditorViewPreview: PreviewProvider {
 	static var previews: some View {
 		NavigationStack {
 			AvatarEditorView(store: .init(
-				initialState: AvatarEditor.State(avatar: .init(id: UUID(), value: .text("Ye", .rgb(0, 0, 0)))),
+				initialState: AvatarEditor.State(avatar: .init(id: UUID(), value: .text("Ye", .rgb(.default)))),
 				reducer: AvatarEditor.init
 			) {
 				$0.avatars.render = { _ in Asset.Media.Charts.error.image }

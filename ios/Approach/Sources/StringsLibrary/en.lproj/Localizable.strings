@@ -338,8 +338,12 @@
 "avatar.editor.title" = "Edit avatar";
 "avatar.editor.preview" = "Preview";
 "avatar.editor.properties.backgroundColor.title" = "Background Colour";
-"avatar.editor.properties.backgroundColor.chooseNewColor" = "Choose new colour";
-"avatar.editor.properties.backgroundColor.randomColor" = "Random colour";
+"avatar.editor.properties.backgroundColor.backgroundColor" = "Background colour";
+"avatar.editor.properties.backgroundColor.secondaryColor" = "Secondary colour";
+"avatar.editor.properties.backgroundColor.randomColor" = "Randomize colour";
+"avatar.editor.properties.backgroundColor.style.title" = "Style";
+"avatar.editor.properties.backgroundColor.style.solid" = "Solid";
+"avatar.editor.properties.backgroundColor.style.gradient" = "Gradient";
 "avatar.editor.properties.label.title" = "Label";
 
 /* Sharing */

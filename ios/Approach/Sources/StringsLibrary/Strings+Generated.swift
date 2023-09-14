@@ -246,12 +246,22 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "avatar.editor.title", fallback: "Edit avatar")
       public enum Properties {
         public enum BackgroundColor {
-          /// Choose new colour
-          public static let chooseNewColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.chooseNewColor", fallback: "Choose new colour")
-          /// Random colour
-          public static let randomColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.randomColor", fallback: "Random colour")
+          /// Background colour
+          public static let backgroundColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.backgroundColor", fallback: "Background colour")
+          /// Randomize colour
+          public static let randomColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.randomColor", fallback: "Randomize colour")
+          /// Secondary colour
+          public static let secondaryColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.secondaryColor", fallback: "Secondary colour")
           /// Background Colour
           public static let title = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.title", fallback: "Background Colour")
+          public enum Style {
+            /// Gradient
+            public static let gradient = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.style.gradient", fallback: "Gradient")
+            /// Solid
+            public static let solid = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.style.solid", fallback: "Solid")
+            /// Style
+            public static let title = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.style.title", fallback: "Style")
+          }
         }
         public enum Label {
           /// Label

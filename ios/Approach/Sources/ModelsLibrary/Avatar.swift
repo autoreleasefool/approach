@@ -17,28 +17,54 @@ extension Avatar {
 
 extension Avatar {
 	public enum Background: Sendable, Hashable, Codable, CustomStringConvertible {
-		case rgb(CGFloat, CGFloat, CGFloat)
+		case rgb(RGB)
+		case gradient(RGB, RGB)
+
+		public var description: String {
+			switch self {
+			case let .rgb(rgb): return String(describing: rgb)
+			case let .gradient(start, end): return "gradient(\(String(describing: start)), \(String(describing: end)))"
+			}
+		}
+
+		public static var `default`: Self {
+			.rgb(.default)
+		}
+	}
+}
+
+extension Avatar.Background {
+	public struct RGB: Sendable, Hashable, Codable, CustomStringConvertible {
+		public let red: CGFloat
+		public let green: CGFloat
+		public let blue: CGFloat
+
+		public init(red: CGFloat, green: CGFloat, blue: CGFloat) {
+			self.red = red
+			self.green = green
+			self.blue = blue
+		}
+
+		public init(_ red: CGFloat, _ green: CGFloat, _ blue: CGFloat) {
+			self.red = red
+			self.green = green
+			self.blue = blue
+		}
 
 		public var uiColor: UIColor {
-			switch self {
-			case let .rgb(red, green, blue):
-				return UIColor(red: red, green: green, blue: blue, alpha: 1)
-			}
+			.init(red: red, green: green, blue: blue, alpha: 1)
 		}
 
 		public var color: Color {
 			Color(uiColor: uiColor)
 		}
 
-		public var description: String {
-			switch self {
-			case let .rgb(red, green, blue):
-				return "rgb(\(red),\(green),\(blue))"
-			}
+		public static var `default`: Self {
+			.init(134 / 255.0, 128 / 255.0, 223 / 255.0)
 		}
 
-		public static var `default`: Self {
-			.rgb(134 / 255.0, 128 / 255.0, 223 / 255.0)
+		public var description: String {
+			"rgb(\(red),\(green),\(blue))"
 		}
 	}
 }
