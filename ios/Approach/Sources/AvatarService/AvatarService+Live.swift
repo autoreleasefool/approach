@@ -1,5 +1,6 @@
 import AvatarServiceInterface
 import Dependencies
+import ExtensionsLibrary
 import Foundation
 import ModelsLibrary
 import UIKit
@@ -9,49 +10,26 @@ extension AvatarService: DependencyKey {
 		let cache = Cache()
 
 		@Sendable func render(text: String, color: Avatar.Background) -> UIImage {
-			let renderer = UIGraphicsImageRenderer(size: CGSize(width: 256, height: 256))
+			let imageSize: CGFloat = 256
+			let renderer = UIGraphicsImageRenderer(size: CGSize(width: imageSize, height: imageSize))
 			return renderer.image { ctx in
-				color.uiColor.setFill()
-				ctx.cgContext.fillEllipse(in: CGRect(x: 0, y: 0, width: 256, height: 256))
+				let backgroundColor = color.uiColor
+				let rect = CGRect(x: 0, y: 0, width: imageSize, height: imageSize)
 
-				UIColor.red.setFill()
+				backgroundColor.setFill()
+				ctx.cgContext.fillEllipse(in: rect)
 
-				let font = UIFont.systemFont(ofSize: 128)
+				let font = UIFont.boldSystemFont(ofSize: imageSize / 2)
 				let paragraphStyle = NSMutableParagraphStyle()
 				paragraphStyle.alignment = .center
-
-				ctx.cgContext.setStrokeColor(UIColor.white.cgColor)
 				let attributes = [
 					NSAttributedString.Key.font: font,
-					NSAttributedString.Key.foregroundColor: UIColor.white,
+					NSAttributedString.Key.foregroundColor: backgroundColor.preferredForegroundColorForBackground,
 					NSAttributedString.Key.paragraphStyle: paragraphStyle,
 				]
 
-				let rect = CGRect(x: 0, y: 0, width: 256, height: 256)
-
-				let string = String(text.prefix(2))
-				string.draw(in: rect.insetBy(dx: 0, dy: (rect.height - font.pointSize) / 2), withAttributes: attributes)
-
-//				let paragraphStyle = NSMutableParagraphStyle()
-//				paragraphStyle.alignment = .center
-//
-//				let attrs = [
-//					NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 36)!,
-//					NSAttributedString.Key.paragraphStyle: paragraphStyle,
-//				]
-//
-//				let string = String(text.prefix(2))
-//				string.draw(
-//					with: CGRect(
-//						x: 32,
-//						y: 32,
-//						width: 448,
-//						height: 448
-//					),
-//					options: .usesLineFragmentOrigin,
-//					attributes: attrs,
-//					context: nil
-//				)
+				let initials = text.initials
+				initials.draw(in: rect.insetBy(dx: 0, dy: (rect.height - font.lineHeight) / 2).integral, withAttributes: attributes)
 			}
 		}
 

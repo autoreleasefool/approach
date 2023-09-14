@@ -1038,6 +1038,7 @@ let package = Package(
 			name: "AvatarService",
 			dependencies: [
 				"AvatarServiceInterface",
+				"ExtensionsLibrary",
 			]
 		),
 		.target(

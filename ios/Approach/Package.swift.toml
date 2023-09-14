@@ -210,6 +210,7 @@ skip_tests = true
 libraries = [ "Assets" ]
 
 [services.Avatar]
+libraries = [ "Extensions" ]
 [services.Avatar.interface]
 libraries = [ "Assets", "Models" ]
 
