@@ -325,7 +325,7 @@ public struct AccessoriesOverview: Reducer {
 
 	private func observeGear() -> Effect<Action> {
 		.run { send in
-			for try await gear in self.gear.overview() {
+			for try await gear in self.gear.mostRecentlyUsed(limit: 3) {
 				await send(.internal(.itemsResponse(.success(gear.map { .gear($0) }))))
 			}
 		} catch: { error, send in

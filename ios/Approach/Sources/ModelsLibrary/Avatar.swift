@@ -16,16 +16,9 @@ extension Avatar {
 }
 
 extension Avatar {
-	public enum Background: Sendable, Hashable, Codable, CustomStringConvertible {
+	public enum Background: Sendable, Hashable, Codable {
 		case rgb(RGB)
 		case gradient(RGB, RGB)
-
-		public var description: String {
-			switch self {
-			case let .rgb(rgb): return String(describing: rgb)
-			case let .gradient(start, end): return "gradient(\(String(describing: start)), \(String(describing: end)))"
-			}
-		}
 
 		public static var `default`: Self {
 			.rgb(.default)

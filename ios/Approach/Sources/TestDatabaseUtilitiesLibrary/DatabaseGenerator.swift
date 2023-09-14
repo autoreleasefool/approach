@@ -7,10 +7,10 @@ import ModelsLibrary
 
 public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws -> any DatabaseWriter {
 	let avatars: [Avatar.Database] = [
-		.init(id: UUID(0), value: .text("Ye", .rgb(255 / 255.0, 195 / 255.0, 0))),
-		.init(id: UUID(1), value: .text("Bl", .rgb(0, 80 / 255.0, 157 / 255.0))),
-		.init(id: UUID(2), value: .text("Gr", .rgb(0, 127 / 255.0, 95 / 255.0))),
-		.init(id: UUID(3), value: .text("Re", .rgb(191 / 255.0, 33 / 255.0, 30 / 255.0))),
+		.init(id: UUID(0), value: .text("Ye", .rgb(.init(255 / 255.0, 195 / 255.0, 0)))),
+		.init(id: UUID(1), value: .text("Bl", .rgb(.init(0, 80 / 255.0, 157 / 255.0)))),
+		.init(id: UUID(2), value: .text("Gr", .rgb(.init(0, 127 / 255.0, 95 / 255.0)))),
+		.init(id: UUID(3), value: .text("Re", .rgb(.init(191 / 255.0, 33 / 255.0, 30 / 255.0)))),
 	]
 	let locations: [Location.Database] = [
 		.init(id: UUID(0), title: "Skyview", subtitle: "123 Fake Street", latitude: 1.0, longitude: 1.0),

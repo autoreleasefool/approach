@@ -143,9 +143,9 @@ final class GearRepositoryTests: XCTestCase {
 		])
 	}
 
-	// MARK: - Overview
+	// MARK: - Most Recently Used
 
-	func testOverview_ReturnsGear() async throws {
+	func testMostRecentlyUsed_ReturnsGear() async throws {
 		// Given a database with four gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
@@ -163,7 +163,7 @@ final class GearRepositoryTests: XCTestCase {
 			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.gear = .liveValue
 		} operation: {
-			self.gear.overview()
+			self.gear.mostRecentlyUsed(limit: 3)
 		}
 		var iterator = gear.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -176,7 +176,7 @@ final class GearRepositoryTests: XCTestCase {
 		])
 	}
 
-	func testOverview_WithRecentlyUsedGear_ReturnsGearOrderedByRecentlyUsed() async throws {
+	func testMostRecentlyUsed_WithRecentlyUsedGear_ReturnsGearOrderedByRecentlyUsed() async throws {
 		// Given a database with four gear
 		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
 		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
@@ -194,7 +194,7 @@ final class GearRepositoryTests: XCTestCase {
 			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.gear = .liveValue
 		} operation: {
-			self.gear.overview()
+			self.gear.mostRecentlyUsed(limit: 3)
 		}
 		var iterator = gear.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -204,6 +204,64 @@ final class GearRepositoryTests: XCTestCase {
 			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
 			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
 			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: .mock(id: UUID(0))),
+		])
+	}
+
+	func testMostRecentlyUsed_WithLimit_ReturnsLimitedNumber() async throws {
+		// Given a database with four gear
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
+		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
+		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
+		recentContinuation.yield([UUID(2), UUID(3)])
+
+		// Fetching the gear
+		let gear = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
+			$0.gear = .liveValue
+		} operation: {
+			self.gear.mostRecentlyUsed(limit: 1)
+		}
+		var iterator = gear.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the expected gear
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
+		])
+	}
+
+	func testMostRecentlyUsed_FilteredByKind_ReturnsGearOfKind() async throws {
+		// Given a database with four gear
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
+		let gear2 = Gear.Database.mock(id: UUID(1), name: "Blue", kind: .towel, bowlerId: UUID(1))
+		let gear3 = Gear.Database.mock(id: UUID(2), name: "Green", kind: .other, bowlerId: UUID(0))
+		let gear4 = Gear.Database.mock(id: UUID(3), name: "Red", kind: .shoes, bowlerId: UUID(1))
+		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3, gear4]), withBowlerPreferredGear: .zero)
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
+		recentContinuation.yield([UUID(2), UUID(3)])
+
+		// Fetching the gear
+		let gear = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
+			$0.gear = .liveValue
+		} operation: {
+			self.gear.mostRecentlyUsed(ofKind: .bowlingBall)
+		}
+		var iterator = gear.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the expected gear
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0))),
 		])
 	}
 
@@ -340,7 +398,7 @@ final class GearRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withAvatars: .custom([avatar1]), withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear
-		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .init(id: UUID(0), value: .text("Bl", .rgb(0, 0, 1))))
+		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .init(id: UUID(0), value: .text("Bl", .rgb(.init(0, 0, 1)))))
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.gear = .liveValue
@@ -350,7 +408,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Updates the avatar
 		let updatedAvatar = try await db.read { try Avatar.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(updatedAvatar?.value, .text("Bl", .rgb(0, 0, 1)))
+		XCTAssertEqual(updatedAvatar?.value, .text("Bl", .rgb(.init(0, 0, 1))))
 
 		// Does not insert any records
 		let count = try await db.read { try Avatar.Database.fetchCount($0) }

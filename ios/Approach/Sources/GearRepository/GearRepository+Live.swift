@@ -55,17 +55,18 @@ extension GearRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
-			overview: {
+			mostRecentlyUsed: { kind, limit in
 				let gear = database.reader().observe {
 					try Gear.Database
 						.all()
+						.filter(byKind: kind)
 						.orderByName()
 						.includingOwnerName()
 						.includingAvatar()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
-				return prefix(sortGear(gear, .byRecentlyUsed), ofSize: 3)
+				return prefix(sortGear(gear, .byRecentlyUsed), ofSize: limit)
 			},
 			edit: { id in
 				try await database.reader().read {

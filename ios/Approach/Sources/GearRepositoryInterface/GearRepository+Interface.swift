@@ -11,7 +11,7 @@ extension Gear {
 public struct GearRepository: Sendable {
 	public var list: @Sendable (Bowler.ID?, Gear.Kind?, Gear.Ordering) -> AsyncThrowingStream<[Gear.Summary], Error>
 	public var preferred: @Sendable (Bowler.ID) async throws -> [Gear.Summary]
-	public var overview: @Sendable () -> AsyncThrowingStream<[Gear.Summary], Error>
+	public var mostRecentlyUsed: @Sendable (Gear.Kind?, Int) -> AsyncThrowingStream<[Gear.Summary], Error>
 	public var edit: @Sendable (Gear.ID) async throws -> Gear.Edit
 	public var create: @Sendable (Gear.Create) async throws -> Void
 	public var update: @Sendable (Gear.Edit) async throws -> Void
@@ -21,7 +21,7 @@ public struct GearRepository: Sendable {
 	public init(
 		list: @escaping @Sendable (Bowler.ID?, Gear.Kind?, Gear.Ordering) -> AsyncThrowingStream<[Gear.Summary], Error>,
 		preferred: @escaping @Sendable (Bowler.ID) async throws -> [Gear.Summary],
-		overview: @escaping @Sendable () -> AsyncThrowingStream<[Gear.Summary], Error>,
+		mostRecentlyUsed: @escaping @Sendable (Gear.Kind?, Int) -> AsyncThrowingStream<[Gear.Summary], Error>,
 		edit: @escaping @Sendable (Gear.ID) async throws -> Gear.Edit,
 		create: @escaping @Sendable (Gear.Create) async throws -> Void,
 		update: @escaping @Sendable (Gear.Edit) async throws -> Void,
@@ -30,7 +30,7 @@ public struct GearRepository: Sendable {
 	) {
 		self.list = list
 		self.preferred = preferred
-		self.overview = overview
+		self.mostRecentlyUsed = mostRecentlyUsed
 		self.edit = edit
 		self.create = create
 		self.update = update
@@ -46,6 +46,13 @@ public struct GearRepository: Sendable {
 		self.list(ownedBy, ofKind, ordered)
 	}
 
+	public func mostRecentlyUsed(
+		ofKind kind: Gear.Kind? = nil,
+		limit: Int = 3
+	) -> AsyncThrowingStream<[Gear.Summary], Error> {
+		self.mostRecentlyUsed(kind, limit)
+	}
+
 	public func preferredGear(forBowler: Bowler.ID) async throws -> [Gear.Summary] {
 		try await self.preferred(forBowler)
 	}
@@ -59,7 +66,7 @@ extension GearRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _, _ in unimplemented("\(Self.self).list") },
 		preferred: { _ in unimplemented("\(Self.self).preferred") },
-		overview: { unimplemented("\(Self.self).overview") },
+		mostRecentlyUsed: { _, _ in unimplemented("\(Self.self).mostRecentlyUsed") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },
 		update: { _ in unimplemented("\(Self.self).update") },

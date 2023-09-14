@@ -24,7 +24,7 @@ extension Avatar.Summary {
 
 extension Avatar.Value {
 	public static var mock: Self {
-		.text("YB", .rgb(134 / 255.0, 128 / 255.0, 223 / 255.0))
+		.text("YB", .rgb(.init(134 / 255.0, 128 / 255.0, 223 / 255.0)))
 	}
 }
 
