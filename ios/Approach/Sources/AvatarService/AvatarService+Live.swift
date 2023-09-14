@@ -51,13 +51,13 @@ extension AvatarService: DependencyKey {
 			}
 		}
 
-		@Sendable func render(_ avatar: Avatar.Summary) async -> UIImage? {
-			if let image = await cache.fetch(avatar.value) {
+		@Sendable func render(_ avatar: Avatar.Value) async -> UIImage? {
+			if let image = await cache.fetch(avatar) {
 				return image
 			}
 
 			let image: UIImage?
-			switch avatar.value {
+			switch avatar {
 			case let .url(url):
 				if url.isFileURL {
 					image = UIImage(contentsOfFile: url.absoluteString)
@@ -71,7 +71,7 @@ extension AvatarService: DependencyKey {
 			}
 
 			guard let image else { return nil }
-			await cache.store(avatar.value, image: image)
+			await cache.store(avatar, image: image)
 			return image
 		}
 

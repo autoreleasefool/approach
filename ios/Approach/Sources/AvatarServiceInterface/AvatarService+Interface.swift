@@ -4,12 +4,12 @@ import ModelsLibrary
 import SwiftUI
 
 public struct AvatarService {
-	public var render: @Sendable (Avatar.Summary) async -> UIImage?
-	public var preRender: @Sendable (Avatar.Summary) async -> Void
+	public var render: @Sendable (Avatar.Value) async -> UIImage?
+	public var preRender: @Sendable (Avatar.Value) async -> Void
 
 	public init(
-		render: @escaping @Sendable (Avatar.Summary) async -> UIImage?,
-		preRender: @escaping @Sendable (Avatar.Summary) async -> Void
+		render: @escaping @Sendable (Avatar.Value) async -> UIImage?,
+		preRender: @escaping @Sendable (Avatar.Value) async -> Void
 	) {
 		self.render = render
 		self.preRender = preRender
