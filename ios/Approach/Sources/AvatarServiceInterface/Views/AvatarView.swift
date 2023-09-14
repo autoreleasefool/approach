@@ -4,12 +4,12 @@ import ModelsLibrary
 import SwiftUI
 
 public struct AvatarView: View {
-	let avatar: Avatar.Summary
+	let avatar: Avatar.Summary?
 	let size: CGFloat
 
 	@State private var image: UIImage?
 
-	public init(_ avatar: Avatar.Summary, size: CGFloat) {
+	public init(_ avatar: Avatar.Summary?, size: CGFloat) {
 		self.avatar = avatar
 		self.size = size
 	}
@@ -27,7 +27,9 @@ public struct AvatarView: View {
 					.frame(width: size, height: size)
 					.cornerRadius(size)
 			}
-		}.task {
+		}
+		.task(id: avatar) {
+			guard let avatar else { return }
 			@Dependency(\.avatars) var avatars
 			image = await avatars.render(avatar)
 		}
