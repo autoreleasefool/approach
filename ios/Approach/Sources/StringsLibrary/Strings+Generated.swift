@@ -238,6 +238,28 @@ public enum Strings {
       public static let statistics = Strings.tr("Localizable", "app.tabs.statistics", fallback: "Statistics")
     }
   }
+  public enum Avatar {
+    public enum Editor {
+      /// Preview
+      public static let preview = Strings.tr("Localizable", "avatar.editor.preview", fallback: "Preview")
+      /// Avatar
+      public static let title = Strings.tr("Localizable", "avatar.editor.title", fallback: "Edit avatar")
+      public enum Properties {
+        public enum BackgroundColor {
+          /// Choose new colour
+          public static let chooseNewColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.chooseNewColor", fallback: "Choose new colour")
+          /// Random colour
+          public static let randomColor = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.randomColor", fallback: "Random colour")
+          /// Background Colour
+          public static let title = Strings.tr("Localizable", "avatar.editor.properties.backgroundColor.title", fallback: "Background Colour")
+        }
+        public enum Label {
+          /// Label
+          public static let title = Strings.tr("Localizable", "avatar.editor.properties.label.title", fallback: "Label")
+        }
+      }
+    }
+  }
   public enum Ball {
     /// Ball %d
     public static func title(_ p1: Int) -> String {
@@ -523,6 +545,14 @@ public enum Strings {
       public static let kind = Strings.tr("Localizable", "gear.properties.kind", fallback: "Kind")
       /// Owner
       public static let owner = Strings.tr("Localizable", "gear.properties.owner", fallback: "Owner")
+      public enum Avatar {
+        /// Customize
+        public static let customize = Strings.tr("Localizable", "gear.properties.avatar.customize", fallback: "Customize")
+        /// Create a unique avatar so you can quickly and easily recognize this item in the app.
+        public static let description = Strings.tr("Localizable", "gear.properties.avatar.description", fallback: "Create a unique avatar so you can quickly and easily recognize this item in the app.")
+        /// Avatar
+        public static let title = Strings.tr("Localizable", "gear.properties.avatar.title", fallback: "Avatar")
+      }
       public enum Kind {
         /// Ball
         public static let bowlingBall = Strings.tr("Localizable", "gear.properties.kind.bowlingBall", fallback: "Ball")

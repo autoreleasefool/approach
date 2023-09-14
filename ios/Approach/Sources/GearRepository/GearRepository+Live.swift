@@ -79,21 +79,14 @@ extension GearRepository: DependencyKey {
 			},
 			create: { gear in
 				try await database.writer().write {
-					if let avatar = gear.avatar?.databaseModel {
-						try avatar.insert($0)
-					}
-
+					try gear.avatar.databaseModel.insert($0)
 					try gear.insert($0)
 				}
 			},
 			update: { gear in
 				try await database.writer().write {
 					try gear.update($0)
-
-					// TODO: Delete unused avatars if nil
-					if let avatar = gear.avatar?.databaseModel {
-						try avatar.update($0)
-					}
+					try gear.avatar.databaseModel.update($0)
 				}
 			},
 			delete: { id in

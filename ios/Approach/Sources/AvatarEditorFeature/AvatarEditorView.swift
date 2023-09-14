@@ -4,44 +4,40 @@ import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct AvatarEditorView: View {
 	let store: StoreOf<AvatarEditor>
-
-	struct ViewState: Equatable {
-		let avatar: Avatar.Summary
-		let hasChanges: Bool
-
-		init(state: AvatarEditor.State) {
-			self.avatar = state.avatar
-			self.hasChanges = state.avatar != state.initialAvatar
-		}
-	}
 
 	public init(store: StoreOf<AvatarEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			VStack {
-				AvatarView(viewStore.avatar, size: .extraLargeIcon)
-				LazyVGrid(columns: [.init(), .init(), .init()]) {
-					Image(systemSymbol: .camera)
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.frame(width: .smallIcon, height: .smallIcon)
-						.background {
-							Circle()
-								.fill(.gray)
-								.frame(width: .largeIcon, height: .largeIcon)
-						}
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+			List {
+				Section {
+					VStack {
+						AvatarView(viewStore.avatar, size: .extraLargeIcon)
+							.shadow(radius: .standardShadowRadius)
+					}
+					.frame(maxWidth: .infinity)
+				}
+				.listRowBackground(Color.clear)
 
-					Image(systemSymbol: .photoOnRectangle)
-						.resizable()
-						.frame(width: .standardIcon, height: .standardIcon)
+				Section(Strings.Avatar.Editor.Properties.Label.title) {
+					TextField(Strings.Avatar.Editor.Properties.Label.title, text: viewStore.$label)
+				}
+
+				Section(Strings.Avatar.Editor.Properties.BackgroundColor.title) {
+					ColorPicker(Strings.Avatar.Editor.Properties.BackgroundColor.chooseNewColor, selection: viewStore.$backgroundColor)
+					Button(Strings.Avatar.Editor.Properties.BackgroundColor.randomColor) {
+						viewStore.send(.didTapRandomColorButton)
+					}
 				}
 			}
+			.navigationTitle(Strings.Avatar.Editor.title)
+			.navigationBarBackButtonHidden(true)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
 					Button(Strings.Action.cancel) { viewStore.send(.didTapCancel) }
@@ -55,3 +51,18 @@ public struct AvatarEditorView: View {
 		})
 	}
 }
+
+#if DEBUG
+struct AvatarEditorViewPreview: PreviewProvider {
+	static var previews: some View {
+		NavigationStack {
+			AvatarEditorView(store: .init(
+				initialState: AvatarEditor.State(avatar: .init(id: UUID(), value: .text("Ye", .rgb(0, 0, 0)))),
+				reducer: AvatarEditor.init
+			) {
+				$0.avatars.render = { _ in Asset.Media.Charts.error.image }
+			})
+		}
+	}
+}
+#endif

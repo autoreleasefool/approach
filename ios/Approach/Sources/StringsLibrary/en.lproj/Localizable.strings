@@ -87,6 +87,9 @@
 "gear.properties.kind.towel" = "Towel";
 "gear.properties.kind.towels" = "Towels";
 "gear.properties.owner" = "Owner";
+"gear.properties.avatar.title" = "Avatar";
+"gear.properties.avatar.description" = "Create a unique avatar so you can quickly and easily recognize this item in the app.";
+"gear.properties.avatar.customize" = "Customize";
 "gear.ownedBy" = "Owned by %@";
 "gear.list.add" = "Add Gear";
 "gear.error.empty.title" = "No gear found";
@@ -330,6 +333,14 @@
 "statistics.title.totalPinsLeftOnDeck" = "Total Pins Left on Deck";
 "statistics.title.averagePinsLeftOnDeck" = "Average Pins Left on Deck";
 "statistics.title.totalRolls" = "Total Rolls";
+
+/* Avatar */
+"avatar.editor.title" = "Edit avatar";
+"avatar.editor.preview" = "Preview";
+"avatar.editor.properties.backgroundColor.title" = "Background Colour";
+"avatar.editor.properties.backgroundColor.chooseNewColor" = "Choose new colour";
+"avatar.editor.properties.backgroundColor.randomColor" = "Random colour";
+"avatar.editor.properties.label.title" = "Label";
 
 /* Sharing */
 "sharing.title" = "Share";

@@ -33,7 +33,7 @@ features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "St
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
-libraries = [ "Strings" ]
+libraries = [ "Extensions", "Views" ]
 
 [features.BowlerEditor]
 features = [ "Form" ]
@@ -65,9 +65,9 @@ features = [ "GamesEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.GearEditor]
-features = [ "Form" ]
+features = [ "AvatarEditor", "Form" ]
 repositories = [ "Bowlers", "Gear" ]
-services = [ "Analytics", "Avatar", "FeatureFlags" ]
+services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "PickableModels" ]
 
 [features.GearList]

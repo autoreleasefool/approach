@@ -240,9 +240,10 @@ let package = Package(
 			name: "AvatarEditorFeature",
 			dependencies: [
 				"AvatarServiceInterface",
+				"ExtensionsLibrary",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
-				"StringsLibrary",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -370,7 +371,7 @@ let package = Package(
 			name: "GearEditorFeature",
 			dependencies: [
 				"AnalyticsServiceInterface",
-				"AvatarServiceInterface",
+				"AvatarEditorFeature",
 				"BowlersRepositoryInterface",
 				"FeatureFlagsServiceInterface",
 				"FormFeature",

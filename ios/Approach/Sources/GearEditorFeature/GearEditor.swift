@@ -1,4 +1,6 @@
 import AnalyticsServiceInterface
+import AvatarEditorFeature
+import AvatarServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
@@ -12,21 +14,28 @@ import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
+import UIKit
 
 public typealias GearForm = Form<Gear.Create, Gear.Edit>
 
+public struct AvatarImage: Equatable {
+	public let id: Avatar.ID
+	public let image: AlwaysEqual<UIImage>
+}
+
 public struct GearEditor: Reducer {
 	public struct State: Equatable {
-		public let hasAvatarsEnabled: Bool
-
 		@BindingState public var name: String
 		@BindingState public var kind: Gear.Kind
 		public var owner: Bowler.Summary?
+		public var avatar: Avatar.Summary
 
 		public var initialValue: GearForm.Value
 		public var _form: GearForm.State
 
-		@PresentationState var bowlerPicker: ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State?
+		@PresentationState var destination: Destination.State?
+
+		public let isAvatarsEnabled: Bool
 
 		public init(value: GearForm.Value) {
 			self.initialValue = value
@@ -37,31 +46,57 @@ public struct GearEditor: Reducer {
 				self.name = new.name
 				self.kind = new.kind
 				self.owner = new.owner
+				self.avatar = new.avatar
 			case let .edit(existing):
 				self.name = existing.name
 				self.kind = existing.kind
 				self.owner = existing.owner
+				self.avatar = existing.avatar
 			}
 
 			@Dependency(\.featureFlags) var featureFlags
-			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
+			self.isAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
 			case didTapOwner
+			case didTapAvatar
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case form(GearForm.Action)
-			case bowlerPicker(PresentationAction<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+	}
+
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
+			case avatar(AvatarEditor.State)
+		}
+
+		public enum Action: Equatable {
+			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
+			case avatar(AvatarEditor.Action)
+		}
+
+		@Dependency(\.bowlers) var bowlers
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.bowlerPicker, action: /Action.bowlerPicker) {
+				ResourcePicker { _ in bowlers.pickable() }
+			}
+			Scope(state: /State.avatar, action: /Action.avatar) {
+				AvatarEditor()
+			}
+		}
 	}
 
 	public init() {}
@@ -87,13 +122,17 @@ public struct GearEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didTapAvatar:
+					state.destination = .avatar(.init(avatar: state.avatar))
+					return .none
+
 				case .didTapOwner:
-					state.bowlerPicker = .init(
+					state.destination = .bowlerPicker(.init(
 						selected: Set([state.owner?.id].compactMap { $0 }),
 						query: .init(()),
 						limit: 1,
 						showsCancelHeaderButton: false
-					)
+					))
 					return .none
 
 				case .binding:
@@ -120,21 +159,26 @@ public struct GearEditor: Reducer {
 						return .run { _ in await dismiss() }
 					}
 
-				case let .bowlerPicker(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSelection(bowler):
 						state.owner = bowler.first
 						return .none
 					}
 
-				case .bowlerPicker(.dismiss):
-					state.owner = state.bowlerPicker?.selectedResources?.first
-					return .none
+				case let .destination(.presented(.avatar(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didFinishEditing(avatar):
+						state.avatar = avatar ?? state.avatar
+						return .none
+					}
 
 				case .form(.view), .form(.internal):
 					return .none
 
-				case .bowlerPicker(.presented(.view)), .bowlerPicker(.presented(.internal)):
+				case .destination(.dismiss),
+						.destination(.presented(.bowlerPicker(.view))), .destination(.presented(.bowlerPicker(.internal))),
+						.destination(.presented(.avatar(.view))), .destination(.presented(.avatar(.internal))):
 					return .none
 				}
 
@@ -142,8 +186,8 @@ public struct GearEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
-			ResourcePicker { _ in bowlers.pickable() }
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
 
 		AnalyticsReducer<State, Action> { _, action in
@@ -170,10 +214,12 @@ extension GearEditor.State {
 				new.name = name
 				new.kind = kind
 				new.owner = owner
+				new.avatar = avatar
 				form.value = .create(new)
 			case var .edit(existing):
 				existing.name = name
 				existing.owner = owner
+				existing.avatar = avatar
 				form.value = .edit(existing)
 			}
 			return form

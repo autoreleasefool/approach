@@ -10,6 +10,8 @@ import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SortOrderLibrary
 import StringsLibrary
+import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 extension Gear.Summary: ResourceListItem {}
@@ -82,13 +84,13 @@ public struct GearList: Reducer {
 		public enum State: Equatable {
 			case editor(GearEditor.State)
 			case filters(GearFilter.State)
-			case sortOrder(SortOrder<Gear.Ordering>.State)
+			case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(GearEditor.Action)
 			case filters(GearFilter.Action)
-			case sortOrder(SortOrder<Gear.Ordering>.Action)
+			case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -177,7 +179,8 @@ public struct GearList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
+						let avatar = Avatar.Summary(id: uuid(), value: .text("", UIColor.random.avatarBackground))
+						state.destination = .editor(.init(value: .create(.default(withId: uuid(), avatar: avatar))))
 						return .none
 
 					case .didTap:
@@ -243,5 +246,12 @@ public struct GearList: Reducer {
 				return nil
 			}
 		}
+	}
+}
+
+extension UIColor {
+	var avatarBackground: Avatar.Background {
+		let (red, green, blue, _) = rgba
+		return .rgb(red, green, blue)
 	}
 }

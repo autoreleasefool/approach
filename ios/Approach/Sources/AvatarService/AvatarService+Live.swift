@@ -14,31 +14,49 @@ extension AvatarService: DependencyKey {
 				color.uiColor.setFill()
 				ctx.cgContext.fillEllipse(in: CGRect(x: 0, y: 0, width: 256, height: 256))
 
+				UIColor.red.setFill()
+
+				let font = UIFont.systemFont(ofSize: 128)
 				let paragraphStyle = NSMutableParagraphStyle()
 				paragraphStyle.alignment = .center
 
-				let attrs = [
-					NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 36)!,
+				ctx.cgContext.setStrokeColor(UIColor.white.cgColor)
+				let attributes = [
+					NSAttributedString.Key.font: font,
+					NSAttributedString.Key.foregroundColor: UIColor.white,
 					NSAttributedString.Key.paragraphStyle: paragraphStyle,
 				]
 
+				let rect = CGRect(x: 0, y: 0, width: 256, height: 256)
+
 				let string = String(text.prefix(2))
-				string.draw(
-					with: CGRect(
-						x: 32,
-						y: 32,
-						width: 448,
-						height: 448
-					),
-					options: .usesLineFragmentOrigin,
-					attributes: attrs,
-					context: nil
-				)
+				string.draw(in: rect.insetBy(dx: 0, dy: (rect.height - font.pointSize) / 2), withAttributes: attributes)
+
+//				let paragraphStyle = NSMutableParagraphStyle()
+//				paragraphStyle.alignment = .center
+//
+//				let attrs = [
+//					NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 36)!,
+//					NSAttributedString.Key.paragraphStyle: paragraphStyle,
+//				]
+//
+//				let string = String(text.prefix(2))
+//				string.draw(
+//					with: CGRect(
+//						x: 32,
+//						y: 32,
+//						width: 448,
+//						height: 448
+//					),
+//					options: .usesLineFragmentOrigin,
+//					attributes: attrs,
+//					context: nil
+//				)
 			}
 		}
 
 		@Sendable func render(_ avatar: Avatar.Summary) async -> UIImage? {
-			if let image = await cache.fetch(avatar) {
+			if let image = await cache.fetch(avatar.value) {
 				return image
 			}
 
@@ -57,7 +75,7 @@ extension AvatarService: DependencyKey {
 			}
 
 			guard let image else { return nil }
-			await cache.store(avatar, image: image)
+			await cache.store(avatar.value, image: image)
 			return image
 		}
 
@@ -73,11 +91,11 @@ extension AvatarService: DependencyKey {
 private actor Cache {
 	var imageCache: NSCache<NSString, UIImage> = NSCache()
 
-	func fetch(_ avatar: Avatar.Summary) async -> UIImage? {
-		return imageCache.object(forKey: NSString(string: avatar.id.uuidString))
+	func fetch(_ avatar: Avatar.Value) async -> UIImage? {
+		return imageCache.object(forKey: NSString(string: String(describing: avatar)))
 	}
 
-	func store(_ avatar: Avatar.Summary, image: UIImage) async {
-		imageCache.setObject(image, forKey: NSString(string: avatar.id.uuidString))
+	func store(_ avatar: Avatar.Value, image: UIImage) async {
+		imageCache.setObject(image, forKey: NSString(string: String(describing: avatar)))
 	}
 }

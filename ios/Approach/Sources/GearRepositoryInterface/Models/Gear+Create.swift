@@ -9,13 +9,13 @@ extension Gear {
 		public var owner: Bowler.Summary?
 		public var avatar: Avatar.Summary
 
-		public static func `default`(withId: Gear.ID, andAvatarId: Avatar.ID) -> Self {
+		public static func `default`(withId: Gear.ID, avatar: Avatar.Summary) -> Self {
 			.init(
 				id: withId,
 				name: "",
 				kind: .bowlingBall,
 				owner: nil,
-				avatar: .init(id: andAvatarId, value: .text("", .default))
+				avatar: avatar
 			)
 		}
 	}

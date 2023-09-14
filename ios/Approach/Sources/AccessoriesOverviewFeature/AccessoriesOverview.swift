@@ -10,6 +10,8 @@ import GearListFeature
 import GearRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
+import SwiftUI
+import SwiftUIExtensionsLibrary
 
 // swiftlint:disable:next type_body_length
 public struct AccessoriesOverview: Reducer {
@@ -167,7 +169,8 @@ public struct AccessoriesOverview: Reducer {
 					return .none
 
 				case .didTapAddGear:
-					state.destination = .gearEditor(.init(value: .create(.default(withId: uuid()))))
+					let avatar = Avatar.Summary(id: uuid(), value: .text("", UIColor.random.avatarBackground))
+					state.destination = .gearEditor(.init(value: .create(.default(withId: uuid(), avatar: avatar))))
 					return .none
 
 				case let .didTapGearKind(kind):
@@ -345,5 +348,12 @@ extension AccessoriesOverview {
 				action: .send(.didTapDismissButton)
 			)
 		)
+	}
+}
+
+extension UIColor {
+	var avatarBackground: Avatar.Background {
+		let (red, green, blue, _) = rgba
+		return .rgb(red, green, blue)
 	}
 }
