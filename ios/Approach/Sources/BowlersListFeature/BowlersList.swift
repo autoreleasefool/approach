@@ -5,8 +5,6 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import LeaguesListFeature
 import ModelsLibrary
 import PreferenceServiceInterface
@@ -42,7 +40,6 @@ public struct BowlersList: Reducer {
 		@PresentationState public var destination: Destination.State?
 
 		public var isShowingWidgets: Bool
-		public let hasAvatarsEnabled: Bool
 
 		public init() {
 			self.list = .init(
@@ -60,9 +57,6 @@ public struct BowlersList: Reducer {
 					action: Strings.Bowler.List.add
 				)
 			)
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 
 			@Dependency(\.preferences) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
