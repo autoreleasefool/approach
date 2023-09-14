@@ -6,6 +6,12 @@ import GRDB
 import ModelsLibrary
 
 public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws -> any DatabaseWriter {
+	let avatars: [Avatar.Database] = [
+		.init(id: UUID(0), value: .text("Ye", .rgb(255 / 255.0, 195 / 255.0, 0))),
+		.init(id: UUID(1), value: .text("Bl", .rgb(0, 80 / 255.0, 157 / 255.0))),
+		.init(id: UUID(2), value: .text("Gr", .rgb(0, 127 / 255.0, 95 / 255.0))),
+		.init(id: UUID(3), value: .text("Re", .rgb(191 / 255.0, 33 / 255.0, 30 / 255.0))),
+	]
 	let locations: [Location.Database] = [
 		.init(id: UUID(0), title: "Skyview", subtitle: "123 Fake Street", latitude: 1.0, longitude: 1.0),
 		.init(id: UUID(1), title: "Grandview", subtitle: "456 Real Street", latitude: 2.0, longitude: 2.0),
@@ -48,10 +54,10 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 	]
 	let gear: [Gear.Database] = [
 		.mock(id: UUID(0), name: "Joseph's Shoes", kind: .shoes, bowlerId: UUID(0)),
-		.mock(id: UUID(1), name: "Yellow Epco", kind: .bowlingBall, bowlerId: UUID(0)),
-		.mock(id: UUID(2), name: "Blue Epco", kind: .bowlingBall, bowlerId: UUID(0)),
-		.mock(id: UUID(3), name: "Green Paramount", kind: .bowlingBall, bowlerId: UUID(1)),
-		.mock(id: UUID(4), name: "Red Paramount", kind: .bowlingBall, bowlerId: UUID(1)),
+		.mock(id: UUID(1), name: "Yellow Epco", kind: .bowlingBall, bowlerId: UUID(0), avatarId: UUID(0)),
+		.mock(id: UUID(2), name: "Blue Epco", kind: .bowlingBall, bowlerId: UUID(0), avatarId: UUID(1)),
+		.mock(id: UUID(3), name: "Green Paramount", kind: .bowlingBall, bowlerId: UUID(1), avatarId: UUID(2)),
+		.mock(id: UUID(4), name: "Red Paramount", kind: .bowlingBall, bowlerId: UUID(1), avatarId: UUID(3)),
 	]
 	let leagues: [League.Database] = [
 		.init(bowlerId: UUID(0), id: UUID(0), name: "Majors, 2022-23", recurrence: .repeating, numberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include),
@@ -73,6 +79,7 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 	let bowlerPreferredGear = generateBowlerPreferredGear(forBowlers: bowlers, withGear: gear)
 
 	return try initializeDatabase(
+		withAvatars: .custom(avatars),
 		withLocations: .custom(locations),
 		withAlleys: .custom(alleys),
 		withLanes: .custom(lanes),

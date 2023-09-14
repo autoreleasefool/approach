@@ -49,9 +49,7 @@ extension DerivableRequest<Gear.Database> {
 	}
 
 	public func includingAvatar() -> Self {
-		annotated(withOptional: Gear.Database.avatar.select(
-			Avatar.Database.Columns.value
-		))
+		including(optional: Gear.Database.avatar)
 	}
 }
 

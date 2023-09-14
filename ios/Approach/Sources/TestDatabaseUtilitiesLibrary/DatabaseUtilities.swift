@@ -12,6 +12,7 @@ public enum InitialValue<T> {
 }
 
 public func initializeDatabase(
+	withAvatars: InitialValue<Avatar.Database>? = nil,
 	withLocations: InitialValue<Location.Database>? = nil,
 	withAlleys: InitialValue<Alley.Database>? = nil,
 	withLanes: InitialValue<Lane.Database>? = nil,
@@ -38,6 +39,7 @@ public func initializeDatabase(
 		try migrator.migrate(dbQueue)
 	}
 
+	let avatars = withAvatars
 	let matchPlays = withMatchPlays
 	let frames = withFrames
 	let games = coallesce(withGames, ifHasOneOf: frames, matchPlays)
@@ -55,6 +57,7 @@ public func initializeDatabase(
 
 	#if DEBUG
 	try dbQueue.write {
+		try insert(avatars: avatars, into: $0)
 		try insert(locations: locations, into: $0)
 		try insert(alleys: alleys, into: $0)
 		try insert(lanes: lanes, into: $0)

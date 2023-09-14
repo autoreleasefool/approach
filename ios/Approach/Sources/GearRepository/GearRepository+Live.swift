@@ -72,6 +72,7 @@ extension GearRepository: DependencyKey {
 					try Gear.Database
 						.filter(Gear.Database.Columns.id == id)
 						.including(optional: Gear.Database.bowler.forKey("owner"))
+						.includingAvatar()
 						.asRequest(of: Gear.Edit.self)
 						.fetchOneGuaranteed($0)
 				}
