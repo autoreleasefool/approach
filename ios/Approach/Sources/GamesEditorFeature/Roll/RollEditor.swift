@@ -198,8 +198,20 @@ struct RollEditorPreview: PreviewProvider {
 					while !Task.isCancelled {
 						try await Task.sleep(for: .seconds(1))
 						continuation.yield([
-							.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .init(id: UUID(0), value: .text("", .default))),
-							.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Sarah", avatar: .init(id: UUID(1), value: .text("", .default))),
+							.init(
+								id: UUID(0),
+								name: "Yellow",
+								kind: .bowlingBall,
+								ownerName: "Joseph",
+								avatar: .init(id: UUID(0), value: .text("", .default))
+							),
+							.init(
+								id: UUID(1),
+								name: "Blue",
+								kind: .bowlingBall,
+								ownerName: "Sarah",
+								avatar: .init(id: UUID(1), value: .text("", .default))
+							),
 						])
 					}
 				}
