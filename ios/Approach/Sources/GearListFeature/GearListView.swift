@@ -1,4 +1,5 @@
 import AssetsLibrary
+import AvatarServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
@@ -31,7 +32,7 @@ public struct GearListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /GearList.Action.InternalAction.list)
 			) {
-				Gear.View($0)
+				Gear.ViewWithAvatar($0)
 			}
 			.navigationTitle(Strings.Gear.List.title)
 			.toolbar {

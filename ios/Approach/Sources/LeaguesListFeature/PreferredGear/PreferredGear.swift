@@ -1,3 +1,4 @@
+import AvatarServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import GearRepositoryInterface
@@ -118,7 +119,7 @@ public struct PreferredGearView: View {
 					Text(Strings.Bowler.List.PreferredGear.footer)
 				} else {
 					ForEach(viewStore.gear) { gear in
-						Gear.View(gear)
+						Gear.ViewWithAvatar(gear)
 					}
 				}
 			} header: {
@@ -144,7 +145,7 @@ public struct PreferredGearView: View {
 			store: store.scope(state: \.$gearPicker, action: { .internal(.gearPicker($0)) })
 		) { store in
 			ResourcePickerView(store: store) {
-				Gear.View($0)
+				Gear.ViewWithAvatar($0)
 			}
 		}
 	}

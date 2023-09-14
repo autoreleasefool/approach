@@ -8,20 +8,21 @@ extension Gear {
 		let name: String
 		let ownerName: String?
 		let kind: Gear.Kind
+		let avatar: Avatar.Value
 
-		public init(name: String, kind: Gear.Kind, ownerName: String?) {
+		public init(name: String, kind: Gear.Kind, ownerName: String?, avatar: Avatar.Value) {
 			self.name = name
 			self.kind = kind
 			self.ownerName = ownerName
+			self.avatar = avatar
 		}
 
 		public init(_ gear: Gear.Summary) {
-			self.init(name: gear.name, kind: gear.kind, ownerName: gear.ownerName)
+			self.init(name: gear.name, kind: gear.kind, ownerName: gear.ownerName, avatar: gear.avatar.value)
 		}
 
 		public var body: some SwiftUI.View {
-			HStack(alignment: .firstTextBaseline) {
-				Image(systemSymbol: kind.systemSymbol)
+			HStack(alignment: .center) {
 				VStack(alignment: .leading) {
 					Text(name)
 					if let ownerName {
@@ -29,6 +30,10 @@ extension Gear {
 							.font(.caption2)
 					}
 				}
+
+				Spacer()
+
+				Image(systemSymbol: kind.systemSymbol)
 			}
 		}
 	}
@@ -49,10 +54,10 @@ extension Gear.Kind {
 struct GearViewPreview: PreviewProvider {
 	static var previews: some View {
 		List {
-			Gear.View(name: "Blue", kind: .bowlingBall, ownerName: "Joseph")
-			Gear.View(name: "Reebok", kind: .shoes, ownerName: nil)
-			Gear.View(name: "Towel", kind: .towel, ownerName: nil)
-			Gear.View(name: "Favourite Shirt", kind: .other, ownerName: "Sarah")
+			Gear.View(name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .text("", .default))
+			Gear.View(name: "Reebok", kind: .shoes, ownerName: nil, avatar: .text("", .default))
+			Gear.View(name: "Towel", kind: .towel, ownerName: nil, avatar: .text("", .default))
+			Gear.View(name: "Favourite Shirt", kind: .other, ownerName: "Sarah", avatar: .text("", .default))
 		}
 	}
 }

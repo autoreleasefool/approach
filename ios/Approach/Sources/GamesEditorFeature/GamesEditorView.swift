@@ -1,4 +1,5 @@
 import AssetsLibrary
+import AvatarServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import ErrorsFeature
@@ -225,7 +226,7 @@ public struct GamesEditorView: View {
 	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
-				Gear.View($0)
+				Gear.ViewWithAvatar($0)
 			}
 		}
 	}
@@ -241,7 +242,7 @@ public struct GamesEditorView: View {
 	private func gearPicker(store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
-				Gear.View($0)
+				Gear.ViewWithAvatar($0)
 			}
 		}
 	}

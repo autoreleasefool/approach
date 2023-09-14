@@ -335,14 +335,15 @@ let package = Package(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"AnalyticsServiceInterface",
+				"AvatarServiceInterface",
 				"BowlersRepositoryInterface",
 				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
-				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
 				"PreferenceServiceInterface",
+				"RecentlyUsedServiceInterface",
 				"SharingFeature",
 			]
 		),
@@ -390,7 +391,6 @@ let package = Package(
 			name: "GearListFeature",
 			dependencies: [
 				"GearEditorFeature",
-				"ModelsViewsLibrary",
 				"RecentlyUsedServiceInterface",
 				"ResourceListLibrary",
 				"SortOrderLibrary",
@@ -443,7 +443,6 @@ let package = Package(
 			name: "LeaguesListFeature",
 			dependencies: [
 				"LeagueEditorFeature",
-				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
 				"StatisticsWidgetsLayoutFeature",
 			]
@@ -1045,8 +1044,7 @@ let package = Package(
 			name: "AvatarServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
-				"AssetsLibrary",
-				"ModelsLibrary",
+				"ModelsViewsLibrary",
 			]
 		),
 		.testTarget(

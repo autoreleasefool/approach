@@ -4,12 +4,16 @@ import ModelsLibrary
 import SwiftUI
 
 public struct AvatarView: View {
-	let avatar: Avatar.Summary?
+	let avatar: Avatar.Value?
 	let size: CGFloat
 
 	@State private var image: UIImage?
 
 	public init(_ avatar: Avatar.Summary?, size: CGFloat) {
+		self.init(avatar?.value, size: size)
+	}
+
+	public init(_ avatar: Avatar.Value?, size: CGFloat) {
 		self.avatar = avatar
 		self.size = size
 	}

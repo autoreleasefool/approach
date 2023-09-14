@@ -2,6 +2,7 @@ import Algorithms
 import AlleyEditorFeature
 import AlleysListFeature
 import AssetsLibrary
+import AvatarServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import GearEditorFeature
@@ -99,7 +100,7 @@ public struct AccessoriesOverviewView: View {
 						Text(Strings.Gear.Error.Empty.message)
 					} else {
 						ForEach(viewStore.gear) { gear in
-							Gear.View(gear)
+							Gear.ViewWithAvatar(gear)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .gear(gear))) }
 									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }

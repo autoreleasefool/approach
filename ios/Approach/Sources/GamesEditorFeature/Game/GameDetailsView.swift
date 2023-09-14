@@ -1,4 +1,5 @@
 import AssetsLibrary
+import AvatarServiceInterface
 import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
@@ -16,7 +17,7 @@ public struct GameDetailsView: View {
 						Text(Strings.Game.Editor.Fields.Gear.help)
 					} else {
 						ForEach(viewStore.game.gear) { gear in
-							Gear.View(gear)
+							Gear.ViewWithAvatar(gear)
 								.swipeActions(allowsFullSwipe: false) {
 									DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
 								}
