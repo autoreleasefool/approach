@@ -7,9 +7,10 @@ extension Gear {
 		public var name: String
 		public var kind: Kind
 		public var owner: Bowler.Summary?
+		public var avatar: Avatar.Summary?
 
 		public static func `default`(withId: UUID) -> Self {
-			.init(id: withId, name: "", kind: .bowlingBall, owner: nil)
+			.init(id: withId, name: "", kind: .bowlingBall, owner: nil, avatar: nil)
 		}
 	}
 }

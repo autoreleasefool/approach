@@ -8,5 +8,6 @@ extension Gear {
 
 		public var name: String
 		public var owner: Bowler.Summary?
+		public var avatar: Avatar.Summary?
 	}
 }

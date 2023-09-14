@@ -26,3 +26,9 @@ extension Avatar.Database {
 }
 
 extension Avatar.Summary: FetchableRecord {}
+
+extension Avatar.Summary {
+	public var databaseModel: Avatar.Database {
+		.init(id: id, value: value)
+	}
+}

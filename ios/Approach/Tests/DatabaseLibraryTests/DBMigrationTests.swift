@@ -22,6 +22,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230602AddGearToGame",
 		"Migration20230630CreateStatisticsWidget",
 		"Migration20230912CreateBowlerPreferredGear",
+		"Migration20230913AddAvatarToGear",
 	]
 
 	func testIdentifier() {

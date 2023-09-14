@@ -54,6 +54,7 @@
 		CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BBA29FDF8E40015E4CB /* GamesRepository */; };
 		CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */; };
 		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
+		CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFF2FCA2AB19B3000AE31BF /* AvatarService */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA2FCE912A14908C0061A7FE /* MatchPlaysRepository in Frameworks */,
+				CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */,
 				CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */,
 				CA59011D2A05AD81000261C9 /* PreferenceService in Frameworks */,
 				CA5901192A05A862000261C9 /* GearRepository in Frameworks */,
@@ -254,6 +256,7 @@
 				CA9E25F22A0FA66B00BA216C /* BowlersRepository */,
 				CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */,
 				CA2B781E2AABC9E10044487E /* ScoresRepository */,
+				CAFF2FCA2AB19B3000AE31BF /* AvatarService */,
 			);
 			productName = GameEditorPreview;
 			productReference = CA632F5529BD26E200272ADB /* GameEditorPreview.app */;
@@ -651,6 +654,10 @@
 		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeatureFlagsService;
+		};
+		CAFF2FCA2AB19B3000AE31BF /* AvatarService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AvatarService;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

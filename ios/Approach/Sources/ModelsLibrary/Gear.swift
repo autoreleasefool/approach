@@ -23,6 +23,7 @@ extension Gear {
 		public let name: String
 		public let kind: Kind
 		public let ownerName: String?
+		public let avatar: Avatar.Value?
 
 		public var named: Named {
 			.init(id: id, name: name)

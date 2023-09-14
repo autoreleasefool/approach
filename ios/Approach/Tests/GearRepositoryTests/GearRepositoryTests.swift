@@ -34,8 +34,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns all the gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph"),
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
+			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
 		])
 	}
 
@@ -57,7 +57,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the matching gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
 		])
 	}
 
@@ -79,7 +79,7 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the matching gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
 		])
 	}
 
@@ -107,9 +107,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the gear ordered by ids
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(2), name: "Green", kind: .towel, ownerName: "Sarah"),
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
-			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah"),
+			.init(id: UUID(2), name: "Green", kind: .towel, ownerName: "Sarah", avatar: nil),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: nil),
 		])
 	}
 
@@ -138,8 +138,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns all the gear
 		XCTAssertEqual(gear, [
-			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph"),
-			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph"),
+			.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: nil),
 		])
 	}
 
@@ -170,9 +170,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the expected gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah"),
-			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph"),
-			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah"),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: nil),
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: nil),
 		])
 	}
 
@@ -201,9 +201,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Returns the expected gear
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph"),
-			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah"),
-			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah"),
+			.init(id: UUID(2), name: "Green", kind: .other, ownerName: "Joseph", avatar: nil),
+			.init(id: UUID(3), name: "Red", kind: .shoes, ownerName: "Sarah", avatar: nil),
+			.init(id: UUID(1), name: "Blue", kind: .towel, ownerName: "Sarah", avatar: nil),
 		])
 	}
 
@@ -265,7 +265,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenGearExists_UpdatesGear() async throws {
 		// Given a database with an existing gear
-		let gear1 = Gear.Database(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: nil)
+		let gear1 = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: nil)
 		let db = try initializeDatabase(withGear: .custom([gear1]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear
@@ -313,7 +313,7 @@ final class GearRepositoryTests: XCTestCase {
 
 	func testEdit_WhenGearExists_ReturnsGear() async throws {
 		// Given a database with a gear
-		let gear = Gear.Database(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
+		let gear = Gear.Database.mock(id: UUID(0), name: "Yellow", kind: .bowlingBall, bowlerId: UUID(0))
 		let db = try initializeDatabase(withGear: .custom([gear]), withBowlerPreferredGear: .zero)
 
 		// Editing the gear

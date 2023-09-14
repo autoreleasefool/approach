@@ -47,11 +47,11 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 		.init(id: UUID(3), name: "Jordan", kind: .opponent),
 	]
 	let gear: [Gear.Database] = [
-		.init(id: UUID(0), name: "Joseph's Shoes", kind: .shoes, bowlerId: UUID(0)),
-		.init(id: UUID(1), name: "Yellow Epco", kind: .bowlingBall, bowlerId: UUID(0)),
-		.init(id: UUID(2), name: "Blue Epco", kind: .bowlingBall, bowlerId: UUID(0)),
-		.init(id: UUID(3), name: "Green Paramount", kind: .bowlingBall, bowlerId: UUID(1)),
-		.init(id: UUID(4), name: "Red Paramount", kind: .bowlingBall, bowlerId: UUID(1)),
+		.mock(id: UUID(0), name: "Joseph's Shoes", kind: .shoes, bowlerId: UUID(0)),
+		.mock(id: UUID(1), name: "Yellow Epco", kind: .bowlingBall, bowlerId: UUID(0)),
+		.mock(id: UUID(2), name: "Blue Epco", kind: .bowlingBall, bowlerId: UUID(0)),
+		.mock(id: UUID(3), name: "Green Paramount", kind: .bowlingBall, bowlerId: UUID(1)),
+		.mock(id: UUID(4), name: "Red Paramount", kind: .bowlingBall, bowlerId: UUID(1)),
 	]
 	let leagues: [League.Database] = [
 		.init(bowlerId: UUID(0), id: UUID(0), name: "Majors, 2022-23", recurrence: .repeating, numberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include),

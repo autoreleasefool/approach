@@ -29,13 +29,13 @@ extension GearRepository: DependencyKey {
 		return Self(
 			list: { owner, kind, ordering in
 				let gear = database.reader().observe {
-					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
-					return try Gear.Database
+					try Gear.Database
 						.all()
 						.orderByName()
 						.filter(byKind: kind)
 						.owned(byBowler: owner)
-						.annotated(withOptional: Gear.Database.bowler.select(ownerName))
+						.includingOwnerName()
+						.includingAvatar()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
@@ -43,25 +43,25 @@ extension GearRepository: DependencyKey {
 			},
 			preferred: { bowler in
 				try await database.reader().read {
-					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
-					return try Gear.Database
+					try Gear.Database
 						.having(
 							Gear.Database.bowlerPreferredGear
 								.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
 						)
 						.orderByName()
-						.annotated(withOptional: Gear.Database.bowler.select(ownerName))
+						.includingOwnerName()
+						.includingAvatar()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
 			},
 			overview: {
 				let gear = database.reader().observe {
-					let ownerName = Bowler.Database.Columns.name.forKey("ownerName")
-					return try Gear.Database
+					try Gear.Database
 						.all()
 						.orderByName()
-						.annotated(withOptional: Gear.Database.bowler.select(ownerName))
+						.includingOwnerName()
+						.includingAvatar()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
@@ -78,12 +78,21 @@ extension GearRepository: DependencyKey {
 			},
 			create: { gear in
 				try await database.writer().write {
+					if let avatar = gear.avatar?.databaseModel {
+						try avatar.insert($0)
+					}
+
 					try gear.insert($0)
 				}
 			},
 			update: { gear in
 				try await database.writer().write {
 					try gear.update($0)
+
+					// TODO: Delete unused avatars if nil
+					if let avatar = gear.avatar?.databaseModel {
+						try avatar.update($0)
+					}
 				}
 			},
 			delete: { id in

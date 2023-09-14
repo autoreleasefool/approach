@@ -17,16 +17,12 @@ extension Avatar {
 
 extension Avatar {
 	public enum Background: Sendable, Hashable, Codable, CustomStringConvertible {
-		case rgb(Double, Double, Double)
-
-		public static func red() -> Self {
-			.rgb(1, 0, 0)
-		}
+		case rgb(CGFloat, CGFloat, CGFloat)
 
 		public var uiColor: UIColor {
 			switch self {
 			case let .rgb(red, green, blue):
-				return UIColor(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: 1)
+				return UIColor(red: red, green: green, blue: blue, alpha: 1)
 			}
 		}
 
@@ -47,5 +43,10 @@ extension Avatar {
 	public struct Summary: Identifiable, Codable, Equatable {
 		public let id: Avatar.ID
 		public let value: Value
+
+		public init(id: Avatar.ID, value: Value) {
+			self.id = id
+			self.value = value
+		}
 	}
 }
