@@ -17,9 +17,23 @@ extension FramesRepository: DependencyKey {
 						.all()
 						.filter(byGame: game)
 						.orderByIndex()
-						.including(optional: Frame.Database.bowlingBall0.forKey("bowlingBall0"))
-						.including(optional: Frame.Database.bowlingBall1.forKey("bowlingBall1"))
-						.including(optional: Frame.Database.bowlingBall2.forKey("bowlingBall2"))
+						.including(
+							optional: Frame.Database
+								.bowlingBall0
+								.includingSummaryProperties()
+								.forKey("bowlingBall0")
+						)
+						.including(
+							optional: Frame.Database
+								.bowlingBall1
+								.includingSummaryProperties()
+								.forKey("bowlingBall1")
+						)
+						.including(
+							optional: Frame.Database.bowlingBall2
+								.includingSummaryProperties()
+								.forKey("bowlingBall2")
+						)
 						.asRequest(of: Frame.Edit.self)
 						.fetchAll($0)
 				}

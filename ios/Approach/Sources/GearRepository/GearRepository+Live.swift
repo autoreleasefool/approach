@@ -34,8 +34,7 @@ extension GearRepository: DependencyKey {
 						.orderByName()
 						.filter(byKind: kind)
 						.owned(byBowler: owner)
-						.includingOwnerName()
-						.includingAvatar()
+						.includingSummaryProperties()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
@@ -49,8 +48,7 @@ extension GearRepository: DependencyKey {
 								.filter(BowlerPreferredGear.Database.Columns.bowlerId == bowler).isEmpty == false
 						)
 						.orderByName()
-						.includingOwnerName()
-						.includingAvatar()
+						.includingSummaryProperties()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}
@@ -61,8 +59,7 @@ extension GearRepository: DependencyKey {
 						.all()
 						.filter(byKind: kind)
 						.orderByName()
-						.includingOwnerName()
-						.includingAvatar()
+						.includingSummaryProperties()
 						.asRequest(of: Gear.Summary.self)
 						.fetchAll($0)
 				}

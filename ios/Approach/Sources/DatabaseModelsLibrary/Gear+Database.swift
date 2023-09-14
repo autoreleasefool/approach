@@ -49,7 +49,13 @@ extension DerivableRequest<Gear.Database> {
 	}
 
 	public func includingAvatar() -> Self {
-		including(required: Gear.Database.avatar)
+		including(optional: Gear.Database.avatar)
+	}
+
+	public func includingSummaryProperties() -> Self {
+		self
+			.includingOwnerName()
+			.includingAvatar()
 	}
 }
 

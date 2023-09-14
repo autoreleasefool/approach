@@ -115,10 +115,10 @@ extension TrackableFilter.SeriesFilter.AlleyFilter {
 extension TrackableFilter {
 	public struct GameFilter: Equatable {
 		public var lanes: LaneFilter?
-		public var gearUsed: IdentifiedArrayOf<Gear.Named>
+		public var gearUsed: IdentifiedArrayOf<Gear.Summary>
 		public var opponent: Bowler.Summary?
 
-		public init(lanes: LaneFilter? = nil, gearUsed: IdentifiedArrayOf<Gear.Named> = [], opponent: Bowler.Summary? = nil) {
+		public init(lanes: LaneFilter? = nil, gearUsed: IdentifiedArrayOf<Gear.Summary> = [], opponent: Bowler.Summary? = nil) {
 			self.lanes = lanes
 			self.gearUsed = gearUsed
 			self.opponent = opponent
@@ -137,9 +137,9 @@ extension TrackableFilter.GameFilter {
 
 extension TrackableFilter {
 	public struct FrameFilter: Equatable {
-		public var bowlingBallsUsed: IdentifiedArrayOf<Gear.Named>
+		public var bowlingBallsUsed: IdentifiedArrayOf<Gear.Summary>
 
-		public init(bowlingBallsUsed: IdentifiedArrayOf<Gear.Named> = []) {
+		public init(bowlingBallsUsed: IdentifiedArrayOf<Gear.Summary> = []) {
 			self.bowlingBallsUsed = bowlingBallsUsed
 		}
 	}

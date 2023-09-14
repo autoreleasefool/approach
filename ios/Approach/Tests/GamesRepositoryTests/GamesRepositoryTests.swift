@@ -249,7 +249,7 @@ final class GamesRepositoryTests: XCTestCase {
 						index: 0,
 						rolls: [
 							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
-							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: .init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))),
 							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
 						]
 					),
@@ -257,7 +257,7 @@ final class GamesRepositoryTests: XCTestCase {
 						gameId: UUID(0),
 						index: 1,
 						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))),
 							.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
 							.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin], didFoul: false), bowlingBall: nil),
 						]
@@ -280,7 +280,7 @@ final class GamesRepositoryTests: XCTestCase {
 						gameId: UUID(1),
 						index: 0,
 						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))),
 							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false), bowlingBall: nil),
 							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
 						]
@@ -346,7 +346,7 @@ final class GamesRepositoryTests: XCTestCase {
 						index: 0,
 						rolls: [
 							.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
-							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: .init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))),
 							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
 						]
 					),
@@ -354,7 +354,7 @@ final class GamesRepositoryTests: XCTestCase {
 						gameId: UUID(0),
 						index: 1,
 						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow")),
+							.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .headPin, .rightThreePin, .rightTwoPin], didFoul: false), bowlingBall: .init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))),
 							.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
 							.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin], didFoul: false), bowlingBall: nil),
 						]
@@ -503,8 +503,8 @@ final class GamesRepositoryTests: XCTestCase {
 				excludeFromStatistics: .include,
 				matchPlay: nil,
 				gear: [
-					.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil),
-					.init(id: UUID(0), name: "Towel", kind: .towel, ownerName: nil),
+					.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil, avatar: .mock(id: UUID(0))),
+					.init(id: UUID(0), name: "Towel", kind: .towel, ownerName: nil, avatar: .mock(id: UUID(0))),
 				],
 				lanes: [],
 				bowler: .init(name: "Joseph"),
@@ -706,7 +706,7 @@ final class GamesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			gear: [
-				.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil),
+				.init(id: UUID(1), name: "Shoes", kind: .shoes, ownerName: nil, avatar: .mock(id: UUID(0))),
 			],
 			lanes: [],
 			bowler: .init(name: "Joseph"),

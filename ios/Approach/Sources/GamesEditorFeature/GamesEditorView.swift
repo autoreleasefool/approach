@@ -136,7 +136,7 @@ public struct GamesEditorView: View {
 			state: /GamesEditor.Destination.State.ballPicker,
 			action: GamesEditor.Destination.Action.ballPicker,
 			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) in
+			content: { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
 				ballPicker(store: store)
 			}
 		)
@@ -223,7 +223,7 @@ public struct GamesEditorView: View {
 		.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 	}
 
-	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, Bowler.ID>>) -> some View {
+	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
 				Gear.ViewWithAvatar($0)

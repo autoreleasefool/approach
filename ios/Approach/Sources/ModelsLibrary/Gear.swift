@@ -18,22 +18,19 @@ extension Gear {
 }
 
 extension Gear {
-	public struct Summary: Identifiable, Codable, Equatable {
+	public struct Summary: Sendable, Identifiable, Codable, Equatable {
 		public let id: Gear.ID
 		public let name: String
 		public let kind: Kind
 		public let ownerName: String?
 		public let avatar: Avatar.Summary
 
-		public var named: Named {
-			.init(id: id, name: name)
+		public init(id: Gear.ID, name: String, kind: Kind, ownerName: String?, avatar: Avatar.Summary) {
+			self.id = id
+			self.name = name
+			self.kind = kind
+			self.ownerName = ownerName
+			self.avatar = avatar
 		}
-	}
-}
-
-extension Gear {
-	public struct Named: Identifiable, Codable, Equatable, Sendable {
-		public let id: Gear.ID
-		public let name: String
 	}
 }

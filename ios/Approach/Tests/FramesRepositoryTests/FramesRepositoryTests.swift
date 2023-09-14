@@ -43,12 +43,12 @@ final class FramesRepositoryTests: XCTestCase {
 						.init(
 							index: 0,
 							roll: .init(pinsDowned: [.leftTwoPin, .headPin], didFoul: true),
-							bowlingBall: .init(id: UUID(0), name: "Yellow")
+							bowlingBall: .init(id: UUID(0), name: "Yellow", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))
 						),
 						.init(
 							index: 1,
 							roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false),
-							bowlingBall: .init(id: UUID(1), name: "Blue")
+							bowlingBall: .init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))
 						),
 					]
 				),

@@ -33,9 +33,23 @@ extension GamesRepository: DependencyKey {
 				.including(
 					all: Game.Database.frames
 						.order(Frame.Database.Columns.index)
-						.including(optional: Frame.Database.bowlingBall0.forKey("bowlingBall0"))
-						.including(optional: Frame.Database.bowlingBall1.forKey("bowlingBall1"))
-						.including(optional: Frame.Database.bowlingBall2.forKey("bowlingBall2"))
+						.including(
+							optional: Frame.Database.bowlingBall0
+								.includingSummaryProperties()
+								.forKey("bowlingBall0")
+						)
+						.including(
+							optional: Frame.Database
+								.bowlingBall1
+								.includingSummaryProperties()
+								.forKey("bowlingBall1")
+						)
+						.including(
+							optional: Frame.Database
+								.bowlingBall2
+								.includingSummaryProperties()
+								.forKey("bowlingBall2")
+						)
 				)
 				.asRequest(of: Game.Shareable.self)
 		}
@@ -118,6 +132,7 @@ extension GamesRepository: DependencyKey {
 							all: Game.Database.gear
 								.order(Gear.Database.Columns.kind)
 								.order(Gear.Database.Columns.name)
+								.includingAvatar()
 								.forKey("gear")
 						)
 						.including(

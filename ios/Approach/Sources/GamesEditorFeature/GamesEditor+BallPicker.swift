@@ -1,11 +1,12 @@
 import ComposableArchitecture
+import EquatableLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
 
 extension GamesEditor {
 	func reduce(
 		into state: inout State,
-		ballPickerAction: ResourcePicker<Gear.Summary, Bowler.ID>.Action
+		ballPickerAction: ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action
 	) -> Effect<Action> {
 		switch ballPickerAction {
 		case let .delegate(delegateAction):

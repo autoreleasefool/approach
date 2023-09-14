@@ -15,7 +15,7 @@ extension GamesEditor {
 			case settings(GamesSettings.State)
 			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
-			case ballPicker(ResourcePicker<Gear.Summary, Bowler.ID>.State)
+			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 			case sharing(Sharing.State)
 		}
@@ -25,7 +25,7 @@ extension GamesEditor {
 			case settings(GamesSettings.Action)
 			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
-			case ballPicker(ResourcePicker<Gear.Summary, Bowler.ID>.Action)
+			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case sharing(Sharing.Action)
 		}
@@ -48,7 +48,7 @@ extension GamesEditor {
 				ResourcePicker { _ in gear.list(ordered: .byName) }
 			}
 			Scope(state: /State.ballPicker, action: /Action.ballPicker) {
-				ResourcePicker { bowler in gear.list(ownedBy: bowler, ofKind: .bowlingBall, ordered: .byName) }
+				ResourcePicker { _ in gear.list(ofKind: .bowlingBall, ordered: .byName) }
 			}
 			Scope(state: /State.lanePicker, action: /Action.lanePicker) {
 				ResourcePicker { alley in lanes.list(alley) }
