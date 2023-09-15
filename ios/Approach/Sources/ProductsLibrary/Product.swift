@@ -1,4 +1,4 @@
-public struct Product: Equatable {
+public struct Product: Hashable {
 	public let name: String
 	public let introduced: String
 
@@ -7,6 +7,10 @@ public struct Product: Equatable {
 	public func buildVariant(withName: String) -> ProductVariant {
 		.init(product: self, name: withName)
 	}
+
+	public static let allCases: [Product] = [
+		.proSubscription,
+	]
 }
 
 public struct ProductVariant: Equatable {

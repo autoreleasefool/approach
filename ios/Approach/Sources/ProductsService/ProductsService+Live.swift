@@ -1,10 +1,22 @@
 import ConstantsLibrary
 import Dependencies
+import ProductsLibrary
 import ProductsServiceInterface
 import RevenueCat
 
 extension ProductsService: DependencyKey {
 	public static var liveValue: Self = {
+		let isAvailableCache = LockIsolated<[Product: Bool]>([:])
+
+		@Sendable func updateCache(forProducts products: [Product], withEntitlements entitlements: EntitlementInfos) {
+			isAvailableCache.withValue {
+				for product in products {
+					let isAvailable = entitlements[product.name]?.isActive == true
+					$0[product] = isAvailable
+				}
+			}
+		}
+
 		return Self(
 			initialize: {
 				let apiKey = AppConstants.ApiKey.revenueCat
@@ -20,10 +32,22 @@ extension ProductsService: DependencyKey {
 				Purchases.configure(
 					with: Configuration.Builder(withAPIKey: apiKey)
 				)
+
+				Task.detached {
+					do {
+						let customerInfo = try await Purchases.shared.customerInfo()
+						updateCache(forProducts: Product.allCases, withEntitlements: customerInfo.entitlements)
+						// Ignore error below since we're just trying to optimistically cache values and doesn't matter if it fails
+					} catch {}
+				}
+			},
+			peekIsAvailable: { product in
+				isAvailableCache.value[product] ?? false
 			},
 			isAvailable: { product in
 				do {
 					let customerInfo = try await Purchases.shared.customerInfo()
+					updateCache(forProducts: [product], withEntitlements: customerInfo.entitlements)
 					return customerInfo.entitlements[product.name]?.isActive == true
 				} catch {
 					// TODO: handle error checking for product, report to TelemetryDeck
@@ -35,6 +59,7 @@ extension ProductsService: DependencyKey {
 				.init { continuation in
 					let task = Task {
 						for try await customerInfo in Purchases.shared.customerInfoStream {
+							updateCache(forProducts: [product], withEntitlements: customerInfo.entitlements)
 							continuation.yield(customerInfo.entitlements[product.name]?.isActive == true)
 						}
 					}
