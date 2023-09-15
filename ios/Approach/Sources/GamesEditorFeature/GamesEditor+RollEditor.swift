@@ -12,7 +12,6 @@ extension GamesEditor.State {
 			return rollEditor
 		}
 		set {
-			guard isEditable else { return }
 			_rollEditor = newValue
 			guard let newValue else { return }
 			let currentFrameIndex = self.currentFrameIndex
