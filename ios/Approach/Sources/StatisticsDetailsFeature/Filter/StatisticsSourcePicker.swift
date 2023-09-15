@@ -20,6 +20,7 @@ import ViewsLibrary
 public struct StatisticsSourcePicker: Reducer {
 	public struct State: Equatable {
 		public var sourceToLoad: TrackableFilter.Source?
+
 		public var bowler: Bowler.Summary?
 		public var league: League.Summary?
 		public var series: Series.Summary?
@@ -48,7 +49,7 @@ public struct StatisticsSourcePicker: Reducer {
 			case didChangeSource(TrackableFilter.Source)
 		}
 		public enum InternalAction: Equatable {
-			case didLoadSources(TaskResult<TrackableFilter.Sources>)
+			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
 		}
@@ -113,13 +114,19 @@ public struct StatisticsSourcePicker: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didFirstAppear:
-					guard let source = state.sourceToLoad else { return .none }
-					state.sourceToLoad = nil
 					state.isLoadingSources = true
-					return .run { send in
-						await send(.internal(.didLoadSources(TaskResult {
-							try await statistics.loadSources(source)
-						})))
+					if let source = state.sourceToLoad {
+						return .run { send in
+							await send(.internal(.didLoadSources(TaskResult {
+								try await statistics.loadSources(source)
+							})))
+						}
+					} else {
+						return .run { send in
+							await send(.internal(.didLoadSources(TaskResult {
+								try await statistics.loadDefaultSources()
+							})))
+						}
 					}
 
 				case .didTapBowler:
@@ -176,10 +183,10 @@ public struct StatisticsSourcePicker: Reducer {
 				switch internalAction {
 				case let .didLoadSources(.success(sources)):
 					state.isLoadingSources = false
-					state.bowler = sources.bowler
-					state.league = sources.league
-					state.series = sources.series
-					state.game = sources.game
+					state.bowler = sources?.bowler
+					state.league = sources?.league
+					state.series = sources?.series
+					state.game = sources?.game
 					return .none
 
 				case let .didLoadSources(.failure(error)):

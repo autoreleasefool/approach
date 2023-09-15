@@ -159,6 +159,20 @@ extension StatisticsRepository: DependencyKey {
 					}
 				}
 			},
+			loadDefaultSources: {
+				try await database.reader().read {
+					let bowlers = try Bowler.Database
+						.limit(2)
+						.asRequest(of: Bowler.Summary.self)
+						.fetchAll($0)
+
+					guard let bowler = bowlers.first, bowlers.count == 1 else {
+						return nil
+					}
+
+					return TrackableFilter.Sources(bowler: bowler, league: nil, series: nil, game: nil)
+				}
+			},
 			loadValues: { filter in
 				let statistics = try database.reader().read {
 					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }

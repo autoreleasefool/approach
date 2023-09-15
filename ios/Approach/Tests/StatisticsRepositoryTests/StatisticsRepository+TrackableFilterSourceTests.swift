@@ -191,7 +191,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 					lanes: .lanes([.init(id: UUID(12), label: "1", position: .noWall)]),
 					opponent: .init(id: UUID(0), name: "Joseph")
 				),
-				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))])
 			))
 		}
 
@@ -222,7 +222,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 					lanes: .lanes([.init(id: UUID(12), label: "1", position: .noWall)]),
 					opponent: .init(id: UUID(0), name: "Joseph")
 				),
-				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))])
 			))
 		}
 
@@ -248,7 +248,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 					lanes: .lanes([.init(id: UUID(12), label: "1", position: .noWall)]),
 					opponent: .init(id: UUID(0), name: "Joseph")
 				),
-				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))])
 			))
 		}
 
@@ -269,7 +269,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .game(UUID(0)),
-				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue")])
+				frameFilter: .init(bowlingBallsUsed: [.init(id: UUID(1), name: "Blue", kind: .bowlingBall, ownerName: "Joseph", avatar: .mock(id: UUID(0)))])
 			))
 		}
 
