@@ -78,6 +78,7 @@
 		CA8BBC5A28D59B8B00653A1E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +165,7 @@
 			children = (
 				CA5F86ED2A01E5810092F519 /* Base */,
 				CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */,
+				CAB632A72AB4F96200C6D1BA /* Secrets.xcconfig */,
 				CA5F86F32A01E5BE0092F519 /* AppGameEditorPreview.xcconfig */,
 			);
 			path = XCConfigs;
