@@ -153,8 +153,8 @@ public struct StatisticsSourcePicker: Reducer {
 
 				case .didTapGame:
 					guard let series = state.series else { return .none }
-					state.destination = .seriesPicker(.init(
-						selected: Set([state.series?.id].compactMap { $0 }),
+					state.destination = .gamePicker(.init(
+						selected: Set([state.game?.id].compactMap { $0 }),
 						query: series.id,
 						limit: 1,
 						showsCancelHeaderButton: false
