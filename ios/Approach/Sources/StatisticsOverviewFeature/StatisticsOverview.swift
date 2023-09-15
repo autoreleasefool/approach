@@ -71,6 +71,7 @@ public struct StatisticsOverview: Reducer {
 				case .sourcePickerDidDismiss:
 					guard let filter = state.filter else { return .none }
 					state.destination = .details(.init(filter: filter))
+					state.filter = nil
 					return .none
 
 				case .didTapDismissDetailsTip:
