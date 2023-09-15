@@ -101,6 +101,10 @@ libraries = [ "SortOrder" ]
 repositories = [ "Bowlers" ]
 libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
 
+[features.Paywall]
+features = [ "Errors" ]
+services = [ "Products" ]
+
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]

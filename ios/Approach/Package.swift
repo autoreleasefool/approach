@@ -31,6 +31,7 @@ let package = Package(
 		.library(name: "OnboardingFeature", targets: ["OnboardingFeature"]),
 		.library(name: "OpponentDetailsFeature", targets: ["OpponentDetailsFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
+		.library(name: "PaywallFeature", targets: ["PaywallFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
@@ -505,6 +506,20 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentsListFeature",
+			]
+		),
+		.target(
+			name: "PaywallFeature",
+			dependencies: [
+				"ErrorsFeature",
+				"ProductsServiceInterface",
+			]
+		),
+		.testTarget(
+			name: "PaywallFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"PaywallFeature",
 			]
 		),
 		.target(
