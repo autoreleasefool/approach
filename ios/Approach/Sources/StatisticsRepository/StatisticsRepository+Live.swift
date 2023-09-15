@@ -124,7 +124,7 @@ extension StatisticsRepository: DependencyKey {
 
 		return Self(
 			loadSources: { source in
-				try database.reader().read {
+				try await database.reader().read {
 					switch source {
 					case let .bowler(id):
 						let request = Bowler.Database
@@ -174,7 +174,7 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadValues: { filter in
-				let statistics = try database.reader().read {
+				let statistics = try await database.reader().read {
 					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }
 
 					let (series, games, frames) = try filter.buildTrackableQueries(db: $0)
@@ -207,11 +207,11 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadChart: { statistic, filter in
-				func unavailable() -> Statistics.ChartContent {
+				@Sendable func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: statistic.title)
 				}
 
-				func dataMissing() -> Statistics.ChartContent {
+				@Sendable func dataMissing() -> Statistics.ChartContent {
 					.dataMissing(statistic: statistic.title)
 				}
 
@@ -219,7 +219,7 @@ extension StatisticsRepository: DependencyKey {
 					return unavailable()
 				}
 
-				return try database.reader().read { db in
+				return try await database.reader().read { db in
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
 					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
 								let chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
@@ -242,7 +242,7 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadWidgetSources: { source in
-				try database.reader().read {
+				try await database.reader().read {
 					switch source {
 					case let .bowler(id):
 						let request = Bowler.Database
@@ -262,15 +262,15 @@ extension StatisticsRepository: DependencyKey {
 			},
 			loadWidgetData: { configuration in
 				let statistic = configuration.statistic.type
-				func unavailable() -> Statistics.ChartContent {
+				@Sendable func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: statistic.title)
 				}
 
-				func dataMissing() -> Statistics.ChartContent {
+				@Sendable func dataMissing() -> Statistics.ChartContent {
 					.dataMissing(statistic: statistic.title)
 				}
 
-				return try database.reader().read { db in
+				return try await database.reader().read { db in
 					let filter = configuration.trackableFilter(relativeTo: date(), in: calendar)
 
 					// FIXME: should user be able to choose accumulate/periodic?
