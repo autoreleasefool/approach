@@ -3,6 +3,8 @@ import AppIconServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
+import ProductsServiceInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -13,7 +15,16 @@ public struct AppIconList: Reducer {
 		public var currentAppIcon: AppIcon?
 		@PresentationState var alert: AlertState<Action.Alert>?
 
-		init() {}
+		public let isPurchasesEnabled: Bool
+		public var isProEnabled: Bool
+
+		init() {
+			@Dependency(\.featureFlags) var features
+			self.isPurchasesEnabled = features.isEnabled(.purchases)
+
+			@Dependency(\.products) var products
+			self.isProEnabled = products.peekIsAvailable(.proSubscription)
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -134,8 +145,12 @@ public struct AppIconListView: View {
 				ForEach(AppIcon.Category.allCases) { category in
 					Section(String(describing: category)) {
 						ForEach(category.matchingIcons) { icon in
-							Button { viewStore.send(.didTapIcon(icon)) } label: {
-								AppIconView(String(describing: icon), icon: .appIcon(icon))
+							if icon.isProRequired && !viewStore.isPurchasesEnabled {
+								EmptyView()
+							} else {
+								Button { viewStore.send(.didTapIcon(icon)) } label: {
+									AppIconView(String(describing: icon), icon: .appIcon(icon))
+								}
 							}
 						}
 					}
@@ -182,6 +197,15 @@ extension AppIcon: CustomStringConvertible {
 		case .primary: return Strings.App.Icon.primary
 		case .sage: return Strings.App.Icon.sage
 		case .trans: return Strings.App.Icon.trans
+		}
+	}
+}
+
+extension AppIcon {
+	public var isProRequired: Bool {
+		switch self {
+		case .primary, .bisexual, .pride, .trans: return false
+		case .earth, .ember, .glacial, .hexed, .pink, .sage: return true
 		}
 	}
 }
