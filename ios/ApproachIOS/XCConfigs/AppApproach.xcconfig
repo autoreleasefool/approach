@@ -3,6 +3,7 @@
 DEVELOPMENT_ASSET_PATHS = "ApproachIOS/Preview Content"
 INFOPLIST_FILE = Approach/Info.plist
 INFOPLIST_KEY_CFBundleDisplayName = Approach
+INFOPLIST_KEY_LSApplicationCategoryType = public.app-category.sports
 PRODUCT_BUNDLE_IDENTIFIER = $(PRODUCT_BUNDLE_IDENTIFIER_$(CONFIGURATION))
 PRODUCT_BUNDLE_IDENTIFIER_Debug = ca.josephroque.approach.debug
 PRODUCT_BUNDLE_IDENTIFIER_Release = ca.josephroque.approach
