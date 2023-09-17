@@ -1,6 +1,7 @@
 import ModelsLibrary
 
 extension GamesEditor.State {
+	// swiftlint:disable:next function_body_length
 	mutating func setCurrent(
 		rollIndex newRollIndex: Int? = nil,
 		frameIndex newFrameIndex: Int? = nil,
@@ -9,10 +10,19 @@ extension GamesEditor.State {
 	) {
 		guard let frames else { return }
 
+		let isGameChanging = (newGameId != nil && _currentGameId != newGameId) ||
+			(newBowlerId != nil && _currentBowlerId != newBowlerId)
 		currentFrame.rollIndex = newRollIndex ?? currentFrame.rollIndex
 		currentFrame.frameIndex = newFrameIndex ?? currentFrame.frameIndex
 		_currentGameId = newGameId ?? _currentGameId
 		_currentBowlerId = newBowlerId ?? _currentBowlerId
+
+		if !isGameChanging {
+			let lastAccessibleRollInFrame = frames[currentFrame.frameIndex].lastAccessibleRollIndex
+			if lastAccessibleRollInFrame < currentFrame.rollIndex {
+				currentFrame.rollIndex = lastAccessibleRollInFrame
+			}
+		}
 
 		guard !forceNextHeaderElementNil else {
 			_nextHeaderElement = nil

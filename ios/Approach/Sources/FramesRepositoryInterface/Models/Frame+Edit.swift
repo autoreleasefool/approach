@@ -117,6 +117,20 @@ extension Frame.Edit {
 			deck.formUnion(roll.roll.pinsDowned)
 		})
 	}
+
+	public var lastAccessibleRollIndex: Int {
+		if !Frame.isLast(index) {
+			var deck: Set<Pin> = []
+			for roll in  rolls {
+				deck.formUnion(roll.roll.pinsDowned)
+				if deck.arePinsCleared {
+					return roll.index
+				}
+			}
+		}
+
+		return Frame.ROLL_INDICES.last ?? 0
+	}
 }
 
 extension Frame.OrderedRoll {
