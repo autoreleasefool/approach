@@ -52,11 +52,13 @@ public struct StatisticsWidgetLayout: Reducer {
 		public enum State: Equatable {
 			case details(StatisticsDetails.State)
 			case layout(StatisticsWidgetLayoutBuilder.State)
+			case help(StatisticsWidgetHelp.State)
 		}
 
 		public enum Action: Equatable {
 			case details(StatisticsDetails.Action)
 			case layout(StatisticsWidgetLayoutBuilder.Action)
+			case help(StatisticsWidgetHelp.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -65,6 +67,9 @@ public struct StatisticsWidgetLayout: Reducer {
 			}
 			Scope(state: /State.layout, action: /Action.layout) {
 				StatisticsWidgetLayoutBuilder()
+			}
+			Scope(state: /State.help, action: /Action.help) {
+				StatisticsWidgetHelp()
 			}
 		}
 	}
@@ -114,11 +119,7 @@ public struct StatisticsWidgetLayout: Reducer {
 							.map { .internal(.errors($0)) }
 					}
 
-					state.destination = .details(.init(
-						filter: .init(widget: widget, relativeToDate: date(), inCalendar: calendar),
-						withInitialStatistic: widget.statistic.type.title
-					))
-					return .none
+					return presentDetails(for: widget, in: &state)
 				}
 
 			case let .internal(internalAction):
@@ -162,9 +163,16 @@ public struct StatisticsWidgetLayout: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.help(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .destination(.dismiss),
 						.destination(.presented(.layout(.internal))), .destination(.presented(.layout(.view))),
 						.destination(.presented(.details(.internal))), .destination(.presented(.details(.view))),
+						.destination(.presented(.help(.internal))), .destination(.presented(.help(.view))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}
@@ -176,6 +184,20 @@ public struct StatisticsWidgetLayout: Reducer {
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
 		}
+	}
+
+	private func presentDetails(for widget: StatisticsWidget.Configuration, in state: inout State) -> Effect<Action> {
+		switch state.widgetData[widget.id] {
+		case .averaging, .counting, .percentage:
+			state.destination = .details(.init(
+				filter: .init(widget: widget, relativeToDate: date(), inCalendar: calendar),
+				withInitialStatistic: widget.statistic.type.title
+			))
+		case .dataMissing, .chartUnavailable, .none:
+			state.destination = .help(.init(missingStatistic: widget))
+		}
+
+		return .none
 	}
 }
 
@@ -244,6 +266,15 @@ public struct StatisticsWidgetLayoutView: View {
 				StatisticsWidgetLayoutBuilderView(store: store)
 			}
 			.interactiveDismissDisabled()
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsWidgetLayout.Destination.State.help,
+			action: StatisticsWidgetLayout.Destination.Action.help
+		) { (store: StoreOf<StatisticsWidgetHelp>) in
+			NavigationStack {
+				StatisticsWidgetHelpView(store: store)
+			}
 		}
 	}
 }

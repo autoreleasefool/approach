@@ -69,9 +69,7 @@ extension StatisticsWidget {
 					)
 				)
 			} footer: {
-				Label(Strings.Widget.Chart.Placeholder.whatDoesThisMean, systemSymbol: .questionmarkCircle)
-					.font(.caption)
-					.foregroundColor(.white)
+				whatDoesThisMeanFooter
 			}
 		}
 
@@ -87,15 +85,27 @@ extension StatisticsWidget {
 						.padding()
 				}
 			} footer: {
-				Label(Strings.Widget.Chart.Placeholder.whatDoesThisMean, systemSymbol: .questionmarkCircle)
-					.font(.caption)
-					.foregroundColor(.white)
+				whatDoesThisMeanFooter
 			}
 		}
 
 		private func chartLoading(_ statistic: String) -> some View {
 			centered {
 				ProgressView()
+			}
+		}
+
+		private var whatDoesThisMeanFooter: some View {
+			HStack(spacing: .standardSpacing) {
+				Image(systemSymbol: .questionmarkCircle)
+					.resizable()
+					.scaledToFit()
+					.foregroundColor(.white)
+					.frame(width: .tinyIcon, height: .tinyIcon)
+
+				Text(Strings.Widget.Chart.Placeholder.whatDoesThisMean)
+					.font(.caption)
+					.foregroundColor(.white)
 			}
 		}
 

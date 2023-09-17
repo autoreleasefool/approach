@@ -392,6 +392,13 @@
 "widget.timeline.allTime" = "All Time";
 "widget.chart.placeholder.notEnoughData" = "Not enough data";
 "widget.chart.placeholder.whatDoesThisMean" = "What does this mean?";
+"widget.help.title" = "Help";
+"widget.help.notEnoughData.title" = "Why does my widget say 'Not enough data'?";
+"widget.help.notEnoughData.description1" = "Approach works best when you've been using the app for a short while and have recorded a few games. Theses statistics are compiled and showed as trends over time.";
+"widget.help.notEnoughData.description2" = "Try to make sure you add at least 2 games on different days to start seeing your statistics appear.";
+"widget.help.error.title" = "Why does my widget show an error message?";
+"widget.help.error.description1" = "This is probably an unexpected error. First, try restarting the app.";
+"widget.help.error.description2" = "If that doesn't help, you can report the bug through the app settings and we'll do our best to help you resolve the problem.";
 
 /* Settings */
 

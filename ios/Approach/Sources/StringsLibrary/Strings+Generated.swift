@@ -1466,6 +1466,26 @@ public enum Strings {
         public static let whatDoesThisMean = Strings.tr("Localizable", "widget.chart.placeholder.whatDoesThisMean", fallback: "What does this mean?")
       }
     }
+    public enum Help {
+      /// Help
+      public static let title = Strings.tr("Localizable", "widget.help.title", fallback: "Help")
+      public enum Error {
+        /// This is probably an unexpected error. First, try restarting the app.
+        public static let description1 = Strings.tr("Localizable", "widget.help.error.description1", fallback: "This is probably an unexpected error. First, try restarting the app.")
+        /// If that doesn't help, you can report the bug through the app settings and we'll do our best to help you resolve the problem.
+        public static let description2 = Strings.tr("Localizable", "widget.help.error.description2", fallback: "If that doesn't help, you can report the bug through the app settings and we'll do our best to help you resolve the problem.")
+        /// Why does my widget show an error message?
+        public static let title = Strings.tr("Localizable", "widget.help.error.title", fallback: "Why does my widget show an error message?")
+      }
+      public enum NotEnoughData {
+        /// Approach works best when you've been using the app for a short while and have recorded a few games. Theses statistics are compiled and showed as trends over time.
+        public static let description1 = Strings.tr("Localizable", "widget.help.notEnoughData.description1", fallback: "Approach works best when you've been using the app for a short while and have recorded a few games. Theses statistics are compiled and showed as trends over time.")
+        /// Try to make sure you add at least 2 games on different days to start seeing your statistics appear.
+        public static let description2 = Strings.tr("Localizable", "widget.help.notEnoughData.description2", fallback: "Try to make sure you add at least 2 games on different days to start seeing your statistics appear.")
+        /// Why does my widget say 'Not enough data'?
+        public static let title = Strings.tr("Localizable", "widget.help.notEnoughData.title", fallback: "Why does my widget say 'Not enough data'?")
+      }
+    }
     public enum LayoutBuilder {
       /// You don't have any widgets yet. Tap the '+' to add
       public static let addNewInstructions = Strings.tr("Localizable", "widget.layoutBuilder.addNewInstructions", fallback: "You don't have any widgets yet. Tap the '+' to add")

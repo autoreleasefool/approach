@@ -57,6 +57,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didTapBowler
 			case didTapLeague
 			case didTapSaveButton
+			case didTapWidget
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
@@ -82,11 +83,13 @@ public struct StatisticsWidgetEditor: Reducer {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.State)
+			case help(StatisticsWidgetHelp.State)
 		}
 
 		public enum Action: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.Action)
+			case help(StatisticsWidgetHelp.Action)
 		}
 
 		@Dependency(\.bowlers) var bowlers
@@ -98,6 +101,9 @@ public struct StatisticsWidgetEditor: Reducer {
 			}
 			Scope(state: /State.leaguePicker, action: /Action.leaguePicker) {
 				ResourcePicker { bowler in leagues.pickable(bowledBy: bowler, ordering: .byName) }
+			}
+			Scope(state: /State.help, action: /Action.help) {
+				StatisticsWidgetHelp()
 			}
 		}
 	}
@@ -133,6 +139,15 @@ public struct StatisticsWidgetEditor: Reducer {
 				switch viewAction {
 				case .didFirstAppear:
 					return loadSources(&state)
+
+				case .didTapWidget:
+					switch state.widgetPreviewData {
+					case .averaging, .counting, .percentage:
+						return .none
+					case .dataMissing, .chartUnavailable, .none:
+						state.destination = .help(.init(missingStatistic: state.configuration))
+					}
+					return .none
 
 				case .didTapBowler:
 					guard state.isBowlerEditable else { return .none }
@@ -245,6 +260,12 @@ public struct StatisticsWidgetEditor: Reducer {
 						return refreshChart(withConfiguration: state.configuration, state: &state)
 					}
 
+				case let .destination(.presented(.help(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .errors(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:
@@ -252,10 +273,9 @@ public struct StatisticsWidgetEditor: Reducer {
 					}
 
 				case .destination(.dismiss),
-						.destination(.presented(.bowlerPicker(.internal))),
-						.destination(.presented(.bowlerPicker(.view))),
-						.destination(.presented(.leaguePicker(.internal))),
-						.destination(.presented(.leaguePicker(.view))),
+						.destination(.presented(.bowlerPicker(.internal))), .destination(.presented(.bowlerPicker(.view))),
+						.destination(.presented(.leaguePicker(.internal))), .destination(.presented(.leaguePicker(.view))),
+						.destination(.presented(.help(.internal))), .destination(.presented(.help(.view))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}

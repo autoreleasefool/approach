@@ -85,8 +85,11 @@ public struct StatisticsWidgetEditorView: View {
 
 					if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
 						Section(Strings.Widget.Builder.preview) {
-							StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
-								.aspectRatio(2, contentMode: .fit)
+							Button { viewStore.send(.didTapWidget) } label: {
+								StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
+									.aspectRatio(2, contentMode: .fit)
+							}
+							.buttonStyle(TappableElement())
 						}
 						.listRowInsets(EdgeInsets())
 					} else if viewStore.isLoadingPreview {
@@ -120,6 +123,15 @@ public struct StatisticsWidgetEditorView: View {
 		) { store in
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
+			}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsWidgetEditor.Destination.State.help,
+			action: StatisticsWidgetEditor.Destination.Action.help
+		) { (store: StoreOf<StatisticsWidgetHelp>) in
+			NavigationStack {
+				StatisticsWidgetHelpView(store: store)
 			}
 		}
 	}
