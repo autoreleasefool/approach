@@ -114,6 +114,7 @@ public struct SeriesList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(\.featureFlags) var featureFlags
 	@Dependency(\.series) var series
@@ -139,7 +140,7 @@ public struct SeriesList: Reducer {
 
 				case .didTapAddButton:
 					state.destination = .editor(.init(
-						value: .create(.default(withId: uuid(), onDate: date(), inLeague: state.league)),
+						value: .create(.default(withId: uuid(), onDate: calendar.startOfDay(for: date()), inLeague: state.league)),
 						inLeague: state.league
 					))
 					return .none

@@ -87,6 +87,7 @@ public struct SeriesEditor: Reducer {
 	public init() {}
 
 	@Dependency(\.alleys) var alleys
+	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.series) var series
@@ -126,6 +127,10 @@ public struct SeriesEditor: Reducer {
 					case (.include, .regular):
 						break
 					}
+					return .none
+
+				case .binding(\.$date):
+					state.date = calendar.startOfDay(for: state.date)
 					return .none
 
 				case .binding:
