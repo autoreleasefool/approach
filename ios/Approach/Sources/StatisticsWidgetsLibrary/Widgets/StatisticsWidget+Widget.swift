@@ -18,7 +18,7 @@ extension StatisticsWidget {
 		public var body: some View {
 			switch chartContent {
 			case let .averaging(data):
-				StatisticsWidget.AveragingWidget(data, configuration: configuration)
+				averagingWidget(data)
 			case let .counting(data):
 				chartUnavailable(data.title)
 			case let .percentage(data):
@@ -32,35 +32,70 @@ extension StatisticsWidget {
 			}
 		}
 
-		private func chartLoading(_ statistic: String) -> some View {
-			centered {
-				ProgressView()
-			}
-		}
-
-		private func chartUnavailable(_ statistic: String) -> some View {
-			centered {
-				Asset.Media.Charts.error.swiftUIImage
-					.resizable()
-					.renderingMode(.template)
-					.scaledToFit()
-					.foregroundColor(Asset.Colors.Error.default)
-					.frame(width: .smallIcon, height: .smallIcon)
-
-				Text(Strings.Widget.Chart.unavailable)
+		private func averagingWidget(_ data: AveragingChart.Data) -> some View {
+			StatisticsWidget.WidgetLayout(data.title) {
+				AveragingChart.Compact(
+					data,
+					style: .init(
+						lineMarkColor: Asset.Colors.Charts.Averaging.Compact.lineMark,
+						axesColor: Asset.Colors.Charts.Averaging.Compact.axes,
+						hideXAxis: true,
+						hideYAxis: false
+					)
+				)
+			} footer: {
+				LabeledContent(
+					String(describing: configuration.timeline),
+					value: format(percentageWithModifier: data.percentDifferenceOverFullTimeSpan)
+				)
+				.labeledContentStyle(WidgetLabeledContentStyle(
+					labelColor: Asset.Colors.Charts.Averaging.Compact.axes,
+					contentColor: data.percentDifferenceOverFullTimeSpan > 0
+					? Asset.Colors.Charts.Averaging.Compact.positiveChange
+					: Asset.Colors.Charts.Averaging.Compact.negativeChange
+				))
 			}
 		}
 
 		private func dataMissing(_ statistic: String) -> some View {
-			centered {
-				Asset.Media.Charts.noData.swiftUIImage
-					.resizable()
-					.renderingMode(.template)
-					.scaledToFit()
-					.foregroundColor(Asset.Colors.Warning.default)
-					.frame(width: .smallIcon, height: .smallIcon)
+			StatisticsWidget.WidgetLayout(statistic, subtitle: Strings.Widget.Chart.Placeholder.notEnoughData) {
+				AveragingChart.Compact(
+					.createPlaceholderData(forStatistic: statistic),
+					style: .init(
+						lineMarkColor: Asset.Colors.Charts.Averaging.Compact.lineMark,
+						axesColor: Asset.Colors.Charts.Averaging.Compact.axes,
+						hideXAxis: true,
+						hideYAxis: true
+					)
+				)
+			} footer: {
+				Label(Strings.Widget.Chart.Placeholder.whatDoesThisMean, systemSymbol: .questionmarkCircle)
+					.font(.caption)
+					.foregroundColor(.white)
+			}
+		}
 
-				Text(Strings.Widget.Chart.noData)
+		private func chartUnavailable(_ statistic: String) -> some View {
+			StatisticsWidget.WidgetLayout(statistic, subtitle: Strings.Widget.Chart.unavailable) {
+				centered {
+					Asset.Media.Charts.error.swiftUIImage
+						.resizable()
+						.renderingMode(.template)
+						.scaledToFit()
+						.foregroundColor(Asset.Colors.Error.default)
+						.frame(width: .smallIcon, height: .smallIcon)
+						.padding()
+				}
+			} footer: {
+				Label(Strings.Widget.Chart.Placeholder.whatDoesThisMean, systemSymbol: .questionmarkCircle)
+					.font(.caption)
+					.foregroundColor(.white)
+			}
+		}
+
+		private func chartLoading(_ statistic: String) -> some View {
+			centered {
+				ProgressView()
 			}
 		}
 
@@ -78,3 +113,36 @@ extension StatisticsWidget {
 		}
 	}
 }
+
+#if DEBUG
+struct StatisticsWidgetPreview: PreviewProvider {
+	static var previews: some View {
+		LazyVGrid(
+			columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
+			spacing: .standardSpacing
+		) {
+			StatisticsWidget.Widget(
+				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				chartContent: .averaging(AveragingChart.Data.bowlerAverageDecrementingMock)
+			)
+			StatisticsWidget.Widget(
+				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
+			)
+			StatisticsWidget.Widget(
+				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				chartContent: .dataMissing(statistic: "Average")
+			)
+			StatisticsWidget.Widget(
+				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				chartContent: nil
+			)
+			StatisticsWidget.Widget(
+				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				chartContent: .chartUnavailable(statistic: "Average")
+			)
+
+		}
+	}
+}
+#endif

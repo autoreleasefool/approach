@@ -390,6 +390,8 @@
 "widget.timeline.past6Months" = "Past 6 Months";
 "widget.timeline.pastYear" = "Past Year";
 "widget.timeline.allTime" = "All Time";
+"widget.chart.placeholder.notEnoughData" = "Not enough data";
+"widget.chart.placeholder.whatDoesThisMean" = "What does this mean?";
 
 /* Settings */
 

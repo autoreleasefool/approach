@@ -4,6 +4,7 @@ import StatisticsChartsLibrary
 import SwiftUI
 
 extension AveragingChart.Data {
+	private static let generallyIncreasingData: [Double] = [180.0, 200.0, 190.0, 210.0]
 	private static let bowlerAverageIncrementing: [Double] = [180.0, 181.2, 183.6, 185.2]
 	private static func createMockData(fromArray: [Double]) -> AveragingChart.Data {
 		// FIXME: Use @Dependency(\.calendar)
@@ -11,6 +12,21 @@ extension AveragingChart.Data {
 		return .init(
 			title: "Your Average",
 			entries: fromArray.enumerated().map { index, average in
+				.init(
+					id: .init(index),
+					value: average,
+					date: Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!
+				)
+			}
+		)
+	}
+
+	public static func createPlaceholderData(forStatistic: String) -> AveragingChart.Data {
+		// FIXME: Use @Dependency(\.calendar)
+		let startDate = Calendar.current.date(byAdding: .month, value: -1, to: Date.now)!
+		return .init(
+			title: forStatistic,
+			entries: generallyIncreasingData.enumerated().map { index, average in
 				.init(
 					id: .init(index),
 					value: average,

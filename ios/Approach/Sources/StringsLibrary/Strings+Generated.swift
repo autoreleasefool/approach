@@ -1459,6 +1459,12 @@ public enum Strings {
       public static let noData = Strings.tr("Localizable", "widget.chart.noData", fallback: "Not enough data")
       /// Error
       public static let unavailable = Strings.tr("Localizable", "widget.chart.unavailable", fallback: "Error")
+      public enum Placeholder {
+        /// Not enough data
+        public static let notEnoughData = Strings.tr("Localizable", "widget.chart.placeholder.notEnoughData", fallback: "Not enough data")
+        /// What does this mean?
+        public static let whatDoesThisMean = Strings.tr("Localizable", "widget.chart.placeholder.whatDoesThisMean", fallback: "What does this mean?")
+      }
     }
     public enum LayoutBuilder {
       /// You don't have any widgets yet. Tap the '+' to add

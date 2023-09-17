@@ -35,10 +35,12 @@ public struct AveragingChart: View {
 			}
 		}
 		.chartYAxis {
-			AxisMarks {
-				AxisGridLine().foregroundStyle(style.axesColor.swiftUIColor)
-				AxisTick().foregroundStyle(style.axesColor.swiftUIColor)
-				AxisValueLabel().foregroundStyle(style.axesColor.swiftUIColor)
+			if !style.hideYAxis {
+				AxisMarks {
+					AxisGridLine().foregroundStyle(style.axesColor.swiftUIColor)
+					AxisTick().foregroundStyle(style.axesColor.swiftUIColor)
+					AxisValueLabel().foregroundStyle(style.axesColor.swiftUIColor)
+				}
 			}
 		}
 		.chartYScale(domain: [data.minimumValue, data.maximumValue])
@@ -98,15 +100,18 @@ extension AveragingChart {
 		public let lineMarkColor: ColorAsset
 		public let axesColor: ColorAsset
 		public let hideXAxis: Bool
+		public let hideYAxis: Bool
 
 		public init(
 			lineMarkColor: ColorAsset = Asset.Colors.Charts.Averaging.lineMark,
 			axesColor: ColorAsset = Asset.Colors.Charts.Averaging.axes,
-			hideXAxis: Bool = false
+			hideXAxis: Bool = false,
+			hideYAxis: Bool = false
 		) {
 			self.lineMarkColor = lineMarkColor
 			self.axesColor = axesColor
 			self.hideXAxis = hideXAxis
+			self.hideYAxis = hideYAxis
 		}
 	}
 }

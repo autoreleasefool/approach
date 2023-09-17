@@ -258,3 +258,34 @@ public enum StatisticsWidgetLayoutError: LocalizedError {
 		}
 	}
 }
+
+#if DEBUG
+struct StatisticsWidgetLayoutPreview: PreviewProvider {
+	static var previews: some View {
+		List {
+			Section {
+				StatisticsWidgetLayoutView(store: .init(
+					initialState: {
+						var state = StatisticsWidgetLayout.State(context: "", newWidgetSource: .bowler(UUID()))
+						state.widgets = [
+							.init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+							.init(id: UUID(1), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+							.init(id: UUID(2), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+						]
+						state.widgetData = [
+							UUID(0): .averaging(AveragingChart.Data.bowlerAverageIncrementingMock),
+							UUID(1): .chartUnavailable(statistic: ""),
+							UUID(2): .dataMissing(statistic: ""),
+						]
+						return state
+					}(),
+					reducer: StatisticsWidgetLayout.init
+				))
+			}
+			.listRowSeparator(.hidden)
+			.listRowInsets(EdgeInsets())
+			.listRowBackground(Color.clear)
+		}
+	}
+}
+#endif
