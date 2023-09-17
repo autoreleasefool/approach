@@ -1,26 +1,13 @@
 import StringsLibrary
 
-public enum Tip: String {
+public struct Tip: Hashable {
+	public let id: String
+	public let title: String
+	public let message: String?
 
-	// MARK: - Statistics
-	case statisticsOverview
-	case statisticsDetails
-
-	public var title: String {
-		switch self {
-		case .statisticsOverview:
-			return Strings.Statistics.Overview.GetAnOverviewHint.title
-		case .statisticsDetails:
-			return Strings.Statistics.Overview.ViewMoreDetailsHint.title
-		}
-	}
-
-	public var message: String {
-		switch self {
-		case .statisticsOverview:
-			return Strings.Statistics.Overview.GetAnOverviewHint.message
-		case .statisticsDetails:
-			return Strings.Statistics.Overview.ViewMoreDetailsHint.message
-		}
+	public init(id: String? = nil, title: String, message: String? = nil) {
+		self.id = id ?? title
+		self.title = title
+		self.message = message
 	}
 }

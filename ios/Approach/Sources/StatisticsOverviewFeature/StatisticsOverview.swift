@@ -3,6 +3,8 @@ import FeatureActionLibrary
 import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsRepositoryInterface
+import StringsLibrary
+import TipsLibrary
 import TipsServiceInterface
 
 public struct StatisticsOverview: Reducer {
@@ -119,4 +121,16 @@ public struct StatisticsOverview: Reducer {
 			Destination()
 		}
 	}
+}
+
+extension Tip {
+	public static let statisticsOverview = Tip(
+		title: Strings.Statistics.Overview.GetAnOverviewHint.title,
+		message: Strings.Statistics.Overview.GetAnOverviewHint.message
+	)
+
+	public static let statisticsDetails = Tip(
+		title: Strings.Statistics.Overview.ViewMoreDetailsHint.title,
+		message: Strings.Statistics.Overview.ViewMoreDetailsHint.message
+	)
 }

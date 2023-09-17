@@ -565,6 +565,7 @@ let package = Package(
 				"FeatureFlagsListFeature",
 				"OpponentsListFeature",
 				"PreferenceServiceInterface",
+				"ProductsServiceInterface",
 			]
 		),
 		.testTarget(

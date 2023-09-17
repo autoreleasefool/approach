@@ -117,7 +117,7 @@ libraries = [ "SortOrder" ]
 
 [features.Settings]
 features = [ "FeatureFlagsList", "OpponentsList" ]
-services = [ "AppIcon", "DatabaseMocking", "Preference" ]
+services = [ "AppIcon", "DatabaseMocking", "Preference", "Products" ]
 
 [features.Sharing]
 features = [ "Errors" ]

@@ -29,8 +29,10 @@ public struct BasicTipView: View {
 			}
 			.frame(maxWidth: .infinity)
 
-			Text(tip.message)
-				.frame(maxWidth: .infinity, alignment: .leading)
+			if let message = tip.message {
+				Text(message)
+					.frame(maxWidth: .infinity, alignment: .leading)
+			}
 		}
 	}
 }
@@ -40,7 +42,7 @@ struct BasicTipViewPreview: PreviewProvider {
 	static var previews: some View {
 		List {
 			Section {
-				BasicTipView(tip: .statisticsDetails) { }
+				BasicTipView(tip: .init(title: "Title", message: "Message")) { }
 			}
 		}
 	}
