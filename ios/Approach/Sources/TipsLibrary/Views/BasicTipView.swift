@@ -26,6 +26,8 @@ public struct BasicTipView: View {
 						.padding(.leading)
 				}
 				.buttonStyle(TappableElement())
+				// TODO: URGENT Remove this so that tips are dismissable again
+				.hidden()
 			}
 			.frame(maxWidth: .infinity)
 
