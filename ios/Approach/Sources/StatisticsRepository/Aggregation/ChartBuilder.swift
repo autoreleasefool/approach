@@ -6,7 +6,8 @@ import StatisticsRepositoryInterface
 
 struct ChartBuilder {
 	static let maxTimePeriods: Double = 20
-	static let minPeriodTimeInterval: TimeInterval = 604800
+	static let weekTimeInterval: TimeInterval = 604800
+	static let dayTimeInterval: TimeInterval = 86400
 
 	let uuid: UUIDGenerator
 	let aggregation: TrackableFilter.Aggregation
@@ -22,10 +23,17 @@ struct ChartBuilder {
 			return .dataMissing(statistic: statistic.title)
 		}
 
-		let timePeriod = max(
-			(lastEntry.key.timeIntervalSince1970 - firstEntry.key.timeIntervalSince1970) / Self.maxTimePeriods,
-			Self.minPeriodTimeInterval
-		)
+		let timePeriod: TimeInterval
+		let timeBetweenStartAndEnd = lastEntry.key.timeIntervalSince1970 - firstEntry.key.timeIntervalSince1970
+
+		if timeBetweenStartAndEnd > Self.weekTimeInterval {
+			timePeriod = max(
+				timeBetweenStartAndEnd / Self.maxTimePeriods,
+				Self.weekTimeInterval
+			)
+		} else {
+			timePeriod = Self.dayTimeInterval
+		}
 
 		var entries: [Date: Statistic] = [:]
 		var period = firstEntry.key.addingTimeInterval(timePeriod)
