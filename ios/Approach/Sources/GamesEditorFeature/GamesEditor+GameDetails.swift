@@ -52,7 +52,9 @@ extension GamesEditor {
 
 			case .didClearManualScore:
 				state.hideNextHeaderIfNecessary()
-				return .none
+				state.game?.scoringMethod = .byFrame
+				state.game?.score = state.score?.frames.gameScore() ?? 0
+				return save(game: state.game)
 
 			case .didProvokeLock:
 				return state.presentLockedToast()
