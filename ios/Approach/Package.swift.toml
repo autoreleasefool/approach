@@ -237,6 +237,9 @@ libraries = [ "FeatureFlags" ]
 [services.FileManager]
 dependencies = [ "ZIPFoundation" ]
 
+[services.ImportExport]
+services = [ "Database", "FileManager" ]
+
 [services.Logging]
 services = [ "FileManager" ]
 dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]

@@ -47,6 +47,7 @@
 		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
 		CAA668C02A8F2A2E00DF3E75 /* PasteboardService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BF2A8F2A2E00DF3E75 /* PasteboardService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
+		CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC458A22AB838C500898C16 /* ImportExportService */; };
 		CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */; };
 		CAC51C1C2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C1B2A4FFE8D00A99164 /* TestDatabaseUtilitiesLibrary */; };
 		CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C1D2A51412300A99164 /* StatisticsWidgetsRepository */; };
@@ -111,6 +112,7 @@
 				CA6CBA3B29EBBE4C00B3BAF7 /* LanesRepository in Frameworks */,
 				CA6CBA3729EBBE4C00B3BAF7 /* GamesRepository in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
+				CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */,
 				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
 				CA8847382A587D1D001AA48F /* AppIconService in Frameworks */,
 				CA626E292A821B9A002BCC13 /* ProductsService in Frameworks */,
@@ -319,6 +321,7 @@
 				CAA668BF2A8F2A2E00DF3E75 /* PasteboardService */,
 				CA2B78202AABC9EC0044487E /* ScoresRepository */,
 				CA626E282A821B9A002BCC13 /* ProductsService */,
+				CAC458A22AB838C500898C16 /* ImportExportService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -627,6 +630,10 @@
 		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AddressLookupService;
+		};
+		CAC458A22AB838C500898C16 /* ImportExportService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ImportExportService;
 		};
 		CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */ = {
 			isa = XCSwiftPackageProductDependency;

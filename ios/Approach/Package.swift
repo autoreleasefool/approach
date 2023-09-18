@@ -89,6 +89,8 @@ let package = Package(
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
+		.library(name: "ImportExportService", targets: ["ImportExportService"]),
+		.library(name: "ImportExportServiceInterface", targets: ["ImportExportServiceInterface"]),
 		.library(name: "LoggingService", targets: ["LoggingService"]),
 		.library(name: "LoggingServiceInterface", targets: ["LoggingServiceInterface"]),
 		.library(name: "NotificationsService", targets: ["NotificationsService"]),
@@ -1166,6 +1168,27 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FileManagerService",
+			]
+		),
+		.target(
+			name: "ImportExportService",
+			dependencies: [
+				"DatabaseServiceInterface",
+				"FileManagerServiceInterface",
+				"ImportExportServiceInterface",
+			]
+		),
+		.target(
+			name: "ImportExportServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "ImportExportServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ImportExportService",
 			]
 		),
 		.target(
