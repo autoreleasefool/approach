@@ -75,6 +75,10 @@ features = [ "GearEditor" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "ResourceList", "SortOrder" ]
 
+[features.ImportExport]
+services = [ "ImportExport", "Preference" ]
+libraries = [ "DateTime", "SwiftUIExtensions", "Views" ]
+
 [features.LaneEditor]
 libraries = [ "Models", "SwiftUIExtensions", "Views" ]
 
@@ -116,8 +120,8 @@ features = [ "GamesList", "SeriesEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]
-features = [ "FeatureFlagsList", "OpponentsList" ]
-services = [ "AppIcon", "DatabaseMocking", "Preference", "Products" ]
+features = [ "FeatureFlagsList", "ImportExport", "OpponentsList" ]
+services = [ "AppIcon", "DatabaseMocking", "Products" ]
 
 [features.Sharing]
 features = [ "Errors" ]
@@ -239,6 +243,7 @@ dependencies = [ "ZIPFoundation" ]
 
 [services.ImportExport]
 services = [ "Database", "FileManager" ]
+libraries = [ "DateTime" ]
 
 [services.Logging]
 services = [ "FileManager" ]

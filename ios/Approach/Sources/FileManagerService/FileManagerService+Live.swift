@@ -9,6 +9,10 @@ public enum FileManagerServiceError: Error {
 
 extension FileManagerService: DependencyKey {
 	public static var liveValue: Self = {
+		@Sendable func getTemporaryDirectory() -> URL {
+			FileManager.default.temporaryDirectory
+		}
+
 		return Self(
 			getFileContents: { url in
 				try Data(contentsOf: url)
@@ -17,6 +21,7 @@ extension FileManagerService: DependencyKey {
 				try FileManager.default
 					.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
 			},
+			getTemporaryDirectory: getTemporaryDirectory,
 			createDirectory: { url in
 				try FileManager.default
 					.createDirectory(at: url, withIntermediateDirectories: true)
@@ -30,7 +35,7 @@ extension FileManagerService: DependencyKey {
 					.fileExists(atPath: url.absoluteString)
 			},
 			getZip: { urls, fileName in
-				let archivePath = FileManager.default.temporaryDirectory.appending(path: fileName)
+				let archivePath = getTemporaryDirectory().appending(path: fileName)
 				guard let archive = Archive(url: archivePath, accessMode: .create) else {
 					throw FileManagerServiceError.failedToCreateArchive
 				}

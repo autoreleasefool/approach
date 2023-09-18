@@ -4,6 +4,7 @@ import Foundation
 public struct FileManagerService {
 	public var getFileContents: @Sendable (URL) throws -> Data
 	public var getUserDirectory: @Sendable () throws -> URL
+	public var getTemporaryDirectory: @Sendable () -> URL
 	public var createDirectory: @Sendable (URL) throws -> Void
 	public var remove: @Sendable (URL) throws -> Void
 	public var exists: @Sendable (URL) -> Bool
@@ -12,6 +13,7 @@ public struct FileManagerService {
 	public init(
 		getFileContents: @escaping @Sendable (URL) throws -> Data,
 		getUserDirectory: @escaping @Sendable () throws -> URL,
+		getTemporaryDirectory: @escaping @Sendable () -> URL,
 		createDirectory: @escaping @Sendable (URL) throws -> Void,
 		remove: @escaping @Sendable (URL) throws -> Void,
 		exists: @escaping @Sendable (URL) -> Bool,
@@ -19,6 +21,7 @@ public struct FileManagerService {
 	) {
 		self.getFileContents = getFileContents
 		self.getUserDirectory = getUserDirectory
+		self.getTemporaryDirectory = getTemporaryDirectory
 		self.createDirectory = createDirectory
 		self.remove = remove
 		self.exists = exists
@@ -34,6 +37,7 @@ extension FileManagerService: TestDependencyKey {
 	public static var testValue = Self(
 		getFileContents: { _ in unimplemented("\(Self.self).getFileContents") },
 		getUserDirectory: { unimplemented("\(Self.self).getUserDirectory") },
+		getTemporaryDirectory: { unimplemented("\(Self.self).getTemporaryDirectory") },
 		createDirectory: { _ in unimplemented("\(Self.self).createDirectory") },
 		remove: { _ in unimplemented("\(Self.self).remove") },
 		exists: { _ in unimplemented("\(Self.self).exists") },

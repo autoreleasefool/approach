@@ -379,6 +379,28 @@ public enum Strings {
       public static let disclaimer = Strings.tr("Localizable", "errorReport.includeDeviceLogs.disclaimer", fallback: "Your logs contain no identifying information, and will only be used to diagnose your issue. Including your device logs makes this process much easier!")
     }
   }
+  public enum Export {
+    /// An error occurred: %@
+    public static func errorMessage(_ p1: Any) -> String {
+      return Strings.tr("Localizable", "export.errorMessage", String(describing: p1), fallback: "An error occurred: %@")
+    }
+    /// At any time you can export your Approach data, to backup or transfer devices. Save the file somewhere you can always find it later.
+    public static let exportAnytime = Strings.tr("Localizable", "export.exportAnytime", fallback: "At any time you can export your Approach data, to backup or transfer devices. Save the file somewhere you can always find it later.")
+    /// Export data
+    public static let exportData = Strings.tr("Localizable", "export.exportData", fallback: "Export data")
+    /// You last exported your data on %@
+    public static func lastExportedAt(_ p1: Any) -> String {
+      return Strings.tr("Localizable", "export.lastExportedAt", String(describing: p1), fallback: "You last exported your data on %@")
+    }
+    /// You've never exported your data before.
+    public static let neverExported = Strings.tr("Localizable", "export.neverExported", fallback: "You've never exported your data before.")
+    /// Export
+    public static let title = Strings.tr("Localizable", "export.title", fallback: "Exporting")
+    /// We recommend exporting your data regularly, in case of any unexpected circumstances causing you to lose your phone or data!
+    public static let weRecommend = Strings.tr("Localizable", "export.weRecommend", fallback: "We recommend exporting your data regularly, in case of any unexpected circumstances causing you to lose your phone or data!")
+    /// Your data is always yours.
+    public static let yourData = Strings.tr("Localizable", "export.yourData", fallback: "Your data is always yours.")
+  }
   public enum Form {
     public enum Prompt {
       /// Add %@
@@ -985,6 +1007,14 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "settings.appInfo.title", fallback: "App Info")
       /// Version
       public static let version = Strings.tr("Localizable", "settings.appInfo.version", fallback: "Version")
+    }
+    public enum Data {
+      /// Export Data
+      public static let export = Strings.tr("Localizable", "settings.data.export", fallback: "Export Data")
+      /// Import Data
+      public static let `import` = Strings.tr("Localizable", "settings.data.import", fallback: "Import Data")
+      /// Data
+      public static let title = Strings.tr("Localizable", "settings.data.title", fallback: "Data")
     }
     public enum Developer {
       /// https://runcode.blog

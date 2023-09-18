@@ -24,4 +24,7 @@ public enum PreferenceKey: String {
 
 	// MARK: - Analytics
 	case analyticsOptInStatus                       // default: "optIn"
+
+	// MARK: - Data Management
+	case dataLastExportDate                         // default: 0
 }

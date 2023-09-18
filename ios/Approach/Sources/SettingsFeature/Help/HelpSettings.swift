@@ -3,6 +3,8 @@ import ComposableArchitecture
 import ConstantsLibrary
 import EmailServiceInterface
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
+import ImportExportFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -13,9 +15,16 @@ public struct HelpSettings: Reducer {
 		@BindingState public var isShowingBugReportEmail: Bool = false
 		@BindingState public var isShowingSendFeedbackEmail: Bool = false
 
-		@PresentationState public var analytics: AnalyticsSettings.State?
+		@PresentationState public var destination: Destination.State?
 
-		init() {}
+		public let isExportEnabled: Bool
+		public let isImportEnabled: Bool
+
+		init() {
+			@Dependency(\.featureFlags) var featureFlags
+			self.isExportEnabled = featureFlags.isEnabled(.dataExport)
+			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -26,11 +35,13 @@ public struct HelpSettings: Reducer {
 			case didTapAnalyticsButton
 			case didShowDeveloperDetails
 			case didTapViewSource
+			case didTapImportButton
+			case didTapExportButton
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
-			case analytics(PresentationAction<AnalyticsSettings.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
@@ -38,7 +49,29 @@ public struct HelpSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case analytics(AnalyticsSettings.State)
+			case export(Export.State)
+		}
+
+		public enum Action: Equatable {
+			case analytics(AnalyticsSettings.Action)
+			case export(Export.Action)
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.analytics, action: /Action.analytics) {
+				AnalyticsSettings()
+			}
+			Scope(state: /State.export, action: /Action.export) {
+				Export()
+			}
+		}
+	}
+
 	@Dependency(\.email) var email
+	@Dependency(\.export) var export
 	@Dependency(\.openURL) var openURL
 
 	public var body: some ReducerOf<Self> {
@@ -78,7 +111,15 @@ public struct HelpSettings: Reducer {
 					return .run { _ in await openURL(AppConstants.openSourceRepositoryUrl) }
 
 				case .didTapAnalyticsButton:
-					state.analytics = .init()
+					state.destination = .analytics(.init())
+					return .none
+
+				case .didTapImportButton:
+					// TODO: Navigate to data import feature
+					return .none
+
+				case .didTapExportButton:
+					state.destination = .export(.init())
 					return .none
 
 				case .binding:
@@ -87,13 +128,28 @@ public struct HelpSettings: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .analytics(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.analytics(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
 						return .none
 					}
 
-				case .analytics(.dismiss), .analytics(.presented(.internal)), .analytics(.presented(.view)):
+				case let .destination(.presented(.export(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .destination(.dismiss):
+					switch state.destination {
+					case .export:
+						return .run { _ in export.cleanUp() }
+					case .analytics, .none:
+						return .none
+					}
+
+				case .destination(.presented(.analytics(.internal))), .destination(.presented(.analytics(.view))),
+						.destination(.presented(.export(.internal))), .destination(.presented(.export(.view))):
 					return .none
 				}
 
@@ -101,8 +157,8 @@ public struct HelpSettings: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$analytics, action: /Action.internal..Action.InternalAction.analytics) {
-			AnalyticsSettings()
+		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+			Destination()
 		}
 
 		AnalyticsReducer<State, Action> { _, action in
@@ -148,6 +204,20 @@ public struct HelpSettingsView: View {
 					.buttonStyle(.navigation)
 			}
 
+			if viewStore.isImportEnabled || viewStore.isExportEnabled {
+				Section(Strings.Settings.Data.title) {
+					if viewStore.isImportEnabled {
+						Button(Strings.Settings.Data.import) { viewStore.send(.didTapImportButton) }
+							.buttonStyle(.navigation)
+					}
+
+					if viewStore.isExportEnabled {
+						Button(Strings.Settings.Data.export) { viewStore.send(.didTapExportButton) }
+							.buttonStyle(.navigation)
+					}
+				}
+			}
+
 			Section {
 				NavigationLink(
 					Strings.Settings.Help.developer,
@@ -177,8 +247,19 @@ public struct HelpSettingsView: View {
 					)
 				)
 			}
-			.navigationDestination(store: store.scope(state: \.$analytics, action: { .internal(.analytics($0)) })) {
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /HelpSettings.Destination.State.analytics,
+				action: HelpSettings.Destination.Action.analytics
+			) {
 				AnalyticsSettingsView(store: $0)
+			}
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /HelpSettings.Destination.State.export,
+				action: HelpSettings.Destination.Action.export
+			) {
+				ExportView(store: $0)
 			}
 		})
 	}

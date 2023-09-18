@@ -25,6 +25,7 @@ let package = Package(
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "GearEditorFeature", targets: ["GearEditorFeature"]),
 		.library(name: "GearListFeature", targets: ["GearListFeature"]),
+		.library(name: "ImportExportFeature", targets: ["ImportExportFeature"]),
 		.library(name: "LaneEditorFeature", targets: ["LaneEditorFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
@@ -411,6 +412,25 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "ImportExportFeature",
+			dependencies: [
+				"DateTimeLibrary",
+				"FeatureActionLibrary",
+				"ImportExportServiceInterface",
+				"LoggingServiceInterface",
+				"PreferenceServiceInterface",
+				"SwiftUIExtensionsLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ImportExportFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ImportExportFeature",
+			]
+		),
+		.target(
 			name: "LaneEditorFeature",
 			dependencies: [
 				"FeatureActionLibrary",
@@ -565,8 +585,8 @@ let package = Package(
 				"AppIconServiceInterface",
 				"DatabaseMockingServiceInterface",
 				"FeatureFlagsListFeature",
+				"ImportExportFeature",
 				"OpponentsListFeature",
-				"PreferenceServiceInterface",
 				"ProductsServiceInterface",
 			]
 		),
@@ -1174,6 +1194,7 @@ let package = Package(
 			name: "ImportExportService",
 			dependencies: [
 				"DatabaseServiceInterface",
+				"DateTimeLibrary",
 				"FileManagerServiceInterface",
 				"ImportExportServiceInterface",
 			]

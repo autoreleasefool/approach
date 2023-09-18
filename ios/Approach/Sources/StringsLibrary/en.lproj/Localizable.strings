@@ -408,6 +408,9 @@
 "settings.analytics.shareAnonymousAnalytics" = "Share anonymous analytics?";
 "settings.analytics.shareAnonymousAnalytics.footer" = "You can opt out from sharing analytics anytime. When you do, you're anonymized activity stops being shared immediately.";
 "settings.acknowledgements.title" = "Acknowledgements";
+"settings.data.title" = "Data";
+"settings.data.import" = "Import Data";
+"settings.data.export" = "Export Data";
 "settings.developer.name" = "Joseph Roque";
 "settings.developer.contact" = "Contact";
 "settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";
@@ -474,6 +477,16 @@
 "onboarding.logbook.belongsTo" = "This logbook belongs to";
 "onboarding.logbook.name" = "Your Name";
 "onboarding.logbook.addBowler" = "Add Bowler";
+
+/* Export */
+"export.title" = "Exporting";
+"export.exportData" = "Export data";
+"export.errorMessage" = "An error occurred: %@";
+"export.yourData" = "Your data is always yours.";
+"export.exportAnytime" = "At any time you can export your Approach data, to backup or transfer devices. Save the file somewhere you can always find it later.";
+"export.weRecommend" = "We recommend exporting your data regularly, in case of any unexpected circumstances causing you to lose your phone or data!";
+"export.lastExportedAt" = "You last exported your data on %@";
+"export.neverExported" = "You've never exported your data before.";
 
 /* App */
 

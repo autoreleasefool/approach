@@ -31,4 +31,14 @@ extension Date {
 	public var shortFormat: String {
 		Self.shortFormatter.string(from: self)
 	}
+
+	private static let machineDateFormatter: DateFormatter = {
+		let formatter = DateFormatter()
+		formatter.dateFormat = "yyyy-MM-dd"
+		return formatter
+	}()
+
+	public var machineDateFormat: String {
+		Self.machineDateFormatter.string(from: self)
+	}
 }
