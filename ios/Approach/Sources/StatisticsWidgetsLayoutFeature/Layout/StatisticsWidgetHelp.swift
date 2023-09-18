@@ -116,7 +116,7 @@ struct StatisticsWidgetHelpPreview: PreviewProvider {
 					id: UUID(0),
 					source: .bowler(UUID(0)),
 					timeline: .allTime,
-					statistic: .middleHits
+					statistic: .average
 				)),
 				reducer: StatisticsWidgetHelp.init
 			))
