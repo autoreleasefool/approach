@@ -1,6 +1,12 @@
 # Most recent version
 
-## v3.2.0
+## iOS 1.0.1b5
+
+```
+- Allows exporting user data in a single file for backup or sharing
+```
+
+## Android v3.2.0
 
 ```
 A lot of users have been having issues with the current transfer functionality, so I've created a new process which will let you export and save the data wherever you'd like, and then import it on a new device. Hopefully this helps those with longstanding issues of being unable to move to new devices.
@@ -11,6 +17,12 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.0.0b4
+
+```
+First official release of Approach for iOS!
+```
 
 ## v3.1.2
 
