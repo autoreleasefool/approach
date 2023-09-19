@@ -25,6 +25,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230913AddAvatarToGear",
 		"Migration20230918ChangeWidgetSourceToColumns",
 		"Migration20230918OnDeleteGearBowlerSetNull",
+		"Migration20230918MigrateStatisticsWidgetType",
 	]
 
 	func testIdentifier() {

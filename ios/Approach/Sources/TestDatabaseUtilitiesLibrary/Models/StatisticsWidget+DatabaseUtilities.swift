@@ -11,7 +11,7 @@ extension StatisticsWidget.Database {
 		bowlerId: Bowler.ID? = UUID(0),
 		leagueId: League.ID? = nil,
 		timeline: StatisticsWidget.Timeline = .past3Months,
-		statistic: StatisticsWidget.Statistic = .average,
+		statistic: String = "Average",
 		context: String = "context",
 		priority: Int
 	) -> Self {
@@ -29,8 +29,8 @@ func insert(
 		statisticsWidgets = []
 	case .default:
 		statisticsWidgets = [
-			.init(id: UUID(0), created: Date(timeIntervalSince1970: 123), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average, context: "bowlersList", priority: 1),
-			.init(id: UUID(1), created: Date(timeIntervalSince1970: 123), bowlerId: UUID(0), leagueId: nil, timeline: .pastYear, statistic: .average, context: "bowlersList", priority: 2),
+			.init(id: UUID(0), created: Date(timeIntervalSince1970: 123), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average", context: "bowlersList", priority: 1),
+			.init(id: UUID(1), created: Date(timeIntervalSince1970: 123), bowlerId: UUID(0), leagueId: nil, timeline: .pastYear, statistic: "Average", context: "bowlersList", priority: 2),
 		]
 	case let .custom(custom):
 		statisticsWidgets = custom

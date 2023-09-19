@@ -37,10 +37,10 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Returns all of the widgets
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
-			.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
-			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
-			.init(id: UUID(3), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
+			.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
+			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
+			.init(id: UUID(3), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
 		])
 	}
 
@@ -64,8 +64,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Returns the widgets for the context
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
-			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
+			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
 		])
 	}
 
@@ -88,9 +88,9 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Returns the widgets in order
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
-			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
-			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
+			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
+			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: "Average"),
 		])
 	}
 
@@ -186,7 +186,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Create the widget
 		await assertThrowsError(ofType: DatabaseError.self) {
-			let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .averagePinsLeftOnDeck, context: "", priority: 0)
+			let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average Pins Left on Deck", context: "", priority: 0)
 			try await withDependencies {
 				$0.database.writer = { db }
 				$0.statisticsWidgets = .liveValue
@@ -203,7 +203,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let updated = try await db.read { try StatisticsWidget.Database.fetchOne($0, id: UUID(0)) }
 		XCTAssertEqual(updated?.id, UUID(0))
 		XCTAssertEqual(updated?.timeline, .past3Months)
-		XCTAssertEqual(updated?.statistic, .average)
+		XCTAssertEqual(updated?.statistic, "Average")
 	}
 
 	func testCreate_WhenWidgetNotExists_CreatesWidget() async throws {
@@ -211,7 +211,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .default, withStatisticsWidgets: nil)
 
 		// Creating a widget
-		let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .averagePinsLeftOnDeck, context: "", priority: 0)
+		let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average Pins Left on Deck", context: "", priority: 0)
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.statisticsWidgets = .liveValue
@@ -227,7 +227,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let updated = try await db.read { try StatisticsWidget.Database.fetchOne($0, id: UUID(0)) }
 		XCTAssertEqual(updated?.id, UUID(0))
 		XCTAssertEqual(updated?.timeline, .allTime)
-		XCTAssertEqual(updated?.statistic, .averagePinsLeftOnDeck)
+		XCTAssertEqual(updated?.statistic, "Average Pins Left on Deck")
 	}
 
 	// MARK: Delete
