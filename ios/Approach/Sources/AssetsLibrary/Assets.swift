@@ -91,11 +91,18 @@ public enum Asset {
       public static let light = ColorAsset(name: "Error/Light")
     }
     public enum Filters {
-      public static let auburn = ColorAsset(name: "Filters/Auburn")
-      public static let celadon = ColorAsset(name: "Filters/Celadon")
-      public static let englishViolet = ColorAsset(name: "Filters/EnglishViolet")
-      public static let puce = ColorAsset(name: "Filters/Puce")
-      public static let seaGreen = ColorAsset(name: "Filters/SeaGreen")
+      public static let alley = ColorAsset(name: "Filters/Alley")
+      public static let gear = ColorAsset(name: "Filters/Gear")
+      public static let league = ColorAsset(name: "Filters/League")
+      public static let matchPlay = ColorAsset(name: "Filters/MatchPlay")
+      public static let series = ColorAsset(name: "Filters/Series")
+      public enum Text {
+        public static let onAlley = ColorAsset(name: "Filters/Text/OnAlley")
+        public static let onGear = ColorAsset(name: "Filters/Text/OnGear")
+        public static let onLeague = ColorAsset(name: "Filters/Text/OnLeague")
+        public static let onMatchPlay = ColorAsset(name: "Filters/Text/OnMatchPlay")
+        public static let onSeries = ColorAsset(name: "Filters/Text/OnSeries")
+      }
     }
     public enum Frame {
       public static let pinTint = ColorAsset(name: "Frame/PinTint")

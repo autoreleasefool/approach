@@ -38,14 +38,14 @@ public struct StatisticsFilterView: View {
 
 	@ViewBuilder private var seriesFilters: some View {
 		if let series = sources.series {
-			filterLabel(Strings.Statistics.Filter.Label.Series.title, value: series.date.mediumFormat, type: .seriesDate)
+			filterLabel(Strings.Statistics.Filter.Label.Series.title, value: series.date.mediumFormat, type: .series)
 		} else {
 			if let startDate = filter.seriesFilter.startDate {
-				filterLabel(Strings.Statistics.Filter.Label.Series.starts, value: startDate.longFormat, type: .seriesDate)
+				filterLabel(Strings.Statistics.Filter.Label.Series.starts, value: startDate.longFormat, type: .series)
 			}
 
 			if let endDate = filter.seriesFilter.endDate {
-				filterLabel(Strings.Statistics.Filter.Label.Series.ends, value: endDate.longFormat, type: .seriesDate)
+				filterLabel(Strings.Statistics.Filter.Label.Series.ends, value: endDate.longFormat, type: .series)
 			}
 
 			if let alley = filter.seriesFilter.alley {
@@ -137,13 +137,12 @@ public struct StatisticsFilterView: View {
 			Text(title)
 				.font(size.titleFont)
 				.fontWeight(size.titleFontWeight)
-				.foregroundColor(type.textColor)
 			Text(value)
 				.font(size.valueFont)
-				.foregroundColor(type.textColor)
 		}
+		.foregroundColor(type.text)
 		.padding(size.padding)
-		.background(type.backgroundColor)
+		.background(type.background)
 		.cornerRadius(.standardRadius)
 	}
 }
@@ -185,28 +184,28 @@ extension StatisticsFilterView {
 
 enum StatisticsFilterType {
 	case league
-	case seriesDate
+	case series
 	case alley
 	case gear
 	case matchPlay
 
-	var backgroundColor: ColorAsset {
+	var background: ColorAsset {
 		switch self {
-		case .league: return Asset.Colors.Filters.seaGreen
-		case .seriesDate: return Asset.Colors.Filters.puce
-		case .alley: return Asset.Colors.Filters.englishViolet
-		case .gear: return Asset.Colors.Filters.celadon
-		case .matchPlay: return Asset.Colors.Filters.auburn
+		case .league: return Asset.Colors.Filters.league
+		case .series: return Asset.Colors.Filters.series
+		case .alley: return Asset.Colors.Filters.alley
+		case .gear: return Asset.Colors.Filters.gear
+		case .matchPlay: return Asset.Colors.Filters.matchPlay
 		}
 	}
 
-	var textColor: Color {
+	var text: ColorAsset {
 		switch self {
-		case .league: return .white
-		case .seriesDate: return .white
-		case .alley: return .white
-		case .gear: return .black
-		case .matchPlay: return .white
+		case .league: return Asset.Colors.Filters.Text.onLeague
+		case .series: return Asset.Colors.Filters.Text.onSeries
+		case .alley: return Asset.Colors.Filters.Text.onAlley
+		case .gear: return Asset.Colors.Filters.Text.onGear
+		case .matchPlay: return Asset.Colors.Filters.Text.onMatchPlay
 		}
 	}
 }
