@@ -387,6 +387,7 @@
 "widget.layoutBuilder.title" = "Widgets";
 "widget.layoutBuilder.addNewInstructions" = "You don't have any widgets yet. Tap the '+' to add";
 "widget.layoutBuilder.reorderInstructions" = "Tap and hold widgets to reorder";
+"widget.layoutBuilder.tapToChange" = "Tap to change layout";
 "widget.timeline.past1Month" = "Past Month";
 "widget.timeline.past3Months" = "Past 3 Months";
 "widget.timeline.past6Months" = "Past 6 Months";

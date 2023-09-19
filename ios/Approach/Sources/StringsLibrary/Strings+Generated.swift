@@ -1527,6 +1527,8 @@ public enum Strings {
       public static let addNewInstructions = Strings.tr("Localizable", "widget.layoutBuilder.addNewInstructions", fallback: "You don't have any widgets yet. Tap the '+' to add")
       /// Tap and hold widgets to reorder
       public static let reorderInstructions = Strings.tr("Localizable", "widget.layoutBuilder.reorderInstructions", fallback: "Tap and hold widgets to reorder")
+      /// Tap to change layout
+      public static let tapToChange = Strings.tr("Localizable", "widget.layoutBuilder.tapToChange", fallback: "Tap to change layout")
       /// Widgets
       public static let title = Strings.tr("Localizable", "widget.layoutBuilder.title", fallback: "Widgets")
     }

@@ -232,20 +232,31 @@ public struct StatisticsWidgetLayoutView: View {
 						}
 						.buttonStyle(TappableElement())
 					} else {
-						LazyVGrid(
-							columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
-							spacing: .standardSpacing
-						) {
-							ForEach(widgets) { widget in
-								SquareWidget(
-									configuration: widget,
-									chartContent: viewStore.widgetData[widget.id]
-								) {
-									viewStore.send(.didTapWidget(id: widget.id))
+						VStack {
+							LazyVGrid(
+								columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
+								spacing: .standardSpacing
+							) {
+								ForEach(widgets) { widget in
+									SquareWidget(
+										configuration: widget,
+										chartContent: viewStore.widgetData[widget.id]
+									) {
+										viewStore.send(.didTapWidget(id: widget.id))
+									}
 								}
 							}
+
+							Button {
+								viewStore.send(.didTapConfigureStatisticsButton)
+							} label: {
+								Text(Strings.Widget.LayoutBuilder.tapToChange)
+									.font(.caption)
+									.opacity(0.7)
+									.frame(maxWidth: .infinity, alignment: .trailing)
+							}
+							.buttonStyle(.plain)
 						}
-						.simultaneousGesture(LongPressGesture().onEnded { _ in viewStore.send(.didTapConfigureStatisticsButton) })
 					}
 				} else {
 					Text("")
