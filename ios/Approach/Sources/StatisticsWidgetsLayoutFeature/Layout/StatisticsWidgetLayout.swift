@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
@@ -210,10 +211,22 @@ public struct StatisticsWidgetLayoutView: View {
 
 	struct ViewState: Equatable {
 		let widgets: IdentifiedArrayOf<StatisticsWidget.Configuration>?
+		let leftoverWidget: StatisticsWidget.Configuration?
 		let widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
 
 		init(state: StatisticsWidgetLayout.State) {
-			self.widgets = state.widgets
+			if let widgets = state.widgets {
+				if widgets.count % 2 == 0 {
+					self.widgets = widgets
+					self.leftoverWidget = nil
+				} else {
+					self.widgets = .init(uniqueElements: widgets.dropLast())
+					self.leftoverWidget = widgets.last
+				}
+			} else {
+				self.widgets = nil
+				self.leftoverWidget = nil
+			}
 			self.widgetData = state.widgetData
 		}
 	}
@@ -226,13 +239,13 @@ public struct StatisticsWidgetLayoutView: View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Group {
 				if let widgets = viewStore.widgets {
-					if widgets.isEmpty {
+					if widgets.isEmpty && viewStore.leftoverWidget == nil {
 						Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
 							StatisticsWidget.PlaceholderWidget()
 						}
 						.buttonStyle(TappableElement())
 					} else {
-						VStack {
+						VStack(spacing: 0) {
 							LazyVGrid(
 								columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
 								spacing: .standardSpacing
@@ -247,6 +260,16 @@ public struct StatisticsWidgetLayoutView: View {
 								}
 							}
 
+							if let leftoverWidget = viewStore.leftoverWidget {
+								RectangleWidget(
+									configuration: leftoverWidget,
+									chartContent: viewStore.widgetData[leftoverWidget.id]
+								) {
+									viewStore.send(.didTapWidget(id: leftoverWidget.id))
+								}
+								.padding(.top, widgets.isEmpty ? .zero : .standardSpacing)
+							}
+
 							Button {
 								viewStore.send(.didTapConfigureStatisticsButton)
 							} label: {
@@ -256,6 +279,7 @@ public struct StatisticsWidgetLayoutView: View {
 									.frame(maxWidth: .infinity, alignment: .trailing)
 							}
 							.buttonStyle(.plain)
+							.padding(.top, .smallSpacing)
 						}
 					}
 				} else {
