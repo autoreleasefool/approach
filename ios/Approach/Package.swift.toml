@@ -142,6 +142,7 @@ libraries = [ "ModelsViews", "PickableModels" ]
 [features.StatisticsWidgetsLayout]
 features = [ "StatisticsDetails" ]
 repositories = [ "StatisticsWidgets" ]
+services = [ "Tips" ]
 libraries = [ "Reordering" ]
 
 # Repositories

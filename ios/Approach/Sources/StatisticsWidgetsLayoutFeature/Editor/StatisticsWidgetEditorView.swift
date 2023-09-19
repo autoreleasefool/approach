@@ -8,6 +8,7 @@ import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import TipsLibrary
 import ViewsLibrary
 
 public struct StatisticsWidgetEditorView: View {
@@ -30,6 +31,8 @@ public struct StatisticsWidgetEditorView: View {
 
 		let widgetConfiguration: StatisticsWidget.Configuration?
 		let widgetPreviewData: Statistics.ChartContent?
+
+		let isShowingTapThroughTip: Bool
 	}
 
 	public init(store: StoreOf<StatisticsWidgetEditor>) {
@@ -52,6 +55,8 @@ public struct StatisticsWidgetEditorView: View {
 							}
 						}
 						.pickerStyle(.navigationLink)
+					} footer: {
+						Text(Strings.Widget.Builder.Timeline.description)
 					}
 
 					Section {
@@ -70,6 +75,8 @@ public struct StatisticsWidgetEditorView: View {
 							}
 							.buttonStyle(.navigation)
 						}
+					} footer: {
+						Text(Strings.Widget.Builder.Filter.description)
 					}
 
 					Section {
@@ -90,6 +97,14 @@ public struct StatisticsWidgetEditorView: View {
 						.listRowInsets(EdgeInsets())
 					} else if viewStore.isLoadingPreview {
 						ProgressView()
+					}
+
+					if viewStore.isShowingTapThroughTip {
+						Section {
+							BasicTipView(tip: .tapThroughStatisticTip) {
+								viewStore.send(.didTapDismissTapThroughTip, animation: .easeInOut)
+							}
+						}
 					}
 				}
 			}
@@ -155,5 +170,6 @@ extension StatisticsWidgetEditorView.ViewState {
 		self.isBowlerEditable = store.isBowlerEditable
 		self.widgetConfiguration = store.configuration
 		self.widgetPreviewData = store.widgetPreviewData
+		self.isShowingTapThroughTip = store.isShowingTapThroughTip
 	}
 }

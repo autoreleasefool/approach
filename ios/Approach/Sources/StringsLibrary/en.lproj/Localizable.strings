@@ -381,7 +381,11 @@
 "widget.builder.preview" = "Preview";
 "widget.builder.title" = "Create a Widget";
 "widget.builder.timeline" = "Timeline";
+"widget.builder.timeline.description" = "Choose a shorter timespan to only be shown recent stats, or a longer timespan to measurements over years.";
 "widget.builder.statistic" = "Statistic to Display";
+"widget.builder.filter.description" = "Filter to a specific league for a better look at how you perform in one setting.";
+"widget.builder.tapThrough.title" = "Widgets are a convenient way to access your favourite stats!";
+"widget.builder.tapThrough.message" = "When you're done adding widgets, try tapping them from the home screen and see your statistics in full view.";
 "widget.chart.unavailable" = "Error";
 "widget.chart.noData" = "Not enough data";
 "widget.layoutBuilder.title" = "Widgets";

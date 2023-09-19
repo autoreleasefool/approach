@@ -1489,6 +1489,20 @@ public enum Strings {
       public static let timeline = Strings.tr("Localizable", "widget.builder.timeline", fallback: "Timeline")
       /// Create a Widget
       public static let title = Strings.tr("Localizable", "widget.builder.title", fallback: "Create a Widget")
+      public enum Filter {
+        /// Filter to a specific league for a better look at how you perform in one setting.
+        public static let description = Strings.tr("Localizable", "widget.builder.filter.description", fallback: "Filter to a specific league for a better look at how you perform in one setting.")
+      }
+      public enum TapThrough {
+        /// When you're done adding widgets, try tapping them from the home screen and see your statistics in full view.
+        public static let message = Strings.tr("Localizable", "widget.builder.tapThrough.message", fallback: "When you're done adding widgets, try tapping them from the home screen and see your statistics in full view.")
+        /// Widgets are a convenient way to access your favourite stats!
+        public static let title = Strings.tr("Localizable", "widget.builder.tapThrough.title", fallback: "Widgets are a convenient way to access your favourite stats!")
+      }
+      public enum Timeline {
+        /// Choose a shorter timespan to only be shown recent stats, or a longer timespan to measurements over years.
+        public static let description = Strings.tr("Localizable", "widget.builder.timeline.description", fallback: "Choose a shorter timespan to only be shown recent stats, or a longer timespan to measurements over years.")
+      }
     }
     public enum Chart {
       /// Not enough data

@@ -14,6 +14,8 @@ import StatisticsLibrary
 import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
+import TipsLibrary
+import TipsServiceInterface
 
 // swiftlint:disable:next type_body_length
 public struct StatisticsWidgetEditor: Reducer {
@@ -37,6 +39,8 @@ public struct StatisticsWidgetEditor: Reducer {
 		public var isLoadingPreview = false
 		public var widgetPreviewData: Statistics.ChartContent?
 
+		public var isShowingTapThroughTip: Bool
+
 		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var destination: Destination.State?
@@ -48,6 +52,9 @@ public struct StatisticsWidgetEditor: Reducer {
 			self.priority = priority
 			self.initialSource = source
 			self.source = source
+
+			@Dependency(\.tips) var tips
+			self.isShowingTapThroughTip = tips.shouldShow(tipFor: .tapThroughStatisticTip)
 		}
 	}
 
@@ -59,6 +66,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didTapSaveButton
 			case didTapWidget
 			case didTapStatistic
+			case didTapDismissTapThroughTip
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
@@ -131,6 +139,7 @@ public struct StatisticsWidgetEditor: Reducer {
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
+	@Dependency(\.tips) var tips
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -191,6 +200,10 @@ public struct StatisticsWidgetEditor: Reducer {
 							return configuration
 						})))
 					}
+
+				case .didTapDismissTapThroughTip:
+					state.isShowingTapThroughTip = false
+					return .run { _ in await tips.hide(tipFor: .tapThroughStatisticTip) }
 
 				case .binding(\.$timeline):
 					return refreshChart(withConfiguration: state.configuration, state: &state)
@@ -376,4 +389,12 @@ extension StatisticsWidgetEditor.State {
 		case .none: return true
 		}
 	}
+}
+
+extension Tip {
+	static let tapThroughStatisticTip = Tip(
+		id: "Widget.Builder.TapThrough",
+		title: Strings.Widget.Builder.TapThrough.title,
+		message: Strings.Widget.Builder.TapThrough.message
+	)
 }

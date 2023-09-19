@@ -658,6 +658,7 @@ let package = Package(
 				"ReorderingLibrary",
 				"StatisticsDetailsFeature",
 				"StatisticsWidgetsRepositoryInterface",
+				"TipsServiceInterface",
 			]
 		),
 		.testTarget(
