@@ -1233,11 +1233,17 @@ public enum Strings {
       }
     }
     public enum Charts {
+      /// You may have picked too narrow a window. Series and games aren't long enough to show useful charts. Try examining the statistics below instead.
+      public static let filterTooNarrow = Strings.tr("Localizable", "statistics.charts.filterTooNarrow", fallback: "You may have picked too narrow a window. Series and games aren't long enough to show useful charts. Try examining the statistics below instead.")
       /// There doesn't seem to be any data available.
       public static let unavailable = Strings.tr("Localizable", "statistics.charts.unavailable", fallback: "There doesn't seem to be any data available.")
       public enum AxesLabels {
         /// Date
         public static let date = Strings.tr("Localizable", "statistics.charts.axesLabels.date", fallback: "Date")
+      }
+      public enum Unavailable {
+        /// You may not have bowled enough games yet, or your filters are excluding too many games.
+        public static let description = Strings.tr("Localizable", "statistics.charts.unavailable.description", fallback: "You may not have bowled enough games yet, or your filters are excluding too many games.")
       }
     }
     public enum Details {

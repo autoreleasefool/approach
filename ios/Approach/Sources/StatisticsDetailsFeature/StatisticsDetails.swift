@@ -201,7 +201,12 @@ public struct StatisticsDetails: Reducer {
 				case let .didLoadChartContent(.success(chartContent)):
 					state.chartContent = chartContent
 					state.isLoadingNextChart = false
-					return .none
+					switch state.chartContent {
+					case .averaging, .counting, .percentage:
+						return .none
+					case .chartUnavailable, .dataMissing, .none:
+						return .send(.view(.binding(.set(\.$sheetDetent, .medium))))
+					}
 
 				case let .didLoadSources(.failure(error)):
 					return state.errors
@@ -400,6 +405,7 @@ extension StatisticsDetails.State {
 			.init(
 				aggregation: filter.aggregation,
 				chartContent: chartContent,
+				isFilterTooNarrow: filter.isTooNarrowForCharts,
 				isLoadingNextChart: isLoadingNextChart
 			)
 		}

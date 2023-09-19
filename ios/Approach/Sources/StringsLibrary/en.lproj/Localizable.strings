@@ -284,6 +284,8 @@
 "statistics.overview.viewDetailedStatistics" = "View Detailed Statistics";
 "statistics.details.filter.source" = "Source";
 "statistics.charts.unavailable" = "There doesn't seem to be any data available.";
+"statistics.charts.unavailable.description" = "You may not have bowled enough games yet, or your filters are excluding too many games.";
+"statistics.charts.filterTooNarrow" = "You may have picked too narrow a window. Series and games aren't long enough to show useful charts. Try examining the statistics below instead.";
 "statistics.charts.axesLabels.date" = "Date";
 "statistics.list.hideZeroStatistics" = "Hide statistics with a value of zero?";
 "statistics.list.hideZeroStatistics.help" = "Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.";

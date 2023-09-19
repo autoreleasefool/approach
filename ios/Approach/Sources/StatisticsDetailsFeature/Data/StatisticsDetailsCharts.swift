@@ -10,6 +10,7 @@ public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
 		@BindingState public var aggregation: TrackableFilter.Aggregation
 		public var chartContent: Statistics.ChartContent?
+		public var isFilterTooNarrow: Bool
 		public var isLoadingNextChart: Bool
 	}
 
@@ -78,7 +79,7 @@ public struct StatisticsDetailsChartsView: View {
 					case let .percentage(data):
 						PercentageChart.Default(data)
 					case let .chartUnavailable(statistic), let .dataMissing(statistic):
-						emptyChart(statistic)
+						emptyChart(statistic, warnTooNarrow: viewStore.isFilterTooNarrow)
 					}
 				}
 
@@ -100,7 +101,7 @@ public struct StatisticsDetailsChartsView: View {
 		})
 	}
 
-	private func emptyChart(_ statistic: String) -> some View {
+	private func emptyChart(_ statistic: String, warnTooNarrow: Bool) -> some View {
 		VStack(alignment: .leading) {
 			Text(statistic)
 				.font(.headline)
@@ -112,6 +113,18 @@ public struct StatisticsDetailsChartsView: View {
 				.fontWeight(.light)
 				.frame(maxWidth: .infinity)
 				.padding(.top, .standardSpacing)
+
+			if warnTooNarrow {
+				Text(Strings.Statistics.Charts.filterTooNarrow)
+					.font(.caption)
+					.frame(maxWidth: .infinity)
+					.padding(.top, .smallSpacing)
+			} else {
+				Text(Strings.Statistics.Charts.Unavailable.description)
+					.font(.caption)
+					.frame(maxWidth: .infinity)
+					.padding(.top, .smallSpacing)
+			}
 
 			Spacer()
 		}

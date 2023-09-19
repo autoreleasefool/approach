@@ -25,6 +25,15 @@ public struct TrackableFilter: Equatable {
 		self.frameFilter = frameFilter
 		self.aggregation = aggregation
 	}
+
+	public var isTooNarrowForCharts: Bool {
+		switch source {
+		case .series, .game:
+			return true
+		case .bowler, .league:
+			return false
+		}
+	}
 }
 
 // MARK: - Source
