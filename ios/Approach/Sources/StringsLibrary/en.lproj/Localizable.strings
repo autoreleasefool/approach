@@ -1,6 +1,7 @@
 /* Accessories */
 "accessory.title" = "Accessory";
 "accessory.overview.title" = "Accessories";
+"accessory.overview.showingLimit" = "Showing only %d most recent";
 
 /* Alleys */
 

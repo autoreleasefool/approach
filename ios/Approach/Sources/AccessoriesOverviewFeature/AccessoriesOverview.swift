@@ -15,6 +15,9 @@ import SwiftUIExtensionsLibrary
 
 // swiftlint:disable:next type_body_length
 public struct AccessoriesOverview: Reducer {
+	static let recentAlleysLimit = 5
+	static let recentGearLimit = 10
+
 	public struct State: Equatable {
 		public var recentAlleys: IdentifiedArrayOf<Alley.Summary> = []
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
@@ -314,7 +317,7 @@ public struct AccessoriesOverview: Reducer {
 
 	private func observeAlleys() -> Effect<Action> {
 		.run { send in
-			for try await alleys in self.alleys.overview() {
+			for try await alleys in self.alleys.mostRecent(limit: Self.recentAlleysLimit) {
 				await send(.internal(.itemsResponse(.success(alleys.map { .alley($0) }))))
 			}
 		} catch: { error, send in
@@ -325,7 +328,7 @@ public struct AccessoriesOverview: Reducer {
 
 	private func observeGear() -> Effect<Action> {
 		.run { send in
-			for try await gear in self.gear.mostRecentlyUsed(limit: 3) {
+			for try await gear in self.gear.mostRecentlyUsed(limit: Self.recentGearLimit) {
 				await send(.internal(.itemsResponse(.success(gear.map { .gear($0) }))))
 			}
 		} catch: { error, send in

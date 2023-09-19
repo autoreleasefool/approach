@@ -203,9 +203,9 @@ final class AlleysRepositoryTests: XCTestCase {
 		])
 	}
 
-	// MARK: - Overview
+	// MARK: - Most Recently Used
 
-	func testOverview_ReturnsAlleys() async throws {
+	func testMostRecentlyUsed_ReturnsAlleys() async throws {
 		// Given a database with four alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
@@ -223,7 +223,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.alleys = .liveValue
 		} operation: {
-			self.alleys.overview()
+			self.alleys.mostRecentlyUsed(3)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -236,7 +236,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		])
 	}
 
-	func testOverview_WithRecentlyUsedAlleys_ReturnsAlleysOrderedByRecentlyUsed() async throws {
+	func testMostRecentlyUsed_WithRecentlyUsedAlleys_ReturnsAlleysOrderedByRecentlyUsed() async throws {
 		// Given a database with four alleys
 		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
 		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
@@ -254,7 +254,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
 			$0.alleys = .liveValue
 		} operation: {
-			self.alleys.overview()
+			self.alleys.mostRecentlyUsed(3)
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -264,6 +264,35 @@ final class AlleysRepositoryTests: XCTestCase {
 			.init(alley4),
 			.init(alley1),
 			.init(alley2),
+		])
+	}
+
+	func testMostRecentlyUsed_WithRecentlyUsedAlleys_WithLimit_ReturnsAlleysOrderedByRecentlyUsed() async throws {
+		// Given a database with four alleys
+		let alley1 = Alley.Database.mock(id: UUID(0), name: "Skyview", material: .wood)
+		let alley2 = Alley.Database.mock(id: UUID(1), name: "Grandview", mechanism: .dedicated)
+		let alley3 = Alley.Database.mock(id: UUID(2), name: "Homeview", pinBase: .black)
+		let alley4 = Alley.Database.mock(id: UUID(3), name: "Worldview", pinFall: .freefall)
+		let db = try initializeDatabase(withAlleys: .custom([alley1, alley2, alley3, alley4]))
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.makeStream()
+		recentContinuation.yield([UUID(3), UUID(0)])
+
+		// Fetching the alleys
+		let alleys = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
+			$0.alleys = .liveValue
+		} operation: {
+			self.alleys.mostRecentlyUsed(1)
+		}
+		var iterator = alleys.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the expected alleys
+		XCTAssertEqual(fetched, [
+			.init(alley4),
 		])
 	}
 

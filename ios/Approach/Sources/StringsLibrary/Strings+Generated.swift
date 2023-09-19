@@ -28,6 +28,10 @@ public enum Strings {
     /// Accessories
     public static let title = Strings.tr("Localizable", "accessory.title", fallback: "Accessory")
     public enum Overview {
+      /// Showing only %d most recent
+      public static func showingLimit(_ p1: Int) -> String {
+        return Strings.tr("Localizable", "accessory.overview.showingLimit", p1, fallback: "Showing only %d most recent")
+      }
       /// Accessories
       public static let title = Strings.tr("Localizable", "accessory.overview.title", fallback: "Accessories")
     }

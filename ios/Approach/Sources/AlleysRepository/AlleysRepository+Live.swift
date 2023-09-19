@@ -41,7 +41,7 @@ extension AlleysRepository: DependencyKey {
 					return sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys))
 				}
 			},
-			overview: {
+			mostRecentlyUsed: { limit in
 				let alleys = database.reader().observe {
 					try Alley.Database
 						.all()
@@ -51,7 +51,7 @@ extension AlleysRepository: DependencyKey {
 						.fetchAll($0)
 				}
 
-				return prefix(sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys)), ofSize: 3)
+				return prefix(sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys)), ofSize: limit)
 			},
 			pickable: {
 				let alleys = database.reader().observe {

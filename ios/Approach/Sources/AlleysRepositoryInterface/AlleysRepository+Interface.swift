@@ -16,7 +16,7 @@ public struct AlleysRepository: Sendable {
 		Alley.PinBase?,
 		Alley.Ordering
 	) -> AsyncThrowingStream<[Alley.List], Error>
-	public var overview: @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>
+	public var mostRecentlyUsed: @Sendable (Int) -> AsyncThrowingStream<[Alley.Summary], Error>
 	public var pickable: @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>
 	public var load: @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>
 	public var edit: @Sendable (Alley.ID) async throws -> Alley.EditWithLanes
@@ -32,7 +32,7 @@ public struct AlleysRepository: Sendable {
 			Alley.PinBase?,
 			Alley.Ordering
 		) -> AsyncThrowingStream<[Alley.List], Error>,
-		overview: @escaping @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>,
+		mostRecentlyUsed: @escaping @Sendable (Int) -> AsyncThrowingStream<[Alley.Summary], Error>,
 		pickable: @escaping @Sendable () -> AsyncThrowingStream<[Alley.Summary], Error>,
 		load: @escaping @Sendable (Alley.ID) -> AsyncThrowingStream<Alley.Summary, Error>,
 		edit: @escaping @Sendable (Alley.ID) async throws -> Alley.EditWithLanes,
@@ -41,7 +41,7 @@ public struct AlleysRepository: Sendable {
 		delete: @escaping @Sendable (Alley.ID) async throws -> Void
 	) {
 		self.list = list
-		self.overview = overview
+		self.mostRecentlyUsed = mostRecentlyUsed
 		self.pickable = pickable
 		self.load = load
 		self.edit = edit
@@ -63,12 +63,16 @@ public struct AlleysRepository: Sendable {
 	) -> AsyncThrowingStream<[Alley.List], Error> {
 		self.list(withMaterial, withPinFall, withMechanism, withPinBase, ordered)
 	}
+
+	public func mostRecent(limit: Int = 3) -> AsyncThrowingStream<[Alley.Summary], Error> {
+		self.mostRecentlyUsed(limit)
+	}
 }
 
 extension AlleysRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _, _, _, _ in unimplemented("\(Self.self).list") },
-		overview: { unimplemented("\(Self.self).overview") },
+		mostRecentlyUsed: { _ in unimplemented("\(Self.self).mostRecentlyUsed") },
 		pickable: { unimplemented("\(Self.self).pickable") },
 		load: { _ in unimplemented("\(Self.self).load") },
 		edit: { _ in unimplemented("\(Self.self).edit") },

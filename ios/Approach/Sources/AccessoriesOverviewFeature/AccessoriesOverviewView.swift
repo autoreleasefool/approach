@@ -60,6 +60,10 @@ public struct AccessoriesOverviewView: View {
 								.font(.caption)
 						}
 					}
+				} footer: {
+					if !viewStore.alleys.isEmpty {
+						Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentAlleysLimit))
+					}
 				}
 
 				Section {
@@ -106,6 +110,10 @@ public struct AccessoriesOverviewView: View {
 									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }
 								}
 						}
+					}
+				} footer: {
+					if !viewStore.gear.isEmpty {
+						Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentGearLimit))
 					}
 				}
 			}
