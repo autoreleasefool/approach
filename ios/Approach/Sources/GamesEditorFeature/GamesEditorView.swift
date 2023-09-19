@@ -154,7 +154,7 @@ public struct GamesEditorView: View {
 			state: /GamesEditor.Destination.State.opponentPicker,
 			action: GamesEditor.Destination.Action.opponentPicker,
 			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+			content: { (store: StoreOf<ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>>) in
 				opponentPicker(store: store)
 			}
 		)
@@ -231,7 +231,7 @@ public struct GamesEditorView: View {
 		}
 	}
 
-	private func opponentPicker(store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) -> some View {
+	private func opponentPicker(store: StoreOf<ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
 				Bowler.View($0)

@@ -236,13 +236,16 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.bowlers = .liveValue
 		} operation: {
-			self.bowlers.opponents(ordered: .byName)
+			self.bowlers.opponents(ordering: .byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns both bowlers
-		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph"), .init(id: UUID(1), name: "Sarah")])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", kind: .opponent),
+			.init(id: UUID(1), name: "Sarah", kind: .playable),
+		])
 	}
 
 	func testOpponents_SortsByName() async throws {
@@ -256,13 +259,16 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.bowlers = .liveValue
 		} operation: {
-			self.bowlers.opponents(ordered: .byName)
+			self.bowlers.opponents(ordering: .byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns the opponents sorted by name
-		XCTAssertEqual(fetched, [.init(id: UUID(1), name: "Audriana"), .init(id: UUID(0), name: "Joseph")])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), name: "Audriana", kind: .opponent),
+			.init(id: UUID(0), name: "Joseph", kind: .opponent),
+		])
 	}
 
 	func testOpponents_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
@@ -282,13 +288,16 @@ final class BowlersRepositoryTests: XCTestCase {
 			$0.bowlers = .liveValue
 		} operation: {
 			// with `byRecentlyUsed` ordering
-			self.bowlers.opponents(ordered: .byRecentlyUsed)
+			self.bowlers.opponents(ordering: .byRecentlyUsed)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns the opponents sorted by recently used
-		XCTAssertEqual(fetched, [.init(id: UUID(0), name: "Joseph"), .init(id: UUID(1), name: "Audriana")])
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", kind: .opponent),
+			.init(id: UUID(1), name: "Audriana", kind: .opponent)
+		])
 	}
 
 	// MARK: Opponent Record

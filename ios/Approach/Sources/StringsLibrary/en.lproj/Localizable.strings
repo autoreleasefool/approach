@@ -57,6 +57,7 @@
 "opponent.list.add" = "Add Opponent";
 "opponent.error.empty.title" = "No opponents found";
 "opponent.error.empty.message" = "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.";
+"opponent.list.description" = "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.";
 "opponent.record" = "Record";
 "opponent.record.matchesWon" = "Matches Won";
 "opponent.record.matchesTied" = "Matches Tied";

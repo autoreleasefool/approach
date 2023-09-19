@@ -15,7 +15,7 @@ import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension Bowler.Summary: ResourceListItem {}
+extension Bowler.Opponent: ResourceListItem {}
 
 extension Bowler.Ordering: CustomStringConvertible {
 	public var description: String {
@@ -28,7 +28,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 
 public struct OpponentsList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Bowler.Summary, Bowler.Ordering>.State
+		public var list: ResourceList<Bowler.Opponent, Bowler.Ordering>.State
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
 		public let isOpponentDetailsEnabled: Bool
 
@@ -66,9 +66,9 @@ public struct OpponentsList: Reducer {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableOpponent(TaskResult<Bowler.Edit>)
-			case didDeleteOpponent(TaskResult<Bowler.Summary>)
+			case didDeleteOpponent(TaskResult<Bowler.Opponent>)
 
-			case list(ResourceList<Bowler.Summary, Bowler.Ordering>.Action)
+			case list(ResourceList<Bowler.Opponent, Bowler.Ordering>.Action)
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -122,7 +122,7 @@ public struct OpponentsList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: bowlers.opponents(ordered:))
+			ResourceList(fetchResources: bowlers.opponents(ordering:))
 		}
 
 		Reduce<State, Action> { state, action in
@@ -131,7 +131,7 @@ public struct OpponentsList: Reducer {
 				switch viewAction {
 				case let .didTapOpponent(id):
 					guard state.isOpponentDetailsEnabled, let opponent = state.list.resources?[id: id] else { return .none }
-					state.destination = .details(.init(opponent: opponent))
+					state.destination = .details(.init(opponent: opponent.summary))
 					return .none
 
 				case .didTapSortOrderButton:

@@ -11,6 +11,7 @@ extension Bowler {
 public struct BowlersRepository: Sendable {
 	public var list: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>
 	public var summaries: @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
+	public var opponents: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Opponent], Error>
 	public var fetchSummaries: @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary]
 	public var opponentRecord: @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails
 	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Edit
@@ -21,6 +22,7 @@ public struct BowlersRepository: Sendable {
 	public init(
 		list: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.List], Error>,
 		summaries: @escaping @Sendable (Bowler.Kind?, Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
+		opponents: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Opponent], Error>,
 		fetchSummaries: @escaping @Sendable ([Bowler.ID]) async throws -> [Bowler.Summary],
 		opponentRecord: @escaping @Sendable (Bowler.ID) async throws -> Bowler.OpponentDetails,
 		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Edit,
@@ -30,6 +32,7 @@ public struct BowlersRepository: Sendable {
 	) {
 		self.list = list
 		self.summaries = summaries
+		self.opponents = opponents
 		self.fetchSummaries = fetchSummaries
 		self.opponentRecord = opponentRecord
 		self.edit = edit
@@ -42,8 +45,8 @@ public struct BowlersRepository: Sendable {
 		self.summaries(nil, .byName)
 	}
 
-	public func opponents(ordered: Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error> {
-		self.summaries(nil, ordered)
+	public func opponents(ordering: Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Opponent], Error> {
+		self.opponents(ordering)
 	}
 
 	public func summaries(forIds: [Bowler.ID]) async throws -> [Bowler.Summary] {
@@ -64,6 +67,7 @@ extension BowlersRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _ in unimplemented("\(Self.self).list") },
 		summaries: { _, _ in unimplemented("\(Self.self).summaries") },
+		opponents: { _ in unimplemented("\(Self.self).opponents") },
 		fetchSummaries: { _ in unimplemented("\(Self.self).fetchSummaries") },
 		opponentRecord: { _ in unimplemented("\(Self.self).opponentRecord") },
 		edit: { _ in unimplemented("\(Self.self).edit") },

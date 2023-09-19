@@ -13,7 +13,7 @@ extension GamesEditor {
 		public enum State: Equatable {
 			case gameDetails(GameDetails.State)
 			case settings(GamesSettings.State)
-			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
+			case opponentPicker(ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
@@ -23,7 +23,7 @@ extension GamesEditor {
 		public enum Action: Equatable {
 			case gameDetails(GameDetails.Action)
 			case settings(GamesSettings.Action)
-			case opponentPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
+			case opponentPicker(ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
@@ -42,7 +42,7 @@ extension GamesEditor {
 				GamesSettings()
 			}
 			Scope(state: /State.opponentPicker, action: /Action.opponentPicker) {
-				ResourcePicker { _ in bowlers.opponents(ordered: .byName) }
+				ResourcePicker { _ in bowlers.opponents(ordering: .byName) }
 			}
 			Scope(state: /State.gearPicker, action: /Action.gearPicker) {
 				ResourcePicker { _ in gear.list(ordered: .byName) }

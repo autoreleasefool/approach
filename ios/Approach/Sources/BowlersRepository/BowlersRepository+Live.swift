@@ -59,6 +59,22 @@ extension BowlersRepository: DependencyKey {
 					return sort(bowlers, byIds: recentlyUsed.observeRecentlyUsedIds(.bowlers))
 				}
 			},
+			opponents: { ordering in
+				let bowlers = database.reader().observe {
+					try Bowler.Database
+						.all()
+						.orderByName()
+						.asRequest(of: Bowler.Opponent.self)
+						.fetchAll($0)
+				}
+
+				switch ordering {
+				case .byName:
+					return bowlers
+				case .byRecentlyUsed:
+					return sort(bowlers, byIds: recentlyUsed.observeRecentlyUsedIds(.bowlers))
+				}
+			},
 			fetchSummaries: { ids in
 				let bowlers = try await database.reader().read {
 					try Bowler.Database

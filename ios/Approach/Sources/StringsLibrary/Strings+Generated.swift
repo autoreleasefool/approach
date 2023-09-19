@@ -801,6 +801,8 @@ public enum Strings {
     public enum List {
       /// Add Opponent
       public static let add = Strings.tr("Localizable", "opponent.list.add", fallback: "Add Opponent")
+      /// Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.
+      public static let description = Strings.tr("Localizable", "opponent.list.description", fallback: "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.")
       /// Opponents
       public static let title = Strings.tr("Localizable", "opponent.list.title", fallback: "Opponents")
     }
