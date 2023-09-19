@@ -29,11 +29,11 @@ struct SquareWidgetPreview: PreviewProvider {
 			spacing: .standardSpacing
 		) {
 			SquareWidget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
 			) {}
 			SquareWidget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
 			) {}
 		}

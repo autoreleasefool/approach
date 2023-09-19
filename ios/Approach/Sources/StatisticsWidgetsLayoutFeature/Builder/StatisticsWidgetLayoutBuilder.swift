@@ -243,7 +243,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case let .internal(.editor(.presented(.delegate(.didCreateConfiguration(configuration))))):
 				return Analytics.Widget.Created(
 					context: state.context,
-					source: configuration.source.analyticsString,
+					source: configuration.source?.analyticsString,
 					statistic: configuration.statistic.rawValue,
 					timeline: configuration.timeline.rawValue
 				)

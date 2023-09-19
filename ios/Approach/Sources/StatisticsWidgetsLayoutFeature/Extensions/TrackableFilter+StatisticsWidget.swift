@@ -3,13 +3,14 @@ import ModelsLibrary
 import StatisticsLibrary
 
 extension TrackableFilter {
-	init(
+	init?(
 		widget: StatisticsWidget.Configuration,
 		relativeToDate: Date,
 		inCalendar calendar: Calendar
 	) {
+		guard let source = widget.source else { return nil }
 		self.init(
-			source: .init(from: widget.source),
+			source: .init(from: source),
 			seriesFilter: .init(from: widget.timeline, relativeTo: relativeToDate, in: calendar)
 		)
 	}

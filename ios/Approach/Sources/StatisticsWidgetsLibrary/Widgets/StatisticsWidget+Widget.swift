@@ -132,23 +132,23 @@ struct StatisticsWidgetPreview: PreviewProvider {
 			spacing: .standardSpacing
 		) {
 			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageDecrementingMock)
 			)
 			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
 			)
 			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .dataMissing(statistic: "Average")
 			)
 			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: nil
 			)
 			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .chartUnavailable(statistic: "Average")
 			)
 

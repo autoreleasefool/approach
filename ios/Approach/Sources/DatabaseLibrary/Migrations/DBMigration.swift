@@ -34,6 +34,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230630CreateStatisticsWidget.self)
 		registerMigration(Migration20230912CreateBowlerPreferredGear.self)
 		registerMigration(Migration20230913AddAvatarToGear.self)
+		registerMigration(Migration20230918ChangeWidgetSourceToColumns.self)
 	}
 
 	mutating func registerMigration(_ migration: DBMigration.Type) {

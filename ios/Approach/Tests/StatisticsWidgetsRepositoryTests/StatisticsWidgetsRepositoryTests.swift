@@ -37,10 +37,10 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Returns all of the widgets
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
-			.init(id: UUID(1), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
-			.init(id: UUID(2), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
-			.init(id: UUID(3), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
+			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(3), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
 		])
 	}
 
@@ -64,8 +64,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Returns the widgets for the context
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
-			.init(id: UUID(2), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
+			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
 		])
 	}
 
@@ -88,9 +88,9 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Returns the widgets in order
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(1), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
-			.init(id: UUID(0), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
-			.init(id: UUID(2), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average),
+			.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
+			.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average),
 		])
 	}
 
@@ -186,7 +186,7 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Create the widget
 		await assertThrowsError(ofType: DatabaseError.self) {
-			let create = StatisticsWidget.Create(id: UUID(0), created: Date(), source: .bowler(UUID(0)), timeline: .allTime, statistic: .averagePinsLeftOnDeck, context: "", priority: 0)
+			let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .averagePinsLeftOnDeck, context: "", priority: 0)
 			try await withDependencies {
 				$0.database.writer = { db }
 				$0.statisticsWidgets = .liveValue
@@ -208,10 +208,10 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 	func testCreate_WhenWidgetNotExists_CreatesWidget() async throws {
 		// Given a database with no widgets
-		let db = try initializeDatabase(withStatisticsWidgets: nil)
+		let db = try initializeDatabase(withBowlers: .default, withStatisticsWidgets: nil)
 
 		// Creating a widget
-		let create = StatisticsWidget.Create(id: UUID(0), created: Date(), source: .bowler(UUID(0)), timeline: .allTime, statistic: .averagePinsLeftOnDeck, context: "", priority: 0)
+		let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .averagePinsLeftOnDeck, context: "", priority: 0)
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.statisticsWidgets = .liveValue

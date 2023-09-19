@@ -3,14 +3,14 @@ extension Analytics.Widget {
 		public let name = "Widget.Created"
 
 		public let context: String
-		public let source: String
+		public let source: String?
 		public let statistic: String
 		public let timeline: String
 
 		public var payload: [String: String]? {
 			[
 				"Context": context,
-				"Source": source,
+				"Source": source ?? "",
 				"Statistic": statistic,
 				"Timeline": timeline,
 			]
@@ -18,7 +18,7 @@ extension Analytics.Widget {
 
 		public init(
 			context: String,
-			source: String,
+			source: String?,
 			statistic: String,
 			timeline: String
 		) {

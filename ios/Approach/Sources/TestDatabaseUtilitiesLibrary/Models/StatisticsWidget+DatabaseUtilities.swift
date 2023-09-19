@@ -8,13 +8,14 @@ extension StatisticsWidget.Database {
 	public static func mock(
 		id: Bowler.ID,
 		created: Date,
-		source: StatisticsWidget.Source = .bowler(UUID(0)),
+		bowlerId: Bowler.ID? = UUID(0),
+		leagueId: League.ID? = nil,
 		timeline: StatisticsWidget.Timeline = .past3Months,
 		statistic: StatisticsWidget.Statistic = .average,
 		context: String = "context",
 		priority: Int
 	) -> Self {
-		.init(id: id, created: created, source: source, timeline: timeline, statistic: statistic, context: context, priority: priority)
+		.init(id: id, created: created, bowlerId: bowlerId, leagueId: leagueId, timeline: timeline, statistic: statistic, context: context, priority: priority)
 	}
 }
 
@@ -28,8 +29,8 @@ func insert(
 		statisticsWidgets = []
 	case .default:
 		statisticsWidgets = [
-			.init(id: UUID(0), created: Date(timeIntervalSince1970: 123), source: .bowler(UUID(0)), timeline: .past3Months, statistic: .average, context: "bowlersList", priority: 1),
-			.init(id: UUID(1), created: Date(timeIntervalSince1970: 123), source: .bowler(UUID(0)), timeline: .pastYear, statistic: .average, context: "bowlersList", priority: 2),
+			.init(id: UUID(0), created: Date(timeIntervalSince1970: 123), bowlerId: UUID(0), leagueId: nil, timeline: .past3Months, statistic: .average, context: "bowlersList", priority: 1),
+			.init(id: UUID(1), created: Date(timeIntervalSince1970: 123), bowlerId: UUID(0), leagueId: nil, timeline: .pastYear, statistic: .average, context: "bowlersList", priority: 2),
 		]
 	case let .custom(custom):
 		statisticsWidgets = custom

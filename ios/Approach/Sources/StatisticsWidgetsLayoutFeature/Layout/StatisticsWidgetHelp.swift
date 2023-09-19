@@ -12,7 +12,8 @@ public struct StatisticsWidgetHelp: Reducer {
 		init(missingStatistic: StatisticsWidget.Configuration?) {
 			self.missingStatistic = missingStatistic ?? .init(
 				id: UUID(0),
-				source: .bowler(UUID(0)),
+				bowlerId: UUID(0),
+				leagueId: nil,
 				timeline: .allTime,
 				statistic: .average
 			)
@@ -114,7 +115,8 @@ struct StatisticsWidgetHelpPreview: PreviewProvider {
 			StatisticsWidgetHelpView(store: .init(
 				initialState: .init(missingStatistic: .init(
 					id: UUID(0),
-					source: .bowler(UUID(0)),
+					bowlerId: UUID(0),
+					leagueId: nil,
 					timeline: .allTime,
 					statistic: .average
 				)),

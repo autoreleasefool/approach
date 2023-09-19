@@ -170,10 +170,13 @@ public struct StatisticsWidgetEditor: Reducer {
 					return .none
 
 				case .didTapSaveButton:
-					guard let configuration = state.configuration else { return .none }
-					return .run { [context = state.context, priority = state.priority] send in
+					guard let configuration = state.configuration,
+								let widget = configuration.make(on: date(), context: state.context, priority: state.priority) else {
+						return .none
+					}
+					return .run { send in
 						await send(.internal(.didFinishSavingConfiguration(TaskResult {
-							try await self.statisticsWidgets.create(configuration.make(on: date(), context: context, priority: priority))
+							try await self.statisticsWidgets.create(widget)
 							return configuration
 						})))
 					}
@@ -329,7 +332,7 @@ public struct StatisticsWidgetEditor: Reducer {
 extension StatisticsWidgetEditor.State {
 	var configuration: StatisticsWidget.Configuration? {
 		guard let source else { return nil }
-		return .init(id: id, source: source, timeline: timeline, statistic: statistic)
+		return .init(id: id, bowlerId: source.bowlerId, leagueId: source.leagueId, timeline: timeline, statistic: statistic)
 	}
 
 	var isBowlerEditable: Bool {

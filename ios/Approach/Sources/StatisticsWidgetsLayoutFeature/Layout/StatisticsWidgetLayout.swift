@@ -189,8 +189,12 @@ public struct StatisticsWidgetLayout: Reducer {
 	private func presentDetails(for widget: StatisticsWidget.Configuration, in state: inout State) -> Effect<Action> {
 		switch state.widgetData[widget.id] {
 		case .averaging, .counting, .percentage:
+			guard let filter = TrackableFilter(widget: widget, relativeToDate: date(), inCalendar: calendar) else {
+				return .none
+			}
+
 			state.destination = .details(.init(
-				filter: .init(widget: widget, relativeToDate: date(), inCalendar: calendar),
+				filter: filter,
 				withInitialStatistic: widget.statistic.type.title
 			))
 		case .dataMissing, .chartUnavailable, .none:
@@ -299,9 +303,9 @@ struct StatisticsWidgetLayoutPreview: PreviewProvider {
 					initialState: {
 						var state = StatisticsWidgetLayout.State(context: "", newWidgetSource: .bowler(UUID()))
 						state.widgets = [
-							.init(id: UUID(0), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
-							.init(id: UUID(1), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
-							.init(id: UUID(2), source: .bowler(UUID(0)), timeline: .allTime, statistic: .average),
+							.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
+							.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
+							.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 						]
 						state.widgetData = [
 							UUID(0): .averaging(AveragingChart.Data.bowlerAverageIncrementingMock),

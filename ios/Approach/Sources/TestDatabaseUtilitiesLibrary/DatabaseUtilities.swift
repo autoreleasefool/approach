@@ -39,6 +39,7 @@ public func initializeDatabase(
 		try migrator.migrate(dbQueue)
 	}
 
+	let statisticsWidgets = withStatisticsWidgets
 	let matchPlays = withMatchPlays
 	let frames = withFrames
 	let games = coallesce(withGames, ifHasOneOf: frames, matchPlays)
@@ -46,14 +47,13 @@ public func initializeDatabase(
 	let leagues = coallesce(withLeagues, ifHasOneOf: series)
 	let gear = coallesce(withGear, ifHasOneOf: frames)
 	let avatars = coallesce(withAvatars, ifHasOneOf: gear)
-	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear, matchPlays)
+	let bowlers = coallesce(withBowlers, ifHasOneOf: leagues, gear, matchPlays, statisticsWidgets)
 	let lanes = withLanes
 	let alleys = coallesce(withAlleys, ifHasOneOf: lanes, leagues)
 	let locations = coallesce(withLocations, ifHasOneOf: alleys)
 	let gameLanes = coallesce(withGameLanes, ifHasAllOf: games, lanes)
 	let gameGear = coallesce(withGameGear, ifHasAllOf: games, gear)
 	let bowlerPreferredGear = coallesce(withBowlerPreferredGear, ifHasAllOf: bowlers, gear)
-	let statisticsWidgets = withStatisticsWidgets
 
 	#if DEBUG
 	try dbQueue.write {

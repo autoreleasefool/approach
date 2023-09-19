@@ -6,7 +6,8 @@ extension StatisticsWidget {
 	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: StatisticsWidget.ID
 		public var created: Date
-		public var source: StatisticsWidget.Source
+		public var bowlerId: Bowler.ID?
+		public var leagueId: League.ID?
 		public var timeline: StatisticsWidget.Timeline
 		public var statistic: StatisticsWidget.Statistic
 		public var context: String
@@ -15,7 +16,8 @@ extension StatisticsWidget {
 		public init(
 			id: StatisticsWidget.ID,
 			created: Date,
-			source: StatisticsWidget.Source,
+			bowlerId: Bowler.ID?,
+			leagueId: League.ID?,
 			timeline: StatisticsWidget.Timeline,
 			statistic: StatisticsWidget.Statistic,
 			context: String,
@@ -23,7 +25,8 @@ extension StatisticsWidget {
 		) {
 			self.id = id
 			self.created = created
-			self.source = source
+			self.bowlerId = bowlerId
+			self.leagueId = leagueId
 			self.timeline = timeline
 			self.statistic = statistic
 			self.context = context
@@ -36,7 +39,6 @@ extension StatisticsWidget.Database: TableRecord, FetchableRecord, PersistableRe
 	public static let databaseTableName = "statisticsWidget"
 }
 
-extension StatisticsWidget.Source: DatabaseValueConvertible {}
 extension StatisticsWidget.Timeline: DatabaseValueConvertible {}
 extension StatisticsWidget.Statistic: DatabaseValueConvertible {}
 
@@ -44,7 +46,8 @@ extension StatisticsWidget.Database {
 	public enum Columns {
 		public static let id = Column(CodingKeys.id)
 		public static let created = Column(CodingKeys.created)
-		public static let source = Column(CodingKeys.source)
+		public static let bowlerId = Column(CodingKeys.bowlerId)
+		public static let leagueId = Column(CodingKeys.leagueId)
 		public static let timeline = Column(CodingKeys.timeline)
 		public static let statistic = Column(CodingKeys.statistic)
 		public static let context = Column(CodingKeys.context)

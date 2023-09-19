@@ -271,7 +271,9 @@ extension StatisticsRepository: DependencyKey {
 				}
 
 				return try await database.reader().read { db in
-					let filter = configuration.trackableFilter(relativeTo: date(), in: calendar)
+					guard let filter = configuration.trackableFilter(relativeTo: date(), in: calendar) else {
+						return unavailable()
+					}
 
 					// FIXME: should user be able to choose accumulate/periodic?
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: .accumulate)
