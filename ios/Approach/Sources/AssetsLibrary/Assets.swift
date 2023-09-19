@@ -61,6 +61,14 @@ public enum Asset {
       public enum Percentage {
         public static let axes = ColorAsset(name: "Charts/Percentage/Axes")
         public static let barMark = ColorAsset(name: "Charts/Percentage/BarMark")
+        public enum Compact {
+          public static let axes = ColorAsset(name: "Charts/Percentage/Compact/Axes")
+          public static let barMark = ColorAsset(name: "Charts/Percentage/Compact/BarMark")
+          public static let denominatorLineMark = ColorAsset(name: "Charts/Percentage/Compact/DenominatorLineMark")
+          public static let negativeChange = ColorAsset(name: "Charts/Percentage/Compact/NegativeChange")
+          public static let numeratorLineMark = ColorAsset(name: "Charts/Percentage/Compact/NumeratorLineMark")
+          public static let positiveChange = ColorAsset(name: "Charts/Percentage/Compact/PositiveChange")
+        }
         public static let denominatorLineMark = ColorAsset(name: "Charts/Percentage/DenominatorLineMark")
         public static let numeratorLineMark = ColorAsset(name: "Charts/Percentage/NumeratorLineMark")
       }

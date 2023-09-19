@@ -72,11 +72,11 @@ public struct StatisticsDetailsChartsView: View {
 				if let chartContent = viewStore.chartContent {
 					switch chartContent {
 					case let .counting(data):
-						CountingChart(data)
+						CountingChart.Default(data)
 					case let .averaging(data):
 						AveragingChart.Default(data)
 					case let .percentage(data):
-						PercentageChart(data)
+						PercentageChart.Default(data)
 					case let .chartUnavailable(statistic), let .dataMissing(statistic):
 						emptyChart(statistic)
 					}

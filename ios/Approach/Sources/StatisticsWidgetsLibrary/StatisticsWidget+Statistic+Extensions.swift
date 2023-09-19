@@ -6,8 +6,8 @@ extension StatisticsWidget.Statistic {
 		switch self {
 		case .average:
 			return Statistics.GameAverage.self
-//		case .middleHits:
-//			return Statistics.MiddleHits.self
+		case .middleHits:
+			return Statistics.MiddleHits.self
 		case .averagePinsLeftOnDeck:
 			return Statistics.AveragePinsLeftOnDeck.self
 		}

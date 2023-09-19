@@ -102,8 +102,7 @@ extension StatisticsWidget.Configuration {
 extension StatisticsWidget {
 	public enum Statistic: String, Codable, Sendable, Identifiable, CaseIterable {
 		case average
-		// TODO: Enable adding middleHits widgets
-//		case middleHits
+		case middleHits
 		case averagePinsLeftOnDeck
 
 		public var id: String { rawValue }

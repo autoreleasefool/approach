@@ -22,7 +22,7 @@ extension StatisticsWidget {
 			case let .counting(data):
 				chartUnavailable(data.title)
 			case let .percentage(data):
-				chartUnavailable(data.title)
+				percentageWidget(data)
 			case let .chartUnavailable(statistic):
 				chartUnavailable(statistic)
 			case let .dataMissing(statistic):
@@ -54,6 +54,37 @@ extension StatisticsWidget {
 					? Asset.Colors.Charts.Averaging.Compact.positiveChange
 					: Asset.Colors.Charts.Averaging.Compact.negativeChange
 				))
+			}
+		}
+
+		private func percentageWidget(_ data: PercentageChart.Data) -> some View {
+			StatisticsWidget.WidgetLayout(data.title) {
+				PercentageChart.Compact(
+					data,
+					style: .init(
+						barMarkColor: Asset.Colors.Charts.Percentage.Compact.barMark,
+						denominatorLineMarkColor: Asset.Colors.Charts.Percentage.Compact.denominatorLineMark,
+						numeratorLineMarkColor: Asset.Colors.Charts.Percentage.Compact.numeratorLineMark,
+						axesColor: Asset.Colors.Charts.Percentage.Compact.axes,
+						hideXAxis: true
+					)
+				)
+			} footer: {
+				if let percentageDifferenceOverTime = data.percentDifferenceOverFullTimeSpan {
+					LabeledContent(
+						String(describing: configuration.timeline),
+						value: format(percentageWithModifier: percentageDifferenceOverTime)
+					)
+					.labeledContentStyle(WidgetLabeledContentStyle(
+						labelColor: Asset.Colors.Charts.Percentage.Compact.axes,
+						contentColor: percentageDifferenceOverTime > 0
+							? Asset.Colors.Charts.Percentage.Compact.positiveChange
+							: Asset.Colors.Charts.Percentage.Compact.negativeChange
+					))
+				} else {
+					Text(String(describing: configuration.timeline))
+						.foregroundColor(Asset.Colors.Charts.Percentage.axes)
+				}
 			}
 		}
 
@@ -138,6 +169,10 @@ struct StatisticsWidgetPreview: PreviewProvider {
 			StatisticsWidget.Widget(
 				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
+			)
+			StatisticsWidget.Widget(
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .middleHits),
+				chartContent: .percentage(PercentageChart.Data.bowlerMiddleHitsMock)
 			)
 			StatisticsWidget.Widget(
 				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),

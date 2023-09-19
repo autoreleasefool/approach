@@ -6,66 +6,73 @@ import SwiftUI
 
 public struct PercentageChart: View {
 	let data: Data
+	let style: Style
 
-	public init(_ data: Data) {
+	public init(_ data: Data, style: Style = .init()) {
 		self.data = data
+		self.style = style
 	}
 
 	public var body: some View {
-		GroupBox(data.title) {
-			Chart {
-				ForEach(data.entries) {
-					if data.isAccumulating {
-						AreaMark(
-							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-							y: .value(data.title, $0.numerator),
-							series: .value("", data.title)
-						)
-						.lineStyle(StrokeStyle(lineWidth: 3))
-						.foregroundStyle(Asset.Colors.Charts.Percentage.numeratorLineMark.swiftUIColor)
-						.interpolationMethod(.catmullRom)
+		Chart {
+			ForEach(data.entries) {
+				if data.isAccumulating {
+					AreaMark(
+						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
+						y: .value(data.title, $0.numerator),
+						series: .value("", data.title)
+					)
+					.lineStyle(StrokeStyle(lineWidth: 3))
+					.foregroundStyle(style.numeratorLineMarkColor.swiftUIColor)
+					.interpolationMethod(.catmullRom)
 
-						AreaMark(
-							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-							y: .value(Strings.Statistics.Title.totalRolls, $0.denominator),
-							series: .value("", Strings.Statistics.Title.totalRolls)
-						)
-						.lineStyle(StrokeStyle(lineWidth: 3))
-						.foregroundStyle(Asset.Colors.Charts.Percentage.denominatorLineMark.swiftUIColor)
-						.interpolationMethod(.catmullRom)
-					} else {
-						BarMark(
-							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
-							y: .value(data.title, $0.numerator)
-						)
-						.foregroundStyle(barMarkGradient)
+					AreaMark(
+						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
+						y: .value(Strings.Statistics.Title.totalRolls, $0.denominator),
+						series: .value("", Strings.Statistics.Title.totalRolls)
+					)
+					.lineStyle(StrokeStyle(lineWidth: 3))
+					.foregroundStyle(style.denominatorLineMarkColor.swiftUIColor)
+					.interpolationMethod(.catmullRom)
+				} else {
+					BarMark(
+						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
+						y: .value(data.title, $0.numerator)
+					)
+					.foregroundStyle(barMarkGradient)
 
-					}
-				}
-			}
-			.chartXAxis {
-				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Percentage.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Percentage.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Percentage.axes.swiftUIColor)
-				}
-			}
-			.chartYAxis {
-				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Percentage.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Percentage.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Percentage.axes.swiftUIColor)
 				}
 			}
 		}
-		.groupBoxStyle(ChartsGroupBoxStyle.percentage)
+		.chartXAxis {
+			AxisMarks {
+				if !style.hideXAxis {
+					AxisGridLine()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisTick()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisValueLabel()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+				}
+			}
+		}
+		.chartYAxis {
+			AxisMarks {
+				AxisGridLine()
+					.foregroundStyle(style.axesColor.swiftUIColor)
+				AxisTick()
+					.foregroundStyle(style.axesColor.swiftUIColor)
+				AxisValueLabel()
+					.foregroundStyle(style.axesColor.swiftUIColor)
+			}
+		}
 	}
 
 	private var barMarkGradient: LinearGradient {
 		.init(
 			gradient: Gradient(colors: [
-				Asset.Colors.Charts.Percentage.barMark.swiftUIColor.opacity(0.8),
-				Asset.Colors.Charts.Percentage.barMark.swiftUIColor.opacity(0.3),
+				style.barMarkColor.swiftUIColor.opacity(0.8),
+				style.barMarkColor.swiftUIColor.opacity(0.3),
 			]),
 			startPoint: .top,
 			endPoint: .bottom
@@ -80,6 +87,7 @@ extension PercentageChart {
 		public let title: String
 		public let entries: [Entry]
 		public let isAccumulating: Bool
+		public let percentDifferenceOverFullTimeSpan: Double?
 
 		public var isEmpty: Bool {
 			entries.isEmpty || (isAccumulating && entries.count == 1)
@@ -89,6 +97,16 @@ extension PercentageChart {
 			self.title = title
 			self.entries = entries
 			self.isAccumulating = isAccumulating
+
+			if isAccumulating {
+				let firstValue = entries.first?.percentage ?? 0
+				let lastValue = entries.last?.percentage ?? 0
+				self.percentDifferenceOverFullTimeSpan = firstValue > 0
+					? ((lastValue - firstValue) / abs(firstValue))
+					: 0
+			} else {
+				self.percentDifferenceOverFullTimeSpan = nil
+			}
 		}
 	}
 }
@@ -109,6 +127,32 @@ extension PercentageChart.Data {
 			self.percentage = denominator > 0 ? Double(numerator) / Double(denominator) : 0
 			self.date = date
 			self.timeRange = timeRange
+		}
+	}
+}
+
+// MARK: - Style
+
+extension PercentageChart {
+	public struct Style {
+		public let barMarkColor: ColorAsset
+		public let denominatorLineMarkColor: ColorAsset
+		public let numeratorLineMarkColor: ColorAsset
+		public let axesColor: ColorAsset
+		public let hideXAxis: Bool
+
+		public init(
+			barMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.barMark,
+			denominatorLineMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.denominatorLineMark,
+			numeratorLineMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.numeratorLineMark,
+			axesColor: ColorAsset = Asset.Colors.Charts.Percentage.axes,
+			hideXAxis: Bool = false
+		) {
+			self.barMarkColor = barMarkColor
+			self.denominatorLineMarkColor = denominatorLineMarkColor
+			self.numeratorLineMarkColor = numeratorLineMarkColor
+			self.axesColor = axesColor
+			self.hideXAxis = hideXAxis
 		}
 	}
 }

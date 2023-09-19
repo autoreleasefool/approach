@@ -28,18 +28,24 @@ public struct AveragingChart: View {
 		.chartXAxis {
 			if !style.hideXAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(style.axesColor.swiftUIColor)
-					AxisTick().foregroundStyle(style.axesColor.swiftUIColor)
-					AxisValueLabel().foregroundStyle(style.axesColor.swiftUIColor)
+					AxisGridLine()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisTick()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisValueLabel()
+						.foregroundStyle(style.axesColor.swiftUIColor)
 				}
 			}
 		}
 		.chartYAxis {
 			if !style.hideYAxis {
 				AxisMarks {
-					AxisGridLine().foregroundStyle(style.axesColor.swiftUIColor)
-					AxisTick().foregroundStyle(style.axesColor.swiftUIColor)
-					AxisValueLabel().foregroundStyle(style.axesColor.swiftUIColor)
+					AxisGridLine()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisTick()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisValueLabel()
+						.foregroundStyle(style.axesColor.swiftUIColor)
 				}
 			}
 		}
