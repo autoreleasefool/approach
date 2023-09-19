@@ -1,9 +1,13 @@
 # Most recent version
 
-## iOS 1.0.1b5
+## iOS 1.0.2b6
 
 ```
-- Allows exporting user data in a single file for backup or sharing
+- Feat: More choices for statistics for widgets
+- Feat: Widgets appearing on a line alone now take the full width
+- Fix: Better language throughout the app to clarify when data is missing or ambiguous
+- Fix: Populate bowler by default for stats when only one bowler exists
+- Fix: Gear is no longer deleted when owner is deleted
 ```
 
 ## Android v3.2.0
@@ -17,6 +21,12 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.0.1b5
+
+```
+- Allows exporting user data in a single file for backup or sharing
+```
 
 ## iOS 1.0.0b4
 
