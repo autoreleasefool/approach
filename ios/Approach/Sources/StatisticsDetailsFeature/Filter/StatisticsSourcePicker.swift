@@ -367,7 +367,7 @@ public struct StatisticsSourcePickerView: View {
 			action: StatisticsSourcePicker.Destination.Action.bowlerPicker
 		) { store in
 			ResourcePickerView(store: store) { bowler in
-				Bowler.View(bowler.name)
+				Bowler.View(bowler)
 			}
 		}
 		.navigationDestination(

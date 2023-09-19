@@ -53,7 +53,11 @@ extension Statistics {
 		allCases.filter { $0.supports(trackableSource: trackableSource) }
 	}
 
-	public static func type(of id: String) -> Statistic.Type? {
-		Self.allCases.first { $0.title == id }
+	public static func supportingWidgets() -> [Statistic.Type] {
+		allCases.filter { $0.supportsWidgets }
+	}
+
+	public static func type(of id: String, fallbackResolver: ((String) -> Statistic.Type?)? = nil) -> Statistic.Type? {
+		Self.allCases.first(where: { $0.title == id }) ?? fallbackResolver?(id)
 	}
 }

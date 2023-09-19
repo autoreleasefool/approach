@@ -1374,6 +1374,10 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "statistics.overview.viewMoreDetailsHint.title", fallback: "View more detailed statistics")
       }
     }
+    public enum Picker {
+      /// Statistic
+      public static let title = Strings.tr("Localizable", "statistics.picker.title", fallback: "Statistic")
+    }
     public enum Placeholder {
       /// Tap here to configure the stats you want to see
       public static let message = Strings.tr("Localizable", "statistics.placeholder.message", fallback: "Tap here to configure the stats you want to see")

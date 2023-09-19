@@ -244,7 +244,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				return Analytics.Widget.Created(
 					context: state.context,
 					source: configuration.source?.analyticsString,
-					statistic: configuration.statistic.rawValue,
+					statistic: configuration.statistic,
 					timeline: configuration.timeline.rawValue
 				)
 			default:

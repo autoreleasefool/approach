@@ -17,7 +17,7 @@ public struct StatisticsWidgetEditorView: View {
 		let source: StatisticsWidget.Source?
 		let sources: StatisticsWidget.Sources?
 		@BindingViewState var timeline: StatisticsWidget.Timeline
-		@BindingViewState var statistic: StatisticsWidget.Statistic
+		let statistic: String
 
 		let selectedBowlerName: String?
 		let selectedLeagueName: String?
@@ -73,15 +73,10 @@ public struct StatisticsWidgetEditorView: View {
 					}
 
 					Section {
-						Picker(
-							Strings.Widget.Builder.statistic,
-							selection: viewStore.$statistic
-						) {
-							ForEach(StatisticsWidget.Statistic.allCases) {
-								Text(String(describing: $0)).tag($0)
-							}
+						Button { viewStore.send(.didTapStatistic) } label: {
+							Text(viewStore.statistic)
 						}
-						.pickerStyle(.navigationLink)
+						.buttonStyle(.navigation)
 					}
 
 					if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
@@ -114,7 +109,7 @@ public struct StatisticsWidgetEditorView: View {
 			action: StatisticsWidgetEditor.Destination.Action.bowlerPicker
 		) { store in
 			ResourcePickerView(store: store) { bowler in
-				Bowler.View(bowler.name)
+				Bowler.View(bowler)
 			}
 		}
 		.navigationDestination(
@@ -125,6 +120,13 @@ public struct StatisticsWidgetEditorView: View {
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
+		}
+		.navigationDestination(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /StatisticsWidgetEditor.Destination.State.statisticPicker,
+			action: StatisticsWidgetEditor.Destination.Action.statisticPicker
+		) { store in
+			StatisticPickerView(store: store)
 		}
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
@@ -141,7 +143,7 @@ public struct StatisticsWidgetEditorView: View {
 extension StatisticsWidgetEditorView.ViewState {
 	init(store: BindingViewStore<StatisticsWidgetEditor.State>) {
 		self._timeline = store.$timeline
-		self._statistic = store.$statistic
+		self.statistic = store.statistic
 		self.source = store.source
 		self.sources = store.sources
 		self.selectedBowlerName = store.bowler?.name

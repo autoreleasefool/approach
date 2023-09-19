@@ -24,13 +24,3 @@ extension StatisticsWidget.Timeline: CustomStringConvertible {
 		}
 	}
 }
-
-extension StatisticsWidget.Statistic: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .average: return Strings.Statistics.Title.gameAverage
-		case .middleHits: return Strings.Statistics.Title.middleHits
-		case .averagePinsLeftOnDeck: return Strings.Statistics.Title.averagePinsLeftOnDeck
-		}
-	}
-}

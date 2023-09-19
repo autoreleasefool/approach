@@ -27,7 +27,7 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		public var source: StatisticsWidget.Source?
 		@BindingState public var timeline: StatisticsWidget.Timeline = .past3Months
-		@BindingState public var statistic: StatisticsWidget.Statistic = .average
+		public var statistic: String = Statistics.GameAverage.title
 
 		public var sources: StatisticsWidget.Sources?
 		public var bowler: Bowler.Summary?
@@ -58,6 +58,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didTapLeague
 			case didTapSaveButton
 			case didTapWidget
+			case didTapStatistic
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
@@ -84,12 +85,14 @@ public struct StatisticsWidgetEditor: Reducer {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.State)
 			case help(StatisticsWidgetHelp.State)
+			case statisticPicker(StatisticPicker.State)
 		}
 
 		public enum Action: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.Action)
 			case help(StatisticsWidgetHelp.Action)
+			case statisticPicker(StatisticPicker.Action)
 		}
 
 		@Dependency(\.bowlers) var bowlers
@@ -104,6 +107,9 @@ public struct StatisticsWidgetEditor: Reducer {
 			}
 			Scope(state: /State.help, action: /Action.help) {
 				StatisticsWidgetHelp()
+			}
+			Scope(state: /State.statisticPicker, action: /Action.statisticPicker) {
+				StatisticPicker()
 			}
 		}
 	}
@@ -139,6 +145,10 @@ public struct StatisticsWidgetEditor: Reducer {
 				switch viewAction {
 				case .didFirstAppear:
 					return loadSources(&state)
+
+				case .didTapStatistic:
+					state.destination = .statisticPicker(.init(selected: state.statistic))
+					return .none
 
 				case .didTapWidget:
 					switch state.widgetPreviewData {
@@ -182,9 +192,6 @@ public struct StatisticsWidgetEditor: Reducer {
 					}
 
 				case .binding(\.$timeline):
-					return refreshChart(withConfiguration: state.configuration, state: &state)
-
-				case .binding(\.$statistic):
 					return refreshChart(withConfiguration: state.configuration, state: &state)
 
 				case .binding:
@@ -269,6 +276,13 @@ public struct StatisticsWidgetEditor: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.statisticPicker(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didSelectStatistic(statistic):
+						state.statistic = statistic
+						return refreshChart(withConfiguration: state.configuration, state: &state)
+					}
+
 				case let .errors(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:
@@ -279,6 +293,7 @@ public struct StatisticsWidgetEditor: Reducer {
 						.destination(.presented(.bowlerPicker(.internal))), .destination(.presented(.bowlerPicker(.view))),
 						.destination(.presented(.leaguePicker(.internal))), .destination(.presented(.leaguePicker(.view))),
 						.destination(.presented(.help(.internal))), .destination(.presented(.help(.view))),
+						.destination(.presented(.statisticPicker(.internal))), .destination(.presented(.statisticPicker(.view))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}

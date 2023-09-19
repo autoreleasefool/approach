@@ -82,7 +82,7 @@ public struct GearEditorView: View {
 			action: GearEditor.Destination.Action.bowlerPicker
 		) {
 			ResourcePickerView(store: $0) { bowler in
-				Bowler.View(bowler.name)
+				Bowler.View(bowler)
 			}
 		}
 		.navigationDestination(

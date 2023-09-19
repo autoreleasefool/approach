@@ -261,14 +261,15 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadWidgetData: { configuration in
-				let statistic = configuration.statistic.type
 				@Sendable func unavailable() -> Statistics.ChartContent {
-					.chartUnavailable(statistic: statistic.title)
+					.chartUnavailable(statistic: configuration.statistic)
 				}
 
 				@Sendable func dataMissing() -> Statistics.ChartContent {
-					.dataMissing(statistic: statistic.title)
+					.dataMissing(statistic: configuration.statistic)
 				}
+
+				guard let statistic = Statistics.type(of: configuration.statistic) else { return unavailable() }
 
 				return try await database.reader().read { db in
 					guard let filter = configuration.trackableFilter(relativeTo: date(), in: calendar) else {

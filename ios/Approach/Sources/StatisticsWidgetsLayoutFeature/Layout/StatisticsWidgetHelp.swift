@@ -15,7 +15,7 @@ public struct StatisticsWidgetHelp: Reducer {
 				bowlerId: UUID(0),
 				leagueId: nil,
 				timeline: .allTime,
-				statistic: .average
+				statistic: "Average"
 			)
 		}
 	}
@@ -66,7 +66,7 @@ public struct StatisticsWidgetHelpView: View {
 					VStack(alignment: .leading, spacing: .smallSpacing) {
 						SquareWidget(
 							configuration: viewStore.missingStatistic,
-							chartContent: .dataMissing(statistic: viewStore.missingStatistic.statistic.type.title),
+							chartContent: .dataMissing(statistic: viewStore.missingStatistic.statistic),
 							onPress: {}
 						)
 						.frame(maxWidth: 150)
@@ -84,7 +84,7 @@ public struct StatisticsWidgetHelpView: View {
 					VStack(alignment: .leading, spacing: .smallSpacing) {
 						SquareWidget(
 							configuration: viewStore.missingStatistic,
-							chartContent: .chartUnavailable(statistic: viewStore.missingStatistic.statistic.type.title),
+							chartContent: .chartUnavailable(statistic: viewStore.missingStatistic.statistic),
 							onPress: {}
 						)
 						.frame(maxWidth: 150)
@@ -118,7 +118,7 @@ struct StatisticsWidgetHelpPreview: PreviewProvider {
 					bowlerId: UUID(0),
 					leagueId: nil,
 					timeline: .allTime,
-					statistic: .average
+					statistic: "Average"
 				)),
 				reducer: StatisticsWidgetHelp.init
 			))

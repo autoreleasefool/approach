@@ -8,6 +8,7 @@ public protocol Statistic {
 	static var title: String { get }
 	static var category: StatisticCategory { get }
 	static var supportsAggregation: Bool { get }
+	static var supportsWidgets: Bool { get }
 
 	var formattedValue: String { get }
 	var isEmpty: Bool { get }

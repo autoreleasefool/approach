@@ -53,8 +53,6 @@ public enum Asset {
           public static let axes = ColorAsset(name: "Charts/Counting/Compact/Axes")
           public static let barMark = ColorAsset(name: "Charts/Counting/Compact/BarMark")
           public static let lineMark = ColorAsset(name: "Charts/Counting/Compact/LineMark")
-          public static let negativeChange = ColorAsset(name: "Charts/Counting/Compact/NegativeChange")
-          public static let positiveChange = ColorAsset(name: "Charts/Counting/Compact/PositiveChange")
         }
         public static let lineMark = ColorAsset(name: "Charts/Counting/LineMark")
       }

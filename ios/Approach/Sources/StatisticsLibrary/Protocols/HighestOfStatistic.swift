@@ -10,6 +10,10 @@ extension HighestOfStatistic {
 		true
 	}
 
+	public static var supportsWidgets: Bool {
+		true
+	}
+
 	public mutating func aggregate(with: Statistic) {
 		guard let with = with as? Self else { return }
 		self.highest = max(self.highest, with.highest)

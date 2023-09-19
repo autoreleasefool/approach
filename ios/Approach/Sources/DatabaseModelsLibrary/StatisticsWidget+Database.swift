@@ -9,7 +9,7 @@ extension StatisticsWidget {
 		public var bowlerId: Bowler.ID?
 		public var leagueId: League.ID?
 		public var timeline: StatisticsWidget.Timeline
-		public var statistic: StatisticsWidget.Statistic
+		public var statistic: String
 		public var context: String
 		public var priority: Int
 
@@ -19,7 +19,7 @@ extension StatisticsWidget {
 			bowlerId: Bowler.ID?,
 			leagueId: League.ID?,
 			timeline: StatisticsWidget.Timeline,
-			statistic: StatisticsWidget.Statistic,
+			statistic: String,
 			context: String,
 			priority: Int
 		) {
@@ -40,7 +40,6 @@ extension StatisticsWidget.Database: TableRecord, FetchableRecord, PersistableRe
 }
 
 extension StatisticsWidget.Timeline: DatabaseValueConvertible {}
-extension StatisticsWidget.Statistic: DatabaseValueConvertible {}
 
 extension StatisticsWidget.Database {
 	public enum Columns {

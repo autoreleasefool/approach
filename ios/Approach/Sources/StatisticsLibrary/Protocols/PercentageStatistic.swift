@@ -16,6 +16,10 @@ extension PercentageStatistic {
 		true
 	}
 
+	public static var supportsWidgets: Bool {
+		true
+	}
+
 	public var percentage: Double {
 		return denominator > 0 ? Double(numerator) / Double(denominator) : 0
 	}

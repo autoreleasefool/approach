@@ -195,7 +195,7 @@ public struct StatisticsWidgetLayout: Reducer {
 
 			state.destination = .details(.init(
 				filter: filter,
-				withInitialStatistic: widget.statistic.type.title
+				withInitialStatistic: widget.statistic
 			))
 		case .dataMissing, .chartUnavailable, .none:
 			state.destination = .help(.init(missingStatistic: widget))
@@ -303,9 +303,9 @@ struct StatisticsWidgetLayoutPreview: PreviewProvider {
 					initialState: {
 						var state = StatisticsWidgetLayout.State(context: "", newWidgetSource: .bowler(UUID()))
 						state.widgets = [
-							.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
-							.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
-							.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
+							.init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+							.init(id: UUID(1), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
+							.init(id: UUID(2), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average"),
 						]
 						state.widgetData = [
 							UUID(0): .averaging(AveragingChart.Data.bowlerAverageIncrementingMock),

@@ -9,7 +9,7 @@ extension StatisticsWidget {
 		public var bowlerId: Bowler.ID?
 		public var leagueId: League.ID?
 		public var timeline: StatisticsWidget.Timeline
-		public var statistic: StatisticsWidget.Statistic
+		public var statistic: String
 		public var context: String
 		public var priority: Int
 

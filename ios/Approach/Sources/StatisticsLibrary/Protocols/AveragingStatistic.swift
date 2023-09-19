@@ -12,6 +12,10 @@ extension AveragingStatistic {
 		false
 	}
 
+	public static var supportsWidgets: Bool {
+		true
+	}
+
 	public var average: Double {
 		return divisor > 0 ? Double(total) / Double(divisor) : 0
 	}

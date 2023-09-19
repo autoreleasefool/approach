@@ -12,14 +12,14 @@ extension StatisticsWidget {
 		public let bowlerId: Bowler.ID?
 		public let leagueId: League.ID?
 		public let timeline: StatisticsWidget.Timeline
-		public let statistic: StatisticsWidget.Statistic
+		public let statistic: String
 
 		public init(
 			id: StatisticsWidget.ID,
 			bowlerId: Bowler.ID?,
 			leagueId: League.ID?,
 			timeline: StatisticsWidget.Timeline,
-			statistic: StatisticsWidget.Statistic
+			statistic: String
 		) {
 			self.id = id
 			self.bowlerId = bowlerId
@@ -94,17 +94,5 @@ extension StatisticsWidget.Configuration {
 		} else {
 			return nil
 		}
-	}
-}
-
-// MARK: - Statistic
-
-extension StatisticsWidget {
-	public enum Statistic: String, Codable, Sendable, Identifiable, CaseIterable {
-		case average
-		case middleHits
-		case averagePinsLeftOnDeck
-
-		public var id: String { rawValue }
 	}
 }
