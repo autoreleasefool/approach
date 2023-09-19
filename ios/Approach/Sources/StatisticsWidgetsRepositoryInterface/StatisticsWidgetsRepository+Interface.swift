@@ -7,6 +7,7 @@ import StatisticsWidgetsLibrary
 
 public struct StatisticsWidgetsRepository: Sendable {
 	public var loadSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
+	public var loadDefaultSources: @Sendable () async throws -> StatisticsWidget.Sources?
 	public var loadChart: @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
 	public var fetchAll: @Sendable (String?) -> AsyncThrowingStream<[StatisticsWidget.Configuration], Error>
 	public var updatePriorities: @Sendable ([StatisticsWidget.ID]) async throws -> Void
@@ -15,6 +16,7 @@ public struct StatisticsWidgetsRepository: Sendable {
 
 	public init(
 		loadSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,
+		loadDefaultSources: @escaping @Sendable () async throws -> StatisticsWidget.Sources?,
 		loadChart: @escaping @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent,
 		fetchAll: @escaping @Sendable (String?) -> AsyncThrowingStream<[StatisticsWidget.Configuration], Error>,
 		updatePriorities: @escaping @Sendable ([StatisticsWidget.ID]) async throws -> Void,
@@ -22,6 +24,7 @@ public struct StatisticsWidgetsRepository: Sendable {
 		delete: @escaping @Sendable (StatisticsWidget.ID) async throws -> Void
 	) {
 		self.loadSources = loadSources
+		self.loadDefaultSources = loadDefaultSources
 		self.loadChart = loadChart
 		self.fetchAll = fetchAll
 		self.updatePriorities = updatePriorities
@@ -41,6 +44,7 @@ public struct StatisticsWidgetsRepository: Sendable {
 extension StatisticsWidgetsRepository: TestDependencyKey {
 	public static var testValue = Self(
 		loadSources: { _ in unimplemented("\(Self.self).loadSources") },
+		loadDefaultSources: { unimplemented("\(Self.self).loadDefaultSources") },
 		loadChart: { _ in unimplemented("\(Self.self).loadChart") },
 		fetchAll: { _ in unimplemented("\(Self.self).fetchAll") },
 		updatePriorities: { _ in unimplemented("\(Self.self).updatePriorities") },

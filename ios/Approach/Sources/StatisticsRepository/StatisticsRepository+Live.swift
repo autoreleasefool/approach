@@ -261,6 +261,21 @@ extension StatisticsRepository: DependencyKey {
 					}
 				}
 			},
+			loadDefaultWidgetSources: {
+				try await database.reader().read {
+					let bowlers = try Bowler.Database
+						.limit(2)
+						.filter(byKind: .playable)
+						.asRequest(of: Bowler.Summary.self)
+						.fetchAll($0)
+
+					guard let bowler = bowlers.first, bowlers.count == 1 else {
+						return nil
+					}
+
+					return .init(bowler: bowler, league: nil)
+				}
+			},
 			loadWidgetData: { configuration in
 				@Sendable func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: configuration.statistic)

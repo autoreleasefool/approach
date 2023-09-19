@@ -11,6 +11,7 @@ public struct StatisticsRepository: Sendable {
 	public var loadValues: @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup]
 	public var loadChart: @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent
 	public var loadWidgetSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
+	public var loadDefaultWidgetSources: @Sendable () async throws -> StatisticsWidget.Sources?
 	public var loadWidgetData: @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
 
 	public init(
@@ -19,6 +20,7 @@ public struct StatisticsRepository: Sendable {
 		loadValues: @escaping @Sendable (TrackableFilter) async throws -> [Statistics.ListEntryGroup],
 		loadChart: @escaping @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent,
 		loadWidgetSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,
+		loadDefaultWidgetSources: @escaping @Sendable () async throws -> StatisticsWidget.Sources?,
 		loadWidgetData: @escaping @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
 	) {
 		self.loadSources = loadSources
@@ -26,6 +28,7 @@ public struct StatisticsRepository: Sendable {
 		self.loadValues = loadValues
 		self.loadChart = loadChart
 		self.loadWidgetSources = loadWidgetSources
+		self.loadDefaultWidgetSources = loadDefaultWidgetSources
 		self.loadWidgetData = loadWidgetData
 	}
 
@@ -45,6 +48,7 @@ extension StatisticsRepository: TestDependencyKey {
 		loadValues: { _ in unimplemented("\(Self.self).loadValues") },
 		loadChart: { _, _ in unimplemented("\(Self.self).loadChart") },
 		loadWidgetSources: { _ in unimplemented("\(Self.self).loadWidgetSources") },
+		loadDefaultWidgetSources: { unimplemented("\(Self.self).loadDefaultWidgetSources") },
 		loadWidgetData: { _ in unimplemented("\(Self.self).loadWidgetData") }
 	)
 }

@@ -12,6 +12,7 @@ extension StatisticsWidgetsRepository: DependencyKey {
 
 		return Self(
 			loadSources: { source in try await statistics.loadWidgetSources(source) },
+			loadDefaultSources: { try await statistics.loadDefaultWidgetSources() },
 			loadChart: { configuration in try await statistics.loadWidgetData(configuration) },
 			fetchAll: { context in
 				database.reader().observe {

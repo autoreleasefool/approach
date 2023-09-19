@@ -70,6 +70,7 @@ public struct StatisticsWidgetEditor: Reducer {
 
 			case didStartLoadingPreview
 			case didLoadSources(TaskResult<StatisticsWidget.Sources>)
+			case didLoadDefaultSources(TaskResult<StatisticsWidget.Sources?>)
 			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
 			case didFinishSavingConfiguration(TaskResult<StatisticsWidget.Configuration>)
 			case hideChart
@@ -217,6 +218,18 @@ public struct StatisticsWidgetEditor: Reducer {
 					state.league = sources.league
 					return .none
 
+				case let .didLoadDefaultSources(.success(sources)):
+					state.isLoadingSources = false
+					state.sources = sources
+					state.bowler = sources?.bowler
+					state.league = sources?.league
+					if let league = sources?.league {
+						state.source = .league(league.id)
+					} else if let bowler = sources?.bowler {
+						state.source = .bowler(bowler.id)
+					}
+					return refreshChart(withConfiguration: state.configuration, state: &state)
+
 				case let .didLoadChartContent(.success(content)):
 					state.widgetPreviewData = content
 					return .none
@@ -227,7 +240,7 @@ public struct StatisticsWidgetEditor: Reducer {
 						.run { _ in await dismiss() }
 					)
 
-				case let .didLoadSources(.failure(error)):
+				case let .didLoadSources(.failure(error)), let .didLoadDefaultSources(.failure(error)):
 					state.isLoadingSources = false
 					return state.errors
 						.enqueue(.failedToLoadSources, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
@@ -308,12 +321,19 @@ public struct StatisticsWidgetEditor: Reducer {
 	}
 
 	private func loadSources(_ state: inout State) -> Effect<Action> {
-		guard let source = state.source else { return .none }
 		state.isLoadingSources = true
-		return .run { send in
-			await send(.internal(.didLoadSources(TaskResult {
-				try await statisticsWidgets.loadSources(source)
-			})))
+		if let source = state.source {
+			return .run { send in
+				await send(.internal(.didLoadSources(TaskResult {
+					try await statisticsWidgets.loadSources(source)
+				})))
+			}
+		} else {
+			return .run { send in
+				await send(.internal(.didLoadDefaultSources(TaskResult {
+					try await statisticsWidgets.loadDefaultSources()
+				})))
+			}
 		}
 	}
 
