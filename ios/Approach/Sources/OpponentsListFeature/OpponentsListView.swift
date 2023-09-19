@@ -4,6 +4,7 @@ import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
+import ModelsViewsLibrary
 import OpponentDetailsFeature
 import ResourceListLibrary
 import SortOrderLibrary
@@ -34,11 +35,15 @@ public struct OpponentsListView: View {
 			) { opponent in
 				if viewStore.isOpponentDetailsEnabled {
 					Button { store.send(.view(.didTapOpponent(opponent.id))) } label: {
-						Text(opponent.name)
+						Bowler.View(opponent)
 					}
 					.buttonStyle(.navigation)
 				} else {
-					Text(opponent.name)
+					Bowler.View(opponent)
+				}
+			} header: {
+				Section {
+					Text(Strings.Opponent.List.description)
 				}
 			}
 		})

@@ -234,7 +234,7 @@ public struct GamesEditorView: View {
 	private func opponentPicker(store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) -> some View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
-				Text($0.name)
+				Bowler.View($0)
 			}
 		}
 	}

@@ -4,6 +4,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import FormFeature
 import ModelsLibrary
+import ModelsViewsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
@@ -81,7 +82,7 @@ public struct GearEditorView: View {
 			action: GearEditor.Destination.Action.bowlerPicker
 		) {
 			ResourcePickerView(store: $0) { bowler in
-				Text(bowler.name)
+				Bowler.View(bowler.name)
 			}
 		}
 		.navigationDestination(

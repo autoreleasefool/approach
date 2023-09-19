@@ -7,6 +7,7 @@ import FeatureActionLibrary
 import GamesRepositoryInterface
 import LeaguesRepositoryInterface
 import ModelsLibrary
+import ModelsViewsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
 import SeriesRepositoryInterface
@@ -366,7 +367,7 @@ public struct StatisticsSourcePickerView: View {
 			action: StatisticsSourcePicker.Destination.Action.bowlerPicker
 		) { store in
 			ResourcePickerView(store: store) { bowler in
-				Text(bowler.name)
+				Bowler.View(bowler.name)
 			}
 		}
 		.navigationDestination(

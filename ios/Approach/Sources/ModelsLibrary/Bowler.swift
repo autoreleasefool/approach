@@ -27,6 +27,22 @@ extension Bowler {
 }
 
 extension Bowler {
+	public struct Opponent: Identifiable, Codable, Equatable {
+		public let id: Bowler.ID
+		public let name: String
+		public let kind: Kind
+
+		public init(id: Bowler.ID, name: String, kind: Kind) {
+			self.id = id
+			self.name = name
+			self.kind = kind
+		}
+
+		public var summary: Summary { .init(id: id, name: name) }
+	}
+}
+
+extension Bowler {
 	public struct List: Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public let name: String

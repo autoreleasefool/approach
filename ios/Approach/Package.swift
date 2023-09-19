@@ -518,6 +518,7 @@ let package = Package(
 			name: "OpponentsListFeature",
 			dependencies: [
 				"FeatureFlagsServiceInterface",
+				"ModelsViewsLibrary",
 				"OpponentDetailsFeature",
 				"RecentlyUsedServiceInterface",
 				"SortOrderLibrary",
@@ -622,6 +623,7 @@ let package = Package(
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
+				"ModelsViewsLibrary",
 				"NotificationsServiceInterface",
 				"PickableModelsLibrary",
 				"PreferenceServiceInterface",

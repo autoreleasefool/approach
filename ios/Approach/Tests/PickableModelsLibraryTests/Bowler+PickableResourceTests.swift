@@ -8,4 +8,10 @@ final class BowlerPickableResourceTests: XCTestCase {
 		XCTAssertEqual(Bowler.Summary.pickableModelName(forCount: 1), "Bowler")
 		XCTAssertEqual(Bowler.Summary.pickableModelName(forCount: 2), "Bowlers")
 	}
+
+	func testOpponentModelName() {
+		XCTAssertEqual(Bowler.Opponent.pickableModelName(forCount: 0), "Opponents")
+		XCTAssertEqual(Bowler.Opponent.pickableModelName(forCount: 1), "Opponent")
+		XCTAssertEqual(Bowler.Opponent.pickableModelName(forCount: 2), "Opponents")
+	}
 }

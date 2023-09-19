@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import ErrorsFeature
 import ModelsLibrary
+import ModelsViewsLibrary
 import ResourcePickerLibrary
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
@@ -113,7 +114,7 @@ public struct StatisticsWidgetEditorView: View {
 			action: StatisticsWidgetEditor.Destination.Action.bowlerPicker
 		) { store in
 			ResourcePickerView(store: store) { bowler in
-				Text(bowler.name)
+				Bowler.View(bowler.name)
 			}
 		}
 		.navigationDestination(
