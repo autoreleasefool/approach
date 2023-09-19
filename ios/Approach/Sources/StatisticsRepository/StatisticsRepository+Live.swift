@@ -163,6 +163,7 @@ extension StatisticsRepository: DependencyKey {
 				try await database.reader().read {
 					let bowlers = try Bowler.Database
 						.limit(2)
+						.filter(byKind: .playable)
 						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 

@@ -11,6 +11,8 @@ import XCTest
 final class StatisticsRepositorySourcesTests: XCTestCase {
 	@Dependency(\.statistics) var statistics
 
+	// MARK: Load Default Sources
+
 	func testLoadDefaultSources_WithNoBowlers_ReturnsNil() async throws {
 		let db = try initializeDatabase(withBowlers: .zero)
 
@@ -57,6 +59,28 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 
 		XCTAssertNil(sources)
 	}
+
+	func testLoadDefaultSources_WithOpponent_ReturnsBowler() async throws {
+		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph")
+		let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah", kind: .opponent)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
+
+		let sources = try await withDependencies {
+			$0.database.reader = { db }
+			$0.statistics = .liveValue
+		} operation: {
+			try await self.statistics.loadDefaultSources()
+		}
+
+		XCTAssertEqual(sources, .init(
+			bowler: .init(id: UUID(0), name: "Joseph"),
+			league: nil,
+			series: nil,
+			game: nil
+		))
+	}
+
+	// MARK: Load Sources
 
 	func testLoadsSources_ForBowler() async throws {
 		let db = try generatePopulatedDatabase()
