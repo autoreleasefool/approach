@@ -115,7 +115,7 @@ public struct HelpSettings: Reducer {
 					return .none
 
 				case .didTapImportButton:
-					// TODO: Navigate to data import feature
+					// FIXME: Navigate to data import feature
 					return .none
 
 				case .didTapExportButton:
