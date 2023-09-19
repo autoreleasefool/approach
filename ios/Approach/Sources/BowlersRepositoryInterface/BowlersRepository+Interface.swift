@@ -42,7 +42,7 @@ public struct BowlersRepository: Sendable {
 	}
 
 	public func pickable() -> AsyncThrowingStream<[Bowler.Summary], Error> {
-		self.summaries(nil, .byName)
+		self.summaries(.playable, .byName)
 	}
 
 	public func opponents(ordering: Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Opponent], Error> {

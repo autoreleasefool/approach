@@ -223,6 +223,30 @@ final class BowlersRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: Pickable
+
+	func testPickable_DoesNotIncludeOpponents() async throws {
+		// Given a database with a bowler and an opponent
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .playable)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
+
+		// Fetching the pickable bowlers
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			self.bowlers.pickable()
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowler
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), name: "Sarah"),
+		])
+	}
+
 	// MARK: Opponents
 
 	func testOpponents_ReturnsPlayablesAndOpponents() async throws {
