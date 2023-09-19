@@ -254,9 +254,9 @@
 "statistics.filter.frame.ballRolled.noneSelected" = "You haven't selected any bowling balls.";
 "statistics.filter.label.league.title" = "League";
 "statistics.filter.label.league.repeats" = "Repeats?";
-"statistics.filter.label.series.title" = "Series";
-"statistics.filter.label.series.starts" = "Starts";
-"statistics.filter.label.series.ends" = "Ends";
+"statistics.filter.label.series.title" = "Series Date";
+"statistics.filter.label.series.starts" = "Beginning from";
+"statistics.filter.label.series.ends" = "Ending on";
 "statistics.filter.label.series.alley.title" = "Alley";
 "statistics.filter.label.series.alley.material" = "Material";
 "statistics.filter.label.series.alley.mechanism" = "Mechanism";
@@ -265,7 +265,7 @@
 "statistics.filter.label.game.title" = "Game";
 "statistics.filter.label.game.lanes.title" = "Lanes";
 "statistics.filter.label.game.lanes.positions" = "Lane Positions";
-"statistics.filter.label.gear.title" = "Gear";
+"statistics.filter.label.gear.title" = "Gear used";
 "statistics.filter.label.gear.ballsRolled" = "Balls Rolled";
 "statistics.filter.label.opponent.title" = "Opponent";
 "statistics.categories.overall.title" = "Overall";

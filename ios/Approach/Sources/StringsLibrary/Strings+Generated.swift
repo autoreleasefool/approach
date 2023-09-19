@@ -1299,8 +1299,8 @@ public enum Strings {
         public enum Gear {
           /// Balls Rolled
           public static let ballsRolled = Strings.tr("Localizable", "statistics.filter.label.gear.ballsRolled", fallback: "Balls Rolled")
-          /// Gear
-          public static let title = Strings.tr("Localizable", "statistics.filter.label.gear.title", fallback: "Gear")
+          /// Gear used
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.gear.title", fallback: "Gear used")
         }
         public enum League {
           /// Repeats?
@@ -1313,12 +1313,12 @@ public enum Strings {
           public static let title = Strings.tr("Localizable", "statistics.filter.label.opponent.title", fallback: "Opponent")
         }
         public enum Series {
-          /// Ends
-          public static let ends = Strings.tr("Localizable", "statistics.filter.label.series.ends", fallback: "Ends")
-          /// Starts
-          public static let starts = Strings.tr("Localizable", "statistics.filter.label.series.starts", fallback: "Starts")
-          /// Series
-          public static let title = Strings.tr("Localizable", "statistics.filter.label.series.title", fallback: "Series")
+          /// Ending on
+          public static let ends = Strings.tr("Localizable", "statistics.filter.label.series.ends", fallback: "Ending on")
+          /// Beginning from
+          public static let starts = Strings.tr("Localizable", "statistics.filter.label.series.starts", fallback: "Beginning from")
+          /// Series Date
+          public static let title = Strings.tr("Localizable", "statistics.filter.label.series.title", fallback: "Series Date")
           public enum Alley {
             /// Material
             public static let material = Strings.tr("Localizable", "statistics.filter.label.series.alley.material", fallback: "Material")
