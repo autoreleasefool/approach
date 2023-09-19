@@ -20,7 +20,7 @@ extension StatisticsWidget {
 			case let .averaging(data):
 				averagingWidget(data)
 			case let .counting(data):
-				chartUnavailable(data.title)
+				countingWidget(data)
 			case let .percentage(data):
 				percentageWidget(data)
 			case let .chartUnavailable(statistic):
@@ -83,8 +83,28 @@ extension StatisticsWidget {
 					))
 				} else {
 					Text(String(describing: configuration.timeline))
-						.foregroundColor(Asset.Colors.Charts.Percentage.axes)
+						.foregroundColor(Asset.Colors.Charts.Percentage.Compact.axes)
+						.font(.caption)
 				}
+			}
+		}
+
+		private func countingWidget(_ data: CountingChart.Data) -> some View {
+			StatisticsWidget.WidgetLayout(data.title) {
+				CountingChart.Compact(
+					data,
+					style: .init(
+						areaMarkColor: Asset.Colors.Charts.Counting.Compact.areaMark,
+						barMarkColor: Asset.Colors.Charts.Counting.Compact.barMark,
+						lineMarkColor: Asset.Colors.Charts.Counting.Compact.lineMark,
+						axesColor: Asset.Colors.Charts.Counting.Compact.axes,
+						hideXAxis: true
+					)
+				)
+			} footer: {
+				Text(String(describing: configuration.timeline))
+					.foregroundColor(Asset.Colors.Charts.Counting.Compact.axes)
+					.font(.caption)
 			}
 		}
 
@@ -167,8 +187,8 @@ struct StatisticsWidgetPreview: PreviewProvider {
 				chartContent: .averaging(AveragingChart.Data.bowlerAverageDecrementingMock)
 			)
 			StatisticsWidget.Widget(
-				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .average),
-				chartContent: .averaging(AveragingChart.Data.bowlerAverageIncrementingMock)
+				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .middleHits),
+				chartContent: .counting(CountingChart.Data.bowlerHeadPinsMock)
 			)
 			StatisticsWidget.Widget(
 				configuration: .init(id: UUID(0), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: .middleHits),

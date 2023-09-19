@@ -48,6 +48,14 @@ public enum Asset {
         public static let areaMark = ColorAsset(name: "Charts/Counting/AreaMark")
         public static let axes = ColorAsset(name: "Charts/Counting/Axes")
         public static let barMark = ColorAsset(name: "Charts/Counting/BarMark")
+        public enum Compact {
+          public static let areaMark = ColorAsset(name: "Charts/Counting/Compact/AreaMark")
+          public static let axes = ColorAsset(name: "Charts/Counting/Compact/Axes")
+          public static let barMark = ColorAsset(name: "Charts/Counting/Compact/BarMark")
+          public static let lineMark = ColorAsset(name: "Charts/Counting/Compact/LineMark")
+          public static let negativeChange = ColorAsset(name: "Charts/Counting/Compact/NegativeChange")
+          public static let positiveChange = ColorAsset(name: "Charts/Counting/Compact/PositiveChange")
+        }
         public static let lineMark = ColorAsset(name: "Charts/Counting/LineMark")
       }
       public static let foreground = ColorAsset(name: "Charts/Foreground")

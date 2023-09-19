@@ -6,60 +6,67 @@ import SwiftUI
 
 public struct CountingChart: View {
 	let data: Data
+	let style: Style
 
-	public init(_ data: Data) {
+	public init(_ data: Data, style: Style = .init()) {
 		self.data = data
+		self.style = style
 	}
 
 	public var body: some View {
-		GroupBox(data.title) {
-			Chart {
-				ForEach(data.entries) {
-					if data.isAccumulating {
-						AreaMark(
-							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-							y: .value(data.title, $0.value)
-						)
-						.foregroundStyle(areaMarkGradient)
+		Chart {
+			ForEach(data.entries) {
+				if data.isAccumulating {
+					AreaMark(
+						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
+						y: .value(data.title, $0.value)
+					)
+					.foregroundStyle(areaMarkGradient)
 
-						LineMark(
-							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-							y: .value(data.title, $0.value)
-						)
-						.lineStyle(StrokeStyle(lineWidth: 2))
-						.foregroundStyle(Asset.Colors.Charts.Counting.lineMark.swiftUIColor)
-					} else {
-						BarMark(
-							x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
-							y: .value(data.title, $0.value)
-						)
-						.foregroundStyle(barMarkGradient)
-					}
-				}
-			}
-			.chartXAxis {
-				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
-				}
-			}
-			.chartYAxis {
-				AxisMarks {
-					AxisGridLine().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
-					AxisTick().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
-					AxisValueLabel().foregroundStyle(Asset.Colors.Charts.Counting.axes.swiftUIColor)
+					LineMark(
+						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
+						y: .value(data.title, $0.value)
+					)
+					.lineStyle(StrokeStyle(lineWidth: 2))
+					.foregroundStyle(style.lineMarkColor.swiftUIColor)
+				} else {
+					BarMark(
+						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
+						y: .value(data.title, $0.value)
+					)
+					.foregroundStyle(barMarkGradient)
 				}
 			}
 		}
-		.groupBoxStyle(ChartsGroupBoxStyle.counting)
+		.chartXAxis {
+			if !style.hideXAxis {
+				AxisMarks {
+					AxisGridLine()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisTick()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+					AxisValueLabel()
+						.foregroundStyle(style.axesColor.swiftUIColor)
+				}
+			}
+		}
+		.chartYAxis {
+			AxisMarks {
+				AxisGridLine()
+					.foregroundStyle(style.axesColor.swiftUIColor)
+				AxisTick()
+					.foregroundStyle(style.axesColor.swiftUIColor)
+				AxisValueLabel()
+					.foregroundStyle(style.axesColor.swiftUIColor)
+			}
+		}
 	}
 
 	private var barMarkGradient: LinearGradient {
 		.init(
 			gradient: Gradient(colors: [
-				Asset.Colors.Charts.Counting.barMark.swiftUIColor.opacity(0.8),
-				Asset.Colors.Charts.Counting.barMark.swiftUIColor.opacity(0.3),
+				style.barMarkColor.swiftUIColor.opacity(0.8),
+				style.barMarkColor.swiftUIColor.opacity(0.3),
 			]),
 			startPoint: .top,
 			endPoint: .bottom
@@ -69,9 +76,9 @@ public struct CountingChart: View {
 	private var areaMarkGradient: LinearGradient {
 		.init(
 			gradient: Gradient(colors: [
-				Asset.Colors.Charts.Counting.areaMark.swiftUIColor.opacity(0.8),
-				Asset.Colors.Charts.Counting.areaMark.swiftUIColor.opacity(0.4),
-				Asset.Colors.Charts.Counting.areaMark.swiftUIColor.opacity(0.2),
+				style.areaMarkColor.swiftUIColor.opacity(0.8),
+				style.areaMarkColor.swiftUIColor.opacity(0.4),
+				style.areaMarkColor.swiftUIColor.opacity(0.2),
 			]),
 			startPoint: .top,
 			endPoint: .bottom
@@ -111,6 +118,32 @@ extension CountingChart.Data {
 			self.value = value
 			self.date = date
 			self.timeRange = timeRange
+		}
+	}
+}
+
+// MARK: - Style
+
+extension CountingChart {
+	public struct Style {
+		public let areaMarkColor: ColorAsset
+		public let barMarkColor: ColorAsset
+		public let lineMarkColor: ColorAsset
+		public let axesColor: ColorAsset
+		public let hideXAxis: Bool
+
+		public init(
+			areaMarkColor: ColorAsset = Asset.Colors.Charts.Counting.areaMark,
+			barMarkColor: ColorAsset = Asset.Colors.Charts.Counting.barMark,
+			lineMarkColor: ColorAsset = Asset.Colors.Charts.Counting.lineMark,
+			axesColor: ColorAsset = Asset.Colors.Charts.Counting.axes,
+			hideXAxis: Bool = false
+		) {
+			self.areaMarkColor = areaMarkColor
+			self.barMarkColor = barMarkColor
+			self.lineMarkColor = lineMarkColor
+			self.axesColor = axesColor
+			self.hideXAxis = hideXAxis
 		}
 	}
 }
