@@ -29,10 +29,11 @@ public struct GameDetailsHeader: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didFirstAppear
+			case didStartTask
 			case didTapNext(State.NextElement)
 		}
 		public enum InternalAction: Equatable {
+			case startShimmering
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}
@@ -55,7 +56,7 @@ public struct GameDetailsHeader: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didFirstAppear:
+				case .didStartTask:
 					return .run { send in
 						for await key in preferences.observe(keys: [.gameShouldNotifyEditorChanges]) {
 							await send(.internal(.setFlashEditorChangesEnabled(preferences.bool(forKey: key) ?? true)))
@@ -66,32 +67,22 @@ public struct GameDetailsHeader: Reducer {
 					let shimmeringEffect: Effect<Action>
 					switch next {
 					case .bowler:
-						shimmeringEffect = state.isFlashEditorChangesEnabled ? .none : .run { send in
-							for color in [
-								Asset.Colors.Primary.light.swiftUIColor,
-								Asset.Colors.Primary.light.swiftUIColor.opacity(0),
-								Asset.Colors.Primary.light.swiftUIColor,
-								Asset.Colors.Primary.light.swiftUIColor.opacity(0),
-								nil,
-							] {
-								guard !Task.isCancelled else { return }
-								await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
-								try await clock.sleep(for: .milliseconds(500))
-							}
-						}
-						.cancellable(id: CancelID.shimmering, cancelInFlight: true)
+						shimmeringEffect = state.shouldStartShimmering()
 					case .frame, .game, .roll:
 						shimmeringEffect = .none
 					}
 
-					return .merge([
+					return .merge(
 						shimmeringEffect,
-						.send(.delegate(.didProceed(to: next))),
-					])
+						.send(.delegate(.didProceed(to: next)))
+					)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .startShimmering:
+					return startShimmering(ifEnabled: state.isFlashEditorChangesEnabled)
+
 				case let .setShimmerColor(color):
 					state.shimmerColor = color
 					return .none
@@ -105,6 +96,23 @@ public struct GameDetailsHeader: Reducer {
 				return .none
 			}
 		}
+	}
+
+	private func startShimmering(ifEnabled shimmerEnabled: Bool) -> Effect<Action> {
+		shimmerEnabled ? .run { send in
+			for color in [
+				Asset.Colors.Primary.light.swiftUIColor,
+				Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+				Asset.Colors.Primary.light.swiftUIColor,
+				Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+				nil,
+			] {
+				guard !Task.isCancelled else { return }
+				await send(.internal(.setShimmerColor(color)), animation: .easeInOut(duration: 0.5))
+				try await clock.sleep(for: .milliseconds(500))
+			}
+		}
+		.cancellable(id: CancelID.shimmering, cancelInFlight: true) : .none
 	}
 }
 
@@ -127,6 +135,12 @@ extension GameDetailsHeader.State {
 				return Strings.Game.titleWithOrdinal(gameIndex + 1)
 			}
 		}
+	}
+}
+
+extension GameDetailsHeader.State {
+	func shouldStartShimmering() -> Effect<GameDetailsHeader.Action> {
+		return .send(.internal(.startShimmering))
 	}
 }
 
@@ -173,7 +187,7 @@ public struct GameDetailsHeaderView: View {
 					.buttonStyle(TappableElement())
 				}
 			}
-			.task { await viewStore.send(.didFirstAppear).finish() }
+			.task { await viewStore.send(.didStartTask).finish() }
 		})
 	}
 }

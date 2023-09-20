@@ -24,11 +24,11 @@ public struct GamesEditorView: View {
 	@State private var frameContentSize: CGSize = .zero
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
-	@State private var minimumSheetContentSize: CGSize = .zero
-	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	struct ViewState: Equatable {
 		@BindingViewState var sheetDetent: PresentationDetent
+		let gameDetailsHeaderSize: CGSize
+		let gameDetailsMinimumContentSize: CGSize
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
 
@@ -191,36 +191,22 @@ public struct GamesEditorView: View {
 		viewStore: GamesEditorViewStore,
 		gameDetailsStore: StoreOf<GameDetails>
 	) -> some View {
-		Form {
-			Section {
-				IfLetStore(store.scope(state: \.gameDetailsHeader, action: /GamesEditor.Action.InternalAction.gameDetailsHeader)) {
-					GameDetailsHeaderView(store: $0)
-						.listRowInsets(EdgeInsets())
-						.listRowBackground(Color.clear)
-						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
-				}
-			} header: {
-				Color.clear
-					.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
-			}
-
-			GameDetailsView(store: gameDetailsStore)
-		}
-		.padding(.top, -sectionHeaderContentSize.height)
-		.frame(minHeight: 50)
-		.edgesIgnoringSafeArea(.bottom)
-		.presentationDetents(
-			[
-				.height(minimumSheetContentSize.height + 40),
-				.medium,
-				.large,
-			],
-			selection: viewStore.$sheetDetent
-		)
-		.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-		.interactiveDismissDisabled(true)
-		.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
-		.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
+		GameDetailsView(store: gameDetailsStore)
+			.padding(.top, -viewStore.gameDetailsHeaderSize.height)
+			.frame(minHeight: 50)
+			.edgesIgnoringSafeArea(.bottom)
+			.presentationDetents(
+				[
+					.height(viewStore.gameDetailsMinimumContentSize.height + 40),
+					.medium,
+					.large,
+				],
+				selection: viewStore.$sheetDetent
+			)
+			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+			.interactiveDismissDisabled(true)
+			.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
+			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 	}
 
 	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) -> some View {
@@ -314,6 +300,8 @@ extension GamesEditorView.ViewState {
 	init(store: BindingViewStore<GamesEditor.State>) {
 		self._sheetDetent = store.$sheetDetent
 		self._currentFrame = store.$currentFrame
+		self.gameDetailsHeaderSize = store.gameDetailsHeaderSize
+		self.gameDetailsMinimumContentSize = store.gameDetailsMinimumContentSize
 		self.willAdjustLaneLayoutAt = store.willAdjustLaneLayoutAt
 		self.backdropSize = store.backdropSize
 		self.isScoreSheetVisible = store.isScoreSheetVisible
@@ -333,10 +321,8 @@ extension GamesEditorView.ViewState {
 	}
 }
 
-private struct MinimumSheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct HeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct FrameContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct RollEditorSizeKey: PreferenceKey, CGSizePreferenceKey {}
-private struct SectionHeaderContentSizeKey: PreferenceKey, CGSizePreferenceKey {}

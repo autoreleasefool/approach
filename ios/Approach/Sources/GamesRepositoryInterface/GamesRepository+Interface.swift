@@ -13,7 +13,8 @@ public struct GamesRepository: Sendable {
 	public var matchesAgainstOpponent: @Sendable (Bowler.ID) -> AsyncThrowingStream<[Game.ListMatch], Error>
 	public var shareGames: @Sendable ([Game.ID]) async throws -> [Game.Shareable]
 	public var shareSeries: @Sendable (Series.ID) async throws -> [Game.Shareable]
-	public var edit: @Sendable (Game.ID) async throws -> Game.Edit?
+	public var observe: @Sendable (Game.ID) -> AsyncThrowingStream<Game.Edit?, Error>
+	public var findIndex: @Sendable (Game.ID) async throws -> Game.Indexed?
 	public var update: @Sendable (Game.Edit) async throws -> Void
 	public var delete: @Sendable (Game.ID) async throws -> Void
 
@@ -23,7 +24,8 @@ public struct GamesRepository: Sendable {
 		matchesAgainstOpponent: @escaping @Sendable (Bowler.ID) -> AsyncThrowingStream<[Game.ListMatch], Error>,
 		shareGames: @escaping @Sendable ([Game.ID]) async throws -> [Game.Shareable],
 		shareSeries: @escaping @Sendable (Series.ID) async throws -> [Game.Shareable],
-		edit: @escaping @Sendable (Game.ID) async throws -> Game.Edit?,
+		observe: @escaping @Sendable (Game.ID) -> AsyncThrowingStream<Game.Edit?, Error>,
+		findIndex: @escaping @Sendable (Game.ID) async throws -> Game.Indexed?,
 		update: @escaping @Sendable (Game.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Game.ID) async throws -> Void
 	) {
@@ -32,7 +34,8 @@ public struct GamesRepository: Sendable {
 		self.matchesAgainstOpponent = matchesAgainstOpponent
 		self.shareGames = shareGames
 		self.shareSeries = shareSeries
-		self.edit = edit
+		self.observe = observe
+		self.findIndex = findIndex
 		self.update = update
 		self.delete = delete
 	}
@@ -60,7 +63,8 @@ extension GamesRepository: TestDependencyKey {
 		matchesAgainstOpponent: { _ in unimplemented("\(Self.self).matchesAgainstOpponent") },
 		shareGames: { _ in unimplemented("\(Self.self).shareGames") },
 		shareSeries: { _ in unimplemented("\(Self.self).shareSeries") },
-		edit: { _ in unimplemented("\(Self.self).edit") },
+		observe: { _ in unimplemented("\(Self.self).observeChanges") },
+		findIndex: { _ in unimplemented("\(Self.self).findIndex") },
 		update: { _ in unimplemented("\(Self.self).update") },
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)

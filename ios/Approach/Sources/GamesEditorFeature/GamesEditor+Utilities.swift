@@ -81,6 +81,15 @@ extension GamesEditor.State {
 				}
 			}
 		}
+
+		// Keep _nextHeaderElement in sync with GameDetails
+		switch destination {
+		case var .gameDetails(details):
+			details.nextHeaderElement = _nextHeaderElement
+			destination = .gameDetails(details)
+		case .ballPicker, .gearPicker, .lanePicker, .opponentPicker, .settings, .sharing, .none:
+			break
+		}
 	}
 
 	mutating func hideNextHeaderIfNecessary(
