@@ -114,8 +114,8 @@ extension GamesRepository: DependencyKey {
 					.fetchAll($0)
 				}
 			},
-			edit: { id in
-				try await database.reader().read {
+			observe: { id in
+				database.reader().observeOne {
 					try Game.Database
 						.filter(id: id)
 						.including(required: Game.Database.bowler)
@@ -140,6 +140,14 @@ extension GamesRepository: DependencyKey {
 								.orderByLabel()
 						)
 						.asRequest(of: Game.Edit.self)
+						.fetchOne($0)
+				}
+			},
+			findIndex: { id in
+				try await database.reader().read {
+					try Game.Database
+						.filter(id: id)
+						.asRequest(of: Game.Indexed.self)
 						.fetchOne($0)
 				}
 			},

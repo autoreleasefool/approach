@@ -22,3 +22,5 @@ extension DerivableRequest<Game.Database> {
 		return filter(Game.Database.Columns.seriesId == bySeries)
 	}
 }
+
+extension Game.Indexed: FetchableRecord {}

@@ -188,7 +188,7 @@ extension ScoresRepository: DependencyKey {
 				return .init { continuation in
 					let task = Task {
 						do {
-							guard let game = try await gamesRepository.edit(gameId) else {
+							guard let game = try await gamesRepository.findIndex(gameId) else {
 								continuation.finish()
 								return
 							}

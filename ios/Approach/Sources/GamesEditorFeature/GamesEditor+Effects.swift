@@ -31,9 +31,11 @@ extension GamesEditor {
 				await send(.internal(.framesResponse(.failure(error))))
 			},
 			.run { [gameId = state.currentGameId] send in
-				await send(.internal(.gameResponse(TaskResult {
-					try await games.edit(gameId)
-				})))
+				for try await game in self.games.observe(gameId) {
+					await send(.internal(.gameResponse(.success(game))))
+				}
+			} catch: { error, send in
+				await send(.internal(.gameResponse(.failure(error))))
 			}
 		)
 		.cancellable(id: CancelID.observation, cancelInFlight: true)

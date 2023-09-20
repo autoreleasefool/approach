@@ -27,7 +27,7 @@ public struct GamesHeader: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didFirstAppear
+			case didStartTask
 			case didTapCloseButton
 			case didTapSettingsButton
 			case didTapShareButton
@@ -58,7 +58,7 @@ public struct GamesHeader: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didFirstAppear:
+				case .didStartTask:
 					return .run { send in
 						for await key in preferences.observe(keys: [.gameShouldNotifyEditorChanges]) {
 							await send(.internal(.setFlashEditorChangesEnabled(preferences.bool(forKey: key) ?? true)))
@@ -145,7 +145,7 @@ public struct GamesHeaderView: View {
 			.onChange(of: viewStore.currentGameIndex) { _ in
 				viewStore.send(.didStartShimmering)
 			}
-			.task { await viewStore.send(.didFirstAppear).finish() }
+			.task { await viewStore.send(.didStartTask).finish() }
 		})
 	}
 

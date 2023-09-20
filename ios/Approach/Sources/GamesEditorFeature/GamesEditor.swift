@@ -27,6 +27,8 @@ public struct GamesEditor: Reducer {
 		@BindingState public var sheetDetent: PresentationDetent = .height(.zero)
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
+		public var gameDetailsHeaderSize: CGSize = .zero
+		public var gameDetailsMinimumContentSize: CGSize = .zero
 		public var isScoreSheetVisible = true
 
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
@@ -40,7 +42,10 @@ public struct GamesEditor: Reducer {
 		public var _currentBowlerId: Bowler.ID
 		public var _currentGameId: Game.ID
 		@BindingState public var currentFrame: ScoreSheet.Selection = .init(frameIndex: 0, rollIndex: 0)
+
+		// Should only be modified in `GamesEditor.State.setCurrent`
 		public var _nextHeaderElement: GameDetailsHeader.State.NextElement?
+		public var didChangeBowler: Bool = false
 
 		public var currentBowlerId: Bowler.ID { _currentBowlerId }
 		public var currentGameId: Game.ID { _currentGameId }
@@ -62,7 +67,6 @@ public struct GamesEditor: Reducer {
 		public var _frameEditor: FrameEditor.State?
 		public var _rollEditor: RollEditor.State?
 		public var _gamesHeader: GamesHeader.State = .init()
-		public var _gameDetailsHeader: GameDetailsHeader.State? = .init()
 		@PresentationState public var destination: Destination.State?
 
 		public var toast: ToastState<ToastAction>?
@@ -111,7 +115,6 @@ public struct GamesEditor: Reducer {
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case gamesHeader(GamesHeader.Action)
-			case gameDetailsHeader(GameDetailsHeader.Action)
 			case frameEditor(FrameEditor.Action)
 			case rollEditor(RollEditor.Action)
 		}
@@ -208,7 +211,12 @@ public struct GamesEditor: Reducer {
 				case .didDismissOpenSheet:
 					if let game = state.game {
 						state.sheetDetent = .medium
-						state.destination = .gameDetails(.init(game: game))
+						state.destination = .gameDetails(.init(
+							gameId: game.id,
+							nextHeaderElement: state.nextHeaderElement,
+							didChangeBowler: state.didChangeBowler
+						))
+						state.didChangeBowler = false
 					}
 					return .none
 
@@ -244,7 +252,10 @@ public struct GamesEditor: Reducer {
 					state.hideNextHeaderIfNecessary(updatingRollIndexTo: newRollIndex, frameIndex: newFrameIndex ?? 0)
 
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
-					state._frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
+					state._frameEditor = .init(
+						currentRollIndex: state.currentRollIndex,
+						frame: state.frames![state.currentFrameIndex]
+					)
 
 					state._rollEditor = .init(
 						ballRolled: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall,
@@ -267,8 +278,21 @@ public struct GamesEditor: Reducer {
 				case let .gameResponse(.success(game)):
 					guard state.currentGameId == game?.id, let game else { return .none }
 					switch state.destination {
-					case .gameDetails, .none:
-						state.destination = .gameDetails(.init(game: game))
+					case let .gameDetails(gameDetails):
+						var details = gameDetails
+						if gameDetails.gameId != state.currentGameId {
+							let loadEffect = details.loadGameDetails(forGameId: state.currentGameId, didChangeBowler: state.didChangeBowler)
+							state.destination = .gameDetails(details)
+							return loadEffect
+								.map { .internal(.destination(.presented(.gameDetails($0)))) }
+						}
+					case .none:
+						state.destination = .gameDetails(.init(
+							gameId: state.currentGameId,
+							nextHeaderElement: state.nextHeaderElement,
+							didChangeBowler: state.didChangeBowler
+						))
+						state.didChangeBowler = false
 					case .ballPicker, .lanePicker, .gearPicker, .settings, .opponentPicker, .sharing:
 						state.destination = nil
 					}
@@ -340,9 +364,6 @@ public struct GamesEditor: Reducer {
 				case let .gamesHeader(action):
 					return reduce(into: &state, gamesHeaderAction: action)
 
-				case let .gameDetailsHeader(action):
-					return reduce(into: &state, gamesDetailsHeaderAction: action)
-
 				case let .toast(action):
 					return reduce(into: &state, toastAction: action)
 
@@ -356,9 +377,6 @@ public struct GamesEditor: Reducer {
 			case .delegate:
 				return .none
 			}
-		}
-		.ifLet(\.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
-			GameDetailsHeader()
 		}
 		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
 			FrameEditor()
