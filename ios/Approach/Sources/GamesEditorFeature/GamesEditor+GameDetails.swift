@@ -104,7 +104,7 @@ extension GamesEditor {
 	}
 
 	func lockGameIfFinished(in state: inout State) -> Effect<Action> {
-		if Frame.isLast(state.currentFrameIndex) && Frame.Roll.isLast(state.currentRollIndex) {
+		if Frame.isLast(state.currentFrameIndex) && Frame.isLastRoll(state.currentRollIndex) {
 			state.game?.locked = .locked
 			return save(game: state.game)
 		}

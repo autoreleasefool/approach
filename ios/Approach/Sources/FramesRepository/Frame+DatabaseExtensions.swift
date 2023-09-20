@@ -7,6 +7,8 @@ extension Frame.Edit: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Frame.Database.databaseTableName
 }
 
+extension Frame.Rolls: FetchableRecord {}
+
 extension Frame.Summary: FetchableRecord {}
 
 extension DerivableRequest<Frame.Database> {

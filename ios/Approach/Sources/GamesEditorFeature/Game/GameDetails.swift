@@ -15,6 +15,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+// swiftlint:disable:next type_body_length
 public struct GameDetails: Reducer {
 	public struct State: Equatable {
 		public var gameId: Game.ID

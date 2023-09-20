@@ -31,7 +31,7 @@ extension GamesEditor.State {
 
 		// If the current roll isn't the last, and there are still pins standing or it's the last frame,
 		// just show the next ball to be thrown
-		if !Frame.Roll.isLast(currentRollIndex) &&
+		if !Frame.isLastRoll(currentRollIndex) &&
 				(Frame.isLast(currentFrameIndex) || !frames[currentFrameIndex].deck(forRoll: currentRollIndex).arePinsCleared) {
 			_nextHeaderElement = .roll(rollIndex: currentRollIndex + 1)
 		} else {
@@ -90,7 +90,7 @@ extension GamesEditor.State {
 		case .ballPicker, .gearPicker, .lanePicker, .opponentPicker, .settings, .sharing, .none:
 			break
 		}
-	}
+}
 
 	mutating func hideNextHeaderIfNecessary(
 		updatingRollIndexTo: Int? = nil,

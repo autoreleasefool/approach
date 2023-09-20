@@ -18,6 +18,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+// swiftlint:disable file_length
 public struct StatisticsSourcePicker: Reducer {
 	public struct State: Equatable {
 		public var sourceToLoad: TrackableFilter.Source?

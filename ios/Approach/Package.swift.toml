@@ -159,7 +159,7 @@ libraries = [ "StatisticsModels" ]
 
 [repositories.Frames]
 [repositories.Frames.interface]
-libraries = [ "Extensions" ]
+libraries = [ "Extensions", "ScoreKeeper" ]
 
 [repositories.Games]
 [repositories.Games.interface]
@@ -309,6 +309,7 @@ libraries = [ "Views" ]
 dependencies = [ "ComposableArchitecture" ]
 
 [libraries.Models]
+libraries = [ "ScoreKeeperModels" ]
 dependencies = [ "IdentifiedCollections" ]
 [libraries.Models.tests]
 dependencies = [ "Dependencies" ]
@@ -335,6 +336,11 @@ libraries = [ "Equatable", "FeatureAction", "ListContent" ]
 
 [libraries.ResourcePicker]
 libraries = [ "FeatureAction", "ListContent" ]
+
+[libraries.ScoreKeeper]
+libraries = [ "ScoreKeeperModels" ]
+
+[libraries.ScoreKeeperModels]
 
 [libraries.ScoreSheet]
 libraries = [ "DateTime", "Models", "SwiftUIExtensions", "Views" ]

@@ -6,6 +6,7 @@ import FramesRepository
 import GamesRepository
 @testable import GamesRepositoryInterface
 @testable import ModelsLibrary
+@testable import ScoreKeeperLibrary
 @testable import ScoresRepository
 @testable import ScoresRepositoryInterface
 import TestDatabaseUtilitiesLibrary
@@ -16,62 +17,60 @@ final class ScoresRepositoryTests: XCTestCase {
 	@Dependency(\.scores) var scores
 
 	func testCalculatesScoreForFramesWithSteps() async throws {
-		let (frames, framesContinuation) = AsyncThrowingStream<[Frame.Edit], Error>.makeStream()
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.edit = { id in await self.buildGame(withId: id) }
-			$0.frames.observe = { _ in frames }
+			$0.games.findIndex = { id in .init(id: id, index: 0) }
+			$0.frames.observeRolls = { _ in frames }
 			$0.scores = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
 
-		let orderedRolls: [[Frame.OrderedRoll]] = [
+		let rolls: [[ScoreKeeper.Roll]] = [
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: false),
+				.init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false),
+				.init(pinsDowned: [.headPin], didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin], didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin], didFoul: false),
+				.init(pinsDowned: [.rightTwoPin, .rightThreePin], didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin], didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin], didFoul: false),
+				.init(pinsDowned: [.rightTwoPin], didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: [.leftTwoPin, .leftThreePin], didFoul: true),
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: [.headPin], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+				.init(pinsDowned: [.headPin], didFoul: false),
 			],
 		]
 
-		framesContinuation.yield(Game.FRAME_INDICES.map {
-			.init(gameId: UUID(0), index: $0, rolls: orderedRolls.endIndex > $0 ? orderedRolls[$0] : [])
-		})
+		framesContinuation.yield(rolls)
 
 		var iterator = scoresStream.makeAsyncIterator()
 		let scores = try await iterator.next()
@@ -97,26 +96,26 @@ final class ScoresRepositoryTests: XCTestCase {
 	}
 
 	func testCalculatesScoreWithInvalidRollsAfterStrike() async throws {
-		let (frames, framesContinuation) = AsyncThrowingStream<[Frame.Edit], Error>.makeStream()
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.edit = { id in await self.buildGame(withId: id) }
-			$0.frames.observe = { _ in frames }
+			$0.games.findIndex = { id in .init(id: id, index: 0) }
+			$0.frames.observeRolls = { _ in frames }
 			$0.scores = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
 
-		let orderedRolls: [[Frame.OrderedRoll]] = [
+		let rolls: [[ScoreKeeper.Roll]] = [
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin], didFoul: false), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [], didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
 			],
 			[],
 			[],
@@ -128,9 +127,7 @@ final class ScoresRepositoryTests: XCTestCase {
 			[],
 		]
 
-		framesContinuation.yield(Game.FRAME_INDICES.map {
-			.init(gameId: UUID(0), index: $0, rolls: orderedRolls.endIndex > $0 ? orderedRolls[$0] : [])
-		})
+		framesContinuation.yield(rolls)
 
 		var iterator = scoresStream.makeAsyncIterator()
 		let scores = try await iterator.next()
@@ -156,19 +153,19 @@ final class ScoresRepositoryTests: XCTestCase {
 	}
 
 	func testCalculatesScoreWithEmptyFrames() async throws {
-		let (frames, framesContinuation) = AsyncThrowingStream<[Frame.Edit], Error>.makeStream()
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.edit = { id in await self.buildGame(withId: id) }
-			$0.frames.observe = { _ in frames }
+			$0.games.findIndex = { id in .init(id: id, index: 0) }
+			$0.frames.observeRolls = { _ in frames }
 			$0.scores = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
 
-		let orderedRolls: [[Frame.OrderedRoll]] = [
+		let rolls: [[ScoreKeeper.Roll]] = [
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[],
 			[],
@@ -179,13 +176,11 @@ final class ScoresRepositoryTests: XCTestCase {
 			[],
 			[],
 			[
-				.init(index: 9, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 		]
 
-		framesContinuation.yield(Game.FRAME_INDICES.map {
-			.init(gameId: UUID(0), index: $0, rolls: orderedRolls.endIndex > $0 ? orderedRolls[$0] : [])
-		})
+		framesContinuation.yield(rolls)
 
 		var iterator = scoresStream.makeAsyncIterator()
 		let scores = try await iterator.next()
@@ -206,33 +201,35 @@ final class ScoresRepositoryTests: XCTestCase {
 				.init(index: 9, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: nil, didFoul: false), .init(index: 2, displayValue: nil, didFoul: false)], score: 30),
 			]
 		)
+
+		XCTAssertEqual(expectedGame, scores)
 	}
 
 	func testCalculatesScoreWithFoulsAppliedCorrectly() async throws {
-		let (frames, framesContinuation) = AsyncThrowingStream<[Frame.Edit], Error>.makeStream()
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.edit = { id in await self.buildGame(withId: id) }
-			$0.frames.observe = { _ in frames }
+			$0.games.findIndex = { id in .init(id: id, index: 0) }
+			$0.frames.observeRolls = { _ in frames }
 			$0.scores = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
 
-		let orderedRolls: [[Frame.OrderedRoll]] = [
+		let rolls: [[ScoreKeeper.Roll]] = [
 			[
-				.init(index: 0, roll: .init(pinsDowned: [], didFoul: true), bowlingBall: nil),
-				.init(index: 1, roll: .init(pinsDowned: [], didFoul: true), bowlingBall: nil),
-				.init(index: 2, roll: .init(pinsDowned: [], didFoul: true), bowlingBall: nil),
+				.init(pinsDowned: [], didFoul: true),
+				.init(pinsDowned: [], didFoul: true),
+				.init(pinsDowned: [], didFoul: true),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: true), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: true),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[
-				.init(index: 0, roll: .init(pinsDowned: Pin.fullDeck, didFoul: false), bowlingBall: nil),
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
 			],
 			[],
 			[],
@@ -242,9 +239,7 @@ final class ScoresRepositoryTests: XCTestCase {
 			[],
 		]
 
-		framesContinuation.yield(Game.FRAME_INDICES.map {
-			.init(gameId: UUID(0), index: $0, rolls: orderedRolls.endIndex > $0 ? orderedRolls[$0] : [])
-		})
+		framesContinuation.yield(rolls)
 
 		var iterator = scoresStream.makeAsyncIterator()
 		let scores = try await iterator.next()
@@ -438,27 +433,5 @@ final class ScoresRepositoryTests: XCTestCase {
 
 		XCTAssertEqual(expectedGame, scores)
 
-	}
-
-	private func buildGame(withId id: Game.ID) -> Game.Edit {
-		.init(
-			id: id,
-			index: 0,
-			score: 255,
-			locked: .locked,
-			scoringMethod: .byFrame,
-			excludeFromStatistics: .include,
-			matchPlay: nil,
-			gear: [],
-			lanes: [],
-			bowler: .init(name: "Joseph"),
-			league: .init(name: "Majors", excludeFromStatistics: .include),
-			series: .init(
-				date: Date(timeIntervalSince1970: 123),
-				preBowl: .regular,
-				excludeFromStatistics: .include,
-				alley: nil
-			)
-		)
 	}
 }

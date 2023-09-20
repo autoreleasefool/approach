@@ -1,17 +1,10 @@
 import Foundation
-
-public enum Game {}
+import ScoreKeeperModelsLibrary
 
 extension Game {
 	public typealias ID = UUID
 
-	public static let NUMBER_OF_FRAMES = 10
-	public static let FRAME_INDICES = 0..<NUMBER_OF_FRAMES
 	public static let MAXIMUM_SCORE = 450
-
-	public static func frameIndices(after: Int, upTo: Int = NUMBER_OF_FRAMES) -> Range<Int> {
-		(after + 1)..<upTo
-	}
 }
 
 extension Game {
@@ -72,6 +65,20 @@ extension Game {
 		public let opponentScore: Int?
 		public let result: MatchPlay.Result?
 	}
+}
+
+public struct ScoredGame: Sendable, Identifiable, Equatable {
+	public let id: Game.ID
+	public let index: Int
+	public let frames: [ScoredFrame]
+
+	public init(id: Game.ID, index: Int, frames: [ScoredFrame]) {
+		self.id = id
+		self.index = index
+		self.frames = frames
+	}
+
+	public var score: Int? { frames.gameScore() }
 }
 
 extension Game {

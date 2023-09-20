@@ -320,7 +320,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		// Returns the opponents sorted by recently used
 		XCTAssertEqual(fetched, [
 			.init(id: UUID(0), name: "Joseph", kind: .opponent),
-			.init(id: UUID(1), name: "Audriana", kind: .opponent)
+			.init(id: UUID(1), name: "Audriana", kind: .opponent),
 		])
 	}
 

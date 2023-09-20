@@ -126,6 +126,8 @@ let package = Package(
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
+		.library(name: "ScoreKeeperLibrary", targets: ["ScoreKeeperLibrary"]),
+		.library(name: "ScoreKeeperModelsLibrary", targets: ["ScoreKeeperModelsLibrary"]),
 		.library(name: "ScoreSheetLibrary", targets: ["ScoreSheetLibrary"]),
 		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
@@ -739,6 +741,7 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"ExtensionsLibrary",
 				"ModelsLibrary",
+				"ScoreKeeperLibrary",
 			]
 		),
 		.testTarget(
@@ -1465,6 +1468,7 @@ let package = Package(
 			name: "ModelsLibrary",
 			dependencies: [
 				.product(name: "IdentifiedCollections", package: "swift-identified-collections"),
+				"ScoreKeeperModelsLibrary",
 			]
 		),
 		.testTarget(
@@ -1563,6 +1567,30 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ResourcePickerLibrary",
+			]
+		),
+		.target(
+			name: "ScoreKeeperLibrary",
+			dependencies: [
+				"ScoreKeeperModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ScoreKeeperLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ScoreKeeperLibrary",
+			]
+		),
+		.target(
+			name: "ScoreKeeperModelsLibrary",
+			dependencies: []
+		),
+		.testTarget(
+			name: "ScoreKeeperModelsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ScoreKeeperModelsLibrary",
 			]
 		),
 		.target(

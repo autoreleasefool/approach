@@ -1,4 +1,4 @@
-@testable import ModelsLibrary
+@testable import ScoreKeeperModelsLibrary
 import XCTest
 
 final class PinTests: XCTestCase {

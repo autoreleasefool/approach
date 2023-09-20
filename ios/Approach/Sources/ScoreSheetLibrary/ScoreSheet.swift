@@ -98,7 +98,7 @@ public struct ScoreSheet: View {
 					.background(background(forRollIndex: roll.index, inFrame: frame.index))
 					.roundCorners(
 						topLeading: frame.index == 0 && roll.index == 0,
-						topTrailing: Frame.isLast(frame.index) && Frame.Roll.isLast(roll.index)
+						topTrailing: Frame.isLast(frame.index) && Frame.isLastRoll(roll.index)
 					)
 			}
 			.id(Selection(frameIndex: frame.index, rollIndex: roll.index))
@@ -106,7 +106,7 @@ public struct ScoreSheet: View {
 			.border(
 				edges: [
 					.bottom,
-					Frame.Roll.isLast(roll.index) ? nil : .trailing,
+					Frame.isLastRoll(roll.index) ? nil : .trailing,
 					frame.index != 0 && roll.index == 0 ? .leading : nil,
 				].compactMap { $0 }
 			)

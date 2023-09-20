@@ -99,7 +99,7 @@ public struct CompactScoreSheets: View {
 				.matchHeight(byKey: RollHeightKey.self, to: $rollHeight)
 				.border(
 					edges: [
-						Frame.Roll.isLast(roll.index) ? nil : .trailing,
+						Frame.isLastRoll(roll.index) ? nil : .trailing,
 						.bottom,
 						roll.index == 0 ? .leading : nil,
 					].compactMap { $0 },

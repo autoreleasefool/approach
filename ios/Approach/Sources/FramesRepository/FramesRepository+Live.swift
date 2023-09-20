@@ -38,6 +38,22 @@ extension FramesRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
+			observeRolls: { game in
+				database.reader().observe {
+					try Frame.Database
+						.all()
+						.filter(byGame: game)
+						.orderByIndex()
+						.select(
+							Frame.Database.Columns.roll0,
+							Frame.Database.Columns.roll1,
+							Frame.Database.Columns.roll2
+						)
+						.asRequest(of: Frame.Rolls.self)
+						.fetchAll($0)
+						.map(\.rolls)
+				}
+			},
 			update: { frame in
 				try await database.writer().write {
 					try frame.update($0)
