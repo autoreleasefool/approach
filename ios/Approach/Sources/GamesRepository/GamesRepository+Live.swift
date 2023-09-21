@@ -182,6 +182,20 @@ extension GamesRepository: DependencyKey {
 				_ = try await database.writer().write {
 					try Game.Database.deleteOne($0, id: id)
 				}
+			},
+			duplicateLanes: { source, destinations in
+				try await database.writer().write {
+					let lanesForGame = try GameLane.Database
+						.filter(GameLane.Database.Columns.gameId == source)
+						.fetchAll($0)
+
+					for game in destinations {
+						for lane in lanesForGame {
+							let gameLane = GameLane.Database(gameId: game, laneId: lane.laneId)
+							try gameLane.upsert($0)
+						}
+					}
+				}
 			}
 		)
 	}()

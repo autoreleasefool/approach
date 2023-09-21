@@ -382,24 +382,27 @@ final class GamesRepositoryTests: XCTestCase {
 		}
 	}
 
-	// MARK: Edit
+	// MARK: Observe
 
-	func testEdit_WhenGameExists_ReturnsGame() async throws {
+	func testObserve_WhenGameExists_ReturnsGame() async throws {
 		// Given a database with one game
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let db = try initializeDatabase(withGames: .custom([game1]))
 
 		// Editing the game
-		let game = try await withDependencies {
+		let game = withDependencies {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.edit(UUID(0))
+			self.games.observe(UUID(0))
 		}
+
+		var iterator = game.makeAsyncIterator()
+		let fetched = try await iterator.next()
 
 		// Returns the game
 		XCTAssertEqual(
-			game,
+			fetched,
 			.init(
 				id: UUID(0),
 				index: 0,
@@ -435,16 +438,19 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGames: .custom([game1]), withMatchPlays: .custom([matchPlay1]))
 
 		// Editing the game
-		let game = try await withDependencies {
+		let game = withDependencies {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.edit(UUID(0))
+			self.games.observe(UUID(0))
 		}
+
+		var iterator = game.makeAsyncIterator()
+		let fetched = try await iterator.next()
 
 		// Returns the game
 		XCTAssertEqual(
-			game,
+			fetched,
 			.init(
 				id: UUID(0),
 				index: 0,
@@ -484,16 +490,19 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGear: .custom([gear1, gear2, gear3]), withGames: .custom([game1]), withGameGear: .custom([gameGear1, gameGear2]), withBowlerPreferredGear: .zero)
 
 		// Editing the game
-		let game = try await withDependencies {
+		let game = withDependencies {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.edit(UUID(0))
+			self.games.observe(UUID(0))
 		}
+
+		var iterator = game.makeAsyncIterator()
+		let fetched = try await iterator.next()
 
 		// Returns the game
 		XCTAssertEqual(
-			game,
+			fetched,
 			.init(
 				id: UUID(0),
 				index: 0,
@@ -532,16 +541,19 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withLanes: .custom([lane1, lane2, lane3, lane4]), withGames: .custom([game1]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
 
 		// Editing the game
-		let game = try await withDependencies {
+		let game = withDependencies {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.edit(UUID(0))
+			self.games.observe(UUID(0))
 		}
+
+		var iterator = game.makeAsyncIterator()
+		let fetched = try await iterator.next()
 
 		// Returns the game
 		XCTAssertEqual(
-			game,
+			fetched,
 			.init(
 				id: UUID(0),
 				index: 0,
@@ -573,11 +585,48 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withGames: nil)
 
 		// Editing the game
+		let game = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.observe(UUID(0))
+		}
+
+		var iterator = game.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns nil
+		XCTAssertNil(fetched??.id)
+	}
+
+	// MARK: - Find Index
+
+	func testFindIndex_WhenGameExists_ReturnsIndex() async throws {
+		// Given a database with 1 game
+		let game1 = Game.Database.mock(id: UUID(0), index: 23)
+		let db = try initializeDatabase(withGames: .custom([game1]))
+
+		// Fetching the game
 		let game = try await withDependencies {
 			$0.database.reader = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.edit(UUID(0))
+			try await self.games.findIndex(UUID(0))
+		}
+
+		XCTAssertEqual(game, .init(id: UUID(0), index: 23))
+	}
+
+	func testFindIndex_WhenGameNotExists_ReturnsNil() async throws {
+		// Given a database with no games
+		let db = try initializeDatabase(withGames: nil)
+
+		// Fetching the game
+		let game = try await withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.findIndex(UUID(0))
 		}
 
 		// Returns nil
@@ -853,5 +902,88 @@ final class GamesRepositoryTests: XCTestCase {
 		// Leaves the game
 		let exists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
+	}
+
+	// MARK: - Duplicate Lanes
+
+	func testDuplicateLanes_WhenGameHasNoLanes_DoesNothing() async throws {
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .zero)
+
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.duplicateLanes(from: UUID(0), toAllGames: [UUID(1), UUID(2)])
+		}
+
+		let gameLanes = try await db.read { try GameLane.Database.fetchCount($0) }
+		XCTAssertEqual(gameLanes, 0)
+	}
+
+	func testDuplicateLanes_WhenGameHasLanes_CopiesToAllOtherGames() async throws {
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
+		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
+		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2]))
+
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.duplicateLanes(from: UUID(0), toAllGames: [UUID(1), UUID(2)])
+		}
+
+		let gameLanes = try await db.read {
+			try GameLane.Database
+				.order(GameLane.Database.Columns.gameId, GameLane.Database.Columns.laneId)
+				.fetchAll($0)
+		}
+
+		XCTAssertEqual(gameLanes, [
+			.init(gameId: UUID(0), laneId: UUID(0)),
+			.init(gameId: UUID(0), laneId: UUID(1)),
+			.init(gameId: UUID(1), laneId: UUID(0)),
+			.init(gameId: UUID(1), laneId: UUID(1)),
+			.init(gameId: UUID(2), laneId: UUID(0)),
+			.init(gameId: UUID(2), laneId: UUID(1)),
+		])
+	}
+
+	func testDuplicateLanes_WhenOtherGameHasLanes_Appends() async throws {
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
+		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
+		let gameLane3 = GameLane.Database(gameId: UUID(1), laneId: UUID(1))
+		let gameLane4 = GameLane.Database(gameId: UUID(2), laneId: UUID(1))
+		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3, gameLane4]))
+
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.duplicateLanes(from: UUID(0), toAllGames: [UUID(1), UUID(2)])
+		}
+
+		let gameLanes = try await db.read {
+			try GameLane.Database
+				.order(GameLane.Database.Columns.gameId, GameLane.Database.Columns.laneId)
+				.fetchAll($0)
+		}
+
+		XCTAssertEqual(gameLanes, [
+			.init(gameId: UUID(0), laneId: UUID(0)),
+			.init(gameId: UUID(0), laneId: UUID(1)),
+			.init(gameId: UUID(1), laneId: UUID(0)),
+			.init(gameId: UUID(1), laneId: UUID(1)),
+			.init(gameId: UUID(2), laneId: UUID(0)),
+			.init(gameId: UUID(2), laneId: UUID(1)),
+		])
 	}
 }
