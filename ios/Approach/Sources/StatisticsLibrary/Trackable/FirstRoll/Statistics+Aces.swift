@@ -5,6 +5,7 @@ extension Statistics {
 	public struct Aces: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.aces }
 		public static var category: StatisticCategory { .onFirstRoll }
+		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var aces = 0
 		public var count: Int {

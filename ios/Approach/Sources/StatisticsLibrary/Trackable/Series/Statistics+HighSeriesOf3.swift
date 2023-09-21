@@ -5,6 +5,7 @@ extension Statistics {
 	public struct HighSeriesOf3: Statistic, TrackablePerSeries, HighestOfStatistic {
 		public static var title: String { Strings.Statistics.Title.highSeriesOf3 }
 		public static var category: StatisticCategory { .series }
+		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		private var highSeries = 0
 		public var highest: Int {

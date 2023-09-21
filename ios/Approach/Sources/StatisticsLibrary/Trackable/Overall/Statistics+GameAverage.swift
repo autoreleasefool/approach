@@ -5,6 +5,7 @@ extension Statistics {
 	public struct GameAverage: Statistic, TrackablePerGame, AveragingStatistic {
 		public static var title: String { Strings.Statistics.Title.gameAverage }
 		public static var category: StatisticCategory { .overall }
+		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		private var totalPinFall = 0
 		private var gamesPlayed = 0

@@ -5,6 +5,7 @@ extension Statistics {
 	public struct Strikes: Statistic, TrackablePerFirstRoll, FirstRollStatistic {
 		public static var title: String { Strings.Statistics.Title.strikes }
 		public static var category: StatisticCategory { .overall }
+		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public var totalRolls = 0
 		private var strikes = 0

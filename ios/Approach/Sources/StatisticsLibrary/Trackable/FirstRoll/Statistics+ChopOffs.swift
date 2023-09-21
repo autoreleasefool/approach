@@ -5,6 +5,7 @@ extension Statistics {
 	public struct ChopOffs: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.chopOffs }
 		public static var category: StatisticCategory { .onFirstRoll }
+		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var chopOffs = 0
 		public var count: Int {

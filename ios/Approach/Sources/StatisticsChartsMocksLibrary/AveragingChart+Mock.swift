@@ -17,7 +17,8 @@ extension AveragingChart.Data {
 					value: average,
 					date: Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!
 				)
-			}
+			},
+			preferredTrendDirection: .upwards
 		)
 	}
 
@@ -32,7 +33,8 @@ extension AveragingChart.Data {
 					value: average,
 					date: Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!
 				)
-			}
+			},
+			preferredTrendDirection: .upwards
 		)
 	}
 

@@ -1,6 +1,7 @@
 import AssetsLibrary
 import Charts
 import DateTimeLibrary
+import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -61,15 +62,18 @@ extension AveragingChart {
 		public let entries: [Entry]
 		public let minimumValue: Double
 		public let maximumValue: Double
+
+		public let preferredTrendDirection: StatisticTrendDirection?
 		public let percentDifferenceOverFullTimeSpan: Double
 
 		public var isEmpty: Bool {
 			entries.count <= 1
 		}
 
-		public init(title: String, entries: [Entry]) {
+		public init(title: String, entries: [Entry], preferredTrendDirection: StatisticTrendDirection?) {
 			self.title = title
 			self.entries = entries
+			self.preferredTrendDirection = preferredTrendDirection
 			let minimumValue = entries.min { $0.value < $1.value }?.value ?? 0
 			let maximumValue = entries.max { $0.value < $1.value }?.value ?? 0
 			let padding = (maximumValue - minimumValue) / 10
@@ -139,7 +143,8 @@ struct AveragingChartPreview: PreviewProvider {
 							value: value,
 							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
 						)
-					}
+					},
+					preferredTrendDirection: .downwards
 				)
 			)
 
@@ -152,7 +157,8 @@ struct AveragingChartPreview: PreviewProvider {
 							value: value,
 							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
 						)
-					}
+					},
+					preferredTrendDirection: .upwards
 				),
 				style: .init(hideXAxis: true)
 			)

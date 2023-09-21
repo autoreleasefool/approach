@@ -50,9 +50,7 @@ extension StatisticsWidget {
 				)
 				.labeledContentStyle(WidgetLabeledContentStyle(
 					labelColor: Asset.Colors.Charts.Averaging.Compact.axes,
-					contentColor: data.percentDifferenceOverFullTimeSpan > 0
-					? Asset.Colors.Charts.Averaging.Compact.positiveChange
-					: Asset.Colors.Charts.Averaging.Compact.negativeChange
+					contentColor: data.trendColor
 				))
 			}
 		}
@@ -77,9 +75,7 @@ extension StatisticsWidget {
 					)
 					.labeledContentStyle(WidgetLabeledContentStyle(
 						labelColor: Asset.Colors.Charts.Percentage.Compact.axes,
-						contentColor: percentageDifferenceOverTime > 0
-							? Asset.Colors.Charts.Percentage.Compact.positiveChange
-							: Asset.Colors.Charts.Percentage.Compact.negativeChange
+						contentColor: data.trendColor
 					))
 				} else {
 					Text(String(describing: configuration.timeline))
@@ -171,6 +167,41 @@ extension StatisticsWidget {
 				Spacer()
 			}
 			.contentShape(Rectangle())
+		}
+	}
+}
+
+extension AveragingChart.Data {
+	var trendColor: ColorAsset {
+		switch preferredTrendDirection {
+		case .upwards:
+			return percentDifferenceOverFullTimeSpan > 0
+				? Asset.Colors.Charts.Averaging.Compact.positiveChange
+				: Asset.Colors.Charts.Averaging.Compact.negativeChange
+		case .downwards:
+			return percentDifferenceOverFullTimeSpan < 0
+				? Asset.Colors.Charts.Averaging.Compact.positiveChange
+				: Asset.Colors.Charts.Averaging.Compact.negativeChange
+		case .none:
+			return Asset.Colors.Charts.Averaging.Compact.axes
+		}
+	}
+}
+
+extension PercentageChart.Data {
+	var trendColor: ColorAsset {
+		guard let percentDifferenceOverFullTimeSpan else { return Asset.Colors.Charts.Percentage.Compact.axes }
+		switch preferredTrendDirection {
+		case .upwards:
+			return percentDifferenceOverFullTimeSpan > 0
+				? Asset.Colors.Charts.Percentage.Compact.positiveChange
+				: Asset.Colors.Charts.Percentage.Compact.negativeChange
+		case .downwards:
+			return percentDifferenceOverFullTimeSpan < 0
+				? Asset.Colors.Charts.Percentage.Compact.positiveChange
+				: Asset.Colors.Charts.Percentage.Compact.negativeChange
+		case .none:
+			return Asset.Colors.Charts.Percentage.Compact.axes
 		}
 	}
 }
