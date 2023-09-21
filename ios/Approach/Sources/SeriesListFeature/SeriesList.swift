@@ -134,7 +134,7 @@ public struct SeriesList: Reducer {
 
 				case let .didTapSeries(id):
 					if let series = state.series[id: id] {
-						state.destination = .games(.init(series: series.asSummary))
+						state.destination = .games(.init(series: series.asSummary, host: state.league))
 					}
 					return .none
 
@@ -179,7 +179,7 @@ public struct SeriesList: Reducer {
 					if let seriesToNavigate = state.seriesToNavigate {
 						if let destination = state.series[id: seriesToNavigate] {
 							state.seriesToNavigate = nil
-							state.destination = .games(.init(series: destination.asSummary))
+							state.destination = .games(.init(series: destination.asSummary, host: state.league))
 						} else {
 							return .send(.internal(.didLoadEditableSeries(.failure(SeriesListError.seriesNotFound(seriesToNavigate)))))
 						}
@@ -212,10 +212,13 @@ public struct SeriesList: Reducer {
 					switch delegateAction {
 					case let .didFinishCreating(created):
 						if let series = state.series[id: created.id] {
-							state.destination = .games(.init(series: series.asSummary))
+							state.destination = .games(.init(series: series.asSummary, host: state.league))
 						} else {
 							state.seriesToNavigate = created.id
 						}
+						return .none
+
+					case .didFinishDeleting, .didFinishUpdating:
 						return .none
 					}
 

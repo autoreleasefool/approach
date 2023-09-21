@@ -10,6 +10,8 @@ import GamesEditorFeature
 import GamesRepositoryInterface
 import ModelsLibrary
 import ResourceListLibrary
+import SeriesEditorFeature
+import SeriesRepositoryInterface
 import SharingFeature
 import StringsLibrary
 
@@ -19,7 +21,9 @@ extension Game.List: ResourceListItem {
 
 public struct GamesList: Reducer {
 	public struct State: Equatable {
-		public let series: Series.Summary
+		public var series: Series.Summary
+		public let seriesHost: League.SeriesHost
+
 		public var list: ResourceList<Game.List, Series.ID>.State
 
 		public var errors: Errors<ErrorID>.State = .init()
@@ -28,7 +32,8 @@ public struct GamesList: Reducer {
 
 		public let isSeriesSharingEnabled: Bool
 
-		public init(series: Series.Summary) {
+		public init(series: Series.Summary, host: League.SeriesHost) {
+			self.seriesHost = host
 			self.series = series
 			self.list = .init(
 				features: [],
@@ -50,9 +55,12 @@ public struct GamesList: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapGame(Game.ID)
 			case didTapShareButton
+			case didTapEditButton
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
+			case didLoadEditableSeries(TaskResult<Series.Edit>)
+
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -65,20 +73,25 @@ public struct GamesList: Reducer {
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case sharing(Sharing.State)
-			case editor(GamesEditor.State)
+			case gameEditor(GamesEditor.State)
+			case seriesEditor(SeriesEditor.State)
 		}
 
 		public enum Action: Equatable {
 			case sharing(Sharing.Action)
-			case editor(GamesEditor.Action)
+			case gameEditor(GamesEditor.Action)
+			case seriesEditor(SeriesEditor.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: /State.sharing, action: /Action.sharing) {
 				Sharing()
 			}
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: /State.gameEditor, action: /Action.gameEditor) {
 				GamesEditor()
+			}
+			Scope(state: /State.seriesEditor, action: /Action.seriesEditor) {
+				SeriesEditor()
 			}
 		}
 	}
@@ -86,11 +99,14 @@ public struct GamesList: Reducer {
 	public enum ErrorID: Hashable {
 		case gamesNotFound
 		case gameNotFound
+		case seriesNotFound
 	}
 
 	public init() {}
 
+	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.games) var games
+	@Dependency(\.series) var series
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -109,6 +125,13 @@ public struct GamesList: Reducer {
 				case .didTapShareButton:
 					state.destination = .sharing(.init(dataSource: .series(state.series.id)))
 					return .none
+
+				case .didTapEditButton:
+					return .run { [id = state.series.id] send in
+						await send(.internal(.didLoadEditableSeries(TaskResult {
+							try await self.series.edit(id)
+						})))
+					}
 
 				case let .didTapGame(id):
 					guard let games = state.list.resources else {
@@ -131,7 +154,7 @@ public struct GamesList: Reducer {
 							.map { .internal(.errors($0)) }
 					}
 
-					state.destination = .editor(.init(
+					state.destination = .gameEditor(.init(
 						bowlerIds: [game.bowlerId],
 						bowlerGameIds: [game.bowlerId: games.map(\.id)],
 						initialBowlerId: game.bowlerId,
@@ -143,15 +166,32 @@ public struct GamesList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadEditableSeries(.success(series)):
+					state.destination = .seriesEditor(.init(value: .edit(series), inLeague: state.seriesHost))
+					return .none
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton:
 						return .none
 					}
 
-				case let .destination(.presented(.editor(.delegate(delegateAction)))):
+				case let .destination(.presented(.gameEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
+						return .none
+					}
+
+				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didFinishUpdating(series):
+						state.series = series.asSummary
+						return .none
+
+					case .didFinishDeleting:
+						return .run { _ in await dismiss() }
+
+					case .didFinishCreating:
 						return .none
 					}
 
@@ -167,9 +207,15 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
+				case let .didLoadEditableSeries(.failure(error)):
+					return state.errors
+						.enqueue(.seriesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
 				case .list(.internal), .list(.view),
 						.destination(.dismiss),
-						.destination(.presented(.editor(.internal))), .destination(.presented(.editor(.view))),
+						.destination(.presented(.gameEditor(.internal))), .destination(.presented(.gameEditor(.view))),
+						.destination(.presented(.seriesEditor(.internal))), .destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.sharing(.internal))), .destination(.presented(.sharing(.view))),
 						.errors(.internal), .errors(.view):
 					return .none

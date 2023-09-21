@@ -6,6 +6,7 @@ import FeatureActionLibrary
 import GamesEditorFeature
 import ModelsLibrary
 import ResourceListLibrary
+import SeriesEditorFeature
 import SharingFeature
 import StringsLibrary
 import SwiftUI
@@ -44,6 +45,10 @@ public struct GamesListView: View {
 				GamesListHeaderView(scores: viewStore.scores)
 			}
 			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					EditButton { viewStore.send(.didTapEditButton) }
+				}
+
 				if viewStore.isSeriesSharingEnabled {
 					ToolbarItem(placement: .navigationBarTrailing) {
 						Button { viewStore.send(.didTapShareButton) } label: {
@@ -66,10 +71,19 @@ public struct GamesListView: View {
 		}
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesList.Destination.State.editor,
-			action: GamesList.Destination.Action.editor
+			state: /GamesList.Destination.State.gameEditor,
+			action: GamesList.Destination.Action.gameEditor
 		) { store in
 			GamesEditorView(store: store)
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /GamesList.Destination.State.seriesEditor,
+			action: GamesList.Destination.Action.seriesEditor
+		) { store in
+			NavigationStack {
+				SeriesEditorView(store: store)
+			}
 		}
 	}
 }

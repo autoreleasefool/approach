@@ -12,5 +12,9 @@ extension Series {
 		public var preBowl: PreBowl
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var location: Alley.Summary?
+
+		public var asSummary: Summary {
+			.init(id: id, date: date)
+		}
 	}
 }

@@ -369,6 +369,7 @@ let package = Package(
 			dependencies: [
 				"GamesEditorFeature",
 				"ResourceListLibrary",
+				"SeriesEditorFeature",
 			]
 		),
 		.testTarget(
@@ -571,7 +572,6 @@ let package = Package(
 			name: "SeriesListFeature",
 			dependencies: [
 				"GamesListFeature",
-				"SeriesEditorFeature",
 				"SortOrderLibrary",
 			]
 		),

@@ -68,6 +68,8 @@ public struct SeriesEditor: Reducer {
 		}
 		public enum DelegateAction: Equatable {
 			case didFinishCreating(Series.Create)
+			case didFinishDeleting(Series.Edit)
+			case didFinishUpdating(Series.Edit)
 		}
 		public enum InternalAction: Equatable {
 			case form(SeriesForm.Action)
@@ -167,7 +169,19 @@ public struct SeriesEditor: Reducer {
 							.run { _ in await dismiss() }
 						)
 
-					case .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case let .didFinishDeleting(series):
+						return .concatenate(
+							.send(.delegate(.didFinishDeleting(series))),
+							.run { _ in await dismiss() }
+						)
+
+					case let .didFinishUpdating(series):
+						return .concatenate(
+							.send(.delegate(.didFinishUpdating(series))),
+							.run { _ in await dismiss() }
+						)
+
+					case .didDiscard:
 						return .run { _ in await dismiss() }
 					}
 

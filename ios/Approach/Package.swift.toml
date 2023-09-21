@@ -61,7 +61,7 @@ services = [ "Analytics", "Avatar", "FeatureFlags", "Preference", "RecentlyUsed"
 libraries = [ "PickableModels" ]
 
 [features.GamesList]
-features = [ "GamesEditor" ]
+features = [ "GamesEditor", "SeriesEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.GearEditor]
@@ -116,7 +116,7 @@ services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
-features = [ "GamesList", "SeriesEditor" ]
+features = [ "GamesList" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]
