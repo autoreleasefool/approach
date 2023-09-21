@@ -8,13 +8,13 @@ extension GamesEditor.State {
 			let frame = frames[currentFrameIndex]
 			var frameEditor = _frameEditor
 			frameEditor.isEditable = isEditable
-			frameEditor.downedPins = frame.deck(forRoll: currentRollIndex)
 			let pinsDownLastFrame = currentRollIndex > 0 ? frame.deck(forRoll: currentRollIndex - 1) : []
 			if Frame.isLast(frame.index) {
 				frameEditor.lockedPins = pinsDownLastFrame.arePinsCleared ? [] : pinsDownLastFrame
 			} else {
 				frameEditor.lockedPins = pinsDownLastFrame
 			}
+			frameEditor.downedPins = frame.deck(forRoll: currentRollIndex).subtracting(frameEditor.lockedPins)
 			return frameEditor
 		}
 		set {
