@@ -1384,6 +1384,7 @@ let package = Package(
 			name: "DatabaseLibrary",
 			dependencies: [
 				.product(name: "GRDB", package: "GRDB.swift"),
+				"ScoreKeeperLibrary",
 			]
 		),
 		.testTarget(
