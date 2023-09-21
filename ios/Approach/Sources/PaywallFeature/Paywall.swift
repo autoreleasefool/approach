@@ -26,7 +26,7 @@ public struct Paywall: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case didStartObserving
+			case didStartTask
 			case didTapRestorePurchasesButton
 			case binding(BindingAction<State>)
 		}
@@ -63,7 +63,7 @@ public struct Paywall: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didStartObserving:
+				case .didStartTask:
 					return .run { [product = state.product] send in
 						for try await isPurchased in self.products.observe(product) {
 							await send(.internal(.setProductAvailability(isPurchased)))

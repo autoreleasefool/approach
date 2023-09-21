@@ -65,7 +65,7 @@ public struct LeaguesListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
-			.task { viewStore.send(.didStartObserving) }
+			.task { viewStore.send(.didStartTask) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(

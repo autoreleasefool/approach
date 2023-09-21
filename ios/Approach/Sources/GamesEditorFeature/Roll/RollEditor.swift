@@ -33,7 +33,7 @@ public struct RollEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didStartObserving
+			case didStartTask
 			case didTapBall(Gear.ID)
 			case didTapOtherButton
 			case didToggleFoul
@@ -63,7 +63,7 @@ public struct RollEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didStartObserving:
+				case .didStartTask:
 					return .run { send in
 						for try await gear in self.gear.mostRecentlyUsed(ofKind: .bowlingBall, limit: 3) {
 							await send(.internal(.didLoadGear(.success(gear))))
@@ -171,7 +171,7 @@ public struct RollEditorView: View {
 				}
 				.buttonStyle(TappableElement())
 			}
-			.task { await viewStore.send(.didStartObserving).finish() }
+			.task { await viewStore.send(.didStartTask).finish() }
 		})
 	}
 }

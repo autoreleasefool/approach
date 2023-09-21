@@ -76,7 +76,7 @@ public struct LeaguesList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didStartObserving
+			case didStartTask
 			case didTapLeague(id: League.ID)
 			case didTapFilterButton
 			case didTapSortOrderButton
@@ -177,7 +177,7 @@ public struct LeaguesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didStartObserving:
+				case .didStartTask:
 					return .run { send in
 						for await _ in preferences.observe(keys: [.statisticsWidgetHideInLeagueList]) {
 							await send(.internal(.didSetIsShowingWidgets(

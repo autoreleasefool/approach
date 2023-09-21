@@ -14,7 +14,7 @@ public struct PaywallView<Content: View>: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			content
-				.task { await viewStore.send(.didStartObserving).finish() }
+				.task { await viewStore.send(.didStartTask).finish() }
 				.sheet(isPresented: viewStore.$isPaywallPresented) {
 					if viewStore.product == .proSubscription {
 						ProPaywallView(viewStore: viewStore)
