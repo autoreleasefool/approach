@@ -312,7 +312,9 @@ public struct GamesEditor: Reducer {
 						))
 						state.didChangeBowler = false
 					case .sheets, .duplicateLanesAlert:
-						state.destination = nil
+						if state.currentGameId != game.id {
+							state.destination = nil
+						}
 					}
 					state.game = game
 					state.elementsRefreshing.remove(.game)
