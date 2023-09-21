@@ -285,6 +285,7 @@ libraries = [ "Strings" ]
 processed = [ "Resources" ]
 
 [libraries.Database]
+libraries = [ "ScoreKeeper" ]
 dependencies = [ "GRDB" ]
 
 [libraries.DatabaseModels]
