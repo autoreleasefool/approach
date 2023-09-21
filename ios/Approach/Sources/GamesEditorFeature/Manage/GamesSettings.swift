@@ -67,10 +67,16 @@ public struct GamesSettings: Reducer {
 					return .run { _ in await dismiss() }
 
 				case let .didSwitchGame(index):
-					return .send(.delegate(.switchedGame(to: index)))
+					return .concatenate(
+						.send(.delegate(.switchedGame(to: index))),
+						.run { _ in await dismiss() }
+					)
 
 				case let .didSwitchBowler(id):
-					return .send(.delegate(.switchedBowler(to: id)))
+					return .concatenate(
+						.send(.delegate(.switchedBowler(to: id))),
+						.run { _ in await dismiss() }
+					)
 
 				case let .didMoveBowlers(source, destination):
 					return .send(.delegate(.movedBowlers(source: source, destination: destination)))

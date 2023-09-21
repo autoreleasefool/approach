@@ -34,11 +34,11 @@ extension GamesEditor {
 
 			case .didRequestBallPicker:
 				let bowlingBall = state.frames?[state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall?.id
-				state.destination = .ballPicker(.init(
+				state.destination = .sheets(.ballPicker(.init(
 					selected: Set([bowlingBall].compactMap { $0 }),
 					query: .init(()),
 					limit: 1
-				))
+				)))
 				return .none
 
 			case .didEditRoll:

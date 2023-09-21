@@ -131,60 +131,69 @@ public struct GamesEditorView: View {
 			}
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(
+		.alert(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesEditor.Destination.State.ballPicker,
-			action: GamesEditor.Destination.Action.ballPicker,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
-				ballPicker(store: store)
-			}
+			state: /GamesEditor.Destination.State.duplicateLanesAlert,
+			action: GamesEditor.Destination.Action.duplicateLanesAlert
 		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesEditor.Destination.State.lanePicker,
-			action: GamesEditor.Destination.Action.lanePicker,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<ResourcePicker<Lane.Summary, Alley.ID>>) in
-				lanePicker(store: store)
+			state: /GamesEditor.Destination.State.sheets,
+			action: GamesEditor.Destination.Action.sheets
+		) {
+			SwitchStore($0) { state in
+				switch state {
+				case .ballPicker:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.ballPicker,
+						action: GamesEditor.SheetsDestination.Action.ballPicker
+					) {
+						ballPicker(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.ballPicker))) }
+					}
+				case .lanePicker:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.lanePicker,
+						action: GamesEditor.SheetsDestination.Action.lanePicker
+					) {
+						lanePicker(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.lanePicker))) }
+					}
+				case .opponentPicker:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.opponentPicker,
+						action: GamesEditor.SheetsDestination.Action.opponentPicker
+					) {
+						opponentPicker(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.opponentPicker))) }
+					}
+				case .gearPicker:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.gearPicker,
+						action: GamesEditor.SheetsDestination.Action.gearPicker
+					) {
+						gearPicker(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.gearPicker))) }
+					}
+				case .settings:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.settings,
+						action: GamesEditor.SheetsDestination.Action.settings
+					) {
+						gamesSettings(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.settings))) }
+					}
+				case .sharing:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.sharing,
+						action: GamesEditor.SheetsDestination.Action.sharing
+					) {
+						sharing(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.sharing))) }
+					}
+				}
 			}
-		)
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesEditor.Destination.State.opponentPicker,
-			action: GamesEditor.Destination.Action.opponentPicker,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>>) in
-				opponentPicker(store: store)
-			}
-		)
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesEditor.Destination.State.gearPicker,
-			action: GamesEditor.Destination.Action.gearPicker,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) in
-				gearPicker(store: store)
-			}
-		)
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesEditor.Destination.State.settings,
-			action: GamesEditor.Destination.Action.settings,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<GamesSettings>) in
-				gamesSettings(store: store)
-			}
-		)
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesEditor.Destination.State.sharing,
-			action: GamesEditor.Destination.Action.sharing,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) },
-			content: { (store: StoreOf<Sharing>) in
-				sharing(store: store)
-			}
-		)
+		}
 	}
 
 	private func gameDetails(

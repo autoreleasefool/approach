@@ -23,16 +23,16 @@ extension GamesEditor {
 
 			case .didOpenSettings:
 				guard let bowlers = state.bowlers else { return .none }
-				state.destination = .settings(.init(
+				state.destination = .sheets(.settings(.init(
 					bowlers: bowlers,
 					currentBowlerId: state.currentBowlerId,
 					numberOfGames: state.numberOfGames,
 					gameIndex: state.currentGameIndex
-				))
+				)))
 				return .none
 
 			case .didShareGame:
-				state.destination = .sharing(.init(dataSource: .games([state.currentGameId])))
+				state.destination = .sheets(.sharing(.init(dataSource: .games([state.currentGameId]))))
 				return .none
 			}
 

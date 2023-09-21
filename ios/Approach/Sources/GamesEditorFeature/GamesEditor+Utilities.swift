@@ -87,7 +87,7 @@ extension GamesEditor.State {
 		case var .gameDetails(details):
 			details.nextHeaderElement = _nextHeaderElement
 			destination = .gameDetails(details)
-		case .ballPicker, .gearPicker, .lanePicker, .opponentPicker, .settings, .sharing, .none:
+		case .duplicateLanesAlert, .sheets, .none:
 			break
 		}
 }

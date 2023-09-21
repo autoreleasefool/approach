@@ -9,9 +9,8 @@ import ResourcePickerLibrary
 import SharingFeature
 
 extension GamesEditor {
-	public struct Destination: Reducer {
+	public struct SheetsDestination: Reducer {
 		public enum State: Equatable {
-			case gameDetails(GameDetails.State)
 			case settings(GamesSettings.State)
 			case opponentPicker(ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
@@ -21,7 +20,6 @@ extension GamesEditor {
 		}
 
 		public enum Action: Equatable {
-			case gameDetails(GameDetails.Action)
 			case settings(GamesSettings.Action)
 			case opponentPicker(ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
@@ -35,9 +33,6 @@ extension GamesEditor {
 		@Dependency(\.lanes) var lanes
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.gameDetails, action: /Action.gameDetails) {
-				GameDetails()
-			}
 			Scope(state: /State.settings, action: /Action.settings) {
 				GamesSettings()
 			}
@@ -55,6 +50,34 @@ extension GamesEditor {
 			}
 			Scope(state: /State.sharing, action: /Action.sharing) {
 				Sharing()
+			}
+		}
+	}
+
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case gameDetails(GameDetails.State)
+			case duplicateLanesAlert(AlertState<AlertAction>)
+			case sheets(SheetsDestination.State)
+		}
+
+		public enum Action: Equatable {
+			case gameDetails(GameDetails.Action)
+			case duplicateLanesAlert(AlertAction)
+			case sheets(SheetsDestination.Action)
+		}
+
+		public enum AlertAction: Equatable {
+			case confirmDuplicateLanes
+			case didDismiss
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: /State.gameDetails, action: /Action.gameDetails) {
+				GameDetails()
+			}
+			Scope(state: /State.sheets, action: /Action.sheets) {
+				SheetsDestination()
 			}
 		}
 	}
