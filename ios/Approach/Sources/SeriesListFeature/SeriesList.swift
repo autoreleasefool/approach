@@ -7,6 +7,8 @@ import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import Foundation
 import GamesListFeature
+import LeagueEditorFeature
+import LeaguesRepositoryInterface
 import ListContentLibrary
 import ModelsLibrary
 import SeriesEditorFeature
@@ -28,7 +30,7 @@ extension Series.Ordering: CustomStringConvertible {
 
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
-		public let league: League.SeriesHost
+		public var league: League.SeriesHost
 		public var series: IdentifiedArrayOf<Series.List> = []
 		public var ordering: Series.Ordering = .newestFirst
 
@@ -47,6 +49,7 @@ public struct SeriesList: Reducer {
 		public enum ViewAction: Equatable {
 			case didObserveData
 			case didTapAddButton
+			case didTapEditButton
 			case didTapSortOrderButton
 			case didTapSeries(Series.ID)
 			case didSwipeSeries(SwipeAction, Series.ID)
@@ -56,6 +59,7 @@ public struct SeriesList: Reducer {
 			case seriesResponse(TaskResult<[Series.List]>)
 			case didDeleteSeries(TaskResult<Series.ID>)
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
+			case didLoadEditableLeague(TaskResult<League.Edit>)
 
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -79,6 +83,7 @@ public struct SeriesList: Reducer {
 	}
 
 	public enum ErrorID: Hashable {
+		case leagueNotFound
 		case seriesNotFound
 		case seriesNotLoaded
 		case failedToDeleteSeries
@@ -86,21 +91,26 @@ public struct SeriesList: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
-			case editor(SeriesEditor.State)
+			case seriesEditor(SeriesEditor.State)
+			case leagueEditor(LeagueEditor.State)
 			case games(GamesList.State)
 			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
 			case alert(AlertState<AlertAction>)
 		}
 
 		public enum Action: Equatable {
-			case editor(SeriesEditor.Action)
+			case seriesEditor(SeriesEditor.Action)
+			case leagueEditor(LeagueEditor.Action)
 			case games(GamesList.Action)
 			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.Action)
 			case alert(AlertAction)
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: /State.leagueEditor, action: /Action.leagueEditor) {
+				LeagueEditor()
+			}
+			Scope(state: /State.seriesEditor, action: /Action.seriesEditor) {
 				SeriesEditor()
 			}
 			Scope(state: /State.games, action: /Action.games) {
@@ -116,7 +126,9 @@ public struct SeriesList: Reducer {
 
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
+	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(\.leagues) var leagues
 	@Dependency(\.series) var series
 	@Dependency(\.uuid) var uuid
 
@@ -138,8 +150,15 @@ public struct SeriesList: Reducer {
 					}
 					return .none
 
+				case .didTapEditButton:
+					return .run { [id = state.league.id] send in
+						await send(.internal(.didLoadEditableLeague(TaskResult {
+							try await leagues.edit(id)
+						})))
+					}
+
 				case .didTapAddButton:
-					state.destination = .editor(.init(
+					state.destination = .seriesEditor(.init(
 						value: .create(.default(withId: uuid(), onDate: calendar.startOfDay(for: date()), inLeague: state.league)),
 						inLeague: state.league
 					))
@@ -187,7 +206,11 @@ public struct SeriesList: Reducer {
 					return .none
 
 				case let .didLoadEditableSeries(.success(series)):
-					state.destination = .editor(.init(value: .edit(series), inLeague: state.league))
+					state.destination = .seriesEditor(.init(value: .edit(series), inLeague: state.league))
+					return .none
+
+				case let .didLoadEditableLeague(.success(league)):
+					state.destination = .leagueEditor(.init(value: .edit(league)))
 					return .none
 
 				case .didDeleteSeries(.success):
@@ -208,7 +231,12 @@ public struct SeriesList: Reducer {
 						.enqueue(.seriesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
 
-				case let .destination(.presented(.editor(.delegate(delegateAction)))):
+				case let .didLoadEditableLeague(.failure(error)):
+					return state.errors
+						.enqueue(.leagueNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
+				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
 						if let series = state.series[id: created.id] {
@@ -219,6 +247,19 @@ public struct SeriesList: Reducer {
 						return .none
 
 					case .didFinishDeleting, .didFinishUpdating:
+						return .none
+					}
+
+				case let .destination(.presented(.leagueEditor(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didFinishUpdating(league):
+						state.league = league.asSeriesHost
+						return .none
+
+					case .didFinishDeleting:
+						return .run { _ in await dismiss() }
+
+					case .didFinishCreating:
 						return .none
 					}
 
@@ -250,13 +291,11 @@ public struct SeriesList: Reducer {
 					}
 
 				case .destination(.dismiss),
-						.destination(.presented(.editor(.view))),
-						.destination(.presented(.editor(.internal))),
-						.destination(.presented(.games(.view))),
-						.destination(.presented(.games(.internal))),
+						.destination(.presented(.seriesEditor(.view))), .destination(.presented(.seriesEditor(.internal))),
+						.destination(.presented(.leagueEditor(.view))), .destination(.presented(.leagueEditor(.internal))),
+						.destination(.presented(.games(.view))), .destination(.presented(.games(.internal))),
 						.destination(.presented(.alert(.didTapDismissButton))),
-						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))),
+						.destination(.presented(.sortOrder(.internal))), .destination(.presented(.sortOrder(.view))),
 						.errors(.view),
 						.errors(.internal):
 					return .none

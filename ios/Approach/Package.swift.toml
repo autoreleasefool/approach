@@ -89,7 +89,7 @@ services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 
 [features.LeaguesList]
-features = [ "LeagueEditor", "SeriesList", "StatisticsWidgetsLayout" ]
+features = [ "SeriesList", "StatisticsWidgetsLayout" ]
 
 [features.OpponentDetails]
 features = [ "BowlerEditor" ]
@@ -116,7 +116,7 @@ services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
-features = [ "GamesList" ]
+features = [ "GamesList", "LeagueEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]

@@ -3,6 +3,7 @@ import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
 import GamesListFeature
+import LeagueEditorFeature
 import ModelsLibrary
 import SeriesEditorFeature
 import SortOrderLibrary
@@ -83,6 +84,10 @@ public struct SeriesListView: View {
 			.navigationTitle(viewStore.leagueName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
+					EditButton { viewStore.send(.didTapEditButton) }
+				}
+
+				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.didTapAddButton) }
 				}
 
@@ -100,11 +105,20 @@ public struct SeriesListView: View {
 		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /SeriesList.Destination.State.editor,
-			action: SeriesList.Destination.Action.editor
+			state: /SeriesList.Destination.State.seriesEditor,
+			action: SeriesList.Destination.Action.seriesEditor
 		) { store in
 			NavigationStack {
 				SeriesEditorView(store: store)
+			}
+		}
+		.sheet(
+			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			state: /SeriesList.Destination.State.leagueEditor,
+			action: SeriesList.Destination.Action.leagueEditor
+		) { store in
+			NavigationStack {
+				LeagueEditorView(store: store)
 			}
 		}
 		.sheet(

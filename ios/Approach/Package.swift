@@ -472,7 +472,6 @@ let package = Package(
 		.target(
 			name: "LeaguesListFeature",
 			dependencies: [
-				"LeagueEditorFeature",
 				"SeriesListFeature",
 				"StatisticsWidgetsLayoutFeature",
 			]
@@ -572,6 +571,7 @@ let package = Package(
 			name: "SeriesListFeature",
 			dependencies: [
 				"GamesListFeature",
+				"LeagueEditorFeature",
 				"SortOrderLibrary",
 			]
 		),

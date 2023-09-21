@@ -88,7 +88,11 @@ public struct LeagueEditor: Reducer {
 			case didTapAlley
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable {
+			case didFinishCreating(League.Create)
+			case didFinishUpdating(League.Edit)
+			case didFinishDeleting(League.Edit)
+		}
 		public enum InternalAction: Equatable {
 			case setLocationSection(isShown: Bool)
 			case form(LeagueForm.Action)
@@ -174,7 +178,25 @@ public struct LeagueEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case let  .didFinishDeleting(league):
+						return .concatenate(
+							.send(.delegate(.didFinishDeleting(league))),
+							.run { _ in await dismiss() }
+						)
+
+					case let  .didFinishUpdating(league):
+						return .concatenate(
+							.send(.delegate(.didFinishUpdating(league))),
+							.run { _ in await dismiss() }
+						)
+
+					case let  .didFinishCreating(league):
+						return .concatenate(
+							.send(.delegate(.didFinishCreating(league))),
+							.run { _ in await dismiss() }
+						)
+
+					case .didDiscard:
 						return .run { _ in await dismiss() }
 					}
 
