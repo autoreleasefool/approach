@@ -9,6 +9,7 @@ public protocol Statistic {
 	static var category: StatisticCategory { get }
 	static var supportsAggregation: Bool { get }
 	static var supportsWidgets: Bool { get }
+	static var preferredTrendDirection: StatisticTrendDirection? { get }
 
 	var formattedValue: String { get }
 	var isEmpty: Bool { get }
@@ -45,6 +46,13 @@ public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 		case .series: return Strings.Statistics.Categories.Series.title
 		}
 	}
+}
+
+// MARK: - Trend
+
+public enum StatisticTrendDirection {
+	case upwards
+	case downwards
 }
 
 // MARK: - Trackable Per Frame

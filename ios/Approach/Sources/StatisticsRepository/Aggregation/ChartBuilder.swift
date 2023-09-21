@@ -73,7 +73,8 @@ struct ChartBuilder {
 				title: statisticType.title,
 				entries: entries.sortedByDate()
 					.compactMap(as: AveragingStatistic.self)
-					.map { .init(id: uuid(), value: $1.average, date: $0) }
+					.map { .init(id: uuid(), value: $1.average, date: $0) },
+				preferredTrendDirection: statisticType.preferredTrendDirection
 			))
 		} else if statisticType is CountingStatistic.Type {
 			return .counting(.init(
@@ -97,7 +98,8 @@ struct ChartBuilder {
 				entries: entries.sortedByDate()
 					.compactMap(as: PercentageStatistic.self)
 					.map { .init(id: uuid(), numerator: $1.numerator, denominator: $1.denominator, date: $0, timeRange: timePeriod) },
-				isAccumulating: aggregation == .accumulate
+				isAccumulating: aggregation == .accumulate,
+				preferredTrendDirection: statisticType.preferredTrendDirection
 			))
 		}
 

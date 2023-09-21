@@ -36,7 +36,8 @@ extension PercentageChart.Data {
 						timeRange: 604800.0
 					)
 				},
-			isAccumulating: isAccumulating
+			isAccumulating: isAccumulating,
+			preferredTrendDirection: .upwards
 		)
 	}
 

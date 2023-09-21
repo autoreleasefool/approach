@@ -1,6 +1,7 @@
 import AssetsLibrary
 import Charts
 import DateTimeLibrary
+import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -87,16 +88,24 @@ extension PercentageChart {
 		public let title: String
 		public let entries: [Entry]
 		public let isAccumulating: Bool
+
+		public let preferredTrendDirection: StatisticTrendDirection?
 		public let percentDifferenceOverFullTimeSpan: Double?
 
 		public var isEmpty: Bool {
 			entries.isEmpty || (isAccumulating && entries.count == 1)
 		}
 
-		public init(title: String, entries: [Entry], isAccumulating: Bool) {
+		public init(
+			title: String,
+			entries: [Entry],
+			isAccumulating: Bool,
+			preferredTrendDirection: StatisticTrendDirection?
+		) {
 			self.title = title
 			self.entries = entries
 			self.isAccumulating = isAccumulating
+			self.preferredTrendDirection = preferredTrendDirection
 
 			if isAccumulating {
 				let firstValue = entries.first?.percentage ?? 0
@@ -192,7 +201,8 @@ struct PercentageChartPreview: PreviewProvider {
 								timeRange: 604800.0
 							)
 					},
-					isAccumulating: false
+					isAccumulating: false,
+					preferredTrendDirection: .upwards
 				)
 			)
 
@@ -208,7 +218,8 @@ struct PercentageChartPreview: PreviewProvider {
 								timeRange: 604800.0
 							)
 					},
-					isAccumulating: true
+					isAccumulating: true,
+					preferredTrendDirection: .downwards
 				)
 			)
 		}

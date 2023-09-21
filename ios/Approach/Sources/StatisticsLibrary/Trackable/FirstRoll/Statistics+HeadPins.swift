@@ -5,6 +5,7 @@ extension Statistics {
 	public struct HeadPins: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.headPins }
 		public static var category: StatisticCategory { .onFirstRoll }
+		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var headPins = 0
 		public var count: Int {

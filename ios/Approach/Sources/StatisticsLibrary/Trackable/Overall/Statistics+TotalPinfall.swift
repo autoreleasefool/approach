@@ -5,6 +5,7 @@ extension Statistics {
 	public struct TotalPinfall: Statistic, TrackablePerGame, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.totalPinfall }
 		public static var category: StatisticCategory { .overall }
+		public static var preferredTrendDirection: StatisticTrendDirection? { nil }
 
 		private var totalPinfall = 0
 		public var count: Int {

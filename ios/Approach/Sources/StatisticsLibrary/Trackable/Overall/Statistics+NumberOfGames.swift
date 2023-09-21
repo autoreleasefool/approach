@@ -5,6 +5,7 @@ extension Statistics {
 	public struct NumberOfGames: Statistic, TrackablePerGame, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.numberOfGames }
 		public static var category: StatisticCategory { .overall }
+		public static var preferredTrendDirection: StatisticTrendDirection? { nil }
 
 		private var numberOfGames = 0
 		public var count: Int {
