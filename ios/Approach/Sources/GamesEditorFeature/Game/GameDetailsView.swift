@@ -112,8 +112,8 @@ public struct GameDetailsView: View {
 						}
 					}
 
-					if let alley = game.series.alley?.name {
-						Section(Strings.Alley.title) {
+					Section(Strings.Alley.title) {
+						if let alley = game.series.alley?.name {
 							LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
 
 							Toggle(
@@ -139,6 +139,9 @@ public struct GameDetailsView: View {
 								}
 								.buttonStyle(TappableElement())
 							}
+						} else {
+							Text(Strings.Game.Editor.Fields.Alley.noneSelected)
+								.font(.caption)
 						}
 					}
 

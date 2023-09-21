@@ -445,6 +445,8 @@ public enum Strings {
       }
       public enum Fields {
         public enum Alley {
+          /// No alley was selected for this series. To add one, or to specify lanes, you can edit the series by navigating back, and swiping left on the series to edit.
+          public static let noneSelected = Strings.tr("Localizable", "game.editor.fields.alley.noneSelected", fallback: "No alley was selected for this series. To add one, or to specify lanes, you can edit the series by navigating back, and swiping left on the series to edit.")
           public enum Lanes {
             /// Manage lanes
             public static let manageLanes = Strings.tr("Localizable", "game.editor.fields.alley.lanes.manageLanes", fallback: "Manage lanes")

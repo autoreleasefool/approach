@@ -212,6 +212,7 @@
 "game.editor.fields.manualScore.prompt" = "Score";
 "game.editor.fields.manualScore.caption" = "Score set manually";
 "game.editor.fields.gear.help" = "Choose any additional gear you're using this game";
+"game.editor.fields.alley.noneSelected" = "No alley was selected for this series. To add one, or to specify lanes, you can edit the series by navigating back, and swiping left on the series to edit.";
 "game.editor.fields.alley.lanes.selectLanes" = "Set specific lanes?";
 "game.editor.fields.alley.lanes.manageLanes" = "Manage lanes";
 "game.editor.fields.alley.lanes.duplicate.title" = "Copy lanes to all games?";
