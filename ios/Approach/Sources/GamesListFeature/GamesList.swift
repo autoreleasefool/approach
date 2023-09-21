@@ -104,6 +104,7 @@ public struct GamesList: Reducer {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.games) var games
 	@Dependency(\.series) var series
@@ -161,7 +162,7 @@ public struct GamesList: Reducer {
 						initialGameId: id
 					))
 
-					return .none
+					return .run { _ in await analytics.resetGameSessionID() }
 				}
 
 			case let .internal(internalAction):
@@ -227,7 +228,6 @@ public struct GamesList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
-				.dependency(\.analyticsGameSessionId, uuid())
 		}
 	}
 }

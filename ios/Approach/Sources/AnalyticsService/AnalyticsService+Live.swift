@@ -7,8 +7,10 @@ import TelemetryClient
 
 extension AnalyticsService: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.analyticsGameSessionId) var analyticsGameSessionId
 		let properties = PropertyManager()
+
+		@Dependency(\.uuid) var uuid
+		let gameSessionID: LockIsolated<UUID> = .init(uuid())
 
 		@Sendable func getOptInStatus() -> Analytics.OptInStatus {
 			@Dependency(\.preferences) var preferences
@@ -42,11 +44,14 @@ extension AnalyticsService: DependencyKey {
 				let payload = (await properties.globalProperties).merging(event.payload ?? [:]) { first, _ in first }
 
 				if let sessionEvent = event as? GameSessionTrackableEvent,
-					 !(await properties.shouldRecordEvent(sessionEvent.eventId, toSession: analyticsGameSessionId)) {
+					 !(await properties.shouldRecordEvent(sessionEvent.eventId, toSession: gameSessionID.value)) {
 					return
 				}
 
 				TelemetryManager.send(event.name, with: payload)
+			},
+			resetGameSessionID: {
+				gameSessionID.setValue(uuid())
 			},
 			getOptInStatus: getOptInStatus,
 			setOptInStatus: { newValue in
