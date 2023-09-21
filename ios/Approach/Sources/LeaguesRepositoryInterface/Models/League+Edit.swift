@@ -11,5 +11,15 @@ extension League {
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var location: Alley.Summary?
+
+		public var asSeriesHost: SeriesHost {
+			.init(
+				id: id,
+				name: name,
+				numberOfGames: numberOfGames,
+				alley: location,
+				excludeFromStatistics: excludeFromStatistics
+			)
+		}
 	}
 }

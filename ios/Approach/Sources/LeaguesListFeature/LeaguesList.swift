@@ -294,7 +294,7 @@ public struct LeaguesList: Reducer {
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .never:
+					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating:
 						return .none
 					}
 

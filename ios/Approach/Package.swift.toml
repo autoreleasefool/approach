@@ -61,7 +61,7 @@ services = [ "Analytics", "Avatar", "FeatureFlags", "Preference", "RecentlyUsed"
 libraries = [ "PickableModels" ]
 
 [features.GamesList]
-features = [ "GamesEditor" ]
+features = [ "GamesEditor", "SeriesEditor" ]
 libraries = [ "ResourceList" ]
 
 [features.GearEditor]
@@ -89,7 +89,7 @@ services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 
 [features.LeaguesList]
-features = [ "LeagueEditor", "SeriesList", "StatisticsWidgetsLayout" ]
+features = [ "SeriesList", "StatisticsWidgetsLayout" ]
 
 [features.OpponentDetails]
 features = [ "BowlerEditor" ]
@@ -116,7 +116,7 @@ services = [ "Analytics", "FeatureFlags" ]
 libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
-features = [ "GamesList", "SeriesEditor" ]
+features = [ "GamesList", "LeagueEditor" ]
 libraries = [ "SortOrder" ]
 
 [features.Settings]
