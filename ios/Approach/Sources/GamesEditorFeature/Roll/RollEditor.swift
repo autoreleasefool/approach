@@ -65,8 +65,8 @@ public struct RollEditor: Reducer {
 				switch viewAction {
 				case .didStartTask:
 					return .run { send in
-						for try await gear in self.gear.mostRecentlyUsed(ofKind: .bowlingBall, limit: 3) {
-							await send(.internal(.didLoadGear(.success(gear))))
+						for try await gear in self.gear.mostRecentlyUsed(ofKind: .bowlingBall, limit: 4) {
+							await send(.internal(.didLoadGear(.success(gear.sorted(by: { $0.name < $1.name })))))
 						}
 					} catch: { error, send in
 						await send(.internal(.didLoadGear(.failure(error))))
