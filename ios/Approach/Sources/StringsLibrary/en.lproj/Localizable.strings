@@ -214,6 +214,11 @@
 "game.editor.fields.gear.help" = "Choose any additional gear you're using this game";
 "game.editor.fields.alley.lanes.selectLanes" = "Set specific lanes?";
 "game.editor.fields.alley.lanes.manageLanes" = "Manage lanes";
+"game.editor.fields.alley.lanes.duplicate.title" = "Copy lanes to all games?";
+"game.editor.fields.alley.lanes.duplicate.message" = "If you're bowling all your games on the same lanes tonight, easily copy the lanes you just set to the rest of the games. You can change these later.";
+"game.editor.fields.alley.lanes.duplicate.copyToAll" = "Yes, copy to all";
+"game.editor.fields.alley.lanes.duplicate.dismiss" = "No, I might change lanes";
+
 "game.editor.picker.switch" = "Switch game";
 "game.editor.preferences.title" = "Preferences";
 "game.editor.preferences.flashEditorChanges" = "Flash editor changes?";

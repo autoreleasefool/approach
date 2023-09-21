@@ -31,6 +31,8 @@ public struct GamesEditor: Reducer {
 		public var gameDetailsMinimumContentSize: CGSize = .zero
 		public var isScoreSheetVisible = true
 
+		public var didPromptLaneDuplication = false
+
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
 		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
 
@@ -106,8 +108,9 @@ public struct GamesEditor: Reducer {
 			case didUpdateFrame(TaskResult<Frame.Edit>)
 			case didUpdateGame(TaskResult<Game.Edit>)
 			case didUpdateMatchPlay(TaskResult<MatchPlay.Edit>)
+			case didDuplicateLanes(TaskResult<Never>)
 
-			case didDismissOpenSheet
+			case didDismissOpenSheet(SheetType)
 			case calculatedScore(ScoredGame)
 			case adjustBackdrop
 
@@ -140,6 +143,16 @@ public struct GamesEditor: Reducer {
 		case failedToSaveGame
 		case failedToSaveFrame
 		case failedToSaveMatchPlay
+		case failedToSaveLanes
+	}
+
+	public enum SheetType {
+		case ballPicker
+		case lanePicker
+		case opponentPicker
+		case gearPicker
+		case settings
+		case sharing
 	}
 
 	public init() {}
@@ -208,15 +221,20 @@ public struct GamesEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .didDismissOpenSheet:
-					if let game = state.game {
-						state.sheetDetent = .medium
-						state.destination = .gameDetails(.init(
-							gameId: game.id,
-							nextHeaderElement: state.nextHeaderElement,
-							didChangeBowler: state.didChangeBowler
-						))
-						state.didChangeBowler = false
+				case let .didDismissOpenSheet(sheetType):
+					if sheetType == .lanePicker, (state.game?.lanes.count ?? 0) > 0 && !state.didPromptLaneDuplication {
+						state.didPromptLaneDuplication = true
+						state.destination = .duplicateLanesAlert(.duplicateLanes)
+					} else {
+						if let game = state.game {
+							state.sheetDetent = .medium
+							state.destination = .gameDetails(.init(
+								gameId: game.id,
+								nextHeaderElement: state.nextHeaderElement,
+								didChangeBowler: state.didChangeBowler
+							))
+							state.didChangeBowler = false
+						}
 					}
 					return .none
 
@@ -293,13 +311,18 @@ public struct GamesEditor: Reducer {
 							didChangeBowler: state.didChangeBowler
 						))
 						state.didChangeBowler = false
-					case .ballPicker, .lanePicker, .gearPicker, .settings, .opponentPicker, .sharing:
+					case .sheets, .duplicateLanesAlert:
 						state.destination = nil
 					}
 					state.game = game
 					state.elementsRefreshing.remove(.game)
 					state.hideNextHeaderIfNecessary()
 					return .none
+
+				case let .didDuplicateLanes(.failure(error)):
+					return state.errors
+						.enqueue(.failedToSaveLanes, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
 
 				case let .gameResponse(.failure(error)):
 					state.elementsRefreshing.remove(.game)
@@ -334,26 +357,29 @@ public struct GamesEditor: Reducer {
 					state.willAdjustLaneLayoutAt = date()
 					return .none
 
-				case let .destination(.presented(.opponentPicker(action))):
+				case let .destination(.presented(.sheets(.opponentPicker(action)))):
 					return reduce(into: &state, opponentPickerAction: action)
 
-				case let .destination(.presented(.gearPicker(action))):
+				case let .destination(.presented(.sheets(.gearPicker(action)))):
 					return reduce(into: &state, gearPickerAction: action)
 
 				case let .destination(.presented(.gameDetails(action))):
 					return reduce(into: &state, gameDetailsAction: action)
 
-				case let .destination(.presented(.ballPicker(action))):
+				case let .destination(.presented(.sheets(.ballPicker(action)))):
 					return reduce(into: &state, ballPickerAction: action)
 
-				case let .destination(.presented(.settings(action))):
+				case let .destination(.presented(.sheets(.settings(action)))):
 					return reduce(into: &state, gamesSettingsAction: action)
 
-				case let .destination(.presented(.lanePicker(action))):
+				case let .destination(.presented(.sheets(.lanePicker(action)))):
 					return reduce(into: &state, lanePickerAction: action)
 
-				case let .destination(.presented(.sharing(action))):
+				case let .destination(.presented(.sheets(.sharing(action)))):
 					return reduce(into: &state, sharingAction: action)
+
+				case let .destination(.presented(.duplicateLanesAlert(action))):
+					return reduce(into: &state, duplicateLanesAction: action)
 
 				case let .frameEditor(action):
 					return reduce(into: &state, frameEditorAction: action)

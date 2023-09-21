@@ -450,6 +450,16 @@ public enum Strings {
             public static let manageLanes = Strings.tr("Localizable", "game.editor.fields.alley.lanes.manageLanes", fallback: "Manage lanes")
             /// Set specific lanes?
             public static let selectLanes = Strings.tr("Localizable", "game.editor.fields.alley.lanes.selectLanes", fallback: "Set specific lanes?")
+            public enum Duplicate {
+              /// Yes, copy to all
+              public static let copyToAll = Strings.tr("Localizable", "game.editor.fields.alley.lanes.duplicate.copyToAll", fallback: "Yes, copy to all")
+              /// No, I might change lanes
+              public static let dismiss = Strings.tr("Localizable", "game.editor.fields.alley.lanes.duplicate.dismiss", fallback: "No, I might change lanes")
+              /// If you're bowling all your games on the same lanes tonight, easily copy the lanes you just set to the rest of the games. You can change these later.
+              public static let message = Strings.tr("Localizable", "game.editor.fields.alley.lanes.duplicate.message", fallback: "If you're bowling all your games on the same lanes tonight, easily copy the lanes you just set to the rest of the games. You can change these later.")
+              /// Copy lanes to all games?
+              public static let title = Strings.tr("Localizable", "game.editor.fields.alley.lanes.duplicate.title", fallback: "Copy lanes to all games?")
+            }
           }
         }
         public enum ExcludeFromStatistics {
