@@ -8,22 +8,27 @@ import ViewsLibrary
 
 public struct FrameEditor: Reducer {
 	public struct State: Equatable {
-		public var currentRollIndex: Int
-		public var frame: Frame.Edit
-		public var draggedPinNewState: Bool?
+		public var isDragging = false
+
+		public var downedPinsBeforeDrag: Set<Pin>?
+		public var downedPins: Set<Pin>
+		public var lockedPins: Set<Pin>
+		public var nextPinState: NextPinState?
 		public var isEditable: Bool
 
-		public init(currentRollIndex: Int, frame: Frame.Edit) {
-			self.currentRollIndex = currentRollIndex
-			self.frame = frame
-			self.isEditable = true
+		public init(downedPins: Set<Pin> = [], lockedPins: Set<Pin> = [], isEditable: Bool = true) {
+			self.downedPins = downedPins
+			self.lockedPins = lockedPins
+			self.isEditable = isEditable
 		}
 	}
 
 	public enum Action: Equatable {
 		public enum ViewAction: Equatable {
+			case didStartDragging
 			case didDragOverPin(Pin)
-			case didStopDraggingPins
+			case didStopDragging
+			case didTapPin(Pin)
 		}
 		public enum DelegateAction: Equatable {
 			case didProvokeLock
@@ -36,6 +41,11 @@ public struct FrameEditor: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	public enum NextPinState {
+		case downed
+		case up
+	}
+
 	init() {}
 
 	public var body: some ReducerOf<Self> {
@@ -43,24 +53,49 @@ public struct FrameEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case let .didDragOverPin(pin):
+				case let .didTapPin(pin):
+					guard !state.lockedPins.contains(pin) else { return .none }
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					let existingState = state
-					if let newState = state.draggedPinNewState {
-						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
-					} else {
-						let oldState = state.frame.roll(at: state.currentRollIndex).isPinDown(pin)
-						let newState = !oldState
-						state.draggedPinNewState = newState
-						state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
+					state.downedPins.toggle(pin)
+					return .send(.delegate(.didEditFrame))
+
+				case .didStartDragging:
+					state.downedPinsBeforeDrag = state.downedPins
+					return .none
+
+				case let .didDragOverPin(pin):
+					guard !state.lockedPins.contains(pin) else { return .none }
+
+					guard state.isEditable else {
+						if state.isDragging {
+							return .none
+						} else {
+							state.isDragging = true
+							return .send(.delegate(.didProvokeLock))
+						}
 					}
 
-					return existingState != state ? .send(.delegate(.didEditFrame)) : .none
+					state.isDragging = true
+					if let nextPinState = state.nextPinState {
+						state.downedPins.toggle(pin, toContain: nextPinState == .downed)
+					} else {
+						let newState: NextPinState = state.downedPins.contains(pin) ? .up : .downed
+						state.nextPinState = newState
+						state.downedPins.toggle(pin, toContain: newState == .downed)
+					}
 
-				case .didStopDraggingPins:
-					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					state.draggedPinNewState = nil
 					return .none
+
+				case .didStopDragging:
+					state.isDragging = false
+					state.nextPinState = nil
+					if state.downedPins != state.downedPinsBeforeDrag {
+						state.downedPinsBeforeDrag = nil
+						return .send(.delegate(.didEditFrame))
+					} else {
+						state.downedPinsBeforeDrag = nil
+						return .none
+					}
 				}
 
 			case let .internal(internalAction):
@@ -81,66 +116,70 @@ public struct FrameEditor: Reducer {
 public struct FrameEditorView: View {
 	let store: StoreOf<FrameEditor>
 
-	@GestureState private var dragLocation: CGPoint = .zero
-	@State private var initialContentSize: CGSize = .zero
-	@State private var contentSize: CGSize = .zero
+	struct PinContainer: Equatable {
+		let pin: Pin
+		let bounds: CGRect
+	}
 
-	struct ViewState: Equatable {
-		let rollIndex: Int
-		let downPins: Set<Pin>
-		let inaccessiblePins: Set<Pin>
-
-		init(state: FrameEditor.State) {
-			self.rollIndex = state.currentRollIndex
-			self.downPins = state.frame.deck(forRoll: state.currentRollIndex)
-
-			let pinsDownLastFrame = state.currentRollIndex > 0 ? state.frame.deck(forRoll: state.currentRollIndex - 1) : []
-			if Frame.isLast(state.frame.index) {
-				self.inaccessiblePins = pinsDownLastFrame.arePinsCleared ? [] : pinsDownLastFrame
-			} else {
-				self.inaccessiblePins = pinsDownLastFrame
-			}
+	struct PinContainerPreferenceKey: PreferenceKey {
+		static var defaultValue: [PinContainer] = []
+		static func reduce(value: inout [FrameEditorView.PinContainer], nextValue: () -> [FrameEditorView.PinContainer]) {
+			value.append(contentsOf: nextValue())
 		}
 	}
 
+	@State private var initialContentSize: CGSize = .zero
+	@State private var contentSize: CGSize = .zero
+
+	@State private var pinContainers: [PinContainer] = []
+	@State private var touchablePins: [PinContainer] = []
+
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack(alignment: .center, spacing: .smallSpacing) {
 				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.allCases) { pin in
 					ZStack {
-						(viewStore.downPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
+						(viewStore.downedPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.shadow(color: .black, radius: 2)
 					}
 					.frame(width: getWidth(for: pin), height: getHeight(for: pin))
-					.background(dragReader(for: pin, withViewStore: viewStore))
-					.opacity(viewStore.inaccessiblePins.contains(pin) ? 0.25 : 1)
+					.background(
+						GeometryReader { proxy in
+							Color.clear
+								.preference(
+									key: PinContainerPreferenceKey.self,
+									value: [PinContainer(pin: pin, bounds: proxy.frame(in: .named("FrameEditor")))]
+								)
+						}
+					)
+					.opacity(viewStore.lockedPins.contains(pin) ? 0.25 : 1)
+					.onTapGesture { viewStore.send(.didTapPin(pin)) }
 				}
 				Spacer(minLength: .standardSpacing)
 			}
 			.measure(key: InitialContentSizeKey.self, to: $initialContentSize, exactlyOnce: true)
 			.measure(key: ContentSizeKey.self, to: $contentSize)
-			.gesture(
-				DragGesture(minimumDistance: 0, coordinateSpace: .global)
-					.updating($dragLocation) { (value, state, _) in state = value.location }
-					.onEnded { _ in viewStore.send(.didStopDraggingPins) }
+			.onPreferenceChange(PinContainerPreferenceKey.self) { pinContainers = $0 }
+			.simultaneousGesture(
+				DragGesture()
+					.onChanged { drag in
+						if !viewStore.isDragging {
+							touchablePins = pinContainers
+							viewStore.send(.didStartDragging)
+						}
+
+						if let index = touchablePins.firstIndex(where: { $0.bounds.contains(drag.location) }) {
+							viewStore.send(.didDragOverPin(touchablePins[index].pin))
+							touchablePins.remove(at: index)
+						}
+					}
+					.onEnded { _ in viewStore.send(.didStopDragging) }
 			)
+			.coordinateSpace(name: "FrameEditor")
 		})
-	}
-
-	private func dragReader(
-		for pin: Pin,
-		withViewStore viewStore: ViewStore<ViewState, FrameEditor.Action.ViewAction>
-	) -> some View {
-		GeometryReader { proxy in
-			if !viewStore.inaccessiblePins.contains(pin) && proxy.frame(in: .global).contains(dragLocation) {
-				Task.detached { @MainActor in viewStore.send(.didDragOverPin(pin)) }
-			}
-
-			return Color.clear
-		}
 	}
 
 	private func getHeight(for pin: Pin) -> CGFloat? {

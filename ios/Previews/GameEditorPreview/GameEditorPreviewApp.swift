@@ -20,7 +20,8 @@ public struct GameEditorPreviewApp: App {
 				initialGameId: UUID(1)
 			),
 			reducer: {
-				GamesEditor()//._printChanges()
+				GamesEditor()
+					._printChanges()
 					.dependency(\.database, {
 						let db: any DatabaseWriter
 						do {

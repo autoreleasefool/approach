@@ -96,6 +96,14 @@ extension Frame.Edit {
 		}
 	}
 
+	public mutating func setDownedPins(rollIndex: Int, to downedPins: Set<Pin>) {
+		guaranteeRollExists(upTo: rollIndex)
+		rolls[rollIndex].roll.pinsDowned = downedPins
+		for roll in (rollIndex + 1..<rolls.endIndex) {
+			rolls[roll].roll.pinsDowned.subtract(downedPins)
+		}
+	}
+
 	public mutating func guaranteeRollExists(upTo index: Int) {
 		while rolls.count < index + 1 {
 			rolls.append(.init(index: rolls.count, roll: .default, bowlingBall: nil))

@@ -270,10 +270,7 @@ public struct GamesEditor: Reducer {
 					state.hideNextHeaderIfNecessary(updatingRollIndexTo: newRollIndex, frameIndex: newFrameIndex ?? 0)
 
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
-					state._frameEditor = .init(
-						currentRollIndex: state.currentRollIndex,
-						frame: state.frames![state.currentFrameIndex]
-					)
+					state._frameEditor = .init()
 
 					state._rollEditor = .init(
 						ballRolled: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall,

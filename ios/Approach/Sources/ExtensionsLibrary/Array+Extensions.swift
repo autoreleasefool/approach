@@ -8,4 +8,12 @@ extension Set {
 			insert(element)
 		}
 	}
+
+	public mutating func toggle(_ element: Element, toContain: Bool) {
+		if toContain {
+			insert(element)
+		} else {
+			remove(element)
+		}
+	}
 }
