@@ -113,7 +113,8 @@ public struct GamesEditorView: View {
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /GamesEditor.Destination.State.gameDetails,
-				action: GamesEditor.Destination.Action.gameDetails
+				action: GamesEditor.Destination.Action.gameDetails,
+				onDismiss: { viewStore.send(.didDismissGameDetails) }
 			) { (store: StoreOf<GameDetails>) in
 				gameDetails(viewStore: viewStore, gameDetailsStore: store)
 			}
@@ -140,7 +141,7 @@ public struct GamesEditorView: View {
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.sheets,
 			action: GamesEditor.Destination.Action.sheets,
-			onDismiss: { store.send(.internal(.didDismissOpenSheet)) }
+			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
 		) {
 			SwitchStore($0) { state in
 				switch state {

@@ -190,6 +190,10 @@ extension GamesRepository: DependencyKey {
 						.fetchAll($0)
 
 					for game in destinations {
+						try GameLane.Database
+							.filter(GameLane.Database.Columns.gameId == game)
+							.deleteAll($0)
+
 						for lane in lanesForGame {
 							let gameLane = GameLane.Database(gameId: game, laneId: lane.laneId)
 							try gameLane.upsert($0)

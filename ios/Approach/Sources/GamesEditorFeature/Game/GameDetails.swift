@@ -31,8 +31,6 @@ public struct GameDetails: Reducer {
 		public let isGearEnabled: Bool
 		public let isOpponentsEnabled: Bool
 
-		@BindingState public var isSelectingLanes: Bool = false
-
 		public var _gameDetailsHeader: GameDetailsHeader.State = .init()
 
 		@PresentationState public var destination: Destination.State?
@@ -55,7 +53,7 @@ public struct GameDetails: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+		public enum ViewAction: Equatable {
 			case didStartTask
 			case didToggleLock
 			case didToggleExclude
@@ -65,9 +63,9 @@ public struct GameDetails: Reducer {
 			case didTapAlley
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
-			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
+			case didSelectLanes
 			case didProceed(to: GameDetailsHeader.State.NextElement)
 			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
 			case didClearManualScore
@@ -130,8 +128,6 @@ public struct GameDetails: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
-
 		Scope(state: \.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
 			GameDetailsHeader()
 		}
@@ -210,21 +206,6 @@ public struct GameDetails: Reducer {
 
 				case let .didMeasureSectionHeaderContentSize(size):
 					return .send(.delegate(.didMeasureSectionHeaderContentSize(size)))
-
-				case .binding(\.$isSelectingLanes):
-					guard state.isEditable else {
-						state.isSelectingLanes = state.game?.lanes.isEmpty != true
-						return .send(.delegate(.didProvokeLock))
-					}
-
-					if !state.isSelectingLanes {
-						state.game?.lanes.removeAll()
-						return .send(.delegate(.didEditGame(state.game)))
-					}
-					return .none
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -232,7 +213,6 @@ public struct GameDetails: Reducer {
 				case let .didLoadGame(.success(game)):
 					guard let game, game.id == state.gameId else { return .none }
 					state.game = game
-					state.isSelectingLanes = !game.lanes.isEmpty
 					return .none
 
 				case .didLoadGame(.failure):
@@ -281,8 +261,19 @@ public struct GameDetails: Reducer {
 						return .send(.delegate(.didProceed(to: next)))
 					}
 
-				case .destination(.dismiss),
-						.destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
+				case .destination(.dismiss):
+					switch state.destination {
+					case .lanePicker:
+						if (state.game?.lanes.count ?? 0 > 0) {
+							return .send(.delegate(.didSelectLanes))
+						} else {
+							return .none
+						}
+					case .gearPicker, .matchPlay, .scoring, .none:
+						return .none
+					}
+
+				case .destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
 						.destination(.presented(.scoring(.internal))), .destination(.presented(.scoring(.view))),
 						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
 						.destination(.presented(.lanePicker(.internal))), .destination(.presented(.lanePicker(.view))),

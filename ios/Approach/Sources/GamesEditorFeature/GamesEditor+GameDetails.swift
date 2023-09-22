@@ -30,6 +30,14 @@ extension GamesEditor {
 				state.game?.score = state.score?.frames.gameScore() ?? 0
 				return save(game: state.game)
 
+			case .didSelectLanes:
+				if !state.didPromptLaneDuplication {
+					state.didPromptLaneDuplication = true
+					state.willShowDuplicateLanesAlert = true
+					state.destination = nil
+				}
+				return .none
+
 			case .didProvokeLock:
 				return state.presentLockedToast()
 

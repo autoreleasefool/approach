@@ -564,9 +564,9 @@ final class GamesRepositoryTests: XCTestCase {
 				matchPlay: nil,
 				gear: [],
 				lanes: [
-					.init(id: UUID(0), label: "1"),
-					.init(id: UUID(2), label: "2"),
-					.init(id: UUID(1), label: "10"),
+					.init(id: UUID(0), label: "1", position: .leftWall),
+					.init(id: UUID(2), label: "2", position: .rightWall),
+					.init(id: UUID(1), label: "10", position: .noWall),
 				],
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
@@ -799,7 +799,7 @@ final class GamesRepositoryTests: XCTestCase {
 			matchPlay: nil,
 			gear: [],
 			lanes: [
-				.init(id: UUID(1), label: "2"),
+				.init(id: UUID(1), label: "2", position: .noWall),
 			],
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
@@ -954,15 +954,14 @@ final class GamesRepositoryTests: XCTestCase {
 		])
 	}
 
-	func testDuplicateLanes_WhenOtherGameHasLanes_Appends() async throws {
+	func testDuplicateLanes_WhenOtherGameHasLanes_Replaces() async throws {
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
 		let gameLane1 = GameLane.Database(gameId: UUID(0), laneId: UUID(0))
-		let gameLane2 = GameLane.Database(gameId: UUID(0), laneId: UUID(1))
-		let gameLane3 = GameLane.Database(gameId: UUID(1), laneId: UUID(1))
-		let gameLane4 = GameLane.Database(gameId: UUID(2), laneId: UUID(1))
-		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3, gameLane4]))
+		let gameLane2 = GameLane.Database(gameId: UUID(1), laneId: UUID(1))
+		let gameLane3 = GameLane.Database(gameId: UUID(2), laneId: UUID(1))
+		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
 
 		try await withDependencies {
 			$0.database.writer = { db }
@@ -979,11 +978,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		XCTAssertEqual(gameLanes, [
 			.init(gameId: UUID(0), laneId: UUID(0)),
-			.init(gameId: UUID(0), laneId: UUID(1)),
 			.init(gameId: UUID(1), laneId: UUID(0)),
-			.init(gameId: UUID(1), laneId: UUID(1)),
 			.init(gameId: UUID(2), laneId: UUID(0)),
-			.init(gameId: UUID(2), laneId: UUID(1)),
 		])
 	}
 }

@@ -32,6 +32,7 @@ public struct GamesEditor: Reducer {
 		public var isScoreSheetVisible = true
 
 		public var didPromptLaneDuplication = false
+		public var willShowDuplicateLanesAlert = false
 
 		public var elementsRefreshing: Set<RefreshableElements> = [.bowlers, .frames, .game]
 		var isEditable: Bool { elementsRefreshing.isEmpty && game?.locked != .locked }
@@ -97,6 +98,8 @@ public struct GamesEditor: Reducer {
 		public enum ViewAction: BindableAction, Equatable {
 			case didFirstAppear
 			case didAdjustBackdropSize(CGSize)
+			case didDismissGameDetails
+			case didDismissOpenSheet
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
@@ -110,7 +113,8 @@ public struct GamesEditor: Reducer {
 			case didUpdateMatchPlay(TaskResult<MatchPlay.Edit>)
 			case didDuplicateLanes(TaskResult<Never>)
 
-			case didDismissOpenSheet
+			case showDuplicateLanesAlert
+
 			case calculatedScore(ScoredGame)
 			case adjustBackdrop
 
@@ -200,6 +204,29 @@ public struct GamesEditor: Reducer {
 					}
 					return .none
 
+				case .didDismissOpenSheet:
+					if let game = state.game {
+						state.sheetDetent = .medium
+						state.destination = .gameDetails(.init(
+							gameId: game.id,
+							nextHeaderElement: state.nextHeaderElement,
+							didChangeBowler: state.didChangeBowler
+						))
+						state.didChangeBowler = false
+					}
+					return .none
+
+				case .didDismissGameDetails:
+					if state.willShowDuplicateLanesAlert {
+						state.willShowDuplicateLanesAlert = false
+						return .run { send in
+							try await clock.sleep(for: .milliseconds(25))
+							await send(.internal(.showDuplicateLanesAlert))
+						}
+					} else {
+						return .none
+					}
+
 				case .binding(\.$sheetDetent):
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(25))
@@ -212,16 +239,8 @@ public struct GamesEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .didDismissOpenSheet:
-					if let game = state.game {
-						state.sheetDetent = .medium
-						state.destination = .gameDetails(.init(
-							gameId: game.id,
-							nextHeaderElement: state.nextHeaderElement,
-							didChangeBowler: state.didChangeBowler
-						))
-						state.didChangeBowler = false
-					}
+				case .showDuplicateLanesAlert:
+					state.destination = .duplicateLanesAlert(.duplicateLanes)
 					return .none
 
 				case let .bowlersResponse(.success(bowlers)):
