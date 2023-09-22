@@ -31,7 +31,8 @@ extension GamesEditor {
 				return save(game: state.game)
 
 			case .didSelectLanes:
-				if !state.didPromptLaneDuplication {
+				let hasOtherGames = Set(state.bowlerGameIds.flatMap { $0.value }).count > 1
+				if hasOtherGames && !state.didPromptLaneDuplication {
 					state.didPromptLaneDuplication = true
 					state.willShowDuplicateLanesAlert = true
 					state.destination = nil
