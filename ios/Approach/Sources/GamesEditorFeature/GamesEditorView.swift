@@ -139,7 +139,8 @@ public struct GamesEditorView: View {
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.sheets,
-			action: GamesEditor.Destination.Action.sheets
+			action: GamesEditor.Destination.Action.sheets,
+			onDismiss: { store.send(.internal(.didDismissOpenSheet)) }
 		) {
 			SwitchStore($0) { state in
 				switch state {
@@ -149,7 +150,6 @@ public struct GamesEditorView: View {
 						action: GamesEditor.SheetsDestination.Action.ballPicker
 					) {
 						ballPicker(store: $0)
-							.onDisappear { store.send(.internal(.didDismissOpenSheet(.ballPicker))) }
 					}
 				case .settings:
 					CaseLet(
@@ -157,7 +157,6 @@ public struct GamesEditorView: View {
 						action: GamesEditor.SheetsDestination.Action.settings
 					) {
 						gamesSettings(store: $0)
-							.onDisappear { store.send(.internal(.didDismissOpenSheet(.settings))) }
 					}
 				case .sharing:
 					CaseLet(
@@ -165,7 +164,6 @@ public struct GamesEditorView: View {
 						action: GamesEditor.SheetsDestination.Action.sharing
 					) {
 						sharing(store: $0)
-							.onDisappear { store.send(.internal(.didDismissOpenSheet(.sharing))) }
 					}
 				}
 			}
