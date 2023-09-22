@@ -376,6 +376,7 @@ libraries = [ "StatisticsChartsMocks" ]
 [libraries.Strings]
 
 [libraries.SwiftUIExtensions]
+libraries = [ "Assets" ]
 
 [libraries.TestDatabaseUtilities]
 suitable_for_dependents_matching = "\\w+Tests$"
