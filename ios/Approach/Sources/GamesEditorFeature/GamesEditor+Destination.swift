@@ -12,6 +12,7 @@ extension GamesEditor {
 	public struct SheetsDestination: Reducer {
 		public enum State: Equatable {
 			case settings(GamesSettings.State)
+			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 			case sharing(Sharing.State)
@@ -19,6 +20,7 @@ extension GamesEditor {
 
 		public enum Action: Equatable {
 			case settings(GamesSettings.Action)
+			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case sharing(Sharing.Action)
@@ -31,6 +33,9 @@ extension GamesEditor {
 		public var body: some ReducerOf<Self> {
 			Scope(state: /State.settings, action: /Action.settings) {
 				GamesSettings()
+			}
+			Scope(state: /State.gearPicker, action: /Action.gearPicker) {
+				ResourcePicker { _ in gear.list(ordered: .byName) }
 			}
 			Scope(state: /State.ballPicker, action: /Action.ballPicker) {
 				ResourcePicker { _ in gear.list(ofKind: .bowlingBall, ordered: .byName) }

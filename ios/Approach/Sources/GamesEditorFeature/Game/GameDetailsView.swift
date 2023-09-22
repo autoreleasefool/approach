@@ -2,7 +2,6 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import ModelsLibrary
-import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -34,10 +33,30 @@ public struct GameDetailsView: View {
 
 					if let game = viewStore.game {
 						if viewStore.isGearEnabled {
-							GearSummarySection(gear: game.gear) {
-								viewStore.send(.didTapGear)
-							} onDelete: { id in
-								viewStore.send(.didSwipeGear(.delete, id: id))
+							Section {
+								if game.gear.isEmpty {
+									Text(Strings.Game.Editor.Fields.Gear.help)
+								} else {
+									ForEach(game.gear) { gear in
+										Gear.ViewWithAvatar(gear)
+											.swipeActions(allowsFullSwipe: false) {
+												DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
+											}
+									}
+								}
+							} header: {
+								HStack(alignment: .firstTextBaseline) {
+									Text(Strings.Gear.List.title)
+									Spacer()
+									Button { viewStore.send(.didTapGear) } label: {
+										Text(Strings.Action.select)
+											.font(.caption)
+									}
+								}
+							} footer: {
+								if !game.gear.isEmpty {
+									Text(Strings.Game.Editor.Fields.Gear.help)
+								}
 							}
 						}
 
@@ -146,15 +165,6 @@ public struct GameDetailsView: View {
 				action: GameDetails.Destination.Action.matchPlay
 			) {
 				MatchPlayEditorView(store: $0)
-			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GameDetails.Destination.State.gearPicker,
-				action: GameDetails.Destination.Action.gearPicker
-			) {
-				ResourcePickerView(store: $0) {
-					Gear.ViewWithAvatar($0)
-				}
 			}
 		}
 	}

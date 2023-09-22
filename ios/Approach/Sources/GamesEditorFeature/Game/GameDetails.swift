@@ -2,17 +2,14 @@ import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
-import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
-import GearRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import ModelsViewsLibrary
-import PickableModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
@@ -84,6 +81,7 @@ public struct GameDetails: Reducer {
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
+			case didRequestGearPicker
 			case didRequestLanePicker
 			case didProceed(to: GameDetailsHeader.State.NextElement)
 			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
@@ -106,20 +104,12 @@ public struct GameDetails: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
-			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case matchPlay(MatchPlayEditor.State)
 		}
 		public enum Action: Equatable {
-			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case matchPlay(MatchPlayEditor.Action)
 		}
-
-		@Dependency(\.gear) var gear
-
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.gearPicker, action: /Action.gearPicker) {
-				ResourcePicker { _ in gear.list(ordered: .byName) }
-			}
 			Scope(state: /State.matchPlay, action: /Action.matchPlay) {
 				MatchPlayEditor()
 			}
@@ -174,13 +164,7 @@ public struct GameDetails: Reducer {
 
 				case .didTapGear:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					let gear = Set(state.game?.gear.map(\.id) ?? [])
-					state.destination = .gearPicker(.init(
-						selected: gear,
-						query: .init(()),
-						showsCancelHeaderButton: false
-					))
-					return .none
+					return .send(.delegate(.didRequestGearPicker))
 
 				case .didTapManageLanes:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
@@ -274,13 +258,6 @@ public struct GameDetails: Reducer {
 					// TODO: Handle error observing game -- not actually sure we need to care about the error here
 					return .none
 
-				case let .destination(.presented(.gearPicker(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didChangeSelection(gear):
-						state.game?.gear = .init(uniqueElements: gear)
-						return .send(.delegate(.didEditGame(state.game)))
-					}
-
 				case let .destination(.presented(.matchPlay(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didEditMatchPlay(matchPlay):
@@ -300,7 +277,6 @@ public struct GameDetails: Reducer {
 
 				case .destination(.dismiss),
 						.destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
-						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
 						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
 
