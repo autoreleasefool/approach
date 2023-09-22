@@ -72,18 +72,18 @@ class LegacyUserOnboardingViewModel @Inject constructor(
 }
 
 sealed interface LegacyUserOnboardingUiState {
-	object Started: LegacyUserOnboardingUiState
+	data object Started: LegacyUserOnboardingUiState
 	data class ShowingApproachHeader(
 		val isDetailsVisible: Boolean
 	): LegacyUserOnboardingUiState
 	data class ImportingData(
 		val stepInProgress: MigrationStep?,
 	): LegacyUserOnboardingUiState
-	object Complete: LegacyUserOnboardingUiState
+	data object Complete: LegacyUserOnboardingUiState
 }
 
 sealed interface LegacyUserOnboardingUiEvent {
-	object ApproachIconClicked: LegacyUserOnboardingUiEvent
-	object ApproachHeaderAnimationFinished: LegacyUserOnboardingUiEvent
-	object GetStartedClicked: LegacyUserOnboardingUiEvent
+	data object ApproachIconClicked: LegacyUserOnboardingUiEvent
+	data object ApproachHeaderAnimationFinished: LegacyUserOnboardingUiEvent
+	data object GetStartedClicked: LegacyUserOnboardingUiEvent
 }
