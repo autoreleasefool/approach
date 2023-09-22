@@ -12,7 +12,6 @@ extension GamesEditor {
 	public struct SheetsDestination: Reducer {
 		public enum State: Equatable {
 			case settings(GamesSettings.State)
-			case opponentPicker(ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
@@ -21,7 +20,6 @@ extension GamesEditor {
 
 		public enum Action: Equatable {
 			case settings(GamesSettings.Action)
-			case opponentPicker(ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
@@ -35,9 +33,6 @@ extension GamesEditor {
 		public var body: some ReducerOf<Self> {
 			Scope(state: /State.settings, action: /Action.settings) {
 				GamesSettings()
-			}
-			Scope(state: /State.opponentPicker, action: /Action.opponentPicker) {
-				ResourcePicker { _ in bowlers.opponents(ordering: .byName) }
 			}
 			Scope(state: /State.gearPicker, action: /Action.gearPicker) {
 				ResourcePicker { _ in gear.list(ordered: .byName) }

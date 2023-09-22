@@ -14,192 +14,159 @@ public struct GameDetailsView: View {
 	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
-			Form {
-				Section {
-					GameDetailsHeaderView(
-						store: store.scope(state: \.gameDetailsHeader, action: /GameDetails.Action.InternalAction.gameDetailsHeader)
-					)
-					.listRowInsets(EdgeInsets())
-					.listRowBackground(Color.clear)
-					.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
-				} header: {
-					Color.clear
-						.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
-				}
-				.onChange(of: minimumSheetContentSize) { viewStore.send(.didMeasureMinimumSheetContentSize($0)) }
-				.onChange(of: sectionHeaderContentSize) { viewStore.send(.didMeasureSectionHeaderContentSize($0)) }
+		NavigationStack {
+			WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+				Form {
+					Section {
+						GameDetailsHeaderView(
+							store: store.scope(state: \.gameDetailsHeader, action: /GameDetails.Action.InternalAction.gameDetailsHeader)
+						)
+						.listRowInsets(EdgeInsets())
+						.listRowBackground(Color.clear)
+						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+					} header: {
+						Color.clear
+							.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
+					}
+					.onChange(of: minimumSheetContentSize) { viewStore.send(.didMeasureMinimumSheetContentSize($0)) }
+					.onChange(of: sectionHeaderContentSize) { viewStore.send(.didMeasureSectionHeaderContentSize($0)) }
 
-				if let game = viewStore.game {
-					if viewStore.isGearEnabled {
-						Section {
-							if game.gear.isEmpty {
-								Text(Strings.Game.Editor.Fields.Gear.help)
-							} else {
-								ForEach(game.gear) { gear in
-									Gear.ViewWithAvatar(gear)
-										.swipeActions(allowsFullSwipe: false) {
-											DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
-										}
+					if let game = viewStore.game {
+						if viewStore.isGearEnabled {
+							Section {
+								if game.gear.isEmpty {
+									Text(Strings.Game.Editor.Fields.Gear.help)
+								} else {
+									ForEach(game.gear) { gear in
+										Gear.ViewWithAvatar(gear)
+											.swipeActions(allowsFullSwipe: false) {
+												DeleteButton { viewStore.send(.didSwipeGear(.delete, id: gear.id)) }
+											}
+									}
+								}
+							} header: {
+								HStack(alignment: .firstTextBaseline) {
+									Text(Strings.Gear.List.title)
+									Spacer()
+									Button { viewStore.send(.didTapGear) } label: {
+										Text(Strings.Action.select)
+											.font(.caption)
+									}
+								}
+							} footer: {
+								if !game.gear.isEmpty {
+									Text(Strings.Game.Editor.Fields.Gear.help)
 								}
 							}
-						} header: {
-							HStack(alignment: .firstTextBaseline) {
-								Text(Strings.Gear.List.title)
-								Spacer()
-								Button { viewStore.send(.didTapGear) } label: {
-									Text(Strings.Action.select)
-										.font(.caption)
+						}
+
+						Section(Strings.MatchPlay.title) {
+							NavigationButton { viewStore.send(.didTapMatchPlay) } content: {
+								MatchPlaySummary(matchPlay: game.matchPlay)
+							}
+						}
+
+						Section(Strings.Alley.title) {
+							if let alley = game.series.alley?.name {
+								LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
+
+								Toggle(
+									Strings.Game.Editor.Fields.Alley.Lanes.selectLanes,
+									isOn: viewStore.$isSelectingLanes
+								)
+								.toggleStyle(CheckboxToggleStyle())
+
+								if viewStore.isSelectingLanes {
+									Button { viewStore.send(.didTapManageLanes) } label: {
+										HStack {
+											LabeledContent(
+												Strings.Game.Editor.Fields.Alley.Lanes.manageLanes,
+												value: viewStore.laneLabels
+											)
+											// We don't use .navigation button style because it appears disabled in this context
+											Image(systemSymbol: .chevronForward)
+												.resizable()
+												.scaledToFit()
+												.frame(width: .tinyIcon, height: .tinyIcon)
+												.foregroundColor(Color(uiColor: .secondaryLabel))
+										}
+										.contentShape(Rectangle())
+									}
+									.buttonStyle(TappableElement())
+								}
+							} else {
+								Text(Strings.Game.Editor.Fields.Alley.noneSelected)
+									.font(.caption)
+							}
+						}
+
+						Section {
+							Toggle(
+								Strings.Game.Editor.Fields.ScoringMethod.label,
+								isOn: viewStore.binding(get: { $0.game?.scoringMethod == .manual }, send: { _ in .didToggleScoringMethod })
+							)
+							.toggleStyle(CheckboxToggleStyle())
+
+							if game.scoringMethod == .manual {
+								Button { viewStore.send(.didTapManualScore) } label: {
+									Text(String(game.score))
 								}
 							}
 						} footer: {
-							if !game.gear.isEmpty {
-								Text(Strings.Game.Editor.Fields.Gear.help)
-							}
+							Text(Strings.Game.Editor.Fields.ScoringMethod.help)
 						}
-					}
-
-					Section(Strings.MatchPlay.title) {
-						Toggle(
-							Strings.MatchPlay.record,
-							isOn: viewStore.binding(get: { $0.game?.matchPlay != nil }, send: { _ in .didToggleMatchPlay })
-						)
-
-						if let matchPlay = game.matchPlay {
-							if viewStore.isOpponentsEnabled {
-								Button { viewStore.send(.didTapOpponent) } label: {
-									HStack {
-										LabeledContent(
-											Strings.Opponent.title,
-											value: game.matchPlay?.opponent?.name ?? Strings.none
-										)
-										// We don't use .navigation button style because it appears disabled in this context
-										Image(systemSymbol: .chevronForward)
-											.resizable()
-											.scaledToFit()
-											.frame(width: .tinyIcon, height: .tinyIcon)
-											.foregroundColor(Color(uiColor: .secondaryLabel))
-									}
-									.contentShape(Rectangle())
-								}
-								.buttonStyle(TappableElement())
-							}
-
+						.alert(
+							Strings.Game.Editor.Fields.ManualScore.title,
+							isPresented: viewStore.binding(get: \.isScoreAlertPresented, send: { _ in .didDismissScoreAlert })
+						) {
 							TextField(
-								Strings.MatchPlay.Properties.opponentScore,
+								Strings.Game.Editor.Fields.ManualScore.prompt,
 								text: viewStore.binding(
-									get: {
-										if let score = $0.game?.matchPlay?.opponentScore, score > 0 {
-											return String(score)
-										} else {
-											return ""
-										}
-									},
-									send: { .didSetMatchPlayScore($0) }
+									get: { $0.alertScore > 0 ? String($0.alertScore) : "" },
+									send: { .didSetAlertScore($0) }
 								)
 							)
 							.keyboardType(.numberPad)
-
-							Picker(
-								Strings.MatchPlay.Properties.result,
-								selection: viewStore.binding(get: { _ in matchPlay.result }, send: { .didSetMatchPlayResult($0) })
-							) {
-								Text("").tag(nil as MatchPlay.Result?)
-								ForEach(MatchPlay.Result.allCases) {
-									Text(String(describing: $0)).tag(Optional($0))
-								}
-							}
+							Button(Strings.Action.save) { viewStore.send(.didTapSaveScore) }
+							Button(Strings.Action.cancel, role: .cancel) { viewStore.send(.didTapCancelScore) }
 						}
-					}
 
-					Section(Strings.Alley.title) {
-						if let alley = game.series.alley?.name {
-							LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
-
+						Section {
 							Toggle(
-								Strings.Game.Editor.Fields.Alley.Lanes.selectLanes,
-								isOn: viewStore.$isSelectingLanes
+								Strings.Game.Editor.Fields.Lock.label,
+								isOn: viewStore.binding(get: { $0.game?.locked == .locked }, send: { _ in .didToggleLock })
 							)
-
-							if viewStore.isSelectingLanes {
-								Button { viewStore.send(.didTapManageLanes) } label: {
-									HStack {
-										LabeledContent(
-											Strings.Game.Editor.Fields.Alley.Lanes.manageLanes,
-											value: viewStore.laneLabels
-										)
-										// We don't use .navigation button style because it appears disabled in this context
-										Image(systemSymbol: .chevronForward)
-											.resizable()
-											.scaledToFit()
-											.frame(width: .tinyIcon, height: .tinyIcon)
-											.foregroundColor(Color(uiColor: .secondaryLabel))
-									}
-									.contentShape(Rectangle())
-								}
-								.buttonStyle(TappableElement())
-							}
-						} else {
-							Text(Strings.Game.Editor.Fields.Alley.noneSelected)
-								.font(.caption)
+							.toggleStyle(CheckboxToggleStyle())
+						} footer: {
+							Text(Strings.Game.Editor.Fields.Lock.help)
 						}
-					}
 
-					Section {
-						Toggle(
-							Strings.Game.Editor.Fields.ScoringMethod.label,
-							isOn: viewStore.binding(get: { $0.game?.scoringMethod == .manual }, send: { _ in .didToggleScoringMethod })
-						)
-
-						if game.scoringMethod == .manual {
-							Button { viewStore.send(.didTapManualScore) } label: {
-								Text(String(game.score))
-							}
-						}
-					} footer: {
-						Text(Strings.Game.Editor.Fields.ScoringMethod.help)
-					}
-					.alert(
-						Strings.Game.Editor.Fields.ManualScore.title,
-						isPresented: viewStore.binding(get: \.isScoreAlertPresented, send: { _ in .didDismissScoreAlert })
-					) {
-						TextField(
-							Strings.Game.Editor.Fields.ManualScore.prompt,
-							text: viewStore.binding(
-								get: { $0.alertScore > 0 ? String($0.alertScore) : "" },
-								send: { .didSetAlertScore($0) }
+						Section {
+							Toggle(
+								Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
+								isOn: viewStore.binding(get: { $0.game?.excludeFromStatistics == .exclude }, send: { _ in .didToggleExclude })
 							)
-						)
-						.keyboardType(.numberPad)
-						Button(Strings.Action.save) { viewStore.send(.didTapSaveScore) }
-						Button(Strings.Action.cancel, role: .cancel) { viewStore.send(.didTapCancelScore) }
-					}
-
-					Section {
-						Toggle(
-							Strings.Game.Editor.Fields.Lock.label,
-							isOn: viewStore.binding(get: { $0.game?.locked == .locked }, send: { _ in .didToggleLock })
-						)
-					} footer: {
-						Text(Strings.Game.Editor.Fields.Lock.help)
-					}
-
-					Section {
-						Toggle(
-							Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
-							isOn: viewStore.binding(get: { $0.game?.excludeFromStatistics == .exclude }, send: { _ in .didToggleExclude })
-						)
-					} footer: {
-						excludeFromStatisticsHelp(
-							excludeLeagueFromStatistics: game.league.excludeFromStatistics,
-							seriesPreBowl: game.series.preBowl,
-							excludeSeriesFromStatistics: game.series.excludeFromStatistics
-						)
+							.toggleStyle(CheckboxToggleStyle())
+						} footer: {
+							excludeFromStatisticsHelp(
+								excludeLeagueFromStatistics: game.league.excludeFromStatistics,
+								seriesPreBowl: game.series.preBowl,
+								excludeSeriesFromStatistics: game.series.excludeFromStatistics
+							)
+						}
 					}
 				}
+				.task { await viewStore.send(.didStartTask).finish() }
+			})
+			.toolbar(.hidden)
+			.navigationDestination(
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				state: /GameDetails.Destination.State.matchPlay,
+				action: GameDetails.Destination.Action.matchPlay
+			) {
+				MatchPlayEditorView(store: $0)
 			}
-			.task { await viewStore.send(.didStartTask).finish() }
-		})
+		}
 	}
 
 	@ViewBuilder private func excludeFromStatisticsHelp(

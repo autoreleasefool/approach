@@ -752,10 +752,22 @@ public enum Strings {
     }
   }
   public enum MatchPlay {
-    /// Record results?
-    public static let record = Strings.tr("Localizable", "matchPlay.record", fallback: "Record results?")
     /// Match Play
     public static let title = Strings.tr("Localizable", "matchPlay.title", fallback: "Match Play")
+    public enum Editor {
+      public enum Fields {
+        public enum Opponent {
+          /// Score
+          public static let score = Strings.tr("Localizable", "matchPlay.editor.fields.opponent.score", fallback: "Score")
+          /// Opponent
+          public static let title = Strings.tr("Localizable", "matchPlay.editor.fields.opponent.title", fallback: "Opponent")
+        }
+        public enum Result {
+          /// Outcome
+          public static let title = Strings.tr("Localizable", "matchPlay.editor.fields.result.title", fallback: "Outcome")
+        }
+      }
+    }
     public enum Properties {
       /// Opponent's score
       public static let opponentScore = Strings.tr("Localizable", "matchPlay.properties.opponentScore", fallback: "Opponent's score")
@@ -770,6 +782,20 @@ public enum Strings {
         public static let tied = Strings.tr("Localizable", "matchPlay.properties.result.tied", fallback: "Tied")
         /// Won
         public static let won = Strings.tr("Localizable", "matchPlay.properties.result.won", fallback: "Won")
+      }
+    }
+    public enum Summary {
+      public enum Opponent {
+        /// No opponent
+        public static let `none` = Strings.tr("Localizable", "matchPlay.summary.opponent.none", fallback: "No opponent")
+      }
+      public enum Score {
+        /// Scored %d
+        public static func label(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "matchPlay.summary.score.label", p1, fallback: "Scored %d")
+        }
+        /// Score not recorded
+        public static let `none` = Strings.tr("Localizable", "matchPlay.summary.score.none", fallback: "Score not recorded")
       }
     }
   }
