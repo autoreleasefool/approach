@@ -12,7 +12,6 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
-// swiftlint:disable:next type_body_length
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>
 	typealias GamesEditorViewStore = ViewStore<ViewState, GamesEditor.Action.ViewAction>
@@ -114,10 +113,11 @@ public struct GamesEditorView: View {
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /GamesEditor.Destination.State.gameDetails,
 				action: GamesEditor.Destination.Action.gameDetails,
-				onDismiss: { viewStore.send(.didDismissGameDetails) }
-			) { (store: StoreOf<GameDetails>) in
-				gameDetails(viewStore: viewStore, gameDetailsStore: store)
-			}
+				onDismiss: { viewStore.send(.didDismissGameDetails) },
+				content: { (store: StoreOf<GameDetails>) in
+					gameDetails(viewStore: viewStore, gameDetailsStore: store)
+				}
+			)
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
@@ -141,34 +141,35 @@ public struct GamesEditorView: View {
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /GamesEditor.Destination.State.sheets,
 			action: GamesEditor.Destination.Action.sheets,
-			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
-		) {
-			SwitchStore($0) { state in
-				switch state {
-				case .ballPicker:
-					CaseLet(
-						/GamesEditor.SheetsDestination.State.ballPicker,
-						action: GamesEditor.SheetsDestination.Action.ballPicker
-					) {
-						ballPicker(store: $0)
-					}
-				case .settings:
-					CaseLet(
-						/GamesEditor.SheetsDestination.State.settings,
-						action: GamesEditor.SheetsDestination.Action.settings
-					) {
-						gamesSettings(store: $0)
-					}
-				case .sharing:
-					CaseLet(
-						/GamesEditor.SheetsDestination.State.sharing,
-						action: GamesEditor.SheetsDestination.Action.sharing
-					) {
-						sharing(store: $0)
+			onDismiss: { store.send(.view(.didDismissOpenSheet)) },
+			content: {
+				SwitchStore($0) { state in
+					switch state {
+					case .ballPicker:
+						CaseLet(
+							/GamesEditor.SheetsDestination.State.ballPicker,
+							action: GamesEditor.SheetsDestination.Action.ballPicker
+						) {
+							ballPicker(store: $0)
+						}
+					case .settings:
+						CaseLet(
+							/GamesEditor.SheetsDestination.State.settings,
+							action: GamesEditor.SheetsDestination.Action.settings
+						) {
+							gamesSettings(store: $0)
+						}
+					case .sharing:
+						CaseLet(
+							/GamesEditor.SheetsDestination.State.sharing,
+							action: GamesEditor.SheetsDestination.Action.sharing
+						) {
+							sharing(store: $0)
+						}
 					}
 				}
 			}
-		}
+		)
 	}
 
 	private func gameDetails(

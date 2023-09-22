@@ -264,7 +264,7 @@ public struct GameDetails: Reducer {
 				case .destination(.dismiss):
 					switch state.destination {
 					case .lanePicker:
-						if (state.game?.lanes.count ?? 0 > 0) {
+						if (state.game?.lanes.count ?? 0) > 0 {
 							return .send(.delegate(.didSelectLanes))
 						} else {
 							return .none
