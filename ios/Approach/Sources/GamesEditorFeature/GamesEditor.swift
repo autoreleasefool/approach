@@ -66,8 +66,8 @@ public struct GamesEditor: Reducer {
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
 		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
 
-		public var _frameEditor: FrameEditor.State?
-		public var _rollEditor: RollEditor.State?
+		public var _frameEditor: FrameEditor.State = .init()
+		public var _rollEditor: RollEditor.State = .init()
 		public var _gamesHeader: GamesHeader.State = .init()
 		@PresentationState public var destination: Destination.State?
 
@@ -256,12 +256,7 @@ public struct GamesEditor: Reducer {
 					state.hideNextHeaderIfNecessary(updatingRollIndexTo: newRollIndex, frameIndex: newFrameIndex ?? 0)
 
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
-					state._frameEditor = .init()
 
-					state._rollEditor = .init(
-						ballRolled: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].bowlingBall,
-						didFoul: state.frames![state.currentFrameIndex].rolls[state.currentRollIndex].roll.didFoul
-					)
 					state.elementsRefreshing.remove(.frames)
 					return .none
 

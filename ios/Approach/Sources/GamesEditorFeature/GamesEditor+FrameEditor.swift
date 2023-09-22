@@ -4,7 +4,7 @@ import ModelsLibrary
 extension GamesEditor.State {
 	var frameEditor: FrameEditor.State? {
 		get {
-			guard let _frameEditor, let frames else { return nil }
+			guard let frames else { return nil }
 			let frame = frames[currentFrameIndex]
 			var frameEditor = _frameEditor
 			frameEditor.isEditable = isEditable
@@ -18,8 +18,8 @@ extension GamesEditor.State {
 			return frameEditor
 		}
 		set {
-			_frameEditor = newValue
 			guard let newValue else { return }
+			_frameEditor = newValue
 			let currentFrameIndex = self.currentFrameIndex
 			let currentRollIndex = self.currentRollIndex
 			self.frames?[currentFrameIndex].setDownedPins(rollIndex: currentRollIndex, to: newValue.downedPins)

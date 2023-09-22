@@ -22,7 +22,7 @@ public struct RollEditor: Reducer {
 
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
 
-		init(ballRolled: Gear.Summary?, didFoul: Bool) {
+		init(ballRolled: Gear.Summary? = nil, didFoul: Bool = false) {
 			self.ballRolled = ballRolled
 			self.didFoul = didFoul
 

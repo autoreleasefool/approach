@@ -3,7 +3,7 @@ import ComposableArchitecture
 extension GamesEditor.State {
 	var rollEditor: RollEditor.State? {
 		get {
-			guard let _rollEditor, let frames else { return nil }
+			guard let frames else { return nil }
 			var rollEditor = _rollEditor
 			let currentRoll = frames[currentFrameIndex].rolls[currentRollIndex]
 			rollEditor.ballRolled = currentRoll.bowlingBall
@@ -12,8 +12,8 @@ extension GamesEditor.State {
 			return rollEditor
 		}
 		set {
-			_rollEditor = newValue
 			guard let newValue else { return }
+			_rollEditor = newValue
 			let currentFrameIndex = self.currentFrameIndex
 			let currentRollIndex = self.currentRollIndex
 			frames?[currentFrameIndex].setDidFoul(newValue.didFoul, forRoll: currentRollIndex)
