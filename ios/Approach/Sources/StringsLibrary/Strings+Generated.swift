@@ -499,10 +499,14 @@ public enum Strings {
           public static let title = Strings.tr("Localizable", "game.editor.fields.manualScore.title", fallback: "Set manual score")
         }
         public enum ScoringMethod {
-          /// This game's frames will be hidden and ignored in all statistics.
-          public static let help = Strings.tr("Localizable", "game.editor.fields.scoringMethod.help", fallback: "This game's frames will be hidden and ignored in all statistics.")
-          /// Set manual score?
-          public static let label = Strings.tr("Localizable", "game.editor.fields.scoringMethod.label", fallback: "Set manual score?")
+          /// Frame-by-Frame
+          public static let byFrame = Strings.tr("Localizable", "game.editor.fields.scoringMethod.byFrame", fallback: "Frame-by-Frame")
+          /// Tap to set a manual score
+          public static let help = Strings.tr("Localizable", "game.editor.fields.scoringMethod.help", fallback: "Tap to set a manual score")
+          /// Manual
+          public static let manual = Strings.tr("Localizable", "game.editor.fields.scoringMethod.manual", fallback: "Manual")
+          /// Scoring
+          public static let title = Strings.tr("Localizable", "game.editor.fields.scoringMethod.title", fallback: "Scoring")
         }
       }
       public enum Picker {
@@ -904,6 +908,22 @@ public enum Strings {
       public enum Foul {
         /// Foul?
         public static let title = Strings.tr("Localizable", "roll.properties.foul.title", fallback: "Foul?")
+      }
+    }
+  }
+  public enum Scoring {
+    /// Scoring
+    public static let title = Strings.tr("Localizable", "scoring.title", fallback: "Scoring")
+    public enum Editor {
+      public enum Fields {
+        public enum ManualScore {
+          /// By setting a manual score, all the frames for this game will be ignored in all statistics, but the score can be used for your averages and high series.
+          public static let help = Strings.tr("Localizable", "scoring.editor.fields.manualScore.help", fallback: "By setting a manual score, all the frames for this game will be ignored in all statistics, but the score can be used for your averages and high series.")
+          /// Score
+          public static let label = Strings.tr("Localizable", "scoring.editor.fields.manualScore.label", fallback: "Score")
+          /// Set manual score?
+          public static let title = Strings.tr("Localizable", "scoring.editor.fields.manualScore.title", fallback: "Set manual score?")
+        }
       }
     }
   }

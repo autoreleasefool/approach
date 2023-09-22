@@ -1,6 +1,7 @@
 import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
+import EquatableLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
@@ -55,35 +56,8 @@ public struct GameDetailsView: View {
 							viewStore.send(.didTapAlley)
 						}
 
-						Section {
-							Toggle(
-								Strings.Game.Editor.Fields.ScoringMethod.label,
-								isOn: viewStore.binding(get: { $0.game?.scoringMethod == .manual }, send: { _ in .didToggleScoringMethod })
-							)
-							.toggleStyle(CheckboxToggleStyle())
-
-							if game.scoringMethod == .manual {
-								Button { viewStore.send(.didTapManualScore) } label: {
-									Text(String(game.score))
-								}
-							}
-						} footer: {
-							Text(Strings.Game.Editor.Fields.ScoringMethod.help)
-						}
-						.alert(
-							Strings.Game.Editor.Fields.ManualScore.title,
-							isPresented: viewStore.binding(get: \.isScoreAlertPresented, send: { _ in .didDismissScoreAlert })
-						) {
-							TextField(
-								Strings.Game.Editor.Fields.ManualScore.prompt,
-								text: viewStore.binding(
-									get: { $0.alertScore > 0 ? String($0.alertScore) : "" },
-									send: { .didSetAlertScore($0) }
-								)
-							)
-							.keyboardType(.numberPad)
-							Button(Strings.Action.save) { viewStore.send(.didTapSaveScore) }
-							Button(Strings.Action.cancel, role: .cancel) { viewStore.send(.didTapCancelScore) }
+						ScoringSummarySection(scoringMethod: game.scoringMethod, score: game.score) {
+							viewStore.send(.didTapScoring)
 						}
 
 						Section {
@@ -115,28 +89,43 @@ public struct GameDetailsView: View {
 			})
 			.toolbar(.hidden)
 			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GameDetails.Destination.State.matchPlay,
-				action: GameDetails.Destination.Action.matchPlay
+				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) })
 			) {
-				MatchPlayEditorView(store: $0)
-			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GameDetails.Destination.State.gearPicker,
-				action: GameDetails.Destination.Action.gearPicker
-			) {
-				ResourcePickerView(store: $0) {
-					Gear.ViewWithAvatar($0)
-				}
-			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GameDetails.Destination.State.lanePicker,
-				action: GameDetails.Destination.Action.lanePicker
-			) {
-				ResourcePickerView(store: $0) {
-					Lane.View($0)
+				SwitchStore($0) { state in
+					switch state {
+					case .gearPicker:
+						CaseLet(
+							/GameDetails.Destination.State.gearPicker,
+							 action: GameDetails.Destination.Action.gearPicker
+						) {
+							ResourcePickerView(store: $0) {
+								Gear.ViewWithAvatar($0)
+							}
+						}
+					case .lanePicker:
+						CaseLet(
+							/GameDetails.Destination.State.lanePicker,
+							 action: GameDetails.Destination.Action.lanePicker
+						) {
+							ResourcePickerView(store: $0) {
+								Lane.View($0)
+							}
+						}
+					case .matchPlay:
+						CaseLet(
+							/GameDetails.Destination.State.matchPlay,
+							 action: GameDetails.Destination.Action.matchPlay
+						) {
+							MatchPlayEditorView(store: $0)
+						}
+					case .scoring:
+						CaseLet(
+							/GameDetails.Destination.State.scoring,
+							 action: GameDetails.Destination.Action.scoring
+						) {
+							ScoringEditorView(store: $0)
+						}
+					}
 				}
 			}
 		}

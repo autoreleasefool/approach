@@ -24,9 +24,6 @@ public struct GameDetails: Reducer {
 	public struct State: Equatable {
 		public var gameId: Game.ID
 		public var game: Game.Edit?
-		public var isScoreAlertPresented = false
-		public var didJustToggleScoringMethod = false
-		public var alertScore: Int = 0
 
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement?
 		public var shouldHeaderShimmer: Bool
@@ -63,14 +60,9 @@ public struct GameDetails: Reducer {
 			case didToggleLock
 			case didToggleExclude
 			case didTapMatchPlay
-			case didToggleScoringMethod
-			case didTapManualScore
+			case didTapScoring
 			case didTapGear
-			case didDismissScoreAlert
-			case didTapSaveScore
-			case didTapCancelScore
 			case didTapAlley
-			case didSetAlertScore(String)
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 			case binding(BindingAction<State>)
@@ -100,11 +92,13 @@ public struct GameDetails: Reducer {
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case matchPlay(MatchPlayEditor.State)
+			case scoring(ScoringEditor.State)
 		}
 		public enum Action: Equatable {
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case matchPlay(MatchPlayEditor.Action)
+			case scoring(ScoringEditor.Action)
 		}
 
 		@Dependency(\.gear) var gear
@@ -119,6 +113,9 @@ public struct GameDetails: Reducer {
 			}
 			Scope(state: /State.matchPlay, action: /Action.matchPlay) {
 				MatchPlayEditor()
+			}
+			Scope(state: /State.scoring, action: /Action.scoring) {
+				ScoringEditor()
 			}
 		}
 	}
@@ -186,40 +183,13 @@ public struct GameDetails: Reducer {
 					))
 					return .none
 
-				case .didToggleScoringMethod:
+				case .didTapScoring:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					return toggleScoringMethod(in: &state)
-
-				case .didDismissScoreAlert:
-					state.didJustToggleScoringMethod = false
-					state.isScoreAlertPresented = false
-					return .none
-
-				case .didTapSaveScore:
-					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					state.game?.score = max(min(state.alertScore, 450), 0)
-					return .send(.delegate(.didEditGame(state.game)))
-
-				case .didTapCancelScore:
-					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					if state.didJustToggleScoringMethod {
-						state.didJustToggleScoringMethod = false
-						return toggleScoringMethod(in: &state)
-					} else {
-						return .none
-					}
-
-				case .didTapManualScore:
-					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					state.alertScore = state.game?.score ?? 0
-					state.isScoreAlertPresented = true
-					return .none
-
-				case let .didSetAlertScore(string):
-					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					if !string.isEmpty, let score = Int(string) {
-						state.alertScore = max(min(score, 450), 0)
-					}
+					guard let game = state.game else { return .none }
+					state.destination = .scoring(.init(
+						scoringMethod: game.scoringMethod,
+						score: game.score
+					))
 					return .none
 
 				case .didTapMatchPlay:
@@ -294,6 +264,17 @@ public struct GameDetails: Reducer {
 						}
 					}
 
+				case let .destination(.presented(.scoring(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .didClearManualScore:
+						state.game?.scoringMethod = .byFrame
+						return .send(.delegate(.didClearManualScore))
+					case let .didSetManualScore(score):
+						state.game?.scoringMethod = .manual
+						state.game?.score = score
+						return .send(.delegate(.didEditGame(state.game)))
+					}
+
 				case let .gameDetailsHeader(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didProceed(next):
@@ -302,6 +283,7 @@ public struct GameDetails: Reducer {
 
 				case .destination(.dismiss),
 						.destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
+						.destination(.presented(.scoring(.internal))), .destination(.presented(.scoring(.view))),
 						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
 						.destination(.presented(.lanePicker(.internal))), .destination(.presented(.lanePicker(.view))),
 						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
@@ -319,27 +301,12 @@ public struct GameDetails: Reducer {
 
 		AnalyticsReducer<State, Action> { state, action in
 			switch action {
-			case .view(.didTapSaveScore):
+			case .internal(.destination(.presented(.scoring(.delegate(.didSetManualScore))))):
 				guard let gameId = state.game?.id else { return nil }
 				return Analytics.Game.ManualScoreSet(gameId: gameId)
 			default:
 				return nil
 			}
-		}
-	}
-
-	private func toggleScoringMethod(in state: inout State) -> Effect<Action> {
-		state.game?.scoringMethod.toNext()
-		switch state.game?.scoringMethod {
-		case .byFrame:
-			return .send(.delegate(.didClearManualScore))
-		case .manual:
-			state.alertScore = state.game?.score ?? 0
-			state.didJustToggleScoringMethod = true
-			state.isScoreAlertPresented = true
-			return .none
-		case .none:
-			return .none
 		}
 	}
 
