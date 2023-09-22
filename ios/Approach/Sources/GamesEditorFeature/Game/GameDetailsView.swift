@@ -44,10 +44,8 @@ public struct GameDetailsView: View {
 							}
 						}
 
-						Section(Strings.MatchPlay.title) {
-							NavigationButton { viewStore.send(.didTapMatchPlay) } content: {
-								MatchPlaySummary(matchPlay: game.matchPlay)
-							}
+						MatchPlaySummarySection(matchPlay: game.matchPlay) {
+							viewStore.send(.didTapMatchPlay)
 						}
 
 						AlleySummarySection(
@@ -167,16 +165,6 @@ public struct GameDetailsView: View {
 					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
 				}
 			}
-		}
-	}
-}
-
-extension MatchPlay.Result: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .lost: return Strings.MatchPlay.Properties.Result.lost
-		case .tied: return Strings.MatchPlay.Properties.Result.tied
-		case .won: return Strings.MatchPlay.Properties.Result.won
 		}
 	}
 }
