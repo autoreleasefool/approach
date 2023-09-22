@@ -445,11 +445,9 @@ public enum Strings {
       }
       public enum Fields {
         public enum Alley {
-          /// No alley was selected for this series. To add one, you can navigate back and use the edit button at the top of the screen.
-          public static let noneSelected = Strings.tr("Localizable", "game.editor.fields.alley.noneSelected", fallback: "No alley was selected for this series. To add one, you can navigate back and use the edit button at the top of the screen.")
+          /// No alley was selected for this series. To add one, or to specify lanes, you can edit the series by navigating back, and swiping left on the series to edit.
+          public static let noneSelected = Strings.tr("Localizable", "game.editor.fields.alley.noneSelected", fallback: "No alley was selected for this series. To add one, or to specify lanes, you can edit the series by navigating back, and swiping left on the series to edit.")
           public enum Lanes {
-            /// Record which lanes you bowled on for more detailed stats.
-            public static let help = Strings.tr("Localizable", "game.editor.fields.alley.lanes.help", fallback: "Record which lanes you bowled on for more detailed stats.")
             /// Manage lanes
             public static let manageLanes = Strings.tr("Localizable", "game.editor.fields.alley.lanes.manageLanes", fallback: "Manage lanes")
             /// Set specific lanes?

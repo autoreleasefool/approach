@@ -148,6 +148,7 @@ public struct GamesEditor: Reducer {
 
 	public enum SheetType {
 		case ballPicker
+		case lanePicker
 		case settings
 		case sharing
 	}
@@ -219,7 +220,7 @@ public struct GamesEditor: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didDismissOpenSheet(sheetType):
-					if (state.game?.lanes.count ?? 0) > 0 && !state.didPromptLaneDuplication {
+					if sheetType == .lanePicker, (state.game?.lanes.count ?? 0) > 0 && !state.didPromptLaneDuplication {
 						state.didPromptLaneDuplication = true
 						state.destination = .duplicateLanesAlert(.duplicateLanes)
 					} else {
@@ -361,6 +362,9 @@ public struct GamesEditor: Reducer {
 
 				case let .destination(.presented(.sheets(.settings(action)))):
 					return reduce(into: &state, gamesSettingsAction: action)
+
+				case let .destination(.presented(.sheets(.lanePicker(action)))):
+					return reduce(into: &state, lanePickerAction: action)
 
 				case let .destination(.presented(.sheets(.sharing(action)))):
 					return reduce(into: &state, sharingAction: action)

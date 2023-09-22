@@ -36,6 +36,8 @@ public struct GameDetailsView: View {
 						if viewStore.isGearEnabled {
 							GearSummarySection(gear: game.gear) {
 								viewStore.send(.didTapGear)
+							} onDelete: { id in
+								viewStore.send(.didSwipeGear(.delete, id: id))
 							}
 						}
 
@@ -45,11 +47,38 @@ public struct GameDetailsView: View {
 							}
 						}
 
-						AlleySummarySection(
-							alleyInfo: game.series.alley,
-							lanes: game.lanes
-						) {
-							viewStore.send(.didTapAlley)
+						Section(Strings.Alley.title) {
+							if let alley = game.series.alley?.name {
+								LabeledContent(Strings.Alley.Title.bowlingAlley, value: alley)
+
+								Toggle(
+									Strings.Game.Editor.Fields.Alley.Lanes.selectLanes,
+									isOn: viewStore.$isSelectingLanes
+								)
+								.toggleStyle(CheckboxToggleStyle())
+
+								if viewStore.isSelectingLanes {
+									Button { viewStore.send(.didTapManageLanes) } label: {
+										HStack {
+											LabeledContent(
+												Strings.Game.Editor.Fields.Alley.Lanes.manageLanes,
+												value: viewStore.laneLabels
+											)
+											// We don't use .navigation button style because it appears disabled in this context
+											Image(systemSymbol: .chevronForward)
+												.resizable()
+												.scaledToFit()
+												.frame(width: .tinyIcon, height: .tinyIcon)
+												.foregroundColor(Color(uiColor: .secondaryLabel))
+										}
+										.contentShape(Rectangle())
+									}
+									.buttonStyle(TappableElement())
+								}
+							} else {
+								Text(Strings.Game.Editor.Fields.Alley.noneSelected)
+									.font(.caption)
+							}
 						}
 
 						Section {
@@ -125,15 +154,6 @@ public struct GameDetailsView: View {
 			) {
 				ResourcePickerView(store: $0) {
 					Gear.ViewWithAvatar($0)
-				}
-			}
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /GameDetails.Destination.State.lanePicker,
-				action: GameDetails.Destination.Action.lanePicker
-			) {
-				ResourcePickerView(store: $0) {
-					Lane.View($0)
 				}
 			}
 		}
