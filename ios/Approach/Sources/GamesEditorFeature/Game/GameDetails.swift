@@ -34,8 +34,6 @@ public struct GameDetails: Reducer {
 
 		public var _gameDetailsHeader: GameDetailsHeader.State = .init()
 
-		@PresentationState public var destination: Destination.State?
-
 		var isEditable: Bool { game?.locked != .locked }
 
 		var laneLabels: String {
@@ -66,14 +64,17 @@ public struct GameDetails: Reducer {
 			case didStartTask
 			case didToggleLock
 			case didToggleExclude
-			case didTapMatchPlay
+			case didToggleMatchPlay
 			case didToggleScoringMethod
 			case didTapManualScore
 			case didTapGear
+			case didTapOpponent
 			case didDismissScoreAlert
 			case didTapSaveScore
 			case didTapCancelScore
 			case didTapManageLanes
+			case didSetMatchPlayResult(MatchPlay.Result?)
+			case didSetMatchPlayScore(String)
 			case didSetAlertScore(String)
 			case didSwipeGear(SwipeAction, id: Gear.ID)
 			case didMeasureMinimumSheetContentSize(CGSize)
@@ -81,6 +82,7 @@ public struct GameDetails: Reducer {
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
+			case didRequestOpponentPicker
 			case didRequestGearPicker
 			case didRequestLanePicker
 			case didProceed(to: GameDetailsHeader.State.NextElement)
@@ -94,26 +96,11 @@ public struct GameDetails: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadGame(TaskResult<Game.Edit?>)
 			case gameDetailsHeader(GameDetailsHeader.Action)
-			case destination(PresentationAction<Destination.Action>)
 		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
-	}
-
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case matchPlay(MatchPlayEditor.State)
-		}
-		public enum Action: Equatable {
-			case matchPlay(MatchPlayEditor.Action)
-		}
-		public var body: some ReducerOf<Self> {
-			Scope(state: /State.matchPlay, action: /Action.matchPlay) {
-				MatchPlayEditor()
-			}
-		}
 	}
 
 	enum CancelID {
@@ -166,9 +153,18 @@ public struct GameDetails: Reducer {
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didRequestGearPicker))
 
+				case .didTapOpponent:
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
+					return .send(.delegate(.didRequestOpponentPicker))
+
 				case .didTapManageLanes:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					return .send(.delegate(.didRequestLanePicker))
+
+				case let .didSetMatchPlayResult(result):
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
+					state.game?.matchPlay?.result = result
+					return .send(.delegate(.didEditMatchPlay(.success(state.game?.matchPlay))))
 
 				case .didToggleScoringMethod:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
@@ -206,17 +202,22 @@ public struct GameDetails: Reducer {
 					}
 					return .none
 
-				case .didTapMatchPlay:
+				case let .didSetMatchPlayScore(string):
+					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
+					if !string.isEmpty, let score = Int(string) {
+						state.game?.matchPlay?.opponentScore = score
+					} else {
+						state.game?.matchPlay?.opponentScore = nil
+					}
+					return .send(.delegate(.didEditMatchPlay(.success(state.game?.matchPlay))))
+
+				case .didToggleMatchPlay:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					guard let game = state.game else { return .none }
-					if let matchPlay = game.matchPlay {
-						state.destination = .matchPlay(.init(matchPlay: matchPlay))
-						return .none
+					if game.matchPlay == nil {
+						return createMatchPlay(state: &state)
 					} else {
-						let matchPlay = MatchPlay.Edit(gameId: game.id, id: uuid())
-						state.game?.matchPlay = matchPlay
-						state.destination = .matchPlay(.init(matchPlay: matchPlay))
-						return createMatchPlay(matchPlay)
+						return deleteMatchPlay(state: &state)
 					}
 
 				case let .didSwipeGear(.delete, id):
@@ -258,36 +259,19 @@ public struct GameDetails: Reducer {
 					// TODO: Handle error observing game -- not actually sure we need to care about the error here
 					return .none
 
-				case let .destination(.presented(.matchPlay(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didEditMatchPlay(matchPlay):
-						if matchPlay == nil {
-							return deleteMatchPlay(state: &state)
-						} else {
-							state.game?.matchPlay = matchPlay
-							return .send(.delegate(.didEditMatchPlay(.success(state.game?.matchPlay))))
-						}
-					}
-
 				case let .gameDetailsHeader(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didProceed(next):
 						return .send(.delegate(.didProceed(to: next)))
 					}
 
-				case .destination(.dismiss),
-						.destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
-						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
+				case .gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
-
 				}
 
 			case .delegate:
 				return .none
 			}
-		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
-			Destination()
 		}
 
 		AnalyticsReducer<State, Action> { state, action in
@@ -316,7 +300,10 @@ public struct GameDetails: Reducer {
 		}
 	}
 
-	private func createMatchPlay(_ matchPlay: MatchPlay.Edit) -> Effect<Action> {
+	private func createMatchPlay(state: inout State) -> Effect<Action> {
+		guard let gameId = state.game?.id else { return .none }
+		let matchPlay = MatchPlay.Edit(gameId: gameId, id: uuid())
+		state.game?.matchPlay = matchPlay
 		return .run { send in
 			await send(.delegate(.didEditMatchPlay(TaskResult {
 				try await matchPlays.create(matchPlay)

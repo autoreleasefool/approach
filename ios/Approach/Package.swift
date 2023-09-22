@@ -1715,9 +1715,7 @@ let package = Package(
 		),
 		.target(
 			name: "SwiftUIExtensionsLibrary",
-			dependencies: [
-				"AssetsLibrary",
-			]
+			dependencies: []
 		),
 		.testTarget(
 			name: "SwiftUIExtensionsLibraryTests",

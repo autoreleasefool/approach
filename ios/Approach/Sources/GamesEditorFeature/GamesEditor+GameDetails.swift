@@ -9,6 +9,16 @@ extension GamesEditor {
 		switch gameDetailsAction {
 		case let .delegate(delegateAction):
 			switch delegateAction {
+			case .didRequestOpponentPicker:
+				let opponent = Set([state.game?.matchPlay?.opponent?.id].compactMap { $0 })
+				state.destination = .sheets(.opponentPicker(.init(
+					selected: opponent,
+					query: .init(()),
+					limit: 1,
+					showsCancelHeaderButton: false
+				)))
+				return .none
+
 			case .didRequestGearPicker:
 				let gear = Set(state.game?.gear.map(\.id) ?? [])
 				state.destination = .sheets(.gearPicker(.init(

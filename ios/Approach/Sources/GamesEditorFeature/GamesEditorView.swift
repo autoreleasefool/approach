@@ -159,6 +159,14 @@ public struct GamesEditorView: View {
 						lanePicker(store: $0)
 							.onDisappear { store.send(.internal(.didDismissOpenSheet(.lanePicker))) }
 					}
+				case .opponentPicker:
+					CaseLet(
+						/GamesEditor.SheetsDestination.State.opponentPicker,
+						action: GamesEditor.SheetsDestination.Action.opponentPicker
+					) {
+						opponentPicker(store: $0)
+							.onDisappear { store.send(.internal(.didDismissOpenSheet(.opponentPicker))) }
+					}
 				case .gearPicker:
 					CaseLet(
 						/GamesEditor.SheetsDestination.State.gearPicker,
@@ -214,6 +222,14 @@ public struct GamesEditorView: View {
 		NavigationStack {
 			ResourcePickerView(store: store) {
 				Gear.ViewWithAvatar($0)
+			}
+		}
+	}
+
+	private func opponentPicker(store: StoreOf<ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>>) -> some View {
+		NavigationStack {
+			ResourcePickerView(store: store) {
+				Bowler.View($0)
 			}
 		}
 	}
