@@ -174,7 +174,6 @@ public struct MatchPlayEditorView: View {
 				}
 			}
 		})
-		.navigationTitle(Strings.MatchPlay.title)
 		.navigationDestination(
 			store: store.scope(state: \.$opponentPicker, action: { .internal(.opponentPicker($0)) })
 		) { store in
