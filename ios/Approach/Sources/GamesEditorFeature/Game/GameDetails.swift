@@ -9,6 +9,7 @@ import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
 import GearRepositoryInterface
+import LanesRepositoryInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import ModelsViewsLibrary
@@ -41,14 +42,6 @@ public struct GameDetails: Reducer {
 
 		var isEditable: Bool { game?.locked != .locked }
 
-		var laneLabels: String {
-			if let game, !game.lanes.isEmpty {
-				return game.lanes.map(\.label).joined(separator: ", ")
-			} else {
-				return Strings.none
-			}
-		}
-
 		init(
 			gameId: Game.ID,
 			nextHeaderElement: GameDetailsHeader.State.NextElement?,
@@ -76,15 +69,13 @@ public struct GameDetails: Reducer {
 			case didDismissScoreAlert
 			case didTapSaveScore
 			case didTapCancelScore
-			case didTapManageLanes
+			case didTapAlley
 			case didSetAlertScore(String)
-			case didSwipeGear(SwipeAction, id: Gear.ID)
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
-			case didRequestLanePicker
 			case didProceed(to: GameDetailsHeader.State.NextElement)
 			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
 			case didClearManualScore
@@ -106,17 +97,23 @@ public struct GameDetails: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
+			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case matchPlay(MatchPlayEditor.State)
 		}
 		public enum Action: Equatable {
+			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case matchPlay(MatchPlayEditor.Action)
 		}
 
 		@Dependency(\.gear) var gear
+		@Dependency(\.lanes) var lanes
 
 		public var body: some ReducerOf<Self> {
+			Scope(state: /State.lanePicker, action: /Action.lanePicker) {
+				ResourcePicker { alley in lanes.list(alley) }
+			}
 			Scope(state: /State.gearPicker, action: /Action.gearPicker) {
 				ResourcePicker { _ in gear.list(ordered: .byName) }
 			}
@@ -129,10 +126,6 @@ public struct GameDetails: Reducer {
 	enum CancelID {
 		case saveMatchPlay
 		case observation
-	}
-
-	public enum SwipeAction: Equatable {
-		case delete
 	}
 
 	@Dependency(\.games) var games
@@ -182,9 +175,16 @@ public struct GameDetails: Reducer {
 					))
 					return .none
 
-				case .didTapManageLanes:
+				case .didTapAlley:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					return .send(.delegate(.didRequestLanePicker))
+					guard let alleyId = state.game?.series.alley?.id else { return .none }
+					let lanes = Set(state.game?.lanes.map(\.id) ?? [])
+					state.destination = .lanePicker(.init(
+						selected: lanes,
+						query: alleyId,
+						showsCancelHeaderButton: false
+					))
+					return .none
 
 				case .didToggleScoringMethod:
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
@@ -235,11 +235,6 @@ public struct GameDetails: Reducer {
 						return createMatchPlay(matchPlay)
 					}
 
-				case let .didSwipeGear(.delete, id):
-					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
-					state.game?.gear.remove(id: id)
-					return .send(.delegate(.didEditGame(state.game)))
-
 				case let .didMeasureMinimumSheetContentSize(size):
 					return .send(.delegate(.didMeasureMinimumSheetContentSize(size)))
 
@@ -274,6 +269,13 @@ public struct GameDetails: Reducer {
 					// TODO: Handle error observing game -- not actually sure we need to care about the error here
 					return .none
 
+				case let .destination(.presented(.lanePicker(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didChangeSelection(lanes):
+						state.game?.lanes = .init(uniqueElements: lanes)
+						return .send(.delegate(.didEditGame(state.game)))
+					}
+
 				case let .destination(.presented(.gearPicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSelection(gear):
@@ -301,6 +303,7 @@ public struct GameDetails: Reducer {
 				case .destination(.dismiss),
 						.destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
 						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
+						.destination(.presented(.lanePicker(.internal))), .destination(.presented(.lanePicker(.view))),
 						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
 
