@@ -9,12 +9,13 @@ extension MatchPlay {
 		public var opponentScore: Int?
 		public var result: MatchPlay.Result?
 
-		public init(gameId: Game.ID, id: MatchPlay.ID) {
-			self.gameId = gameId
-			self.id = id
-		}
-
-		init(gameId: Game.ID, id: MatchPlay.ID, opponent: Bowler.Summary?, opponentScore: Int?, result: MatchPlay.Result?) {
+		public init(
+			gameId: Game.ID,
+			id: MatchPlay.ID,
+			opponent: Bowler.Summary? = nil,
+			opponentScore: Int? = nil,
+			result: MatchPlay.Result? = nil
+		) {
 			self.gameId = gameId
 			self.id = id
 			self.opponent = opponent

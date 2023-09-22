@@ -69,13 +69,18 @@
 
 /* Match Play */
 "matchPlay.title" = "Match Play";
-"matchPlay.record" = "Record results?";
+"matchPlay.summary.opponent.none" = "No opponent";
+"matchPlay.summary.score.none" = "Score not recorded";
+"matchPlay.summary.score.label" = "Scored %d";
 "matchPlay.properties.opponentScore" = "Opponent's score";
 "matchPlay.properties.result" = "Outcome";
 "matchPlay.properties.result.won" = "Won";
 "matchPlay.properties.result.tied" = "Tied";
 "matchPlay.properties.result.lost" = "Lost";
 "matchPlay.properties.result.none" = "None";
+"matchPlay.editor.fields.opponent.title" = "Opponent";
+"matchPlay.editor.fields.opponent.score" = "Score";
+"matchPlay.editor.fields.result.title" = "Outcome";
 
 /* Gear */
 

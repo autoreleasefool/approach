@@ -110,6 +110,10 @@ public enum Asset {
     public enum List {
       public static let selection = ColorAsset(name: "List/Selection")
     }
+    public enum MatchPlay {
+      public static let lost = ColorAsset(name: "MatchPlay/Lost")
+      public static let won = ColorAsset(name: "MatchPlay/Won")
+    }
     public enum Primary {
       public static let `default` = ColorAsset(name: "Primary/Default")
       public static let light = ColorAsset(name: "Primary/Light")
