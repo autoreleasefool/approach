@@ -31,9 +31,6 @@ public struct GameDetailsView: View {
 					}
 					.onChange(of: minimumSheetContentSize) { viewStore.send(.didMeasureMinimumSheetContentSize($0)) }
 					.onChange(of: sectionHeaderContentSize) { viewStore.send(.didMeasureSectionHeaderContentSize($0)) }
-					// We force these extra measures on appear/disappear to let child navigation screens
-					// take the full height of the screen.
-					// This value is used as a negative top padding in `GamesEditor`
 					.onAppear { viewStore.send(.didMeasureSectionHeaderContentSize(sectionHeaderContentSize), animation: .easeInOut) }
 					.onDisappear { viewStore.send(.didMeasureSectionHeaderContentSize(.zero), animation: .easeInOut) }
 
