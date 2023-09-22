@@ -1,13 +1,14 @@
 # Most recent version
 
-## iOS 1.0.2b6
+## iOS 1.0.3b7
 
 ```
-- Feat: More choices for statistics for widgets
-- Feat: Widgets appearing on a line alone now take the full width
-- Fix: Better language throughout the app to clarify when data is missing or ambiguous
-- Fix: Populate bowler by default for stats when only one bowler exists
-- Fix: Gear is no longer deleted when owner is deleted
+- Feat: Edit buttons in header for league and series
+- Feat: When setting lanes for a game, prompts to copy to all other games
+- Fix: Game details on iOS 17 no longer glitch and block screen
+- Fix: Score is properly saved when locking game
+- Fix: Gear no longer reorders in game editor when picking a ball
+- Fix: Refactored how pin swiping works to reduce mistaps
 ```
 
 ## Android v3.2.0
@@ -21,6 +22,16 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.0.2b6
+
+```
+- Feat: More choices for statistics for widgets
+- Feat: Widgets appearing on a line alone now take the full width
+- Fix: Better language throughout the app to clarify when data is missing or ambiguous
+- Fix: Populate bowler by default for stats when only one bowler exists
+- Fix: Gear is no longer deleted when owner is deleted
+```
 
 ## iOS 1.0.1b5
 
