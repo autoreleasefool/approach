@@ -184,3 +184,13 @@ public struct MatchPlayEditorView: View {
 		}
 	}
 }
+
+extension MatchPlay.Result: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .lost: return Strings.MatchPlay.Properties.Result.lost
+		case .tied: return Strings.MatchPlay.Properties.Result.tied
+		case .won: return Strings.MatchPlay.Properties.Result.won
+		}
+	}
+}
