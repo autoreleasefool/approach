@@ -57,7 +57,6 @@
 		CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BB829FDF8DF0015E4CB /* FramesRepository */; };
 		CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BBA29FDF8E40015E4CB /* GamesRepository */; };
 		CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */; };
-		CAECBAEB2ABD7323007713A8 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAECBAEA2ABD7323007713A8 /* LanesRepository */; };
 		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
 		CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFF2FCA2AB19B3000AE31BF /* AvatarService */; };
 /* End PBXBuildFile section */
@@ -88,7 +87,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CAECBAEB2ABD7323007713A8 /* LanesRepository in Frameworks */,
 				CA2FCE912A14908C0061A7FE /* MatchPlaysRepository in Frameworks */,
 				CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */,
 				CAD15BB929FDF8DF0015E4CB /* FramesRepository in Frameworks */,
@@ -272,7 +270,6 @@
 				CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */,
 				CA2B781E2AABC9E10044487E /* ScoresRepository */,
 				CAFF2FCA2AB19B3000AE31BF /* AvatarService */,
-				CAECBAEA2ABD7323007713A8 /* LanesRepository */,
 			);
 			productName = GameEditorPreview;
 			productReference = CA632F5529BD26E200272ADB /* GameEditorPreview.app */;
@@ -673,10 +670,6 @@
 		CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestDatabaseUtilitiesLibrary;
-		};
-		CAECBAEA2ABD7323007713A8 /* LanesRepository */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = LanesRepository;
 		};
 		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;
