@@ -62,7 +62,12 @@ extension SeriesRepository: DependencyKey {
 					let lanesAlias = TableAlias(name: "lanes")
 					return try Series.Database
 						.filter(id: id)
-						.including(optional: Series.Database.alley.forKey("location"))
+						.including(
+							optional: Series.Database
+								.alley
+								.including(optional: Alley.Database.location)
+								.forKey("location")
+						)
 						.asRequest(of: Series.Edit.self)
 						.fetchOneGuaranteed($0)
 				}
