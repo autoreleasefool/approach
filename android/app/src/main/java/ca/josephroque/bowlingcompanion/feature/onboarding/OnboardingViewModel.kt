@@ -50,13 +50,13 @@ class OnboardingViewModel @Inject constructor(
 }
 
 sealed interface OnboardingUiState {
-	object Loading: OnboardingUiState
-	object NewUser: OnboardingUiState
-	object LegacyUser: OnboardingUiState
-	object Completed: OnboardingUiState
+	data object Loading: OnboardingUiState
+	data object NewUser: OnboardingUiState
+	data object LegacyUser: OnboardingUiState
+	data object Completed: OnboardingUiState
 }
 
 sealed interface UserDataUiState {
-	object Loading: UserDataUiState
+	data object Loading: UserDataUiState
 	data class Success(val userData: UserData): UserDataUiState
 }

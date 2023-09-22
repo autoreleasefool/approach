@@ -130,8 +130,8 @@ class BowlerFormViewModel @Inject constructor(
 }
 
 sealed interface BowlerFormUiState {
-	object Loading: BowlerFormUiState
-	object Dismissed: BowlerFormUiState
+	data object Loading: BowlerFormUiState
+	data object Dismissed: BowlerFormUiState
 
 	data class Create(
 		val name: String,
@@ -164,11 +164,11 @@ data class BowlerFormFieldErrors(
 )
 
 sealed interface BowlerFormUiEvent {
-	object OnAppear: BowlerFormUiEvent
+	data object OnAppear: BowlerFormUiEvent
 
-	object SaveButtonClick: BowlerFormUiEvent
+	data object SaveButtonClick: BowlerFormUiEvent
 
-	object DeleteButtonClick: BowlerFormUiEvent
+	data object DeleteButtonClick: BowlerFormUiEvent
 
 	class NameChanged(val name: String):
 			BowlerFormUiEvent

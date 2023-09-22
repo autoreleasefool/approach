@@ -28,7 +28,7 @@ fun LazyListScope.bowlersList(
 
 sealed interface BowlersListUiState {
 
-	object Loading: BowlersListUiState
+	data object Loading: BowlersListUiState
 
 	data class Success(
 		val list: List<Bowler>

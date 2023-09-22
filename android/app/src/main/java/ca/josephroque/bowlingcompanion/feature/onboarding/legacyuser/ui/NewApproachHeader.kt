@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -108,7 +109,7 @@ internal fun NewApproachHeader(
 private fun rememberBounceAnimation(
 	isAnimating: Boolean,
 ): Float {
-	var lastBouncePosition by remember { mutableStateOf(0f) }
+	var lastBouncePosition by remember { mutableFloatStateOf(0f) }
 	val bounceAnimation = remember(isAnimating) { Animatable(lastBouncePosition) }
 
 	LaunchedEffect(isAnimating) {

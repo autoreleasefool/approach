@@ -60,15 +60,15 @@ class NewUserOnboardingViewModel @Inject constructor(
 }
 
 sealed interface NewUserOnboardingUiState {
-	object ShowingWelcomeMessage: NewUserOnboardingUiState
-	object Complete: NewUserOnboardingUiState
+	data object ShowingWelcomeMessage: NewUserOnboardingUiState
+	data object Complete: NewUserOnboardingUiState
 	data class ShowingLogbook(
 		val name: String
 	): NewUserOnboardingUiState
 }
 
 sealed interface NewUserOnboardingUiEvent {
-	object GetStartedClicked: NewUserOnboardingUiEvent
-	object AddBowlerClicked: NewUserOnboardingUiEvent
+	data object GetStartedClicked: NewUserOnboardingUiEvent
+	data object AddBowlerClicked: NewUserOnboardingUiEvent
 	class NameChanged(val name: String): NewUserOnboardingUiEvent
 }
