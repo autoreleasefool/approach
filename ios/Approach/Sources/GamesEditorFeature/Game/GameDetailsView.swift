@@ -31,8 +31,6 @@ public struct GameDetailsView: View {
 					}
 					.onChange(of: minimumSheetContentSize) { viewStore.send(.didMeasureMinimumSheetContentSize($0)) }
 					.onChange(of: sectionHeaderContentSize) { viewStore.send(.didMeasureSectionHeaderContentSize($0)) }
-					.onAppear { viewStore.send(.didMeasureSectionHeaderContentSize(sectionHeaderContentSize), animation: .easeInOut) }
-					.onDisappear { viewStore.send(.didMeasureSectionHeaderContentSize(.zero), animation: .easeInOut) }
 
 					if let game = viewStore.game {
 						if viewStore.isGearEnabled {

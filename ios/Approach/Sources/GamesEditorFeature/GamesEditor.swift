@@ -110,7 +110,7 @@ public struct GamesEditor: Reducer {
 			case didUpdateMatchPlay(TaskResult<MatchPlay.Edit>)
 			case didDuplicateLanes(TaskResult<Never>)
 
-			case didDismissOpenSheet
+			case didDismissOpenSheet(SheetType)
 			case calculatedScore(ScoredGame)
 			case adjustBackdrop
 
@@ -144,6 +144,12 @@ public struct GamesEditor: Reducer {
 		case failedToSaveFrame
 		case failedToSaveMatchPlay
 		case failedToSaveLanes
+	}
+
+	public enum SheetType {
+		case ballPicker
+		case settings
+		case sharing
 	}
 
 	public init() {}
@@ -212,15 +218,20 @@ public struct GamesEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .didDismissOpenSheet:
-					if let game = state.game {
-						state.sheetDetent = .medium
-						state.destination = .gameDetails(.init(
-							gameId: game.id,
-							nextHeaderElement: state.nextHeaderElement,
-							didChangeBowler: state.didChangeBowler
-						))
-						state.didChangeBowler = false
+				case let .didDismissOpenSheet(sheetType):
+					if (state.game?.lanes.count ?? 0) > 0 && !state.didPromptLaneDuplication {
+						state.didPromptLaneDuplication = true
+						state.destination = .duplicateLanesAlert(.duplicateLanes)
+					} else {
+						if let game = state.game {
+							state.sheetDetent = .medium
+							state.destination = .gameDetails(.init(
+								gameId: game.id,
+								nextHeaderElement: state.nextHeaderElement,
+								didChangeBowler: state.didChangeBowler
+							))
+							state.didChangeBowler = false
+						}
 					}
 					return .none
 
