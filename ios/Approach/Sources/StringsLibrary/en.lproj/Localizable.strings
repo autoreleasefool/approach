@@ -211,11 +211,10 @@
 "game.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics.";
 "game.editor.fields.lock.label" = "Lock for editing";
 "game.editor.fields.lock.help" = "Prevent all future edits to this game. No other changes will be saved. You can edit this game again by unlocking here.";
-"game.editor.fields.scoringMethod.label" = "Set manual score?";
-"game.editor.fields.scoringMethod.help" = "This game's frames will be hidden and ignored in all statistics.";
-"game.editor.fields.manualScore.title" = "Set manual score";
-"game.editor.fields.manualScore.prompt" = "Score";
-"game.editor.fields.manualScore.caption" = "Score set manually";
+"game.editor.fields.scoringMethod.title" = "Scoring";
+"game.editor.fields.scoringMethod.byFrame" = "Frame-by-Frame";
+"game.editor.fields.scoringMethod.manual" = "Manual";
+"game.editor.fields.scoringMethod.help" = "Tap to set a manual score";
 "game.editor.fields.gear.help" = "Choose any additional gear you're using this game";
 "game.editor.fields.alley.noneSelected" = "No alley was selected for this series. To add one, you can navigate back and use the edit button at the top of the screen.";
 "game.editor.fields.alley.lanes.help" = "Record which lanes you bowled on for more detailed stats.";
@@ -237,6 +236,16 @@
 "ball.title" = "Ball %d";
 "ball.properties.ballRolled" = "Ball Rolled";
 "ball.properties.fouled" = "Fouled?";
+
+"scoring.title" = "Scoring";
+"scoring.editor.fields.manualScore.title" = "Set manual score?";
+"scoring.editor.fields.manualScore.label" = "Score";
+"scoring.editor.fields.manualScore.help" = "By setting a manual score, all the frames for this game will be ignored in all statistics, but the score can be used for your averages and high series.";
+
+
+"game.editor.fields.manualScore.title" = "Set manual score";
+"game.editor.fields.manualScore.prompt" = "Score";
+"game.editor.fields.manualScore.caption" = "Score set manually";
 
 /* Statistics */
 
