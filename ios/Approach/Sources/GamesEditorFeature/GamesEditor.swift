@@ -149,7 +149,6 @@ public struct GamesEditor: Reducer {
 	public enum SheetType {
 		case ballPicker
 		case lanePicker
-		case opponentPicker
 		case gearPicker
 		case settings
 		case sharing
@@ -355,9 +354,6 @@ public struct GamesEditor: Reducer {
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
 					return .none
-
-				case let .destination(.presented(.sheets(.opponentPicker(action)))):
-					return reduce(into: &state, opponentPickerAction: action)
 
 				case let .destination(.presented(.sheets(.gearPicker(action)))):
 					return reduce(into: &state, gearPickerAction: action)
