@@ -161,9 +161,6 @@ public struct GearEditor: Reducer {
 
 				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .didConfirmSelection:
-						return .none
-
 					case let .didChangeSelection(bowler):
 						state.owner = bowler.first
 						return .none
