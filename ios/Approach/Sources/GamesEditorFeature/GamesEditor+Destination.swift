@@ -13,20 +13,17 @@ extension GamesEditor {
 		public enum State: Equatable {
 			case settings(GamesSettings.State)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
-			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.State)
 			case sharing(Sharing.State)
 		}
 
 		public enum Action: Equatable {
 			case settings(GamesSettings.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
-			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case sharing(Sharing.Action)
 		}
 
 		@Dependency(\.bowlers) var bowlers
 		@Dependency(\.gear) var gear
-		@Dependency(\.lanes) var lanes
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: /State.settings, action: /Action.settings) {
@@ -34,9 +31,6 @@ extension GamesEditor {
 			}
 			Scope(state: /State.ballPicker, action: /Action.ballPicker) {
 				ResourcePicker { _ in gear.list(ofKind: .bowlingBall, ordered: .byName) }
-			}
-			Scope(state: /State.lanePicker, action: /Action.lanePicker) {
-				ResourcePicker { alley in lanes.list(alley) }
 			}
 			Scope(state: /State.sharing, action: /Action.sharing) {
 				Sharing()

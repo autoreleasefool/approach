@@ -11,8 +11,6 @@ extension Game.Edit.SeriesInfo: FetchableRecord {}
 
 extension Game.Edit.AlleyInfo: FetchableRecord {}
 
-extension Game.Edit.LaneInfo: FetchableRecord {}
-
 extension DerivableRequest<Game.Database> {
 	func orderByIndex() -> Self {
 		return order(Game.Database.Columns.index)

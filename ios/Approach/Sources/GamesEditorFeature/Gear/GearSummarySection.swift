@@ -9,7 +9,6 @@ import ViewsLibrary
 public struct GearSummarySection: View {
 	let gear: IdentifiedArrayOf<Gear.Summary>
 	let onEdit: () -> Void
-	let onDelete: (Gear.ID) -> Void
 
 	public var body: some View {
 		Section {
@@ -18,9 +17,6 @@ public struct GearSummarySection: View {
 			} else {
 				ForEach(gear) { gear in
 					Gear.ViewWithAvatar(gear)
-						.swipeActions(allowsFullSwipe: false) {
-							DeleteButton { onDelete(gear.id) }
-						}
 				}
 			}
 		} header: {

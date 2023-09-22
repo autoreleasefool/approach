@@ -21,5 +21,11 @@ extension Lane {
 		public let id: Lane.ID
 		public let label: String
 		public let position: Lane.Position
+
+		public init(id: Lane.ID, label: String, position: Lane.Position) {
+			self.id = id
+			self.label = label
+			self.position = position
+		}
 	}
 }
