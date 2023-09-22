@@ -14,7 +14,6 @@ public struct CheckboxToggleStyle: ToggleStyle {
 				Image(systemSymbol: configuration.isOn ? .checkmarkCircleFill : .circle)
 					.resizable()
 					.frame(width: .smallIcon, height: .smallIcon)
-					.foregroundColor(Color(red: 0.14, green: 0.11, blue: 0.59))
 					.foregroundColor(Asset.Colors.Action.default)
 					.padding(.vertical, .smallSpacing)
 					.padding(.leading, .standardSpacing)
