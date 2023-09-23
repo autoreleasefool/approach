@@ -22,6 +22,13 @@ import java.util.UUID
 			onUpdate = ForeignKey.CASCADE,
 			onDelete = ForeignKey.CASCADE,
 		),
+		ForeignKey(
+			entity = AlleyEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["alley_id"],
+			onUpdate = ForeignKey.CASCADE,
+			onDelete = ForeignKey.SET_NULL,
+		),
 	],
 )
 @Immutable
@@ -32,6 +39,7 @@ data class SeriesEntity(
 	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?
 )
 
 fun SeriesEntity.asExternalModel() = Series(

@@ -152,6 +152,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				preBowl = SeriesPreBowl.REGULAR,
 				leagueId = leagueIdMappings[legacySeries.leagueId]!!,
+				alleyId = null,
 			))
 		}
 
