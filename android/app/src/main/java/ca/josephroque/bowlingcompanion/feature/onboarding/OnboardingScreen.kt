@@ -25,7 +25,10 @@ internal fun OnboardingRoute(
 
 	OnboardingScreen(
 		onboardingUiState = onboardingUiState,
-		onCompleteOnboarding = onCompleteOnboarding,
+		onCompleteOnboarding = {
+			viewModel.didCompleteOnboarding()
+			onCompleteOnboarding()
+		},
 		modifier = modifier,
 	)
 }

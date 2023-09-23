@@ -9,11 +9,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
-	userDataRepository: UserDataRepository,
+	private val userDataRepository: UserDataRepository,
 	fileManager: FileManager,
 ): ViewModel() {
 
@@ -47,6 +48,12 @@ class OnboardingViewModel @Inject constructor(
 			started = SharingStarted.WhileSubscribed(5_000),
 			initialValue = OnboardingUiState.Loading,
 		)
+
+	fun didCompleteOnboarding() {
+		viewModelScope.launch {
+			userDataRepository.didCompleteOnboarding()
+		}
+	}
 }
 
 sealed interface OnboardingUiState {

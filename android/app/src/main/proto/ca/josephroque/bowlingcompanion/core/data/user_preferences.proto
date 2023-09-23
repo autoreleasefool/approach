@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "ca.josephroque.bowlingcompanion.core.model";
+option java_multiple_files = true;
+
+message UserPreferences {
+  bool is_onboarding_complete = 16;
+  bool is_legacy_migration_complete = 17;
+}

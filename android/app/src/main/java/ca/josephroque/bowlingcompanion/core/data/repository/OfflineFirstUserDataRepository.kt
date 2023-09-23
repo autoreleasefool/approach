@@ -1,25 +1,25 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.datastore.ApproachPreferencesDataSource
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 
-class OfflineFirstUserDataRepository @Inject constructor(): UserDataRepository {
+class OfflineFirstUserDataRepository @Inject constructor(
+	private val approachPreferencesDataSource: ApproachPreferencesDataSource,
+): UserDataRepository {
 
-	private val _userData = MutableSharedFlow<UserData>(replay = 1, onBufferOverflow = BufferOverflow.DROP_LATEST)
+	override val userData: Flow<UserData> =
+		approachPreferencesDataSource.userData
 
-	private val currentUserData
-		get() = _userData.replayCache.firstOrNull() ?: UserData()
-
-	override val userData: Flow<UserData> = _userData
 
 	override suspend fun didCompleteOnboarding() {
-		_userData.tryEmit(currentUserData.copy(isOnboardingComplete = true))
+		approachPreferencesDataSource.setOnboardingComplete(true)
 	}
 
 	override suspend fun didCompleteLegacyMigration() {
-		_userData.tryEmit(currentUserData.copy(isLegacyMigrationComplete = true))
+		approachPreferencesDataSource.setLegacyMigrationComplete(true)
 	}
 }

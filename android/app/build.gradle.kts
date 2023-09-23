@@ -4,6 +4,7 @@ plugins {
 	kotlin("kapt")
 	id("com.google.dagger.hilt.android")
 	id("com.google.devtools.ksp")
+	id("com.google.protobuf")
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
 	implementation("androidx.compose.ui:ui-graphics:1.5.1")
 	implementation("androidx.compose.ui:ui-tooling-preview:1.5.1")
 	implementation("androidx.compose.material3:material3:1.1.2")
+	implementation("androidx.datastore:datastore:1.0.0")
 	implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 	implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -71,6 +73,7 @@ dependencies {
 	implementation("androidx.room:room-runtime:2.5.2")
 	implementation("androidx.room:room-ktx:2.5.2")
 	implementation("com.google.dagger:hilt-android:2.48")
+	implementation("com.google.protobuf:protobuf-kotlin-lite:3.24.0")
 	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
 	ksp("androidx.room:room-compiler:2.5.2")
 	kapt("com.google.dagger:hilt-android-compiler:2.48")
@@ -88,6 +91,24 @@ dependencies {
 
 kapt {
 	correctErrorTypes = true
+}
+
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:3.24.0"
+	}
+	generateProtoTasks {
+		all().forEach { task ->
+			task.builtins {
+				register("java") {
+					option("lite")
+				}
+				register("kotlin") {
+					option("lite")
+				}
+			}
+		}
+	}
 }
 
 class RoomSchemaArgProvider(

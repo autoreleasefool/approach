@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migra
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class SQLiteMigrationManager @Inject constructor(
@@ -30,6 +31,8 @@ class SQLiteMigrationManager @Inject constructor(
 	override val currentStep: Flow<MigrationStep?> = _currentStep
 
 	override suspend fun beginMigration() {
+		if (userDataRepository.userData.first().isLegacyMigrationComplete) return
+
 		transactionRunner {
 			val legacyDb = LegacyDatabaseHelper.getInstance(context).readableDatabase
 
