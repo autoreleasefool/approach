@@ -83,6 +83,9 @@ fun BowlerFormPreview() {
 			kind = BowlerKind.PLAYABLE,
 			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
 		),
-		handleEvent = {},
+		saveBowler = {},
+		loadBowler = {},
+		deleteBowler = {},
+		updateName = {},
 	)
 }

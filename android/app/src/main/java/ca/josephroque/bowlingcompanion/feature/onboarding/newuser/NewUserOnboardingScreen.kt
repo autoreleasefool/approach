@@ -62,15 +62,19 @@ internal fun NewUserOnboardingScreen(
 
 	NewUserOnboarding(
 		newUserOnboardingUiState = newUserOnboardingUiState,
-		handleEvent = viewModel::handleEvent,
 		modifier = modifier,
+		showLogbook = viewModel::showLogbook,
+		addBowler = viewModel::addBowler,
+		updateBowlerName = viewModel::updateName,
 	)
 }
 
 @Composable
 internal fun NewUserOnboarding(
 	newUserOnboardingUiState: NewUserOnboardingUiState,
-	handleEvent: (NewUserOnboardingUiEvent) -> Unit,
+	showLogbook: () -> Unit,
+	addBowler: () -> Unit,
+	updateBowlerName: (String) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -101,7 +105,7 @@ internal fun NewUserOnboarding(
 		Spacer(modifier = Modifier.weight(1.0f))
 
 		Actions(
-			onGetStartedClick = { handleEvent(NewUserOnboardingUiEvent.GetStartedClicked) },
+			onGetStartedClick = showLogbook,
 			modifier = Modifier
 				.padding(horizontal = 16.dp)
 				.padding(bottom = 16.dp),
@@ -111,8 +115,8 @@ internal fun NewUserOnboarding(
 			NewUserOnboardingUiState.Complete, NewUserOnboardingUiState.ShowingWelcomeMessage -> Unit
 			is NewUserOnboardingUiState.ShowingLogbook -> Logbook(
 				name = newUserOnboardingUiState.name,
-				onNameChanged = { handleEvent(NewUserOnboardingUiEvent.NameChanged(it)) },
-				onAddBowlerClicked = { handleEvent(NewUserOnboardingUiEvent.AddBowlerClicked) },
+				onNameChanged = updateBowlerName,
+				onAddBowlerClicked = addBowler,
 			)
 		}
 	}
@@ -226,7 +230,7 @@ internal fun Logbook(
 	val focusManager = LocalFocusManager.current
 
 	ModalBottomSheet(
-		onDismissRequest = { },
+		onDismissRequest = {},
 		sheetState = sheetState,
 		modifier = modifier,
 	) {
@@ -280,7 +284,9 @@ fun NewUserOnboardingPreview() {
 	Surface {
 		NewUserOnboarding(
 			NewUserOnboardingUiState.ShowingWelcomeMessage,
-			handleEvent = { },
+			showLogbook = {},
+			updateBowlerName = {},
+			addBowler = {},
 		)
 	}
 }

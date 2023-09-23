@@ -22,18 +22,11 @@ class NewUserOnboardingViewModel @Inject constructor(
 		MutableStateFlow(NewUserOnboardingUiState.ShowingWelcomeMessage)
 	val uiState: StateFlow<NewUserOnboardingUiState> = _uiState.asStateFlow()
 
-	fun handleEvent(event: NewUserOnboardingUiEvent) {
-		when (event) {
-			NewUserOnboardingUiEvent.GetStartedClicked ->
-				_uiState.value = NewUserOnboardingUiState.ShowingLogbook(name = "")
-			NewUserOnboardingUiEvent.AddBowlerClicked ->
-				addBowler()
-			is NewUserOnboardingUiEvent.NameChanged ->
-				updateName(event.name)
-		}
+	fun showLogbook() {
+		_uiState.value = NewUserOnboardingUiState.ShowingLogbook(name = "")
 	}
 
-	private fun addBowler() {
+	fun addBowler() {
 		when (val state = _uiState.value) {
 			NewUserOnboardingUiState.ShowingWelcomeMessage, NewUserOnboardingUiState.Complete -> Unit
 			is NewUserOnboardingUiState.ShowingLogbook -> {
@@ -51,7 +44,7 @@ class NewUserOnboardingViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateName(name: String) {
+	fun updateName(name: String) {
 		when (val state = _uiState.value) {
 			NewUserOnboardingUiState.ShowingWelcomeMessage, NewUserOnboardingUiState.Complete -> Unit
 			is NewUserOnboardingUiState.ShowingLogbook -> _uiState.value = state.copy(name = name)
@@ -65,10 +58,4 @@ sealed interface NewUserOnboardingUiState {
 	data class ShowingLogbook(
 		val name: String
 	): NewUserOnboardingUiState
-}
-
-sealed interface NewUserOnboardingUiEvent {
-	data object GetStartedClicked: NewUserOnboardingUiEvent
-	data object AddBowlerClicked: NewUserOnboardingUiEvent
-	class NameChanged(val name: String): NewUserOnboardingUiEvent
 }

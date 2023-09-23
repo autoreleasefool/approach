@@ -37,7 +37,10 @@ internal fun BowlerFormRoute(
 
 	BowlerFormScreen(
 		bowlerFormUiState = bowlerFormUiState,
-		handleEvent = viewModel::handleEvent,
+		loadBowler = viewModel::loadBowler,
+		saveBowler = viewModel::saveBowler,
+		deleteBowler = viewModel::deleteBowler,
+		updateName = viewModel::updateName,
 		modifier = modifier,
 	)
 }
@@ -46,20 +49,23 @@ internal fun BowlerFormRoute(
 @Composable
 internal fun BowlerFormScreen(
 	bowlerFormUiState: BowlerFormUiState,
-	handleEvent: (BowlerFormUiEvent) -> Unit,
+	loadBowler: () -> Unit,
+	saveBowler: () -> Unit,
+	deleteBowler: () -> Unit,
+	updateName: (String) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	LaunchedEffect(Unit) {
-		handleEvent(BowlerFormUiEvent.OnAppear)
+		loadBowler()
 	}
 
 	Scaffold(
 		floatingActionButtonPosition = FabPosition.End,
-		floatingActionButton = { FloatingActionButton(bowlerFormUiState, handleEvent) },
+		floatingActionButton = { FloatingActionButton(bowlerFormUiState, saveBowler) },
 		topBar = {
 			MediumTopAppBar(
 				title = { Title(bowlerFormUiState) },
-				actions = { Actions(bowlerFormUiState, handleEvent) },
+				actions = { Actions(bowlerFormUiState, deleteBowler) },
 			)
 		}
 	) { padding ->
@@ -68,8 +74,8 @@ internal fun BowlerFormScreen(
 		 is BowlerFormUiState.Edit ->
 			 BowlerForm(
 				 name = bowlerFormUiState.name,
-				 onNameChanged = { handleEvent(BowlerFormUiEvent.NameChanged(it)) },
-				 onDoneClicked = { handleEvent(BowlerFormUiEvent.SaveButtonClick) },
+				 onNameChanged = updateName,
+				 onDoneClicked = saveBowler,
 				 errorId = bowlerFormUiState.fieldErrors.nameErrorId,
 				 modifier = modifier
 					 .padding(padding)
@@ -77,8 +83,8 @@ internal fun BowlerFormScreen(
 		 is BowlerFormUiState.Create ->
 			 BowlerForm(
 				 name = bowlerFormUiState.name,
-				 onNameChanged = { handleEvent(BowlerFormUiEvent.NameChanged(it)) },
-				 onDoneClicked = { handleEvent(BowlerFormUiEvent.SaveButtonClick) },
+				 onNameChanged = updateName,
+				 onDoneClicked = saveBowler,
 				 errorId = bowlerFormUiState.fieldErrors.nameErrorId,
 				 modifier = modifier
 					 .padding(padding)
@@ -101,12 +107,12 @@ internal fun Title(
 @Composable
 internal fun Actions(
 	uiState: BowlerFormUiState,
-	handleEvent: (BowlerFormUiEvent) -> Unit,
+	deleteBowler: () -> Unit,
 ) {
 	when (uiState) {
 		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
 		is BowlerFormUiState.Edit -> {
-			IconButton(onClick = { handleEvent(BowlerFormUiEvent.DeleteButtonClick) }) {
+			IconButton(onClick = deleteBowler) {
 				Icon(
 					Icons.Outlined.Delete,
 					tint = MaterialTheme.colorScheme.error,
@@ -120,7 +126,7 @@ internal fun Actions(
 @Composable
 internal fun FloatingActionButton(
 	uiState: BowlerFormUiState,
-	handleEvent: (BowlerFormUiEvent) -> Unit,
+	saveBowler: () -> Unit,
 ) {
 	when (uiState) {
 		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
@@ -128,7 +134,7 @@ internal fun FloatingActionButton(
 			ExtendedFloatingActionButton(
 				text = { Text(stringResource(R.string.action_save)) },
 				icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-				onClick = { handleEvent(BowlerFormUiEvent.SaveButtonClick) },
+				onClick = saveBowler,
 			)
 		}
 	}

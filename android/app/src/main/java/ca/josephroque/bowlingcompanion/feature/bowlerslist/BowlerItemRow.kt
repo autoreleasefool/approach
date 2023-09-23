@@ -39,7 +39,7 @@ fun BowlerCardPreview() {
 	Surface {
 		BowlerItemRow(
 			bowler = Bowler(id = UUID.randomUUID(), name = "Joseph", kind = BowlerKind.PLAYABLE),
-			onClick = { },
+			onClick = {},
 		)
 	}
 }

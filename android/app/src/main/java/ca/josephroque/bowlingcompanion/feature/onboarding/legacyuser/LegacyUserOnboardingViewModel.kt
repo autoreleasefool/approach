@@ -25,26 +25,15 @@ class LegacyUserOnboardingViewModel @Inject constructor(
 		MutableStateFlow(LegacyUserOnboardingUiState.Started)
 	val uiState = _uiState.asStateFlow()
 
-	fun handleEvent(event: LegacyUserOnboardingUiEvent) {
-		when (event) {
-			LegacyUserOnboardingUiEvent.ApproachIconClicked ->
-				showApproachHeader()
-			LegacyUserOnboardingUiEvent.ApproachHeaderAnimationFinished ->
-				showApproachDetails()
-			LegacyUserOnboardingUiEvent.GetStartedClicked ->
-				startDataImport()
-		}
-	}
-
-	private fun showApproachHeader() {
+	fun showApproachHeader() {
 		_uiState.value = LegacyUserOnboardingUiState.ShowingApproachHeader(isDetailsVisible = false)
 	}
 
-	private fun showApproachDetails() {
+	fun showApproachDetails() {
 		_uiState.value = LegacyUserOnboardingUiState.ShowingApproachHeader(isDetailsVisible = true)
 	}
 
-	private fun startDataImport() {
+	fun startDataImport() {
 		if (_uiState.value is LegacyUserOnboardingUiState.ImportingData) {
 			return
 		}
@@ -80,10 +69,4 @@ sealed interface LegacyUserOnboardingUiState {
 		val stepInProgress: MigrationStep?,
 	): LegacyUserOnboardingUiState
 	data object Complete: LegacyUserOnboardingUiState
-}
-
-sealed interface LegacyUserOnboardingUiEvent {
-	data object ApproachIconClicked: LegacyUserOnboardingUiEvent
-	data object ApproachHeaderAnimationFinished: LegacyUserOnboardingUiEvent
-	data object GetStartedClicked: LegacyUserOnboardingUiEvent
 }

@@ -33,40 +33,29 @@ class BowlerFormViewModel @Inject constructor(
 			.firstOrNull { it.name == string }
 	} ?: BowlerKind.PLAYABLE
 
-	fun handleEvent(event: BowlerFormUiEvent) {
-		when (event) {
-			BowlerFormUiEvent.OnAppear ->
-				viewModelScope.launch { loadBowler() }
-			BowlerFormUiEvent.DeleteButtonClick ->
-				deleteBowler()
-			BowlerFormUiEvent.SaveButtonClick ->
-				saveBowler()
-			is BowlerFormUiEvent.NameChanged ->
-				updateName(event.name)
+	fun loadBowler() {
+		viewModelScope.launch {
+			val bowlerId = savedStateHandle.get<UUID?>(BOWLER_ID)
+			if (bowlerId == null) {
+				_uiState.value = BowlerFormUiState.Create(
+					name = "",
+					kind = kind,
+					fieldErrors = BowlerFormFieldErrors()
+				)
+			} else {
+				val bowler = bowlersRepository.getBowler(bowlerId)
+					.first()
+
+				_uiState.value = BowlerFormUiState.Edit(
+					name = bowler.name,
+					initialValue = bowler,
+					fieldErrors = BowlerFormFieldErrors()
+				)
+			}
 		}
 	}
 
-	private suspend fun loadBowler() {
-		val bowlerId = savedStateHandle.get<UUID?>(BOWLER_ID)
-		if (bowlerId == null) {
-			_uiState.value = BowlerFormUiState.Create(
-				name = "",
-				kind = kind,
-				fieldErrors = BowlerFormFieldErrors()
-			)
-		} else {
-			val bowler = bowlersRepository.getBowler(bowlerId)
-				.first()
-
-			_uiState.value = BowlerFormUiState.Edit(
-				name = bowler.name,
-				initialValue = bowler,
-				fieldErrors = BowlerFormFieldErrors()
-			)
-		}
-	}
-
-	private fun updateName(name: String) {
+	fun updateName(name: String) {
 		when (val state = _uiState.value) {
 			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 			is BowlerFormUiState.Edit -> _uiState.value = state.copy(
@@ -80,7 +69,7 @@ class BowlerFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun saveBowler() {
+	fun saveBowler() {
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
 				 BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
@@ -116,7 +105,7 @@ class BowlerFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun deleteBowler() {
+	fun deleteBowler() {
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
 				BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
@@ -162,14 +151,3 @@ fun BowlerFormUiState.Edit.bowler() = BowlerUpdate(
 data class BowlerFormFieldErrors(
 	val nameErrorId: Int? = null
 )
-
-sealed interface BowlerFormUiEvent {
-	data object OnAppear: BowlerFormUiEvent
-
-	data object SaveButtonClick: BowlerFormUiEvent
-
-	data object DeleteButtonClick: BowlerFormUiEvent
-
-	class NameChanged(val name: String):
-			BowlerFormUiEvent
-}

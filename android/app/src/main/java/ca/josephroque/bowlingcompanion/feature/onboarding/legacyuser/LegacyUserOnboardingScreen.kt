@@ -30,7 +30,9 @@ internal fun LegacyUserOnboardingScreen(
 
 	LegacyUserOnboarding(
 		legacyUserOnboardingUiState = legacyUserOnboardingUiState,
-		handleEvent = viewModel::handleEvent,
+		showApproachHeader = viewModel::showApproachHeader,
+		showApproachDetails = viewModel::showApproachDetails,
+		startDataImport = viewModel::startDataImport,
 		modifier = modifier,
 	)
 }
@@ -38,7 +40,9 @@ internal fun LegacyUserOnboardingScreen(
 @Composable
 internal fun LegacyUserOnboarding(
 	legacyUserOnboardingUiState: LegacyUserOnboardingUiState,
-	handleEvent: (LegacyUserOnboardingUiEvent) -> Unit,
+	showApproachHeader: () -> Unit,
+	showApproachDetails: () -> Unit,
+	startDataImport: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Box(
@@ -49,12 +53,12 @@ internal fun LegacyUserOnboarding(
 		)
 		NewApproachHeader(
 			uiState = legacyUserOnboardingUiState,
-			onHeaderClicked = { handleEvent(LegacyUserOnboardingUiEvent.ApproachIconClicked) },
-			onHeaderAnimationFinished = { handleEvent(LegacyUserOnboardingUiEvent.ApproachHeaderAnimationFinished) },
+			onHeaderClicked = showApproachHeader,
+			onHeaderAnimationFinished = showApproachDetails,
 		)
 		ApproachAppDescription(
 			uiState = legacyUserOnboardingUiState,
-			onGetStartedClicked = { handleEvent(LegacyUserOnboardingUiEvent.GetStartedClicked) },
+			onGetStartedClicked = startDataImport,
 		)
 	}
 }
@@ -65,7 +69,9 @@ internal fun LegacyUserOnboardingPreview() {
 	Surface {
 		LegacyUserOnboarding(
 			legacyUserOnboardingUiState = LegacyUserOnboardingUiState.Started,
-			handleEvent = { },
+			showApproachDetails = {},
+			showApproachHeader = {},
+			startDataImport = {},
 		)
 	}
 }
