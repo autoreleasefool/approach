@@ -22,9 +22,11 @@ import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.LocationEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
@@ -43,6 +45,8 @@ import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 		MatchPlayEntity::class,
 		GameGearCrossRef::class,
 		GameLaneCrossRef::class,
+		BowlerPreferredGearCrossRef::class,
+		SeriesLaneCrossRef::class,
 		TeamEntity::class,
 		TeamBowlerCrossRef::class,
 		LegacyIDMappingEntity::class,

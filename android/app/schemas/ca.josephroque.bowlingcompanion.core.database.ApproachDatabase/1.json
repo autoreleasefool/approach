@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6f92fe2d831a93df6660e52faeb81d75",
+    "identityHash": "dc94f8b458f0f17b98f43077b55db185",
     "entities": [
       {
         "tableName": "bowlers",
@@ -141,7 +141,7 @@
       },
       {
         "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `league_id` BLOB NOT NULL, `date` INTEGER NOT NULL, `number_of_games` INTEGER NOT NULL, `pre_bowl` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `league_id` BLOB NOT NULL, `date` INTEGER NOT NULL, `number_of_games` INTEGER NOT NULL, `pre_bowl` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `alley_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -178,6 +178,12 @@
             "columnName": "exclude_from_statistics",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "alleyId",
+            "columnName": "alley_id",
+            "affinity": "BLOB",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -204,6 +210,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_series_league_id` ON `${TABLE_NAME}` (`league_id`)"
+          },
+          {
+            "name": "index_series_alley_id",
+            "unique": false,
+            "columnNames": [
+              "alley_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_series_alley_id` ON `${TABLE_NAME}` (`alley_id`)"
           }
         ],
         "foreignKeys": [
@@ -213,6 +228,17 @@
             "onUpdate": "CASCADE",
             "columns": [
               "league_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "alleys",
+            "onDelete": "SET NULL",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "alley_id"
             ],
             "referencedColumns": [
               "id"
@@ -309,7 +335,7 @@
       },
       {
         "tableName": "gear",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `kind` TEXT NOT NULL, `owner_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`owner_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `kind` TEXT NOT NULL, `owner_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`owner_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -365,7 +391,7 @@
         "foreignKeys": [
           {
             "table": "bowlers",
-            "onDelete": "CASCADE",
+            "onDelete": "SET NULL",
             "onUpdate": "CASCADE",
             "columns": [
               "owner_id"
@@ -588,7 +614,7 @@
       },
       {
         "tableName": "frames",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`game_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `roll0` TEXT, `roll1` TEXT, `roll2` TEXT, `ball0` BLOB, `ball1` BLOB, `ball2` BLOB, PRIMARY KEY(`game_id`, `index`), FOREIGN KEY(`game_id`) REFERENCES `games`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`ball0`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`ball1`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`ball2`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`game_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `roll0` TEXT, `roll1` TEXT, `roll2` TEXT, `ball0` BLOB, `ball1` BLOB, `ball2` BLOB, PRIMARY KEY(`game_id`, `index`), FOREIGN KEY(`game_id`) REFERENCES `games`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`ball0`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE SET NULL , FOREIGN KEY(`ball1`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE SET NULL , FOREIGN KEY(`ball2`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "gameId",
@@ -717,7 +743,7 @@
           },
           {
             "table": "gear",
-            "onDelete": "CASCADE",
+            "onDelete": "SET NULL",
             "onUpdate": "CASCADE",
             "columns": [
               "ball0"
@@ -728,7 +754,7 @@
           },
           {
             "table": "gear",
-            "onDelete": "CASCADE",
+            "onDelete": "SET NULL",
             "onUpdate": "CASCADE",
             "columns": [
               "ball1"
@@ -739,7 +765,7 @@
           },
           {
             "table": "gear",
-            "onDelete": "CASCADE",
+            "onDelete": "SET NULL",
             "onUpdate": "CASCADE",
             "columns": [
               "ball2"
@@ -1004,6 +1030,164 @@
         ]
       },
       {
+        "tableName": "bowler_preferred_gear",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`bowler_id` BLOB NOT NULL, `gear_id` BLOB NOT NULL, PRIMARY KEY(`bowler_id`, `gear_id`), FOREIGN KEY(`bowler_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`gear_id`) REFERENCES `gear`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "bowlerId",
+            "columnName": "bowler_id",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gearId",
+            "columnName": "gear_id",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "bowler_id",
+            "gear_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_bowler_preferred_gear_bowler_id_gear_id",
+            "unique": false,
+            "columnNames": [
+              "bowler_id",
+              "gear_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bowler_preferred_gear_bowler_id_gear_id` ON `${TABLE_NAME}` (`bowler_id`, `gear_id`)"
+          },
+          {
+            "name": "index_bowler_preferred_gear_bowler_id",
+            "unique": false,
+            "columnNames": [
+              "bowler_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bowler_preferred_gear_bowler_id` ON `${TABLE_NAME}` (`bowler_id`)"
+          },
+          {
+            "name": "index_bowler_preferred_gear_gear_id",
+            "unique": false,
+            "columnNames": [
+              "gear_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_bowler_preferred_gear_gear_id` ON `${TABLE_NAME}` (`gear_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "bowlers",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "bowler_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "gear",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "gear_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "series_lane",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`series_id` BLOB NOT NULL, `lane_id` BLOB NOT NULL, PRIMARY KEY(`series_id`, `lane_id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`lane_id`) REFERENCES `lanes`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "seriesId",
+            "columnName": "series_id",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "laneId",
+            "columnName": "lane_id",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "series_id",
+            "lane_id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_series_lane_series_id_lane_id",
+            "unique": false,
+            "columnNames": [
+              "series_id",
+              "lane_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_series_lane_series_id_lane_id` ON `${TABLE_NAME}` (`series_id`, `lane_id`)"
+          },
+          {
+            "name": "index_series_lane_series_id",
+            "unique": false,
+            "columnNames": [
+              "series_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_series_lane_series_id` ON `${TABLE_NAME}` (`series_id`)"
+          },
+          {
+            "name": "index_series_lane_lane_id",
+            "unique": false,
+            "columnNames": [
+              "lane_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_series_lane_lane_id` ON `${TABLE_NAME}` (`lane_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "series",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "series_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "lanes",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "lane_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "teams",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
@@ -1173,7 +1357,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f92fe2d831a93df6660e52faeb81d75')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'dc94f8b458f0f17b98f43077b55db185')"
     ]
   }
 }

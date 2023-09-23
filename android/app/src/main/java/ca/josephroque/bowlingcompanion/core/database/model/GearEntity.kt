@@ -18,7 +18,7 @@ import java.util.UUID
 			parentColumns = ["id"],
 			childColumns = ["owner_id"],
 			onUpdate = ForeignKey.CASCADE,
-			onDelete = ForeignKey.CASCADE,
+			onDelete = ForeignKey.SET_NULL,
 		)
 	],
 )
