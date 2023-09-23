@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migra
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateLeagues
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateMatchPlays
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateSeries
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateTeamBowlers
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateTeams
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
@@ -50,6 +51,7 @@ class SQLiteMigrationManager @Inject constructor(
 		when (step) {
 			MigrationStep.TEAMS -> migrateTeams(legacyDb)
 			MigrationStep.BOWLERS -> migrateBowlers(legacyDb)
+			MigrationStep.TEAM_BOWLERS -> migrateTeamBowlers(legacyDb)
 			MigrationStep.LEAGUES -> migrateLeagues(legacyDb)
 			MigrationStep.SERIES -> migrateSeries(legacyDb)
 			MigrationStep.GAMES -> migrateGames(legacyDb)
