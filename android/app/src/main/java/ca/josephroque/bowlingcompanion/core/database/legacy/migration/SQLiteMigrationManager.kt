@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateBowlers
+import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateFrames
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateGames
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateLeagues
 import ca.josephroque.bowlingcompanion.core.database.legacy.migration.step.migrateMatchPlays
@@ -53,6 +54,7 @@ class SQLiteMigrationManager @Inject constructor(
 			MigrationStep.SERIES -> migrateSeries(legacyDb)
 			MigrationStep.GAMES -> migrateGames(legacyDb)
 			MigrationStep.MATCH_PLAYS -> migrateMatchPlays(legacyDb)
+			MigrationStep.FRAMES -> migrateFrames(legacyDb)
 		}
 	}
 }

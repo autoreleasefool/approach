@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
+import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
@@ -62,6 +63,7 @@ abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun leagueDao(): LeagueDao
 	abstract fun seriesDao(): SeriesDao
 	abstract fun gameDao(): GameDao
+	abstract fun frameDao(): FrameDao
 	abstract fun matchPlayDao(): MatchPlayDao
 
 	abstract fun legacyIDMappingDao(): LegacyIDMappingDao

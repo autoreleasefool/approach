@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.di
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
+import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
@@ -43,6 +44,11 @@ object DaosModule {
 	fun providesGameDao(
 		database: ApproachDatabase,
 	): GameDao = database.gameDao()
+
+	@Provides
+	fun providesFrameDao(
+		database: ApproachDatabase,
+	): FrameDao = database.frameDao()
 
 	@Provides
 	fun providesMatchPlayDao(

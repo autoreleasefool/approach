@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import androidx.sqlite.db.SimpleSQLiteQuery
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
+import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
@@ -11,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingD
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyBowler
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyFrame
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyGame
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
@@ -21,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPla
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacySeries
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.asMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
@@ -42,6 +45,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
 	private val seriesDao: SeriesDao,
 	private val gameDao: GameDao,
+	private val frameDao: FrameDao,
 	private val matchPlayDao: MatchPlayDao,
 	private val legacyIDMappingDao: LegacyIDMappingDao,
 	private val checkpointDao: CheckpointDao,
@@ -248,6 +252,45 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 
 		legacyIDMappingDao.insertAll(matchPlayIdMappings)
 		matchPlayDao.insertAll(migratedMatchPlays)
+	}
+
+	override suspend fun migrateFrames(frames: List<LegacyFrame>) {
+		val migratedFrames = mutableListOf<FrameEntity>()
+
+		val legacyGameIds = frames.map(LegacyFrame::gameId)
+		val gameIdMappings = legacyIDMappingDao.getLegacyIDMappings(
+			legacyIds = legacyGameIds,
+			key = LegacyIDMappingKey.GAME,
+		).associateBy({ it.legacyId }, { it.id })
+
+		for (legacyFrame in frames) {
+			val fouls = (if (legacyFrame.fouls in 24..30) legacyFrame.fouls - 23 else 0)
+				.toString(2)
+				.padStart(3)
+				.map { it == '1' }
+
+			val rollPins = listOf(
+				legacyFrame.firstPinState,
+				legacyFrame.firstPinState.xor(legacyFrame.secondPinState),
+				legacyFrame.secondPinState.xor(legacyFrame.thirdPinState),
+			)
+
+			val rolls = (fouls zip rollPins)
+				.map { "${if (it.first) 1 else 0}${Integer.toBinaryString(it.second).padStart(5, '0')}" }
+
+			migratedFrames.add(FrameEntity(
+				gameId = gameIdMappings[legacyFrame.gameId]!!,
+				index = legacyFrame.ordinal - 1,
+				roll0 = rolls[0],
+				roll1 = rolls[1],
+				roll2 = rolls[2],
+				ball0 = null,
+				ball1 = null,
+				ball2 = null,
+			))
+		}
+
+		frameDao.insertAll(migratedFrames)
 	}
 
 	override suspend fun recordCheckpoint() {
