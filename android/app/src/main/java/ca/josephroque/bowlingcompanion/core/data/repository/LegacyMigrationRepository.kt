@@ -7,10 +7,12 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacySeries
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeam
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeamBowler
 
 interface LegacyMigrationRepository {
 	suspend fun migrateTeams(teams: List<LegacyTeam>)
 	suspend fun migrateBowlers(bowlers: List<LegacyBowler>)
+	suspend fun migrateTeamBowlers(teamBowlers: List<LegacyTeamBowler>)
 	suspend fun migrateLeagues(leagues: List<LegacyLeague>)
 	suspend fun migrateSeries(series: List<LegacySeries>)
 	suspend fun migrateGames(games: List<LegacyGame>)

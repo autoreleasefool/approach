@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
+import ca.josephroque.bowlingcompanion.core.database.dao.TeamBowlerDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
@@ -21,6 +22,7 @@ import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlayResult
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacySeries
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyTeamBowler
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.asMatchPlay
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
@@ -28,6 +30,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
@@ -42,6 +45,7 @@ import javax.inject.Inject
 class OfflineFirstLegacyMigrationRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	private val teamDao: TeamDao,
+	private var teamBowlerDao: TeamBowlerDao,
 	private val leagueDao: LeagueDao,
 	private val seriesDao: SeriesDao,
 	private val gameDao: GameDao,
@@ -95,6 +99,33 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 
 		legacyIDMappingDao.insertAll(idMappings)
 		bowlerDao.insertAll(migratedBowlers)
+	}
+
+	override suspend fun migrateTeamBowlers(teamBowlers: List<LegacyTeamBowler>) {
+		val migratedTeamBowlers = mutableListOf<TeamBowlerCrossRef>()
+
+		val legacyBowlerIds = teamBowlers.map(LegacyTeamBowler::bowlerId)
+		val bowlerIdMappings = legacyIDMappingDao.getLegacyIDMappings(
+			legacyIds = legacyBowlerIds,
+			key = LegacyIDMappingKey.BOWLER,
+		).associateBy({ it.legacyId }, { it.id })
+
+		val legacyTeamIds = teamBowlers.map(LegacyTeamBowler::teamId)
+		val teamIdMappings = legacyIDMappingDao.getLegacyIDMappings(
+			legacyIds = legacyTeamIds,
+			key = LegacyIDMappingKey.TEAM,
+		).associateBy({ it.legacyId }, { it.id })
+
+	  for (legacyTeamBowler in teamBowlers) {
+			migratedTeamBowlers.add(
+				TeamBowlerCrossRef(
+					teamId = teamIdMappings[legacyTeamBowler.teamId]!!,
+					bowlerId = bowlerIdMappings[legacyTeamBowler.bowlerId]!!,
+				)
+			)
+	  }
+
+		teamBowlerDao.insertAll(migratedTeamBowlers)
 	}
 
 	override suspend fun migrateLeagues(leagues: List<LegacyLeague>) {

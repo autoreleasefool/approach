@@ -13,7 +13,7 @@ suspend fun SQLiteMigrationManager.migrateBowlers(legacyDb: SQLiteDatabase) {
 		""".trimIndent(), emptyArray()
 	)
 
-	val bowlers =  mutableListOf<LegacyBowler>()
+	val bowlers = mutableListOf<LegacyBowler>()
 	if (cursor.moveToFirst()) {
 		while (!cursor.isAfterLast) {
 			val bowlerIdIndex = cursor.getColumnIndex(LegacyContract.BowlerEntry._ID)
