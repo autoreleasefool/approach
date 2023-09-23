@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyBowler
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyFrame
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyGame
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyLeague
 import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyMatchPlay
@@ -14,6 +15,7 @@ interface LegacyMigrationRepository {
 	suspend fun migrateSeries(series: List<LegacySeries>)
 	suspend fun migrateGames(games: List<LegacyGame>)
 	suspend fun migrateMatchPlays(matchPlays: List<LegacyMatchPlay>)
+	suspend fun migrateFrames(frames: List<LegacyFrame>)
 
 	suspend fun recordCheckpoint()
 }
