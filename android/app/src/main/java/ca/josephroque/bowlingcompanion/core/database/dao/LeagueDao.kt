@@ -29,10 +29,11 @@ abstract class LeagueDao: BaseDao<LeagueEntity> {
 				ON games.series_id = series.id
 				AND (games.exclude_from_statistics = "INCLUDE" OR games.exclude_from_statistics IS NULL)
 				AND (games.score > 0 OR games.score is NULL)
+			WHERE leagues.bowler_id = :bowlerId
 			GROUP BY leagues.id
 		"""
 	)
-	abstract fun getLeagueAverages(): Flow<List<LeagueWithAverage>>
+	abstract fun getLeagueAverages(bowlerId: UUID): Flow<List<LeagueWithAverage>>
 
 	@Insert(entity = LeagueEntity::class)
 	abstract fun insertLeague(league: LeagueCreate)

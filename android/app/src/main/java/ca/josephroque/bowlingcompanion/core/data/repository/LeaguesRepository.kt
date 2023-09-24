@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface LeaguesRepository {
-	fun getLeaguesList(): Flow<List<LeagueListItem>>
+	fun getLeaguesList(bowlerId: UUID): Flow<List<LeagueListItem>>
 
 	suspend fun insertLeague(league: LeagueCreate)
 	suspend fun updateLeague(league: LeagueUpdate)

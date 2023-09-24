@@ -14,8 +14,8 @@ import javax.inject.Inject
 class OfflineFirstLeaguesRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
 ): LeaguesRepository {
-	override fun getLeaguesList(): Flow<List<LeagueListItem>> =
-		leagueDao.getLeagueAverages()
+	override fun getLeaguesList(bowlerId: UUID): Flow<List<LeagueListItem>> =
+		leagueDao.getLeagueAverages(bowlerId = bowlerId)
 			.map { it.map(LeagueWithAverage::asListItem) }
 
 	override suspend fun insertLeague(league: LeagueCreate) {

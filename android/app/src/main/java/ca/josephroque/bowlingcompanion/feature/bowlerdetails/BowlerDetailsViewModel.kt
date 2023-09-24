@@ -38,7 +38,7 @@ class BowlerDetailsViewModel @Inject constructor(
 			)
 
 	val leaguesListState: StateFlow<LeaguesListUiState> =
-		leaguesRepository.getLeaguesList()
+		leaguesRepository.getLeaguesList(bowlerId)
 			.map(LeaguesListUiState::Success)
 			.stateIn(
 				scope = viewModelScope,
