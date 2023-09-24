@@ -2,9 +2,12 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerWithAverage
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asExternalModel
+import ca.josephroque.bowlingcompanion.core.database.model.asListItem
 import ca.josephroque.bowlingcompanion.core.model.Bowler
+import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,6 +24,10 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	override fun getBowler(id: UUID): Flow<Bowler> =
 		bowlerDao.getBowler(id)
 			.map(BowlerEntity::asExternalModel)
+
+	override fun getBowlersList(): Flow<List<BowlerListItem>> =
+		bowlerDao.getBowlerAverages()
+			.map { it.map(BowlerWithAverage::asListItem) }
 
 	override suspend fun insertBowler(bowler: Bowler) {
 		bowlerDao.insert(bowler.asEntity())

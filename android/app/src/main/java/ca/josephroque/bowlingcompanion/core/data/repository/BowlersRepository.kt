@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.Bowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -13,6 +14,8 @@ data class BowlerQuery(
 interface BowlersRepository {
 	fun getBowlers(query: BowlerQuery): Flow<List<Bowler>>
 	fun getBowler(id: UUID): Flow<Bowler>
+
+	fun getBowlersList(): Flow<List<BowlerListItem>>
 
 	suspend fun insertBowler(bowler: Bowler)
 	suspend fun updateBowler(bowler: BowlerUpdate)

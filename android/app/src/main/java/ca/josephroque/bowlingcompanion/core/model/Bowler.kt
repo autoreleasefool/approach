@@ -13,6 +13,12 @@ data class BowlerUpdate(
 	val name: String,
 )
 
+data class BowlerListItem(
+	val id: UUID,
+	val name: String,
+	val average: Double?,
+)
+
 enum class BowlerKind {
 	PLAYABLE,
 	OPPONENT,
