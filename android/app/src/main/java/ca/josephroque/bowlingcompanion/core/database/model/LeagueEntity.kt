@@ -7,7 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
-import ca.josephroque.bowlingcompanion.core.model.League
+import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import java.util.UUID
 
@@ -35,12 +35,12 @@ data class LeagueEntity(
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )
 
-fun LeagueEntity.asExternalModel() = League(
-	id = id,
-	name = name,
-	recurrence = recurrence,
-	numberOfGames = numberOfGames,
-	additionalPinFall = additionalPinFall,
-	additionalGames = additionalGames,
-	excludeFromStatistics = excludeFromStatistics
+data class LeagueWithAverage(
+	val id: UUID,
+	val name: String,
+	val recurrence: LeagueRecurrence,
+	val average: Double?,
 )
+
+fun LeagueWithAverage.asListItem() =
+	LeagueListItem(id = id, name = name, average = average, recurrence = recurrence)

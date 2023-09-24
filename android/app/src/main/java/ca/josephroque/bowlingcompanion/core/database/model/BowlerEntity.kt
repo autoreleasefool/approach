@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.Bowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import java.util.UUID
 
 @Entity(
@@ -29,3 +30,12 @@ fun Bowler.asEntity() = BowlerEntity(
 	name = name,
 	kind = kind,
 )
+
+data class BowlerWithAverage(
+	val id: UUID,
+	val name: String,
+	val average: Double?,
+)
+
+fun BowlerWithAverage.asListItem() =
+	BowlerListItem(id = id, name = name, average = average)
