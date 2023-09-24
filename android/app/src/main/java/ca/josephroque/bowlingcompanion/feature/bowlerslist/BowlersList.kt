@@ -1,8 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerslist
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import ca.josephroque.bowlingcompanion.core.model.Bowler
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import java.util.UUID
 
 fun LazyListScope.bowlersList(
@@ -20,6 +23,7 @@ fun LazyListScope.bowlersList(
 				BowlerItemRow(
 					bowler = bowler,
 					onClick = { onBowlerClick(bowler.id) },
+					modifier = Modifier.padding(16.dp)
 				)
 			}
 		}
@@ -31,6 +35,6 @@ sealed interface BowlersListUiState {
 	data object Loading: BowlersListUiState
 
 	data class Success(
-		val list: List<Bowler>
+		val list: List<BowlerListItem>
 	): BowlersListUiState
 }

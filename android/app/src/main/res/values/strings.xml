@@ -6,14 +6,17 @@
 	<string name="destination_accessories">Utilities</string>
 	<string name="destination_settings">Settings</string>
 
-	<string name="bowlers_list_add">Add Bowler</string>
+	<string name="overview_title">Overview</string>
+
+	<string name="bowler_list_add">Add Bowler</string>
+	<string name="bowler_list_title">Bowlers</string>
 	<string name="bowler_form_new">New Bowler</string>
 	<string name="bowler_form_edit">Edit %1$s</string>
 	<string name="bowler_form_name">Name</string>
 	<string name="bowler_form_name_missing">Name cannot be blank</string>
 
-	<string name="action_save">Save</string>
-	<string name="action_delete">Delete</string>
+	<string name="statistics_placeholder_title">Statistics at a glance</string>
+	<string name="statistics_placeholder_message">Tap here to configure the stats you want to see</string>
 
 	<string name="onboarding_new_user_title_welcome">Welcome</string>
 	<string name="onboarding_new_user_title_to_your_new">to your new</string>
@@ -34,4 +37,7 @@
 	<string name="onboarding_legacy_user_description_vancouver">Lovingly crafted in Vancouver</string>
 	<string name="onboarding_legacy_user_get_started">Get started</string>
 	<string name="onboarding_legacy_user_importing_data">Importing data…</string>
+
+	<string name="action_save">Save</string>
+	<string name="action_delete">Delete</string>
 </resources>
