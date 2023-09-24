@@ -23,7 +23,9 @@ fun LazyListScope.bowlersList(
 				BowlerItemRow(
 					bowler = bowler,
 					onClick = { onBowlerClick(bowler.id) },
-					modifier = Modifier.padding(16.dp)
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 16.dp),
 				)
 			}
 		}

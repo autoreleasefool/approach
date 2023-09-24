@@ -4,11 +4,11 @@ import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Entity(
@@ -40,7 +40,8 @@ data class LeagueWithAverage(
 	val name: String,
 	val recurrence: LeagueRecurrence,
 	val average: Double?,
+	val lastSeriesDate: Instant?,
 )
 
 fun LeagueWithAverage.asListItem() =
-	LeagueListItem(id = id, name = name, average = average, recurrence = recurrence)
+	LeagueListItem(id = id, name = name, average = average, recurrence = recurrence, lastSeriesDate = lastSeriesDate)

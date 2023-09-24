@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview
+package ca.josephroque.bowlingcompanion.feature.bowlerdetails
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,7 +9,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -18,30 +17,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
-import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
-import ca.josephroque.bowlingcompanion.feature.bowlerslist.bowlersList
+import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
+import ca.josephroque.bowlingcompanion.feature.leagueslist.leaguesList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.StatisticsWidgetPlaceholderCard
 import java.util.UUID
 
 @Composable
-internal fun OverviewRoute(
-	onEditBowler: (UUID) -> Unit,
-	onAddBowler: () -> Unit,
-	onShowBowlerDetails: (UUID) -> Unit,
+internal fun BowlerDetailsRoute(
+	onEditLeague: (UUID) -> Unit,
+	onAddLeague: () -> Unit,
 	modifier: Modifier = Modifier,
-	viewModel: OverviewViewModel = hiltViewModel(),
+	viewModel: BowlerDetailsViewModel = hiltViewModel(),
 ) {
-	val bowlersListState by viewModel.bowlersListState.collectAsStateWithLifecycle()
+	val bowlerDetailsState by viewModel.bowlerDetailsState.collectAsStateWithLifecycle()
+	val leaguesListState by viewModel.leaguesListState.collectAsStateWithLifecycle()
 
-	OverviewScreen(
-		bowlersListState = bowlersListState,
-		onBowlerClick = onShowBowlerDetails,
-		onAddBowler = onAddBowler,
+	BowlerDetailsScreen(
+		bowlerDetailsState = bowlerDetailsState,
+		leaguesListState = leaguesListState,
+		onLeagueClick = viewModel::navigateToLeague,
+		onAddLeague = onAddLeague,
 		editStatisticsWidget = viewModel::editStatisticsWidget,
 		modifier = modifier,
 	)
@@ -49,10 +47,11 @@ internal fun OverviewRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun OverviewScreen(
-	bowlersListState: BowlersListUiState,
-	onBowlerClick: (UUID) -> Unit,
-	onAddBowler: () -> Unit,
+internal fun BowlerDetailsScreen(
+	bowlerDetailsState: BowlerDetailsUiState,
+	leaguesListState: LeaguesListUiState,
+	onLeagueClick: (UUID) -> Unit,
+	onAddLeague: () -> Unit,
 	editStatisticsWidget: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -62,53 +61,38 @@ internal fun OverviewScreen(
 				colors = TopAppBarDefaults.topAppBarColors(),
 				title = {
 					Text(
-						stringResource(R.string.overview_title),
+						text = when (bowlerDetailsState) {
+							BowlerDetailsUiState.Loading -> ""
+							is BowlerDetailsUiState.Success -> bowlerDetailsState.bowlerName
+						},
 						maxLines = 1,
 						overflow = TextOverflow.Ellipsis,
 					)
 				},
 				actions = {
-					IconButton(onClick = onAddBowler) {
+					IconButton(onClick = onAddLeague) {
 						Icon(
 							imageVector = Icons.Filled.Add,
-							contentDescription = stringResource(R.string.bowler_list_add)
+							contentDescription = stringResource(R.string.league_list_add)
 						)
 					}
-				}
+				},
 			)
 		}
 	) { padding ->
 		LazyColumn(
 			modifier = modifier
 				.fillMaxSize()
-				.padding(padding),
+				.padding(padding)
 		) {
 			item {
 				StatisticsWidgetPlaceholderCard(onClick = editStatisticsWidget)
 			}
 
-			bowlersList(
-				bowlersListState = bowlersListState,
-				onBowlerClick = onBowlerClick,
+			leaguesList(
+				leaguesListState = leaguesListState,
+				onLeagueClick = onLeagueClick,
 			)
 		}
-	}
-}
-
-
-
-@Preview
-@Composable
-fun OverviewPreview() {
-	Surface {
-		OverviewScreen(
-			bowlersListState = BowlersListUiState.Success(listOf(
-				BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
-				BowlerListItem(id = UUID.randomUUID(), name = "Sarah", average = null),
-			)),
-			onBowlerClick = {},
-			onAddBowler = {},
-			editStatisticsWidget = {},
-		)
 	}
 }

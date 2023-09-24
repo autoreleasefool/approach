@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessories.navigation.accessoriesScreen
+import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
+import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigateToBowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToBowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToNewBowlerForm
@@ -43,12 +45,17 @@ fun ApproachNavHost(
 			showOnboarding = navController::navigateToOnboarding,
 			onEditBowler = navController::navigateToBowlerForm,
 			onAddBowler = { navController.navigateToNewBowlerForm(BowlerKind.PLAYABLE) },
+			onShowBowlerDetails = navController::navigateToBowlerDetails,
 		)
 		statisticsScreen()
 		accessoriesScreen()
 		settingsScreen()
 		bowlerFormScreen(
 			onDismiss = navController::navigateToOverview,
+		)
+		bowlerDetailsScreen(
+			onEditLeague = {},
+			onAddLeague = {},
 		)
 		onboardingScreen(
 			finishActivity = finishActivity,

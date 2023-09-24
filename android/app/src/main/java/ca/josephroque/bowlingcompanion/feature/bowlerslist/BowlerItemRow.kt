@@ -44,7 +44,7 @@ fun BowlerItemRow(
 		Row(
 			modifier = modifier
 				.fillMaxWidth()
-				.padding(vertical = 8.dp, horizontal = 8.dp),
+				.padding(8.dp),
 			verticalAlignment = Alignment.CenterVertically,
 		) {
 			Icon(Icons.Filled.Person, contentDescription = null)

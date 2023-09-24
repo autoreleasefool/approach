@@ -29,10 +29,6 @@ class OverviewViewModel @Inject constructor(
 		// TODO: prompt delete bowler
 	}
 
-	fun navigateToBowler(id: UUID) {
-		// TODO: navigate to bowler
-	}
-
 	fun editStatisticsWidget() {
 		// TODO: Navigate to statistics widget editor
 	}

@@ -20,6 +20,7 @@ fun NavGraphBuilder.overviewScreen(
 	showOnboarding: () -> Unit,
 	onEditBowler: (UUID) -> Unit,
 	onAddBowler: () -> Unit,
+	onShowBowlerDetails: (UUID) -> Unit,
 ) {
 	composable(
 		route = overviewNavigationRoute,
@@ -31,7 +32,11 @@ fun NavGraphBuilder.overviewScreen(
 		}
 
 		if (!shouldShowOnboarding.value) {
-			OverviewRoute(onEditBowler, onAddBowler)
+			OverviewRoute(
+				onEditBowler = onEditBowler,
+				onAddBowler = onAddBowler,
+				onShowBowlerDetails = onShowBowlerDetails,
+			)
 		}
 	}
 }
