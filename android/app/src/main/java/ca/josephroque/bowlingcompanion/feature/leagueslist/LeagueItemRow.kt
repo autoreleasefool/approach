@@ -89,7 +89,7 @@ fun LeagueRecurrence.listIcon(): Painter = when (this) {
 
 @Preview
 @Composable
-fun LeagueTemPreview() {
+fun LeagueItemPreview() {
 	Surface {
 		LeagueItemRow(
 			league = LeagueListItem(

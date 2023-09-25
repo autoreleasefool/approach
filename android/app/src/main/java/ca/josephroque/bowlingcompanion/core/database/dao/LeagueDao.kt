@@ -13,6 +13,9 @@ import java.util.UUID
 
 @Dao
 abstract class LeagueDao: BaseDao<LeagueEntity> {
+	@Query("SELECT * FROM leagues WHERE id = :leagueId")
+	abstract fun getLeagueDetails(leagueId: UUID): Flow<LeagueEntity>
+
 	@Query(
 		"""
 			SELECT

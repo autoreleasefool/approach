@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import kotlinx.datetime.Instant
@@ -45,3 +46,6 @@ data class LeagueWithAverage(
 
 fun LeagueWithAverage.asListItem() =
 	LeagueListItem(id = id, name = name, average = average, recurrence = recurrence, lastSeriesDate = lastSeriesDate)
+
+fun LeagueEntity.asLeagueDetails() =
+	LeagueDetails(id = id, name = name, numberOfGames = numberOfGames, recurrence = recurrence)

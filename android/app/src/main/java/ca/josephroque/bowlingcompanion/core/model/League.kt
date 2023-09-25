@@ -4,6 +4,13 @@ import androidx.room.ColumnInfo
 import kotlinx.datetime.Instant
 import java.util.UUID
 
+data class LeagueDetails(
+	val id: UUID,
+	val name: String,
+	@ColumnInfo(name = "number_of_games") val numberOfGames: Int?,
+	val recurrence: LeagueRecurrence,
+)
+
 data class LeagueCreate(
 	@ColumnInfo(name = "bowler_id") val bowlerId: UUID,
 	val id: UUID,

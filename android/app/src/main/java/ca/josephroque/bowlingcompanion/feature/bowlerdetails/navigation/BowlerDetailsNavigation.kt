@@ -22,6 +22,7 @@ fun NavController.navigateToBowlerDetails(bowlerId: UUID) {
 fun NavGraphBuilder.bowlerDetailsScreen(
 	onEditLeague: (UUID) -> Unit,
 	onAddLeague: () -> Unit,
+	onShowLeagueDetails: (UUID) -> Unit,
 ) {
 	composable(
 		route = bowlerDetailsNavigationRoute,
@@ -32,6 +33,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 		BowlerDetailsRoute(
 			onEditLeague = onEditLeague,
 			onAddLeague = onAddLeague,
+			onShowLeagueDetails = onShowLeagueDetails,
 		)
 	}
 }

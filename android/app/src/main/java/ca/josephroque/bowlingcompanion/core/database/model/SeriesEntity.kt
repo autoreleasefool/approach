@@ -4,10 +4,8 @@ import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
-import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import kotlinx.datetime.Instant
 import java.util.UUID
@@ -40,12 +38,4 @@ data class SeriesEntity(
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?
-)
-
-fun SeriesEntity.asExternalModel() = Series(
-	id = id,
-	date = date,
-	numberOfGames = numberOfGames,
-	preBowl = preBowl,
-	excludeFromStatistics = excludeFromStatistics,
 )

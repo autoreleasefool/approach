@@ -12,7 +12,7 @@ fun LazyListScope.leaguesList(
 	leaguesListState: LeaguesListUiState,
 	onLeagueClick: (UUID) -> Unit,
 ) {
-	when(leaguesListState) {
+	when (leaguesListState) {
 		LeaguesListUiState.Loading -> Unit
 		is LeaguesListUiState.Success -> {
 			items(
