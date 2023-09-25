@@ -6,8 +6,10 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepos
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLegacyMigrationRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstTeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstUserDataRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import dagger.Binds
@@ -27,6 +29,11 @@ interface DataModule {
 	fun bindsLeaguesRepository(
 		leaguesRepository: OfflineFirstLeaguesRepository,
 	): LeaguesRepository
+
+	@Binds
+	fun bindsSeriesRepository(
+		seriesRepository: OfflineFirstSeriesRepository,
+	): SeriesRepository
 
 	@Binds
 	fun bindsTeamRepository(

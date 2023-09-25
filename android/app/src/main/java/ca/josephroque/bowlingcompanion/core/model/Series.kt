@@ -1,14 +1,48 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Relation
+import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import kotlinx.datetime.Instant
 import java.util.UUID
 
-data class Series(
+data class SeriesCreate(
+	@ColumnInfo(name = "league_id") val leagueId: UUID,
 	val id: UUID,
 	val date: Instant,
-	val numberOfGames: Int,
+	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
+	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+)
+
+data class SeriesUpdate(
+	val id: UUID,
+	val date: Instant,
+	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+)
+
+data class SeriesListItem(
+	@Embedded
+	val series: SeriesListProperties,
+	@Relation(
+		parentColumn = "id",
+		entityColumn = "series_id",
+		entity = GameEntity::class,
+	)
+	val scores: List<SeriesScore>,
+)
+
+data class SeriesListProperties(
+	val id: UUID,
+	val date: Instant,
+	val total: Int,
 	val preBowl: SeriesPreBowl,
-	val excludeFromStatistics: ExcludeFromStatistics,
+)
+
+data class SeriesScore(
+	val score: Int,
 )
 
 enum class SeriesPreBowl {
