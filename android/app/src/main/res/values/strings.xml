@@ -20,6 +20,13 @@
 	<string name="league_list_item_latest_series">Last bowled %1$s</string>
 	<string name="league_list_item_bowled_once">Bowled on %1$s</string>
 
+	<string name="series_list_add">Add Series</string>
+	<string name="series_list_score_range">%d — %d</string>
+	<plurals name="series_list_games_count">
+		<item quantity="one">%d game</item>
+		<item quantity="other">%d games</item>
+	</plurals>
+
 	<string name="statistics_placeholder_title">Statistics at a glance</string>
 	<string name="statistics_placeholder_message">Tap here to configure the stats you want to see</string>
 

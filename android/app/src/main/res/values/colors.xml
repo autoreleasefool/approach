@@ -32,4 +32,15 @@
 	<color name="pink_700">#8c009e</color>
 	<color name="pink_800">#7a0098</color>
 	<color name="pink_900">#59008c</color>
+
+	<color name="yellow_100">#FFF9C4</color>
+	<color name="yellow_200">#FFF59D</color>
+	<color name="yellow_300">#FFF176</color>
+	<color name="yellow_400">#FFEE58</color>
+	<color name="yellow_500">#FFEB3B</color>
+	<color name="yellow_600">#FDD835</color>
+	<color name="yellow_700">#FBC02D</color>
+	<color name="yellow_800">#F9A825</color>
+	<color name="yellow_900">#F57F17</color>
+
 </resources>
