@@ -6,7 +6,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
-import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import java.util.UUID
@@ -32,13 +31,4 @@ data class GameEntity(
 	@ColumnInfo(name = "locked") val locked: GameLockState,
 	@ColumnInfo(name = "scoring_method") val scoringMethod: GameScoringMethod,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
-)
-
-fun GameEntity.asExternalModel() = Game(
-	id = id,
-	index = index,
-	score = score,
-	locked = locked,
-	scoringMethod = scoringMethod,
-	excludeFromStatistics = excludeFromStatistics,
 )

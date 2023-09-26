@@ -1,9 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.data.di
 
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstSeriesRepository
@@ -36,7 +38,12 @@ interface DataModule {
 	): SeriesRepository
 
 	@Binds
-	fun bindsTeamRepository(
+	fun bindsGamesRepository(
+		gamesRepository: OfflineFirstGamesRepository,
+	): GamesRepository
+
+	@Binds
+	fun bindsTeamsRepository(
 		teamsRepository: OfflineFirstTeamsRepository,
 	): TeamsRepository
 
