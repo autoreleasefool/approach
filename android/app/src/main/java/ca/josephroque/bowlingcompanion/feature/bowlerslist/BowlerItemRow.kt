@@ -1,10 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerslist
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -34,33 +37,29 @@ fun BowlerItemRow(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Card(
-		onClick = onClick,
-		colors = CardDefaults.cardColors(
-			containerColor = colorResource(R.color.purple_100)
-		),
-		modifier = modifier,
+	Row(
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(16.dp),
+		modifier = modifier
+			.fillMaxWidth()
+			.clickable(onClick = onClick)
+			.padding(16.dp),
 	) {
-		Row(
-			modifier = modifier
-				.fillMaxWidth()
-				.padding(8.dp),
-			verticalAlignment = Alignment.CenterVertically,
-		) {
-			Icon(Icons.Filled.Person, contentDescription = null)
-			Spacer(Modifier.width(16.dp))
-			Text(
-				text = bowler.name,
-				fontSize = 18.sp,
-				fontWeight = FontWeight.Bold,
-			)
-			Spacer(
-				Modifier
-					.defaultMinSize(minWidth = 8.dp)
-					.weight(1f)
-			)
-			Text(bowler.average.formatAsAverage())
-		}
+		Icon(
+			Icons.Filled.Person,
+			contentDescription = null,
+			modifier = Modifier.size(24.dp),
+		)
+
+		Text(
+			text = bowler.name,
+			fontSize = 18.sp,
+			fontWeight = FontWeight.Bold,
+		)
+
+		Spacer(Modifier.weight(1F))
+
+		Text(bowler.average.formatAsAverage())
 	}
 }
 
@@ -71,6 +70,7 @@ fun BowlerCardPreview() {
 		BowlerItemRow(
 			bowler = BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
 			onClick = {},
+			modifier = Modifier.padding(16.dp),
 		)
 	}
 }

@@ -1,15 +1,15 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +30,12 @@ internal fun StatisticsWidgetPlaceholderCard(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	OutlinedCard(
+	Card(
 		onClick = onClick,
 		colors = CardDefaults.cardColors(
 			containerColor = colorResource(R.color.purple_300),
 			contentColor = colorResource(R.color.white),
 		),
-		elevation = CardDefaults.cardElevation(),
 		modifier = modifier.fillMaxWidth(),
 	) {
 		Box(
@@ -52,7 +51,9 @@ internal fun StatisticsWidgetPlaceholderCard(
 					.align(Alignment.BottomEnd)
 					.alpha(0.3F)
 			)
-			Column {
+			Column(
+				verticalArrangement = Arrangement.spacedBy(4.dp),
+			) {
 				Text(
 					stringResource(R.string.statistics_placeholder_title),
 					fontSize = 24.sp,
