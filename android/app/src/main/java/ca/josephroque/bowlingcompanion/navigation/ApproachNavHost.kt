@@ -19,6 +19,8 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingS
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToOverview
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
@@ -63,7 +65,10 @@ fun ApproachNavHost(
 		leagueDetailsScreen(
 			onEditSeries = {},
 			onAddSeries = {},
-			onShowSeriesDetails = {},
+			onShowSeriesDetails = navController::navigateToSeriesDetails,
+		)
+		seriesDetailsScreen(
+			onEditGame = {},
 		)
 		onboardingScreen(
 			finishActivity = finishActivity,

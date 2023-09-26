@@ -152,7 +152,7 @@ private fun ScoreSummary(
 			.padding(vertical = 2.dp, horizontal = 4.dp)
 	) {
 		Text(
-			text = pluralStringResource(R.plurals.series_list_games_count, numberOfGames, numberOfGames),
+			text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
 			fontSize = 12.sp,
 		)
 

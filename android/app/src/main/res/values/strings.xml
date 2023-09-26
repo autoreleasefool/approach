@@ -22,10 +22,17 @@
 
 	<string name="series_list_add">Add Series</string>
 	<string name="series_list_score_range">%d — %d</string>
-	<plurals name="series_list_games_count">
+
+	<string name="series_details_high_game">High of %d</string>
+	<string name="series_details_low_game">Low of %d</string>
+	<string name="series_details_total">Series total</string>
+
+	<plurals name="games_count">
 		<item quantity="one">%d game</item>
 		<item quantity="other">%d games</item>
 	</plurals>
+
+	<string name="game_with_ordinal">Game %d</string>
 
 	<string name="statistics_placeholder_title">Statistics at a glance</string>
 	<string name="statistics_placeholder_message">Tap here to configure the stats you want to see</string>
