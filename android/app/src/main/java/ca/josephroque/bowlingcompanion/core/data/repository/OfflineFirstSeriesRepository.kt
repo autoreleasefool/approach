@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import kotlinx.coroutines.flow.Flow
@@ -11,6 +12,9 @@ import javax.inject.Inject
 class OfflineFirstSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
 ): SeriesRepository {
+	override fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails> =
+		seriesDao.getSeriesDetails(seriesId)
+
 	override fun getSeriesList(leagueId: UUID): Flow<List<SeriesListItem>> =
 		seriesDao.getSeriesList(leagueId)
 

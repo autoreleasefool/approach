@@ -7,6 +7,26 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import kotlinx.datetime.Instant
 import java.util.UUID
 
+data class SeriesDetails(
+	@Embedded
+	val details: SeriesDetailsProperties,
+	@Relation(
+		parentColumn = "id",
+		entityColumn = "series_id",
+		entity = GameEntity::class,
+	)
+	val scores: List<SeriesScore>,
+)
+
+data class SeriesDetailsProperties(
+	val id: UUID,
+	val date: Instant,
+	val total: Int,
+	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
+	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+)
+
 data class SeriesCreate(
 	@ColumnInfo(name = "league_id") val leagueId: UUID,
 	val id: UUID,
