@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -13,14 +14,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
+import java.util.UUID
 
 @Composable
 internal fun BowlerFormRoute(
@@ -60,12 +66,10 @@ internal fun BowlerFormScreen(
 	}
 
 	Scaffold(
-		floatingActionButtonPosition = FabPosition.End,
-		floatingActionButton = { FloatingActionButton(bowlerFormUiState, saveBowler) },
 		topBar = {
-			MediumTopAppBar(
+			TopAppBar(
 				title = { Title(bowlerFormUiState) },
-				actions = { Actions(bowlerFormUiState, deleteBowler) },
+				actions = { Actions(bowlerFormUiState, saveBowler) },
 			)
 		}
 	) { padding ->
@@ -107,35 +111,31 @@ internal fun Title(
 @Composable
 internal fun Actions(
 	uiState: BowlerFormUiState,
-	deleteBowler: () -> Unit,
+	saveBowler: () -> Unit,
 ) {
 	when (uiState) {
 		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
 		is BowlerFormUiState.Edit -> {
-			IconButton(onClick = deleteBowler) {
-				Icon(
-					Icons.Outlined.Delete,
-					tint = MaterialTheme.colorScheme.error,
-					contentDescription = stringResource(R.string.action_delete),
-				)
-			}
+			Text(
+				stringResource(R.string.action_save),
+				modifier = Modifier.clickable(onClick = saveBowler),
+			)
 		}
 	}
 }
 
+@Preview
 @Composable
-internal fun FloatingActionButton(
-	uiState: BowlerFormUiState,
-	saveBowler: () -> Unit,
-) {
-	when (uiState) {
-		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
-		is BowlerFormUiState.Create, is BowlerFormUiState.Edit -> {
-			ExtendedFloatingActionButton(
-				text = { Text(stringResource(R.string.action_save)) },
-				icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-				onClick = saveBowler,
-			)
-		}
-	}
+fun BowlerFormPreview() {
+	BowlerFormScreen(
+		bowlerFormUiState = BowlerFormUiState.Edit(
+			name = "Joseph",
+			initialValue = BowlerDetails(id = UUID.randomUUID(), name = "Joseph"),
+			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
+		),
+		saveBowler = {},
+		loadBowler = {},
+		deleteBowler = {},
+		updateName = {},
+	)
 }

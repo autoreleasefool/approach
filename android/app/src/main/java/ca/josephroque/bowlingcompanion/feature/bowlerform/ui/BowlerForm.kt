@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +42,7 @@ internal fun BowlerForm(
 		OutlinedTextField(
 			value = name,
 			onValueChange = onNameChanged,
+			leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) },
 			label = { Text(stringResource(R.string.bowler_form_name)) },
 			singleLine = true,
 			isError = errorId != null,
@@ -72,20 +75,4 @@ internal fun BowlerForm(
 				.padding(horizontal = 16.dp),
 		)
 	}
-}
-
-@Preview
-@Composable
-fun BowlerFormPreview() {
-	BowlerFormScreen(
-		bowlerFormUiState = BowlerFormUiState.Create(
-			name = "Joseph",
-			kind = BowlerKind.PLAYABLE,
-			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
-		),
-		saveBowler = {},
-		loadBowler = {},
-		deleteBowler = {},
-		updateName = {},
-	)
 }
