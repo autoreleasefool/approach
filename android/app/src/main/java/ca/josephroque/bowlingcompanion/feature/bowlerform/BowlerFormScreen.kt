@@ -3,15 +3,11 @@ package ca.josephroque.bowlingcompanion.feature.bowlerform
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,40 +17,42 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
-import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
 import java.util.UUID
 
 @Composable
 internal fun BowlerFormRoute(
+	onBackPressed: () -> Unit,
 	onDismiss: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerFormViewModel = hiltViewModel(),
 ) {
-	val bowlerFormUiState = viewModel.uiState.collectAsState().value
+	val bowlerFormState = viewModel.uiState.collectAsState().value
 
-	when (bowlerFormUiState) {
+	when (bowlerFormState) {
 		BowlerFormUiState.Dismissed -> onDismiss()
 		else -> Unit
 	}
 
 	BowlerFormScreen(
-		bowlerFormUiState = bowlerFormUiState,
+		bowlerFormState = bowlerFormState,
 		loadBowler = viewModel::loadBowler,
 		saveBowler = viewModel::saveBowler,
 		deleteBowler = viewModel::deleteBowler,
 		updateName = viewModel::updateName,
+		onBackPressed = onBackPressed,
 		modifier = modifier,
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BowlerFormScreen(
-	bowlerFormUiState: BowlerFormUiState,
+	bowlerFormState: BowlerFormUiState,
+	onBackPressed: () -> Unit,
 	loadBowler: () -> Unit,
 	saveBowler: () -> Unit,
 	deleteBowler: () -> Unit,
@@ -67,34 +65,62 @@ internal fun BowlerFormScreen(
 
 	Scaffold(
 		topBar = {
-			TopAppBar(
-				title = { Title(bowlerFormUiState) },
-				actions = { Actions(bowlerFormUiState, saveBowler) },
+			BowlerFormTopBar(
+				bowlerFormState = bowlerFormState,
+				onBackPressed = onBackPressed,
+				saveBowler = saveBowler
 			)
-		}
+		},
 	) { padding ->
-	 when (bowlerFormUiState) {
+	 when (bowlerFormState) {
 		 BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 		 is BowlerFormUiState.Edit ->
 			 BowlerForm(
-				 name = bowlerFormUiState.name,
+				 name = bowlerFormState.name,
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
-				 errorId = bowlerFormUiState.fieldErrors.nameErrorId,
+				 errorId = bowlerFormState.fieldErrors.nameErrorId,
 				 modifier = modifier
 					 .padding(padding)
 			 )
 		 is BowlerFormUiState.Create ->
 			 BowlerForm(
-				 name = bowlerFormUiState.name,
+				 name = bowlerFormState.name,
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
-				 errorId = bowlerFormUiState.fieldErrors.nameErrorId,
+				 errorId = bowlerFormState.fieldErrors.nameErrorId,
 				 modifier = modifier
 					 .padding(padding)
 			 )
 		}
 	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun BowlerFormTopBar(
+	bowlerFormState: BowlerFormUiState,
+	onBackPressed: () -> Unit,
+	saveBowler: () -> Unit,
+) {
+	TopAppBar(
+		title = { Title(bowlerFormState) },
+		navigationIcon = {
+			IconButton(onClick = onBackPressed) {
+				Icon(
+					Icons.Default.ArrowBack,
+					contentDescription = stringResource(R.string.cd_back),
+					tint = MaterialTheme.colorScheme.onSurface,
+				)
+			}
+		},
+		actions = {
+			Actions(
+				bowlerFormState,
+				saveBowler,
+			)
+		},
+	)
 }
 
 @Composable
@@ -114,11 +140,13 @@ internal fun Actions(
 	saveBowler: () -> Unit,
 ) {
 	when (uiState) {
-		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
-		is BowlerFormUiState.Edit -> {
+		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
+		is BowlerFormUiState.Edit, is BowlerFormUiState.Create -> {
 			Text(
 				stringResource(R.string.action_save),
-				modifier = Modifier.clickable(onClick = saveBowler),
+				modifier = Modifier
+					.clickable(onClick = saveBowler)
+					.padding(16.dp),
 			)
 		}
 	}
@@ -128,11 +156,12 @@ internal fun Actions(
 @Composable
 fun BowlerFormPreview() {
 	BowlerFormScreen(
-		bowlerFormUiState = BowlerFormUiState.Edit(
+		bowlerFormState = BowlerFormUiState.Edit(
 			name = "Joseph",
 			initialValue = BowlerDetails(id = UUID.randomUUID(), name = "Joseph"),
 			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
 		),
+		onBackPressed = {},
 		saveBowler = {},
 		loadBowler = {},
 		deleteBowler = {},

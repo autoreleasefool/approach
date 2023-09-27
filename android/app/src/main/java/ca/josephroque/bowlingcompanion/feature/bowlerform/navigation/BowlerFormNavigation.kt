@@ -28,14 +28,19 @@ fun NavController.navigateToNewBowlerForm(kind: BowlerKind) {
 	}
 }
 
-fun NavGraphBuilder.bowlerFormScreen(onDismiss: () -> Unit) {
+fun NavGraphBuilder.bowlerFormScreen(
+	onBackPressed: () -> Unit
+) {
 	composable(
 		route = editBowlerNavigationRoute,
 		arguments = listOf(
 			navArgument(BOWLER_ID) { type = NavType.StringType },
 		),
 	) {
-		BowlerFormRoute(onDismiss)
+		BowlerFormRoute(
+			onBackPressed = onBackPressed,
+			onDismiss = onBackPressed,
+		)
 	}
 	composable(
 		route = addBowlerNavigationRoute,
@@ -43,6 +48,9 @@ fun NavGraphBuilder.bowlerFormScreen(onDismiss: () -> Unit) {
 			navArgument(BOWLER_KIND) { type = NavType.StringType },
 		),
 	) {
-		BowlerFormRoute(onDismiss)
+		BowlerFormRoute(
+			onDismiss = onBackPressed,
+			onBackPressed = onBackPressed,
+		)
 	}
 }

@@ -55,7 +55,7 @@ fun ApproachNavHost(
 		accessoriesScreen()
 		settingsScreen()
 		bowlerFormScreen(
-			onDismiss = navController::navigateToOverview,
+			onBackPressed = { navController.popBackStack() },
 		)
 		bowlerDetailsScreen(
 			onEditLeague = {},

@@ -59,4 +59,6 @@
 
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
+
+	<string name="cd_back">Back</string>
 </resources>
