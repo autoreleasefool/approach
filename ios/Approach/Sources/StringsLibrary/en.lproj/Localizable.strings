@@ -81,6 +81,7 @@
 "matchPlay.editor.fields.opponent.title" = "Opponent";
 "matchPlay.editor.fields.opponent.score" = "Score";
 "matchPlay.editor.fields.result.title" = "Outcome";
+"matchPlay.editor.fields.result.footer" = "Indicate your personal result. If you won, select '%@'";
 
 /* Gear */
 

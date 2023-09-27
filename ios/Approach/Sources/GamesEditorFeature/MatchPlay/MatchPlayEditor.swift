@@ -167,6 +167,8 @@ public struct MatchPlayEditorView: View {
 							Text(String(describing: $0)).tag(Optional($0))
 						}
 					}
+				} footer: {
+					Text(Strings.MatchPlay.Editor.Fields.Result.footer(String(describing: MatchPlay.Result.won)))
 				}
 
 				Section {

@@ -769,6 +769,10 @@ public enum Strings {
           public static let title = Strings.tr("Localizable", "matchPlay.editor.fields.opponent.title", fallback: "Opponent")
         }
         public enum Result {
+          /// Indicate your personal result. If you won, select '%@'
+          public static func footer(_ p1: Any) -> String {
+            return Strings.tr("Localizable", "matchPlay.editor.fields.result.footer", String(describing: p1), fallback: "Indicate your personal result. If you won, select '%@'")
+          }
           /// Outcome
           public static let title = Strings.tr("Localizable", "matchPlay.editor.fields.result.title", fallback: "Outcome")
         }
