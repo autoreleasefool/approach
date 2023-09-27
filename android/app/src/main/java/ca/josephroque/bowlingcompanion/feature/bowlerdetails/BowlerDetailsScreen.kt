@@ -64,7 +64,7 @@ internal fun BowlerDetailsScreen(
 					Text(
 						text = when (bowlerDetailsState) {
 							BowlerDetailsUiState.Loading -> ""
-							is BowlerDetailsUiState.Success -> bowlerDetailsState.bowlerName
+							is BowlerDetailsUiState.Success -> bowlerDetailsState.details.name
 						},
 						maxLines = 1,
 						overflow = TextOverflow.Ellipsis,

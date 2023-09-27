@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.onboarding.newuser
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
-import ca.josephroque.bowlingcompanion.core.model.Bowler
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ class NewUserOnboardingViewModel @Inject constructor(
 			is NewUserOnboardingUiState.ShowingLogbook -> {
 				if (state.name.isNotBlank()) {
 					viewModelScope.launch {
-						bowlersRepository.insertBowler(Bowler(
+						bowlersRepository.insertBowler(BowlerCreate(
 							id = UUID.randomUUID(),
 							name = state.name,
 							kind = BowlerKind.PLAYABLE,

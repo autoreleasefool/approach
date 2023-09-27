@@ -116,7 +116,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 			key = LegacyIDMappingKey.TEAM,
 		).associateBy({ it.legacyId }, { it.id })
 
-	  for (legacyTeamBowler in teamBowlers) {
+		for (legacyTeamBowler in teamBowlers) {
 			migratedTeamBowlers.add(
 				TeamBowlerCrossRef(
 					teamId = teamIdMappings[legacyTeamBowler.teamId]!!,

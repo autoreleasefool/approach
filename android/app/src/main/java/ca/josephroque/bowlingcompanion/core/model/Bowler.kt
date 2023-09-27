@@ -1,22 +1,19 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import androidx.compose.runtime.Immutable
 import java.util.UUID
 
-data class Bowler(
-	val id: UUID,
-	val name: String,
-	val kind: BowlerKind,
-)
-
-data class BowlerUpdate(
-	val id: UUID,
-	val name: String,
-)
-
+@Immutable
 data class BowlerListItem(
 	val id: UUID,
 	val name: String,
 	val average: Double?,
+)
+
+@Immutable
+data class BowlerDetails(
+	val id: UUID,
+	val name: String,
 )
 
 enum class BowlerKind {

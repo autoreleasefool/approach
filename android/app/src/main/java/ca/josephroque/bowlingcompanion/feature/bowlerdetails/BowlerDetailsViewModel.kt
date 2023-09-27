@@ -5,8 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
-import ca.josephroque.bowlingcompanion.core.model.Bowler
-import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,10 +26,8 @@ class BowlerDetailsViewModel @Inject constructor(
 		?: UUID.randomUUID().also { savedStateHandle[BOWLER_ID] = it }
 
 	val bowlerDetailsState: StateFlow<BowlerDetailsUiState> =
-		bowlersRepository.getBowler(bowlerId)
-			.map {
-				BowlerDetailsUiState.Success(it.name)
-			}
+		bowlersRepository.getBowlerDetails(bowlerId)
+			.map(BowlerDetailsUiState::Success)
 			.stateIn(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(5_000),
@@ -58,6 +55,6 @@ class BowlerDetailsViewModel @Inject constructor(
 sealed interface BowlerDetailsUiState {
 	data object Loading: BowlerDetailsUiState
 	data class Success(
-		val bowlerName: String,
+		val details: BowlerDetails,
 	): BowlerDetailsUiState
 }
