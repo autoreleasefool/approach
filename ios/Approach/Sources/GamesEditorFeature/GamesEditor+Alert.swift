@@ -16,6 +16,7 @@ extension GamesEditor {
 		case .didDismiss:
 			state.destination = .gameDetails(.init(
 				gameId: state.currentGameId,
+				seriesGames: state.currentBowlerGames,
 				nextHeaderElement: state.nextHeaderElement,
 				didChangeBowler: false
 			))

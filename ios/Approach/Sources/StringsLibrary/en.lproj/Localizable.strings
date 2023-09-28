@@ -313,6 +313,8 @@
 "statistics.list.hideZeroStatistics" = "Hide statistics with a value of zero?";
 "statistics.list.hideZeroStatistics.help" = "Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.";
 "statistics.picker.title" = "Statistic";
+"statistics.filter.filterByGame" = "Filter by game";
+"statistics.filter.allGames" = "All games";
 
 "statistics.title.aces" = "Aces";
 "statistics.title.acesSpared" = "Aces Spared";

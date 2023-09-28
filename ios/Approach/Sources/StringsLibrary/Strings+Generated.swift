@@ -1323,6 +1323,10 @@ public enum Strings {
     public enum Filter {
       /// Aggregation
       public static let aggregation = Strings.tr("Localizable", "statistics.filter.aggregation", fallback: "Aggregation")
+      /// All games
+      public static let allGames = Strings.tr("Localizable", "statistics.filter.allGames", fallback: "All games")
+      /// Filter by game
+      public static let filterByGame = Strings.tr("Localizable", "statistics.filter.filterByGame", fallback: "Filter by game")
       /// Filter Statistics
       public static let title = Strings.tr("Localizable", "statistics.filter.title", fallback: "Filter Statistics")
       public enum Aggregation {

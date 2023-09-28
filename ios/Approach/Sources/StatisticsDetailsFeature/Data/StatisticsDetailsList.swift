@@ -94,13 +94,25 @@ extension StatisticsDetailsList.State {
 
 // MARK: - View
 
-public struct StatisticsDetailsListView: View {
+public struct StatisticsDetailsListView<Header: View>: View {
 	let store: StoreOf<StatisticsDetailsList>
+	let header: Header
+
+	init(store: StoreOf<StatisticsDetailsList>, @ViewBuilder header: () -> Header) {
+		self.store = store
+		self.header = header()
+	}
+
+	init(store: StoreOf<StatisticsDetailsList>) where Header == EmptyView {
+		self.init(store: store, header: { EmptyView() })
+	}
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			ScrollViewReader { scrollViewProxy in
 				List {
+					header
+
 					ForEach(viewStore.listEntries) { group in
 						Section(String(describing: group.category)) {
 							ForEach(group.entries) { entry in

@@ -94,3 +94,15 @@ extension GamesEditor {
 		return .none
 	}
 }
+
+extension GamesEditor.State {
+	// FIXME: Should not be generating indices from array of game ids, indices should be loaded
+	var currentBowlerGames: IdentifiedArrayOf<Game.Indexed> {
+		.init(
+			uniqueElements: bowlerGameIds[currentBowlerId]?
+				.enumerated()
+				.map { .init(id: $0.element, index: $0.offset) }
+			?? []
+		)
+	}
+}

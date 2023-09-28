@@ -25,6 +25,7 @@ public struct GameDetails: Reducer {
 	public struct State: Equatable {
 		public var gameId: Game.ID
 		public var game: Game.Edit?
+		public var seriesGames: IdentifiedArrayOf<Game.Indexed>
 
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement?
 		public var shouldHeaderShimmer: Bool
@@ -40,10 +41,12 @@ public struct GameDetails: Reducer {
 
 		init(
 			gameId: Game.ID,
+			seriesGames: IdentifiedArrayOf<Game.Indexed>,
 			nextHeaderElement: GameDetailsHeader.State.NextElement?,
 			didChangeBowler: Bool
 		) {
 			self.gameId = gameId
+			self.seriesGames = seriesGames
 			self.nextHeaderElement = nextHeaderElement
 			self.shouldHeaderShimmer = didChangeBowler
 
@@ -159,12 +162,16 @@ public struct GameDetails: Reducer {
 
 				case .didTapSeriesStatisticsButton:
 					guard let seriesId = state.game?.series.id else { return .none }
-					state.destination = .statistics(.init(filter: .init(source: .series(seriesId))))
+					state.destination = .statistics(
+						.init(filter: .init(source: .series(seriesId)), seriesId: seriesId, games: state.seriesGames)
+					)
 					return .none
 
 				case .didTapGameStatisticsButton:
-					guard let gameId = state.game?.id else { return .none }
-					state.destination = .statistics(.init(filter: .init(source: .game(gameId))))
+					guard let gameId = state.game?.id, let seriesId = state.game?.series.id else { return .none }
+					state.destination = .statistics(
+						.init(filter: .init(source: .game(gameId)), seriesId: seriesId, games: state.seriesGames)
+					)
 					return .none
 
 				case .didToggleLock:

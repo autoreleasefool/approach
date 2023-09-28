@@ -1,6 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
+import ModelsLibrary
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
@@ -11,11 +12,8 @@ public struct MidGameStatisticsDetailsView: View {
 	let store: StoreOf<MidGameStatisticsDetails>
 
 	struct ViewState: Equatable {
-//		let sources: TrackableFilter.Sources?
-
-		init(state: MidGameStatisticsDetails.State) {
-
-		}
+		let games: IdentifiedArrayOf<Game.Indexed>
+		@BindingViewState var selectedGame: Game.ID?
 	}
 
 	public init(store: StoreOf<MidGameStatisticsDetails>) {
@@ -27,12 +25,31 @@ public struct MidGameStatisticsDetailsView: View {
 			VStack {
 				StatisticsDetailsListView(
 					store: store.scope(state: \.list, action: { .internal(.list($0)) })
-				)
+				) {
+					Section {
+						Picker(
+							Strings.Statistics.Filter.filterByGame,
+							selection: viewStore.$selectedGame
+						) {
+							Text(Strings.Statistics.Filter.allGames).tag(nil as Game.ID?)
+							ForEach(viewStore.games) {
+								Text(Strings.Game.titleWithOrdinal($0.index + 1)).tag(Optional($0.id))
+							}
+						}
+					}
+				}
 			}
-//			.navigationTitle(viewStore.sources?.bowler.name ?? "")
+			.navigationTitle(Strings.Statistics.title)
 			.navigationBarTitleDisplayMode(.inline)
 			.task { await viewStore.send(.didFirstAppear).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+	}
+}
+
+extension MidGameStatisticsDetailsView.ViewState {
+	init(store: BindingViewStore<MidGameStatisticsDetails.State>) {
+		self._selectedGame = store.$selectedGame
+		self.games = store.games
 	}
 }

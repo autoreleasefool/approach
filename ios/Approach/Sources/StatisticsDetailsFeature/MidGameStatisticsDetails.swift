@@ -9,21 +9,35 @@ import SwiftUI
 
 public struct MidGameStatisticsDetails: Reducer {
 	public struct State: Equatable {
-		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var filter: TrackableFilter
+		public let games: IdentifiedArrayOf<Game.Indexed>
+		public let seriesId: Series.ID
+		@BindingState public var selectedGame: Game.ID?
+
+		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 
 		public var errors: Errors<ErrorID>.State = .init()
 
 		public var _list: StatisticsDetailsList.State = .init(listEntries: [], hasTappableElements: false)
 
-		public init(filter: TrackableFilter) {
+		public init(filter: TrackableFilter, seriesId: Series.ID, games: IdentifiedArrayOf<Game.Indexed>) {
 			self.filter = filter
+			self.seriesId = seriesId
+			self.games = games
+
+			switch filter.source {
+			case .bowler, .league, .series:
+				self.selectedGame = nil
+			case let .game(id):
+				self.selectedGame = id
+			}
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didFirstAppear
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -51,6 +65,8 @@ public struct MidGameStatisticsDetails: Reducer {
 	@Dependency(\.statistics) var statistics
 
 	public var body: some ReducerOf<Self> {
+		BindingReducer(action: /Action.view)
+
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
 			Errors()
 		}
@@ -65,6 +81,17 @@ public struct MidGameStatisticsDetails: Reducer {
 				switch viewAction {
 				case .didFirstAppear:
 					return refreshStatistics(state: state)
+
+				case .binding(\.$selectedGame):
+					if let game = state.selectedGame {
+						state.filter.source = .game(game)
+					} else {
+						state.filter.source = .series(state.seriesId)
+					}
+					return refreshStatistics(state: state)
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -105,13 +132,11 @@ public struct MidGameStatisticsDetails: Reducer {
 	}
 
 	private func refreshStatistics(state: State) -> Effect<Action> {
-		.merge(
-			.run { [filter = state.filter] send in
-				await send(.internal(.didLoadListEntries(TaskResult {
-					try await statistics.load(for: filter)
-				})))
-			}
-		)
+		.run { [filter = state.filter] send in
+			await send(.internal(.didLoadListEntries(TaskResult {
+				try await statistics.load(for: filter)
+			})))
+		}
 		.cancellable(id: CancelID.loadingStaticValues, cancelInFlight: true)
 	}
 }

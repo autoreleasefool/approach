@@ -209,6 +209,7 @@ public struct GamesEditor: Reducer {
 						state.sheetDetent = .medium
 						state.destination = .gameDetails(.init(
 							gameId: game.id,
+							seriesGames: state.currentBowlerGames,
 							nextHeaderElement: state.nextHeaderElement,
 							didChangeBowler: state.didChangeBowler
 						))
@@ -304,6 +305,7 @@ public struct GamesEditor: Reducer {
 					case .none:
 						state.destination = .gameDetails(.init(
 							gameId: state.currentGameId,
+							seriesGames: state.currentBowlerGames,
 							nextHeaderElement: state.nextHeaderElement,
 							didChangeBowler: state.didChangeBowler
 						))
