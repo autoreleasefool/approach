@@ -151,7 +151,7 @@ public struct GameDetailsHeaderView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
-			HStack(alignment: .top) {
+			HStack(alignment: .center) {
 				VStack(alignment: .leading, spacing: .tinySpacing) {
 					Text(viewStore.currentBowlerName)
 						.font(.headline)
@@ -182,6 +182,12 @@ public struct GameDetailsHeaderView: View {
 								.scaledToFit()
 								.frame(width: .tinyIcon, height: .tinyIcon)
 						}
+						.foregroundColor(Asset.Colors.Text.onAction)
+						.padding(.standardSpacing)
+						.background(
+							RoundedRectangle(cornerRadius: .standardRadius)
+								.fill(Asset.Colors.Action.default.swiftUIColor)
+						)
 					}
 					.contentShape(Rectangle())
 					.buttonStyle(TappableElement())

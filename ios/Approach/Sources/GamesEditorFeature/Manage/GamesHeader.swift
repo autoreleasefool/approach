@@ -79,10 +79,10 @@ public struct GamesHeader: Reducer {
 
 					return .run { send in
 						for color in [
-							Asset.Colors.Primary.default.swiftUIColor.opacity(0.6),
-							Asset.Colors.Primary.default.swiftUIColor.opacity(0),
-							Asset.Colors.Primary.default.swiftUIColor.opacity(0.6),
-							Asset.Colors.Primary.default.swiftUIColor.opacity(0),
+							Asset.Colors.Primary.light.swiftUIColor.opacity(0.6),
+							Asset.Colors.Primary.light.swiftUIColor.opacity(0),
+							Asset.Colors.Primary.light.swiftUIColor.opacity(0.6),
+							Asset.Colors.Primary.light.swiftUIColor.opacity(0),
 							nil,
 						] {
 							guard !Task.isCancelled else { return }
