@@ -51,6 +51,7 @@ extension Game {
 
 extension Game.Edit {
 	public struct SeriesInfo: Codable, Equatable {
+		public let id: Series.ID
 		public let date: Date
 		public let preBowl: Series.PreBowl
 		public let excludeFromStatistics: Series.ExcludeFromStatistics

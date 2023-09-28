@@ -14,9 +14,11 @@ public struct StatisticsDetailsList: Reducer {
 		@BindingState public var isHidingZeroStatistics: Bool
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var entryToHighlight: Statistics.ListEntry.ID?
+		public let hasTappableElements: Bool
 
-		init(listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup>) {
+		init(listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup>, hasTappableElements: Bool) {
 			self.listEntries = listEntries
+			self.hasTappableElements = hasTappableElements
 
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
@@ -105,7 +107,10 @@ public struct StatisticsDetailsListView: View {
 								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
 									LabeledContent(entry.title, value: entry.value)
 								}
-								.buttonStyle(.navigation)
+								.buttonStyle(.plain)
+								.if(viewStore.hasTappableElements) {
+									$0.buttonStyle(.navigation)
+								}
 								.listRowBackground(
 									entry.id == viewStore.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
 								)

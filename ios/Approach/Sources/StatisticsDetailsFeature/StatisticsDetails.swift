@@ -371,11 +371,11 @@ public struct StatisticsDetails: Reducer {
 		var list: StatisticsDetailsList.State?
 		switch state.lastOrientation {
 		case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown, .none:
-			list = .init(listEntries: state.listEntries)
+			list = .init(listEntries: state.listEntries, hasTappableElements: true)
 		case .landscapeLeft, .landscapeRight:
 			list = nil
 		@unknown default:
-			list = .init(listEntries: state.listEntries)
+			list = .init(listEntries: state.listEntries, hasTappableElements: true)
 		}
 
 		switch state.destination {

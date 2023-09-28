@@ -4,6 +4,7 @@ import ComposableArchitecture
 import EquatableLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
+import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -39,6 +40,12 @@ public struct GameDetailsView: View {
 					.onDisappear { viewStore.send(.didMeasureSectionHeaderContentSize(.zero), animation: .easeInOut) }
 
 					if let game = viewStore.game {
+						StatisticsSummarySection(
+							currentGameIndex: game.index,
+							onTapSeries: { viewStore.send(.didTapSeriesStatisticsButton) },
+							onTapGame: { viewStore.send(.didTapGameStatisticsButton) }
+						)
+
 						if viewStore.isGearEnabled {
 							GearSummarySection(gear: game.gear) {
 								viewStore.send(.didTapGear)
@@ -124,6 +131,13 @@ public struct GameDetailsView: View {
 							 action: GameDetails.Destination.Action.scoring
 						) {
 							ScoringEditorView(store: $0)
+						}
+					case .statistics:
+						CaseLet(
+							/GameDetails.Destination.State.statistics,
+							 action: GameDetails.Destination.Action.statistics
+						) {
+							MidGameStatisticsDetailsView(store: $0)
 						}
 					}
 				}

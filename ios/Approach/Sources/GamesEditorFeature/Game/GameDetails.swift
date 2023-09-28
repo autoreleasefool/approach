@@ -15,6 +15,7 @@ import ModelsLibrary
 import ModelsViewsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
+import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -61,6 +62,8 @@ public struct GameDetails: Reducer {
 			case didTapScoring
 			case didTapGear
 			case didTapAlley
+			case didTapSeriesStatisticsButton
+			case didTapGameStatisticsButton
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
@@ -91,12 +94,14 @@ public struct GameDetails: Reducer {
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
 			case matchPlay(MatchPlayEditor.State)
 			case scoring(ScoringEditor.State)
+			case statistics(MidGameStatisticsDetails.State)
 		}
 		public enum Action: Equatable {
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case matchPlay(MatchPlayEditor.Action)
 			case scoring(ScoringEditor.Action)
+			case statistics(MidGameStatisticsDetails.Action)
 		}
 
 		@Dependency(\.gear) var gear
@@ -114,6 +119,9 @@ public struct GameDetails: Reducer {
 			}
 			Scope(state: /State.scoring, action: /Action.scoring) {
 				ScoringEditor()
+			}
+			Scope(state: /State.statistics, action: /Action.statistics){
+				MidGameStatisticsDetails()
 			}
 		}
 	}
@@ -148,6 +156,16 @@ public struct GameDetails: Reducer {
 						.cancellable(id: CancelID.observation, cancelInFlight: true),
 						state.startShimmer()
 					)
+
+				case .didTapSeriesStatisticsButton:
+					guard let seriesId = state.game?.series.id else { return .none }
+					state.destination = .statistics(.init(filter: .init(source: .series(seriesId))))
+					return .none
+
+				case .didTapGameStatisticsButton:
+					guard let gameId = state.game?.id else { return .none }
+					state.destination = .statistics(.init(filter: .init(source: .game(gameId))))
+					return .none
 
 				case .didToggleLock:
 					state.game?.locked.toNext()
@@ -219,6 +237,12 @@ public struct GameDetails: Reducer {
 					// TODO: Handle error observing game -- not actually sure we need to care about the error here
 					return .none
 
+				case let .destination(.presented(.statistics(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .destination(.presented(.lanePicker(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeSelection(lanes):
@@ -269,7 +293,7 @@ public struct GameDetails: Reducer {
 						} else {
 							return .none
 						}
-					case .gearPicker, .matchPlay, .scoring, .none:
+					case .gearPicker, .matchPlay, .scoring, .statistics, .none:
 						return .none
 					}
 
@@ -277,6 +301,7 @@ public struct GameDetails: Reducer {
 						.destination(.presented(.scoring(.internal))), .destination(.presented(.scoring(.view))),
 						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
 						.destination(.presented(.lanePicker(.internal))), .destination(.presented(.lanePicker(.view))),
+						.destination(.presented(.statistics(.internal))), .destination(.presented(.statistics(.view))),
 						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
 

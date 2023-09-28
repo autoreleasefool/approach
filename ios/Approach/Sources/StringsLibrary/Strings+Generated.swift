@@ -508,6 +508,10 @@ public enum Strings {
           /// Scoring
           public static let title = Strings.tr("Localizable", "game.editor.fields.scoringMethod.title", fallback: "Scoring")
         }
+        public enum Statistics {
+          /// View stats
+          public static let viewStatistics = Strings.tr("Localizable", "game.editor.fields.statistics.viewStatistics", fallback: "View stats")
+        }
       }
       public enum Picker {
         /// Switch game
