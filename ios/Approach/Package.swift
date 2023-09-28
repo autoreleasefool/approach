@@ -344,17 +344,14 @@ let package = Package(
 		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
-				"AnalyticsServiceInterface",
 				"AvatarServiceInterface",
-				"BowlersRepositoryInterface",
 				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
-				"PickableModelsLibrary",
-				"PreferenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SharingFeature",
+				"StatisticsDetailsFeature",
 			]
 		),
 		.testTarget(

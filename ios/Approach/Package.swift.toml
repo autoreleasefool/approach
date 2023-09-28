@@ -55,10 +55,9 @@ libraries = [ "Strings" ]
 features = [ "Errors" ]
 
 [features.GamesEditor]
-features = [ "Sharing" ]
-repositories = [ "Bowlers", "Frames", "Gear", "Lanes" ]
-services = [ "Analytics", "Avatar", "FeatureFlags", "Preference", "RecentlyUsed" ]
-libraries = [ "PickableModels" ]
+features = [ "Sharing", "StatisticsDetails" ]
+repositories = [ "Frames", "Gear", "Lanes" ]
+services = [ "Avatar", "FeatureFlags", "RecentlyUsed" ]
 
 [features.GamesList]
 features = [ "GamesEditor", "SeriesEditor" ]
