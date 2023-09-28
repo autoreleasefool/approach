@@ -38,7 +38,7 @@ extension GamesEditor.State {
 			// In this case, the frame is finished
 
 			let numberOfBowlers = bowlerIds.count
-			let numberOfGames = bowlerGameIds.count
+			let numberOfGames = bowlerGameIds.first?.value.count ?? 1
 			let nextGameIndex = currentGameIndex + 1
 			let nextFrameIndex = currentFrameIndex + 1
 
