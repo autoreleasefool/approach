@@ -15,6 +15,7 @@
 	<string name="bowler_form_name">Name</string>
 	<string name="bowler_form_name_missing">Name cannot be blank</string>
 
+	<string name="league_list_title">Leagues</string>
 	<string name="league_list_add">Add League</string>
 	<string name="league_list_item_series_missing">No series yet</string>
 	<string name="league_list_item_latest_series">Last bowled %1$s</string>

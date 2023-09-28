@@ -20,6 +20,7 @@ fun NavController.navigateToBowlerDetails(bowlerId: UUID) {
 }
 
 fun NavGraphBuilder.bowlerDetailsScreen(
+	onBackPressed: () -> Unit,
 	onEditLeague: (UUID) -> Unit,
 	onAddLeague: () -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
@@ -33,6 +34,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 		BowlerDetailsRoute(
 			onEditLeague = onEditLeague,
 			onAddLeague = onAddLeague,
+			onBackPressed = onBackPressed,
 			onShowLeagueDetails = onShowLeagueDetails,
 		)
 	}
