@@ -6,10 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
-import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
-import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Entity(
@@ -36,16 +33,23 @@ data class LeagueEntity(
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )
 
-data class LeagueWithAverage(
+@Immutable
+data class LeagueCreate(
+	@ColumnInfo(name = "bowler_id") val bowlerId: UUID,
 	val id: UUID,
 	val name: String,
 	val recurrence: LeagueRecurrence,
-	val average: Double?,
-	val lastSeriesDate: Instant?,
+	@ColumnInfo(name = "number_of_games") val numberOfGames: Int?,
+	@ColumnInfo(name = "additional_pin_fall")val additionalPinFall: Int?,
+	@ColumnInfo(name = "additional_games") val additionalGames: Int?,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )
 
-fun LeagueWithAverage.asListItem() =
-	LeagueListItem(id = id, name = name, average = average, recurrence = recurrence, lastSeriesDate = lastSeriesDate)
-
-fun LeagueEntity.asLeagueDetails() =
-	LeagueDetails(id = id, name = name, numberOfGames = numberOfGames, recurrence = recurrence)
+@Immutable
+data class LeagueUpdate(
+	val id: UUID,
+	val name: String,
+	@ColumnInfo(name = "additional_pin_fall") val additionalPinFall: Int?,
+	@ColumnInfo(name = "additional_games") val additionalGames: Int?,
+	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+)
