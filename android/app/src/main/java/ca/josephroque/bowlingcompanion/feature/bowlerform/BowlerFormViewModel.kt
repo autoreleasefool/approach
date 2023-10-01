@@ -121,9 +121,9 @@ class BowlerFormViewModel @Inject constructor(
 				is BowlerFormUiState.Edit ->
 					bowlersRepository.deleteBowler(state.initialValue.id)
 			}
-		}
 
-		_uiState.value = BowlerFormUiState.Dismissed
+			_uiState.value = BowlerFormUiState.Dismissed
+		}
 	}
 }
 
