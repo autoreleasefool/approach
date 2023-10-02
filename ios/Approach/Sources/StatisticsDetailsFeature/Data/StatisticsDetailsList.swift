@@ -119,9 +119,13 @@ public struct StatisticsDetailsListView<Header: View>: View {
 								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
 									LabeledContent(entry.title, value: entry.value)
 								}
-								.buttonStyle(.plain)
+								.if(!viewStore.hasTappableElements) {
+									$0.buttonStyle(.plain)
+								}
 								.if(viewStore.hasTappableElements) {
-									$0.buttonStyle(.navigation)
+									$0
+										.buttonStyle(.navigation)
+										.contentShape(Rectangle())
 								}
 								.listRowBackground(
 									entry.id == viewStore.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
