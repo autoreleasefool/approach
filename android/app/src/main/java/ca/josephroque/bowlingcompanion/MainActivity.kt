@@ -15,7 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import ca.josephroque.bowlingcompanion.ui.ApproachApp
-import ca.josephroque.bowlingcompanion.ui.theme.ApproachTheme
+import ca.josephroque.bowlingcompanion.core.theme.ApproachTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach

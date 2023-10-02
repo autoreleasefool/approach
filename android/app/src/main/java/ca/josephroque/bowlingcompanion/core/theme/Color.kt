@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.ui.theme
+package ca.josephroque.bowlingcompanion.core.theme
 
 import androidx.compose.ui.graphics.Color
 
