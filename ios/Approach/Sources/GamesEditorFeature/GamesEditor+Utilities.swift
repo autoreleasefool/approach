@@ -90,7 +90,7 @@ extension GamesEditor.State {
 		case .duplicateLanesAlert, .sheets, .none:
 			break
 		}
-}
+	}
 
 	mutating func hideNextHeaderIfNecessary(
 		updatingRollIndexTo: Int? = nil,
@@ -98,5 +98,15 @@ extension GamesEditor.State {
 	) {
 		forceNextHeaderElementNil = game?.scoringMethod == .manual || frames?.first(where: { $0.hasUntouchedRoll }) == nil
 		setCurrent(rollIndex: updatingRollIndexTo, frameIndex: frameIndex)
+	}
+
+	mutating func populateFrames(upTo: Int) {
+		for frameIndex in 0..<upTo {
+			guard let rollsCount = frames?[frameIndex].rolls.count, rollsCount < Frame.NUMBER_OF_ROLLS else { continue }
+			let lastRollIndex = rollsCount - 1
+			if frames?[frameIndex].deck(forRoll: lastRollIndex).arePinsCleared == false {
+				frames?[frameIndex].guaranteeRollExists(upTo: Frame.NUMBER_OF_ROLLS - 1)
+			}
+		}
 	}
 }
