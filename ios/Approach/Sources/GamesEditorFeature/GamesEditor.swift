@@ -172,8 +172,9 @@ public struct GamesEditor: Reducer {
 			state.setCurrent(rollIndex: state.currentFrame.rollIndex, frameIndex: state.currentFrame.frameIndex)
 			let currentFrameIndex = state.currentFrameIndex
 			let currentRollIndex = state.currentRollIndex
+			state.populateFrames(upTo: currentFrameIndex)
 			state.frames?[currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
-			return .none
+			return save(frame: state.frames?[currentFrameIndex])
 		}
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
