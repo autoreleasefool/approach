@@ -3,7 +3,7 @@ import GRDB
 import ScoreKeeperLibrary
 import ScoreKeeperModelsLibrary
 
-struct Migration20230920ValidateGameScores: DBMigration {
+struct Migration20231002ValidateGameScores: DBMigration {
 	static func migrate(_ db: Database) throws {
 		let games = try Game
 			.all()
@@ -29,7 +29,7 @@ struct Migration20230920ValidateGameScores: DBMigration {
 	}
 }
 
-extension Migration20230920ValidateGameScores {
+extension Migration20231002ValidateGameScores {
 	struct Game: Decodable, TableRecord, FetchableRecord {
 		static let databaseTableName = "game"
 		let id: UUID

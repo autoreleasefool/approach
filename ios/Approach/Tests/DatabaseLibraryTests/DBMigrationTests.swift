@@ -27,6 +27,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230918OnDeleteGearBowlerSetNull",
 		"Migration20230918MigrateStatisticsWidgetType",
 		"Migration20230920ValidateGameScores",
+		"Migration20231002ValidateGameScores",
 	]
 
 	func testIdentifier() {
