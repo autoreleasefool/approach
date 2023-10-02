@@ -50,6 +50,7 @@ public struct LeagueEditor: Reducer {
 				self.coordinate = .init(coordinate: .init())
 				numberOfGames = new.numberOfGames ?? 0
 				additionalGames = new.additionalGames ?? 0
+				self.gamesPerSeries = .dynamic
 				self.shouldShowLocationSection = new.recurrence.shouldShowLocationSection
 				self.initialValue = .create(new)
 			case let .edit(existing):
@@ -63,12 +64,12 @@ public struct LeagueEditor: Reducer {
 				numberOfGames = existing.numberOfGames ?? 0
 				additionalGames = existing.additionalGames ?? 0
 				self.shouldShowLocationSection = existing.recurrence.shouldShowLocationSection
+				self.gamesPerSeries = numberOfGames == 0 ? .dynamic : .static
 				self.initialValue = .edit(existing)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
-			self.gamesPerSeries = numberOfGames == 0 ? .dynamic : .static
 			self.hasAdditionalPinfall = additionalGames > 0
-			self.numberOfGames = numberOfGames
+			self.numberOfGames = max(numberOfGames, 1)
 			self.additionalGames = additionalGames > 0 ? String(additionalGames) : ""
 
 			@Dependency(\.featureFlags) var featureFlags
@@ -238,7 +239,7 @@ extension LeagueEditor.State {
 			case var .create(new):
 				new.name = name
 				new.recurrence = recurrence
-				new.numberOfGames = gamesPerSeries == .static ? Int(numberOfGames) : nil
+				new.numberOfGames = gamesPerSeries == .static ? max(1, Int(numberOfGames)) : nil
 				new.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
 				new.additionalPinfall = hasAdditionalPinfall && (new.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
 				new.excludeFromStatistics = excludeFromStatistics
