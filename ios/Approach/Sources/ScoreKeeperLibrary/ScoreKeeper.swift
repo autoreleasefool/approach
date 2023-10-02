@@ -31,7 +31,10 @@ public class ScoreKeeper {
 			// Must be at least 1 roll or we skip the frame
 			guard !frame.isEmpty else {
 				if frameIndex < lastValidFrame {
-					rolls.append(.init(frameIndex: frameIndex, rollIndex: 0, roll: .init(pinsDowned: [], didFoul: false)))
+					// Insert empty rolls for missing frames
+					rolls.append(contentsOf: Frame.ROLL_INDICES.map {
+						.init(frameIndex: frameIndex, rollIndex: $0, roll: .init(pinsDowned: [], didFoul: false))
+					})
 				}
 				continue
 			}
@@ -43,6 +46,13 @@ public class ScoreKeeper {
 				if pinsDowned.count == 5 && !Frame.isLast(frameIndex) {
 					break
 				}
+			}
+
+			if frameIndex < lastValidFrame && frame.count < Frame.NUMBER_OF_ROLLS && !pinsDowned.arePinsCleared {
+				// Insert empty rolls if unrecorded
+				rolls.append(contentsOf: (frame.count...Frame.ROLL_INDICES.upperBound - 1).map {
+					.init(frameIndex: frameIndex, rollIndex: $0, roll: .init(pinsDowned: [], didFoul: false))
+				})
 			}
 		}
 
@@ -83,11 +93,26 @@ public class ScoreKeeper {
 
 				var stepScore = pinsDown.value
 				let rollsToAdd = 2 - roll.rollIndex
+				var acceptableFrameIndexForNextRoll = roll.frameIndex + 1
 
 				// If the roll was a spare or a strike, add the scores of the subsequent rolls to this roll
 				if rollsToAdd > 0 {
 					for addedRollIndex in 1...rollsToAdd where index + addedRollIndex < rolls.endIndex {
-						let pinsToAdd = rolls[index + addedRollIndex].roll.pinsDowned
+						let nextRoll = rolls[index + addedRollIndex]
+
+						// We should only consider rolls from the correct frame, not any frame
+						// Handles the bug where there may not be any rolls recorded for an empty frame
+						guard nextRoll.frameIndex == acceptableFrameIndexForNextRoll || Frame.isLast(nextRoll.frameIndex) else {
+							break
+						}
+
+						let pinsToAdd = nextRoll.roll.pinsDowned
+
+						// If the frame is cleared, we should get rolls from the subsequent frame
+						if pinsToAdd.arePinsCleared {
+							acceptableFrameIndexForNextRoll += 1
+						}
+
 						stepScore += pinsToAdd.value
 						rollSteps.append(.init(
 							index: rollSteps.count,
