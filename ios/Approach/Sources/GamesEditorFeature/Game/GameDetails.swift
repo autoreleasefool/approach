@@ -123,7 +123,7 @@ public struct GameDetails: Reducer {
 			Scope(state: /State.scoring, action: /Action.scoring) {
 				ScoringEditor()
 			}
-			Scope(state: /State.statistics, action: /Action.statistics){
+			Scope(state: /State.statistics, action: /Action.statistics) {
 				MidGameStatisticsDetails()
 			}
 		}

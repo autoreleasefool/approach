@@ -28,4 +28,3 @@ public struct NavigationButton<Content: View>: View {
 		.buttonStyle(TappableElement())
 	}
 }
-

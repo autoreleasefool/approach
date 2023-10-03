@@ -356,7 +356,7 @@ libraries = [ "Models", "Strings" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.StatisticsCharts]
-libraries = [ "Assets", "DateTime", "Statistics" ]
+libraries = [ "DateTime", "Statistics", "SwiftUIExtensions" ]
 
 [libraries.StatisticsChartsMocks]
 skip_tests = true

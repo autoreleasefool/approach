@@ -44,8 +44,8 @@ extension Game.TrackableEntry {
 	static var mocks: [Game.TrackableEntry] {
 		(1..<10).flatMap {
 			[
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), score: 123, date: Date(timeIntervalSince1970: 123), matchPlay: nil),
-				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), score: 234, date: Date(timeIntervalSince1970: 234), matchPlay: .init(id: UUID($0), result: [.lost, .tied, .won][$0 % 3])),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), index: 0, score: 123, date: Date(timeIntervalSince1970: 123), matchPlay: nil),
+				Game.TrackableEntry(seriesId: UUID(0), id: UUID($0), index: 1, score: 234, date: Date(timeIntervalSince1970: 234), matchPlay: .init(id: UUID($0), result: [.lost, .tied, .won][$0 % 3])),
 			]
 		}
 	}
@@ -57,6 +57,7 @@ extension Frame.TrackableEntry {
 			Frame.TrackableEntry(
 				seriesId: UUID(0),
 				gameId: UUID(0),
+				gameIndex: 0,
 				index: $0,
 				rolls: [
 					.init(index: 0, roll: .default),
@@ -70,7 +71,7 @@ extension Frame.TrackableEntry {
 
 extension Frame.TrackableEntry {
 	init(gameId: Game.ID = UUID(0), index: Int = 0, rolls: [Frame.OrderedRoll]) {
-		self.init(seriesId: UUID(0), gameId: gameId, index: index, rolls: rolls, date: Date())
+		self.init(seriesId: UUID(0), gameId: gameId, gameIndex: 0, index: index, rolls: rolls, date: Date())
 	}
 }
 

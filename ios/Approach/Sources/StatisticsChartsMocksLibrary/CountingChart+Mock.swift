@@ -14,8 +14,7 @@ extension CountingChart.Data {
 				.init(
 					id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 					value: value,
-					date: Date(timeIntervalSince1970: Double(index) * 604800.0),
-					timeRange: 604800
+					xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800)
 				)
 			},
 			isAccumulating: isAccumulating

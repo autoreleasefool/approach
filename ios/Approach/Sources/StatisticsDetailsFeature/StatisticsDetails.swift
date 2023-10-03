@@ -405,6 +405,7 @@ extension StatisticsDetails.State {
 			.init(
 				aggregation: filter.aggregation,
 				chartContent: chartContent,
+				filterSource: filter.source,
 				isFilterTooNarrow: filter.isTooNarrowForCharts,
 				isLoadingNextChart: isLoadingNextChart
 			)

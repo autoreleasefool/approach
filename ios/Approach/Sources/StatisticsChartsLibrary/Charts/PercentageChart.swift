@@ -4,6 +4,7 @@ import DateTimeLibrary
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 
 public struct PercentageChart: View {
 	let data: Data
@@ -18,30 +19,18 @@ public struct PercentageChart: View {
 		Chart {
 			ForEach(data.entries) {
 				if data.isAccumulating {
-					AreaMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-						y: .value(data.title, $0.numerator),
-						series: .value("", data.title)
-					)
-					.lineStyle(StrokeStyle(lineWidth: 3))
-					.foregroundStyle(style.numeratorLineMarkColor.swiftUIColor)
-					.interpolationMethod(.catmullRom)
+					$0.numeratorAreaMark(withTitle: data.title)
+						.lineStyle(StrokeStyle(lineWidth: 3))
+						.foregroundStyle(style.numeratorLineMarkColor.swiftUIColor)
+						.interpolationMethod(.catmullRom)
 
-					AreaMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-						y: .value(Strings.Statistics.Title.totalRolls, $0.denominator),
-						series: .value("", Strings.Statistics.Title.totalRolls)
-					)
-					.lineStyle(StrokeStyle(lineWidth: 3))
-					.foregroundStyle(style.denominatorLineMarkColor.swiftUIColor)
-					.interpolationMethod(.catmullRom)
+					$0.denominatorAreaMark(withTitle: data.title)
+						.lineStyle(StrokeStyle(lineWidth: 3))
+						.foregroundStyle(style.denominatorLineMarkColor.swiftUIColor)
+						.interpolationMethod(.catmullRom)
 				} else {
-					BarMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
-						y: .value(data.title, $0.numerator)
-					)
-					.foregroundStyle(barMarkGradient)
-
+					$0.barMark(withTitle: data.title)
+						.foregroundStyle(barMarkGradient)
 				}
 			}
 		}
@@ -126,17 +115,71 @@ extension PercentageChart.Data {
 		public let numerator: Int
 		public let denominator: Int
 		public let percentage: Double
-		public let date: Date
-		public let timeRange: TimeInterval
+		public let xAxis: XAxis
 
-		public init(id: UUID, numerator: Int, denominator: Int, date: Date, timeRange: TimeInterval) {
+		public init(id: UUID, numerator: Int, denominator: Int, xAxis: XAxis) {
 			self.id = id
 			self.numerator = numerator
 			self.denominator = denominator
 			self.percentage = denominator > 0 ? Double(numerator) / Double(denominator) : 0
-			self.date = date
-			self.timeRange = timeRange
+			self.xAxis = xAxis
 		}
+
+		func numeratorAreaMark(withTitle title: String) -> AreaMark {
+			switch xAxis {
+			case let .date(date, _):
+				return AreaMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date),
+					y: .value(title, numerator),
+					series: .value("", title)
+				)
+			case let .game(ordinal):
+				return AreaMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, numerator),
+					series: .value("", title)
+				)
+			}
+		}
+
+		func denominatorAreaMark(withTitle title: String) -> AreaMark {
+			switch xAxis {
+			case let .date(date, _):
+				return AreaMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date),
+					y: .value(Strings.Statistics.Title.totalRolls, denominator),
+					series: .value("", Strings.Statistics.Title.totalRolls)
+				)
+			case let .game(ordinal):
+				return AreaMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(Strings.Statistics.Title.totalRolls, denominator),
+					series: .value("", Strings.Statistics.Title.totalRolls)
+				)
+			}
+		}
+
+		func barMark(withTitle title: String) -> BarMark {
+			switch xAxis {
+			case let .date(date, timeRange):
+				return BarMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date ..< date.advanced(by: timeRange)),
+					y: .value(title, numerator)
+				)
+			case let .game(ordinal):
+				return BarMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, numerator)
+				)
+			}
+		}
+	}
+}
+
+extension PercentageChart.Data {
+	public enum XAxis: Equatable {
+		case date(Date, TimeInterval)
+		case game(ordinal: Int)
 	}
 }
 
@@ -197,8 +240,7 @@ struct PercentageChartPreview: PreviewProvider {
 								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 								numerator: value.0,
 								denominator: value.1,
-								date: Date(timeIntervalSince1970: Double(index) * 604800.0),
-								timeRange: 604800.0
+								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800.0)
 							)
 					},
 					isAccumulating: false,
@@ -214,8 +256,7 @@ struct PercentageChartPreview: PreviewProvider {
 								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 								numerator: value.0,
 								denominator: value.1,
-								date: Date(timeIntervalSince1970: Double(index) * 604800.0),
-								timeRange: 604800.0
+								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800.0)
 							)
 					},
 					isAccumulating: true,

@@ -1636,9 +1636,9 @@ let package = Package(
 		.target(
 			name: "StatisticsChartsLibrary",
 			dependencies: [
-				"AssetsLibrary",
 				"DateTimeLibrary",
 				"StatisticsLibrary",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(

@@ -17,13 +17,10 @@ public struct AveragingChart: View {
 	public var body: some View {
 		Chart {
 			ForEach(data.entries) {
-				LineMark(
-					x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-					y: .value(data.title, $0.value)
-				)
-				.lineStyle(StrokeStyle(lineWidth: 3))
-				.foregroundStyle(style.lineMarkColor.swiftUIColor)
-				.interpolationMethod(.catmullRom)
+				$0.lineMark(withTitle: data.title)
+					.lineStyle(StrokeStyle(lineWidth: 3))
+					.foregroundStyle(style.lineMarkColor.swiftUIColor)
+					.interpolationMethod(.catmullRom)
 			}
 		}
 		.chartXAxis {
@@ -93,13 +90,35 @@ extension AveragingChart.Data {
 	public struct Entry: Equatable, Identifiable {
 		public let id: UUID
 		public let value: Double
-		public let date: Date
+		public let xAxis: XAxis
 
-		public init(id: UUID, value: Double, date: Date) {
+		public init(id: UUID, value: Double, xAxis: XAxis) {
 			self.id = id
 			self.value = value
-			self.date = date
+			self.xAxis = xAxis
 		}
+
+		func lineMark(withTitle title: String) -> LineMark {
+			switch xAxis {
+			case let .date(date):
+				return LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date),
+					y: .value(title, value)
+				)
+			case let .game(ordinal):
+				return LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, value)
+				)
+			}
+		}
+	}
+}
+
+extension AveragingChart.Data {
+	public enum XAxis: Equatable {
+		case date(Date)
+		case game(ordinal: Int)
 	}
 }
 
@@ -141,7 +160,7 @@ struct AveragingChartPreview: PreviewProvider {
 						.init(
 							id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 							value: value,
-							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
+							xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0))
 						)
 					},
 					preferredTrendDirection: .downwards
@@ -155,7 +174,7 @@ struct AveragingChartPreview: PreviewProvider {
 						.init(
 							id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 							value: value,
-							date: Date(timeIntervalSince1970: Double(index) * 604800.0)
+							xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0))
 						)
 					},
 					preferredTrendDirection: .upwards

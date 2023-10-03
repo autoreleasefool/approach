@@ -28,6 +28,7 @@ extension Series.Ordering: CustomStringConvertible {
 	}
 }
 
+// swiftlint:disable:next type_body_length
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
 		public var league: League.SeriesHost

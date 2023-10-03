@@ -28,18 +28,19 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func accumulate(
+		@Sendable func accumulate<Key: ChartEntryKey>(
 			statistic: Statistic.Type,
 			bySeries: RecordCursor<Series.TrackableEntry>?
-		) throws -> [Date: Statistic] {
+		) throws -> [Key: Statistic] {
 			let perSeriesConfiguration = preferences.perSeriesConfiguration()
-			var allEntries: [Date: Statistic] = [:]
+			var allEntries: [Key: Statistic] = [:]
 			while let series = try bySeries?.next() {
-				if allEntries[series.date] == nil {
-					allEntries[series.date] = statistic.init()
+				guard let key = Key.extractKey(from: series) else { continue }
+				if allEntries[key] == nil {
+					allEntries[key] = statistic.init()
 				}
 
-				allEntries[series.date]?.adjust(bySeries: series, configuration: perSeriesConfiguration)
+				allEntries[key]?.adjust(bySeries: series, configuration: perSeriesConfiguration)
 			}
 			return allEntries
 		}
@@ -55,18 +56,19 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func accumulate(
+		@Sendable func accumulate<Key: ChartEntryKey>(
 			statistic: Statistic.Type,
 			byGames: RecordCursor<Game.TrackableEntry>?
-		) throws -> [Date: Statistic] {
+		) throws -> [Key: Statistic] {
 			let perGameConfiguration = preferences.perGameConfiguration()
-			var allEntries: [Date: Statistic] = [:]
+			var allEntries: [Key: Statistic] = [:]
 			while let game = try byGames?.next() {
-				if allEntries[game.date] == nil {
-					allEntries[game.date] = statistic.init()
+				guard let key = Key.extractKey(from: game) else { continue }
+				if allEntries[key] == nil {
+					allEntries[key] = statistic.init()
 				}
 
-				allEntries[game.date]?.adjust(byGame: game, configuration: perGameConfiguration)
+				allEntries[key]?.adjust(byGame: game, configuration: perGameConfiguration)
 			}
 			return allEntries
 		}
@@ -82,27 +84,28 @@ extension StatisticsRepository: DependencyKey {
 			}
 		}
 
-		@Sendable func accumulate(
+		@Sendable func accumulate<Key: ChartEntryKey>(
 			statistic: Statistic.Type,
 			byFrames: RecordCursor<Frame.TrackableEntry>?
-		) throws -> [Date: Statistic] {
+		) throws -> [Key: Statistic] {
 			let perFrameConfiguration = preferences.perFrameConfiguration()
-			var allEntries: [Date: Statistic] = [:]
+			var allEntries: [Key: Statistic] = [:]
 			while let frame = try byFrames?.next() {
-				if allEntries[frame.date] == nil {
-					allEntries[frame.date] = statistic.init()
+				guard let key = Key.extractKey(from: frame) else { continue }
+				if allEntries[key] == nil {
+					allEntries[key] = statistic.init()
 				}
 
-				allEntries[frame.date]?.adjust(byFrame: frame, configuration: perFrameConfiguration)
+				allEntries[key]?.adjust(byFrame: frame, configuration: perFrameConfiguration)
 			}
 			return allEntries
 		}
 
-		@Sendable func buildEntries(
+		@Sendable func buildEntries<Key: ChartEntryKey>(
 			forStatistic statistic: Statistic.Type,
 			filter: TrackableFilter,
 			db: Database
-		) throws -> [Date: Statistic]? {
+		) throws -> [Key: Statistic]? {
 			if statistic is TrackablePerSeries.Type {
 				let (series, _, _) = try filter.buildTrackableQueries(db: db)
 				guard let seriesCursor = try series?.fetchCursor(db) else { return nil }
@@ -222,11 +225,17 @@ extension StatisticsRepository: DependencyKey {
 
 				return try await database.reader().read { db in
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: filter.aggregation)
-					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
-								let chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
-					else {
-						return unavailable()
+					let chart: Statistics.ChartContent?
+					switch filter.source {
+					case .bowler, .league, .game:
+						let entries: [EntryDate: Statistic]? = try buildEntries(forStatistic: statistic, filter: filter, db: db)
+						chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
+					case .series:
+						let entries: [EntryGameOrdinal: Statistic]? = try buildEntries(forStatistic: statistic, filter: filter, db: db)
+						chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
 					}
+
+					guard let chart else { return unavailable() }
 
 					switch chart {
 					case let .averaging(data):
@@ -294,11 +303,18 @@ extension StatisticsRepository: DependencyKey {
 
 					// FIXME: should user be able to choose accumulate/periodic?
 					let chartBuilder = ChartBuilder(uuid: uuid, aggregation: .accumulate)
-					guard let entries = try buildEntries(forStatistic: statistic, filter: filter, db: db),
-								let chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
-					else {
-						return unavailable()
+
+					let chart: Statistics.ChartContent?
+					switch filter.source {
+					case .bowler, .league, .game:
+						let entries: [EntryDate: Statistic]? = try buildEntries(forStatistic: statistic, filter: filter, db: db)
+						chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
+					case .series:
+						let entries: [EntryGameOrdinal: Statistic]? = try buildEntries(forStatistic: statistic, filter: filter, db: db)
+						chart = chartBuilder.buildChart(withEntries: entries, forStatistic: statistic)
 					}
+
+					guard let chart else { return unavailable() }
 
 					switch chart {
 					case let .averaging(data):

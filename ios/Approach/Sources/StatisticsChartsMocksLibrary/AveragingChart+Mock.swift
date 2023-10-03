@@ -15,7 +15,7 @@ extension AveragingChart.Data {
 				.init(
 					id: .init(index),
 					value: average,
-					date: Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!
+					xAxis: .date(Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!)
 				)
 			},
 			preferredTrendDirection: .upwards
@@ -31,7 +31,7 @@ extension AveragingChart.Data {
 				.init(
 					id: .init(index),
 					value: average,
-					date: Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!
+					xAxis: .date(Calendar.current.date(byAdding: .weekOfYear, value: index, to: startDate)!)
 				)
 			},
 			preferredTrendDirection: .upwards

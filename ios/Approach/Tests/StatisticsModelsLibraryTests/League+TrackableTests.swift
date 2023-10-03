@@ -172,14 +172,15 @@ final class LeagueTrackableTests: XCTestCase {
 			withLeagues: .custom([league]),
 			withSeries: .custom([series]),
 			withGames: .custom([game1, game2]),
-			withGameGear: .custom([gameGear1, gameGear2])
+			withGameGear: .custom([gameGear1, gameGear2]),
+			withBowlerPreferredGear: .zero
 		)
 
 		let result = try await database.read {
 			try league
 				.request(for: League.Database.trackableGames(
 					through: League.Database.trackableSeries(filter: .init()),
-					filter: .init(gearUsed: [.init(id: UUID(0), name: "Shoes")])
+					filter: .init(gearUsed: [.init(id: UUID(0), name: "Shoes", kind: .shoes, ownerName: nil, avatar: .mock(id: UUID(0)))])
 				))
 				.fetchAll($0)
 		}
@@ -335,7 +336,8 @@ final class LeagueTrackableTests: XCTestCase {
 			withGames: .custom([game]),
 			withGameLanes: .zero,
 			withGameGear: .zero,
-			withFrames: .custom([frame1, frame2, frame3])
+			withFrames: .custom([frame1, frame2, frame3]),
+			withBowlerPreferredGear: .zero
 		)
 
 		let result = try await database.read {
@@ -345,7 +347,10 @@ final class LeagueTrackableTests: XCTestCase {
 						through: League.Database.trackableSeries(filter: .init()),
 						filter: .init()
 					),
-					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Red"), .init(id: UUID(1), name: "Green")])
+					filter: .init(bowlingBallsUsed: [
+						.init(id: UUID(0), name: "Red", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0))),
+						.init(id: UUID(1), name: "Green", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0)))
+					])
 				))
 				.fetchAll($0)
 		}
@@ -390,7 +395,8 @@ final class LeagueTrackableTests: XCTestCase {
 			withGameLanes: .custom([gameLane]),
 			withGameGear: .custom([gameGear]),
 			withFrames: .custom([frame]),
-			withMatchPlays: .custom([matchPlay])
+			withMatchPlays: .custom([matchPlay]),
+			withBowlerPreferredGear: .zero
 		)
 
 		let result1 = try await database.read {
@@ -400,11 +406,11 @@ final class LeagueTrackableTests: XCTestCase {
 						through: League.Database.trackableSeries(filter: .init(startDate: Date(timeIntervalSince1970: 123), endDate: Date(timeIntervalSince1970: 123), alley: .alley(.init(id: UUID(0), name: "Skyview")))),
 						filter: .init(
 							lanes: .lanes([.init(id: UUID(0), label: "1", position: .noWall)]),
-							gearUsed: [.init(id: UUID(1), name: "Towel")],
+							gearUsed: [.init(id: UUID(1), name: "Towel", kind: .towel, ownerName: nil, avatar: .mock(id: UUID(0)))],
 							opponent: .init(id: UUID(1), name: "Sarah")
 						)
 					),
-					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Ball")])
+					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Ball", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0)))])
 				))
 				.fetchAll($0)
 		}
@@ -418,11 +424,11 @@ final class LeagueTrackableTests: XCTestCase {
 						through: League.Database.trackableSeries(filter: .init(startDate: Date(timeIntervalSince1970: 123), endDate: Date(timeIntervalSince1970: 123), alley: .alley(.init(id: UUID(0), name: "Skyview")))),
 						filter: .init(
 							lanes: .positions([.noWall]),
-							gearUsed: [.init(id: UUID(1), name: "Towel")],
+							gearUsed: [.init(id: UUID(1), name: "Towel", kind: .towel, ownerName: nil, avatar: .mock(id: UUID(0)))],
 							opponent: .init(id: UUID(1), name: "Sarah")
 						)
 					),
-					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Ball")])
+					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Ball", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0)))])
 				))
 				.fetchAll($0)
 		}

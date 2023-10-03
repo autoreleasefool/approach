@@ -10,6 +10,7 @@ public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
 		@BindingState public var aggregation: TrackableFilter.Aggregation
 		public var chartContent: Statistics.ChartContent?
+		public var filterSource: TrackableFilter.Source
 		public var isFilterTooNarrow: Bool
 		public var isLoadingNextChart: Bool
 	}
@@ -91,7 +92,7 @@ public struct StatisticsDetailsChartsView: View {
 						selection: viewStore.$aggregation
 					) {
 						ForEach(TrackableFilter.Aggregation.allCases) {
-							Text(String(describing: $0)).tag($0)
+							Text($0.description(forSource: viewStore.filterSource)).tag($0)
 						}
 					}
 					.pickerStyle(.segmented)
@@ -131,11 +132,15 @@ public struct StatisticsDetailsChartsView: View {
 	}
 }
 
-extension TrackableFilter.Aggregation: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .accumulate: return Strings.Statistics.Filter.Aggregation.accumulate
-		case .periodic: return Strings.Statistics.Filter.Aggregation.periodic
+extension TrackableFilter.Aggregation {
+	func description(forSource: TrackableFilter.Source) -> String {
+		switch (self, forSource) {
+		case (.accumulate, _):
+			return Strings.Statistics.Filter.Aggregation.accumulate
+		case (.periodic, .series):
+			return Strings.Statistics.Filter.Aggregation.byGame
+		case (.periodic, _):
+			return Strings.Statistics.Filter.Aggregation.periodic
 		}
 	}
 }

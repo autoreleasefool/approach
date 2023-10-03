@@ -45,13 +45,17 @@ final class GameTrackableTests: XCTestCase {
 			withGames: .custom([game]),
 			withGameLanes: .zero,
 			withGameGear: .zero,
-			withFrames: .custom([frame1, frame2, frame3])
+			withFrames: .custom([frame1, frame2, frame3]),
+			withBowlerPreferredGear: .zero
 		)
 
 		let result = try await database.read {
 			try game
 				.request(for: Game.Database.trackableFrames(
-					filter: .init(bowlingBallsUsed: [.init(id: UUID(0), name: "Red"), .init(id: UUID(1), name: "Green")])
+					filter: .init(bowlingBallsUsed: [
+						.init(id: UUID(0), name: "Red", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0))),
+						.init(id: UUID(1), name: "Green", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0)))
+					])
 				))
 				.fetchAll($0)
 		}

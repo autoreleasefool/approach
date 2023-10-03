@@ -1308,6 +1308,8 @@ public enum Strings {
       public enum AxesLabels {
         /// Date
         public static let date = Strings.tr("Localizable", "statistics.charts.axesLabels.date", fallback: "Date")
+        /// Game
+        public static let game = Strings.tr("Localizable", "statistics.charts.axesLabels.game", fallback: "Game")
       }
       public enum Unavailable {
         /// You may not have bowled enough games yet, or your filters are excluding too many games.
@@ -1332,6 +1334,8 @@ public enum Strings {
       public enum Aggregation {
         /// Accumulate
         public static let accumulate = Strings.tr("Localizable", "statistics.filter.aggregation.accumulate", fallback: "Accumulate")
+        /// By Game
+        public static let byGame = Strings.tr("Localizable", "statistics.filter.aggregation.byGame", fallback: "By Game")
         /// Periodic
         public static let periodic = Strings.tr("Localizable", "statistics.filter.aggregation.periodic", fallback: "Periodic")
       }

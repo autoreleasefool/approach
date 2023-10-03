@@ -102,20 +102,20 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let expectedResults: [(first: Entry?, last: Entry?)] = [
 			(
-				.averaging(.init(id: UUID(0), value: .init(197.25), date: Date(timeIntervalSince1970: 1665035280))),
-				.averaging(.init(id: UUID(19), value: .init(197.25), date: Date(timeIntervalSince1970: 1712970000)))
+				.averaging(.init(id: UUID(0), value: .init(197.25), xAxis: .date(Date(timeIntervalSince1970: 1665035280)))),
+				.averaging(.init(id: UUID(19), value: .init(197.25), xAxis: .date(Date(timeIntervalSince1970: 1712970000))))
 			),
 			(
-				.counting(.init(id: UUID(0), value: .init(269), date: Date(timeIntervalSince1970: 1665035280), timeRange: 2522880.0)),
-				.counting(.init(id: UUID(19), value: .init(269), date: Date(timeIntervalSince1970: 1712970000), timeRange: 2522880.0))
+				.counting(.init(id: UUID(0), value: .init(269), xAxis: .date(Date(timeIntervalSince1970: 1665035280), 2522880.0))),
+				.counting(.init(id: UUID(19), value: .init(269), xAxis: .date(Date(timeIntervalSince1970: 1712970000), 2522880.0)))
 			),
 			(
-				.counting(.init(id: UUID(0), value: .init(15), date: Date(timeIntervalSince1970: 1665035280), timeRange: 2522880.0)),
-				.counting(.init(id: UUID(19), value: .init(183), date: Date(timeIntervalSince1970: 1712970000), timeRange: 2522880.0))
+				.counting(.init(id: UUID(0), value: .init(15), xAxis: .date(Date(timeIntervalSince1970: 1665035280), 2522880.0))),
+				.counting(.init(id: UUID(19), value: .init(183), xAxis: .date(Date(timeIntervalSince1970: 1712970000), 2522880.0)))
 			),
 			(
-				.counting(.init(id: UUID(0), value: .init(0), date: Date(timeIntervalSince1970: 1665035280), timeRange: 2522880.0)),
-				.counting(.init(id: UUID(19), value: .init(626), date: Date(timeIntervalSince1970: 1712970000), timeRange: 2522880.0))
+				.counting(.init(id: UUID(0), value: .init(0), xAxis: .date(Date(timeIntervalSince1970: 1665035280), 2522880.0))),
+				.counting(.init(id: UUID(19), value: .init(626), xAxis: .date(Date(timeIntervalSince1970: 1712970000), 2522880.0)))
 			),
 		]
 

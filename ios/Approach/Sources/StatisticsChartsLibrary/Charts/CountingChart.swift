@@ -1,6 +1,8 @@
 import AssetsLibrary
 import Charts
 import DateTimeLibrary
+import Foundation
+import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -17,24 +19,15 @@ public struct CountingChart: View {
 		Chart {
 			ForEach(data.entries) {
 				if data.isAccumulating {
-					AreaMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-						y: .value(data.title, $0.value)
-					)
-					.foregroundStyle(areaMarkGradient)
+					$0.areaMark(withTitle: data.title)
+						.foregroundStyle(areaMarkGradient)
 
-					LineMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date),
-						y: .value(data.title, $0.value)
-					)
-					.lineStyle(StrokeStyle(lineWidth: 2))
-					.foregroundStyle(style.lineMarkColor.swiftUIColor)
+					$0.lineMark(withTitle: data.title)
+						.lineStyle(StrokeStyle(lineWidth: 2))
+						.foregroundStyle(style.lineMarkColor.swiftUIColor)
 				} else {
-					BarMark(
-						x: .value(Strings.Statistics.Charts.AxesLabels.date, $0.date ..< $0.date.advanced(by: $0.timeRange)),
-						y: .value(data.title, $0.value)
-					)
-					.foregroundStyle(barMarkGradient)
+					$0.barMark(withTitle: data.title)
+						.foregroundStyle(barMarkGradient)
 				}
 			}
 		}
@@ -110,15 +103,65 @@ extension CountingChart.Data {
 	public struct Entry: Equatable, Identifiable {
 		public let id: UUID
 		public let value: Int
-		public let date: Date
-		public let timeRange: TimeInterval
+		public let xAxis: XAxis
 
-		public init(id: UUID, value: Int, date: Date, timeRange: TimeInterval) {
+		public init(id: UUID, value: Int, xAxis: XAxis) {
 			self.id = id
 			self.value = value
-			self.date = date
-			self.timeRange = timeRange
+			self.xAxis = xAxis
 		}
+
+		func areaMark(withTitle title: String) -> AreaMark {
+			switch xAxis {
+			case let .date(date, _):
+				return AreaMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date),
+					y: .value(title, value)
+				)
+			case let .game(ordinal):
+				return AreaMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, value)
+				)
+			}
+		}
+
+		func lineMark(withTitle title: String) -> LineMark {
+			switch xAxis {
+			case let .date(date, _):
+				return LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date),
+					y: .value(title, value)
+				)
+			case let .game(ordinal):
+				return LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, value)
+				)
+			}
+		}
+
+		func barMark(withTitle title: String) -> BarMark {
+			switch xAxis {
+			case let .date(date, timeRange):
+				return BarMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date ..< date.advanced(by: timeRange)),
+					y: .value(title, value)
+				)
+			case let .game(ordinal):
+				return BarMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, value)
+				)
+			}
+		}
+	}
+}
+
+extension CountingChart.Data {
+	public enum XAxis: Equatable {
+		case date(Date, TimeInterval)
+		case game(ordinal: Int)
 	}
 }
 
@@ -164,8 +207,7 @@ struct CountingChartPreview: PreviewProvider {
 							.init(
 								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 								value: value,
-								date: Date(timeIntervalSince1970: Double(index) * 604800.0),
-								timeRange: 604800
+								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800)
 							)
 					},
 					isAccumulating: false
@@ -179,8 +221,7 @@ struct CountingChartPreview: PreviewProvider {
 							.init(
 								id: UUID(uuidString: "00000000-0000-0000-0000-0000000000\(index + 10)")!,
 								value: value,
-								date: Date(timeIntervalSince1970: Double(index) * 604800.0),
-								timeRange: 604800
+								xAxis: .date(Date(timeIntervalSince1970: Double(index) * 604800.0), 604800)
 							)
 					},
 					isAccumulating: true

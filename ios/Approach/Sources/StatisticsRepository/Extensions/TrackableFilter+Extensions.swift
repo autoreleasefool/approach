@@ -60,6 +60,9 @@ extension TrackableFilter {
 					Series.Database.Columns.id.forKey("seriesId"),
 					Series.Database.Columns.date
 				))
+				.annotated(withRequired: Frame.Database.game.select(
+					Game.Database.Columns.index.forKey("gameIndex")
+				))
 				.asRequest(of: Frame.TrackableEntry.self)
 		)
 	}
