@@ -110,6 +110,7 @@ internal fun BowlerDetailsTopBar(
 				},
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,
+				style = MaterialTheme.typography.titleMedium
 			)
 		},
 		navigationIcon = {

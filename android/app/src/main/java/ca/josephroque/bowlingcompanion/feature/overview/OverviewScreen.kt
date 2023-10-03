@@ -9,6 +9,7 @@ import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -63,7 +64,8 @@ internal fun OverviewScreen(
 				colors = TopAppBarDefaults.topAppBarColors(),
 				title = {
 					Text(
-						stringResource(R.string.overview_title),
+						text = stringResource(R.string.overview_title),
+						style = MaterialTheme.typography.titleMedium,
 						maxLines = 1,
 						overflow = TextOverflow.Ellipsis,
 					)

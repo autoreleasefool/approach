@@ -127,11 +127,14 @@ internal fun BowlerFormTopBar(
 internal fun Title(
 	uiState: BowlerFormUiState,
 ) {
-	when (uiState) {
-		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Text("")
-		is BowlerFormUiState.Create -> Text(stringResource(R.string.bowler_form_new))
-		is BowlerFormUiState.Edit -> Text(stringResource(R.string.bowler_form_edit, uiState.initialValue.name))
-	}
+	Text(
+		text = when (uiState) {
+			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> ""
+			is BowlerFormUiState.Create -> stringResource(R.string.bowler_form_new)
+			is BowlerFormUiState.Edit -> stringResource(R.string.bowler_form_edit, uiState.initialValue.name)
+		},
+		style = MaterialTheme.typography.titleMedium,
+	)
 }
 
 @Composable
@@ -143,7 +146,8 @@ internal fun Actions(
 		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 		is BowlerFormUiState.Edit, is BowlerFormUiState.Create -> {
 			Text(
-				stringResource(R.string.action_save),
+				text = stringResource(R.string.action_save),
+				style = MaterialTheme.typography.bodySmall,
 				modifier = Modifier
 					.clickable(onClick = saveBowler)
 					.padding(16.dp),

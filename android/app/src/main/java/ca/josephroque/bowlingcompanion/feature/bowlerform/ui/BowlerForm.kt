@@ -42,6 +42,7 @@ internal fun BowlerForm(
 				errorId?.let {
 					Text(
 						text = stringResource(it),
+						style = MaterialTheme.typography.bodySmall,
 						color = MaterialTheme.colorScheme.error,
 						modifier = Modifier.fillMaxWidth(),
 					)

@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
@@ -135,20 +136,17 @@ internal fun Title(
 		) {
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_welcome),
-				fontSize = 30.sp,
+				style = MaterialTheme.typography.headlineMedium,
 				fontStyle = FontStyle.Italic,
-				fontWeight = FontWeight.Bold,
 			)
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_to_your_new),
-				fontSize = 30.sp,
+				style = MaterialTheme.typography.headlineMedium,
 				fontStyle = FontStyle.Italic,
-				fontWeight = FontWeight.Bold,
 			)
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_approach),
-				fontSize = 30.sp,
-				fontWeight = FontWeight.Black,
+				style = MaterialTheme.typography.displayMedium,
 			)
 		}
 
@@ -172,12 +170,12 @@ internal fun Description(
 	) {
 		Text(
 			text = stringResource(R.string.onboarding_new_user_description_arrived),
-			fontSize = 16.sp,
+			style = MaterialTheme.typography.bodyMedium,
 		)
 		Spacer(modifier = Modifier.height(16.dp))
 		Text(
 			text = stringResource(R.string.onboarding_new_user_description_wish),
-			fontSize = 16.sp,
+			style = MaterialTheme.typography.bodyMedium,
 		)
 	}
 }
@@ -189,7 +187,7 @@ internal fun TagLine(
 	Text(
 		text = stringResource(R.string.onboarding_new_user_description_vancouver),
 		textAlign = TextAlign.Center,
-		fontSize = 16.sp,
+		style = MaterialTheme.typography.bodySmall,
 		modifier = modifier.fillMaxWidth(),
 	)
 }
@@ -205,7 +203,7 @@ internal fun Actions(
 	) {
 		Text(
 			text = stringResource(R.string.onboarding_new_user_get_started),
-			fontSize = 24.sp,
+			style = MaterialTheme.typography.titleMedium,
 		)
 	}
 }
@@ -236,6 +234,7 @@ internal fun Logbook(
 	) {
 		Text(
 			text = stringResource(R.string.onboarding_new_user_logbook),
+			style = MaterialTheme.typography.bodyMedium,
 			textAlign = TextAlign.Center,
 			modifier = Modifier.fillMaxWidth(),
 		)
@@ -269,7 +268,10 @@ internal fun Logbook(
 				.fillMaxWidth()
 				.padding(top = 16.dp, bottom = 32.dp, start = 16.dp, end = 16.dp),
 		) {
-			Text(stringResource(R.string.onboarding_new_user_add_bowler))
+			Text(
+				text = stringResource(R.string.onboarding_new_user_add_bowler),
+				style = MaterialTheme.typography.titleMedium,
+			)
 		}
 	}
 

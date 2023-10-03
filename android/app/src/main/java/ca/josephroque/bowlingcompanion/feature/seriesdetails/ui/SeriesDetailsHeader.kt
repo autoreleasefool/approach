@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,22 +57,21 @@ fun SeriesDetailsHeader(
 				modifier = Modifier.alignBy(FirstBaseline),
 			) {
 				Text(
-					pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
-					fontSize = 16.sp,
-					fontWeight = FontWeight.Bold,
+					text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
+					style = MaterialTheme.typography.titleMedium,
 				)
 
 				if (numberOfGames > 1 && scores != null) {
 					Column {
 						Text(
-							stringResource(R.string.series_details_high_game, scores.maxY.roundToInt()),
-							fontSize = 12.sp,
+							text = stringResource(R.string.series_details_high_game, scores.maxY.roundToInt()),
+							style = MaterialTheme.typography.bodyMedium,
 							fontStyle = FontStyle.Italic,
 						)
 
 						Text(
-							stringResource(R.string.series_details_low_game, scores.minY.roundToInt()),
-							fontSize = 12.sp,
+							text = stringResource(R.string.series_details_low_game, scores.minY.roundToInt()),
+							style = MaterialTheme.typography.bodyMedium,
 							fontStyle = FontStyle.Italic,
 						)
 					}
@@ -84,15 +84,13 @@ fun SeriesDetailsHeader(
 				modifier = Modifier.alignBy(FirstBaseline),
 			) {
 				Text(
-					stringResource(R.string.series_details_total),
-					fontSize = 12.sp,
-					fontWeight = FontWeight.Light,
+					text = stringResource(R.string.series_details_total),
+					style = MaterialTheme.typography.bodySmall,
 				)
 
 				Text(
 					seriesTotal.toString(),
-					fontSize = 24.sp,
-					fontStyle = FontStyle.Italic,
+					style = MaterialTheme.typography.bodyLarge,
 					fontWeight = FontWeight.Black,
 				)
 			}

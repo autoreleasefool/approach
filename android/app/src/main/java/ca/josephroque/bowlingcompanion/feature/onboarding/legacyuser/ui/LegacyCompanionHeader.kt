@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -73,9 +74,7 @@ private fun Header(
 			) {
 				Text(
 					text = stringResource(R.string.onboarding_legacy_user_title_your_bowling_companion),
-					fontSize = 30.sp,
-					fontStyle = FontStyle.Italic,
-					fontWeight = FontWeight.Bold,
+					style = MaterialTheme.typography.titleMedium,
 					modifier = Modifier.weight(1.0f),
 				)
 

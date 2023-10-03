@@ -15,6 +15,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -96,9 +97,8 @@ fun SeriesItemRow(
 
 					if (series.total > 0) {
 						Text(
-							series.total.toString(),
-							fontSize = 24.sp,
-							fontWeight = FontWeight.ExtraBold,
+							text = series.total.toString(),
+							style = MaterialTheme.typography.titleMedium,
 							fontStyle = FontStyle.Italic,
 							modifier = Modifier.alignBy(LastBaseline),
 						)
@@ -124,8 +124,7 @@ private fun Header(date: Instant) {
 		Text(
 			text = date.toLocalDateTime(TimeZone.currentSystemDefault())
 				.format("MMMM d, yyyy"),
-			fontSize = 16.sp,
-			fontWeight = FontWeight.Bold,
+			style = MaterialTheme.typography.titleMedium,
 		)
 	}
 }
@@ -153,7 +152,7 @@ private fun ScoreSummary(
 	) {
 		Text(
 			text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
-			fontSize = 12.sp,
+			style = MaterialTheme.typography.bodySmall,
 		)
 
 		if (scores != null) {
@@ -163,7 +162,7 @@ private fun ScoreSummary(
 					scores.minY.roundToInt(),
 					scores.maxY.roundToInt()
 				),
-				fontSize = 12.sp,
+				style = MaterialTheme.typography.bodySmall,
 				fontStyle = FontStyle.Italic,
 			)
 		}

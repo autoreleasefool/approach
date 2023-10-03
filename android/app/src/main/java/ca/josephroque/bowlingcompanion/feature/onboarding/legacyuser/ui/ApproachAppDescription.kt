@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -59,34 +60,35 @@ private fun Description(
 		) {
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_title_is_taking_a_new),
-				fontSize = 24.sp,
+				style = MaterialTheme.typography.headlineSmall,
 			)
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_title_approach),
-				fontSize = 30.sp,
-				fontStyle = FontStyle.Italic,
-				fontWeight = FontWeight.Bold,
+				style = MaterialTheme.typography.headlineLarge
 			)
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_updated),
+				style = MaterialTheme.typography.bodyMedium,
 			)
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_wish),
+				style = MaterialTheme.typography.bodyMedium,
 			)
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_vancouver),
-				fontSize = 12.sp,
+				style = MaterialTheme.typography.bodySmall,
 			)
 
 			Spacer(modifier = Modifier.weight(1f))
 
 			Button(onClick = onGetStartedClicked) {
 				Text(
-					text = stringResource(R.string.onboarding_legacy_user_get_started)
+					text = stringResource(R.string.onboarding_legacy_user_get_started),
+					style = MaterialTheme.typography.bodyMedium,
 				)
 			}
 		}

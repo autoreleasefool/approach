@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,10 +56,13 @@ internal fun StatisticsWidgetPlaceholderCard(
 				verticalArrangement = Arrangement.spacedBy(4.dp),
 			) {
 				Text(
-					stringResource(R.string.statistics_placeholder_title),
-					fontSize = 24.sp,
+					text = stringResource(R.string.statistics_placeholder_title),
+					style = MaterialTheme.typography.titleMedium,
 				)
-				Text(stringResource(R.string.statistics_placeholder_message))
+				Text(
+					text = stringResource(R.string.statistics_placeholder_message),
+					style = MaterialTheme.typography.bodyMedium,
+				)
 			}
 		}
 	}
