@@ -1301,8 +1301,8 @@ public enum Strings {
       }
     }
     public enum Charts {
-      /// You may have picked too narrow a window. Series and games aren't long enough to show useful charts. Try examining the statistics below instead.
-      public static let filterTooNarrow = Strings.tr("Localizable", "statistics.charts.filterTooNarrow", fallback: "You may have picked too narrow a window. Series and games aren't long enough to show useful charts. Try examining the statistics below instead.")
+      /// You may have picked too narrow a window. We can't show useful charts for games. Try examining the statistics below instead.
+      public static let filterTooNarrow = Strings.tr("Localizable", "statistics.charts.filterTooNarrow", fallback: "You may have picked too narrow a window. We can't show useful charts for games. Try examining the statistics below instead.")
       /// There doesn't seem to be any data available.
       public static let unavailable = Strings.tr("Localizable", "statistics.charts.unavailable", fallback: "There doesn't seem to be any data available.")
       public enum AxesLabels {
