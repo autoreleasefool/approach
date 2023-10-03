@@ -1,14 +1,14 @@
 # Most recent version
 
-## iOS 1.0.3b7
+## iOS 1.0.4b8
 
 ```
-- Feat: Edit buttons in header for league and series
-- Feat: When setting lanes for a game, prompts to copy to all other games
-- Fix: Game details on iOS 17 no longer glitch and block screen
-- Fix: Score is properly saved when locking game
-- Fix: Gear no longer reorders in game editor when picking a ball
-- Fix: Refactored how pin swiping works to reduce mistaps
+- Feat: Show series and game statistics from GameDetails
+- Feat: Render statistics in charts per game for series
+- Fix: Pins left of deck stat now only calculated for frames with at least 1 roll
+- Fix: Next button in GamesEditor is larger
+- Fix: League # of games is dynamic by default
+- Fix: Strikes are now calculated properly when followed by incomplete frames
 ```
 
 ## Android v3.2.0
@@ -22,6 +22,17 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.0.3b7
+
+```
+- Feat: Edit buttons in header for league and series
+- Feat: When setting lanes for a game, prompts to copy to all other games
+- Fix: Game details on iOS 17 no longer glitch and block screen
+- Fix: Score is properly saved when locking game
+- Fix: Gear no longer reorders in game editor when picking a ball
+- Fix: Refactored how pin swiping works to reduce mistaps
+```
 
 ## iOS 1.0.2b6
 
