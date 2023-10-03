@@ -263,7 +263,7 @@ final class SeriesTrackableTests: XCTestCase {
 					through: Series.Database.trackableGames(filter: .init()),
 					filter: .init(bowlingBallsUsed: [
 						.init(id: UUID(0), name: "Red", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0))),
-						.init(id: UUID(1), name: "Green", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0)))
+						.init(id: UUID(1), name: "Green", kind: .bowlingBall, ownerName: nil, avatar: .mock(id: UUID(0))),
 					])
 				))
 				.fetchAll($0)
