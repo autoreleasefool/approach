@@ -188,14 +188,8 @@ extension AppIcon: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case .bisexual: return Strings.App.Icon.bisexual
-		case .earth: return Strings.App.Icon.earth
-		case .ember: return Strings.App.Icon.ember
-		case .glacial: return Strings.App.Icon.glacial
-		case .hexed: return Strings.App.Icon.hexed
-		case .pink: return Strings.App.Icon.pink
 		case .pride: return Strings.App.Icon.pride
 		case .primary: return Strings.App.Icon.primary
-		case .sage: return Strings.App.Icon.sage
 		case .trans: return Strings.App.Icon.trans
 		}
 	}
@@ -205,7 +199,6 @@ extension AppIcon {
 	public var isProRequired: Bool {
 		switch self {
 		case .primary, .bisexual, .pride, .trans: return false
-		case .earth, .ember, .glacial, .hexed, .pink, .sage: return true
 		}
 	}
 }

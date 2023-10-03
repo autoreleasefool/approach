@@ -204,22 +204,10 @@ public enum Strings {
       public static let bisexual = Strings.tr("Localizable", "app.icon.bisexual", fallback: "Bisexual Pride")
       /// Current icon
       public static let current = Strings.tr("Localizable", "app.icon.current", fallback: "Current icon")
-      /// Earth
-      public static let earth = Strings.tr("Localizable", "app.icon.earth", fallback: "Earth")
-      /// Ember
-      public static let ember = Strings.tr("Localizable", "app.icon.ember", fallback: "Ember")
-      /// Glacial
-      public static let glacial = Strings.tr("Localizable", "app.icon.glacial", fallback: "Glacial")
-      /// Hexed
-      public static let hexed = Strings.tr("Localizable", "app.icon.hexed", fallback: "Hexed")
-      /// Pink
-      public static let pink = Strings.tr("Localizable", "app.icon.pink", fallback: "Pink")
       /// Pride
       public static let pride = Strings.tr("Localizable", "app.icon.pride", fallback: "Pride")
       /// Primary
       public static let primary = Strings.tr("Localizable", "app.icon.primary", fallback: "Primary")
-      /// Sage
-      public static let sage = Strings.tr("Localizable", "app.icon.sage", fallback: "Sage")
       /// Tap to Reset
       public static let tapToReset = Strings.tr("Localizable", "app.icon.tapToReset", fallback: "Tap to Reset")
       /// Trans Pride
