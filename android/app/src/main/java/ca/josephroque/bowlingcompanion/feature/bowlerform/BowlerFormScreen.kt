@@ -79,7 +79,7 @@ internal fun BowlerFormScreen(
 				 name = bowlerFormState.name,
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
-				 errorId = bowlerFormState.fieldErrors.nameErrorId,
+				 nameErrorId = bowlerFormState.fieldErrors.nameErrorId,
 				 modifier = modifier
 					 .padding(padding)
 			 )
@@ -88,7 +88,7 @@ internal fun BowlerFormScreen(
 				 name = bowlerFormState.name,
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
-				 errorId = bowlerFormState.fieldErrors.nameErrorId,
+				 nameErrorId = bowlerFormState.fieldErrors.nameErrorId,
 				 modifier = modifier
 					 .padding(padding)
 			 )

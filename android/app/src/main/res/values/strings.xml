@@ -10,8 +10,10 @@
 
 	<string name="bowler_list_add">Add Bowler</string>
 	<string name="bowler_list_title">Bowlers</string>
+
 	<string name="bowler_form_new">New Bowler</string>
 	<string name="bowler_form_edit">Edit %1$s</string>
+	<string name="bowler_form_section_details">Details</string>
 	<string name="bowler_form_name">Name</string>
 	<string name="bowler_form_name_missing">Name cannot be blank</string>
 
