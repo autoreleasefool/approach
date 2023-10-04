@@ -98,7 +98,7 @@ fun SeriesItemRow(
 					if (series.total > 0) {
 						Text(
 							text = series.total.toString(),
-							style = MaterialTheme.typography.titleMedium,
+							style = MaterialTheme.typography.headlineMedium,
 							fontStyle = FontStyle.Italic,
 							modifier = Modifier.alignBy(LastBaseline),
 						)
@@ -152,7 +152,7 @@ private fun ScoreSummary(
 	) {
 		Text(
 			text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
-			style = MaterialTheme.typography.bodySmall,
+			style = MaterialTheme.typography.bodyMedium,
 		)
 
 		if (scores != null) {
@@ -162,7 +162,7 @@ private fun ScoreSummary(
 					scores.minY.roundToInt(),
 					scores.maxY.roundToInt()
 				),
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyMedium,
 				fontStyle = FontStyle.Italic,
 			)
 		}

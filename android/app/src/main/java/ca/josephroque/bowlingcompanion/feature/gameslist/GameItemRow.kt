@@ -48,7 +48,7 @@ fun GameItemRow(
 			)
 			Text(
 				text = game.score.toString(),
-				style = MaterialTheme.typography.bodyMedium,
+				style = MaterialTheme.typography.bodyLarge,
 			)
 		}
 	}

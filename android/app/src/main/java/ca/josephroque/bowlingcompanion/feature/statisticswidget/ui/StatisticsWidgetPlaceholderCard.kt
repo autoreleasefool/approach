@@ -57,11 +57,11 @@ internal fun StatisticsWidgetPlaceholderCard(
 			) {
 				Text(
 					text = stringResource(R.string.statistics_placeholder_title),
-					style = MaterialTheme.typography.titleMedium,
+					style = MaterialTheme.typography.headlineMedium,
 				)
 				Text(
 					text = stringResource(R.string.statistics_placeholder_message),
-					style = MaterialTheme.typography.bodyMedium,
+					style = MaterialTheme.typography.titleMedium,
 				)
 			}
 		}

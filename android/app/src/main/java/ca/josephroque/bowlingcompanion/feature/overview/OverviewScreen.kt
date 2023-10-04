@@ -65,7 +65,7 @@ internal fun OverviewScreen(
 				title = {
 					Text(
 						text = stringResource(R.string.overview_title),
-						style = MaterialTheme.typography.titleMedium,
+						style = MaterialTheme.typography.titleLarge,
 						maxLines = 1,
 						overflow = TextOverflow.Ellipsis,
 					)

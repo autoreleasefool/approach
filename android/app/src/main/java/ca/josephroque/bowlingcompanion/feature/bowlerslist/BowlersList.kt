@@ -19,7 +19,7 @@ fun LazyListScope.bowlersList(
 	item {
 		Text(
 			text = stringResource(R.string.bowler_list_title),
-			style = MaterialTheme.typography.titleMedium,
+			style = MaterialTheme.typography.titleLarge,
 			modifier = Modifier
 				.padding(horizontal = 16.dp)
 				.padding(bottom = 16.dp),

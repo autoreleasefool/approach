@@ -19,7 +19,7 @@ fun LazyListScope.leaguesList(
 	item {
 		Text(
 			text = stringResource(R.string.league_list_title),
-			style = MaterialTheme.typography.titleMedium,
+			style = MaterialTheme.typography.titleLarge,
 			modifier = Modifier
 				.padding(horizontal = 16.dp)
 				.padding(bottom = 16.dp),
@@ -37,9 +37,6 @@ fun LazyListScope.leaguesList(
 				LeagueItemRow(
 					league = league,
 					onClick = { onLeagueClick(league.id) },
-					modifier = Modifier
-						.padding(horizontal = 16.dp)
-						.padding(bottom = 16.dp),
 				)
 			}
 		}

@@ -136,12 +136,12 @@ internal fun Title(
 		) {
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_welcome),
-				style = MaterialTheme.typography.headlineMedium,
+				style = MaterialTheme.typography.headlineSmall,
 				fontStyle = FontStyle.Italic,
 			)
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_to_your_new),
-				style = MaterialTheme.typography.headlineMedium,
+				style = MaterialTheme.typography.headlineSmall,
 				fontStyle = FontStyle.Italic,
 			)
 			Text(
@@ -170,12 +170,12 @@ internal fun Description(
 	) {
 		Text(
 			text = stringResource(R.string.onboarding_new_user_description_arrived),
-			style = MaterialTheme.typography.bodyMedium,
+			style = MaterialTheme.typography.bodyLarge,
 		)
 		Spacer(modifier = Modifier.height(16.dp))
 		Text(
 			text = stringResource(R.string.onboarding_new_user_description_wish),
-			style = MaterialTheme.typography.bodyMedium,
+			style = MaterialTheme.typography.bodyLarge,
 		)
 	}
 }
@@ -187,7 +187,7 @@ internal fun TagLine(
 	Text(
 		text = stringResource(R.string.onboarding_new_user_description_vancouver),
 		textAlign = TextAlign.Center,
-		style = MaterialTheme.typography.bodySmall,
+		style = MaterialTheme.typography.bodyMedium,
 		modifier = modifier.fillMaxWidth(),
 	)
 }
@@ -203,7 +203,7 @@ internal fun Actions(
 	) {
 		Text(
 			text = stringResource(R.string.onboarding_new_user_get_started),
-			style = MaterialTheme.typography.titleMedium,
+			style = MaterialTheme.typography.titleLarge,
 		)
 	}
 }
@@ -234,7 +234,7 @@ internal fun Logbook(
 	) {
 		Text(
 			text = stringResource(R.string.onboarding_new_user_logbook),
-			style = MaterialTheme.typography.bodyMedium,
+			style = MaterialTheme.typography.bodyLarge,
 			textAlign = TextAlign.Center,
 			modifier = Modifier.fillMaxWidth(),
 		)
@@ -270,7 +270,7 @@ internal fun Logbook(
 		) {
 			Text(
 				text = stringResource(R.string.onboarding_new_user_add_bowler),
-				style = MaterialTheme.typography.titleMedium,
+				style = MaterialTheme.typography.titleLarge,
 			)
 		}
 	}

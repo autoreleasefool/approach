@@ -74,7 +74,7 @@ private fun Header(
 			) {
 				Text(
 					text = stringResource(R.string.onboarding_legacy_user_title_your_bowling_companion),
-					style = MaterialTheme.typography.titleMedium,
+					style = MaterialTheme.typography.titleLarge,
 					modifier = Modifier.weight(1.0f),
 				)
 

@@ -70,17 +70,17 @@ private fun Description(
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_updated),
-				style = MaterialTheme.typography.bodyMedium,
+				style = MaterialTheme.typography.bodyLarge,
 			)
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_wish),
-				style = MaterialTheme.typography.bodyMedium,
+				style = MaterialTheme.typography.bodyLarge,
 			)
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_vancouver),
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyMedium,
 			)
 
 			Spacer(modifier = Modifier.weight(1f))
@@ -88,7 +88,7 @@ private fun Description(
 			Button(onClick = onGetStartedClicked) {
 				Text(
 					text = stringResource(R.string.onboarding_legacy_user_get_started),
-					style = MaterialTheme.typography.bodyMedium,
+					style = MaterialTheme.typography.bodyLarge,
 				)
 			}
 		}

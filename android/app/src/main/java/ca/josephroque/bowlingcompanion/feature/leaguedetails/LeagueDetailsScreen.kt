@@ -66,7 +66,7 @@ internal fun LeagueDetailsScreen(
 						},
 						maxLines = 1,
 						overflow = TextOverflow.Ellipsis,
-						style = MaterialTheme.typography.titleMedium,
+						style = MaterialTheme.typography.titleLarge,
 					)
 				},
 				actions = {

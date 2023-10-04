@@ -133,7 +133,7 @@ internal fun Title(
 			is BowlerFormUiState.Create -> stringResource(R.string.bowler_form_new)
 			is BowlerFormUiState.Edit -> stringResource(R.string.bowler_form_edit, uiState.initialValue.name)
 		},
-		style = MaterialTheme.typography.titleMedium,
+		style = MaterialTheme.typography.titleLarge,
 	)
 }
 
@@ -147,7 +147,7 @@ internal fun Actions(
 		is BowlerFormUiState.Edit, is BowlerFormUiState.Create -> {
 			Text(
 				text = stringResource(R.string.action_save),
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyMedium,
 				modifier = Modifier
 					.clickable(onClick = saveBowler)
 					.padding(16.dp),

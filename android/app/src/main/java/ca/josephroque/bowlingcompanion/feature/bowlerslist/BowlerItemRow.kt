@@ -51,7 +51,7 @@ fun BowlerItemRow(
 
 		Text(
 			text = bowler.average.formatAsAverage(),
-			style = MaterialTheme.typography.bodyMedium,
+			style = MaterialTheme.typography.bodyLarge,
 		)
 	}
 }

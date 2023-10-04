@@ -65,13 +65,13 @@ fun SeriesDetailsHeader(
 					Column {
 						Text(
 							text = stringResource(R.string.series_details_high_game, scores.maxY.roundToInt()),
-							style = MaterialTheme.typography.bodyMedium,
+							style = MaterialTheme.typography.bodyLarge,
 							fontStyle = FontStyle.Italic,
 						)
 
 						Text(
 							text = stringResource(R.string.series_details_low_game, scores.minY.roundToInt()),
-							style = MaterialTheme.typography.bodyMedium,
+							style = MaterialTheme.typography.bodyLarge,
 							fontStyle = FontStyle.Italic,
 						)
 					}
@@ -85,12 +85,12 @@ fun SeriesDetailsHeader(
 			) {
 				Text(
 					text = stringResource(R.string.series_details_total),
-					style = MaterialTheme.typography.bodySmall,
+					style = MaterialTheme.typography.bodyMedium,
 				)
 
 				Text(
 					seriesTotal.toString(),
-					style = MaterialTheme.typography.bodyLarge,
+					style = MaterialTheme.typography.titleMedium,
 					fontWeight = FontWeight.Black,
 				)
 			}

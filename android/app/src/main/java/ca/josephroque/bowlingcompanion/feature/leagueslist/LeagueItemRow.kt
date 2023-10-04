@@ -55,7 +55,7 @@ fun LeagueItemRow(
 			)
 			Text(
 				text = league.lastSeriesDate.seriesDate(recurrence = league.recurrence),
-				style = MaterialTheme.typography.bodySmall,
+				style = MaterialTheme.typography.bodyMedium,
 				fontStyle = FontStyle.Italic,
 			)
 		}
@@ -64,7 +64,7 @@ fun LeagueItemRow(
 
 		Text(
 			text = league.average.formatAsAverage(),
-			style = MaterialTheme.typography.bodyMedium,
+			style = MaterialTheme.typography.bodyLarge,
 		)
 	}
 }
