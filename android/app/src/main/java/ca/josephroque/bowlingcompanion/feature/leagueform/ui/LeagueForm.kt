@@ -62,7 +62,7 @@ internal fun LeagueForm(
 	{
 		FormSection(
 			titleResourceId = R.string.league_form_details_title,
-			modifier = Modifier.padding(top = 16.dp),
+			modifier = Modifier.padding(vertical = 16.dp),
 		) {
 			LeagueNameField(name, onNameChanged, nameErrorId)
 		}

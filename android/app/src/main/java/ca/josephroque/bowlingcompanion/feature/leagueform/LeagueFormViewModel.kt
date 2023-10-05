@@ -92,11 +92,11 @@ class LeagueFormViewModel @Inject constructor(
 										GamesPerSeries.STATIC -> state.numberOfGames
 									},
 									additionalPinFall = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> state.additionalPinFall
+										IncludeAdditionalPinFall.INCLUDE -> if (state.additionalGames > 0) state.additionalPinFall else null
 										IncludeAdditionalPinFall.NONE -> null
 									},
 									additionalGames = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> state.additionalGames
+										IncludeAdditionalPinFall.INCLUDE -> if (state.additionalGames > 0) state.additionalGames else null
 									IncludeAdditionalPinFall.NONE -> null
 									},
 									excludeFromStatistics = state.excludeFromStatistics,
@@ -116,11 +116,11 @@ class LeagueFormViewModel @Inject constructor(
 									name = state.name,
 									excludeFromStatistics = state.excludeFromStatistics,
 									additionalGames = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> state.additionalGames
+										IncludeAdditionalPinFall.INCLUDE -> if (state.additionalGames > 0) state.additionalGames else null
 										IncludeAdditionalPinFall.NONE -> null
 									},
 									additionalPinFall = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> state.additionalPinFall
+										IncludeAdditionalPinFall.INCLUDE -> if (state.additionalGames > 0) state.additionalPinFall else null
 										IncludeAdditionalPinFall.NONE -> null
 									},
 								)
