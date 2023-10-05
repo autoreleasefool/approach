@@ -22,7 +22,7 @@ fun NavController.navigateToBowlerDetails(bowlerId: UUID) {
 fun NavGraphBuilder.bowlerDetailsScreen(
 	onBackPressed: () -> Unit,
 	onEditLeague: (UUID) -> Unit,
-	onAddLeague: () -> Unit,
+	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
 ) {
 	composable(

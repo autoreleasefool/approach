@@ -57,4 +57,9 @@ sealed interface BowlerDetailsUiState {
 	data class Success(
 		val details: BowlerDetails,
 	): BowlerDetailsUiState
+
+	fun bowlerId(): UUID? = when (this) {
+		Loading -> null
+		is Success -> this.details.id
+	}
 }

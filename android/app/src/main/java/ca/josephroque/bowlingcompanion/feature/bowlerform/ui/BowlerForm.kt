@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
@@ -29,8 +31,15 @@ internal fun BowlerForm(
 	onDoneClicked: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Column(modifier = modifier.fillMaxSize()) {
-		FormSection(titleResourceId = R.string.bowler_form_section_details) {
+	Column(
+		modifier = modifier
+			.verticalScroll(rememberScrollState())
+			.fillMaxSize(),
+	) {
+		FormSection(
+			titleResourceId = R.string.bowler_form_section_details,
+			modifier = Modifier.padding(top = 16.dp),
+		) {
 			NameTextField(
 				name = name,
 				onNameChanged = onNameChanged,

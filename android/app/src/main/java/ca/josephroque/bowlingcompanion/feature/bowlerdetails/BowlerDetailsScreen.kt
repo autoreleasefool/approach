@@ -32,7 +32,7 @@ import java.util.UUID
 internal fun BowlerDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditLeague: (UUID) -> Unit,
-	onAddLeague: () -> Unit,
+	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
@@ -45,13 +45,12 @@ internal fun BowlerDetailsRoute(
 		leaguesListState = leaguesListState,
 		onBackPressed = onBackPressed,
 		onLeagueClick = onShowLeagueDetails,
-		onAddLeague = onAddLeague,
+		onAddLeague = { bowlerDetailsState.bowlerId()?.let { onAddLeague(it) } },
 		editStatisticsWidget = viewModel::editStatisticsWidget,
 		modifier = modifier,
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BowlerDetailsScreen(
 	bowlerDetailsState: BowlerDetailsUiState,

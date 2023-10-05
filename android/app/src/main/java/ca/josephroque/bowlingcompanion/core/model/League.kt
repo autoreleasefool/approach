@@ -1,9 +1,14 @@
 package ca.josephroque.bowlingcompanion.core.model
 
 import androidx.compose.runtime.Immutable
-import androidx.room.ColumnInfo
 import kotlinx.datetime.Instant
 import java.util.UUID
+
+class League {
+	companion object {
+		val NUMBER_OF_GAMES_RANGE = 1..40
+	}
+}
 
 @Immutable
 data class LeagueDetails(
