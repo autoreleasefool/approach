@@ -20,6 +20,7 @@ fun NavController.navigateToLeagueDetails(leagueId: UUID) {
 }
 
 fun NavGraphBuilder.leagueDetailsScreen(
+	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
 	onAddSeries: () -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
@@ -34,6 +35,7 @@ fun NavGraphBuilder.leagueDetailsScreen(
 			onEditSeries = onEditSeries,
 			onAddSeries = onAddSeries,
 			onShowSeriesDetails = onShowSeriesDetails,
+			onBackPressed = onBackPressed,
 		)
 	}
 }

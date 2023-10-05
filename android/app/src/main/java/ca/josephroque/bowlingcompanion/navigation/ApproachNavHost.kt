@@ -71,6 +71,7 @@ fun ApproachNavHost(
 			onEditSeries = {},
 			onAddSeries = {},
 			onShowSeriesDetails = navController::navigateToSeriesDetails,
+			onBackPressed = { navController.popBackStack() },
 		)
 		seriesDetailsScreen(
 			onEditGame = {},

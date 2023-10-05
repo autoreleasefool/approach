@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,6 +28,7 @@ import java.util.UUID
 
 @Composable
 internal fun LeagueDetailsRoute(
+	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
 	onAddSeries: () -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
@@ -39,44 +41,28 @@ internal fun LeagueDetailsRoute(
 	LeagueDetailsScreen(
 		leagueDetailsState = leagueDetailsState,
 		seriesListState = seriesListState,
+		onBackPressed = onBackPressed,
 		onSeriesClick = onShowSeriesDetails,
 		onAddSeries = onAddSeries,
 		modifier = modifier,
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LeagueDetailsScreen(
 	leagueDetailsState: LeagueDetailsUiState,
 	seriesListState: SeriesListUiState,
+	onBackPressed: () -> Unit,
 	onSeriesClick: (UUID) -> Unit,
 	onAddSeries: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Scaffold(
 		topBar = {
-			TopAppBar(
-				colors = TopAppBarDefaults.topAppBarColors(),
-				title = {
-					Text(
-						text = when (leagueDetailsState) {
-							LeagueDetailsUiState.Loading -> ""
-							is LeagueDetailsUiState.Success -> leagueDetailsState.details.name
-						},
-						maxLines = 1,
-						overflow = TextOverflow.Ellipsis,
-						style = MaterialTheme.typography.titleLarge,
-					)
-				},
-				actions = {
-					IconButton(onClick = onAddSeries) {
-						Icon(
-							imageVector = Icons.Filled.Add,
-							contentDescription = stringResource(R.string.league_list_add)
-						)
-					}
-				},
+			LeagueDetailsTopBar(
+				leagueDetailsState = leagueDetailsState,
+				onAddSeries = onAddSeries,
+				onBackPressed = onBackPressed,
 			)
 		}
 	) { padding ->
@@ -91,4 +77,44 @@ internal fun LeagueDetailsScreen(
 			)
 		}
 	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun LeagueDetailsTopBar(
+	leagueDetailsState: LeagueDetailsUiState,
+	onAddSeries: () -> Unit,
+	onBackPressed: () -> Unit
+) {
+	TopAppBar(
+		colors = TopAppBarDefaults.topAppBarColors(),
+		title = {
+			Text(
+				text = when (leagueDetailsState) {
+					LeagueDetailsUiState.Loading -> ""
+					is LeagueDetailsUiState.Success -> leagueDetailsState.details.name
+				},
+				maxLines = 1,
+				overflow = TextOverflow.Ellipsis,
+				style = MaterialTheme.typography.titleLarge,
+			)
+		},
+		navigationIcon = {
+			IconButton(onClick = onBackPressed) {
+				Icon(
+					Icons.Default.ArrowBack,
+					contentDescription = stringResource(R.string.cd_back),
+					tint = MaterialTheme.colorScheme.onSurface,
+				)
+			}
+		},
+		actions = {
+			IconButton(onClick = onAddSeries) {
+				Icon(
+					imageVector = Icons.Filled.Add,
+					contentDescription = stringResource(R.string.league_list_add)
+				)
+			}
+		},
+	)
 }
