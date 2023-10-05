@@ -10,18 +10,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -30,7 +27,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
@@ -65,12 +61,11 @@ fun SeriesItemRow(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Card(
+	OutlinedCard(
 		onClick = onClick,
-		colors = CardDefaults.cardColors(
-			containerColor = colorResource(R.color.purple_100),
-		),
-		modifier = modifier,
+		modifier = modifier
+			.padding(horizontal = 16.dp)
+			.padding(bottom = 16.dp),
 	) {
 		Box(
 			contentAlignment = Alignment.BottomStart,
@@ -81,29 +76,27 @@ fun SeriesItemRow(
 
 			Column(
 				verticalArrangement = Arrangement.spacedBy(16.dp),
-				modifier = Modifier
-					.padding(8.dp)
+				modifier = Modifier.padding(16.dp),
 			) {
-				Header(series.date)
-
 				Row {
-					ScoreSummary(
-						numberOfGames = series.numberOfGames,
-						scores = series.scores,
-						modifier = Modifier.alignBy(LastBaseline),
-					)
+					Header(series.date)
 
-					Spacer(modifier = Modifier.weight(1F))
+					Spacer(modifier = Modifier.weight(1f))
 
 					if (series.total > 0) {
 						Text(
 							text = series.total.toString(),
 							style = MaterialTheme.typography.headlineMedium,
+							fontWeight = FontWeight.Black,
 							fontStyle = FontStyle.Italic,
-							modifier = Modifier.alignBy(LastBaseline),
 						)
 					}
 				}
+
+				ScoreSummary(
+					numberOfGames = series.numberOfGames,
+					scores = series.scores,
+				)
 			}
 		}
 	}
@@ -143,8 +136,8 @@ private fun ScoreSummary(
 				} else {
 					Modifier
 						.background(
-							colorResource(R.color.purple_200).copy(alpha = 0.5F),
-							RoundedCornerShape(4.dp)
+							colorResource(R.color.yellow_300).copy(alpha = 0.5F),
+							MaterialTheme.shapes.medium,
 						)
 				}
 			)
@@ -172,7 +165,9 @@ private fun ScoreSummary(
 @Composable
 private fun ScoreChart(scores: ChartEntryModel) {
 	ProvideChartStyle(
-		chartStyle = rememberChartStyle(chartColors = listOf(colorResource(R.color.yellow_300))),
+		chartStyle = rememberChartStyle(
+			chartColors = listOf(colorResource(R.color.purple_300))
+		),
 	) {
 		Chart(
 			chart = lineChart(
@@ -210,7 +205,6 @@ fun SeriesItemPreview() {
 					scores = entryModelOf(220, 230, 215, 225),
 				),
 				onClick = {},
-				modifier = Modifier.padding(16.dp),
 			)
 			SeriesItemRow(
 				series = SeriesChartable(
@@ -222,7 +216,6 @@ fun SeriesItemPreview() {
 					scores = null,
 				),
 				onClick = {},
-				modifier = Modifier.padding(16.dp),
 			)
 		}
 	}

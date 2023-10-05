@@ -46,6 +46,7 @@
 	<string name="league_form_property_pinfall_additional_games">Games played</string>
 	<string name="league_form_property_pinfall_calculated_average">Calculated average</string>
 
+	<string name="series_list_title">Series</string>
 	<string name="series_list_add">Add Series</string>
 	<string name="series_list_score_range">%d — %d</string>
 
