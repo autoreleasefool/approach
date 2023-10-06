@@ -1469,6 +1469,10 @@ public enum Strings {
       public static let chopOffs = Strings.tr("Localizable", "statistics.title.chopOffs", fallback: "Chop Offs")
       /// Chop Offs Spared
       public static let chopOffsSpared = Strings.tr("Localizable", "statistics.title.chopOffsSpared", fallback: "Chop Offs Spared")
+      /// Fives
+      public static let fives = Strings.tr("Localizable", "statistics.title.fives", fallback: "Fives")
+      /// Fives Spared
+      public static let fivesSpared = Strings.tr("Localizable", "statistics.title.fivesSpared", fallback: "Fives Spared")
       /// Fouls
       public static let fouls = Strings.tr("Localizable", "statistics.title.fouls", fallback: "Fouls")
       /// Average
@@ -1485,6 +1489,10 @@ public enum Strings {
       public static let leftChopOffs = Strings.tr("Localizable", "statistics.title.leftChopOffs", fallback: "Left Chop Offs")
       /// Left Chop Offs Spared
       public static let leftChopOffsSpared = Strings.tr("Localizable", "statistics.title.leftChopOffsSpared", fallback: "Left Chop Offs Spared")
+      /// Left Fives
+      public static let leftFives = Strings.tr("Localizable", "statistics.title.leftFives", fallback: "Left Fives")
+      /// Left Fives Spared
+      public static let leftFivesSpared = Strings.tr("Localizable", "statistics.title.leftFivesSpared", fallback: "Left Fives Spared")
       /// Left of Middle Hits
       public static let leftOfMiddleHits = Strings.tr("Localizable", "statistics.title.leftOfMiddleHits", fallback: "Left of Middle Hits")
       /// Lefts
@@ -1515,6 +1523,10 @@ public enum Strings {
       public static let rightChopOffs = Strings.tr("Localizable", "statistics.title.rightChopOffs", fallback: "Right Chop Offs")
       /// Right Chop Offs Spared
       public static let rightChopOffsSpared = Strings.tr("Localizable", "statistics.title.rightChopOffsSpared", fallback: "Right Chop Offs Spared")
+      /// Right Fives
+      public static let rightFives = Strings.tr("Localizable", "statistics.title.rightFives", fallback: "Right Fives")
+      /// Right Fives Spared
+      public static let rightFivesSpared = Strings.tr("Localizable", "statistics.title.rightFivesSpared", fallback: "Right Fives Spared")
       /// Right of Middle Hits
       public static let rightOfMiddleHits = Strings.tr("Localizable", "statistics.title.rightOfMiddleHits", fallback: "Right of Middle Hits")
       /// Rights
