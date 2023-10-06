@@ -371,6 +371,12 @@
 "statistics.title.leftFivesSpared" = "Left Fives Spared";
 "statistics.title.rightFives" = "Right Fives";
 "statistics.title.rightFivesSpared" = "Right Fives Spared";
+"statistics.title.threes" = "Threes";
+"statistics.title.threesSpared" = "Threes Spared";
+"statistics.title.leftThrees" = "Left Threes";
+"statistics.title.leftThreesSpared" = "Left Threes Spared";
+"statistics.title.rightThrees" = "Right Threes";
+"statistics.title.rightThreesSpared" = "Right Threes Spared";
 
 /* Avatar */
 "avatar.editor.title" = "Edit avatar";
