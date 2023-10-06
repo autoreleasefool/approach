@@ -29,13 +29,15 @@ public struct StatisticsOverviewView: View {
 			List {
 				if viewStore.isShowingOverviewTip {
 					Section {
-						BasicTipView(tip: .statisticsOverview) { viewStore.send(.didTapDismissOverviewTip, animation: .default) }
+						// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
+						BasicTipView(tip: .statisticsOverview, isDismissable: false) { viewStore.send(.didTapDismissOverviewTip, animation: .default) }
 					}
 				}
 
 				if viewStore.isShowingDetailsTip {
 					Section {
-						BasicTipView(tip: .statisticsDetails) { viewStore.send(.didTapDismissDetailsTip, animation: .default) }
+						// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
+						BasicTipView(tip: .statisticsDetails, isDismissable: false) { viewStore.send(.didTapDismissDetailsTip, animation: .default) }
 					}
 				}
 

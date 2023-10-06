@@ -4,10 +4,12 @@ import ViewsLibrary
 
 public struct BasicTipView: View {
 	let tip: Tip
+	let isDismissable: Bool
 	let onDismiss: () -> Void
 
-	public init(tip: Tip, onDismiss: @escaping () -> Void) {
+	public init(tip: Tip, isDismissable: Bool = true, onDismiss: @escaping () -> Void) {
 		self.tip = tip
+		self.isDismissable = isDismissable
 		self.onDismiss = onDismiss
 	}
 
@@ -17,17 +19,18 @@ public struct BasicTipView: View {
 				Text(tip.title)
 					.font(.headline)
 					.frame(maxWidth: .infinity, alignment: .leading)
-				Button(action: onDismiss) {
-					Image(systemSymbol: .xmark)
-						.resizable()
-						.scaledToFit()
-						.frame(width: .smallIcon, height: .smallSpacing)
-						.padding(.vertical)
-						.padding(.leading)
+
+				if isDismissable {
+					Button(action: onDismiss) {
+						Image(systemSymbol: .xmark)
+							.resizable()
+							.scaledToFit()
+							.frame(width: .smallIcon, height: .smallSpacing)
+							.padding(.vertical)
+							.padding(.leading)
+					}
+					.buttonStyle(TappableElement())
 				}
-				.buttonStyle(TappableElement())
-				// TODO: URGENT Remove this so that tips are dismissable again
-				.hidden()
 			}
 			.frame(maxWidth: .infinity)
 
