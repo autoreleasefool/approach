@@ -21,6 +21,7 @@ extension FeatureFlag {
 	public static let purchases = Self(name: "purchase", introduced: "2023-09-15", stage: .disabled)
 	public static let dataExport = Self(name: "dataExport", introduced: "2023-09-17", stage: .release)
 	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .development)
+	public static let statisticsDescriptions = Self(name: "statisticsDescriptions", introduced: "2023-10-06", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.accessoriesTab,
@@ -41,6 +42,7 @@ extension FeatureFlag {
 		.settingsTab,
 		.sharingGame,
 		.sharingSeries,
+		.statisticsDescriptions,
 		.statisticsTab,
 		.teams,
 	]
