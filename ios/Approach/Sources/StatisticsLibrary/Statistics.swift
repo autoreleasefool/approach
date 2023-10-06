@@ -15,6 +15,12 @@ extension Statistics {
 		// First Roll
 		Statistics.HeadPins.self,
 		Statistics.HeadPinsSpared.self,
+		Statistics.Fives.self,
+		Statistics.FivesSpared.self,
+		Statistics.LeftFives.self,
+		Statistics.LeftFivesSpared.self,
+		Statistics.RightFives.self,
+		Statistics.RightFivesSpared.self,
 		Statistics.Lefts.self,
 		Statistics.LeftsSpared.self,
 		Statistics.Rights.self,

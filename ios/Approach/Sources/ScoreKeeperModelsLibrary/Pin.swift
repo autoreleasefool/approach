@@ -54,6 +54,9 @@ extension Set where Element == Pin {
 	public var isLeftTwelve: Bool { count == 4 && !contains(.rightThreePin) }
 	public var isRightTwelve: Bool { count == 4 && !contains(.leftThreePin) }
 	public var isTwelve: Bool { isLeftTwelve || isRightTwelve }
+	public var isLeftFive: Bool { count == 2 && contains(.leftTwoPin) && contains(.leftThreePin) }
+	public var isRightFive: Bool { count == 2 && contains(.rightTwoPin) && contains(.rightThreePin) }
+	public var isFive: Bool { isLeftFive || isRightFive }
 	public var arePinsCleared: Bool { count == 5 }
 }
 

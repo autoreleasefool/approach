@@ -365,6 +365,12 @@
 "statistics.title.totalPinsLeftOnDeck" = "Total Pins Left on Deck";
 "statistics.title.averagePinsLeftOnDeck" = "Average Pins Left on Deck";
 "statistics.title.totalRolls" = "Total Rolls";
+"statistics.title.fives" = "Fives";
+"statistics.title.fivesSpared" = "Fives Spared";
+"statistics.title.leftFives" = "Left Fives";
+"statistics.title.leftFivesSpared" = "Left Fives Spared";
+"statistics.title.rightFives" = "Right Fives";
+"statistics.title.rightFivesSpared" = "Right Fives Spared";
 
 /* Avatar */
 "avatar.editor.title" = "Edit avatar";
