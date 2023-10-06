@@ -3,23 +3,23 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class RightFivesSparedTests: XCTestCase {
-	func testAdjust_ByFramesWithRightFivesSpared_Adjusts() {
+final class LeftThreesSparedTests: XCTestCase {
+	func testAdjust_ByFramesWithLeftThreesSpared_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.RightFivesSpared.self,
+			statistic: Statistics.LeftThreesSpared.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.rightThreePin, .rightTwoPin])),
-						.init(index: 1, roll: .init(pinsDowned: [.headPin, .leftTwoPin, .leftThreePin])),
+						.init(index: 0, roll: .init(pinsDowned: [.rightThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.headPin, .leftTwoPin, .leftThreePin, .rightTwoPin])),
 					]
 				),
 				Frame.TrackableEntry(
 					index: 1,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .leftTwoPin])),
-						.init(index: 1, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .rightThreePin])),
+						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .rightThreePin, .leftTwoPin])),
 					]
 				),
 				Frame.TrackableEntry(
@@ -50,9 +50,9 @@ final class RightFivesSparedTests: XCTestCase {
 		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 1, formattedAs: "100% (1)")
 	}
 
-	func testAdjust_ByFramesWithoutRightFivesSpared_DoesNotAdjust() {
+	func testAdjust_ByFramesWithoutLeftThreesSpared_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.RightFivesSpared.self,
+			statistic: Statistics.LeftThreesSpared.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -78,15 +78,15 @@ final class RightFivesSparedTests: XCTestCase {
 				Frame.TrackableEntry(
 					index: 3,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin, .leftTwoPin])),
-						.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+						.init(index: 0, roll: .init(pinsDowned: [.rightThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
 					]
 				),
 				Frame.TrackableEntry(
 					index: 4,
 					rolls: [
-						.init(index: 0, roll: .init(pinsDowned: [.rightThreePin, .rightTwoPin])),
-						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+						.init(index: 0, roll: .init(pinsDowned: [.leftThreePin])),
+						.init(index: 1, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
 					]
 				),
 			],
@@ -97,12 +97,12 @@ final class RightFivesSparedTests: XCTestCase {
 	}
 
 	func testAdjustBySeries_DoesNothing() {
-		let statistic = create(statistic: Statistics.RightFivesSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.LeftThreesSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.RightFivesSpared.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.LeftThreesSpared.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 }
