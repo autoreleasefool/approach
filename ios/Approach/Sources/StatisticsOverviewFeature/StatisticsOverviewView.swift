@@ -30,14 +30,24 @@ public struct StatisticsOverviewView: View {
 				if viewStore.isShowingOverviewTip {
 					Section {
 						// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
-						BasicTipView(tip: .statisticsOverview, isDismissable: false) { viewStore.send(.didTapDismissOverviewTip, animation: .default) }
+						BasicTipView(
+							tip: .statisticsOverview,
+							isDismissable: false
+						) {
+							viewStore.send(.didTapDismissOverviewTip, animation: .default)
+						}
 					}
 				}
 
 				if viewStore.isShowingDetailsTip {
 					Section {
 						// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
-						BasicTipView(tip: .statisticsDetails, isDismissable: false) { viewStore.send(.didTapDismissDetailsTip, animation: .default) }
+						BasicTipView(
+							tip: .statisticsDetails,
+							isDismissable: false
+						) {
+							viewStore.send(.didTapDismissDetailsTip, animation: .default)
+						}
 					}
 				}
 

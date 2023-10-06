@@ -4,12 +4,14 @@ import StatisticsLibrary
 extension Statistics {
 	public struct ListEntry: Identifiable, Equatable {
 		public let title: String
+		public let description: String?
 		public let value: String
 
 		public var id: String { title }
 
-		public init(title: String, value: String) {
+		public init(title: String, description: String?, value: String) {
 			self.title = title
+			self.description = description
 			self.value = value
 		}
 	}

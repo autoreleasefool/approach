@@ -205,7 +205,8 @@ extension StatisticsRepository: DependencyKey {
 					return .init(
 						category: category,
 						entries: .init(uniqueElements: categoryStatistics.map {
-							.init(title: type(of: $0).title, value: $0.formattedValue)
+							let statistic = type(of: $0)
+							return .init(title: statistic.title, description: statistic.pinDescription, value: $0.formattedValue)
 						})
 					)
 				}

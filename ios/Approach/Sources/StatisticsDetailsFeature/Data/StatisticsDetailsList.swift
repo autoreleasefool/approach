@@ -1,33 +1,49 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
 import PreferenceServiceInterface
 import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import TipsLibrary
+import TipsServiceInterface
 import ViewsLibrary
 
 public struct StatisticsDetailsList: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isHidingZeroStatistics: Bool
+		@BindingState public var isHidingStatisticsDescriptions: Bool
+
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var entryToHighlight: Statistics.ListEntry.ID?
 		public let hasTappableElements: Bool
+
+		public let isStatisticsDescriptionsEnabled: Bool
+		public var isShowingStatisticDescriptionTip: Bool
 
 		init(listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup>, hasTappableElements: Bool) {
 			self.listEntries = listEntries
 			self.hasTappableElements = hasTappableElements
 
+			@Dependency(\.featureFlags) var featureFlags
+			self.isStatisticsDescriptionsEnabled = featureFlags.isEnabled(.statisticsDescriptions)
+
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
+			self.isHidingStatisticsDescriptions = preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false
+
+			@Dependency(\.tips) var tips
+			self.isShowingStatisticDescriptionTip = tips.shouldShow(tipFor: .statisticsDescriptionTip)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
 			case didTapEntry(id: String)
+			case didTapDismissDescriptionsTip
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
@@ -43,11 +59,15 @@ public struct StatisticsDetailsList: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	enum CancelID { case setHidingZeroStatistics }
+	enum CancelID {
+		case setHidingZeroStatistics
+		case setHidingStatisticsDescriptions
+	}
 
 	public init() {}
 
 	@Dependency(\.preferences) var preferences
+	@Dependency(\.tips) var tips
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
@@ -59,6 +79,10 @@ public struct StatisticsDetailsList: Reducer {
 				case let .didTapEntry(id):
 					return .send(.delegate(.didRequestEntryDetails(id: id)))
 
+				case .didTapDismissDescriptionsTip:
+					state.isShowingStatisticDescriptionTip = false
+					return .run { _ in await tips.hide(tipFor: .statisticsDescriptionTip) }
+
 				case .binding(\.$isHidingZeroStatistics):
 					return .concatenate(
 						.run { [updatedValue = state.isHidingZeroStatistics] _ in
@@ -67,6 +91,15 @@ public struct StatisticsDetailsList: Reducer {
 						.send(.delegate(.listRequiresReload))
 					)
 					.cancellable(id: CancelID.setHidingZeroStatistics, cancelInFlight: true)
+
+				case .binding(\.$isHidingStatisticsDescriptions):
+					return .concatenate(
+						.run { [updatedValue = state.isHidingStatisticsDescriptions] _ in
+							preferences.setKey(.statisticsHideStatisticsDescriptions, toBool: updatedValue)
+						},
+						.send(.delegate(.listRequiresReload))
+					)
+					.cancellable(id: CancelID.setHidingStatisticsDescriptions, cancelInFlight: true)
 
 				case .binding:
 					return .none
@@ -113,11 +146,34 @@ public struct StatisticsDetailsListView<Header: View>: View {
 				List {
 					header
 
+					if viewStore.isStatisticsDescriptionsEnabled && viewStore.isShowingStatisticDescriptionTip {
+						BasicTipView(tip: .statisticsDescriptionTip) {
+							viewStore.send(.didTapDismissDescriptionsTip, animation: .default)
+						}
+					}
+
 					ForEach(viewStore.listEntries) { group in
 						Section(String(describing: group.category)) {
 							ForEach(group.entries) { entry in
 								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
-									LabeledContent(entry.title, value: entry.value)
+									if !viewStore.isStatisticsDescriptionsEnabled || viewStore.isHidingStatisticsDescriptions {
+										LabeledContent(entry.title, value: entry.value)
+									} else {
+										HStack(alignment: .center) {
+											VStack(alignment: .leading) {
+												Text(entry.title)
+												if let description = entry.description {
+													Text(description)
+														.font(.caption2)
+												}
+											}
+
+											Spacer()
+
+											Text(entry.value)
+												.foregroundColor(Color(uiColor: UIColor.secondaryLabel))
+										}
+									}
 								}
 								.if(!viewStore.hasTappableElements) {
 									$0.buttonStyle(.plain)
@@ -145,6 +201,17 @@ public struct StatisticsDetailsListView<Header: View>: View {
 							Text(Strings.Statistics.List.HideZeroStatistics.help)
 						}
 					}
+
+					if viewStore.isStatisticsDescriptionsEnabled {
+						Section {
+							Toggle(
+								Strings.Statistics.List.statisticsDescription,
+								isOn: viewStore.$isHidingStatisticsDescriptions
+							)
+						} footer: {
+							Text(Strings.Statistics.List.StatisticsDescription.help)
+						}
+					}
 				}
 				.onChange(of: viewStore.entryToHighlight) {
 					guard let id = $0 else { return }
@@ -155,4 +222,12 @@ public struct StatisticsDetailsListView<Header: View>: View {
 			}
 		})
 	}
+}
+
+extension Tip {
+	static let statisticsDescriptionTip = Tip(
+		id: "Statistics.Details.List.Descriptions",
+		title: Strings.Statistics.List.StatisticsDescription.Tip.title,
+		message: Strings.Statistics.List.StatisticsDescription.Tip.message
+	)
 }

@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
 import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
@@ -7,19 +8,26 @@ import SwiftUI
 public struct StatisticsSettings: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isHidingZeroStatistics: Bool
+		@BindingState public var isHidingStatisticsDescriptions: Bool
 		@BindingState public var isCountingSplitWithBonusAsSplit: Bool
 		@BindingState public var isCountingH2AsH: Bool
 
 		@BindingState public var isHidingWidgetsInBowlerList: Bool
 		@BindingState public var isHidingWidgetsInLeagueList: Bool
 
+		public let isStatisticsDescriptionsEnabled: Bool
+
 		init() {
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
+			self.isHidingStatisticsDescriptions = preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false
 			self.isCountingH2AsH = preferences.bool(forKey: .statisticsCountH2AsH) ?? true
 			self.isCountingSplitWithBonusAsSplit = preferences.bool(forKey: .statisticsCountSplitWithBonusAsSplit) ?? true
 			self.isHidingWidgetsInBowlerList = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
 			self.isHidingWidgetsInLeagueList = preferences.bool(forKey: .statisticsWidgetHideInLeagueList) ?? false
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isStatisticsDescriptionsEnabled = featureFlags.isEnabled(.statisticsDescriptions)
 		}
 	}
 
@@ -49,6 +57,12 @@ public struct StatisticsSettings: Reducer {
 						preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
 					}
 					.cancellable(id: PreferenceKey.statisticsHideZeroStatistics, cancelInFlight: true)
+
+				case .binding(\.$isHidingStatisticsDescriptions):
+					return .run { [updatedValue = state.isHidingStatisticsDescriptions] _ in
+						preferences.setKey(.statisticsHideStatisticsDescriptions, toBool: updatedValue)
+					}
+					.cancellable(id: PreferenceKey.statisticsHideStatisticsDescriptions, cancelInFlight: true)
 
 				case .binding(\.$isCountingH2AsH):
 					return .run { [updatedValue = state.isCountingH2AsH] _ in
@@ -114,6 +128,13 @@ public struct StatisticsSettingsView: View {
 						Strings.Settings.Statistics.Overall.hideZeroStatistics,
 						isOn: viewStore.$isHidingZeroStatistics
 					)
+
+					if viewStore.isStatisticsDescriptionsEnabled {
+						Toggle(
+							Strings.Settings.Statistics.Overall.hideStatisticsDescriptions,
+							isOn: viewStore.$isHidingStatisticsDescriptions
+						)
+					}
 				}
 
 				Section(Strings.Settings.Statistics.Widgets.title) {

@@ -6,6 +6,7 @@ public enum Statistics {}
 
 public protocol Statistic {
 	static var title: String { get }
+	static var pinDescription: String? { get }
 	static var category: StatisticCategory { get }
 	static var supportsAggregation: Bool { get }
 	static var supportsWidgets: Bool { get }
@@ -22,6 +23,10 @@ public protocol Statistic {
 	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
 	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
 	mutating func aggregate(with: Statistic)
+}
+
+extension Statistic {
+	public static var pinDescription: String? { nil }
 }
 
 // MARK: - Category

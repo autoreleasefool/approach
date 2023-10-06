@@ -102,7 +102,7 @@ public struct StatisticsWidgetEditorView: View {
 					if viewStore.isShowingTapThroughTip {
 						Section {
 							BasicTipView(tip: .tapThroughStatisticTip) {
-								viewStore.send(.didTapDismissTapThroughTip, animation: .easeInOut)
+								viewStore.send(.didTapDismissTapThroughTip, animation: .default)
 							}
 						}
 					}
