@@ -1,14 +1,10 @@
 # Most recent version
 
-## iOS 1.0.4b8
+## iOS 1.1.0b9
 
 ```
-- Feat: Show series and game statistics from GameDetails
-- Feat: Render statistics in charts per game for series
-- Fix: Pins left of deck stat now only calculated for frames with at least 1 roll
-- Fix: Next button in GamesEditor is larger
-- Fix: League # of games is dynamic by default
-- Fix: Strikes are now calculated properly when followed by incomplete frames
+- Feat: New statistics: Fives and Threes
+- Feat: Descriptions of statistics in list
 ```
 
 ## Android v3.2.0
@@ -22,6 +18,17 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.0.4b8
+
+```
+- Feat: Show series and game statistics from GameDetails
+- Feat: Render statistics in charts per game for series
+- Fix: Pins left of deck stat now only calculated for frames with at least 1 roll
+- Fix: Next button in GamesEditor is larger
+- Fix: League # of games is dynamic by default
+- Fix: Strikes are now calculated properly when followed by incomplete frames
+```
 
 ## iOS 1.0.3b7
 
