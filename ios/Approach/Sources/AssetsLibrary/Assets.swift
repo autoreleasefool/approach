@@ -209,6 +209,23 @@ public enum Asset {
     }
     public enum Icons {
       public static let analytics = ImageAsset(name: "Icons/Analytics")
+      public enum Pins {
+        public static let aces = ImageAsset(name: "Icons/Pins/Aces")
+        public static let empty = ImageAsset(name: "Icons/Pins/Empty")
+        public static let headPin = ImageAsset(name: "Icons/Pins/HeadPin")
+        public static let `left` = ImageAsset(name: "Icons/Pins/Left")
+        public static let leftChopOff = ImageAsset(name: "Icons/Pins/LeftChopOff")
+        public static let leftFive = ImageAsset(name: "Icons/Pins/LeftFive")
+        public static let leftSplit = ImageAsset(name: "Icons/Pins/LeftSplit")
+        public static let leftThree = ImageAsset(name: "Icons/Pins/LeftThree")
+        public static let leftTwelve = ImageAsset(name: "Icons/Pins/LeftTwelve")
+        public static let `right` = ImageAsset(name: "Icons/Pins/Right")
+        public static let rightChopOff = ImageAsset(name: "Icons/Pins/RightChopOff")
+        public static let rightFive = ImageAsset(name: "Icons/Pins/RightFive")
+        public static let rightSplit = ImageAsset(name: "Icons/Pins/RightSplit")
+        public static let rightThree = ImageAsset(name: "Icons/Pins/RightThree")
+        public static let rightTwelve = ImageAsset(name: "Icons/Pins/RightTwelve")
+      }
       public enum Social {
         public static let instagram = ImageAsset(name: "Icons/Social/Instagram")
       }

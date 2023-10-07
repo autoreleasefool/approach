@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Deck/LeftTwelve</title>
+    <g id="Deck/LeftTwelve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="LeftTwo" fill="#8680DF" cx="4" cy="7" r="2"></circle>
+        <circle id="RightTwo" fill="#8680DF" cx="20" cy="7" r="2"></circle>
+        <circle id="LeftThree" fill="#8680DF" cx="8" cy="12" r="2"></circle>
+        <circle id="RightThree" fill="#C8C8C8" cx="16" cy="12" r="2"></circle>
+        <circle id="HeadPin" fill="#8680DF" cx="12" cy="17" r="2"></circle>
+    </g>
+</svg>
