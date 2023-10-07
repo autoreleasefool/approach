@@ -35,6 +35,10 @@ extension Statistics {
 		Statistics.AcesSpared.self,
 		Statistics.ChopOffs.self,
 		Statistics.ChopOffsSpared.self,
+		Statistics.LeftChopOffs.self,
+		Statistics.LeftChopOffsSpared.self,
+		Statistics.RightChopOffs.self,
+		Statistics.RightChopOffsSpared.self,
 		Statistics.Splits.self,
 		Statistics.SplitsSpared.self,
 		Statistics.LeftSplits.self,
@@ -43,6 +47,10 @@ extension Statistics {
 		Statistics.RightSplitsSpared.self,
 		Statistics.Twelves.self,
 		Statistics.TwelvesSpared.self,
+		Statistics.LeftTwelves.self,
+		Statistics.LeftTwelvesSpared.self,
+		Statistics.RightTwelves.self,
+		Statistics.RightTwelvesSpared.self,
 
 		// Fouls
 		Statistics.Fouls.self,
