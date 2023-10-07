@@ -11,6 +11,7 @@ extension Statistics {
 		Statistics.RightOfMiddleHits.self,
 		Statistics.StrikeMiddleHits.self,
 		Statistics.Strikes.self,
+		Statistics.SpareConversions.self,
 
 		// First Roll
 		Statistics.HeadPins.self,
