@@ -6,7 +6,6 @@ public enum Statistics {}
 
 public protocol Statistic {
 	static var title: String { get }
-	static var pinDescription: String? { get }
 	static var category: StatisticCategory { get }
 	static var supportsAggregation: Bool { get }
 	static var supportsWidgets: Bool { get }
@@ -25,29 +24,41 @@ public protocol Statistic {
 	mutating func aggregate(with: Statistic)
 }
 
-extension Statistic {
-	public static var pinDescription: String? { nil }
-}
-
 // MARK: - Category
 
 public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 	case overall
-	case onFirstRoll
+	case middleHits
+	case strikesAndSpares
+	case headPins
+	case fives
+	case threes
+	case aces
+	case chopOffs
+	case splits
+	case taps
+	case twelves
 	case fouls
 	case pinsLeftOnDeck
 	case matchPlayResults
-	case average
 	case series
 
 	public var description: String {
 		switch self {
 		case .overall: return Strings.Statistics.Categories.Overall.title
-		case .onFirstRoll: return Strings.Statistics.Categories.OnFirstRoll.title
+		case .middleHits: return Strings.Statistics.Categories.MiddleHits.title
+		case .strikesAndSpares: return Strings.Statistics.Categories.StrikesAndSpares.title
+		case .headPins: return Strings.Statistics.Categories.HeadPins.title
+		case .fives: return Strings.Statistics.Categories.Fives.title
+		case .threes: return Strings.Statistics.Categories.Threes.title
+		case .aces: return Strings.Statistics.Categories.Aces.title
+		case .chopOffs: return Strings.Statistics.Categories.ChopOffs.title
+		case .splits: return Strings.Statistics.Categories.Splits.title
+		case .taps: return Strings.Statistics.Categories.Taps.title
+		case .twelves: return Strings.Statistics.Categories.Twelves.title
 		case .fouls: return Strings.Statistics.Categories.Fouls.title
 		case .pinsLeftOnDeck: return Strings.Statistics.Categories.PinsLeftOnDeck.title
 		case .matchPlayResults: return Strings.Statistics.Categories.MatchPlay.title
-		case .average: return Strings.Statistics.Categories.Average.title
 		case .series: return Strings.Statistics.Categories.Series.title
 		}
 	}

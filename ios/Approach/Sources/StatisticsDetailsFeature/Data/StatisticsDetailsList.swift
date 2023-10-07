@@ -153,7 +153,27 @@ public struct StatisticsDetailsListView<Header: View>: View {
 					}
 
 					ForEach(viewStore.listEntries) { group in
-						Section(String(describing: group.category)) {
+						Section(group.title) {
+							if viewStore.isStatisticsDescriptionsEnabled && (group.description != nil || group.images != nil) {
+								VStack(alignment: .center) {
+									if let description = group.description {
+										Text(description)
+											.font(.caption)
+									}
+
+									if let images = group.images, !images.isEmpty {
+										HStack(alignment: .center) {
+											ForEach(images) {
+												Image(uiImage: $0.image)
+													.resizable()
+													.scaledToFit()
+													.frame(width: .smallerIcon, height: .smallerIcon)
+											}
+										}
+									}
+								}
+							}
+
 							ForEach(group.entries) { entry in
 								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
 									if !viewStore.isStatisticsDescriptionsEnabled || viewStore.isHidingStatisticsDescriptions {

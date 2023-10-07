@@ -4,7 +4,7 @@ import StringsLibrary
 extension Statistics {
 	public struct Rights: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.rights }
-		public static var category: StatisticCategory { .onFirstRoll }
+		public static var category: StatisticCategory { .taps }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var rights = 0

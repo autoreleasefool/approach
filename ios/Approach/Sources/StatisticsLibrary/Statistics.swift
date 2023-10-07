@@ -6,46 +6,64 @@ extension Statistics {
 		Statistics.NumberOfGames.self,
 		Statistics.GameAverage.self,
 		Statistics.TotalRolls.self,
+
+		// Middle Hits
 		Statistics.MiddleHits.self,
 		Statistics.LeftOfMiddleHits.self,
 		Statistics.RightOfMiddleHits.self,
 		Statistics.StrikeMiddleHits.self,
+
+		// Strikes and Spares
 		Statistics.Strikes.self,
 		Statistics.SpareConversions.self,
 
-		// First Roll
+		// Head Pins
 		Statistics.HeadPins.self,
 		Statistics.HeadPinsSpared.self,
+
+		// Fives
 		Statistics.Fives.self,
 		Statistics.FivesSpared.self,
 		Statistics.LeftFives.self,
 		Statistics.LeftFivesSpared.self,
 		Statistics.RightFives.self,
 		Statistics.RightFivesSpared.self,
+
+		// Threes
 		Statistics.Threes.self,
 		Statistics.ThreesSpared.self,
 		Statistics.LeftThrees.self,
 		Statistics.LeftThreesSpared.self,
 		Statistics.RightThrees.self,
 		Statistics.RightThreesSpared.self,
+
+		// Taps
 		Statistics.Lefts.self,
 		Statistics.LeftsSpared.self,
 		Statistics.Rights.self,
 		Statistics.RightsSpared.self,
+
+		// Aces
 		Statistics.Aces.self,
 		Statistics.AcesSpared.self,
+
+		// Chop Offs
 		Statistics.ChopOffs.self,
 		Statistics.ChopOffsSpared.self,
 		Statistics.LeftChopOffs.self,
 		Statistics.LeftChopOffsSpared.self,
 		Statistics.RightChopOffs.self,
 		Statistics.RightChopOffsSpared.self,
+
+		// Splits
 		Statistics.Splits.self,
 		Statistics.SplitsSpared.self,
 		Statistics.LeftSplits.self,
 		Statistics.LeftSplitsSpared.self,
 		Statistics.RightSplits.self,
 		Statistics.RightSplitsSpared.self,
+
+		// Twelves
 		Statistics.Twelves.self,
 		Statistics.TwelvesSpared.self,
 		Statistics.LeftTwelves.self,

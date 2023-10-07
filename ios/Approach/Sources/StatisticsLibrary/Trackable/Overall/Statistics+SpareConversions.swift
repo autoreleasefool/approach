@@ -4,7 +4,7 @@ import StringsLibrary
 extension Statistics {
 	public struct SpareConversions: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
 		public static var title: String { Strings.Statistics.Title.spareConversions }
-		public static var category: StatisticCategory { .overall }
+		public static var category: StatisticCategory { .strikesAndSpares }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public static var denominatorTitle: String { Strings.Statistics.Title.spareChances }

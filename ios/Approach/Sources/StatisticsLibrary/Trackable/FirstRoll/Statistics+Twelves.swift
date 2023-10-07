@@ -4,7 +4,7 @@ import StringsLibrary
 extension Statistics {
 	public struct Twelves: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.twelves }
-		public static var category: StatisticCategory { .onFirstRoll }
+		public static var category: StatisticCategory { .twelves }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var twelves = 0

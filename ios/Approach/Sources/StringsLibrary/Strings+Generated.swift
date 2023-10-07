@@ -1261,21 +1261,47 @@ public enum Strings {
     /// Statistics
     public static let title = Strings.tr("Localizable", "statistics.title", fallback: "Statistics")
     public enum Categories {
-      public enum Average {
-        /// Average
-        public static let title = Strings.tr("Localizable", "statistics.categories.average.title", fallback: "Average")
+      public enum Aces {
+        /// With your first roll, knock over only the head pin, and the left and right 3-pins
+        public static let description = Strings.tr("Localizable", "statistics.categories.aces.description", fallback: "With your first roll, knock over only the head pin, and the left and right 3-pins")
+        /// Aces
+        public static let title = Strings.tr("Localizable", "statistics.categories.aces.title", fallback: "Aces")
+      }
+      public enum ChopOffs {
+        /// With your first roll, knock over only the head pin, and the 2- and 3-pins on the same side
+        public static let description = Strings.tr("Localizable", "statistics.categories.chopOffs.description", fallback: "With your first roll, knock over only the head pin, and the 2- and 3-pins on the same side")
+        /// Chop Offs
+        public static let title = Strings.tr("Localizable", "statistics.categories.chopOffs.title", fallback: "Chop Offs")
+      }
+      public enum Fives {
+        /// With your first roll, knock over only the 2- and 3-pins on the same side
+        public static let description = Strings.tr("Localizable", "statistics.categories.fives.description", fallback: "With your first roll, knock over only the 2- and 3-pins on the same side")
+        /// Fives
+        public static let title = Strings.tr("Localizable", "statistics.categories.fives.title", fallback: "Fives")
       }
       public enum Fouls {
         /// Fouls
         public static let title = Strings.tr("Localizable", "statistics.categories.fouls.title", fallback: "Fouls")
       }
+      public enum HeadPins {
+        /// Head Pins
+        public static let title = Strings.tr("Localizable", "statistics.categories.headPins.title", fallback: "Head Pins")
+        public enum Description {
+          /// With your first roll, knock over only the head pin, or the head pin and exactly one of the 2-pins
+          public static let withH2 = Strings.tr("Localizable", "statistics.categories.headPins.description.withH2", fallback: "With your first roll, knock over only the head pin, or the head pin and exactly one of the 2-pins")
+          /// With your first roll, knock over only the head pin
+          public static let withoutH2 = Strings.tr("Localizable", "statistics.categories.headPins.description.withoutH2", fallback: "With your first roll, knock over only the head pin")
+        }
+      }
       public enum MatchPlay {
         /// Match Play
         public static let title = Strings.tr("Localizable", "statistics.categories.matchPlay.title", fallback: "Match Play")
       }
-      public enum OnFirstRoll {
-        /// On First Roll
-        public static let title = Strings.tr("Localizable", "statistics.categories.onFirstRoll.title", fallback: "On First Roll")
+      public enum MiddleHits {
+        /// A middle hit is any time you throw the first roll of a frame and you knock over at least the head pin
+        public static let description = Strings.tr("Localizable", "statistics.categories.middleHits.description", fallback: "A middle hit is any time you throw the first roll of a frame and you knock over at least the head pin")
+        /// Middle Hits
+        public static let title = Strings.tr("Localizable", "statistics.categories.middleHits.title", fallback: "Middle Hits")
       }
       public enum Overall {
         /// Overall
@@ -1288,6 +1314,40 @@ public enum Strings {
       public enum Series {
         /// Series
         public static let title = Strings.tr("Localizable", "statistics.categories.series.title", fallback: "Series")
+      }
+      public enum Splits {
+        /// Splits
+        public static let title = Strings.tr("Localizable", "statistics.categories.splits.title", fallback: "Splits")
+        public enum Description {
+          /// With your first roll, knock over the head pin and exactly one of the 3-pins, or the head pin, exactly one of the 3-pins and the 2-pin on the opposite side
+          public static let withBonus = Strings.tr("Localizable", "statistics.categories.splits.description.withBonus", fallback: "With your first roll, knock over the head pin and exactly one of the 3-pins, or the head pin, exactly one of the 3-pins and the 2-pin on the opposite side")
+          /// With your first roll, knock over the head pin and exactly one of the 3-pins
+          public static let withoutBonus = Strings.tr("Localizable", "statistics.categories.splits.description.withoutBonus", fallback: "With your first roll, knock over the head pin and exactly one of the 3-pins")
+        }
+      }
+      public enum StrikesAndSpares {
+        /// Any time you clear all of the remaining pins in one or two rolls
+        public static let description = Strings.tr("Localizable", "statistics.categories.strikesAndSpares.description", fallback: "Any time you clear all of the remaining pins in one or two rolls")
+        /// Strikes and Spares
+        public static let title = Strings.tr("Localizable", "statistics.categories.strikesAndSpares.title", fallback: "Strikes and Spares")
+      }
+      public enum Taps {
+        /// With your first roll, knock over every pin except one of the 2-pins for a total of 13. Also known as a Left or a Right
+        public static let description = Strings.tr("Localizable", "statistics.categories.taps.description", fallback: "With your first roll, knock over every pin except one of the 2-pins for a total of 13. Also known as a Left or a Right")
+        /// Taps
+        public static let title = Strings.tr("Localizable", "statistics.categories.taps.title", fallback: "Taps")
+      }
+      public enum Threes {
+        /// With your first roll, knock over exactly one of the 3-pins
+        public static let description = Strings.tr("Localizable", "statistics.categories.threes.description", fallback: "With your first roll, knock over exactly one of the 3-pins")
+        /// Threes
+        public static let title = Strings.tr("Localizable", "statistics.categories.threes.title", fallback: "Threes")
+      }
+      public enum Twelves {
+        /// With your first roll, knock over every pin except one of the 3-pins for a total of 12
+        public static let description = Strings.tr("Localizable", "statistics.categories.twelves.description", fallback: "With your first roll, knock over every pin except one of the 3-pins for a total of 12")
+        /// Twelves
+        public static let title = Strings.tr("Localizable", "statistics.categories.twelves.title", fallback: "Twelves")
       }
     }
     public enum Charts {
@@ -1307,122 +1367,36 @@ public enum Strings {
       }
     }
     public enum Description {
-      /// With your first roll, knock over only the head pin and 2 three pins
-      public static let aces = Strings.tr("Localizable", "statistics.description.aces", fallback: "With your first roll, knock over only the head pin and 2 three pins")
-      /// Percent of time after aces you knock over all the remaining pins
-      public static let acesSpared = Strings.tr("Localizable", "statistics.description.acesSpared", fallback: "Percent of time after aces you knock over all the remaining pins")
-      /// Average Pins Left on Deck
-      public static let averagePinsLeftOnDeck = Strings.tr("Localizable", "statistics.description.averagePinsLeftOnDeck", fallback: "Average Pins Left on Deck")
-      /// With your first roll, knock over the head pin, and the two and three pins on the same side
-      public static let chopOffs = Strings.tr("Localizable", "statistics.description.chopOffs", fallback: "With your first roll, knock over the head pin, and the two and three pins on the same side")
-      /// Percent of time after a chop off you knock over all the remaining pins
-      public static let chopOffsSpared = Strings.tr("Localizable", "statistics.description.chopOffsSpared", fallback: "Percent of time after a chop off you knock over all the remaining pins")
-      /// Fives
-      public static let fives = Strings.tr("Localizable", "statistics.description.fives", fallback: "Fives")
-      /// Fives Spared
-      public static let fivesSpared = Strings.tr("Localizable", "statistics.description.fivesSpared", fallback: "Fives Spared")
-      /// Fouls
-      public static let fouls = Strings.tr("Localizable", "statistics.description.fouls", fallback: "Fouls")
-      /// Average
-      public static let gameAverage = Strings.tr("Localizable", "statistics.description.gameAverage", fallback: "Average")
-      /// Head Pins
-      public static let headPins = Strings.tr("Localizable", "statistics.description.headPins", fallback: "Head Pins")
-      /// Head Pins Spared
-      public static let headPinsSpared = Strings.tr("Localizable", "statistics.description.headPinsSpared", fallback: "Head Pins Spared")
-      /// High Series of 3
-      public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.description.highSeriesOf3", fallback: "High Series of 3")
-      /// High Single
-      public static let highSingle = Strings.tr("Localizable", "statistics.description.highSingle", fallback: "High Single")
-      /// Left Chop Offs
-      public static let leftChopOffs = Strings.tr("Localizable", "statistics.description.leftChopOffs", fallback: "Left Chop Offs")
-      /// Left Chop Offs Spared
-      public static let leftChopOffsSpared = Strings.tr("Localizable", "statistics.description.leftChopOffsSpared", fallback: "Left Chop Offs Spared")
-      /// Left Fives
-      public static let leftFives = Strings.tr("Localizable", "statistics.description.leftFives", fallback: "Left Fives")
-      /// Left Fives Spared
-      public static let leftFivesSpared = Strings.tr("Localizable", "statistics.description.leftFivesSpared", fallback: "Left Fives Spared")
-      /// Left of Middle Hits
-      public static let leftOfMiddleHits = Strings.tr("Localizable", "statistics.description.leftOfMiddleHits", fallback: "Left of Middle Hits")
-      /// Lefts
-      public static let lefts = Strings.tr("Localizable", "statistics.description.lefts", fallback: "Lefts")
-      /// Left Splits
-      public static let leftSplits = Strings.tr("Localizable", "statistics.description.leftSplits", fallback: "Left Splits")
-      /// Left Splits Spared
-      public static let leftSplitsSpared = Strings.tr("Localizable", "statistics.description.leftSplitsSpared", fallback: "Left Splits Spared")
-      /// Lefts Spared
-      public static let leftsSpared = Strings.tr("Localizable", "statistics.description.leftsSpared", fallback: "Lefts Spared")
-      /// Left Threes
-      public static let leftThrees = Strings.tr("Localizable", "statistics.description.leftThrees", fallback: "Left Threes")
-      /// Left Threes Spared
-      public static let leftThreesSpared = Strings.tr("Localizable", "statistics.description.leftThreesSpared", fallback: "Left Threes Spared")
-      /// Left Twelves
-      public static let leftTwelves = Strings.tr("Localizable", "statistics.description.leftTwelves", fallback: "Left Twelves")
-      /// Left Twelves Spared
-      public static let leftTwelvesSpared = Strings.tr("Localizable", "statistics.description.leftTwelvesSpared", fallback: "Left Twelves Spared")
-      /// Matches Lost
-      public static let matchesLost = Strings.tr("Localizable", "statistics.description.matchesLost", fallback: "Matches Lost")
-      /// Matches Played
-      public static let matchesPlayed = Strings.tr("Localizable", "statistics.description.matchesPlayed", fallback: "Matches Played")
-      /// Matches Tied
-      public static let matchesTied = Strings.tr("Localizable", "statistics.description.matchesTied", fallback: "Matches Tied")
-      /// Matches Won
-      public static let matchesWon = Strings.tr("Localizable", "statistics.description.matchesWon", fallback: "Matches Won")
-      /// Middle Hits
-      public static let middleHits = Strings.tr("Localizable", "statistics.description.middleHits", fallback: "Middle Hits")
-      /// Number of Games
-      public static let numberOfGames = Strings.tr("Localizable", "statistics.description.numberOfGames", fallback: "Number of Games")
-      /// Right Chop Offs
-      public static let rightChopOffs = Strings.tr("Localizable", "statistics.description.rightChopOffs", fallback: "Right Chop Offs")
-      /// Right Chop Offs Spared
-      public static let rightChopOffsSpared = Strings.tr("Localizable", "statistics.description.rightChopOffsSpared", fallback: "Right Chop Offs Spared")
-      /// Right Fives
-      public static let rightFives = Strings.tr("Localizable", "statistics.description.rightFives", fallback: "Right Fives")
-      /// Right Fives Spared
-      public static let rightFivesSpared = Strings.tr("Localizable", "statistics.description.rightFivesSpared", fallback: "Right Fives Spared")
-      /// Right of Middle Hits
-      public static let rightOfMiddleHits = Strings.tr("Localizable", "statistics.description.rightOfMiddleHits", fallback: "Right of Middle Hits")
-      /// Rights
-      public static let rights = Strings.tr("Localizable", "statistics.description.rights", fallback: "Rights")
-      /// Right Splits
-      public static let rightSplits = Strings.tr("Localizable", "statistics.description.rightSplits", fallback: "Right Splits")
-      /// Right Splits Spared
-      public static let rightSplitsSpared = Strings.tr("Localizable", "statistics.description.rightSplitsSpared", fallback: "Right Splits Spared")
-      /// Rights Spared
-      public static let rightsSpared = Strings.tr("Localizable", "statistics.description.rightsSpared", fallback: "Rights Spared")
-      /// Right Threes
-      public static let rightThrees = Strings.tr("Localizable", "statistics.description.rightThrees", fallback: "Right Threes")
-      /// Right Threes Spared
-      public static let rightThreesSpared = Strings.tr("Localizable", "statistics.description.rightThreesSpared", fallback: "Right Threes Spared")
-      /// Right Twelves
-      public static let rightTwelves = Strings.tr("Localizable", "statistics.description.rightTwelves", fallback: "Right Twelves")
-      /// Right Twelves Spared
-      public static let rightTwelvesSpared = Strings.tr("Localizable", "statistics.description.rightTwelvesSpared", fallback: "Right Twelves Spared")
-      /// Opportunities to Spare
-      public static let spareChances = Strings.tr("Localizable", "statistics.description.spareChances", fallback: "Opportunities to Spare")
-      /// Spare Conversions
-      public static let spareConversions = Strings.tr("Localizable", "statistics.description.spareConversions", fallback: "Spare Conversions")
-      /// Splits
-      public static let splits = Strings.tr("Localizable", "statistics.description.splits", fallback: "Splits")
-      /// Splits Spared
-      public static let splitsSpared = Strings.tr("Localizable", "statistics.description.splitsSpared", fallback: "Splits Spared")
-      /// Middle Hits which were Strikes
-      public static let strikeMiddleHits = Strings.tr("Localizable", "statistics.description.strikeMiddleHits", fallback: "Middle Hits which were Strikes")
-      /// Total Strikes
-      public static let strikes = Strings.tr("Localizable", "statistics.description.strikes", fallback: "Total Strikes")
-      /// Threes
-      public static let threes = Strings.tr("Localizable", "statistics.description.threes", fallback: "Threes")
-      /// Threes Spared
-      public static let threesSpared = Strings.tr("Localizable", "statistics.description.threesSpared", fallback: "Threes Spared")
-      /// Total Pinfall
-      public static let totalPinfall = Strings.tr("Localizable", "statistics.description.totalPinfall", fallback: "Total Pinfall")
-      /// Total Pins Left on Deck
-      public static let totalPinsLeftOnDeck = Strings.tr("Localizable", "statistics.description.totalPinsLeftOnDeck", fallback: "Total Pins Left on Deck")
-      /// Total Rolls
-      public static let totalRolls = Strings.tr("Localizable", "statistics.description.totalRolls", fallback: "Total Rolls")
-      /// Twelves
-      public static let twelves = Strings.tr("Localizable", "statistics.description.twelves", fallback: "Twelves")
-      /// Twelves Spared
-      public static let twelvesSpared = Strings.tr("Localizable", "statistics.description.twelvesSpared", fallback: "Twelves Spared")
+      /// Average value of pins you've left standing at the end of frames per game
+      public static let averagePinsLeftOnDeck = Strings.tr("Localizable", "statistics.description.averagePinsLeftOnDeck", fallback: "Average value of pins you've left standing at the end of frames per game")
+      /// Number of times you marked a roll as a foul
+      public static let fouls = Strings.tr("Localizable", "statistics.description.fouls", fallback: "Number of times you marked a roll as a foul")
+      /// Average score across all counted games
+      public static let gameAverage = Strings.tr("Localizable", "statistics.description.gameAverage", fallback: "Average score across all counted games")
+      /// Highest total for series of 3 games
+      public static let highSeriesOf3 = Strings.tr("Localizable", "statistics.description.highSeriesOf3", fallback: "Highest total for series of 3 games")
+      /// Highest score across all counted games
+      public static let highSingle = Strings.tr("Localizable", "statistics.description.highSingle", fallback: "Highest score across all counted games")
+      /// Number of match plays you've marked as a 'Loss'
+      public static let matchesLost = Strings.tr("Localizable", "statistics.description.matchesLost", fallback: "Number of match plays you've marked as a 'Loss'")
+      /// Number of match plays you've recorded
+      public static let matchesPlayed = Strings.tr("Localizable", "statistics.description.matchesPlayed", fallback: "Number of match plays you've recorded")
+      /// Number of match plays you've marked as a 'Tie'
+      public static let matchesTied = Strings.tr("Localizable", "statistics.description.matchesTied", fallback: "Number of match plays you've marked as a 'Tie'")
+      /// Number of match plays you've marked as a 'Win'
+      public static let matchesWon = Strings.tr("Localizable", "statistics.description.matchesWon", fallback: "Number of match plays you've marked as a 'Win'")
+      /// Total number of games you've recorded
+      public static let numberOfGames = Strings.tr("Localizable", "statistics.description.numberOfGames", fallback: "Total number of games you've recorded")
+      /// Number of times you've successfully converted a spare opportunity. Failing to spare a split and other difficult shots do not affect this statistic
+      public static let spareChances = Strings.tr("Localizable", "statistics.description.spareChances", fallback: "Number of times you've successfully converted a spare opportunity. Failing to spare a split and other difficult shots do not affect this statistic")
+      /// Percent of the time a hit on the middle was a strike
+      public static let strikeMiddleHits = Strings.tr("Localizable", "statistics.description.strikeMiddleHits", fallback: "Percent of the time a hit on the middle was a strike")
+      /// Total sum of the scores across all counted games
+      public static let totalPinfall = Strings.tr("Localizable", "statistics.description.totalPinfall", fallback: "Total sum of the scores across all counted games")
+      /// Total value of pins you've left standing at the end of frames across all counted games
+      public static let totalPinsLeftOnDeck = Strings.tr("Localizable", "statistics.description.totalPinsLeftOnDeck", fallback: "Total value of pins you've left standing at the end of frames across all counted games")
+      /// Total number of times you've rolled a ball
+      public static let totalRolls = Strings.tr("Localizable", "statistics.description.totalRolls", fallback: "Total number of times you've rolled a ball")
     }
     public enum Details {
       public enum Filter {

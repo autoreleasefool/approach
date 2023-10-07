@@ -4,7 +4,7 @@ import StringsLibrary
 extension Statistics {
 	public struct LeftSplitsSpared: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
 		public static var title: String { Strings.Statistics.Title.leftSplitsSpared }
-		public static var category: StatisticCategory { .onFirstRoll }
+		public static var category: StatisticCategory { .splits }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public static var denominatorTitle: String { Strings.Statistics.Title.leftSplits }

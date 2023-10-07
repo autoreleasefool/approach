@@ -17,6 +17,7 @@ extension CGFloat {
 	public static let extraTinyIcon: CGFloat = unitSpacing * 3
 	public static let tinyIcon: CGFloat = unitSpacing * 4
 	public static let smallIcon: CGFloat = unitSpacing * 5
+	public static let inlineIcon: CGFloat = unitSpacing * 6
 	public static let smallerIcon: CGFloat = unitSpacing * 8
 	public static let standardIcon: CGFloat = unitSpacing * 12
 	public static let tappableIcon: CGFloat = 40

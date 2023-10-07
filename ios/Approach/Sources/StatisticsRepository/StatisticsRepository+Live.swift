@@ -1,6 +1,7 @@
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
+import FeatureFlagsServiceInterface
 import Foundation
 import GRDB
 import ModelsLibrary
@@ -14,6 +15,7 @@ extension StatisticsRepository: DependencyKey {
 		@Dependency(\.calendar) var calendar
 		@Dependency(\.database) var database
 		@Dependency(\.date) var date
+		@Dependency(\.featureFlags) var featureFlags
 		@Dependency(\.preferences) var preferences
 		@Dependency(\.uuid) var uuid
 
@@ -193,7 +195,10 @@ extension StatisticsRepository: DependencyKey {
 					return statistics
 				}
 
+				let frameConfiguration = preferences.perFrameConfiguration()
 				let isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
+				let isShowingStatisticDescriptions = featureFlags.isEnabled(.statisticsDescriptions)
+					&& !(preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false)
 
 				return StatisticCategory.allCases.compactMap { category in
 					var categoryStatistics = statistics
@@ -203,10 +208,22 @@ extension StatisticsRepository: DependencyKey {
 					guard !categoryStatistics.isEmpty else { return nil }
 
 					return .init(
-						category: category,
+						title: String(describing: category),
+						description: isShowingStatisticDescriptions
+						? category.detailedDescription(frameConfiguration: frameConfiguration)
+						: nil,
+						images: isShowingStatisticDescriptions
+						? category.imageAssets(frameConfiguration: frameConfiguration)?.asListEntryImages()
+						: nil,
 						entries: .init(uniqueElements: categoryStatistics.map {
 							let statistic = type(of: $0)
-							return .init(title: statistic.title, description: statistic.pinDescription, value: $0.formattedValue)
+							let describable = statistic as? DescribableStatistic.Type
+
+							return .init(
+								title: statistic.title,
+								description: describable?.pinDescription,
+								value: $0.formattedValue
+							)
 						})
 					)
 				}

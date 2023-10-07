@@ -57,7 +57,7 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing", "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
-services = [ "Avatar", "FeatureFlags", "RecentlyUsed" ]
+services = [ "Avatar", "RecentlyUsed" ]
 
 [features.GamesList]
 features = [ "GamesEditor", "SeriesEditor" ]
@@ -130,18 +130,16 @@ dependencies = [ "Algorithms" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
-services = [ "Tips" ]
 
 [features.StatisticsDetails]
 features = [ "Errors" ]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
-services = [ "Analytics", "Notifications", "Preference" ]
+services = [ "Analytics", "FeatureFlags", "Notifications", "Preference", "Tips" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 
 [features.StatisticsWidgetsLayout]
 features = [ "StatisticsDetails" ]
 repositories = [ "StatisticsWidgets" ]
-services = [ "Tips" ]
 libraries = [ "Reordering" ]
 
 # Repositories

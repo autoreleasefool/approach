@@ -4,7 +4,7 @@ import StringsLibrary
 extension Statistics {
 	public struct StrikeMiddleHits: Statistic, TrackablePerFrame, PercentageStatistic {
 		public static var title: String { Strings.Statistics.Title.strikeMiddleHits }
-		public static var category: StatisticCategory { .overall }
+		public static var category: StatisticCategory { .middleHits }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public static var numeratorTitle: String { Strings.Statistics.Title.strikeMiddleHits }

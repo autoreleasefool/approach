@@ -345,7 +345,6 @@ let package = Package(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"AvatarServiceInterface",
-				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
@@ -620,6 +619,7 @@ let package = Package(
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"ErrorsFeature",
+				"FeatureFlagsServiceInterface",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
@@ -628,6 +628,7 @@ let package = Package(
 				"PreferenceServiceInterface",
 				"SeriesRepositoryInterface",
 				"StatisticsRepositoryInterface",
+				"TipsServiceInterface",
 			]
 		),
 		.testTarget(
@@ -641,7 +642,6 @@ let package = Package(
 			name: "StatisticsOverviewFeature",
 			dependencies: [
 				"StatisticsDetailsFeature",
-				"TipsServiceInterface",
 			]
 		),
 		.testTarget(
@@ -657,7 +657,6 @@ let package = Package(
 				"ReorderingLibrary",
 				"StatisticsDetailsFeature",
 				"StatisticsWidgetsRepositoryInterface",
-				"TipsServiceInterface",
 			]
 		),
 		.testTarget(
