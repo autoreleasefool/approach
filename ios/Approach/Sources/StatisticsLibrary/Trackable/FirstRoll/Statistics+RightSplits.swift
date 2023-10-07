@@ -5,6 +5,7 @@ extension Statistics {
 	public struct RightSplits: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.rightSplits }
 		public static var category: StatisticCategory { .splits }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var rightSplits = 0

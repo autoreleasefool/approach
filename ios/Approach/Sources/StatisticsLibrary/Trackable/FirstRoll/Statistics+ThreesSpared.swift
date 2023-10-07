@@ -5,6 +5,7 @@ extension Statistics {
 	public struct ThreesSpared: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
 		public static var title: String { Strings.Statistics.Title.threesSpared }
 		public static var category: StatisticCategory { .threes }
+		public static var isEligibleForNewLabel: Bool { true }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public static var denominatorTitle: String { Strings.Statistics.Title.threes }

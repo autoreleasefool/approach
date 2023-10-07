@@ -5,6 +5,7 @@ extension Statistics {
 	public struct TotalRolls: Statistic, TrackablePerFrame, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.totalRolls }
 		public static var category: StatisticCategory { .overall }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { nil }
 
 		private var totalRolls = 0

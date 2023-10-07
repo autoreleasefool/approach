@@ -5,6 +5,7 @@ extension Statistics {
 	public struct LeftFives: Statistic, TrackablePerFirstRoll, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.leftFives }
 		public static var category: StatisticCategory { .fives }
+		public static var isEligibleForNewLabel: Bool { true }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		private var leftFives = 0

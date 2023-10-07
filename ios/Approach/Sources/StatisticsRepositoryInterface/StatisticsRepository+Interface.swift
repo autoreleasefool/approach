@@ -13,6 +13,7 @@ public struct StatisticsRepository: Sendable {
 	public var loadWidgetSources: @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources
 	public var loadDefaultWidgetSources: @Sendable () async throws -> StatisticsWidget.Sources?
 	public var loadWidgetData: @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
+	public var hideNewStatisticLabels: @Sendable () async -> Void
 
 	public init(
 		loadSources: @escaping @Sendable (TrackableFilter.Source) async throws -> TrackableFilter.Sources,
@@ -21,7 +22,8 @@ public struct StatisticsRepository: Sendable {
 		loadChart: @escaping @Sendable (Statistic.Type, TrackableFilter) async throws -> Statistics.ChartContent,
 		loadWidgetSources: @escaping @Sendable (StatisticsWidget.Source) async throws -> StatisticsWidget.Sources,
 		loadDefaultWidgetSources: @escaping @Sendable () async throws -> StatisticsWidget.Sources?,
-		loadWidgetData: @escaping @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent
+		loadWidgetData: @escaping @Sendable (StatisticsWidget.Configuration) async throws -> Statistics.ChartContent,
+		hideNewStatisticLabels: @escaping @Sendable () async -> Void
 	) {
 		self.loadSources = loadSources
 		self.loadDefaultSources = loadDefaultSources
@@ -30,6 +32,7 @@ public struct StatisticsRepository: Sendable {
 		self.loadWidgetSources = loadWidgetSources
 		self.loadDefaultWidgetSources = loadDefaultWidgetSources
 		self.loadWidgetData = loadWidgetData
+		self.hideNewStatisticLabels = hideNewStatisticLabels
 	}
 
 	public func load(for filter: TrackableFilter) async throws -> [Statistics.ListEntryGroup] {
@@ -49,7 +52,8 @@ extension StatisticsRepository: TestDependencyKey {
 		loadChart: { _, _ in unimplemented("\(Self.self).loadChart") },
 		loadWidgetSources: { _ in unimplemented("\(Self.self).loadWidgetSources") },
 		loadDefaultWidgetSources: { unimplemented("\(Self.self).loadDefaultWidgetSources") },
-		loadWidgetData: { _ in unimplemented("\(Self.self).loadWidgetData") }
+		loadWidgetData: { _ in unimplemented("\(Self.self).loadWidgetData") },
+		hideNewStatisticLabels: { unimplemented("\(Self.self).hideNewStatisticsLabels") }
 	)
 }
 

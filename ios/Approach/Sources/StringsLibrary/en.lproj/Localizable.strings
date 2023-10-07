@@ -312,6 +312,7 @@
 "statistics.list.statisticsDescription.tip.message" = "All the statistics come with clarifying descriptions. When you've learned them and no longer need the help, at the bottom of this list is a setting to hide these descriptions.";
 "statistics.list.statisticsDescription" = "Hide descriptions?";
 "statistics.list.statisticsDescription.help" = "You can hide the descriptions to see more stats at once.";
+"statistics.list.new" = "New";
 "statistics.picker.title" = "Statistic";
 "statistics.filter.filterByGame" = "Filter by game";
 "statistics.filter.allGames" = "All games";

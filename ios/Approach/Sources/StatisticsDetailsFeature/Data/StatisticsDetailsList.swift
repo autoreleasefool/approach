@@ -180,6 +180,13 @@ public struct StatisticsDetailsListView<Header: View>: View {
 										LabeledContent(entry.title, value: entry.value)
 									} else {
 										HStack(alignment: .center) {
+											if entry.highlightAsNew {
+												Text(Strings.Statistics.List.new.uppercased())
+													.font(.caption)
+													.fontWeight(.thin)
+													.foregroundColor(Asset.Colors.Action.default)
+											}
+
 											VStack(alignment: .leading) {
 												Text(entry.title)
 												if let description = entry.description {

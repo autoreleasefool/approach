@@ -46,7 +46,7 @@ extension StatisticCategory {
 				Asset.Media.Icons.Pins.leftSplit,
 				Asset.Media.Icons.Pins.leftSplitWithBonus,
 				Asset.Media.Icons.Pins.rightSplit,
-				Asset.Media.Icons.Pins.rightSplitWithBonus
+				Asset.Media.Icons.Pins.rightSplitWithBonus,
 			]
 			: [Asset.Media.Icons.Pins.leftSplit, Asset.Media.Icons.Pins.rightSplit]
 		case .threes: return [Asset.Media.Icons.Pins.leftThree, Asset.Media.Icons.Pins.rightThree]

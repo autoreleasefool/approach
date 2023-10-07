@@ -7,6 +7,7 @@ public enum Statistics {}
 public protocol Statistic {
 	static var title: String { get }
 	static var category: StatisticCategory { get }
+	static var isEligibleForNewLabel: Bool { get }
 	static var supportsAggregation: Bool { get }
 	static var supportsWidgets: Bool { get }
 	static var preferredTrendDirection: StatisticTrendDirection? { get }

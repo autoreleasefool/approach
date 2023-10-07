@@ -2,6 +2,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import OnboardingFeature
 import SwiftUI
+import SwiftUIExtensionsLibrary
 
 public struct AppView: View {
 	let store: StoreOf<App>
@@ -23,5 +24,6 @@ public struct AppView: View {
 				})
 			}
 		}
+		.onFirstAppear { store.send(.view(.didFirstAppear)) }
 	}
 }

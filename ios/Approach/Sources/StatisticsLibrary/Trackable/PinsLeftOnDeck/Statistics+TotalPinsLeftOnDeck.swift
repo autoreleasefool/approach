@@ -5,6 +5,7 @@ extension Statistics {
 	public struct TotalPinsLeftOnDeck: Statistic, TrackablePerFrame, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.totalPinsLeftOnDeck }
 		public static var category: StatisticCategory { .pinsLeftOnDeck }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .none }
 
 		private var totalPinsLeftOnDeck = 0

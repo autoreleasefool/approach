@@ -7,13 +7,15 @@ extension Statistics {
 		public let title: String
 		public let description: String?
 		public let value: String
+		public let highlightAsNew: Bool
 
 		public var id: String { title }
 
-		public init(title: String, description: String?, value: String) {
+		public init(title: String, description: String?, value: String, highlightAsNew: Bool) {
 			self.title = title
 			self.description = description
 			self.value = value
+			self.highlightAsNew = highlightAsNew
 		}
 	}
 }

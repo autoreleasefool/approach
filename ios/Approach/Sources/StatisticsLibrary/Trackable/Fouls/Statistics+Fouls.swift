@@ -5,6 +5,7 @@ extension Statistics {
 	public struct Fouls: Statistic, TrackablePerFrame, PercentageStatistic {
 		public static var title: String { Strings.Statistics.Title.fouls }
 		public static var category: StatisticCategory { .fouls }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
 		public static var numeratorTitle: String { Strings.Statistics.Title.fouls }

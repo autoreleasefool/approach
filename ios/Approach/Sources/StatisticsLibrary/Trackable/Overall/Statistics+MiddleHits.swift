@@ -5,6 +5,7 @@ extension Statistics {
 	public struct MiddleHits: Statistic, TrackablePerFirstRoll, FirstRollStatistic {
 		public static var title: String { Strings.Statistics.Title.middleHits }
 		public static var category: StatisticCategory { .middleHits }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public var totalRolls = 0

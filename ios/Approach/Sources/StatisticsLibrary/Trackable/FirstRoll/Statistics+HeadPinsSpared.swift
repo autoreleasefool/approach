@@ -5,6 +5,7 @@ extension Statistics {
 	public struct HeadPinsSpared: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
 		public static var title: String { Strings.Statistics.Title.headPinsSpared }
 		public static var category: StatisticCategory { .headPins }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public static var denominatorTitle: String { Strings.Statistics.Title.headPins }

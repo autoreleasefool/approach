@@ -16,6 +16,7 @@ import ModelsViewsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
 import StatisticsDetailsFeature
+import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -136,6 +137,7 @@ public struct GameDetails: Reducer {
 
 	@Dependency(\.games) var games
 	@Dependency(\.matchPlays) var matchPlays
+	@Dependency(\.statistics) var statistics
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -300,7 +302,9 @@ public struct GameDetails: Reducer {
 						} else {
 							return .none
 						}
-					case .gearPicker, .matchPlay, .scoring, .statistics, .none:
+					case .statistics:
+						return .run { _ in await statistics.hideNewStatisticLabels() }
+					case .gearPicker, .matchPlay, .scoring, .none:
 						return .none
 					}
 

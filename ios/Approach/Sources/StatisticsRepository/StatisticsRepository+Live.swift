@@ -19,6 +19,10 @@ extension StatisticsRepository: DependencyKey {
 		@Dependency(\.preferences) var preferences
 		@Dependency(\.uuid) var uuid
 
+		@Sendable func isSeenKey(forStatistic: Statistic.Type) -> String {
+			"Statistic.IsSeen.\(forStatistic.title)"
+		}
+
 		// MARK: - Per Series
 
 		@Sendable func adjust(statistics: inout [Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
@@ -222,7 +226,9 @@ extension StatisticsRepository: DependencyKey {
 							return .init(
 								title: statistic.title,
 								description: describable?.pinDescription,
-								value: $0.formattedValue
+								value: $0.formattedValue,
+								highlightAsNew: statistic.isEligibleForNewLabel
+									&& preferences.getBool(isSeenKey(forStatistic: statistic)) != true
 							)
 						})
 					)
@@ -346,6 +352,12 @@ extension StatisticsRepository: DependencyKey {
 					case .dataMissing:
 						return dataMissing()
 					}
+				}
+			},
+			hideNewStatisticLabels: {
+				@Dependency(\.preferences) var preferences
+				Statistics.allCases.forEach {
+					preferences.setBool(isSeenKey(forStatistic: $0), true)
 				}
 			}
 		)

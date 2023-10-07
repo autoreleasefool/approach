@@ -63,6 +63,7 @@ public struct StatisticsOverview: Reducer {
 
 	public init() {}
 
+	@Dependency(\.statistics) var statistics
 	@Dependency(\.tips) var tips
 
 	public var body: some ReducerOf<Self> {
@@ -105,8 +106,15 @@ public struct StatisticsOverview: Reducer {
 						return .none
 					}
 
-				case .destination(.dismiss),
-						.destination(.presented(.sourcePicker(.internal))),
+				case .destination(.dismiss):
+					switch state.destination {
+					case .details:
+						return .run { _ in await statistics.hideNewStatisticLabels() }
+					case .sourcePicker, .none:
+						return .none
+					}
+
+				case .destination(.presented(.sourcePicker(.internal))),
 						.destination(.presented(.sourcePicker(.view))),
 						.destination(.presented(.details(.internal))),
 						.destination(.presented(.details(.view))):

@@ -5,6 +5,7 @@ extension Statistics {
 	public struct HighSingle: Statistic, TrackablePerGame, HighestOfStatistic {
 		public static var title: String { Strings.Statistics.Title.highSingle }
 		public static var category: StatisticCategory { .overall }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		private var highSingle = 0

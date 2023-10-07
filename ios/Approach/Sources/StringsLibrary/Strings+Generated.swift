@@ -1521,6 +1521,8 @@ public enum Strings {
     public enum List {
       /// Hide statistics with a value of zero?
       public static let hideZeroStatistics = Strings.tr("Localizable", "statistics.list.hideZeroStatistics", fallback: "Hide statistics with a value of zero?")
+      /// New
+      public static let new = Strings.tr("Localizable", "statistics.list.new", fallback: "New")
       /// Hide descriptions?
       public static let statisticsDescription = Strings.tr("Localizable", "statistics.list.statisticsDescription", fallback: "Hide descriptions?")
       public enum HideZeroStatistics {

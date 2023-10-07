@@ -5,6 +5,7 @@ extension Statistics {
 	public struct RightChopOffsSpared: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
 		public static var title: String { Strings.Statistics.Title.rightChopOffsSpared }
 		public static var category: StatisticCategory { .chopOffs }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
 		public static var denominatorTitle: String { Strings.Statistics.Title.rightChopOffs }

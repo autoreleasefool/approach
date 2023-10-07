@@ -5,6 +5,7 @@ extension Statistics {
 	public struct MatchesPlayed: Statistic, TrackablePerGame, CountingStatistic {
 		public static var title: String { Strings.Statistics.Title.matchesPlayed }
 		public static var category: StatisticCategory { .matchPlayResults }
+		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { nil }
 
 		private var matchesPlayed = 0

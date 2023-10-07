@@ -8,6 +8,7 @@ import FeatureFlagsServiceInterface
 import OnboardingFeature
 import PreferenceServiceInterface
 import SettingsFeature
+import StatisticsRepositoryInterface
 
 public struct App: Reducer {
 	public enum State: Equatable {
@@ -25,7 +26,9 @@ public struct App: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable {
+			case didFirstAppear
+		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case onboarding(Onboarding.Action)
@@ -37,6 +40,7 @@ public struct App: Reducer {
 	}
 
 	@Dependency(\.preferences) var preferences
+	@Dependency(\.statistics) var statistics
 
 	public init() {}
 
@@ -45,8 +49,14 @@ public struct App: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
-					return .none
+				case .didFirstAppear:
+					switch state {
+					case .content:
+						return .none
+					case .onboarding:
+						// TODO: Move this to a 'first launch' service
+						return .run { _ in await statistics.hideNewStatisticLabels() }
+					}
 				}
 
 			case let .internal(internalAction):
