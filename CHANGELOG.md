@@ -1,10 +1,9 @@
 # Most recent version
 
-## iOS 1.1.0b9
+## iOS 1.1.0b10
 
 ```
-- Feat: New statistics: Fives and Threes
-- Feat: Descriptions of statistics in list
+- Fix: Resolve issue with iPad icon picking
 ```
 
 ## Android v3.2.0
@@ -18,6 +17,13 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.1.0b9
+
+```
+- Feat: New statistics: Fives and Threes
+- Feat: Descriptions of statistics in list
+```
 
 ## iOS 1.0.4b8
 
