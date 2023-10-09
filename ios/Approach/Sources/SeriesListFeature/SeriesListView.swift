@@ -88,11 +88,11 @@ public struct SeriesListView: View {
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.didTapAddButton) }
+					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
+					AddButton { viewStore.send(.didTapAddButton) }
 				}
 			}
 			.task { await viewStore.send(.didObserveData).finish() }
