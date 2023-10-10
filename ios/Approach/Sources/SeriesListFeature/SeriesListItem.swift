@@ -59,7 +59,7 @@ public struct SeriesListItem: View {
 					.chartXAxis(.hidden)
 					.chartYAxis(.hidden)
 					.chartLegend(.hidden)
-					.chartYScale(domain: 0...Game.MAXIMUM_SCORE)
+					.chartYScale(domain: series.scoreDomain)
 					.chartXScale(domain: 1...series.scores.count)
 					.frame(
 						width: contentSize.width * 0.9,
@@ -137,6 +137,14 @@ extension Series.List {
 			return (lowest, highest)
 		} else {
 			return nil
+		}
+	}
+
+	var scoreDomain: ClosedRange<Int> {
+		if let scoreRange {
+			return max(scoreRange.lowest - 10, 0)...min(scoreRange.highest + 10, Game.MAXIMUM_SCORE)
+		} else {
+			return 0...Game.MAXIMUM_SCORE
 		}
 	}
 }
