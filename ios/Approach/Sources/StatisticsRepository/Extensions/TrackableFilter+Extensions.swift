@@ -46,7 +46,9 @@ extension TrackableFilter {
 
 		return (
 			series?
-				.annotated(with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total"))
+				.annotated(
+					with: Series.Database.trackableGames(filter: .init()).sum(Game.Database.Columns.score).forKey("total") ?? 0
+				)
 				.asRequest(of: Series.TrackableEntry.self),
 			games?
 				.annotated(withRequired: Game.Database.series.select(

@@ -17,7 +17,9 @@ extension SeriesRepository: DependencyKey {
 					var request = Series.Database
 						.all()
 						.bowled(inLeague: league)
-						.annotated(with: Series.Database.games.sum(Game.Database.Columns.score).forKey("total"))
+						.annotated(
+							with: Series.Database.games.sum(Game.Database.Columns.score).forKey("total") ?? 0
+						)
 						.including(
 							all: Series.Database.games
 								.order(Game.Database.Columns.index)
