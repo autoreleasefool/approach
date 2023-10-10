@@ -1,9 +1,11 @@
 # Most recent version
 
-## iOS 1.1.0b10
+## iOS 1.1.1b11
 
 ```
-- Fix: Resolve issue with iPad icon picking
+- Feat: More varied charts in series list
+- Fix: Statistics not loading when a all games of a series are excluded
+- Fix: Marking a pre-bowl as a regular series now updates the games in the series to be included in stats
 ```
 
 ## Android v3.2.0
@@ -17,6 +19,12 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.1.0b10
+
+```
+- Fix: Resolve issue with iPad icon picking
+```
 
 ## iOS 1.1.0b9
 
