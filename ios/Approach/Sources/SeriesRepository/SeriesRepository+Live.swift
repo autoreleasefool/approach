@@ -123,6 +123,21 @@ extension SeriesRepository: DependencyKey {
 			},
 			update: { series in
 				try await database.writer().write {
+					if let existing = try Series.Database.fetchOne($0, id: series.id) {
+						switch (existing.preBowl, series.preBowl) {
+						case (.preBowl, .regular):
+							try Game.Database
+								.filter(Game.Database.Columns.seriesId == series.id)
+								.updateAll($0, Game.Database.Columns.excludeFromStatistics.set(to: Game.ExcludeFromStatistics.include))
+						case (.regular, .preBowl):
+							try Game.Database
+								.filter(Game.Database.Columns.seriesId == series.id)
+								.updateAll($0, Game.Database.Columns.excludeFromStatistics.set(to: Game.ExcludeFromStatistics.exclude))
+						case (.preBowl, .preBowl), (.regular, .regular):
+							break
+						}
+					}
+
 					try series.update($0)
 				}
 			},

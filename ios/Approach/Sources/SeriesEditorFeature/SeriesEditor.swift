@@ -131,6 +131,17 @@ public struct SeriesEditor: Reducer {
 					}
 					return .none
 
+				case .binding(\.$preBowl):
+					switch (state.league.excludeFromStatistics, state.preBowl) {
+					case (.exclude, _):
+						state.excludeFromStatistics = .exclude
+					case (_, .preBowl):
+						state.excludeFromStatistics = .exclude
+					case (.include, .regular):
+						state.excludeFromStatistics = .include
+					}
+					return .none
+
 				case .binding(\.$date):
 					state.date = calendar.startOfDay(for: state.date)
 					return .none
