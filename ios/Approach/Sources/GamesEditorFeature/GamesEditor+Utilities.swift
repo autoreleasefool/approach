@@ -96,7 +96,8 @@ extension GamesEditor.State {
 		updatingRollIndexTo: Int? = nil,
 		frameIndex: Int? = nil
 	) {
-		forceNextHeaderElementNil = game?.scoringMethod == .manual || frames?.first(where: { $0.hasUntouchedRoll }) == nil
+		forceNextHeaderElementNilOrNextGame = game?.scoringMethod == .manual
+			|| frames?.nextFrameToRecord().hasUntouchedRoll != true
 		setCurrent(rollIndex: updatingRollIndexTo, frameIndex: frameIndex)
 	}
 

@@ -141,6 +141,20 @@ extension Frame.Edit {
 	}
 }
 
+extension Array where Element == Frame.Edit {
+	public func nextIndexToRecord() -> Index {
+		let lastFrameWithRolls = self.lastIndex { !$0.rolls.isEmpty }
+		guard let lastFrameWithRolls else { return startIndex }
+		return self[lastFrameWithRolls].hasUntouchedRoll
+			? lastFrameWithRolls
+			: Swift.min(index(after: lastFrameWithRolls), endIndex - 1)
+	}
+
+	public func nextFrameToRecord() -> Frame.Edit {
+		self[nextIndexToRecord()]
+	}
+}
+
 extension Frame.OrderedRoll {
 	mutating func toggle(_ pin: Pin, newValue: Bool?) {
 		if let newValue {

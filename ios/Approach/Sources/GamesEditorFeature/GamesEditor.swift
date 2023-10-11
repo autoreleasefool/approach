@@ -272,9 +272,9 @@ public struct GamesEditor: Reducer {
 
 					state.frames = frames
 
-					let newFrameIndex = frames.firstIndex { $0.hasUntouchedRoll }
-					let newRollIndex = frames[newFrameIndex ?? 0].firstUntouchedRoll ?? 0
-					state.hideNextHeaderIfNecessary(updatingRollIndexTo: newRollIndex, frameIndex: newFrameIndex ?? 0)
+					let newFrameIndex = frames.nextIndexToRecord()
+					let newRollIndex = frames[newFrameIndex].firstUntouchedRoll ?? 0
+					state.hideNextHeaderIfNecessary(updatingRollIndexTo: newRollIndex, frameIndex: newFrameIndex)
 
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 
