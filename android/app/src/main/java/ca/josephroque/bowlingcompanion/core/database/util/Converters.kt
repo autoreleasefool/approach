@@ -1,15 +1,14 @@
 package ca.josephroque.bowlingcompanion.core.database.util
 
 import androidx.room.TypeConverter
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
-
-class InstantConverter {
+class LocalDateConverter {
 	@TypeConverter
-	fun longToInstant(value: Long?): Instant? =
-		value?.let(Instant::fromEpochMilliseconds)
+	fun stringToLocalDate(value: String?): LocalDate? =
+		value?.let { LocalDate.parse(it) }
 
 	@TypeConverter
-	fun instantToLong(instant: Instant?): Long? =
-		instant?.toEpochMilliseconds()
+	fun localDateToString(localDate: LocalDate?): String? =
+		localDate?.toString()
 }

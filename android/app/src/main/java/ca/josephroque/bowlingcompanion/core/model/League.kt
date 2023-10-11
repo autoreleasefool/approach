@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.model
 
 import androidx.compose.runtime.Immutable
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 class League {
@@ -26,7 +26,7 @@ data class LeagueListItem(
 	val id: UUID,
 	val name: String,
 	val recurrence: LeagueRecurrence,
-	val lastSeriesDate: Instant?,
+	val lastSeriesDate: LocalDate?,
 	val average: Double?,
 )
 

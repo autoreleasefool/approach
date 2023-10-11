@@ -38,16 +38,13 @@ import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.entryModelOf
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 import kotlin.math.roundToInt
 
 data class SeriesChartable(
 	val id: UUID,
-	val date: Instant,
+	val date: LocalDate,
 	val preBowl: SeriesPreBowl,
 	val total: Int,
 	val numberOfGames: Int,
@@ -103,7 +100,7 @@ fun SeriesItemRow(
 }
 
 @Composable
-private fun Header(date: Instant) {
+private fun Header(date: LocalDate) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -115,8 +112,7 @@ private fun Header(date: Instant) {
 		)
 
 		Text(
-			text = date.toLocalDateTime(TimeZone.currentSystemDefault())
-				.format("MMMM d, yyyy"),
+			text = date.format("MMMM d, yyyy"),
 			style = MaterialTheme.typography.titleMedium,
 		)
 	}
@@ -198,7 +194,7 @@ fun SeriesItemPreview() {
 			SeriesItemRow(
 				series = SeriesChartable(
 					id = UUID.randomUUID(),
-					date = Clock.System.now(),
+					date = LocalDate.parse("2023-09-24"),
 					total = 880,
 					preBowl = SeriesPreBowl.REGULAR,
 					numberOfGames = 4,
@@ -209,7 +205,7 @@ fun SeriesItemPreview() {
 			SeriesItemRow(
 				series = SeriesChartable(
 					id = UUID.randomUUID(),
-					date = Clock.System.now(),
+					date = LocalDate.parse("2023-10-01"),
 					total = 880,
 					preBowl = SeriesPreBowl.REGULAR,
 					numberOfGames = 1,

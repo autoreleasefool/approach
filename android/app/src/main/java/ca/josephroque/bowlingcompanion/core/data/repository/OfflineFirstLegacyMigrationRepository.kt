@@ -38,6 +38,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.utils.toLocalDate
 import kotlinx.datetime.Instant
 import java.util.UUID
 import javax.inject.Inject
@@ -182,7 +183,9 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 
 			migratedSeries.add(SeriesEntity(
 				id = id,
-				date = Instant.fromEpochMilliseconds(legacySeries.date.time),
+				date = Instant
+					.fromEpochMilliseconds(legacySeries.date.time)
+					.toLocalDate(),
 				numberOfGames = legacySeries.numberOfGames,
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				preBowl = SeriesPreBowl.REGULAR,

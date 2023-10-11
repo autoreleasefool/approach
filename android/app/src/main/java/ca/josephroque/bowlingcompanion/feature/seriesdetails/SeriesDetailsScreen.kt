@@ -20,8 +20,6 @@ import ca.josephroque.bowlingcompanion.feature.gameslist.GamesListUiState
 import ca.josephroque.bowlingcompanion.feature.gameslist.gamesList
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsHeader
 import ca.josephroque.bowlingcompanion.utils.format
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.util.UUID
 
 @Composable
@@ -58,9 +56,7 @@ internal fun SeriesDetailsScreen(
 						text = when (seriesDetailsState) {
 							SeriesDetailsUiState.Loading -> ""
 							is SeriesDetailsUiState.Success -> seriesDetailsState.details
-								.date
-								.toLocalDateTime(TimeZone.currentSystemDefault())
-								.format("MMMM d, yyyy")
+								.date.format("MMMM d, yyyy")
 						},
 						maxLines = 1,
 						overflow = TextOverflow.Ellipsis,

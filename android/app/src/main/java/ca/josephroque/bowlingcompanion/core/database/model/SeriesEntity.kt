@@ -7,7 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 @Entity(
@@ -33,7 +33,7 @@ import java.util.UUID
 data class SeriesEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
 	@ColumnInfo(name = "league_id", index = true) val leagueId: UUID,
-	@ColumnInfo(name = "date") val date: Instant,
+	@ColumnInfo(name = "date") val date: LocalDate,
 	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,

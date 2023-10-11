@@ -25,7 +25,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.utils.formatAsAverage
 import ca.josephroque.bowlingcompanion.utils.seriesDate
-import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 @Composable
@@ -85,7 +85,7 @@ fun LeagueItemPreview() {
 				name = "Majors, 23/24",
 				recurrence = LeagueRecurrence.REPEATING,
 				average = 234.0,
-				lastSeriesDate = Instant.fromEpochSeconds(1695530266L),
+				lastSeriesDate = LocalDate.parse("2023-10-01"),
 			),
 			onClick = {},
 		)
