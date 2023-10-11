@@ -10,6 +10,7 @@ extension GamesEditor {
 		case let .delegate(delegateAction):
 			switch delegateAction {
 			case let .didEditMatchPlay(.success(matchPlay)):
+				guard state.game?.matchPlay == nil || state.game?.matchPlay?.id == matchPlay?.id else { return .none }
 				state.game?.matchPlay = matchPlay
 				return save(matchPlay: state.game?.matchPlay)
 
@@ -19,7 +20,7 @@ extension GamesEditor {
 					.map { .internal(.errors($0)) }
 
 			case let .didEditGame(game):
-				guard let game else { return .none }
+				guard let game, state.currentGameId == game.id else { return .none }
 				state.game = game
 				state.hideNextHeaderIfNecessary()
 				return save(game: state.game)

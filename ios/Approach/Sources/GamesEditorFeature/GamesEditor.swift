@@ -293,15 +293,17 @@ public struct GamesEditor: Reducer {
 						.map { .internal(.errors($0)) }
 
 				case let .gameResponse(.success(game)):
-					guard state.currentGameId == game?.id, let game else { return .none }
+					guard let game, state.currentGameId == game.id else { return .none }
+					let loadGameDetailsEffect: Effect<Action>?
 					switch state.destination {
 					case let .gameDetails(gameDetails):
 						var details = gameDetails
 						if gameDetails.gameId != state.currentGameId {
 							let loadEffect = details.loadGameDetails(forGameId: state.currentGameId, didChangeBowler: state.didChangeBowler)
 							state.destination = .gameDetails(details)
-							return loadEffect
-								.map { .internal(.destination(.presented(.gameDetails($0)))) }
+							loadGameDetailsEffect = loadEffect.map { .internal(.destination(.presented(.gameDetails($0)))) }
+						} else {
+							loadGameDetailsEffect = nil
 						}
 					case .none:
 						state.destination = .gameDetails(.init(
@@ -311,15 +313,17 @@ public struct GamesEditor: Reducer {
 							didChangeBowler: state.didChangeBowler
 						))
 						state.didChangeBowler = false
+						loadGameDetailsEffect = nil
 					case .sheets, .duplicateLanesAlert:
 						if state.currentGameId != game.id {
 							state.destination = nil
 						}
+						loadGameDetailsEffect = nil
 					}
 					state.game = game
 					state.elementsRefreshing.remove(.game)
 					state.hideNextHeaderIfNecessary()
-					return .none
+					return loadGameDetailsEffect ?? .none
 
 				case let .didDuplicateLanes(.failure(error)):
 					return state.errors
@@ -346,6 +350,7 @@ public struct GamesEditor: Reducer {
 					return .none
 
 				case let .calculatedScore(score):
+					guard state.currentGameId == score.id else { return .none }
 					state.score = score
 					switch state.game?.scoringMethod {
 					case .none, .manual:
