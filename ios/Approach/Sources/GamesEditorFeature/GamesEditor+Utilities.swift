@@ -24,8 +24,43 @@ extension GamesEditor.State {
 			}
 		}
 
-		guard !forceNextHeaderElementNil else {
-			_nextHeaderElement = nil
+		func syncGameDetailsHeaderElement() {
+			// Keep _nextHeaderElement in sync with GameDetails
+			switch destination {
+			case var .gameDetails(details):
+				details.nextHeaderElement = _nextHeaderElement
+				destination = .gameDetails(details)
+			case .duplicateLanesAlert, .sheets, .none:
+				break
+			}
+		}
+
+		guard !forceNextHeaderElementNilOrNextGame else {
+			let numberOfBowlers = bowlerIds.count
+			let numberOfGames = bowlerGameIds.first?.value.count ?? 1
+			let nextGameIndex = currentGameIndex + 1
+
+			if numberOfBowlers == 1 {
+				_nextHeaderElement = numberOfGames > nextGameIndex ? .game(
+					gameIndex: nextGameIndex,
+					bowler: currentBowlerId,
+					game: bowlerGameIds[currentBowlerId]![nextGameIndex]
+				) : nil
+			} else {
+				let nextBowlerIndex = (currentBowlerIndex + 1) % numberOfBowlers
+				let nextBowlerId = bowlerIds[nextBowlerIndex]
+
+				if nextBowlerIndex == 0 {
+					_nextHeaderElement = numberOfGames > nextGameIndex ? .game(
+						gameIndex: nextGameIndex,
+						bowler: nextBowlerId,
+						game: bowlerGameIds[nextBowlerId]![nextGameIndex]
+					) : nil
+				} else  {
+					_nextHeaderElement = .bowler(name: bowlers![id: nextBowlerId]!.name, id: nextBowlerId)
+				}
+			}
+			syncGameDetailsHeaderElement()
 			return
 		}
 
@@ -56,7 +91,7 @@ extension GamesEditor.State {
 					_nextHeaderElement = .frame(frameIndex: nextFrameIndex)
 				}
 			} else {
-				let nextBowlerIndex = (currentBowlerIndex + 1) % bowlerIds.count
+				let nextBowlerIndex = (currentBowlerIndex + 1) % numberOfBowlers
 				let nextBowlerId = bowlerIds[nextBowlerIndex]
 
 				// If it's the last frame, we should show either the next bowler or, if there are no more bowlers,
@@ -82,14 +117,7 @@ extension GamesEditor.State {
 			}
 		}
 
-		// Keep _nextHeaderElement in sync with GameDetails
-		switch destination {
-		case var .gameDetails(details):
-			details.nextHeaderElement = _nextHeaderElement
-			destination = .gameDetails(details)
-		case .duplicateLanesAlert, .sheets, .none:
-			break
-		}
+		syncGameDetailsHeaderElement()
 	}
 
 	mutating func hideNextHeaderIfNecessary(

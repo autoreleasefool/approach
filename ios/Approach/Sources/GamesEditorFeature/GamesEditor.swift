@@ -55,7 +55,7 @@ public struct GamesEditor: Reducer {
 		public var currentFrameIndex: Int { currentFrame.frameIndex  }
 		public var currentRollIndex: Int { currentFrame.rollIndex }
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement? { _nextHeaderElement }
-		public var forceNextHeaderElementNil: Bool = false
+		public var forceNextHeaderElementNilOrNextGame: Bool = false
 
 		// Loaded details for the current entity being edited
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
