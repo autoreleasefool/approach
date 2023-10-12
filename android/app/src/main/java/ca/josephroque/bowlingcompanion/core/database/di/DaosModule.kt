@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
+import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
@@ -60,6 +61,11 @@ object DaosModule {
 	fun providesMatchPlayDao(
 		database: ApproachDatabase,
 	): MatchPlayDao = database.matchPlayDao()
+
+	@Provides
+	fun providesGearDao(
+		database: ApproachDatabase,
+	): GearDao = database.gearDao()
 
 	@Provides
 	fun providesLegacyIDMappingDao(

@@ -4,9 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import ca.josephroque.bowlingcompanion.core.model.Gear
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import java.util.UUID
 
@@ -30,9 +28,19 @@ data class GearEntity(
 	@ColumnInfo(name = "owner_id", index = true) val ownerId: UUID?,
 )
 
-fun GearEntity.asExternalModel() = Gear(
-	id = id,
-	name = name,
-	kind = kind,
-	ownerId = ownerId,
+@Immutable
+data class GearCreate(
+	val id: UUID,
+	val name: String,
+	val kind: GearKind,
+	@ColumnInfo(name = "owner_id") val ownerId: UUID?,
+	// TODO: avatar
+)
+
+@Immutable
+data class GearUpdate(
+	val id: UUID,
+	val name: String,
+	@ColumnInfo(name = "owner_id") val ownerId: UUID?,
+	// TODO: avatar
 )

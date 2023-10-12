@@ -1,12 +1,15 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import androidx.compose.runtime.Immutable
 import java.util.UUID
 
-data class Gear(
+@Immutable
+data class GearListItem(
 	val id: UUID,
 	val name: String,
 	val kind: GearKind,
-	val ownerId: UUID?,
+	val ownerName: String?,
+//	val avatar: Avatar,
 )
 
 enum class GearKind {
