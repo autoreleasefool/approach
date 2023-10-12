@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
@@ -71,6 +72,16 @@ internal fun LeagueDetailsScreen(
 				.fillMaxSize()
 				.padding(padding),
 		) {
+			item {
+				Text(
+					text = stringResource(R.string.series_list_title),
+					style = MaterialTheme.typography.titleLarge,
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 16.dp),
+				)
+			}
+
 			seriesList(
 				seriesListState = seriesListState,
 				onSeriesClick = onSeriesClick,

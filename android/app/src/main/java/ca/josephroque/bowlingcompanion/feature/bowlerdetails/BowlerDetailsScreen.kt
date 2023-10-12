@@ -84,6 +84,16 @@ internal fun BowlerDetailsScreen(
 				)
 			}
 
+			item {
+				Text(
+					text = stringResource(R.string.league_list_title),
+					style = MaterialTheme.typography.titleLarge,
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 16.dp),
+				)
+			}
+
 			leaguesList(
 				leaguesListState = leaguesListState,
 				onLeagueClick = onLeagueClick,
