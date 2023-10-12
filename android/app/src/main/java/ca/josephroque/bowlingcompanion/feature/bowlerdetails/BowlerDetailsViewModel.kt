@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.BOWLER_ID
+import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,6 +23,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	bowlersRepository: BowlersRepository,
 	leaguesRepository: LeaguesRepository,
+	gearRepository: GearRepository,
 ): ViewModel() {
 	private val bowlerId = UUID.fromString(savedStateHandle[BOWLER_ID])
 		?: UUID.randomUUID().also { savedStateHandle[BOWLER_ID] = it }
@@ -41,6 +44,15 @@ class BowlerDetailsViewModel @Inject constructor(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(5_000),
 				initialValue = LeaguesListUiState.Loading,
+			)
+
+	val gearListState: StateFlow<GearListUiState> =
+		gearRepository.getBowlerPreferredGear(bowlerId)
+			.map(GearListUiState::Success)
+			.stateIn(
+				scope = viewModelScope,
+				started = SharingStarted.WhileSubscribed(5_000),
+				initialValue = GearListUiState.Loading,
 			)
 
 	fun navigateToLeague(id: UUID) {

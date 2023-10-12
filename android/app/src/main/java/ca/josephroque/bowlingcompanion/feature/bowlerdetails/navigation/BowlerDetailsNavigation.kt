@@ -24,6 +24,8 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onEditLeague: (UUID) -> Unit,
 	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
+	onShowGearDetails: (UUID) -> Unit,
+	onShowPreferredGearPicker: () -> Unit,
 ) {
 	composable(
 		route = bowlerDetailsNavigationRoute,
@@ -36,6 +38,8 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 			onAddLeague = onAddLeague,
 			onBackPressed = onBackPressed,
 			onShowLeagueDetails = onShowLeagueDetails,
+			onShowGearDetails = onShowGearDetails,
+			onShowPreferredGearPicker = onShowPreferredGearPicker,
 		)
 	}
 }

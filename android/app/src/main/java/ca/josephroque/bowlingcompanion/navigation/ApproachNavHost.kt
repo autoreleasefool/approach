@@ -63,6 +63,8 @@ fun ApproachNavHost(
 			onAddLeague = navController::navigateToNewLeagueForm,
 			onBackPressed = { navController.popBackStack() },
 			onShowLeagueDetails = navController::navigateToLeagueDetails,
+			onShowGearDetails = {},
+			onShowPreferredGearPicker = {},
 		)
 		leagueFormScreen(
 			onBackPressed = { navController.popBackStack() },

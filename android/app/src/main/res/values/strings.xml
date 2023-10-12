@@ -11,6 +11,9 @@
 	<string name="bowler_list_add">Add Bowler</string>
 	<string name="bowler_list_title">Bowlers</string>
 
+	<string name="bowler_details_preferred_gear_title">Preferred Gear</string>
+	<string name="bowler_details_preferred_gear_description">Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.</string>
+
 	<string name="bowler_form_new">New Bowler</string>
 	<string name="bowler_form_edit">Edit %1$s</string>
 	<string name="bowler_form_section_details">Details</string>
@@ -54,6 +57,8 @@
 	<string name="series_details_low_game">Low of %d</string>
 	<string name="series_details_total">Series total</string>
 
+	<string name="gear_owned_by">Owned by %1$s</string>
+
 	<plurals name="games_count">
 		<item quantity="one">%d game</item>
 		<item quantity="other">%d games</item>
@@ -86,6 +91,7 @@
 
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
+	<string name="action_manage">Manage</string>
 
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>

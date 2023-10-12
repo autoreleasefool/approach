@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.components.list.HeaderAction
+import ca.josephroque.bowlingcompanion.core.components.list.footer
+import ca.josephroque.bowlingcompanion.core.components.list.header
+import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
+import ca.josephroque.bowlingcompanion.feature.gearlist.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.leaguesList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.StatisticsWidgetPlaceholderCard
@@ -34,17 +40,23 @@ internal fun BowlerDetailsRoute(
 	onEditLeague: (UUID) -> Unit,
 	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
+	onShowGearDetails: (UUID) -> Unit,
+	onShowPreferredGearPicker: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
 ) {
 	val bowlerDetailsState by viewModel.bowlerDetailsState.collectAsStateWithLifecycle()
 	val leaguesListState by viewModel.leaguesListState.collectAsStateWithLifecycle()
+	val gearListState by viewModel.gearListState.collectAsStateWithLifecycle()
 
 	BowlerDetailsScreen(
 		bowlerDetailsState = bowlerDetailsState,
 		leaguesListState = leaguesListState,
+		gearListState = gearListState,
 		onBackPressed = onBackPressed,
 		onLeagueClick = onShowLeagueDetails,
+		onGearClick = onShowGearDetails,
+		onManagePreferredGearClick = onShowPreferredGearPicker,
 		onAddLeague = { bowlerDetailsState.bowlerId()?.let { onAddLeague(it) } },
 		editStatisticsWidget = viewModel::editStatisticsWidget,
 		modifier = modifier,
@@ -55,8 +67,11 @@ internal fun BowlerDetailsRoute(
 internal fun BowlerDetailsScreen(
 	bowlerDetailsState: BowlerDetailsUiState,
 	leaguesListState: LeaguesListUiState,
+	gearListState: GearListUiState,
 	onBackPressed: () -> Unit,
+	onGearClick: (UUID) -> Unit,
 	onLeagueClick: (UUID) -> Unit,
+	onManagePreferredGearClick: () -> Unit,
 	onAddLeague: () -> Unit,
 	editStatisticsWidget: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -84,20 +99,28 @@ internal fun BowlerDetailsScreen(
 				)
 			}
 
-			item {
-				Text(
-					text = stringResource(R.string.league_list_title),
-					style = MaterialTheme.typography.titleLarge,
-					modifier = Modifier
-						.padding(horizontal = 16.dp)
-						.padding(bottom = 16.dp),
-				)
-			}
+			header(R.string.league_list_title)
 
 			leaguesList(
 				leaguesListState = leaguesListState,
 				onLeagueClick = onLeagueClick,
 			)
+
+			item {
+				Divider(modifier = Modifier.padding(bottom = 8.dp))
+			}
+
+			header(
+				titleResourceId = R.string.bowler_details_preferred_gear_title,
+				action = HeaderAction(
+					actionResourceId = R.string.action_manage,
+					onClick = onManagePreferredGearClick,
+				),
+			)
+
+			gearList(gearListState, onGearClick = onGearClick)
+
+			footer(R.string.bowler_details_preferred_gear_description)
 		}
 	}
 }
