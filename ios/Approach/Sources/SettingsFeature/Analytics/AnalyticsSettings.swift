@@ -89,6 +89,7 @@ public struct AnalyticsSettingsView: View {
 					Text(Strings.Settings.Analytics.Info.paragraphOne)
 					Text(Strings.Settings.Analytics.Info.paragraphTwo)
 				}
+				.listRowInsets(EdgeInsets(top: .standardSpacing, leading: 0, bottom: 0, trailing: 0))
 				.listRowBackground(Color.clear)
 				.listRowSeparator(.hidden)
 
@@ -99,6 +100,13 @@ public struct AnalyticsSettingsView: View {
 					)
 				} footer: {
 					Text(Strings.Settings.Analytics.ShareAnonymousAnalytics.footer)
+				}
+
+				Section {
+					Link(
+						Strings.Settings.Analytics.privacyPolicy,
+						destination: AppConstants.privacyPolicyUrl
+					)
 				}
 			}
 			.navigationTitle(Strings.Settings.Analytics.title)

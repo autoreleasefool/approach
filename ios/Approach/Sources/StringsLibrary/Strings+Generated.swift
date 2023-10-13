@@ -1031,6 +1031,8 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "settings.acknowledgements.title", fallback: "Acknowledgements")
     }
     public enum Analytics {
+      /// Privacy Policy
+      public static let privacyPolicy = Strings.tr("Localizable", "settings.analytics.privacyPolicy", fallback: "Privacy Policy")
       /// Share anonymous analytics?
       public static let shareAnonymousAnalytics = Strings.tr("Localizable", "settings.analytics.shareAnonymousAnalytics", fallback: "Share anonymous analytics?")
       /// Settings
@@ -1040,6 +1042,10 @@ public enum Strings {
         public static let paragraphOne = Strings.tr("Localizable", "settings.analytics.info.paragraphOne", fallback: "Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold.")
         /// You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.
         public static let paragraphTwo = Strings.tr("Localizable", "settings.analytics.info.paragraphTwo", fallback: "You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.")
+      }
+      public enum PrivacyPolicy {
+        /// https://tryapproach.app/privacy
+        public static let url = Strings.tr("Localizable", "settings.analytics.privacyPolicy.url", fallback: "https://tryapproach.app/privacy")
       }
       public enum ShareAnonymousAnalytics {
         /// You can opt out from sharing analytics anytime. When you do, you're anonymized activity stops being shared immediately.
@@ -1093,8 +1099,8 @@ public enum Strings {
       public static let mastodonUrl = Strings.tr("Localizable", "settings.developer.mastodonUrl", fallback: "https://iosdev.space/@autoreleasefool")
       /// Joseph Roque
       public static let name = Strings.tr("Localizable", "settings.developer.name", fallback: "Joseph Roque")
-      /// https://github.com/autoreleasefool/approach
-      public static let openSourceRepositoryUrl = Strings.tr("Localizable", "settings.developer.openSourceRepositoryUrl", fallback: "https://github.com/autoreleasefool/approach")
+      /// https://tryapproach.app/view-source
+      public static let openSourceRepositoryUrl = Strings.tr("Localizable", "settings.developer.openSourceRepositoryUrl", fallback: "https://tryapproach.app/view-source")
       /// Developer
       public static let title = Strings.tr("Localizable", "settings.developer.title", fallback: "Developer")
       /// https://josephroque.dev
@@ -1130,9 +1136,9 @@ public enum Strings {
       /// View Source
       public static let viewSource = Strings.tr("Localizable", "settings.help.viewSource", fallback: "View Source")
       public enum Development {
-        /// %@ is an open source project you can aid in the development of by using the links above
+        /// You can view the source for %@ using the links above, to report issues or watch the development of new features
         public static func help(_ p1: Any) -> String {
-          return Strings.tr("Localizable", "settings.help.development.help", String(describing: p1), fallback: "%@ is an open source project you can aid in the development of by using the links above")
+          return Strings.tr("Localizable", "settings.help.development.help", String(describing: p1), fallback: "You can view the source for %@ using the links above, to report issues or watch the development of new features")
         }
         /// Development
         public static let title = Strings.tr("Localizable", "settings.help.development.title", fallback: "Development")

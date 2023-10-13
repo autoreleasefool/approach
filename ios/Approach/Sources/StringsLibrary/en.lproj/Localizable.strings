@@ -501,6 +501,8 @@
 "settings.analytics.info.paragraphTwo" = "You can opt in or out of letting us collect these analytics below. This won't affect your usage of the app or any of its features.";
 "settings.analytics.shareAnonymousAnalytics" = "Share anonymous analytics?";
 "settings.analytics.shareAnonymousAnalytics.footer" = "You can opt out from sharing analytics anytime. When you do, you're anonymized activity stops being shared immediately.";
+"settings.analytics.privacyPolicy" = "Privacy Policy";
+"settings.analytics.privacyPolicy.url" = "https://tryapproach.app/privacy";
 "settings.acknowledgements.title" = "Acknowledgements";
 "settings.data.title" = "Data";
 "settings.data.import" = "Import Data";
@@ -515,7 +517,7 @@
 "settings.developer.blogTitle" = "Blog";
 "settings.developer.blog" = "https://runcode.blog";
 "settings.developer.title" = "Developer";
-"settings.developer.openSourceRepositoryUrl" = "https://github.com/autoreleasefool/approach";
+"settings.developer.openSourceRepositoryUrl" = "https://tryapproach.app/view-source";
 "settings.developerOptions.populateDatabase" = "Mock database";
 "settings.help.title" = "Help";
 "settings.help.reportBug" = "Report Bug";
@@ -527,7 +529,7 @@
 "settings.help.developer" = "Developer";
 "settings.help.viewSource" = "View Source";
 "settings.help.development.title" = "Development";
-"settings.help.development.help" = "%@ is an open source project you can aid in the development of by using the links above";
+"settings.help.development.help" = "You can view the source for %@ using the links above, to report issues or watch the development of new features";
 "settings.appIcon.title" = "App Icon";
 "settings.appInfo.title" = "App Info";
 "settings.appIcon.list.error.notFound" = "Could not find icon. Please try again.";
