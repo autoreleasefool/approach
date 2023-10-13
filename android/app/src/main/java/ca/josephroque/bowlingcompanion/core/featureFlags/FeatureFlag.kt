@@ -20,7 +20,6 @@ enum class FeatureFlag(
 	override val introduced: String,
 	override val rolloutStage: RolloutStage,
 ): Feature {
-	OPPONENTS("Opponents", "2023-10-12", RolloutStage.DEVELOPMENT),
 	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.DEVELOPMENT),
 }
 
