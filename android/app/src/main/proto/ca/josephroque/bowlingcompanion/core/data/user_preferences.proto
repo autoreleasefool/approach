@@ -1,9 +1,13 @@
 syntax = "proto3";
 
+import "ca/josephroque/bowlingcompanion/core/data/analytics_opt_in.proto";
+
 option java_package = "ca.josephroque.bowlingcompanion.core.model";
 option java_multiple_files = true;
 
 message UserPreferences {
   bool is_onboarding_complete = 16;
   bool is_legacy_migration_complete = 17;
+
+  AnalyticsOptInProto analytics_opt_in = 18;
 }
