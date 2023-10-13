@@ -3,12 +3,14 @@ package ca.josephroque.bowlingcompanion
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppLaunched
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +39,9 @@ class MainActivityViewModel @Inject constructor(
 		if (isLaunchComplete.value) return
 
 		analyticsClient.initialize()
+		viewModelScope.launch {
+			analyticsClient.trackEvent(AppLaunched)
+		}
 
 		isLaunchComplete.value = true
 	}
