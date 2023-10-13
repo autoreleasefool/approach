@@ -12,10 +12,24 @@ fun NavController.navigateToSettings(navOptions: NavOptions? = null) {
 	this.navigate(settingsNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.settingsScreen() {
+fun NavGraphBuilder.settingsScreen(
+	openOpponents: () -> Unit,
+	openStatisticsSettings: () -> Unit,
+	openAcknowledgements: () -> Unit,
+	openAnalyticsSettings: () -> Unit,
+	openDataSettings: () -> Unit,
+	openDeveloperSettings: () -> Unit,
+) {
 	composable(
 		route = settingsNavigationRoute,
 	) {
-		SettingsRoute()
+		SettingsRoute(
+			openOpponents = openOpponents,
+			openStatisticsSettings = openStatisticsSettings,
+			openAcknowledgements = openAcknowledgements,
+			openAnalyticsSettings = openAnalyticsSettings,
+			openDataSettings = openDataSettings,
+			openDeveloperSettings = openDeveloperSettings,
+		)
 	}
 }

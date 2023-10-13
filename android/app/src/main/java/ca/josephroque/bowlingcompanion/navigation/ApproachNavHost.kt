@@ -54,29 +54,36 @@ fun ApproachNavHost(
 		)
 		statisticsScreen()
 		accessoriesScreen()
-		settingsScreen()
+		settingsScreen(
+			openOpponents = { /* TODO: openOpponents */ },
+			openStatisticsSettings = { /* TODO: openStatisticsSettings */ },
+			openAcknowledgements = { /* TODO: openAcknowledgements */ },
+			openAnalyticsSettings = { /* TODO: openAnalyticsSettings */ },
+			openDataSettings = { /* TODO: openDataSettings */ },
+			openDeveloperSettings = { /* TODO: openDeveloperSettings */ },
+		)
 		bowlerFormScreen(
 			onBackPressed = { navController.popBackStack() },
 		)
 		bowlerDetailsScreen(
-			onEditLeague = {},
+			onEditLeague = { /* TODO: onEditLeague */ },
 			onAddLeague = navController::navigateToNewLeagueForm,
 			onBackPressed = { navController.popBackStack() },
 			onShowLeagueDetails = navController::navigateToLeagueDetails,
-			onShowGearDetails = {},
-			onShowPreferredGearPicker = {},
+			onShowGearDetails = { /* TODO: onShowGearDetails */ },
+			onShowPreferredGearPicker = { /* TODO: onShowPreferredGearPicker */ },
 		)
 		leagueFormScreen(
 			onBackPressed = { navController.popBackStack() },
 		)
 		leagueDetailsScreen(
-			onEditSeries = {},
-			onAddSeries = {},
+			onEditSeries = { /* TODO: onEditSeries */ },
+			onAddSeries = { /* TODO: onAddSeries */ },
 			onShowSeriesDetails = navController::navigateToSeriesDetails,
 			onBackPressed = { navController.popBackStack() },
 		)
 		seriesDetailsScreen(
-			onEditGame = {},
+			onEditGame = { /* TODO: onEditGame */ },
 		)
 		onboardingScreen(
 			finishActivity = finishActivity,
