@@ -242,15 +242,17 @@ internal fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((I
 		) {
 			IconButton(onClick = { onNumberOfGamesChanged?.invoke(numberOfGames - 1) }) {
 				Icon(
-					painter = painterResource(R.drawable.minus_circle),
+					painter = painterResource(R.drawable.ic_minus_circle),
 					contentDescription = stringResource(R.string.cd_decrement),
+					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
 
 			IconButton(onClick = { onNumberOfGamesChanged?.invoke(numberOfGames + 1) }) {
 				Icon(
-					painter = painterResource(R.drawable.add_circle),
+					painter = painterResource(R.drawable.ic_add_circle),
 					contentDescription = stringResource(R.string.cd_increment),
+					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
 		}

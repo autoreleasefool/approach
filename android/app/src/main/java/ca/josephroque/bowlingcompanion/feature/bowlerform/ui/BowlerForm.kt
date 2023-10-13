@@ -62,7 +62,13 @@ internal fun NameTextField(
 	OutlinedTextField(
 		value = name,
 		onValueChange = onNameChanged,
-		leadingIcon = { Icon(Icons.Filled.Person, contentDescription = null) },
+		leadingIcon = {
+			Icon(
+				Icons.Filled.Person,
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.onSurfaceVariant,
+			)
+		},
 		label = {
 			Text(
 				text = stringResource(R.string.bowler_form_name),

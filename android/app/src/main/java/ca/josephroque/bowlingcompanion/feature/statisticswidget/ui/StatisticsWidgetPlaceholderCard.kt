@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ca.josephroque.bowlingcompanion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,7 +44,7 @@ internal fun StatisticsWidgetPlaceholderCard(
 				.padding(16.dp),
 		) {
 			Image(
-				painterResource(R.drawable.ic_analytics),
+				painterResource(R.drawable.analytics),
 				contentDescription = null,
 				modifier = Modifier
 					.size(80.dp)

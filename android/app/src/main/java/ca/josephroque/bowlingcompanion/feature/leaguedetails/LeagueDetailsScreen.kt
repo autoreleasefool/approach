@@ -123,7 +123,8 @@ internal fun LeagueDetailsTopBar(
 			IconButton(onClick = onAddSeries) {
 				Icon(
 					imageVector = Icons.Filled.Add,
-					contentDescription = stringResource(R.string.league_list_add)
+					contentDescription = stringResource(R.string.league_list_add),
+					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
 		},

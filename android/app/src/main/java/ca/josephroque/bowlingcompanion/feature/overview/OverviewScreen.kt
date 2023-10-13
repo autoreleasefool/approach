@@ -74,7 +74,8 @@ internal fun OverviewScreen(
 					IconButton(onClick = onAddBowler) {
 						Icon(
 							imageVector = Icons.Filled.Add,
-							contentDescription = stringResource(R.string.bowler_list_add)
+							contentDescription = stringResource(R.string.bowler_list_add),
+							tint = MaterialTheme.colorScheme.onSurface,
 						)
 					}
 				}

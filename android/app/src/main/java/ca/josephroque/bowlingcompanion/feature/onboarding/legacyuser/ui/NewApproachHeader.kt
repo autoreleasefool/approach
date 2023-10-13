@@ -83,7 +83,7 @@ internal fun NewApproachHeader(
 				),
 		) {
 			Image(
-				painter = painterResource(R.drawable.double_arrow_up),
+				painter = painterResource(R.drawable.ic_double_arrow_up),
 				contentDescription = stringResource(R.string.onboarding_legacy_user_content_description_next),
 				modifier = Modifier
 					.padding(bottom = 8.dp)

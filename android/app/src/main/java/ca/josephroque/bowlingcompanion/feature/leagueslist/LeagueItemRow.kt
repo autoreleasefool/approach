@@ -45,6 +45,7 @@ fun LeagueItemRow(
 		Icon(
 			league.recurrence.listIcon(),
 			contentDescription = null,
+			tint = MaterialTheme.colorScheme.onSurface,
 			modifier = Modifier.size(24.dp),
 		)
 

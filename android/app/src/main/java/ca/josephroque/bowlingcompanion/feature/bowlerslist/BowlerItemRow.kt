@@ -39,6 +39,7 @@ fun BowlerItemRow(
 		Icon(
 			Icons.Filled.Person,
 			contentDescription = null,
+			tint = MaterialTheme.colorScheme.onSurface,
 			modifier = Modifier.size(24.dp),
 		)
 

@@ -108,6 +108,7 @@ private fun Header(date: LocalDate) {
 		Icon(
 			painterResource(R.drawable.ic_calendar),
 			contentDescription = null,
+			tint = MaterialTheme.colorScheme.onSurface,
 			modifier = Modifier.size(16.dp),
 		)
 
