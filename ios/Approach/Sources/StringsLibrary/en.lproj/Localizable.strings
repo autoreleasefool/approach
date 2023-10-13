@@ -1,4 +1,5 @@
 /* Accessories */
+
 "accessory.title" = "Accessory";
 "accessory.overview.title" = "Accessories";
 "accessory.overview.showingLimit" = "Showing only %d most recent";
@@ -36,6 +37,7 @@
 "alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
 
 /* Address */
+
 "address.title" = "Address";
 "address.error.empty.title" = "No suggestions found";
 "address.error.notFound" = "We were unable to gather details for the chosen location. Please try again.";
@@ -68,6 +70,7 @@
 "opponent.matches.none" = "No matches played. Try recording a match against this bowler in the game details.";
 
 /* Match Play */
+
 "matchPlay.title" = "Match Play";
 "matchPlay.summary.opponent.none" = "No opponent";
 "matchPlay.summary.score.none" = "Score not recorded";
@@ -243,7 +246,6 @@
 "scoring.editor.fields.manualScore.title" = "Set manual score?";
 "scoring.editor.fields.manualScore.label" = "Score";
 "scoring.editor.fields.manualScore.help" = "By setting a manual score, all the frames for this game will be ignored in all statistics, but the score can be used for your averages and high series.";
-
 
 "game.editor.fields.manualScore.title" = "Set manual score";
 "game.editor.fields.manualScore.prompt" = "Score";
@@ -421,6 +423,7 @@
 "statistics.description.averagePinsLeftOnDeck" = "Average value of pins you've left standing at the end of frames per game";
 
 /* Avatar */
+
 "avatar.editor.title" = "Edit avatar";
 "avatar.editor.preview" = "Preview";
 "avatar.editor.properties.backgroundColor.title" = "Background Colour";
@@ -433,6 +436,7 @@
 "avatar.editor.properties.label.title" = "Label";
 
 /* Sharing */
+
 "sharing.title" = "Share";
 "sharing.sharingSeries" = "Share Series";
 "sharing.sharingGame" = "Share Game";
@@ -455,7 +459,6 @@
 "sharing.layout.labelPosition.right" = "Right";
 "sharing.layout.labelPosition.bottom" = "Bottom";
 "sharing.scoreSheet.score" = "Score";
-
 "sharing.scoreSheet.style.default" = "Default";
 "sharing.scoreSheet.style.plain" = "Plain";
 "sharing.scoreSheet.style.pride" = "Pride";
@@ -571,6 +574,7 @@
 "onboarding.logbook.addBowler" = "Add Bowler";
 
 /* Export */
+
 "export.title" = "Exporting";
 "export.exportData" = "Export data";
 "export.errorMessage" = "An error occurred: %@";
@@ -612,6 +616,7 @@
 "sortOrder.title" = "Sort Order";
 
 /* List */
+
 "list.results" = "Results";
 "list..averages.showAverages" = "Show averages";
 "list.averages.allBowlers" = "All bowlers";
