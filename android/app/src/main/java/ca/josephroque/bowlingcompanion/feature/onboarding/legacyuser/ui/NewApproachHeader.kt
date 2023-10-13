@@ -31,7 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.icons.rememberKeyboardDoubleArrowUp
 import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.LegacyUserOnboardingUiState
 
 @Composable
@@ -84,7 +83,7 @@ internal fun NewApproachHeader(
 				),
 		) {
 			Image(
-				imageVector = rememberKeyboardDoubleArrowUp(),
+				painter = painterResource(R.drawable.double_arrow_up),
 				contentDescription = stringResource(R.string.onboarding_legacy_user_content_description_next),
 				modifier = Modifier
 					.padding(bottom = 8.dp)
