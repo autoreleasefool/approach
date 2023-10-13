@@ -5,11 +5,20 @@ plugins {
 	id("com.google.dagger.hilt.android")
 	id("com.google.devtools.ksp")
 	id("com.google.protobuf")
+	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+}
+
+secrets {
+	propertiesFileName = "secrets.properties"
 }
 
 android {
 	namespace = "ca.josephroque.bowlingcompanion"
 	compileSdk = 34
+
+	buildFeatures {
+		buildConfig = true
+	}
 
 	defaultConfig {
 		applicationId = "ca.josephroque.bowlingcompanion"
@@ -72,6 +81,7 @@ dependencies {
 	implementation(platform("androidx.compose:compose-bom:2023.09.01"))
 	implementation("androidx.room:room-runtime:2.5.2")
 	implementation("androidx.room:room-ktx:2.5.2")
+	implementation("com.github.TelemetryDeck:KotlinSDK:1.1.0")
 	implementation("com.google.dagger:hilt-android:2.48")
 	implementation("com.google.protobuf:protobuf-kotlin-lite:3.24.0")
 	implementation("com.patrykandpatrick.vico:compose:1.12.0")

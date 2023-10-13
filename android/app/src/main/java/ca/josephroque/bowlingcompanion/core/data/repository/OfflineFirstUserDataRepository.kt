@@ -1,10 +1,9 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.datastore.ApproachPreferencesDataSource
 import ca.josephroque.bowlingcompanion.core.model.UserData
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 
 class OfflineFirstUserDataRepository @Inject constructor(
@@ -21,5 +20,9 @@ class OfflineFirstUserDataRepository @Inject constructor(
 
 	override suspend fun didCompleteLegacyMigration() {
 		approachPreferencesDataSource.setLegacyMigrationComplete(true)
+	}
+
+	override suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus) {
+		approachPreferencesDataSource.setAnalyticsOptInStatus(status)
 	}
 }

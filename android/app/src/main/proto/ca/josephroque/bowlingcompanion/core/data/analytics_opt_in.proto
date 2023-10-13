@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "ca.josephroque.bowlingcompanion.core.analytics";
+option java_multiple_files = true;
+
+enum AnalyticsOptInProto {
+  ANALYTICS_OPT_IN_OPTED_IN = 0;
+  ANALYTICS_OPT_IN_OPTED_OUT = 1;
+}
