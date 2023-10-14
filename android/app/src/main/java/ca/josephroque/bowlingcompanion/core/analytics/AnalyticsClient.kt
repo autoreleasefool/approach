@@ -16,3 +16,8 @@ enum class AnalyticsOptInStatus {
 	OPTED_IN,
 	OPTED_OUT,
 }
+
+fun AnalyticsOptInStatus.toggle(): AnalyticsOptInStatus = when (this) {
+	AnalyticsOptInStatus.OPTED_IN -> AnalyticsOptInStatus.OPTED_OUT
+	AnalyticsOptInStatus.OPTED_OUT -> AnalyticsOptInStatus.OPTED_IN
+}

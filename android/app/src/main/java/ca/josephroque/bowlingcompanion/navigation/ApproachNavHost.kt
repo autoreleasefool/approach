@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessories.navigation.accessoriesScreen
+import ca.josephroque.bowlingcompanion.feature.analytics.navigation.analyticsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.analytics.navigation.navigateToAnalyticsSettings
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigateToBowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
@@ -60,7 +62,7 @@ fun ApproachNavHost(
 			openOpponents = navController::navigateToOpponentsList,
 			openStatisticsSettings = { /* TODO: openStatisticsSettings */ },
 			openAcknowledgements = { /* TODO: openAcknowledgements */ },
-			openAnalyticsSettings = { /* TODO: openAnalyticsSettings */ },
+			openAnalyticsSettings = navController::navigateToAnalyticsSettings,
 			openDeveloperSettings = { /* TODO: openDeveloperSettings */ },
 			openDataExportSettings = { /* TODO: openDataExportSettings */ },
 			openDataImportSettings = { /* TODO: openDataImportSettings */ },
@@ -99,6 +101,9 @@ fun ApproachNavHost(
 			onBackPressed = { navController.popBackStack() },
 			onAddOpponent = { navController.navigateToNewBowlerForm(BowlerKind.OPPONENT) },
 			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
+		)
+		analyticsSettingsScreen(
+			onBackPressed = { navController.popBackStack() },
 		)
 	}
 }

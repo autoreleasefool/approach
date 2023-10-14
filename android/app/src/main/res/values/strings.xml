@@ -96,6 +96,14 @@
 	<string name="settings_item_development_footer">You can view the source for Approach using the links above, to report issues or watch the development of new features</string>
 	<string name="settings_item_copyright">© Joseph Roque, 2023</string>
 
+	<string name="analytics_title">Analytics</string>
+	<string name="analytics_info_first">Approach collects anonymous analytics, such as the number of people using a feature, to improve the app. These analytics are never shared or sold.</string>
+	<string name="analytics_info_second">You can opt in or out of letting us collect these analytics below. This won\'t affect your usage of the app or any of its features.</string>
+	<string name="analytics_share_anonymous_analytics">Share anonymous analytics?</string>
+	<string name="analytics_opt_out">You can opt out from sharing analytics any time. When you do, your anonymized activity stops being shared immediately</string>
+	<string name="analytics_privacy_policy">Privacy Policy</string>
+	<string name="analytics_privacy_policy_url">https://tryapproach.app/privacy</string>
+
 	<string name="feedback_email_recipient">approach@josephroque.ca</string>
 	<string name="bug_report_email_recipient">approach@josephroque.ca</string>
 	<string name="bug_report_email_subject">Approach Bug Report (%1$s - %2$s)</string>

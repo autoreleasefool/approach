@@ -99,8 +99,6 @@ internal fun OpponentsListTopBar(
 		title = {
 			Text(
 				text = stringResource(R.string.opponent_list_title),
-				maxLines = 1,
-				overflow = TextOverflow.Ellipsis,
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},
