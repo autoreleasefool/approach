@@ -57,4 +57,34 @@ class ApproachPreferencesDataSource @Inject constructor(
 			}
 		}
 	}
+
+	suspend fun setIsCountingH2AsH(enabled: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isCountingH2AsHDisabled = !enabled }
+		}
+	}
+
+	suspend fun setIsCountingSplitWithBonusAsSplit(enabled: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isCountingSplitWithBonusAsSplitDisabled = !enabled }
+		}
+	}
+
+	suspend fun setIsHidingZeroStatistics(isHiding: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isShowingZeroStatistics = !isHiding }
+		}
+	}
+
+	suspend fun setIsHidingWidgetsInBowlersList(isHiding: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isHidingWidgetsInBowlersList = isHiding }
+		}
+	}
+
+	suspend fun setIsHidingWidgetsInLeaguesList(isHiding: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isHidingWidgetsInLeaguesList = isHiding }
+		}
+	}
 }

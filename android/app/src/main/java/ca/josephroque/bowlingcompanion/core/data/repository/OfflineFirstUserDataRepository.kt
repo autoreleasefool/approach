@@ -25,4 +25,24 @@ class OfflineFirstUserDataRepository @Inject constructor(
 	override suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus) {
 		approachPreferencesDataSource.setAnalyticsOptInStatus(status)
 	}
+
+	override suspend fun setIsCountingH2AsH(isCountingH2AsH: Boolean) {
+		approachPreferencesDataSource.setIsCountingH2AsH(enabled = isCountingH2AsH)
+	}
+
+	override suspend fun setIsCountingSplitWithBonusAsSplit(isCountingSplitWithBonusAsSplit: Boolean) {
+		approachPreferencesDataSource.setIsCountingSplitWithBonusAsSplit(enabled = isCountingSplitWithBonusAsSplit)
+	}
+
+	override suspend fun setIsHidingZeroStatistics(isHidingZeroStatistics: Boolean) {
+		approachPreferencesDataSource.setIsHidingZeroStatistics(isHiding = isHidingZeroStatistics)
+	}
+
+	override suspend fun setIsHidingWidgetsInLeaguesList(isHidingWidgetsInLeaguesList: Boolean) {
+		approachPreferencesDataSource.setIsHidingWidgetsInLeaguesList(isHiding = isHidingWidgetsInLeaguesList)
+	}
+
+	override suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean) {
+		approachPreferencesDataSource.setIsHidingWidgetsInBowlersList(isHiding = isHidingWidgetsInBowlersList)
+	}
 }

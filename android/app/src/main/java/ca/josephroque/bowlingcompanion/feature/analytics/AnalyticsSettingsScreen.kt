@@ -1,11 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.analytics
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,13 +13,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -34,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.components.Link
 
 @Composable
@@ -89,25 +84,11 @@ fun AnalyticsSettingsScreen(
 			when (analyticsSettingsState) {
 				AnalyticsSettingsUiState.Loading -> Unit
 				is AnalyticsSettingsUiState.Success -> {
-					Row(
-						verticalAlignment = Alignment.CenterVertically,
-						horizontalArrangement = Arrangement.SpaceBetween,
-						modifier = Modifier
-							.fillMaxWidth()
-							.clickable(onClick = { onToggleOptInStatus(null) })
-							.padding(16.dp)
-					) {
-						Text(
-							text = stringResource(R.string.analytics_share_anonymous_analytics),
-							style = MaterialTheme.typography.bodyMedium,
-							modifier = Modifier.weight(1f),
-						)
-
-						Switch(
-							checked = analyticsSettingsState.analyticsOptInStatus == AnalyticsOptInStatus.OPTED_IN,
-							onCheckedChange = { onToggleOptInStatus(it) },
-						)
-					}
+					LabeledSwitch(
+						checked = analyticsSettingsState.analyticsOptInStatus == AnalyticsOptInStatus.OPTED_IN,
+						onCheckedChange = onToggleOptInStatus,
+						titleResourceId = R.string.analytics_share_anonymous_analytics
+					)
 				}
 			}
 
@@ -138,7 +119,7 @@ fun AnalyticsSettingsTopBar(
 		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
-				text = stringResource(R.string.settings_item_analytics),
+				text = stringResource(R.string.analytics_title),
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},

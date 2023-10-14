@@ -9,5 +9,12 @@ interface UserDataRepository {
 
 	suspend fun didCompleteOnboarding()
 	suspend fun didCompleteLegacyMigration()
+
 	suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus)
+
+	suspend fun setIsCountingH2AsH(isCountingH2AsH: Boolean)
+	suspend fun setIsCountingSplitWithBonusAsSplit(isCountingSplitWithBonusAsSplit: Boolean)
+	suspend fun setIsHidingZeroStatistics(isHidingZeroStatistics: Boolean)
+	suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean)
+	suspend fun setIsHidingWidgetsInLeaguesList(isHidingWidgetsInLeaguesList: Boolean)
 }

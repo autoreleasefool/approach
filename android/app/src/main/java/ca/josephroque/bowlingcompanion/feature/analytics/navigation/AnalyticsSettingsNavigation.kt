@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.feature.analytics.AnalyticsSettingsRoute
 
-const val analyticsSettingsNavigationRoute = "analytics"
+const val analyticsSettingsNavigationRoute = "settings/analytics"
 
 fun NavController.navigateToAnalyticsSettings(navOptions: NavOptions? = null) {
 	this.navigate(analyticsSettingsNavigationRoute, navOptions)

@@ -56,11 +56,13 @@ internal fun SettingsRoute(
 	SettingsScreen(
 		settingsState = settingsState,
 		openOpponents = openOpponents,
+		openStatisticsSettings = openStatisticsSettings,
 		openAcknowledgements = openAcknowledgements,
 		openAnalyticsSettings = openAnalyticsSettings,
 		openDataImportSettings = openDataImportSettings,
 		openDataExportSettings = openDataExportSettings,
 		openDeveloperSettings = openDeveloperSettings,
+		modifier = modifier,
 	)
 }
 
@@ -68,6 +70,7 @@ internal fun SettingsRoute(
 internal fun SettingsScreen(
 	settingsState: SettingsUiState,
 	openOpponents: () -> Unit,
+	openStatisticsSettings: () -> Unit,
 	openAcknowledgements: () -> Unit,
 	openAnalyticsSettings: () -> Unit,
 	openDataImportSettings: () -> Unit,
@@ -95,7 +98,7 @@ internal fun SettingsScreen(
 			NavigationItem(
 				titleResourceId = R.string.settings_item_statistics_title,
 				descriptionResourceId = R.string.settings_item_statistics_description,
-				onClick = openOpponents,
+				onClick = openStatisticsSettings,
 			)
 
 			Divider()
@@ -243,6 +246,7 @@ fun SettingsScreenPreview() {
 		SettingsScreen(
 			settingsState = SettingsUiState(isDataExportsEnabled = true, isDataImportsEnabled = true),
 			openOpponents = {},
+			openStatisticsSettings = {},
 			openAcknowledgements = {},
 			openAnalyticsSettings = {},
 			openDataExportSettings = {},

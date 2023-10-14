@@ -28,6 +28,8 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsScreen
+import ca.josephroque.bowlingcompanion.feature.statisticssettings.navigation.navigateToStatisticsSettings
+import ca.josephroque.bowlingcompanion.feature.statisticssettings.navigation.statisticsSettingsScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 
 @Composable
@@ -60,7 +62,7 @@ fun ApproachNavHost(
 		accessoriesScreen()
 		settingsScreen(
 			openOpponents = navController::navigateToOpponentsList,
-			openStatisticsSettings = { /* TODO: openStatisticsSettings */ },
+			openStatisticsSettings = navController::navigateToStatisticsSettings,
 			openAcknowledgements = { /* TODO: openAcknowledgements */ },
 			openAnalyticsSettings = navController::navigateToAnalyticsSettings,
 			openDeveloperSettings = { /* TODO: openDeveloperSettings */ },
@@ -103,6 +105,9 @@ fun ApproachNavHost(
 			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
 		)
 		analyticsSettingsScreen(
+			onBackPressed = { navController.popBackStack() },
+		)
+		statisticsSettingsScreen(
 			onBackPressed = { navController.popBackStack() },
 		)
 	}
