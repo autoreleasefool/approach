@@ -17,8 +17,9 @@ fun NavGraphBuilder.settingsScreen(
 	openStatisticsSettings: () -> Unit,
 	openAcknowledgements: () -> Unit,
 	openAnalyticsSettings: () -> Unit,
-	openDataSettings: () -> Unit,
 	openDeveloperSettings: () -> Unit,
+	openDataImportSettings: () -> Unit,
+	openDataExportSettings: () -> Unit,
 ) {
 	composable(
 		route = settingsNavigationRoute,
@@ -28,8 +29,9 @@ fun NavGraphBuilder.settingsScreen(
 			openStatisticsSettings = openStatisticsSettings,
 			openAcknowledgements = openAcknowledgements,
 			openAnalyticsSettings = openAnalyticsSettings,
-			openDataSettings = openDataSettings,
 			openDeveloperSettings = openDeveloperSettings,
+			openDataImportSettings = openDataImportSettings,
+			openDataExportSettings = openDataExportSettings,
 		)
 	}
 }

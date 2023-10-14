@@ -11,15 +11,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-	private val featureFlagsClient: FeatureFlagsClient,
+	featureFlagsClient: FeatureFlagsClient,
 ): ViewModel() {
 
 	private val _settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
-		SettingsUiState(isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT))
+		SettingsUiState(
+			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
+			isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT),
+		)
 	)
 	val settingsState: StateFlow<SettingsUiState> = _settingsState.asStateFlow()
 }
 
 data class SettingsUiState(
+	val isDataImportsEnabled: Boolean,
 	val isDataExportsEnabled: Boolean,
-)
+) {
+	val isDataSectionVisible: Boolean
+		get() = isDataImportsEnabled || isDataExportsEnabled
+}

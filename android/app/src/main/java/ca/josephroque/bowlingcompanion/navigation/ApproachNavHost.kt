@@ -59,8 +59,9 @@ fun ApproachNavHost(
 			openStatisticsSettings = { /* TODO: openStatisticsSettings */ },
 			openAcknowledgements = { /* TODO: openAcknowledgements */ },
 			openAnalyticsSettings = { /* TODO: openAnalyticsSettings */ },
-			openDataSettings = { /* TODO: openDataSettings */ },
 			openDeveloperSettings = { /* TODO: openDeveloperSettings */ },
+			openDataExportSettings = { /* TODO: openDataExportSettings */ },
+			openDataImportSettings = { /* TODO: openDataImportSettings */ },
 		)
 		bowlerFormScreen(
 			onBackPressed = { navController.popBackStack() },

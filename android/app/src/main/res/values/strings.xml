@@ -72,6 +72,29 @@
 	<string name="settings_title">Settings</string>
 	<string name="settings_item_opponents_title">Opponents</string>
 	<string name="settings_item_opponents_description">Logs of all your past opponents and a record of your match play</string>
+	<string name="settings_item_statistics_title">Statistics</string>
+	<string name="settings_item_statistics_description">Fine-tune your preferences when it comes to which statistics to show</string>
+	<string name="settings_item_help">Help</string>
+	<string name="settings_item_report_bug">Report Bug</string>
+	<string name="settings_item_send_feedback">Send Feedback</string>
+	<string name="settings_item_acknowledgements">Acknowledgements</string>
+	<string name="settings_item_analytics">Analytics</string>
+	<string name="settings_item_data">Data</string>
+	<string name="settings_item_import_data">Import Data</string>
+	<string name="settings_item_export_data">Export Data</string>
+	<string name="settings_item_development">Development</string>
+	<string name="settings_item_developer">Developer</string>
+	<string name="settings_item_view_source">View Source</string>
+	<string name="settings_item_app_info">App Info</string>
+	<string name="settings_item_version">Version</string>
+	<string name="settings_item_version_detail">%1$s (%2$s)</string>
+	<string name="settings_item_development_footer">You can view the source for Approach using the links above, to report issues or watch the development of new features</string>
+	<string name="settings_item_copyright">© Joseph Roque, 2023</string>
+
+	<string name="feedback_email_recipient">approach@josephroque.ca</string>
+	<string name="bug_report_email_recipient">approach@josephroque.ca</string>
+	<string name="bug_report_email_subject">Approach Bug Report (%1$s - %2$s)</string>
+	<string name="app_source_repository_url">https://tryapproach.app/view-source</string>
 
 	<string name="onboarding_new_user_title_welcome">Welcome</string>
 	<string name="onboarding_new_user_title_to_your_new">to your new</string>
@@ -96,6 +119,7 @@
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
 	<string name="action_manage">Manage</string>
+	<string name="action_send_email">Send Email</string>
 
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>
