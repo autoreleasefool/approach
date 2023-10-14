@@ -11,6 +11,13 @@ data class BowlerListItem(
 )
 
 @Immutable
+data class OpponentListItem(
+	val id: UUID,
+	val name: String,
+	val kind: BowlerKind,
+)
+
+@Immutable
 data class BowlerDetails(
 	val id: UUID,
 	val name: String,

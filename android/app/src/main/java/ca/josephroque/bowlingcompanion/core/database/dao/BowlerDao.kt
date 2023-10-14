@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -47,6 +48,18 @@ abstract class BowlerDao: BaseDao<BowlerEntity> {
 		"""
 	)
 	abstract fun getBowlersList(): Flow<List<BowlerListItem>>
+
+	@Query(
+		"""
+			SELECT
+				bowlers.id AS id,
+				bowlers.name AS name,
+				bowlers.kind AS kind
+			FROM bowlers
+			ORDER BY bowlers.name
+		"""
+	)
+	abstract fun getOpponentsList(): Flow<List<OpponentListItem>>
 
 	@Insert(entity = BowlerEntity::class)
 	abstract fun insertBowler(bowler: BowlerCreate)

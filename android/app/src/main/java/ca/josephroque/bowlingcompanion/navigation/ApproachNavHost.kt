@@ -18,6 +18,8 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.leagueFormS
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToNewLeagueForm
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOnboarding
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
+import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.navigateToOpponentsList
+import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.opponentsListScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
@@ -55,7 +57,7 @@ fun ApproachNavHost(
 		statisticsScreen()
 		accessoriesScreen()
 		settingsScreen(
-			openOpponents = { /* TODO: openOpponents */ },
+			openOpponents = navController::navigateToOpponentsList,
 			openStatisticsSettings = { /* TODO: openStatisticsSettings */ },
 			openAcknowledgements = { /* TODO: openAcknowledgements */ },
 			openAnalyticsSettings = { /* TODO: openAnalyticsSettings */ },
@@ -92,6 +94,11 @@ fun ApproachNavHost(
 				shouldShowOnboarding.value = false
 				navController.popBackStack()
 			},
+		)
+		opponentsListScreen(
+			onBackPressed = { navController.popBackStack() },
+			onAddOpponent = { /* TODO: onAddOpponent */ },
+			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
 		)
 	}
 }
