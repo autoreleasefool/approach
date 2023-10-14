@@ -1,47 +1,38 @@
 package ca.josephroque.bowlingcompanion.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Call
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
 import ca.josephroque.bowlingcompanion.R
 
 enum class TopLevelDestination(
-	val selectedIcon: ImageVector,
-	val unselectedIcon: ImageVector,
+	@DrawableRes val selectedIcon: Int,
+	@DrawableRes val unselectedIcon: Int,
 	val iconTextId: Int,
 	val titleTextId: Int,
 ) {
 	OVERVIEW(
-		selectedIcon = Icons.Filled.AccountCircle,
-		unselectedIcon = Icons.Outlined.AccountCircle,
+		selectedIcon = R.drawable.ic_bowling_ball,
+		unselectedIcon = R.drawable.ic_bowling_ball,
 		iconTextId = R.string.destination_overview,
 		titleTextId = R.string.app_name,
 	),
 
 	STATISTICS(
-		selectedIcon = Icons.Filled.Add,
-		unselectedIcon = Icons.Outlined.Add,
+		selectedIcon = R.drawable.ic_monitoring,
+		unselectedIcon = R.drawable.ic_monitoring,
 		iconTextId = R.string.destination_statistics,
 		titleTextId = R.string.destination_statistics,
 	),
 
 	ACCESSORIES(
-		selectedIcon = Icons.Filled.Call,
-		unselectedIcon = Icons.Outlined.Call,
+		selectedIcon = R.drawable.ic_accessory,
+		unselectedIcon = R.drawable.ic_accessory,
 		iconTextId = R.string.destination_accessories,
 		titleTextId = R.string.destination_accessories,
 	),
 
 	SETTINGS(
-		selectedIcon = Icons.Filled.Settings,
-		unselectedIcon = Icons.Outlined.Settings,
+		selectedIcon = R.drawable.ic_settings,
+		unselectedIcon = R.drawable.ic_settings,
 		iconTextId = R.string.destination_settings,
 		titleTextId = R.string.destination_settings,
 	),
