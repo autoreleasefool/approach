@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
 import java.util.UUID
 
@@ -130,7 +131,10 @@ internal fun Title(
 	Text(
 		text = when (uiState) {
 			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> ""
-			is BowlerFormUiState.Create -> stringResource(R.string.bowler_form_new)
+			is BowlerFormUiState.Create -> when (uiState.kind) {
+				BowlerKind.PLAYABLE -> stringResource(R.string.bowler_form_new_bowler)
+				BowlerKind.OPPONENT -> stringResource(R.string.bowler_form_new_opponent)
+			}
 			is BowlerFormUiState.Edit -> stringResource(R.string.bowler_form_edit, uiState.initialValue.name)
 		},
 		style = MaterialTheme.typography.titleLarge,

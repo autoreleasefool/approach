@@ -97,7 +97,7 @@ fun ApproachNavHost(
 		)
 		opponentsListScreen(
 			onBackPressed = { navController.popBackStack() },
-			onAddOpponent = { /* TODO: onAddOpponent */ },
+			onAddOpponent = { navController.navigateToNewBowlerForm(BowlerKind.OPPONENT) },
 			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
 		)
 	}
