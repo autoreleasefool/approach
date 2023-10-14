@@ -17,4 +17,9 @@ interface UserDataRepository {
 	suspend fun setIsHidingZeroStatistics(isHidingZeroStatistics: Boolean)
 	suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean)
 	suspend fun setIsHidingWidgetsInLeaguesList(isHidingWidgetsInLeaguesList: Boolean)
+
+	suspend fun didRecentlyUseBowler(id: String)
+	suspend fun didRecentlyUseLeague(id: String)
+	suspend fun didRecentlyUseAlley(id: String)
+	suspend fun didRecentlyUseGear(id: String)
 }

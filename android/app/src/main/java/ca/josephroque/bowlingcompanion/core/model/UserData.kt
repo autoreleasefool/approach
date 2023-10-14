@@ -16,4 +16,10 @@ data class UserData(
 	val isShowingZeroStatistics: Boolean,
 	val isHidingWidgetsInBowlersList: Boolean,
 	val isHidingWidgetsInLeaguesList: Boolean,
+
+	// Recently Used
+	val recentlyUsedBowlerIds: List<String>,
+	val recentlyUsedLeagueIds: List<String>,
+	val recentlyUsedAlleyIds: List<String>,
+	val recentlyUsedGearIds: List<String>,
 )

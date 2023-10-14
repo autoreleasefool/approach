@@ -20,4 +20,10 @@ message UserPreferences {
 
   // Analytics
   AnalyticsOptInProto analytics_opt_in = 18;
+
+  // Recently Used
+  repeated string recently_used_bowler_ids = 1;
+  repeated string recently_used_league_ids = 2;
+  repeated string recently_used_alley_ids = 3;
+  repeated string recently_used_gear_ids = 4;
 }

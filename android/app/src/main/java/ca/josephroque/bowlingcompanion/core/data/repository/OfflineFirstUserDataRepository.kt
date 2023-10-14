@@ -45,4 +45,20 @@ class OfflineFirstUserDataRepository @Inject constructor(
 	override suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean) {
 		approachPreferencesDataSource.setIsHidingWidgetsInBowlersList(isHiding = isHidingWidgetsInBowlersList)
 	}
+
+	override suspend fun didRecentlyUseAlley(id: String) {
+		approachPreferencesDataSource.insertRecentlyUsedAlley(id)
+	}
+
+	override suspend fun didRecentlyUseBowler(id: String) {
+		approachPreferencesDataSource.insertRecentlyUsedBowler(id)
+	}
+
+	override suspend fun didRecentlyUseGear(id: String) {
+		approachPreferencesDataSource.insertRecentlyUsedGear(id)
+	}
+
+	override suspend fun didRecentlyUseLeague(id: String) {
+		approachPreferencesDataSource.insertRecentlyUsedLeague(id)
+	}
 }

@@ -28,6 +28,10 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isShowingZeroStatistics = it.isShowingZeroStatistics,
 				isHidingWidgetsInBowlersList = it.isHidingWidgetsInBowlersList,
 				isHidingWidgetsInLeaguesList = it.isHidingWidgetsInLeaguesList,
+				recentlyUsedBowlerIds = it.recentlyUsedAlleyIdsList,
+				recentlyUsedLeagueIds = it.recentlyUsedLeagueIdsList,
+				recentlyUsedAlleyIds = it.recentlyUsedAlleyIdsList,
+				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
 			)
 		}
 
@@ -87,4 +91,57 @@ class ApproachPreferencesDataSource @Inject constructor(
 			it.copy { this.isHidingWidgetsInLeaguesList = isHiding }
 		}
 	}
+
+	suspend fun insertRecentlyUsedBowler(id: String) {
+		userPreferences.updateData {
+			val recentBowlers = it.recentlyUsedBowlerIdsList.toMutableList()
+			recentBowlers.replaceOrInsert(id)
+
+			it.toBuilder()
+				.clearRecentlyUsedBowlerIds()
+				.addAllRecentlyUsedBowlerIds(recentBowlers)
+				.build()
+		}
+	}
+
+	suspend fun insertRecentlyUsedAlley(id: String) {
+		userPreferences.updateData {
+			val recentAlleys = it.recentlyUsedAlleyIdsList.toMutableList()
+			recentAlleys.replaceOrInsert(id)
+
+			it.toBuilder()
+				.clearRecentlyUsedAlleyIds()
+				.addAllRecentlyUsedAlleyIds(recentAlleys)
+				.build()
+		}
+	}
+
+	suspend fun insertRecentlyUsedGear(id: String) {
+		userPreferences.updateData {
+			val recentGear = it.recentlyUsedGearIdsList.toMutableList()
+			recentGear.replaceOrInsert(id)
+
+			it.toBuilder()
+				.clearRecentlyUsedGearIds()
+				.addAllRecentlyUsedGearIds(recentGear)
+				.build()
+		}
+	}
+
+	suspend fun insertRecentlyUsedLeague(id: String) {
+		userPreferences.updateData {
+			val recentLeagues = it.recentlyUsedLeagueIdsList.toMutableList()
+			recentLeagues.replaceOrInsert(id)
+
+			it.toBuilder()
+				.clearRecentlyUsedLeagueIds()
+				.addAllRecentlyUsedLeagueIds(recentLeagues)
+				.build()
+		}
+	}
+}
+
+private fun MutableList<String>.replaceOrInsert(id: String) {
+	this.remove(id)
+	this.add(0, id)
 }
