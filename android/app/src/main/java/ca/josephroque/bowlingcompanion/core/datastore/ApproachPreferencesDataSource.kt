@@ -22,7 +22,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 					AnalyticsOptInProto.UNRECOGNIZED,
 					null -> AnalyticsOptInStatus.OPTED_IN
 					AnalyticsOptInProto.ANALYTICS_OPT_IN_OPTED_OUT -> AnalyticsOptInStatus.OPTED_OUT
-				}
+				},
+				isCountingH2AsHDisabled = it.isCountingH2AsHDisabled,
+				isCountingSplitWithBonusAsSplitDisabled = it.isCountingSplitWithBonusAsSplitDisabled,
+				isShowingZeroStatistics = it.isShowingZeroStatistics,
+				isHidingWidgetsInBowlersList = it.isHidingWidgetsInBowlersList,
+				isHidingWidgetsInLeaguesList = it.isHidingWidgetsInLeaguesList,
 			)
 		}
 

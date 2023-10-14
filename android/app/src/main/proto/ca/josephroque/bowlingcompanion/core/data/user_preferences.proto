@@ -6,8 +6,18 @@ option java_package = "ca.josephroque.bowlingcompanion.core.model";
 option java_multiple_files = true;
 
 message UserPreferences {
+
+  // Onboarding
   bool is_onboarding_complete = 16;
   bool is_legacy_migration_complete = 17;
 
+  // Statistics
+  bool is_counting_h2_as_h_disabled = 19;
+  bool is_counting_split_with_bonus_as_split_disabled = 20;
+  bool is_hiding_widgets_in_bowlers_list = 21;
+  bool is_hiding_widgets_in_leagues_list = 22;
+  bool is_showing_zero_statistics = 23;
+
+  // Analytics
   AnalyticsOptInProto analytics_opt_in = 18;
 }

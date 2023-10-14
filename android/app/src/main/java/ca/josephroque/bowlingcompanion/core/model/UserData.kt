@@ -3,7 +3,17 @@ package ca.josephroque.bowlingcompanion.core.model
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
 
 data class UserData(
-	val isOnboardingComplete: Boolean = false,
-	val isLegacyMigrationComplete: Boolean = false,
-	val analyticsOptIn: AnalyticsOptInStatus = AnalyticsOptInStatus.OPTED_IN,
+	// Onboarding
+	val isOnboardingComplete: Boolean,
+	val isLegacyMigrationComplete: Boolean,
+
+	// Analytics
+	val analyticsOptIn: AnalyticsOptInStatus,
+
+	// Statistics
+	val isCountingH2AsHDisabled: Boolean,
+	val isCountingSplitWithBonusAsSplitDisabled: Boolean,
+	val isShowingZeroStatistics: Boolean,
+	val isHidingWidgetsInBowlersList: Boolean,
+	val isHidingWidgetsInLeaguesList: Boolean,
 )
