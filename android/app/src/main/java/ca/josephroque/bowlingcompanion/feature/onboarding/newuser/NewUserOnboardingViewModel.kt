@@ -4,18 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
+import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class NewUserOnboardingViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
+	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel() {
 
 	private val _uiState: MutableStateFlow<NewUserOnboardingUiState> =
@@ -32,12 +37,16 @@ class NewUserOnboardingViewModel @Inject constructor(
 			is NewUserOnboardingUiState.ShowingLogbook -> {
 				if (state.name.isNotBlank()) {
 					viewModelScope.launch {
-						bowlersRepository.insertBowler(BowlerCreate(
-							id = UUID.randomUUID(),
-							name = state.name,
-							kind = BowlerKind.PLAYABLE,
-						))
-						_uiState.value = NewUserOnboardingUiState.Complete
+						withContext(ioDispatcher) {
+							bowlersRepository.insertBowler(
+								BowlerCreate(
+									id = UUID.randomUUID(),
+									name = state.name,
+									kind = BowlerKind.PLAYABLE,
+								)
+							)
+							_uiState.value = NewUserOnboardingUiState.Complete
+						}
 					}
 				}
 			}
