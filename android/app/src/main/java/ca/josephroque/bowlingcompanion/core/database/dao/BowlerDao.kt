@@ -43,6 +43,7 @@ abstract class BowlerDao: BaseDao<BowlerEntity> {
 				ON games.series_id = series.id
 				AND (games.exclude_from_statistics = "INCLUDE" OR games.exclude_from_statistics IS NULL)
 				AND (games.score > 0 OR games.score IS NULL)
+			WHERE bowlers.kind = "PLAYABLE"
 			GROUP BY bowlers.id
 			ORDER BY bowlers.name
 		"""
