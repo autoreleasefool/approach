@@ -46,6 +46,7 @@ abstract class LeagueDao: BaseDao<LeagueEntity> {
 				AND (games.score > 0 OR games.score IS NULL)
 			WHERE leagues.bowler_id = :bowlerId
 			GROUP BY leagues.id
+			ORDER BY leagues.name
 		"""
 	)
 	abstract fun getLeagueAverages(bowlerId: UUID): Flow<List<LeagueListItem>>

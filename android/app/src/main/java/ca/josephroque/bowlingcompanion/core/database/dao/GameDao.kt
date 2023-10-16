@@ -17,6 +17,7 @@ abstract class GameDao: BaseDao<GameEntity> {
 			 games.score
 			FROM games
 			WHERE games.series_id = :seriesId
+			ORDER BY games.`index`
 		"""
 	)
 	abstract fun getGamesList(seriesId: UUID): Flow<List<GameListItem>>

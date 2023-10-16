@@ -16,16 +16,17 @@ abstract class GearDao: BaseDao<GearEntity> {
 	@Query(
 		"""
 			SELECT
-				gear.id,
-				gear.name,
-				gear.kind,
-				owner.name
+				gear.id AS id,
+				gear.name AS name,
+				gear.kind AS kind,
+				owner.name AS ownerName
 			FROM gear
 			JOIN bowler_preferred_gear
 				ON gear.id = bowler_preferred_gear.gear_id
 				AND bowler_preferred_gear.gear_id = :bowlerId
 			JOIN bowlers AS owner 
 				ON gear.owner_id = owner.id
+			ORDER BY gear.name
 		"""
 	)
 	abstract fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
