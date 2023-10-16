@@ -1,15 +1,18 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import androidx.compose.runtime.Immutable
+import ca.josephroque.bowlingcompanion.utils.SortableByUUID
 import java.util.UUID
 
-data class Alley(
-	val id: UUID,
+@Immutable
+data class AlleyListItem(
+	override val id: UUID,
 	val name: String,
 	val material: AlleyMaterial?,
 	val pinFall: AlleyPinFall?,
 	val mechanism: AlleyMechanism?,
 	val pinBase: AlleyPinBase?,
-)
+): SortableByUUID
 
 enum class AlleyMaterial {
 	SYNTHETIC,
