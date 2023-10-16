@@ -21,6 +21,7 @@ class OfflineFirstAlleysRepository @Inject constructor(
 			userDataRepository.userData.map { it.recentlyUsedAlleyIds }
 		) { alleys, recentlyUsed ->
 			alleys.sortByUUIDs(recentlyUsed)
+				.subList(0, limit)
 		}
 
 	override suspend fun insertAlley(alley: AlleyCreate) {
