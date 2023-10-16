@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.database.di
 
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
+import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
@@ -66,6 +67,11 @@ object DaosModule {
 	fun providesGearDao(
 		database: ApproachDatabase,
 	): GearDao = database.gearDao()
+
+	@Provides
+	fun providesAlleyDao(
+		database: ApproachDatabase,
+	): AlleyDao = database.alleyDao()
 
 	@Provides
 	fun providesLegacyIDMappingDao(
