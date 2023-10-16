@@ -31,6 +31,21 @@ abstract class GearDao: BaseDao<GearEntity> {
 	)
 	abstract fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
 
+	@Query(
+		"""
+			SELECT
+				gear.id AS id,
+				gear.name AS name,
+				gear.kind AS kind,
+				owner.name AS ownerName
+			FROM gear
+			JOIN bowlers AS owner
+				ON gear.owner_id = owner.id
+			ORDER BY gear.name
+		"""
+	)
+	abstract fun getGearList(): Flow<List<GearListItem>>
+
 	@Insert(entity = GearEntity::class)
 	abstract fun insertGear(gear: GearCreate)
 
