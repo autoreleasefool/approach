@@ -36,18 +36,20 @@ data class AlleyEntity(
 
 @Immutable
 data class AlleyCreate(
+	val id: UUID,
 	val name: String,
 	val material: AlleyMaterial?,
 	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
 	val mechanism: AlleyMechanism?,
-	@ColumnInfo(name = "pin_fall") val pinBase: AlleyPinBase?,
+	@ColumnInfo(name = "pin_base") val pinBase: AlleyPinBase?,
 )
 
 @Immutable
 data class AlleyUpdate(
+	val id: UUID,
 	val name: String,
 	val material: AlleyMaterial?,
 	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
 	val mechanism: AlleyMechanism?,
-	@ColumnInfo(name = "pin_fall") val pinBase: AlleyPinBase?,
+	@ColumnInfo(name = "pin_base") val pinBase: AlleyPinBase?,
 )
