@@ -37,7 +37,10 @@ fun NavGraphBuilder.leagueFormScreen(
 			navArgument(LEAGUE_ID) { type = NavType.StringType },
 		),
 	) {
-
+		LeagueFormRoute(
+			onBackPressed = onBackPressed,
+			onDismiss = onBackPressed,
+		)
 	}
 	composable(
 		route = addLeagueNavigationRoute,

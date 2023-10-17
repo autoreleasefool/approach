@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessories.navigation.accessoriesScreen
+import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
+import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.analyticsSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.navigateToAnalyticsSettings
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
@@ -60,7 +62,7 @@ fun ApproachNavHost(
 		)
 		statisticsScreen()
 		accessoriesScreen(
-			onAddAlley = { /* TODO: onAddAlley */ },
+			onAddAlley = navController::navigateToNewAlleyForm,
 			onAddGear = { /* TODO: onAddGear */ },
 			onViewAllAlleys = { /* TODO: onViewAllAlleys */ },
 			onViewAllGear = { /* TODO: onViewAllGear */ },
@@ -115,6 +117,9 @@ fun ApproachNavHost(
 			onBackPressed = { navController.popBackStack() },
 		)
 		statisticsSettingsScreen(
+			onBackPressed = { navController.popBackStack() },
+		)
+		alleyFormScreen(
 			onBackPressed = { navController.popBackStack() },
 		)
 	}

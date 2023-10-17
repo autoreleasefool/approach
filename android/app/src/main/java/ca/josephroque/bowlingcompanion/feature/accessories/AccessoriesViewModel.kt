@@ -23,7 +23,7 @@ class AccessoriesViewModel @Inject constructor(
 	alleysRepository: AlleysRepository,
 	gearRepository: GearRepository,
 ): ViewModel() {
-	val _uiState = MutableStateFlow(AccessoriesUiState())
+	private val _uiState = MutableStateFlow(AccessoriesUiState())
 	val uiState: StateFlow<AccessoriesUiState> =
 		_uiState.asStateFlow()
 

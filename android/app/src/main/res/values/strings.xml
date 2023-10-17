@@ -13,6 +13,33 @@
 	<string name="accessory_list_gear_title">Gear</string>
 	<string name="accessory_list_x_most_recent">Only showing %1d$ most recent</string>
 
+	<string name="alley_form_title_new">New Alley</string>
+	<string name="alley_form_title_edit">Edit %$1s</string>
+	<string name="alley_form_details_title">Details</string>
+	<string name="alley_form_property_name">Name</string>
+	<string name="alley_form_property_name_missing">Name cannot be blank</string>
+	<string name="alley_form_property_material">Material</string>
+	<string name="alley_form_property_material_footer">To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother</string>
+	<string name="alley_form_property_mechanism">Mechanism</string>
+	<string name="alley_form_property_mechanism_footer">Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?</string>
+	<string name="alley_form_property_pin_fall">Pin Fall</string>
+	<string name="alley_form_property_pin_fall_footer">Look at the pin set up. Do you notice the pins are pushed off the lane after each ball (freefall), or are they attached to strings and pulled up?</string>
+	<string name="alley_form_property_pin_base">Pin Base</string>
+	<string name="alley_form_property_pin_base_footer">What kind of base do the pins have?</string>
+	<string name="alley_form_property_lanes">Lanes</string>
+	<string name="alley_form_property_lanes_no_lanes_created">No lanes created</string>
+	<string name="alley_form_properties_help">Not sure about any of the settings? Ask a staff member! They\'ll probably be happy to help</string>
+
+	<string name="alley_property_material_wood">Wood</string>
+	<string name="alley_property_material_synthetic">Synthetic</string>
+	<string name="alley_property_mechanism_dedicated">Dedicated</string>
+	<string name="alley_property_mechanism_interchangeable">Interchangeable</string>
+	<string name="alley_property_pin_fall_freefall">Freefall</string>
+	<string name="alley_property_pin_fall_strings">Strings</string>
+	<string name="alley_property_pin_base_black">Black</string>
+	<string name="alley_property_pin_base_white">White</string>
+	<string name="alley_property_pin_base_other">Other</string>
+
 	<string name="bowler_list_add">Add Bowler</string>
 	<string name="bowler_list_title">Bowlers</string>
 
@@ -149,6 +176,8 @@
 	<string name="action_manage">Manage</string>
 	<string name="action_send_email">Send Email</string>
 	<string name="action_view_all">View All</string>
+
+	<string name="none">None</string>
 
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>
