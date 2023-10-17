@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -44,17 +45,24 @@ class BowlerFormViewModel @Inject constructor(
 			val bowlerId = savedStateHandle.get<UUID?>(BOWLER_ID)
 			if (bowlerId == null) {
 				_uiState.value = BowlerFormUiState.Create(
-					name = "",
-					kind = kind,
+					properties = BowlerCreate(
+						id = UUID.randomUUID(),
+						name = "",
+						kind = kind,
+					),
 					fieldErrors = BowlerFormFieldErrors()
 				)
 			} else {
 				val bowler = bowlersRepository.getBowlerDetails(bowlerId)
 					.first()
+				val update = BowlerUpdate(
+					id = bowler.id,
+					name = bowler.name,
+				)
 
 				_uiState.value = BowlerFormUiState.Edit(
-					name = bowler.name,
-					initialValue = bowler,
+					initialValue = update,
+					properties = update,
 					fieldErrors = BowlerFormFieldErrors()
 				)
 			}
@@ -65,11 +73,11 @@ class BowlerFormViewModel @Inject constructor(
 		when (val state = _uiState.value) {
 			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 			is BowlerFormUiState.Edit -> _uiState.value = state.copy(
-				name = name,
+				properties = state.properties.copy(name = name),
 				fieldErrors = state.fieldErrors.copy(nameErrorId = null)
 			)
 			is BowlerFormUiState.Create -> _uiState.value = state.copy(
-				name = name,
+				properties = state.properties.copy(name = name),
 				fieldErrors = state.fieldErrors.copy(nameErrorId = null)
 			)
 		}
@@ -82,30 +90,24 @@ class BowlerFormViewModel @Inject constructor(
 					BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 					is BowlerFormUiState.Create ->
 						if (state.isSavable()) {
-							bowlersRepository.insertBowler(
-								BowlerCreate(
-									id = UUID.randomUUID(),
-									name = state.name,
-									kind = state.kind
-								)
-							)
+							bowlersRepository.insertBowler(state.properties)
 							_uiState.value = BowlerFormUiState.Dismissed
 						} else {
 							_uiState.value = state.copy(
 								fieldErrors = BowlerFormFieldErrors(
-									nameErrorId = if (state.name.isBlank()) R.string.bowler_form_name_missing else null
+									nameErrorId = if (state.properties.name.isBlank()) R.string.bowler_form_name_missing else null
 								)
 							)
 						}
 
 					is BowlerFormUiState.Edit ->
 						if (state.isSavable()) {
-							bowlersRepository.updateBowler(state.bowler())
+							bowlersRepository.updateBowler(state.properties)
 							_uiState.value = BowlerFormUiState.Dismissed
 						} else {
 							_uiState.value = state.copy(
 								fieldErrors = BowlerFormFieldErrors(
-									nameErrorId = if (state.name.isBlank()) R.string.bowler_form_name_missing else null
+									nameErrorId = if (state.properties.name.isBlank()) R.string.bowler_form_name_missing else null
 								)
 							)
 						}
@@ -132,31 +134,23 @@ sealed interface BowlerFormUiState {
 	data object Dismissed: BowlerFormUiState
 
 	data class Create(
-		val name: String,
-		val kind: BowlerKind,
+		val properties: BowlerCreate,
 		val fieldErrors: BowlerFormFieldErrors,
 	): BowlerFormUiState {
-		fun isSavable(): Boolean {
-			return name.isNotBlank()
-		}
+		fun isSavable(): Boolean =
+			properties.name.isNotBlank()
 	}
 
 	data class Edit(
-		val name: String,
-		val initialValue: BowlerDetails,
+		val initialValue: BowlerUpdate,
+		val properties: BowlerUpdate,
 		val fieldErrors: BowlerFormFieldErrors,
 	): BowlerFormUiState {
-		fun isSavable(): Boolean {
-			return name.isNotBlank() && name != initialValue.name
-		}
+		fun isSavable(): Boolean =
+			properties.name.isNotBlank() && properties != initialValue
 	}
 }
 
-fun BowlerFormUiState.Edit.bowler() = BowlerUpdate(
-	id = initialValue.id,
-	name = name,
-)
-
 data class BowlerFormFieldErrors(
-	val nameErrorId: Int? = null
+	@StringRes val nameErrorId: Int? = null
 )

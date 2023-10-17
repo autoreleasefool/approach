@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
@@ -77,7 +78,7 @@ internal fun BowlerFormScreen(
 		 BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 		 is BowlerFormUiState.Edit ->
 			 BowlerForm(
-				 name = bowlerFormState.name,
+				 name = bowlerFormState.properties.name,
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
 				 nameErrorId = bowlerFormState.fieldErrors.nameErrorId,
@@ -86,7 +87,7 @@ internal fun BowlerFormScreen(
 			 )
 		 is BowlerFormUiState.Create ->
 			 BowlerForm(
-				 name = bowlerFormState.name,
+				 name = bowlerFormState.properties.name,
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
 				 nameErrorId = bowlerFormState.fieldErrors.nameErrorId,
@@ -131,7 +132,7 @@ internal fun Title(
 	Text(
 		text = when (uiState) {
 			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> ""
-			is BowlerFormUiState.Create -> when (uiState.kind) {
+			is BowlerFormUiState.Create -> when (uiState.properties.kind) {
 				BowlerKind.PLAYABLE -> stringResource(R.string.bowler_form_new_bowler)
 				BowlerKind.OPPONENT -> stringResource(R.string.bowler_form_new_opponent)
 			}
@@ -165,8 +166,8 @@ internal fun Actions(
 fun BowlerFormPreview() {
 	BowlerFormScreen(
 		bowlerFormState = BowlerFormUiState.Edit(
-			name = "Joseph",
-			initialValue = BowlerDetails(id = UUID.randomUUID(), name = "Joseph"),
+			properties = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),
+			initialValue = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),
 			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
 		),
 		onBackPressed = {},
