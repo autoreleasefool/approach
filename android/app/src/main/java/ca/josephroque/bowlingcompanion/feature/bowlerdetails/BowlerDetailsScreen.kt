@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.core.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.components.list.footer
 import ca.josephroque.bowlingcompanion.core.components.list.header
@@ -145,15 +145,7 @@ internal fun BowlerDetailsTopBar(
 				style = MaterialTheme.typography.titleLarge
 			)
 		},
-		navigationIcon = {
-			IconButton(onClick = onBackPressed) {
-				Icon(
-					Icons.Default.ArrowBack,
-					contentDescription = stringResource(R.string.cd_back),
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
-			}
-		},
+		navigationIcon = { BackButton(onClick = onBackPressed) },
 		actions = {
 			IconButton(onClick = onAddLeague) {
 				Icon(

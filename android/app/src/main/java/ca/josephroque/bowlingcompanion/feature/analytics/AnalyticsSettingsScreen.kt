@@ -5,11 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -28,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.core.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.components.Link
 
@@ -123,15 +120,7 @@ fun AnalyticsSettingsTopBar(
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},
-		navigationIcon = {
-			IconButton(onClick = onBackPressed) {
-				Icon(
-					imageVector = Icons.Default.ArrowBack,
-					contentDescription = stringResource(R.string.cd_back),
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
-			}
-		}
+		navigationIcon = { BackButton(onClick = onBackPressed) }
 	)
 }
 
