@@ -173,9 +173,13 @@ internal fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged:
 			when (it) {
 				LeagueRecurrence.REPEATING -> stringResource(R.string.league_form_property_repeat_repeats)
 				LeagueRecurrence.ONCE -> stringResource(R.string.league_form_property_repeat_never)
+				null -> ""
 			}
 		},
-		onOptionSelected = onRecurrenceChanged ?: { }
+		onOptionSelected = {
+			it ?: return@FormRadioGroup
+			onRecurrenceChanged?.invoke(it)
+		}
 	)
 }
 
@@ -190,9 +194,13 @@ internal fun ExcludeFromStatisticsPicker(excludeFromStatistics: ExcludeFromStati
 			when (it) {
 				ExcludeFromStatistics.INCLUDE -> stringResource(R.string.league_form_property_exclude_include)
 				ExcludeFromStatistics.EXCLUDE -> stringResource(R.string.league_form_property_exclude_exclude)
+				null -> ""
 			}
 		},
-		onOptionSelected = onExcludeFromStatisticsChanged ?: { }
+		onOptionSelected = {
+			it ?: return@FormRadioGroup
+			onExcludeFromStatisticsChanged?.invoke(it)
+		}
 	)
 }
 
@@ -211,9 +219,13 @@ internal fun GamesPerSeriesPicker(gamesPerSeries: GamesPerSeries, onGamesPerSeri
 			when (it) {
 				GamesPerSeries.STATIC -> stringResource(R.string.league_form_property_number_of_games_constant)
 				GamesPerSeries.DYNAMIC -> stringResource(R.string.league_form_property_number_of_games_always_ask)
+				null -> ""
 			}
 		},
-		onOptionSelected = onGamesPerSeriesChanged ?: { }
+		onOptionSelected = {
+			it ?: return@FormRadioGroup
+			onGamesPerSeriesChanged?.invoke(it)
+		}
 	)
 }
 

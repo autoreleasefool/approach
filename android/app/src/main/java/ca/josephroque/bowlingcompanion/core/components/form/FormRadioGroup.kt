@@ -16,17 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun <T>FormRadioGroup(
 	@StringRes titleResourceId: Int,
 	options: Array<T>,
 	selected: T?,
-	titleForOption: @Composable (T) -> String,
-	onOptionSelected: (T) -> Unit,
+	titleForOption: @Composable (T?) -> String,
+	onOptionSelected: (T?) -> Unit,
 	modifier: Modifier = Modifier,
 	@StringRes subtitleResourceId: Int? = null,
 ) {
@@ -46,9 +44,10 @@ fun <T>FormRadioGroup(
 	title: String,
 	options: Array<T>,
 	selected: T?,
-	titleForOption: @Composable (T) -> String,
-	onOptionSelected: (T) -> Unit,
+	titleForOption: @Composable (T?) -> String,
+	onOptionSelected: (T?) -> Unit,
 	modifier: Modifier = Modifier,
+	allowNullableSelection: Boolean = false,
 	subtitle: String? = null,
 ) {
 	Column(modifier = modifier) {
@@ -66,35 +65,56 @@ fun <T>FormRadioGroup(
 					.padding(horizontal = 16.dp, vertical = 8.dp),
 			)
 		}
+		
+		if (allowNullableSelection) {
+			FormRadioButton(
+				isSelected = selected == null,
+				title = titleForOption(null),
+				onClick = { onOptionSelected(null) },
+			)
+		}
 
 		options.forEach {
 			val isSelected = it == selected
 
-			Surface(
-				color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-				modifier = Modifier
-					.selectable(
-						selected = isSelected,
-						onClick = { onOptionSelected(it) },
-						role = Role.RadioButton,
-					)
-			) {
-				Row(
-					verticalAlignment = Alignment.CenterVertically,
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(16.dp),
-				) {
-					Text(
-						text = titleForOption(it),
-						style = MaterialTheme.typography.bodyLarge,
-						modifier = Modifier.weight(1f),
-					)
+			FormRadioButton(
+				isSelected = isSelected,
+				title = titleForOption(it),
+				onClick = { onOptionSelected(it) },
+			)
+		}
+	}
+}
 
-					Box(modifier = Modifier.padding(8.dp)) {
-						RadioButton(selected = isSelected, onClick = null)
-					}
-				}
+@Composable
+internal fun FormRadioButton(
+	isSelected: Boolean,
+	title: String,
+	onClick: () -> Unit,
+) {
+	Surface(
+		color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+		modifier = Modifier
+			.selectable(
+				selected = isSelected,
+				onClick = onClick,
+				role = Role.RadioButton,
+			)
+	) {
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(16.dp),
+		) {
+			Text(
+				text = title,
+				style = MaterialTheme.typography.bodyLarge,
+				modifier = Modifier.weight(1f),
+			)
+
+			Box(modifier = Modifier.padding(8.dp)) {
+				RadioButton(selected = isSelected, onClick = null)
 			}
 		}
 	}

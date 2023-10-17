@@ -114,9 +114,7 @@ class LeagueFormViewModel @Inject constructor(
 							)
 							_uiState.value = LeagueFormUiState.Dismissed
 						} else {
-							_uiState.value = state.copy(
-								fieldErrors = state.fieldErrors()
-							)
+							_uiState.value = state.copy(fieldErrors = state.fieldErrors())
 						}
 					is LeagueFormUiState.Edit ->
 						if (state.isSavable()) {
@@ -140,9 +138,7 @@ class LeagueFormViewModel @Inject constructor(
 							)
 							_uiState.value = LeagueFormUiState.Dismissed
 						} else {
-							_uiState.value = state.copy(
-								fieldErrors = state.fieldErrors()
-							)
+							_uiState.value = state.copy(fieldErrors = state.fieldErrors())
 						}
 				}
 			}
