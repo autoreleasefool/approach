@@ -24,7 +24,7 @@ class OfflineFirstGearRepository @Inject constructor(
 			userDataRepository.userData.map { it.recentlyUsedGearIds }
 		) { gear, recentlyUsed ->
 			gear.sortByUUIDs(recentlyUsed)
-				.subList(0, limit)
+				.take(limit)
 		}
 
 	override suspend fun insertGear(gear: GearCreate) {
