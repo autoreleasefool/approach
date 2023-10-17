@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.feature.accessories.AccessoriesRoute
+import java.util.UUID
 
 const val accessoriesNavigationRoute = "accessories"
 
@@ -12,10 +13,24 @@ fun NavController.navigateToAccessories(navOptions: NavOptions? = null) {
 	this.navigate(accessoriesNavigationRoute, navOptions)
 }
 
-fun NavGraphBuilder.accessoriesScreen() {
+fun NavGraphBuilder.accessoriesScreen(
+	onAddAlley: () -> Unit,
+	onAddGear: () -> Unit,
+	onViewAllAlleys: () -> Unit,
+	onViewAllGear: () -> Unit,
+	onShowAlleyDetails: (UUID) -> Unit,
+	onShowGearDetails: (UUID) -> Unit,
+) {
 	composable(
 		route = accessoriesNavigationRoute,
 	) {
-		AccessoriesRoute()
+		AccessoriesRoute(
+			onAddAlley = onAddAlley,
+			onAddGear = onAddGear,
+			onViewAllAlleys = onViewAllAlleys,
+			onViewAllGear = onViewAllGear,
+			onShowAlleyDetails = onShowAlleyDetails,
+			onShowGearDetails = onShowGearDetails,
+		)
 	}
 }

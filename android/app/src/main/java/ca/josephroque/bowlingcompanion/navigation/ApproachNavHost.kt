@@ -59,7 +59,14 @@ fun ApproachNavHost(
 			onShowBowlerDetails = navController::navigateToBowlerDetails,
 		)
 		statisticsScreen()
-		accessoriesScreen()
+		accessoriesScreen(
+			onAddAlley = { /* TODO: onAddAlley */ },
+			onAddGear = { /* TODO: onAddGear */ },
+			onViewAllAlleys = { /* TODO: onViewAllAlleys */ },
+			onViewAllGear = { /* TODO: onViewAllGear */ },
+			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
+			onShowGearDetails = { /* TODO: onShowGearDetails */ },
+		)
 		settingsScreen(
 			openOpponents = navController::navigateToOpponentsList,
 			openStatisticsSettings = navController::navigateToStatisticsSettings,

@@ -61,16 +61,20 @@ fun ListSectionHeader(
 }
 
 fun LazyListScope.footer(@StringRes footerResourceId: Int) {
-	item { ListSectionFooter(footerResourceId = footerResourceId) }
+	item { ListSectionFooter(footer = stringResource(footerResourceId)) }
+}
+
+fun LazyListScope.footer(footer: String) {
+	item { ListSectionFooter(footer = footer) }
 }
 
 @Composable
 fun ListSectionFooter(
-	@StringRes footerResourceId: Int,
+	footer: String,
 	modifier: Modifier = Modifier,
 ) {
 	Text(
-		text = stringResource(footerResourceId),
+		text = footer,
 		style = MaterialTheme.typography.bodySmall,
 		modifier = modifier
 			.fillMaxWidth()

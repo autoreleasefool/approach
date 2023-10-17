@@ -38,7 +38,7 @@ fun GearItemRow(
 			.clickable(onClick = onClick)
 			.padding(16.dp),
 	) {
-		// TOOD: add avatar
+		// TODO: add avatar
 
 		Column(
 			horizontalAlignment = Alignment.Start,

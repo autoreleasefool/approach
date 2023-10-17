@@ -60,26 +60,7 @@ internal fun OverviewScreen(
 ) {
 	Scaffold(
 		topBar = {
-			CenterAlignedTopAppBar(
-				colors = TopAppBarDefaults.topAppBarColors(),
-				title = {
-					Text(
-						text = stringResource(R.string.overview_title),
-						style = MaterialTheme.typography.titleLarge,
-						maxLines = 1,
-						overflow = TextOverflow.Ellipsis,
-					)
-				},
-				actions = {
-					IconButton(onClick = onAddBowler) {
-						Icon(
-							imageVector = Icons.Filled.Add,
-							contentDescription = stringResource(R.string.bowler_list_add),
-							tint = MaterialTheme.colorScheme.onSurface,
-						)
-					}
-				}
-			)
+			OverviewTopBar(onAddBowler)
 		}
 	) { padding ->
 		LazyColumn(
@@ -114,7 +95,32 @@ internal fun OverviewScreen(
 	}
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OverviewTopBar(
+	onAddBowler: () -> Unit,
+) {
+	CenterAlignedTopAppBar(
+		colors = TopAppBarDefaults.topAppBarColors(),
+		title = {
+			Text(
+				text = stringResource(R.string.destination_overview),
+				style = MaterialTheme.typography.titleLarge,
+				maxLines = 1,
+				overflow = TextOverflow.Ellipsis,
+			)
+		},
+		actions = {
+			IconButton(onClick = onAddBowler) {
+				Icon(
+					imageVector = Icons.Filled.Add,
+					contentDescription = stringResource(R.string.bowler_list_add),
+					tint = MaterialTheme.colorScheme.onSurface,
+				)
+			}
+		}
+	)
+}
 
 @Preview
 @Composable

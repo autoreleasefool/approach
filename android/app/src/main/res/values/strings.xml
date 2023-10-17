@@ -3,10 +3,15 @@
 
 	<string name="destination_overview">Overview</string>
 	<string name="destination_statistics">Statistics</string>
-	<string name="destination_accessories">Utilities</string>
+	<string name="destination_accessories">Accessories</string>
 	<string name="destination_settings">Settings</string>
 
-	<string name="overview_title">Overview</string>
+	<string name="accessory_list_add">Add Item</string>
+	<string name="accessory_list_add_alley">Add Alley</string>
+	<string name="accessory_list_add_gear">Add Gear</string>
+	<string name="accessory_list_alleys_title">Alleys</string>
+	<string name="accessory_list_gear_title">Gear</string>
+	<string name="accessory_list_x_most_recent">Only showing %1d$ most recent</string>
 
 	<string name="bowler_list_add">Add Bowler</string>
 	<string name="bowler_list_title">Bowlers</string>
@@ -143,6 +148,7 @@
 	<string name="action_delete">Delete</string>
 	<string name="action_manage">Manage</string>
 	<string name="action_send_email">Send Email</string>
+	<string name="action_view_all">View All</string>
 
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>
