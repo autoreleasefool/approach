@@ -7,12 +7,28 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdate
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
 abstract class AlleyDao: BaseDao<AlleyEntity> {
+	@Query(
+		"""
+			SELECT
+				alleys.id AS id,
+				alleys.name AS name,
+				alleys.material AS material,
+				alleys.pin_fall AS pinFall,
+				alleys.mechanism AS mechanism,
+				alleys.pin_base AS pinBase
+			FROM alleys
+			WHERE alleys.id = :alleyId
+		"""
+	)
+	abstract fun getAlleyDetails(alleyId: UUID): Flow<AlleyDetails>
+
 	@Query(
 		"""
 			SELECT 

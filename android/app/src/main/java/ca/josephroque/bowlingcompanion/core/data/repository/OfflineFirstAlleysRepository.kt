@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdate
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.utils.sortByUUIDs
 import kotlinx.coroutines.flow.Flow
@@ -15,6 +16,9 @@ class OfflineFirstAlleysRepository @Inject constructor(
 	private val alleyDao: AlleyDao,
 	private val userDataRepository: UserDataRepository,
 ): AlleysRepository {
+	override fun getAlleyDetails(id: UUID): Flow<AlleyDetails> =
+		alleyDao.getAlleyDetails(id)
+
 	override fun getRecentAlleysList(limit: Int): Flow<List<AlleyListItem>> =
 		combine(
 			alleyDao.getAlleysList(),
