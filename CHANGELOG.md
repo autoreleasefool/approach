@@ -1,11 +1,9 @@
 # Most recent version
 
-## iOS 1.1.1b11
+## iOS 1.1.2b12
 
 ```
-- Feat: More varied charts in series list
-- Fix: Statistics not loading when a all games of a series are excluded
-- Fix: Marking a pre-bowl as a regular series now updates the games in the series to be included in stats
+- Fix: Prevent score calculation from being applied to wrong game and overwriting score
 ```
 
 ## Android v3.2.0
@@ -19,6 +17,14 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.1.1b11
+
+```
+- Feat: More varied charts in series list
+- Fix: Statistics not loading when a all games of a series are excluded
+- Fix: Marking a pre-bowl as a regular series now updates the games in the series to be included in stats
+```
 
 ## iOS 1.1.0b10
 
