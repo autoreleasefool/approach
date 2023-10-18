@@ -49,7 +49,6 @@ internal fun OverviewRoute(
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun OverviewScreen(
 	bowlersListState: BowlersListUiState,

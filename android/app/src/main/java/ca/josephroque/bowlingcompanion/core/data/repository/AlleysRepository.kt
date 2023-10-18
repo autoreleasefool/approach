@@ -10,6 +10,7 @@ import java.util.UUID
 interface AlleysRepository {
 	fun getAlleyDetails(id: UUID): Flow<AlleyDetails>
 	fun getRecentAlleysList(limit: Int): Flow<List<AlleyListItem>>
+	fun getAlleysList(): Flow<List<AlleyListItem>>
 
 	suspend fun insertAlley(alley: AlleyCreate)
 	suspend fun updateAlley(alley: AlleyUpdate)

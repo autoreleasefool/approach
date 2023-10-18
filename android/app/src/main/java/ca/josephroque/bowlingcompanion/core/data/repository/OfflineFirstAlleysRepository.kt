@@ -28,6 +28,9 @@ class OfflineFirstAlleysRepository @Inject constructor(
 				.take(limit)
 		}
 
+	override fun getAlleysList(): Flow<List<AlleyListItem>> =
+		alleyDao.getAlleysList()
+
 	override suspend fun insertAlley(alley: AlleyCreate) {
 		alleyDao.insertAlley(alley)
 	}

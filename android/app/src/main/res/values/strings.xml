@@ -13,6 +13,9 @@
 	<string name="accessory_list_gear_title">Gear</string>
 	<string name="accessory_list_x_most_recent">Only showing %1d$ most recent</string>
 
+	<string name="alley_list_title">Alleys</string>
+	<string name="alley_list_add">Add Alley</string>
+
 	<string name="alley_form_title_new">New Alley</string>
 	<string name="alley_form_title_edit">Edit %$1s</string>
 	<string name="alley_form_details_title">Details</string>

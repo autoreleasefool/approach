@@ -9,6 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessories.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
+import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.alleysListScreen
+import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.navigateToAlleysList
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.analyticsSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.navigateToAnalyticsSettings
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
@@ -64,7 +66,7 @@ fun ApproachNavHost(
 		accessoriesScreen(
 			onAddAlley = navController::navigateToNewAlleyForm,
 			onAddGear = { /* TODO: onAddGear */ },
-			onViewAllAlleys = { /* TODO: onViewAllAlleys */ },
+			onViewAllAlleys = navController::navigateToAlleysList,
 			onViewAllGear = { /* TODO: onViewAllGear */ },
 			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
 			onShowGearDetails = { /* TODO: onShowGearDetails */ },
@@ -118,6 +120,12 @@ fun ApproachNavHost(
 		)
 		statisticsSettingsScreen(
 			onBackPressed = { navController.popBackStack() },
+		)
+		alleysListScreen(
+			onBackPressed = { navController.popBackStack() },
+			onEditAlley = { /* TODO: onEditAlley */ },
+			onAddAlley = navController::navigateToNewAlleyForm,
+			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
 		)
 		alleyFormScreen(
 			onBackPressed = { navController.popBackStack() },
