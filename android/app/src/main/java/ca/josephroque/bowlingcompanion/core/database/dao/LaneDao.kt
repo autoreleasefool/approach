@@ -19,6 +19,7 @@ abstract class LaneDao: BaseDao<LaneEntity> {
 				lanes.position AS position
 			FROM lanes
 			WHERE lanes.alley_id = :alleyId
+			ORDER BY lanes.label
 		"""
 	)
 	abstract fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>>
