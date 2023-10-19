@@ -1,8 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import androidx.compose.runtime.Immutable
 import java.util.UUID
 
-data class Lane(
+@Immutable
+data class LaneListItem(
 	val id: UUID,
 	val label: String,
 	val position: LanePosition,

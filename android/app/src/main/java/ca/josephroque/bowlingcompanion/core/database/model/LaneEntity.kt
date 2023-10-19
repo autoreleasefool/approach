@@ -4,9 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import ca.josephroque.bowlingcompanion.core.model.Lane
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import java.util.UUID
 
@@ -30,8 +28,10 @@ data class LaneEntity(
 	@ColumnInfo(name = "position") val position: LanePosition,
 )
 
-fun LaneEntity.asExternalModel() = Lane(
-	id = id,
-	label = label,
-	position = position,
+@Immutable
+data class LaneCreate(
+	val id: UUID,
+	@ColumnInfo(name = "alley_id") val alleyId: UUID,
+	val label: String,
+	val position: LanePosition,
 )

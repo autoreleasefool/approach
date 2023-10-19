@@ -4,12 +4,14 @@ import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGearRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstRecentlyUsedRepository
@@ -62,6 +64,11 @@ interface DataModule {
 	fun bindsAlleysRepository(
 		alleysRepository: OfflineFirstAlleysRepository,
 	): AlleysRepository
+
+	@Binds
+	fun bindsLanesRepository(
+		lanesRepository: OfflineFirstLanesRepository,
+	): LanesRepository
 
 	@Binds
 	fun bindsUserDataRepository(
