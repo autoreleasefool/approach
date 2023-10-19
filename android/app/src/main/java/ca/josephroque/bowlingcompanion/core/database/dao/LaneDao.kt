@@ -1,14 +1,15 @@
 package ca.josephroque.bowlingcompanion.core.database.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
+@Dao
 abstract class LaneDao: BaseDao<LaneEntity> {
 	@Query(
 		"""
@@ -23,12 +24,6 @@ abstract class LaneDao: BaseDao<LaneEntity> {
 		"""
 	)
 	abstract fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>>
-
-	@Transaction
-	fun overwriteAlleyLanes(alleyId: UUID, lanes: List<LaneCreate>) {
-		deleteAlleyLanes(alleyId)
-		insertAll(lanes)
-	}
 
 	@Query("DELETE FROM lanes WHERE alley_id = :alleyId")
 	abstract fun deleteAlleyLanes(alleyId: UUID)
