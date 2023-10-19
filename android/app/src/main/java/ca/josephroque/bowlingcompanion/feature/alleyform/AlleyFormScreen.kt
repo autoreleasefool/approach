@@ -116,7 +116,7 @@ internal fun AlleyFormScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun AlleyFormTopBar(
+private fun AlleyFormTopBar(
 	alleyFormState: AlleyFormUiState,
 	onBackPressed: () -> Unit,
 	saveAlley: () -> Unit,
@@ -129,7 +129,7 @@ internal fun AlleyFormTopBar(
 }
 
 @Composable
-internal fun Title(alleyFormState: AlleyFormUiState) {
+private fun Title(alleyFormState: AlleyFormUiState) {
 	when (alleyFormState) {
 		AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Text("")
 		is AlleyFormUiState.Create -> Text(stringResource(R.string.alley_form_title_new))
@@ -138,7 +138,7 @@ internal fun Title(alleyFormState: AlleyFormUiState) {
 }
 
 @Composable
-internal fun Actions(
+private fun Actions(
 	alleyFormState: AlleyFormUiState,
 	saveAlley: () -> Unit,
 ) {

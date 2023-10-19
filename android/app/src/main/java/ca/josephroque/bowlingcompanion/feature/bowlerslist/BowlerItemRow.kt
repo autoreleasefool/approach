@@ -23,7 +23,7 @@ import ca.josephroque.bowlingcompanion.utils.formatAsAverage
 import java.util.UUID
 
 @Composable
-fun BowlerItemRow(
+internal fun BowlerItemRow(
 	bowler: BowlerListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -59,7 +59,7 @@ fun BowlerItemRow(
 
 @Preview
 @Composable
-fun BowlerCardPreview() {
+private fun BowlerCardPreview() {
 	Surface {
 		BowlerItemRow(
 			bowler = BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),

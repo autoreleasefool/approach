@@ -45,7 +45,7 @@ internal fun AnalyticsSettingsRoute(
 }
 
 @Composable
-fun AnalyticsSettingsScreen(
+internal fun AnalyticsSettingsScreen(
 	analyticsSettingsState: AnalyticsSettingsUiState,
 	onBackPressed: () -> Unit,
 	onToggleOptInStatus: (Boolean?) -> Unit,
@@ -109,7 +109,7 @@ fun AnalyticsSettingsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AnalyticsSettingsTopBar(
+private fun AnalyticsSettingsTopBar(
 	onBackPressed: () -> Unit,
 ) {
 	TopAppBar(
@@ -126,7 +126,7 @@ fun AnalyticsSettingsTopBar(
 
 @Preview
 @Composable
-fun AnalyticsSettingsScreenPreview() {
+private fun AnalyticsSettingsScreenPreview() {
 	Surface {
 		AnalyticsSettingsScreen(
 			analyticsSettingsState = AnalyticsSettingsUiState.Success(analyticsOptInStatus = AnalyticsOptInStatus.OPTED_IN),

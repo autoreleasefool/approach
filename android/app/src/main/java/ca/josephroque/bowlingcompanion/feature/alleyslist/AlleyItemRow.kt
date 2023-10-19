@@ -26,7 +26,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import java.util.UUID
 
 @Composable
-fun AlleyItemRow(
+internal fun AlleyItemRow(
 	alley: AlleyListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -68,7 +68,7 @@ fun AlleyItemRow(
 }
 
 @Composable
-fun AlleyListItem.properties(): List<Painter> {
+private fun AlleyListItem.properties(): List<Painter> {
 	val properties = mutableListOf<Painter>()
 	this.material?.let { properties.add(it.icon()) }
 	this.pinFall?.let { properties.add(it.icon()) }
@@ -79,7 +79,7 @@ fun AlleyListItem.properties(): List<Painter> {
 
 @Preview
 @Composable
-fun AlleyItemRowPreview() {
+private fun AlleyItemRowPreview() {
 	Surface {
 		AlleyItemRow(
 			alley = AlleyListItem(

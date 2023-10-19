@@ -38,7 +38,7 @@ internal fun LegacyUserOnboardingScreen(
 }
 
 @Composable
-internal fun LegacyUserOnboarding(
+private fun LegacyUserOnboarding(
 	legacyUserOnboardingUiState: LegacyUserOnboardingUiState,
 	showApproachHeader: () -> Unit,
 	showApproachDetails: () -> Unit,
@@ -65,7 +65,7 @@ internal fun LegacyUserOnboarding(
 
 @Preview
 @Composable
-internal fun LegacyUserOnboardingPreview() {
+private fun LegacyUserOnboardingPreview() {
 	Surface {
 		LegacyUserOnboarding(
 			legacyUserOnboardingUiState = LegacyUserOnboardingUiState.Started,

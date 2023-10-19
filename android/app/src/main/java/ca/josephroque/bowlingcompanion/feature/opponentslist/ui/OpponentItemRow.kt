@@ -19,13 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
-import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
-import ca.josephroque.bowlingcompanion.utils.formatAsAverage
 import java.util.UUID
 
 @Composable
-fun OpponentItemRow(
+internal fun OpponentItemRow(
 	opponent: OpponentListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -59,7 +57,7 @@ fun OpponentItemRow(
 
 @Preview
 @Composable
-fun OpponentItemPreview() {
+private fun OpponentItemPreview() {
 	Surface {
 		OpponentItemRow(
 			opponent = OpponentListItem(id = UUID.randomUUID(), name = "Joseph", kind = BowlerKind.PLAYABLE),

@@ -127,7 +127,7 @@ internal fun BowlerDetailsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun BowlerDetailsTopBar(
+private fun BowlerDetailsTopBar(
 	bowlerDetailsState: BowlerDetailsUiState,
 	onAddLeague: () -> Unit,
 	onBackPressed: () -> Unit,

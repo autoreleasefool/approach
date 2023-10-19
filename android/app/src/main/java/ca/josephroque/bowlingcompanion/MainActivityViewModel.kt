@@ -55,7 +55,7 @@ sealed interface MainActivityUiState {
 	): MainActivityUiState
 }
 
-fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {
+internal fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {
 	MainActivityUiState.Loading -> false
 	is MainActivityUiState.Success -> this.isLaunchComplete
 }

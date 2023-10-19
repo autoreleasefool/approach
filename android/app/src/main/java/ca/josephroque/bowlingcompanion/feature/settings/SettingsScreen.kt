@@ -227,7 +227,7 @@ internal fun SettingsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SettingsTopBar() {
+private fun SettingsTopBar() {
 	TopAppBar(
 		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
@@ -241,7 +241,7 @@ internal fun SettingsTopBar() {
 
 @Preview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
 	Surface {
 		SettingsScreen(
 			settingsState = SettingsUiState(isDataExportsEnabled = true, isDataImportsEnabled = true),

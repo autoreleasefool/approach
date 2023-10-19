@@ -53,7 +53,7 @@ data class SeriesChartable(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SeriesItemRow(
+internal fun SeriesItemRow(
 	series: SeriesChartable,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -189,7 +189,7 @@ private fun ScoreChart(scores: ChartEntryModel) {
 
 @Preview
 @Composable
-fun SeriesItemPreview() {
+private fun SeriesItemPreview() {
 	Surface {
 		Column {
 			SeriesItemRow(

@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SectionHeader(
+internal fun SectionHeader(
 	@StringRes titleResourceId: Int,
 	modifier: Modifier = Modifier,
 ) {
@@ -25,7 +25,7 @@ fun SectionHeader(
 }
 
 @Composable
-fun SectionFooter(
+internal fun SectionFooter(
 	@StringRes titleResourceId: Int,
 	modifier: Modifier = Modifier,
 ) {

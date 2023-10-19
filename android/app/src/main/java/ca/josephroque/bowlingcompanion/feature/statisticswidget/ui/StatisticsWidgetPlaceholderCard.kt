@@ -26,7 +26,7 @@ import ca.josephroque.bowlingcompanion.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun StatisticsWidgetPlaceholderCard(
+fun StatisticsWidgetPlaceholderCard(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -69,7 +69,7 @@ internal fun StatisticsWidgetPlaceholderCard(
 
 @Preview
 @Composable
-fun StatisticsWidgetPlaceholderPreview() {
+private fun StatisticsWidgetPlaceholderPreview() {
 	Surface {
 		StatisticsWidgetPlaceholderCard(onClick = {}, modifier = Modifier.padding(16.dp))
 	}

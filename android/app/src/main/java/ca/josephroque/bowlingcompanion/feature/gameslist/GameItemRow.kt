@@ -23,7 +23,7 @@ import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GameItemRow(
+internal fun GameItemRow(
 	game: GameListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -56,7 +56,7 @@ fun GameItemRow(
 
 @Preview
 @Composable
-fun GameItemPreview() {
+private fun GameItemPreview() {
 	Surface {
 		GameItemRow(
 			game = GameListItem(

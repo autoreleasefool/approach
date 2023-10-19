@@ -72,7 +72,7 @@ internal fun AccessoriesRoute(
 }
 
 @Composable
-fun AccessoriesScreen(
+internal fun AccessoriesScreen(
 	accessoriesState: AccessoriesUiState,
 	alleysListState: AlleysListUiState,
 	gearListState: GearListUiState,
@@ -159,7 +159,7 @@ fun AccessoriesScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccessoriesTopBar(
+private fun AccessoriesTopBar(
 	isAccessoryMenuExpanded: Boolean,
 	onAddAccessory: () -> Unit,
 	onMinimizeAddAccessoryMenu: () -> Unit,
@@ -217,7 +217,7 @@ fun AccessoriesTopBar(
 
 @Preview
 @Composable
-internal fun AccessoriesPreview() {
+private fun AccessoriesPreview() {
 	Surface {
 		AccessoriesScreen(
 			accessoriesState = AccessoriesUiState(isAccessoryMenuExpanded = false),

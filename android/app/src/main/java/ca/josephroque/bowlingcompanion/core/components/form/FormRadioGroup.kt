@@ -87,7 +87,7 @@ fun <T>FormRadioGroup(
 }
 
 @Composable
-internal fun FormRadioButton(
+private fun FormRadioButton(
 	isSelected: Boolean,
 	title: String,
 	onClick: () -> Unit,

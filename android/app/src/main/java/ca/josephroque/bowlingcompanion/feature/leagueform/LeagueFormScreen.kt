@@ -125,7 +125,7 @@ internal fun LeagueFormScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun LeagueFormTopBar(
+private fun LeagueFormTopBar(
 	leagueFormState: LeagueFormUiState,
 	onBackPressed: () -> Unit,
 	saveLeague: () -> Unit,
@@ -138,7 +138,7 @@ internal fun LeagueFormTopBar(
 }
 
 @Composable
-internal fun Title(leagueFormState: LeagueFormUiState) {
+private fun Title(leagueFormState: LeagueFormUiState) {
 	when (leagueFormState) {
 		LeagueFormUiState.Loading, LeagueFormUiState.Dismissed -> Text("")
 		is LeagueFormUiState.Create -> Text(stringResource(R.string.league_form_title_new))
@@ -147,7 +147,7 @@ internal fun Title(leagueFormState: LeagueFormUiState) {
 }
 
 @Composable
-internal fun Actions(
+private fun Actions(
 	leagueFormState: LeagueFormUiState,
 	saveLeague: () -> Unit,
 ) {

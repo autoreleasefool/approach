@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -103,7 +102,7 @@ fun SeriesDetailsHeader(
 }
 
 @Composable
-fun ScoreChart(scores: ChartEntryModel) {
+private fun ScoreChart(scores: ChartEntryModel) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(chartColors = listOf(colorResource(R.color.purple_300))),
 	) {
@@ -130,7 +129,7 @@ fun ScoreChart(scores: ChartEntryModel) {
 
 @Preview
 @Composable
-fun SeriesDetailsHeaderPreview() {
+private fun SeriesDetailsHeaderPreview() {
 	Surface {
 		SeriesDetailsHeader(
 			numberOfGames = 4,

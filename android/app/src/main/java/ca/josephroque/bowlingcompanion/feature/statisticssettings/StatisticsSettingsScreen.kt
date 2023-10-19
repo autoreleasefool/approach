@@ -46,7 +46,7 @@ internal fun StatisticsSettingsRoute(
 }
 
 @Composable
-fun StatisticsSettingsScreen(
+internal fun StatisticsSettingsScreen(
 	statisticsSettingsState: StatisticsSettingsUiState,
 	onBackPressed: () -> Unit,
 	onToggleCountH2AsH: (Boolean?) -> Unit,
@@ -117,7 +117,7 @@ fun StatisticsSettingsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsSettingsTopBar(
+private fun StatisticsSettingsTopBar(
 	onBackPressed: () -> Unit,
 ) {
 	TopAppBar(
@@ -134,7 +134,7 @@ fun StatisticsSettingsTopBar(
 
 @Preview
 @Composable
-fun StatisticsSettingsScreenPreview() {
+private fun StatisticsSettingsScreenPreview() {
 	Surface {
 		StatisticsSettingsScreen(
 			statisticsSettingsState = StatisticsSettingsUiState.Success(

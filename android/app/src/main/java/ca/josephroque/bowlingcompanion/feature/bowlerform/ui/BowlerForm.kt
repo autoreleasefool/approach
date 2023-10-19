@@ -52,7 +52,7 @@ internal fun BowlerForm(
 }
 
 @Composable
-internal fun NameTextField(
+private fun NameTextField(
 	name: String,
 	onNameChanged: (String) -> Unit,
 	nameErrorId: Int?,

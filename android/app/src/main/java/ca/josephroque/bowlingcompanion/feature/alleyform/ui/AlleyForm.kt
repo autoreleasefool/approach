@@ -80,7 +80,7 @@ internal fun AlleyForm(
 }
 
 @Composable
-internal fun AlleyNameField(name: String, onNameChanged: ((String) -> Unit)?, errorId: Int?) {
+private fun AlleyNameField(name: String, onNameChanged: ((String) -> Unit)?, errorId: Int?) {
 	OutlinedTextField(
 		value = name,
 		onValueChange = onNameChanged ?: {},
@@ -112,7 +112,7 @@ internal fun AlleyNameField(name: String, onNameChanged: ((String) -> Unit)?, er
 }
 
 @Composable
-internal fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMaterial?) -> Unit) {
+private fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMaterial?) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_material),
 		subtitle = stringResource(R.string.alley_form_property_material_footer),
@@ -131,7 +131,7 @@ internal fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyM
 }
 
 @Composable
-internal fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (AlleyMechanism?) -> Unit) {
+private fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (AlleyMechanism?) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_mechanism),
 		subtitle = stringResource(R.string.alley_form_property_mechanism_footer),
@@ -150,7 +150,7 @@ internal fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (Al
 }
 
 @Composable
-internal fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFall?) -> Unit) {
+private fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFall?) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_pin_fall),
 		subtitle = stringResource(R.string.alley_form_property_pin_fall_footer),
@@ -169,7 +169,7 @@ internal fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFa
 }
 
 @Composable
-internal fun PinBasePicker(pinBase: AlleyPinBase?, onPinBaseChanged: (AlleyPinBase?) -> Unit) {
+private fun PinBasePicker(pinBase: AlleyPinBase?, onPinBaseChanged: (AlleyPinBase?) -> Unit) {
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_pin_base),
 		subtitle = stringResource(R.string.alley_form_property_pin_base_footer),

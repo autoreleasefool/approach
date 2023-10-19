@@ -15,9 +15,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.LegacyUserOnboardingUiState
 

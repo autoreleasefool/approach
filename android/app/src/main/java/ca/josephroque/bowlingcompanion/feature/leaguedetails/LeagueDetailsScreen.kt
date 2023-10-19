@@ -92,7 +92,7 @@ internal fun LeagueDetailsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun LeagueDetailsTopBar(
+private fun LeagueDetailsTopBar(
 	leagueDetailsState: LeagueDetailsUiState,
 	onAddSeries: () -> Unit,
 	onBackPressed: () -> Unit

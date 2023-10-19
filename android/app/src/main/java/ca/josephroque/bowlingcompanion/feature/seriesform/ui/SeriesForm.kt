@@ -25,7 +25,6 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
-import ca.josephroque.bowlingcompanion.feature.leagueform.ui.NumberOfGamesSlider
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -59,7 +58,7 @@ internal fun SeriesForm(
 }
 
 @Composable
-internal fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((Int) -> Unit)?) {
+private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((Int) -> Unit)?) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -102,7 +101,7 @@ internal fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((I
 
 @Preview
 @Composable
-fun SeriesFormPreview() {
+private fun SeriesFormPreview() {
 	Surface {
 		SeriesForm(
 			numberOfGames = 4,

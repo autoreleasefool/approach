@@ -29,7 +29,7 @@ import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 @Composable
-fun LeagueItemRow(
+internal fun LeagueItemRow(
 	league: LeagueListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -71,14 +71,14 @@ fun LeagueItemRow(
 }
 
 @Composable
-fun LeagueRecurrence.listIcon(): Painter = when (this) {
+private fun LeagueRecurrence.listIcon(): Painter = when (this) {
 	LeagueRecurrence.ONCE -> painterResource(R.drawable.ic_ticket)
 	LeagueRecurrence.REPEATING -> painterResource(R.drawable.ic_event_repeat)
 }
 
 @Preview
 @Composable
-fun LeagueItemPreview() {
+private fun LeagueItemPreview() {
 	Surface {
 		LeagueItemRow(
 			league = LeagueListItem(

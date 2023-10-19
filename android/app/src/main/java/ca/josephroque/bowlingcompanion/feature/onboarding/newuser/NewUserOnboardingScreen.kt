@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,12 +37,10 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
@@ -71,7 +68,7 @@ internal fun NewUserOnboardingScreen(
 }
 
 @Composable
-internal fun NewUserOnboarding(
+private fun NewUserOnboarding(
 	newUserOnboardingUiState: NewUserOnboardingUiState,
 	showLogbook: () -> Unit,
 	addBowler: () -> Unit,
@@ -124,7 +121,7 @@ internal fun NewUserOnboarding(
 }
 
 @Composable
-internal fun Title(
+private fun Title(
 	modifier: Modifier = Modifier,
 ) {
 	Row(
@@ -162,7 +159,7 @@ internal fun Title(
 }
 
 @Composable
-internal fun Description(
+private fun Description(
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -181,7 +178,7 @@ internal fun Description(
 }
 
 @Composable
-internal fun TagLine(
+private fun TagLine(
 	modifier: Modifier = Modifier,
 ) {
 	Text(
@@ -193,7 +190,7 @@ internal fun TagLine(
 }
 
 @Composable
-internal fun Actions(
+private fun Actions(
 	onGetStartedClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -210,7 +207,7 @@ internal fun Actions(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun Logbook(
+private fun Logbook(
 	name: String,
 	onNameChanged: (String) -> Unit,
 	onAddBowlerClicked: () -> Unit,
@@ -282,7 +279,7 @@ internal fun Logbook(
 
 @Preview
 @Composable
-fun NewUserOnboardingPreview() {
+private fun NewUserOnboardingPreview() {
 	Surface {
 		NewUserOnboarding(
 			NewUserOnboardingUiState.ShowingWelcomeMessage,

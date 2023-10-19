@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SettingsLink(
+internal fun SettingsLink(
 	@StringRes titleResourceId: Int,
 	@DrawableRes iconResourceId: Int,
 	onClick: () -> Unit,

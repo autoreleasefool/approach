@@ -89,7 +89,7 @@ internal fun OpponentsListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun OpponentsListTopBar(
+private fun OpponentsListTopBar(
 	onBackPressed: () -> Unit,
 	onAddOpponent: () -> Unit,
 ) {

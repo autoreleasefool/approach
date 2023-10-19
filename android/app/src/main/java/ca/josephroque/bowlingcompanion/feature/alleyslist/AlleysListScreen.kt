@@ -72,7 +72,7 @@ internal fun AlleysListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AlleysListTopBar(
+private fun AlleysListTopBar(
 	onBackPressed: () -> Unit,
 	onAddAlley: () -> Unit,
 ) {

@@ -25,7 +25,7 @@ import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import java.util.UUID
 
 @Composable
-fun GearItemRow(
+internal fun GearItemRow(
 	gear: GearListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -68,7 +68,7 @@ fun GearItemRow(
 
 @Preview
 @Composable
-fun GearItemRowPreview() {
+private fun GearItemRowPreview() {
 	Surface {
 		GearItemRow(
 			gear = GearListItem(

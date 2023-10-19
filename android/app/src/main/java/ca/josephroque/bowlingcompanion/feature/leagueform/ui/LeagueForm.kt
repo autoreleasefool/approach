@@ -127,7 +127,7 @@ internal fun LeagueForm(
 }
 
 @Composable
-internal fun LeagueNameField(name: String, onNameChanged: ((String) -> Unit)?, errorId: Int?) {
+private fun LeagueNameField(name: String, onNameChanged: ((String) -> Unit)?, errorId: Int?) {
 	OutlinedTextField(
 		value = name,
 		onValueChange = onNameChanged ?: {},
@@ -159,7 +159,7 @@ internal fun LeagueNameField(name: String, onNameChanged: ((String) -> Unit)?, e
 }
 
 @Composable
-internal fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged: ((LeagueRecurrence) -> Unit)?) {
+private fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged: ((LeagueRecurrence) -> Unit)?) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_repeat),
 		subtitle = stringResource(
@@ -184,7 +184,7 @@ internal fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged:
 }
 
 @Composable
-internal fun ExcludeFromStatisticsPicker(excludeFromStatistics: ExcludeFromStatistics, onExcludeFromStatisticsChanged: ((ExcludeFromStatistics) -> Unit)?) {
+private fun ExcludeFromStatisticsPicker(excludeFromStatistics: ExcludeFromStatistics, onExcludeFromStatisticsChanged: ((ExcludeFromStatistics) -> Unit)?) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_exclude),
 		subtitle = stringResource(R.string.league_form_property_exclude_footer),
@@ -205,7 +205,7 @@ internal fun ExcludeFromStatisticsPicker(excludeFromStatistics: ExcludeFromStati
 }
 
 @Composable
-internal fun GamesPerSeriesPicker(gamesPerSeries: GamesPerSeries, onGamesPerSeriesChanged: ((GamesPerSeries) -> Unit)?) {
+private fun GamesPerSeriesPicker(gamesPerSeries: GamesPerSeries, onGamesPerSeriesChanged: ((GamesPerSeries) -> Unit)?) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_number_of_games),
 		subtitle = stringResource(
@@ -230,7 +230,7 @@ internal fun GamesPerSeriesPicker(gamesPerSeries: GamesPerSeries, onGamesPerSeri
 }
 
 @Composable
-internal fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((Int) -> Unit)?) {
+private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((Int) -> Unit)?) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -272,7 +272,7 @@ internal fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((I
 }
 
 @Composable
-internal fun IncludeAdditionalPinFallSwitch(includeAdditionalPinFall: IncludeAdditionalPinFall, onIncludeAdditionalPinFallChanged: ((IncludeAdditionalPinFall) -> Unit)?) {
+private fun IncludeAdditionalPinFallSwitch(includeAdditionalPinFall: IncludeAdditionalPinFall, onIncludeAdditionalPinFallChanged: ((IncludeAdditionalPinFall) -> Unit)?) {
 	FormSwitch(
 		titleResourceId = R.string.league_form_property_pinfall,
 		isChecked = includeAdditionalPinFall == IncludeAdditionalPinFall.INCLUDE,
@@ -286,7 +286,7 @@ internal fun IncludeAdditionalPinFallSwitch(includeAdditionalPinFall: IncludeAdd
 }
 
 @Composable
-internal fun AdditionalPinFallField(additionalPinFall: Int, onAdditionalPinFallChanged: ((Int) -> Unit)?) {
+private fun AdditionalPinFallField(additionalPinFall: Int, onAdditionalPinFallChanged: ((Int) -> Unit)?) {
 	OutlinedTextField(
 		value = additionalPinFall.toString(),
 		onValueChange = {
@@ -302,7 +302,7 @@ internal fun AdditionalPinFallField(additionalPinFall: Int, onAdditionalPinFallC
 }
 
 @Composable
-internal fun AdditionalGamesField(additionalGames: Int, onAdditionalGamesChanged: ((Int) -> Unit)?) {
+private fun AdditionalGamesField(additionalGames: Int, onAdditionalGamesChanged: ((Int) -> Unit)?) {
 	OutlinedTextField(
 		value = additionalGames.toString(),
 		onValueChange = {
@@ -319,7 +319,7 @@ internal fun AdditionalGamesField(additionalGames: Int, onAdditionalGamesChanged
 
 @Preview
 @Composable
-fun LeagueFormPreview() {
+private fun LeagueFormPreview() {
 	Surface {
 		LeagueForm(
 			name = "Majors 2022/2023",

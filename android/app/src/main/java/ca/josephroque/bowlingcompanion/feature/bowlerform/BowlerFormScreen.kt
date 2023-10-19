@@ -96,7 +96,7 @@ internal fun BowlerFormScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun BowlerFormTopBar(
+private fun BowlerFormTopBar(
 	bowlerFormState: BowlerFormUiState,
 	onBackPressed: () -> Unit,
 	saveBowler: () -> Unit,
@@ -109,7 +109,7 @@ internal fun BowlerFormTopBar(
 }
 
 @Composable
-internal fun Title(
+private fun Title(
 	uiState: BowlerFormUiState,
 ) {
 	Text(
@@ -126,7 +126,7 @@ internal fun Title(
 }
 
 @Composable
-internal fun Actions(
+private fun Actions(
 	uiState: BowlerFormUiState,
 	saveBowler: () -> Unit,
 ) {
@@ -146,7 +146,7 @@ internal fun Actions(
 
 @Preview
 @Composable
-fun BowlerFormPreview() {
+private fun BowlerFormPreview() {
 	BowlerFormScreen(
 		bowlerFormState = BowlerFormUiState.Edit(
 			properties = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),

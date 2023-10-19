@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
 
 @Composable
-fun NavigationItem(
+internal fun NavigationItem(
 	@StringRes titleResourceId: Int,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,

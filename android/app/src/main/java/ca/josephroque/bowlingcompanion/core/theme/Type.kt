@@ -135,7 +135,7 @@ val Typography = Typography(
 
 @Preview
 @Composable
-internal fun TypePreview() {
+private fun TypePreview() {
 	Surface {
 		Column {
 			Text(text = "Display Large", style = Typography.displayLarge)

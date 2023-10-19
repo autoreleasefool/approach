@@ -49,7 +49,7 @@ class LeagueDetailsViewModel @Inject constructor(
 			)
 }
 
-fun SeriesListItem.chartable(): SeriesChartable =
+private fun SeriesListItem.chartable(): SeriesChartable =
 	SeriesChartable(
 		id = series.id,
 		date = series.date,

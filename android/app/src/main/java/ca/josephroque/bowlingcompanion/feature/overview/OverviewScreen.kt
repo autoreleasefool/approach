@@ -96,7 +96,7 @@ internal fun OverviewScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OverviewTopBar(
+private fun OverviewTopBar(
 	onAddBowler: () -> Unit,
 ) {
 	CenterAlignedTopAppBar(
@@ -123,7 +123,7 @@ fun OverviewTopBar(
 
 @Preview
 @Composable
-fun OverviewPreview() {
+private fun OverviewPreview() {
 	Surface {
 		OverviewScreen(
 			bowlersListState = BowlersListUiState.Success(listOf(
