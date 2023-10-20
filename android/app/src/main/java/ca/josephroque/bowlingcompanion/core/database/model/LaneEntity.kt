@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import java.util.UUID
 
@@ -34,4 +35,17 @@ data class LaneCreate(
 	@ColumnInfo(name = "alley_id") val alleyId: UUID,
 	val label: String,
 	val position: LanePosition,
+)
+
+fun LaneListItem.asLaneCreate(alleyId: UUID): LaneCreate = LaneCreate(
+	id = id,
+	alleyId = alleyId,
+	label = label,
+	position = position,
+)
+
+fun LaneCreate.asLaneListItem(): LaneListItem = LaneListItem(
+	id = id,
+	label = label,
+	position = position,
 )

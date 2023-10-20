@@ -18,6 +18,8 @@ import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToBowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToNewBowlerForm
+import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
+import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneForm
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.leagueDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.navigateToLeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.leagueFormScreen
@@ -128,6 +130,10 @@ fun ApproachNavHost(
 			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
 		)
 		alleyFormScreen(
+			onBackPressed = { navController.popBackStack() },
+			onManageLanes = navController::navigateToLaneForm,
+		)
+		laneFormScreen(
 			onBackPressed = { navController.popBackStack() },
 		)
 	}

@@ -29,9 +29,14 @@
 	<string name="alley_form_property_pin_fall_footer">Look at the pin set up. Do you notice the pins are pushed off the lane after each ball (freefall), or are they attached to strings and pulled up?</string>
 	<string name="alley_form_property_pin_base">Pin Base</string>
 	<string name="alley_form_property_pin_base_footer">What kind of base do the pins have?</string>
-	<string name="alley_form_property_lanes">Lanes</string>
-	<string name="alley_form_property_lanes_no_lanes_created">No lanes created</string>
+	<string name="alley_form_manage_lanes">Manage Lanes</string>
 	<string name="alley_form_properties_help">Not sure about any of the settings? Ask a staff member! They\'ll probably be happy to help</string>
+
+	<plurals name="alley_form_property_lanes_created">
+		<item quantity="zero">No lanes created</item>
+		<item quantity="one">%1$d lane</item>
+		<item quantity="other">%1$d lanes</item>
+	</plurals>
 
 	<string name="alley_property_material_wood">Wood</string>
 	<string name="alley_property_material_synthetic">Synthetic</string>
@@ -42,6 +47,16 @@
 	<string name="alley_property_pin_base_black">Black</string>
 	<string name="alley_property_pin_base_white">White</string>
 	<string name="alley_property_pin_base_other">Other</string>
+
+	<string name="lane_form_title">Lanes</string>
+	<string name="lane_form_add_multiple_lanes">Add Lanes</string>
+	<string name="lane_form_property_label">Label</string>
+	<string name="lane_form_property_position">Position by walls?</string>
+	<string name="lane_form_add_x_lanes">Add %1$d</string>
+
+	<string name="lane_property_position_no_wall">No walls</string>
+	<string name="lane_property_position_wall_on_right">Wall on Right</string>
+	<string name="lane_property_position_wall_on_left">Wall on Left</string>
 
 	<string name="bowler_list_add">Add Bowler</string>
 	<string name="bowler_list_title">Bowlers</string>
