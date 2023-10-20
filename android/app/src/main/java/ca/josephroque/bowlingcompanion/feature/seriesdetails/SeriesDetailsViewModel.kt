@@ -21,12 +21,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SeriesDetailsViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
+	savedStateHandle: SavedStateHandle,
 	seriesRepository: SeriesRepository,
 	gamesRepository: GamesRepository,
 ): ViewModel() {
 	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
-		?: UUID.randomUUID().also { savedStateHandle[SERIES_ID] = it }
 
 	val seriesDetailsState: StateFlow<SeriesDetailsUiState> =
 		seriesRepository.getSeriesDetails(seriesId)

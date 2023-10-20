@@ -61,8 +61,14 @@ internal fun AccessoriesRoute(
 		gearListState = gearListState,
 		onAddAccessory = viewModel::expandAccessoryMenu,
 		onMinimizeAddAccessoryMenu = viewModel::minimizeAccessoryMenu,
-		onAddAlley = onAddAlley,
-		onAddGear = onAddGear,
+		onAddAlley = {
+			viewModel.minimizeAccessoryMenu()
+			onAddAlley()
+		},
+		onAddGear = {
+			viewModel.minimizeAccessoryMenu()
+			onAddGear()
+		},
 		onViewAllAlleys = onViewAllAlleys,
 		onViewAllGear = onViewAllGear,
 		onShowAlleyDetails = onShowAlleyDetails,

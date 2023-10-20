@@ -26,7 +26,6 @@ class BowlerDetailsViewModel @Inject constructor(
 	gearRepository: GearRepository,
 ): ViewModel() {
 	private val bowlerId = UUID.fromString(savedStateHandle[BOWLER_ID])
-		?: UUID.randomUUID().also { savedStateHandle[BOWLER_ID] = it }
 
 	val bowlerDetailsState: StateFlow<BowlerDetailsUiState> =
 		bowlersRepository.getBowlerDetails(bowlerId)

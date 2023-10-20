@@ -1,6 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.alleyform.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
@@ -25,12 +30,16 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
+import ca.josephroque.bowlingcompanion.core.model.LaneListItem
+import ca.josephroque.bowlingcompanion.utils.quantityStringResource
 
 @Composable
 internal fun AlleyForm(
 	name: String,
 	nameErrorId: Int?,
 	onNameChanged: (String) -> Unit,
+	numberOfLanes: Int,
+	onManageLanes: () -> Unit,
 	material: AlleyMaterial?,
 	onMaterialChanged: (AlleyMaterial?) -> Unit,
 	pinFall: AlleyPinFall?,
@@ -48,9 +57,36 @@ internal fun AlleyForm(
 	) {
 		FormSection(
 			titleResourceId = R.string.alley_form_details_title,
-			modifier = Modifier.padding(vertical = 16.dp)
+			modifier = Modifier.padding(vertical = 8.dp),
 		) {
 			AlleyNameField(name = name, onNameChanged = onNameChanged, errorId = nameErrorId)
+
+			Row(
+				horizontalArrangement = Arrangement.spacedBy(8.dp),
+				verticalAlignment = Alignment.CenterVertically,
+				modifier = Modifier
+					.fillMaxWidth()
+					.clickable(onClick = onManageLanes)
+					.padding(horizontal = 16.dp, vertical = 16.dp),
+			) {
+				Text(
+					text = stringResource(R.string.alley_form_manage_lanes),
+					style = MaterialTheme.typography.titleMedium,
+					modifier = Modifier.weight(1f),
+				)
+
+				Text(
+					text = quantityStringResource(R.plurals.alley_form_property_lanes_created, quantity = numberOfLanes, numberOfLanes),
+					style = MaterialTheme.typography.bodyMedium,
+					color = MaterialTheme.colorScheme.onSurfaceVariant,
+				)
+
+				Icon(
+					painter = painterResource(R.drawable.ic_chevron_right),
+					contentDescription = null,
+					tint = MaterialTheme.colorScheme.onSurfaceVariant,
+				)
+			}
 		}
 
 		Divider()

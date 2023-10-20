@@ -16,16 +16,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.components.BackButton
+import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyForm
+import java.util.UUID
 
 @Composable
 internal fun AlleyFormRoute(
 	onBackPressed: () -> Unit,
 	onDismiss: () -> Unit,
+	onManageLanes: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AlleyFormViewModel = hiltViewModel(),
 ) {
@@ -33,7 +36,8 @@ internal fun AlleyFormRoute(
 
 	when (alleyFormState) {
 		AlleyFormUiState.Dismissed -> onDismiss()
-		else -> Unit
+		is AlleyFormUiState.ManagingLanes -> onManageLanes(alleyFormState.alleyId)
+		is AlleyFormUiState.Create, is AlleyFormUiState.Edit, AlleyFormUiState.Loading -> Unit
 	}
 
 	AlleyFormScreen(
@@ -47,6 +51,7 @@ internal fun AlleyFormRoute(
 		onMechanismChanged = viewModel::updateMechanism,
 		onPinBaseChanged = viewModel::updatePinBase,
 		onPinFallChanged = viewModel::updatePinFall,
+		onManageLanes = viewModel::manageLanes,
 		modifier = modifier,
 	)
 }
@@ -63,6 +68,7 @@ internal fun AlleyFormScreen(
 	onMechanismChanged: (AlleyMechanism?) -> Unit,
 	onPinBaseChanged: (AlleyPinBase?) -> Unit,
 	onPinFallChanged: (AlleyPinFall?) -> Unit,
+	onManageLanes: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	LaunchedEffect(Unit) {
@@ -79,12 +85,14 @@ internal fun AlleyFormScreen(
 		}
 	) { padding ->
 		when (alleyFormState) {
-			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 			is AlleyFormUiState.Create ->
 				AlleyForm(
 					name = alleyFormState.properties.name,
 					nameErrorId = alleyFormState.fieldErrors.nameErrorId,
 					onNameChanged = onNameChanged,
+					numberOfLanes = alleyFormState.numberOfLanes,
+					onManageLanes = onManageLanes,
 					material = alleyFormState.properties.material,
 					onMaterialChanged = onMaterialChanged,
 					pinFall = alleyFormState.properties.pinFall,
@@ -100,6 +108,8 @@ internal fun AlleyFormScreen(
 					name = alleyFormState.properties.name,
 					nameErrorId = alleyFormState.fieldErrors.nameErrorId,
 					onNameChanged = onNameChanged,
+					numberOfLanes = alleyFormState.numberOfLanes,
+					onManageLanes = onManageLanes,
 					material = alleyFormState.properties.material,
 					onMaterialChanged = onMaterialChanged,
 					pinFall = alleyFormState.properties.pinFall,
@@ -131,7 +141,7 @@ private fun AlleyFormTopBar(
 @Composable
 private fun Title(alleyFormState: AlleyFormUiState) {
 	when (alleyFormState) {
-		AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Text("")
+		AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Text("")
 		is AlleyFormUiState.Create -> Text(stringResource(R.string.alley_form_title_new))
 		is AlleyFormUiState.Edit -> Text(stringResource(R.string.alley_form_title_edit, alleyFormState.initialValue.name))
 	}
@@ -143,7 +153,7 @@ private fun Actions(
 	saveAlley: () -> Unit,
 ) {
 	when (alleyFormState) {
-		AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+		AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 		is AlleyFormUiState.Edit, is AlleyFormUiState.Create ->
 			Text(
 				stringResource(R.string.action_save),

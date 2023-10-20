@@ -5,7 +5,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
 import ca.josephroque.bowlingcompanion.feature.alleyform.AlleyFormRoute
+import java.util.UUID
 
 const val ALLEY_ID = "alleyid"
 const val editAlleyNavigationRoute = "edit_alley/{$ALLEY_ID}"
@@ -19,6 +21,7 @@ fun NavController.navigateToNewAlleyForm() {
 
 fun NavGraphBuilder.alleyFormScreen(
 	onBackPressed: () -> Unit,
+	onManageLanes: (UUID) -> Unit,
 ) {
 	composable(
 		route = editAlleyNavigationRoute,
@@ -29,6 +32,7 @@ fun NavGraphBuilder.alleyFormScreen(
 		AlleyFormRoute(
 			onBackPressed = onBackPressed,
 			onDismiss = onBackPressed,
+			onManageLanes = onManageLanes,
 		)
 	}
 
@@ -38,6 +42,7 @@ fun NavGraphBuilder.alleyFormScreen(
 		AlleyFormRoute(
 			onBackPressed = onBackPressed,
 			onDismiss = onBackPressed,
+			onManageLanes = onManageLanes,
 		)
 	}
 }

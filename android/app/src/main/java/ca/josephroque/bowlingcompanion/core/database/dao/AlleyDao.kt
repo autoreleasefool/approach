@@ -22,8 +22,10 @@ abstract class AlleyDao: BaseDao<AlleyEntity> {
 				alleys.material AS material,
 				alleys.pin_fall AS pinFall,
 				alleys.mechanism AS mechanism,
-				alleys.pin_base AS pinBase
+				alleys.pin_base AS pinBase,
+				COUNT(lanes.id) AS numberOfLanes
 			FROM alleys
+			JOIN lanes ON lanes.alley_id = alleys.id
 			WHERE alleys.id = :alleyId
 		"""
 	)

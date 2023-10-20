@@ -32,7 +32,6 @@ class AlleyFormViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel() {
-
 	private val _uiState: MutableStateFlow<AlleyFormUiState> = MutableStateFlow(AlleyFormUiState.Loading)
 	val uiState: StateFlow<AlleyFormUiState> = _uiState.asStateFlow()
 
@@ -49,6 +48,7 @@ class AlleyFormViewModel @Inject constructor(
 						pinBase = null,
 						material = null,
 					),
+					numberOfLanes = 0,
 					fieldErrors = AlleyFormFieldErrors(),
 				)
 			} else {
@@ -65,6 +65,7 @@ class AlleyFormViewModel @Inject constructor(
 				_uiState.value = AlleyFormUiState.Edit(
 					initialValue = update,
 					properties = update,
+					numberOfLanes = alley.numberOfLanes,
 					fieldErrors = AlleyFormFieldErrors(),
 				)
 			}
@@ -73,24 +74,40 @@ class AlleyFormViewModel @Inject constructor(
 
 	fun saveAlley() {
 		viewModelScope.launch {
-			withContext(ioDispatcher) {
-				when (val state = uiState.value) {
-					AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
-					is AlleyFormUiState.Create ->
-						if (state.isSavable()) {
-							alleysRepository.insertAlley(state.properties)
-							_uiState.value = AlleyFormUiState.Dismissed
-						} else {
-							_uiState.value = state.copy(fieldErrors = state.fieldErrors())
-						}
-					is AlleyFormUiState.Edit ->
-						if (state.isSavable()) {
-							alleysRepository.updateAlley(state.properties)
-							_uiState.value = AlleyFormUiState.Dismissed
-						} else {
-							_uiState.value = state.copy(fieldErrors = state.fieldErrors())
-						}
-				}
+			saveAlleyAndTransition(nextState = AlleyFormUiState.Dismissed)
+		}
+	}
+
+	fun manageLanes() {
+		viewModelScope.launch {
+			when (val state = _uiState.value) {
+				AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
+				is AlleyFormUiState.Create ->
+					saveAlleyAndTransition(nextState = AlleyFormUiState.ManagingLanes(state.properties.id))
+				is AlleyFormUiState.Edit ->
+					saveAlleyAndTransition(nextState = AlleyFormUiState.ManagingLanes(state.properties.id))
+			}
+		}
+	}
+
+	private suspend fun saveAlleyAndTransition(nextState: AlleyFormUiState) {
+		withContext(ioDispatcher) {
+			when (val state = _uiState.value) {
+				AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
+				is AlleyFormUiState.Create ->
+					if (state.isSavable()) {
+						alleysRepository.insertAlley(state.properties)
+						_uiState.value = nextState
+					} else {
+						_uiState.value = state.copy(fieldErrors = state.fieldErrors())
+					}
+				is AlleyFormUiState.Edit ->
+					if (state.isSavable()) {
+						alleysRepository.updateAlley(state.properties)
+						_uiState.value = nextState
+					} else {
+						_uiState.value = state.copy(fieldErrors = state.fieldErrors())
+					}
 			}
 		}
 	}
@@ -98,7 +115,7 @@ class AlleyFormViewModel @Inject constructor(
 	fun deleteAlley() {
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
-				AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.Create -> Unit
+				AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes, is AlleyFormUiState.Create -> Unit
 				is AlleyFormUiState.Edit ->
 					alleysRepository.deleteAlley(state.properties.id)
 			}
@@ -109,7 +126,7 @@ class AlleyFormViewModel @Inject constructor(
 
 	fun updateName(name: String) {
 		when (val state = _uiState.value) {
-			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 			is AlleyFormUiState.Edit -> _uiState.value = state.copy(
 				properties = state.properties.copy(name = name),
 				fieldErrors = state.fieldErrors.copy(nameErrorId = null),
@@ -123,7 +140,7 @@ class AlleyFormViewModel @Inject constructor(
 
 	fun updateMaterial(material: AlleyMaterial?) {
 		when (val state = _uiState.value) {
-			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 			is AlleyFormUiState.Edit -> _uiState.value = state.copy(
 				properties = state.properties.copy(material = material),
 			)
@@ -135,7 +152,7 @@ class AlleyFormViewModel @Inject constructor(
 
 	fun updateMechanism(mechanism: AlleyMechanism?) {
 		when (val state = _uiState.value) {
-			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 			is AlleyFormUiState.Edit -> _uiState.value = state.copy(
 				properties = state.properties.copy(mechanism = mechanism),
 			)
@@ -147,7 +164,7 @@ class AlleyFormViewModel @Inject constructor(
 
 	fun updatePinFall(pinFall: AlleyPinFall?) {
 		when (val state = _uiState.value) {
-			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 			is AlleyFormUiState.Edit -> _uiState.value = state.copy(
 				properties = state.properties.copy(pinFall = pinFall),
 			)
@@ -159,7 +176,7 @@ class AlleyFormViewModel @Inject constructor(
 
 	fun updatePinBase(pinBase: AlleyPinBase?) {
 		when (val state = _uiState.value) {
-			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed -> Unit
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 			is AlleyFormUiState.Edit -> _uiState.value = state.copy(
 				properties = state.properties.copy(pinBase = pinBase),
 			)
@@ -173,9 +190,13 @@ class AlleyFormViewModel @Inject constructor(
 sealed interface AlleyFormUiState {
 	data object Loading: AlleyFormUiState
 	data object Dismissed: AlleyFormUiState
+	data class ManagingLanes(
+		val alleyId: UUID,
+	): AlleyFormUiState
 
 	data class Create(
 		val properties: AlleyCreate,
+		val numberOfLanes: Int,
 		val fieldErrors: AlleyFormFieldErrors,
 	): AlleyFormUiState {
 		fun isSavable(): Boolean =
@@ -190,6 +211,7 @@ sealed interface AlleyFormUiState {
 	data class Edit(
 		val initialValue: AlleyUpdate,
 		val properties: AlleyUpdate,
+		val numberOfLanes: Int,
 		val fieldErrors: AlleyFormFieldErrors,
 	): AlleyFormUiState {
 		fun isSavable(): Boolean =

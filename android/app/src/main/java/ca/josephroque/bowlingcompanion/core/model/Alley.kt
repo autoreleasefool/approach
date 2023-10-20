@@ -12,6 +12,7 @@ data class AlleyDetails(
 	val pinFall: AlleyPinFall?,
 	val mechanism: AlleyMechanism?,
 	val pinBase: AlleyPinBase?,
+	val numberOfLanes: Int,
 )
 
 @Immutable

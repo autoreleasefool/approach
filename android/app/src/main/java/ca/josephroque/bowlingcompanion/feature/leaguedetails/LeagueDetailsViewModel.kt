@@ -22,12 +22,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LeagueDetailsViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
+	savedStateHandle: SavedStateHandle,
 	leaguesRepository: LeaguesRepository,
 	seriesRepository: SeriesRepository,
 ): ViewModel() {
 	private val leagueId = UUID.fromString(savedStateHandle[LEAGUE_ID])
-		?: UUID.randomUUID().also { savedStateHandle[LEAGUE_ID] = it }
 
 	val leagueDetailsState: StateFlow<LeagueDetailsUiState> =
 		leaguesRepository.getLeagueDetails(leagueId)
