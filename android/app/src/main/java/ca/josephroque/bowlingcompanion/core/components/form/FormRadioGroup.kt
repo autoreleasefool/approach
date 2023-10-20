@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
@@ -105,7 +106,8 @@ private fun FormRadioButton(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp),
+				.defaultMinSize(minHeight = 44.dp)
+				.padding(horizontal = 16.dp, vertical = 8.dp),
 		) {
 			Text(
 				text = title,
@@ -113,7 +115,7 @@ private fun FormRadioButton(
 				modifier = Modifier.weight(1f),
 			)
 
-			Box(modifier = Modifier.padding(8.dp)) {
+			Box(modifier = Modifier.padding(horizontal = 8.dp)) {
 				RadioButton(selected = isSelected, onClick = null)
 			}
 		}
