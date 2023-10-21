@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
@@ -49,7 +50,7 @@ internal fun LeagueItemRow(
 			modifier = Modifier.size(24.dp),
 		)
 
-		Column {
+		Column(modifier = Modifier.weight(1f)) {
 			Text(
 				text = league.name,
 				style = MaterialTheme.typography.titleMedium,
@@ -61,11 +62,10 @@ internal fun LeagueItemRow(
 			)
 		}
 
-		Spacer(Modifier.weight(1f))
-
 		Text(
 			text = league.average.formatAsAverage(),
 			style = MaterialTheme.typography.bodyLarge,
+			maxLines = 1,
 		)
 	}
 }

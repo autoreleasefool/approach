@@ -60,9 +60,7 @@ internal fun SeriesItemRow(
 ) {
 	OutlinedCard(
 		onClick = onClick,
-		modifier = modifier
-			.padding(horizontal = 16.dp)
-			.padding(bottom = 16.dp),
+		modifier = modifier.padding(horizontal = 16.dp),
 	) {
 		Box(
 			contentAlignment = Alignment.BottomStart,
@@ -202,6 +200,7 @@ private fun SeriesItemPreview() {
 					scores = entryModelOf(220, 230, 215, 225),
 				),
 				onClick = {},
+				modifier = Modifier.padding(bottom = 16.dp),
 			)
 			SeriesItemRow(
 				series = SeriesChartable(

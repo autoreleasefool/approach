@@ -46,13 +46,13 @@ internal fun BowlerItemRow(
 		Text(
 			text = bowler.name,
 			style = MaterialTheme.typography.titleMedium,
+			modifier = Modifier.weight(1f)
 		)
-
-		Spacer(Modifier.weight(1F))
 
 		Text(
 			text = bowler.average.formatAsAverage(),
 			style = MaterialTheme.typography.bodyLarge,
+			maxLines = 1
 		)
 	}
 }
@@ -64,7 +64,6 @@ private fun BowlerCardPreview() {
 		BowlerItemRow(
 			bowler = BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
 			onClick = {},
-			modifier = Modifier.padding(16.dp),
 		)
 	}
 }
