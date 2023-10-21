@@ -83,26 +83,27 @@ fun ApproachNavHost(
 			openDataImportSettings = { /* TODO: openDataImportSettings */ },
 		)
 		bowlerFormScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 		)
 		bowlerDetailsScreen(
 			onEditLeague = { /* TODO: onEditLeague */ },
 			onAddLeague = navController::navigateToNewLeagueForm,
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 			onShowLeagueDetails = navController::navigateToLeagueDetails,
 			onShowGearDetails = { /* TODO: onShowGearDetails */ },
 			onShowPreferredGearPicker = { /* TODO: onShowPreferredGearPicker */ },
 		)
 		leagueFormScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 		)
 		leagueDetailsScreen(
 			onEditSeries = { /* TODO: onEditSeries */ },
 			onAddSeries = { /* TODO: onAddSeries */ },
 			onShowSeriesDetails = navController::navigateToSeriesDetails,
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 		)
 		seriesDetailsScreen(
+			onBackPressed = navController::popBackStack,
 			onEditGame = { /* TODO: onEditGame */ },
 		)
 		onboardingScreen(
@@ -113,28 +114,28 @@ fun ApproachNavHost(
 			},
 		)
 		opponentsListScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 			onAddOpponent = { navController.navigateToNewBowlerForm(BowlerKind.OPPONENT) },
 			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
 		)
 		analyticsSettingsScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 		)
 		statisticsSettingsScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 		)
 		alleysListScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 			onEditAlley = { /* TODO: onEditAlley */ },
 			onAddAlley = navController::navigateToNewAlleyForm,
 			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
 		)
 		alleyFormScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 			onManageLanes = navController::navigateToLaneForm,
 		)
 		laneFormScreen(
-			onBackPressed = { navController.popBackStack() },
+			onBackPressed = navController::popBackStack,
 		)
 	}
 }
