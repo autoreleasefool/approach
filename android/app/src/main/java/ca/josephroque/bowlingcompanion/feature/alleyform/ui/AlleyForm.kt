@@ -55,10 +55,7 @@ internal fun AlleyForm(
 			.verticalScroll(rememberScrollState())
 			.fillMaxSize(),
 	) {
-		FormSection(
-			titleResourceId = R.string.alley_form_details_title,
-			modifier = Modifier.padding(vertical = 8.dp),
-		) {
+		FormSection(titleResourceId = R.string.alley_form_details_title) {
 			AlleyNameField(name = name, onNameChanged = onNameChanged, errorId = nameErrorId)
 
 			Row(

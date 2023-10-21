@@ -36,10 +36,7 @@ internal fun SeriesForm(
 			.fillMaxSize(),
 	) {
 		numberOfGames?.let {
-			FormSection(
-				titleResourceId = R.string.league_form_property_number_of_games,
-				modifier = Modifier.padding(vertical = 16.dp)
-			) {
+			FormSection(titleResourceId = R.string.league_form_property_number_of_games) {
 				NumberOfGamesSlider(it, onNumberOfGamesChanged)
 			}
 		}

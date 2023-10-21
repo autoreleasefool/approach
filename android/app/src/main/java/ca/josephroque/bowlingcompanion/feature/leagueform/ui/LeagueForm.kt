@@ -60,10 +60,7 @@ internal fun LeagueForm(
 			.fillMaxSize(),
 	)
 	{
-		FormSection(
-			titleResourceId = R.string.league_form_details_title,
-			modifier = Modifier.padding(vertical = 16.dp),
-		) {
+		FormSection(titleResourceId = R.string.league_form_details_title) {
 			LeagueNameField(name, onNameChanged, nameErrorId)
 		}
 

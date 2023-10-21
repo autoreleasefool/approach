@@ -36,10 +36,7 @@ internal fun BowlerForm(
 			.verticalScroll(rememberScrollState())
 			.fillMaxSize(),
 	) {
-		FormSection(
-			titleResourceId = R.string.bowler_form_section_details,
-			modifier = Modifier.padding(top = 16.dp),
-		) {
+		FormSection(titleResourceId = R.string.bowler_form_section_details) {
 			NameTextField(
 				name = name,
 				onNameChanged = onNameChanged,
