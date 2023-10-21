@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.feature.gameslist.GamesListUiState
 import ca.josephroque.bowlingcompanion.feature.gameslist.gamesList
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsHeader
@@ -24,6 +25,7 @@ import java.util.UUID
 
 @Composable
 internal fun SeriesDetailsRoute(
+	onBackPressed: () -> Unit,
 	onEditGame: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesDetailsViewModel = hiltViewModel(),
@@ -34,35 +36,25 @@ internal fun SeriesDetailsRoute(
 	SeriesDetailsScreen(
 		seriesDetailsState = seriesDetailsState,
 		gamesListState = gamesListState,
+		onBackPressed = onBackPressed,
 		onGameClick = onEditGame,
 		modifier = modifier,
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SeriesDetailsScreen(
 	seriesDetailsState: SeriesDetailsUiState,
 	gamesListState: GamesListUiState,
+	onBackPressed: () -> Unit,
 	onGameClick: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Scaffold(
 		topBar = {
-			TopAppBar(
-				colors = TopAppBarDefaults.topAppBarColors(),
-				title = {
-					Text(
-						text = when (seriesDetailsState) {
-							SeriesDetailsUiState.Loading -> ""
-							is SeriesDetailsUiState.Success -> seriesDetailsState.details
-								.date.format("MMMM d, yyyy")
-						},
-						maxLines = 1,
-						overflow = TextOverflow.Ellipsis,
-						style = MaterialTheme.typography.titleLarge,
-					)
-				},
+			SeriesDetailsTopBar(
+				seriesDetailsState = seriesDetailsState,
+				onBackPressed = onBackPressed,
 			)
 		}
 	) { padding ->
@@ -83,7 +75,6 @@ internal fun SeriesDetailsScreen(
 							.padding(bottom = 16.dp),
 					)
 				}
-
 			}
 
 			gamesList(
@@ -92,4 +83,31 @@ internal fun SeriesDetailsScreen(
 			)
 		}
 	}
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SeriesDetailsTopBar(
+	onBackPressed: () -> Unit,
+	seriesDetailsState: SeriesDetailsUiState,
+) {
+	TopAppBar(
+		colors = TopAppBarDefaults.topAppBarColors(),
+		title = { Title(seriesDetailsState) },
+		navigationIcon = { BackButton(onClick = onBackPressed) },
+	)
+}
+
+@Composable
+private fun Title(seriesDetailsState: SeriesDetailsUiState) {
+	Text(
+		text = when (seriesDetailsState) {
+			SeriesDetailsUiState.Loading -> ""
+			is SeriesDetailsUiState.Success -> seriesDetailsState.details
+				.date.format("MMMM d, yyyy")
+		},
+		maxLines = 1,
+		overflow = TextOverflow.Ellipsis,
+		style = MaterialTheme.typography.titleLarge,
+	)
 }

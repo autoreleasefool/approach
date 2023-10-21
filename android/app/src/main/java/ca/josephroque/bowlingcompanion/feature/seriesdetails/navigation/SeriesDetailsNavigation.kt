@@ -20,6 +20,7 @@ fun NavController.navigateToSeriesDetails(seriesId: UUID) {
 }
 
 fun NavGraphBuilder.seriesDetailsScreen(
+	onBackPressed: () -> Unit,
 	onEditGame: (UUID) -> Unit,
 ) {
 	composable(
@@ -29,6 +30,7 @@ fun NavGraphBuilder.seriesDetailsScreen(
 		),
 	) {
 		SeriesDetailsRoute(
+			onBackPressed = onBackPressed,
 			onEditGame = onEditGame,
 		)
 	}
