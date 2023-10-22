@@ -12,6 +12,7 @@ extension League {
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
+		public var isArchived: Bool
 
 		public init(
 			bowlerId: Bowler.ID,
@@ -21,7 +22,8 @@ extension League {
 			numberOfGames: Int?,
 			additionalPinfall: Int?,
 			additionalGames: Int?,
-			excludeFromStatistics: ExcludeFromStatistics
+			excludeFromStatistics: ExcludeFromStatistics,
+			isArchived: Bool
 		) {
 			self.bowlerId = bowlerId
 			self.id = id
@@ -31,6 +33,7 @@ extension League {
 			self.additionalPinfall = additionalPinfall
 			self.additionalGames = additionalGames
 			self.excludeFromStatistics = excludeFromStatistics
+			self.isArchived = isArchived
 		}
 	}
 }
@@ -52,6 +55,7 @@ extension League.Database {
 		public static let additionalPinfall = Column(CodingKeys.additionalPinfall)
 		public static let additionalGames = Column(CodingKeys.additionalGames)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
+		public static let isArchived = Column(CodingKeys.isArchived)
 	}
 }
 
