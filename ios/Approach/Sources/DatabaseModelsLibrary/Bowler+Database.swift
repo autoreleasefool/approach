@@ -7,15 +7,18 @@ extension Bowler {
 		public let id: Bowler.ID
 		public var name: String
 		public var kind: Kind
+		public var isArchived: Bool
 
 		public init(
 			id: Bowler.ID,
 			name: String,
-			kind: Kind
+			kind: Kind,
+			isArchived: Bool
 		) {
 			self.id = id
 			self.name = name
 			self.kind = kind
+			self.isArchived = isArchived
 		}
 	}
 }
@@ -31,6 +34,7 @@ extension Bowler.Database {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)
 		public static let kind = Column(CodingKeys.kind)
+		public static let isArchived = Column(CodingKeys.isArchived)
 	}
 }
 

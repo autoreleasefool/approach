@@ -11,6 +11,7 @@ extension Series {
 		public var preBowl: PreBowl
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var alleyId: Alley.ID?
+		public var isArchived: Bool
 
 		public init(
 			leagueId: League.ID,
@@ -19,7 +20,8 @@ extension Series {
 			numberOfGames: Int,
 			preBowl: PreBowl,
 			excludeFromStatistics: ExcludeFromStatistics,
-			alleyId: Alley.ID?
+			alleyId: Alley.ID?,
+			isArchived: Bool
 		) {
 			self.leagueId = leagueId
 			self.id = id
@@ -28,6 +30,7 @@ extension Series {
 			self.preBowl = preBowl
 			self.excludeFromStatistics = excludeFromStatistics
 			self.alleyId = alleyId
+			self.isArchived = isArchived
 		}
 	}
 }
@@ -48,6 +51,7 @@ extension Series.Database {
 		public static let preBowl = Column(CodingKeys.preBowl)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
 		public static let alleyId = Column(CodingKeys.alleyId)
+		public static let isArchived = Column(CodingKeys.isArchived)
 	}
 }
 

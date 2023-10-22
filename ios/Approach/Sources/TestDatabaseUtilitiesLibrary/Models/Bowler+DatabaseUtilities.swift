@@ -7,9 +7,10 @@ extension Bowler.Database {
 	public static func mock(
 		id: Bowler.ID,
 		name: String,
-		kind: Bowler.Kind = .playable
+		kind: Bowler.Kind = .playable,
+		isArchived: Bool = false
 	) -> Self {
-		.init(id: id, name: name, kind: kind)
+		.init(id: id, name: name, kind: kind, isArchived: isArchived)
 	}
 }
 
@@ -23,8 +24,8 @@ func insert(
 		bowlers = []
 	case .default:
 		bowlers = [
-			.init(id: UUID(0), name: "Joseph", kind: .playable),
-			.init(id: UUID(1), name: "Sarah", kind: .playable),
+			.init(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false),
+			.init(id: UUID(1), name: "Sarah", kind: .playable, isArchived: false),
 		]
 	case let .custom(custom):
 		bowlers = custom
