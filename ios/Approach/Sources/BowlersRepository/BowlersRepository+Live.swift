@@ -28,8 +28,9 @@ extension BowlersRepository: DependencyKey {
 
 					return try Bowler.Database
 						.all()
-						.orderByName()
 						.filter(byKind: .playable)
+						.isNotArchived()
+						.orderByName()
 						.annotated(with: averageScore)
 						.asRequest(of: Bowler.List.self)
 						.fetchAll($0)
@@ -46,8 +47,9 @@ extension BowlersRepository: DependencyKey {
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
-						.orderByName()
 						.filter(byKind: kind)
+						.isNotArchived()
+						.orderByName()
 						.asRequest(of: Bowler.Summary.self)
 						.fetchAll($0)
 				}
@@ -59,10 +61,24 @@ extension BowlersRepository: DependencyKey {
 					return sort(bowlers, byIds: recentlyUsed.observeRecentlyUsedIds(.bowlers))
 				}
 			},
+			archived: {
+				database.reader().observe {
+					try Bowler.Database
+						.all()
+						.isArchived()
+						.orderByName()
+						.annotated(with: Bowler.Database.leagues.count.forKey("numberOfLeagues") ?? 0)
+						.annotated(with: Bowler.Database.series.count.forKey("numberOfSeries") ?? 0)
+						.annotated(with: Bowler.Database.games.count.forKey("numberOfGames") ?? 0)
+						.asRequest(of: Bowler.Archived.self)
+						.fetchAll($0)
+				}
+			},
 			opponents: { ordering in
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
+						.isNotArchived()
 						.orderByName()
 						.asRequest(of: Bowler.Opponent.self)
 						.fetchAll($0)
@@ -155,9 +171,18 @@ extension BowlersRepository: DependencyKey {
 					try bowler.update($0)
 				}
 			},
-			delete: { id in
+			archive: { id in
 				return try await database.writer().write {
-					try Bowler.Database.deleteOne($0, id: id)
+					try Bowler.Database
+						.filter(id: id)
+						.updateAll($0, Bowler.Database.Columns.isArchived.set(to: true))
+				}
+			},
+			unarchive: { id in
+				return try await database.writer().write {
+					try Bowler.Database
+						.filter(id: id)
+						.updateAll($0, Bowler.Database.Columns.isArchived.set(to: false))
 				}
 			}
 		)

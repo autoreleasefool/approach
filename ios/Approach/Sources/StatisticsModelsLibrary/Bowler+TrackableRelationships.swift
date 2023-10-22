@@ -8,7 +8,7 @@ extension Bowler.Database {
 		filter: TrackableFilter.LeagueFilter?
 	) -> HasManyAssociation<Self, League.Database> {
 		var association = hasMany(League.Database.self)
-			.filter(League.Database.Columns.excludeFromStatistics == League.ExcludeFromStatistics.include)
+			.isIncludedInStatistics()
 
 		if let recurrence = filter?.recurrence {
 			association = association

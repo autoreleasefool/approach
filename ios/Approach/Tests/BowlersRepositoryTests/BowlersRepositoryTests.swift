@@ -17,10 +17,11 @@ final class BowlersRepositoryTests: XCTestCase {
 	// MARK: List
 
 	func testList_ReturnsOnlyPlayable() async throws {
-		// Given a database with a bowler and opponent
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .opponent)
-		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
+		// Given a database with 3 bowlers
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .opponent, isArchived: false)
+		let bowler3 = Bowler.Database(id: UUID(2), name: "Audriana", kind: .opponent, isArchived: true)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2, bowler3]))
 
 		// Fetching the bowlers
 		let bowlers = withDependencies {
@@ -38,8 +39,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testList_SortsByName() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the bowlers
@@ -61,8 +62,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testList_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Given an ordering of ids
@@ -89,8 +90,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testList_WithGames_CalculatesAverages() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .playable, isArchived: false)
 		// and 2 games each
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 200)
@@ -120,21 +121,24 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testList_WhenLeagueExcludedFromStatistics_DoesNotIncludeInStatistics() async throws {
 		// Given a database with 1 bowler
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
 		// 2 leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", excludeFromStatistics: .include)
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", excludeFromStatistics: .exclude)
+		let league3 = League.Database.mock(id: UUID(2), name: "Ursa", isArchived: true)
 		// with series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date())
+		let series3 = Series.Database.mock(leagueId: UUID(2), id: UUID(2), date: Date())
 		// and 1 game each
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 2, score: 300)
 		let db = try initializeDatabase(
 			withBowlers: .custom([bowler1]),
-			withLeagues: .custom([league1, league2]),
-			withSeries: .custom([series1, series2]),
-			withGames: .custom([game1, game2])
+			withLeagues: .custom([league1, league2, league3]),
+			withSeries: .custom([series1, series2, series3]),
+			withGames: .custom([game1, game2, game3])
 		)
 
 		// Fetching the bowler
@@ -155,21 +159,24 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testList_WhenSeriesExcludedFromStatistics_DoesNotIncludeInStatistics() async throws {
 		// Given a database with 1 bowler
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
 		// 2 leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
+		let league3 = League.Database.mock(id: UUID(2), name: "Ursa")
 		// with series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(), excludeFromStatistics: .include)
 		let series2 = Series.Database.mock(leagueId: UUID(1), id: UUID(1), date: Date(), excludeFromStatistics: .exclude)
+		let series3 = Series.Database.mock(leagueId: UUID(2), id: UUID(2), date: Date(), isArchived: true)
 		// and 1 game each
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 2, score: 300)
 		let db = try initializeDatabase(
 			withBowlers: .custom([bowler1]),
-			withLeagues: .custom([league1, league2]),
-			withSeries: .custom([series1, series2]),
-			withGames: .custom([game1, game2])
+			withLeagues: .custom([league1, league2, league3]),
+			withSeries: .custom([series1, series2, series3]),
+			withGames: .custom([game1, game2, game3])
 		)
 
 		// Fetching the bowler
@@ -190,7 +197,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testList_WhenGameExcludedFromStatistics_DoesNotIncludeInStatistics() async throws {
 		// Given a database with 1 bowler
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
 		// 2 leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
@@ -227,8 +234,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testPickable_DoesNotIncludeOpponents() async throws {
 		// Given a database with a bowler and an opponent
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the pickable bowlers
@@ -247,12 +254,73 @@ final class BowlersRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: Archived
+
+	func testArchived_ReturnsArchivedBowlers() async throws {
+		// Given a database with bowlers
+		let bowler1 = Bowler.Database.mock(id: UUID(0), name: "Joseph", isArchived: true)
+		let bowler2 = Bowler.Database.mock(id: UUID(1), name: "Sarah", isArchived: false)
+		// 2 leagues each
+		let league1 = League.Database.mock(bowlerId: UUID(0), id: UUID(0), name: "Majors")
+		let league2 = League.Database.mock(bowlerId: UUID(0), id: UUID(1), name: "Minors")
+		let league3 = League.Database.mock(bowlerId: UUID(1), id: UUID(2), name: "Majors")
+		let league4 = League.Database.mock(bowlerId: UUID(1), id: UUID(3), name: "Minors")
+		// 2 series each
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
+		let series2 = Series.Database.mock(leagueId: UUID(0), id: UUID(1), date: Date())
+		let series3 = Series.Database.mock(leagueId: UUID(1), id: UUID(2), date: Date())
+		let series4 = Series.Database.mock(leagueId: UUID(1), id: UUID(3), date: Date())
+		let series5 = Series.Database.mock(leagueId: UUID(2), id: UUID(4), date: Date())
+		let series6 = Series.Database.mock(leagueId: UUID(2), id: UUID(5), date: Date())
+		let series7 = Series.Database.mock(leagueId: UUID(3), id: UUID(6), date: Date())
+		let series8 = Series.Database.mock(leagueId: UUID(3), id: UUID(7), date: Date())
+		// 2 games each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 0)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 0)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 0)
+		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0)
+		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 0)
+		let game9 = Game.Database.mock(seriesId: UUID(4), id: UUID(8), index: 0)
+		let game10 = Game.Database.mock(seriesId: UUID(4), id: UUID(9), index: 0)
+		let game11 = Game.Database.mock(seriesId: UUID(5), id: UUID(10), index: 0)
+		let game12 = Game.Database.mock(seriesId: UUID(5), id: UUID(11), index: 0)
+		let game13 = Game.Database.mock(seriesId: UUID(6), id: UUID(12), index: 0)
+		let game14 = Game.Database.mock(seriesId: UUID(6), id: UUID(13), index: 0)
+		let game15 = Game.Database.mock(seriesId: UUID(7), id: UUID(14), index: 0)
+		let game16 = Game.Database.mock(seriesId: UUID(7), id: UUID(15), index: 0)
+
+		let db = try initializeDatabase(
+			withBowlers: .custom([bowler1, bowler2]),
+			withLeagues: .custom([league1, league2, league3, league4]),
+			withSeries: .custom([series1, series2, series3, series4, series5, series6, series7, series8]),
+			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8, game9, game10, game11, game12, game13, game14, game15, game16])
+		)
+
+		// Fetching the archived bowlers
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			self.bowlers.archived()
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowler
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Joseph", numberOfLeagues: 2, numberOfSeries: 4, numberOfGames: 8),
+		])
+	}
+
 	// MARK: Opponents
 
 	func testOpponents_ReturnsPlayablesAndOpponents() async throws {
 		// Given a database with a bowler and an opponent
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the opponents
@@ -274,8 +342,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testOpponents_SortsByName() async throws {
 		// Given a database with 2 opponents
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Fetching the opponents
@@ -297,8 +365,8 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testOpponents_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with 2 opponents
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		// Given an ordering of ids
@@ -329,7 +397,7 @@ final class BowlersRepositoryTests: XCTestCase {
 	func testOpponentRecord_ReturnsOpponentRecord() async throws {
 		// Given a database with an opponent
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Sarah")
-		let opponent = Bowler.Database(id: UUID(1), name: "Joseph", kind: .opponent)
+		let opponent = Bowler.Database(id: UUID(1), name: "Joseph", kind: .opponent, isArchived: false)
 		let league = League.Database.mock(id: UUID(0), name: "Majors")
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 2))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1))
@@ -377,7 +445,7 @@ final class BowlersRepositoryTests: XCTestCase {
 	func testOpponentRecord_WhenGameExcluded_DoesNotIncludeInMatches() async throws {
 		// Given a database with an opponent and some excluded leagues
 		let bowler = Bowler.Database.mock(id: UUID(0), name: "Sarah")
-		let opponent = Bowler.Database(id: UUID(1), name: "Joseph", kind: .opponent)
+		let opponent = Bowler.Database(id: UUID(1), name: "Joseph", kind: .opponent, isArchived: false)
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors", excludeFromStatistics: .include)
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors", excludeFromStatistics: .exclude)
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123), excludeFromStatistics: .include)
@@ -454,9 +522,9 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testSummaries_ReturnsMatchingBowlers() async throws {
 		// Given a database with 3 bowlers
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent)
-		let bowler3 = Bowler.Database(id: UUID(2), name: "Sarah", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent, isArchived: false)
+		let bowler3 = Bowler.Database(id: UUID(2), name: "Sarah", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2, bowler3]))
 
 		// Fetching the bowlers
@@ -473,9 +541,9 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testSummaries_SortsByIDs() async throws {
 		// Given a database with 3 bowlers
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent)
-		let bowler3 = Bowler.Database(id: UUID(2), name: "Sarah", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Audriana", kind: .opponent, isArchived: false)
+		let bowler3 = Bowler.Database(id: UUID(2), name: "Sarah", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2, bowler3]))
 
 		// Fetching the bowlers
@@ -502,7 +570,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testCreate_WhenBowlerExists_ThrowsError() async throws {
 		// Given a database with an existing bowler
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
 
 		// Create the bowler
@@ -555,7 +623,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testUpdate_WhenBowlerExists_UpdatesBowler() async throws {
 		// Given a database with an existing bowler
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .opponent, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
 
 		// Editing the bowler
@@ -602,7 +670,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 	func testEdit_WhenBowlerExists_ReturnsBowler() async throws {
 		// Given a database with a bowler
-		let bowler = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
+		let bowler = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler]))
 
 		// Editing the bowler
@@ -632,46 +700,105 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 	}
 
-	// MARK: Delete
+	// MARK: Archive
 
-	func testDelete_WhenIdExists_DeletesBowler() async throws {
+	func testArchive_WhenIdExists_ArchivesBowler() async throws {
 		// Given a database with 2 bowlers
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
-		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .opponent)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .opponent, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
-		// Deleting the first bowler
+		// Archiving the first bowler
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.bowlers = .liveValue
 		} operation: {
-			try await self.bowlers.delete(UUID(0))
+			try await self.bowlers.archive(UUID(0))
 		}
 
-		// Updates the database
-		let deletedExists = try await db.read { try Bowler.Database.exists($0, id: UUID(0)) }
-		XCTAssertFalse(deletedExists)
+		// Does not delete the entry
+		let archiveExists = try await db.read { try Bowler.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(archiveExists)
+
+		// Marks the entry as archived
+		let archived = try await db.read { try Bowler.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, true)
 
 		// And leaves the other bowler intact
 		let otherExists = try await db.read { try Bowler.Database.exists($0, id: UUID(1)) }
 		XCTAssertTrue(otherExists)
+		let otherIsArchived = try await db.read { try Bowler.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(otherIsArchived?.isArchived, false)
 	}
 
-	func testDelete_WhenIdNotExists_DoesNothing() async throws {
+	func testArchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 bowler
-		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable)
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
 		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
 
-		// Deleting a non-existent bowler
+		// Archiving a non-existent bowler
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.bowlers = .liveValue
 		} operation: {
-			try await self.bowlers.delete(UUID(1))
+			try await self.bowlers.archive(UUID(1))
 		}
 
 		// Leaves the bowler
 		let exists = try await db.read { try Bowler.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
+		let archived = try await db.read { try Bowler.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
+	}
+
+	// MARK: Unarchive
+
+	func testUnarchive_WhenIdExists_UnarchivesBowler() async throws {
+		// Given a database with 2 bowlers
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: true)
+		let bowler2 = Bowler.Database(id: UUID(1), name: "Sarah", kind: .opponent, isArchived: true)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
+
+		// Unarchiving the first bowler
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			try await self.bowlers.unarchive(UUID(0))
+		}
+
+		// Does not delete the entry
+		let archiveExists = try await db.read { try Bowler.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(archiveExists)
+
+		// Marks the entry as unarchived
+		let archived = try await db.read { try Bowler.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
+
+		// And leaves the other bowler intact
+		let otherExists = try await db.read { try Bowler.Database.exists($0, id: UUID(1)) }
+		XCTAssertTrue(otherExists)
+		let otherIsArchived = try await db.read { try Bowler.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(otherIsArchived?.isArchived, true)
+	}
+
+	func testUnarchive_WhenIdNotExists_DoesNothing() async throws {
+		// Given a database with 1 bowler
+		let bowler1 = Bowler.Database(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false)
+		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
+
+		// Unarchiving a non-existent bowler
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.bowlers = .liveValue
+		} operation: {
+			try await self.bowlers.unarchive(UUID(1))
+		}
+
+		// Leaves the bowler
+		let exists = try await db.read { try Bowler.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(exists)
+		let archived = try await db.read { try Bowler.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
 	}
 }

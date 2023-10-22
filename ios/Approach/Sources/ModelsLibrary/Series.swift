@@ -34,6 +34,13 @@ extension Series {
 }
 
 extension Series {
+	public enum ArchiveState: String, Codable, Sendable {
+		case available
+		case archived
+	}
+}
+
+extension Series {
 	public struct Summary: Identifiable, Codable, Equatable {
 		public let id: Series.ID
 		public let date: Date
@@ -63,6 +70,30 @@ extension Series {
 
 		public var asSummary: Summary {
 			.init(id: id, date: date)
+		}
+	}
+}
+
+extension Series {
+	public struct Archived: Identifiable, Codable, Equatable {
+		public let id: Series.ID
+		public let date: Date
+		public let bowlerName: String
+		public let leagueName: String
+		public let numberOfGames: Int
+
+		public init(
+			id: Series.ID,
+			date: Date,
+			bowlerName: String,
+			leagueName: String,
+			numberOfGames: Int
+		) {
+			self.id = id
+			self.date = date
+			self.bowlerName = bowlerName
+			self.leagueName = leagueName
+			self.numberOfGames = numberOfGames
 		}
 	}
 }

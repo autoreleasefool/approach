@@ -53,7 +53,7 @@ extension Series.Database {
 		toAssociation: HasManyAssociation<T, Series.Database>
 	) -> HasManyAssociation<T, Series.Database> {
 		var association = toAssociation
-			.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
+			.isIncludedInStatistics()
 
 		if let startDate = filter?.startDate {
 			association = association

@@ -28,6 +28,13 @@ extension League {
 }
 
 extension League {
+	public enum ArchiveState: String, Codable, Sendable {
+		case available
+		case archived
+	}
+}
+
+extension League {
 	public struct Summary: Identifiable, Codable, Equatable {
 		public let id: League.ID
 		public let name: String
@@ -35,6 +42,30 @@ extension League {
 		public init(id: League.ID, name: String) {
 			self.id = id
 			self.name = name
+		}
+	}
+}
+
+extension League {
+	public struct Archived: Identifiable, Codable, Equatable {
+		public let id: League.ID
+		public let name: String
+		public let bowlerName: String
+		public let numberOfSeries: Int
+		public let numberOfGames: Int
+
+		public init(
+			id: League.ID,
+			name: String,
+			bowlerName: String,
+			numberOfSeries: Int,
+			numberOfGames: Int
+		) {
+			self.id = id
+			self.name = name
+			self.bowlerName = bowlerName
+			self.numberOfSeries = numberOfSeries
+			self.numberOfGames = numberOfGames
 		}
 	}
 }

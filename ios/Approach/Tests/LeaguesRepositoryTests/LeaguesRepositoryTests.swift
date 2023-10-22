@@ -20,7 +20,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Given a database with two leagues
 		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
 		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
-		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+		let league3 = League.Database.mock(id: UUID(2), name: "Ursa", isArchived: true)
+
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2, league3]))
 
 		// Fetching the leagues
 		let leagues = withDependencies {
@@ -169,13 +171,15 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// with series
 		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(), excludeFromStatistics: .include)
 		let series2 = Series.Database.mock(leagueId: UUID(0), id: UUID(1), date: Date(), excludeFromStatistics: .exclude)
+		let series3 = Series.Database.mock(leagueId: UUID(0), id: UUID(2), date: Date(), isArchived: true)
 		// and 1 game each
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 100)
 		let game2 = Game.Database.mock(seriesId: UUID(1), id: UUID(1), index: 1, score: 200)
+		let game3 = Game.Database.mock(seriesId: UUID(2), id: UUID(2), index: 2, score: 300)
 		let db = try initializeDatabase(
 			withLeagues: .custom([league1]),
-			withSeries: .custom([series1, series2]),
-			withGames: .custom([game1, game2])
+			withSeries: .custom([series1, series2, series3]),
+			withGames: .custom([game1, game2, game3])
 		)
 
 		// Fetching the league
@@ -343,6 +347,49 @@ final class LeaguesRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: Archived
+
+	func testArchived_ReturnsArchivedLeagues() async throws {
+		// Given a database with leagues
+		let league1 = League.Database.mock(bowlerId: UUID(0), id: UUID(0), name: "Majors", isArchived: true)
+		let league2 = League.Database.mock(bowlerId: UUID(0), id: UUID(1), name: "Minors", isArchived: false)
+		// 2 series each
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date())
+		let series2 = Series.Database.mock(leagueId: UUID(0), id: UUID(1), date: Date())
+		let series3 = Series.Database.mock(leagueId: UUID(1), id: UUID(2), date: Date())
+		let series4 = Series.Database.mock(leagueId: UUID(1), id: UUID(3), date: Date())
+		// 2 games each
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 0)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 0)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 0)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 0)
+		let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0)
+		let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 0)
+
+		let db = try initializeDatabase(
+			withLeagues: .custom([league1, league2]),
+			withSeries: .custom([series1, series2, series3, series4]),
+			withGames: .custom([game1, game2, game3, game4, game5, game6, game7, game8])
+		)
+
+		// Fetching the archived leagues
+		let leagues = withDependencies {
+			$0.database.reader = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			self.leagues.archived()
+		}
+		var iterator = leagues.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the league
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(0), name: "Majors", bowlerName: "Joseph", numberOfSeries: 2, numberOfGames: 4),
+		])
+	}
+
 	// MARK: - Series Host
 
 	func testSeriesHost_WhenLeagueExists_ReturnsLeague() async throws {
@@ -495,7 +542,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testCreate_WhenLeagueRepeats_WithPreferredGear_InsertsGear() async throws {
 		// Given a database with no leagues
-		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withLeagues: nil, withBowlerPreferredGear: .default)
+		let db = try initializeDatabase(withAlleys: .default, withBowlers: .default, withGear: .default, withLeagues: nil, withBowlerPreferredGear: .default)
 
 		// Creating a league
 		let new = League.Create(
@@ -668,46 +715,105 @@ final class LeaguesRepositoryTests: XCTestCase {
 		}
 	}
 
-	// MARK: - Delete
+	// MARK: Archive
 
-	func testDelete_WhenIdExists_DeletesLeague() async throws {
+	func testArchive_WhenIdExists_ArchivesLeague() async throws {
 		// Given a database with 2 leagues
-		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
-		let league2 = League.Database.mock(id: UUID(1), name: "Minors")
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", isArchived: false)
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors", isArchived: false)
 		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
 
-		// Deleting the first league
+		// Archiving the first league
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.leagues = .liveValue
 		} operation: {
-			try await self.leagues.delete(UUID(0))
+			try await self.leagues.archive(UUID(0))
 		}
 
-		// Updates the database
-		let deletedExists = try await db.read { try League.Database.exists($0, id: UUID(0)) }
-		XCTAssertFalse(deletedExists)
+		// Does not delete the entry
+		let archiveExists = try await db.read { try League.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(archiveExists)
+
+		// Marks the entry as archived
+		let archived = try await db.read { try League.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, true)
 
 		// And leaves the other league intact
 		let otherExists = try await db.read { try League.Database.exists($0, id: UUID(1)) }
 		XCTAssertTrue(otherExists)
+		let otherIsArchived = try await db.read { try League.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(otherIsArchived?.isArchived, false)
 	}
 
-	func testDelete_WhenIdNotExists_DoesNothing() async throws {
+	func testArchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 league
-		let league1 = League.Database.mock(id: UUID(0), name: "Majors")
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", isArchived: false)
 		let db = try initializeDatabase(withLeagues: .custom([league1]))
 
-		// Deleting a non-existent league
+		// Archiving a non-existent league
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.leagues = .liveValue
 		} operation: {
-			try await self.leagues.delete(UUID(1))
+			try await self.leagues.archive(UUID(1))
 		}
 
 		// Leaves the league
 		let exists = try await db.read { try League.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
+		let archived = try await db.read { try League.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
+	}
+
+	// MARK: Unarchive
+
+	func testUnarchive_WhenIdExists_UnarchivesLeague() async throws {
+		// Given a database with 2 leagues
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", isArchived: true)
+		let league2 = League.Database.mock(id: UUID(1), name: "Minors", isArchived: true)
+		let db = try initializeDatabase(withLeagues: .custom([league1, league2]))
+
+		// Unarchiving the first league
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			try await self.leagues.unarchive(UUID(0))
+		}
+
+		// Does not delete the entry
+		let archiveExists = try await db.read { try League.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(archiveExists)
+
+		// Marks the entry as unarchived
+		let archived = try await db.read { try League.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
+
+		// And leaves the other league intact
+		let otherExists = try await db.read { try League.Database.exists($0, id: UUID(1)) }
+		XCTAssertTrue(otherExists)
+		let otherIsArchived = try await db.read { try League.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(otherIsArchived?.isArchived, true)
+	}
+
+	func testUnarchive_WhenIdNotExists_DoesNothing() async throws {
+		// Given a database with 1 league
+		let league1 = League.Database.mock(id: UUID(0), name: "Majors", isArchived: false)
+		let db = try initializeDatabase(withLeagues: .custom([league1]))
+
+		// Unarchiving a non-existent league
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.leagues = .liveValue
+		} operation: {
+			try await self.leagues.unarchive(UUID(1))
+		}
+
+		// Leaves the league
+		let exists = try await db.read { try League.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(exists)
+		let archived = try await db.read { try League.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
 	}
 }

@@ -75,8 +75,27 @@ extension DerivableRequest<League.Database> {
 		let recurrence = League.Database.Columns.recurrence
 		return filter(recurrence == byRecurrence)
 	}
+
+	public func isNotArchived() -> Self {
+		let isArchived = League.Database.Columns.isArchived
+		return filter(isArchived == false)
+	}
+
+	public func isArchived() -> Self {
+		let isArchived = League.Database.Columns.isArchived
+		return filter(isArchived == true)
+	}
+
+	public func isIncludedInStatistics() -> Self {
+		let excludeFromStatistics = League.Database.Columns.excludeFromStatistics
+		return self
+			.filter(excludeFromStatistics == League.ExcludeFromStatistics.include)
+			.isNotArchived()
+	}
 }
 
 extension League.Summary: FetchableRecord {}
 
 extension League.List: FetchableRecord {}
+
+extension League.Archived: FetchableRecord {}
