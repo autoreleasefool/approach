@@ -23,9 +23,7 @@ fun LazyListScope.gamesList(
 				GameItemRow(
 					game = game,
 					onClick = { onGameClick(game.id) },
-					modifier = Modifier
-						.padding(horizontal = 16.dp)
-						.padding(bottom = 16.dp)
+					modifier = Modifier.padding(bottom = 16.dp),
 				)
 			}
 		}

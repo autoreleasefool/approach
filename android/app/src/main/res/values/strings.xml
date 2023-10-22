@@ -200,4 +200,9 @@
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>
 	<string name="cd_increment">Increment</string>
+	<string name="cd_pin_left_two_pin">Left Two Pin</string>
+	<string name="cd_pin_left_three_pin">Left Three Pin</string>
+	<string name="cd_pin_head_pin">Head Pin</string>
+	<string name="cd_pin_right_three_pin">Right Three Pin</string>
+	<string name="cd_pin_right_two_pin">Right Two Pin</string>
 </resources>

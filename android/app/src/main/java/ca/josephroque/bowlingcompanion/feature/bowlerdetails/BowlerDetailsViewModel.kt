@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BowlerDetailsViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle,
+	savedStateHandle: SavedStateHandle,
 	bowlersRepository: BowlersRepository,
 	leaguesRepository: LeaguesRepository,
 	gearRepository: GearRepository,
