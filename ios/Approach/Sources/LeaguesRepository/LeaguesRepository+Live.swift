@@ -22,9 +22,10 @@ extension LeaguesRepository: DependencyKey {
 		) -> QueryInterfaceRequest<League.Database> {
 			League.Database
 				.all()
-				.orderByName()
 				.bowled(byBowler: bowledBy)
 				.filter(byRecurrence: withRecurrence)
+				.isNotArchived()
+				.orderByName()
 		}
 
 		return Self(
@@ -60,6 +61,19 @@ extension LeaguesRepository: DependencyKey {
 					return leagues
 				case .byRecentlyUsed:
 					return sort(leagues, byIds: recentlyUsed.observeRecentlyUsedIds(.leagues))
+				}
+			},
+			archived: {
+				database.reader().observe {
+					try League.Database
+						.all()
+						.isArchived()
+						.orderByName()
+						.annotated(withRequired: League.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
+						.annotated(with: League.Database.series.count.forKey("numberOfSeries") ?? 0)
+						.annotated(with: League.Database.games.count.forKey("numberOfGames") ?? 0)
+						.asRequest(of: League.Archived.self)
+						.fetchAll($0)
 				}
 			},
 			seriesHost: { id in
@@ -100,7 +114,8 @@ extension LeaguesRepository: DependencyKey {
 									numberOfGames: numberOfGames,
 									preBowl: .regular,
 									excludeFromStatistics: .init(from: league.excludeFromStatistics),
-									alleyId: league.location?.id
+									alleyId: league.location?.id,
+									isArchived: false
 								)
 								try series.insert(db)
 
@@ -144,9 +159,18 @@ extension LeaguesRepository: DependencyKey {
 					try league.update($0)
 				}
 			},
-			delete: { id in
-				_ = try await database.writer().write {
-					try League.Database.deleteOne($0, id: id)
+			archive: { id in
+				return try await database.writer().write {
+					try League.Database
+						.filter(id: id)
+						.updateAll($0, League.Database.Columns.isArchived.set(to: true))
+				}
+			},
+			unarchive: { id in
+				return try await database.writer().write {
+					try League.Database
+						.filter(id: id)
+						.updateAll($0, League.Database.Columns.isArchived.set(to: false))
 				}
 			}
 		)

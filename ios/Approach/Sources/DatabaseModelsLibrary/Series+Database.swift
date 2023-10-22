@@ -65,8 +65,25 @@ extension DerivableRequest<Series.Database> {
 		let league = Series.Database.Columns.leagueId
 		return filter(league == inLeague)
 	}
-}
 
+	public func isNotArchived() -> Self {
+		let isArchived = Series.Database.Columns.isArchived
+		return filter(isArchived == false)
+	}
+
+	public func isArchived() -> Self {
+		let isArchived = Series.Database.Columns.isArchived
+		return filter(isArchived == true)
+	}
+
+	public func isIncludedInStatistics() -> Self {
+		let excludeFromStatistics = Series.Database.Columns.excludeFromStatistics
+		return self
+			.filter(excludeFromStatistics == Series.ExcludeFromStatistics.include)
+			.isNotArchived()
+	}
+}
 
 extension Series.Summary: FetchableRecord {}
 extension Series.List: FetchableRecord {}
+extension Series.Archived: FetchableRecord {}

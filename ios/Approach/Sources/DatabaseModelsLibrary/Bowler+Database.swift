@@ -49,6 +49,16 @@ extension DerivableRequest<Bowler.Database> {
 		let kind = Bowler.Database.Columns.kind
 		return filter(kind == byKind)
 	}
+
+	public func isNotArchived() -> Self {
+		let isArchived = Bowler.Database.Columns.isArchived
+		return filter(isArchived == false)
+	}
+
+	public func isArchived() -> Self {
+		let isArchived = Bowler.Database.Columns.isArchived
+		return filter(isArchived == true)
+	}
 }
 
 extension Bowler.Summary: FetchableRecord {}
@@ -58,3 +68,5 @@ extension Bowler.Opponent: FetchableRecord {}
 extension Bowler.List: FetchableRecord {}
 
 extension Bowler.OpponentDetails: FetchableRecord {}
+
+extension Bowler.Archived: FetchableRecord {}

@@ -59,6 +59,18 @@ extension SeriesRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
+			archived: {
+				database.reader().observe {
+					try Series.Database
+						.all()
+						.isArchived()
+						.orderByDate()
+						.annotated(withRequired: Series.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
+						.annotated(withRequired: Series.Database.league.select(League.Database.Columns.name.forKey("leagueName")))
+						.asRequest(of: Series.Archived.self)
+						.fetchAll($0)
+				}
+			},
 			edit: { id in
 				try await database.reader().read {
 					let lanesAlias = TableAlias(name: "lanes")
@@ -141,9 +153,18 @@ extension SeriesRepository: DependencyKey {
 					try series.update($0)
 				}
 			},
-			delete: { id in
-				_ = try await database.writer().write {
-					try Series.Database.deleteOne($0, id: id)
+			archive: { id in
+				return try await database.writer().write {
+					try Series.Database
+						.filter(id: id)
+						.updateAll($0, Series.Database.Columns.isArchived.set(to: true))
+				}
+			},
+			unarchive: { id in
+				return try await database.writer().write {
+					try Series.Database
+						.filter(id: id)
+						.updateAll($0, Series.Database.Columns.isArchived.set(to: false))
 				}
 			}
 		)
