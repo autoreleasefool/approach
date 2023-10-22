@@ -57,6 +57,23 @@ extension DerivableRequest<Gear.Database> {
 			.includingOwnerName()
 			.includingAvatar()
 	}
+
+	public func orderByName() -> Self {
+		let name = Gear.Database.Columns.name
+		return order(name.collating(.localizedCaseInsensitiveCompare))
+	}
+
+	public func filter(byKind: Gear.Kind?) -> Self {
+		guard let byKind else { return self }
+		let kind = Gear.Database.Columns.kind
+		return filter(kind == byKind)
+	}
+
+	public func owned(byBowler: Bowler.ID?) -> Self {
+		guard let byBowler else { return self }
+		let bowler = Gear.Database.Columns.bowlerId
+		return filter(bowler == byBowler)
+	}
 }
 
 extension Gear.Summary: FetchableRecord {}

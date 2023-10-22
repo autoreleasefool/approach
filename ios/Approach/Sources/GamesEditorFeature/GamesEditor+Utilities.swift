@@ -56,7 +56,7 @@ extension GamesEditor.State {
 						bowler: nextBowlerId,
 						game: bowlerGameIds[nextBowlerId]![nextGameIndex]
 					) : nil
-				} else  {
+				} else {
 					_nextHeaderElement = .bowler(name: bowlers![id: nextBowlerId]!.name, id: nextBowlerId)
 				}
 			}

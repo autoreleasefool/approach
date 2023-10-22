@@ -55,6 +55,24 @@ extension League.Database {
 	}
 }
 
+extension DerivableRequest<League.Database> {
+	public func orderByName() -> Self {
+		let name = League.Database.Columns.name
+		return order(name.collating(.localizedCaseInsensitiveCompare))
+	}
+
+	public func bowled(byBowler: Bowler.ID) -> Self {
+		let bowler = League.Database.Columns.bowlerId
+		return filter(bowler == byBowler)
+	}
+
+	public func filter(byRecurrence: League.Recurrence?) -> Self {
+		guard let byRecurrence else { return self }
+		let recurrence = League.Database.Columns.recurrence
+		return filter(recurrence == byRecurrence)
+	}
+}
+
 extension League.Summary: FetchableRecord {}
 
 extension League.List: FetchableRecord {}

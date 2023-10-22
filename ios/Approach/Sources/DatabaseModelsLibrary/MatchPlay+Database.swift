@@ -43,4 +43,10 @@ extension MatchPlay.Database {
 	}
 }
 
+extension DerivableRequest<MatchPlay.Database> {
+	public func filter(byGame: Game.ID) -> Self {
+		return filter(MatchPlay.Database.Columns.gameId == byGame)
+	}
+}
+
 extension MatchPlay.Summary: FetchableRecord {}

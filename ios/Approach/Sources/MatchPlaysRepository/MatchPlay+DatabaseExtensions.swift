@@ -17,11 +17,3 @@ extension MatchPlay.Edit: PersistableRecord, FetchableRecord {
 		container[Columns.result] = result
 	}
 }
-
-// MARK: - Base
-
-extension DerivableRequest<MatchPlay.Database> {
-	func filter(byGame: Game.ID) -> Self {
-		return filter(MatchPlay.Database.Columns.gameId == byGame)
-	}
-}

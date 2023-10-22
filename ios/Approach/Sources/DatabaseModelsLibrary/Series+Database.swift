@@ -51,5 +51,18 @@ extension Series.Database {
 	}
 }
 
+extension DerivableRequest<Series.Database> {
+	public func orderByDate() -> Self {
+		let date = Series.Database.Columns.date
+		return order(date.desc)
+	}
+
+	public func bowled(inLeague: League.ID) -> Self {
+		let league = Series.Database.Columns.leagueId
+		return filter(league == inLeague)
+	}
+}
+
+
 extension Series.Summary: FetchableRecord {}
 extension Series.List: FetchableRecord {}

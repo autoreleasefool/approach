@@ -36,17 +36,3 @@ extension Series.Create: PersistableRecord {
 		container[Columns.alleyId] = location?.id
 	}
 }
-
-// MARK: - Base
-
-extension DerivableRequest<Series.Database> {
-	func orderByDate() -> Self {
-		let date = Series.Database.Columns.date
-		return order(date.desc)
-	}
-
-	func bowled(inLeague: League.ID) -> Self {
-		let league = Series.Database.Columns.leagueId
-		return filter(league == inLeague)
-	}
-}

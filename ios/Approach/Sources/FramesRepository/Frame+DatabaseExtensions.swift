@@ -10,13 +10,3 @@ extension Frame.Edit: PersistableRecord, FetchableRecord {
 extension Frame.Rolls: FetchableRecord {}
 
 extension Frame.Summary: FetchableRecord {}
-
-extension DerivableRequest<Frame.Database> {
-	func orderByIndex() -> Self {
-		order(Frame.Database.Columns.index)
-	}
-
-	func filter(byGame: Game.ID) -> Self {
-		filter(Frame.Database.Columns.gameId == byGame)
-	}
-}

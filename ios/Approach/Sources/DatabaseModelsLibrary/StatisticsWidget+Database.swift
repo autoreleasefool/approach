@@ -54,4 +54,17 @@ extension StatisticsWidget.Database {
 	}
 }
 
+extension DerivableRequest<StatisticsWidget.Database> {
+	public func orderByPriority() -> Self {
+		let priority = StatisticsWidget.Database.Columns.priority
+		return order(priority.asc)
+	}
+
+	public func filter(byContext: String?) -> Self {
+		guard let byContext else { return self }
+		let context = StatisticsWidget.Database.Columns.context
+		return filter(context == byContext)
+	}
+}
+
 extension StatisticsWidget.Configuration: FetchableRecord {}

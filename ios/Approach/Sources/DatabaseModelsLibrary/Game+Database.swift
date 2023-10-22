@@ -52,6 +52,16 @@ extension Game.Database {
 	}
 }
 
+extension DerivableRequest<Game.Database> {
+	public func orderByIndex() -> Self {
+		return order(Game.Database.Columns.index)
+	}
+
+	public func filter(bySeries: Series.ID) -> Self {
+		return filter(Game.Database.Columns.seriesId == bySeries)
+	}
+}
+
 extension Game.List: FetchableRecord {}
 
 extension Game.ListMatch: FetchableRecord {}

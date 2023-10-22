@@ -29,24 +29,3 @@ extension Gear.Create: PersistableRecord {
 		container[Gear.Database.Columns.avatarId] = avatar.id
 	}
 }
-
-// MARK: - Base
-
-extension DerivableRequest<Gear.Database> {
-	func orderByName() -> Self {
-		let name = Gear.Database.Columns.name
-		return order(name.collating(.localizedCaseInsensitiveCompare))
-	}
-
-	func filter(byKind: Gear.Kind?) -> Self {
-		guard let byKind else { return self }
-		let kind = Gear.Database.Columns.kind
-		return filter(kind == byKind)
-	}
-
-	func owned(byBowler: Bowler.ID?) -> Self {
-		guard let byBowler else { return self }
-		let bowler = Gear.Database.Columns.bowlerId
-		return filter(bowler == byBowler)
-	}
-}
