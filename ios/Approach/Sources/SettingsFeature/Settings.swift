@@ -1,5 +1,6 @@
 import AnalyticsServiceInterface
 import AppIconServiceInterface
+import ArchiveListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
@@ -41,6 +42,7 @@ public struct Settings: Reducer {
 			case didTapFeatureFlags
 			case didTapOpponents
 			case didTapStatistics
+			case didTapArchive
 			case didTapAppIcon
 			case didTapVersionNumber
 		}
@@ -61,6 +63,7 @@ public struct Settings: Reducer {
 
 	public struct Destination: Reducer {
 		public enum State: Equatable {
+			case archive(ArchiveList.State)
 			case appIcon(AppIconList.State)
 			case featureFlags(FeatureFlagsList.State)
 			case opponentsList(OpponentsList.State)
@@ -68,6 +71,7 @@ public struct Settings: Reducer {
 		}
 
 		public enum Action: Equatable {
+			case archive(ArchiveList.Action)
 			case appIcon(AppIconList.Action)
 			case featureFlags(FeatureFlagsList.Action)
 			case opponentsList(OpponentsList.Action)
@@ -75,6 +79,9 @@ public struct Settings: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
+			Scope(state: /State.archive, action: /Action.archive) {
+				ArchiveList()
+			}
 			Scope(state: /State.appIcon, action: /Action.appIcon) {
 				AppIconList()
 			}
@@ -136,6 +143,10 @@ public struct Settings: Reducer {
 					state.destination = .appIcon(.init())
 					return .none
 
+				case .didTapArchive:
+					state.destination = .archive(.init())
+					return .none
+
 				case .didTapVersionNumber:
 					return .run { send in
 						pasteboard.copyToClipboard(AppConstants.appVersionReadable)
@@ -180,6 +191,12 @@ public struct Settings: Reducer {
 						return .none
 					}
 
+				case let .destination(.presented(.archive(.delegate(delegateAction)))):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .destination(.presented(.featureFlags(.delegate(delegateAction)))):
 					switch delegateAction {
 					case .never:
@@ -205,14 +222,11 @@ public struct Settings: Reducer {
 					}
 
 				case .destination(.dismiss),
-						.destination(.presented(.featureFlags(.internal))),
-						.destination(.presented(.featureFlags(.view))),
-						.destination(.presented(.statistics(.internal))),
-						.destination(.presented(.statistics(.view))),
-						.destination(.presented(.appIcon(.view))),
-						.destination(.presented(.appIcon(.internal))),
-						.destination(.presented(.opponentsList(.internal))),
-						.destination(.presented(.opponentsList(.view))),
+						.destination(.presented(.featureFlags(.internal))), .destination(.presented(.featureFlags(.view))),
+						.destination(.presented(.statistics(.internal))), .destination(.presented(.statistics(.view))),
+						.destination(.presented(.appIcon(.view))), .destination(.presented(.appIcon(.internal))),
+						.destination(.presented(.opponentsList(.internal))), .destination(.presented(.opponentsList(.view))),
+						.destination(.presented(.archive(.internal))), .destination(.presented(.archive(.view))),
 						.helpSettings(.internal), .helpSettings(.view):
 					return .none
 				}

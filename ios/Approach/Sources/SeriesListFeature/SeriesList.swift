@@ -297,8 +297,7 @@ public struct SeriesList: Reducer {
 						.destination(.presented(.games(.view))), .destination(.presented(.games(.internal))),
 						.destination(.presented(.alert(.didTapDismissButton))),
 						.destination(.presented(.sortOrder(.internal))), .destination(.presented(.sortOrder(.view))),
-						.errors(.view),
-						.errors(.internal):
+						.errors(.view), .errors(.internal):
 					return .none
 				}
 

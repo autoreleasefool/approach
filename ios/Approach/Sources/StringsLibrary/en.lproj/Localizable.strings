@@ -553,7 +553,29 @@
 "settings.statistics.widgets.hideInBowlerList" = "Hide widgets for bowlers";
 "settings.statistics.widgets.hideInLeagueList" = "Hide widgets for leagues";
 "settings.opponents.footer" = "Logs of all your past opponents and a record of your match play.";
+"settings.archive.title" = "Archive";
+"settings.archive.footer" = "An archive of your old data, hidden from the rest of the app.";
 "settings.title" = "Settings";
+
+/* Archive */
+
+"archive.title" = "Archive";
+"archive.list.description" = "Here you will find all the bowlers, leagues, and series you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.";
+"archive.list.bowlers.title" = "Archived Bowlers";
+"archive.list.bowlers.none" = "No bowlers have been archived";
+"archive.list.bowlers.archivedWith" = "Archived with %@ leagues, %@ series, %@ games";
+"archive.list.leagues.title" = "Archived Leagues";
+"archive.list.leagues.none" = "No leagues have been archived";
+"archive.list.leagues.belongsTo" = "Belongs to %@";
+"archive.list.leagues.archivedWith" = "Archived with %@ series, %@ games";
+"archive.list.series.title" = "Archived Series";
+"archive.list.series.none" = "No series have been archived";
+"archive.list.series.belongsTo" = "Belongs to %@, in %@";
+"archive.list.series.archivedWith" = "Archived with %@ games";
+"archive.alert.unarchived" = "Unarchived %@";
+"archive.alert.restoredBowler" = "Your bowler's data has been restored";
+"archive.alert.restoredLeague" = "Your league's data has been restored";
+"archive.alert.restoredSeries" = "Your series' data has been restored";
 
 /* Ordering */
 
@@ -632,6 +654,7 @@
 "error.toast.failedToLoad" = "Error loading data";
 "error.toast.failedToDelete" = "Error deleting data";
 "error.toast.failedToArchive" = "Error archiving data";
+"error.toast.failedToRestore" = "Error restoring data";
 "error.toast.failedToSave" = "Error saving data";
 "error.toast.itemNotCreated" = "%@ not created";
 "error.toast.itemNotUpdated" = "%@ not updated";
@@ -654,6 +677,7 @@
 "action.done" = "Done";
 "action.delete" = "Delete";
 "action.archive" = "Archive";
+"action.restore" = "Restore";
 "action.cancel" = "Cancel";
 "action.dismiss" = "Dismiss";
 "action.tryAgain" = "Try again";

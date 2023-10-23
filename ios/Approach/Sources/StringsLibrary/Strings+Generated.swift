@@ -67,6 +67,8 @@ public enum Strings {
     public static let report = Strings.tr("Localizable", "action.report", fallback: "Report")
     /// Reset
     public static let reset = Strings.tr("Localizable", "action.reset", fallback: "Reset")
+    /// Restore
+    public static let restore = Strings.tr("Localizable", "action.restore", fallback: "Restore")
     /// Save
     public static let save = Strings.tr("Localizable", "action.save", fallback: "Save")
     /// Search
@@ -232,6 +234,64 @@ public enum Strings {
       public static let statistics = Strings.tr("Localizable", "app.tabs.statistics", fallback: "Statistics")
     }
   }
+  public enum Archive {
+    /// Archive
+    public static let title = Strings.tr("Localizable", "archive.title", fallback: "Archive")
+    public enum Alert {
+      /// Your bowler's data has been restored
+      public static let restoredBowler = Strings.tr("Localizable", "archive.alert.restoredBowler", fallback: "Your bowler's data has been restored")
+      /// Your league's data has been restored
+      public static let restoredLeague = Strings.tr("Localizable", "archive.alert.restoredLeague", fallback: "Your league's data has been restored")
+      /// Your series' data has been restored
+      public static let restoredSeries = Strings.tr("Localizable", "archive.alert.restoredSeries", fallback: "Your series' data has been restored")
+      /// Unarchived %@
+      public static func unarchived(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "archive.alert.unarchived", String(describing: p1), fallback: "Unarchived %@")
+      }
+    }
+    public enum List {
+      /// Here you will find all the bowlers, leagues, and series you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.
+      public static let description = Strings.tr("Localizable", "archive.list.description", fallback: "Here you will find all the bowlers, leagues, and series you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.")
+      public enum Bowlers {
+        /// Archived with %@ leagues, %@ series, %@ games
+        public static func archivedWith(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.bowlers.archivedWith", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Archived with %@ leagues, %@ series, %@ games")
+        }
+        /// No bowlers have been archived
+        public static let `none` = Strings.tr("Localizable", "archive.list.bowlers.none", fallback: "No bowlers have been archived")
+        /// Archived Bowlers
+        public static let title = Strings.tr("Localizable", "archive.list.bowlers.title", fallback: "Archived Bowlers")
+      }
+      public enum Leagues {
+        /// Archived with %@ series, %@ games
+        public static func archivedWith(_ p1: Any, _ p2: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.leagues.archivedWith", String(describing: p1), String(describing: p2), fallback: "Archived with %@ series, %@ games")
+        }
+        /// Belongs to %@
+        public static func belongsTo(_ p1: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.leagues.belongsTo", String(describing: p1), fallback: "Belongs to %@")
+        }
+        /// No leagues have been archived
+        public static let `none` = Strings.tr("Localizable", "archive.list.leagues.none", fallback: "No leagues have been archived")
+        /// Archived Leagues
+        public static let title = Strings.tr("Localizable", "archive.list.leagues.title", fallback: "Archived Leagues")
+      }
+      public enum Series {
+        /// Archived with %@ games
+        public static func archivedWith(_ p1: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.series.archivedWith", String(describing: p1), fallback: "Archived with %@ games")
+        }
+        /// Belongs to %@, in %@
+        public static func belongsTo(_ p1: Any, _ p2: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.series.belongsTo", String(describing: p1), String(describing: p2), fallback: "Belongs to %@, in %@")
+        }
+        /// No series have been archived
+        public static let `none` = Strings.tr("Localizable", "archive.list.series.none", fallback: "No series have been archived")
+        /// Archived Series
+        public static let title = Strings.tr("Localizable", "archive.list.series.title", fallback: "Archived Series")
+      }
+    }
+  }
   public enum Avatar {
     public enum Editor {
       /// Preview
@@ -340,6 +400,8 @@ public enum Strings {
       public static let failedToDelete = Strings.tr("Localizable", "error.toast.failedToDelete", fallback: "Error deleting data")
       /// Error loading data
       public static let failedToLoad = Strings.tr("Localizable", "error.toast.failedToLoad", fallback: "Error loading data")
+      /// Error restoring data
+      public static let failedToRestore = Strings.tr("Localizable", "error.toast.failedToRestore", fallback: "Error restoring data")
       /// Error saving data
       public static let failedToSave = Strings.tr("Localizable", "error.toast.failedToSave", fallback: "Error saving data")
       /// %@ not created
@@ -1083,6 +1145,12 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "settings.appInfo.title", fallback: "App Info")
       /// Version
       public static let version = Strings.tr("Localizable", "settings.appInfo.version", fallback: "Version")
+    }
+    public enum Archive {
+      /// An archive of your old data, hidden from the rest of the app.
+      public static let footer = Strings.tr("Localizable", "settings.archive.footer", fallback: "An archive of your old data, hidden from the rest of the app.")
+      /// Archive
+      public static let title = Strings.tr("Localizable", "settings.archive.title", fallback: "Archive")
     }
     public enum Data {
       /// Export Data
