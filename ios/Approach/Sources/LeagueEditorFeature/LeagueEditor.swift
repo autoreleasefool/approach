@@ -92,7 +92,7 @@ public struct LeagueEditor: Reducer {
 		public enum DelegateAction: Equatable {
 			case didFinishCreating(League.Create)
 			case didFinishUpdating(League.Edit)
-			case didFinishDeleting(League.Edit)
+			case didFinishArchiving(League.Edit)
 		}
 		public enum InternalAction: Equatable {
 			case setLocationSection(isShown: Bool)
@@ -120,7 +120,8 @@ public struct LeagueEditor: Reducer {
 				.dependency(\.records, .init(
 					create: leagues.create,
 					update: leagues.update,
-					delete: leagues.delete
+					delete: { _ in },
+					archive: leagues.archive
 				))
 		}
 
@@ -175,13 +176,13 @@ public struct LeagueEditor: Reducer {
 						return state._form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
-					case let .didDelete(result):
+					case let .didArchive(result):
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case let  .didFinishDeleting(league):
+					case let  .didFinishArchiving(league):
 						return .concatenate(
-							.send(.delegate(.didFinishDeleting(league))),
+							.send(.delegate(.didFinishArchiving(league))),
 							.run { _ in await dismiss() }
 						)
 
@@ -197,7 +198,7 @@ public struct LeagueEditor: Reducer {
 							.run { _ in await dismiss() }
 						)
 
-					case .didDiscard:
+					case .didDiscard, .didDelete, .didFinishDeleting:
 						return .run { _ in await dismiss() }
 					}
 
@@ -222,8 +223,8 @@ public struct LeagueEditor: Reducer {
 				return Analytics.League.Created()
 			case .internal(.form(.delegate(.didFinishUpdating))):
 				return Analytics.League.Updated()
-			case .internal(.form(.delegate(.didFinishDeleting))):
-				return Analytics.League.Deleted()
+			case .internal(.form(.delegate(.didFinishArchiving))):
+				return Analytics.League.Archived()
 			default:
 				return nil
 			}
@@ -271,7 +272,8 @@ extension League.Create: CreateableRecord {
 }
 
 extension League.Edit: EditableRecord {
-	public var isDeleteable: Bool { true }
+	public var isDeleteable: Bool { false }
+	public var isArchivable: Bool { true }
 	public var isSaveable: Bool {
 		!name.isEmpty
 	}

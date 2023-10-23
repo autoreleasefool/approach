@@ -173,7 +173,7 @@ public struct GamesList: Reducer {
 
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
-					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton:
+					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton, .didArchive:
 						return .none
 					}
 
@@ -189,7 +189,7 @@ public struct GamesList: Reducer {
 						state.series = series.asSummary
 						return .none
 
-					case .didFinishDeleting:
+					case .didFinishArchiving:
 						return .run { _ in await dismiss() }
 
 					case .didFinishCreating:

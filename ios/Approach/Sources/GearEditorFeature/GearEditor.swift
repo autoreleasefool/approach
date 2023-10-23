@@ -114,7 +114,8 @@ public struct GearEditor: Reducer {
 				.dependency(\.records, .init(
 					create: gear.create,
 					update: gear.update,
-					delete: gear.delete
+					delete: gear.delete,
+					archive: { _ in }
 				))
 		}
 
@@ -155,7 +156,7 @@ public struct GearEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard, .didArchive, .didFinishArchiving:
 						return .run { _ in await dismiss() }
 					}
 
@@ -240,6 +241,7 @@ extension Gear.Create: CreateableRecord {
 
 extension Gear.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
+	public var isArchivable: Bool { false }
 	public var isSaveable: Bool {
 		!name.isEmpty
 	}

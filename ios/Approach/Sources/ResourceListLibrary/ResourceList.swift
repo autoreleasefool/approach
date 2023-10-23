@@ -13,6 +13,7 @@ public struct ResourceList<
 	Q: Equatable
 >: Reducer {
 	public typealias OnDelete = (R) async throws -> Void
+	public typealias OnArchive = (R) async throws -> Void
 
 	public struct State: Equatable {
 		public var features: [Feature]
@@ -49,6 +50,7 @@ public struct ResourceList<
 
 		public enum DelegateAction: Equatable {
 			case didDelete(R)
+			case didArchive(R)
 			case didEdit(R)
 			case didTap(R)
 			case didAddNew
@@ -69,6 +71,7 @@ public struct ResourceList<
 	}
 
 	public enum Feature: Equatable {
+		case swipeToArchive
 		case swipeToDelete
 		case swipeToEdit
 		case tappable
@@ -78,6 +81,7 @@ public struct ResourceList<
 	public enum SwipeAction: Equatable {
 		case edit
 		case delete
+		case archive
 	}
 
 	enum CancelID { case observation }
@@ -116,6 +120,14 @@ public struct ResourceList<
 
 					return .send(.delegate(.didEdit(resource)))
 
+				case let .didSwipe(.archive, resource):
+					guard state.features.contains(.swipeToArchive) else {
+						fatalError("\(Self.self) did not specify `swipeToArchive` feature")
+					}
+
+					state.alert = Self.alert(toArchive: resource)
+					return .none
+
 				case let .didTap(resource):
 					guard state.features.contains(.tappable) else {
 						fatalError("\(Self.self) did not specify `didTap` feature")
@@ -133,6 +145,10 @@ public struct ResourceList<
 				case let .alert(.presented(.didTapDeleteButton(resource))):
 					state.alert = nil
 					return .send(.delegate(.didDelete(resource)))
+
+				case let .alert(.presented(.didTapArchiveButton(resource))):
+					state.alert = nil
+					return .send(.delegate(.didArchive(resource)))
 
 				case .alert(.presented(.didTapDismissButton)):
 					state.alert = nil
@@ -210,6 +226,7 @@ extension ResourceList.State {
 
 extension ResourceList {
 	public enum AlertAction: Equatable {
+		case didTapArchiveButton(R)
 		case didTapDeleteButton(R)
 		case didTapDismissButton
 	}
@@ -222,6 +239,20 @@ extension ResourceList {
 			primaryButton: .destructive(
 				TextState(Strings.Action.delete),
 				action: .send(.didTapDeleteButton(resource))
+			),
+			secondaryButton: .cancel(
+				TextState(Strings.Action.cancel),
+				action: .send(.didTapDismissButton)
+			)
+		)
+	}
+
+	static func alert(toArchive resource: R) -> AlertState<AlertAction> {
+		.init(
+			title: TextState(Strings.Form.Prompt.archive(resource.name)),
+			primaryButton: .destructive(
+				TextState(Strings.Action.archive),
+				action: .send(.didTapArchiveButton(resource))
 			),
 			secondaryButton: .cancel(
 				TextState(Strings.Action.cancel),

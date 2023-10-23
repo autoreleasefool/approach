@@ -58,7 +58,7 @@ public struct SeriesList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case seriesResponse(TaskResult<[Series.List]>)
-			case didDeleteSeries(TaskResult<Series.ID>)
+			case didArchiveSeries(TaskResult<Series.ID>)
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
 			case didLoadEditableLeague(TaskResult<League.Edit>)
 
@@ -75,11 +75,11 @@ public struct SeriesList: Reducer {
 
 	public enum SwipeAction: Equatable {
 		case edit
-		case delete
+		case archive
 	}
 
 	public enum AlertAction: Equatable {
-		case didTapDeleteButton(Series.ID)
+		case didTapArchiveButton(Series.ID)
 		case didTapDismissButton
 	}
 
@@ -87,7 +87,7 @@ public struct SeriesList: Reducer {
 		case leagueNotFound
 		case seriesNotFound
 		case seriesNotLoaded
-		case failedToDeleteSeries
+		case failedToArchiveSeries
 	}
 
 	public struct Destination: Reducer {
@@ -169,13 +169,13 @@ public struct SeriesList: Reducer {
 					state.destination = .sortOrder(.init(initialValue: state.ordering))
 					return .none
 
-				case let .didSwipeSeries(.delete, id):
+				case let .didSwipeSeries(.archive, id):
 					guard let series = state.series[id: id] else { return .none }
 					state.destination = .alert(.init(
-						title: TextState(Strings.Form.Prompt.delete(series.date.longFormat)),
+						title: TextState(Strings.Form.Prompt.archive(series.date.longFormat)),
 						primaryButton: .destructive(
-							TextState(Strings.Action.delete),
-							action: .send(.didTapDeleteButton(series.id))
+							TextState(Strings.Action.archive),
+							action: .send(.didTapArchiveButton(series.id))
 						),
 						secondaryButton: .cancel(
 							TextState(Strings.Action.cancel),
@@ -214,7 +214,7 @@ public struct SeriesList: Reducer {
 					state.destination = .leagueEditor(.init(value: .edit(league)))
 					return .none
 
-				case .didDeleteSeries(.success):
+				case .didArchiveSeries(.success):
 					return .none
 
 				case let .seriesResponse(.failure(error)):
@@ -222,9 +222,9 @@ public struct SeriesList: Reducer {
 						.enqueue(.seriesNotLoaded, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .didDeleteSeries(.failure(error)):
+				case let .didArchiveSeries(.failure(error)):
 					return state.errors
-						.enqueue(.failedToDeleteSeries, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.enqueue(.failedToArchiveSeries, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
 						.map { .internal(.errors($0)) }
 
 				case let .didLoadEditableSeries(.failure(error)):
@@ -247,7 +247,7 @@ public struct SeriesList: Reducer {
 						}
 						return .none
 
-					case .didFinishDeleting, .didFinishUpdating:
+					case .didFinishArchiving, .didFinishUpdating:
 						return .none
 					}
 
@@ -257,7 +257,7 @@ public struct SeriesList: Reducer {
 						state.league = league.asSeriesHost
 						return .none
 
-					case .didFinishDeleting:
+					case .didFinishArchiving:
 						return .run { _ in await dismiss() }
 
 					case .didFinishCreating:
@@ -270,12 +270,12 @@ public struct SeriesList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.alert(.didTapDeleteButton(id)))):
+				case let .destination(.presented(.alert(.didTapArchiveButton(id)))):
 					return .run { send in
-						try await self.series.delete(id)
-						await send(.internal(.didDeleteSeries(.success(id))))
+						try await self.series.archive(id)
+						await send(.internal(.didArchiveSeries(.success(id))))
 					} catch: { error, send in
-						await send(.internal(.didDeleteSeries(.failure(error))))
+						await send(.internal(.didArchiveSeries(.failure(error))))
 					}
 
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
@@ -314,8 +314,8 @@ public struct SeriesList: Reducer {
 			switch action {
 			case .view(.didTapSeries):
 				return Analytics.Series.Viewed()
-			case .internal(.didDeleteSeries(.success)):
-				return Analytics.Series.Deleted()
+			case .internal(.didArchiveSeries(.success)):
+				return Analytics.Series.Archived()
 			default:
 				return nil
 			}

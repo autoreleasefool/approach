@@ -107,7 +107,8 @@ public struct AlleyEditor: Reducer {
 				.dependency(\.records, .init(
 					create: alleys.create,
 					update: alleys.update,
-					delete: alleys.delete
+					delete: alleys.delete,
+					archive: { _ in }
 				))
 		}
 
@@ -183,7 +184,7 @@ public struct AlleyEditor: Reducer {
 						return state._form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating, .didDiscard:
+					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating, .didDiscard, .didArchive, .didFinishArchiving:
 						return .run { _ in await dismiss() }
 					}
 
@@ -305,4 +306,5 @@ extension Alley.Create: CreateableRecord {
 
 extension Alley.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
+	public var isArchivable: Bool { false }
 }

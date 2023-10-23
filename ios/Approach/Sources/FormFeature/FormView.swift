@@ -18,6 +18,7 @@ public struct FormView<
 		let isLoading: Bool
 		let isSaveable: Bool
 		let isDeleteable: Bool
+		let isArchivable: Bool
 		let isDiscardable: Bool
 		let isDismissable: Bool
 		let saveButtonText: String
@@ -28,6 +29,7 @@ public struct FormView<
 			self.isSaveable = state.isSaveable
 			self.isDiscardable = state.hasChanges
 			self.isDeleteable = state.isDeleteable
+			self.isArchivable = state.isArchivable
 			self.isDismissable = !state.hasChanges
 			self.alert = state.alert
 			self.saveButtonText = state.saveButtonText
@@ -58,6 +60,13 @@ public struct FormView<
 				if viewStore.isDeleteable {
 					Section {
 						DeleteButton { viewStore.send(.didTapDeleteButton) }
+					}
+					.disabled(viewStore.isLoading)
+				}
+
+				if viewStore.isArchivable {
+					Section {
+						ArchiveButton { viewStore.send(.didTapArchiveButton) }
 					}
 					.disabled(viewStore.isLoading)
 				}

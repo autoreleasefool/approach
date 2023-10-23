@@ -1,6 +1,6 @@
 extension Analytics.Bowler {
-	public struct Deleted: TrackableEvent {
-		public let name = "Bowler.Deleted"
+	public struct Archived: TrackableEvent {
+		public let name = "Bowler.Archived"
 
 		public let kind: String
 

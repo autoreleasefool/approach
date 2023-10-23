@@ -41,6 +41,8 @@ public enum Strings {
     public static let add = Strings.tr("Localizable", "action.add", fallback: "Add")
     /// Actions
     public static let apply = Strings.tr("Localizable", "action.apply", fallback: "Apply")
+    /// Archive
+    public static let archive = Strings.tr("Localizable", "action.archive", fallback: "Archive")
     /// Cancel
     public static let cancel = Strings.tr("Localizable", "action.cancel", fallback: "Cancel")
     /// Delete
@@ -332,6 +334,8 @@ public enum Strings {
     public enum Toast {
       /// Data missing
       public static let dataNotFound = Strings.tr("Localizable", "error.toast.dataNotFound", fallback: "Data missing")
+      /// Error archiving data
+      public static let failedToArchive = Strings.tr("Localizable", "error.toast.failedToArchive", fallback: "Error archiving data")
       /// Error deleting data
       public static let failedToDelete = Strings.tr("Localizable", "error.toast.failedToDelete", fallback: "Error deleting data")
       /// Error loading data
@@ -398,6 +402,10 @@ public enum Strings {
       /// Add %@
       public static func add(_ p1: Any) -> String {
         return Strings.tr("Localizable", "form.prompt.add", String(describing: p1), fallback: "Add %@")
+      }
+      /// Are you sure you want to archive %@?
+      public static func archive(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "form.prompt.archive", String(describing: p1), fallback: "Are you sure you want to archive %@?")
       }
       /// Are you sure you want to delete %@?
       public static func delete(_ p1: Any) -> String {

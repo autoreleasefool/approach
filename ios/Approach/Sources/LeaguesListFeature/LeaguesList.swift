@@ -54,7 +54,7 @@ public struct LeaguesList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete,
+					.swipeToArchive,
 				],
 				query: .init(
 					filter: filter,
@@ -86,7 +86,7 @@ public struct LeaguesList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableLeague(TaskResult<League.Edit>)
-			case didDeleteLeague(TaskResult<League.List>)
+			case didArchiveLeague(TaskResult<League.List>)
 			case didLoadSeriesLeague(TaskResult<League.SeriesHost>)
 			case didSetIsShowingWidgets(Bool)
 
@@ -135,7 +135,7 @@ public struct LeaguesList: Reducer {
 
 	public enum ErrorID: Hashable {
 		case leagueNotFound
-		case failedToDeleteLeague
+		case failedToArchiveLeague
 		case failedToLoadPreferredGear
 		case failedToSavePreferredGear
 	}
@@ -219,7 +219,7 @@ public struct LeaguesList: Reducer {
 						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
 					}
 
-				case .didDeleteLeague(.success):
+				case .didArchiveLeague(.success):
 					return .none
 
 				case let .didLoadSeriesLeague(.failure(error)), let .didLoadEditableLeague(.failure(error)):
@@ -227,9 +227,9 @@ public struct LeaguesList: Reducer {
 						.enqueue(.leagueNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
 
-				case let .didDeleteLeague(.failure(error)):
+				case let .didArchiveLeague(.failure(error)):
 					return state.errors
-						.enqueue(.failedToDeleteLeague, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.enqueue(.failedToArchiveLeague, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
 						.map { .internal(.errors($0)) }
 
 				case let .widgets(.delegate(delegateAction)):
@@ -260,10 +260,10 @@ public struct LeaguesList: Reducer {
 							})))
 						}
 
-					case let .didDelete(league):
+					case let .didArchive(league):
 						return .run { send in
-							await send(.internal(.didDeleteLeague(TaskResult {
-								try await leagues.delete(league.id)
+							await send(.internal(.didArchiveLeague(TaskResult {
+								try await leagues.archive(league.id)
 								return league
 							})))
 						}
@@ -272,7 +272,7 @@ public struct LeaguesList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid(), forBowler: state.bowler.id))))
 						return .none
 
-					case .didTap:
+					case .didTap, .didDelete:
 						return .none
 					}
 
@@ -294,7 +294,7 @@ public struct LeaguesList: Reducer {
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):
 					switch delegateAction {
-					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating:
+					case .didFinishCreating, .didFinishUpdating, .didFinishArchiving:
 						return .none
 					}
 
@@ -338,8 +338,8 @@ public struct LeaguesList: Reducer {
 			switch action {
 			case .view(.didTapLeague):
 				return Analytics.League.Viewed()
-			case .internal(.list(.delegate(.didDelete))):
-				return Analytics.League.Deleted()
+			case .internal(.list(.delegate(.didArchive))):
+				return Analytics.League.Archived()
 			default:
 				return nil
 			}
