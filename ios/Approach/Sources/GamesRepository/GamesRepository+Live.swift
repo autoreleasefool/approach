@@ -1,6 +1,7 @@
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
+import ExtensionsLibrary
 import GamesRepositoryInterface
 import GRDB
 import MatchPlaysRepositoryInterface
@@ -198,6 +199,39 @@ extension GamesRepository: DependencyKey {
 							let gameLane = GameLane.Database(gameId: game, laneId: lane.laneId)
 							try gameLane.upsert($0)
 						}
+					}
+				}
+			},
+			reorderGames: { series, games in
+				try await database.writer().write {
+					let gameIds = Set(games)
+					let gamesForSeries =
+						try Set(
+							Game.Database
+								.filter(Game.Database.Columns.seriesId == series)
+								.fetchAll($0)
+								.map(\.id)
+						)
+
+					guard gameIds.count == games.count else {
+						throw GamesRepositoryError.reorderingDuplicateGames(series: series, duplicateGames: games.findDuplicates())
+					}
+
+					guard gameIds == gamesForSeries else {
+						let missingGames = gamesForSeries.subtracting(gameIds)
+						let extraGames = gameIds.subtracting(gamesForSeries)
+						if !missingGames.isEmpty {
+							throw GamesRepositoryError.missingGamesToReorder(series: series, gamesInSeriesMissing: missingGames)
+						} else {
+							throw GamesRepositoryError.tooManyGamesToReorder(series: series, gamesNotInSeries: extraGames)
+						}
+					}
+
+					let newGameIndices: [(index: Int, id: Game.ID)] = games.enumerated().map { ($0, $1) }
+					for newGameIndex in newGameIndices {
+						try Game.Database
+							.filter(id: newGameIndex.id)
+							.updateAll($0, Game.Database.Columns.index.set(to: newGameIndex.index))
 					}
 				}
 			}

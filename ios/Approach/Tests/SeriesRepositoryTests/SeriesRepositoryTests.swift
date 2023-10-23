@@ -26,7 +26,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -317,7 +317,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Returns the series
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 3),
+			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 2),
 		])
 	}
 
@@ -453,7 +453,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let editable = Series.Edit(
 			leagueId: UUID(0),
 			id: UUID(0),
-			numberOfGames: series1.numberOfGames,
+			numberOfGames: 3,
 			date: Date(timeIntervalSince1970: 123_456_999),
 			preBowl: .regular,
 			excludeFromStatistics: series1.excludeFromStatistics,
@@ -504,6 +504,85 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 0)
 	}
 
+	// MARK: Add Games to Series
+
+	func testAddGamesToSeries_WhenSeriesExists_AddsGames() async throws {
+		// Given a database with one series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2]))
+
+		// Adding games to the series
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			_ = $0.uuid()
+			_ = $0.uuid()
+			$0.series = .liveValue
+		} operation: {
+			try await self.series.addGamesToSeries(UUID(0), 2)
+		}
+
+		// Inserted the games and frames
+		let numberOfGames = try await db.read { try Game.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGames, 4)
+
+		let allGames = try await db.read { try Game.Database.order(Game.Database.Columns.index).fetchAll($0) }
+		XCTAssertEqual(allGames, [
+			.mock(id: UUID(0), index: 0),
+			.mock(id: UUID(1), index: 1),
+			.mock(id: UUID(2), index: 2),
+			.mock(id: UUID(3), index: 3),
+		])
+
+		let numberOfFrames = try await db.read { try Frame.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfFrames, 20)
+	}
+
+	func testAddGamesToSeries_WhenSeriesExists_HasNoGames_AddsGames() async throws {
+		// Given a database with one series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .zero)
+
+		// Adding games to the series
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			$0.series = .liveValue
+		} operation: {
+			try await self.series.addGamesToSeries(UUID(0), 2)
+		}
+
+		// Inserted the games and frames
+		let numberOfGames = try await db.read { try Game.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGames, 2)
+
+		let allGames = try await db.read { try Game.Database.order(Game.Database.Columns.index).fetchAll($0) }
+		XCTAssertEqual(allGames, [
+			.mock(id: UUID(0), index: 0),
+			.mock(id: UUID(1), index: 1),
+		])
+
+		let numberOfFrames = try await db.read { try Frame.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfFrames, 20)
+	}
+
+	func testAddGamesToSeries_WhenSeriesNotExists_ThrowsError() async throws {
+		// Given a database with no series
+		let db = try initializeDatabase(withSeries: nil)
+
+		// Editing the series
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+				$0.series = .liveValue
+			} operation: {
+				_ = try await self.series.addGamesToSeries(UUID(0), 3)
+			}
+		}
+	}
+
 	// MARK: Edit
 
 	func testEdit_WhenSeriesExists_ReturnsSeries() async throws {
@@ -525,7 +604,7 @@ final class SeriesRepositoryTests: XCTestCase {
 			.init(
 				leagueId: UUID(0),
 				id: UUID(0),
-				numberOfGames: 3,
+				numberOfGames: 0,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -553,7 +632,7 @@ final class SeriesRepositoryTests: XCTestCase {
 			.init(
 				leagueId: UUID(0),
 				id: UUID(0),
-				numberOfGames: 3,
+				numberOfGames: 0,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,

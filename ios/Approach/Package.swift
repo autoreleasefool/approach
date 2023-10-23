@@ -773,6 +773,7 @@ let package = Package(
 			dependencies: [
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
+				"ExtensionsLibrary",
 				"GamesRepositoryInterface",
 				"RepositoryLibrary",
 			]
@@ -1412,6 +1413,7 @@ let package = Package(
 		.target(
 			name: "DatabaseModelsLibrary",
 			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
 				"ModelsLibrary",
 			]
@@ -1745,7 +1747,6 @@ let package = Package(
 		.target(
 			name: "TestDatabaseUtilitiesLibrary",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
 				"DatabaseLibrary",
 				"DatabaseModelsLibrary",
 			]

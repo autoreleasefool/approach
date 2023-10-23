@@ -29,6 +29,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20230920ValidateGameScores",
 		"Migration20231002ValidateGameScores",
 		"Migration20231022IsArchivedProperty",
+		"Migration20231022DropSeriesNumberOfGames",
 	]
 
 	func testIdentifier() {

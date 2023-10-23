@@ -83,6 +83,7 @@ extension SeriesRepository: DependencyKey {
 								.including(optional: Alley.Database.location)
 								.forKey("location")
 						)
+						.withNumberOfGames()
 						.asRequest(of: Series.Edit.self)
 						.fetchOneGuaranteed($0)
 				}
@@ -100,36 +101,14 @@ extension SeriesRepository: DependencyKey {
 						try series.insert(db)
 
 						try dependencies.yield {
-							for index in (0..<series.numberOfGames) {
-								let game = Game.Database(
-									seriesId: series.id,
-									id: uuid(),
-									index: index,
-									score: 0,
-									locked: .open,
-									scoringMethod: .byFrame,
-									excludeFromStatistics: .init(from: series.excludeFromStatistics)
-								)
-								try game.insert(db)
-
-								for frameIndex in Game.FRAME_INDICES {
-									let frame = Frame.Database(
-										gameId: game.id,
-										index: frameIndex,
-										roll0: nil,
-										roll1: nil,
-										roll2: nil,
-										ball0: nil,
-										ball1: nil,
-										ball2: nil
-									)
-									try frame.insert(db)
-								}
-
-								for gear in preferredGear {
-									try GameGear.Database(gameId: game.id, gearId: gear.id).insert(db)
-								}
-							}
+							try Series.insertGames(
+								forSeries: series.id,
+								excludeFromStatistics: series.excludeFromStatistics,
+								withPreferredGear: preferredGear,
+								startIndex: 0,
+								count: series.numberOfGames,
+								db: db
+							)
 						}
 					}
 				}
@@ -152,6 +131,38 @@ extension SeriesRepository: DependencyKey {
 					}
 
 					try series.update($0)
+				}
+			},
+			addGamesToSeries: { id, count in
+				try await withEscapedDependencies { dependencies in
+					try await database.writer().write { db in
+						let series = try Series.Database.fetchOneGuaranteed(db, id: id)
+						let bowler = try Bowler.Database
+							.having(Bowler.Database.leagues.filter(League.Database.Columns.id == series.leagueId).isEmpty == false)
+							.fetchOneGuaranteed(db)
+						let preferredGear = try bowler
+							.request(for: Bowler.Database.preferredGear)
+							.fetchAll(db)
+
+						guard let highestIndex = try Series.Database
+							.filter(id: id)
+							.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? 0)
+							.asRequest(of: Series.HighestIndex.self)
+							.fetchOne(db) else {
+							return
+						}
+
+						try dependencies.yield {
+							try Series.insertGames(
+								forSeries: id,
+								excludeFromStatistics: series.excludeFromStatistics,
+								withPreferredGear: preferredGear,
+								startIndex: highestIndex.maxGameIndex == 0 ? 0 : highestIndex.maxGameIndex + 1,
+								count: count,
+								db: db
+							)
+						}
+					}
 				}
 			},
 			archive: { id in

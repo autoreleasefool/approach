@@ -293,7 +293,7 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(series, [.init(id: UUID(0), numberOfGames: 3, total: 123, date: Date(timeIntervalSince1970: 123))])
+		XCTAssertEqual(series, [.init(id: UUID(0), numberOfGames: 1, total: 123, date: Date(timeIntervalSince1970: 123))])
 	}
 
 	func testBuildTrackableQueries_WithBowlerSource_ReturnsExpectedGames() async throws {
@@ -347,7 +347,7 @@ final class TrackableFiltersTests: XCTestCase {
 			return try seriesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(series, [.init(id: UUID(0), numberOfGames: 3, total: 123, date: Date(timeIntervalSince1970: 123))])
+		XCTAssertEqual(series, [.init(id: UUID(0), numberOfGames: 1, total: 123, date: Date(timeIntervalSince1970: 123))])
 	}
 
 	func testBuildTrackableQueries_WithLeagueSource_ReturnsExpectedGames() async throws {

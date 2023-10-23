@@ -416,6 +416,7 @@ final class GamesRepositoryTests: XCTestCase {
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
+					id: UUID(0),
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
@@ -470,6 +471,7 @@ final class GamesRepositoryTests: XCTestCase {
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
+					id: UUID(0),
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
@@ -519,6 +521,7 @@ final class GamesRepositoryTests: XCTestCase {
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
+					id: UUID(0),
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
@@ -571,6 +574,7 @@ final class GamesRepositoryTests: XCTestCase {
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
+					id: UUID(0),
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
@@ -654,6 +658,7 @@ final class GamesRepositoryTests: XCTestCase {
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
+				id: UUID(0),
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -706,6 +711,7 @@ final class GamesRepositoryTests: XCTestCase {
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
+				id: UUID(0),
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -761,6 +767,7 @@ final class GamesRepositoryTests: XCTestCase {
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
+				id: UUID(0),
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -804,6 +811,7 @@ final class GamesRepositoryTests: XCTestCase {
 			bowler: .init(name: "Joseph"),
 			league: .init(name: "Majors", excludeFromStatistics: .include),
 			series: .init(
+				id: UUID(0),
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -842,6 +850,7 @@ final class GamesRepositoryTests: XCTestCase {
 				bowler: .init(name: "Joseph"),
 				league: .init(name: "Majors", excludeFromStatistics: .include),
 				series: .init(
+					id: UUID(0),
 					date: Date(timeIntervalSince1970: 123_456_000),
 					preBowl: .regular,
 					excludeFromStatistics: .include,
@@ -981,5 +990,105 @@ final class GamesRepositoryTests: XCTestCase {
 			.init(gameId: UUID(1), laneId: UUID(0)),
 			.init(gameId: UUID(2), laneId: UUID(0)),
 		])
+	}
+
+	// MARK: - Reorder Games
+
+	func testReorderGames_AdjustsOrder() async throws {
+		// Given a database with 4 games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date())
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game4 = Game.Database.mock(id: UUID(3), index: 4)
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+
+		// Changing the order
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.reorderGames([game2.id, game4.id, game1.id, game3.id], inSeries: series1.id)
+		}
+
+		// Updates the indexes
+		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		XCTAssertEqual(games.map(\.id), [game2.id, game4.id, game1.id, game3.id])
+		XCTAssertEqual(games.map(\.index), [0, 1, 2, 3])
+	}
+
+	func testReorderGames_WithMissingGames_ThrowsError() async throws {
+		// Given a database with 4 games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date())
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game4 = Game.Database.mock(id: UUID(3), index: 4)
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+
+		// Changing the order throws an error
+		await assertThrowsError(ofType: GamesRepositoryError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+				$0.games = .liveValue
+			} operation: {
+				try await self.games.reorderGames([game2.id, game4.id, game1.id], inSeries: series1.id)
+			}
+		}
+
+		// Leaves data unchanged
+		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		XCTAssertEqual(games, [game1, game2, game3, game4])
+		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
+	}
+
+	func testReorderGames_WithExtraGames_ThrowsError() async throws {
+		// Given a database with 4 games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date())
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game4 = Game.Database.mock(id: UUID(3), index: 4)
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+
+		// Changing the order throws an error
+		await assertThrowsError(ofType: GamesRepositoryError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+				$0.games = .liveValue
+			} operation: {
+				try await self.games.reorderGames([game2.id, game4.id, game1.id, game3.id, UUID(5)], inSeries: series1.id)
+			}
+		}
+
+		// Leaves data unchanged
+		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		XCTAssertEqual(games, [game1, game2, game3, game4])
+		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
+	}
+
+	func testReorderGames_WithDuplicates_ThrowsError() async throws {
+		// Given a database with 4 games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date())
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game4 = Game.Database.mock(id: UUID(3), index: 4)
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1, game2, game3, game4]))
+
+		// Changing the order throws an error
+		await assertThrowsError(ofType: GamesRepositoryError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+				$0.games = .liveValue
+			} operation: {
+				try await self.games.reorderGames([game2.id, game4.id, game1.id, game3.id, game2.id], inSeries: series1.id)
+			}
+		}
+
+		// Leaves data unchanged
+		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		XCTAssertEqual(games, [game1, game2, game3, game4])
+		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
 	}
 }

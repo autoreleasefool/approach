@@ -17,3 +17,17 @@ extension Set {
 		}
 	}
 }
+
+extension Collection where Element: Hashable {
+	public func findDuplicates() -> Set<Element> {
+		var allElements: Set<Element> = []
+		var duplicateElements: Set<Element> = []
+		for element in self {
+			if !allElements.insert(element).inserted {
+				duplicateElements.insert(element)
+			}
+		}
+
+		return duplicateElements
+	}
+}

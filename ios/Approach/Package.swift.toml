@@ -164,6 +164,7 @@ libraries = [ "StatisticsModels" ]
 libraries = [ "Extensions", "ScoreKeeper" ]
 
 [repositories.Games]
+libraries = [ "Extensions" ]
 [repositories.Games.interface]
 repositories = [ "MatchPlays" ]
 
@@ -293,7 +294,7 @@ dependencies = [ "GRDB" ]
 [libraries.DatabaseModels]
 skip_tests = true
 libraries = [ "Models" ]
-dependencies = [ "GRDB" ]
+dependencies = [ "Dependencies", "GRDB" ]
 
 [libraries.DateTime]
 
@@ -384,7 +385,6 @@ libraries = [ "Assets" ]
 suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
 libraries = [ "Database", "DatabaseModels" ]
-dependencies = [ "Dependencies" ]
 
 [libraries.TestUtilities]
 suitable_for_dependents_matching = "\\w+Tests$"

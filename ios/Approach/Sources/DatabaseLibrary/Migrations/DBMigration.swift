@@ -40,6 +40,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230920ValidateGameScores.self)
 		registerMigration(Migration20231002ValidateGameScores.self)
 		registerMigration(Migration20231022IsArchivedProperty.self)
+		registerMigration(Migration20231022DropSeriesNumberOfGames.self)
 	}
 
 	mutating func registerMigration(_ migration: DBMigration.Type) {

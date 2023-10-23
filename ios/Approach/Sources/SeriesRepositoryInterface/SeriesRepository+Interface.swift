@@ -17,6 +17,7 @@ public struct SeriesRepository: Sendable {
 	public var edit: @Sendable (Series.ID) async throws -> Series.Edit
 	public var create: @Sendable (Series.Create) async throws -> Void
 	public var update: @Sendable (Series.Edit) async throws -> Void
+	public var addGamesToSeries: @Sendable (Series.ID, Int) async throws -> Void
 	public var archive: @Sendable (Series.ID) async throws -> Void
 	public var unarchive: @Sendable (Series.ID) async throws -> Void
 
@@ -27,6 +28,7 @@ public struct SeriesRepository: Sendable {
 		edit: @escaping @Sendable (Series.ID) async throws -> Series.Edit,
 		create: @escaping @Sendable (Series.Create) async throws -> Void,
 		update: @escaping @Sendable (Series.Edit) async throws -> Void,
+		addGamesToSeries: @escaping @Sendable (Series.ID, Int) async throws -> Void,
 		archive: @escaping @Sendable (Series.ID) async throws -> Void,
 		unarchive: @escaping @Sendable (Series.ID) async throws -> Void
 	) {
@@ -36,6 +38,7 @@ public struct SeriesRepository: Sendable {
 		self.edit = edit
 		self.create = create
 		self.update = update
+		self.addGamesToSeries = addGamesToSeries
 		self.archive = archive
 		self.unarchive = unarchive
 	}
@@ -57,6 +60,7 @@ extension SeriesRepository: TestDependencyKey {
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },
 		update: { _ in unimplemented("\(Self.self).update") },
+		addGamesToSeries: { _, _ in unimplemented("\(Self.self).addGames") },
 		archive: { _ in unimplemented("\(Self.self).archive") },
 		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
 	)
