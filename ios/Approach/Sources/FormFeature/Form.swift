@@ -182,6 +182,8 @@ public struct Form<
 					} actions: {
 						ButtonState(role: .destructive, action: .didTapArchiveButton) { TextState(Strings.Action.archive) }
 						ButtonState(role: .cancel, action: .didTapCancelButton) { TextState(Strings.Action.cancel) }
+					} message: {
+						TextState(Strings.Form.Prompt.Archive.message)
 					}
 					return .none
 
