@@ -47,7 +47,7 @@ public struct AccessoriesOverviewView: View {
 							Alley.View(alley)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .alley(alley))) }
-									DeleteButton { viewStore.send(.didSwipe(.delete, .alley(alley))) }
+//									DeleteButton { viewStore.send(.didSwipe(.delete, .alley(alley))) }
 								}
 						}
 					}
@@ -107,7 +107,7 @@ public struct AccessoriesOverviewView: View {
 							Gear.ViewWithAvatar(gear)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .gear(gear))) }
-									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }
+//									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }
 								}
 						}
 					}

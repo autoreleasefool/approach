@@ -102,7 +102,7 @@ public struct AccessoriesOverview: Reducer {
 
 	public enum SwipeAction: Equatable {
 		case edit
-		case delete
+//		case delete
 	}
 
 	enum CancelID {
@@ -139,9 +139,9 @@ public struct AccessoriesOverview: Reducer {
 				case .didObserveData:
 					return .merge(observeAlleys(), observeGear())
 
-				case let .didSwipe(.delete, item):
-					state.destination = .alert(Self.alert(toDeleteItem: item))
-					return .none
+//				case let .didSwipe(.delete, item):
+//					state.destination = .alert(Self.alert(toDeleteItem: item))
+//					return .none
 
 				case let .didSwipe(.edit, item):
 					switch item {
@@ -305,10 +305,10 @@ public struct AccessoriesOverview: Reducer {
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {
-			case .view(.didSwipe(.delete, .gear)):
-				return Analytics.Gear.Deleted()
-			case .view(.didSwipe(.delete, .alley)):
-				return Analytics.Alley.Deleted()
+//			case .view(.didSwipe(.delete, .gear)):
+//				return Analytics.Gear.Deleted()
+//			case .view(.didSwipe(.delete, .alley)):
+//				return Analytics.Alley.Deleted()
 			default:
 				return nil
 			}
