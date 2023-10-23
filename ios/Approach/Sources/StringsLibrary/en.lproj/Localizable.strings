@@ -636,6 +636,7 @@
 "form.prompt.discardChanges" = "Discard your changes?";
 "form.prompt.delete" = "Are you sure you want to delete %@?";
 "form.prompt.archive" = "Are you sure you want to archive %@?";
+"form.prompt.archive.message" = "It will be hidden and no longer affect your statistics. It can be recovered from the Archive in Settings.";
 "picker.title" = "Picking %@";
 "picker.empty.title" = "No items found";
 "sortOrder.title" = "Sort Order";

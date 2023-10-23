@@ -173,6 +173,7 @@ public struct SeriesList: Reducer {
 					guard let series = state.series[id: id] else { return .none }
 					state.destination = .alert(.init(
 						title: TextState(Strings.Form.Prompt.archive(series.date.longFormat)),
+						message: TextState(Strings.Form.Prompt.Archive.message),
 						primaryButton: .destructive(
 							TextState(Strings.Action.archive),
 							action: .send(.didTapArchiveButton(series.id))

@@ -479,6 +479,10 @@ public enum Strings {
       public static func edit(_ p1: Any) -> String {
         return Strings.tr("Localizable", "form.prompt.edit", String(describing: p1), fallback: "Edit %@")
       }
+      public enum Archive {
+        /// It will be hidden and no longer affect your statistics. It can be recovered from the Archive in Settings.
+        public static let message = Strings.tr("Localizable", "form.prompt.archive.message", fallback: "It will be hidden and no longer affect your statistics. It can be recovered from the Archive in Settings.")
+      }
     }
   }
   public enum Frame {

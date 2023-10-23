@@ -250,6 +250,7 @@ extension ResourceList {
 	static func alert(toArchive resource: R) -> AlertState<AlertAction> {
 		.init(
 			title: TextState(Strings.Form.Prompt.archive(resource.name)),
+			message: TextState(Strings.Form.Prompt.Archive.message),
 			primaryButton: .destructive(
 				TextState(Strings.Action.archive),
 				action: .send(.didTapArchiveButton(resource))
