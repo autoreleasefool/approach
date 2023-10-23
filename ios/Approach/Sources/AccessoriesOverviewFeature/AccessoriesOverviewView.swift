@@ -61,7 +61,7 @@ public struct AccessoriesOverviewView: View {
 						}
 					}
 				} footer: {
-					if !viewStore.alleys.isEmpty {
+					if viewStore.alleys.count >= AccessoriesOverview.recentAlleysLimit {
 						Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentAlleysLimit))
 					}
 				}
@@ -112,7 +112,7 @@ public struct AccessoriesOverviewView: View {
 						}
 					}
 				} footer: {
-					if !viewStore.gear.isEmpty {
+					if viewStore.gear.count >= AccessoriesOverview.recentGearLimit {
 						Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentGearLimit))
 					}
 				}
