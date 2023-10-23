@@ -13,7 +13,7 @@ public struct SeriesListItem: View {
 	let series: Series.List
 	let onPress: () -> Void
 	let onEdit: () -> Void
-	let onDelete: () -> Void
+	let onArchive: () -> Void
 
 	public var body: some View {
 		Button(action: onPress) {
@@ -122,7 +122,7 @@ public struct SeriesListItem: View {
 		}
 		.swipeActions(allowsFullSwipe: true) {
 			EditButton(perform: onEdit)
-			DeleteButton(perform: onDelete)
+			ArchiveButton(perform: onArchive)
 		}
 	}
 }
@@ -169,7 +169,7 @@ struct SeriesListItemPreview: PreviewProvider {
 					),
 					onPress: { },
 					onEdit: { },
-					onDelete: { }
+					onArchive: { }
 				)
 			}
 
@@ -197,7 +197,7 @@ struct SeriesListItemPreview: PreviewProvider {
 					),
 					onPress: { },
 					onEdit: { },
-					onDelete: { }
+					onArchive: { }
 				)
 
 				SeriesListItem(
@@ -223,7 +223,7 @@ struct SeriesListItemPreview: PreviewProvider {
 					),
 					onPress: { },
 					onEdit: { },
-					onDelete: { }
+					onArchive: { }
 				)
 
 				SeriesListItem(
@@ -238,7 +238,7 @@ struct SeriesListItemPreview: PreviewProvider {
 					),
 					onPress: { },
 					onEdit: { },
-					onDelete: { }
+					onArchive: { }
 				)
 
 				SeriesListItem(
@@ -254,7 +254,7 @@ struct SeriesListItemPreview: PreviewProvider {
 					),
 					onPress: { },
 					onEdit: { },
-					onDelete: { }
+					onArchive: { }
 				)
 			}
 		}

@@ -41,7 +41,7 @@ public struct OpponentsList: Reducer {
 				features: [
 					.add,
 					.swipeToEdit,
-					.swipeToDelete,
+					.swipeToArchive,
 				],
 				query: ordering,
 				listTitle: Strings.Opponent.List.title,
@@ -66,7 +66,7 @@ public struct OpponentsList: Reducer {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableOpponent(TaskResult<Bowler.Edit>)
-			case didDeleteOpponent(TaskResult<Bowler.Opponent>)
+			case didArchiveOpponent(TaskResult<Bowler.Opponent>)
 
 			case list(ResourceList<Bowler.Opponent, Bowler.Ordering>.Action)
 			case errors(Errors<ErrorID>.Action)
@@ -106,7 +106,7 @@ public struct OpponentsList: Reducer {
 
 	public enum ErrorID: Hashable {
 		case opponentNotFound
-		case failedToDeleteOpponent
+		case failedToArchiveOpponent
 	}
 
 	public init() {}
@@ -145,7 +145,7 @@ public struct OpponentsList: Reducer {
 					state.destination = .editor(.init(value: .edit(bowler)))
 					return .none
 
-				case .didDeleteOpponent(.success):
+				case .didArchiveOpponent(.success):
 					return .none
 
 				case let .didLoadEditableOpponent(.failure(error)):
@@ -153,9 +153,9 @@ public struct OpponentsList: Reducer {
 						.enqueue(.opponentNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
 
-				case let .didDeleteOpponent(.failure(error)):
+				case let .didArchiveOpponent(.failure(error)):
 					return state.errors
-						.enqueue(.failedToDeleteOpponent, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+						.enqueue(.failedToArchiveOpponent, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
 						.map { .internal(.errors($0)) }
 
 				case let .list(.delegate(delegateAction)):
@@ -167,10 +167,10 @@ public struct OpponentsList: Reducer {
 							})))
 						}
 
-					case let .didDelete(bowler):
+					case let .didArchive(bowler):
 						return .run { send in
-							await send(.internal(.didDeleteOpponent(TaskResult {
-								try await bowlers.delete(bowler.id)
+							await send(.internal(.didArchiveOpponent(TaskResult {
+								try await bowlers.archive(bowler.id)
 								return bowler
 							})))
 						}
@@ -179,7 +179,7 @@ public struct OpponentsList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultOpponent(withId: uuid()))))
 						return .none
 
-					case .didTap:
+					case .didTap, .didDelete:
 						return .none
 					}
 
@@ -237,8 +237,8 @@ public struct OpponentsList: Reducer {
 			switch action {
 			case .view(.didTapOpponent):
 				return Analytics.Bowler.Viewed(kind: Bowler.Kind.opponent.rawValue)
-			case .internal(.list(.delegate(.didDelete))):
-				return Analytics.Bowler.Deleted(kind: Bowler.Kind.opponent.rawValue)
+			case .internal(.list(.delegate(.didArchive))):
+				return Analytics.Bowler.Archived(kind: Bowler.Kind.opponent.rawValue)
 			default:
 				return nil
 			}

@@ -60,8 +60,8 @@ public struct SeriesListView: View {
 								viewStore.send(.didTapSeries(series.id))
 							} onEdit: {
 								viewStore.send(.didSwipeSeries(.edit, series.id))
-							} onDelete: {
-								viewStore.send(.didSwipeSeries(.delete, series.id))
+							} onArchive: {
+								viewStore.send(.didSwipeSeries(.archive, series.id))
 							}
 						}
 					}
@@ -74,8 +74,8 @@ public struct SeriesListView: View {
 								viewStore.send(.didTapSeries(series.id))
 							} onEdit: {
 								viewStore.send(.didSwipeSeries(.edit, series.id))
-							} onDelete: {
-								viewStore.send(.didSwipeSeries(.delete, series.id))
+							} onArchive: {
+								viewStore.send(.didSwipeSeries(.archive, series.id))
 							}
 						}
 					}

@@ -68,7 +68,7 @@ public struct SeriesEditor: Reducer {
 		}
 		public enum DelegateAction: Equatable {
 			case didFinishCreating(Series.Create)
-			case didFinishDeleting(Series.Edit)
+			case didFinishArchiving(Series.Edit)
 			case didFinishUpdating(Series.Edit)
 		}
 		public enum InternalAction: Equatable {
@@ -103,7 +103,8 @@ public struct SeriesEditor: Reducer {
 				.dependency(\.records, .init(
 					create: series.create,
 					update: series.update,
-					delete: series.delete
+					delete: { _ in },
+					archive: series.archive
 				))
 		}
 
@@ -170,8 +171,8 @@ public struct SeriesEditor: Reducer {
 						return state._form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
-					case let .didDelete(result):
-						return state._form.didFinishDeleting(result)
+					case let .didArchive(result):
+						return state._form.didFinishArchiving(result)
 							.map { .internal(.form($0)) }
 
 					case let .didFinishCreating(series):
@@ -180,9 +181,9 @@ public struct SeriesEditor: Reducer {
 							.run { _ in await dismiss() }
 						)
 
-					case let .didFinishDeleting(series):
+					case let .didFinishArchiving(series):
 						return .concatenate(
-							.send(.delegate(.didFinishDeleting(series))),
+							.send(.delegate(.didFinishArchiving(series))),
 							.run { _ in await dismiss() }
 						)
 
@@ -192,7 +193,7 @@ public struct SeriesEditor: Reducer {
 							.run { _ in await dismiss() }
 						)
 
-					case .didDiscard:
+					case .didDiscard, .didDelete, .didFinishDeleting:
 						return .run { _ in await dismiss() }
 					}
 
@@ -219,8 +220,8 @@ public struct SeriesEditor: Reducer {
 				return Analytics.Series.Created()
 			case .internal(.form(.delegate(.didFinishUpdating))):
 				return Analytics.Series.Updated()
-			case .internal(.form(.delegate(.didFinishDeleting))):
-				return Analytics.Series.Deleted()
+			case .internal(.form(.delegate(.didFinishArchiving))):
+				return Analytics.Series.Archived()
 			default:
 				return nil
 			}
@@ -265,7 +266,8 @@ extension Series.Create: CreateableRecord {
 }
 
 extension Series.Edit: EditableRecord {
-	public var isDeleteable: Bool { true }
+	public var isDeleteable: Bool { false }
+	public var isArchivable: Bool { true }
 	public var isSaveable: Bool { true }
 	public var name: String { date.longFormat }
 }

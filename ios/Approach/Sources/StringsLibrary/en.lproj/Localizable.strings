@@ -613,6 +613,7 @@
 "form.prompt.edit" = "Edit %@";
 "form.prompt.discardChanges" = "Discard your changes?";
 "form.prompt.delete" = "Are you sure you want to delete %@?";
+"form.prompt.archive" = "Are you sure you want to archive %@?";
 "picker.title" = "Picking %@";
 "picker.empty.title" = "No items found";
 "sortOrder.title" = "Sort Order";
@@ -630,6 +631,7 @@
 "error.toast.dataNotFound" = "Data missing";
 "error.toast.failedToLoad" = "Error loading data";
 "error.toast.failedToDelete" = "Error deleting data";
+"error.toast.failedToArchive" = "Error archiving data";
 "error.toast.failedToSave" = "Error saving data";
 "error.toast.itemNotCreated" = "%@ not created";
 "error.toast.itemNotUpdated" = "%@ not updated";
@@ -651,6 +653,7 @@
 "action.edit" = "Edit";
 "action.done" = "Done";
 "action.delete" = "Delete";
+"action.archive" = "Archive";
 "action.cancel" = "Cancel";
 "action.dismiss" = "Dismiss";
 "action.tryAgain" = "Try again";

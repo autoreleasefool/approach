@@ -64,7 +64,8 @@ public struct BowlerEditor: Reducer {
 				.dependency(\.records, .init(
 					create: bowlers.create,
 					update: bowlers.update,
-					delete: bowlers.delete
+					delete: { _ in },
+					archive: bowlers.archive
 				))
 		}
 
@@ -88,11 +89,11 @@ public struct BowlerEditor: Reducer {
 						return state._form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
-					case let .didDelete(result):
-						return state._form.didFinishDeleting(result)
+					case let .didArchive(result):
+						return state._form.didFinishArchiving(result)
 							.map { .internal(.form($0)) }
 
-					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard, .didFinishArchiving, .didDelete:
 						return .run { _ in await dismiss() }
 					}
 
@@ -111,8 +112,8 @@ public struct BowlerEditor: Reducer {
 				return Analytics.Bowler.Created(kind: state.kind.rawValue)
 			case .internal(.form(.delegate(.didFinishUpdating))):
 				return Analytics.Bowler.Updated(kind: state.kind.rawValue)
-			case .internal(.form(.delegate(.didFinishDeleting))):
-				return Analytics.Bowler.Deleted(kind: state.kind.rawValue)
+			case .internal(.form(.delegate(.didFinishArchiving))):
+				return Analytics.Bowler.Archived(kind: state.kind.rawValue)
 			default:
 				return nil
 			}
@@ -149,7 +150,8 @@ extension Bowler.Create: CreateableRecord {
 }
 
 extension Bowler.Edit: EditableRecord {
-	public var isDeleteable: Bool { true }
+	public var isDeleteable: Bool { false }
+	public var isArchivable: Bool { true }
 	public var isSaveable: Bool {
 		!name.isEmpty
 	}

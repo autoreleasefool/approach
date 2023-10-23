@@ -116,6 +116,10 @@ public struct ResourceListView<
 										if viewStore.features.contains(.swipeToDelete) {
 											DeleteButton { viewStore.send(.didSwipe(.delete, element)) }
 										}
+
+										if viewStore.features.contains(.swipeToArchive) {
+											ArchiveButton { viewStore.send(.didSwipe(.archive, element)) }
+										}
 									}
 								}
 							} header: {

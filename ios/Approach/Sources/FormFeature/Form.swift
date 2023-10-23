@@ -16,6 +16,7 @@ public protocol CreateableRecord: FormRecord {
 
 public protocol EditableRecord: FormRecord {
 	var isDeleteable: Bool { get }
+	var isArchivable: Bool { get }
 }
 
 extension FormRecord {
@@ -76,6 +77,13 @@ public struct Form<
 			}
 		}
 
+		public var isArchivable: Bool {
+			switch value {
+			case .create: return false
+			case let .edit(existing): return existing.isArchivable
+			}
+		}
+
 		public var saveButtonText: String {
 			value.record?.saveButtonText ?? Strings.Action.save
 		}
@@ -92,6 +100,7 @@ public struct Form<
 			case didTapSaveButton
 			case didTapDiscardButton
 			case didTapDeleteButton
+			case didTapArchiveButton
 			case alert(PresentationAction<AlertAction>)
 		}
 
@@ -103,9 +112,11 @@ public struct Form<
 			case didCreate(TaskResult<New>)
 			case didUpdate(TaskResult<Existing>)
 			case didDelete(TaskResult<Existing>)
+			case didArchive(TaskResult<Existing>)
 			case didFinishCreating(New)
 			case didFinishUpdating(Existing)
 			case didFinishDeleting(Existing)
+			case didFinishArchiving(Existing)
 			case didDiscard
 		}
 
@@ -116,6 +127,7 @@ public struct Form<
 
 	public enum AlertAction: Equatable {
 		case didTapDeleteButton
+		case didTapArchiveButton
 		case didTapDiscardButton
 		case didTapCancelButton
 	}
@@ -124,6 +136,7 @@ public struct Form<
 		case failedToCreate
 		case failedToUpdate
 		case failedToDelete
+		case failedToArchive
 	}
 
 	public init() {}
@@ -162,6 +175,16 @@ public struct Form<
 						}
 					}
 
+				case .didTapArchiveButton:
+					guard case let .edit(existing) = state.initialValue, state.isArchivable else { return .none }
+					state.alert = AlertState {
+						TextState(Strings.Form.Prompt.archive(existing.name))
+					} actions: {
+						ButtonState(role: .destructive, action: .didTapArchiveButton) { TextState(Strings.Action.archive) }
+						ButtonState(role: .cancel, action: .didTapCancelButton) { TextState(Strings.Action.cancel) }
+					}
+					return .none
+
 				case .didTapDeleteButton:
 					guard case let .edit(existing) = state.initialValue, state.isDeleteable else { return .none }
 					state.alert = AlertState {
@@ -190,6 +213,16 @@ public struct Form<
 						return .run { send in
 							await send(.delegate(.didDelete(TaskResult {
 								try await records.delete?(record.id)
+								return record
+							})))
+						}
+
+					case .presented(.didTapArchiveButton):
+						guard case let .edit(record) = state.initialValue else { return .none }
+						state.isLoading = true
+						return .run { send in
+							await send(.delegate(.didArchive(TaskResult {
+								try await records.archive?(record.id)
 								return record
 							})))
 						}
@@ -260,6 +293,18 @@ extension Form.State {
 		case let .failure(error):
 			return errors
 				.enqueue(.failedToDelete, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+				.map { .internal(.errors($0)) }
+		}
+	}
+
+	public mutating func didFinishArchiving(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+		isLoading = false
+		switch record {
+		case let .success(existing):
+			return .send(.delegate(.didFinishArchiving(existing)))
+		case let .failure(error):
+			return errors
+				.enqueue(.failedToArchive, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
 				.map { .internal(.errors($0)) }
 		}
 	}
