@@ -17,3 +17,18 @@ public struct ArchiveButton: View {
 		.tint(Asset.Colors.Destructive.default)
 	}
 }
+
+public struct UnarchiveButton: View {
+	let perform: () -> Void
+
+	public init(perform: @escaping () -> Void) {
+		self.perform = perform
+	}
+
+	public var body: some View {
+		Button(action: perform) {
+			Label(Strings.Action.restore, systemSymbol: .arrowUturnBackward)
+		}
+		.tint(Asset.Colors.Action.default)
+	}
+}

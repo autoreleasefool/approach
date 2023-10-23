@@ -15,6 +15,7 @@ let package = Package(
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "ArchiveListFeature", targets: ["ArchiveListFeature"]),
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
@@ -244,6 +245,23 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AppFeature",
+			]
+		),
+		.target(
+			name: "ArchiveListFeature",
+			dependencies: [
+				"BowlersRepositoryInterface",
+				"ErrorsFeature",
+				"LeaguesRepositoryInterface",
+				"ModelsViewsLibrary",
+				"SeriesRepositoryInterface",
+			]
+		),
+		.testTarget(
+			name: "ArchiveListFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ArchiveListFeature",
 			]
 		),
 		.target(
@@ -548,7 +566,6 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"AnalyticsServiceInterface",
-				"DateTimeLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"ModelsViewsLibrary",
@@ -582,6 +599,7 @@ let package = Package(
 			name: "SettingsFeature",
 			dependencies: [
 				"AppIconServiceInterface",
+				"ArchiveListFeature",
 				"DatabaseMockingServiceInterface",
 				"FeatureFlagsListFeature",
 				"ImportExportFeature",
@@ -967,6 +985,7 @@ let package = Package(
 			name: "StatisticsRepository",
 			dependencies: [
 				"DatabaseServiceInterface",
+				"FeatureFlagsServiceInterface",
 				"PreferenceServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
@@ -1480,6 +1499,7 @@ let package = Package(
 			name: "ModelsViewsLibrary",
 			dependencies: [
 				"AssetsLibrary",
+				"DateTimeLibrary",
 				"ModelsLibrary",
 				"StringsLibrary",
 			]

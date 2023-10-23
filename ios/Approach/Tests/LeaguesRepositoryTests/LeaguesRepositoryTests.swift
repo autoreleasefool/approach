@@ -386,7 +386,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Returns the league
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Majors", bowlerName: "Joseph", numberOfSeries: 2, numberOfGames: 4),
+			.init(id: UUID(0), name: "Majors", bowlerName: "Joseph", totalNumberOfSeries: 2, totalNumberOfGames: 4),
 		])
 	}
 

@@ -311,7 +311,7 @@ final class BowlersRepositoryTests: XCTestCase {
 
 		// Returns the bowler
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), name: "Joseph", numberOfLeagues: 2, numberOfSeries: 4, numberOfGames: 8),
+			.init(id: UUID(0), name: "Joseph", totalNumberOfLeagues: 2, totalNumberOfSeries: 4, totalNumberOfGames: 8),
 		])
 	}
 

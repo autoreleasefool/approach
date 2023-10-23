@@ -317,7 +317,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Returns the series
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", numberOfGames: 3),
+			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 3),
 		])
 	}
 

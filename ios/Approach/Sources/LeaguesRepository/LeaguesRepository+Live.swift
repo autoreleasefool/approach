@@ -70,8 +70,8 @@ extension LeaguesRepository: DependencyKey {
 						.isArchived()
 						.orderByName()
 						.annotated(withRequired: League.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
-						.annotated(with: League.Database.series.count.forKey("numberOfSeries") ?? 0)
-						.annotated(with: League.Database.games.count.forKey("numberOfGames") ?? 0)
+						.annotated(with: League.Database.series.count.forKey("totalNumberOfSeries") ?? 0)
+						.annotated(with: League.Database.games.count.forKey("totalNumberOfGames") ?? 0)
 						.asRequest(of: League.Archived.self)
 						.fetchAll($0)
 				}

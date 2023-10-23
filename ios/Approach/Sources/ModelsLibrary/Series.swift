@@ -80,20 +80,20 @@ extension Series {
 		public let date: Date
 		public let bowlerName: String
 		public let leagueName: String
-		public let numberOfGames: Int
+		public let totalNumberOfGames: Int
 
 		public init(
 			id: Series.ID,
 			date: Date,
 			bowlerName: String,
 			leagueName: String,
-			numberOfGames: Int
+			totalNumberOfGames: Int
 		) {
 			self.id = id
 			self.date = date
 			self.bowlerName = bowlerName
 			self.leagueName = leagueName
-			self.numberOfGames = numberOfGames
+			self.totalNumberOfGames = totalNumberOfGames
 		}
 	}
 }

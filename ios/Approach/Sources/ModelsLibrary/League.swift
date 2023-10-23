@@ -51,21 +51,21 @@ extension League {
 		public let id: League.ID
 		public let name: String
 		public let bowlerName: String
-		public let numberOfSeries: Int
-		public let numberOfGames: Int
+		public let totalNumberOfSeries: Int
+		public let totalNumberOfGames: Int
 
 		public init(
 			id: League.ID,
 			name: String,
 			bowlerName: String,
-			numberOfSeries: Int,
-			numberOfGames: Int
+			totalNumberOfSeries: Int,
+			totalNumberOfGames: Int
 		) {
 			self.id = id
 			self.name = name
 			self.bowlerName = bowlerName
-			self.numberOfSeries = numberOfSeries
-			self.numberOfGames = numberOfGames
+			self.totalNumberOfSeries = totalNumberOfSeries
+			self.totalNumberOfGames = totalNumberOfGames
 		}
 	}
 }

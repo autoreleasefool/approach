@@ -1,3 +1,4 @@
+import ArchiveListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
@@ -88,6 +89,15 @@ public struct SettingsView: View {
 					}
 				}
 
+				Section {
+					Button { viewStore.send(.didTapArchive) } label: {
+						Text(Strings.Settings.Archive.title)
+					}
+					.buttonStyle(.navigation)
+				} footer: {
+					Text(Strings.Settings.Archive.footer)
+				}
+
 				HelpSettingsView(store: store.scope(state: \.helpSettings, action: /Settings.Action.InternalAction.helpSettings))
 
 				Section {
@@ -109,33 +119,60 @@ public struct SettingsView: View {
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 		.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+		.archive(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.appIconList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.opponentsList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.featureFlagsList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.statisticsSettings(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+	}
+}
+
+@MainActor extension View {
+	fileprivate typealias State = PresentationState<Settings.Destination.State>
+	fileprivate typealias Action = PresentationAction<Settings.Destination.Action>
+
+	fileprivate func archive(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
+			state: /Settings.Destination.State.archive,
+			action: Settings.Destination.Action.archive,
+			destination: { ArchiveListView(store: $0) }
+		)
+	}
+
+	fileprivate func appIconList(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /Settings.Destination.State.appIcon,
-			action: Settings.Destination.Action.appIcon
-		) { (store: StoreOf<AppIconList>) in
-			AppIconListView(store: store)
-		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			action: Settings.Destination.Action.appIcon,
+			destination: { AppIconListView(store: $0) }
+		)
+	}
+
+	fileprivate func opponentsList(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /Settings.Destination.State.opponentsList,
-			action: Settings.Destination.Action.opponentsList
-		) { (store: StoreOf<OpponentsList>) in
-			OpponentsListView(store: store)
-		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			action: Settings.Destination.Action.opponentsList,
+			destination: { OpponentsListView(store: $0) }
+		)
+	}
+
+	fileprivate func featureFlagsList(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /Settings.Destination.State.featureFlags,
-			action: Settings.Destination.Action.featureFlags
-		) { (store: StoreOf<FeatureFlagsList>) in
-			FeatureFlagsListView(store: store)
-		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			action: Settings.Destination.Action.featureFlags,
+			destination: { FeatureFlagsListView(store: $0) }
+		)
+	}
+
+	fileprivate func statisticsSettings(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /Settings.Destination.State.statistics,
-			action: Settings.Destination.Action.statistics
-		) { (store: StoreOf<StatisticsSettings>) in
-			StatisticsSettingsView(store: store)
-		}
+			action: Settings.Destination.Action.statistics,
+			destination: { StatisticsSettingsView(store: $0) }
+		)
 	}
 }
