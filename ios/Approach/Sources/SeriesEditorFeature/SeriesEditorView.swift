@@ -22,7 +22,6 @@ public struct SeriesEditorView: View {
 		@BindingViewState var coordinate: CoordinateRegion
 		let location: Alley.Summary?
 
-		let hasSetNumberOfGames: Bool
 		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
 
 		let hasAlleysEnabled: Bool
@@ -44,7 +43,7 @@ public struct SeriesEditorView: View {
 						value: viewStore.$numberOfGames,
 						in: League.NUMBER_OF_GAMES_RANGE
 					)
-					.disabled(viewStore.hasSetNumberOfGames || viewStore.isEditing)
+					.disabled(viewStore.isEditing)
 
 					DatePicker(
 						Strings.Series.Properties.date,
@@ -156,7 +155,6 @@ extension SeriesEditorView.ViewState {
 		self._coordinate = store.$coordinate
 		self.location = store.location
 
-		self.hasSetNumberOfGames = store.league.numberOfGames != nil
 		self.excludeLeagueFromStatistics = store.league.excludeFromStatistics
 
 		self.hasAlleysEnabled = store.hasAlleysEnabled

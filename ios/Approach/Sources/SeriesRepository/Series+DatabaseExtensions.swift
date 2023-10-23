@@ -12,7 +12,6 @@ extension Series.Edit: FetchableRecord, PersistableRecord {
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.leagueId] = leagueId
 		container[Columns.id] = id
-		container[Columns.numberOfGames] = numberOfGames
 		container[Columns.date] = date
 		container[Columns.preBowl] = preBowl
 		container[Columns.excludeFromStatistics] = excludeFromStatistics
@@ -29,10 +28,17 @@ extension Series.Create: PersistableRecord {
 	public func encode(to container: inout PersistenceContainer) throws {
 		container[Columns.leagueId] = leagueId
 		container[Columns.id] = id
-		container[Columns.numberOfGames] = numberOfGames
 		container[Columns.date] = date
 		container[Columns.preBowl] = preBowl
 		container[Columns.excludeFromStatistics] = excludeFromStatistics
 		container[Columns.alleyId] = location?.id
+	}
+}
+
+// MARK: HighestIndex
+
+extension Series {
+	struct HighestIndex: Decodable, FetchableRecord {
+		public let maxGameIndex: Int
 	}
 }

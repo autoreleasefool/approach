@@ -111,7 +111,6 @@ extension LeaguesRepository: DependencyKey {
 									leagueId: league.id,
 									id: uuid(),
 									date: date(),
-									numberOfGames: numberOfGames,
 									preBowl: .regular,
 									excludeFromStatistics: .init(from: league.excludeFromStatistics),
 									alleyId: league.location?.id,
@@ -119,36 +118,14 @@ extension LeaguesRepository: DependencyKey {
 								)
 								try series.insert(db)
 
-								for index in (0..<series.numberOfGames) {
-									let game = Game.Database(
-										seriesId: series.id,
-										id: uuid(),
-										index: index,
-										score: 0,
-										locked: .open,
-										scoringMethod: .byFrame,
-										excludeFromStatistics: .init(from: series.excludeFromStatistics)
-									)
-									try game.insert(db)
-
-									for frameIndex in Game.FRAME_INDICES {
-										let frame = Frame.Database(
-											gameId: game.id,
-											index: frameIndex,
-											roll0: nil,
-											roll1: nil,
-											roll2: nil,
-											ball0: nil,
-											ball1: nil,
-											ball2: nil
-										)
-										try frame.insert(db)
-									}
-
-									for gear in preferredGear {
-										try GameGear.Database(gameId: game.id, gearId: gear.id).insert(db)
-									}
-								}
+								try Series.insertGames(
+									forSeries: series.id,
+									excludeFromStatistics: series.excludeFromStatistics,
+									withPreferredGear: preferredGear,
+									startIndex: 0,
+									count: numberOfGames,
+									db: db
+								)
 							}
 						}
 					}

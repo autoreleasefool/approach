@@ -86,7 +86,7 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 		withBowlers: .custom(bowlers),
 		withGear: .custom(gear),
 		withLeagues: .custom(leagues),
-		withSeries: .custom(series),
+		withSeries: .custom(series.map(\.0)),
 		withGames: .custom(games),
 		withGameLanes: .custom(gameLanes),
 		withGameGear: .zero,
@@ -104,26 +104,28 @@ private func generateSeries(
 	firstId: Int,
 	league: League.ID,
 	alley: Alley.ID?
-) -> [Series.Database] {
+) -> [(Series.Database, numberOfGames: Int)] {
 	var date = startDate
-	var series: [Series.Database] = []
+	var series: [(Series.Database, numberOfGames: Int)] = []
 	while series.count < numberOfSeries {
-		series.append(.init(
-			leagueId: league,
-			id: UUID(firstId + series.count),
-			date: Date(timeIntervalSince1970: date.timeIntervalSince1970),
-			numberOfGames: numberOfGames ?? series.count % 4 + 1,
-			preBowl: .regular,
-			excludeFromStatistics: .include,
-			alleyId: alley ?? UUID(series.count % 2),
-			isArchived: false
+		series.append((
+			Series.Database(
+				leagueId: league,
+				id: UUID(firstId + series.count),
+				date: Date(timeIntervalSince1970: date.timeIntervalSince1970),
+				preBowl: .regular,
+				excludeFromStatistics: .include,
+				alleyId: alley ?? UUID(series.count % 2),
+				isArchived: false
+			),
+			numberOfGames: numberOfGames ?? series.count % 4 + 1
 		))
 		date.addTimeInterval(604800)
 	}
 	return series
 }
 
-private func generateGames(forSeries: [Series.Database]) -> ([Game.Database], [GameLane.Database]) {
+private func generateGames(forSeries: [(Series.Database, numberOfGames: Int)]) -> ([Game.Database], [GameLane.Database]) {
 	var games: [Game.Database] = []
 	var gameLanes: [GameLane.Database] = []
 	func generateGame() -> (Series.ID) -> Game.Database {
@@ -151,10 +153,10 @@ private func generateGames(forSeries: [Series.Database]) -> ([Game.Database], [G
 	for series in forSeries {
 		var seriesGames: [Game.Database] = []
 		for _ in (0..<series.numberOfGames) {
-			seriesGames.append(gameGenerator(series.id))
+			seriesGames.append(gameGenerator(series.0.id))
 		}
 		let laneIds: Range<Int>?
-		switch series.alleyId {
+		switch series.0.alleyId {
 		case UUID(0): laneIds = (0..<12)
 		case UUID(1): laneIds = (12..<24)
 		default: laneIds = nil

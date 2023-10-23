@@ -1,9 +1,27 @@
 import Dependencies
+import Foundation
 import ModelsLibrary
 
 extension Game {
 	public enum Ordering: Hashable, CaseIterable {
 		case byIndex
+	}
+}
+
+public enum GamesRepositoryError: Error, LocalizedError {
+	case tooManyGamesToReorder(series: Series.ID, gamesNotInSeries: Set<Game.ID>)
+	case missingGamesToReorder(series: Series.ID, gamesInSeriesMissing: Set<Game.ID>)
+	case reorderingDuplicateGames(series: Series.ID, duplicateGames: Set<Game.ID>)
+
+	public var errorDescription: String? {
+		switch self {
+		case let .tooManyGamesToReorder(series, gamesNotInSeries):
+			return "Could not reorder games, games do not belong to series \(series): \(gamesNotInSeries)"
+		case let .missingGamesToReorder(series, gamesInSeriesMissing):
+			return "Could not reorder games, not all games in series provided \(series): \(gamesInSeriesMissing)"
+		case let .reorderingDuplicateGames(series, duplicateGames):
+			return "Could not reorder duplicate games in serites \(series): \(duplicateGames)"
+		}
 	}
 }
 
@@ -18,6 +36,7 @@ public struct GamesRepository: Sendable {
 	public var update: @Sendable (Game.Edit) async throws -> Void
 	public var delete: @Sendable (Game.ID) async throws -> Void
 	public var duplicateLanes: @Sendable (Game.ID, [Game.ID]) async throws -> Void
+	public var reorderGames: @Sendable (Series.ID, [Game.ID]) async throws -> Void
 
 	public init(
 		list: @escaping @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.List], Error>,
@@ -29,7 +48,8 @@ public struct GamesRepository: Sendable {
 		findIndex: @escaping @Sendable (Game.ID) async throws -> Game.Indexed?,
 		update: @escaping @Sendable (Game.Edit) async throws -> Void,
 		delete: @escaping @Sendable (Game.ID) async throws -> Void,
-		duplicateLanes: @escaping @Sendable (Game.ID, [Game.ID]) async throws -> Void
+		duplicateLanes: @escaping @Sendable (Game.ID, [Game.ID]) async throws -> Void,
+		reorderGames: @escaping @Sendable (Series.ID, [Game.ID]) async throws -> Void
 	) {
 		self.list = list
 		self.summariesList = summariesList
@@ -41,6 +61,7 @@ public struct GamesRepository: Sendable {
 		self.update = update
 		self.delete = delete
 		self.duplicateLanes = duplicateLanes
+		self.reorderGames = reorderGames
 	}
 
 	public func seriesGames(forId: Series.ID, ordering: Game.Ordering) -> AsyncThrowingStream<[Game.List], Error> {
@@ -61,6 +82,10 @@ public struct GamesRepository: Sendable {
 	public func duplicateLanes(from source: Game.ID, toAllGames allGames: [Game.ID]) async throws {
 		try await self.duplicateLanes(source, allGames)
 	}
+
+	public func reorderGames(_ games: [Game.ID], inSeries series: Series.ID) async throws {
+		try await self.reorderGames(series, games)
+	}
 }
 
 extension GamesRepository: TestDependencyKey {
@@ -74,7 +99,8 @@ extension GamesRepository: TestDependencyKey {
 		findIndex: { _ in unimplemented("\(Self.self).findIndex") },
 		update: { _ in unimplemented("\(Self.self).update") },
 		delete: { _ in unimplemented("\(Self.self).delete") },
-		duplicateLanes: { _, _ in unimplemented("\(Self.self).duplicateLanes") }
+		duplicateLanes: { _, _ in unimplemented("\(Self.self).duplicateLanes") },
+		reorderGames: { _, _ in unimplemented("\(Self.self).reorderGames") }
 	)
 }
 

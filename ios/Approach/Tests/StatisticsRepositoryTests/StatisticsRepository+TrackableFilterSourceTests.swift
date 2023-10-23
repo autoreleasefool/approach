@@ -1,5 +1,6 @@
 import DatabaseServiceInterface
 import Dependencies
+import FeatureFlagsServiceInterface
 @testable import ModelsLibrary
 import PreferenceServiceInterface
 @testable import StatisticsLibrary
@@ -21,6 +22,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -29,10 +31,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
-			.init(title: Strings.Statistics.Title.headPins, value: "0"),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -42,6 +44,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -50,10 +53,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
-			.init(title: Strings.Statistics.Title.headPins, value: "0"),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -63,6 +66,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -71,9 +75,9 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "—"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "0"),
-			.init(title: Strings.Statistics.Title.headPins, value: "0"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -83,6 +87,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -91,7 +96,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.headPins, value: "0"),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -101,6 +106,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -109,10 +115,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
-			.init(title: Strings.Statistics.Title.headPins, value: "183"),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "626"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "183", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "626", highlightAsNew: false),
 		])
 	}
 
@@ -120,6 +126,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -128,10 +135,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
-			.init(title: Strings.Statistics.Title.headPins, value: "96"),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "96", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -139,6 +146,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -147,9 +155,9 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "197.2"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "269"),
-			.init(title: Strings.Statistics.Title.headPins, value: "3"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "3", highlightAsNew: false),
 		])
 	}
 
@@ -157,6 +165,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -165,7 +174,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.headPins, value: "1"),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", highlightAsNew: false),
 		])
 	}
 
@@ -175,6 +184,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -196,10 +206,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
-			.init(title: Strings.Statistics.Title.headPins, value: "6"),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "6", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -207,6 +217,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -227,10 +238,10 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
-			.init(title: Strings.Statistics.Title.headPins, value: "6"),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, value: "0"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "6", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
 		])
 	}
 
@@ -238,6 +249,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -253,9 +265,9 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, value: "192"),
-			.init(title: Strings.Statistics.Title.highSingle, value: "192"),
-			.init(title: Strings.Statistics.Title.headPins, value: "1"),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", highlightAsNew: false),
 		])
 	}
 
@@ -263,6 +275,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
 			$0.database.reader = { db }
+			$0.featureFlags.isEnabled = { _ in true }
 			$0.preferences.getBool = { _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0.statistics = .liveValue
@@ -274,7 +287,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.headPins, value: "1"),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", highlightAsNew: false),
 		])
 	}
 }
