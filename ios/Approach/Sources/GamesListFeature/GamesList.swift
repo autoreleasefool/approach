@@ -65,6 +65,7 @@ public struct GamesList: Reducer {
 		public enum InternalAction: Equatable {
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
 			case didReorderGames(TaskResult<Never>)
+			case didAddGameToSeries(TaskResult<Never>)
 
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
@@ -106,6 +107,7 @@ public struct GamesList: Reducer {
 		case gameNotFound
 		case seriesNotFound
 		case gamesNotReordered
+		case gameNotAdded
 	}
 
 	public init() {}
@@ -134,7 +136,11 @@ public struct GamesList: Reducer {
 					return .none
 
 				case .didTapAddButton:
-					return .none
+					return .run { [seriesId = state.series.id] send in
+						try await series.addGamesToSeries(seriesId, 1)
+					} catch: { error, send in
+						await send(.internal(.didAddGameToSeries(.failure(error))))
+					}
 
 				case .didTapEditButton:
 					return .run { [id = state.series.id] send in
@@ -186,6 +192,11 @@ public struct GamesList: Reducer {
 				case let .didReorderGames(.failure(error)):
 					return state.errors
 						.enqueue(.gamesNotReordered, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
+
+				case let .didAddGameToSeries(.failure(error)):
+					return state.errors
+						.enqueue(.gameNotAdded, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
 						.map { .internal(.errors($0)) }
 
 				case let .list(.delegate(delegateAction)):
