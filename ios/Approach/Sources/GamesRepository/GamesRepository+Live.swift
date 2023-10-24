@@ -255,7 +255,7 @@ extension GamesRepository: DependencyKey {
 					let game = try Game.Database.fetchOneGuaranteed($0, id: id)
 					let series = try Series.Database
 						.filter(id: game.seriesId)
-						.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? 0)
+						.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? -1)
 						.asRequest(of: Series.HighestIndex.self)
 						.fetchOneGuaranteed($0)
 
@@ -264,7 +264,7 @@ extension GamesRepository: DependencyKey {
 						.updateAll(
 							$0,
 							Game.Database.Columns.isArchived.set(to: false),
-							Game.Database.Columns.index.set(to: series.maxGameIndex <= 0 ? 0 : series.maxGameIndex + 1)
+							Game.Database.Columns.index.set(to: series.maxGameIndex < 0 ? 0 : series.maxGameIndex + 1)
 						)
 				}
 			},

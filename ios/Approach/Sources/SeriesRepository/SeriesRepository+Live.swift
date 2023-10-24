@@ -143,7 +143,7 @@ extension SeriesRepository: DependencyKey {
 					try await database.writer().write { db in
 						let series = try Series.Database
 							.filter(id: id)
-							.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? 0)
+							.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? -1)
 							.asRequest(of: Series.HighestIndex.self)
 							.fetchOneGuaranteed(db)
 						let bowler = try Bowler.Database
@@ -158,7 +158,7 @@ extension SeriesRepository: DependencyKey {
 								forSeries: id,
 								excludeFromStatistics: series.excludeFromStatistics,
 								withPreferredGear: preferredGear,
-								startIndex: series.maxGameIndex <= 0 ? 0 : series.maxGameIndex + 1,
+								startIndex: series.maxGameIndex < 0 ? 0 : series.maxGameIndex + 1,
 								count: count,
 								db: db
 							)

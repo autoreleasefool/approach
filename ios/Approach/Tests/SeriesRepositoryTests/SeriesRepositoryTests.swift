@@ -566,7 +566,35 @@ final class SeriesRepositoryTests: XCTestCase {
 		])
 
 		let numberOfFrames = try await db.read { try Frame.Database.fetchCount($0) }
+		// Only 20 because we added 2 games which generated 10 frames each. The initial games did not include frames
 		XCTAssertEqual(numberOfFrames, 20)
+	}
+
+	func testAddGamesToSeries_WhenSeriesHasOneGame_AddsGamesWithCorrectIndex() async throws {
+		// Given a database with one series and one game
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+		let game1 = Game.Database.mock(id: UUID(0), index: 0)
+		let db = try initializeDatabase(withSeries: .custom([series1]), withGames: .custom([game1]))
+
+		// Adding a game to the series
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.uuid = .incrementing
+			_ = $0.uuid()
+			$0.series = .liveValue
+		} operation: {
+			try await self.series.addGamesToSeries(UUID(0), 1)
+		}
+
+		// Inserted the games and frames
+		let numberOfGames = try await db.read { try Game.Database.fetchCount($0) }
+		XCTAssertEqual(numberOfGames, 2)
+
+		let allGames = try await db.read { try Game.Database.order(Game.Database.Columns.index).fetchAll($0) }
+		XCTAssertEqual(allGames, [
+			.mock(id: UUID(0), index: 0),
+			.mock(id: UUID(1), index: 1),
+		])
 	}
 
 	func testAddGamesToSeries_WhenSeriesNotExists_ThrowsError() async throws {
