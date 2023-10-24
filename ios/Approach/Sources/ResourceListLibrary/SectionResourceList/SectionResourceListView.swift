@@ -16,16 +16,18 @@ public struct SectionResourceListView<
 	let store: StoreOf<SectionList>
 
 	struct ViewState: Equatable {
+		@BindingViewState var editMode: EditMode
 		let listContent: ListContent
 		let listTitle: String?
 		let features: [SectionList.Feature]
 
-		init(state: SectionList.State) {
-			self.features = state.features
-			self.listTitle = state.listTitle
-			if state.errorState != nil {
+		init(store: BindingViewStore<SectionList.State>) {
+			self._editMode = store.$editMode
+			self.features = store.features
+			self.listTitle = store.listTitle
+			if store.errorState != nil {
 				self.listContent = .error
-			} else if let sections = state.sections {
+			} else if let sections = store.sections {
 				self.listContent = .loaded(sections)
 			} else {
 				self.listContent = .notLoaded
@@ -101,7 +103,7 @@ public struct SectionResourceListView<
 								Section {
 									ForEach(section.items) { element in
 										Group {
-											if viewStore.features.contains(.tappable) {
+											if viewStore.features.contains(.tappable) && viewStore.editMode != .active {
 												Button {
 													viewStore.send(.didTap(element))
 												} label: {
@@ -112,21 +114,28 @@ public struct SectionResourceListView<
 											}
 										}
 										.swipeActions(allowsFullSwipe: true) {
-											if viewStore.features.contains(.swipeToEdit) {
-												EditButton { viewStore.send(.didSwipe(.edit, element)) }
-											}
+											if viewStore.editMode != .active {
+												if viewStore.features.contains(.swipeToEdit) {
+													EditButton { viewStore.send(.didSwipe(.edit, element)) }
+												}
 
-											if viewStore.features.contains(.swipeToDelete) {
-												DeleteButton { viewStore.send(.didSwipe(.delete, element)) }
-											}
+												if viewStore.features.contains(.swipeToDelete) {
+													DeleteButton { viewStore.send(.didSwipe(.delete, element)) }
+												}
 
-											if viewStore.features.contains(.swipeToArchive) {
-												ArchiveButton { viewStore.send(.didSwipe(.archive, element)) }
+												if viewStore.features.contains(.swipeToArchive) {
+													ArchiveButton { viewStore.send(.didSwipe(.archive, element)) }
+												}
 											}
 										}
 									}
+									.onMove { viewStore.send(.didMove(section: section.id, source: $0, destination: $1)) }
 								} header: {
-									if let title = viewStore.listTitle {
+									if viewStore.features.contains(.moveable) {
+										reorderableHeader(title: viewStore.listTitle, editMode: viewStore.editMode) {
+											viewStore.send(.didTapReorderButton)
+										}
+									} else if let title = viewStore.listTitle {
 										Text(title)
 									}
 								}
@@ -135,6 +144,7 @@ public struct SectionResourceListView<
 							footer()
 						}
 						.listStyle(.insetGrouped)
+						.environment(\.editMode, viewStore.$editMode)
 					}
 
 				case .error:
@@ -155,6 +165,24 @@ public struct SectionResourceListView<
 			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
+	}
+
+	private func reorderableHeader(title: String?, editMode: EditMode, perform: @escaping () -> Void) -> some View {
+		HStack(alignment: .firstTextBaseline) {
+			if let title {
+				Text(title)
+			}
+			Spacer()
+			Button(action: perform) {
+				if editMode == .inactive {
+					Label(Strings.Action.reorder, systemSymbol: .arrowUpAndDownSquare)
+						.font(.caption)
+				} else if editMode == .active {
+					Label(Strings.Action.finish, systemSymbol: .checkmarkCircle)
+						.font(.caption)
+				}
+			}
+		}
 	}
 }
 

@@ -2,6 +2,7 @@ import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
 import StringsLibrary
+import SwiftUI
 import ViewsLibrary
 
 public struct SectionResourceList<
@@ -9,6 +10,8 @@ public struct SectionResourceList<
 	Q: Equatable
 >: Reducer {
 	public struct State: Equatable {
+		@BindingState public var editMode: EditMode = .inactive
+
 		public var features: [Feature]
 		public var query: Q
 		public var sections: IdentifiedArrayOf<Section>?
@@ -54,12 +57,15 @@ public struct SectionResourceList<
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didObserveData
 			case didTapAddButton
+			case didTapReorderButton
 			case didSwipe(SwipeAction, R)
+			case didMove(section: Section.ID, source: IndexSet, destination: Int)
 			case didTap(R)
 			case alert(PresentationAction<AlertAction>)
+			case binding(BindingAction<State>)
 		}
 
 		public enum DelegateAction: Equatable {
@@ -67,6 +73,7 @@ public struct SectionResourceList<
 			case didArchive(R)
 			case didEdit(R)
 			case didTap(R)
+			case didMove(section: Section.ID, source: IndexSet, destination: Int)
 			case didAddNew
 			case didTapEmptyStateButton
 		}
@@ -88,6 +95,7 @@ public struct SectionResourceList<
 		case swipeToArchive
 		case swipeToDelete
 		case swipeToEdit
+		case moveable
 		case tappable
 		case add
 	}
@@ -156,6 +164,28 @@ public struct SectionResourceList<
 
 					return .send(.delegate(.didAddNew))
 
+				case let .didMove(sectionId, source, destination):
+					guard state.features.contains(.moveable) else {
+						fatalError("\(Self.self) did not specify `moveable` feature")
+					}
+
+					guard var section = state.sections?[id: sectionId] else { return .none }
+					section.items.move(fromOffsets: source, toOffset: destination)
+					state.sections?[id: sectionId] = section
+					return .send(.delegate(.didMove(section: sectionId, source: source, destination: destination)))
+
+				case .didTapReorderButton:
+					guard state.features.contains(.moveable) else {
+						fatalError("\(Self.self) did not specify `moveable` feature")
+					}
+
+					if state.editMode == .active {
+						state.editMode = .inactive
+					} else {
+						state.editMode = .active
+					}
+					return .none
+
 				case let .alert(.presented(.didTapDeleteButton(resource))):
 					state.alert = nil
 					return .send(.delegate(.didDelete(resource)))
@@ -169,6 +199,9 @@ public struct SectionResourceList<
 					return beginObservation(query: state.query)
 
 				case .alert(.dismiss):
+					return .none
+
+				case .binding:
 					return .none
 				}
 

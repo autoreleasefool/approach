@@ -216,7 +216,7 @@ public struct BowlersList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultBowler(withId: uuid()))))
 						return .none
 
-					case .didTap, .didDelete:
+					case .didTap, .didDelete, .didMove:
 						return .none
 					}
 

@@ -171,7 +171,7 @@ public struct AlleysList: Reducer {
 						state.destination = .editor(.init(value: .create(.default(withId: uuid()))))
 						return .none
 
-					case .didTap, .didArchive:
+					case .didTap, .didArchive, .didMove:
 						return .none
 					}
 

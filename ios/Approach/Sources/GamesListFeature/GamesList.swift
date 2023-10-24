@@ -14,6 +14,7 @@ import SeriesEditorFeature
 import SeriesRepositoryInterface
 import SharingFeature
 import StringsLibrary
+import SwiftUI
 
 extension Game.List: ResourceListItem {
 	public var name: String { Strings.Game.titleWithOrdinal(index + 1) }
@@ -36,7 +37,7 @@ public struct GamesList: Reducer {
 			self.seriesHost = host
 			self.series = series
 			self.list = .init(
-				features: [],
+				features: [.moveable],
 				query: series.id,
 				listTitle: nil,
 				emptyContent: .init(
@@ -52,14 +53,18 @@ public struct GamesList: Reducer {
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+		public enum ViewAction: BindableAction, Equatable {
 			case didTapGame(Game.ID)
 			case didTapShareButton
 			case didTapEditButton
+			case didTapAddButton
+
+			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
+			case didReorderGames(TaskResult<Never>)
 
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
@@ -100,6 +105,7 @@ public struct GamesList: Reducer {
 		case gamesNotFound
 		case gameNotFound
 		case seriesNotFound
+		case gamesNotReordered
 	}
 
 	public init() {}
@@ -112,7 +118,7 @@ public struct GamesList: Reducer {
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList { series in games.seriesGames(forId: series, ordering: .byIndex) }
+			ResourceList(fetchResources: fetchGames(seriesId:))
 		}
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
@@ -125,6 +131,9 @@ public struct GamesList: Reducer {
 				switch viewAction {
 				case .didTapShareButton:
 					state.destination = .sharing(.init(dataSource: .series(state.series.id)))
+					return .none
+
+				case .didTapAddButton:
 					return .none
 
 				case .didTapEditButton:
@@ -163,6 +172,9 @@ public struct GamesList: Reducer {
 					))
 
 					return .run { _ in await analytics.resetGameSessionID() }
+
+				case .binding:
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -171,8 +183,21 @@ public struct GamesList: Reducer {
 					state.destination = .seriesEditor(.init(value: .edit(series), inLeague: state.seriesHost))
 					return .none
 
+				case let .didReorderGames(.failure(error)):
+					return state.errors
+						.enqueue(.gamesNotReordered, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
+						.map { .internal(.errors($0)) }
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
+					case .didMove:
+						guard let orderedGames = state.list.resources?.map(\.id) else { return .none }
+						return .run { [seriesId = state.series.id] _ in
+							try await games.reorderGames(orderedGames, inSeries: seriesId)
+						} catch: { error, send in
+							await send(.internal(.didReorderGames(.failure(error))))
+						}
+
 					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton, .didArchive:
 						return .none
 					}
@@ -228,6 +253,21 @@ public struct GamesList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+	}
+
+	private func fetchGames(seriesId: Series.ID) -> AsyncThrowingStream<[Game.List], Error> {
+		.init { continuation in
+			let task = Task {
+				do {
+					for try await games in games.seriesGames(forId: seriesId, ordering: .byIndex) {
+						continuation.yield(games)
+					}
+				} catch {
+					continuation.finish(throwing: error)
+				}
+			}
+			continuation.onTermination = { _ in task.cancel() }
 		}
 	}
 }

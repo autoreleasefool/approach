@@ -179,7 +179,7 @@ public struct OpponentsList: Reducer {
 						state.destination = .editor(.init(value: .create(.defaultOpponent(withId: uuid()))))
 						return .none
 
-					case .didTap, .didDelete:
+					case .didTap, .didDelete, .didMove:
 						return .none
 					}
 

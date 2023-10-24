@@ -59,10 +59,14 @@ public enum Strings {
     public static let edit = Strings.tr("Localizable", "action.edit", fallback: "Edit")
     /// Filter
     public static let filter = Strings.tr("Localizable", "action.filter", fallback: "Filter")
+    /// Finish
+    public static let finish = Strings.tr("Localizable", "action.finish", fallback: "Finish")
     /// Manage
     public static let manage = Strings.tr("Localizable", "action.manage", fallback: "Manage")
     /// Reload
     public static let reload = Strings.tr("Localizable", "action.reload", fallback: "Reload")
+    /// Reorder
+    public static let reorder = Strings.tr("Localizable", "action.reorder", fallback: "Reorder")
     /// Report
     public static let report = Strings.tr("Localizable", "action.report", fallback: "Report")
     /// Reset
