@@ -4,25 +4,23 @@ import FeatureActionLibrary
 import StringsLibrary
 import ViewsLibrary
 
-public protocol ResourceListItem: Equatable, Identifiable {
-	var name: String { get }
-}
-
-public struct ResourceList<
+public struct SectionResourceList<
 	R: ResourceListItem,
 	Q: Equatable
 >: Reducer {
-	public typealias OnDelete = (R) async throws -> Void
-	public typealias OnArchive = (R) async throws -> Void
-
 	public struct State: Equatable {
 		public var features: [Feature]
 		public var query: Q
-		public var resources: IdentifiedArrayOf<R>?
+		public var sections: IdentifiedArrayOf<Section>?
 		public var listTitle: String?
 
 		public var emptyState: ResourceListEmpty.State
 		public var errorState: ResourceListEmpty.State?
+
+		public var resources: IdentifiedArrayOf<R>? {
+			guard let sections else { return nil }
+			return .init(uniqueElements: sections.flatMap { $0.items })
+		}
 
 		@PresentationState public var alert: AlertState<AlertAction>?
 
@@ -36,6 +34,22 @@ public struct ResourceList<
 			self.query = query
 			self.listTitle = listTitle
 			self.emptyState = .init(content: emptyContent, style: .empty)
+		}
+	}
+
+	public struct Section: Identifiable, Equatable {
+		public let id: String
+		public var title: String?
+		public var items: IdentifiedArrayOf<R>
+
+		public init(
+			id: String,
+			title: String? = nil,
+			items: IdentifiedArrayOf<R>
+		) {
+			self.id = id
+			self.title = title
+			self.items = items
 		}
 	}
 
@@ -60,7 +74,7 @@ public struct ResourceList<
 		public enum InternalAction: Equatable {
 			case observeData
 			case cancelObservation
-			case resourcesResponse(TaskResult<[R]>)
+			case sectionsResponse(TaskResult<[Section]>)
 			case empty(ResourceListEmpty.Action)
 			case error(ResourceListEmpty.Action)
 		}
@@ -86,11 +100,11 @@ public struct ResourceList<
 
 	enum CancelID { case observation }
 
-	public init(fetchResources: @escaping (Q) -> AsyncThrowingStream<[R], Swift.Error>) {
-		self.fetchResources = fetchResources
+	public init(fetchSections: @escaping (Q) -> AsyncThrowingStream<[Section], Swift.Error>) {
+		self.fetchSections = fetchSections
 	}
 
-	let fetchResources: (Q) -> AsyncThrowingStream<[R], Swift.Error>
+	let fetchSections: (Q) -> AsyncThrowingStream<[Section], Swift.Error>
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.emptyState, action: /Action.internal..Action.InternalAction.empty) {
@@ -167,11 +181,11 @@ public struct ResourceList<
 				case .cancelObservation:
 					return .cancel(id: CancelID.observation)
 
-				case let .resourcesResponse(.success(resources)):
-					state.resources = .init(uniqueElements: resources)
+				case let .sectionsResponse(.success(sections)):
+					state.sections = .init(uniqueElements: sections)
 					return .none
 
-				case .resourcesResponse(.failure):
+				case .sectionsResponse(.failure):
 					state.errorState = .failedToLoad
 					return .none
 
@@ -205,18 +219,18 @@ public struct ResourceList<
 
 	private func beginObservation(query: Q) -> Effect<Action> {
 		return .run { send in
-			for try await resources in fetchResources(query) {
-				await send(.internal(.resourcesResponse(.success(resources))))
+			for try await sections in fetchSections(query) {
+				await send(.internal(.sectionsResponse(.success(sections))))
 			}
 		} catch: { error, send in
-			await send(.internal(.resourcesResponse(.failure(error))))
+			await send(.internal(.sectionsResponse(.failure(error))))
 		}
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
 }
 
-extension ResourceList.State {
-	public mutating func updateQuery(to query: Q) -> Effect<ResourceList.Action> {
+extension SectionResourceList.State {
+	public mutating func updateQuery(to query: Q) -> Effect<SectionResourceList.Action> {
 		self.query = query
 		return .send(.internal(.observeData))
 	}
@@ -224,7 +238,7 @@ extension ResourceList.State {
 
 // MARK: - AlertAction
 
-extension ResourceList {
+extension SectionResourceList {
 	public enum AlertAction: Equatable {
 		case didTapArchiveButton(R)
 		case didTapDeleteButton(R)
@@ -232,33 +246,34 @@ extension ResourceList {
 	}
 }
 
-extension ResourceList {
+extension SectionResourceList {
 	static func alert(toDelete resource: R) -> AlertState<AlertAction> {
-		.init(
-			title: TextState(Strings.Form.Prompt.delete(resource.name)),
-			primaryButton: .destructive(
-				TextState(Strings.Action.delete),
-				action: .send(.didTapDeleteButton(resource))
-			),
-			secondaryButton: .cancel(
-				TextState(Strings.Action.cancel),
-				action: .send(.didTapDismissButton)
-			)
-		)
+		AlertState {
+			TextState(Strings.Form.Prompt.delete(resource.name))
+		} actions: {
+			ButtonState(role: .destructive, action: .didTapDeleteButton(resource)) {
+				TextState(Strings.Action.delete)
+			}
+
+			ButtonState(role: .cancel, action: .didTapDismissButton) {
+				TextState(Strings.Action.cancel)
+			}
+		}
 	}
 
 	static func alert(toArchive resource: R) -> AlertState<AlertAction> {
-		.init(
-			title: TextState(Strings.Form.Prompt.archive(resource.name)),
-			message: TextState(Strings.Form.Prompt.Archive.message),
-			primaryButton: .destructive(
-				TextState(Strings.Action.archive),
-				action: .send(.didTapArchiveButton(resource))
-			),
-			secondaryButton: .cancel(
-				TextState(Strings.Action.cancel),
-				action: .send(.didTapDismissButton)
-			)
-		)
+		AlertState {
+			TextState(Strings.Form.Prompt.archive(resource.name))
+		} actions: {
+			ButtonState(role: .destructive, action: .didTapArchiveButton(resource)) {
+				TextState(Strings.Action.archive)
+			}
+
+			ButtonState(role: .cancel, action: .didTapDismissButton) {
+				TextState(Strings.Action.cancel)
+			}
+		} message: {
+			TextState(Strings.Form.Prompt.Archive.message)
+		}
 	}
 }
