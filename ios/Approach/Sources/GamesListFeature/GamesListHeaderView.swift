@@ -20,8 +20,16 @@ public struct GamesListHeaderView: View {
 
 	public var body: some View {
 		Section {
-			ZStack(alignment: .bottomLeading) {
-				if scores.count > 1 {
+			if scores.count == 0 {
+				Text(Strings.Game.List.Header.numberOfGames(scores.count))
+					.font(.subheadline)
+					.bold()
+			} else if scores.count == 1 {
+				Text(Strings.Game.List.Header.numberOfGames(scores.count))
+					.font(.subheadline)
+					.bold()
+			} else {
+				ZStack(alignment: .bottomLeading) {
 					Chart {
 						ForEach(scores) { score in
 							AreaMark(
@@ -71,50 +79,50 @@ public struct GamesListHeaderView: View {
 						width: contentSize.width,
 						height: contentSize.height * 0.7
 					)
-				}
 
-				VStack {
-					HStack(alignment: .firstTextBaseline) {
-						VStack(alignment: .leading, spacing: 0) {
-							Text(Strings.Game.List.Header.numberOfGames(scores.count))
-								.font(.subheadline)
-								.bold()
+					VStack {
+						HStack(alignment: .firstTextBaseline) {
+							VStack(alignment: .leading, spacing: 0) {
+								Text(Strings.Game.List.Header.numberOfGames(scores.count))
+									.font(.subheadline)
+									.bold()
 
-							if let scoreRange {
-								Group {
-									Text(Strings.Game.List.Header.highGame(scoreRange.highest))
-										.padding(.top, .smallSpacing)
-									Text(Strings.Game.List.Header.lowGame(scoreRange.lowest))
+								if let scoreRange {
+									Group {
+										Text(Strings.Game.List.Header.highGame(scoreRange.highest))
+											.padding(.top, .smallSpacing)
+										Text(Strings.Game.List.Header.lowGame(scoreRange.lowest))
+									}
+									.italic()
 								}
-								.italic()
+							}
+
+							Spacer()
+
+							if total > 0 {
+								VStack(alignment: .trailing, spacing: .smallSpacing) {
+									Text(Strings.Game.List.Header.seriesTotal)
+										.font(.subheadline)
+										.fontWeight(.thin)
+
+									Text(String(total))
+										.font(.title2)
+										.fontWeight(.heavy)
+										.italic()
+								}
 							}
 						}
 
 						Spacer()
-
-						if total > 0 {
-							VStack(alignment: .trailing, spacing: .smallSpacing) {
-								Text(Strings.Game.List.Header.seriesTotal)
-									.font(.subheadline)
-									.fontWeight(.thin)
-
-								Text(String(total))
-									.font(.title2)
-									.fontWeight(.heavy)
-									.italic()
-							}
-						}
 					}
-
-					Spacer()
+					.padding(.standardSpacing)
+					.frame(height: scores.count > 1 ? 200 : nil)
+					.measure(key: ContentSizeKey.self, to: $contentSize)
 				}
-				.padding(.standardSpacing)
-				.frame(height: scores.count > 1 ? 200 : nil)
-				.measure(key: ContentSizeKey.self, to: $contentSize)
-			}
-			.listRowInsets(EdgeInsets())
-			.alignmentGuide(.listRowSeparatorLeading) { d in
+				.listRowInsets(EdgeInsets())
+				.alignmentGuide(.listRowSeparatorLeading) { d in
 					d[.leading]
+				}
 			}
 		}
 	}
@@ -199,6 +207,10 @@ struct GamesListHeaderViewPreview: PreviewProvider {
 				scores: [
 					.init(index: 0, score: 233),
 				]
+			)
+
+			GamesListHeaderView(
+				scores: []
 			)
 
 			GamesListHeaderView(

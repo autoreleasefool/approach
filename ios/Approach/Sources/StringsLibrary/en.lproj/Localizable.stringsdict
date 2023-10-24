@@ -46,6 +46,8 @@
 			<string>d</string>
 			<key>one</key>
 			<string>%d game</string>
+			<key>zero</key>
+			<string>No games</string>
 			<key>other</key>
 			<string>%d games</string>
 		</dict>
