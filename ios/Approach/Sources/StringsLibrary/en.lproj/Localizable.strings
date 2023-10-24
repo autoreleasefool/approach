@@ -696,6 +696,8 @@
 "action.deselectAll" = "Deselect all";
 "action.shareToStories" = "Share to Stories";
 "action.shareToOther" = "Other";
+"action.reorder" = "Reorder";
+"action.finish" = "Finish";
 
 /* Other */
 

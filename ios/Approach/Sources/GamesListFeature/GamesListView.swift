@@ -18,13 +18,15 @@ public struct GamesListView: View {
 
 	struct ViewState: Equatable {
 		let title: String
+		let editMode: EditMode
 		let scores: [GamesListHeaderView.Score]
 		let isSeriesSharingEnabled: Bool
 
-		init(state: GamesList.State) {
-			self.title = state.series.date.longFormat
-			self.scores = state.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
-			self.isSeriesSharingEnabled = state.isSeriesSharingEnabled
+		init(store: BindingViewStore<GamesList.State>) {
+			self.title = store.series.date.longFormat
+			self.editMode = store.list.editMode
+			self.scores = store.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
+			self.isSeriesSharingEnabled = store.isSeriesSharingEnabled
 		}
 	}
 
@@ -40,7 +42,12 @@ public struct GamesListView: View {
 				Button { viewStore.send(.didTapGame(game.id)) } label: {
 					LabeledContent(Strings.Game.titleWithOrdinal(game.index + 1), value: "\(game.score)")
 				}
-				.buttonStyle(.navigation)
+				.if(viewStore.editMode == .active) {
+					$0.buttonStyle(.plain)
+				}
+				.if(viewStore.editMode == .inactive) {
+					$0.buttonStyle(.navigation)
+				}
 			} header: {
 				GamesListHeaderView(scores: viewStore.scores)
 			}
@@ -54,6 +61,10 @@ public struct GamesListView: View {
 						Button { viewStore.send(.didTapShareButton) } label: {
 							Image(systemSymbol: .squareAndArrowUp)
 						}
+					}
+
+					ToolbarItem(placement: .navigationBarTrailing) {
+						AddButton { viewStore.send(.didTapAddButton) }
 					}
 				}
 			}

@@ -2,6 +2,7 @@ import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
 import StringsLibrary
+import SwiftUI
 import ViewsLibrary
 
 public protocol ResourceListItem: Equatable, Identifiable {
@@ -14,9 +15,10 @@ public struct ResourceList<
 >: Reducer {
 	public struct State: Equatable {
 		public var sectionList: SectionResourceList<R, Q>.State
-		
+
 		public var query: Q { sectionList.query }
 		public var resources: IdentifiedArrayOf<R>? { sectionList.resources }
+		public var editMode: EditMode { sectionList.editMode }
 
 		public init(
 			features: [SectionResourceList<R, Q>.Feature],
@@ -41,6 +43,7 @@ public struct ResourceList<
 			case didArchive(R)
 			case didEdit(R)
 			case didTap(R)
+			case didMove(source: IndexSet, destination: Int)
 			case didAddNew
 			case didTapEmptyStateButton
 		}
@@ -62,26 +65,10 @@ public struct ResourceList<
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.sectionList, action: /Action.internal..Action.InternalAction.sectionList) {
-			SectionResourceList { query in
-				return .init { continuation in
-					let task = Task {
-						do {
-							for try await resources in self.fetchResources(query) {
-								continuation.yield([
-									.init(id: "", items: .init(uniqueElements: resources)),
-								])
-							}
-						} catch {
-							continuation.finish(throwing: error)
-						}
-					}
-
-					continuation.onTermination = { _ in task.cancel() }
-				}
-			}
+			SectionResourceList(fetchSections: fetchResources(query:))
 		}
 
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
@@ -108,6 +95,9 @@ public struct ResourceList<
 					case let .didTap(resource):
 						return .send(.delegate(.didTap(resource)))
 
+					case let .didMove(_, source, destination):
+						return .send(.delegate(.didMove(source: source, destination: destination)))
+
 					case .didTapEmptyStateButton:
 						return .send(.delegate(.didTapEmptyStateButton))
 					}
@@ -119,6 +109,22 @@ public struct ResourceList<
 			case .delegate:
 				return .none
 			}
+		}
+	}
+
+	private func fetchResources(query: Q) -> AsyncThrowingStream<[SectionResourceList<R, Q>.Section], Swift.Error> {
+		return .init { continuation in
+			let task = Task {
+				do {
+					for try await resources in self.fetchResources(query) {
+						continuation.yield([.init(id: "", items: .init(uniqueElements: resources))])
+					}
+				} catch {
+					continuation.finish(throwing: error)
+				}
+			}
+
+			continuation.onTermination = { _ in task.cancel() }
 		}
 	}
 }
