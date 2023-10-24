@@ -16,6 +16,7 @@ extension SeriesRepository: DependencyKey {
 				database.reader().observe {
 					var request = Series.Database
 						.all()
+						.isNotArchived()
 						.bowled(inLeague: league)
 						.annotated(
 							with: Series.Database.games.sum(Game.Database.Columns.score).forKey("total") ?? 0
@@ -53,6 +54,7 @@ extension SeriesRepository: DependencyKey {
 				database.reader().observe {
 					try Series.Database
 						.all()
+						.isNotArchived()
 						.orderByDate()
 						.bowled(inLeague: league)
 						.asRequest(of: Series.Summary.self)

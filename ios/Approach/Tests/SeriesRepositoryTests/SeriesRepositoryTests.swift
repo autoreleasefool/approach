@@ -19,7 +19,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with two series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let series3 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000), isArchived: true)
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000), isArchived: true)
 
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 2)
@@ -218,9 +218,10 @@ final class SeriesRepositoryTests: XCTestCase {
 	// MARK: Summaries
 
 	func testSummaries_ReturnsAllSeries() async throws {
-		// Given a database with two series
+		// Given a database with 3 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
+		let series3 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000), isArchived: true)
 
 		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
