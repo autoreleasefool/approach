@@ -202,6 +202,8 @@
 "game.list.header.lowGame" = "Low of %d";
 "game.list.header.highGame" = "High of %d";
 "game.list.header.seriesTotal" = "Series total";
+"game.list.footer.archiveTip.title" = "You can now add and archive games to series";
+"game.list.footer.archiveTip.message" = "Tap the '+' to add more games to any series, and swipe to hide any unwanted games.";
 "game.settings.title" = "Game Settings";
 "game.settings.current" = "Currently Editing";
 "game.properties.excludeFromStatistics.include" = "Include in statistics";
@@ -560,7 +562,7 @@
 /* Archive */
 
 "archive.title" = "Archive";
-"archive.list.description" = "Here you will find all the bowlers, leagues, and series you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.";
+"archive.list.description" = "Here you will find all the bowlers, leagues, series, and games you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.";
 "archive.list.bowlers.title" = "Archived Bowlers";
 "archive.list.bowlers.none" = "No bowlers have been archived";
 "archive.list.bowlers.archivedWith" = "Archived with %@ leagues, %@ series, %@ games";
@@ -572,10 +574,16 @@
 "archive.list.series.none" = "No series have been archived";
 "archive.list.series.belongsTo" = "Belongs to %@, in %@";
 "archive.list.series.archivedWith" = "Archived with %@ games";
+"archive.list.games.title" = "Archived Games";
+"archive.list.games.none" = "No games have been archived";
+"archive.list.games.itemTitle" = "%@ game with score of %@";
+"archive.list.games.belongsTo" = "Belongs to %@, in %@";
 "archive.alert.unarchived" = "Unarchived %@";
+"archive.alert.unarchivedGame" = "Unarchived game in %@ series";
 "archive.alert.restoredBowler" = "Your bowler's data has been restored";
 "archive.alert.restoredLeague" = "Your league's data has been restored";
 "archive.alert.restoredSeries" = "Your series' data has been restored";
+"archive.alert.restoredGame" = "Your game's data has been restored";
 
 /* Ordering */
 

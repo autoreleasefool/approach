@@ -252,6 +252,7 @@ let package = Package(
 			dependencies: [
 				"BowlersRepositoryInterface",
 				"ErrorsFeature",
+				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
 				"SeriesRepositoryInterface",

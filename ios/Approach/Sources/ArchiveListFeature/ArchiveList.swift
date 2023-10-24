@@ -3,6 +3,7 @@ import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
 import FeatureActionLibrary
+import GamesRepositoryInterface
 import LeaguesRepositoryInterface
 import ModelsLibrary
 import SeriesRepositoryInterface
@@ -13,6 +14,7 @@ public struct ArchiveList: Reducer {
 		public var archivedBowlers: IdentifiedArrayOf<Bowler.Archived> = []
 		public var archivedLeagues: IdentifiedArrayOf<League.Archived> = []
 		public var archivedSeries: IdentifiedArrayOf<Series.Archived> = []
+		public var archivedGames: IdentifiedArrayOf<Game.Archived> = []
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -27,6 +29,7 @@ public struct ArchiveList: Reducer {
 			case didSwipeBowler(Bowler.Archived)
 			case didSwipeLeague(League.Archived)
 			case didSwipeSeries(Series.Archived)
+			case didSwipeGame(Game.Archived)
 			case alert(PresentationAction<AlertAction>)
 		}
 
@@ -35,10 +38,12 @@ public struct ArchiveList: Reducer {
 			case bowlersResponse(TaskResult<[Bowler.Archived]>)
 			case leaguesResponse(TaskResult<[League.Archived]>)
 			case seriesResponse(TaskResult<[Series.Archived]>)
+			case gamesResponse(TaskResult<[Game.Archived]>)
 
 			case unarchivedBowler(TaskResult<Bowler.Archived>)
 			case unarchivedLeague(TaskResult<League.Archived>)
 			case unarchivedSeries(TaskResult<Series.Archived>)
+			case unarchivedGame(TaskResult<Game.Archived>)
 
 			case errors(Errors<ErrorID>.Action)
 		}
@@ -56,9 +61,11 @@ public struct ArchiveList: Reducer {
 		case failedToLoadBowlers
 		case failedToLoadLeagues
 		case failedToLoadSeries
+		case failedToLoadGames
 		case failedToUnarchiveBowler
 		case failedToUnarchiveLeague
 		case failedToUnarchiveSeries
+		case failedToUnarchiveGame
 	}
 
 	public init() {}
@@ -66,6 +73,7 @@ public struct ArchiveList: Reducer {
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.series) var series
+	@Dependency(\.games) var games
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
@@ -80,7 +88,8 @@ public struct ArchiveList: Reducer {
 					return .merge(
 						observeBowlers(),
 						observeLeagues(),
-						observeSeries()
+						observeSeries(),
+						observeGames()
 					)
 
 				case let .didSwipeBowler(bowler):
@@ -104,6 +113,14 @@ public struct ArchiveList: Reducer {
 						await send(.internal(.unarchivedSeries(TaskResult {
 							try await self.series.unarchive(series.id)
 							return series
+						})))
+					}
+
+				case let .didSwipeGame(game):
+					return .run { send in
+						await send(.internal(.unarchivedGame(TaskResult {
+							try await self.games.unarchive(game.id)
+							return game
 						})))
 					}
 
@@ -157,6 +174,18 @@ public struct ArchiveList: Reducer {
 					}
 					return .none
 
+				case let .gamesResponse(.success(games)):
+					state.archivedGames = .init(uniqueElements: games)
+					return .none
+
+				case let .unarchivedGame(.success(game)):
+					state.alert = AlertState {
+						TextState(Strings.Archive.Alert.unarchivedGame(game.seriesDate.longFormat))
+					} message: {
+						TextState(Strings.Archive.Alert.restoredGame)
+					}
+					return .none
+
 				case let .bowlersResponse(.failure(error)):
 					return state.errors
 						.enqueue(.failedToLoadBowlers, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
@@ -185,6 +214,16 @@ public struct ArchiveList: Reducer {
 				case let .unarchivedSeries(.failure(error)):
 					return state.errors
 						.enqueue(.failedToUnarchiveSeries, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
+						.map { .internal(.errors($0)) }
+
+				case let .gamesResponse(.failure(error)):
+					return state.errors
+						.enqueue(.failedToLoadGames, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
+						.map { .internal(.errors($0)) }
+
+				case let .unarchivedGame(.failure(error)):
+					return state.errors
+						.enqueue(.failedToUnarchiveGame, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
 						.map { .internal(.errors($0)) }
 
 				case let .errors(.delegate(delegateAction)):
@@ -230,6 +269,16 @@ public struct ArchiveList: Reducer {
 			}
 		} catch: { error, send in
 			await send(.internal(.seriesResponse(.failure(error))))
+		}
+	}
+
+	private func observeGames() -> Effect<Action> {
+		.run { send in
+			for try await games in self.games.archived() {
+				await send(.internal(.gamesResponse(.success(games))))
+			}
+		} catch: { error, send in
+			await send(.internal(.gamesResponse(.failure(error))))
 		}
 	}
 }
