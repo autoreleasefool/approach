@@ -131,12 +131,16 @@ public struct SectionResourceListView<
 									}
 									.onMove { viewStore.send(.didMove(section: section.id, source: $0, destination: $1)) }
 								} header: {
-									if viewStore.features.contains(.moveable) {
-										reorderableHeader(title: viewStore.listTitle, editMode: viewStore.editMode) {
-											viewStore.send(.didTapReorderButton)
+									if section.items.isEmpty {
+										EmptyView()
+									} else {
+										if viewStore.features.contains(.moveable) && section.items.count > 1 {
+											reorderableHeader(title: viewStore.listTitle, editMode: viewStore.editMode) {
+												viewStore.send(.didTapReorderButton)
+											}
+										} else if let title = viewStore.listTitle {
+											Text(title)
 										}
-									} else if let title = viewStore.listTitle {
-										Text(title)
 									}
 								}
 							}

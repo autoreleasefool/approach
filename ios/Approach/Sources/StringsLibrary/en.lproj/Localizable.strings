@@ -202,6 +202,8 @@
 "game.list.header.lowGame" = "Low of %d";
 "game.list.header.highGame" = "High of %d";
 "game.list.header.seriesTotal" = "Series total";
+"game.list.header.seeYourScores" = "See your scores";
+"game.list.header.whenYouStartBowling" = "Start bowling to see them charted here";
 "game.list.footer.archiveTip.title" = "You can now add and archive games to series";
 "game.list.footer.archiveTip.message" = "Tap the '+' to add more games to any series, and swipe to hide any unwanted games.";
 "game.settings.title" = "Game Settings";

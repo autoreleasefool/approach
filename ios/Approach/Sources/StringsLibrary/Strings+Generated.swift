@@ -642,8 +642,12 @@ public enum Strings {
         public static func numberOfGames(_ p1: Int) -> String {
           return Strings.tr("Localizable", "game.list.header.numberOfGames", p1, fallback: "Plural format key: \"%#@numberOfGames@\"")
         }
+        /// See your scores
+        public static let seeYourScores = Strings.tr("Localizable", "game.list.header.seeYourScores", fallback: "See your scores")
         /// Series total
         public static let seriesTotal = Strings.tr("Localizable", "game.list.header.seriesTotal", fallback: "Series total")
+        /// Start bowling to see them charted here
+        public static let whenYouStartBowling = Strings.tr("Localizable", "game.list.header.whenYouStartBowling", fallback: "Start bowling to see them charted here")
         public enum Chart {
           /// Game
           public static let xAxisLabel = Strings.tr("Localizable", "game.list.header.chart.xAxisLabel", fallback: "Game")
