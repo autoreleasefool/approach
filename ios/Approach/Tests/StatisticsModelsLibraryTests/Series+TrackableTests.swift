@@ -12,12 +12,11 @@ final class SeriesTrackableTests: XCTestCase {
 	func testTrackableGames_ReturnsGames() async throws {
 		let series = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 120, excludeFromStatistics: .include)
-		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 200, excludeFromStatistics: .exclude)
+		let games = generateGames(forSeries: [series])
 
 		let database = try initializeDatabase(
 			withSeries: .custom([series]),
-			withGames: .custom([game1, game2])
+			withGames: .custom(games)
 		)
 
 		let result = try await database.read {
@@ -26,7 +25,7 @@ final class SeriesTrackableTests: XCTestCase {
 				.fetchAll($0)
 		}
 
-		XCTAssertEqual(result, [game1])
+		XCTAssertEqual(result, [games[0]])
 	}
 
 	func testTrackableGames_WithZeroScore_IsNotReturned() async throws {
@@ -206,17 +205,15 @@ final class SeriesTrackableTests: XCTestCase {
 	func testTrackableFrames_ReturnsFrames() async throws {
 		let series = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123))
 
-		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 120, excludeFromStatistics: .include)
-		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 150, excludeFromStatistics: .exclude)
+		let games = generateGames(forSeries: [series])
 
-		let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
-		let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
+		let frames = generateFrames(forGames: games)
 
 		let database = try initializeDatabase(
 			withSeries: .custom([series]),
-			withGames: .custom([game1, game2]),
+			withGames: .custom(games),
 			withGameGear: .zero,
-			withFrames: .custom([frame1, frame2])
+			withFrames: .custom(frames)
 		)
 
 		let result = try await database.read {
@@ -228,7 +225,7 @@ final class SeriesTrackableTests: XCTestCase {
 				.fetchAll($0)
 		}
 
-		XCTAssertEqual(result, [frame1])
+		XCTAssertEqual(result, [frames[0]])
 	}
 
 	func testTrackableFrames_FilteredByGear_ReturnsFrames() async throws {
