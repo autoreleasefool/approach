@@ -114,6 +114,7 @@ public struct SeriesListItem: View {
 				.padding(.smallSpacing)
 				.measure(key: ContentSizeKey.self, to: $contentSize)
 			}
+			.contentShape(Rectangle())
 		}
 		.buttonStyle(.plain)
 		.listRowInsets(EdgeInsets())
