@@ -19,6 +19,7 @@ extension GamesRepository: DependencyKey {
 				return Game.Database
 					.all()
 					.filter(bySeries: forSeries)
+					.isNotArchived()
 					.order(Game.Database.Columns.index.asc)
 			}
 		}
@@ -55,12 +56,59 @@ extension GamesRepository: DependencyKey {
 				.asRequest(of: Game.Shareable.self)
 		}
 
+		@Sendable func reorderGames(series: Series.ID, games: [Game.ID], db: Database) throws {
+			let gameIds = Set(games)
+			let gamesForSeries =
+				try Set(
+					Game.Database
+						.filter(Game.Database.Columns.seriesId == series)
+						.isNotArchived()
+						.fetchAll(db)
+						.map(\.id)
+				)
+
+			guard gameIds.count == games.count else {
+				throw GamesRepositoryError.reorderingDuplicateGames(series: series, duplicateGames: games.findDuplicates())
+			}
+
+			guard gameIds == gamesForSeries else {
+				let missingGames = gamesForSeries.subtracting(gameIds)
+				let extraGames = gameIds.subtracting(gamesForSeries)
+				if !missingGames.isEmpty {
+					throw GamesRepositoryError.missingGamesToReorder(series: series, gamesInSeriesMissing: missingGames)
+				} else {
+					throw GamesRepositoryError.tooManyGamesToReorder(series: series, gamesNotInSeries: extraGames)
+				}
+			}
+
+			let newGameIndices: [(index: Int, id: Game.ID)] = games.enumerated().map { ($0, $1) }
+			for newGameIndex in newGameIndices {
+				try Game.Database
+					.filter(id: newGameIndex.id)
+					.updateAll(db, Game.Database.Columns.index.set(to: newGameIndex.index))
+			}
+		}
+
 		return Self(
 			list: { series, ordering in
 				database.reader().observe {
 					try requestList(forSeries: series, ordering: ordering)
 						.annotated(withRequired: Game.Database.bowler.select(Bowler.Database.Columns.id.forKey("bowlerId")))
 						.asRequest(of: Game.List.self)
+						.fetchAll($0)
+				}
+			},
+			archived: {
+				database.reader().observe {
+					try Game.Database
+						.all()
+						.isArchived()
+						.annotated(withRequired: Game.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
+						.annotated(withRequired: Game.Database.league.select(League.Database.Columns.name.forKey("leagueName")))
+						.annotated(withRequired: Game.Database.series.select(Series.Database.Columns.date.forKey("seriesDate")))
+						.order(SQL("seriesDate").sqlExpression)
+						.orderByIndex()
+						.asRequest(of: Game.Archived.self)
 						.fetchAll($0)
 				}
 			},
@@ -76,6 +124,7 @@ extension GamesRepository: DependencyKey {
 					let seriesAlias = TableAlias()
 					return try Game.Database
 						.all()
+						.isNotArchived()
 						.annotated(withRequired: Game.Database.matchPlay
 							.filter(MatchPlay.Database.Columns.opponentId == opponent)
 							.select(MatchPlay.Database.Columns.opponentScore, MatchPlay.Database.Columns.result)
@@ -179,9 +228,44 @@ extension GamesRepository: DependencyKey {
 					try await matchPlays.update(matchPlay)
 				}
 			},
-			delete: { id in
-				_ = try await database.writer().write {
-					try Game.Database.deleteOne($0, id: id)
+			archive: { id in
+				return try await database.writer().write {
+					let game = try Game.Database.fetchOneGuaranteed($0, id: id)
+
+					try Game.Database
+						.filter(id: game.id)
+						.updateAll(
+							$0,
+							Game.Database.Columns.isArchived.set(to: true),
+							Game.Database.Columns.index.set(to: -1)
+						)
+
+					let gamesForSeries = try Game.Database
+						.filter(Game.Database.Columns.seriesId == game.seriesId)
+						.orderByIndex()
+						.isNotArchived()
+						.fetchAll($0)
+						.map(\.id)
+
+					try reorderGames(series: game.seriesId, games: gamesForSeries, db: $0)
+				}
+			},
+			unarchive: { id in
+				return try await database.writer().write {
+					let game = try Game.Database.fetchOneGuaranteed($0, id: id)
+					let series = try Series.Database
+						.filter(id: game.seriesId)
+						.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? 0)
+						.asRequest(of: Series.HighestIndex.self)
+						.fetchOneGuaranteed($0)
+
+					try Game.Database
+						.filter(id: game.id)
+						.updateAll(
+							$0,
+							Game.Database.Columns.isArchived.set(to: false),
+							Game.Database.Columns.index.set(to: series.maxGameIndex <= 0 ? 0 : series.maxGameIndex + 1)
+						)
 				}
 			},
 			duplicateLanes: { source, destinations in
@@ -204,35 +288,7 @@ extension GamesRepository: DependencyKey {
 			},
 			reorderGames: { series, games in
 				try await database.writer().write {
-					let gameIds = Set(games)
-					let gamesForSeries =
-						try Set(
-							Game.Database
-								.filter(Game.Database.Columns.seriesId == series)
-								.fetchAll($0)
-								.map(\.id)
-						)
-
-					guard gameIds.count == games.count else {
-						throw GamesRepositoryError.reorderingDuplicateGames(series: series, duplicateGames: games.findDuplicates())
-					}
-
-					guard gameIds == gamesForSeries else {
-						let missingGames = gamesForSeries.subtracting(gameIds)
-						let extraGames = gameIds.subtracting(gamesForSeries)
-						if !missingGames.isEmpty {
-							throw GamesRepositoryError.missingGamesToReorder(series: series, gamesInSeriesMissing: missingGames)
-						} else {
-							throw GamesRepositoryError.tooManyGamesToReorder(series: series, gamesNotInSeries: extraGames)
-						}
-					}
-
-					let newGameIndices: [(index: Int, id: Game.ID)] = games.enumerated().map { ($0, $1) }
-					for newGameIndex in newGameIndices {
-						try Game.Database
-							.filter(id: newGameIndex.id)
-							.updateAll($0, Game.Database.Columns.index.set(to: newGameIndex.index))
-					}
+					try reorderGames(series: series, games: games, db: $0)
 				}
 			}
 		)

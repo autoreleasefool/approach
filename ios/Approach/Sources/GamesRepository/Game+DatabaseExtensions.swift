@@ -12,3 +12,11 @@ extension Game.Edit.SeriesInfo: FetchableRecord {}
 extension Game.Edit.AlleyInfo: FetchableRecord {}
 
 extension Game.Indexed: FetchableRecord {}
+
+// MARK: HighestIndex
+
+extension Series {
+	struct HighestIndex: Decodable, FetchableRecord {
+		public let maxGameIndex: Int
+	}
+}

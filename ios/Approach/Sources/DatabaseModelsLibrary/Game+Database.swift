@@ -11,6 +11,7 @@ extension Game {
 		public var locked: Lock
 		public var scoringMethod: ScoringMethod
 		public var excludeFromStatistics: ExcludeFromStatistics
+		public var isArchived: Bool
 
 		public init(
 			seriesId: Series.ID,
@@ -19,7 +20,8 @@ extension Game {
 			score: Int,
 			locked: Lock,
 			scoringMethod: ScoringMethod,
-			excludeFromStatistics: ExcludeFromStatistics
+			excludeFromStatistics: ExcludeFromStatistics,
+			isArchived: Bool
 		) {
 			self.seriesId = seriesId
 			self.id = id
@@ -28,6 +30,7 @@ extension Game {
 			self.locked = locked
 			self.scoringMethod = scoringMethod
 			self.excludeFromStatistics = excludeFromStatistics
+			self.isArchived = isArchived
 		}
 	}
 }
@@ -49,6 +52,7 @@ extension Game.Database {
 		public static let locked = Column(CodingKeys.locked)
 		public static let scoringMethod = Column(CodingKeys.scoringMethod)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
+		public static let isArchived = Column(CodingKeys.isArchived)
 	}
 }
 
@@ -58,7 +62,25 @@ extension DerivableRequest<Game.Database> {
 	}
 
 	public func filter(bySeries: Series.ID) -> Self {
-		return filter(Game.Database.Columns.seriesId == bySeries)
+		let seriesId = Game.Database.Columns.seriesId
+		return filter(seriesId == bySeries)
+	}
+
+	public func isArchived() -> Self {
+		let isArchived = Game.Database.Columns.isArchived
+		return filter(isArchived == true)
+	}
+
+	public func isNotArchived() -> Self {
+		let isArchived = Game.Database.Columns.isArchived
+		return filter(isArchived == false)
+	}
+
+	public func trackable() -> Self {
+		self
+			.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
+			.filter(Game.Database.Columns.score > 0)
+			.isNotArchived()
 	}
 }
 
@@ -69,3 +91,5 @@ extension Game.ListMatch: FetchableRecord {}
 extension Game.Summary: FetchableRecord {}
 
 extension Game.Shareable: FetchableRecord {}
+
+extension Game.Archived: FetchableRecord {}

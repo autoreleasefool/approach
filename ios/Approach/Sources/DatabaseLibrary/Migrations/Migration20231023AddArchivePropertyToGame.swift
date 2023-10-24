@@ -1,8 +1,10 @@
-//
-//  File.swift
-//  
-//
-//  Created by Joseph Roque on 2023-10-23.
-//
+import GRDB
 
-import Foundation
+struct Migration20231023AddArchivePropertyToGame: DBMigration {
+	static func migrate(_ db: Database) throws {
+		try db.alter(table: "game") { t in
+			t.add(column: "isArchived", .boolean)
+				.defaults(to: false)
+		}
+	}
+}
