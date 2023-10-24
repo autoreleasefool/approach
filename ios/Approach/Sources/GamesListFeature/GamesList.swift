@@ -148,7 +148,7 @@ public struct GamesList: Reducer {
 					return .run { _ in await tips.hide(tipFor: .gameArchiveTip) }
 
 				case .didTapAddButton:
-					return .run { [seriesId = state.series.id] send in
+					return .run { [seriesId = state.series.id] _ in
 						try await series.addGamesToSeries(seriesId, 1)
 					} catch: { error, send in
 						await send(.internal(.didAddGameToSeries(.failure(error))))
@@ -224,7 +224,7 @@ public struct GamesList: Reducer {
 						}
 
 					case let .didArchive(game):
-						return .run { send in
+						return .run { _ in
 							try await games.archive(game.id)
 						} catch: { error, send in
 							await send(.internal(.didArchiveGame(.failure(error))))
