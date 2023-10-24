@@ -67,9 +67,9 @@ extension BowlersRepository: DependencyKey {
 						.all()
 						.isArchived()
 						.orderByName()
-						.annotated(with: Bowler.Database.leagues.count.forKey("totalNumberOfLeagues") ?? 0)
-						.annotated(with: Bowler.Database.series.count.forKey("totalNumberOfSeries") ?? 0)
-						.annotated(with: Bowler.Database.games.count.forKey("totalNumberOfGames") ?? 0)
+						.annotated(with: Bowler.Database.leagues.isNotArchived().count.forKey("totalNumberOfLeagues") ?? 0)
+						.annotated(with: Bowler.Database.series.isNotArchived().count.forKey("totalNumberOfSeries") ?? 0)
+						.annotated(with: Bowler.Database.games.isNotArchived().count.forKey("totalNumberOfGames") ?? 0)
 						.asRequest(of: Bowler.Archived.self)
 						.fetchAll($0)
 				}

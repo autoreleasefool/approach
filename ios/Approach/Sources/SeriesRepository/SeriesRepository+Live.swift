@@ -19,7 +19,9 @@ extension SeriesRepository: DependencyKey {
 						.isNotArchived()
 						.bowled(inLeague: league)
 						.annotated(
-							with: Series.Database.games.sum(Game.Database.Columns.score).forKey("total") ?? 0
+							with: Series.Database.games
+								.isNotArchived()
+								.sum(Game.Database.Columns.score).forKey("total") ?? 0
 						)
 						.including(
 							all: Series.Database.games
@@ -70,7 +72,7 @@ extension SeriesRepository: DependencyKey {
 						.orderByDate()
 						.annotated(withRequired: Series.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
 						.annotated(withRequired: Series.Database.league.select(League.Database.Columns.name.forKey("leagueName")))
-						.annotated(with: Series.Database.games.count.forKey("totalNumberOfGames") ?? 0)
+						.annotated(with: Series.Database.games.isNotArchived().count.forKey("totalNumberOfGames") ?? 0)
 						.asRequest(of: Series.Archived.self)
 						.fetchAll($0)
 				}

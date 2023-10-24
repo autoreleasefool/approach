@@ -81,7 +81,7 @@ extension DerivableRequest<Series.Database> {
 	}
 
 	public func withNumberOfGames() -> Self {
-		annotated(with: Series.Database.games.count.forKey("numberOfGames") ?? 0)
+		annotated(with: Series.Database.games.all().isNotArchived().count.forKey("numberOfGames") ?? 0)
 	}
 }
 
