@@ -17,10 +17,11 @@ final class GamesRepositoryTests: XCTestCase {
 	// MARK: List
 
 	func testList_ReturnsAllGames() async throws {
-		// Given a database with two games
+		// Given a database with 3 games
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let game3 = Game.Database.mock(id: UUID(2), index: 2, isArchived: true)
+		let db = try initializeDatabase(withGames: .custom([game1, game2, game3]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -90,7 +91,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Given a database with two games
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
-		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+		let game3 = Game.Database.mock(id: UUID(2), index: 2, isArchived: true)
+		let db = try initializeDatabase(withGames: .custom([game1, game2, game3]))
 
 		// Fetching the games
 		let games = withDependencies {
@@ -154,6 +156,33 @@ final class GamesRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: Archived
+
+	func testArchived_ReturnsArchivedGames() async throws {
+		// Given a database with games
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 0, isArchived: true)
+
+		let db = try initializeDatabase(
+			withGames: .custom([game1, game2])
+		)
+
+		// Fetching the archived games
+		let games = withDependencies {
+			$0.database.reader = { db }
+			$0.games = .liveValue
+		} operation: {
+			self.games.archived()
+		}
+		var iterator = games.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the games
+		XCTAssertEqual(fetched, [
+			.init(id: UUID(1), bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0),
+		])
+	}
+
 	// MARK: Matches Against Opponent
 
 	func testMatchesAgainstOpponent_ReturnsGamesAgainstOpponent() async throws {
@@ -161,11 +190,13 @@ final class GamesRepositoryTests: XCTestCase {
 		let game1 = Game.Database.mock(id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(id: UUID(1), index: 1)
 		let game3 = Game.Database.mock(id: UUID(2), index: 2)
+		let game4 = Game.Database.mock(id: UUID(3), index: 3, isArchived: true)
 		let matchPlay1 = MatchPlay.Database.mock(gameId: UUID(0), id: UUID(0), opponentId: UUID(0), opponentScore: 1, result: .won)
 		let matchPlay2 = MatchPlay.Database.mock(gameId: UUID(1), id: UUID(1), opponentId: UUID(1), opponentScore: 2, result: .lost)
+		let matchPlay3 = MatchPlay.Database.mock(gameId: UUID(3), id: UUID(2), opponentId: UUID(1), opponentScore: 2, result: .lost)
 		let db = try initializeDatabase(
-			withGames: .custom([game1, game2, game3]),
-			withMatchPlays: .custom([matchPlay1, matchPlay2])
+			withGames: .custom([game1, game2, game3, game4]),
+			withMatchPlays: .custom([matchPlay1, matchPlay2, matchPlay3])
 		)
 
 		// Fetching the games
@@ -870,47 +901,201 @@ final class GamesRepositoryTests: XCTestCase {
 		XCTAssertEqual(count, 0)
 	}
 
-	// MARK: Delete
+	// MARK: Archive
 
-	func testDelete_WhenIdExists_DeletesGame() async throws {
-		// Given a database with two games
-		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let game2 = Game.Database.mock(id: UUID(1), index: 1)
+	func testArchive_WhenIdExists_ArchivesGame() async throws {
+		// Given a database with 2 games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, isArchived: false)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, isArchived: false)
 		let db = try initializeDatabase(withGames: .custom([game1, game2]))
 
-		// Deleting the first game
+		// Archiving the first game
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.delete(UUID(0))
+			try await self.games.archive(UUID(0))
 		}
 
-		// Updates the database
-		let deletedExists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
-		XCTAssertFalse(deletedExists)
+		// Does not delete the entry
+		let archiveExists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(archiveExists)
+
+		// Marks the entry as archived
+		let archived = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, true)
 
 		// And leaves the other game intact
 		let otherExists = try await db.read { try Game.Database.exists($0, id: UUID(1)) }
 		XCTAssertTrue(otherExists)
+		let otherIsArchived = try await db.read { try Game.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(otherIsArchived?.isArchived, false)
 	}
 
-	func testDelete_WhenIdNotExists_DoesNothing() async throws {
-		// Given a database with one game
-		let game1 = Game.Database.mock(id: UUID(0), index: 0)
-		let db = try initializeDatabase(withGames: .custom([game1]))
+	func testArchive_ReordersRemainingGames() async throws {
+		// Given a database with 3 games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, isArchived: false)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, isArchived: false)
+		let game3 = Game.Database.mock(id: UUID(2), index: 2, isArchived: false)
+		let db = try initializeDatabase(withGames: .custom([game1, game2, game3]))
 
-		// Deleting a non-existent series
+		// Archiving the second game
 		try await withDependencies {
 			$0.database.writer = { db }
 			$0.games = .liveValue
 		} operation: {
-			try await self.games.delete(UUID(1))
+			try await self.games.archive(UUID(1))
+		}
+
+		// Reorders the remaining games
+		let firstGame = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(firstGame?.isArchived, false)
+		XCTAssertEqual(firstGame?.index, 0)
+
+		let thirdGame = try await db.read { try Game.Database.fetchOne($0, id: UUID(2)) }
+		XCTAssertEqual(thirdGame?.isArchived, false)
+		XCTAssertEqual(thirdGame?.index, 1)
+	}
+
+	func testArchive_SetsIndexToNegativeOne() async throws {
+		// Given a database with 2 games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, isArchived: false)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, isArchived: false)
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+
+		// Archiving the games
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.archive(UUID(0))
+			try await self.games.archive(UUID(1))
+		}
+
+		// Sets the indices to -1
+		let firstGame = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(firstGame?.isArchived, true)
+		XCTAssertEqual(firstGame?.index, -1)
+
+		let secondGame = try await db.read { try Game.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(secondGame?.isArchived, true)
+		XCTAssertEqual(secondGame?.index, -1)
+	}
+
+	func testArchive_WhenIdNotExists_ThrowsError() async throws {
+		// Given a database with 1 game
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, isArchived: false)
+		let db = try initializeDatabase(withGames: .custom([game1]))
+
+		// Archiving a non-existent game
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+				$0.games = .liveValue
+			} operation: {
+				try await self.games.archive(UUID(1))
+			}
 		}
 
 		// Leaves the game
 		let exists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
+		let archived = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
+	}
+
+	// MARK: Unarchive
+
+	func testUnarchive_WhenIdExists_UnarchivesGame() async throws {
+		// Given a database with 2 games
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, isArchived: true)
+		let game2 = Game.Database.mock(id: UUID(1), index: 1, isArchived: true)
+		let db = try initializeDatabase(withGames: .custom([game1, game2]))
+
+		// Unarchiving the first game
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.unarchive(UUID(0))
+		}
+
+		// Does not delete the entry
+		let archiveExists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(archiveExists)
+
+		// Marks the entry as unarchived
+		let archived = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, false)
+
+		// And leaves the other game intact
+		let otherExists = try await db.read { try Game.Database.exists($0, id: UUID(1)) }
+		XCTAssertTrue(otherExists)
+		let otherIsArchived = try await db.read { try Game.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(otherIsArchived?.isArchived, true)
+	}
+
+	func testUnarchive_MovesGameToLastIndex() async throws {
+		// Given a database with 3 games
+		let game1 = Game.Database.mock(id: UUID(0), index: -1, isArchived: true)
+		let game2 = Game.Database.mock(id: UUID(1), index: 0, isArchived: false)
+		let game3 = Game.Database.mock(id: UUID(2), index: 1, isArchived: false)
+		let game4 = Game.Database.mock(id: UUID(3), index: 2, isArchived: false)
+		let db = try initializeDatabase(withGames: .custom([game1, game2, game3, game4]))
+
+		// Unarchiving the first game
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.unarchive(UUID(0))
+		}
+
+		// Updates the index
+		let unarchived = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(unarchived?.isArchived, false)
+		XCTAssertEqual(unarchived?.index, 3)
+	}
+
+	func testUnarchive_WhenNoOtherGameExists_MovesGameToZeroIndex() async throws {
+		// Given a database with 3 games
+		let game1 = Game.Database.mock(id: UUID(0), index: -1, isArchived: true)
+		let db = try initializeDatabase(withGames: .custom([game1]))
+
+		// Unarchiving the first game
+		try await withDependencies {
+			$0.database.writer = { db }
+			$0.games = .liveValue
+		} operation: {
+			try await self.games.unarchive(UUID(0))
+		}
+
+		// Updates the index
+		let unarchived = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(unarchived?.isArchived, false)
+		XCTAssertEqual(unarchived?.index, 0)
+	}
+
+	func testUnarchive_WhenIdNotExists_ThrowsError() async throws {
+		// Given a database with 1 game
+		let game1 = Game.Database.mock(id: UUID(0), index: 0, isArchived: true)
+		let db = try initializeDatabase(withGames: .custom([game1]))
+
+		// Unarchiving a non-existent game
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0.database.writer = { db }
+				$0.games = .liveValue
+			} operation: {
+				try await self.games.unarchive(UUID(1))
+			}
+		}
+
+		// Leaves the game
+		let exists = try await db.read { try Game.Database.exists($0, id: UUID(0)) }
+		XCTAssertTrue(exists)
+		let archived = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(archived?.isArchived, true)
 	}
 
 	// MARK: - Duplicate Lanes

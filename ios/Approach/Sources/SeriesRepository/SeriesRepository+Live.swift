@@ -138,7 +138,11 @@ extension SeriesRepository: DependencyKey {
 			addGamesToSeries: { id, count in
 				try await withEscapedDependencies { dependencies in
 					try await database.writer().write { db in
-						let series = try Series.Database.fetchOneGuaranteed(db, id: id)
+						let series = try Series.Database
+							.filter(id: id)
+							.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? 0)
+							.asRequest(of: Series.HighestIndex.self)
+							.fetchOneGuaranteed(db)
 						let bowler = try Bowler.Database
 							.having(Bowler.Database.leagues.filter(League.Database.Columns.id == series.leagueId).isEmpty == false)
 							.fetchOneGuaranteed(db)
@@ -146,20 +150,12 @@ extension SeriesRepository: DependencyKey {
 							.request(for: Bowler.Database.preferredGear)
 							.fetchAll(db)
 
-						guard let highestIndex = try Series.Database
-							.filter(id: id)
-							.annotated(with: Series.Database.games.max(Game.Database.Columns.index) ?? 0)
-							.asRequest(of: Series.HighestIndex.self)
-							.fetchOne(db) else {
-							return
-						}
-
 						try dependencies.yield {
 							try Series.insertGames(
 								forSeries: id,
 								excludeFromStatistics: series.excludeFromStatistics,
 								withPreferredGear: preferredGear,
-								startIndex: highestIndex.maxGameIndex == 0 ? 0 : highestIndex.maxGameIndex + 1,
+								startIndex: series.maxGameIndex <= 0 ? 0 : series.maxGameIndex + 1,
 								count: count,
 								db: db
 							)

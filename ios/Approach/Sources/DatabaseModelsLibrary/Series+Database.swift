@@ -107,7 +107,8 @@ extension Series {
 				score: 0,
 				locked: .open,
 				scoringMethod: .byFrame,
-				excludeFromStatistics: .init(from: excludeFromStatistics)
+				excludeFromStatistics: .init(from: excludeFromStatistics),
+				isArchived: false
 			)
 			try game.insert(db)
 

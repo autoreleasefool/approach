@@ -144,7 +144,8 @@ private func generateGames(forSeries: [(Series.Database, numberOfGames: Int)]) -
 				score: baseGamesScores[gameId % baseGamesScores.count],
 				locked: .locked,
 				scoringMethod: .byFrame,
-				excludeFromStatistics: .include
+				excludeFromStatistics: .include,
+				isArchived: false
 			)
 		}
 	}

@@ -27,6 +27,7 @@ public enum GamesRepositoryError: Error, LocalizedError {
 
 public struct GamesRepository: Sendable {
 	public var list: @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.List], Error>
+	public var archived: @Sendable () -> AsyncThrowingStream<[Game.Archived], Error>
 	public var summariesList: @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.Summary], Error>
 	public var matchesAgainstOpponent: @Sendable (Bowler.ID) -> AsyncThrowingStream<[Game.ListMatch], Error>
 	public var shareGames: @Sendable ([Game.ID]) async throws -> [Game.Shareable]
@@ -34,12 +35,14 @@ public struct GamesRepository: Sendable {
 	public var observe: @Sendable (Game.ID) -> AsyncThrowingStream<Game.Edit?, Error>
 	public var findIndex: @Sendable (Game.ID) async throws -> Game.Indexed?
 	public var update: @Sendable (Game.Edit) async throws -> Void
-	public var delete: @Sendable (Game.ID) async throws -> Void
+	public var archive: @Sendable (Game.ID) async throws -> Void
+	public var unarchive: @Sendable (Game.ID) async throws -> Void
 	public var duplicateLanes: @Sendable (Game.ID, [Game.ID]) async throws -> Void
 	public var reorderGames: @Sendable (Series.ID, [Game.ID]) async throws -> Void
 
 	public init(
 		list: @escaping @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.List], Error>,
+		archived: @escaping @Sendable () -> AsyncThrowingStream<[Game.Archived], Error>,
 		summariesList: @escaping @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.Summary], Error>,
 		matchesAgainstOpponent: @escaping @Sendable (Bowler.ID) -> AsyncThrowingStream<[Game.ListMatch], Error>,
 		shareGames: @escaping @Sendable ([Game.ID]) async throws -> [Game.Shareable],
@@ -47,11 +50,13 @@ public struct GamesRepository: Sendable {
 		observe: @escaping @Sendable (Game.ID) -> AsyncThrowingStream<Game.Edit?, Error>,
 		findIndex: @escaping @Sendable (Game.ID) async throws -> Game.Indexed?,
 		update: @escaping @Sendable (Game.Edit) async throws -> Void,
-		delete: @escaping @Sendable (Game.ID) async throws -> Void,
+		archive: @escaping @Sendable (Game.ID) async throws -> Void,
+		unarchive: @escaping @Sendable (Game.ID) async throws -> Void,
 		duplicateLanes: @escaping @Sendable (Game.ID, [Game.ID]) async throws -> Void,
 		reorderGames: @escaping @Sendable (Series.ID, [Game.ID]) async throws -> Void
 	) {
 		self.list = list
+		self.archived = archived
 		self.summariesList = summariesList
 		self.matchesAgainstOpponent = matchesAgainstOpponent
 		self.shareGames = shareGames
@@ -59,7 +64,8 @@ public struct GamesRepository: Sendable {
 		self.observe = observe
 		self.findIndex = findIndex
 		self.update = update
-		self.delete = delete
+		self.archive = archive
+		self.unarchive = unarchive
 		self.duplicateLanes = duplicateLanes
 		self.reorderGames = reorderGames
 	}
@@ -91,6 +97,7 @@ public struct GamesRepository: Sendable {
 extension GamesRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _ in unimplemented("\(Self.self).list") },
+		archived: { unimplemented("\(Self.self).archived") },
 		summariesList: { _, _ in unimplemented("\(Self.self).summariesList") },
 		matchesAgainstOpponent: { _ in unimplemented("\(Self.self).matchesAgainstOpponent") },
 		shareGames: { _ in unimplemented("\(Self.self).shareGames") },
@@ -98,7 +105,8 @@ extension GamesRepository: TestDependencyKey {
 		observe: { _ in unimplemented("\(Self.self).observeChanges") },
 		findIndex: { _ in unimplemented("\(Self.self).findIndex") },
 		update: { _ in unimplemented("\(Self.self).update") },
-		delete: { _ in unimplemented("\(Self.self).delete") },
+		archive: { _ in unimplemented("\(Self.self).archive") },
+		unarchive: { _ in unimplemented("\(Self.self).unarchive") },
 		duplicateLanes: { _, _ in unimplemented("\(Self.self).duplicateLanes") },
 		reorderGames: { _, _ in unimplemented("\(Self.self).reorderGames") }
 	)

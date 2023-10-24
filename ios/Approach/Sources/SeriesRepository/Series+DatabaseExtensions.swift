@@ -39,6 +39,8 @@ extension Series.Create: PersistableRecord {
 
 extension Series {
 	struct HighestIndex: Decodable, FetchableRecord {
+		public let leagueId: League.ID
+		public let excludeFromStatistics: ExcludeFromStatistics
 		public let maxGameIndex: Int
 	}
 }
