@@ -33,7 +33,7 @@ features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "St
 
 [features.ArchiveList]
 features = [ "Errors" ]
-repositories = [ "Bowlers", "Leagues", "Series" ]
+repositories = [ "Bowlers", "Games", "Leagues", "Series" ]
 libraries = [ "ModelsViews" ]
 
 [features.AvatarEditor]

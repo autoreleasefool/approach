@@ -11,6 +11,7 @@ import SharingFeature
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import TipsLibrary
 import ViewsLibrary
 
 public struct GamesListView: View {
@@ -21,12 +22,14 @@ public struct GamesListView: View {
 		let editMode: EditMode
 		let scores: [GamesListHeaderView.Score]
 		let isSeriesSharingEnabled: Bool
+		let isShowingArchiveTip: Bool
 
-		init(store: BindingViewStore<GamesList.State>) {
-			self.title = store.series.date.longFormat
-			self.editMode = store.list.editMode
-			self.scores = store.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
-			self.isSeriesSharingEnabled = store.isSeriesSharingEnabled
+		init(state: GamesList.State) {
+			self.title = state.series.date.longFormat
+			self.editMode = state.list.editMode
+			self.scores = state.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
+			self.isSeriesSharingEnabled = state.isSeriesSharingEnabled
+			self.isShowingArchiveTip = state.isShowingArchiveTip
 		}
 	}
 
@@ -50,6 +53,12 @@ public struct GamesListView: View {
 				}
 			} header: {
 				GamesListHeaderView(scores: viewStore.scores)
+			} footer: {
+				if viewStore.isShowingArchiveTip {
+					BasicTipView(tip: .gameArchiveTip) {
+						viewStore.send(.didTapArchiveTipDismissButton, animation: .default)
+					}
+				}
 			}
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {

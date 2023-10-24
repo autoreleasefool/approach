@@ -15,6 +15,8 @@ import SeriesRepositoryInterface
 import SharingFeature
 import StringsLibrary
 import SwiftUI
+import TipsLibrary
+import TipsServiceInterface
 
 extension Game.List: ResourceListItem {
 	public var name: String { Strings.Game.titleWithOrdinal(index + 1) }
@@ -32,12 +34,13 @@ public struct GamesList: Reducer {
 		@PresentationState public var destination: Destination.State?
 
 		public let isSeriesSharingEnabled: Bool
+		public var isShowingArchiveTip: Bool
 
 		public init(series: Series.Summary, host: League.SeriesHost) {
 			self.seriesHost = host
 			self.series = series
 			self.list = .init(
-				features: [.moveable],
+				features: [.moveable, .swipeToArchive],
 				query: series.id,
 				listTitle: nil,
 				emptyContent: .init(
@@ -49,23 +52,26 @@ public struct GamesList: Reducer {
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.isSeriesSharingEnabled = featureFlags.isEnabled(.sharingSeries)
+
+			@Dependency(\.tips) var tips
+			self.isShowingArchiveTip = tips.shouldShow(tipFor: .gameArchiveTip)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+		public enum ViewAction: Equatable {
 			case didTapGame(Game.ID)
 			case didTapShareButton
 			case didTapEditButton
 			case didTapAddButton
-
-			case binding(BindingAction<State>)
+			case didTapArchiveTipDismissButton
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
 			case didReorderGames(TaskResult<Never>)
 			case didAddGameToSeries(TaskResult<Never>)
+			case didArchiveGame(TaskResult<Never>)
 
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
@@ -108,6 +114,7 @@ public struct GamesList: Reducer {
 		case seriesNotFound
 		case gamesNotReordered
 		case gameNotAdded
+		case failedToArchiveGame
 	}
 
 	public init() {}
@@ -116,6 +123,7 @@ public struct GamesList: Reducer {
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.games) var games
 	@Dependency(\.series) var series
+	@Dependency(\.tips) var tips
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -134,6 +142,10 @@ public struct GamesList: Reducer {
 				case .didTapShareButton:
 					state.destination = .sharing(.init(dataSource: .series(state.series.id)))
 					return .none
+
+				case .didTapArchiveTipDismissButton:
+					state.isShowingArchiveTip = false
+					return .run { _ in await tips.hide(tipFor: .gameArchiveTip) }
 
 				case .didTapAddButton:
 					return .run { [seriesId = state.series.id] send in
@@ -178,9 +190,6 @@ public struct GamesList: Reducer {
 					))
 
 					return .run { _ in await analytics.resetGameSessionID() }
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -199,6 +208,11 @@ public struct GamesList: Reducer {
 						.enqueue(.gameNotAdded, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
 						.map { .internal(.errors($0)) }
 
+				case let .didArchiveGame(.failure(error)):
+					return state.errors
+						.enqueue(.failedToArchiveGame, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
+						.map { .internal(.errors($0)) }
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didMove:
@@ -209,7 +223,14 @@ public struct GamesList: Reducer {
 							await send(.internal(.didReorderGames(.failure(error))))
 						}
 
-					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton, .didArchive:
+					case let .didArchive(game):
+						return .run { send in
+							try await games.archive(game.id)
+						} catch: { error, send in
+							await send(.internal(.didArchiveGame(.failure(error))))
+						}
+
+					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton:
 						return .none
 					}
 
@@ -295,4 +316,12 @@ public enum GamesListError: LocalizedError {
 			return "Games were not loaded in List"
 		}
 	}
+}
+
+extension Tip {
+	static let gameArchiveTip = Tip(
+		id: "Games.List.archive",
+		title: Strings.Game.List.Footer.ArchiveTip.title,
+		message: Strings.Game.List.Footer.ArchiveTip.message
+	)
 }

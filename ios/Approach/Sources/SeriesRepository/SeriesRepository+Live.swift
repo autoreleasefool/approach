@@ -23,6 +23,7 @@ extension SeriesRepository: DependencyKey {
 						)
 						.including(
 							all: Series.Database.games
+								.isNotArchived()
 								.order(Game.Database.Columns.index)
 								.select(Game.Database.Columns.index, Game.Database.Columns.score)
 								.forKey("scores")

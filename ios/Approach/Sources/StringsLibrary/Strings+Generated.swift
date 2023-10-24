@@ -244,6 +244,8 @@ public enum Strings {
     public enum Alert {
       /// Your bowler's data has been restored
       public static let restoredBowler = Strings.tr("Localizable", "archive.alert.restoredBowler", fallback: "Your bowler's data has been restored")
+      /// Your game's data has been restored
+      public static let restoredGame = Strings.tr("Localizable", "archive.alert.restoredGame", fallback: "Your game's data has been restored")
       /// Your league's data has been restored
       public static let restoredLeague = Strings.tr("Localizable", "archive.alert.restoredLeague", fallback: "Your league's data has been restored")
       /// Your series' data has been restored
@@ -252,10 +254,14 @@ public enum Strings {
       public static func unarchived(_ p1: Any) -> String {
         return Strings.tr("Localizable", "archive.alert.unarchived", String(describing: p1), fallback: "Unarchived %@")
       }
+      /// Unarchived game in %@ series
+      public static func unarchivedGame(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "archive.alert.unarchivedGame", String(describing: p1), fallback: "Unarchived game in %@ series")
+      }
     }
     public enum List {
-      /// Here you will find all the bowlers, leagues, and series you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.
-      public static let description = Strings.tr("Localizable", "archive.list.description", fallback: "Here you will find all the bowlers, leagues, and series you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.")
+      /// Here you will find all the bowlers, leagues, series, and games you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.
+      public static let description = Strings.tr("Localizable", "archive.list.description", fallback: "Here you will find all the bowlers, leagues, series, and games you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.")
       public enum Bowlers {
         /// Archived with %@ leagues, %@ series, %@ games
         public static func archivedWith(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
@@ -265,6 +271,20 @@ public enum Strings {
         public static let `none` = Strings.tr("Localizable", "archive.list.bowlers.none", fallback: "No bowlers have been archived")
         /// Archived Bowlers
         public static let title = Strings.tr("Localizable", "archive.list.bowlers.title", fallback: "Archived Bowlers")
+      }
+      public enum Games {
+        /// Belongs to %@, in %@
+        public static func belongsTo(_ p1: Any, _ p2: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.games.belongsTo", String(describing: p1), String(describing: p2), fallback: "Belongs to %@, in %@")
+        }
+        /// %@ game with score of %@
+        public static func itemTitle(_ p1: Any, _ p2: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.games.itemTitle", String(describing: p1), String(describing: p2), fallback: "%@ game with score of %@")
+        }
+        /// No games have been archived
+        public static let `none` = Strings.tr("Localizable", "archive.list.games.none", fallback: "No games have been archived")
+        /// Archived Games
+        public static let title = Strings.tr("Localizable", "archive.list.games.title", fallback: "Archived Games")
       }
       public enum Leagues {
         /// Archived with %@ series, %@ games
@@ -601,6 +621,14 @@ public enum Strings {
     public enum List {
       /// Games
       public static let title = Strings.tr("Localizable", "game.list.title", fallback: "Games")
+      public enum Footer {
+        public enum ArchiveTip {
+          /// Tap the '+' to add more games to any series, and swipe to hide any unwanted games.
+          public static let message = Strings.tr("Localizable", "game.list.footer.archiveTip.message", fallback: "Tap the '+' to add more games to any series, and swipe to hide any unwanted games.")
+          /// You can now add and archive games to series
+          public static let title = Strings.tr("Localizable", "game.list.footer.archiveTip.title", fallback: "You can now add and archive games to series")
+        }
+      }
       public enum Header {
         /// High of %d
         public static func highGame(_ p1: Int) -> String {

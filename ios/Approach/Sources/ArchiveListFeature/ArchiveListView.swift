@@ -58,6 +58,19 @@ public struct ArchiveListView: View {
 							}
 					}
 				}
+
+				Section(Strings.Archive.List.Games.title) {
+					if viewStore.archivedGames.isEmpty {
+						Text(Strings.Archive.List.Games.none)
+					}
+
+					ForEach(viewStore.archivedGames) { game in
+						Game.ArchivedView(game)
+							.swipeActions(allowsFullSwipe: true) {
+								UnarchiveButton { viewStore.send(.didSwipeGame(game)) }
+							}
+					}
+				}
 			}
 			.navigationTitle(Strings.Archive.title)
 			.task { await viewStore.send(.observeData).finish() }
