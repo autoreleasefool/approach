@@ -20,55 +20,16 @@ public struct ArchiveListView: View {
 					Text(Strings.Archive.List.description)
 				}
 
-				Section(Strings.Archive.List.Bowlers.title) {
-					if viewStore.archivedBowlers.isEmpty {
-						Text(Strings.Archive.List.Bowlers.none)
-					}
-
-					ForEach(viewStore.archivedBowlers) { bowler in
-						Bowler.ArchivedView(bowler)
-							.swipeActions(allowsFullSwipe: true) {
-								UnarchiveButton { viewStore.send(.didSwipeBowler(bowler)) }
-							}
-					}
-				}
-
-				Section(Strings.Archive.List.Leagues.title) {
-					if viewStore.archivedLeagues.isEmpty {
-						Text(Strings.Archive.List.Leagues.none)
-					}
-
-					ForEach(viewStore.archivedLeagues) { league in
-						League.ArchivedView(league)
-							.swipeActions(allowsFullSwipe: true) {
-								UnarchiveButton { viewStore.send(.didSwipeLeague(league)) }
-							}
-					}
-				}
-
-				Section(Strings.Archive.List.Series.title) {
-					if viewStore.archivedSeries.isEmpty {
-						Text(Strings.Archive.List.Series.none)
-					}
-
-					ForEach(viewStore.archivedSeries) { series in
-						Series.ArchivedView(series)
-							.swipeActions(allowsFullSwipe: true) {
-								UnarchiveButton { viewStore.send(.didSwipeSeries(series)) }
-							}
-					}
-				}
-
-				Section(Strings.Archive.List.Games.title) {
-					if viewStore.archivedGames.isEmpty {
-						Text(Strings.Archive.List.Games.none)
-					}
-
-					ForEach(viewStore.archivedGames) { game in
-						Game.ArchivedView(game)
-							.swipeActions(allowsFullSwipe: true) {
-								UnarchiveButton { viewStore.send(.didSwipeGame(game)) }
-							}
+				Section {
+					if viewStore.archived.isEmpty {
+						Text(Strings.Archive.List.none)
+					} else {
+						ForEach(viewStore.archived) { item in
+							ArchiveItemView(item: item)
+								.swipeActions(allowsFullSwipe: true) {
+									UnarchiveButton { viewStore.send(.didSwipe(item)) }
+								}
+						}
 					}
 				}
 			}

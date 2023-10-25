@@ -3,18 +3,35 @@ import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
 import FeatureActionLibrary
+import Foundation
 import GamesRepositoryInterface
 import LeaguesRepositoryInterface
 import ModelsLibrary
 import SeriesRepositoryInterface
 import StringsLibrary
 
+public struct ArchiveItem: Identifiable, Equatable {
+	public let id: ArchiveItemID
+	public let title: String
+	public let subtitle: String
+	public let archivedOn: Date?
+}
+
+public enum ArchiveItemID: Hashable {
+	case bowler(Bowler.ID)
+	case league(League.ID)
+	case series(Series.ID)
+	case game(Game.ID)
+}
+
 public struct ArchiveList: Reducer {
 	public struct State: Equatable {
-		public var archivedBowlers: IdentifiedArrayOf<Bowler.Archived> = []
-		public var archivedLeagues: IdentifiedArrayOf<League.Archived> = []
-		public var archivedSeries: IdentifiedArrayOf<Series.Archived> = []
-		public var archivedGames: IdentifiedArrayOf<Game.Archived> = []
+		public var archivedBowlers: [Bowler.Archived] = []
+		public var archivedLeagues: [League.Archived] = []
+		public var archivedSeries: [Series.Archived] = []
+		public var archivedGames: [Game.Archived] = []
+
+		public var archived: IdentifiedArrayOf<ArchiveItem> = []
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -26,10 +43,7 @@ public struct ArchiveList: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case observeData
-			case didSwipeBowler(Bowler.Archived)
-			case didSwipeLeague(League.Archived)
-			case didSwipeSeries(Series.Archived)
-			case didSwipeGame(Game.Archived)
+			case didSwipe(ArchiveItem)
 			case alert(PresentationAction<AlertAction>)
 		}
 
@@ -40,10 +54,7 @@ public struct ArchiveList: Reducer {
 			case seriesResponse(TaskResult<[Series.Archived]>)
 			case gamesResponse(TaskResult<[Game.Archived]>)
 
-			case unarchivedBowler(TaskResult<Bowler.Archived>)
-			case unarchivedLeague(TaskResult<League.Archived>)
-			case unarchivedSeries(TaskResult<Series.Archived>)
-			case unarchivedGame(TaskResult<Game.Archived>)
+			case unarchived(TaskResult<ArchiveItem>)
 
 			case errors(Errors<ErrorID>.Action)
 		}
@@ -62,10 +73,7 @@ public struct ArchiveList: Reducer {
 		case failedToLoadLeagues
 		case failedToLoadSeries
 		case failedToLoadGames
-		case failedToUnarchiveBowler
-		case failedToUnarchiveLeague
-		case failedToUnarchiveSeries
-		case failedToUnarchiveGame
+		case failedToUnarchive
 	}
 
 	public init() {}
@@ -92,35 +100,20 @@ public struct ArchiveList: Reducer {
 						observeGames()
 					)
 
-				case let .didSwipeBowler(bowler):
+				case let .didSwipe(item):
 					return .run { send in
-						await send(.internal(.unarchivedBowler(TaskResult {
-							try await self.bowlers.unarchive(bowler.id)
-							return bowler
-						})))
-					}
-
-				case let .didSwipeLeague(league):
-					return .run { send in
-						await send(.internal(.unarchivedLeague(TaskResult {
-							try await self.leagues.unarchive(league.id)
-							return league
-						})))
-					}
-
-				case let .didSwipeSeries(series):
-					return .run { send in
-						await send(.internal(.unarchivedSeries(TaskResult {
-							try await self.series.unarchive(series.id)
-							return series
-						})))
-					}
-
-				case let .didSwipeGame(game):
-					return .run { send in
-						await send(.internal(.unarchivedGame(TaskResult {
-							try await self.games.unarchive(game.id)
-							return game
+						await send(.internal(.unarchived(TaskResult {
+							switch item.id {
+							case let .bowler(bowlerId):
+								try await self.bowlers.unarchive(bowlerId)
+							case let .league(leagueId):
+								try await self.leagues.unarchive(leagueId)
+							case let .series(seriesId):
+								try await self.series.unarchive(seriesId)
+							case let .game(gameId):
+								try await self.games.unarchive(gameId)
+							}
+							return item
 						})))
 					}
 
@@ -138,62 +131,47 @@ public struct ArchiveList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .bowlersResponse(.success(bowlers)):
-					state.archivedBowlers = .init(uniqueElements: bowlers)
+				case let .unarchived(.success(item)):
+					state.alert = AlertState {
+						TextState(Strings.Archive.Alert.unarchived(item.title))
+					} message: {
+						switch item.id {
+						case .bowler: return TextState(Strings.Archive.Alert.restoredBowler)
+						case .league: return TextState(Strings.Archive.Alert.restoredLeague)
+						case .series: return TextState(Strings.Archive.Alert.restoredSeries)
+						case .game: return TextState(Strings.Archive.Alert.restoredGame)
+						}
+					}
 					return .none
 
-				case let .unarchivedBowler(.success(bowler)):
-					state.alert = AlertState {
-						TextState(Strings.Archive.Alert.unarchived(bowler.name))
-					} message: {
-						TextState(Strings.Archive.Alert.restoredBowler)
-					}
+				case let .bowlersResponse(.success(bowlers)):
+					state.archivedBowlers = bowlers
+					state.updateItems()
 					return .none
 
 				case let .leaguesResponse(.success(leagues)):
-					state.archivedLeagues = .init(uniqueElements: leagues)
-					return .none
-
-				case let .unarchivedLeague(.success(league)):
-					state.alert = AlertState {
-						TextState(Strings.Archive.Alert.unarchived(league.name))
-					} message: {
-						TextState(Strings.Archive.Alert.restoredLeague)
-					}
+					state.archivedLeagues = leagues
+					state.updateItems()
 					return .none
 
 				case let .seriesResponse(.success(series)):
-					state.archivedSeries = .init(uniqueElements: series)
-					return .none
-
-				case let .unarchivedSeries(.success(series)):
-					state.alert = AlertState {
-						TextState(Strings.Archive.Alert.unarchived(series.date.longFormat))
-					} message: {
-						TextState(Strings.Archive.Alert.restoredSeries)
-					}
+					state.archivedSeries = series
+					state.updateItems()
 					return .none
 
 				case let .gamesResponse(.success(games)):
-					state.archivedGames = .init(uniqueElements: games)
+					state.archivedGames = games
+					state.updateItems()
 					return .none
 
-				case let .unarchivedGame(.success(game)):
-					state.alert = AlertState {
-						TextState(Strings.Archive.Alert.unarchivedGame(game.seriesDate.longFormat))
-					} message: {
-						TextState(Strings.Archive.Alert.restoredGame)
-					}
-					return .none
+				case let .unarchived(.failure(error)):
+					return state.errors
+						.enqueue(.failedToUnarchive, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
+						.map { .internal(.errors($0)) }
 
 				case let .bowlersResponse(.failure(error)):
 					return state.errors
 						.enqueue(.failedToLoadBowlers, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
-						.map { .internal(.errors($0)) }
-
-				case let .unarchivedBowler(.failure(error)):
-					return state.errors
-						.enqueue(.failedToUnarchiveBowler, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
 						.map { .internal(.errors($0)) }
 
 				case let .leaguesResponse(.failure(error)):
@@ -201,29 +179,14 @@ public struct ArchiveList: Reducer {
 						.enqueue(.failedToLoadLeagues, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .unarchivedLeague(.failure(error)):
-					return state.errors
-						.enqueue(.failedToUnarchiveLeague, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
-						.map { .internal(.errors($0)) }
-
 				case let .seriesResponse(.failure(error)):
 					return state.errors
 						.enqueue(.failedToLoadSeries, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .unarchivedSeries(.failure(error)):
-					return state.errors
-						.enqueue(.failedToUnarchiveSeries, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
-						.map { .internal(.errors($0)) }
-
 				case let .gamesResponse(.failure(error)):
 					return state.errors
 						.enqueue(.failedToLoadGames, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
-						.map { .internal(.errors($0)) }
-
-				case let .unarchivedGame(.failure(error)):
-					return state.errors
-						.enqueue(.failedToUnarchiveGame, thrownError: error, toastMessage: Strings.Error.Toast.failedToRestore)
 						.map { .internal(.errors($0)) }
 
 				case let .errors(.delegate(delegateAction)):
@@ -279,6 +242,80 @@ public struct ArchiveList: Reducer {
 			}
 		} catch: { error, send in
 			await send(.internal(.gamesResponse(.failure(error))))
+		}
+	}
+}
+
+extension ArchiveList.State {
+	mutating func updateItems() {
+		let allItems =
+			archivedGamesToItems() + archivedSeriesToItems() + archivedBowlersToItems() + archivedLeaguesToItems()
+		archived = .init(uniqueElements: allItems.sorted(by: archiveItemSort()))
+	}
+
+	private func archivedBowlersToItems() -> [ArchiveItem] {
+		archivedBowlers.map { .init(
+			id: .bowler($0.id),
+			title: $0.name,
+			subtitle: Strings.Archive.List.Bowler.description(
+				$0.totalNumberOfLeagues,
+				$0.totalNumberOfSeries,
+				$0.totalNumberOfGames
+			),
+			archivedOn: $0.archivedOn
+		)}
+	}
+
+	private func archivedLeaguesToItems() -> [ArchiveItem] {
+		archivedLeagues.map { .init(
+			id: .league($0.id),
+			title: $0.name,
+			subtitle: Strings.Archive.List.League.description(
+				$0.bowlerName,
+				$0.totalNumberOfSeries,
+				$0.totalNumberOfGames
+			),
+			archivedOn: $0.archivedOn
+		)}
+	}
+
+	private func archivedSeriesToItems() -> [ArchiveItem] {
+		archivedSeries.map { .init(
+			id: .series($0.id),
+			title: $0.date.longFormat,
+			subtitle: Strings.Archive.List.Series.description(
+				$0.bowlerName,
+				$0.leagueName,
+				$0.totalNumberOfGames
+			),
+			archivedOn: $0.archivedOn
+		)}
+	}
+
+	private func archivedGamesToItems() -> [ArchiveItem] {
+		archivedGames.map { .init(
+			id: .game($0.id),
+			title: Strings.Archive.List.Game.title($0.scoringMethod, $0.score),
+			subtitle: Strings.Archive.List.Game.description(
+				$0.bowlerName,
+				$0.leagueName,
+				$0.seriesDate.longFormat
+			),
+			archivedOn: $0.archivedOn
+		)}
+	}
+
+	private func archiveItemSort() -> ((ArchiveItem, ArchiveItem) -> Bool) {
+		let date = Date()
+		return { first, second in (first.archivedOn ?? date) > (second.archivedOn ?? date) }
+	}
+}
+
+extension Game.ScoringMethod: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .manual: return Strings.Game.Editor.Fields.ScoringMethod.manual
+		case .byFrame: return Strings.Game.Editor.Fields.ScoringMethod.byFrame
 		}
 	}
 }

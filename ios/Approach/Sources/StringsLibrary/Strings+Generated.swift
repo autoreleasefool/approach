@@ -254,65 +254,43 @@ public enum Strings {
       public static func unarchived(_ p1: Any) -> String {
         return Strings.tr("Localizable", "archive.alert.unarchived", String(describing: p1), fallback: "Unarchived %@")
       }
-      /// Unarchived game in %@ series
-      public static func unarchivedGame(_ p1: Any) -> String {
-        return Strings.tr("Localizable", "archive.alert.unarchivedGame", String(describing: p1), fallback: "Unarchived game in %@ series")
-      }
     }
     public enum List {
+      /// Archived on %@
+      public static func archivedOn(_ p1: Any) -> String {
+        return Strings.tr("Localizable", "archive.list.archivedOn", String(describing: p1), fallback: "Archived on %@")
+      }
       /// Here you will find all the bowlers, leagues, series, and games you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.
       public static let description = Strings.tr("Localizable", "archive.list.description", fallback: "Here you will find all the bowlers, leagues, series, and games you've previously archived. They're never deleted, just hidden. You can always recover this data by swiping the items below.")
-      public enum Bowlers {
+      /// No items archived
+      public static let `none` = Strings.tr("Localizable", "archive.list.none", fallback: "No items archived")
+      public enum Bowler {
         /// Archived with %@ leagues, %@ series, %@ games
-        public static func archivedWith(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.bowlers.archivedWith", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Archived with %@ leagues, %@ series, %@ games")
+        public static func description(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.bowler.description", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Archived with %@ leagues, %@ series, %@ games")
         }
-        /// No bowlers have been archived
-        public static let `none` = Strings.tr("Localizable", "archive.list.bowlers.none", fallback: "No bowlers have been archived")
-        /// Archived Bowlers
-        public static let title = Strings.tr("Localizable", "archive.list.bowlers.title", fallback: "Archived Bowlers")
       }
-      public enum Games {
-        /// Belongs to %@, in %@
-        public static func belongsTo(_ p1: Any, _ p2: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.games.belongsTo", String(describing: p1), String(describing: p2), fallback: "Belongs to %@, in %@")
+      public enum Game {
+        /// Belongs to %@, in %@, bowled on %@
+        public static func description(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.game.description", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Belongs to %@, in %@, bowled on %@")
         }
-        /// %@ game with score of %@
-        public static func itemTitle(_ p1: Any, _ p2: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.games.itemTitle", String(describing: p1), String(describing: p2), fallback: "%@ game with score of %@")
+        /// %@ Game with score of %@
+        public static func title(_ p1: Any, _ p2: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.game.title", String(describing: p1), String(describing: p2), fallback: "%@ Game with score of %@")
         }
-        /// No games have been archived
-        public static let `none` = Strings.tr("Localizable", "archive.list.games.none", fallback: "No games have been archived")
-        /// Archived Games
-        public static let title = Strings.tr("Localizable", "archive.list.games.title", fallback: "Archived Games")
       }
-      public enum Leagues {
-        /// Archived with %@ series, %@ games
-        public static func archivedWith(_ p1: Any, _ p2: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.leagues.archivedWith", String(describing: p1), String(describing: p2), fallback: "Archived with %@ series, %@ games")
+      public enum League {
+        /// Belongs to %@, archived with %@ series, %@ games
+        public static func description(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.league.description", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Belongs to %@, archived with %@ series, %@ games")
         }
-        /// Belongs to %@
-        public static func belongsTo(_ p1: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.leagues.belongsTo", String(describing: p1), fallback: "Belongs to %@")
-        }
-        /// No leagues have been archived
-        public static let `none` = Strings.tr("Localizable", "archive.list.leagues.none", fallback: "No leagues have been archived")
-        /// Archived Leagues
-        public static let title = Strings.tr("Localizable", "archive.list.leagues.title", fallback: "Archived Leagues")
       }
       public enum Series {
-        /// Archived with %@ games
-        public static func archivedWith(_ p1: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.series.archivedWith", String(describing: p1), fallback: "Archived with %@ games")
+        /// Belongs to %@, in %@, archived with %@ games
+        public static func description(_ p1: Any, _ p2: Any, _ p3: Any) -> String {
+          return Strings.tr("Localizable", "archive.list.series.description", String(describing: p1), String(describing: p2), String(describing: p3), fallback: "Belongs to %@, in %@, archived with %@ games")
         }
-        /// Belongs to %@, in %@
-        public static func belongsTo(_ p1: Any, _ p2: Any) -> String {
-          return Strings.tr("Localizable", "archive.list.series.belongsTo", String(describing: p1), String(describing: p2), fallback: "Belongs to %@, in %@")
-        }
-        /// No series have been archived
-        public static let `none` = Strings.tr("Localizable", "archive.list.series.none", fallback: "No series have been archived")
-        /// Archived Series
-        public static let title = Strings.tr("Localizable", "archive.list.series.title", fallback: "Archived Series")
       }
     }
   }
