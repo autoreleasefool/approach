@@ -130,7 +130,7 @@ public struct OpponentsList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .didTapOpponent(id):
-					guard state.isOpponentDetailsEnabled, let opponent = state.list.resources?[id: id] else { return .none }
+					guard state.isOpponentDetailsEnabled, let opponent = state.list.findResource(byId: id) else { return .none }
 					state.destination = .details(.init(opponent: opponent.summary))
 					return .none
 

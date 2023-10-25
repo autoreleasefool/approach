@@ -158,7 +158,7 @@ public struct BowlersList: Reducer {
 					return .none
 
 				case let .didTapBowler(id):
-					guard let bowler = state.list.resources?[id: id] else { return .none }
+					guard let bowler = state.list.findResource(byId: id) else { return .none }
 					state.destination = .leagues(.init(bowler: bowler.summary))
 					return .run { _ in
 						try await clock.sleep(for: .seconds(1))

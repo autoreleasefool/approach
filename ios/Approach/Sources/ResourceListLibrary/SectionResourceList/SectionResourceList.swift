@@ -25,6 +25,17 @@ public struct SectionResourceList<
 			return .init(uniqueElements: sections.flatMap { $0.items })
 		}
 
+		public func findResource(byId: R.ID) -> R? {
+			guard let sections else { return nil }
+			for section in sections {
+				if let resource = section.items[id: byId] {
+					return resource
+				}
+			}
+
+			return nil
+		}
+
 		@PresentationState public var alert: AlertState<AlertAction>?
 
 		public init(

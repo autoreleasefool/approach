@@ -20,6 +20,10 @@ public struct ResourceList<
 		public var resources: IdentifiedArrayOf<R>? { sectionList.resources }
 		public var editMode: EditMode { sectionList.editMode }
 
+		public func findResource(byId: R.ID) -> R? {
+			sectionList.sections?.first?.items[id: byId]
+		}
+
 		public init(
 			features: [SectionResourceList<R, Q>.Feature],
 			query: Q,
