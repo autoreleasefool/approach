@@ -207,7 +207,7 @@ public struct SeriesList: Reducer {
 
 				case .list(.internal(.sectionsResponse)):
 					if let seriesToNavigate = state.seriesToNavigate {
-						if let destination = state.list.sections?[id: SectionID.regular.rawValue]?.items[id: seriesToNavigate] {
+						if let destination = state.list.findResource(byId: seriesToNavigate) {
 							state.seriesToNavigate = nil
 							state.destination = .games(.init(series: destination.asSummary, host: state.league))
 						} else {
