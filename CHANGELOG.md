@@ -1,9 +1,13 @@
 # Most recent version
 
-## iOS 1.1.2b12
+## iOS 1.2.0b13
 
 ```
-- Fix: Prevent score calculation from being applied to wrong game and overwriting score
+- Feat: Add ArchiveList
+- Feat: Archive bowlers, leagues, series, and games
+- Feat: Add new games to series after they're created
+- Feat: Better empty state for GamesList
+- Fix: Ensure game details are loaded before all other properties
 ```
 
 ## Android v3.2.0
@@ -17,6 +21,12 @@ This update also comes with some quality of life fixes:
 ```
 
 # Legacy versions
+
+## iOS 1.1.2b12
+
+```
+- Fix: Prevent score calculation from being applied to wrong game and overwriting score
+```
 
 ## iOS 1.1.1b11
 
