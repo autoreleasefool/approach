@@ -11,120 +11,106 @@ public struct SeriesListItem: View {
 	@State private var contentSize: CGSize = .zero
 
 	let series: Series.List
-	let onPress: () -> Void
-	let onEdit: () -> Void
-	let onArchive: () -> Void
 
 	public var body: some View {
-		Button(action: onPress) {
-			ZStack(alignment: .bottomLeading) {
-				if series.scores.count > 1 {
-					Chart {
-						ForEach(series.scores) { score in
-							AreaMark(
-								x: .value(Strings.Series.List.Scores.Chart.xAxisLabel, score.index + 1),
-								y: .value(Strings.Series.List.Scores.Chart.yAxisLabel, score.score)
+		ZStack(alignment: .bottomLeading) {
+			if series.scores.count > 1 {
+				Chart {
+					ForEach(series.scores) { score in
+						AreaMark(
+							x: .value(Strings.Series.List.Scores.Chart.xAxisLabel, score.index + 1),
+							y: .value(Strings.Series.List.Scores.Chart.yAxisLabel, score.score)
+						)
+						.foregroundStyle(
+							.linearGradient(
+								stops: [
+									.init(color: Asset.Colors.Charts.Series.areaMark.swiftUIColor, location: 0.3),
+									.init(color: Color.clear, location: 0.95),
+								],
+								startPoint: .leading,
+								endPoint: .trailing
 							)
-							.foregroundStyle(
-								.linearGradient(
-									stops: [
-										.init(color: Asset.Colors.Charts.Series.areaMark.swiftUIColor, location: 0.3),
-										.init(color: Color.clear, location: 0.95),
-									],
-									startPoint: .leading,
-									endPoint: .trailing
-								)
-							)
-							.interpolationMethod(.catmullRom)
+						)
+						.interpolationMethod(.catmullRom)
 
-							LineMark(
-								x: .value(Strings.Series.List.Scores.Chart.xAxisLabel, score.index + 1),
-								y: .value(Strings.Series.List.Scores.Chart.yAxisLabel, score.score)
+						LineMark(
+							x: .value(Strings.Series.List.Scores.Chart.xAxisLabel, score.index + 1),
+							y: .value(Strings.Series.List.Scores.Chart.yAxisLabel, score.score)
+						)
+						.lineStyle(StrokeStyle(lineWidth: 2))
+						.foregroundStyle(
+							.linearGradient(
+								stops: [
+									.init(color: Asset.Colors.Charts.Series.lineMark.swiftUIColor, location: 0.3),
+									.init(color: Color.clear, location: 0.95),
+								],
+								startPoint: .leading,
+								endPoint: .trailing
 							)
-							.lineStyle(StrokeStyle(lineWidth: 2))
-							.foregroundStyle(
-								.linearGradient(
-									stops: [
-										.init(color: Asset.Colors.Charts.Series.lineMark.swiftUIColor, location: 0.3),
-										.init(color: Color.clear, location: 0.95),
-									],
-									startPoint: .leading,
-									endPoint: .trailing
-								)
-							)
-							.interpolationMethod(.catmullRom)
-						}
-
+						)
+						.interpolationMethod(.catmullRom)
 					}
-					.chartXAxis(.hidden)
-					.chartYAxis(.hidden)
-					.chartLegend(.hidden)
-					.chartYScale(domain: series.scoreDomain)
-					.chartXScale(domain: 1...series.scores.count)
-					.frame(
-						width: contentSize.width * 0.9,
-						height: contentSize.height / 2
-					)
+
 				}
-
-				VStack(spacing: .standardSpacing) {
-					HStack {
-						Label(series.date.longFormat, systemSymbol: .calendar)
-							.font(.subheadline)
-							.labelStyle(.titleAndIcon)
-
-						Spacer()
-
-						Image(systemSymbol: .chevronForward)
-							.scaledToFit()
-							.frame(width: .tinyIcon, height: .tinyIcon)
-					}
-					.contentShape(Rectangle())
-
-					HStack(alignment: .lastTextBaseline) {
-						VStack(alignment: .leading, spacing: 0) {
-							Text(Strings.Series.List.numberOfGames(series.scores.count))
-								.font(.caption)
-								.padding(.horizontal, .unitSpacing)
-								.bold()
-
-							if let range = series.scoreRange {
-								Text(Strings.Series.List.Scores.range(range.lowest, range.highest))
-									.font(.caption)
-									.italic()
-									.padding(.horizontal, .unitSpacing)
-									.background(
-										Material.thinMaterial,
-										in: RoundedRectangle(cornerRadius: .standardRadius)
-									)
-									.padding(.top, .unitSpacing)
-							}
-						}
-
-						Spacer()
-
-						if series.total > 0 {
-							Text(String(series.total))
-								.font(.title2)
-								.fontWeight(.heavy)
-								.italic()
-						}
-					}
-				}
-				.padding(.smallSpacing)
-				.measure(key: ContentSizeKey.self, to: $contentSize)
+				.chartXAxis(.hidden)
+				.chartYAxis(.hidden)
+				.chartLegend(.hidden)
+				.chartYScale(domain: series.scoreDomain)
+				.chartXScale(domain: 1...series.scores.count)
+				.frame(
+					width: contentSize.width * 0.9,
+					height: contentSize.height / 2
+				)
 			}
-			.contentShape(Rectangle())
+
+			VStack(spacing: .standardSpacing) {
+				HStack {
+					Label(series.date.longFormat, systemSymbol: .calendar)
+						.font(.subheadline)
+						.labelStyle(.titleAndIcon)
+
+					Spacer()
+
+					Image(systemSymbol: .chevronForward)
+						.scaledToFit()
+						.frame(width: .tinyIcon, height: .tinyIcon)
+				}
+				.contentShape(Rectangle())
+
+				HStack(alignment: .lastTextBaseline) {
+					VStack(alignment: .leading, spacing: 0) {
+						Text(Strings.Series.List.numberOfGames(series.scores.count))
+							.font(.caption)
+							.padding(.horizontal, .unitSpacing)
+							.bold()
+
+						if let range = series.scoreRange {
+							Text(Strings.Series.List.Scores.range(range.lowest, range.highest))
+								.font(.caption)
+								.italic()
+								.padding(.horizontal, .unitSpacing)
+								.background(
+									Material.thinMaterial,
+									in: RoundedRectangle(cornerRadius: .standardRadius)
+								)
+								.padding(.top, .unitSpacing)
+						}
+					}
+
+					Spacer()
+
+					if series.total > 0 {
+						Text(String(series.total))
+							.font(.title2)
+							.fontWeight(.heavy)
+							.italic()
+					}
+				}
+			}
+			.padding(.smallSpacing)
+			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}
-		.buttonStyle(.plain)
-		.listRowInsets(EdgeInsets())
-		.alignmentGuide(.listRowSeparatorLeading) { d in
-				d[.leading]
-		}
-		.swipeActions(allowsFullSwipe: true) {
-			EditButton(perform: onEdit)
-			ArchiveButton(perform: onArchive)
-		}
+		.contentShape(Rectangle())
 	}
 }
 
@@ -167,10 +153,7 @@ struct SeriesListItemPreview: PreviewProvider {
 						],
 						total: 450,
 						preBowl: .regular
-					),
-					onPress: { },
-					onEdit: { },
-					onArchive: { }
+					)
 				)
 			}
 
@@ -195,10 +178,7 @@ struct SeriesListItemPreview: PreviewProvider {
 						],
 						total: 1651,
 						preBowl: .regular
-					),
-					onPress: { },
-					onEdit: { },
-					onArchive: { }
+					)
 				)
 
 				SeriesListItem(
@@ -221,10 +201,7 @@ struct SeriesListItemPreview: PreviewProvider {
 						],
 						total: 1651,
 						preBowl: .regular
-					),
-					onPress: { },
-					onEdit: { },
-					onArchive: { }
+					)
 				)
 
 				SeriesListItem(
@@ -236,10 +213,7 @@ struct SeriesListItemPreview: PreviewProvider {
 						],
 						total: 233,
 						preBowl: .regular
-					),
-					onPress: { },
-					onEdit: { },
-					onArchive: { }
+					)
 				)
 
 				SeriesListItem(
@@ -252,10 +226,7 @@ struct SeriesListItemPreview: PreviewProvider {
 						],
 						total: 450,
 						preBowl: .regular
-					),
-					onPress: { },
-					onEdit: { },
-					onArchive: { }
+					)
 				)
 			}
 		}

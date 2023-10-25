@@ -11,6 +11,7 @@ import LeagueEditorFeature
 import LeaguesRepositoryInterface
 import ListContentLibrary
 import ModelsLibrary
+import ResourceListLibrary
 import SeriesEditorFeature
 import SeriesRepositoryInterface
 import SortOrderLibrary
@@ -28,12 +29,19 @@ extension Series.Ordering: CustomStringConvertible {
 	}
 }
 
+extension Series.List: ResourceListItem {
+	public var name: String {
+		date.longFormat
+	}
+}
+
 // swiftlint:disable:next type_body_length
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
 		public var league: League.SeriesHost
-		public var series: IdentifiedArrayOf<Series.List> = []
 		public var ordering: Series.Ordering = .newestFirst
+
+		public var list: SectionResourceList<Series.List, Series.List.FetchRequest>.State
 
 		public var seriesToNavigate: Series.ID?
 
@@ -43,27 +51,40 @@ public struct SeriesList: Reducer {
 
 		public init(league: League.SeriesHost) {
 			self.league = league
+			self.list = .init(
+				features: [
+					.add,
+					.swipeToEdit,
+					.swipeToArchive,
+				],
+				query: .init(league: league.id, ordering: ordering),
+				listTitle: nil,
+				emptyContent: .init(
+					image: Asset.Media.EmptyState.series,
+					title: Strings.Series.Error.Empty.title,
+					message: Strings.Series.Error.Empty.message,
+					action: Strings.Series.List.add
+				)
+			)
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didObserveData
-			case didTapAddButton
 			case didTapEditButton
 			case didTapSortOrderButton
 			case didTapSeries(Series.ID)
-			case didSwipeSeries(SwipeAction, Series.ID)
 		}
 
 		public enum InternalAction: Equatable {
-			case seriesResponse(TaskResult<[Series.List]>)
-			case didArchiveSeries(TaskResult<Series.ID>)
+			case didArchiveSeries(TaskResult<Series.List>)
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
 			case didLoadEditableLeague(TaskResult<League.Edit>)
 
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
+			case list(SectionResourceList<Series.List, Series.List
+				.FetchRequest>.Action)
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -73,21 +94,15 @@ public struct SeriesList: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	public enum SwipeAction: Equatable {
-		case edit
-		case archive
-	}
-
-	public enum AlertAction: Equatable {
-		case didTapArchiveButton(Series.ID)
-		case didTapDismissButton
-	}
-
 	public enum ErrorID: Hashable {
 		case leagueNotFound
 		case seriesNotFound
-		case seriesNotLoaded
 		case failedToArchiveSeries
+	}
+
+	public enum SectionID: String {
+		case regular
+		case preBowl
 	}
 
 	public struct Destination: Reducer {
@@ -96,7 +111,6 @@ public struct SeriesList: Reducer {
 			case leagueEditor(LeagueEditor.State)
 			case games(GamesList.State)
 			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
-			case alert(AlertState<AlertAction>)
 		}
 
 		public enum Action: Equatable {
@@ -104,7 +118,6 @@ public struct SeriesList: Reducer {
 			case leagueEditor(LeagueEditor.Action)
 			case games(GamesList.Action)
 			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.Action)
-			case alert(AlertAction)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -138,15 +151,16 @@ public struct SeriesList: Reducer {
 			Errors()
 		}
 
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+			SectionResourceList(fetchSections: self.fetchResources(query:))
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didObserveData:
-					return startObservingSeries(forLeague: state.league.id, orderedBy: state.ordering)
-
 				case let .didTapSeries(id):
-					if let series = state.series[id: id] {
+					if let series = state.list.findResource(byId: id) {
 						state.destination = .games(.init(series: series.asSummary, host: state.league))
 					}
 					return .none
@@ -158,55 +172,13 @@ public struct SeriesList: Reducer {
 						})))
 					}
 
-				case .didTapAddButton:
-					state.destination = .seriesEditor(.init(
-						value: .create(.default(withId: uuid(), onDate: calendar.startOfDay(for: date()), inLeague: state.league)),
-						inLeague: state.league
-					))
-					return .none
-
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.ordering))
 					return .none
-
-				case let .didSwipeSeries(.archive, id):
-					guard let series = state.series[id: id] else { return .none }
-					state.destination = .alert(.init(
-						title: TextState(Strings.Form.Prompt.archive(series.date.longFormat)),
-						message: TextState(Strings.Form.Prompt.Archive.message),
-						primaryButton: .destructive(
-							TextState(Strings.Action.archive),
-							action: .send(.didTapArchiveButton(series.id))
-						),
-						secondaryButton: .cancel(
-							TextState(Strings.Action.cancel),
-							action: .send(.didTapDismissButton)
-						)
-					))
-					return .none
-
-				case let .didSwipeSeries(.edit, id):
-					return .run { send in
-						await send(.internal(.didLoadEditableSeries(TaskResult {
-							try await self.series.edit(id)
-						})))
-					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .seriesResponse(.success(series)):
-					state.series = .init(uniqueElements: series)
-					if let seriesToNavigate = state.seriesToNavigate {
-						if let destination = state.series[id: seriesToNavigate] {
-							state.seriesToNavigate = nil
-							state.destination = .games(.init(series: destination.asSummary, host: state.league))
-						} else {
-							return .send(.internal(.didLoadEditableSeries(.failure(SeriesListError.seriesNotFound(seriesToNavigate)))))
-						}
-					}
-					return .none
-
 				case let .didLoadEditableSeries(.success(series)):
 					state.destination = .seriesEditor(.init(value: .edit(series), inLeague: state.league))
 					return .none
@@ -217,11 +189,6 @@ public struct SeriesList: Reducer {
 
 				case .didArchiveSeries(.success):
 					return .none
-
-				case let .seriesResponse(.failure(error)):
-					return state.errors
-						.enqueue(.seriesNotLoaded, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
-						.map { .internal(.errors($0)) }
 
 				case let .didArchiveSeries(.failure(error)):
 					return state.errors
@@ -238,10 +205,49 @@ public struct SeriesList: Reducer {
 						.enqueue(.leagueNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
 
+				case .list(.internal(.sectionsResponse)):
+					if let seriesToNavigate = state.seriesToNavigate {
+						if let destination = state.list.sections?[id: SectionID.regular.rawValue]?.items[id: seriesToNavigate] {
+							state.seriesToNavigate = nil
+							state.destination = .games(.init(series: destination.asSummary, host: state.league))
+						} else {
+							return .send(.internal(.didLoadEditableSeries(.failure(SeriesListError.seriesNotFound(seriesToNavigate)))))
+						}
+					}
+					return .none
+
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didEdit(series):
+						return .run { send in
+							await send(.internal(.didLoadEditableSeries(TaskResult {
+								try await self.series.edit(series.id)
+							})))
+						}
+
+					case let .didArchive(series):
+						return .run { send in
+							await send(.internal(.didArchiveSeries(TaskResult {
+								try await self.series.archive(series.id)
+								return series
+							})))
+						}
+
+					case .didAddNew, .didTapEmptyStateButton:
+						state.destination = .seriesEditor(.init(
+							value: .create(.default(withId: uuid(), onDate: calendar.startOfDay(for: date()), inLeague: state.league)),
+							inLeague: state.league
+						))
+						return .none
+
+					case .didTap, .didDelete, .didMove:
+						return .none
+					}
+
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
-						if let series = state.series[id: created.id] {
+						if let series = state.list.findResource(byId: created.id) {
 							state.destination = .games(.init(series: series.asSummary, host: state.league))
 						} else {
 							state.seriesToNavigate = created.id
@@ -271,19 +277,12 @@ public struct SeriesList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.alert(.didTapArchiveButton(id)))):
-					return .run { send in
-						try await self.series.archive(id)
-						await send(.internal(.didArchiveSeries(.success(id))))
-					} catch: { error, send in
-						await send(.internal(.didArchiveSeries(.failure(error))))
-					}
-
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
 						state.ordering = option
-						return startObservingSeries(forLeague: state.league.id, orderedBy: state.ordering)
+						return state.list.updateQuery(to: .init(league: state.league.id, ordering: state.ordering))
+							.map { .internal(.list($0)) }
 					}
 
 				case let .errors(.delegate(delegateAction)):
@@ -296,8 +295,8 @@ public struct SeriesList: Reducer {
 						.destination(.presented(.seriesEditor(.view))), .destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.leagueEditor(.view))), .destination(.presented(.leagueEditor(.internal))),
 						.destination(.presented(.games(.view))), .destination(.presented(.games(.internal))),
-						.destination(.presented(.alert(.didTapDismissButton))),
 						.destination(.presented(.sortOrder(.internal))), .destination(.presented(.sortOrder(.view))),
+						.list(.view), .list(.internal),
 						.errors(.view), .errors(.internal):
 					return .none
 				}
@@ -322,26 +321,59 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	private func startObservingSeries(forLeague: League.ID, orderedBy: Series.Ordering) -> Effect<Action> {
-		return .run { send in
-			for try await series in self.series.list(bowledIn: forLeague, orderedBy: orderedBy) {
-				await send(.internal(.seriesResponse(.success(series))))
+	private func fetchResources(
+		query: Series.List.FetchRequest
+	) -> AsyncThrowingStream<[SectionResourceList<Series.List, Series.List.FetchRequest>.Section], Swift.Error> {
+		return .init { continuation in
+			let task = Task {
+				do {
+					for try await series in self.series.list(bowledIn: query.league, orderedBy: query.ordering) {
+						let preBowlSeries: IdentifiedArrayOf<Series.List>
+						let regularSeries: IdentifiedArrayOf<Series.List>
+						switch query.ordering {
+						case .newestFirst:
+							preBowlSeries = .init(uniqueElements: series.filter {
+								switch $0.preBowl {
+								case .preBowl: return true
+								case .regular: return false
+								}
+							})
+
+							regularSeries = .init(uniqueElements: series.filter {
+								switch $0.preBowl {
+								case .preBowl: return false
+								case .regular: return true
+								}
+							})
+						case .oldestFirst, .highestToLowest, .lowestToHighest:
+							preBowlSeries = []
+							regularSeries = .init(uniqueElements: series)
+						}
+
+						continuation.yield([
+							preBowlSeries.isEmpty ? nil : .init(
+								id: SectionID.preBowl.rawValue,
+								title: Strings.Series.PreBowl.title,
+								items: preBowlSeries
+							),
+							regularSeries.isEmpty ? nil : .init(
+								id: SectionID.regular.rawValue,
+								title: Strings.Series.List.title,
+								items: regularSeries
+							),
+						].compactMap { $0 })
+					}
+				} catch {
+					continuation.finish(throwing: error)
+				}
 			}
-		} catch: { error, send in
-			await send(.internal(.seriesResponse(.failure(error))))
+
+			continuation.onTermination = { _ in task.cancel() }
 		}
 	}
 }
 
-extension ListErrorContent {
-	static let createError = Self(
-		title: Strings.Series.Error.FailedToCreate.title,
-		message: Strings.Series.Error.FailedToCreate.message,
-		action: Strings.Action.tryAgain
-	)
-}
-
-public enum SeriesListError: LocalizedError {
+public enum SeriesListError: Error, LocalizedError {
 	case seriesNotFound(Series.ID)
 
 	public var errorDescription: String? {

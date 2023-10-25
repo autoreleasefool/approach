@@ -115,13 +115,13 @@ private struct MockGamesListHeaderView: View {
 			VStack(alignment: .leading) {
 				Text(Strings.Game.List.Header.seeYourScores)
 					.font(.headline)
-					.bold()
 
 				Text(Strings.Game.List.Header.whenYouStartBowling)
 
 				Spacer()
 			}
 			.padding()
+			.frame(maxWidth: .infinity)
 			.frame(height: 150)
 			.measure(key: ContentSizeKey.self, to: $contentSize)
 		}

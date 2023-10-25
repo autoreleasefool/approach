@@ -139,7 +139,9 @@ public struct SectionResourceListView<
 											reorderableHeader(title: viewStore.listTitle, editMode: viewStore.editMode) {
 												viewStore.send(.didTapReorderButton)
 											}
-										} else if let title = viewStore.listTitle {
+										} else if let title = section.title {
+											Text(title)
+										} else if sections.first == section, let title = viewStore.listTitle {
 											Text(title)
 										}
 									}

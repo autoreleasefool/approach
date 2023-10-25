@@ -5,6 +5,7 @@ import ErrorsFeature
 import GamesListFeature
 import LeagueEditorFeature
 import ModelsLibrary
+import ResourceListLibrary
 import SeriesEditorFeature
 import SortOrderLibrary
 import StringsLibrary
@@ -18,31 +19,10 @@ public struct SeriesListView: View {
 	struct ViewState: Equatable {
 		let leagueName: String
 		let ordering: Series.Ordering
-		let preBowlSeries: IdentifiedArrayOf<Series.List>
-		let regularSeries: IdentifiedArrayOf<Series.List>
 
 		init(state: SeriesList.State) {
 			self.leagueName = state.league.name
 			self.ordering = state.ordering
-
-			switch state.ordering {
-			case .newestFirst:
-				self.preBowlSeries = state.series.filter {
-					switch $0.preBowl {
-					case .preBowl: return true
-					case .regular: return false
-					}
-				}
-				self.regularSeries = state.series.filter {
-					switch $0.preBowl {
-					case .preBowl: return false
-					case .regular: return true
-					}
-				}
-			case .oldestFirst, .highestToLowest, .lowestToHighest:
-				self.preBowlSeries = []
-				self.regularSeries = state.series
-			}
 		}
 	}
 
@@ -52,33 +32,16 @@ public struct SeriesListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			List {
-				if !viewStore.preBowlSeries.isEmpty {
-					Section(Strings.Series.PreBowl.title) {
-						ForEach(viewStore.preBowlSeries) { series in
-							SeriesListItem(series: series) {
-								viewStore.send(.didTapSeries(series.id))
-							} onEdit: {
-								viewStore.send(.didSwipeSeries(.edit, series.id))
-							} onArchive: {
-								viewStore.send(.didSwipeSeries(.archive, series.id))
-							}
-						}
-					}
+			SectionResourceListView(
+				store: store.scope(state: \.list, action: /SeriesList.Action.InternalAction.list)
+			) { _, series in
+				Button { viewStore.send(.didTapSeries(series.id)) } label: {
+					SeriesListItem(series: series)
 				}
-
-				if !viewStore.regularSeries.isEmpty {
-					Section(Strings.Series.List.title) {
-						ForEach(viewStore.regularSeries) { series in
-							SeriesListItem(series: series) {
-								viewStore.send(.didTapSeries(series.id))
-							} onEdit: {
-								viewStore.send(.didSwipeSeries(.edit, series.id))
-							} onArchive: {
-								viewStore.send(.didSwipeSeries(.archive, series.id))
-							}
-						}
-					}
+				.buttonStyle(.plain)
+				.listRowInsets(EdgeInsets())
+				.alignmentGuide(.listRowSeparatorLeading) { d in
+						d[.leading]
 				}
 			}
 			.navigationTitle(viewStore.leagueName)
@@ -90,19 +53,9 @@ public struct SeriesListView: View {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
-
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.didTapAddButton) }
-				}
 			}
-			.task { await viewStore.send(.didObserveData).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.alert(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /SeriesList.Destination.State.alert,
-			action: SeriesList.Destination.Action.alert
-		)
 		.sheet(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 			state: /SeriesList.Destination.State.seriesEditor,
