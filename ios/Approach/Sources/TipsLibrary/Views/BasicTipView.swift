@@ -14,34 +14,41 @@ public struct BasicTipView: View {
 	}
 
 	public var body: some View {
-		VStack(alignment: .leading, spacing: 0) {
-			HStack(alignment: .center, spacing: 0) {
-				Text(tip.title)
-					.font(.headline)
-					.frame(maxWidth: .infinity, alignment: .leading)
+		ZStack(alignment: .topTrailing) {
+			VStack(alignment: .leading) {
+				HStack(alignment: .top, spacing: 0) {
+					Text(tip.title)
+						.font(.headline)
+						.frame(maxWidth: .infinity, alignment: .leading)
 
-				if isDismissable {
-					Button(action: onDismiss) {
-						Image(systemSymbol: .xmark)
-							.resizable()
-							.scaledToFit()
-							.frame(width: .smallIcon, height: .smallSpacing)
-							.padding(.vertical)
-							.padding(.leading)
+					if isDismissable {
+						Spacer(minLength: .extraTinyIcon + .smallerIcon)
 					}
-					.buttonStyle(TappableElement())
+				}
+				.frame(maxWidth: .infinity)
+
+				if let message = tip.message {
+					Text(message)
+						.frame(maxWidth: .infinity, alignment: .leading)
 				}
 			}
-			.frame(maxWidth: .infinity)
 
-			if let message = tip.message {
-				Text(message)
-					.frame(maxWidth: .infinity, alignment: .leading)
+			if isDismissable {
+				Button(action: onDismiss) {
+					Image(systemSymbol: .xmark)
+						.resizable()
+						.scaledToFit()
+						.frame(width: .extraTinyIcon, height: .extraTinyIcon, alignment: .topTrailing)
+						.frame(width: .smallerIcon, height: .smallerIcon, alignment: .topTrailing)
+						.contentShape(Rectangle())
+				}
+				.buttonStyle(TappableElement())
 			}
 		}
 	}
 }
 
+// swiftlint:disable line_length
 #if DEBUG
 struct BasicTipViewPreview: PreviewProvider {
 	static var previews: some View {
@@ -49,7 +56,28 @@ struct BasicTipViewPreview: PreviewProvider {
 			Section {
 				BasicTipView(tip: .init(title: "Title", message: "Message")) { }
 			}
+
+			Section {
+				BasicTipView(tip: .init(title: "Title", message: "Message"), isDismissable: false) { }
+			}
+
+			Section {
+				BasicTipView(tip: .init(title: "This is a title", message: "And this is a message.")) { }
+			}
+
+			Section {
+				BasicTipView(tip: .init(title: "This is a title", message: "And this is a message."), isDismissable: false) { }
+			}
+
+			Section {
+				BasicTipView(tip: .init(title: "Extremely long title that makes it all the way over to the close icon and extends onto many lines", message: "Even longer message that could go on for as many as three or four or five or size or seven lines oh nevermind only four")) { }
+			}
+
+			Section {
+				BasicTipView(tip: .init(title: "Extremely long title that makes it all the way over to the close icon and extends onto many lines", message: "Even longer message that could go on for as many as three or four or five or size or seven lines oh nevermind only four"), isDismissable: false) { }
+			}
 		}
 	}
 }
 #endif
+// swiftlint:enable line_length
