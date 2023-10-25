@@ -128,6 +128,7 @@ public struct SectionResourceListView<
 												}
 											}
 										}
+										.moveDisabled(viewStore.editMode != .active || !viewStore.features.contains(.moveable))
 									}
 									.onMove { viewStore.send(.didMove(section: section.id, source: $0, destination: $1)) }
 								} header: {
