@@ -71,10 +71,10 @@ public struct GamesListView: View {
 							Image(systemSymbol: .squareAndArrowUp)
 						}
 					}
+				}
 
-					ToolbarItem(placement: .navigationBarTrailing) {
-						AddButton { viewStore.send(.didTapAddButton) }
-					}
+				ToolbarItem(placement: .navigationBarTrailing) {
+					AddButton { viewStore.send(.didTapAddButton) }
 				}
 			}
 			.navigationTitle(viewStore.title)
