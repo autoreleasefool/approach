@@ -3,7 +3,7 @@ import GRDB
 import ModelsLibrary
 
 extension League {
-	public struct Database: Sendable, Identifiable, Codable, Equatable {
+	public struct Database: Archivable, Sendable, Identifiable, Codable, Equatable {
 		public let bowlerId: Bowler.ID
 		public let id: League.ID
 		public var name: String
@@ -12,7 +12,7 @@ extension League {
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
-		public var isArchived: Bool
+		public var archivedOn: Date?
 
 		public init(
 			bowlerId: Bowler.ID,
@@ -23,7 +23,7 @@ extension League {
 			additionalPinfall: Int?,
 			additionalGames: Int?,
 			excludeFromStatistics: ExcludeFromStatistics,
-			isArchived: Bool
+			archivedOn: Date?
 		) {
 			self.bowlerId = bowlerId
 			self.id = id
@@ -33,7 +33,7 @@ extension League {
 			self.additionalPinfall = additionalPinfall
 			self.additionalGames = additionalGames
 			self.excludeFromStatistics = excludeFromStatistics
-			self.isArchived = isArchived
+			self.archivedOn = archivedOn
 		}
 	}
 }
@@ -55,7 +55,7 @@ extension League.Database {
 		public static let additionalPinfall = Column(CodingKeys.additionalPinfall)
 		public static let additionalGames = Column(CodingKeys.additionalGames)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
-		public static let isArchived = Column(CodingKeys.isArchived)
+		public static let archivedOn = Column(CodingKeys.archivedOn)
 	}
 }
 
@@ -74,16 +74,6 @@ extension DerivableRequest<League.Database> {
 		guard let byRecurrence else { return self }
 		let recurrence = League.Database.Columns.recurrence
 		return filter(recurrence == byRecurrence)
-	}
-
-	public func isNotArchived() -> Self {
-		let isArchived = League.Database.Columns.isArchived
-		return filter(isArchived == false)
-	}
-
-	public func isArchived() -> Self {
-		let isArchived = League.Database.Columns.isArchived
-		return filter(isArchived == true)
 	}
 
 	public func isIncludedInStatistics() -> Self {

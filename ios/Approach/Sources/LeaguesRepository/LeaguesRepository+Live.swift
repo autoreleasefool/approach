@@ -68,7 +68,7 @@ extension LeaguesRepository: DependencyKey {
 					try League.Database
 						.all()
 						.isArchived()
-						.orderByName()
+						.orderByArchivedDate()
 						.annotated(withRequired: League.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
 						.annotated(with: League.Database.series.isNotArchived().count.forKey("totalNumberOfSeries") ?? 0)
 						.annotated(with: League.Database.games.isNotArchived().count.forKey("totalNumberOfGames") ?? 0)
@@ -114,7 +114,7 @@ extension LeaguesRepository: DependencyKey {
 									preBowl: .regular,
 									excludeFromStatistics: .init(from: league.excludeFromStatistics),
 									alleyId: league.location?.id,
-									isArchived: false
+									archivedOn: nil
 								)
 								try series.insert(db)
 
@@ -137,17 +137,18 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			archive: { id in
+				@Dependency(\.date) var date
 				return try await database.writer().write {
 					try League.Database
 						.filter(id: id)
-						.updateAll($0, League.Database.Columns.isArchived.set(to: true))
+						.updateAll($0, League.Database.Columns.archivedOn.set(to: date()))
 				}
 			},
 			unarchive: { id in
 				return try await database.writer().write {
 					try League.Database
 						.filter(id: id)
-						.updateAll($0, League.Database.Columns.isArchived.set(to: false))
+						.updateAll($0, League.Database.Columns.archivedOn.set(to: nil))
 				}
 			}
 		)

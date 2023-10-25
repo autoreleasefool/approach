@@ -66,7 +66,7 @@ extension BowlersRepository: DependencyKey {
 					try Bowler.Database
 						.all()
 						.isArchived()
-						.orderByName()
+						.orderByArchivedDate()
 						.annotated(with: Bowler.Database.leagues.isNotArchived().count.forKey("totalNumberOfLeagues") ?? 0)
 						.annotated(with: Bowler.Database.series.isNotArchived().count.forKey("totalNumberOfSeries") ?? 0)
 						.annotated(with: Bowler.Database.games.isNotArchived().count.forKey("totalNumberOfGames") ?? 0)
@@ -172,17 +172,18 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			archive: { id in
+				@Dependency(\.date) var date
 				return try await database.writer().write {
 					try Bowler.Database
 						.filter(id: id)
-						.updateAll($0, Bowler.Database.Columns.isArchived.set(to: true))
+						.updateAll($0, Bowler.Database.Columns.archivedOn.set(to: date()))
 				}
 			},
 			unarchive: { id in
 				return try await database.writer().write {
 					try Bowler.Database
 						.filter(id: id)
-						.updateAll($0, Bowler.Database.Columns.isArchived.set(to: false))
+						.updateAll($0, Bowler.Database.Columns.archivedOn.set(to: nil))
 				}
 			}
 		)

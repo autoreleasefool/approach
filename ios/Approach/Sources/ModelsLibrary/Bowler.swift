@@ -15,13 +15,6 @@ extension Bowler {
 }
 
 extension Bowler {
-	public enum ArchiveState: String, Codable, Sendable {
-		case available
-		case archived
-	}
-}
-
-extension Bowler {
 	public struct Summary: Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public let name: String
@@ -68,20 +61,7 @@ extension Bowler {
 		public let totalNumberOfLeagues: Int
 		public let totalNumberOfSeries: Int
 		public let totalNumberOfGames: Int
-
-		public init(
-			id: Bowler.ID,
-			name: String,
-			totalNumberOfLeagues: Int,
-			totalNumberOfSeries: Int,
-			totalNumberOfGames: Int
-		) {
-			self.id = id
-			self.name = name
-			self.totalNumberOfLeagues = totalNumberOfLeagues
-			self.totalNumberOfSeries = totalNumberOfSeries
-			self.totalNumberOfGames = totalNumberOfGames
-		}
+		public let archivedOn: Date?
 	}
 }
 

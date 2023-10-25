@@ -19,7 +19,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with two series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000), isArchived: true)
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000), archivedOn: Date())
 
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 2)
@@ -221,7 +221,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with 3 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let series3 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000), isArchived: true)
+		let series3 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000), archivedOn: Date())
 
 		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
@@ -293,8 +293,10 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testArchived_ReturnsArchivedSeries() async throws {
 		// Given a database with series
-		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123), isArchived: true)
+		let series1 = Series.Database.mock(leagueId: UUID(0), id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 1))
 		let series2 = Series.Database.mock(leagueId: UUID(0), id: UUID(1), date: Date(timeIntervalSince1970: 456))
+		let series3 = Series.Database.mock(leagueId: UUID(0), id: UUID(2), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 3))
+		let series4 = Series.Database.mock(leagueId: UUID(0), id: UUID(3), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 2))
 		// 2 games each
 		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0)
 		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 0)
@@ -302,7 +304,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 0)
 
 		let db = try initializeDatabase(
-			withSeries: .custom([series1, series2]),
+			withSeries: .custom([series1, series2, series3, series4]),
 			withGames: .custom([game1, game2, game3, game4])
 		)
 
@@ -318,7 +320,9 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Returns the series
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 2),
+			.init(id: UUID(2), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 0, archivedOn: Date(timeIntervalSince1970: 3)),
+			.init(id: UUID(3), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 0, archivedOn: Date(timeIntervalSince1970: 2)),
+			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 2, archivedOn: Date(timeIntervalSince1970: 1)),
 		])
 	}
 
@@ -702,13 +706,14 @@ final class SeriesRepositoryTests: XCTestCase {
 
 	func testArchive_WhenIdExists_ArchivesSeries() async throws {
 		// Given a database with 2 series
-		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), isArchived: false)
-		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), isArchived: false)
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: nil)
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), archivedOn: nil)
 		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
 		// Archiving the first series
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.date = .constant(Date(timeIntervalSince1970: 123))
 			$0.series = .liveValue
 		} operation: {
 			try await self.series.archive(UUID(0))
@@ -720,23 +725,25 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Marks the entry as archived
 		let archived = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(archived?.isArchived, true)
+		XCTAssertEqual(archived?.archivedOn, Date(timeIntervalSince1970: 123))
 
 		// And leaves the other series intact
 		let otherExists = try await db.read { try Series.Database.exists($0, id: UUID(1)) }
 		XCTAssertTrue(otherExists)
 		let otherIsArchived = try await db.read { try Series.Database.fetchOne($0, id: UUID(1)) }
-		XCTAssertEqual(otherIsArchived?.isArchived, false)
+		XCTAssertNotNil(otherIsArchived)
+		XCTAssertNil(otherIsArchived?.archivedOn)
 	}
 
 	func testArchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 series
-		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), isArchived: false)
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: nil)
 		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Archiving a non-existent series
 		try await withDependencies {
 			$0.database.writer = { db }
+			$0.date = .constant(Date(timeIntervalSince1970: 123))
 			$0.series = .liveValue
 		} operation: {
 			try await self.series.archive(UUID(1))
@@ -746,15 +753,16 @@ final class SeriesRepositoryTests: XCTestCase {
 		let exists = try await db.read { try Series.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
 		let archived = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(archived?.isArchived, false)
+		XCTAssertNotNil(archived)
+		XCTAssertNil(archived?.archivedOn)
 	}
 
 	// MARK: Unarchive
 
 	func testUnarchive_WhenIdExists_UnarchivesSeries() async throws {
 		// Given a database with 2 series
-		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), isArchived: true)
-		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), isArchived: true)
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 124))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 124))
 		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
 
 		// Unarchiving the first series
@@ -771,18 +779,20 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Marks the entry as unarchived
 		let archived = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(archived?.isArchived, false)
+		XCTAssertNotNil(archived)
+		XCTAssertNil(archived?.archivedOn)
 
 		// And leaves the other series intact
 		let otherExists = try await db.read { try Series.Database.exists($0, id: UUID(1)) }
 		XCTAssertTrue(otherExists)
 		let otherIsArchived = try await db.read { try Series.Database.fetchOne($0, id: UUID(1)) }
-		XCTAssertEqual(otherIsArchived?.isArchived, true)
+		XCTAssertNotNil(otherIsArchived)
+		XCTAssertEqual(otherIsArchived?.archivedOn, Date(timeIntervalSince1970: 124))
 	}
 
 	func testUnarchive_WhenIdNotExists_DoesNothing() async throws {
 		// Given a database with 1 series
-		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), isArchived: true)
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), archivedOn: Date(timeIntervalSince1970: 123))
 		let db = try initializeDatabase(withSeries: .custom([series1]))
 
 		// Unarchiving a non-existent series
@@ -797,6 +807,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let exists = try await db.read { try Series.Database.exists($0, id: UUID(0)) }
 		XCTAssertTrue(exists)
 		let archived = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
-		XCTAssertEqual(archived?.isArchived, true)
+		XCTAssertNotNil(archived)
+		XCTAssertEqual(archived?.archivedOn, Date(timeIntervalSince1970: 123))
 	}
 }

@@ -3,22 +3,22 @@ import GRDB
 import ModelsLibrary
 
 extension Bowler {
-	public struct Database: Sendable, Identifiable, Codable, Equatable {
+	public struct Database: Archivable, Sendable, Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public var name: String
 		public var kind: Kind
-		public var isArchived: Bool
+		public var archivedOn: Date?
 
 		public init(
 			id: Bowler.ID,
 			name: String,
 			kind: Kind,
-			isArchived: Bool
+			archivedOn: Date?
 		) {
 			self.id = id
 			self.name = name
 			self.kind = kind
-			self.isArchived = isArchived
+			self.archivedOn = archivedOn
 		}
 	}
 }
@@ -34,7 +34,7 @@ extension Bowler.Database {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)
 		public static let kind = Column(CodingKeys.kind)
-		public static let isArchived = Column(CodingKeys.isArchived)
+		public static let archivedOn = Column(CodingKeys.archivedOn)
 	}
 }
 
@@ -48,16 +48,6 @@ extension DerivableRequest<Bowler.Database> {
 		guard let byKind else { return self }
 		let kind = Bowler.Database.Columns.kind
 		return filter(kind == byKind)
-	}
-
-	public func isNotArchived() -> Self {
-		let isArchived = Bowler.Database.Columns.isArchived
-		return filter(isArchived == false)
-	}
-
-	public func isArchived() -> Self {
-		let isArchived = Bowler.Database.Columns.isArchived
-		return filter(isArchived == true)
 	}
 }
 

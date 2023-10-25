@@ -8,9 +8,9 @@ extension Bowler.Database {
 		id: Bowler.ID,
 		name: String,
 		kind: Bowler.Kind = .playable,
-		isArchived: Bool = false
+		archivedOn: Date? = nil
 	) -> Self {
-		.init(id: id, name: name, kind: kind, isArchived: isArchived)
+		.init(id: id, name: name, kind: kind, archivedOn: archivedOn)
 	}
 }
 
@@ -24,8 +24,8 @@ func insert(
 		bowlers = []
 	case .default:
 		bowlers = [
-			.init(id: UUID(0), name: "Joseph", kind: .playable, isArchived: false),
-			.init(id: UUID(1), name: "Sarah", kind: .playable, isArchived: false),
+			.init(id: UUID(0), name: "Joseph", kind: .playable, archivedOn: nil),
+			.init(id: UUID(1), name: "Sarah", kind: .playable, archivedOn: nil),
 		]
 	case let .custom(custom):
 		bowlers = custom

@@ -69,7 +69,7 @@ extension SeriesRepository: DependencyKey {
 					try Series.Database
 						.all()
 						.isArchived()
-						.orderByDate()
+						.orderByArchivedDate()
 						.annotated(withRequired: Series.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
 						.annotated(withRequired: Series.Database.league.select(League.Database.Columns.name.forKey("leagueName")))
 						.annotated(with: Series.Database.games.isNotArchived().count.forKey("totalNumberOfGames") ?? 0)
@@ -167,17 +167,18 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			archive: { id in
+				@Dependency(\.date) var date
 				return try await database.writer().write {
 					try Series.Database
 						.filter(id: id)
-						.updateAll($0, Series.Database.Columns.isArchived.set(to: true))
+						.updateAll($0, Series.Database.Columns.archivedOn.set(to: date()))
 				}
 			},
 			unarchive: { id in
 				return try await database.writer().write {
 					try Series.Database
 						.filter(id: id)
-						.updateAll($0, Series.Database.Columns.isArchived.set(to: false))
+						.updateAll($0, Series.Database.Columns.archivedOn.set(to: nil))
 				}
 			}
 		)

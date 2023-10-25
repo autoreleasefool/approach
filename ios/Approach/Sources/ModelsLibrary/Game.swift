@@ -73,10 +73,12 @@ extension Game {
 extension Game {
 	public struct Archived: Identifiable, Equatable, Codable {
 		public let id: Game.ID
+		public let scoringMethod: ScoringMethod
 		public let bowlerName: String
 		public let leagueName: String
 		public let seriesDate: Date
 		public let score: Int
+		public let archivedOn: Date?
 	}
 }
 

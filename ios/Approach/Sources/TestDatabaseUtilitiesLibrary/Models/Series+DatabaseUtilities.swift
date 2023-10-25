@@ -12,7 +12,7 @@ extension Series.Database {
 		preBowl: Series.PreBowl = .regular,
 		excludeFromStatistics: Series.ExcludeFromStatistics = .include,
 		alleyId: Alley.ID? = nil,
-		isArchived: Bool = false
+		archivedOn: Date? = nil
 	) -> Self {
 		.init(
 			leagueId: leagueId,
@@ -21,7 +21,7 @@ extension Series.Database {
 			preBowl: preBowl,
 			excludeFromStatistics: excludeFromStatistics,
 			alleyId: alleyId,
-			isArchived: isArchived
+			archivedOn: archivedOn
 		)
 	}
 }
@@ -64,7 +64,7 @@ func insert(
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alleyId: UUID(0),
-				isArchived: false
+				archivedOn: nil
 			),
 			.init(
 				leagueId: UUID(0),
@@ -73,7 +73,7 @@ func insert(
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alleyId: UUID(0),
-				isArchived: false
+				archivedOn: nil
 			),
 			.init(
 				leagueId: UUID(1),
@@ -82,7 +82,7 @@ func insert(
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alleyId: UUID(1),
-				isArchived: false
+				archivedOn: nil
 			),
 			.init(
 				leagueId: UUID(1),
@@ -91,7 +91,7 @@ func insert(
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alleyId: UUID(1),
-				isArchived: false
+				archivedOn: nil
 			),
 		]
 	case let .custom(custom):

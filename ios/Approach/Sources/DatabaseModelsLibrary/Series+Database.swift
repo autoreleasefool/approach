@@ -4,14 +4,14 @@ import GRDB
 import ModelsLibrary
 
 extension Series {
-	public struct Database: Sendable, Identifiable, Codable, Equatable {
+	public struct Database: Archivable, Sendable, Identifiable, Codable, Equatable {
 		public let leagueId: League.ID
 		public let id: Series.ID
 		public var date: Date
 		public var preBowl: PreBowl
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var alleyId: Alley.ID?
-		public var isArchived: Bool
+		public var archivedOn: Date?
 
 		public init(
 			leagueId: League.ID,
@@ -20,7 +20,7 @@ extension Series {
 			preBowl: PreBowl,
 			excludeFromStatistics: ExcludeFromStatistics,
 			alleyId: Alley.ID?,
-			isArchived: Bool
+			archivedOn: Date?
 		) {
 			self.leagueId = leagueId
 			self.id = id
@@ -28,7 +28,7 @@ extension Series {
 			self.preBowl = preBowl
 			self.excludeFromStatistics = excludeFromStatistics
 			self.alleyId = alleyId
-			self.isArchived = isArchived
+			self.archivedOn = archivedOn
 		}
 	}
 }
@@ -48,7 +48,7 @@ extension Series.Database {
 		public static let preBowl = Column(CodingKeys.preBowl)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
 		public static let alleyId = Column(CodingKeys.alleyId)
-		public static let isArchived = Column(CodingKeys.isArchived)
+		public static let archivedOn = Column(CodingKeys.archivedOn)
 	}
 }
 
@@ -61,16 +61,6 @@ extension DerivableRequest<Series.Database> {
 	public func bowled(inLeague: League.ID) -> Self {
 		let league = Series.Database.Columns.leagueId
 		return filter(league == inLeague)
-	}
-
-	public func isNotArchived() -> Self {
-		let isArchived = Series.Database.Columns.isArchived
-		return filter(isArchived == false)
-	}
-
-	public func isArchived() -> Self {
-		let isArchived = Series.Database.Columns.isArchived
-		return filter(isArchived == true)
 	}
 
 	public func isIncludedInStatistics() -> Self {
@@ -108,7 +98,7 @@ extension Series {
 				locked: .open,
 				scoringMethod: .byFrame,
 				excludeFromStatistics: .init(from: excludeFromStatistics),
-				isArchived: false
+				archivedOn: nil
 			)
 			try game.insert(db)
 

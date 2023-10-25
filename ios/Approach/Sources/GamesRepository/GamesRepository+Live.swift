@@ -106,8 +106,7 @@ extension GamesRepository: DependencyKey {
 						.annotated(withRequired: Game.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
 						.annotated(withRequired: Game.Database.league.select(League.Database.Columns.name.forKey("leagueName")))
 						.annotated(withRequired: Game.Database.series.select(Series.Database.Columns.date.forKey("seriesDate")))
-						.order(SQL("seriesDate").sqlExpression)
-						.orderByIndex()
+						.orderByArchivedDate()
 						.asRequest(of: Game.Archived.self)
 						.fetchAll($0)
 				}
@@ -229,6 +228,7 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			archive: { id in
+				@Dependency(\.date) var date
 				return try await database.writer().write {
 					let game = try Game.Database.fetchOneGuaranteed($0, id: id)
 
@@ -236,7 +236,7 @@ extension GamesRepository: DependencyKey {
 						.filter(id: game.id)
 						.updateAll(
 							$0,
-							Game.Database.Columns.isArchived.set(to: true),
+							Game.Database.Columns.archivedOn.set(to: date()),
 							Game.Database.Columns.index.set(to: -1)
 						)
 
@@ -263,7 +263,7 @@ extension GamesRepository: DependencyKey {
 						.filter(id: game.id)
 						.updateAll(
 							$0,
-							Game.Database.Columns.isArchived.set(to: false),
+							Game.Database.Columns.archivedOn.set(to: nil),
 							Game.Database.Columns.index.set(to: series.maxGameIndex < 0 ? 0 : series.maxGameIndex + 1)
 						)
 				}

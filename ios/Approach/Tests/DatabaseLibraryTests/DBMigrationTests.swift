@@ -31,6 +31,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20231022IsArchivedProperty",
 		"Migration20231022DropSeriesNumberOfGames",
 		"Migration20231023AddArchivePropertyToGame",
+		"Migration20231024IsArchivedToArchivedOn",
 	]
 
 	func testIdentifier() {
