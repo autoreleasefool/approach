@@ -120,6 +120,23 @@
 	</plurals>
 
 	<string name="game_with_ordinal">Game %d</string>
+	<string name="game_editor_next_roll">Go to Ball %$1d</string>
+	<string name="game_editor_next_frame">Go to Frame %$1d</string>
+	<string name="game_editor_next_game">Go to Game %$1d</string>
+	<string name="game_editor_view_stats">View stats</string>
+	<string name="game_editor_view_stats_series">Series</string>
+	<string name="game_editor_view_stats_game">Game %1$d</string>
+	<string name="game_editor_gear_title">Gear</string>
+	<string name="game_editor_gear_description">Choose any additional gear you\'re using this game</string>
+	<string name="game_editor_match_play_no_opponent">No opponent</string>
+	<plurals name="game_editor_match_play_score">
+		<item quantity="zero">Score not recorded</item>
+		<item quantity="other">Scored %1$d</item>
+	</plurals>
+
+	<string name="match_play_result_won">Won</string>
+	<string name="match_play_result_lost">Lost</string>
+	<string name="match_play_result_tied">Tied</string>
 
 	<string name="statistics_placeholder_title">Statistics at a glance</string>
 	<string name="statistics_placeholder_message">Tap here to configure the stats you want to see</string>
@@ -198,6 +215,7 @@
 	<string name="none">None</string>
 
 	<string name="cd_back">Back</string>
+	<string name="cd_settings">Settings</string>
 	<string name="cd_decrement">Decrement</string>
 	<string name="cd_increment">Increment</string>
 	<string name="cd_pin_left_two_pin">Left Two Pin</string>
