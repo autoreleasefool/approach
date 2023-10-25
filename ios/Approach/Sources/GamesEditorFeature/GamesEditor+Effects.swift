@@ -16,27 +16,38 @@ extension GamesEditor {
 	func loadGameDetails(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.frames)
 		state.elementsRefreshing.insert(.game)
-		return .merge(
-			.run { [gameId = state.currentGameId] send in
-				for try await scoredGame in self.scores.observeScore(for: gameId) {
-					await send(.internal(.calculatedScore(scoredGame)))
-				}
-			},
-			.run { [gameId = state.currentGameId] send in
-				for try await frames in self.frames.observe(gameId) {
-					await send(.internal(.framesResponse(.success(frames))))
-					break
-				}
-			} catch: { error, send in
-				await send(.internal(.framesResponse(.failure(error))))
-			},
+		return .concatenate(
 			.run { [gameId = state.currentGameId] send in
 				for try await game in self.games.observe(gameId) {
 					await send(.internal(.gameResponse(.success(game))))
+					break
 				}
 			} catch: { error, send in
 				await send(.internal(.gameResponse(.failure(error))))
-			}
+			},
+			.merge(
+				.run { [gameId = state.currentGameId] send in
+					for try await scoredGame in self.scores.observeScore(for: gameId) {
+						print("GameID1: \(gameId)")
+						await send(.internal(.calculatedScore(scoredGame)))
+					}
+				},
+				.run { [gameId = state.currentGameId] send in
+					for try await frames in self.frames.observe(gameId) {
+						await send(.internal(.framesResponse(.success(frames))))
+						break
+					}
+				} catch: { error, send in
+					await send(.internal(.framesResponse(.failure(error))))
+				},
+				.run { [gameId = state.currentGameId] send in
+					for try await game in self.games.observe(gameId) {
+						await send(.internal(.gameResponse(.success(game))))
+					}
+				} catch: { error, send in
+					await send(.internal(.gameResponse(.failure(error))))
+				}
+			)
 		)
 		.cancellable(id: CancelID.observation, cancelInFlight: true)
 	}
