@@ -38,10 +38,12 @@ extension Statistics {
 		Statistics.RightThreesSpared.self,
 
 		// Taps
-		Statistics.Lefts.self,
-		Statistics.LeftsSpared.self,
-		Statistics.Rights.self,
-		Statistics.RightsSpared.self,
+		Statistics.Taps.self,
+		Statistics.TapsSpared.self,
+		Statistics.LeftTaps.self,
+		Statistics.LeftTapsSpared.self,
+		Statistics.RightTaps.self,
+		Statistics.RightTapsSpared.self,
 
 		// Aces
 		Statistics.Aces.self,
