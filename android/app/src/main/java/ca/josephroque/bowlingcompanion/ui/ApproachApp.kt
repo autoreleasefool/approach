@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import ca.josephroque.bowlingcompanion.core.components.ApproachNavigationBarItem
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingNavigationRoute
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
@@ -56,7 +57,9 @@ private fun ApproachBottomBar(
 	onNavigateToDestination: (TopLevelDestination) -> Unit,
 	currentDestination: NavDestination?
 ) {
-	if (currentDestination?.route != onboardingNavigationRoute) {
+	// TODO: Find a better way to determine if NavigationBar should be hidden
+	// TODO: Animate NavigationBar disappearing https://stackoverflow.com/questions/66837991/
+	if (currentDestination?.route != onboardingNavigationRoute && currentDestination?.route != gamesEditorNavigationRoute) {
 		NavigationBar {
 			destinations.forEach { destination ->
 				val isSelected = currentDestination.isTopLevelDestinationInHierarchy(destination)

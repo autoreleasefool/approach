@@ -18,6 +18,8 @@ import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToBowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToNewBowlerForm
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorScreen
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneForm
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.leagueDetailsScreen
@@ -104,7 +106,7 @@ fun ApproachNavHost(
 		)
 		seriesDetailsScreen(
 			onBackPressed = navController::popBackStack,
-			onEditGame = { /* TODO: onEditGame */ },
+			onEditGame = navController::navigateToGamesEditor,
 		)
 		onboardingScreen(
 			finishActivity = finishActivity,
@@ -135,6 +137,9 @@ fun ApproachNavHost(
 			onManageLanes = navController::navigateToLaneForm,
 		)
 		laneFormScreen(
+			onBackPressed = navController::popBackStack,
+		)
+		gamesEditorScreen(
 			onBackPressed = navController::popBackStack,
 		)
 	}

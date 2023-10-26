@@ -26,7 +26,7 @@ import java.util.UUID
 @Composable
 internal fun SeriesDetailsRoute(
 	onBackPressed: () -> Unit,
-	onEditGame: (UUID) -> Unit,
+	onEditGame: (UUID, UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesDetailsViewModel = hiltViewModel(),
 ) {
@@ -37,7 +37,12 @@ internal fun SeriesDetailsRoute(
 		seriesDetailsState = seriesDetailsState,
 		gamesListState = gamesListState,
 		onBackPressed = onBackPressed,
-		onGameClick = onEditGame,
+		onGameClick = {
+			when (val state = seriesDetailsState) {
+				is SeriesDetailsUiState.Success -> onEditGame(state.details.id, it)
+				else -> Unit
+			}
+		},
 		modifier = modifier,
 	)
 }
