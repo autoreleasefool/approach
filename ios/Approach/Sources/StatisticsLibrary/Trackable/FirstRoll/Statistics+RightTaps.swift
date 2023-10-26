@@ -2,24 +2,24 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct Lefts: Statistic, TrackablePerFirstRoll, CountingStatistic {
-		public static var title: String { Strings.Statistics.Title.lefts }
+	public struct RightTaps: Statistic, TrackablePerFirstRoll, CountingStatistic {
+		public static var title: String { Strings.Statistics.Title.rightTaps }
 		public static var category: StatisticCategory { .taps }
 		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .downwards }
 
-		private var lefts = 0
+		private var rights = 0
 		public var count: Int {
-			get { lefts }
-			set { lefts = newValue }
+			get { rights }
+			set { rights = newValue }
 		}
 
 		public init() {}
-		init(lefts: Int) { self.lefts = lefts }
+		init(rights: Int) { self.rights = rights }
 
 		public mutating func adjust(byFirstRoll roll: Frame.OrderedRoll, configuration: TrackablePerFrameConfiguration) {
-			if roll.roll.pinsDowned.isLeft {
-				lefts += 1
+			if roll.roll.pinsDowned.isRight {
+				rights += 1
 			}
 		}
 

@@ -3,10 +3,10 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class LeftsSparedTests: XCTestCase {
+final class LeftTapsSparedTests: XCTestCase {
 	func testAdjust_ByFramesWithLeftsSpared_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.LeftsSpared.self,
+			statistic: Statistics.LeftTapsSpared.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -32,7 +32,7 @@ final class LeftsSparedTests: XCTestCase {
 
 	func testAdjust_ByFramesWithoutLeftsSpared_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.LeftsSpared.self,
+			statistic: Statistics.LeftTapsSpared.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -57,12 +57,12 @@ final class LeftsSparedTests: XCTestCase {
 	}
 
 	func testAdjustBySeries_DoesNothing() {
-		let statistic = create(statistic: Statistics.LeftsSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.LeftTapsSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.LeftsSpared.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.LeftTapsSpared.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertPercentage(statistic, hasNumerator: 0, withDenominator: 0, formattedAs: "0%")
 	}
 }
