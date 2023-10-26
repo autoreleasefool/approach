@@ -2,31 +2,31 @@ import ModelsLibrary
 import StringsLibrary
 
 extension Statistics {
-	public struct LeftsSpared: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
-		public static var title: String { Strings.Statistics.Title.leftsSpared }
+	public struct RightTapsSpared: Statistic, TrackablePerSecondRoll, SecondRollStatistic {
+		public static var title: String { Strings.Statistics.Title.rightTapsSpared }
 		public static var category: StatisticCategory { .taps }
 		public static var isEligibleForNewLabel: Bool { false }
 		public static var preferredTrendDirection: StatisticTrendDirection? { .upwards }
 
-		public static var denominatorTitle: String { Strings.Statistics.Title.lefts }
+		public static var denominatorTitle: String { Strings.Statistics.Title.rightTaps }
 
-		private var lefts = 0
-		private var leftsSpared = 0
+		private var rights = 0
+		private var rightsSpared = 0
 
 		public var numerator: Int {
-			get { leftsSpared }
-			set { leftsSpared = newValue }
+			get { rightsSpared }
+			set { rightsSpared = newValue }
 		}
 
 		public var denominator: Int {
-			get { lefts }
-			set { lefts = newValue }
+			get { rights }
+			set { rights = newValue }
 		}
 
 		public init() {}
-		init(lefts: Int, leftsSpared: Int) {
-			self.lefts = lefts
-			self.leftsSpared = leftsSpared
+		init(rights: Int, rightsSpared: Int) {
+			self.rights = rights
+			self.rightsSpared = rightsSpared
 		}
 
 		public mutating func adjust(
@@ -36,11 +36,11 @@ extension Statistics {
 		) {
 			let firstRoll = afterFirstRoll.roll.pinsDowned
 
-			if firstRoll.isLeft {
-				lefts += 1
+			if firstRoll.isRight {
+				rights += 1
 
 				if bySecondRoll.roll.pinsDowned.union(firstRoll).arePinsCleared {
-					leftsSpared += 1
+					rightsSpared += 1
 				}
 			}
 		}

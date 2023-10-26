@@ -3,10 +3,10 @@ import ModelsLibrary
 @testable import StatisticsLibrary
 import XCTest
 
-final class RightsTests: XCTestCase {
+final class RightTapsTests: XCTestCase {
 	func testAdjust_ByFramesWithRight_Adjusts() {
 		let statistic = create(
-			statistic: Statistics.Rights.self,
+			statistic: Statistics.RightTaps.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -30,7 +30,7 @@ final class RightsTests: XCTestCase {
 
 	func testAdjust_ByFramesWithoutRights_DoesNotAdjust() {
 		let statistic = create(
-			statistic: Statistics.Rights.self,
+			statistic: Statistics.RightTaps.self,
 			adjustedByFrames: [
 				Frame.TrackableEntry(
 					index: 0,
@@ -53,12 +53,12 @@ final class RightsTests: XCTestCase {
 	}
 
 	func testAdjustBySeries_DoesNothing() {
-		let statistic = create(statistic: Statistics.Rights.self, adjustedBySeries: Series.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.RightTaps.self, adjustedBySeries: Series.TrackableEntry.mocks)
 		AssertCounting(statistic, equals: 0)
 	}
 
 	func testAdjustByGame_DoesNothing() {
-		let statistic = create(statistic: Statistics.Rights.self, adjustedByGames: Game.TrackableEntry.mocks)
+		let statistic = create(statistic: Statistics.RightTaps.self, adjustedByGames: Game.TrackableEntry.mocks)
 		AssertCounting(statistic, equals: 0)
 	}
 }
