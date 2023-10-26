@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import java.util.UUID
 
 @Entity(
@@ -32,6 +33,6 @@ import java.util.UUID
 )
 @Immutable
 data class BowlerPreferredGearCrossRef(
-	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: UUID,
+	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: BowlerID,
 	@ColumnInfo(name = "gear_id", index = true) val gearId: UUID,
 )

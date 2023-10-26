@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.BowlerFormRoute
 import java.util.UUID
@@ -15,7 +16,7 @@ const val BOWLER_KIND = "bowlerKind"
 const val editBowlerNavigationRoute = "edit_bowler/{$BOWLER_ID}"
 const val addBowlerNavigationRoute = "add_bowler/{$BOWLER_KIND}"
 
-fun NavController.navigateToBowlerForm(bowlerId: UUID) {
+fun NavController.navigateToBowlerForm(bowlerId: BowlerID) {
 	val encoded = Uri.encode(bowlerId.toString())
 	this.navigate("edit_bowler/$encoded") {
 		launchSingleTop = true

@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.core.components.list.footer
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentItemRow
 import java.util.UUID
 
@@ -30,7 +31,7 @@ import java.util.UUID
 internal fun OpponentsListRoute(
 	onBackPressed: () -> Unit,
 	onAddOpponent: () -> Unit,
-	onOpenOpponentDetails: (UUID) -> Unit,
+	onOpenOpponentDetails: (BowlerID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OpponentsListViewModel = hiltViewModel(),
 ) {
@@ -50,7 +51,7 @@ internal fun OpponentsListScreen(
 	opponentsListState: OpponentsListUiState,
 	onBackPressed: () -> Unit,
 	onAddOpponent: () -> Unit,
-	onOpenOpponentDetails: (UUID) -> Unit,
+	onOpenOpponentDetails: (BowlerID) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Scaffold(

@@ -6,8 +6,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.overview.OverviewRoute
-import java.util.UUID
 
 const val overviewNavigationRoute = "overview"
 
@@ -18,9 +18,9 @@ fun NavController.navigateToOverview(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.overviewScreen(
 	shouldShowOnboarding: State<Boolean>,
 	showOnboarding: () -> Unit,
-	onEditBowler: (UUID) -> Unit,
+	onEditBowler: (BowlerID) -> Unit,
 	onAddBowler: () -> Unit,
-	onShowBowlerDetails: (UUID) -> Unit,
+	onShowBowlerDetails: (BowlerID) -> Unit,
 ) {
 	composable(
 		route = overviewNavigationRoute,

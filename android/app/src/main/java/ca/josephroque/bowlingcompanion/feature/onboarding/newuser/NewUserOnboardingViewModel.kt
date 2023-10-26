@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,7 +40,7 @@ class NewUserOnboardingViewModel @Inject constructor(
 						withContext(ioDispatcher) {
 							bowlersRepository.insertBowler(
 								BowlerCreate(
-									id = UUID.randomUUID(),
+									id = BowlerID.random(),
 									name = state.name,
 									kind = BowlerKind.PLAYABLE,
 								)

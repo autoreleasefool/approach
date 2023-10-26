@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import java.util.UUID
@@ -60,7 +61,7 @@ internal fun OpponentItemRow(
 private fun OpponentItemPreview() {
 	Surface {
 		OpponentItemRow(
-			opponent = OpponentListItem(id = UUID.randomUUID(), name = "Joseph", kind = BowlerKind.PLAYABLE),
+			opponent = OpponentListItem(id = BowlerID.random(), name = "Joseph", kind = BowlerKind.PLAYABLE),
 			onClick = {},
 			modifier = Modifier.padding(16.dp),
 		)

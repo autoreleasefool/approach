@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import java.util.UUID
@@ -24,7 +25,7 @@ import java.util.UUID
 @Immutable
 data class LeagueEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
-	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: UUID,
+	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: BowlerID,
 	@ColumnInfo(name = "name") val name: String,
 	@ColumnInfo(name = "recurrence") val recurrence: LeagueRecurrence,
 	@ColumnInfo(name = "number_of_games") val numberOfGames: Int?,
@@ -35,7 +36,7 @@ data class LeagueEntity(
 
 @Immutable
 data class LeagueCreate(
-	@ColumnInfo(name = "bowler_id") val bowlerId: UUID,
+	@ColumnInfo(name = "bowler_id") val bowlerId: BowlerID,
 	val id: UUID,
 	val name: String,
 	val recurrence: LeagueRecurrence,

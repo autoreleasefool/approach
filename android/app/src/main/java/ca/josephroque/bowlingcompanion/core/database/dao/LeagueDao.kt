@@ -7,6 +7,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +50,7 @@ abstract class LeagueDao: BaseDao<LeagueEntity> {
 			ORDER BY leagues.name
 		"""
 	)
-	abstract fun getLeagueAverages(bowlerId: UUID): Flow<List<LeagueListItem>>
+	abstract fun getLeagueAverages(bowlerId: BowlerID): Flow<List<LeagueListItem>>
 
 	@Insert(entity = LeagueEntity::class)
 	abstract fun insertLeague(league: LeagueCreate)

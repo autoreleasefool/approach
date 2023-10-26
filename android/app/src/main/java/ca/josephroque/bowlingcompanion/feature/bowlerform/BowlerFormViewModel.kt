@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND
@@ -42,11 +43,11 @@ class BowlerFormViewModel @Inject constructor(
 
 	fun loadBowler() {
 		viewModelScope.launch {
-			val bowlerId = savedStateHandle.get<UUID?>(BOWLER_ID)
+			val bowlerId = savedStateHandle.get<BowlerID?>(BOWLER_ID)
 			if (bowlerId == null) {
 				_uiState.value = BowlerFormUiState.Create(
 					properties = BowlerCreate(
-						id = UUID.randomUUID(),
+						id = BowlerID.random(),
 						name = "",
 						kind = kind,
 					),

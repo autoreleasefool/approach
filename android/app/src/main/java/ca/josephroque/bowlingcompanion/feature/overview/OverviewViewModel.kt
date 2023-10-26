@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,7 +26,7 @@ class OverviewViewModel @Inject constructor(
 				initialValue = BowlersListUiState.Loading
 			)
 
-	fun deleteBowler(id: UUID) {
+	fun deleteBowler(id: BowlerID) {
 		// TODO: prompt delete bowler
 	}
 

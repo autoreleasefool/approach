@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.utils.sortByUUIDs
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +16,7 @@ class OfflineFirstGearRepository @Inject constructor(
 	private val gearDao: GearDao,
 	private val userDataRepository: UserDataRepository,
 ): GearRepository {
-	override fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>> =
+	override fun getBowlerPreferredGear(bowlerId: BowlerID): Flow<List<GearListItem>> =
 		gearDao.getBowlerPreferredGear(bowlerId)
 
 	override fun getRecentlyUsedGear(limit: Int): Flow<List<GearListItem>> =

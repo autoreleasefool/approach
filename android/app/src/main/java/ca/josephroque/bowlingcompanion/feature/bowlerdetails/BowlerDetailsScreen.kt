@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.core.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.components.list.footer
 import ca.josephroque.bowlingcompanion.core.components.list.header
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
@@ -38,7 +39,7 @@ import java.util.UUID
 internal fun BowlerDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditLeague: (UUID) -> Unit,
-	onAddLeague: (UUID) -> Unit,
+	onAddLeague: (BowlerID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: () -> Unit,

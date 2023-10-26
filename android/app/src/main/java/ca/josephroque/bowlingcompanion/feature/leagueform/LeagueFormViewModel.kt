@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
@@ -38,8 +39,8 @@ class LeagueFormViewModel @Inject constructor(
 	val uiState: StateFlow<LeagueFormUiState> = _uiState.asStateFlow()
 
 	private val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
-		UUID.fromString(it)
-	} ?: UUID.randomUUID()
+		BowlerID(UUID.fromString(it))
+	} ?: BowlerID.random()
 
 	fun loadLeague() {
 		viewModelScope.launch {

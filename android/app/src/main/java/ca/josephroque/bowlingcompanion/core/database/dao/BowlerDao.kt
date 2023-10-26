@@ -8,10 +8,10 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 
 @Dao
 abstract class BowlerDao: BaseDao<BowlerEntity> {
@@ -24,7 +24,7 @@ abstract class BowlerDao: BaseDao<BowlerEntity> {
 			WHERE id = :bowlerId
 		"""
 	)
-	abstract fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
+	abstract fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails>
 
 	@Query(
 		"""
@@ -69,5 +69,5 @@ abstract class BowlerDao: BaseDao<BowlerEntity> {
 	abstract fun updateBowler(bowler: BowlerUpdate)
 
 	@Query("DELETE FROM bowlers WHERE id = :bowlerId")
-	abstract fun deleteBowler(bowlerId: UUID)
+	abstract fun deleteBowler(bowlerId: BowlerID)
 }

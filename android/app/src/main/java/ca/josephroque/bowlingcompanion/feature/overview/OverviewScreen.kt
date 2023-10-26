@@ -24,17 +24,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.bowlersList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.StatisticsWidgetPlaceholderCard
-import java.util.UUID
 
 @Composable
 internal fun OverviewRoute(
-	onEditBowler: (UUID) -> Unit,
+	onEditBowler: (BowlerID) -> Unit,
 	onAddBowler: () -> Unit,
-	onShowBowlerDetails: (UUID) -> Unit,
+	onShowBowlerDetails: (BowlerID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OverviewViewModel = hiltViewModel(),
 ) {
@@ -52,7 +52,7 @@ internal fun OverviewRoute(
 @Composable
 internal fun OverviewScreen(
 	bowlersListState: BowlersListUiState,
-	onBowlerClick: (UUID) -> Unit,
+	onBowlerClick: (BowlerID) -> Unit,
 	onAddBowler: () -> Unit,
 	editStatisticsWidget: () -> Unit,
 	modifier: Modifier = Modifier,
@@ -127,8 +127,8 @@ private fun OverviewPreview() {
 	Surface {
 		OverviewScreen(
 			bowlersListState = BowlersListUiState.Success(listOf(
-				BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
-				BowlerListItem(id = UUID.randomUUID(), name = "Sarah", average = null),
+				BowlerListItem(id = BowlerID.random(), name = "Joseph", average = 120.0),
+				BowlerListItem(id = BowlerID.random(), name = "Sarah", average = null),
 			)),
 			onBowlerClick = {},
 			onAddBowler = {},

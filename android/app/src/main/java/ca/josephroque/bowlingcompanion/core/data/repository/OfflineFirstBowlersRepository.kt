@@ -4,16 +4,16 @@ import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 import javax.inject.Inject
 
 class OfflineFirstBowlersRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 ): BowlersRepository {
-	override fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails> =
+	override fun getBowlerDetails(bowlerId: BowlerID): Flow<BowlerDetails> =
 		bowlerDao.getBowlerDetails(bowlerId)
 
 	override fun getBowlersList(): Flow<List<BowlerListItem>> =
@@ -30,7 +30,7 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.updateBowler(bowler)
 	}
 
-	override suspend fun deleteBowler(id: UUID) {
+	override suspend fun deleteBowler(id: BowlerID) {
 		bowlerDao.deleteBowler(id)
 	}
 }

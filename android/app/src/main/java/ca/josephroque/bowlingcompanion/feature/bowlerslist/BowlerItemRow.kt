@@ -18,9 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.utils.formatAsAverage
-import java.util.UUID
 
 @Composable
 internal fun BowlerItemRow(
@@ -62,7 +62,7 @@ internal fun BowlerItemRow(
 private fun BowlerCardPreview() {
 	Surface {
 		BowlerItemRow(
-			bowler = BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
+			bowler = BowlerListItem(id = BowlerID.random(), name = "Joseph", average = 120.0),
 			onClick = {},
 		)
 	}

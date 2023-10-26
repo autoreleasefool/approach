@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
@@ -25,7 +26,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	leaguesRepository: LeaguesRepository,
 	gearRepository: GearRepository,
 ): ViewModel() {
-	private val bowlerId = UUID.fromString(savedStateHandle[BOWLER_ID])
+	private val bowlerId = BowlerID.fromString(savedStateHandle[BOWLER_ID])
 
 	val bowlerDetailsState: StateFlow<BowlerDetailsUiState> =
 		bowlersRepository.getBowlerDetails(bowlerId)
@@ -69,7 +70,7 @@ sealed interface BowlerDetailsUiState {
 		val details: BowlerDetails,
 	): BowlerDetailsUiState
 
-	fun bowlerId(): UUID? = when (this) {
+	fun bowlerId(): BowlerID? = when (this) {
 		Loading -> null
 		is Success -> this.details.id
 	}

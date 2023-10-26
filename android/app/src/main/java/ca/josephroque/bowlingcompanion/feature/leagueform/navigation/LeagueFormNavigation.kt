@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.feature.leagueform.LeagueFormRoute
 import java.util.UUID
 
@@ -21,7 +22,7 @@ fun NavController.navigateToLeagueForm(leagueId: UUID) {
 	}
 }
 
-fun NavController.navigateToNewLeagueForm(bowlerId: UUID) {
+fun NavController.navigateToNewLeagueForm(bowlerId: BowlerID) {
 	val encoded = Uri.encode(bowlerId.toString())
 	this.navigate("add_league/$encoded") {
 		launchSingleTop = true

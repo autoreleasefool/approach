@@ -7,6 +7,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -29,7 +30,7 @@ abstract class GearDao: BaseDao<GearEntity> {
 			ORDER BY gear.name
 		"""
 	)
-	abstract fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
+	abstract fun getBowlerPreferredGear(bowlerId: BowlerID): Flow<List<GearListItem>>
 
 	@Query(
 		"""

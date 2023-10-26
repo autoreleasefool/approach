@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -84,9 +85,9 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		val idMappings = mutableListOf<LegacyIDMappingEntity>()
 
 		for (legacyBowler in bowlers) {
-			val id = UUID.randomUUID()
+			val id = BowlerID.random()
 			idMappings.add(LegacyIDMappingEntity(
-				id = id,
+				id = id.value,
 				legacyId = legacyBowler.id,
 				key = LegacyIDMappingKey.BOWLER,
 			))
@@ -121,7 +122,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 			migratedTeamBowlers.add(
 				TeamBowlerCrossRef(
 					teamId = teamIdMappings[legacyTeamBowler.teamId]!!,
-					bowlerId = bowlerIdMappings[legacyTeamBowler.bowlerId]!!,
+					bowlerId = BowlerID(bowlerIdMappings[legacyTeamBowler.bowlerId]!!),
 				)
 			)
 	  }
@@ -155,7 +156,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 				additionalPinFall = if (legacyLeague.additionalGames == 0 || legacyLeague.additionalPinFall == 0) null else legacyLeague.additionalPinFall,
 				excludeFromStatistics = if (legacyLeague.name == LegacyLeague.PRACTICE_LEAGUE_NAME || legacyLeague.name == LegacyLeague.OPEN_LEAGUE_NAME) ExcludeFromStatistics.EXCLUDE else ExcludeFromStatistics.INCLUDE,
 				numberOfGames = if (legacyLeague.gamesPerSeries == 0) null else legacyLeague.gamesPerSeries,
-				bowlerId = bowlerIdMappings[legacyLeague.bowlerId]!!,
+				bowlerId = BowlerID(bowlerIdMappings[legacyLeague.bowlerId]!!),
 			))
 		}
 

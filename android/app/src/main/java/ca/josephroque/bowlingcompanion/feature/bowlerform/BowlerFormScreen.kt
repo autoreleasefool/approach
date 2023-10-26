@@ -18,6 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
 import java.util.UUID
@@ -149,8 +150,8 @@ private fun Actions(
 private fun BowlerFormPreview() {
 	BowlerFormScreen(
 		bowlerFormState = BowlerFormUiState.Edit(
-			properties = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),
-			initialValue = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),
+			properties = BowlerUpdate(id = BowlerID.random(), name = "Joseph"),
+			initialValue = BowlerUpdate(id = BowlerID.random(), name = "Joseph"),
 			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
 		),
 		onBackPressed = {},

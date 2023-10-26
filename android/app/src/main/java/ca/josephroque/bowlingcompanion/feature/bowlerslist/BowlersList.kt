@@ -2,12 +2,12 @@ package ca.josephroque.bowlingcompanion.feature.bowlerslist
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import ca.josephroque.bowlingcompanion.core.model.BowlerID
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
-import java.util.UUID
 
 fun LazyListScope.bowlersList(
 	bowlersListState: BowlersListUiState,
-	onBowlerClick: (UUID) -> Unit,
+	onBowlerClick: (BowlerID) -> Unit,
 ) {
 	when (bowlersListState) {
 		BowlersListUiState.Loading -> Unit
