@@ -365,8 +365,12 @@
 "statistics.title.highSingle" = "High Single";
 "statistics.title.headPins" = "Head Pins";
 "statistics.title.headPinsSpared" = "Head Pins Spared";
-"statistics.title.lefts" = "Lefts";
-"statistics.title.leftsSpared" = "Lefts Spared";
+"statistics.title.taps" = "Taps";
+"statistics.title.tapsSpared" = "Taps Spared";
+"statistics.title.leftTaps" = "Lefts";
+"statistics.title.leftTapsSpared" = "Lefts Spared";
+"statistics.title.rightTaps" = "Rights";
+"statistics.title.rightTapsSpared" = "Rights Spared";
 "statistics.title.middleHits" = "Middle Hits";
 "statistics.title.leftOfMiddleHits" = "Left of Middle Hits";
 "statistics.title.rightOfMiddleHits" = "Right of Middle Hits";
@@ -374,8 +378,6 @@
 "statistics.title.matchesWon" = "Matches Won";
 "statistics.title.matchesLost" = "Matches Lost";
 "statistics.title.matchesTied" = "Matches Tied";
-"statistics.title.rights" = "Rights";
-"statistics.title.rightsSpared" = "Rights Spared";
 "statistics.title.strikeMiddleHits" = "Middle Hits which were Strikes";
 "statistics.title.strikes" = "Total Strikes";
 "statistics.title.spareChances" = "Opportunities to Spare";

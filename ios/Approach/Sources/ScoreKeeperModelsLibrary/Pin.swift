@@ -22,11 +22,16 @@ public enum Pin: Int, Equatable, Sendable, Identifiable, Codable, CaseIterable {
 
 extension Set where Element == Pin {
 	public var value: Int { reduce(0) { value, pin in value + pin.value } }
+
 	public var isHeadPin: Bool { count == 1 && first == .headPin }
 	public var isHeadPin2: Bool { value == 7 && contains(.headPin) }
+
+	public var isAce: Bool { value == 11 }
+
 	public var isLeft: Bool { count == 4 && !contains(.leftTwoPin) }
 	public var isRight: Bool { count == 4 && !contains(.rightTwoPin) }
-	public var isAce: Bool { value == 11 }
+	public var isTapped: Bool { isLeft || isRight }
+
 	public var isLeftChopOff: Bool {
 		count == 3 && contains(.headPin) && contains(.leftTwoPin) && contains(.leftThreePin)
 	}
@@ -34,6 +39,7 @@ extension Set where Element == Pin {
 		count == 3 && contains(.headPin) && contains(.rightTwoPin) && contains(.rightThreePin)
 	}
 	public var isChopOff: Bool { isLeftChopOff || isRightChopOff }
+
 	public var isLeftSplit: Bool { count == 2 && contains(.headPin) && contains(.leftThreePin) }
 	public var isLeftSplitWithBonus: Bool {
 		count == 3 && contains(.headPin) && contains(.leftThreePin) && contains(.rightTwoPin)
@@ -44,6 +50,7 @@ extension Set where Element == Pin {
 	}
 	public var isSplit: Bool { isLeftSplit || isRightSplit }
 	public var isSplitWithBonus: Bool { isLeftSplitWithBonus || isRightSplitWithBonus }
+
 	public var isHitLeftOfMiddle: Bool {
 		!contains(.headPin) && !contains(.rightThreePin) && (contains(.leftTwoPin) || contains(.leftThreePin))
 	}
@@ -51,15 +58,19 @@ extension Set where Element == Pin {
 		!contains(.headPin) && !contains(.leftThreePin) && (contains(.rightTwoPin) || contains(.rightThreePin))
 	}
 	public var isMiddleHit: Bool { contains(.headPin) }
+
 	public var isLeftTwelve: Bool { count == 4 && !contains(.rightThreePin) }
 	public var isRightTwelve: Bool { count == 4 && !contains(.leftThreePin) }
 	public var isTwelve: Bool { isLeftTwelve || isRightTwelve }
+
 	public var isLeftFive: Bool { count == 2 && contains(.leftTwoPin) && contains(.leftThreePin) }
 	public var isRightFive: Bool { count == 2 && contains(.rightTwoPin) && contains(.rightThreePin) }
 	public var isFive: Bool { isLeftFive || isRightFive }
+
 	public var isLeftThree: Bool { count == 1 && contains(.leftThreePin) }
 	public var isRightThree: Bool { count == 1 && contains(.rightThreePin) }
 	public var isThree: Bool { isLeftThree || isRightThree }
+
 	public var arePinsCleared: Bool { count == 5 }
 }
 
