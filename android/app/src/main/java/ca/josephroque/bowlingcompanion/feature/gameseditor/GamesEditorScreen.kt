@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,9 +31,16 @@ internal fun GamesEditorRoute(
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
+	val gamesEditorState by viewModel.gamesEditorState.collectAsStateWithLifecycle()
 	val frameEditorState by viewModel.frameEditorState.collectAsStateWithLifecycle()
 	val rollEditorState by viewModel.rollEditorState.collectAsStateWithLifecycle()
 	val gameDetailsState by viewModel.gameDetailsState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(gamesEditorState.didLoadInitialGame) {
+		if (!gamesEditorState.didLoadInitialGame) {
+			viewModel.loadGame()
+		}
+	}
 
 	GamesEditorScreen(
 		frameEditorState = frameEditorState,
