@@ -48,7 +48,7 @@ abstract class SeriesDao: BaseDao<SeriesEntity> {
 			AND games.score > 0
 		WHERE series.league_id = :leagueId
 		GROUP BY series.id
-		ORDER BY series."date"
+		ORDER BY series."date" DESC
 		"""
 	)
 	abstract fun getSeriesList(leagueId: UUID): Flow<List<SeriesListItem>>
