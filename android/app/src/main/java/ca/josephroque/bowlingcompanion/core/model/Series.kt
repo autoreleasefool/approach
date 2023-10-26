@@ -9,13 +9,14 @@ import java.util.UUID
 
 data class SeriesDetails(
 	@Embedded
-	val details: SeriesDetailsProperties,
+	val properties: SeriesDetailsProperties,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "series_id",
 		entity = GameEntity::class,
+		projection = ["score"],
 	)
-	val scores: List<SeriesScore>,
+	val scores: List<Int>,
 )
 
 data class SeriesDetailsProperties(
@@ -45,13 +46,14 @@ data class SeriesUpdate(
 
 data class SeriesListItem(
 	@Embedded
-	val series: SeriesListProperties,
+	val properties: SeriesListProperties,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "series_id",
 		entity = GameEntity::class,
+		projection = ["score"],
 	)
-	val scores: List<SeriesScore>,
+	val scores: List<Int>,
 )
 
 data class SeriesListProperties(
@@ -59,10 +61,6 @@ data class SeriesListProperties(
 	val date: LocalDate,
 	val total: Int,
 	val preBowl: SeriesPreBowl,
-)
-
-data class SeriesScore(
-	val score: Int,
 )
 
 enum class SeriesPreBowl {

@@ -31,9 +31,9 @@ class SeriesDetailsViewModel @Inject constructor(
 		seriesRepository.getSeriesDetails(seriesId)
 			.map {
 				SeriesDetailsUiState.Success(
-					it.details,
+					it.properties,
 					ChartEntryModelProducer(
-						it.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.score.toFloat()) }
+						it.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
 					).getModel()
 				)
 			}

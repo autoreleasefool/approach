@@ -50,13 +50,13 @@ class LeagueDetailsViewModel @Inject constructor(
 
 private fun SeriesListItem.chartable(): SeriesChartable =
 	SeriesChartable(
-		id = series.id,
-		date = series.date,
-		preBowl = series.preBowl,
-		total = series.total,
+		id = properties.id,
+		date = properties.date,
+		preBowl = properties.preBowl,
+		total = properties.total,
 		numberOfGames = scores.size,
 		scores = ChartEntryModelProducer(
-			scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.score.toFloat()) }
+			scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
 		)
 		.getModel()
 	)
