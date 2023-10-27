@@ -4,7 +4,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
-import ca.josephroque.bowlingcompanion.utils.sortByUUIDs
+import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map

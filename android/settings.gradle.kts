@@ -17,4 +17,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Approach"
 include(":app")
+include(":core:database")
 include(":core:model")

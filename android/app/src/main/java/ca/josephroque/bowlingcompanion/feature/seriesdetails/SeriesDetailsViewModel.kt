@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
-import ca.josephroque.bowlingcompanion.core.model.SeriesDetailsProperties
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsProperties
 import ca.josephroque.bowlingcompanion.feature.gameslist.GamesListUiState
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.SERIES_ID
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel

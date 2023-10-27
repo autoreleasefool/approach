@@ -71,10 +71,12 @@ class LeagueFormViewModel @Inject constructor(
 					excludeFromStatistics = league.excludeFromStatistics,
 				)
 
+				val additionalGames = update.additionalGames
+
 				_uiState.value = LeagueFormUiState.Edit(
 					initialValue = update,
 					properties = update,
-					includeAdditionalPinFall = if (update.additionalGames != null && update.additionalGames > 0) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE,
+					includeAdditionalPinFall = if ((additionalGames ?: 0) > 0) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE,
 					fieldErrors = LeagueFormFieldErrors(),
 				)
 			}
@@ -88,8 +90,11 @@ class LeagueFormViewModel @Inject constructor(
 					LeagueFormUiState.Loading, LeagueFormUiState.Dismissed -> Unit
 					is LeagueFormUiState.Create ->
 						if (state.isSavable()) {
-							val additionalGames = if (state.properties.additionalGames != null && state.properties.additionalPinFall != null && state.properties.additionalGames > 0) state.properties.additionalGames else null
-							val additionalPinFall = if (additionalGames != null && additionalGames > 0) state.properties.additionalPinFall else null
+							val stateAdditionalGames = state.properties.additionalGames
+							val stateAdditionalPinFall = state.properties.additionalPinFall
+
+							val additionalGames = if (stateAdditionalPinFall != null && (stateAdditionalGames ?: 0) > 0) stateAdditionalGames else null
+							val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
 
 							leaguesRepository.insertLeague(
 								LeagueCreate(
@@ -118,8 +123,11 @@ class LeagueFormViewModel @Inject constructor(
 						}
 					is LeagueFormUiState.Edit ->
 						if (state.isSavable()) {
-							val additionalGames = if (state.properties.additionalGames != null && state.properties.additionalPinFall != null && state.properties.additionalGames > 0) state.properties.additionalGames else null
-							val additionalPinFall = if (additionalGames != null && additionalGames > 0) state.properties.additionalPinFall else null
+							val stateAdditionalGames = state.properties.additionalGames
+							val stateAdditionalPinFall = state.properties.additionalPinFall
+
+							val additionalGames = if (stateAdditionalPinFall != null && (stateAdditionalGames ?: 0) > 0) stateAdditionalGames else null
+							val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
 
 							leaguesRepository.updateLeague(
 								LeagueUpdate(

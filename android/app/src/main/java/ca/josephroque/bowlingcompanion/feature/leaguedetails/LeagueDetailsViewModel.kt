@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
-import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.LEAGUE_ID
 import ca.josephroque.bowlingcompanion.feature.serieslist.SeriesChartable
 import ca.josephroque.bowlingcompanion.feature.serieslist.SeriesListUiState

@@ -20,7 +20,7 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
 				// The schemas directory contains a schema file for each version of the Room database.
 				// This is required to enable Room auto migrations.
 				// See https://developer.android.com/reference/kotlin/androidx/room/AutoMigration.
-				arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
+				arg(RoomSchemaArgProvider(File("$rootDir/core/database", "schemas")))
 
 				arg("room.generateKotlin", "true")
 			}

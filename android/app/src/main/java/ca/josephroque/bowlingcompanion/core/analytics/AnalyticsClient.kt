@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.analytics
 
+import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import kotlinx.coroutines.flow.Flow
 
 interface AnalyticsClient {
@@ -10,11 +11,6 @@ interface AnalyticsClient {
 
 	val optInStatus: Flow<AnalyticsOptInStatus>
 	suspend fun setOptInStatus(status: AnalyticsOptInStatus)
-}
-
-enum class AnalyticsOptInStatus {
-	OPTED_IN,
-	OPTED_OUT,
 }
 
 fun AnalyticsOptInStatus.toggle(): AnalyticsOptInStatus = when (this) {

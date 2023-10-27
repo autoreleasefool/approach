@@ -32,11 +32,11 @@ internal fun GameItemRow(
 			.clickable(onClick = onClick)
 			.padding(16.dp),
 	) {
-	 Text(
-		 text = stringResource(R.string.game_with_ordinal, game.index + 1),
-		 style = MaterialTheme.typography.titleMedium,
-		 modifier = Modifier.weight(1f),
-	 )
+		Text(
+			text = stringResource(R.string.game_with_ordinal, game.index + 1),
+			style = MaterialTheme.typography.titleMedium,
+			modifier = Modifier.weight(1f),
+		)
 
 		Text(
 			text = game.score.toString(),

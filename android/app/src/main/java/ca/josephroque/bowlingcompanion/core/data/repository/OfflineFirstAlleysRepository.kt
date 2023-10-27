@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdate
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
-import ca.josephroque.bowlingcompanion.utils.sortByUUIDs
+import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map

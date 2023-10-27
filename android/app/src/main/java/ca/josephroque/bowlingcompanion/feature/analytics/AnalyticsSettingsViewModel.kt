@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.analytics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.analytics.toggle
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

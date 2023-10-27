@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.components.BackButton
 import ca.josephroque.bowlingcompanion.core.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.components.Link

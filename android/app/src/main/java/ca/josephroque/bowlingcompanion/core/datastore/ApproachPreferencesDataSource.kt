@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.core.datastore
 
 import androidx.datastore.core.DataStore
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInProto
-import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.model.UserPreferences
 import ca.josephroque.bowlingcompanion.core.model.copy

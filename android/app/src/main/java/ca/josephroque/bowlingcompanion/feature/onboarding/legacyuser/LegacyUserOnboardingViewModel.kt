@@ -2,8 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.josephroque.bowlingcompanion.core.database.legacy.migration.MigrationManager
-import ca.josephroque.bowlingcompanion.core.database.legacy.migration.MigrationStep
+import ca.josephroque.bowlingcompanion.core.data.migration.MigrationManager
+import ca.josephroque.bowlingcompanion.core.data.migration.MigrationStep
 import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel

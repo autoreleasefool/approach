@@ -7,6 +7,7 @@ androidGradlePlugin = "8.1.2"
 androidxComposeBom = "2023.10.01"
 androidxComposeCompiler = "1.5.3"
 hilt = "2.48"
+junit4 = "4.13.2"
 kotlinxDatetime = "0.4.1"
 kotlin = "1.9.10"
 ksp = "1.9.10-1.0.13"
@@ -18,6 +19,7 @@ secrets = "2.0.1"
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }

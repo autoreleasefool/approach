@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import com.telemetrydeck.sdk.TelemetryManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
