@@ -1,20 +1,16 @@
-plugins {
-	id("com.android.application")
-	id("org.jetbrains.kotlin.android")
-	kotlin("kapt")
-	id("com.google.dagger.hilt.android")
-	id("com.google.devtools.ksp")
-	id("com.google.protobuf")
-	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-}
+import ca.josephroque.bowlingcompanion.ApproachBuildType
 
-secrets {
-	propertiesFileName = "secrets.properties"
+plugins {
+	id("approach.android.application")
+	id("approach.android.application.compose")
+	id("approach.android.room")
+	id("approach.android.hilt")
+	alias(libs.plugins.protobuf)
+	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
 	namespace = "ca.josephroque.bowlingcompanion"
-	compileSdk = 34
 
 	buildFeatures {
 		buildConfig = true
@@ -22,8 +18,6 @@ android {
 
 	defaultConfig {
 		applicationId = "ca.josephroque.bowlingcompanion"
-		minSdk = 26
-		targetSdk = 34
 		versionCode = 321
 		versionName = "4.0.0"
 
@@ -35,10 +29,11 @@ android {
 
 	buildTypes {
 		debug {
-			applicationIdSuffix = ".debug"
+			applicationIdSuffix = ApproachBuildType.DEBUG.applicationIdSuffix
 		}
 		release {
 			isMinifyEnabled = false
+			applicationIdSuffix = ApproachBuildType.RELEASE.applicationIdSuffix
 			proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 		}
 	}
@@ -46,30 +41,17 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_17
 		targetCompatibility = JavaVersion.VERSION_17
 	}
-	kotlinOptions {
-		jvmTarget = "17"
-	}
-	buildFeatures {
-		compose = true
-	}
-	composeOptions {
-		kotlinCompilerExtensionVersion = "1.5.3"
-	}
 	packaging {
 		resources {
 			excludes += "/META-INF/{AL2.0,LGPL2.1}"
 		}
 	}
-	ksp {
-		arg("room.generateKotlin", "true")
-	}
-}
-
-ksp {
-	arg(RoomSchemaArgProvider(File(projectDir, "schemas")))
 }
 
 dependencies {
+	implementation(project(":core:model"))
+	implementation(libs.kotlinx.datetime)
+
 	implementation("androidx.activity:activity-compose:1.8.0")
 	implementation("androidx.core:core-ktx:1.12.0")
 	implementation("androidx.compose.ui:ui:1.5.4")
@@ -82,15 +64,11 @@ dependencies {
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 	implementation("androidx.navigation:navigation-compose:2.7.4")
 	implementation(platform("androidx.compose:compose-bom:2023.09.01"))
-	implementation("androidx.room:room-runtime:2.6.0")
-	implementation("androidx.room:room-ktx:2.6.0")
 	implementation("com.github.TelemetryDeck:KotlinSDK:1.1.0")
 	implementation("com.google.dagger:hilt-android:2.48")
 	implementation("com.google.protobuf:protobuf-kotlin-lite:3.24.0")
 	implementation("com.patrykandpatrick.vico:compose:1.12.0")
 	implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
-	implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
-	ksp("androidx.room:room-compiler:2.6.0")
 	kapt("com.google.dagger:hilt-android-compiler:2.48")
 
 	debugImplementation("androidx.compose.ui:ui-tooling:1.5.4")
@@ -104,10 +82,16 @@ dependencies {
 	androidTestImplementation("androidx.compose.ui:ui-test-junit4")
 }
 
+// TODO: Move to Gradle Convention Plugin
 kapt {
 	correctErrorTypes = true
 }
 
+secrets {
+	propertiesFileName = "secrets.properties"
+}
+
+// TODO: Move to datastore module
 protobuf {
 	protoc {
 		artifact = "com.google.protobuf:protoc:3.24.0"
@@ -123,15 +107,5 @@ protobuf {
 				}
 			}
 		}
-	}
-}
-
-class RoomSchemaArgProvider(
-	@get:InputDirectory
-	@get:PathSensitive(PathSensitivity.RELATIVE)
-	val schemaDir: File
-) : CommandLineArgumentProvider {
-	override fun asArguments(): Iterable<String> {
-		return listOf("room.schemaLocation=${schemaDir.path}")
 	}
 }
