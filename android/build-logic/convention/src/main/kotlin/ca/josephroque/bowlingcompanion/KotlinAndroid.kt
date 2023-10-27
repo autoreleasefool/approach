@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion
 
+import ca.josephroque.bowlingcompanion.libs
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -17,10 +18,10 @@ internal fun Project.configureKotlinAndroid(
 	commonExtension: CommonExtension<*, *, *, *, *>,
 ) {
 	commonExtension.apply {
-		compileSdk = 34
+		compileSdk = libs.findVersion("compileSdk").get().toString().toInt()
 
 		defaultConfig {
-			minSdk = 26
+			minSdk = libs.findVersion("minSdk").get().toString().toInt()
 		}
 
 		compileOptions {

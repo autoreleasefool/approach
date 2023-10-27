@@ -1,4 +1,5 @@
 import ca.josephroque.bowlingcompanion.configureKotlinAndroid
+import ca.josephroque.bowlingcompanion.libs
 import com.android.build.gradle.TestExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -14,7 +15,7 @@ class AndroidTestConventionPlugin : Plugin<Project> {
 
 			extensions.configure<TestExtension> {
 				configureKotlinAndroid(this)
-				defaultConfig.targetSdk = 34
+				defaultConfig.targetSdk = libs.findVersion("targetSdk").get().toString().toInt()
 			}
 		}
 	}

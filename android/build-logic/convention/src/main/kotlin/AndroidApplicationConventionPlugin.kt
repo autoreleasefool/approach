@@ -1,4 +1,5 @@
 import ca.josephroque.bowlingcompanion.configureKotlinAndroid
+import ca.josephroque.bowlingcompanion.libs
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import org.gradle.api.Plugin
@@ -15,7 +16,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
 			extensions.configure<ApplicationExtension> {
 				configureKotlinAndroid(this)
-				defaultConfig.targetSdk = 34
+				defaultConfig.targetSdk = libs.findVersion("targetSdk").get().toString().toInt()
 			}
 		}
 	}

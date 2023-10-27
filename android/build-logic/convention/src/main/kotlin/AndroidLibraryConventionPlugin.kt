@@ -19,7 +19,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
 			extensions.configure<LibraryExtension> {
 				configureKotlinAndroid(this)
-				defaultConfig.targetSdk = 34
+				defaultConfig.targetSdk = libs.findVersion("targetSdk").get().toString().toInt()
 			}
 			extensions.configure<LibraryAndroidComponentsExtension> {
 				disableUnnecessaryAndroidTests(target)
