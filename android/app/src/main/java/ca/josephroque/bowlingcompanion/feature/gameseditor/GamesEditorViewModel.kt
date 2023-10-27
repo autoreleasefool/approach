@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDe
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -29,20 +30,49 @@ class GamesEditorViewModel @Inject constructor(
 	private var _gamesEditorState = MutableStateFlow(GamesEditorUiState())
 	val gamesEditorState = _gamesEditorState.asStateFlow()
 
-	private val _frameEditorState = MutableStateFlow(FrameEditorUiState.Loading)
+	private val _frameEditorState = MutableStateFlow<FrameEditorUiState>(FrameEditorUiState.Loading)
 	val frameEditorState = _frameEditorState.asStateFlow()
 
-	private val _rollEditorState = MutableStateFlow(RollEditorUiState.Loading)
+	private val _rollEditorState = MutableStateFlow<RollEditorUiState>(RollEditorUiState.Loading)
 	val rollEditorState = _rollEditorState.asStateFlow()
 
-	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState.Loading)
+	private var _gameDetailsJob: Job? = null
+	private val _gameDetailsState = MutableStateFlow<GameDetailsUiState>(GameDetailsUiState.Loading)
 	val gameDetailsState = _gameDetailsState.asStateFlow()
 
 	fun loadGame(gameId: UUID? = null) {
 		val gameToLoad = gameId ?: initialGameId
+
+		_gamesEditorState.value = _gamesEditorState.value.copy(didLoadInitialGame = true)
+		_gameDetailsJob?.cancel()
+
 		viewModelScope.launch {
 			gamesRepository.getGameDetails(gameToLoad)
-				.collect()
+				.collect {
+					_gameDetailsState.value = GameDetailsUiState.Edit(
+						bowlerName = it.bowler.name,
+						leagueName = it.league.name,
+						currentGameIndex = it.properties.index,
+						selectedGear = listOf(), // TODO: load selected gear
+						opponentName = null, // TODO: load opponent name
+						opponentScore = null, // TODO: load opponent score
+						matchPlayResult = null, // TODO: load match play result
+						nextElement = null, // TODO: update next header element
+					)
+
+					// TODO: update frame state
+					_frameEditorState.value = FrameEditorUiState.Edit(
+						lockedPins = setOf(),
+						downedPins = setOf(),
+					)
+
+					// TODO: update roll state
+					_rollEditorState.value = RollEditorUiState.Edit(
+						recentBalls = listOf(),
+						didFoulRoll = false,
+						selectedBall = null,
+					)
+				}
 		}
 	}
 
