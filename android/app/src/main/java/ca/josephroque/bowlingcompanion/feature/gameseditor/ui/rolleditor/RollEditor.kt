@@ -37,7 +37,7 @@ sealed interface RollEditorUiState {
 	data object Loading: RollEditorUiState
 	data class Edit(
 		val recentBalls: List<GearListItem>,
-		val selectedBall: UUID,
+		val selectedBall: UUID?,
 		val didFoulRoll: Boolean,
 	): RollEditorUiState
 }

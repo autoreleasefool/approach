@@ -17,7 +17,7 @@
 	<string name="alley_list_add">Add Alley</string>
 
 	<string name="alley_form_title_new">New Alley</string>
-	<string name="alley_form_title_edit">Edit %$1s</string>
+	<string name="alley_form_title_edit">Edit %1$s</string>
 	<string name="alley_form_details_title">Details</string>
 	<string name="alley_form_property_name">Name</string>
 	<string name="alley_form_property_name_missing">Name cannot be blank</string>
@@ -120,9 +120,9 @@
 	</plurals>
 
 	<string name="game_with_ordinal">Game %d</string>
-	<string name="game_editor_next_roll">Go to Ball %$1d</string>
-	<string name="game_editor_next_frame">Go to Frame %$1d</string>
-	<string name="game_editor_next_game">Go to Game %$1d</string>
+	<string name="game_editor_next_roll">Go to Ball %1$d</string>
+	<string name="game_editor_next_frame">Go to Frame %1$d</string>
+	<string name="game_editor_next_game">Go to Game %1$d</string>
 	<string name="game_editor_view_stats">View stats</string>
 	<string name="game_editor_view_stats_series">Series</string>
 	<string name="game_editor_view_stats_game">Game %1$d</string>

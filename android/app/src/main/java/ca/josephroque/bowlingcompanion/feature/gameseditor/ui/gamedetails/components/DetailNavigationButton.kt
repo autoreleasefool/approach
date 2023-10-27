@@ -20,12 +20,13 @@ import ca.josephroque.bowlingcompanion.R
 
 @Composable
 internal fun DetailNavigationButton(
+	modifier: Modifier = Modifier,
 	title: String,
 	subtitle: String? = null,
 	onClick: () -> Unit,
 ) {
 	Surface(
-		modifier = Modifier.heightIn(min = 56.dp),
+		modifier = modifier.heightIn(min = 56.dp),
 		shape = RoundedCornerShape(corner = CornerSize(8.dp)),
 		color = MaterialTheme.colorScheme.surface,
 		onClick = onClick,
@@ -33,7 +34,7 @@ internal fun DetailNavigationButton(
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
-			modifier = Modifier.padding(horizontal = 16.dp),
+//			modifier = Modifier.padding(horizontal = 16.dp),
 		) {
 			Column(
 				horizontalAlignment = Alignment.Start,

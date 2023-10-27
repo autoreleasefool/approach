@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailRow
@@ -133,4 +136,31 @@ sealed interface NextGameEditableElement {
 	data class Roll(val rollIndex: Int): NextGameEditableElement
 	data class Frame(val frameIndex: Int): NextGameEditableElement
 	data class Game(val gameIndex: Int, val game: UUID): NextGameEditableElement
+}
+
+@Preview
+@Composable
+private fun GameDetailsPreview() {
+	Surface {
+		GameDetails(
+			state = GameDetailsUiState.Edit(
+				bowlerName = "Jordan",
+				leagueName = "1 Sunday Nights 2019",
+				currentGameIndex = 0,
+				selectedGear = listOf(
+					GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph"),
+					GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah"),
+				),
+				opponentName = "Joseph",
+				opponentScore = 145,
+				matchPlayResult = MatchPlayResult.WON,
+				nextElement = NextGameEditableElement.Roll(rollIndex = 1),
+			),
+			goToNext = {},
+			onOpenSeriesStats = {},
+			onOpenGameStats = {},
+			onManageGear = {},
+			onManageMatchPlay = {},
+		)
+	}
 }

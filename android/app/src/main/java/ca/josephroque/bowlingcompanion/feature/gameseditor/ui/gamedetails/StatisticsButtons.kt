@@ -27,13 +27,15 @@ internal fun StatisticsButtons(
 		DetailNavigationButton(
 			title = stringResource(R.string.game_editor_view_stats_series),
 			subtitle = stringResource(R.string.game_editor_view_stats),
-			onClick = openSeriesStats
+			onClick = openSeriesStats,
+			modifier = Modifier.weight(1f),
 		)
 
 		DetailNavigationButton(
 			title = stringResource(R.string.game_editor_view_stats_game, gameIndex + 1),
 			subtitle = stringResource(R.string.game_editor_view_stats),
-			onClick = openGameStats
+			onClick = openGameStats,
+			modifier = Modifier.weight(1f),
 		)
 	}
 }
