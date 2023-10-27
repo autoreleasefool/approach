@@ -116,6 +116,23 @@ final class FrameTests: XCTestCase {
 		])
 	}
 
+	func testFirstRolls_InLastFrame_WithThreeStrikes_ReturnsThreeRolls() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(frame.firstRolls, [
+			.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+			.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+			.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+		])
+	}
+
 	// MARK: - Second Rolls
 
 	func testSecondRolls_InAnyFrame_ReturnsSecondRoll() {
@@ -214,6 +231,162 @@ final class FrameTests: XCTestCase {
 		)
 
 		XCTAssertEqual(frame.secondRolls, [])
+	}
+
+	func testSecondRolls_InLastFrame_WithThreeStrikes_ReturnsNoRolls() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(frame.secondRolls, [])
+	}
+
+	// MARK: - Roll Pairs
+
+	func testRollPairs_InAnyFrame_ReturnsPairs() {
+		let frame1 = Frame.Summary(
+			index: 0,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(
+			frame1.rollPairs,
+			[
+				.init(
+					firstRoll: .init(index: 0, roll: .init(pinsDowned: [.headPin])),
+					secondRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))
+				)
+			]
+		)
+
+		let frame2 = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(
+			frame2.rollPairs,
+			[
+				.init(
+					firstRoll: .init(index: 0, roll: .init(pinsDowned: [.headPin])),
+					secondRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))
+				)
+			]
+		)
+	}
+
+	func testRollPairs_WithNoRolls_ReturnsNothing() {
+		let frame = Frame.Summary(index: 0, rolls: [])
+
+		XCTAssertEqual(frame.rollPairs, [])
+	}
+
+	func testRollPairs_WithNoSecondRolls_ReturnsNothing() {
+		let frame = Frame.Summary(index: 0, rolls: [.init(index: 0, roll: .default)])
+
+		XCTAssertEqual(frame.rollPairs, [])
+	}
+
+	func testRollPairs_InLastFrame_WithNoStrikesOrSpares_ReturnsOnePair() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(
+			frame.rollPairs,
+			[
+				.init(
+					firstRoll: .init(index: 0, roll: .init(pinsDowned: [])),
+					secondRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))
+				),
+			]
+		)
+	}
+
+	func testRollPairs_InLastFrame_WithOneStrike_ReturnsOnePair() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(
+			frame.rollPairs,
+			[
+				.init(
+					firstRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+					secondRoll: .init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin]))
+				),
+			]
+		)
+	}
+
+	func testRollPairs_InLastFrame_WithOneSpare_ReturnsOnePair() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(
+			frame.rollPairs,
+			[
+				.init(
+					firstRoll: .init(index: 0, roll: .init(pinsDowned: [.headPin, .rightTwoPin, .rightThreePin])),
+					secondRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))
+				),
+			]
+		)
+	}
+
+	func testRollPairs_InLastFrame_WithTwoStrikes_ReturnsNoPairs() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(frame.rollPairs, [])
+	}
+
+	func testRollPairs_InLastFrame_WithThreeStrikes_ReturnsNoPairs() {
+		let frame = Frame.Summary(
+			index: Game.NUMBER_OF_FRAMES - 1,
+			rolls: [
+				.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+				.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightTwoPin, .rightThreePin])),
+			]
+		)
+
+		XCTAssertEqual(frame.rollPairs, [])
 	}
 
 	// MARK: - Pins Left On Deck

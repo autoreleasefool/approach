@@ -69,6 +69,11 @@ public protocol InspectableFrame {
 	var pinsLeftOnDeck: Set<Pin> { get }
 }
 
+public struct RollPair: Equatable {
+	public let firstRoll: Frame.OrderedRoll
+	public let secondRoll: Frame.OrderedRoll
+}
+
 extension InspectableFrame {
 	public var firstRolls: [Frame.OrderedRoll] {
 		guard let firstRoll = rolls.first else { return [] }
@@ -111,6 +116,20 @@ extension InspectableFrame {
 			return secondRolls
 		} else {
 			return [secondRoll]
+		}
+	}
+
+	public var rollPairs: [RollPair] {
+		let firstRolls = self.firstRolls
+		let secondRolls = self.secondRolls
+		return secondRolls.compactMap { secondRoll in
+			guard
+				let matchingFirstRoll = firstRolls.first(where: { $0.index == secondRoll.index - 1 }),
+				!matchingFirstRoll.roll.pinsDowned.arePinsCleared
+			else {
+				return nil
+			}
+			return RollPair(firstRoll: matchingFirstRoll, secondRoll: secondRoll)
 		}
 	}
 
