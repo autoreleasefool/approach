@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.featureFlags
+package ca.josephroque.bowlingcompanion.core.featureflags
 
 interface FeatureFlagsClient {
 	fun isEnabled(flag: FeatureFlag): Boolean

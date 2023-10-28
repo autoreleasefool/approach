@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.settings
 
 import androidx.lifecycle.ViewModel
-import ca.josephroque.bowlingcompanion.core.featureFlags.FeatureFlag
-import ca.josephroque.bowlingcompanion.core.featureFlags.FeatureFlagsClient
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

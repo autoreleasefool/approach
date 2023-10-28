@@ -50,6 +50,7 @@ android {
 
 dependencies {
 	implementation(project(":core:database"))
+	implementation(project(":core:featureflags"))
 	implementation(project(":core:model"))
 	implementation(libs.kotlinx.datetime)
 

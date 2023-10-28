@@ -1,7 +1,7 @@
-package ca.josephroque.bowlingcompanion.core.featureFlags.di
+package ca.josephroque.bowlingcompanion.core.featureflags.di
 
-import ca.josephroque.bowlingcompanion.core.featureFlags.FeatureFlagsClient
-import ca.josephroque.bowlingcompanion.core.featureFlags.OverridableFeatureFlagsClient
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
+import ca.josephroque.bowlingcompanion.core.featureflags.OverridableFeatureFlagsClient
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -1,6 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.featureFlags
-
-import ca.josephroque.bowlingcompanion.BuildConfig
+package ca.josephroque.bowlingcompanion.core.featureflags
 
 enum class RolloutStage {
 	DISABLED,

@@ -1,6 +1,5 @@
-package ca.josephroque.bowlingcompanion.core.featureFlags
+package ca.josephroque.bowlingcompanion.core.featureflags
 
-import ca.josephroque.bowlingcompanion.BuildConfig
 import javax.inject.Inject
 
 class OverridableFeatureFlagsClient @Inject constructor(): FeatureFlagsClient {
