@@ -8,10 +8,10 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import ca.josephroque.bowlingcompanion.core.datastore.UserPreferencesSerializer
-import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
-import ca.josephroque.bowlingcompanion.core.dispatcher.di.ApplicationScope
-import ca.josephroque.bowlingcompanion.core.model.UserPreferences
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
+import ca.josephroque.bowlingcompanion.core.datastore.UserPreferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

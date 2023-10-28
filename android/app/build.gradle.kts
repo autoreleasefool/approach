@@ -5,7 +5,6 @@ plugins {
 	id("approach.android.application.compose")
 	id("approach.android.room")
 	id("approach.android.hilt")
-	alias(libs.plugins.protobuf)
 }
 
 android {
@@ -51,6 +50,7 @@ dependencies {
 	implementation(project(":core:analytics"))
 	implementation(project(":core:common"))
 	implementation(project(":core:database"))
+	implementation(project(":core:datastore"))
 	implementation(project(":core:featureflags"))
 	implementation(project(":core:model"))
 	implementation(libs.kotlinx.datetime)
@@ -61,14 +61,12 @@ dependencies {
 	implementation("androidx.compose.ui:ui-graphics:1.5.4")
 	implementation("androidx.compose.ui:ui-tooling-preview:1.5.4")
 	implementation("androidx.compose.material3:material3:1.1.2")
-	implementation("androidx.datastore:datastore:1.0.0")
 	implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 	implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 	implementation("androidx.navigation:navigation-compose:2.7.4")
 	implementation(platform("androidx.compose:compose-bom:2023.09.01"))
 	implementation("com.google.dagger:hilt-android:2.48")
-	implementation("com.google.protobuf:protobuf-kotlin-lite:3.24.0")
 	implementation("com.patrykandpatrick.vico:compose:1.12.0")
 	implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
 	kapt("com.google.dagger:hilt-android-compiler:2.48")
@@ -87,23 +85,4 @@ dependencies {
 // TODO: Move to Gradle Convention Plugin
 kapt {
 	correctErrorTypes = true
-}
-
-// TODO: Move to datastore module
-protobuf {
-	protoc {
-		artifact = "com.google.protobuf:protoc:3.24.0"
-	}
-	generateProtoTasks {
-		all().forEach { task ->
-			task.builtins {
-				register("java") {
-					option("lite")
-				}
-				register("kotlin") {
-					option("lite")
-				}
-			}
-		}
-	}
 }

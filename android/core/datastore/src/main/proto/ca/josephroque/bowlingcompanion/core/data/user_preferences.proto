@@ -2,7 +2,7 @@ syntax = "proto3";
 
 import "ca/josephroque/bowlingcompanion/core/data/analytics_opt_in.proto";
 
-option java_package = "ca.josephroque.bowlingcompanion.core.model";
+option java_package = "ca.josephroque.bowlingcompanion.core.datastore";
 option java_multiple_files = true;
 
 message UserPreferences {

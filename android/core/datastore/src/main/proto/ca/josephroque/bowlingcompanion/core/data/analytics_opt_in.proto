@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option java_package = "ca.josephroque.bowlingcompanion.core.analytics";
+option java_package = "ca.josephroque.bowlingcompanion.core.datastore";
 option java_multiple_files = true;
 
 enum AnalyticsOptInProto {
