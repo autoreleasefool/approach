@@ -6,7 +6,6 @@ plugins {
 	id("approach.android.room")
 	id("approach.android.hilt")
 	alias(libs.plugins.protobuf)
-	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -49,6 +48,7 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:analytics"))
 	implementation(project(":core:database"))
 	implementation(project(":core:featureflags"))
 	implementation(project(":core:model"))
@@ -66,7 +66,6 @@ dependencies {
 	implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 	implementation("androidx.navigation:navigation-compose:2.7.4")
 	implementation(platform("androidx.compose:compose-bom:2023.09.01"))
-	implementation("com.github.TelemetryDeck:KotlinSDK:1.1.0")
 	implementation("com.google.dagger:hilt-android:2.48")
 	implementation("com.google.protobuf:protobuf-kotlin-lite:3.24.0")
 	implementation("com.patrykandpatrick.vico:compose:1.12.0")
@@ -87,10 +86,6 @@ dependencies {
 // TODO: Move to Gradle Convention Plugin
 kapt {
 	correctErrorTypes = true
-}
-
-secrets {
-	propertiesFileName = "secrets.properties"
 }
 
 // TODO: Move to datastore module

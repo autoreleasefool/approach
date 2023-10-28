@@ -3,11 +3,11 @@ package ca.josephroque.bowlingcompanion.core.analytics
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import ca.josephroque.bowlingcompanion.BuildConfig
-import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+// import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import com.telemetrydeck.sdk.TelemetryManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -15,14 +15,16 @@ import javax.inject.Inject
 
 class TelemetryDeckAnalyticsClient @Inject constructor(
 	@ApplicationContext private val context: Context,
-	private val userDataRepository: UserDataRepository,
+	// private val userDataRepository: UserDataRepository,
 ): AnalyticsClient {
 	companion object {
 		private const val TAG = "ca.josephroque.bowlingcompanion.core.analytics.TelemetryDeckAnalyticsClient"
 	}
 
-	override val optInStatus = userDataRepository.userData
-		.map { it.analyticsOptIn }
+//	 override val optInStatus = userDataRepository.userData
+//	 	.map { it.analyticsOptIn }
+	override val optInStatus: Flow<AnalyticsOptInStatus>
+		get() = MutableStateFlow(AnalyticsOptInStatus.OPTED_IN)
 
 	private val globalProperties: MutableStateFlow<Map<String, String>> =
 		MutableStateFlow(mapOf())
@@ -69,6 +71,6 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 	}
 
 	override suspend fun setOptInStatus(status: AnalyticsOptInStatus) {
-		userDataRepository.setAnalyticsOptInStatus(status)
+		// userDataRepository.setAnalyticsOptInStatus(status)
 	}
 }
