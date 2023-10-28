@@ -8,9 +8,8 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
-import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
-import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND

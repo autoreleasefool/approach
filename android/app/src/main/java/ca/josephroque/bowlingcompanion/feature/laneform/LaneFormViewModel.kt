@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.database.model.asLaneCreate
-import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.ALLEY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel

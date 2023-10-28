@@ -49,6 +49,7 @@ android {
 
 dependencies {
 	implementation(project(":core:analytics"))
+	implementation(project(":core:common"))
 	implementation(project(":core:database"))
 	implementation(project(":core:featureflags"))
 	implementation(project(":core:model"))

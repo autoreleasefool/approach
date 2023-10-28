@@ -1,7 +1,7 @@
-package ca.josephroque.bowlingcompanion.core.dispatcher.di
+package ca.josephroque.bowlingcompanion.core.common.dispatcher.di
 
-import ca.josephroque.bowlingcompanion.core.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

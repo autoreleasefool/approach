@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.dispatcher
+package ca.josephroque.bowlingcompanion.core.common.dispatcher
 
 import javax.inject.Qualifier
 
