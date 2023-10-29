@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.icon
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import java.util.UUID
@@ -56,12 +55,13 @@ internal fun GearItemRow(
 			}
 		}
 
-		Icon(
-			painter = gear.kind.icon(),
-			contentDescription = null,
-			tint = MaterialTheme.colorScheme.onSurface,
-			modifier = Modifier.size(24.dp),
-		)
+		// TODO: Fix missing back GearIcon
+//		Icon(
+//			painter = gear.kind.icon(),
+//			contentDescription = null,
+//			tint = MaterialTheme.colorScheme.onSurface,
+//			modifier = Modifier.size(24.dp),
+//		)
 	}
 }
 

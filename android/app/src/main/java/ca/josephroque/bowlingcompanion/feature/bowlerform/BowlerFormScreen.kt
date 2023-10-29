@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
@@ -134,7 +135,7 @@ private fun Actions(
 		BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
 		is BowlerFormUiState.Edit, is BowlerFormUiState.Create -> {
 			Text(
-				text = stringResource(R.string.action_save),
+				text = stringResource(RCoreDesign.string.action_save),
 				style = MaterialTheme.typography.bodyMedium,
 				modifier = Modifier
 					.clickable(onClick = saveBowler)

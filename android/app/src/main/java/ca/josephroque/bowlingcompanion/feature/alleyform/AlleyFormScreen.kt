@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.feature.alleyform
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -15,8 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
-import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
@@ -156,7 +155,7 @@ private fun Actions(
 		AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
 		is AlleyFormUiState.Edit, is AlleyFormUiState.Create ->
 			Text(
-				stringResource(R.string.action_save),
+				stringResource(RCoreDesign.string.action_save),
 				modifier = Modifier
 					.clickable(onClick = saveAlley)
 					.padding(16.dp),

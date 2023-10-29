@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 internal fun NewUserOnboardingScreen(
@@ -150,7 +151,7 @@ private fun Title(
 		Spacer(modifier = Modifier.width(16.dp))
 
 		Image(
-			painter = painterResource(R.drawable.pin),
+			painter = painterResource(RCoreDesign.drawable.pin),
 			contentDescription = null,
 			contentScale = ContentScale.Fit,
 			modifier = Modifier.width(48.dp),

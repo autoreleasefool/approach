@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
@@ -113,7 +114,7 @@ internal fun BowlerDetailsScreen(
 			header(
 				titleResourceId = R.string.bowler_details_preferred_gear_title,
 				action = HeaderAction(
-					actionResourceId = R.string.action_manage,
+					actionResourceId = RCoreDesign.string.action_manage,
 					onClick = onManagePreferredGearClick,
 				),
 			)

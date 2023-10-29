@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="game_with_ordinal">Game %d</string>
+
+	<string name="action_save">Save</string>
+	<string name="action_delete">Delete</string>
+	<string name="action_manage">Manage</string>
+	<string name="action_send_email">Send Email</string>
+	<string name="action_view_all">View All</string>
+
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>
 	<string name="cd_increment">Increment</string>
+
+	<string name="none">None</string>
 </resources>

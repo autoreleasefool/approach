@@ -29,6 +29,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -109,7 +110,7 @@ internal fun AccessoriesScreen(
 			header(
 				titleResourceId = R.string.accessory_list_alleys_title,
 				action = HeaderAction(
-					actionResourceId = R.string.action_view_all,
+					actionResourceId = RCoreDesign.string.action_view_all,
 					onClick = onViewAllAlleys,
 				)
 			)
@@ -135,7 +136,7 @@ internal fun AccessoriesScreen(
 			header(
 				titleResourceId = R.string.accessory_list_gear_title,
 				action = HeaderAction(
-					actionResourceId = R.string.action_view_all,
+					actionResourceId = RCoreDesign.string.action_view_all,
 					onClick = onViewAllGear,
 				)
 			)

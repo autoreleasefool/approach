@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
-import ca.josephroque.bowlingcompanion.core.database.model.GameDetails
+import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -32,7 +32,7 @@ abstract class GameDao: BaseDao<GameEntity> {
 			WHERE games.id = :gameId
 		"""
 	)
-	abstract fun getGameDetails(gameId: UUID): Flow<GameDetails>
+	abstract fun getGameDetails(gameId: UUID): Flow<GameEditEntity>
 
 	@Query(
 		"""

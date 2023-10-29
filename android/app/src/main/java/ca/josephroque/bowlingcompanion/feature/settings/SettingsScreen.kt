@@ -123,7 +123,7 @@ internal fun SettingsScreen(
 						putExtra(Intent.EXTRA_SUBJECT, subject)
 					}
 
-					context.startActivity(Intent.createChooser(emailIntent, context.resources.getString(R.string.action_send_email)))
+					context.startActivity(Intent.createChooser(emailIntent, context.resources.getString(RCoreDesign.string.action_send_email)))
 				},
 			)
 
@@ -137,7 +137,7 @@ internal fun SettingsScreen(
 						putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
 					}
 
-					context.startActivity(Intent.createChooser(emailIntent, context.resources.getString(R.string.action_send_email)))
+					context.startActivity(Intent.createChooser(emailIntent, context.resources.getString(RCoreDesign.string.action_send_email)))
 				},
 			)
 

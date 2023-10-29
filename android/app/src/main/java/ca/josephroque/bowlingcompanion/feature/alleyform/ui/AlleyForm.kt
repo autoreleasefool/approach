@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
@@ -78,7 +79,7 @@ internal fun AlleyForm(
 				)
 
 				Icon(
-					painter = painterResource(R.drawable.ic_chevron_right),
+					painter = painterResource(RCoreDesign.drawable.ic_chevron_right),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurfaceVariant,
 				)
@@ -155,7 +156,7 @@ private fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMa
 			when (it) {
 				AlleyMaterial.WOOD -> stringResource(R.string.alley_property_material_wood)
 				AlleyMaterial.SYNTHETIC -> stringResource(R.string.alley_property_material_synthetic)
-				null -> stringResource(R.string.none)
+				null -> stringResource(RCoreDesign.string.none)
 			}
 		},
 		onOptionSelected = onMaterialChanged,
@@ -174,7 +175,7 @@ private fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (All
 			when (it) {
 				AlleyMechanism.DEDICATED -> stringResource(R.string.alley_property_mechanism_dedicated)
 				AlleyMechanism.INTERCHANGEABLE -> stringResource(R.string.alley_property_mechanism_interchangeable)
-				null -> stringResource(R.string.none)
+				null -> stringResource(RCoreDesign.string.none)
 			}
 		},
 		onOptionSelected = onMechanismChanged,
@@ -193,7 +194,7 @@ private fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFal
 			when (it) {
 				AlleyPinFall.FREE_FALL -> stringResource(R.string.alley_property_pin_fall_freefall)
 				AlleyPinFall.STRINGS -> stringResource(R.string.alley_property_pin_fall_strings)
-				null -> stringResource(R.string.none)
+				null -> stringResource(RCoreDesign.string.none)
 			}
 		},
 		onOptionSelected = onPinFallChanged,
@@ -213,7 +214,7 @@ private fun PinBasePicker(pinBase: AlleyPinBase?, onPinBaseChanged: (AlleyPinBas
 				AlleyPinBase.OTHER -> stringResource(R.string.alley_property_pin_base_other)
 				AlleyPinBase.BLACK -> stringResource(R.string.alley_property_pin_base_black)
 				AlleyPinBase.WHITE -> stringResource(R.string.alley_property_pin_base_white)
-				null -> stringResource(R.string.none)
+				null -> stringResource(RCoreDesign.string.none)
 			}
 		},
 		onOptionSelected = onPinBaseChanged,

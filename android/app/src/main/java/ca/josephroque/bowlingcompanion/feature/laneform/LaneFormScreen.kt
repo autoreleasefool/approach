@@ -2,10 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.laneform
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,11 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
-import ca.josephroque.bowlingcompanion.core.database.model.asLaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneForm
-import ca.josephroque.bowlingcompanion.feature.laneslist.LaneItemRow
 import java.util.UUID
 
 @Composable
@@ -139,7 +135,7 @@ private fun Actions(
 	saveLanes: () -> Unit,
 ) {
 	Text(
-		text = stringResource(R.string.action_save),
+		text = stringResource(RCoreDesign.string.action_save),
 		modifier = Modifier
 			.clickable(onClick = saveLanes)
 			.padding(16.dp)

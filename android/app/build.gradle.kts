@@ -59,6 +59,8 @@ dependencies {
 	implementation(project(":feature:alleyslist:ui"))
 	implementation(project(":feature:analytics"))
 	implementation(project(":feature:analytics:ui"))
+	implementation(project(":feature:gameseditor"))
+	implementation(project(":feature:gameseditor:ui"))
 	implementation(project(":feature:statisticswidget"))
 
 	implementation(libs.androidx.compose.foundation)
@@ -72,8 +74,6 @@ dependencies {
 
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
 
-	// implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
-	// implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 	implementation("androidx.navigation:navigation-compose:2.7.4")
 	implementation(platform("androidx.compose:compose-bom:2023.09.01"))
 	implementation("com.patrykandpatrick.vico:compose:1.12.0")

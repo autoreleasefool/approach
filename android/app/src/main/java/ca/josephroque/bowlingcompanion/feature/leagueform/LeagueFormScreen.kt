@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
@@ -155,7 +156,7 @@ private fun Actions(
 		LeagueFormUiState.Loading, LeagueFormUiState.Dismissed -> Unit
 		is LeagueFormUiState.Edit, is LeagueFormUiState.Create ->
 			Text(
-				stringResource(R.string.action_save),
+				stringResource(RCoreDesign.string.action_save),
 				modifier = Modifier
 					.clickable(onClick = saveLeague)
 					.padding(16.dp),

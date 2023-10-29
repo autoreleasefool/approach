@@ -40,6 +40,8 @@
             <option value="$PROJECT_DIR$/feature/alleyslist/ui" />
             <option value="$PROJECT_DIR$/feature/analytics" />
             <option value="$PROJECT_DIR$/feature/analytics/ui" />
+            <option value="$PROJECT_DIR$/feature/gameseditor" />
+            <option value="$PROJECT_DIR$/feature/gameseditor/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
           </set>
         </option>
