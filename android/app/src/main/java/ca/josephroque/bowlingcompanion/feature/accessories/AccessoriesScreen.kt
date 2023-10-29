@@ -32,8 +32,8 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
-import ca.josephroque.bowlingcompanion.feature.alleyslist.AlleysListUiState
-import ca.josephroque.bowlingcompanion.feature.alleyslist.alleysList
+import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
+import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
 import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.gearList
 import java.util.UUID

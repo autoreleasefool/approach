@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.alleyslist
+package ca.josephroque.bowlingcompanion.feature.alleyslist.ui
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items

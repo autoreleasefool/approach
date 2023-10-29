@@ -46,6 +46,10 @@ gradlePlugin {
 			id = "approach.android.feature"
 			implementationClass = "AndroidFeatureConventionPlugin"
 		}
+		register("androidFeatureUi") {
+			id = "approach.android.feature.ui"
+			implementationClass = "AndroidFeatureUiConventionPlugin"
+		}
 		register("androidTest") {
 			id = "approach.android.test"
 			implementationClass = "AndroidTestConventionPlugin"

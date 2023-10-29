@@ -1,9 +1,9 @@
-package ca.josephroque.bowlingcompanion.core.components
+package ca.josephroque.bowlingcompanion.feature.alleyslist.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.R
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase

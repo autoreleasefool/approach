@@ -36,6 +36,8 @@
             <option value="$PROJECT_DIR$/core/featureflags" />
             <option value="$PROJECT_DIR$/core/model" />
             <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/alleyslist" />
+            <option value="$PROJECT_DIR$/feature/alleyslist/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
           </set>
         </option>

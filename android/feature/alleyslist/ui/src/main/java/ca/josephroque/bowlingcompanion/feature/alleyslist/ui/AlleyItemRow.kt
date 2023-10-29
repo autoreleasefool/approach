@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.alleyslist
+package ca.josephroque.bowlingcompanion.feature.alleyslist.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.components.icon
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
@@ -26,7 +25,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import java.util.UUID
 
 @Composable
-internal fun AlleyItemRow(
+fun AlleyItemRow(
 	alley: AlleyListItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
