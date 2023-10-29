@@ -34,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.settings.ui.NavigationItem
 import ca.josephroque.bowlingcompanion.feature.settings.ui.SectionFooter
 import ca.josephroque.bowlingcompanion.feature.settings.ui.SectionHeader
@@ -182,7 +183,7 @@ internal fun SettingsScreen(
 			val uriHandler = LocalUriHandler.current
 			SettingsLink(
 				titleResourceId = R.string.settings_item_view_source,
-				iconResourceId = R.drawable.ic_open_in_new,
+				iconResourceId = RCoreDesign.drawable.ic_open_in_new,
 				onClick = {
 					val viewSourceUri = context.resources.getString(R.string.app_source_repository_url)
 					uriHandler.openUri(viewSourceUri)

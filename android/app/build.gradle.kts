@@ -57,6 +57,8 @@ dependencies {
 	implementation(project(":core:model"))
 	implementation(project(":feature:alleyslist"))
 	implementation(project(":feature:alleyslist:ui"))
+	implementation(project(":feature:analytics"))
+	implementation(project(":feature:analytics:ui"))
 	implementation(project(":feature:statisticswidget"))
 
 	implementation(libs.androidx.compose.foundation)

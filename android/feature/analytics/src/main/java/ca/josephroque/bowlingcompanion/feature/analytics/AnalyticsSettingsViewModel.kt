@@ -2,9 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.analytics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.analytics.toggle
+import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.feature.analytics.ui.AnalyticsSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,11 +39,4 @@ class AnalyticsSettingsViewModel @Inject constructor(
 			userDataRepository.setAnalyticsOptInStatus(updatedStatus)
 		}
 	}
-}
-
-sealed interface AnalyticsSettingsUiState {
-	data object Loading: AnalyticsSettingsUiState
-	data class Success(
-		val analyticsOptInStatus: AnalyticsOptInStatus,
-	): AnalyticsSettingsUiState
 }
