@@ -19,6 +19,7 @@ rootProject.name = "Approach"
 include(":app")
 include(":core:analytics")
 include(":core:common")
+include(":core:data")
 include(":core:database")
 include(":core:datastore")
 include(":core:designsystem")

@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.core.database.di
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
-import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
@@ -93,9 +92,4 @@ object DaosModule {
 	fun providesTransactionRunner(
 		transactionRunnerDao: TransactionRunnerDao,
 	): TransactionRunner = transactionRunnerDao
-
-	@Provides
-	fun providesCheckpointDao(
-		database: ApproachDatabase,
-	): CheckpointDao = database.checkpointDao()
 }

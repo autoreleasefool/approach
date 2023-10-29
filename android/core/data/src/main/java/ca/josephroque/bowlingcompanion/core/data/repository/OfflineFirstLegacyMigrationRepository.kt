@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
-import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
@@ -38,8 +36,10 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
-import ca.josephroque.bowlingcompanion.utils.toLocalDate
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
@@ -53,7 +53,6 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 	private val frameDao: FrameDao,
 	private val matchPlayDao: MatchPlayDao,
 	private val legacyIDMappingDao: LegacyIDMappingDao,
-	private val checkpointDao: CheckpointDao,
 	private val transactionRunner: TransactionRunner,
 ): LegacyMigrationRepository {
 
@@ -326,8 +325,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 
 		frameDao.insertAll(migratedFrames)
 	}
-
-	override suspend fun recordCheckpoint() {
-		checkpointDao.checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
-	}
 }
+
+private fun Instant.toLocalDate(): LocalDate =
+	toLocalDateTime(TimeZone.currentSystemDefault()).date

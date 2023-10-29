@@ -45,7 +45,6 @@ class SQLiteMigrationManager @Inject constructor(
 			LegacyDatabaseHelper.closeInstance()
 		}
 
-		legacyMigrationRepository.recordCheckpoint()
 		userDataRepository.didCompleteLegacyMigration()
 		_currentStep.emit(null)
 	}

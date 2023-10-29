@@ -18,6 +18,4 @@ interface LegacyMigrationRepository {
 	suspend fun migrateGames(games: List<LegacyGame>)
 	suspend fun migrateMatchPlays(matchPlays: List<LegacyMatchPlay>)
 	suspend fun migrateFrames(frames: List<LegacyFrame>)
-
-	suspend fun recordCheckpoint()
 }
