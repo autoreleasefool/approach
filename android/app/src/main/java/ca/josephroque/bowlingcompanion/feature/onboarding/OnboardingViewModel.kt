@@ -2,8 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
-import ca.josephroque.bowlingcompanion.core.filesystem.FileManager
+import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -37,7 +38,7 @@ class OnboardingViewModel @Inject constructor(
 			}
 		}
 
-		if (fileManager.fileExists(fileManager.legacyDatabaseFile)) {
+		if (fileManager.fileExists(fileManager.getDatabasePath(LegacyDatabaseHelper.DATABASE_NAME))) {
 			OnboardingUiState.LegacyUser
 		} else {
 			OnboardingUiState.NewUser

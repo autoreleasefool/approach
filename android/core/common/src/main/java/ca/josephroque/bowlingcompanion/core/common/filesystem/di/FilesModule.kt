@@ -1,7 +1,7 @@
-package ca.josephroque.bowlingcompanion.core.filesystem.di
+package ca.josephroque.bowlingcompanion.core.common.filesystem.di
 
-import ca.josephroque.bowlingcompanion.core.filesystem.FileManager
-import ca.josephroque.bowlingcompanion.core.filesystem.SystemFileManager
+import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
+import ca.josephroque.bowlingcompanion.core.common.filesystem.SystemFileManager
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

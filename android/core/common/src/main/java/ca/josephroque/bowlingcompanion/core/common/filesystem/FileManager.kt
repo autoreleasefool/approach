@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.filesystem
+package ca.josephroque.bowlingcompanion.core.common.filesystem
 
 import java.io.File
 
@@ -6,5 +6,5 @@ interface FileManager {
 	fun filePathExists(fileName: String): Boolean
 	fun fileExists(file: File): Boolean
 
-	val legacyDatabaseFile: File
+	fun getDatabasePath(fileName: String): File
 }
