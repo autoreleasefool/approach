@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.form.FormSection
-import ca.josephroque.bowlingcompanion.core.components.form.Stepper
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import kotlinx.datetime.LocalDate

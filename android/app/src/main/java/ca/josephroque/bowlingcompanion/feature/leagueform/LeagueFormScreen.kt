@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueForm

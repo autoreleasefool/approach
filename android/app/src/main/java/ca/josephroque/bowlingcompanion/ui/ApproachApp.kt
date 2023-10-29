@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import ca.josephroque.bowlingcompanion.core.components.ApproachNavigationBarItem
+import ca.josephroque.bowlingcompanion.core.designsystem.components.ApproachNavigationBarItem
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingNavigationRoute
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost

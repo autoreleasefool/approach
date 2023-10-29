@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
@@ -104,7 +105,7 @@ fun SeriesDetailsHeader(
 @Composable
 private fun ScoreChart(scores: ChartEntryModel) {
 	ProvideChartStyle(
-		chartStyle = rememberChartStyle(chartColors = listOf(colorResource(R.color.purple_300))),
+		chartStyle = rememberChartStyle(chartColors = listOf(colorResource(RCoreDesign.color.purple_300))),
 	) {
 		Chart(
 			chart = lineChart(

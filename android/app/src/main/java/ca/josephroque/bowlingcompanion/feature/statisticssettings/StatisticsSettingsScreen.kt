@@ -21,9 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.BackButton
-import ca.josephroque.bowlingcompanion.core.components.LabeledSwitch
-import ca.josephroque.bowlingcompanion.core.components.list.ListSectionHeader
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionHeader
 
 @Composable
 internal fun StatisticsSettingsRoute(
@@ -32,7 +32,7 @@ internal fun StatisticsSettingsRoute(
 	viewModel: StatisticsSettingsViewModel = hiltViewModel(),
 ) {
 	val statisticsSettingsState by viewModel.uiState.collectAsStateWithLifecycle()
-	
+
 	StatisticsSettingsScreen(
 		statisticsSettingsState = statisticsSettingsState,
 		onBackPressed = onBackPressed,

@@ -23,15 +23,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.form.FormRadioGroup
-import ca.josephroque.bowlingcompanion.core.components.form.FormSection
-import ca.josephroque.bowlingcompanion.core.components.list.ListSectionFooter
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
-import ca.josephroque.bowlingcompanion.core.model.LaneListItem
-import ca.josephroque.bowlingcompanion.utils.quantityStringResource
+import ca.josephroque.bowlingcompanion.core.designsystem.text.quantityStringResource
 
 @Composable
 internal fun AlleyForm(

@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.BackButton
-import ca.josephroque.bowlingcompanion.core.components.list.HeaderAction
-import ca.josephroque.bowlingcompanion.core.components.list.footer
-import ca.josephroque.bowlingcompanion.core.components.list.header
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState

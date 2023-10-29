@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.form.Stepper
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.database.model.asLaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.feature.laneform.LaneFormUiState

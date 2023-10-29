@@ -24,14 +24,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.form.FormRadioGroup
-import ca.josephroque.bowlingcompanion.core.components.form.FormSection
-import ca.josephroque.bowlingcompanion.core.components.form.FormSwitch
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSwitch
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.feature.leagueform.GamesPerSeries
 import ca.josephroque.bowlingcompanion.feature.leagueform.IncludeAdditionalPinFall
+import ca.josephroque.bowlingcompanion.R
 
 @Composable
 internal fun LeagueForm(
@@ -251,16 +252,16 @@ private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((In
 		) {
 			IconButton(onClick = { onNumberOfGamesChanged?.invoke(numberOfGames - 1) }) {
 				Icon(
-					painter = painterResource(R.drawable.ic_minus_circle),
-					contentDescription = stringResource(R.string.cd_decrement),
+					painter = painterResource(RCoreDesign.drawable.ic_minus_circle),
+					contentDescription = stringResource(RCoreDesign.string.cd_decrement),
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
 
 			IconButton(onClick = { onNumberOfGamesChanged?.invoke(numberOfGames + 1) }) {
 				Icon(
-					painter = painterResource(R.drawable.ic_add_circle),
-					contentDescription = stringResource(R.string.cd_increment),
+					painter = painterResource(RCoreDesign.drawable.ic_add_circle),
+					contentDescription = stringResource(RCoreDesign.string.cd_increment),
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}

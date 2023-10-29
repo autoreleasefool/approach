@@ -195,7 +195,7 @@
 	<string name="onboarding_new_user_get_started">Get started</string>
 	<string name="onboarding_new_user_logbook">This logbook belongs to</string>
 	<string name="onboarding_new_user_add_bowler">Add bowler</string>
-	
+
 	<string name="onboarding_legacy_user_title_your_bowling_companion">Your 5 Pin Bowling Companion</string>
 	<string name="onboarding_legacy_user_content_description_next">Next</string>
 	<string name="onboarding_legacy_user_title_is_taking_a_new">is taking a new</string>
@@ -214,10 +214,7 @@
 
 	<string name="none">None</string>
 
-	<string name="cd_back">Back</string>
 	<string name="cd_settings">Settings</string>
-	<string name="cd_decrement">Decrement</string>
-	<string name="cd_increment">Increment</string>
 	<string name="cd_pin_left_two_pin">Left Two Pin</string>
 	<string name="cd_pin_left_three_pin">Left Three Pin</string>
 	<string name="cd_pin_head_pin">Head Pin</string>

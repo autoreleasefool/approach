@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.theme
+package ca.josephroque.bowlingcompanion.core.designsystem.theme
 
 import android.app.Activity
 import android.os.Build

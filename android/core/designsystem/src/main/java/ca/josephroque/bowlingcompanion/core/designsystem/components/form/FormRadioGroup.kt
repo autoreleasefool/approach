@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.components.form
+package ca.josephroque.bowlingcompanion.core.designsystem.components.form
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -66,7 +66,7 @@ fun <T>FormRadioGroup(
 					.padding(horizontal = 16.dp, vertical = 8.dp),
 			)
 		}
-		
+
 		if (allowNullableSelection) {
 			FormRadioButton(
 				isSelected = selected == null,

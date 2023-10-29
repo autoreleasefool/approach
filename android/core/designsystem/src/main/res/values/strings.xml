@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="cd_back">Back</string>
+	<string name="cd_decrement">Decrement</string>
+	<string name="cd_increment">Increment</string>
+</resources>

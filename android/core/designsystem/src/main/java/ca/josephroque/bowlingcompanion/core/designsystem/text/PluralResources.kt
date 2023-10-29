@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.utils
+package ca.josephroque.bowlingcompanion.core.designsystem.text
 
 import androidx.annotation.PluralsRes
 import androidx.compose.runtime.Composable

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 
 @Composable
 internal fun BowlerForm(

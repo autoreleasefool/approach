@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.components
+package ca.josephroque.bowlingcompanion.core.designsystem.components
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.NavigationBarItem

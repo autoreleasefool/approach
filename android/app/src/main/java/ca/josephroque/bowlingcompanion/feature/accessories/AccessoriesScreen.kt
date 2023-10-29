@@ -28,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.list.HeaderAction
-import ca.josephroque.bowlingcompanion.core.components.list.ListSectionFooter
-import ca.josephroque.bowlingcompanion.core.components.list.header
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem

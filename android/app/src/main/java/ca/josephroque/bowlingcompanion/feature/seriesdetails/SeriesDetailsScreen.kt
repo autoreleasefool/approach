@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ca.josephroque.bowlingcompanion.core.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.feature.gameslist.GamesListUiState
 import ca.josephroque.bowlingcompanion.feature.gameslist.gamesList
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsHeader

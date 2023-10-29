@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm

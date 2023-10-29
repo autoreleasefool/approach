@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.components
+package ca.josephroque.bowlingcompanion.core.designsystem.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable

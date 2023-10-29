@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.utils.format
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -131,7 +132,7 @@ private fun ScoreSummary(
 				} else {
 					Modifier
 						.background(
-							colorResource(R.color.yellow_300).copy(alpha = 0.5F),
+							colorResource(RCoreDesign.color.yellow_300).copy(alpha = 0.5F),
 							MaterialTheme.shapes.medium,
 						)
 				}
@@ -161,7 +162,7 @@ private fun ScoreSummary(
 private fun ScoreChart(scores: ChartEntryModel) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
-			chartColors = listOf(colorResource(R.color.purple_300))
+			chartColors = listOf(colorResource(RCoreDesign.color.purple_300))
 		),
 	) {
 		Chart(

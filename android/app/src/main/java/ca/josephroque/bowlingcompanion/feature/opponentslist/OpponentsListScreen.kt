@@ -21,8 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.components.BackButton
-import ca.josephroque.bowlingcompanion.core.components.list.footer
+import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentItemRow
 import java.util.UUID
 
