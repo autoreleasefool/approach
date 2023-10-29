@@ -3,16 +3,22 @@
 	<string name="game_editor_next_roll">Go to Ball %1$d</string>
 	<string name="game_editor_next_frame">Go to Frame %1$d</string>
 	<string name="game_editor_next_game">Go to Game %1$d</string>
+
 	<string name="game_editor_view_stats">View stats</string>
 	<string name="game_editor_view_stats_series">Series</string>
 	<string name="game_editor_view_stats_game">Game %1$d</string>
+
 	<string name="game_editor_gear_title">Gear</string>
 	<string name="game_editor_gear_description">Choose any additional gear you\'re using this game</string>
+
+	<string name="game_editor_match_play_title">Match Play</string>
+	<string name="game_editor_match_play_opponent">Opponent</string>
 	<string name="game_editor_match_play_no_opponent">No opponent</string>
-	<plurals name="game_editor_match_play_score">
-		<item quantity="zero">Score not recorded</item>
-		<item quantity="other">Scored %1$d</item>
-	</plurals>
+	<string name="game_editor_match_play_score">Score</string>
+	<string name="game_editor_match_play_score_not_recorded">Score not recorded</string>
+
+	<string name="game_editor_match_play_result">Result</string>
+	<string name="game_editor_match_play_result_not_recorded">Result not recorded</string>
 
 	<string name="match_play_result_won">Won</string>
 	<string name="match_play_result_lost">Lost</string>

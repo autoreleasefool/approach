@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -35,7 +35,7 @@ internal fun GearCard(
 	DetailCard(
 		title = stringResource(R.string.game_editor_gear_title),
 		action = {
-			IconButton(onClick = manageGear) {
+			RoundIconButton(onClick = manageGear) {
 				Icon(
 					Icons.Default.Edit,
 					contentDescription = stringResource(RCoreDesign.string.action_manage),
@@ -43,17 +43,20 @@ internal fun GearCard(
 				)
 			}
 		},
-		modifier = modifier.padding(horizontal = 16.dp),
+		modifier = modifier,
 	) {
 		Text(
 			text = stringResource(R.string.game_editor_gear_description),
 			style = MaterialTheme.typography.bodySmall,
+			modifier = Modifier
+				.padding(horizontal = 8.dp)
+				.padding(bottom = 8.dp),
 		)
 
 		selectedGear.forEachIndexed{ index, gear ->
 			GearItemRow(gear = gear)
 			if (index != selectedGear.lastIndex) {
-				Divider(modifier = Modifier.padding(start = 16.dp))
+				Divider(modifier = Modifier.padding(start = 8.dp))
 			}
 		}
 	}
@@ -76,6 +79,7 @@ private fun GearItemRow(
 		Text(
 			text = gear.name,
 			style = MaterialTheme.typography.bodyMedium,
+			modifier = Modifier.weight(1f),
 		)
 
 		Icon(

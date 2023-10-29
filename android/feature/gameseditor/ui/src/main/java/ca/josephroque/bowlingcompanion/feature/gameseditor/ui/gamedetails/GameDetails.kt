@@ -1,7 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -57,6 +60,7 @@ private fun GameDetails(
 ) {
 	Column(
 		horizontalAlignment = Alignment.Start,
+		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier.fillMaxSize(),
 	) {
 		Header(
@@ -75,6 +79,7 @@ private fun GameDetails(
 		GearCard(
 			selectedGear = state.selectedGear,
 			manageGear = onManageGear,
+			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		MatchPlayCard(
@@ -82,6 +87,7 @@ private fun GameDetails(
 			opponentScore = state.opponentScore,
 			result = state.matchPlayResult,
 			manageMatchPlay = onManageMatchPlay,
+			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 	}
 }
