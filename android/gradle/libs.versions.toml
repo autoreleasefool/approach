@@ -9,6 +9,8 @@ androidxComposeBom = "2023.10.01"
 androidxComposeCompiler = "1.5.3"
 androidxCore = "1.12.0"
 androidxDataStore = "1.0.0"
+androidxHiltNavigationCompose = "1.0.0"
+androidxLifecycle = "2.6.2"
 hilt = "2.48"
 junit4 = "4.13.2"
 kotlinxDatetime = "0.4.1"
@@ -31,6 +33,8 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidxCore" }
 androidx-dataStore-core = { group = "androidx.datastore", name = "datastore", version.ref = "androidxDataStore" }
+androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidxHiltNavigationCompose" }
+androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.R
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,11 +56,11 @@ fun StatisticsWidgetPlaceholderCard(
 				verticalArrangement = Arrangement.spacedBy(4.dp),
 			) {
 				Text(
-					text = stringResource(R.string.statistics_placeholder_title),
+					text = stringResource(R.string.statistics_widget_placeholder_title),
 					style = MaterialTheme.typography.headlineMedium,
 				)
 				Text(
-					text = stringResource(R.string.statistics_placeholder_message),
+					text = stringResource(R.string.statistics_widget_placeholder_message),
 					style = MaterialTheme.typography.titleMedium,
 				)
 			}

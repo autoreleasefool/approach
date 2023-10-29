@@ -138,9 +138,6 @@
 	<string name="match_play_result_lost">Lost</string>
 	<string name="match_play_result_tied">Tied</string>
 
-	<string name="statistics_placeholder_title">Statistics at a glance</string>
-	<string name="statistics_placeholder_message">Tap here to configure the stats you want to see</string>
-
 	<string name="settings_title">Settings</string>
 	<string name="settings_item_opponents_title">Opponents</string>
 	<string name="settings_item_opponents_description">Logs of all your past opponents and a record of your match play</string>
