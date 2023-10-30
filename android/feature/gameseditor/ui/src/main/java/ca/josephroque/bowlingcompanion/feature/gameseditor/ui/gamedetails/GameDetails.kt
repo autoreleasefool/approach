@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -74,7 +76,10 @@ private fun GameDetails(
 	Column(
 		horizontalAlignment = Alignment.Start,
 		verticalArrangement = Arrangement.spacedBy(16.dp),
-		modifier = modifier.fillMaxSize(),
+		modifier = modifier
+			.fillMaxSize()
+			.verticalScroll(rememberScrollState())
+			.padding(bottom = 16.dp),
 	) {
 		Header(
 			bowlerName = state.bowlerName,
@@ -118,6 +123,7 @@ private fun GameDetails(
 			seriesPreBowl = state.seriesPreBowl,
 			onToggleLock = onToggleLock,
 			onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
+			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 	}
 }
