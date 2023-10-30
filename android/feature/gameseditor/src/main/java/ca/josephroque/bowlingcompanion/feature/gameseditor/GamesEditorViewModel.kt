@@ -4,6 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.toggle
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
@@ -58,6 +61,11 @@ class GamesEditorViewModel @Inject constructor(
 						matchPlayResult = null, // TODO: load match play result
 						gameScore = it.properties.score,
 						scoringMethod = it.properties.scoringMethod,
+						locked = it.properties.locked,
+						gameExcludeFromStatistics = it.properties.excludeFromStatistics,
+						seriesExcludeFromStatistics = it.series.excludeFromStatistics,
+						leagueExcludeFromStatistics = it.league.excludeFromStatistics,
+						seriesPreBowl = it.series.preBowl,
 						nextElement = null, // TODO: update next header element
 					)
 
@@ -103,6 +111,37 @@ class GamesEditorViewModel @Inject constructor(
 
 	fun openScoreSettings() {
 		/* TODO: openScoreSettings */
+	}
+
+	fun toggleGameLocked(isLocked: Boolean?) {
+		when (val state = _gameDetailsState.value) {
+			GameDetailsUiState.Loading -> Unit
+			is GameDetailsUiState.Edit -> _gameDetailsState.value = state.copy(
+				locked = when (isLocked) {
+					true -> GameLockState.LOCKED
+					false -> GameLockState.UNLOCKED
+					null -> when (state.locked) {
+						GameLockState.LOCKED -> GameLockState.UNLOCKED
+						GameLockState.UNLOCKED -> GameLockState.LOCKED
+					}
+				}
+			)
+		}
+		// TODO: save game
+	}
+
+	fun toggleGameExcludedFromStatistics(isExcluded: Boolean?) {
+		when (val state = _gameDetailsState.value) {
+			GameDetailsUiState.Loading -> Unit
+			is GameDetailsUiState.Edit -> _gameDetailsState.value = state.copy(
+				gameExcludeFromStatistics = when (isExcluded) {
+					true -> ExcludeFromStatistics.EXCLUDE
+					false -> ExcludeFromStatistics.INCLUDE
+					null -> state.gameExcludeFromStatistics.toggle()
+				}
+			)
+		}
+		// TODO: save game
 	}
 }
 

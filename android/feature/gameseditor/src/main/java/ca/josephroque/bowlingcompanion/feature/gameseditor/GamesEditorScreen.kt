@@ -45,6 +45,8 @@ internal fun GamesEditorRoute(
 		onManageGear = viewModel::openGearPicker,
 		onManageMatchPlay = viewModel::openMatchPlayManager,
 		onManageScore = viewModel::openScoreSettings,
+		onToggleLock = viewModel::toggleGameLocked,
+		onToggleExcludeFromStatistics = viewModel::toggleGameExcludedFromStatistics,
 		modifier = modifier,
 	)
 }
@@ -63,6 +65,8 @@ internal fun GamesEditorScreen(
 	onManageGear: () -> Unit,
 	onManageMatchPlay: () -> Unit,
 	onManageScore: () -> Unit,
+	onToggleLock: (Boolean?) -> Unit,
+	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val scaffoldState = rememberBottomSheetScaffoldState()
@@ -84,6 +88,8 @@ internal fun GamesEditorScreen(
 				onManageGear = onManageGear,
 				onManageMatchPlay = onManageMatchPlay,
 				onManageScore = onManageScore,
+				onToggleLock = onToggleLock,
+				onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
 			)
 		},
 	) {

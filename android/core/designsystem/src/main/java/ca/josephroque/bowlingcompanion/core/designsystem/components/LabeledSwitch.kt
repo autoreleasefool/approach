@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.designsystem.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -19,26 +20,44 @@ import androidx.compose.ui.unit.dp
 fun LabeledSwitch(
 	checked: Boolean,
 	onCheckedChange: (Boolean?) -> Unit,
+	enabled: Boolean = true,
 	@StringRes titleResourceId: Int,
+	@StringRes subtitleResourceId: Int? = null,
 	modifier: Modifier = Modifier,
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
-		horizontalArrangement = Arrangement.SpaceBetween,
+		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.clickable(onClick = { onCheckedChange(null) })
+			.clickable(onClick = { onCheckedChange(null) }, enabled = enabled)
 			.padding(vertical = 8.dp, horizontal = 16.dp)
 	) {
-		Text(
-			text = stringResource(titleResourceId),
-			style = MaterialTheme.typography.bodyMedium,
-			modifier = Modifier.weight(1f),
-		)
+		Column(
+			horizontalAlignment = Alignment.Start,
+			verticalArrangement = Arrangement.spacedBy(4.dp),
+			modifier = modifier
+				.weight(1f)
+		) {
+			Text(
+				text = stringResource(titleResourceId),
+				style = MaterialTheme.typography.titleMedium,
+			)
+
+			subtitleResourceId?.let {
+				Text(
+					text = stringResource(subtitleResourceId),
+					style = MaterialTheme.typography.bodyMedium,
+					color = MaterialTheme.colorScheme.onSurfaceVariant,
+				)
+			}
+		}
+
 
 		Switch(
 			checked = checked,
 			onCheckedChange = onCheckedChange,
+			enabled = enabled,
 		)
 	}
 }

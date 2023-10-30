@@ -165,7 +165,7 @@ public struct GameDetailsView: View {
 					Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.excludedWhenSeriesExcluded)
 						.foregroundColor(Asset.Colors.Warning.default)
 				case .include:
-					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
+					Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
 				}
 			}
 		}

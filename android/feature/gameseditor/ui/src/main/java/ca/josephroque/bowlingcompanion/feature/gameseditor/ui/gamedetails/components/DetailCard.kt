@@ -29,7 +29,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 @Composable
 internal fun DetailCard(
 	modifier: Modifier = Modifier,
-	title: String?,
+	title: String? = null,
 	action: (@Composable () -> Unit)? = null,
 	content: @Composable ColumnScope.() -> Unit,
 ) {

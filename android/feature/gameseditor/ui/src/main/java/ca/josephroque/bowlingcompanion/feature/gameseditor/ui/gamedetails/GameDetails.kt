@@ -16,11 +16,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailRow
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import java.util.UUID
@@ -34,6 +37,8 @@ fun GameDetails(
 	onManageGear: () -> Unit,
 	onManageMatchPlay: () -> Unit,
 	onManageScore: () -> Unit,
+	onToggleLock: (Boolean?) -> Unit,
+	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	when (gameDetailsState) {
@@ -46,6 +51,8 @@ fun GameDetails(
 			onManageGear = onManageGear,
 			onManageMatchPlay = onManageMatchPlay,
 			onManageScore = onManageScore,
+			onToggleLock = onToggleLock,
+			onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
 			modifier = modifier,
 		)
 	}
@@ -60,6 +67,8 @@ private fun GameDetails(
 	onManageGear: () -> Unit,
 	onManageMatchPlay: () -> Unit,
 	onManageScore: () -> Unit,
+	onToggleLock: (Boolean?) -> Unit,
+	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -99,6 +108,16 @@ private fun GameDetails(
 			score = state.gameScore,
 			manageScore = onManageScore,
 			modifier = Modifier.padding(horizontal = 16.dp),
+		)
+
+		GamePropertiesCard(
+			locked = state.locked,
+			gameExcludeFromStatistics = state.gameExcludeFromStatistics,
+			seriesExcludeFromStatistics = state.seriesExcludeFromStatistics,
+			leagueExcludeFromStatistics = state.leagueExcludeFromStatistics,
+			seriesPreBowl = state.seriesPreBowl,
+			onToggleLock = onToggleLock,
+			onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
 		)
 	}
 }
@@ -148,6 +167,11 @@ sealed interface GameDetailsUiState {
 		val matchPlayResult: MatchPlayResult?,
 		val scoringMethod: GameScoringMethod,
 		val gameScore: Int,
+		val locked: GameLockState,
+		val gameExcludeFromStatistics: ExcludeFromStatistics,
+		val seriesExcludeFromStatistics: ExcludeFromStatistics,
+		val leagueExcludeFromStatistics: ExcludeFromStatistics,
+		val seriesPreBowl: SeriesPreBowl,
 		val nextElement: NextGameEditableElement?,
 	): GameDetailsUiState
 }
@@ -176,6 +200,11 @@ private fun GameDetailsPreview() {
 				matchPlayResult = MatchPlayResult.WON,
 				gameScore = 234,
 				scoringMethod = GameScoringMethod.BY_FRAME,
+				locked = GameLockState.UNLOCKED,
+				gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+				seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+				leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+				seriesPreBowl = SeriesPreBowl.REGULAR,
 				nextElement = NextGameEditableElement.Roll(rollIndex = 1),
 			),
 			goToNext = {},
@@ -184,6 +213,8 @@ private fun GameDetailsPreview() {
 			onManageGear = {},
 			onManageMatchPlay = {},
 			onManageScore = {},
+			onToggleLock = {},
+			onToggleExcludeFromStatistics = {},
 		)
 	}
 }
