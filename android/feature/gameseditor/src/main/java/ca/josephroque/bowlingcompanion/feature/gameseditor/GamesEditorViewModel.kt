@@ -56,6 +56,8 @@ class GamesEditorViewModel @Inject constructor(
 						opponentName = null, // TODO: load opponent name
 						opponentScore = null, // TODO: load opponent score
 						matchPlayResult = null, // TODO: load match play result
+						gameScore = it.properties.score,
+						scoringMethod = it.properties.scoringMethod,
 						nextElement = null, // TODO: update next header element
 					)
 
@@ -97,6 +99,10 @@ class GamesEditorViewModel @Inject constructor(
 
 	fun openGameStats() {
 		/* TODO: openGameStats */
+	}
+
+	fun openScoreSettings() {
+		/* TODO: openScoreSettings */
 	}
 }
 

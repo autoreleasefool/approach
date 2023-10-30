@@ -86,7 +86,7 @@ private fun GearItemRow(
 			painter = gear.kind.icon(),
 			contentDescription = null,
 			tint = MaterialTheme.colorScheme.onSurface,
-			modifier = Modifier.size(20.dp),
+			modifier = Modifier.size(24.dp),
 		)
 	}
 }

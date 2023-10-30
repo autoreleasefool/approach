@@ -24,6 +24,13 @@
 	<string name="match_play_result_lost">Lost</string>
 	<string name="match_play_result_tied">Tied</string>
 
+	<string name="game_editor_scoring_method_title">Scoring</string>
+	<string name="game_editor_scoring_method_set_manual_score">Set manual score</string>
+	<string name="game_editor_scoring_method_edit_manual_score">Edit manual score</string>
+
+	<string name="scoring_method_manual">Manual</string>
+	<string name="scoring_method_frame_by_frame">Frame-by-Frame</string>
+
 	<string name="cd_settings">Settings</string>
 
 	<string name="cd_pin_left_two_pin">Left Two Pin</string>

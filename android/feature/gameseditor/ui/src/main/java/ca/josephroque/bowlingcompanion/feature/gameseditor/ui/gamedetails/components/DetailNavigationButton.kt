@@ -22,6 +22,7 @@ internal fun DetailNavigationButton(
 	modifier: Modifier = Modifier,
 	title: String,
 	subtitle: String? = null,
+	icon: (@Composable () -> Unit)? = null,
 	onClick: () -> Unit,
 ) {
 	Surface(
@@ -33,8 +34,9 @@ internal fun DetailNavigationButton(
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
-//			modifier = Modifier.padding(horizontal = 16.dp),
 		) {
+			icon?.invoke()
+
 			Column(
 				horizontalAlignment = Alignment.Start,
 				modifier = Modifier.weight(1f),
