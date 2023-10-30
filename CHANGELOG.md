@@ -1,13 +1,12 @@
 # Most recent version
 
-## iOS 1.2.0b13
+## iOS 1.2.0b14
 
 ```
-- Feat: Add ArchiveList
-- Feat: Archive bowlers, leagues, series, and games
-- Feat: Add new games to series after they're created
-- Feat: Better empty state for GamesList
-- Fix: Ensure game details are loaded before all other properties
+- Feat: Taps + Taps Spared statistics
+- Fix: First Roll statistics after strikes are no longer incorrectly counted as spares
+- Fix: ArchivedList is now sorted by date archived on
+- Fix: Series Add button is now visible without Sharing feature enabled
 ```
 
 ## Android v3.2.0
@@ -20,7 +19,19 @@ This update also comes with some quality of life fixes:
 - No more analytics
 ```
 
+---
+
 # Legacy versions
+
+## iOS 1.2.0b13
+
+```
+- Feat: Add ArchiveList
+- Feat: Archive bowlers, leagues, series, and games
+- Feat: Add new games to series after they're created
+- Feat: Better empty state for GamesList
+- Fix: Ensure game details are loaded before all other properties
+```
 
 ## iOS 1.1.2b12
 
