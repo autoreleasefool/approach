@@ -21,6 +21,7 @@ public struct StatisticsDetailsList: Reducer {
 		public var entryToHighlight: Statistics.ListEntry.ID?
 		public let hasTappableElements: Bool
 
+		public let isStatisticsIssueReportsEnabled: Bool
 		public let isStatisticsDescriptionsEnabled: Bool
 		public var isShowingStatisticDescriptionTip: Bool
 
@@ -30,6 +31,7 @@ public struct StatisticsDetailsList: Reducer {
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.isStatisticsDescriptionsEnabled = featureFlags.isEnabled(.statisticsDescriptions)
+			self.isStatisticsIssueReportsEnabled = featureFlags.isEnabled(.statisticsIssueReports)
 
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
@@ -44,6 +46,7 @@ public struct StatisticsDetailsList: Reducer {
 		public enum ViewAction: BindableAction, Equatable {
 			case didTapEntry(id: String)
 			case didTapDismissDescriptionsTip
+			case didTapReportIssue
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {
@@ -78,6 +81,10 @@ public struct StatisticsDetailsList: Reducer {
 				switch viewAction {
 				case let .didTapEntry(id):
 					return .send(.delegate(.didRequestEntryDetails(id: id)))
+
+				case .didTapReportIssue:
+					// TODO: report issue
+					return .none
 
 				case .didTapDismissDescriptionsTip:
 					state.isShowingStatisticDescriptionTip = false
@@ -238,6 +245,28 @@ public struct StatisticsDetailsListView<Header: View>: View {
 						} footer: {
 							Text(Strings.Statistics.List.StatisticsDescription.help)
 						}
+					}
+
+					if viewStore.isStatisticsIssueReportsEnabled {
+						Section {
+							Button { viewStore.send(.didTapReportIssue) } label: {
+								HStack {
+									Image(systemSymbol: .exclamationmarkBubble)
+										.resizable()
+										.scaledToFit()
+										.frame(width: .extraTinyIcon, height: .extraTinyIcon)
+										.foregroundColor(Asset.Colors.Error.default)
+
+									Text(Strings.Statistics.List.Issues.report)
+										.font(.caption)
+										.opacity(0.7)
+								}
+								.contentShape(Rectangle())
+							}
+							.buttonStyle(TappableElement())
+						}
+						.listRowInsets(EdgeInsets())
+						.listRowBackground(Color.clear)
 					}
 				}
 				.onChange(of: viewStore.entryToHighlight) {

@@ -1629,6 +1629,10 @@ public enum Strings {
         /// Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.
         public static let help = Strings.tr("Localizable", "statistics.list.hideZeroStatistics.help", fallback: "Some statistics have been hidden from the list because they were empty. You can choose to show these statistics to get a better view of your play.")
       }
+      public enum Issues {
+        /// Noticed something wrong with your statistics? Send an email by tapping here. It will automatically include details about your game and the statistics
+        public static let report = Strings.tr("Localizable", "statistics.list.issues.report", fallback: "Noticed something wrong with your statistics? Send an email by tapping here. It will automatically include details about your game and the statistics")
+      }
       public enum StatisticsDescription {
         /// You can hide the descriptions to see more stats at once.
         public static let help = Strings.tr("Localizable", "statistics.list.statisticsDescription.help", fallback: "You can hide the descriptions to see more stats at once.")

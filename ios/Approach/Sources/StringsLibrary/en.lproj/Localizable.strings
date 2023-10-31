@@ -319,6 +319,7 @@
 "statistics.list.statisticsDescription" = "Hide descriptions?";
 "statistics.list.statisticsDescription.help" = "You can hide the descriptions to see more stats at once.";
 "statistics.list.new" = "New";
+"statistics.list.issues.report" = "Noticed something wrong with your statistics? Send an email by tapping here. It will automatically include details about your game and the statistics";
 "statistics.picker.title" = "Statistic";
 "statistics.filter.filterByGame" = "Filter by game";
 "statistics.filter.allGames" = "All games";
