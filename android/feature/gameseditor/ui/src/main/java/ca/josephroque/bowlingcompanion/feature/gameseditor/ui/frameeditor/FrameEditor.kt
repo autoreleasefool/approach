@@ -6,6 +6,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.pointer.PointerEvent
@@ -62,12 +64,13 @@ private fun FrameEditor(
 	}
 
 	Box(modifier = modifier
-		.fillMaxSize()
+		.fillMaxWidth()
 		.onSizeChanged { maxX = it.width.toFloat() },
 	) {
 		Row(
+			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
-				.fillMaxSize()
+				.fillMaxWidth()
 				.pointerInput(state.downedPins) {
 					awaitEachGesture {
 						awaitFirstDown()
@@ -108,12 +111,18 @@ private fun FrameEditor(
 					contentDescription = it.contentDescription(),
 					modifier = Modifier
 						.padding(horizontal = 4.dp)
-						.weight(1f)
+						.weight(it.weight())
 						.alpha(if (isPinLocked) 0.25f else 1f),
 				)
 			}
 		}
 	}
+}
+
+private fun Pin.weight(): Float = when (this) {
+	Pin.LEFT_TWO_PIN, Pin.RIGHT_TWO_PIN -> 0.1855f
+	Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN -> 0.207f
+	Pin.HEAD_PIN -> 0.215f
 }
 
 sealed interface FrameEditorUiState {
