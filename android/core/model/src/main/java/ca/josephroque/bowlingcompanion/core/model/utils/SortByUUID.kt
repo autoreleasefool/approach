@@ -11,7 +11,7 @@ fun <T: SortableByUUID> List<T>.sortByUUIDs(ids: List<String>): List<T> {
 		return this
 	}
 
-	val idIndices = buildMap<String, Int> {
+	val idIndices = buildMap {
 		ids.forEachIndexed { index, id ->
 			put(id, index)
 		}
