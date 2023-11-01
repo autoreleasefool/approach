@@ -150,7 +150,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.2"),
 		.package(url: "https://github.com/exyte/PopupView.git", from: "2.6.0"),
-		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.16.0"),
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.21.0"),
 		.package(url: "https://github.com/markiv/SwiftUI-Shimmer.git", from: "1.4.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.2.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.0.0"),

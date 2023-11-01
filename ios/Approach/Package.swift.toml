@@ -420,7 +420,7 @@ from = "3.8.2"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
-from = "6.16.0"
+from = "6.21.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
