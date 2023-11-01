@@ -62,6 +62,19 @@ final class PinTests: XCTestCase {
 		XCTAssertFalse(emptyDeck.isRight)
 	}
 
+	func testIsTapped() {
+		let deck1: Set<Pin> = [.headPin, .leftThreePin, .rightThreePin, .rightTwoPin]
+		XCTAssertTrue(deck1.isTapped)
+		let deck2: Set<Pin> = [.headPin, .leftThreePin, .rightThreePin, .leftTwoPin]
+		XCTAssertTrue(deck2.isTapped)
+
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isLeft)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isLeft)
+	}
+
 	func testIsAce() {
 		let deck1: Set<Pin> = [.headPin, .leftThreePin, .rightThreePin]
 		XCTAssertTrue(deck1.isAce)
@@ -364,6 +377,108 @@ final class PinTests: XCTestCase {
 
 		let emptyDeck: Set<Pin> = []
 		XCTAssertFalse(emptyDeck.isTwelve)
+	}
+
+	func testIsLeftFive() {
+		let deck1: Set<Pin> = [.leftTwoPin, .leftThreePin]
+		XCTAssertTrue(deck1.isLeftFive)
+
+		let deck2: Set<Pin> = [.rightTwoPin, .rightThreePin]
+		XCTAssertFalse(deck2.isLeftFive)
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isLeftFive)
+		let deck4: Set<Pin> = [.leftThreePin, .rightTwoPin]
+		XCTAssertFalse(deck4.isLeftFive)
+		let deck5: Set<Pin> = [.rightThreePin, .leftTwoPin]
+		XCTAssertFalse(deck5.isLeftFive)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isLeftFive)
+	}
+
+	func testIsRightFive() {
+		let deck1: Set<Pin> = [.rightTwoPin, .rightThreePin]
+		XCTAssertTrue(deck1.isRightFive)
+
+		let deck2: Set<Pin> = [.leftTwoPin, .leftThreePin]
+		XCTAssertFalse(deck2.isRightFive)
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isRightFive)
+		let deck4: Set<Pin> = [.leftThreePin, .rightTwoPin]
+		XCTAssertFalse(deck4.isRightFive)
+		let deck5: Set<Pin> = [.rightThreePin, .leftTwoPin]
+		XCTAssertFalse(deck5.isRightFive)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isRightFive)
+	}
+
+	func testIsFive() {
+		let deck1: Set<Pin> = [.rightTwoPin, .rightThreePin]
+		XCTAssertTrue(deck1.isFive)
+		let deck2: Set<Pin> = [.leftTwoPin, .leftThreePin]
+		XCTAssertTrue(deck2.isFive)
+
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isFive)
+		let deck4: Set<Pin> = [.leftThreePin, .rightTwoPin]
+		XCTAssertFalse(deck4.isFive)
+		let deck5: Set<Pin> = [.rightThreePin, .leftTwoPin]
+		XCTAssertFalse(deck5.isFive)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isFive)
+	}
+
+	func testIsLeftThree() {
+		let deck1: Set<Pin> = [.leftThreePin]
+		XCTAssertTrue(deck1.isLeftThree)
+
+		let deck2: Set<Pin> = [.rightThreePin]
+		XCTAssertFalse(deck2.isLeftThree)
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isLeftThree)
+		let deck4: Set<Pin> = [.leftTwoPin]
+		XCTAssertFalse(deck4.isLeftThree)
+		let deck5: Set<Pin> = [.rightTwoPin]
+		XCTAssertFalse(deck5.isLeftThree)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isLeftThree)
+	}
+
+	func testIsRightThree() {
+		let deck1: Set<Pin> = [.rightThreePin]
+		XCTAssertTrue(deck1.isRightThree)
+
+		let deck2: Set<Pin> = [.leftThreePin]
+		XCTAssertFalse(deck2.isRightThree)
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isRightThree)
+		let deck4: Set<Pin> = [.leftTwoPin]
+		XCTAssertFalse(deck4.isRightThree)
+		let deck5: Set<Pin> = [.rightTwoPin]
+		XCTAssertFalse(deck5.isRightThree)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isRightThree)
+	}
+
+	func testIsThree() {
+		let deck1: Set<Pin> = [.rightThreePin]
+		XCTAssertTrue(deck1.isThree)
+		let deck2: Set<Pin> = [.leftThreePin]
+		XCTAssertTrue(deck2.isThree)
+
+		let deck3: Set<Pin> = [.headPin]
+		XCTAssertFalse(deck3.isThree)
+		let deck4: Set<Pin> = [.leftTwoPin]
+		XCTAssertFalse(deck4.isThree)
+		let deck5: Set<Pin> = [.rightTwoPin]
+		XCTAssertFalse(deck5.isThree)
+
+		let emptyDeck: Set<Pin> = []
+		XCTAssertFalse(emptyDeck.isThree)
 	}
 
 	func testArePinsCleared() {
