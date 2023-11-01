@@ -264,7 +264,7 @@ final class FrameTests: XCTestCase {
 				.init(
 					firstRoll: .init(index: 0, roll: .init(pinsDowned: [.headPin])),
 					secondRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))
-				)
+				),
 			]
 		)
 
@@ -283,7 +283,7 @@ final class FrameTests: XCTestCase {
 				.init(
 					firstRoll: .init(index: 0, roll: .init(pinsDowned: [.headPin])),
 					secondRoll: .init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin]))
-				)
+				),
 			]
 		)
 	}

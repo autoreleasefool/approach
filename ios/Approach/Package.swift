@@ -146,7 +146,7 @@ let package = Package(
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
 	dependencies: [
-		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
+		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.1.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.1.0"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.0"),
 		.package(url: "https://github.com/exyte/PopupView.git", from: "2.6.0"),
@@ -251,6 +251,7 @@ let package = Package(
 			name: "ArchiveListFeature",
 			dependencies: [
 				"BowlersRepositoryInterface",
+				"DateTimeLibrary",
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
@@ -567,6 +568,7 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"AnalyticsServiceInterface",
+				"DateTimeLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"ModelsViewsLibrary",
@@ -1502,7 +1504,6 @@ let package = Package(
 			name: "ModelsViewsLibrary",
 			dependencies: [
 				"AssetsLibrary",
-				"DateTimeLibrary",
 				"ModelsLibrary",
 				"StringsLibrary",
 			]

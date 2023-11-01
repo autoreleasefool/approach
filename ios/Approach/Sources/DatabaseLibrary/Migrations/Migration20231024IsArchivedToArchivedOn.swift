@@ -1,6 +1,5 @@
 import GRDB
 
-// swiftlint:disable:next type_name
 struct Migration20231024IsArchivedToArchivedOn: DBMigration {
 	static func migrate(_ db: Database) throws {
 		try db.alter(table: "bowler") { t in

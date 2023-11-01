@@ -34,7 +34,7 @@ features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "St
 [features.ArchiveList]
 features = [ "Errors" ]
 repositories = [ "Bowlers", "Games", "Leagues", "Series" ]
-libraries = [ "ModelsViews" ]
+libraries = [ "DateTime", "ModelsViews" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
@@ -117,7 +117,7 @@ services = [ "Products" ]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
 services = [ "Analytics", "FeatureFlags" ]
-libraries = [ "ModelsViews", "PickableModels" ]
+libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
 features = [ "GamesList", "LeagueEditor" ]
@@ -319,7 +319,7 @@ dependencies = [ "IdentifiedCollections" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.ModelsViews]
-libraries = [ "Assets", "DateTime", "Models", "Strings" ]
+libraries = [ "Assets", "Models", "Strings" ]
 
 [libraries.PickableModels]
 libraries = [ "Models", "ResourcePicker" ]
@@ -404,7 +404,7 @@ libraries = [ "Assets", "Strings" ]
 
 [dependencies.Algorithms]
 url = "https://github.com/apple/swift-algorithms.git"
-from = "1.0.0"
+from = "1.1.0"
 
 [dependencies.AsyncAlgorithms]
 url = "https://github.com/apple/swift-async-algorithms.git"
