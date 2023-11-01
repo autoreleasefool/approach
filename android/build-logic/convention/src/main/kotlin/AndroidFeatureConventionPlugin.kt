@@ -20,7 +20,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
 				add("implementation", project(":core:model"))
 
 				add("testImplementation", kotlin("test"))
+				add("testImplementation", project(":core:testing"))
 				add("androidTestImplementation", kotlin("test"))
+				add("androidTestImplementation", project(":core:testing"))
 
 				add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
 				add("implementation", libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
