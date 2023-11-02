@@ -1,6 +1,6 @@
 import ScoreKeeperModelsLibrary
 
-struct SequencedRoll {
+struct SequencedRoll: Equatable {
 	let frameIndex: Int
 	let rollIndex: Int
 	let roll: ScoreKeeper.Roll
@@ -183,7 +183,8 @@ public class ScoreKeeper {
 					didFoul: roll.roll.didFoul
 				))
 
-				if Frame.isLastRoll(roll.rollIndex) {
+				// Update the score after the last roll in the game
+				if roll == rolls.last {
 					stepScore += pinsDown.value
 				}
 			}
