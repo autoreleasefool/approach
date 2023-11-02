@@ -260,6 +260,129 @@ final class ScoresRepositoryTests: XCTestCase {
 		XCTAssertEqual(expectedGame, scores)
 	}
 
+	func testCalculatesScore_WithIncompleteTenthFrame_Correctly() async throws {
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
+
+		let scoresStream = withDependencies {
+			$0.games.findIndex = { id in .init(id: id, index: 0) }
+			$0.frames.observeRolls = { _ in frames }
+			$0.scores = .liveValue
+		} operation: {
+			self.scores.observeScore(for: UUID(0))
+		}
+
+		let rolls: [[ScoreKeeper.Roll]] = [
+			[
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+			],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[
+				.init(pinsDowned: [.headPin, .leftTwoPin, .leftThreePin], didFoul: false)
+			],
+		]
+
+		framesContinuation.yield(rolls)
+
+		var iterator = scoresStream.makeAsyncIterator()
+		let scores = try await iterator.next()
+
+		let expectedGame = ScoredGame(
+			id: UUID(0),
+			index: 0,
+			frames: [
+				.init(index: 0, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 0),
+				.init(index: 1, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "15", didFoul: false), .init(index: 2, displayValue: "15", didFoul: false)], score: 45),
+				.init(index: 2, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "15", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 75),
+				.init(index: 3, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 4, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 5, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 6, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 7, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 8, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 9, rolls: [.init(index: 0, displayValue: "C/O", didFoul: false), .init(index: 1, displayValue: nil, didFoul: false), .init(index: 2, displayValue: nil, didFoul: false)], score: 100),
+			]
+		)
+
+		XCTAssertEqual(expectedGame, scores)
+	}
+
+	func testCalculatesScore_WithIncompleteTenthFrameWithStrike_Correctly() async throws {
+		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
+
+		let scoresStream = withDependencies {
+			$0.games.findIndex = { id in .init(id: id, index: 0) }
+			$0.frames.observeRolls = { _ in frames }
+			$0.scores = .liveValue
+		} operation: {
+			self.scores.observeScore(for: UUID(0))
+		}
+
+		let rolls: [[ScoreKeeper.Roll]] = [
+			[
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+				.init(pinsDowned: [], didFoul: false),
+			],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+			],
+			[],
+			[],
+			[],
+			[],
+			[],
+			[
+				.init(pinsDowned: Pin.fullDeck, didFoul: false),
+				.init(pinsDowned: [.headPin], didFoul: false),
+			],
+		]
+
+		framesContinuation.yield(rolls)
+
+		var iterator = scoresStream.makeAsyncIterator()
+		let scores = try await iterator.next()
+
+		let expectedGame = ScoredGame(
+			id: UUID(0),
+			index: 0,
+			frames: [
+				.init(index: 0, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 0),
+				.init(index: 1, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "15", didFoul: false), .init(index: 2, displayValue: "15", didFoul: false)], score: 45),
+				.init(index: 2, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "15", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 75),
+				.init(index: 3, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 4, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 5, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 6, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 7, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 8, rolls: [.init(index: 0, displayValue: "-", didFoul: false), .init(index: 1, displayValue: "-", didFoul: false), .init(index: 2, displayValue: "-", didFoul: false)], score: 90),
+				.init(index: 9, rolls: [.init(index: 0, displayValue: "X", didFoul: false), .init(index: 1, displayValue: "HP", didFoul: false), .init(index: 2, displayValue: nil, didFoul: false)], score: 110),
+			]
+		)
+
+		XCTAssertEqual(expectedGame, scores)
+	}
+
 	func testCalculatesScoreWithFoulsAppliedCorrectly() async throws {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
