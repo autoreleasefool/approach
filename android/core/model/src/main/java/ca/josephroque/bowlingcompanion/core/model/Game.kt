@@ -3,6 +3,15 @@ package ca.josephroque.bowlingcompanion.core.model
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
+object Game {
+	const val NumberOfFrames = 10
+	val FrameIndices = 0..<NumberOfFrames
+	const val FoulPenalty = 15
+
+	fun frameIndicesAfter(after: Int, upTo: Int = NumberOfFrames): IntRange =
+		(after + 1)..<upTo
+}
+
 data class GameEdit(
 	val properties: GameEditProperties,
 	val series: GameEditSeriesProperties,

@@ -3,10 +3,8 @@ package ca.josephroque.bowlingcompanion.core.model
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
-class League {
-	companion object {
-		val NUMBER_OF_GAMES_RANGE = 1..40
-	}
+object League {
+	val NumberOfGamesRange = 1..40
 }
 
 data class LeagueDetails(
