@@ -1,12 +1,10 @@
 # Most recent version
 
-## iOS 1.2.0b14
+## iOS 1.2.1b15
 
 ```
-- Feat: Taps + Taps Spared statistics
-- Fix: First Roll statistics after strikes are no longer incorrectly counted as spares
-- Fix: ArchivedList is now sorted by date archived on
-- Fix: Series Add button is now visible without Sharing feature enabled
+- Fix: 10th frame will show the correct score at all times, not only at the end of a game
+- Fix: A strike or spare in the 10th frame will no longer cause the "Next" button to open the next game
 ```
 
 ## Android v3.2.0
@@ -22,6 +20,15 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.2.0b14
+
+```
+- Feat: Taps + Taps Spared statistics
+- Fix: First Roll statistics after strikes are no longer incorrectly counted as spares
+- Fix: ArchivedList is now sorted by date archived on
+- Fix: Series Add button is now visible without Sharing feature enabled
+```
 
 ## iOS 1.2.0b13
 
