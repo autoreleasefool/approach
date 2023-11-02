@@ -73,7 +73,11 @@ extension Frame.Edit {
 
 	public var firstUntouchedRoll: Int? {
 		guard rolls.count < Frame.NUMBER_OF_ROLLS else { return nil }
-		return deck(forRoll: rolls.endIndex - 1).arePinsCleared ? nil : rolls.endIndex
+		if Frame.isLast(index) {
+			return rolls.endIndex
+		} else {
+			return deck(forRoll: rolls.endIndex - 1).arePinsCleared ? nil : rolls.endIndex
+		}
 	}
 
 	public mutating func setBowlingBall(_ bowlingBall: Gear.Summary?, forRoll rollIndex: Int) {
