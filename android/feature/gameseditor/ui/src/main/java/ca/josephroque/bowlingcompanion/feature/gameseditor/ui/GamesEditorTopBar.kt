@@ -23,15 +23,12 @@ fun GamesEditorTopBar(
 ) {
 	TopAppBar(
 		title = {
-			when (gameDetailsState) {
-				GameDetailsUiState.Loading -> Unit
-				is GameDetailsUiState.Edit -> Text(
-					stringResource(
-						RCoreDesign.string.game_with_ordinal,
-						gameDetailsState.currentGameIndex + 1
-					)
+			Text(
+				stringResource(
+					RCoreDesign.string.game_with_ordinal,
+					gameDetailsState.currentGameIndex + 1
 				)
-			}
+			)
 		},
 		colors = TopAppBarDefaults.topAppBarColors(),
 		navigationIcon = { BackButton(onClick = onBackPressed) },

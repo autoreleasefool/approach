@@ -30,7 +30,7 @@ fun ScoringFrame.isFirstFrame(): Boolean =
 	index == 0
 
 fun List<ScoringFrame>.gameScore(): Int? =
-	reversed().firstNotNullOf { it.score }
+	reversed().firstNotNullOfOrNull { it.score }
 
 data class ScoringGame(
 	val id: UUID,

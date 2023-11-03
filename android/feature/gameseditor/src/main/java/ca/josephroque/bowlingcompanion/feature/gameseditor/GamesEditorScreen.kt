@@ -95,19 +95,19 @@ internal fun GamesEditorScreen(
 			)
 		},
 		sheetDragHandle = {
-			val dragHandleDescription = stringResource(androidx.compose.material3.R.string.bottom_sheet_drag_handle_description)
+			val dragHandleDescription = stringResource(R.string.bottom_sheet_drag_handle_description)
 			Surface(
 				modifier = modifier
 					.padding(vertical = 8.dp)
 					.semantics { contentDescription = dragHandleDescription }
-					.onGloballyPositioned { handleHeight.value = it.size.height.toFloat() },
+					.onGloballyPositioned { handleHeight.floatValue = it.size.height.toFloat() },
 				color = MaterialTheme.colorScheme.onSurfaceVariant,
 				shape = MaterialTheme.shapes.extraLarge,
 			) {
 				Box(modifier = Modifier.size(width = 32.dp, height = 4.dp))
 			}
 		},
-		sheetPeekHeight = (headerHeight.value + handleHeight.value).dp,
+		sheetPeekHeight = (headerHeight.floatValue + handleHeight.floatValue).dp,
 		sheetContent = {
 			GameDetails(
 				state = gameDetailsState,
@@ -119,7 +119,7 @@ internal fun GamesEditorScreen(
 				onManageScore = onManageScore,
 				onToggleLock = onToggleLock,
 				onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
-				onMeasureHeaderHeight = { headerHeight.value = it }
+				onMeasureHeaderHeight = { headerHeight.floatValue = it }
 			)
 		},
 	) {

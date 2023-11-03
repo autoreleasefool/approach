@@ -1,8 +1,6 @@
-import ca.josephroque.bowlingcompanion.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlin
 
 class AndroidFeatureUiConventionPlugin : Plugin<Project> {
 	override fun apply(target: Project) {

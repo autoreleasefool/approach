@@ -38,15 +38,15 @@ import java.util.UUID
 @Composable
 fun ScoreSheet(
 	modifier: Modifier = Modifier,
-	scoreSheetState: ScoreSheetUiState,
-	onChangeSelection: (frameIndex: Int, rollIndex: Int) -> Unit,
+	state: ScoreSheetUiState,
+	onSelectionChanged: (ScoreSheetUiState.Selection) -> Unit,
 ) {
 	val listState = rememberLazyListState()
 	val coroutineScope = rememberCoroutineScope()
 
-	LaunchedEffect(scoreSheetState.selection) {
+	LaunchedEffect(state.selection) {
 		coroutineScope.launch {
-			listState.animateScrollToItem(index = scoreSheetState.selection.frameIndex)
+			listState.animateScrollToItem(index = state.selection.frameIndex)
 		}
 	}
 
@@ -56,11 +56,11 @@ fun ScoreSheet(
 			.clip(RoundedCornerShape(16.dp)),
 	) {
 		items(
-			items = scoreSheetState.game.frames,
+			items = state.game?.frames ?: emptyList(),
 			key = { it.index },
 			contentType = { "frame" },
 		) { frame ->
-			val isFrameSelected = scoreSheetState.selection.frameIndex == frame.index
+			val isFrameSelected = state.selection.frameIndex == frame.index
 
 			Column(
 				modifier = Modifier.fillParentMaxWidth(0.33f),
@@ -68,25 +68,25 @@ fun ScoreSheet(
 				RollCells(
 					modifier = Modifier.fillMaxWidth(),
 					frame = frame,
-					style = scoreSheetState.configuration.style,
+					style = state.configuration.style,
 					isFrameSelected = isFrameSelected,
-					selectedRollIndex = scoreSheetState.selection.rollIndex,
+					selectedRollIndex = state.selection.rollIndex,
 				) {
-					onChangeSelection(frame.index, it)
+					onSelectionChanged(ScoreSheetUiState.Selection(frame.index, it))
 				}
 
 				FrameCell(
 					frame = frame,
-					style = scoreSheetState.configuration.style,
+					style = state.configuration.style,
 					isSelected = isFrameSelected,
 					modifier = Modifier.fillMaxWidth(),
 				) {
-					onChangeSelection(frame.index, 0)
+					onSelectionChanged(ScoreSheetUiState.Selection(frame.index, 0))
 				}
 
 				RailCell(
 					frameIndex = frame.index,
-					style = scoreSheetState.configuration.style,
+					style = state.configuration.style,
 					isSelected = isFrameSelected,
 					modifier = Modifier.fillMaxWidth(),
 				)
@@ -141,8 +141,18 @@ private fun RollCell(
 				)
 			)
 			.bottomBorder(2.dp, colorResource(style.borderColor))
-			.then(if (roll.isLastRoll()) Modifier else Modifier.endBorder(2.dp, colorResource(style.borderColor)))
-			.then(if (!isFirstFrame && roll.isFirstRoll()) Modifier.startBorder(2.dp, colorResource(style.borderColor)) else Modifier)
+			.then(
+				if (roll.isLastRoll()) Modifier else Modifier.endBorder(
+					2.dp,
+					colorResource(style.borderColor)
+				)
+			)
+			.then(
+				if (!isFirstFrame && roll.isFirstRoll()) Modifier.startBorder(
+					2.dp,
+					colorResource(style.borderColor)
+				) else Modifier
+			)
 			.padding(vertical = 8.dp),
 	) {
 		Text(
@@ -178,7 +188,12 @@ private fun FrameCell(
 						style.backgroundColor
 				)
 			)
-			.then(if (frame.isFirstFrame()) Modifier else Modifier.startBorder(2.dp, colorResource(style.borderColor)))
+			.then(
+				if (frame.isFirstFrame()) Modifier else Modifier.startBorder(
+					2.dp,
+					colorResource(style.borderColor)
+				)
+			)
 			.padding(vertical = 8.dp),
 	) {
 		Text(
@@ -211,7 +226,12 @@ private fun RailCell(
 						style.railBackgroundColor
 				)
 			)
-			.then(if (frameIndex == 0) Modifier else Modifier.startBorder(2.dp, colorResource(style.borderColor)))
+			.then(
+				if (frameIndex == 0) Modifier else Modifier.startBorder(
+					2.dp,
+					colorResource(style.borderColor)
+				)
+			)
 			.padding(vertical = 4.dp),
 	) {
 		Text(
@@ -228,13 +248,13 @@ private fun RailCell(
 }
 
 data class ScoreSheetUiState(
-	val game: ScoringGame,
-	val configuration: ScoreSheetConfiguration,
-	val selection: Selection,
+		val game: ScoringGame? = null,
+		val configuration: ScoreSheetConfiguration = ScoreSheetConfiguration(),
+		val selection: Selection = Selection()
 ) {
 	data class Selection(
-		val frameIndex: Int,
-		val rollIndex: Int,
+		val frameIndex: Int = 0,
+		val rollIndex: Int = 0,
 	)
 }
 
@@ -243,7 +263,7 @@ data class ScoreSheetUiState(
 private fun ScoreSheetPreview() {
 	Surface {
 		ScoreSheet(
-			scoreSheetState = ScoreSheetUiState(
+			state = ScoreSheetUiState(
 				configuration = ScoreSheetConfiguration(ScoreSheetConfiguration.Style.PLAIN),
 				selection = ScoreSheetUiState.Selection(frameIndex = 0, rollIndex = 0),
 				game = ScoringGame(
@@ -343,7 +363,7 @@ private fun ScoreSheetPreview() {
 					),
 				)
 			),
-			onChangeSelection = { _, _ -> },
+			onSelectionChanged = {},
 		)
 	}
 }

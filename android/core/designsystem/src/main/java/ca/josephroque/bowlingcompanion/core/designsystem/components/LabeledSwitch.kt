@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun LabeledSwitch(
+	@StringRes titleResourceId: Int,
 	checked: Boolean,
 	onCheckedChange: (Boolean?) -> Unit,
-	enabled: Boolean = true,
-	@StringRes titleResourceId: Int,
-	@StringRes subtitleResourceId: Int? = null,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
+	@StringRes subtitleResourceId: Int? = null,
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,

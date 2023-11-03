@@ -4,7 +4,7 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 
 data class ScoreSheetConfiguration(
-	val style: Style,
+	val style: Style = Style.PLAIN,
 ) {
 
 	enum class Style(

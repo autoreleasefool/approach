@@ -93,7 +93,7 @@ private fun NameTextField(
 				)
 			}
 		},
-		keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done,),
+		keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
 		keyboardActions = KeyboardActions(onDone = { onDoneClicked() }),
 		modifier = modifier.fillMaxWidth(),
 	)

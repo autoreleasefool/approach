@@ -161,5 +161,5 @@ class GamesEditorViewModel @Inject constructor(
 }
 
 data class GamesEditorUiState(
-	val didLoadInitialGame: Boolean = false
+	val didLoadInitialGame: Boolean = false,
 )

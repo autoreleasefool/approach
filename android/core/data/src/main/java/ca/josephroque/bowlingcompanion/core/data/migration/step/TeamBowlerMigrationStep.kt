@@ -29,5 +29,7 @@ suspend fun SQLiteMigrationManager.migrateTeamBowlers(legacyDb: SQLiteDatabase) 
 			cursor.moveToNext()
 		}
 	}
+
+	cursor.close()
 	legacyMigrationRepository.migrateTeamBowlers(teamBowlers)
 }

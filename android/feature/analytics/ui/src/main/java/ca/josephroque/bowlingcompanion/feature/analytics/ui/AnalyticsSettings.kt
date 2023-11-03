@@ -17,7 +17,6 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitc
 import ca.josephroque.bowlingcompanion.core.designsystem.components.Link
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
-import ca.josephroque.bowlingcompanion.feature.analytics.ui.R
 
 @Composable
 fun AnalyticsSettings(

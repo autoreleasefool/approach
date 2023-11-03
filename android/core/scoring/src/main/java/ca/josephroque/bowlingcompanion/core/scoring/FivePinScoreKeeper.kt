@@ -40,7 +40,7 @@ class FivePinScoreKeeper @Inject constructor(): ScoreKeeper {
 
 		// Calculate the final frame separately
 		scoreLastFrame(
-			lastFrameRolls = state.input.rolls.lastOrNull { Frame.isLastFrame(it.firstOrNull()?.frameIndex ?: 0) } ?: listOf(),
+			lastFrameRolls = state.input.rolls.lastOrNull { Frame.isLastFrame(it.firstOrNull()?.frameIndex ?: 0) } ?: emptyList(),
 			state = state,
 		)?.let {
 			steps.add(it)

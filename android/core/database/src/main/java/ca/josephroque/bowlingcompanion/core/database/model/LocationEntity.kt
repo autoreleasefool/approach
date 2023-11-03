@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.core.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.Location
 import java.util.UUID
@@ -16,12 +15,4 @@ data class LocationEntity(
 	@ColumnInfo(name = "subtitle") val subtitle: String,
 	@ColumnInfo(name = "latitude") val latitude: Double,
 	@ColumnInfo(name = "longitude") val longitude: Double,
-)
-
-fun LocationEntity.asExternalModel() = Location(
-	id = id,
-	title = title,
-	subtitle = subtitle,
-	latitude = latitude,
-	longitude = longitude,
 )
