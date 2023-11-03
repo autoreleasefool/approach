@@ -11,7 +11,12 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GA
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GamePropertiesCardUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GearCardUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.HeaderUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.MatchPlayCardUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.ScoringMethodCardUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -32,14 +37,14 @@ class GamesEditorViewModel @Inject constructor(
 	private var _gamesEditorState = MutableStateFlow(GamesEditorUiState())
 	val gamesEditorState = _gamesEditorState.asStateFlow()
 
-	private val _frameEditorState = MutableStateFlow<FrameEditorUiState>(FrameEditorUiState.Loading)
+	private val _frameEditorState = MutableStateFlow(FrameEditorUiState())
 	val frameEditorState = _frameEditorState.asStateFlow()
 
-	private val _rollEditorState = MutableStateFlow<RollEditorUiState>(RollEditorUiState.Loading)
+	private val _rollEditorState = MutableStateFlow(RollEditorUiState())
 	val rollEditorState = _rollEditorState.asStateFlow()
 
 	private var _gameDetailsJob: Job? = null
-	private val _gameDetailsState = MutableStateFlow<GameDetailsUiState>(GameDetailsUiState.Loading)
+	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState())
 	val gameDetailsState = _gameDetailsState.asStateFlow()
 
 	fun loadGame(gameId: UUID? = null) {
@@ -51,33 +56,43 @@ class GamesEditorViewModel @Inject constructor(
 		viewModelScope.launch {
 			gamesRepository.getGameDetails(gameToLoad)
 				.collect {
-					_gameDetailsState.value = GameDetailsUiState.Edit(
-						bowlerName = it.bowler.name,
-						leagueName = it.league.name,
+					_gameDetailsState.value = GameDetailsUiState(
 						currentGameIndex = it.properties.index,
-						selectedGear = listOf(), // TODO: load selected gear
-						opponentName = null, // TODO: load opponent name
-						opponentScore = null, // TODO: load opponent score
-						matchPlayResult = null, // TODO: load match play result
-						gameScore = it.properties.score,
-						scoringMethod = it.properties.scoringMethod,
-						locked = it.properties.locked,
-						gameExcludeFromStatistics = it.properties.excludeFromStatistics,
-						seriesExcludeFromStatistics = it.series.excludeFromStatistics,
-						leagueExcludeFromStatistics = it.league.excludeFromStatistics,
-						seriesPreBowl = it.series.preBowl,
-						nextElement = null, // TODO: update next header element
+						header = HeaderUiState(
+							bowlerName = it.bowler.name,
+							leagueName = it.league.name,
+							nextElement = null, // TODO: update next header element
+						),
+						gear = GearCardUiState(
+							selectedGear = emptyList(), // TODO: load selected gear
+						),
+						matchPlay = MatchPlayCardUiState(
+							opponentName = null, // TODO: load opponent name
+							opponentScore = null, // TODO: load opponent score
+							result = null, // TODO: load match play result
+						),
+						scoringMethod = ScoringMethodCardUiState(
+							score = it.properties.score,
+							scoringMethod = it.properties.scoringMethod,
+						),
+						gameProperties = GamePropertiesCardUiState(
+							locked = it.properties.locked,
+							gameExcludeFromStatistics = it.properties.excludeFromStatistics,
+							seriesExcludeFromStatistics = it.series.excludeFromStatistics,
+							leagueExcludeFromStatistics = it.league.excludeFromStatistics,
+							seriesPreBowl = it.series.preBowl,
+						),
 					)
 
 					// TODO: update frame state
-					_frameEditorState.value = FrameEditorUiState.Edit(
-						lockedPins = setOf(),
-						downedPins = setOf(),
+					_frameEditorState.value = FrameEditorUiState(
+						lockedPins = emptySet(),
+						downedPins = emptySet(),
 					)
 
 					// TODO: update roll state
-					_rollEditorState.value = RollEditorUiState.Edit(
-						recentBalls = listOf(),
+					_rollEditorState.value = RollEditorUiState(
+						recentBalls = emptyList(),
 						didFoulRoll = false,
 						selectedBall = null,
 					)
@@ -114,33 +129,33 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	fun toggleGameLocked(isLocked: Boolean?) {
-		when (val state = _gameDetailsState.value) {
-			GameDetailsUiState.Loading -> Unit
-			is GameDetailsUiState.Edit -> _gameDetailsState.value = state.copy(
+		val state = _gameDetailsState.value
+		_gameDetailsState.value = state.copy(
+			gameProperties = state.gameProperties.copy(
 				locked = when (isLocked) {
 					true -> GameLockState.LOCKED
 					false -> GameLockState.UNLOCKED
-					null -> when (state.locked) {
+					null -> when (state.gameProperties.locked) {
 						GameLockState.LOCKED -> GameLockState.UNLOCKED
 						GameLockState.UNLOCKED -> GameLockState.LOCKED
 					}
 				}
 			)
-		}
+		)
 		// TODO: save game
 	}
 
 	fun toggleGameExcludedFromStatistics(isExcluded: Boolean?) {
-		when (val state = _gameDetailsState.value) {
-			GameDetailsUiState.Loading -> Unit
-			is GameDetailsUiState.Edit -> _gameDetailsState.value = state.copy(
+		val state = _gameDetailsState.value
+		_gameDetailsState.value = state.copy(
+			gameProperties = state.gameProperties.copy(
 				gameExcludeFromStatistics = when (isExcluded) {
 					true -> ExcludeFromStatistics.EXCLUDE
 					false -> ExcludeFromStatistics.INCLUDE
-					null -> state.gameExcludeFromStatistics.toggle()
+					null -> state.gameProperties.gameExcludeFromStatistics.toggle()
 				}
 			)
-		}
+		)
 		// TODO: save game
 	}
 }

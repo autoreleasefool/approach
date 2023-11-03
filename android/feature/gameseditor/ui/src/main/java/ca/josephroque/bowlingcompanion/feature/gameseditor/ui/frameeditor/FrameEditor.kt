@@ -31,25 +31,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun FrameEditor(
-	frameEditorState: FrameEditorUiState,
-	onDownedPinsChanged: (Set<Pin>) -> Unit,
 	modifier: Modifier = Modifier,
-) {
-	when (frameEditorState) {
-		FrameEditorUiState.Loading -> Unit
-		is FrameEditorUiState.Edit -> FrameEditor(
-			state = frameEditorState,
-			onDownedPinsChanged = onDownedPinsChanged,
-			modifier = modifier,
-		)
-	}
-}
-
-@Composable
-private fun FrameEditor(
-	state: FrameEditorUiState.Edit,
+	state: FrameEditorUiState,
 	onDownedPinsChanged: (Set<Pin>) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	var downedPins by remember(state.downedPins) { mutableStateOf(state.downedPins) }
 	var maxX by remember { mutableFloatStateOf(0f) }
@@ -125,21 +109,17 @@ private fun Pin.weight(): Float = when (this) {
 	Pin.HEAD_PIN -> 0.215f
 }
 
-sealed interface FrameEditorUiState {
-	data object Loading: FrameEditorUiState
-
-	data class Edit(
-		val lockedPins: Set<Pin>,
-		val downedPins: Set<Pin>,
-	): FrameEditorUiState
-}
+data class FrameEditorUiState(
+	val lockedPins: Set<Pin> = emptySet(),
+	val downedPins: Set<Pin> = emptySet(),
+)
 
 @Preview
 @Composable
 private fun FrameEditorPreview() {
 	var state by remember {
 		mutableStateOf(
-			FrameEditorUiState.Edit(
+			FrameEditorUiState(
 				lockedPins = setOf(Pin.LEFT_TWO_PIN),
 				downedPins = setOf(Pin.LEFT_THREE_PIN),
 			)

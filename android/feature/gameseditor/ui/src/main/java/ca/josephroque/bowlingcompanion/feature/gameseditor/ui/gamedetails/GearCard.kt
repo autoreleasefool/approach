@@ -28,7 +28,7 @@ import java.util.UUID
 
 @Composable
 internal fun GearCard(
-	selectedGear: List<GearListItem>,
+	state: GearCardUiState,
 	manageGear: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -53,9 +53,9 @@ internal fun GearCard(
 				.padding(bottom = 8.dp),
 		)
 
-		selectedGear.forEachIndexed{ index, gear ->
+		state.selectedGear.forEachIndexed{ index, gear ->
 			GearItemRow(gear = gear)
-			if (index != selectedGear.lastIndex) {
+			if (index != state.selectedGear.lastIndex) {
 				Divider(modifier = Modifier.padding(start = 8.dp))
 			}
 		}
@@ -91,13 +91,19 @@ private fun GearItemRow(
 	}
 }
 
+data class GearCardUiState(
+	val selectedGear: List<GearListItem> = emptyList(),
+)
+
 @Preview
 @Composable
 private fun GearCardPreview() {
 	GearCard(
-		selectedGear = listOf(
-			GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph"),
-			GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah"),
+		state = GearCardUiState(
+			selectedGear = listOf(
+				GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph"),
+				GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah"),
+			),
 		),
 		manageGear = {},
 	)

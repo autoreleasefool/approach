@@ -29,9 +29,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 @Composable
 internal fun MatchPlayCard(
 	modifier: Modifier = Modifier,
-	opponentName: String?,
-	opponentScore: Int?,
-	result: MatchPlayResult?,
+	state: MatchPlayCardUiState,
 	manageMatchPlay: () -> Unit,
 ) {
 	DetailCard(
@@ -55,21 +53,21 @@ internal fun MatchPlayCard(
 				.padding(horizontal = 8.dp),
 		) {
 			Icon(
-				painter = painterResource(if (opponentName == null) R.drawable.ic_person_none else R.drawable.ic_person),
+				painter = painterResource(if (state.opponentName == null) R.drawable.ic_person_none else R.drawable.ic_person),
 				contentDescription = null,
 				tint = MaterialTheme.colorScheme.onSurface,
 			)
 
 			Label(
 				title = stringResource(R.string.game_editor_match_play_opponent),
-				value = opponentName,
+				value = state.opponentName,
 				placeholder = stringResource(R.string.game_editor_match_play_no_opponent),
 				modifier = Modifier.weight(1f),
 			)
 
 			Label(
 				title = stringResource(R.string.game_editor_match_play_score),
-				value = opponentScore?.toString(),
+				value = state.opponentScore?.toString(),
 				placeholder = stringResource(R.string.game_editor_match_play_score_not_recorded),
 				horizontalAlignment = Alignment.End,
 			)
@@ -83,14 +81,14 @@ internal fun MatchPlayCard(
 				.padding(8.dp),
 		) {
 			Icon(
-				painter = result.icon(),
-				contentDescription = result.contentDescription(),
+				painter = state.result.icon(),
+				contentDescription = state.result.contentDescription(),
 				tint = MaterialTheme.colorScheme.onSurface,
 			)
 
 			Label(
 				title = stringResource(R.string.game_editor_match_play_result),
-				value = result?.contentDescription(),
+				value = state.result?.contentDescription(),
 				placeholder = stringResource(R.string.game_editor_match_play_result_not_recorded),
 				modifier = Modifier.weight(1f),
 			)
@@ -130,13 +128,21 @@ private fun Label(
 	}
 }
 
+data class MatchPlayCardUiState(
+	val opponentName: String? = null,
+	val opponentScore: Int? = null,
+	val result: MatchPlayResult? = null,
+)
+
 @Preview
 @Composable
 private fun MatchPlayCardPreview() {
 	MatchPlayCard(
-		opponentName = "Joseph",
-		opponentScore = 250,
-		result = MatchPlayResult.WON,
+		state = MatchPlayCardUiState(
+			opponentName = "Joseph",
+			opponentScore = 250,
+			result = MatchPlayResult.WON,
+		),
 		manageMatchPlay = {},
 	)
 }

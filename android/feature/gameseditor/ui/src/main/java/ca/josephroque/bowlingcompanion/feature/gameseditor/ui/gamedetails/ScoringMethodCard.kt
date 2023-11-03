@@ -26,8 +26,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 @Composable
 internal fun ScoringMethodCard(
 	modifier: Modifier = Modifier,
-	score: Int,
-	scoringMethod: GameScoringMethod,
+	state: ScoringMethodCardUiState,
 	manageScore: () -> Unit,
 ) {
 	DetailCard(
@@ -42,7 +41,7 @@ internal fun ScoringMethodCard(
 				.padding(8.dp),
 		) {
 			Icon(
-				painter = painterResource(when (scoringMethod) {
+				painter = painterResource(when (state.scoringMethod) {
 					GameScoringMethod.MANUAL -> R.drawable.ic_manual_scoring
 					GameScoringMethod.BY_FRAME -> RCoreDesign.drawable.ic_bowling_ball
 				}), 
@@ -52,7 +51,7 @@ internal fun ScoringMethodCard(
 			)
 			
 			Text(
-				text = stringResource(when (scoringMethod) {
+				text = stringResource(when (state.scoringMethod) {
 					GameScoringMethod.MANUAL -> R.string.scoring_method_manual
 					GameScoringMethod.BY_FRAME -> R.string.scoring_method_frame_by_frame
 				}),
@@ -61,7 +60,7 @@ internal fun ScoringMethodCard(
 			)
 			
 			Text(
-				text = score.toString(),
+				text = state.score.toString(),
 				style = MaterialTheme.typography.bodyMedium,
 				fontWeight = FontWeight.ExtraBold,
 				fontSize = 24.sp,
@@ -70,7 +69,7 @@ internal fun ScoringMethodCard(
 
 		TextButton(onClick = manageScore) {
 			Text(
-				text = stringResource(when (scoringMethod) {
+				text = stringResource(when (state.scoringMethod) {
 					GameScoringMethod.BY_FRAME -> R.string.game_editor_scoring_method_set_manual_score
 					GameScoringMethod.MANUAL -> R.string.game_editor_scoring_method_edit_manual_score
 				}),
@@ -79,12 +78,19 @@ internal fun ScoringMethodCard(
 	}
 }
 
+data class ScoringMethodCardUiState(
+	val score: Int = 0,
+	val scoringMethod: GameScoringMethod = GameScoringMethod.BY_FRAME,
+)
+
 @Preview
 @Composable
 private fun ScoringMethodCardPreview() {
 	ScoringMethodCard(
-		score = 234,
-		scoringMethod = GameScoringMethod.BY_FRAME,
+		state = ScoringMethodCardUiState(
+			score = 234,
+			scoringMethod = GameScoringMethod.BY_FRAME,
+		),
 		manageScore = {},
 	)
 }

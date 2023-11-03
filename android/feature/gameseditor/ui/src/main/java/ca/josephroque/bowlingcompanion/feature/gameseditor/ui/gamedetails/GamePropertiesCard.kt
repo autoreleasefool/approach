@@ -16,11 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 @Composable
 internal fun GamePropertiesCard(
 	modifier: Modifier = Modifier,
-	locked: GameLockState,
-	gameExcludeFromStatistics: ExcludeFromStatistics,
-	seriesExcludeFromStatistics: ExcludeFromStatistics,
-	leagueExcludeFromStatistics: ExcludeFromStatistics,
-	seriesPreBowl: SeriesPreBowl,
+	state: GamePropertiesCardUiState,
 	onToggleLock: (Boolean?) -> Unit,
 	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
 ) {
@@ -29,7 +25,7 @@ internal fun GamePropertiesCard(
 			verticalArrangement = Arrangement.spacedBy(8.dp),
 		) {
 			LabeledSwitch(
-				checked = when (locked) {
+				checked = when (state.locked) {
 					GameLockState.LOCKED -> true
 					GameLockState.UNLOCKED -> false
 				},
@@ -39,13 +35,13 @@ internal fun GamePropertiesCard(
 			)
 
 			LabeledSwitch(
-				checked = when (leagueExcludeFromStatistics) {
+				checked = when (state.leagueExcludeFromStatistics) {
 					ExcludeFromStatistics.EXCLUDE -> true
-					ExcludeFromStatistics.INCLUDE -> when (seriesPreBowl) {
+					ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
 						SeriesPreBowl.PRE_BOWL -> true
-						SeriesPreBowl.REGULAR -> when (seriesExcludeFromStatistics) {
+						SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
 							ExcludeFromStatistics.EXCLUDE -> true
-							ExcludeFromStatistics.INCLUDE -> when (gameExcludeFromStatistics) {
+							ExcludeFromStatistics.INCLUDE -> when (state.gameExcludeFromStatistics) {
 								ExcludeFromStatistics.EXCLUDE -> true
 								ExcludeFromStatistics.INCLUDE -> false
 							}
@@ -54,21 +50,21 @@ internal fun GamePropertiesCard(
 				},
 				onCheckedChange = onToggleExcludeFromStatistics,
 				titleResourceId = R.string.game_editor_exclude_from_statistics_title,
-				subtitleResourceId = when (leagueExcludeFromStatistics) {
+				subtitleResourceId = when (state.leagueExcludeFromStatistics) {
 					ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_league_excluded
-					ExcludeFromStatistics.INCLUDE -> when (seriesPreBowl) {
+					ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
 						SeriesPreBowl.PRE_BOWL -> R.string.game_editor_exclude_from_statistics_series_pre_bowl
-						SeriesPreBowl.REGULAR -> when (seriesExcludeFromStatistics) {
+						SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
 							ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_series_excluded
 							ExcludeFromStatistics.INCLUDE -> R.string.game_editor_exclude_from_statistics_description
 						}
 					}
 				},
-				enabled = when (leagueExcludeFromStatistics) {
+				enabled = when (state.leagueExcludeFromStatistics) {
 					ExcludeFromStatistics.EXCLUDE -> false
-					ExcludeFromStatistics.INCLUDE -> when (seriesPreBowl) {
+					ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
 						SeriesPreBowl.PRE_BOWL -> false
-						SeriesPreBowl.REGULAR -> when (seriesExcludeFromStatistics) {
+						SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
 							ExcludeFromStatistics.EXCLUDE -> false
 							ExcludeFromStatistics.INCLUDE -> true
 						}
@@ -79,15 +75,25 @@ internal fun GamePropertiesCard(
 	}
 }
 
+data class GamePropertiesCardUiState(
+	val locked: GameLockState = GameLockState.LOCKED,
+	val gameExcludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+	val seriesExcludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+	val leagueExcludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+	val seriesPreBowl: SeriesPreBowl = SeriesPreBowl.REGULAR,
+)
+
 @Preview
 @Composable
 private fun GamePropertiesCardPreview() {
 	GamePropertiesCard(
-		locked = GameLockState.LOCKED,
-		gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-		seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-		leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-		seriesPreBowl = SeriesPreBowl.REGULAR,
+		state = GamePropertiesCardUiState(
+			locked = GameLockState.LOCKED,
+			gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+			seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+			leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+			seriesPreBowl = SeriesPreBowl.REGULAR,
+		),
 		onToggleLock = {},
 		onToggleExcludeFromStatistics = {},
 	)

@@ -7,37 +7,15 @@ import java.util.UUID
 
 @Composable
 fun RollEditor(
-	rollEditorState: RollEditorUiState,
+	state: RollEditorUiState,
 	onSelectBall: (UUID) -> Unit,
 	onToggleFoul: (Boolean) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	when (rollEditorState) {
-		RollEditorUiState.Loading -> Unit
-		is RollEditorUiState.Edit -> RollEditor(
-			state = rollEditorState,
-			onSelectBall = onSelectBall,
-			onToggleFoul = onToggleFoul,
-			modifier = modifier,
-		)
-	}
 }
 
-@Composable
-private fun RollEditor(
-	state: RollEditorUiState.Edit,
-	onSelectBall: (UUID) -> Unit,
-	onToggleFoul: (Boolean) -> Unit,
-	modifier: Modifier = Modifier,
-) {
-
-}
-
-sealed interface RollEditorUiState {
-	data object Loading: RollEditorUiState
-	data class Edit(
-		val recentBalls: List<GearListItem>,
-		val selectedBall: UUID?,
-		val didFoulRoll: Boolean,
-	): RollEditorUiState
-}
+data class RollEditorUiState(
+	val recentBalls: List<GearListItem> = emptyList(),
+	val selectedBall: UUID? = null,
+	val didFoulRoll: Boolean = false,
+)

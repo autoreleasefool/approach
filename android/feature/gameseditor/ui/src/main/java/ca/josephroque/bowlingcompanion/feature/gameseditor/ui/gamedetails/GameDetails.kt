@@ -34,39 +34,7 @@ import java.util.UUID
 
 @Composable
 fun GameDetails(
-	gameDetailsState: GameDetailsUiState,
-	goToNext: (NextGameEditableElement) -> Unit,
-	onOpenSeriesStats: () -> Unit,
-	onOpenGameStats: () -> Unit,
-	onManageGear: () -> Unit,
-	onManageMatchPlay: () -> Unit,
-	onManageScore: () -> Unit,
-	onToggleLock: (Boolean?) -> Unit,
-	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
-	onMeasureHeaderHeight: (Float) -> Unit,
-	modifier: Modifier = Modifier,
-) {
-	when (gameDetailsState) {
-		GameDetailsUiState.Loading -> Unit
-		is GameDetailsUiState.Edit -> GameDetails(
-			state = gameDetailsState,
-			goToNext = goToNext,
-			onOpenSeriesStats = onOpenSeriesStats,
-			onOpenGameStats = onOpenGameStats,
-			onManageGear = onManageGear,
-			onManageMatchPlay = onManageMatchPlay,
-			onManageScore = onManageScore,
-			onToggleLock = onToggleLock,
-			onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
-			onMeasureHeaderHeight = onMeasureHeaderHeight,
-			modifier = modifier,
-		)
-	}
-}
-
-@Composable
-private fun GameDetails(
-	state: GameDetailsUiState.Edit,
+	state: GameDetailsUiState,
 	goToNext: (NextGameEditableElement) -> Unit,
 	onOpenSeriesStats: () -> Unit,
 	onOpenGameStats: () -> Unit,
@@ -87,9 +55,7 @@ private fun GameDetails(
 			.padding(bottom = 16.dp),
 	) {
 		Header(
-			bowlerName = state.bowlerName,
-			leagueName = state.leagueName,
-			nextElement = state.nextElement,
+			state = state.header,
 			goToNext = goToNext,
 			modifier = Modifier.onGloballyPositioned { onMeasureHeaderHeight(it.size.height.toFloat()) }
 		)
@@ -101,32 +67,25 @@ private fun GameDetails(
 		)
 
 		GearCard(
-			selectedGear = state.selectedGear,
+			state = state.gear,
 			manageGear = onManageGear,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		MatchPlayCard(
-			opponentName = state.opponentName,
-			opponentScore = state.opponentScore,
-			result = state.matchPlayResult,
+			state = state.matchPlay,
 			manageMatchPlay = onManageMatchPlay,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		ScoringMethodCard(
-			scoringMethod = state.scoringMethod,
-			score = state.gameScore,
+			state = state.scoringMethod,
 			manageScore = onManageScore,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		GamePropertiesCard(
-			locked = state.locked,
-			gameExcludeFromStatistics = state.gameExcludeFromStatistics,
-			seriesExcludeFromStatistics = state.seriesExcludeFromStatistics,
-			leagueExcludeFromStatistics = state.leagueExcludeFromStatistics,
-			seriesPreBowl = state.seriesPreBowl,
+			state = state.gameProperties,
 			onToggleLock = onToggleLock,
 			onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
 			modifier = Modifier.padding(horizontal = 16.dp),
@@ -134,66 +93,14 @@ private fun GameDetails(
 	}
 }
 
-@Composable
-private fun Header(
-	bowlerName: String,
-	leagueName: String,
-	nextElement: NextGameEditableElement?,
-	goToNext: (NextGameEditableElement) -> Unit,
-	modifier: Modifier = Modifier,
-) {
-	DetailRow(modifier = modifier.padding(bottom = 8.dp)) {
-		Column(
-			horizontalAlignment = Alignment.Start,
-			modifier = Modifier.weight(1f),
-		) {
-			Text(
-				text = bowlerName,
-				style = MaterialTheme.typography.titleMedium,
-				fontWeight = FontWeight.Black,
-			)
-			Text(
-				text = leagueName,
-				style = MaterialTheme.typography.bodyMedium
-			)
-		}
-
-		if (nextElement != null) {
-			RoundIconButton(onClick = { goToNext(nextElement) }) {
-				Icon(
-					painter = painterResource(RCoreDesign.drawable.ic_chevron_right),
-					contentDescription = when (nextElement) {
-						is NextGameEditableElement.Roll -> stringResource(R.string.game_editor_next_roll, nextElement.rollIndex + 1)
-						is NextGameEditableElement.Frame -> stringResource(R.string.game_editor_next_frame, nextElement.frameIndex + 1)
-						is NextGameEditableElement.Game -> stringResource(R.string.game_editor_next_game, nextElement.gameIndex + 1)
-					},
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
-			}
-		}
-	}
-}
-
-sealed interface GameDetailsUiState {
-	data object Loading: GameDetailsUiState
-	data class Edit(
-		val bowlerName: String,
-		val leagueName: String,
-		val currentGameIndex: Int,
-		val selectedGear: List<GearListItem>,
-		val opponentName: String?,
-		val opponentScore: Int?,
-		val matchPlayResult: MatchPlayResult?,
-		val scoringMethod: GameScoringMethod,
-		val gameScore: Int,
-		val locked: GameLockState,
-		val gameExcludeFromStatistics: ExcludeFromStatistics,
-		val seriesExcludeFromStatistics: ExcludeFromStatistics,
-		val leagueExcludeFromStatistics: ExcludeFromStatistics,
-		val seriesPreBowl: SeriesPreBowl,
-		val nextElement: NextGameEditableElement?,
-	): GameDetailsUiState
-}
+data class GameDetailsUiState(
+	val currentGameIndex: Int = 0,
+	val header: HeaderUiState = HeaderUiState(),
+	val gear: GearCardUiState = GearCardUiState(),
+	val matchPlay: MatchPlayCardUiState = MatchPlayCardUiState(),
+	val scoringMethod: ScoringMethodCardUiState = ScoringMethodCardUiState(),
+	val gameProperties: GamePropertiesCardUiState = GamePropertiesCardUiState(),
+)
 
 sealed interface NextGameEditableElement {
 	data class Roll(val rollIndex: Int): NextGameEditableElement
@@ -206,25 +113,35 @@ sealed interface NextGameEditableElement {
 private fun GameDetailsPreview() {
 	Surface {
 		GameDetails(
-			state = GameDetailsUiState.Edit(
-				bowlerName = "Jordan",
-				leagueName = "1 Sunday Nights 2019",
+			state = GameDetailsUiState(
 				currentGameIndex = 0,
-				selectedGear = listOf(
-					GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph"),
-					GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah"),
+				header = HeaderUiState(
+					bowlerName = "Jordan",
+					leagueName = "1 Sunday Nights 2019",
+					nextElement = NextGameEditableElement.Roll(rollIndex = 1)
 				),
-				opponentName = "Joseph",
-				opponentScore = 145,
-				matchPlayResult = MatchPlayResult.WON,
-				gameScore = 234,
-				scoringMethod = GameScoringMethod.BY_FRAME,
-				locked = GameLockState.UNLOCKED,
-				gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				seriesPreBowl = SeriesPreBowl.REGULAR,
-				nextElement = NextGameEditableElement.Roll(rollIndex = 1),
+				gear = GearCardUiState(
+					selectedGear = listOf(
+						GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph"),
+						GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah"),
+					),
+				),
+				matchPlay = MatchPlayCardUiState(
+					opponentName = "Joseph",
+					opponentScore = 145,
+					result = MatchPlayResult.WON,
+				),
+				scoringMethod = ScoringMethodCardUiState(
+					score = 234,
+					scoringMethod = GameScoringMethod.BY_FRAME,
+				),
+				gameProperties = GamePropertiesCardUiState(
+					locked = GameLockState.UNLOCKED,
+					gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					seriesPreBowl = SeriesPreBowl.REGULAR,
+				),
 			),
 			goToNext = {},
 			onOpenSeriesStats = {},

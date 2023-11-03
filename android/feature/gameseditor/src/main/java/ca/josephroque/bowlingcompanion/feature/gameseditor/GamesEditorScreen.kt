@@ -110,7 +110,7 @@ internal fun GamesEditorScreen(
 		sheetPeekHeight = (headerHeight.value + handleHeight.value).dp,
 		sheetContent = {
 			GameDetails(
-				gameDetailsState = gameDetailsState,
+				state = gameDetailsState,
 				goToNext = onGoToNext,
 				onOpenSeriesStats = onOpenSeriesStats,
 				onOpenGameStats = onOpenGameStats,
