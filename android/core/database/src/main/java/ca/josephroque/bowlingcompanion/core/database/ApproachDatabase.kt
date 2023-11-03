@@ -34,6 +34,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.database.util.LocalDateConverter
+import ca.josephroque.bowlingcompanion.core.database.util.RollConverter
 
 @Database(
 	entities = [
@@ -59,6 +60,7 @@ import ca.josephroque.bowlingcompanion.core.database.util.LocalDateConverter
 )
 @TypeConverters(
 	LocalDateConverter::class,
+	RollConverter::class,
 )
 abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun bowlerDao(): BowlerDao
