@@ -197,7 +197,7 @@ class LeagueFormViewModel @Inject constructor(
 			LeagueFormUiState.Loading, LeagueFormUiState.Dismissed, is LeagueFormUiState.Edit -> Unit
 			is LeagueFormUiState.Create -> _uiState.value = state.copy(
 				properties = state.properties.copy(
-					numberOfGames = max(min(numberOfGames, League.NUMBER_OF_GAMES_RANGE.last), League.NUMBER_OF_GAMES_RANGE.first),
+					numberOfGames = max(min(numberOfGames, League.NumberOfGamesRange.last), League.NumberOfGamesRange.first),
 				)
 			)
 		}
