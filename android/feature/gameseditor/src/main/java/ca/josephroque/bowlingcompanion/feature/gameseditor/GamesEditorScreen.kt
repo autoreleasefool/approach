@@ -21,12 +21,17 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ca.josephroque.bowlingcompanion.core.model.Pin
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetails
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
+import java.util.UUID
 
 @Composable
 internal fun GamesEditorRoute(
@@ -37,6 +42,7 @@ internal fun GamesEditorRoute(
 	val gamesEditorState by viewModel.gamesEditorState.collectAsStateWithLifecycle()
 	val frameEditorState by viewModel.frameEditorState.collectAsStateWithLifecycle()
 	val rollEditorState by viewModel.rollEditorState.collectAsStateWithLifecycle()
+	val scoreSheetState by viewModel.scoreSheetState.collectAsStateWithLifecycle()
 	val gameDetailsState by viewModel.gameDetailsState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(gamesEditorState.didLoadInitialGame) {
@@ -48,6 +54,7 @@ internal fun GamesEditorRoute(
 	GamesEditorScreen(
 		frameEditorState = frameEditorState,
 		rollEditorState = rollEditorState,
+		scoreSheetState = scoreSheetState,
 		gameDetailsState = gameDetailsState,
 		onBackPressed = onBackPressed,
 		onOpenSettings = viewModel::openGameSettings,
@@ -57,8 +64,12 @@ internal fun GamesEditorRoute(
 		onManageGear = viewModel::openGearPicker,
 		onManageMatchPlay = viewModel::openMatchPlayManager,
 		onManageScore = viewModel::openScoreSettings,
+		onDownedPinsChanged = viewModel::updateDownedPins,
+		onSelectBall = viewModel::updateSelectedBall,
+		onToggleFoul = viewModel::toggleFoul,
 		onToggleLock = viewModel::toggleGameLocked,
 		onToggleExcludeFromStatistics = viewModel::toggleGameExcludedFromStatistics,
+		onFrameSelectionChanged = viewModel::updateFrameSelection,
 		modifier = modifier,
 	)
 }
@@ -68,6 +79,7 @@ internal fun GamesEditorRoute(
 internal fun GamesEditorScreen(
 	frameEditorState: FrameEditorUiState,
 	rollEditorState: RollEditorUiState,
+	scoreSheetState: ScoreSheetUiState,
 	gameDetailsState: GameDetailsUiState,
 	onBackPressed: () -> Unit,
 	onOpenSettings: () -> Unit,
@@ -77,8 +89,12 @@ internal fun GamesEditorScreen(
 	onManageGear: () -> Unit,
 	onManageMatchPlay: () -> Unit,
 	onManageScore: () -> Unit,
+	onDownedPinsChanged: (Set<Pin>) -> Unit,
+	onSelectBall: (UUID) -> Unit,
+	onToggleFoul: (Boolean) -> Unit,
 	onToggleLock: (Boolean?) -> Unit,
 	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
+	onFrameSelectionChanged: (ScoreSheetUiState.Selection) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val scaffoldState = rememberBottomSheetScaffoldState()
@@ -123,6 +139,14 @@ internal fun GamesEditorScreen(
 			)
 		},
 	) {
-
+		GamesEditor(
+			frameEditorState = frameEditorState,
+			rollEditorState = rollEditorState,
+			scoreSheetState = scoreSheetState,
+			onDownedPinsChanged = onDownedPinsChanged,
+			onSelectBall = onSelectBall,
+			onToggleFoul = onToggleFoul,
+			onFrameSelectionChanged = onFrameSelectionChanged,
+		)
 	}
 }

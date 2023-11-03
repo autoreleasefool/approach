@@ -8,5 +8,6 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:scoresheet"))
 	implementation(project(":feature:gameseditor:ui"))
 }

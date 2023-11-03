@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.toggle
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
@@ -42,6 +44,9 @@ class GamesEditorViewModel @Inject constructor(
 
 	private val _rollEditorState = MutableStateFlow(RollEditorUiState())
 	val rollEditorState = _rollEditorState.asStateFlow()
+
+	private val _scoreSheetState = MutableStateFlow(ScoreSheetUiState())
+	val scoreSheetState = _scoreSheetState.asStateFlow()
 
 	private var _gameDetailsJob: Job? = null
 	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState())
@@ -157,6 +162,26 @@ class GamesEditorViewModel @Inject constructor(
 			)
 		)
 		// TODO: save game
+	}
+
+	fun updateFrameSelection(selection: ScoreSheetUiState.Selection) {
+		_scoreSheetState.value = _scoreSheetState.value.copy(selection = selection)
+		// TODO: update frame to correct roll
+	}
+
+	fun updateDownedPins(downedPins: Set<Pin>) {
+		_frameEditorState.value = _frameEditorState.value.copy(downedPins = downedPins)
+		// TODO: save frame
+	}
+
+	fun updateSelectedBall(ballId: UUID) {
+		_rollEditorState.value = _rollEditorState.value.copy(selectedBall = ballId)
+		// TODO: save selected ball
+	}
+
+	fun toggleFoul(isFoul: Boolean) {
+		_rollEditorState.value = _rollEditorState.value.copy(didFoulRoll = isFoul)
+		// TODO: save frame
 	}
 }
 
