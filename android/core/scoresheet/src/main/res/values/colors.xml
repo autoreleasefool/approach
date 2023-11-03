@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="scoresheet_default_background">#2A2F4F</color>
+	<color name="scoresheet_default_background_highlight">#917FB3</color>
+	<color name="scoresheet_default_card_background">#DFDEF9</color>
+	<color name="scoresheet_default_rail_background">#443C68</color>
+	<color name="scoresheet_default_rail_background_highlight">#635985</color>
+	<color name="scoresheet_default_text_on_background">#ECE3FF</color>
+	<color name="scoresheet_default_text_foul_on_background">#F45050</color>
+	<color name="scoresheet_default_text_highlight_on_background">#ECE3FF</color>
+	<color name="scoresheet_default_text_highlight_foul_on_background">#D21312</color>
+	<color name="scoresheet_default_text_on_card">#000000</color>
+	<color name="scoresheet_default_text_on_rail">#ECE3FF</color>
+	<color name="scoresheet_default_text_highlight_on_rail">#ECE3FF</color>
+	<color name="scoresheet_default_border">#46ECE3FF</color>
+	<color name="scoresheet_default_border_strong">#46ECE3FF</color>
+</resources>

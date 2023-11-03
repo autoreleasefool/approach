@@ -8,6 +8,12 @@ data class ScoringRoll(
 	val didFoul: Boolean,
 )
 
+fun ScoringRoll.isLastRoll(): Boolean =
+	Roll.isLastRoll(index)
+
+fun ScoringRoll.isFirstRoll(): Boolean =
+	index == 0
+
 data class ScoringFrame(
 	val index: Int,
 	val rolls: List<ScoringRoll>,
@@ -16,6 +22,12 @@ data class ScoringFrame(
 	val display: String?
 		get() = score?.toString()
 }
+
+fun ScoringFrame.isLastFrame(): Boolean =
+	Frame.isLastFrame(index)
+
+fun ScoringFrame.isFirstFrame(): Boolean =
+	index == 0
 
 fun List<ScoringFrame>.gameScore(): Int? =
 	reversed().firstNotNullOf { it.score }
