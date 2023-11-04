@@ -25,7 +25,7 @@ abstract class AlleyDao {
 				alleys.pin_base AS pinBase,
 				COUNT(lanes.id) AS numberOfLanes
 			FROM alleys
-			JOIN lanes ON lanes.alley_id = alleys.id
+			LEFT JOIN lanes ON lanes.alley_id = alleys.id
 			WHERE alleys.id = :alleyId
 		"""
 	)

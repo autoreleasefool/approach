@@ -39,7 +39,7 @@ abstract class GearDao {
 				gear.kind AS kind,
 				owner.name AS ownerName
 			FROM gear
-			JOIN bowlers AS owner
+			LEFT JOIN bowlers AS owner
 				ON gear.owner_id = owner.id
 			ORDER BY gear.name
 		"""
