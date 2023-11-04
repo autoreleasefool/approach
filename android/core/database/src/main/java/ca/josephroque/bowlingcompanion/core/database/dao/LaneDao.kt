@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
-abstract class LaneDao: BaseDao<LaneEntity> {
+abstract class LaneDao {
 	@Query(
 		"""
 			SELECT

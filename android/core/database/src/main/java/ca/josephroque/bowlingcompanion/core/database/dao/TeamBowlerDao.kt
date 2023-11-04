@@ -4,4 +4,4 @@ import androidx.room.Dao
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 
 @Dao
-abstract class TeamBowlerDao: BaseDao<TeamBowlerCrossRef>
+abstract class TeamBowlerDao: LegacyMigratingDao<TeamBowlerCrossRef>

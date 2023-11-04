@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
-abstract class AlleyDao: BaseDao<AlleyEntity> {
+abstract class AlleyDao {
 	@Query(
 		"""
 			SELECT

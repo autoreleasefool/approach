@@ -75,7 +75,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(idMappings)
-		teamDao.insertAll(migratedTeams)
+		teamDao.migrateAll(migratedTeams)
 	}
 
 	override suspend fun migrateBowlers(bowlers: List<LegacyBowler>) {
@@ -98,7 +98,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(idMappings)
-		bowlerDao.insertAll(migratedBowlers)
+		bowlerDao.migrateAll(migratedBowlers)
 	}
 
 	override suspend fun migrateTeamBowlers(teamBowlers: List<LegacyTeamBowler>) {
@@ -125,7 +125,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 			)
 	  }
 
-		teamBowlerDao.insertAll(migratedTeamBowlers)
+		teamBowlerDao.migrateAll(migratedTeamBowlers)
 	}
 
 	override suspend fun migrateLeagues(leagues: List<LegacyLeague>) {
@@ -146,6 +146,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 				key = LegacyIDMappingKey.LEAGUE,
 			))
 
+			@Suppress("DEPRECATION")
 			migratedLeagues.add(LeagueEntity(
 				id = id,
 				name = legacyLeague.name,
@@ -159,7 +160,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(idMappings)
-		leagueDao.insertAll(migratedLeagues)
+		leagueDao.migrateAll(migratedLeagues)
 	}
 
 	override suspend fun migrateSeries(series: List<LegacySeries>) {
@@ -194,7 +195,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(idMappings)
-		seriesDao.insertAll(migratedSeries)
+		seriesDao.migrateAll(migratedSeries)
 	}
 
 	override suspend fun migrateGames(games: List<LegacyGame>) {
@@ -242,8 +243,8 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(gameIdMappings)
-		gameDao.insertAll(migratedGames)
-		matchPlayDao.insertAll(migratedMatchPlays)
+		gameDao.migrateAll(migratedGames)
+		matchPlayDao.migrateAll(migratedMatchPlays)
 	}
 
 	override suspend fun migrateMatchPlays(matchPlays: List<LegacyMatchPlay>) {
@@ -284,7 +285,7 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(matchPlayIdMappings)
-		matchPlayDao.insertAll(migratedMatchPlays)
+		matchPlayDao.migrateAll(migratedMatchPlays)
 	}
 
 	override suspend fun migrateFrames(frames: List<LegacyFrame>) {
@@ -314,16 +315,16 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 			migratedFrames.add(FrameEntity(
 				gameId = gameIdMappings[legacyFrame.gameId]!!,
 				index = legacyFrame.ordinal - 1,
-				roll0 = rolls[0],
-				roll1 = rolls[1],
-				roll2 = rolls[2],
+				roll0 = FrameEntity.Roll.fromBitString(rolls[0]),
+				roll1 = FrameEntity.Roll.fromBitString(rolls[1]),
+				roll2 = FrameEntity.Roll.fromBitString(rolls[2]),
 				ball0 = null,
 				ball1 = null,
 				ball2 = null,
 			))
 		}
 
-		frameDao.insertAll(migratedFrames)
+		frameDao.migrateAll(migratedFrames)
 	}
 }
 

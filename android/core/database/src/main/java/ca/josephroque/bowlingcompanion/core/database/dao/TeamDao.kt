@@ -4,4 +4,4 @@ import androidx.room.Dao
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 
 @Dao
-abstract class TeamDao: BaseDao<TeamEntity>
+abstract class TeamDao: LegacyMigratingDao<TeamEntity>

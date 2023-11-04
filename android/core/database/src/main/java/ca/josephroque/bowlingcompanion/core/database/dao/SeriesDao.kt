@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
-abstract class SeriesDao: BaseDao<SeriesEntity> {
+abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 	@Transaction
 	@Query(
 		"""

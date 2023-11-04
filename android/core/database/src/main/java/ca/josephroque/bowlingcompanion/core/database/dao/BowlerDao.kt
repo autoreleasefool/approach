@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
-abstract class BowlerDao: BaseDao<BowlerEntity> {
+abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT

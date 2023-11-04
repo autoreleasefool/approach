@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
-abstract class GameDao: BaseDao<GameEntity> {
+abstract class GameDao: LegacyMigratingDao<GameEntity> {
 	@Query(
 		"""
 			SELECT
