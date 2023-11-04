@@ -7,10 +7,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
-import ca.josephroque.bowlingcompanion.core.model.GameEditBowlerProperties
-import ca.josephroque.bowlingcompanion.core.model.GameEditLeagueProperties
-import ca.josephroque.bowlingcompanion.core.model.GameEditProperties
-import ca.josephroque.bowlingcompanion.core.model.GameEditSeriesProperties
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import java.util.UUID
@@ -38,10 +34,10 @@ data class GameEntity(
 )
 
 data class GameEditEntity(
-	@Embedded val properties: GameEditProperties,
-	@Embedded(prefix = "series_") val series: GameEditSeriesProperties,
-	@Embedded(prefix = "league_") val league: GameEditLeagueProperties,
-	@Embedded(prefix = "bowler_") val bowler: GameEditBowlerProperties,
+	@Embedded val properties: GameEdit.Properties,
+	@Embedded(prefix = "series_") val series: GameEdit.Series,
+	@Embedded(prefix = "league_") val league: GameEdit.League,
+	@Embedded(prefix = "bowler_") val bowler: GameEdit.Bowler,
 )
 
 fun GameEditEntity.asModel(): GameEdit = GameEdit(
