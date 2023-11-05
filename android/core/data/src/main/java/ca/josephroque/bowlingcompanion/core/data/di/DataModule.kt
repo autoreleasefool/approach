@@ -19,12 +19,10 @@ import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLegacyMi
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstRecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstSeriesRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstTeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstUserDataRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import dagger.Binds
 import dagger.Module
@@ -58,11 +56,6 @@ interface DataModule {
 	fun bindsFramesRepository(
 		framesRepository: OfflineFirstFramesRepository,
 	): FramesRepository
-
-	@Binds
-	fun bindsTeamsRepository(
-		teamsRepository: OfflineFirstTeamsRepository,
-	): TeamsRepository
 
 	@Binds
 	fun bindsGearRepository(
