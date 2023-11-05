@@ -133,7 +133,7 @@ extension Frame.Edit {
 	public var lastAccessibleRollIndex: Int {
 		if !Frame.isLast(index) {
 			var deck: Set<Pin> = []
-			for roll in  rolls {
+			for roll in rolls {
 				deck.formUnion(roll.roll.pinsDowned)
 				if deck.arePinsCleared {
 					return roll.index
