@@ -63,6 +63,7 @@ dependencies {
 	implementation(project(":feature:gameseditor:ui"))
 	implementation(project(":feature:statisticswidget"))
 
+	implementation(platform(libs.androidx.compose.bom))
 	implementation(libs.androidx.compose.foundation)
 	implementation(libs.androidx.compose.foundation.layout)
 	implementation(libs.androidx.compose.material3)
@@ -70,14 +71,13 @@ dependencies {
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.androidx.hilt.navigation.compose)
 	implementation(libs.androidx.lifecycle.runtimeCompose)
+	implementation(libs.androidx.navigation.compose)
+
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.vico.compose)
+	implementation(libs.vico.compose.m3)
 
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
-
-	implementation("androidx.navigation:navigation-compose:2.7.4")
-	implementation(platform("androidx.compose:compose-bom:2023.09.01"))
-	implementation("com.patrykandpatrick.vico:compose:1.12.0")
-	implementation("com.patrykandpatrick.vico:compose-m3:1.12.0")
 }
 
 // TODO: Move to Gradle Convention Plugin
