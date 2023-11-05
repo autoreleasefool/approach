@@ -8,4 +8,5 @@ import java.util.UUID
 interface GamesRepository {
 	fun getGameDetails(gameId: UUID): Flow<GameEdit>
 	fun getGamesList(seriesId: UUID): Flow<List<GameListItem>>
+	fun getGameIndex(gameId: UUID): Flow<Int>
 }

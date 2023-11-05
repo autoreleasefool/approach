@@ -17,10 +17,12 @@ import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLanesRep
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstRecentlyUsedRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstTeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstUserDataRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.TeamsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
@@ -86,6 +88,11 @@ interface DataModule {
 	fun bindsRecentlyUsedRepository(
 		recentlyUsedRepository: OfflineFirstRecentlyUsedRepository,
 	): RecentlyUsedRepository
+
+	@Binds
+	fun bindsScoresRepository(
+		scoresRepository: OfflineFirstScoresRepository,
+	): ScoresRepository
 
 	@Binds
 	fun bindsLegacyMigrationRepository(

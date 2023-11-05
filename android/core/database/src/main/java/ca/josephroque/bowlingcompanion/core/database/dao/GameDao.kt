@@ -46,4 +46,14 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 		"""
 	)
 	abstract fun getGamesList(seriesId: UUID): Flow<List<GameListItem>>
+
+	@Query(
+		"""
+			SELECT
+				games.`index`
+			FROM games
+			WHERE games.id = :gameId
+		"""
+	)
+	abstract fun getGameIndex(gameId: UUID): Flow<Int>
 }

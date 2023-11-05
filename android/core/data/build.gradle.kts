@@ -12,6 +12,7 @@ dependencies {
 	implementation(project(":core:database"))
 	implementation(project(":core:datastore"))
 	implementation(project(":core:model"))
+	implementation(project(":core:scoring"))
 
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.kotlinx.datetime)

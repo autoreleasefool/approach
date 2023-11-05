@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.scoring
 
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.Pin
@@ -9,10 +11,19 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.displayAt
 import ca.josephroque.bowlingcompanion.core.model.pinCount
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class FivePinScoreKeeper @Inject constructor(): ScoreKeeper {
-	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> {
+class FivePinScoreKeeper @Inject constructor(
+	@Dispatcher(ApproachDispatchers.Default) private val defaultDispatcher: CoroutineDispatcher,
+): ScoreKeeper {
+	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> =
+		withContext(defaultDispatcher) {
+			calculateScoreInternal(input)
+		}
+
+	private suspend fun calculateScoreInternal(input: ScoreKeeperInput): List<ScoringFrame> {
 		val steps: MutableList<ScoringFrame> = mutableListOf()
 		val state = generateStateFromInput(input)
 

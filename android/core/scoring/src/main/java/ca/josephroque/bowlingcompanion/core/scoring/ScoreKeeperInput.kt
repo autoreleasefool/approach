@@ -11,27 +11,12 @@ data class ScoreKeeperInput(
 		val rollIndex: Int,
 		val pinsDowned: Set<Pin>,
 		val didFoul: Boolean,
-	) {
-		companion object {
-			fun fromBitString(frameIndex: Int, rollIndex: Int, bitString: String?): Roll {
-				bitString ?: return Roll(frameIndex, rollIndex, pinsDowned = setOf(), didFoul = false)
-
-				val didFoul = bitString.first() != '0'
-				val pinsDowned = bitString.drop(1).mapIndexedNotNull { index, bit ->
-					if (bit == '0') null else Pin.values()[index]
-				}
-
-				return Roll(frameIndex, rollIndex, pinsDowned.toSet(), didFoul)
-			}
-		}
-	}
+	)
 
 	companion object {
 		fun fromFrames(frames: List<ScoreableFrame>): ScoreKeeperInput = ScoreKeeperInput(
 			rolls = frames.map { frame ->
-				arrayOf(frame.roll0, frame.roll1, frame.roll2).mapIndexed { index, roll ->
-					Roll.fromBitString(frame.index, index, roll)
-				}
+				frame.rolls.mapIndexed { index, roll -> Roll(frame.index, index, roll.pinsDowned, roll.didFoul) }
 			}
 		)
 	}
