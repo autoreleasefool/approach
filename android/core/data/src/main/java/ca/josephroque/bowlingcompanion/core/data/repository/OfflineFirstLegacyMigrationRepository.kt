@@ -186,7 +186,6 @@ class OfflineFirstLegacyMigrationRepository @Inject constructor(
 				date = Instant
 					.fromEpochMilliseconds(legacySeries.date.time)
 					.toLocalDate(),
-				numberOfGames = legacySeries.numberOfGames,
 				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 				preBowl = SeriesPreBowl.REGULAR,
 				leagueId = leagueIdMappings[legacySeries.leagueId]!!,

@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
@@ -35,7 +36,6 @@ data class SeriesEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
 	@ColumnInfo(name = "league_id", index = true) val leagueId: UUID,
 	@ColumnInfo(name = "date") val date: LocalDate,
-	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?
@@ -45,7 +45,7 @@ data class SeriesCreate(
 	@ColumnInfo(name = "league_id") val leagueId: UUID,
 	val id: UUID,
 	val date: LocalDate,
-	@ColumnInfo(name = "number_of_games") val numberOfGames: Int,
+	@Ignore val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )

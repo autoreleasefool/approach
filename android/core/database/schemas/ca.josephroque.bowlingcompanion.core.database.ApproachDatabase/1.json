@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c52a5652b8c038b2ba7debb4f8687b2a",
+    "identityHash": "cfcfc5fb8b5b919ba823242eb4503652",
     "entities": [
       {
         "tableName": "bowlers",
@@ -141,7 +141,7 @@
       },
       {
         "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `league_id` BLOB NOT NULL, `date` TEXT NOT NULL, `number_of_games` INTEGER NOT NULL, `pre_bowl` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `alley_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `league_id` BLOB NOT NULL, `date` TEXT NOT NULL, `pre_bowl` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `alley_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -159,12 +159,6 @@
             "fieldPath": "date",
             "columnName": "date",
             "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "numberOfGames",
-            "columnName": "number_of_games",
-            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1357,7 +1351,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c52a5652b8c038b2ba7debb4f8687b2a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cfcfc5fb8b5b919ba823242eb4503652')"
     ]
   }
 }

@@ -23,12 +23,11 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 				series."date" AS "date",
 				series.pre_bowl AS preBowl,
 				series.exclude_from_statistics AS excludeFromStatistics,
-				series.number_of_games AS numberOfGames,
+				COUNT(games.id) AS numberOfGames,
 				SUM(games.score) AS "total"
 			FROM series
 			LEFT JOIN games
 				ON games.series_id = series.id
-				AND games.score > 0
 			WHERE series.id = :seriesId
 		"""
 	)
