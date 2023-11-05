@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.designsystem.components.Link
@@ -42,8 +45,10 @@ fun AnalyticsSettings(
 			style = MaterialTheme.typography.bodyMedium,
 			modifier = Modifier
 				.padding(horizontal = 16.dp)
-				.padding(bottom = 8.dp),
+				.padding(bottom = 16.dp),
 		)
+
+		Divider()
 
 		LabeledSwitch(
 			checked = state.analyticsOptInStatus == AnalyticsOptInStatus.OPTED_IN,
@@ -51,10 +56,14 @@ fun AnalyticsSettings(
 			titleResourceId = R.string.analytics_share_anonymous_analytics
 		)
 
+		Divider()
+
 		Text(
 			text = stringResource(R.string.analytics_opt_out),
 			style = MaterialTheme.typography.bodySmall,
-			modifier = Modifier.padding(horizontal = 16.dp),
+			modifier = Modifier
+				.padding(horizontal = 16.dp)
+				.padding(top = 16.dp),
 		)
 
 		val uriHandler = LocalUriHandler.current
@@ -73,4 +82,17 @@ sealed interface AnalyticsSettingsUiState {
 	data class Success(
 		val analyticsOptInStatus: AnalyticsOptInStatus,
 	): AnalyticsSettingsUiState
+}
+
+@Preview
+@Composable
+private fun AnalyticsSettingsPreview() {
+	Surface {
+		AnalyticsSettings(
+			state = AnalyticsSettingsUiState.Success(
+				analyticsOptInStatus = AnalyticsOptInStatus.OPTED_IN,
+			),
+			onToggleOptInStatus = {},
+		)
+	}
 }
