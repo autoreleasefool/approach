@@ -1,10 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.accessories.navigation
+package ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import ca.josephroque.bowlingcompanion.feature.accessories.AccessoriesRoute
+import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.AccessoriesRoute
 import java.util.UUID
 
 const val accessoriesNavigationRoute = "accessories"

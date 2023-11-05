@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="accessory_list_title">Utilities</string>
+	<string name="accessory_list_add">Add Item</string>
+	<string name="accessory_list_add_alley">Add Alley</string>
+	<string name="accessory_list_add_gear">Add Gear</string>
+	<string name="accessory_list_alleys_title">Alleys</string>
+	<string name="accessory_list_gear_title">Gear</string>
+	<string name="accessory_list_x_most_recent">Only showing %1d$ most recent</string>
+</resources>

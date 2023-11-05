@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="gear_list_owned_by">Owned by %1$s</string>
+</resources>

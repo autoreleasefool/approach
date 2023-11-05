@@ -1,9 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.accessories
+package ca.josephroque.bowlingcompanion.feature.accessoriesoverview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
+import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +24,7 @@ class AccessoriesViewModel @Inject constructor(
 	alleysRepository: AlleysRepository,
 	gearRepository: GearRepository,
 ): ViewModel() {
-	private val _uiState = MutableStateFlow(AccessoriesUiState())
+	private val _uiState = MutableStateFlow(AccessoriesUiState(alleysItemLimit = alleysListItemLimit, gearItemLimit = gearListItemLimit))
 	val uiState: StateFlow<AccessoriesUiState> =
 		_uiState.asStateFlow()
 
@@ -53,7 +54,3 @@ class AccessoriesViewModel @Inject constructor(
 		_uiState.value = _uiState.value.copy(isAccessoryMenuExpanded = false)
 	}
 }
-
-data class AccessoriesUiState(
-	val isAccessoryMenuExpanded: Boolean = false,
-)

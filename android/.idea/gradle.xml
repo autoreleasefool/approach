@@ -40,12 +40,16 @@
             <option value="$PROJECT_DIR$/core/scoring" />
             <option value="$PROJECT_DIR$/core/testing" />
             <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/accessoriesoverview" />
+            <option value="$PROJECT_DIR$/feature/accessoriesoverview/ui" />
             <option value="$PROJECT_DIR$/feature/alleyslist" />
             <option value="$PROJECT_DIR$/feature/alleyslist/ui" />
             <option value="$PROJECT_DIR$/feature/analytics" />
             <option value="$PROJECT_DIR$/feature/analytics/ui" />
             <option value="$PROJECT_DIR$/feature/gameseditor" />
             <option value="$PROJECT_DIR$/feature/gameseditor/ui" />
+            <option value="$PROJECT_DIR$/feature/gearlist" />
+            <option value="$PROJECT_DIR$/feature/gearlist/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
           </set>
         </option>

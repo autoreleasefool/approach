@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
-import ca.josephroque.bowlingcompanion.feature.accessories.navigation.accessoriesScreen
+import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.alleysListScreen

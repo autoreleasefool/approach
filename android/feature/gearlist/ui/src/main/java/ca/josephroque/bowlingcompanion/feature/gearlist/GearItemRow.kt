@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,9 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.ui.icon
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.R
 import java.util.UUID
 
 @Composable
@@ -47,19 +50,18 @@ internal fun GearItemRow(
 
 			gear.ownerName?.let {
 				Text(
-					text = stringResource(R.string.gear_owned_by, it),
+					text = stringResource(R.string.gear_list_owned_by, it),
 					style = MaterialTheme.typography.bodySmall,
 				)
 			}
 		}
 
-		// TODO: Fix missing back GearIcon
-//		Icon(
-//			painter = gear.kind.icon(),
-//			contentDescription = null,
-//			tint = MaterialTheme.colorScheme.onSurface,
-//			modifier = Modifier.size(24.dp),
-//		)
+		Icon(
+			painter = gear.kind.icon(),
+			contentDescription = null,
+			tint = MaterialTheme.colorScheme.onSurface,
+			modifier = Modifier.size(24.dp),
+		)
 	}
 }
 
