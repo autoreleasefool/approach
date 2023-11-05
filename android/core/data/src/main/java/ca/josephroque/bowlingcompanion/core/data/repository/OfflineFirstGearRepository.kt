@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,9 @@ class OfflineFirstGearRepository @Inject constructor(
 			gear.sortByUUIDs(recentlyUsed)
 				.take(limit)
 		}
+
+	override fun getGearList(kind: GearKind?): Flow<List<GearListItem>> =
+		gearDao.getGearList(kind)
 
 	override suspend fun insertGear(gear: GearCreate) {
 		gearDao.insertGear(gear)

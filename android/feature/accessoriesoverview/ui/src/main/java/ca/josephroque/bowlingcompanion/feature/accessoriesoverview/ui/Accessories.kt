@@ -10,8 +10,8 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSec
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
-import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
-import ca.josephroque.bowlingcompanion.feature.gearlist.gearList
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
 import java.util.UUID
 
 @Composable

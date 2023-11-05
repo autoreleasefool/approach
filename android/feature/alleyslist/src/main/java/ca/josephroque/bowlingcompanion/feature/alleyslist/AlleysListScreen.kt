@@ -35,7 +35,7 @@ internal fun AlleysListRoute(
 }
 
 @Composable
-internal fun AlleysListScreen(
+private fun AlleysListScreen(
 	alleysListState: AlleysListUiState,
 	onBackPressed: () -> Unit,
 	onAlleyClick: (UUID) -> Unit,

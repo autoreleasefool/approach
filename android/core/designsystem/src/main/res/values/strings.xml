@@ -8,9 +8,13 @@
 	<string name="action_send_email">Send Email</string>
 	<string name="action_view_all">View All</string>
 
+	<string name="filter_none">No filter applied</string>
+	<string name="filter_reset">Reset filter</string>
+
 	<string name="cd_back">Back</string>
 	<string name="cd_decrement">Decrement</string>
 	<string name="cd_increment">Increment</string>
+	<string name="cd_selected">Selected</string>
 
 	<string name="none">None</string>
 </resources>

@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.gearlist
+package ca.josephroque.bowlingcompanion.feature.gearlist.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.icon
-import ca.josephroque.bowlingcompanion.feature.gearlist.ui.R
 import java.util.UUID
 
 @Composable

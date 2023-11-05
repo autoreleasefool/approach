@@ -11,7 +11,7 @@ import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.Accessorie
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesTopBar
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
-import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import java.util.UUID
 
 @Composable

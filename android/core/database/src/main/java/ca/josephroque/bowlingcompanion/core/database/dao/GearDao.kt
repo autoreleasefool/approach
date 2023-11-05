@@ -7,6 +7,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -41,10 +42,11 @@ abstract class GearDao {
 			FROM gear
 			LEFT JOIN bowlers AS owner
 				ON gear.owner_id = owner.id
+			WHERE (:kind IS NULL OR gear.kind = :kind)
 			ORDER BY gear.name
 		"""
 	)
-	abstract fun getGearList(): Flow<List<GearListItem>>
+	abstract fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
 	@Insert(entity = GearEntity::class)
 	abstract fun insertGear(gear: GearCreate)

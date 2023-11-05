@@ -6,7 +6,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
-import ca.josephroque.bowlingcompanion.feature.gearlist.GearListUiState
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

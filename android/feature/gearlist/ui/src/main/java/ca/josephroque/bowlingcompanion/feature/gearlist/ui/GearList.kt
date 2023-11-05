@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.gearlist
+package ca.josephroque.bowlingcompanion.feature.gearlist.ui
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +23,4 @@ class AlleysListViewModel @Inject constructor(
 				started = SharingStarted.WhileSubscribed(5_000),
 				initialValue = AlleysListUiState.Loading,
 			)
-
-	fun deleteAlley(id: UUID) {
-		// TODO: prompt delete alley
-	}
 }
