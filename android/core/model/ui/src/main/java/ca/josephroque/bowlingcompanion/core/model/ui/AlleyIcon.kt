@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.alleyslist.ui
+package ca.josephroque.bowlingcompanion.core.model.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter

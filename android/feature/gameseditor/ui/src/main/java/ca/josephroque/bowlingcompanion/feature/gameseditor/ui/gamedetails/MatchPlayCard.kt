@@ -20,10 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
+import ca.josephroque.bowlingcompanion.core.model.ui.contentDescription
+import ca.josephroque.bowlingcompanion.core.model.ui.icon
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.components.contentDescription
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.components.icon
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailCard
 
 @Composable

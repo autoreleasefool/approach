@@ -1,11 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.components
+package ca.josephroque.bowlingcompanion.core.model.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 
 @Composable

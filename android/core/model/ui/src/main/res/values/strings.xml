@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="match_play_result_won">Won</string>
+	<string name="match_play_result_lost">Lost</string>
+	<string name="match_play_result_tied">Tied</string>
+</resources>

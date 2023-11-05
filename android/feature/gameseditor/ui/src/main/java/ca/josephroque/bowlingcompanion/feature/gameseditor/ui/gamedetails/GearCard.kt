@@ -21,9 +21,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconBut
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.ui.icon
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailCard
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.components.icon
 import java.util.UUID
 
 @Composable

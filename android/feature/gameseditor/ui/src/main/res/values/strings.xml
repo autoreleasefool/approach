@@ -20,10 +20,6 @@
 	<string name="game_editor_match_play_result">Result</string>
 	<string name="game_editor_match_play_result_not_recorded">Result not recorded</string>
 
-	<string name="match_play_result_won">Won</string>
-	<string name="match_play_result_lost">Lost</string>
-	<string name="match_play_result_tied">Tied</string>
-
 	<string name="game_editor_scoring_method_title">Scoring</string>
 	<string name="game_editor_scoring_method_set_manual_score">Set manual score</string>
 	<string name="game_editor_scoring_method_edit_manual_score">Edit manual score</string>

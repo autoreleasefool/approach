@@ -22,6 +22,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
+import ca.josephroque.bowlingcompanion.core.model.ui.icon
 import java.util.UUID
 
 @Composable
