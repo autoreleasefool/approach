@@ -28,7 +28,6 @@ extension GamesEditor {
 			.merge(
 				.run { [gameId = state.currentGameId] send in
 					for try await scoredGame in self.scores.observeScore(for: gameId) {
-						print("GameID1: \(gameId)")
 						await send(.internal(.calculatedScore(scoredGame)))
 					}
 				},
