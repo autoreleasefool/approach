@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Entity(
@@ -31,6 +32,7 @@ data class GameEntity(
 	@ColumnInfo(name = "locked") val locked: GameLockState,
 	@ColumnInfo(name = "scoring_method") val scoringMethod: GameScoringMethod,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
 data class GameEditEntity(

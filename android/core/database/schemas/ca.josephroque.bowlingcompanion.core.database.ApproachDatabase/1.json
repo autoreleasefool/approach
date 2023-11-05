@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cfcfc5fb8b5b919ba823242eb4503652",
+    "identityHash": "74dcb89e9e48d161f2b2486e3d0d3f03",
     "entities": [
       {
         "tableName": "bowlers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `kind` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `kind` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,6 +25,13 @@
             "columnName": "kind",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "archivedOn",
+            "columnName": "archived_on",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "NULL"
           }
         ],
         "primaryKey": {
@@ -48,7 +55,7 @@
       },
       {
         "tableName": "leagues",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `bowler_id` BLOB NOT NULL, `name` TEXT NOT NULL, `recurrence` TEXT NOT NULL, `number_of_games` INTEGER, `additional_pin_fall` INTEGER, `additional_games` INTEGER, `exclude_from_statistics` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`bowler_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `bowler_id` BLOB NOT NULL, `name` TEXT NOT NULL, `recurrence` TEXT NOT NULL, `number_of_games` INTEGER, `additional_pin_fall` INTEGER, `additional_games` INTEGER, `exclude_from_statistics` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`bowler_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -97,6 +104,13 @@
             "columnName": "exclude_from_statistics",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "archivedOn",
+            "columnName": "archived_on",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "NULL"
           }
         ],
         "primaryKey": {
@@ -141,7 +155,7 @@
       },
       {
         "tableName": "series",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `league_id` BLOB NOT NULL, `date` TEXT NOT NULL, `pre_bowl` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `alley_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `league_id` BLOB NOT NULL, `date` TEXT NOT NULL, `pre_bowl` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `alley_id` BLOB, `archived_on` INTEGER DEFAULT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "id",
@@ -178,6 +192,13 @@
             "columnName": "alley_id",
             "affinity": "BLOB",
             "notNull": false
+          },
+          {
+            "fieldPath": "archivedOn",
+            "columnName": "archived_on",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "NULL"
           }
         ],
         "primaryKey": {
@@ -242,7 +263,7 @@
       },
       {
         "tableName": "games",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `series_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `score` INTEGER NOT NULL, `locked` TEXT NOT NULL, `scoring_method` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `series_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `score` INTEGER NOT NULL, `locked` TEXT NOT NULL, `scoring_method` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -285,6 +306,13 @@
             "columnName": "exclude_from_statistics",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "archivedOn",
+            "columnName": "archived_on",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "NULL"
           }
         ],
         "primaryKey": {
@@ -1351,7 +1379,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cfcfc5fb8b5b919ba823242eb4503652')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '74dcb89e9e48d161f2b2486e3d0d3f03')"
     ]
   }
 }

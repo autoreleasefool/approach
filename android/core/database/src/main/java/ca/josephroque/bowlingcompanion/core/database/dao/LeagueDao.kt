@@ -40,11 +40,13 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 			LEFT JOIN series
 				ON series.league_id = leagues.id
 				AND (series.exclude_from_statistics = "INCLUDE" OR series.exclude_from_statistics IS NULL)
+				AND series.archived_on IS NULL
 			LEFT JOIN games
 				ON games.series_id = series.id
 				AND (games.exclude_from_statistics = "INCLUDE" OR games.exclude_from_statistics IS NULL)
 				AND (games.score > 0 OR games.score IS NULL)
-			WHERE leagues.bowler_id = :bowlerId
+				AND games.archived_on IS NULL
+			WHERE leagues.bowler_id = :bowlerId AND leagues.archived_on IS NULL
 			GROUP BY leagues.id
 			ORDER BY leagues.name
 		"""

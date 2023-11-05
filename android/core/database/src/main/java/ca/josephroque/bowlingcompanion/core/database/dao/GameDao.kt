@@ -41,7 +41,7 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 			 games.`index`,
 			 games.score
 			FROM games
-			WHERE games.series_id = :seriesId
+			WHERE games.series_id = :seriesId AND games.archived_on IS NULL
 			ORDER BY games.`index`
 		"""
 	)

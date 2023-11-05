@@ -10,6 +10,7 @@ import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
@@ -38,7 +39,8 @@ data class SeriesEntity(
 	@ColumnInfo(name = "date") val date: LocalDate,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
-	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?
+	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?,
+	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
 data class SeriesCreate(

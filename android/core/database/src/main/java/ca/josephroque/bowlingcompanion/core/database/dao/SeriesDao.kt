@@ -27,7 +27,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 				SUM(games.score) AS "total"
 			FROM series
 			LEFT JOIN games
-				ON games.series_id = series.id
+				ON games.series_id = series.id AND games.archived_on IS NULL
 			WHERE series.id = :seriesId
 		"""
 	)
@@ -43,8 +43,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 		 SUM(games.score) AS "total"
 		FROM series
 		LEFT JOIN games
-			ON games.series_id = series.id
-			AND games.score > 0
+			ON games.series_id = series.id AND games.archived_on IS NULL
 		WHERE series.league_id = :leagueId
 		GROUP BY series.id
 		ORDER BY series."date" DESC

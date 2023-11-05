@@ -36,14 +36,17 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 			LEFT JOIN leagues
 				ON leagues.bowler_id = bowlers.id
 				AND (leagues.exclude_from_statistics = "INCLUDE" OR leagues.exclude_from_statistics IS NULL)
+				AND leagues.archived_on IS NULL
 			LEFT JOIN series
 				ON series.league_id = leagues.id
 				AND (series.exclude_from_statistics = "INCLUDE" OR series.exclude_from_statistics IS NULL)
+				AND series.archived_on IS NULL
 			LEFT JOIN games
 				ON games.series_id = series.id
 				AND (games.exclude_from_statistics = "INCLUDE" OR games.exclude_from_statistics IS NULL)
 				AND (games.score > 0 OR games.score IS NULL)
-			WHERE bowlers.kind = "PLAYABLE"
+				AND games.archived_on IS NULL
+			WHERE bowlers.kind = "PLAYABLE" AND bowlers.archived_on IS NULL
 			GROUP BY bowlers.id
 			ORDER BY bowlers.name
 		"""
@@ -57,6 +60,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 				bowlers.name AS name,
 				bowlers.kind AS kind
 			FROM bowlers
+			WHERE bowlers.archived_on IS NULL
 			ORDER BY bowlers.name
 		"""
 	)
