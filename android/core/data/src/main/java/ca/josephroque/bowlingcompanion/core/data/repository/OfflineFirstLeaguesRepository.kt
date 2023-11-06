@@ -1,16 +1,21 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
 class OfflineFirstLeaguesRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
+	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): LeaguesRepository {
 	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> =
 		leagueDao.getLeagueDetails(id)
@@ -18,15 +23,15 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	override fun getLeaguesList(bowlerId: UUID): Flow<List<LeagueListItem>> =
 		leagueDao.getLeagueAverages(bowlerId = bowlerId)
 
-	override suspend fun insertLeague(league: LeagueCreate) {
+	override suspend fun insertLeague(league: LeagueCreate) = withContext(ioDispatcher) {
 		leagueDao.insertLeague(league)
 	}
 
-	override suspend fun updateLeague(league: LeagueUpdate) {
+	override suspend fun updateLeague(league: LeagueUpdate) = withContext(ioDispatcher) {
 		leagueDao.updateLeague(league)
 	}
 
-	override suspend fun deleteLeague(id: UUID) {
+	override suspend fun deleteLeague(id: UUID) = withContext(ioDispatcher) {
 		leagueDao.deleteLeague(id)
 	}
 }

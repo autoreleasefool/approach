@@ -7,21 +7,17 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.LEAGUE_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.Integer.max
 import java.lang.Integer.min
 import java.util.UUID
@@ -31,7 +27,6 @@ import javax.inject.Inject
 class LeagueFormViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	private val leaguesRepository: LeaguesRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel() {
 
 	private val _uiState: MutableStateFlow<LeagueFormUiState> = MutableStateFlow(LeagueFormUiState.Loading)
@@ -43,7 +38,9 @@ class LeagueFormViewModel @Inject constructor(
 
 	fun loadLeague() {
 		viewModelScope.launch {
-			val leagueId = savedStateHandle.get<UUID?>(LEAGUE_ID)
+			val leagueId = savedStateHandle.get<String>(LEAGUE_ID)?.let {
+				UUID.fromString(it)
+			}
 			if (leagueId == null) {
 				_uiState.value = LeagueFormUiState.Create(
 					properties = LeagueCreate(
@@ -85,70 +82,68 @@ class LeagueFormViewModel @Inject constructor(
 
 	fun saveLeague() {
 		viewModelScope.launch {
-			withContext(ioDispatcher) {
-				when (val state = _uiState.value) {
-					LeagueFormUiState.Loading, LeagueFormUiState.Dismissed -> Unit
-					is LeagueFormUiState.Create ->
-						if (state.isSavable()) {
-							val stateAdditionalGames = state.properties.additionalGames
-							val stateAdditionalPinFall = state.properties.additionalPinFall
+			when (val state = _uiState.value) {
+				LeagueFormUiState.Loading, LeagueFormUiState.Dismissed -> Unit
+				is LeagueFormUiState.Create ->
+					if (state.isSavable()) {
+						val stateAdditionalGames = state.properties.additionalGames
+						val stateAdditionalPinFall = state.properties.additionalPinFall
 
-							val additionalGames = if (stateAdditionalPinFall != null && (stateAdditionalGames ?: 0) > 0) stateAdditionalGames else null
-							val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
+						val additionalGames = if (stateAdditionalPinFall != null && (stateAdditionalGames ?: 0) > 0) stateAdditionalGames else null
+						val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
 
-							leaguesRepository.insertLeague(
-								LeagueCreate(
-									bowlerId = state.properties.bowlerId,
-									id = state.properties.id,
-									name = state.properties.name,
-									recurrence = state.properties.recurrence,
-									numberOfGames = when (state.gamesPerSeries) {
-										GamesPerSeries.DYNAMIC -> null
-										GamesPerSeries.STATIC -> state.properties.numberOfGames
-									},
-									additionalPinFall = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
-										IncludeAdditionalPinFall.NONE -> null
-									},
-									additionalGames = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> additionalGames
+						leaguesRepository.insertLeague(
+							LeagueCreate(
+								bowlerId = state.properties.bowlerId,
+								id = state.properties.id,
+								name = state.properties.name,
+								recurrence = state.properties.recurrence,
+								numberOfGames = when (state.gamesPerSeries) {
+									GamesPerSeries.DYNAMIC -> null
+									GamesPerSeries.STATIC -> state.properties.numberOfGames
+								},
+								additionalPinFall = when (state.includeAdditionalPinFall) {
+									IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
 									IncludeAdditionalPinFall.NONE -> null
-									},
-									excludeFromStatistics = state.properties.excludeFromStatistics,
-								)
+								},
+								additionalGames = when (state.includeAdditionalPinFall) {
+									IncludeAdditionalPinFall.INCLUDE -> additionalGames
+								IncludeAdditionalPinFall.NONE -> null
+								},
+								excludeFromStatistics = state.properties.excludeFromStatistics,
 							)
-							_uiState.value = LeagueFormUiState.Dismissed
-						} else {
-							_uiState.value = state.copy(fieldErrors = state.fieldErrors())
-						}
-					is LeagueFormUiState.Edit ->
-						if (state.isSavable()) {
-							val stateAdditionalGames = state.properties.additionalGames
-							val stateAdditionalPinFall = state.properties.additionalPinFall
+						)
+						_uiState.value = LeagueFormUiState.Dismissed
+					} else {
+						_uiState.value = state.copy(fieldErrors = state.fieldErrors())
+					}
+				is LeagueFormUiState.Edit ->
+					if (state.isSavable()) {
+						val stateAdditionalGames = state.properties.additionalGames
+						val stateAdditionalPinFall = state.properties.additionalPinFall
 
-							val additionalGames = if (stateAdditionalPinFall != null && (stateAdditionalGames ?: 0) > 0) stateAdditionalGames else null
-							val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
+						val additionalGames = if (stateAdditionalPinFall != null && (stateAdditionalGames ?: 0) > 0) stateAdditionalGames else null
+						val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
 
-							leaguesRepository.updateLeague(
-								LeagueUpdate(
-									id = state.properties.id,
-									name = state.properties.name,
-									excludeFromStatistics = state.properties.excludeFromStatistics,
-									additionalGames = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> additionalGames
-										IncludeAdditionalPinFall.NONE -> null
-									},
-									additionalPinFall = when (state.includeAdditionalPinFall) {
-										IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
-										IncludeAdditionalPinFall.NONE -> null
-									},
-								)
+						leaguesRepository.updateLeague(
+							LeagueUpdate(
+								id = state.properties.id,
+								name = state.properties.name,
+								excludeFromStatistics = state.properties.excludeFromStatistics,
+								additionalGames = when (state.includeAdditionalPinFall) {
+									IncludeAdditionalPinFall.INCLUDE -> additionalGames
+									IncludeAdditionalPinFall.NONE -> null
+								},
+								additionalPinFall = when (state.includeAdditionalPinFall) {
+									IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
+									IncludeAdditionalPinFall.NONE -> null
+								},
 							)
-							_uiState.value = LeagueFormUiState.Dismissed
-						} else {
-							_uiState.value = state.copy(fieldErrors = state.fieldErrors())
-						}
-				}
+						)
+						_uiState.value = LeagueFormUiState.Dismissed
+					} else {
+						_uiState.value = state.copy(fieldErrors = state.fieldErrors())
+					}
 			}
 		}
 	}

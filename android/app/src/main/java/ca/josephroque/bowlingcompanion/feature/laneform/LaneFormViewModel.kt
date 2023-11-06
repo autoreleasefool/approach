@@ -6,18 +6,14 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.database.model.asLaneCreate
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.ALLEY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
@@ -25,7 +21,6 @@ import javax.inject.Inject
 class LaneFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val lanesRepository: LanesRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel() {
 	private val alleyId = UUID.fromString(savedStateHandle[ALLEY_ID])
 
@@ -56,13 +51,11 @@ class LaneFormViewModel @Inject constructor(
 
 	fun saveLanes() {
 		viewModelScope.launch {
-			withContext(ioDispatcher) {
-				when (val state = _lanes.value) {
-					LaneFormUiState.Loading, LaneFormUiState.Dismissed -> Unit
-					is LaneFormUiState.Success -> {
-						lanesRepository.overwriteAlleyLanes(alleyId, state.lanes)
-						_lanes.value = LaneFormUiState.Dismissed
-					}
+			when (val state = _lanes.value) {
+				LaneFormUiState.Loading, LaneFormUiState.Dismissed -> Unit
+				is LaneFormUiState.Success -> {
+					lanesRepository.overwriteAlleyLanes(alleyId, state.lanes)
+					_lanes.value = LaneFormUiState.Dismissed
 				}
 			}
 		}

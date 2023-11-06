@@ -8,19 +8,15 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import java.util.UUID
 import javax.inject.Inject
@@ -29,7 +25,6 @@ import javax.inject.Inject
 class BowlerFormViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	private val bowlersRepository: BowlersRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
 	private val _uiState: MutableStateFlow<BowlerFormUiState> = MutableStateFlow(BowlerFormUiState.Loading)
@@ -42,7 +37,10 @@ class BowlerFormViewModel @Inject constructor(
 
 	fun loadBowler() {
 		viewModelScope.launch {
-			val bowlerId = savedStateHandle.get<UUID?>(BOWLER_ID)
+			val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
+				UUID.fromString(it)
+			}
+
 			if (bowlerId == null) {
 				_uiState.value = BowlerFormUiState.Create(
 					properties = BowlerCreate(
@@ -85,33 +83,31 @@ class BowlerFormViewModel @Inject constructor(
 
 	fun saveBowler() {
 		viewModelScope.launch {
-			withContext(ioDispatcher) {
-				when (val state = _uiState.value) {
-					BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
-					is BowlerFormUiState.Create ->
-						if (state.isSavable()) {
-							bowlersRepository.insertBowler(state.properties)
-							_uiState.value = BowlerFormUiState.Dismissed
-						} else {
-							_uiState.value = state.copy(
-								fieldErrors = BowlerFormFieldErrors(
-									nameErrorId = if (state.properties.name.isBlank()) R.string.bowler_form_name_missing else null
-								)
+			when (val state = _uiState.value) {
+				BowlerFormUiState.Loading, BowlerFormUiState.Dismissed -> Unit
+				is BowlerFormUiState.Create ->
+					if (state.isSavable()) {
+						bowlersRepository.insertBowler(state.properties)
+						_uiState.value = BowlerFormUiState.Dismissed
+					} else {
+						_uiState.value = state.copy(
+							fieldErrors = BowlerFormFieldErrors(
+								nameErrorId = if (state.properties.name.isBlank()) R.string.bowler_form_name_missing else null
 							)
-						}
+						)
+					}
 
-					is BowlerFormUiState.Edit ->
-						if (state.isSavable()) {
-							bowlersRepository.updateBowler(state.properties)
-							_uiState.value = BowlerFormUiState.Dismissed
-						} else {
-							_uiState.value = state.copy(
-								fieldErrors = BowlerFormFieldErrors(
-									nameErrorId = if (state.properties.name.isBlank()) R.string.bowler_form_name_missing else null
-								)
+				is BowlerFormUiState.Edit ->
+					if (state.isSavable()) {
+						bowlersRepository.updateBowler(state.properties)
+						_uiState.value = BowlerFormUiState.Dismissed
+					} else {
+						_uiState.value = state.copy(
+							fieldErrors = BowlerFormFieldErrors(
+								nameErrorId = if (state.properties.name.isBlank()) R.string.bowler_form_name_missing else null
 							)
-						}
-				}
+						)
+					}
 			}
 		}
 	}

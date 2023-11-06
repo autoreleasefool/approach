@@ -8,21 +8,17 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdate
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.ALLEY_ID
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
@@ -30,14 +26,15 @@ import javax.inject.Inject
 class AlleyFormViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	private val alleysRepository: AlleysRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): ViewModel() {
 	private val _uiState: MutableStateFlow<AlleyFormUiState> = MutableStateFlow(AlleyFormUiState.Loading)
 	val uiState: StateFlow<AlleyFormUiState> = _uiState.asStateFlow()
 
 	fun loadAlley() {
 		viewModelScope.launch {
-			val alleyId = savedStateHandle.get<UUID?>(ALLEY_ID)
+			val alleyId = savedStateHandle.get<String>(ALLEY_ID)?.let {
+				UUID.fromString(it)
+			}
 			if (alleyId == null) {
 				_uiState.value = AlleyFormUiState.Create(
 					properties = AlleyCreate(
@@ -92,24 +89,22 @@ class AlleyFormViewModel @Inject constructor(
 	}
 
 	private suspend fun saveAlleyAndTransition(nextState: AlleyFormUiState) {
-		withContext(ioDispatcher) {
-			when (val state = _uiState.value) {
-				AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
-				is AlleyFormUiState.Create ->
-					if (state.isSavable()) {
-						alleysRepository.insertAlley(state.properties)
-						_uiState.value = nextState
-					} else {
-						_uiState.value = state.copy(fieldErrors = state.fieldErrors())
-					}
-				is AlleyFormUiState.Edit ->
-					if (state.isSavable()) {
-						alleysRepository.updateAlley(state.properties)
-						_uiState.value = nextState
-					} else {
-						_uiState.value = state.copy(fieldErrors = state.fieldErrors())
-					}
-			}
+		when (val state = _uiState.value) {
+			AlleyFormUiState.Loading, AlleyFormUiState.Dismissed, is AlleyFormUiState.ManagingLanes -> Unit
+			is AlleyFormUiState.Create ->
+				if (state.isSavable()) {
+					alleysRepository.insertAlley(state.properties)
+					_uiState.value = nextState
+				} else {
+					_uiState.value = state.copy(fieldErrors = state.fieldErrors())
+				}
+			is AlleyFormUiState.Edit ->
+				if (state.isSavable()) {
+					alleysRepository.updateAlley(state.properties)
+					_uiState.value = nextState
+				} else {
+					_uiState.value = state.copy(fieldErrors = state.fieldErrors())
+				}
 		}
 	}
 

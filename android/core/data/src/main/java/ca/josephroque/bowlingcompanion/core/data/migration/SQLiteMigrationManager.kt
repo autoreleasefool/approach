@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.core.data.migration
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.data.migration.step.migrateBowlers
 import ca.josephroque.bowlingcompanion.core.data.migration.step.migrateFrames
 import ca.josephroque.bowlingcompanion.core.data.migration.step.migrateGames
@@ -15,9 +17,11 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SQLiteMigrationManager @Inject constructor(
@@ -25,13 +29,14 @@ class SQLiteMigrationManager @Inject constructor(
 	val legacyMigrationRepository: LegacyMigrationRepository,
 	private val userDataRepository: UserDataRepository,
 	private val transactionRunner: TransactionRunner,
+	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): MigrationManager {
 
 	private val _currentStep = MutableSharedFlow<MigrationStep?>()
 	override val currentStep: Flow<MigrationStep?> = _currentStep
 
-	override suspend fun beginMigration() {
-		if (userDataRepository.userData.first().isLegacyMigrationComplete) return
+	override suspend fun beginMigration() = withContext(ioDispatcher) {
+		if (userDataRepository.userData.first().isLegacyMigrationComplete) return@withContext
 
 		transactionRunner {
 			val legacyDb = LegacyDatabaseHelper.getInstance(context).readableDatabase
