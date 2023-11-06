@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.core.model.GearKind
+import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearList
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBar
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBarState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
@@ -64,15 +65,13 @@ private fun GearListScreen(
 			)
 		}
 	) { padding ->
-		LazyColumn(
+		GearList(
+			state = gearListState,
+			onGearClick = onGearClick,
+			onAddGear = onAddGear,
 			modifier = modifier
 				.fillMaxSize()
 				.padding(padding),
-		) {
-			gearList(
-				gearListState = gearListState,
-				onGearClick = onGearClick,
-			)
-		}
+		)
 	}
 }

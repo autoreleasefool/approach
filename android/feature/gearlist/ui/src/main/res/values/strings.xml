@@ -4,6 +4,9 @@
 	<string name="gear_list_add">Add Gear</string>
 	<string name="gear_list_filter">Filter List</string>
 
+	<string name="gear_list_empty_title">No gear found</string>
+	<string name="gear_list_empty_message">You haven\'t added any gear yet. Track usage stats for your shoes, balls, and more.</string>
+
 	<string name="gear_kind_filter_bowling_ball">Bowling Balls</string>
 	<string name="gear_kind_filter_shoes">Shoes</string>
 	<string name="gear_kind_filter_other">Other</string>

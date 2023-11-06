@@ -60,14 +60,14 @@ fun Accessories(
 			)
 		)
 
-		gearList(
-			gearListState = gearListState,
-			onGearClick = onShowGearDetails,
-		)
-
 		when (gearListState) {
 			GearListUiState.Loading -> Unit
 			is GearListUiState.Success -> {
+				gearList(
+					list = gearListState.list,
+					onGearClick = onShowGearDetails,
+				)
+
 				item {
 					if (gearListState.list.size > accessoriesState.gearItemLimit) {
 						ListSectionFooter(

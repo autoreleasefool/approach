@@ -119,7 +119,15 @@ internal fun BowlerDetailsScreen(
 				),
 			)
 
-			gearList(gearListState, onGearClick = onGearClick)
+			when (gearListState) {
+				GearListUiState.Loading -> Unit
+				is GearListUiState.Success -> {
+					gearList(
+						list = gearListState.list,
+						onGearClick = onGearClick,
+					)
+				}
+			}
 
 			footer(R.string.bowler_details_preferred_gear_description)
 		}
