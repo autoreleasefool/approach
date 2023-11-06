@@ -33,6 +33,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
+import ca.josephroque.bowlingcompanion.core.database.util.AvatarConverter
 import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 import ca.josephroque.bowlingcompanion.core.database.util.LocalDateConverter
 import ca.josephroque.bowlingcompanion.core.database.util.RollConverter
@@ -60,6 +61,7 @@ import ca.josephroque.bowlingcompanion.core.database.util.RollConverter
 	version = 1,
 )
 @TypeConverters(
+	AvatarConverter::class,
 	LocalDateConverter::class,
 	RollConverter::class,
 	InstantConverter::class,

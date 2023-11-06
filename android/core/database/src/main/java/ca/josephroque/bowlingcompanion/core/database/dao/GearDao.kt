@@ -4,9 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
+import ca.josephroque.bowlingcompanion.core.database.model.GearCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
-import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import kotlinx.coroutines.flow.Flow
@@ -20,12 +20,13 @@ abstract class GearDao {
 				gear.id AS id,
 				gear.name AS name,
 				gear.kind AS kind,
+				gear.avatar as avatar,
 				owner.name AS ownerName
 			FROM gear
 			JOIN bowler_preferred_gear
 				ON gear.id = bowler_preferred_gear.gear_id
 				AND bowler_preferred_gear.gear_id = :bowlerId
-			JOIN bowlers AS owner 
+			LEFT JOIN bowlers AS owner 
 				ON gear.owner_id = owner.id
 			ORDER BY gear.name
 		"""
@@ -38,6 +39,7 @@ abstract class GearDao {
 				gear.id AS id,
 				gear.name AS name,
 				gear.kind AS kind,
+				gear.avatar as avatar,
 				owner.name AS ownerName
 			FROM gear
 			LEFT JOIN bowlers AS owner
@@ -49,10 +51,10 @@ abstract class GearDao {
 	abstract fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
 	@Insert(entity = GearEntity::class)
-	abstract fun insertGear(gear: GearCreate)
+	abstract fun insertGear(gear: GearCreateEntity)
 
 	@Update(entity = GearEntity::class)
-	abstract fun updateGear(gear: GearUpdate)
+	abstract fun updateGear(gear: GearUpdateEntity)
 
 	@Query("DELETE FROM gear WHERE id = :gearId")
 	abstract fun deleteGear(gearId: UUID)

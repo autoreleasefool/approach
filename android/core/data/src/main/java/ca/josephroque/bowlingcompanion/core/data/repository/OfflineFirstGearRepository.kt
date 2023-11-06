@@ -1,10 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
-import ca.josephroque.bowlingcompanion.core.database.model.GearCreate
-import ca.josephroque.bowlingcompanion.core.database.model.GearUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.GearUpdate
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -32,11 +33,11 @@ class OfflineFirstGearRepository @Inject constructor(
 		gearDao.getGearList(kind)
 
 	override suspend fun insertGear(gear: GearCreate) {
-		gearDao.insertGear(gear)
+		gearDao.insertGear(gear.asEntity())
 	}
 
 	override suspend fun updateGear(gear: GearUpdate) {
-		gearDao.updateGear(gear)
+		gearDao.updateGear(gear.asEntity())
 	}
 
 	override suspend fun deleteGear(id: UUID) {
