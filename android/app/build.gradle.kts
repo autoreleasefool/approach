@@ -60,6 +60,7 @@ dependencies {
 	implementation(project(":feature:accessoriesoverview:ui"))
 	implementation(project(":feature:alleyslist"))
 	implementation(project(":feature:alleyslist:ui"))
+	implementation(project(":feature:bowlerslist:ui"))
 	implementation(project(":feature:analytics"))
 	implementation(project(":feature:analytics:ui"))
 	implementation(project(":feature:gameseditor"))

@@ -8,4 +8,5 @@ android {
 }
 
 dependencies {
+	implementation(libs.kotlinx.datetime)
 }

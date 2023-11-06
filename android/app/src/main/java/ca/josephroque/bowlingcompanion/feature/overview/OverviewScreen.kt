@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.feature.overview
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -25,8 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
-import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
-import ca.josephroque.bowlingcompanion.feature.bowlerslist.bowlersList
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlerList
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.StatisticsWidgetPlaceholderCard
 import java.util.UUID
 
@@ -62,21 +61,18 @@ internal fun OverviewScreen(
 			OverviewTopBar(onAddBowler)
 		}
 	) { padding ->
-		LazyColumn(
-			modifier = modifier
-				.fillMaxSize()
-				.padding(padding),
-		) {
-			item {
+		BowlerList(
+			state = bowlersListState,
+			onBowlerClick = onBowlerClick,
+			onAddBowler = onAddBowler,
+			header = {
 				StatisticsWidgetPlaceholderCard(
 					onClick = editStatisticsWidget,
 					modifier = Modifier
 						.padding(horizontal = 16.dp)
 						.padding(bottom = 16.dp),
 				)
-			}
 
-			item {
 				Text(
 					text = stringResource(R.string.bowler_list_title),
 					style = MaterialTheme.typography.titleLarge,
@@ -84,13 +80,11 @@ internal fun OverviewScreen(
 						.padding(horizontal = 16.dp)
 						.padding(bottom = 16.dp),
 				)
-			}
-
-			bowlersList(
-				bowlersListState = bowlersListState,
-				onBowlerClick = onBowlerClick,
-			)
-		}
+			},
+			modifier = modifier
+				.fillMaxSize()
+				.padding(padding),
+		)
 	}
 }
 

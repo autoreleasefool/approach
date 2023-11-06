@@ -29,9 +29,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
+import ca.josephroque.bowlingcompanion.core.common.utils.format
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
-import ca.josephroque.bowlingcompanion.utils.format
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle

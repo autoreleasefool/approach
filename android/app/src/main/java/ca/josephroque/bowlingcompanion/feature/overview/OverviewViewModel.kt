@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.overview
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
-import ca.josephroque.bowlingcompanion.feature.bowlerslist.BowlersListUiState
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

@@ -20,10 +20,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.common.utils.formatAsAverage
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.utils.formatAsAverage
-import ca.josephroque.bowlingcompanion.utils.seriesDate
+import ca.josephroque.bowlingcompanion.feature.leagueslist.utils.seriesDate
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 

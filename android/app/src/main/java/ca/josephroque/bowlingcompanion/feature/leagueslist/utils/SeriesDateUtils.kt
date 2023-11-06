@@ -1,20 +1,11 @@
-package ca.josephroque.bowlingcompanion.utils
+package ca.josephroque.bowlingcompanion.feature.leagueslist.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.common.utils.format
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toJavaLocalDate
-import java.text.DecimalFormat
-import java.time.format.DateTimeFormatter
-
-fun Double?.formatAsAverage(): String = if (this == null) {
-	""
-} else {
-	val df = DecimalFormat("#.#")
-	df.format(this)
-}
 
 @Composable
 fun LocalDate?.seriesDate(recurrence: LeagueRecurrence): String = if (this == null) {
@@ -31,5 +22,3 @@ fun LocalDate?.seriesDate(recurrence: LeagueRecurrence): String = if (this == nu
 		)
 	}
 }
-fun LocalDate.format(format: String): String =
-	DateTimeFormatter.ofPattern(format).format(this.toJavaLocalDate())
