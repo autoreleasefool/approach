@@ -2,8 +2,13 @@
 <resources>
 	<string name="game_with_ordinal">Game %d</string>
 
+	<string name="archive_dialog_title">Are you sure you want to archive %1$s?</string>
+	<string name="archive_dialog_message">It will be hidden and no longer affect your statistics. It can be recovered from the Archive in Settings.</string>
+
+	<string name="action_cancel">Cancel</string>
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
+	<string name="action_archive">Archive</string>
 	<string name="action_manage">Manage</string>
 	<string name="action_send_email">Send Email</string>
 	<string name="action_view_all">View All</string>

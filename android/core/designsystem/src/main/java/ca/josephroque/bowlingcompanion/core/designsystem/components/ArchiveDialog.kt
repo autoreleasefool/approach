@@ -1,0 +1,31 @@
+package ca.josephroque.bowlingcompanion.core.designsystem.components
+
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import ca.josephroque.bowlingcompanion.core.designsystem.R
+
+@Composable
+fun ArchiveDialog(
+	itemName: String,
+	onArchive: () -> Unit,
+	onDismiss: () -> Unit,
+) {
+	AlertDialog(
+		onDismissRequest = onDismiss,
+		title = { Text(text = stringResource(R.string.archive_dialog_title, itemName)) },
+		text = { Text(text = stringResource(R.string.archive_dialog_message)) },
+		confirmButton = {
+			TextButton(onClick = onArchive) {
+				Text(text = stringResource(R.string.action_archive))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismiss) {
+				Text(text = stringResource(R.string.action_cancel))
+			}
+		}
+	)
+}

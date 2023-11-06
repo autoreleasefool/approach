@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Dao
@@ -72,6 +73,6 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 	@Update(entity = BowlerEntity::class)
 	abstract fun updateBowler(bowler: BowlerUpdate)
 
-	@Query("DELETE FROM bowlers WHERE id = :bowlerId")
-	abstract fun deleteBowler(bowlerId: UUID)
+	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id = :bowlerId")
+	abstract fun archiveBowler(bowlerId: UUID, archivedOn: Instant)
 }

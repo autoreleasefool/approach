@@ -43,6 +43,8 @@ internal fun OverviewRoute(
 		bowlersListState = bowlersListState,
 		onBowlerClick = onShowBowlerDetails,
 		onAddBowler = onAddBowler,
+		onEditBowler = onEditBowler,
+		onArchiveBowler = viewModel::archiveBowler,
 		editStatisticsWidget = viewModel::editStatisticsWidget,
 		modifier = modifier,
 	)
@@ -53,6 +55,8 @@ internal fun OverviewScreen(
 	bowlersListState: BowlersListUiState,
 	onBowlerClick: (UUID) -> Unit,
 	onAddBowler: () -> Unit,
+	onEditBowler: (UUID) -> Unit,
+	onArchiveBowler: (UUID?) -> Unit,
 	editStatisticsWidget: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -65,6 +69,8 @@ internal fun OverviewScreen(
 			state = bowlersListState,
 			onBowlerClick = onBowlerClick,
 			onAddBowler = onAddBowler,
+			onEditBowler = onEditBowler,
+			onArchiveBowler = onArchiveBowler,
 			header = {
 				StatisticsWidgetPlaceholderCard(
 					onClick = editStatisticsWidget,
@@ -120,12 +126,17 @@ private fun OverviewTopBar(
 private fun OverviewPreview() {
 	Surface {
 		OverviewScreen(
-			bowlersListState = BowlersListUiState.Success(listOf(
-				BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
-				BowlerListItem(id = UUID.randomUUID(), name = "Sarah", average = null),
-			)),
+			bowlersListState = BowlersListUiState.Success(
+				bowlerToArchive = null,
+				list = listOf(
+					BowlerListItem(id = UUID.randomUUID(), name = "Joseph", average = 120.0),
+					BowlerListItem(id = UUID.randomUUID(), name = "Sarah", average = null),
+				)
+			),
 			onBowlerClick = {},
 			onAddBowler = {},
+			onEditBowler = {},
+			onArchiveBowler = {},
 			editStatisticsWidget = {},
 		)
 	}

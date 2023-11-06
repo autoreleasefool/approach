@@ -41,7 +41,7 @@ internal fun BowlerFormRoute(
 		bowlerFormState = bowlerFormState,
 		loadBowler = viewModel::loadBowler,
 		saveBowler = viewModel::saveBowler,
-		deleteBowler = viewModel::deleteBowler,
+		archiveBowler = viewModel::archiveBowler,
 		updateName = viewModel::updateName,
 		onBackPressed = onBackPressed,
 		modifier = modifier,
@@ -54,7 +54,7 @@ internal fun BowlerFormScreen(
 	onBackPressed: () -> Unit,
 	loadBowler: () -> Unit,
 	saveBowler: () -> Unit,
-	deleteBowler: () -> Unit,
+	archiveBowler: () -> Unit,
 	updateName: (String) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -157,7 +157,7 @@ private fun BowlerFormPreview() {
 		onBackPressed = {},
 		saveBowler = {},
 		loadBowler = {},
-		deleteBowler = {},
+		archiveBowler = {},
 		updateName = {},
 	)
 }

@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 interface BowlersRepository {
@@ -15,5 +16,5 @@ interface BowlersRepository {
 
 	suspend fun insertBowler(bowler: BowlerCreate)
 	suspend fun updateBowler(bowler: BowlerUpdate)
-	suspend fun deleteBowler(id: UUID)
+	suspend fun archiveBowler(id: UUID, archivedOn: Instant)
 }

@@ -43,4 +43,6 @@
 	<color name="yellow_800">#F9A825</color>
 	<color name="yellow_900">#F57F17</color>
 
+	<color name="destructive">#E73838</color>
+
 </resources>

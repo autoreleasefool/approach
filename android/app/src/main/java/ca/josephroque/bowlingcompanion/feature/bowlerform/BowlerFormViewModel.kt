@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import java.util.UUID
 import javax.inject.Inject
 
@@ -115,12 +116,12 @@ class BowlerFormViewModel @Inject constructor(
 		}
 	}
 
-	fun deleteBowler() {
+	fun archiveBowler() {
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
 				BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
 				is BowlerFormUiState.Edit ->
-					bowlersRepository.deleteBowler(state.initialValue.id)
+					bowlersRepository.archiveBowler(state.initialValue.id, archivedOn = Clock.System.now())
 			}
 
 			_uiState.value = BowlerFormUiState.Dismissed

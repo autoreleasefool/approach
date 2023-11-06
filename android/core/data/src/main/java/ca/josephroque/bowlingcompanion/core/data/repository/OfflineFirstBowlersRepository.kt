@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import java.util.UUID
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.updateBowler(bowler)
 	}
 
-	override suspend fun deleteBowler(id: UUID) {
-		bowlerDao.deleteBowler(id)
+	override suspend fun archiveBowler(id: UUID, archivedOn: Instant) {
+		bowlerDao.archiveBowler(id, archivedOn)
 	}
 }
