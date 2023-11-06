@@ -61,7 +61,8 @@ class BowlerFormViewModel @Inject constructor(
 				_uiState.value = BowlerFormUiState.Edit(
 					initialValue = update,
 					properties = update,
-					fieldErrors = BowlerFormFieldErrors()
+					fieldErrors = BowlerFormFieldErrors(),
+					isShowingArchiveDialog = false,
 				)
 			}
 		}
@@ -112,15 +113,28 @@ class BowlerFormViewModel @Inject constructor(
 		}
 	}
 
-	fun archiveBowler() {
-		viewModelScope.launch {
-			when (val state = _uiState.value) {
-				BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
-				is BowlerFormUiState.Edit ->
-					bowlersRepository.archiveBowler(state.initialValue.id, archivedOn = Clock.System.now())
+	fun archiveBowler(shouldArchive: Boolean) {
+		when (val state = _uiState.value) {
+			BowlerFormUiState.Loading, BowlerFormUiState.Dismissed, is BowlerFormUiState.Create -> Unit
+			is BowlerFormUiState.Edit -> if (state.isShowingArchiveDialog) {
+				if (shouldArchive) {
+					viewModelScope.launch {
+						bowlersRepository.archiveBowler(
+							state.initialValue.id,
+							archivedOn = Clock.System.now()
+						)
+						_uiState.value = BowlerFormUiState.Dismissed
+					}
+				} else {
+					_uiState.value = state.copy(
+						isShowingArchiveDialog = false
+					)
+				}
+			} else {
+				_uiState.value = state.copy(
+					isShowingArchiveDialog = shouldArchive
+				)
 			}
-
-			_uiState.value = BowlerFormUiState.Dismissed
 		}
 	}
 }
@@ -141,6 +155,7 @@ sealed interface BowlerFormUiState {
 		val initialValue: BowlerUpdate,
 		val properties: BowlerUpdate,
 		val fieldErrors: BowlerFormFieldErrors,
+		val isShowingArchiveDialog: Boolean,
 	): BowlerFormUiState {
 		fun isSavable(): Boolean =
 			properties.name.isNotBlank() && properties != initialValue

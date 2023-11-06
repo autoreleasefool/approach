@@ -64,6 +64,7 @@
 	<string name="bowler_form_section_details">Details</string>
 	<string name="bowler_form_name">Name</string>
 	<string name="bowler_form_name_missing">Name cannot be blank</string>
+	<string name="bowler_form_archive">Archive Bowler</string>
 
 	<string name="league_list_title">Leagues</string>
 	<string name="league_list_add">Add League</string>

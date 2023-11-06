@@ -54,7 +54,7 @@ internal fun BowlerFormScreen(
 	onBackPressed: () -> Unit,
 	loadBowler: () -> Unit,
 	saveBowler: () -> Unit,
-	archiveBowler: () -> Unit,
+	archiveBowler: (Boolean) -> Unit,
 	updateName: (String) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -79,6 +79,8 @@ internal fun BowlerFormScreen(
 				 onNameChanged = updateName,
 				 onDoneClicked = saveBowler,
 				 nameErrorId = bowlerFormState.fieldErrors.nameErrorId,
+				 isShowingArchiveDialog = bowlerFormState.isShowingArchiveDialog,
+				 archiveBowler = archiveBowler,
 				 modifier = modifier
 					 .padding(padding)
 			 )
@@ -152,7 +154,8 @@ private fun BowlerFormPreview() {
 		bowlerFormState = BowlerFormUiState.Edit(
 			properties = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),
 			initialValue = BowlerUpdate(id = UUID.randomUUID(), name = "Joseph"),
-			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing)
+			fieldErrors = BowlerFormFieldErrors(nameErrorId = R.string.bowler_form_name_missing),
+			isShowingArchiveDialog = false,
 		),
 		onBackPressed = {},
 		saveBowler = {},

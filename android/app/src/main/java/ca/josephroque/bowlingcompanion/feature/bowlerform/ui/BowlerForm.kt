@@ -11,16 +11,21 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
+import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 
 @Composable
@@ -30,7 +35,17 @@ internal fun BowlerForm(
 	nameErrorId: Int?,
 	onDoneClicked: () -> Unit,
 	modifier: Modifier = Modifier,
+	isShowingArchiveDialog: Boolean = false,
+	archiveBowler: ((Boolean) -> Unit)? = null,
 ) {
+	if (isShowingArchiveDialog) {
+		ArchiveDialog(
+			itemName = name,
+			onArchive = { archiveBowler?.invoke(true) },
+			onDismiss = { archiveBowler?.invoke(false) },
+		)
+	}
+
 	Column(
 		modifier = modifier
 			.verticalScroll(rememberScrollState())
@@ -44,6 +59,18 @@ internal fun BowlerForm(
 				onDoneClicked = onDoneClicked,
 				modifier = Modifier.padding(horizontal = 16.dp),
 			)
+
+			if (archiveBowler != null) {
+				Button(
+					onClick = { archiveBowler.invoke(true) },
+					colors = ButtonDefaults.buttonColors(containerColor = colorResource(RCoreDesign.color.destructive)),
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(horizontal = 16.dp, vertical = 8.dp),
+				) {
+					Text(text = stringResource(R.string.bowler_form_archive))
+				}
+			}
 		}
 	}
 }
