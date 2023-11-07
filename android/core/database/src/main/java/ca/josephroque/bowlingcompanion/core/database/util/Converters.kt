@@ -9,23 +9,11 @@ import kotlinx.datetime.LocalDate
 class AvatarConverter {
 	@TypeConverter
 	fun stringToAvatar(value: String?): Avatar? =
-		value?.let {
-			val (primary,	secondary) = it.split(";")
-			val (pRed, pGreen, pBlue) = primary.split(",")
-			val (sRed, sGreen, sBlue) = secondary.split(",")
-			Avatar(
-				primaryColor = Avatar.RGB(pRed.toInt(), pGreen.toInt(), pBlue.toInt()),
-				secondaryColor = Avatar.RGB(sRed.toInt(), sGreen.toInt(), sBlue.toInt()),
-			)
-		}
+		value?.let(Avatar.Companion::fromString)
 
 	@TypeConverter
 	fun avatarRToString(avatar: Avatar?): String? =
-		avatar?.let {
-			val primary = "${it.primaryColor.red},${it.primaryColor.green},${it.primaryColor.blue}"
-			val secondary = "${it.secondaryColor.red},${it.secondaryColor.green},${it.secondaryColor.blue}"
-			"$primary;$secondary"
-		}
+		avatar?.toString()
 }
 
 class InstantConverter {

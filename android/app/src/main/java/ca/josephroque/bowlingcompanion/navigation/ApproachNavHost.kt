@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import ca.josephroque.bowlingcompanion.core.common.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
@@ -13,6 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.alleysListS
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.navigateToAlleysList
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.analyticsSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.navigateToAnalyticsSettings
+import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigateToBowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
@@ -142,6 +144,12 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 			onEditGear = { /* TODO: onEditGear */ },
 			onAddGear = { /* TODO: onAddGear */ },
+		)
+		avatarFormScreen(
+			onBackPressed = navController::popBackStack,
+			onDismissWithResult = { avatar ->
+				navController.popBackStackWithResult(avatar)
+			}
 		)
 		laneFormScreen(
 			onBackPressed = navController::popBackStack,
