@@ -3,7 +3,9 @@ package ca.josephroque.bowlingcompanion.core.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import kotlinx.datetime.Instant
 import java.util.UUID
 
@@ -15,13 +17,24 @@ data class BowlerEntity(
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 )
 
-data class BowlerCreate(
+data class BowlerCreateEntity(
 	val id: UUID,
 	val name: String,
 	val kind: BowlerKind,
 )
 
-data class BowlerUpdate(
+fun BowlerCreate.asEntity(): BowlerCreateEntity = BowlerCreateEntity(
+	id = id,
+	name = name,
+	kind = kind,
+)
+
+data class BowlerUpdateEntity(
 	val id: UUID,
 	val name: String,
+)
+
+fun BowlerUpdate.asEntity(): BowlerUpdateEntity = BowlerUpdateEntity(
+	id = id,
+	name = name,
 )

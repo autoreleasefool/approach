@@ -4,9 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
@@ -20,7 +20,8 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 		"""
 			SELECT
 				bowlers.id as id,
-				bowlers.name as name
+				bowlers.name as name,
+				bowlers.kind as kind
 			FROM bowlers 
 			WHERE id = :bowlerId
 		"""
@@ -68,10 +69,10 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 	abstract fun getOpponentsList(): Flow<List<OpponentListItem>>
 
 	@Insert(entity = BowlerEntity::class)
-	abstract fun insertBowler(bowler: BowlerCreate)
+	abstract fun insertBowler(bowler: BowlerCreateEntity)
 
 	@Update(entity = BowlerEntity::class)
-	abstract fun updateBowler(bowler: BowlerUpdate)
+	abstract fun updateBowler(bowler: BowlerUpdateEntity)
 
 	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id = :bowlerId")
 	abstract fun archiveBowler(bowlerId: UUID, archivedOn: Instant)

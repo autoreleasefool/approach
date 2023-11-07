@@ -17,6 +17,18 @@ data class OpponentListItem(
 data class BowlerDetails(
 	val id: UUID,
 	val name: String,
+	val kind: BowlerKind,
+)
+
+data class BowlerCreate(
+	val id: UUID,
+	val name: String,
+	val kind: BowlerKind,
+)
+
+data class BowlerUpdate(
+	val id: UUID,
+	val name: String,
 )
 
 enum class BowlerKind {

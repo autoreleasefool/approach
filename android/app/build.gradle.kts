@@ -58,6 +58,7 @@ dependencies {
 	implementation(project(":feature:accessoriesoverview"))
 	implementation(project(":feature:alleyslist"))
 	implementation(project(":feature:avatarform"))
+	implementation(project(":feature:bowlerform"))
 	implementation(project(":feature:bowlerslist:ui"))
 	implementation(project(":feature:analytics"))
 	implementation(project(":feature:gameseditor"))

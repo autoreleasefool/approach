@@ -23,26 +23,21 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 
 @Composable
-internal fun BowlerForm(
-	name: String,
-	onNameChanged: (String) -> Unit,
-	nameErrorId: Int?,
-	onDoneClicked: () -> Unit,
+fun BowlerForm(
+	state: BowlerFormUiState,
+	onAction: (BowlerFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	isShowingArchiveDialog: Boolean = false,
-	archiveBowler: ((Boolean) -> Unit)? = null,
 ) {
-	if (isShowingArchiveDialog) {
+	if (state.isShowingArchiveDialog) {
 		ArchiveDialog(
-			itemName = name,
-			onArchive = { archiveBowler?.invoke(true) },
-			onDismiss = { archiveBowler?.invoke(false) },
+			itemName = state.name,
+			onArchive = { onAction(BowlerFormUiAction.ConfirmArchiveClicked) },
+			onDismiss = { onAction(BowlerFormUiAction.DismissArchiveClicked) },
 		)
 	}
 
@@ -53,16 +48,16 @@ internal fun BowlerForm(
 	) {
 		FormSection(titleResourceId = R.string.bowler_form_section_details) {
 			NameTextField(
-				name = name,
-				onNameChanged = onNameChanged,
-				nameErrorId = nameErrorId,
-				onDoneClicked = onDoneClicked,
+				name = state.name,
+				onNameChanged = { onAction(BowlerFormUiAction.NameChanged(it)) },
+				nameErrorId = state.nameErrorId,
+				onDoneClicked = { onAction(BowlerFormUiAction.DoneClicked) },
 				modifier = Modifier.padding(horizontal = 16.dp),
 			)
 
-			if (archiveBowler != null) {
+			if (state.isArchiveButtonEnabled) {
 				Button(
-					onClick = { archiveBowler.invoke(true) },
+					onClick = { onAction(BowlerFormUiAction.ArchiveClicked) },
 					colors = ButtonDefaults.buttonColors(containerColor = colorResource(RCoreDesign.color.destructive)),
 					modifier = Modifier
 						.fillMaxWidth()

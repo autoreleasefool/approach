@@ -3,10 +3,11 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreate
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -29,11 +30,11 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.getOpponentsList()
 
 	override suspend fun insertBowler(bowler: BowlerCreate) = withContext(ioDispatcher) {
-		bowlerDao.insertBowler(bowler)
+		bowlerDao.insertBowler(bowler.asEntity())
 	}
 
 	override suspend fun updateBowler(bowler: BowlerUpdate) = withContext(ioDispatcher) {
-		bowlerDao.updateBowler(bowler)
+		bowlerDao.updateBowler(bowler.asEntity())
 	}
 
 	override suspend fun archiveBowler(id: UUID, archivedOn: Instant) = withContext(ioDispatcher) {

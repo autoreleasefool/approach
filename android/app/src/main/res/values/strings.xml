@@ -58,14 +58,6 @@
 	<string name="bowler_details_preferred_gear_title">Preferred Gear</string>
 	<string name="bowler_details_preferred_gear_description">Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.</string>
 
-	<string name="bowler_form_new_bowler">New Bowler</string>
-	<string name="bowler_form_new_opponent">New Opponent</string>
-	<string name="bowler_form_edit">Edit %1$s</string>
-	<string name="bowler_form_section_details">Details</string>
-	<string name="bowler_form_name">Name</string>
-	<string name="bowler_form_name_missing">Name cannot be blank</string>
-	<string name="bowler_form_archive">Archive Bowler</string>
-
 	<string name="league_list_title">Leagues</string>
 	<string name="league_list_add">Add League</string>
 	<string name="league_list_item_series_missing">No games yet</string>

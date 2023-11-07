@@ -38,7 +38,6 @@ fun NavGraphBuilder.bowlerFormScreen(
 		),
 	) {
 		BowlerFormRoute(
-			onBackPressed = onBackPressed,
 			onDismiss = onBackPressed,
 		)
 	}
@@ -50,7 +49,6 @@ fun NavGraphBuilder.bowlerFormScreen(
 	) {
 		BowlerFormRoute(
 			onDismiss = onBackPressed,
-			onBackPressed = onBackPressed,
 		)
 	}
 }
