@@ -7,7 +7,9 @@ import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.ui.randomPastel
 import ca.josephroque.bowlingcompanion.core.model.ui.toComposeColor
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.AVATAR_VALUE
+import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiAction
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiState
+import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiAction
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,89 +20,117 @@ import javax.inject.Inject
 class AvatarFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 ): ViewModel() {
-	private val _uiState: MutableStateFlow<AvatarFormUiState> = MutableStateFlow(AvatarFormUiState.Loading)
+	private val _uiState: MutableStateFlow<AvatarFormScreenUiState> =
+		MutableStateFlow(AvatarFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
-	private val _events: MutableStateFlow<AvatarFormEvent?> = MutableStateFlow(null)
+	private val _events: MutableStateFlow<AvatarFormScreenEvent?> = MutableStateFlow(null)
 	val events = _events.asStateFlow()
 
 	private val existingAvatar = savedStateHandle.get<String>(AVATAR_VALUE)?.let {
 		Avatar.fromString(it)
 	} ?: Avatar.default()
 
-	fun loadAvatar() {
-		_uiState.value = AvatarFormUiState.Success(
-			avatar = existingAvatar,
-			colorPickerState = ColorPickerUiState.Hidden,
+	private fun getFormUiState(): AvatarFormUiState? {
+		return when (val state = _uiState.value) {
+			AvatarFormScreenUiState.Loading -> null
+			is AvatarFormScreenUiState.Loaded -> state.form
+		}
+	}
+
+	private fun setFormUiState(state: AvatarFormUiState) {
+		when (val uiState = _uiState.value) {
+			AvatarFormScreenUiState.Loading -> Unit
+			is AvatarFormScreenUiState.Loaded -> _uiState.value = uiState.copy(form = state)
+		}
+	}
+
+	fun handleAction(action: AvatarFormScreenUiAction) {
+		when (action) {
+			AvatarFormScreenUiAction.LoadAvatar -> loadAvatar()
+			is AvatarFormScreenUiAction.AvatarFormAction -> handleAvatarFormAction(action.action)
+		}
+	}
+
+	private fun handleAvatarFormAction(action: AvatarFormUiAction) {
+		when (action) {
+			AvatarFormUiAction.BackClicked -> _events.value = AvatarFormScreenEvent.Dismissed(existingAvatar)
+			AvatarFormUiAction.DoneClicked -> saveAvatar()
+			is AvatarFormUiAction.PrimaryColorClicked -> onPrimaryColorClicked()
+			is AvatarFormUiAction.SecondaryColorClicked -> onSecondaryColorClicked()
+			is AvatarFormUiAction.RandomizeColorsClicked -> onRandomizeColorsClicked()
+			is AvatarFormUiAction.LabelChanged -> onLabelChanged(action.label)
+			is AvatarFormUiAction.ColorPickerAction -> handleColorPickerAction(action.event)
+		}
+	}
+
+	private fun handleColorPickerAction(action: ColorPickerUiAction) {
+		when (action) {
+			is ColorPickerUiAction.ColorChanged -> onColorChanged(action.color)
+		}
+	}
+
+	private fun loadAvatar() {
+		_uiState.value = AvatarFormScreenUiState.Loaded(
+			form = AvatarFormUiState(
+				avatar = existingAvatar,
+				colorPickerState = ColorPickerUiState.Hidden,
+			),
 		)
 	}
 
-	fun saveAvatar() {
+	private fun saveAvatar() {
 		when (val state = _uiState.value) {
-			AvatarFormUiState.Loading -> {
-				_events.value = AvatarFormEvent.Dismissed(existingAvatar)
-			}
-			is AvatarFormUiState.Success -> {
-				_events.value = AvatarFormEvent.Dismissed(state.avatar)
-			}
+			AvatarFormScreenUiState.Loading -> _events.value = AvatarFormScreenEvent.Dismissed(existingAvatar)
+			is AvatarFormScreenUiState.Loaded -> _events.value = AvatarFormScreenEvent.Dismissed(state.form.avatar)
 		}
 	}
 
-	fun onColorChanged(color: Color) {
-		when (val state = _uiState.value) {
-			AvatarFormUiState.Loading -> Unit
-			is AvatarFormUiState.Success -> _uiState.value = state.copy(
-				avatar = when (state.colorPickerState) {
-					is ColorPickerUiState.Primary -> state.avatar.copy(primaryColor = color.toRGB())
-					is ColorPickerUiState.Secondary -> state.avatar.copy(secondaryColor = color.toRGB())
-					ColorPickerUiState.Hidden -> state.avatar
-				},
-				colorPickerState = ColorPickerUiState.Hidden,
-			)
-		}
+	private fun onColorChanged(color: Color) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			avatar = when (state.colorPickerState) {
+				is ColorPickerUiState.Primary -> state.avatar.copy(primaryColor = color.toRGB())
+				is ColorPickerUiState.Secondary -> state.avatar.copy(secondaryColor = color.toRGB())
+				ColorPickerUiState.Hidden -> state.avatar
+			},
+			colorPickerState = ColorPickerUiState.Hidden,
+		))
 	}
 
-	fun onPrimaryColorClicked() {
-		when (val state = _uiState.value) {
-			AvatarFormUiState.Loading -> Unit
-			is AvatarFormUiState.Success -> _uiState.value = state.copy(
-				colorPickerState = ColorPickerUiState.Primary(
-					initialColor = state.avatar.primaryColor.toComposeColor(),
-				),
-			)
-		}
+	private fun onPrimaryColorClicked() {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			colorPickerState = ColorPickerUiState.Primary(
+				initialColor = state.avatar.primaryColor.toComposeColor(),
+			),
+		))
 	}
 
-	fun onSecondaryColorClicked() {
-		when (val state = _uiState.value) {
-			AvatarFormUiState.Loading -> Unit
-			is AvatarFormUiState.Success -> _uiState.value = state.copy(
-				colorPickerState = ColorPickerUiState.Secondary(
-					initialColor = state.avatar.secondaryColor.toComposeColor(),
-				),
-			)
-		}
+	private fun onSecondaryColorClicked() {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			colorPickerState = ColorPickerUiState.Secondary(
+				initialColor = state.avatar.secondaryColor.toComposeColor(),
+			),
+		))
 	}
 
-	fun onRandomizeColorsClicked() {
-		when (val state = _uiState.value) {
-			AvatarFormUiState.Loading -> Unit
-			is AvatarFormUiState.Success -> _uiState.value = state.copy(
-				avatar = state.avatar.copy(
-					primaryColor = Avatar.RGB.randomPastel(),
-					secondaryColor = Avatar.RGB.randomPastel(),
-				),
-			)
-		}
+	private fun onRandomizeColorsClicked() {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			avatar = state.avatar.copy(
+				primaryColor = Avatar.RGB.randomPastel(),
+				secondaryColor = Avatar.RGB.randomPastel(),
+			),
+		))
 	}
 
-	fun onLabelChanged(label: String) {
-		when (val state = _uiState.value) {
-			AvatarFormUiState.Loading -> Unit
-			is AvatarFormUiState.Success -> _uiState.value = state.copy(
-				avatar = state.avatar.copy(label = label),
-			)
-		}
+	private fun onLabelChanged(label: String) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			avatar = state.avatar.copy(label = label),
+		))
 	}
 }
 
@@ -109,7 +139,3 @@ private fun Color.toRGB(): Avatar.RGB = Avatar.RGB(
 	green = (green * 255).toInt(),
 	blue = (blue * 255).toInt(),
 )
-
-sealed interface AvatarFormEvent {
-	data class Dismissed(val avatar: Avatar): AvatarFormEvent
-}

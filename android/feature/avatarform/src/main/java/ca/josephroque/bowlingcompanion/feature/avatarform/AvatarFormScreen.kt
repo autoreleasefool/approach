@@ -6,74 +6,67 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.LoadingState
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarForm
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormTopBar
+import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiAction
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiState
 
 @Composable
 internal fun AvatarFormRoute(
-	onBackPressed: () -> Unit,
 	onDismissWithResult: (Avatar) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: AvatarFormViewModel = hiltViewModel(),
 ) {
-	val avatarFormState = viewModel.uiState.collectAsState().value
-	val avatarFormEvent = viewModel.events.collectAsState().value
+	val avatarFormScreenState = viewModel.uiState.collectAsState().value
 
-	LaunchedEffect(avatarFormEvent) {
-		when (avatarFormEvent) {
-			is AvatarFormEvent.Dismissed -> onDismissWithResult(avatarFormEvent.avatar)
-			null -> Unit
-		}
-	}
-
-	LaunchedEffect(Unit) {
-		viewModel.loadAvatar()
+	when (val avatarFormScreenEvent = viewModel.events.collectAsState().value) {
+		is AvatarFormScreenEvent.Dismissed -> onDismissWithResult(avatarFormScreenEvent.result)
+		else -> Unit
 	}
 
 	AvatarFormScreen(
-		avatarFormState = avatarFormState,
-		onBackPressed = onBackPressed,
-		onColorChanged = viewModel::onColorChanged,
-		onSaveAvatar = viewModel::saveAvatar,
-		onPrimaryColorClicked = viewModel::onPrimaryColorClicked,
-		onSecondaryColorClicked = viewModel::onSecondaryColorClicked,
-		onRandomizeColorsClicked = viewModel::onRandomizeColorsClicked,
-		onLabelChanged = viewModel::onLabelChanged,
+		state = avatarFormScreenState,
+		onAction = viewModel::handleAction,
 		modifier = modifier,
 	)
 }
 
 @Composable
 private fun AvatarFormScreen(
-	avatarFormState: AvatarFormUiState,
-	onBackPressed: () -> Unit,
-	onSaveAvatar: () -> Unit,
-	onColorChanged: (Color) -> Unit,
-	onPrimaryColorClicked: () -> Unit,
-	onSecondaryColorClicked: () -> Unit,
-	onRandomizeColorsClicked: () -> Unit,
-	onLabelChanged: (String) -> Unit,
+	state: AvatarFormScreenUiState,
+	onAction: (AvatarFormScreenUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	LaunchedEffect(Unit) {
+		onAction(AvatarFormScreenUiAction.LoadAvatar)
+	}
+
+	when (state) {
+		AvatarFormScreenUiState.Loading -> LoadingState()
+		is AvatarFormScreenUiState.Loaded ->
+			AvatarFormScreen(
+				state = state.form,
+				onAction = { onAction(AvatarFormScreenUiAction.AvatarFormAction(it)) },
+				modifier = modifier,
+			)
+	}
+}
+
+@Composable
+private fun AvatarFormScreen(
+	state: AvatarFormUiState,
+	onAction: (AvatarFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Scaffold(
-		topBar = {
-			AvatarFormTopBar(
-				onBackPressed = onBackPressed,
-				saveAvatar = onSaveAvatar,
-			)
-		},
+		topBar = { AvatarFormTopBar(onAction = onAction) },
 	) { padding ->
 		AvatarForm(
-			state = avatarFormState,
-			onColorChanged = onColorChanged,
-			onPrimaryColorClicked = onPrimaryColorClicked,
-			onSecondaryColorClicked = onSecondaryColorClicked,
-			onRandomizeColorsClicked = onRandomizeColorsClicked,
-			onLabelChanged = onLabelChanged,
+			state = state,
+			onAction = onAction,
 			modifier = modifier.padding(padding),
 		)
 	}

@@ -13,8 +13,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AvatarFormTopBar(
-	onBackPressed: () -> Unit,
-	saveAvatar: () -> Unit,
+	onAction: (AvatarFormUiAction) -> Unit,
 ) {
 	TopAppBar(
 		title = {
@@ -23,9 +22,9 @@ fun AvatarFormTopBar(
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},
-		navigationIcon = { BackButton(onClick = onBackPressed) },
+		navigationIcon = { BackButton(onClick = { onAction(AvatarFormUiAction.BackClicked) }) },
 		actions = {
-			TextButton(onClick = saveAvatar) {
+			TextButton(onClick = { onAction(AvatarFormUiAction.DoneClicked) }) {
 				Text(
 					text = stringResource(RCoreDesign.string.action_save),
 					style = MaterialTheme.typography.bodyMedium,

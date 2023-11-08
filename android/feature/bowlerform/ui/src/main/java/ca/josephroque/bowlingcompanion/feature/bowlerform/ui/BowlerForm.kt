@@ -54,17 +54,17 @@ fun BowlerForm(
 				onDoneClicked = { onAction(BowlerFormUiAction.DoneClicked) },
 				modifier = Modifier.padding(horizontal = 16.dp),
 			)
+		}
 
-			if (state.isArchiveButtonEnabled) {
-				Button(
-					onClick = { onAction(BowlerFormUiAction.ArchiveClicked) },
-					colors = ButtonDefaults.buttonColors(containerColor = colorResource(RCoreDesign.color.destructive)),
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(horizontal = 16.dp, vertical = 8.dp),
-				) {
-					Text(text = stringResource(R.string.bowler_form_archive))
-				}
+		if (state.isArchiveButtonEnabled) {
+			Button(
+				onClick = { onAction(BowlerFormUiAction.ArchiveClicked) },
+				colors = ButtonDefaults.buttonColors(containerColor = colorResource(RCoreDesign.color.destructive)),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(horizontal = 16.dp, vertical = 8.dp),
+			) {
+				Text(text = stringResource(R.string.bowler_form_archive))
 			}
 		}
 	}

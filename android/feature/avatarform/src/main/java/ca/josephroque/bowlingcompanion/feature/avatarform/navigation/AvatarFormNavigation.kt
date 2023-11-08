@@ -23,7 +23,6 @@ fun NavController.navigateToAvatarFormForResult(
 }
 
 fun NavGraphBuilder.avatarFormScreen(
-	onBackPressed: () -> Unit,
 	onDismissWithResult: (Avatar?) -> Unit,
 ) {
 	composable(
@@ -33,7 +32,6 @@ fun NavGraphBuilder.avatarFormScreen(
 		),
 	) {
 		AvatarFormRoute(
-			onBackPressed = onBackPressed,
 			onDismissWithResult = onDismissWithResult,
 		)
 	}

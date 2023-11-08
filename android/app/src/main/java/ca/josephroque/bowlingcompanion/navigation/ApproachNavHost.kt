@@ -146,7 +146,6 @@ fun ApproachNavHost(
 			onAddGear = { /* TODO: onAddGear */ },
 		)
 		avatarFormScreen(
-			onBackPressed = navController::popBackStack,
 			onDismissWithResult = { avatar ->
 				navController.popBackStackWithResult(avatar)
 			}

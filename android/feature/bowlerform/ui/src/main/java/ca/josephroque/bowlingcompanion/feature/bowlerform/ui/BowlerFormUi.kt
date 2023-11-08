@@ -1,10 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform.ui
 
+import androidx.annotation.StringRes
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 
 data class BowlerFormUiState(
 	val name: String,
-	val nameErrorId: Int?,
+	@StringRes val nameErrorId: Int?,
 	val isShowingArchiveDialog: Boolean,
 	val isArchiveButtonEnabled: Boolean,
 )
@@ -12,6 +13,7 @@ data class BowlerFormUiState(
 sealed interface BowlerFormUiAction {
 	data object BackClicked: BowlerFormUiAction
 	data object DoneClicked: BowlerFormUiAction
+
 	data object ArchiveClicked: BowlerFormUiAction
 	data object ConfirmArchiveClicked: BowlerFormUiAction
 	data object DismissArchiveClicked: BowlerFormUiAction
