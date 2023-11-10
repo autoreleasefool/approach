@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.navigateToA
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.analyticsSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.analytics.navigation.navigateToAnalyticsSettings
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
+import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.navigateToAvatarFormForResult
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigateToBowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
@@ -36,6 +37,8 @@ import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.opponentsListScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.bowlerPickerScreen
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
@@ -146,15 +149,16 @@ fun ApproachNavHost(
 			onAddGear = { /* TODO: onAddGear */ },
 		)
 		avatarFormScreen(
-			onDismissWithResult = { avatar ->
-				navController.popBackStackWithResult(avatar)
-			}
+			onDismissWithResult = navController::popBackStackWithResult,
 		)
 		laneFormScreen(
 			onBackPressed = navController::popBackStack,
 		)
 		gamesEditorScreen(
 			onBackPressed = navController::popBackStack,
+		)
+		bowlerPickerScreen(
+			onDismissWithResult = navController::popBackStackWithResult,
 		)
 	}
 }

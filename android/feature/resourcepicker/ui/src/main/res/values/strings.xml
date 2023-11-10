@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="resource_picker_empty_title">No items found</string>
+	<string name="resource_picker_empty_message">You haven\'t created any yet.</string>
+	<string name="resource_picker_empty_action">Back</string>
+
+	<plurals name="bowler_picker_title">
+		<item quantity="one">Select Bowler</item>
+		<item quantity="other">Select Bowlers</item>
+	</plurals>
+
+	<string name="cd_resource_selected">Selected</string>
+	<string name="cd_resource_deselected">Not Selected</string>
+</resources>

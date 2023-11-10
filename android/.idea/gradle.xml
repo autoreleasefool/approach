@@ -56,6 +56,8 @@
             <option value="$PROJECT_DIR$/feature/gameseditor/ui" />
             <option value="$PROJECT_DIR$/feature/gearlist" />
             <option value="$PROJECT_DIR$/feature/gearlist/ui" />
+            <option value="$PROJECT_DIR$/feature/resourcepicker" />
+            <option value="$PROJECT_DIR$/feature/resourcepicker/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
           </set>
         </option>
