@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.common.utils
+package ca.josephroque.bowlingcompanion.core.model.ui.utils
 
 import java.text.DecimalFormat
 

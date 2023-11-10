@@ -10,9 +10,10 @@ import kotlinx.datetime.Instant
 import java.util.UUID
 
 interface BowlersRepository {
-	fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
 	fun getBowlersList(): Flow<List<BowlerListItem>>
 	fun getOpponentsList(): Flow<List<OpponentListItem>>
+
+	fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
 
 	suspend fun insertBowler(bowler: BowlerCreate)
 	suspend fun updateBowler(bowler: BowlerUpdate)
