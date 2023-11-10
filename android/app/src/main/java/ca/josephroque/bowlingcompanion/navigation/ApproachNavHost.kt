@@ -23,6 +23,9 @@ import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToB
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToNewBowlerForm
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
+import ca.josephroque.bowlingcompanion.feature.gearform.navigation.gearFormScreen
+import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToGearForm
+import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToNewGearForm
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.gearListScreen
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.navigateToGearList
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
@@ -76,7 +79,7 @@ fun ApproachNavHost(
 		statisticsScreen()
 		accessoriesScreen(
 			onAddAlley = navController::navigateToNewAlleyForm,
-			onAddGear = { /* TODO: onAddGear */ },
+			onAddGear = navController::navigateToNewGearForm,
 			onViewAllAlleys = navController::navigateToAlleysList,
 			onViewAllGear = navController::navigateToGearList,
 			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
@@ -145,8 +148,8 @@ fun ApproachNavHost(
 		)
 		gearListScreen(
 			onBackPressed = navController::popBackStack,
-			onEditGear = { /* TODO: onEditGear */ },
-			onAddGear = { /* TODO: onAddGear */ },
+			onEditGear = navController::navigateToGearForm,
+			onAddGear = navController::navigateToNewGearForm,
 		)
 		avatarFormScreen(
 			onDismissWithResult = navController::popBackStackWithResult,
@@ -159,6 +162,17 @@ fun ApproachNavHost(
 		)
 		bowlerPickerScreen(
 			onDismissWithResult = navController::popBackStackWithResult,
+		)
+		gearFormScreen(
+			onBackPressed = navController::popBackStack,
+			onEditAvatar = navController::navigateToAvatarFormForResult,
+			onEditOwner = { owner, result ->
+				navController.navigateToBowlerPickerForResult(
+					selectedIds = owner?.let { setOf(it) } ?: emptySet(),
+					limit = 1,
+					navResultCallback = result,
+				)
+			}
 		)
 	}
 }

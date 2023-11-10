@@ -65,6 +65,7 @@ dependencies {
 	implementation(project(":feature:gameseditor"))
 	implementation(project(":feature:gearlist"))
 	implementation(project(":feature:gearlist:ui"))
+	implementation(project(":feature:gearform"))
 	implementation(project(":feature:resourcepicker"))
 	implementation(project(":feature:statisticswidget"))
 

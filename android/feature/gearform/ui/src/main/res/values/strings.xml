@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="gear_form_new_title">New Gear</string>
+	<string name="gear_form_edit_title">Edit %$1s</string>
+
+	<string name="gear_form_section_details">Details</string>
+	<string name="gear_form_name">Label</string>
+	<string name="gear_form_name_missing">Label cannot be blank</string>
+
+	<string name="gear_form_section_avatar">Avatar</string>
+	<string name="gear_form_section_avatar_description">Create a unique avatar so you can quickly and easily recognize this item in the app.</string>
+
+	<string name="gear_form_section_owner">Owner</string>
+	<string name="gear_form_owner_none">No owner</string>
+
+	<string name="gear_form_archive">Archive Gear</string>
+</resources>

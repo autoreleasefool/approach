@@ -54,6 +54,8 @@
             <option value="$PROJECT_DIR$/feature/bowlerslist/ui" />
             <option value="$PROJECT_DIR$/feature/gameseditor" />
             <option value="$PROJECT_DIR$/feature/gameseditor/ui" />
+            <option value="$PROJECT_DIR$/feature/gearform" />
+            <option value="$PROJECT_DIR$/feature/gearform/ui" />
             <option value="$PROJECT_DIR$/feature/gearlist" />
             <option value="$PROJECT_DIR$/feature/gearlist/ui" />
             <option value="$PROJECT_DIR$/feature/resourcepicker" />
