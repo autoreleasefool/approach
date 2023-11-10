@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform.ui
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,10 +51,7 @@ private fun Actions(
 		text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 		style = MaterialTheme.typography.bodyMedium,
 		modifier = Modifier
-			.clickable(onClick = {
-				Log.d("Joseph", "Saved")
-				onAction(BowlerFormUiAction.DoneClicked)
-			})
+			.clickable(onClick = { onAction(BowlerFormUiAction.DoneClicked) })
 			.padding(16.dp),
 	)
 }

@@ -11,8 +11,8 @@ import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.avatarform.AvatarFormRoute
 
-const val AVATAR_VALUE = "avatar"
-const val avatarFormNavigationRoute = "edit_avatar/${AVATAR_VALUE}"
+const val AVATAR_VALUE = "avatardef"
+const val avatarFormNavigationRoute = "edit_avatar/{$AVATAR_VALUE}"
 
 fun NavController.navigateToAvatarFormForResult(
 	avatar: Avatar,

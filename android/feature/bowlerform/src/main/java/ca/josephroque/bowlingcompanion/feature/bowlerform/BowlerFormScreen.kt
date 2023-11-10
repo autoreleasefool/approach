@@ -24,7 +24,7 @@ internal fun BowlerFormRoute(
 
 	when (viewModel.events.collectAsState().value) {
 		BowlerFormScreenEvent.Dismissed -> onDismiss()
-		else -> Unit
+		null -> Unit
 	}
 
 	BowlerFormScreen(

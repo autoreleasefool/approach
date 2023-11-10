@@ -34,7 +34,7 @@ fun FormSection(
 		titleResourceId?.let {
 			Row(
 				horizontalArrangement = Arrangement.spacedBy(8.dp),
-				modifier = modifier
+				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp, vertical = 8.dp),
 			) {
@@ -50,7 +50,7 @@ fun FormSection(
 					Text(
 						text = stringResource(it.actionResourceId),
 						style = MaterialTheme.typography.bodyMedium,
-						modifier = modifier
+						modifier = Modifier
 							.clickable(onClick = it.onClick)
 							.padding(8.dp)
 							.alignBy(LastBaseline),

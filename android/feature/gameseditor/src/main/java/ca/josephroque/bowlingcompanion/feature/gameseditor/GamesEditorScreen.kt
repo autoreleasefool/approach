@@ -39,16 +39,13 @@ internal fun GamesEditorRoute(
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
-	val gamesEditorState by viewModel.gamesEditorState.collectAsStateWithLifecycle()
 	val frameEditorState by viewModel.frameEditorState.collectAsStateWithLifecycle()
 	val rollEditorState by viewModel.rollEditorState.collectAsStateWithLifecycle()
 	val scoreSheetState by viewModel.scoreSheetState.collectAsStateWithLifecycle()
 	val gameDetailsState by viewModel.gameDetailsState.collectAsStateWithLifecycle()
 
-	LaunchedEffect(gamesEditorState.didLoadInitialGame) {
-		if (!gamesEditorState.didLoadInitialGame) {
-			viewModel.loadGame()
-		}
+	LaunchedEffect(Unit) {
+		viewModel.loadGame()
 	}
 
 	GamesEditorScreen(

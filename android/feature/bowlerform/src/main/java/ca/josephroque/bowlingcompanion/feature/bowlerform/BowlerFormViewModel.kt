@@ -62,13 +62,12 @@ class BowlerFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun getFormUiState(): BowlerFormUiState? {
-		return when (val state = _uiState.value) {
+	private fun getFormUiState(): BowlerFormUiState? =
+		when (val state = _uiState.value) {
 			BowlerFormScreenUiState.Loading -> null
 			is BowlerFormScreenUiState.Create -> state.form
 			is BowlerFormScreenUiState.Edit -> state.form
 		}
-	}
 
 	private fun setFormUiState(state: BowlerFormUiState) {
 		when (val uiState = _uiState.value) {
