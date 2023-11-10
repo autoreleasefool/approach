@@ -29,3 +29,26 @@ fun ArchiveDialog(
 		}
 	)
 }
+
+@Composable
+fun DeleteDialog(
+	itemName: String,
+	onDelete: () -> Unit,
+	onDismiss: () -> Unit,
+) {
+	AlertDialog(
+		onDismissRequest = onDismiss,
+		title = { Text(text = stringResource(R.string.delete_dialog_title, itemName)) },
+		text = { Text(text = stringResource(R.string.delete_dialog_message)) },
+		confirmButton = {
+			TextButton(onClick = onDelete) {
+				Text(text = stringResource(R.string.action_delete))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = onDismiss) {
+				Text(text = stringResource(R.string.action_cancel))
+			}
+		}
+	)
+}
