@@ -11,14 +11,6 @@ data class GearListItem(
 	val avatar: Avatar,
 ): SortableByUUID
 
-data class GearProperties(
-	val id: UUID,
-	val name: String,
-	val kind: GearKind,
-	val ownerName: String?,
-	val avatar: Avatar,
-)
-
 data class GearCreate(
 	val id: UUID,
 	val name: String,
@@ -30,8 +22,9 @@ data class GearCreate(
 data class GearUpdate(
 	val id: UUID,
 	val name: String,
+	val kind: GearKind,
+	val avatar: Avatar,
 	val ownerId: UUID?,
-	val ownerName: String?,
 )
 
 enum class GearKind {

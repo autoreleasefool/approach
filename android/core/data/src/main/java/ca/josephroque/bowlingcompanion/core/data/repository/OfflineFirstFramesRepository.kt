@@ -4,7 +4,6 @@ import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEditEntity
 import ca.josephroque.bowlingcompanion.core.database.model.ScoreableFrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
-import ca.josephroque.bowlingcompanion.core.database.model.asModel
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
 import kotlinx.coroutines.flow.Flow

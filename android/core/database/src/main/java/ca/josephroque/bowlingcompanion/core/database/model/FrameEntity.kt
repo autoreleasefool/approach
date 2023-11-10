@@ -5,7 +5,6 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.Pin
@@ -85,18 +84,6 @@ data class FrameEntity(
 			}
 		}
 	}
-
-	data class IndexedRoll(
-		val index: Int,
-		val roll: Roll,
-	)
-
-	val rolls: List<IndexedRoll>
-		get() = listOfNotNull(
-			roll0?.let { IndexedRoll(0, it) },
-			roll1?.let { IndexedRoll(1, it) },
-			roll2?.let { IndexedRoll(2, it) },
-		)
 }
 
 fun FrameEdit.asEntity(): FrameEntity = FrameEntity(
@@ -122,47 +109,47 @@ data class FrameEditEntity(
 		val roll0: FrameEntity.Roll?,
 		val roll1: FrameEntity.Roll?,
 		val roll2: FrameEntity.Roll?,
-	)
+	) {
+		fun asModel(): FrameEdit.Properties = FrameEdit.Properties(
+			gameId = this.gameId,
+			index = this.index,
+		)
+	}
 
 	data class Gear(
 		val id: UUID,
 		val name: String,
 		val kind: GearKind,
+	) {
+		fun asModel(): FrameEdit.Gear = FrameEdit.Gear(
+			id = this.id,
+			name = this.name,
+			kind = this.kind,
+		)
+	}
+
+	fun asModel(): FrameEdit = FrameEdit(
+		properties = this.properties.asModel(),
+		rolls = listOfNotNull(
+			this.properties.roll0?.let { FrameEdit.Roll(0, it.pinsDowned, it.didFoul, this.ball0?.asModel()) },
+			this.properties.roll1?.let { FrameEdit.Roll(1, it.pinsDowned, it.didFoul, this.ball1?.asModel()) },
+			this.properties.roll2?.let { FrameEdit.Roll(2, it.pinsDowned, it.didFoul, this.ball2?.asModel()) },
+		)
 	)
 }
-
-fun FrameEditEntity.asModel(): FrameEdit = FrameEdit(
-	properties = this.properties.asModel(),
-	rolls = listOfNotNull(
-		this.properties.roll0?.let { FrameEdit.Roll(0, it.pinsDowned, it.didFoul, this.ball0?.asModel()) },
-		this.properties.roll1?.let { FrameEdit.Roll(1, it.pinsDowned, it.didFoul, this.ball1?.asModel()) },
-		this.properties.roll2?.let { FrameEdit.Roll(2, it.pinsDowned, it.didFoul, this.ball2?.asModel()) },
-	)
-)
-
-fun FrameEditEntity.Properties.asModel(): FrameEdit.Properties = FrameEdit.Properties(
-	gameId = this.gameId,
-	index = this.index,
-)
-
-fun FrameEditEntity.Gear.asModel(): FrameEdit.Gear = FrameEdit.Gear(
-	id = this.id,
-	name = this.name,
-	kind = this.kind,
-)
 
 data class ScoreableFrameEntity(
 	val index: Int,
 	val roll0: FrameEntity.Roll?,
 	val roll1: FrameEntity.Roll?,
 	val roll2: FrameEntity.Roll?,
-)
-
-fun ScoreableFrameEntity.asModel(): ScoreableFrame = ScoreableFrame(
-	index = this.index,
-	rolls = listOfNotNull(
-		this.roll0?.let { ScoreableFrame.Roll(0, it.pinsDowned, it.didFoul) },
-		this.roll1?.let { ScoreableFrame.Roll(1, it.pinsDowned, it.didFoul) },
-		this.roll2?.let { ScoreableFrame.Roll(2, it.pinsDowned, it.didFoul) },
+) {
+	fun asModel(): ScoreableFrame = ScoreableFrame(
+		index = this.index,
+		rolls = listOfNotNull(
+			this.roll0?.let { ScoreableFrame.Roll(0, it.pinsDowned, it.didFoul) },
+			this.roll1?.let { ScoreableFrame.Roll(1, it.pinsDowned, it.didFoul) },
+			this.roll2?.let { ScoreableFrame.Roll(2, it.pinsDowned, it.didFoul) },
+		)
 	)
-)
+}

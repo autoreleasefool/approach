@@ -50,6 +50,19 @@ abstract class GearDao {
 	)
 	abstract fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
+	@Query(
+		"""
+			SELECT
+				gear.id AS id,
+				gear.name AS name,
+				gear.kind AS kind,
+				gear.avatar AS avatar,
+				gear.owner_id AS ownerId
+			FROM gear WHERE gear.id = :id
+		"""
+	)
+	abstract fun getGearUpdate(id: UUID): Flow<GearUpdateEntity>
+
 	@Insert(entity = GearEntity::class)
 	abstract fun insertGear(gear: GearCreateEntity)
 

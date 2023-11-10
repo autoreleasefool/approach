@@ -12,6 +12,8 @@ interface GearRepository {
 	fun getRecentlyUsedGear(limit: Int): Flow<List<GearListItem>>
 	fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
+	fun getGearUpdate(id: UUID): Flow<GearUpdate>
+
 	suspend fun insertGear(gear: GearCreate)
 	suspend fun updateGear(gear: GearUpdate)
 	suspend fun deleteGear(id: UUID)

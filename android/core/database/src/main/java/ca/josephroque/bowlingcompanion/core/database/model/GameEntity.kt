@@ -40,11 +40,11 @@ data class GameEditEntity(
 	@Embedded(prefix = "series_") val series: GameEdit.Series,
 	@Embedded(prefix = "league_") val league: GameEdit.League,
 	@Embedded(prefix = "bowler_") val bowler: GameEdit.Bowler,
-)
-
-fun GameEditEntity.asModel(): GameEdit = GameEdit(
-	properties = this.properties,
-	series = this.series,
-	league = this.league,
-	bowler = this.bowler
-)
+) {
+	fun asModel(): GameEdit = GameEdit(
+		properties = this.properties,
+		series = this.series,
+		league = this.league,
+		bowler = this.bowler
+	)
+}
