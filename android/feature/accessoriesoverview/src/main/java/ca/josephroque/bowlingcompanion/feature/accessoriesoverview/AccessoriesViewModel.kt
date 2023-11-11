@@ -37,13 +37,14 @@ class AccessoriesViewModel @Inject constructor(
 				initialValue = AlleysListUiState.Loading,
 			)
 
-	val gearListState: StateFlow<GearListUiState> =
+	// TODO: Refactor to AccessoriesScreenUiState, remove optional
+	val gearListState: StateFlow<GearListUiState?> =
 		gearRepository.getRecentlyUsedGear(limit = gearListItemLimit)
-			.map(GearListUiState::Success)
+			.map { GearListUiState(it, gearToDelete = null) }
 			.stateIn(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(5_000),
-				initialValue = GearListUiState.Loading,
+				initialValue = null,
 			)
 
 	fun expandAccessoryMenu() {

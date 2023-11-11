@@ -55,7 +55,7 @@ internal fun AccessoriesRoute(
 internal fun AccessoriesScreen(
 	accessoriesState: AccessoriesUiState,
 	alleysListState: AlleysListUiState,
-	gearListState: GearListUiState,
+	gearListState: GearListUiState?,
 	onAddAccessory: () -> Unit,
 	onMinimizeAddAccessoryMenu: () -> Unit,
 	onAddAlley: () -> Unit,

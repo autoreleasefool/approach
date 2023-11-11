@@ -19,7 +19,7 @@ fun Accessories(
 	modifier: Modifier = Modifier,
 	accessoriesState: AccessoriesUiState,
 	alleysListState: AlleysListUiState,
-	gearListState: GearListUiState,
+	gearListState: GearListUiState?,
 	onViewAllAlleys: () -> Unit,
 	onViewAllGear: () -> Unit,
 	onShowAlleyDetails: (UUID) -> Unit,
@@ -60,20 +60,17 @@ fun Accessories(
 			)
 		)
 
-		when (gearListState) {
-			GearListUiState.Loading -> Unit
-			is GearListUiState.Success -> {
-				gearList(
-					list = gearListState.list,
-					onGearClick = onShowGearDetails,
-				)
+		if (gearListState != null) {
+			gearList(
+				list = gearListState.list,
+				onGearClick = onShowGearDetails,
+			)
 
-				item {
-					if (gearListState.list.size > accessoriesState.gearItemLimit) {
-						ListSectionFooter(
-							footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.gearItemLimit)
-						)
-					}
+			item {
+				if (gearListState.list.size > accessoriesState.gearItemLimit) {
+					ListSectionFooter(
+						footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.gearItemLimit)
+					)
 				}
 			}
 		}

@@ -45,13 +45,14 @@ class BowlerDetailsViewModel @Inject constructor(
 				initialValue = LeaguesListUiState.Loading,
 			)
 
-	val gearListState: StateFlow<GearListUiState> =
+	// TODO: Refactor to BowlerDetailsScreenUiState, remove optional
+	val gearListState: StateFlow<GearListUiState?> =
 		gearRepository.getBowlerPreferredGear(bowlerId)
-			.map(GearListUiState::Success)
+			.map { GearListUiState(it, gearToDelete = null) }
 			.stateIn(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(5_000),
-				initialValue = GearListUiState.Loading,
+				initialValue = null,
 			)
 
 	fun navigateToLeague(id: UUID) {

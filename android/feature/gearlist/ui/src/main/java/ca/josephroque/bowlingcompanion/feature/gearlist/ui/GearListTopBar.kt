@@ -4,15 +4,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
-import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -28,12 +25,8 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.components.filterDesc
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GearListTopBar(
-	state: GearListTopBarState,
-	onBackPressed: () -> Unit,
-	onShowGearFilter: () -> Unit,
-	onMinimizeGearFilter: () -> Unit,
-	onGearFilterChanged: (GearKind?) -> Unit,
-	onAddGear: () -> Unit,
+	state: GearListTopBarUiState,
+	onAction: (GearListUiAction) -> Unit,
 ) {
 	TopAppBar(
 		colors = TopAppBarDefaults.topAppBarColors(),
@@ -45,16 +38,16 @@ fun GearListTopBar(
 				overflow = TextOverflow.Ellipsis,
 			)
 		},
-		navigationIcon = { BackButton(onClick = onBackPressed) },
+		navigationIcon = { BackButton(onClick = { onAction(GearListUiAction.BackClicked) }) },
 		actions = {
 			FilterMenuItem(
 				state = state,
-				onShowGearFilter = onShowGearFilter,
-				onMinimizeGearFilter = onMinimizeGearFilter,
-				onGearFilterChanged = onGearFilterChanged,
+				onShowGearFilter = { onAction(GearListUiAction.FilterMenuClicked) },
+				onMinimizeGearFilter = { onAction(GearListUiAction.FilterMenuDismissed) },
+				onGearFilterChanged = { onAction(GearListUiAction.FilterClicked(it)) },
 			)
 
-			IconButton(onClick = onAddGear) {
+			IconButton(onClick = { onAction(GearListUiAction.AddGearClicked) }) {
 				Icon(
 					imageVector = Icons.Filled.Add,
 					contentDescription = stringResource(R.string.gear_list_add),
@@ -67,7 +60,7 @@ fun GearListTopBar(
 
 @Composable
 private fun FilterMenuItem(
-	state: GearListTopBarState,
+	state: GearListTopBarUiState,
 	onShowGearFilter: () -> Unit,
 	onMinimizeGearFilter: () -> Unit,
 	onGearFilterChanged: (GearKind?) -> Unit,
@@ -126,8 +119,3 @@ private fun FilterMenuItem(
 		}
 	}
 }
-
-data class GearListTopBarState(
-	val kindFilter: GearKind? = null,
-	val isFilterMenuVisible: Boolean = false,
-)

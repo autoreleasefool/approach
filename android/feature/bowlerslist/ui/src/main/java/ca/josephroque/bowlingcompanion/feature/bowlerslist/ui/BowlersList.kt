@@ -116,7 +116,6 @@ fun LazyListScope.bowlersList(
 				name = bowler.name,
 				average = bowler.average,
 				onClick = { onBowlerClick(bowler.id) },
-				modifier = Modifier.padding(16.dp),
 			)
 		}
 	}

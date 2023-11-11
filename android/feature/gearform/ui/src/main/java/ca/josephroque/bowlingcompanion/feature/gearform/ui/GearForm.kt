@@ -90,7 +90,6 @@ fun GearForm(
 			} else {
 				BowlerRow(
 					name = state.owner.name,
-					modifier = Modifier.padding(16.dp),
 					onClick = { onAction(GearFormUiAction.OwnerClicked) },
 				)
 			}

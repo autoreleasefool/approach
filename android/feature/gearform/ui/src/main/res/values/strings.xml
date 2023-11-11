@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="gear_form_new_title">New Gear</string>
-	<string name="gear_form_edit_title">Edit %$1s</string>
+	<string name="gear_form_edit_title">Edit %1$s</string>
 
 	<string name="gear_form_section_details">Details</string>
 	<string name="gear_form_name">Label</string>

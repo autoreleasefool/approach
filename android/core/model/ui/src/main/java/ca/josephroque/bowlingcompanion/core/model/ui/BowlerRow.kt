@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -30,7 +31,8 @@ fun BowlerRow(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
+			.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+			.padding(16.dp),
 	) {
 		Icon(
 			Icons.Filled.Person,

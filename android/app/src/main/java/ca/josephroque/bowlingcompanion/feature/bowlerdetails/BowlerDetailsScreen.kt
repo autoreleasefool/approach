@@ -68,7 +68,7 @@ internal fun BowlerDetailsRoute(
 internal fun BowlerDetailsScreen(
 	bowlerDetailsState: BowlerDetailsUiState,
 	leaguesListState: LeaguesListUiState,
-	gearListState: GearListUiState,
+	gearListState: GearListUiState?,
 	onBackPressed: () -> Unit,
 	onGearClick: (UUID) -> Unit,
 	onLeagueClick: (UUID) -> Unit,
@@ -119,14 +119,11 @@ internal fun BowlerDetailsScreen(
 				),
 			)
 
-			when (gearListState) {
-				GearListUiState.Loading -> Unit
-				is GearListUiState.Success -> {
-					gearList(
-						list = gearListState.list,
-						onGearClick = onGearClick,
-					)
-				}
+			if (gearListState != null) {
+				gearList(
+					list = gearListState.list,
+					onGearClick = onGearClick,
+				)
 			}
 
 			footer(R.string.bowler_details_preferred_gear_description)
