@@ -31,8 +31,11 @@ fun BowlerRow(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
-			.padding(16.dp),
+			.then(if (onClick != null)
+				Modifier
+					.clickable(onClick = onClick)
+					.padding(16.dp)
+			else Modifier),
 	) {
 		Icon(
 			Icons.Filled.Person,
