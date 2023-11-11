@@ -122,7 +122,7 @@ internal fun BowlerDetailsScreen(
 			if (gearListState != null) {
 				gearList(
 					list = gearListState.list,
-					onGearClick = onGearClick,
+					onGearClick = { onGearClick(it.id) },
 				)
 			}
 

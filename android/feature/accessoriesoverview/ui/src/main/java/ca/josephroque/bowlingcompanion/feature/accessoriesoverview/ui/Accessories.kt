@@ -63,7 +63,7 @@ fun Accessories(
 		if (gearListState != null) {
 			gearList(
 				list = gearListState.list,
-				onGearClick = onShowGearDetails,
+				onGearClick = { onShowGearDetails(it.id) },
 			)
 
 			item {
