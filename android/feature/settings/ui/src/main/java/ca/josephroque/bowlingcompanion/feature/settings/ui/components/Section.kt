@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.settings.ui
+package ca.josephroque.bowlingcompanion.feature.settings.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun SectionHeader(
+fun Header(
 	@StringRes titleResourceId: Int,
 	modifier: Modifier = Modifier,
 ) {
@@ -25,7 +25,7 @@ internal fun SectionHeader(
 }
 
 @Composable
-internal fun SectionFooter(
+internal fun Footer(
 	@StringRes titleResourceId: Int,
 	modifier: Modifier = Modifier,
 ) {

@@ -1,10 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.statisticssettings.navigation
+package ca.josephroque.bowlingcompanion.feature.settings.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import ca.josephroque.bowlingcompanion.feature.statisticssettings.StatisticsSettingsRoute
+import ca.josephroque.bowlingcompanion.feature.settings.statistics.StatisticsSettingsRoute
 
 const val statisticsSettingsNavigationRoute = "settings/statistics"
 

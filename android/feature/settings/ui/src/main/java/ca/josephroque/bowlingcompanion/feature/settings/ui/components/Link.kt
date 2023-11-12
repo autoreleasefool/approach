@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.settings.ui
+package ca.josephroque.bowlingcompanion.feature.settings.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun SettingsLink(
+fun Link(
 	@StringRes titleResourceId: Int,
 	@DrawableRes iconResourceId: Int,
 	onClick: () -> Unit,

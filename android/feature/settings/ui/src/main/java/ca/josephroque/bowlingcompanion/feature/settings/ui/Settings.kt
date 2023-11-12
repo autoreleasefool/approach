@@ -1,0 +1,239 @@
+package ca.josephroque.bowlingcompanion.feature.settings.ui
+
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Footer
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
+import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Header
+import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Link
+import ca.josephroque.bowlingcompanion.feature.settings.ui.components.NavigationItem
+
+@Composable
+fun Settings(
+	state: SettingsUiState,
+	onAction: (SettingsUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	Column(
+		modifier = modifier
+			.fillMaxSize()
+			.verticalScroll(rememberScrollState()),
+	) {
+		MainSection(onAction = onAction)
+
+		Divider()
+
+		HelpSection(
+			versionName = state.versionName,
+			versionCode = state.versionCode,
+			onAction = onAction,
+		)
+
+		Divider()
+
+		if (state.isDataSectionVisible) {
+			DataSection(
+				isDataImportsEnabled = state.isDataImportsEnabled,
+				isDataExportsEnabled = state.isDataExportsEnabled,
+				onAction = onAction
+			)
+
+			Divider()
+		}
+
+		DevelopmentSection(onAction = onAction)
+
+		Divider()
+
+		AppInfoSection(
+			versionName = state.versionName,
+			versionCode = state.versionCode,
+		)
+	}
+}
+
+@Composable
+private fun MainSection(
+	onAction: (SettingsUiAction) -> Unit,
+) {
+	NavigationItem(
+		titleResourceId = R.string.settings_item_opponents_title,
+		descriptionResourceId = R.string.settings_item_opponents_description,
+		onClick = { onAction(SettingsUiAction.OpponentsClicked) },
+	)
+
+	NavigationItem(
+		titleResourceId = R.string.settings_item_statistics_title,
+		descriptionResourceId = R.string.settings_item_statistics_description,
+		onClick = { onAction(SettingsUiAction.StatisticsSettingsClicked) },
+	)
+}
+
+@Composable
+private fun HelpSection(
+	versionName: String,
+	versionCode: String,
+	onAction: (SettingsUiAction) -> Unit,
+) {
+	Header(titleResourceId = R.string.settings_item_help)
+
+	val context = LocalContext.current
+	Link(
+		titleResourceId = R.string.settings_item_report_bug,
+		iconResourceId = RCoreDesign.drawable.ic_send,
+		onClick = {
+			val recipient = context.resources.getString(R.string.bug_report_email_recipient)
+			val subject = context.resources.getString(
+				R.string.bug_report_email_subject,
+				versionName,
+				versionCode,
+			)
+			val emailIntent = Intent(Intent.ACTION_SEND).apply {
+				setDataAndType(Uri.parse("mailto:"), "message/rfc822")
+				putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
+				putExtra(Intent.EXTRA_SUBJECT, subject)
+			}
+
+			context.startActivity(
+				Intent.createChooser(
+					emailIntent,
+					context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+				)
+			)
+		},
+	)
+
+	Link(
+		titleResourceId = R.string.settings_item_send_feedback,
+		iconResourceId = RCoreDesign.drawable.ic_send,
+		onClick = {
+			val recipient = context.resources.getString(R.string.feedback_email_recipient)
+			val emailIntent = Intent(Intent.ACTION_SEND).apply {
+				setDataAndType(Uri.parse("mailto:"), "message/rfc822")
+				putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
+			}
+
+			context.startActivity(
+				Intent.createChooser(
+					emailIntent,
+					context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+				)
+			)
+		},
+	)
+
+	NavigationItem(
+		titleResourceId = R.string.settings_item_acknowledgements,
+		onClick = { onAction(SettingsUiAction.AcknowledgementsClicked) },
+	)
+
+	NavigationItem(
+		titleResourceId = R.string.settings_item_analytics,
+		onClick = { onAction(SettingsUiAction.AnalyticsSettingsClicked) },
+	)
+}
+
+@Composable
+private fun DataSection(
+	isDataImportsEnabled: Boolean,
+	isDataExportsEnabled: Boolean,
+	onAction: (SettingsUiAction) -> Unit,
+) {
+	Header(titleResourceId = R.string.settings_item_data)
+
+	if (isDataImportsEnabled) {
+		NavigationItem(
+			titleResourceId = R.string.settings_item_import_data,
+			onClick = { onAction(SettingsUiAction.DataImportSettingsClicked) },
+		)
+	}
+
+	if (isDataExportsEnabled) {
+		NavigationItem(
+			titleResourceId = R.string.settings_item_export_data,
+			onClick = { onAction(SettingsUiAction.DataExportSettingsClicked) },
+		)
+	}
+}
+
+@Composable
+private fun DevelopmentSection(
+	onAction: (SettingsUiAction) -> Unit,
+) {
+	val context = LocalContext.current
+
+	Header(titleResourceId = R.string.settings_item_development)
+
+	NavigationItem(
+		titleResourceId = R.string.settings_item_developer,
+		onClick = { onAction(SettingsUiAction.DeveloperSettingsClicked) }
+	)
+
+	val uriHandler = LocalUriHandler.current
+	Link(
+		titleResourceId = R.string.settings_item_view_source,
+		iconResourceId = RCoreDesign.drawable.ic_open_in_new,
+		onClick = {
+			val viewSourceUri = context.resources.getString(R.string.app_source_repository_url)
+			uriHandler.openUri(viewSourceUri)
+		},
+	)
+
+	Footer(titleResourceId = R.string.settings_item_development_footer)
+}
+
+@Composable
+private fun AppInfoSection(
+	versionName: String,
+	versionCode: String,
+) {
+	Header(titleResourceId = R.string.settings_item_app_info)
+
+	val clipboardManager = LocalClipboardManager.current
+	val versionString = stringResource(
+		R.string.settings_item_version_detail,
+		versionName,
+		versionCode,
+	)
+	Row(
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.SpaceBetween,
+		modifier = Modifier
+			.fillMaxWidth()
+			.clickable(onClick = { clipboardManager.setText(AnnotatedString(versionString)) })
+			.padding(16.dp),
+	) {
+		Text(
+			text = stringResource(R.string.settings_item_version),
+			style = MaterialTheme.typography.titleMedium,
+		)
+		Text(
+			text = versionString,
+			style = MaterialTheme.typography.bodyMedium,
+			color = MaterialTheme.colorScheme.onSurfaceVariant,
+		)
+	}
+
+	Footer(titleResourceId = R.string.settings_item_copyright)
+}

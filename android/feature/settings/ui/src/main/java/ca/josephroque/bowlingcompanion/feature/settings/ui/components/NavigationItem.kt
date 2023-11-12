@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.settings.ui
+package ca.josephroque.bowlingcompanion.feature.settings.ui.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
-internal fun NavigationItem(
+fun NavigationItem(
 	@StringRes titleResourceId: Int,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,

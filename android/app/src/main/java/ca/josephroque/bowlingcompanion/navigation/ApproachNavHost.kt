@@ -46,8 +46,8 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsScreen
-import ca.josephroque.bowlingcompanion.feature.statisticssettings.navigation.navigateToStatisticsSettings
-import ca.josephroque.bowlingcompanion.feature.statisticssettings.navigation.statisticsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToStatisticsSettings
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.statisticsSettingsScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 
 @Composable
