@@ -1,10 +1,9 @@
 # Most recent version
 
-## iOS 1.2.1b15
+## iOS 1.2.2b16
 
 ```
-- Fix: 10th frame will show the correct score at all times, not only at the end of a game
-- Fix: A strike or spare in the 10th frame will no longer cause the "Next" button to open the next game
+- Feat: Add Sentry SDK
 ```
 
 ## Android v3.2.0
@@ -20,6 +19,13 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.2.1b15
+
+```
+- Fix: 10th frame will show the correct score at all times, not only at the end of a game
+- Fix: A strike or spare in the 10th frame will no longer cause the "Next" button to open the next game
+```
 
 ## iOS 1.2.0b14
 
