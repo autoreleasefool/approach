@@ -28,5 +28,9 @@ extension AppConstants {
 		public static let revenueCat: String = {
 			(try? Configuration.value(for: "REVENUE_CAT_API_KEY")) ?? ""
 		}()
+
+		public static let sentry: String = {
+			(try? Configuration.value(for: "SENTRY_DSN")) ?? ""
+		}()
 	}
 }
