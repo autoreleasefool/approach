@@ -7,12 +7,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import ca.josephroque.bowlingcompanion.core.designsystem.components.state.LoadingState
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarForm
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormTopBar
-import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiAction
-import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiState
 
 @Composable
 internal fun AvatarFormRoute(
@@ -44,30 +41,21 @@ private fun AvatarFormScreen(
 		onAction(AvatarFormScreenUiAction.LoadAvatar)
 	}
 
-	when (state) {
-		AvatarFormScreenUiState.Loading -> LoadingState()
-		is AvatarFormScreenUiState.Loaded ->
-			AvatarFormScreen(
-				state = state.form,
-				onAction = { onAction(AvatarFormScreenUiAction.AvatarFormAction(it)) },
-				modifier = modifier,
-			)
-	}
-}
-
-@Composable
-private fun AvatarFormScreen(
-	state: AvatarFormUiState,
-	onAction: (AvatarFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
 	Scaffold(
-		topBar = { AvatarFormTopBar(onAction = onAction) },
+		topBar = {
+			AvatarFormTopBar(
+				onAction = { onAction(AvatarFormScreenUiAction.AvatarFormAction(it)) }
+			)
+	  },
 	) { padding ->
-		AvatarForm(
-			state = state,
-			onAction = onAction,
-			modifier = modifier.padding(padding),
-		)
+		when (state) {
+			AvatarFormScreenUiState.Loading -> Unit
+			is AvatarFormScreenUiState.Loaded ->
+				AvatarForm(
+					state = state.form,
+					onAction = { onAction(AvatarFormScreenUiAction.AvatarFormAction(it)) },
+					modifier = modifier.padding(padding),
+				)
+		}
 	}
 }

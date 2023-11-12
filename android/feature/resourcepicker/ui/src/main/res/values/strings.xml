@@ -4,6 +4,11 @@
 	<string name="resource_picker_empty_message">You haven\'t created any yet.</string>
 	<string name="resource_picker_empty_action">Back</string>
 
+	<plurals name="base_picker_title">
+		<item quantity="one">Select Item</item>
+		<item quantity="other">Select Items</item>
+	</plurals>
+
 	<plurals name="bowler_picker_title">
 		<item quantity="one">Select Bowler</item>
 		<item quantity="other">Select Bowlers</item>

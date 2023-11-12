@@ -7,13 +7,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import ca.josephroque.bowlingcompanion.core.designsystem.components.state.LoadingState
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiState
 import java.util.UUID
 
 @Composable
@@ -46,38 +43,26 @@ private fun BowlerPickerScreen(
 		onAction(ResourcePickerScreenUiAction.LoadResources)
 	}
 
-	when (state) {
-		ResourcePickerScreenUiState.Loading -> LoadingState()
-		is ResourcePickerScreenUiState.Loaded ->
-			BowlerPickerScreen(
-				state = state.picker,
-				topBarState = state.topBar,
-				onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
-				modifier = modifier,
-			)
-	}
-}
-
-@Composable
-private fun BowlerPickerScreen(
-	state: ResourcePickerUiState<BowlerResource>,
-	topBarState: ResourcePickerTopBarUiState,
-	onAction: (ResourcePickerUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
 	Scaffold(
 		topBar = {
 			ResourcePickerTopBar(
-				state = topBarState,
-				onAction = onAction,
+				state = when (state) {
+					ResourcePickerScreenUiState.Loading -> ResourcePickerTopBarUiState()
+					is ResourcePickerScreenUiState.Loaded -> state.topBar
+			  },
+				onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
 			)
 		},
 	) { padding ->
-		ResourcePicker(
-			state = state,
-			onAction = onAction,
-			itemContent = { BowlerRow(name = it.name) },
-			modifier = modifier.padding(padding),
-		)
+		when (state) {
+			ResourcePickerScreenUiState.Loading -> Unit
+			is ResourcePickerScreenUiState.Loaded ->
+				ResourcePicker(
+					state = state.picker,
+					onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
+					itemContent = { BowlerRow(name = it.name) },
+					modifier = modifier.padding(padding),
+				)
+		}
 	}
 }

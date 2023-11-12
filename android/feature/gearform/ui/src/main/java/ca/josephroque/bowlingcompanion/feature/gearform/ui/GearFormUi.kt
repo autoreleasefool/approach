@@ -30,5 +30,5 @@ sealed interface GearFormUiAction {
 }
 
 data class GearFormTopBarUiState(
-	val existingName: String?,
+	val existingName: String? = null,
 )

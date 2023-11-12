@@ -7,12 +7,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import ca.josephroque.bowlingcompanion.core.designsystem.components.state.LoadingState
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBarUiState
-import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiAction
-import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiState
 
 @Composable
 internal fun BowlerFormRoute(
@@ -44,45 +41,32 @@ private fun BowlerFormScreen(
 		onAction(BowlerFormScreenUiAction.LoadBowler)
 	}
 
-	when (state) {
-		BowlerFormScreenUiState.Loading -> LoadingState()
-		is BowlerFormScreenUiState.Create ->
-			BowlerFormScreen(
-				bowlerFormState = state.form,
-				topBarState = state.topBar,
-				onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
-				modifier = modifier,
-			)
-		is BowlerFormScreenUiState.Edit ->
-			BowlerFormScreen(
-				bowlerFormState = state.form,
-				topBarState = state.topBar,
-				onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
-				modifier = modifier,
-			)
-	}
-}
-
-@Composable
-private fun BowlerFormScreen(
-	bowlerFormState: BowlerFormUiState,
-	topBarState: BowlerFormTopBarUiState,
-	onAction: (BowlerFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
 	Scaffold(
 		topBar = {
 			BowlerFormTopBar(
-				state = topBarState,
-				onAction = onAction,
+				state = when (state) {
+					BowlerFormScreenUiState.Loading -> BowlerFormTopBarUiState()
+					is BowlerFormScreenUiState.Create -> state.topBar
+					is BowlerFormScreenUiState.Edit -> state.topBar
+			  },
+				onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
 			)
 		},
 	) { padding ->
-		BowlerForm(
-			state = bowlerFormState,
-			onAction = onAction,
-			modifier = modifier
-				.padding(padding)
-		)
+		when (state) {
+			BowlerFormScreenUiState.Loading -> Unit
+			is BowlerFormScreenUiState.Create ->
+				BowlerForm(
+					state = state.form,
+					onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
+					modifier = modifier.padding(padding),
+				)
+			is BowlerFormScreenUiState.Edit ->
+				BowlerForm(
+					state = state.form,
+					onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
+					modifier = modifier.padding(padding),
+				)
+		}
 	}
 }

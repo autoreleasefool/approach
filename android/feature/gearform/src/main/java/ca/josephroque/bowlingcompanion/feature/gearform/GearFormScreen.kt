@@ -8,13 +8,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.designsystem.components.state.LoadingState
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
-import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
-import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
 import java.util.UUID
 
 @Composable
@@ -61,45 +58,32 @@ private fun GearFormScreen(
 		onAction(GearFormScreenUiAction.LoadGear)
 	}
 
-	when (state) {
-		GearFormScreenUiState.Loading -> LoadingState()
-		is GearFormScreenUiState.Create ->
-			GearFormScreen(
-				gearFormState = state.form,
-				topBarState = state.topBar,
-				onAction = { onAction(GearFormScreenUiAction.GearFormAction(it)) },
-				modifier = modifier,
-			)
-		is GearFormScreenUiState.Edit ->
-			GearFormScreen(
-				gearFormState = state.form,
-				topBarState = state.topBar,
-				onAction = { onAction(GearFormScreenUiAction.GearFormAction(it)) },
-				modifier = modifier,
-			)
-	}
-}
-
-@Composable
-private fun GearFormScreen(
-	gearFormState: GearFormUiState,
-	topBarState: GearFormTopBarUiState,
-	onAction: (GearFormUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
 	Scaffold(
 		topBar = {
 			GearFormTopBar(
-				state = topBarState,
-				onAction = onAction,
+				state = when (state) {
+					GearFormScreenUiState.Loading -> GearFormTopBarUiState()
+					is GearFormScreenUiState.Create -> state.topBar
+					is GearFormScreenUiState.Edit -> state.topBar
+			  },
+				onAction = { onAction(GearFormScreenUiAction.GearFormAction(it)) },
 			)
 		}
 	) { padding ->
-		GearForm(
-			state = gearFormState,
-			onAction = onAction,
-			modifier = modifier
-				.padding(padding),
-		)
+		when (state) {
+			GearFormScreenUiState.Loading -> Unit
+			is GearFormScreenUiState.Create ->
+				GearForm(
+					state = state.form,
+					onAction = { onAction(GearFormScreenUiAction.GearFormAction(it)) },
+					modifier = modifier.padding(padding),
+				)
+			is GearFormScreenUiState.Edit ->
+				GearForm(
+					state = state.form,
+					onAction = { onAction(GearFormScreenUiAction.GearFormAction(it)) },
+					modifier = modifier.padding(padding),
+				)
+		}
 	}
 }
