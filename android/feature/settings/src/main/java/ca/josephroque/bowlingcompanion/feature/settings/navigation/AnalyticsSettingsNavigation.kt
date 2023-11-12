@@ -1,10 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.analytics.navigation
+package ca.josephroque.bowlingcompanion.feature.settings.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import ca.josephroque.bowlingcompanion.feature.analytics.AnalyticsSettingsRoute
+import ca.josephroque.bowlingcompanion.feature.settings.analytics.AnalyticsSettingsRoute
 
 const val analyticsSettingsNavigationRoute = "settings/analytics"
 

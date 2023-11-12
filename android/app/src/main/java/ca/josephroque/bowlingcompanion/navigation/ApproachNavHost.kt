@@ -12,8 +12,8 @@ import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScr
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.alleysListScreen
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.navigateToAlleysList
-import ca.josephroque.bowlingcompanion.feature.analytics.navigation.analyticsSettingsScreen
-import ca.josephroque.bowlingcompanion.feature.analytics.navigation.navigateToAnalyticsSettings
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.analyticsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToAnalyticsSettings
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.navigateToAvatarFormForResult
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
