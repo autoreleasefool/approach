@@ -289,6 +289,7 @@
 				CA8BBC5128D59B8B00653A1E /* Sources */,
 				CA8BBC5228D59B8B00653A1E /* Frameworks */,
 				CA8BBC5328D59B8B00653A1E /* Resources */,
+				5B8CBEA6A7864D49B251E753 /* Upload Debug Symbols to Sentry */,
 			);
 			buildRules = (
 			);
@@ -360,6 +361,8 @@
 				Base,
 			);
 			mainGroup = CA8BBC4C28D59B8B00653A1E;
+			packageReferences = (
+			);
 			productRefGroup = CA8BBC5628D59B8B00653A1E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -392,6 +395,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5B8CBEA6A7864D49B251E753 /* Upload Debug Symbols to Sentry */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+			);
+			name = "Upload Debug Symbols to Sentry";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script is responsable to upload debug symbols and source context for Sentry.\nif which sentry-cli >/dev/null; then\nexport SENTRY_ORG=approach-bowling\nexport SENTRY_PROJECT=approach-for-ios\nERROR=$(sentry-cli debug-files upload --include-sources \"$DWARF_DSYM_FOLDER_PATH\" 2>&1 >/dev/null)\nif [ ! $? -eq 0 ]; then\necho \"warning: sentry-cli - $ERROR\"\nfi\nelse\necho \"warning: sentry-cli not installed, download from https://github.com/getsentry/sentry-cli/releases\"\nfi\n";
+		};
 		CA2890DF28F882FC003C1EE9 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;

@@ -531,6 +531,7 @@
 "settings.help.reportBug.subject" = "Approach Bug Report (%@)";
 "settings.help.sendFeedback" = "Send Feedback";
 "settings.help.sendFeedback.email" = "approach@josephroque.ca";
+"settings.help.forceCrash" = "Force Crash";
 "settings.help.acknowledgements" = "Acknowledgements";
 "settings.help.developer" = "Developer";
 "settings.help.viewSource" = "View Source";

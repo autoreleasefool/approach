@@ -211,7 +211,7 @@ dependencies = [ "XCTestDynamicOverlay" ]
 [services.Analytics]
 services = [ "Preference" ]
 libraries = [ "Constants" ]
-dependencies = [ "TelemetryClient" ]
+dependencies = [ "Sentry", "TelemetryClient" ]
 [services.Analytics.interface]
 dependencies = [ "ComposableArchitecture" ]
 
@@ -445,6 +445,10 @@ from = "4.25.9"
 [dependencies.SFSafeSymbols]
 url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"
 from = "4.1.1"
+
+[dependencies.Sentry]
+url = "https://github.com/getsentry/sentry-cocoa.git"
+from = "8.15.2"
 
 [dependencies.Shimmer]
 url = "https://github.com/markiv/SwiftUI-Shimmer.git"

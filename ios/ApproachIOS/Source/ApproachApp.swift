@@ -1,6 +1,8 @@
 import AnalyticsServiceInterface
+import ConstantsLibrary
 import Dependencies
 import ProductsServiceInterface
+import Sentry
 import SwiftUI
 import XCTestDynamicOverlay
 
@@ -15,6 +17,10 @@ public struct ApproachApp: App {
 	}
 
 	public init() {
+		SentrySDK.start { options in
+			options.dsn = AppConstants.ApiKey.sentry
+		}
+
 		@Dependency(\.products) var products
 		products.initialize()
 

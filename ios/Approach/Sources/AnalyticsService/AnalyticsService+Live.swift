@@ -3,6 +3,7 @@ import ConstantsLibrary
 import Dependencies
 import Foundation
 import PreferenceServiceInterface
+import Sentry
 import TelemetryClient
 
 extension AnalyticsService: DependencyKey {
@@ -62,6 +63,9 @@ extension AnalyticsService: DependencyKey {
 				initialize()
 
 				return getOptInStatus()
+			},
+			forceCrash: {
+				SentrySDK.crash()
 			}
 		)
 	}()

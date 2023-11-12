@@ -126,7 +126,8 @@ struct AnalyticsSettingsPreview: PreviewProvider {
 						trackEvent: { _ in },
 						resetGameSessionID: { },
 						getOptInStatus: { .optedIn },
-						setOptInStatus: { _ in .optedIn }
+						setOptInStatus: { _ in .optedIn },
+						forceCrash: {}
 					)
 				} operation: {
 					AnalyticsSettings.State()
