@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -40,7 +41,7 @@ class StatisticsSettingsViewModel @Inject constructor(
 	)
 
 	private val _events: MutableStateFlow<StatisticsSettingsScreenEvent?> = MutableStateFlow(null)
-	val events: StateFlow<StatisticsSettingsScreenEvent?> = _events
+	val events = _events.asStateFlow()
 
 	fun handleAction(action: StatisticsSettingsScreenUiAction) {
 		when (action) {

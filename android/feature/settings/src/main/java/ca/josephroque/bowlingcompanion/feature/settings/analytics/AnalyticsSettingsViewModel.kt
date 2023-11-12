@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -35,7 +36,7 @@ class AnalyticsSettingsViewModel @Inject constructor(
 	)
 
 	private val _events: MutableStateFlow<AnalyticsSettingsScreenEvent?> = MutableStateFlow(null)
-	val events: StateFlow<AnalyticsSettingsScreenEvent?> = _events
+	val events = _events.asStateFlow()
 
 	fun handleAction(action: AnalyticsSettingsScreenUiAction) {
 		when (action) {

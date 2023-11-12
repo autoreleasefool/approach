@@ -50,4 +50,6 @@
 	<string name="analytics_settings_opt_out">You can opt out from sharing analytics any time. When you do, your anonymized activity stops being shared immediately</string>
 	<string name="analytics_settings_privacy_policy">Privacy Policy</string>
 	<string name="analytics_settings_privacy_policy_url">https://tryapproach.app/privacy</string>
+
+	<string name="acknowledgements_settings_title">Acknowledgements</string>
 </resources>

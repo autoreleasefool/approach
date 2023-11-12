@@ -37,7 +37,7 @@ class SettingsViewModel @Inject constructor(
 		)
 
 	private val _events: MutableStateFlow<SettingsScreenEvent?> = MutableStateFlow(null)
-	val events: StateFlow<SettingsScreenEvent?> = _events.asStateFlow()
+	val events = _events.asStateFlow()
 
 	fun handleAction(action: SettingsScreenUiAction) {
 		when (action) {

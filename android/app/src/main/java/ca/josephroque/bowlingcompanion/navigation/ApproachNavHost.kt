@@ -44,6 +44,10 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.bowlerP
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementDetailsScreen
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToAcknowledgementDetails
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToAcknowledgementsSettings
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToStatisticsSettings
@@ -88,7 +92,7 @@ fun ApproachNavHost(
 		settingsScreen(
 			openOpponents = navController::navigateToOpponentsList,
 			openStatisticsSettings = navController::navigateToStatisticsSettings,
-			openAcknowledgements = { /* TODO: openAcknowledgements */ },
+			openAcknowledgements = navController::navigateToAcknowledgementsSettings,
 			openAnalyticsSettings = navController::navigateToAnalyticsSettings,
 			openDeveloperSettings = { /* TODO: openDeveloperSettings */ },
 			openDataExportSettings = { /* TODO: openDataExportSettings */ },
@@ -134,6 +138,13 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 		)
 		statisticsSettingsScreen(
+			onBackPressed = navController::popBackStack,
+		)
+		acknowledgementsSettingsScreen(
+			onBackPressed = navController::popBackStack,
+			onShowAcknowledgementDetails = navController::navigateToAcknowledgementDetails,
+		)
+		acknowledgementDetailsScreen(
 			onBackPressed = navController::popBackStack,
 		)
 		alleysListScreen(
