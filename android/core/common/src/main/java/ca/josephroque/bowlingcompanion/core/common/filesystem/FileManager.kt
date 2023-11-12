@@ -7,4 +7,7 @@ interface FileManager {
 	fun fileExists(file: File): Boolean
 
 	fun getDatabasePath(fileName: String): File
+
+	fun getAssets(directory: String): List<String>
+	fun getAsset(fileName: String): String
 }

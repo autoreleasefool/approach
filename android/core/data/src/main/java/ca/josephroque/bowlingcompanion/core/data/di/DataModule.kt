@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.di
 
+import ca.josephroque.bowlingcompanion.core.data.repository.AcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
@@ -8,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstFramesRepository
@@ -91,4 +93,9 @@ interface DataModule {
 	fun bindsLegacyMigrationRepository(
 		legacyMigrationRepository: OfflineFirstLegacyMigrationRepository,
 	): LegacyMigrationRepository
+
+	@Binds
+	fun bindsAcknowledgementsRepository(
+		acknowledgementsRepository: OfflineFirstAcknowledgementsRepository,
+	): AcknowledgementsRepository
 }
