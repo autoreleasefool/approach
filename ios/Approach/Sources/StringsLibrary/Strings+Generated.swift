@@ -1221,6 +1221,8 @@ public enum Strings {
       public static let acknowledgements = Strings.tr("Localizable", "settings.help.acknowledgements", fallback: "Acknowledgements")
       /// Developer
       public static let developer = Strings.tr("Localizable", "settings.help.developer", fallback: "Developer")
+      /// Force Crash
+      public static let forceCrash = Strings.tr("Localizable", "settings.help.forceCrash", fallback: "Force Crash")
       /// Report Bug
       public static let reportBug = Strings.tr("Localizable", "settings.help.reportBug", fallback: "Report Bug")
       /// Send Feedback

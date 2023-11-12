@@ -1068,6 +1068,7 @@ let package = Package(
 		.target(
 			name: "AnalyticsService",
 			dependencies: [
+				.product(name: "Sentry", package: "sentry-cocoa"),
 				.product(name: "TelemetryClient", package: "SwiftClient"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",

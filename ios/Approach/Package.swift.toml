@@ -211,7 +211,7 @@ dependencies = [ "XCTestDynamicOverlay" ]
 [services.Analytics]
 services = [ "Preference" ]
 libraries = [ "Constants" ]
-dependencies = [ "TelemetryClient" ]
+dependencies = [ "Sentry", "TelemetryClient" ]
 [services.Analytics.interface]
 dependencies = [ "ComposableArchitecture" ]
 

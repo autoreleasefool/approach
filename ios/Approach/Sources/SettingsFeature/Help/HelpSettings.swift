@@ -19,11 +19,13 @@ public struct HelpSettings: Reducer {
 
 		public let isExportEnabled: Bool
 		public let isImportEnabled: Bool
+		public let isDeveloperOptionsEnabled: Bool
 
 		init() {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isExportEnabled = featureFlags.isEnabled(.dataExport)
 			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
+			self.isDeveloperOptionsEnabled = featureFlags.isEnabled(.developerOptions)
 		}
 	}
 
@@ -37,6 +39,7 @@ public struct HelpSettings: Reducer {
 			case didTapViewSource
 			case didTapImportButton
 			case didTapExportButton
+			case didTapForceCrashButton
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
@@ -70,6 +73,7 @@ public struct HelpSettings: Reducer {
 		}
 	}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.email) var email
 	@Dependency(\.export) var export
 	@Dependency(\.openURL) var openURL
@@ -109,6 +113,9 @@ public struct HelpSettings: Reducer {
 
 				case .didTapViewSource:
 					return .run { _ in await openURL(AppConstants.openSourceRepositoryUrl) }
+
+				case .didTapForceCrashButton:
+					return .run { _ in analytics.forceCrash() }
 
 				case .didTapAnalyticsButton:
 					state.destination = .analytics(.init())
@@ -186,6 +193,7 @@ public struct HelpSettingsView: View {
 	let store: StoreOf<HelpSettings>
 
 	struct ViewState: Equatable {
+		let isDeveloperOptionsEnabled: Bool
 		@BindingState var isShowingBugReportEmail: Bool
 		@BindingState var isShowingSendFeedbackEmail: Bool
 	}
@@ -195,6 +203,9 @@ public struct HelpSettingsView: View {
 			Section(Strings.Settings.Help.title) {
 				Button(Strings.Settings.Help.reportBug) { viewStore.send(.didTapReportBugButton) }
 				Button(Strings.Settings.Help.sendFeedback) { viewStore.send(.didTapSendFeedbackButton) }
+				if viewStore.isDeveloperOptionsEnabled {
+					Button(Strings.Settings.Help.forceCrash) { viewStore.send(.didTapForceCrashButton) }
+				}
 				NavigationLink(
 					Strings.Settings.Help.acknowledgements,
 					destination: AcknowledgementsView()
@@ -267,6 +278,7 @@ public struct HelpSettingsView: View {
 
 extension HelpSettingsView.ViewState {
 	init(store: BindingViewStore<HelpSettings.State>) {
+		self.isDeveloperOptionsEnabled = store.isDeveloperOptionsEnabled
 		self._isShowingBugReportEmail = store.$isShowingBugReportEmail
 		self._isShowingSendFeedbackEmail = store.$isShowingSendFeedbackEmail
 	}
