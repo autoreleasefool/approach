@@ -46,8 +46,10 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.developerSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToAcknowledgementDetails
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToAcknowledgementsSettings
+import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToDeveloperSettings
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToStatisticsSettings
@@ -94,9 +96,12 @@ fun ApproachNavHost(
 			openStatisticsSettings = navController::navigateToStatisticsSettings,
 			openAcknowledgements = navController::navigateToAcknowledgementsSettings,
 			openAnalyticsSettings = navController::navigateToAnalyticsSettings,
-			openDeveloperSettings = { /* TODO: openDeveloperSettings */ },
+			openDeveloperSettings = navController::navigateToDeveloperSettings,
 			openDataExportSettings = { /* TODO: openDataExportSettings */ },
 			openDataImportSettings = { /* TODO: openDataImportSettings */ },
+		)
+		developerSettingsScreen(
+			onBackPressed = navController::popBackStack,
 		)
 		bowlerFormScreen(
 			onBackPressed = navController::popBackStack,

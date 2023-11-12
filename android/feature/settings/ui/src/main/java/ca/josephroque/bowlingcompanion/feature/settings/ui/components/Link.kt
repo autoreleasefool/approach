@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ fun Link(
 	@DrawableRes iconResourceId: Int,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	@StringRes subtitleResourceId: Int? = null,
 ) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -32,11 +34,21 @@ fun Link(
 			.clickable(onClick = onClick)
 			.padding(16.dp),
 	) {
-		Text(
-			text = stringResource(id = titleResourceId),
-			style = MaterialTheme.typography.titleMedium,
+		Column(
 			modifier = Modifier.weight(1f),
-		)
+		) {
+			Text(
+				text = stringResource(id = titleResourceId),
+				style = MaterialTheme.typography.titleMedium,
+			)
+
+			subtitleResourceId?.let {
+				Text(
+					text = stringResource(id = it),
+					style = MaterialTheme.typography.bodyMedium,
+				)
+			}
+		}
 
 		Icon(
 			painter = painterResource(id = iconResourceId),

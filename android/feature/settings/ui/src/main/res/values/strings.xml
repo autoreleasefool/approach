@@ -52,4 +52,16 @@
 	<string name="analytics_settings_privacy_policy_url">https://tryapproach.app/privacy</string>
 
 	<string name="acknowledgements_settings_title">Acknowledgements</string>
+
+	<string name="developer_settings_title">Developer</string>
+	<string name="developer_settings_contact">Contact</string>
+	<string name="developer_settings_contact_name">Joseph Roque</string>
+	<string name="developer_settings_contact_email">approach@josephroque.ca</string>
+	<string name="developer_settings_contact_mastodon">\@autoreleasefool@iosdev.space</string>
+	<string name="developer_settings_contact_mastodon_url">https://iosdev.space/@autoreleasefool</string>
+	<string name="developer_settings_learn_more">Learn More</string>
+	<string name="developer_settings_website">Website</string>
+	<string name="developer_settings_website_url">https://josephroque.dev</string>
+	<string name="developer_settings_blog">Blog</string>
+	<string name="developer_settings_blog_url">https://runcode.blog</string>
 </resources>
