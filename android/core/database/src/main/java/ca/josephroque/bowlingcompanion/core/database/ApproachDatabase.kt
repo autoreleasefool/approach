@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
+import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
@@ -37,6 +38,8 @@ import ca.josephroque.bowlingcompanion.core.database.util.AvatarConverter
 import ca.josephroque.bowlingcompanion.core.database.util.InstantConverter
 import ca.josephroque.bowlingcompanion.core.database.util.LocalDateConverter
 import ca.josephroque.bowlingcompanion.core.database.util.RollConverter
+
+const val DATABASE_NAME = "approach-database"
 
 @Database(
 	entities = [
@@ -82,4 +85,5 @@ abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun legacyIDMappingDao(): LegacyIDMappingDao
 
 	abstract fun transactionRunnerDao(): TransactionRunnerDao
+	abstract fun checkpointDao(): CheckpointDao
 }

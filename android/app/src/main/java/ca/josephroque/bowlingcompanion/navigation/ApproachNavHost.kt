@@ -21,6 +21,8 @@ import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.bowlerFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToBowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToNewBowlerForm
+import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.dataExportScreen
+import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.navigateToDataExport
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.gearFormScreen
@@ -97,8 +99,11 @@ fun ApproachNavHost(
 			openAcknowledgements = navController::navigateToAcknowledgementsSettings,
 			openAnalyticsSettings = navController::navigateToAnalyticsSettings,
 			openDeveloperSettings = navController::navigateToDeveloperSettings,
-			openDataExportSettings = { /* TODO: openDataExportSettings */ },
+			openDataExportSettings = navController::navigateToDataExport,
 			openDataImportSettings = { /* TODO: openDataImportSettings */ },
+		)
+		dataExportScreen(
+			onBackPressed = navController::popBackStack,
 		)
 		developerSettingsScreen(
 			onBackPressed = navController::popBackStack,

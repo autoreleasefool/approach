@@ -23,6 +23,17 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		
+		<provider
+				android:name="androidx.core.content.FileProvider"
+				android:authorities="ca.josephroque.bowlingcompanion.fileprovider"
+				android:grantUriPermissions="true"
+				android:exported="false">
+			<meta-data
+					android:name="android.support.FILE_PROVIDER_PATHS"
+					android:resource="@xml/data_export_filepaths" />
+		</provider>
+
 	</application>
 
 </manifest>

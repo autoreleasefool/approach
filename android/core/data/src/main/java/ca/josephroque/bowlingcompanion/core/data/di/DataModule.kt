@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.di
 import ca.josephroque.bowlingcompanion.core.data.repository.AcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.DataTransferRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -12,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepos
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstDataTransferRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstFramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGearRepository
@@ -98,4 +100,9 @@ interface DataModule {
 	fun bindsAcknowledgementsRepository(
 		acknowledgementsRepository: OfflineFirstAcknowledgementsRepository,
 	): AcknowledgementsRepository
+
+	@Binds
+	fun bindsDataTransferRepository(
+		dataTransferRepository: OfflineFirstDataTransferRepository,
+	): DataTransferRepository
 }
