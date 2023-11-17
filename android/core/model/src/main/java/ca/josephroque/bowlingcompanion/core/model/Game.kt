@@ -12,6 +12,20 @@ object Game {
 		(after + 1)..<upTo
 }
 
+data class TrackableGame(
+	val seriesId: UUID,
+	val id: UUID,
+	val index: Int,
+	val score: Int,
+	val date: LocalDate,
+	val matchPlay: MatchPlay,
+) {
+	data class MatchPlay(
+		val id: UUID,
+		val result: MatchPlayResult?,
+	)
+}
+
 data class GameEdit(
 	val properties: Properties,
 	val series: Series,

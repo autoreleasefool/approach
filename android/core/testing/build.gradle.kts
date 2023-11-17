@@ -1,6 +1,5 @@
 plugins {
 	id("approach.android.library")
-	id("approach.android.library.compose")
 	id("approach.android.hilt")
 }
 

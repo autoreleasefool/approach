@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 object Frame {
@@ -16,6 +17,21 @@ object Frame {
 data class ScoreableFrame(
 	val index: Int,
 	val rolls: List<Roll>,
+) {
+	data class Roll(
+		val index: Int,
+		val pinsDowned: Set<Pin>,
+		val didFoul: Boolean,
+	)
+}
+
+data class TrackableFrame(
+	val seriesId: UUID,
+	val gameId: UUID,
+	val gameIndex: Int,
+	val index: Int,
+	val rolls: List<Roll>,
+	val date: LocalDate,
 ) {
 	data class Roll(
 		val index: Int,

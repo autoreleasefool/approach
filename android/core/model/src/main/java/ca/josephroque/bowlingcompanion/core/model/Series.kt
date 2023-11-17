@@ -10,6 +10,13 @@ data class SeriesListProperties(
 	val preBowl: SeriesPreBowl,
 )
 
+data class TrackableSeries(
+	val id: UUID,
+	val numberOfGames: Int,
+	val total: Int,
+	val date: LocalDate,
+)
+
 enum class SeriesPreBowl {
 	REGULAR,
 	PRE_BOWL,
