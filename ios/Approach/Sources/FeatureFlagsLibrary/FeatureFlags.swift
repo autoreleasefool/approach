@@ -22,6 +22,7 @@ extension FeatureFlag {
 	public static let dataExport = Self(name: "dataExport", introduced: "2023-09-17", stage: .release)
 	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .development)
 	public static let statisticsDescriptions = Self(name: "statisticsDescriptions", introduced: "2023-10-06", stage: .release)
+	public static let seriesQuickCreate = Self(name: "seriesQuickCreate", introduced: "2023-11-19", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.accessoriesTab,
@@ -39,6 +40,7 @@ extension FeatureFlag {
 		.overviewTab,
 		.proSubscription,
 		.purchases,
+		.seriesQuickCreate,
 		.settingsTab,
 		.sharingGame,
 		.sharingSeries,
