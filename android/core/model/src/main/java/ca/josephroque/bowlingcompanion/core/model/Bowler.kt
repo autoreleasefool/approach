@@ -6,6 +6,13 @@ data class BowlerListItem(
 	val id: UUID,
 	val name: String,
 	val average: Double?,
+) {
+	fun asSummary(): BowlerSummary = BowlerSummary(id, name)
+}
+
+data class BowlerSummary(
+	val id: UUID,
+	val name: String,
 )
 
 data class OpponentListItem(

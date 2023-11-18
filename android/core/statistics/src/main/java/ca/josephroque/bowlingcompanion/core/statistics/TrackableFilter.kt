@@ -4,8 +4,12 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.GameSummary
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
+import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
+import ca.josephroque.bowlingcompanion.core.model.SeriesSummary
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
@@ -18,10 +22,12 @@ data class TrackableFilter(
 	val aggregation: AggregationFilter = AggregationFilter.ACCUMULATE,
 ) {
 	sealed interface Source {
-		data class Bowler(val id: UUID): Source
-		data class League(val id: UUID): Source
-		data class Series(val id: UUID): Source
-		data class Game(val id: UUID): Source
+		val id: UUID
+
+		data class Bowler(override val id: UUID) : Source
+		data class League(override val id: UUID) : Source
+		data class Series(override val id: UUID) : Source
+		data class Game(override val id: UUID) : Source
 	}
 
 	data class LeagueFilter(
@@ -41,7 +47,7 @@ data class TrackableFilter(
 			val mechanism: AlleyMechanism? = null,
 			val pinFall: AlleyPinFall? = null,
 			val pinBase: AlleyPinBase? = null,
-		)
+		): AlleyFilter
 	}
 
 	data class GameFilter(
@@ -63,4 +69,11 @@ data class TrackableFilter(
 		ACCUMULATE,
 		PERIODIC,
 	}
+
+	data class SourceSummaries(
+		val bowler: BowlerSummary,
+		val league: LeagueSummary?,
+		val series: SeriesSummary?,
+		val game: GameSummary?,
+	)
 }

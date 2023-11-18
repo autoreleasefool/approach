@@ -7,6 +7,11 @@ object League {
 	val NumberOfGamesRange = 1..40
 }
 
+data class LeagueSummary(
+	val id: UUID,
+	val name: String,
+)
+
 data class LeagueDetails(
 	val id: UUID,
 	val name: String,

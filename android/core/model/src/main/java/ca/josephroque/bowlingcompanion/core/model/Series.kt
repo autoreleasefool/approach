@@ -3,6 +3,11 @@ package ca.josephroque.bowlingcompanion.core.model
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
+data class SeriesSummary(
+	val id: UUID,
+	val date: LocalDate,
+)
+
 data class SeriesListProperties(
 	val id: UUID,
 	val date: LocalDate,
