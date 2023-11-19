@@ -181,6 +181,9 @@ libraries = [ "StatisticsModels" ]
 
 [repositories.MatchPlays]
 
+[repositories.QuickLaunch]
+services = [ "RecentlyUsed"]
+
 [repositories.Scores]
 repositories = [ "Frames", "Games" ]
 [repositories.Scores.tests]

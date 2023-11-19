@@ -61,6 +61,8 @@ let package = Package(
 		.library(name: "LocationsRepositoryInterface", targets: ["LocationsRepositoryInterface"]),
 		.library(name: "MatchPlaysRepository", targets: ["MatchPlaysRepository"]),
 		.library(name: "MatchPlaysRepositoryInterface", targets: ["MatchPlaysRepositoryInterface"]),
+		.library(name: "QuickLaunchRepository", targets: ["QuickLaunchRepository"]),
+		.library(name: "QuickLaunchRepositoryInterface", targets: ["QuickLaunchRepositoryInterface"]),
 		.library(name: "ScoresRepository", targets: ["ScoresRepository"]),
 		.library(name: "ScoresRepositoryInterface", targets: ["ScoresRepositoryInterface"]),
 		.library(name: "SeriesRepository", targets: ["SeriesRepository"]),
@@ -926,6 +928,33 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"MatchPlaysRepository",
+				"TestDatabaseUtilitiesLibrary",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "QuickLaunchRepository",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"QuickLaunchRepositoryInterface",
+				"RecentlyUsedServiceInterface",
+				"RepositoryLibrary",
+			]
+		),
+		.target(
+			name: "QuickLaunchRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "QuickLaunchRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"QuickLaunchRepository",
 				"TestDatabaseUtilitiesLibrary",
 				"TestUtilitiesLibrary",
 			]
