@@ -4,6 +4,7 @@ import ComposableArchitecture
 import ErrorsFeature
 import LeaguesListFeature
 import ModelsLibrary
+import QuickLaunchRepositoryInterface
 import ResourceListLibrary
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
@@ -20,10 +21,12 @@ public struct BowlersListView: View {
 	struct ViewState: Equatable {
 		let ordering: Bowler.Ordering
 		let isShowingWidgets: Bool
+		let quickLaunch: QuickLaunchSource?
 
 		init(state: BowlersList.State) {
 			self.ordering = state.ordering
 			self.isShowingWidgets = state.isShowingWidgets
+			self.quickLaunch = state.isQuickLaunchEnabled ? state.quickLaunch : nil
 		}
 	}
 
@@ -41,6 +44,33 @@ public struct BowlersListView: View {
 				}
 				.buttonStyle(.navigation)
 			} header: {
+				if let quickLaunch = viewStore.quickLaunch {
+					Section(Strings.QuickLaunch.title) {
+						Button { viewStore.send(.didTapQuickLaunchButton) } label: {
+							HStack {
+								Asset.Media.Icons.rocket.swiftUIImage
+									.resizable()
+									.scaledToFit()
+									.frame(width: .smallIcon, height: .smallIcon)
+									.foregroundColor(Asset.Colors.Text.onAction)
+
+								VStack(alignment: .leading) {
+									Text(quickLaunch.bowler.name)
+										.font(.headline)
+										.frame(maxWidth: .infinity, alignment: .leading)
+									Text(quickLaunch.league.name)
+										.font(.subheadline)
+										.frame(maxWidth: .infinity, alignment: .leading)
+								}
+								.frame(maxWidth: .infinity)
+							}
+							.contentShape(Rectangle())
+						}
+						.modifier(PrimaryButton())
+					}
+					.listRowInsets(EdgeInsets())
+				}
+
 				if viewStore.isShowingWidgets {
 					Section {
 						StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))

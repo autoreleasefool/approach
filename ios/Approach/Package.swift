@@ -306,6 +306,7 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
+				"QuickLaunchRepositoryInterface",
 			]
 		),
 		.testTarget(

@@ -977,6 +977,14 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "picker.empty.title", fallback: "No items found")
     }
   }
+  public enum QuickLaunch {
+    /// New Series
+    public static let newSeries = Strings.tr("Localizable", "quickLaunch.newSeries", fallback: "New Series")
+    /// Play Now
+    public static let playNow = Strings.tr("Localizable", "quickLaunch.playNow", fallback: "Play Now")
+    /// Quick Launch
+    public static let title = Strings.tr("Localizable", "quickLaunch.title", fallback: "Quick Play")
+  }
   public enum Roll {
     /// Roll
     public static func title(_ p1: Int) -> String {

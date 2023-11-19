@@ -441,6 +441,12 @@
 "avatar.editor.properties.backgroundColor.style.gradient" = "Gradient";
 "avatar.editor.properties.label.title" = "Label";
 
+/* Quick Launch */
+
+"quickLaunch.title" = "Quick Play";
+"quickLaunch.newSeries" = "New Series";
+"quickLaunch.playNow" = "Play Now";
+
 /* Sharing */
 
 "sharing.title" = "Share";

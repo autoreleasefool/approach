@@ -234,6 +234,7 @@ public enum Asset {
         public static let rightThree = ImageAsset(name: "Icons/Pins/RightThree")
         public static let rightTwelve = ImageAsset(name: "Icons/Pins/RightTwelve")
       }
+      public static let rocket = ImageAsset(name: "Icons/Rocket")
       public enum Social {
         public static let instagram = ImageAsset(name: "Icons/Social/Instagram")
       }

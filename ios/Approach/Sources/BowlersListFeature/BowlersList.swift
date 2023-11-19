@@ -5,10 +5,12 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
 import LeaguesListFeature
 import ModelsLibrary
 import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
+import QuickLaunchRepositoryInterface
 import ResourceListLibrary
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
@@ -34,12 +36,14 @@ public struct BowlersList: Reducer {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext, newWidgetSource: nil)
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
+		public var quickLaunch: QuickLaunchSource?
 
 		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var destination: Destination.State?
 
 		public var isShowingWidgets: Bool
+		public let isQuickLaunchEnabled: Bool
 
 		public init() {
 			self.list = .init(
@@ -60,6 +64,9 @@ public struct BowlersList: Reducer {
 
 			@Dependency(\.preferences) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isQuickLaunchEnabled = featureFlags.isEnabled(.seriesQuickCreate)
 		}
 	}
 
@@ -68,12 +75,14 @@ public struct BowlersList: Reducer {
 			case didStartTask
 			case didTapSortOrderButton
 			case didTapBowler(Bowler.ID)
+			case didTapQuickLaunchButton
 		}
 
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
+			case didLoadQuickLaunch(TaskResult<QuickLaunchSource?>)
 			case didArchiveBowler(TaskResult<Bowler.List>)
 			case didSetIsShowingWidgets(Bool)
 
@@ -124,6 +133,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.preferences) var preferences
+	@Dependency(\.quickLaunch) var quickLaunch
 	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.uuid) var uuid
 
@@ -145,13 +155,23 @@ public struct BowlersList: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didStartTask:
-					return .run { send in
-						for await _ in preferences.observe(keys: [.statisticsWidgetHideInBowlerList]) {
-							await send(.internal(.didSetIsShowingWidgets(
-								preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
-							)))
+					return .merge(
+						.run { send in
+							for await _ in preferences.observe(keys: [.statisticsWidgetHideInBowlerList]) {
+								await send(.internal(.didSetIsShowingWidgets(
+									preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
+								)))
+							}
+						},
+						.run { [isQuickLaunchEnabled = state.isQuickLaunchEnabled] send in
+							guard isQuickLaunchEnabled else { return }
+							for try await source in quickLaunch.defaultSource() {
+								await send(.internal(.didLoadQuickLaunch(.success(source))))
+							}
+						} catch: { error, send in
+							await send(.internal(.didLoadQuickLaunch(.failure(error))))
 						}
-					}
+					)
 
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.list.query))
@@ -164,6 +184,10 @@ public struct BowlersList: Reducer {
 						try await clock.sleep(for: .seconds(1))
 						recentlyUsed.didRecentlyUseResource(.bowlers, id)
 					}
+
+				case .didTapQuickLaunchButton:
+					// TODO: Open quick launch menu
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -174,6 +198,10 @@ public struct BowlersList: Reducer {
 
 				case let .didLoadEditableBowler(.success(bowler)):
 					state.destination = .editor(.init(value: .edit(bowler)))
+					return .none
+
+				case let .didLoadQuickLaunch(.success(quickLaunch)):
+					state.quickLaunch = quickLaunch
 					return .none
 
 				case .didArchiveBowler(.success):
@@ -188,6 +216,10 @@ public struct BowlersList: Reducer {
 					return state.errors
 						.enqueue(.failedToArchiveBowler, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
 						.map { .internal(.errors($0)) }
+
+				case .didLoadQuickLaunch(.failure):
+					// Intentionally drop quick launch errors
+					return .none
 
 				case let .errors(.delegate(delegateAction)):
 					switch delegateAction {
