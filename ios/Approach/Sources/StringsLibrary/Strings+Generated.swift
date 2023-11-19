@@ -984,6 +984,14 @@ public enum Strings {
     public static let playNow = Strings.tr("Localizable", "quickLaunch.playNow", fallback: "Play Now")
     /// Quick Launch
     public static let title = Strings.tr("Localizable", "quickLaunch.title", fallback: "Quick Play")
+    public enum BowlersList {
+      public enum Tip {
+        /// Use the button above to start a new series in your last played league.
+        public static let message = Strings.tr("Localizable", "quickLaunch.bowlersList.tip.message", fallback: "Use the button above to start a new series in your last played league.")
+        /// Quickly start a new series
+        public static let title = Strings.tr("Localizable", "quickLaunch.bowlersList.tip.title", fallback: "Quickly start a new series")
+      }
+    }
   }
   public enum Roll {
     /// Roll

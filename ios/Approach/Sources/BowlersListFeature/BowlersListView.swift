@@ -14,6 +14,7 @@ import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
+import TipsLibrary
 import ToastLibrary
 import ViewsLibrary
 
@@ -24,11 +25,13 @@ public struct BowlersListView: View {
 		let ordering: Bowler.Ordering
 		let isShowingWidgets: Bool
 		let quickLaunch: QuickLaunchSource?
+		let isShowingQuickLaunchTip: Bool
 
 		init(state: BowlersList.State) {
 			self.ordering = state.ordering
 			self.isShowingWidgets = state.isShowingWidgets
 			self.quickLaunch = state.isQuickLaunchEnabled ? state.quickLaunch : nil
+			self.isShowingQuickLaunchTip = state.isShowingQuickLaunchTip
 		}
 	}
 
@@ -94,6 +97,17 @@ public struct BowlersListView: View {
 			}
 			.listRowInsets(EdgeInsets())
 			.compactList()
+
+			if viewStore.isShowingQuickLaunchTip {
+				Section {
+					BasicTipView(
+						tip: .quickLaunchTip,
+						isDismissable: false,
+						onDismiss: {}
+					)
+				}
+				.compactList()
+			}
 		}
 	}
 

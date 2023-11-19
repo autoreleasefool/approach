@@ -17,6 +17,8 @@ import SeriesEditorFeature
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
+import TipsLibrary
+import TipsServiceInterface
 import ToastLibrary
 import ViewsLibrary
 
@@ -45,6 +47,7 @@ public struct BowlersList: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
+		public var isShowingQuickLaunchTip: Bool
 		public var isShowingWidgets: Bool
 		public let isQuickLaunchEnabled: Bool
 
@@ -70,6 +73,9 @@ public struct BowlersList: Reducer {
 
 			@Dependency(\.featureFlags) var featureFlags
 			self.isQuickLaunchEnabled = featureFlags.isEnabled(.seriesQuickCreate)
+
+			@Dependency(\.tips) var tips
+			self.isShowingQuickLaunchTip = tips.shouldShow(tipFor: .quickLaunchTip)
 		}
 	}
 
@@ -150,6 +156,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.preferences) var preferences
 	@Dependency(\.quickLaunch) var quickLaunch
 	@Dependency(\.recentlyUsed) var recentlyUsed
+	@Dependency(\.tips) var tips
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -202,10 +209,12 @@ public struct BowlersList: Reducer {
 
 				case .didTapQuickLaunchButton:
 					guard let league = state.quickLaunch?.league else { return .none }
+					state.isShowingQuickLaunchTip = false
 					state.destination = .seriesEditor(.init(
 						value: .create(.default(withId: uuid(), onDate: calendar.startOfDay(for: date()), inLeague: league)),
 						inLeague: league
 					))
+					return .run { _ in await tips.hide(tipFor: .quickLaunchTip) }
 				}
 
 			case let .internal(internalAction):
@@ -349,4 +358,12 @@ public struct BowlersList: Reducer {
 			}
 		}
 	}
+}
+
+extension Tip {
+	static let quickLaunchTip = Tip(
+		id: "Bowlers.List.QuickLaunch",
+		title: Strings.QuickLaunch.BowlersList.Tip.title,
+		message: Strings.QuickLaunch.BowlersList.Tip.message
+	)
 }
