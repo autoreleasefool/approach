@@ -17,6 +17,7 @@
 		CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E4F29E2949400B09020 /* AlleysRepository */; };
 		CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5129E32A9900B09020 /* LeaguesRepository */; };
 		CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5329E3796A00B09020 /* SeriesRepository */; };
+		CA4A66182B09F37E00DCD52B /* QuickLaunchRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */; };
 		CA5901192A05A862000261C9 /* GearRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA5901182A05A862000261C9 /* GearRepository */; };
 		CA59011B2A05AD62000261C9 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011A2A05AD62000261C9 /* RecentlyUsedService */; };
 		CA59011D2A05AD81000261C9 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011C2A05AD81000261C9 /* PreferenceService */; };
@@ -125,6 +126,7 @@
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
 				CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */,
 				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
+				CA4A66182B09F37E00DCD52B /* QuickLaunchRepository in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CA6CBA3929EBBE4C00B3BAF7 /* GearRepository in Frameworks */,
@@ -329,6 +331,7 @@
 				CA2B78202AABC9EC0044487E /* ScoresRepository */,
 				CA626E282A821B9A002BCC13 /* ProductsService */,
 				CAC458A22AB838C500898C16 /* ImportExportService */,
+				CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -566,6 +569,10 @@
 		CA439E5329E3796A00B09020 /* SeriesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SeriesRepository;
+		};
+		CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = QuickLaunchRepository;
 		};
 		CA5901182A05A862000261C9 /* GearRepository */ = {
 			isa = XCSwiftPackageProductDependency;

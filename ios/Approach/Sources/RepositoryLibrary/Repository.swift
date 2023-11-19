@@ -2,6 +2,18 @@ import AsyncAlgorithms
 import Foundation
 import SortingLibrary
 
+public func asyncThrowingStream<T>(
+	asyncTask: @escaping (AsyncThrowingStream<T, Error>.Continuation) async throws -> Void
+) -> AsyncThrowingStream<T, Error> {
+	.init { continuation in
+		let task = Task {
+			try await asyncTask(continuation)
+		}
+
+		continuation.onTermination = { _ in task.cancel() }
+	}
+}
+
 public func sort<T: Identifiable>(
 	_ itemsStream: AsyncStream<[T]>,
 	byIds idsStream: AsyncStream<[UUID]>
