@@ -47,6 +47,7 @@ services = [ "Analytics" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList" ]
+repositories = [ "QuickLaunch" ]
 
 [features.Errors]
 services = [ "Email", "FileManager", "Logging", "Pasteboard" ]
