@@ -446,6 +446,8 @@
 "quickLaunch.title" = "Quick Play";
 "quickLaunch.newSeries" = "New Series";
 "quickLaunch.playNow" = "Play Now";
+"quickLaunch.bowlersList.tip.title" = "Quickly start a new series";
+"quickLaunch.bowlersList.tip.message" = "Use the button above to start a new series in your last played league.";
 
 /* Sharing */
 
