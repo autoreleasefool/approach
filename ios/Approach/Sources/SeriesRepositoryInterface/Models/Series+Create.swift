@@ -24,5 +24,9 @@ extension Series {
 				location: inLeague.alley
 			)
 		}
+
+		public var asSummary: Summary {
+			.init(id: id, date: date)
+		}
 	}
 }
