@@ -6,12 +6,14 @@ import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
+import GamesListFeature
 import LeaguesListFeature
 import ModelsLibrary
 import PreferenceServiceInterface
-import RecentlyUsedServiceInterface
 import QuickLaunchRepositoryInterface
+import RecentlyUsedServiceInterface
 import ResourceListLibrary
+import SeriesEditorFeature
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
@@ -29,6 +31,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 	}
 }
 
+// swiftlint:disable:next type_body_length
 public struct BowlersList: Reducer {
 	public static let widgetContext = "bowlersList"
 
@@ -102,12 +105,16 @@ public struct BowlersList: Reducer {
 			case editor(BowlerEditor.State)
 			case leagues(LeaguesList.State)
 			case sortOrder(SortOrder<Bowler.Ordering>.State)
+			case seriesEditor(SeriesEditor.State)
+			case games(GamesList.State)
 		}
 
 		public enum Action: Equatable {
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
+			case seriesEditor(SeriesEditor.Action)
+			case games(GamesList.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -120,6 +127,12 @@ public struct BowlersList: Reducer {
 			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
 				SortOrder()
 			}
+			Scope(state: /State.seriesEditor, action: /Action.seriesEditor) {
+				SeriesEditor()
+			}
+			Scope(state: /State.games, action: /Action.games) {
+				GamesList()
+			}
 		}
 	}
 
@@ -131,7 +144,9 @@ public struct BowlersList: Reducer {
 	public init() {}
 
 	@Dependency(\.bowlers) var bowlers
+	@Dependency(\.calendar) var calendar
 	@Dependency(\.continuousClock) var clock
+	@Dependency(\.date) var date
 	@Dependency(\.preferences) var preferences
 	@Dependency(\.quickLaunch) var quickLaunch
 	@Dependency(\.recentlyUsed) var recentlyUsed
@@ -186,8 +201,11 @@ public struct BowlersList: Reducer {
 					}
 
 				case .didTapQuickLaunchButton:
-					// TODO: Open quick launch menu
-					return .none
+					guard let league = state.quickLaunch?.league else { return .none }
+					state.destination = .seriesEditor(.init(
+						value: .create(.default(withId: uuid(), onDate: calendar.startOfDay(for: date()), inLeague: league)),
+						inLeague: league
+					))
 				}
 
 			case let .internal(internalAction):
@@ -224,6 +242,17 @@ public struct BowlersList: Reducer {
 				case let .errors(.delegate(delegateAction)):
 					switch delegateAction {
 					case .never:
+						return .none
+					}
+
+				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
+					switch delegateAction {
+					case let .didFinishCreating(created):
+						guard let quickLaunch = state.quickLaunch else { return .none }
+						state.destination = .games(.init(series: created.asSummary, host: quickLaunch.league))
+						return .none
+
+					case .didFinishArchiving, .didFinishUpdating:
 						return .none
 					}
 
@@ -293,7 +322,11 @@ public struct BowlersList: Reducer {
 						.destination(.presented(.leagues(.internal))),
 						.destination(.presented(.leagues(.view))),
 						.destination(.presented(.sortOrder(.internal))),
-						.destination(.presented(.sortOrder(.view))):
+						.destination(.presented(.sortOrder(.view))),
+						.destination(.presented(.seriesEditor(.internal))),
+						.destination(.presented(.seriesEditor(.view))),
+						.destination(.presented(.games(.internal))),
+						.destination(.presented(.games(.view))):
 					return .none
 				}
 
