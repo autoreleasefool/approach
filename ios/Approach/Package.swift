@@ -109,6 +109,8 @@ let package = Package(
 		.library(name: "ProductsServiceInterface", targets: ["ProductsServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
+		.library(name: "StoreReviewService", targets: ["StoreReviewService"]),
+		.library(name: "StoreReviewServiceInterface", targets: ["StoreReviewServiceInterface"]),
 		.library(name: "TipsService", targets: ["TipsService"]),
 		.library(name: "TipsServiceInterface", targets: ["TipsServiceInterface"]),
 
@@ -1412,6 +1414,27 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
+			]
+		),
+		.target(
+			name: "StoreReviewService",
+			dependencies: [
+				"AppInfoServiceInterface",
+				"PreferenceServiceInterface",
+				"StoreReviewServiceInterface",
+			]
+		),
+		.target(
+			name: "StoreReviewServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "StoreReviewServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StoreReviewService",
 			]
 		),
 		.target(
