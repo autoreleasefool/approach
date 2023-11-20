@@ -275,6 +275,9 @@ libraries = [ "Products" ]
 [services.RecentlyUsed]
 services = [ "Preference" ]
 
+[services.StoreReview]
+services = [ "AppInfo", "Preference" ]
+
 [services.Tips]
 services = [ "Preference" ]
 [services.Tips.interface]

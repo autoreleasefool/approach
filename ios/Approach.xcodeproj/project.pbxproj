@@ -18,6 +18,7 @@
 		CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5129E32A9900B09020 /* LeaguesRepository */; };
 		CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5329E3796A00B09020 /* SeriesRepository */; };
 		CA4A66182B09F37E00DCD52B /* QuickLaunchRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */; };
+		CA58FB392B0B209100151821 /* StoreReviewService in Frameworks */ = {isa = PBXBuildFile; productRef = CA58FB382B0B209100151821 /* StoreReviewService */; };
 		CA58FB3B2B0B234800151821 /* AppInfoService in Frameworks */ = {isa = PBXBuildFile; productRef = CA58FB3A2B0B234800151821 /* AppInfoService */; };
 		CA5901192A05A862000261C9 /* GearRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA5901182A05A862000261C9 /* GearRepository */; };
 		CA59011B2A05AD62000261C9 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CA59011A2A05AD62000261C9 /* RecentlyUsedService */; };
@@ -137,6 +138,7 @@
 				CAC51C1E2A51412300A99164 /* StatisticsWidgetsRepository in Frameworks */,
 				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CA626E272A821846002BCC13 /* StoreKit.framework in Frameworks */,
+				CA58FB392B0B209100151821 /* StoreReviewService in Frameworks */,
 				CA6CBA3529EBBE4C00B3BAF7 /* FramesRepository in Frameworks */,
 				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
 				CA626E2F2A842032002BCC13 /* TipsService in Frameworks */,
@@ -334,6 +336,7 @@
 				CA626E282A821B9A002BCC13 /* ProductsService */,
 				CAC458A22AB838C500898C16 /* ImportExportService */,
 				CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */,
+				CA58FB382B0B209100151821 /* StoreReviewService */,
 				CA58FB3A2B0B234800151821 /* AppInfoService */,
 			);
 			productName = Approach;
@@ -576,6 +579,10 @@
 		CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = QuickLaunchRepository;
+		};
+		CA58FB382B0B209100151821 /* StoreReviewService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = StoreReviewService;
 		};
 		CA58FB3A2B0B234800151821 /* AppInfoService */ = {
 			isa = XCSwiftPackageProductDependency;
