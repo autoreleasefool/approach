@@ -81,6 +81,7 @@ public struct BowlersList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didStartTask
 			case didTapSortOrderButton
 			case didTapBowler(Bowler.ID)
@@ -176,6 +177,9 @@ public struct BowlersList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didStartTask:
 					return .merge(
 						.run { send in
@@ -355,6 +359,13 @@ public struct BowlersList: Reducer {
 				return Analytics.Bowler.Archived(kind: Bowler.Kind.playable.rawValue)
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return Breadcrumb("BowlersList")
+			default: return nil
 			}
 		}
 	}
