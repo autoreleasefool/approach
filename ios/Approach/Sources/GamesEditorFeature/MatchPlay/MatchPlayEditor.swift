@@ -3,7 +3,6 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
 import MatchPlaysRepositoryInterface
 import ModelsLibrary
 import ModelsViewsLibrary
@@ -17,15 +16,11 @@ import ViewsLibrary
 public struct MatchPlayEditor: Reducer {
 	public struct State: Equatable {
 		public var matchPlay: MatchPlay.Edit
-		public let isOpponentsEnabled: Bool
 
 		@PresentationState public var opponentPicker: ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State?
 
-		init(matchPlay: MatchPlay.Edit, isOpponentsEnabled: Bool? = nil) {
+		init(matchPlay: MatchPlay.Edit) {
 			self.matchPlay = matchPlay
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isOpponentsEnabled = isOpponentsEnabled ?? featureFlags.isEnabled(.opponents)
 		}
 	}
 
@@ -132,41 +127,37 @@ public struct MatchPlayEditorView: View {
 
 	struct ViewState: Equatable {
 		let matchPlay: MatchPlay.Edit
-		let isOpponentsEnabled: Bool
 
 		init(state: MatchPlayEditor.State) {
 			self.matchPlay = state.matchPlay
-			self.isOpponentsEnabled = state.isOpponentsEnabled
 		}
 	}
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			Form {
-				if viewStore.isOpponentsEnabled {
-					Section(Strings.MatchPlay.Editor.Fields.Opponent.title) {
-						NavigationButton { viewStore.send(.didTapOpponent) } content: {
-							LabeledContent(
-								Strings.MatchPlay.Editor.Fields.Opponent.title,
-								value: viewStore.matchPlay.opponent?.name ?? Strings.none
-							)
-						}
-
-						TextField(
-							Strings.MatchPlay.Editor.Fields.Opponent.score,
-							text: viewStore.binding(
-								get: {
-									if let score = $0.matchPlay.opponentScore, score > 0 {
-										return String(score)
-									} else {
-										return ""
-									}
-								},
-								send: { .didSetScore($0) }
-							)
+				Section(Strings.MatchPlay.Editor.Fields.Opponent.title) {
+					NavigationButton { viewStore.send(.didTapOpponent) } content: {
+						LabeledContent(
+							Strings.MatchPlay.Editor.Fields.Opponent.title,
+							value: viewStore.matchPlay.opponent?.name ?? Strings.none
 						)
-						.keyboardType(.numberPad)
 					}
+
+					TextField(
+						Strings.MatchPlay.Editor.Fields.Opponent.score,
+						text: viewStore.binding(
+							get: {
+								if let score = $0.matchPlay.opponentScore, score > 0 {
+									return String(score)
+								} else {
+									return ""
+								}
+							},
+							send: { .didSetScore($0) }
+						)
+					)
+					.keyboardType(.numberPad)
 				}
 
 				Section {

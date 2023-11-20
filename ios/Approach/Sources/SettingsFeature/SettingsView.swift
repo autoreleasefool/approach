@@ -15,7 +15,6 @@ public struct SettingsView: View {
 
 	struct ViewState: Equatable {
 		let isShowingDeveloperOptions: Bool
-		let showsOpponents: Bool
 
 		let isShowingAppIcon: Bool
 		let currentAppIcon: AppIcon?
@@ -30,8 +29,7 @@ public struct SettingsView: View {
 
 		init(state: Settings.State) {
 			self.isShowingDeveloperOptions = state.isShowingDeveloperOptions
-			self.showsOpponents = state.hasOpponentsEnabled
-			self.isShowingAppIcon = state.hasAppIconConfigEnabled && !state.isLoadingAppIcon
+			self.isShowingAppIcon = !state.isLoadingAppIcon
 			self.currentAppIcon = state.currentAppIcon
 		}
 	}
@@ -56,15 +54,13 @@ public struct SettingsView: View {
 					}
 				}
 
-				if viewStore.showsOpponents {
-					Section {
-						Button { viewStore.send(.didTapOpponents) } label: {
-							Text(Strings.Opponent.List.title)
-						}
-						.buttonStyle(.navigation)
-					} footer: {
-						Text(Strings.Settings.Opponents.footer)
+				Section {
+					Button { viewStore.send(.didTapOpponents) } label: {
+						Text(Strings.Opponent.List.title)
 					}
+					.buttonStyle(.navigation)
+				} footer: {
+					Text(Strings.Settings.Opponents.footer)
 				}
 
 				Section {

@@ -5,8 +5,6 @@ import DateTimeLibrary
 import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
 import GearRepositoryInterface
 import LanesRepositoryInterface
@@ -31,9 +29,6 @@ public struct GameDetails: Reducer {
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement?
 		public var shouldHeaderShimmer: Bool
 
-		public let isGearEnabled: Bool
-		public let isOpponentsEnabled: Bool
-
 		public var _gameDetailsHeader: GameDetailsHeader.State = .init()
 
 		@PresentationState public var destination: Destination.State?
@@ -50,10 +45,6 @@ public struct GameDetails: Reducer {
 			self.seriesGames = seriesGames
 			self.nextHeaderElement = nextHeaderElement
 			self.shouldHeaderShimmer = didChangeBowler
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isGearEnabled = featureFlags.isEnabled(.gear)
-			self.isOpponentsEnabled = featureFlags.isEnabled(.opponents)
 		}
 	}
 

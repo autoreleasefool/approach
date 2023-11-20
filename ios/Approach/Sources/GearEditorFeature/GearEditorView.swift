@@ -18,10 +18,8 @@ public struct GearEditorView: View {
 		@BindingViewState var name: String
 		@BindingViewState var kind: Gear.Kind
 		let owner: Bowler.Summary?
+		let avatar: Avatar.Summary
 		let isEditing: Bool
-
-		let isAvatarsEnabled: Bool
-		let avatar: Avatar.Summary?
 	}
 
 	public init(store: StoreOf<GearEditor>) {
@@ -49,20 +47,18 @@ public struct GearEditorView: View {
 					.disabled(viewStore.isEditing)
 				}
 
-				if viewStore.isAvatarsEnabled {
-					Section {
-						Button { viewStore.send(.didTapAvatar) } label: {
-							HStack {
-								AvatarView(viewStore.avatar, size: .standardIcon)
-								Text(Strings.Gear.Properties.Avatar.customize)
-							}
+				Section {
+					Button { viewStore.send(.didTapAvatar) } label: {
+						HStack {
+							AvatarView(viewStore.avatar, size: .standardIcon)
+							Text(Strings.Gear.Properties.Avatar.customize)
 						}
-						.buttonStyle(.navigation)
-					} header: {
-						Text(Strings.Gear.Properties.Avatar.title)
-					} footer: {
-						Text(Strings.Gear.Properties.Avatar.description)
 					}
+					.buttonStyle(.navigation)
+				} header: {
+					Text(Strings.Gear.Properties.Avatar.title)
+				} footer: {
+					Text(Strings.Gear.Properties.Avatar.description)
 				}
 
 				Section(Strings.Gear.Properties.owner) {
@@ -101,8 +97,7 @@ extension GearEditorView.ViewState {
 		self._name = store.$name
 		self._kind = store.$kind
 		self.owner = store.owner
-		self.isAvatarsEnabled = store.isAvatarsEnabled
-		self.avatar = isAvatarsEnabled ? store.avatar : nil
+		self.avatar = store.avatar
 		switch store._form.value {
 		case .create: self.isEditing = false
 		case .edit: self.isEditing = true
@@ -132,9 +127,7 @@ struct GearEditorViewPreviews: PreviewProvider {
 						avatar: .init(id: UUID(), value: .text("", .default))
 					))),
 					reducer: GearEditor.init
-				) {
-					$0.featureFlags.isEnabled = { _ in true }
-				}
+				)
 			)
 		}
 	}

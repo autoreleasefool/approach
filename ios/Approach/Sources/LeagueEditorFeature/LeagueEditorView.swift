@@ -30,7 +30,6 @@ public struct LeagueEditorView: View {
 
 		let shouldShowLocationSection: Bool
 		let location: Alley.Summary?
-		let hasAlleysEnabled: Bool
 
 		let isEditing: Bool
 		let isDismissDisabled: Bool
@@ -89,7 +88,7 @@ public struct LeagueEditorView: View {
 	}
 
 	@ViewBuilder private func locationSection(_ viewStore: LeagueEditorViewStore) -> some View {
-		if viewStore.hasAlleysEnabled && viewStore.shouldShowLocationSection {
+		if viewStore.shouldShowLocationSection {
 			Section {
 				Button { viewStore.send(.didTapAlley) } label: {
 					LabeledContent(
@@ -209,7 +208,6 @@ extension LeagueEditorView.ViewState {
 		self._gamesPerSeries = store.$gamesPerSeries
 		self._hasAdditionalPinfall = store.$hasAdditionalPinfall
 
-		self.hasAlleysEnabled = store.hasAlleysEnabled
 		self.isDismissDisabled = store.alleyPicker != nil
 		self.location = store.location
 		self.shouldShowLocationSection = store.shouldShowLocationSection

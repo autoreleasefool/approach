@@ -46,12 +46,12 @@ public struct TabbedContent: Reducer {
 
 		public var id: String { rawValue }
 		public var description: String { rawValue }
-		public var featureFlag: FeatureFlag {
+		public var featureFlag: FeatureFlag? {
 			switch self {
-			case .overview: return .overviewTab
-			case .statistics: return .statisticsTab
-			case .accessories: return .accessoriesTab
-			case .settings: return .settingsTab
+			case .overview: return nil
+			case .statistics: return nil
+			case .accessories: return nil
+			case .settings: return nil
 			}
 		}
 	}
@@ -85,9 +85,12 @@ public struct TabbedContent: Reducer {
 				switch viewAction {
 				case .didAppear:
 					return .run { send in
-						let expectedFlags = TabbedContent.Tab.allCases.map { $0.featureFlag }
+						let expectedFlags = TabbedContent.Tab.allCases.compactMap { $0.featureFlag }
 						for await flags in featureFlags.observeAll(expectedFlags) {
-							await send(.internal(.didChangeTabs(zip(TabbedContent.Tab.allCases, flags).filter(\.1).map(\.0))))
+							await send(.internal(.didChangeTabs(TabbedContent.Tab.allCases.filter {
+								guard let tabFlag = $0.featureFlag else { return true }
+								return flags[tabFlag] ?? true
+							})))
 						}
 					}
 

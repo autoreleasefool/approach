@@ -5,7 +5,7 @@ public struct FeatureFlagsService: Sendable {
 	public var isEnabled: @Sendable (FeatureFlag) -> Bool
 	public var allEnabled: @Sendable ([FeatureFlag]) -> Bool
 	public var observe: @Sendable (FeatureFlag) -> AsyncStream<Bool>
-	public var observeAll: @Sendable ([FeatureFlag]) -> AsyncStream<[Bool]>
+	public var observeAll: @Sendable ([FeatureFlag]) -> AsyncStream<[FeatureFlag: Bool]>
 	public var setEnabled: @Sendable (FeatureFlag, Bool?) -> Void
 	public var resetOverrides: @Sendable () -> Void
 
@@ -13,7 +13,7 @@ public struct FeatureFlagsService: Sendable {
 		isEnabled: @escaping @Sendable (FeatureFlag) -> Bool,
 		allEnabled: @escaping @Sendable ([FeatureFlag]) -> Bool,
 		observe: @escaping @Sendable (FeatureFlag) -> AsyncStream<Bool>,
-		observeAll: @escaping @Sendable ([FeatureFlag]) -> AsyncStream<[Bool]>,
+		observeAll: @escaping @Sendable ([FeatureFlag]) -> AsyncStream<[FeatureFlag: Bool]>,
 		setEnabled: @escaping @Sendable (FeatureFlag, Bool?) -> Void,
 		resetOverrides: @escaping @Sendable () -> Void
 	) {

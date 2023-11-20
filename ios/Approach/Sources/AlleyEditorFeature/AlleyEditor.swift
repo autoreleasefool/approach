@@ -4,8 +4,6 @@ import AnalyticsServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import FormFeature
 import Foundation
 import LaneEditorFeature
@@ -31,8 +29,6 @@ public struct AlleyEditor: Reducer {
 
 		public let initialValue: AlleyForm.Value
 		public var _form: AlleyForm.State
-
-		public let hasLanesEnabled: Bool
 
 		@PresentationState public var addressLookup: AddressLookup.State?
 		@PresentationState public var alleyLanesEditor: AlleyLanesEditor.State?
@@ -62,9 +58,6 @@ public struct AlleyEditor: Reducer {
 				self.initialValue = .edit(existing.alley)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.hasLanesEnabled = featureFlags.isEnabled(.lanes)
 		}
 	}
 

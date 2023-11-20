@@ -17,11 +17,9 @@ public struct Settings: Reducer {
 	public struct State: Equatable {
 		public var isShowingDeveloperOptions: Bool
 		public var helpSettings = HelpSettings.State()
-		public let hasOpponentsEnabled: Bool
 
-		public var isLoadingAppIcon: Bool
+		public var isLoadingAppIcon: Bool = true
 		public var currentAppIcon: AppIcon?
-		public let hasAppIconConfigEnabled: Bool
 
 		public var toast: ToastState<ToastAction>?
 		@PresentationState public var destination: Destination.State?
@@ -29,9 +27,6 @@ public struct Settings: Reducer {
 		public init() {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
-			self.hasOpponentsEnabled = featureFlags.isEnabled(.opponents)
-			self.hasAppIconConfigEnabled = featureFlags.isEnabled(.appIconConfig)
-			self.isLoadingAppIcon = self.hasAppIconConfigEnabled
 		}
 	}
 

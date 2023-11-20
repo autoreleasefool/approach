@@ -25,18 +25,20 @@ extension FeatureFlagsService: DependencyKey {
 			#endif
 		}
 
-		@Sendable func areFlagsEnabled(flags: [FeatureFlag]) -> [Bool] {
+		@Sendable func areFlagsEnabled(flags: [FeatureFlag]) -> [FeatureFlag: Bool] {
 			#if DEBUG
 			let overrides = flagManager.getOverrides(flags: flags)
-			return zip(flags, overrides).map { $1 ?? $0.isEnabled }
+			return zip(flags, overrides).reduce(into: [:]) {
+				acc, override in acc[override.0] = override.1 ?? override.0.isEnabled
+			}
 			#else
-			return flags.map(\.isEnabled)
+			return flags.reduce(into: [:]) { acc, flag in acc[flag] = flag.isEnabled }
 			#endif
 		}
 
 		return Self(
 			isEnabled: isFlagEnabled(flag:),
-			allEnabled: { flags in areFlagsEnabled(flags: flags).allSatisfy { $0 } },
+			allEnabled: { flags in areFlagsEnabled(flags: flags).allSatisfy { $0.value } },
 			observe: { flag in
 				.init { continuation in
 					continuation.yield(isFlagEnabled(flag: flag))

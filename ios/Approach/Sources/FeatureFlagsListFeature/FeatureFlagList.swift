@@ -47,7 +47,9 @@ public struct FeatureFlagsList: Reducer {
 					return .run { send in
 						let observedFlags = FeatureFlag.allFlags
 						for await flags in featureFlagService.observeAll(observedFlags) {
-							await send(.internal(.didLoadFlags(zip(observedFlags, flags).map(FeatureFlagItem.init))))
+							await send(.internal(.didLoadFlags(observedFlags.map {
+								FeatureFlagItem(flag: $0, enabled: flags[$0] ?? false)
+							})))
 						}
 					}
 

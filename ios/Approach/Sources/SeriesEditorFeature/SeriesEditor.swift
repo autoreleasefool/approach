@@ -4,8 +4,6 @@ import ComposableArchitecture
 import DateTimeLibrary
 import EquatableLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import FormFeature
 import Foundation
 import LanesRepositoryInterface
@@ -19,7 +17,6 @@ public typealias SeriesForm = Form<Series.Create, Series.Edit>
 
 public struct SeriesEditor: Reducer {
 	public struct State: Equatable {
-		public let hasAlleysEnabled: Bool
 		public let league: League.SeriesHost
 
 		@BindingState public var numberOfGames: Int
@@ -55,9 +52,6 @@ public struct SeriesEditor: Reducer {
 				self.initialValue = .edit(existing)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
 		}
 	}
 

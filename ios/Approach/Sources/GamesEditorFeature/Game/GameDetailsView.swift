@@ -46,10 +46,8 @@ public struct GameDetailsView: View {
 							onTapGame: { viewStore.send(.didTapGameStatisticsButton) }
 						)
 
-						if viewStore.isGearEnabled {
-							GearSummarySection(gear: game.gear) {
-								viewStore.send(.didTapGear)
-							}
+						GearSummarySection(gear: game.gear) {
+							viewStore.send(.didTapGear)
 						}
 
 						MatchPlaySummarySection(matchPlay: game.matchPlay) {

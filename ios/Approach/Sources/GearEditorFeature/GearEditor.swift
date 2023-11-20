@@ -5,8 +5,6 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import FormFeature
 import Foundation
 import GearRepositoryInterface
@@ -35,8 +33,6 @@ public struct GearEditor: Reducer {
 
 		@PresentationState var destination: Destination.State?
 
-		public let isAvatarsEnabled: Bool
-
 		public init(value: GearForm.Value) {
 			self.initialValue = value
 			self._form = .init(initialValue: value, currentValue: value)
@@ -53,9 +49,6 @@ public struct GearEditor: Reducer {
 				self.owner = existing.owner
 				self.avatar = existing.avatar
 			}
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
 	}
 

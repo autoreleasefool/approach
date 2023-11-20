@@ -24,7 +24,6 @@ public struct AlleyEditorView: View {
 		@BindingViewState var coordinate: CoordinateRegion
 		let location: Location.Edit?
 
-		let hasLanesEnabled: Bool
 		let newLanes: IdentifiedArrayOf<Lane.Create>
 		let existingLanes: IdentifiedArrayOf<Lane.Edit>
 	}
@@ -42,9 +41,7 @@ public struct AlleyEditorView: View {
 				mechanismSection(viewStore)
 				pinFallSection(viewStore)
 				pinBaseSection(viewStore)
-				if viewStore.hasLanesEnabled {
-					lanesSection(viewStore)
-				}
+				lanesSection(viewStore)
 				Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
 					.listRowInsets(EdgeInsets())
 			}
@@ -200,7 +197,6 @@ extension AlleyEditorView.ViewState {
 		self._mechanism = store.$mechanism
 		self._coordinate = store.$coordinate
 		self.location = store.location
-		self.hasLanesEnabled = store.hasLanesEnabled
 		self.newLanes = store.newLanes
 		self.existingLanes = store.existingLanes
 	}

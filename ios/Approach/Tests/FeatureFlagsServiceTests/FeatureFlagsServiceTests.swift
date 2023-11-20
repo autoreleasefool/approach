@@ -163,16 +163,16 @@ final class FeatureFlagsServiceTests: XCTestCase {
 		var observations = featureFlags.observeAll(flags).makeAsyncIterator()
 
 		let firstObservation = await observations.next()
-		XCTAssertEqual(firstObservation, [true, true, true])
+		XCTAssertEqual(firstObservation, [flags[0]: true, flags[1]: true, flags[2]: true])
 
 		featureFlags.setEnabled(flags[0], false)
 		featureFlags.setEnabled(flags[2], false)
 
 		let secondObservation = await observations.next()
-		XCTAssertEqual(secondObservation, [false, true, true])
+		XCTAssertEqual(secondObservation, [flags[0]: false, flags[1]: true, flags[2]: true])
 
 		let thirdObservation = await observations.next()
-		XCTAssertEqual(thirdObservation, [false, true, false])
+		XCTAssertEqual(thirdObservation, [flags[0]: false, flags[1]: true, flags[2]: false])
 	}
 
 	func testOverridingFlagPublishesNotification() {

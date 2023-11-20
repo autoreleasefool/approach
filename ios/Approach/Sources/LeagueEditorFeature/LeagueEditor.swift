@@ -3,8 +3,6 @@ import AnalyticsServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import FormFeature
 import LeaguesRepositoryInterface
 import ModelsLibrary
@@ -16,8 +14,6 @@ public typealias LeagueForm = Form<League.Create, League.Edit>
 
 public struct LeagueEditor: Reducer {
 	public struct State: Equatable {
-		public let hasAlleysEnabled: Bool
-
 		@BindingState public var name: String
 		@BindingState public var recurrence: League.Recurrence
 		@BindingState public var numberOfGames: Int
@@ -71,9 +67,6 @@ public struct LeagueEditor: Reducer {
 			self.hasAdditionalPinfall = additionalGames > 0
 			self.numberOfGames = max(numberOfGames, 1)
 			self.additionalGames = additionalGames > 0 ? String(additionalGames) : ""
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.hasAlleysEnabled = featureFlags.isEnabled(.alleys)
 		}
 	}
 

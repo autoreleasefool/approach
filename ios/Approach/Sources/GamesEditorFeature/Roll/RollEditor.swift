@@ -4,8 +4,6 @@ import ComposableArchitecture
 import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import GearRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
@@ -17,7 +15,6 @@ public struct RollEditor: Reducer {
 	public struct State: Equatable {
 		public var ballRolled: Gear.Summary?
 		public var didFoul: Bool
-		public let isGearEnabled: Bool
 		public var isEditable: Bool = true
 
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
@@ -25,9 +22,6 @@ public struct RollEditor: Reducer {
 		init(ballRolled: Gear.Summary? = nil, didFoul: Bool = false) {
 			self.ballRolled = ballRolled
 			self.didFoul = didFoul
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isGearEnabled = featureFlags.isEnabled(.gear)
 		}
 	}
 
@@ -125,34 +119,32 @@ public struct RollEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
 			HStack(alignment: .bottom) {
-				if viewStore.isGearEnabled {
-					VStack(alignment: .leading, spacing: .unitSpacing) {
-						Text(Strings.Roll.Properties.Ball.title)
-							.font(.caption)
-							.italic()
-							.foregroundColor(.white)
+				VStack(alignment: .leading, spacing: .unitSpacing) {
+					Text(Strings.Roll.Properties.Ball.title)
+						.font(.caption)
+						.italic()
+						.foregroundColor(.white)
 
-						HStack(spacing: .smallSpacing) {
-							ForEach(viewStore.recentGear) { gear in
-								Button { viewStore.send(.didTapBall(gear.id)) } label: {
-									AvatarView(gear.avatar, size: .smallerIcon)
-										.overlay(
-											Circle()
-												.stroke(gear.id == viewStore.ballRolled?.id ? .white : .clear, style: Self.selectedStrokeStyle)
-										)
-										.opacity(gear.id == viewStore.ballRolled?.id ? 1 : 0.8)
-										.padding(.tinySpacing)
-								}
+					HStack(spacing: .smallSpacing) {
+						ForEach(viewStore.recentGear) { gear in
+							Button { viewStore.send(.didTapBall(gear.id)) } label: {
+								AvatarView(gear.avatar, size: .smallerIcon)
+									.overlay(
+										Circle()
+											.stroke(gear.id == viewStore.ballRolled?.id ? .white : .clear, style: Self.selectedStrokeStyle)
+									)
+									.opacity(gear.id == viewStore.ballRolled?.id ? 1 : 0.8)
+									.padding(.tinySpacing)
 							}
+						}
 
-							Button { viewStore.send(.didTapOtherButton) } label: {
-								Image(systemSymbol: .chevronRightSquare)
-									.resizable()
-									.scaledToFit()
-									.foregroundColor(.white)
-									.frame(width: .smallIcon, height: .smallIcon)
-									.padding(.smallSpacing)
-							}
+						Button { viewStore.send(.didTapOtherButton) } label: {
+							Image(systemSymbol: .chevronRightSquare)
+								.resizable()
+								.scaledToFit()
+								.foregroundColor(.white)
+								.frame(width: .smallIcon, height: .smallIcon)
+								.padding(.smallSpacing)
 						}
 					}
 				}
