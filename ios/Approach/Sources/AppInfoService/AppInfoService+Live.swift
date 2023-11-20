@@ -1,4 +1,5 @@
 import AppInfoServiceInterface
+import ConstantsLibrary
 import Dependencies
 import Foundation
 import PreferenceServiceInterface
@@ -27,7 +28,10 @@ extension AppInfoService: DependencyKey {
 				@Dependency(\.date) var date
 				preferences.setKey(.appInstallDate, toDouble: date.now.timeIntervalSince1970)
 			},
-			installDate: installDate
+			installDate: installDate,
+			appVersion: {
+				AppConstants.appVersionReadable
+			}
 		)
 	}()
 }

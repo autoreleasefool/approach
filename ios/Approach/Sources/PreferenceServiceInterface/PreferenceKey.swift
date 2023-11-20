@@ -6,6 +6,7 @@ public enum PreferenceKey: String {
 	case appSessions                                // default: 0
 	case appInstallDate                             // default: 0
 	case appLastReviewRequestDate                   // default: 0
+	case appLastReviewVersion                       // default: ""
 
 	// MARK: - Game
 

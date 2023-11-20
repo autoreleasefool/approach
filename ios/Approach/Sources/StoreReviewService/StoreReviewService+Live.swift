@@ -21,12 +21,19 @@ extension StoreReviewService: DependencyKey {
 				let installDate = appInfo.installDate()
 				let daysSinceInstall = calendar.dateComponents([.day], from: installDate, to: date.now).day ?? 0
 
-				return numberOfSessions >= 3 && daysSinceLastRequest >= 7 && daysSinceInstall >= 7
+				let lastReviewedVersion = preferences.string(forKey: .appLastReviewVersion) ?? ""
+
+				return numberOfSessions >= 3 &&
+					daysSinceLastRequest >= 7 &&
+					daysSinceInstall >= 7 &&
+					lastReviewedVersion != appInfo.appVersion()
 			},
 			didRequestReview: {
+				@Dependency(\.appInfo) var appInfo
 				@Dependency(\.preferences) var preferences
 				@Dependency(\.date) var date
 				preferences.setKey(.appLastReviewRequestDate, toDouble: date.now.timeIntervalSince1970)
+				preferences.setKey(.appLastReviewVersion, toString: appInfo.appVersion())
 			}
 		)
 	}()
