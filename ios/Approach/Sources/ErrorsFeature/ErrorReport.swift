@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
@@ -47,6 +48,7 @@ public struct ErrorReport: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapCopyErrorButton
 			case didTapDismissButton
 			case didTapEmailButton
@@ -79,6 +81,9 @@ public struct ErrorReport: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapCopyErrorButton:
 					return .run { [errorDescription = state.thrownError.wrapped.localizedDescription] send in
 						pasteboard.copyToClipboard(errorDescription)
@@ -125,6 +130,13 @@ public struct ErrorReport: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}
@@ -241,6 +253,7 @@ public struct ErrorReportView: View {
 					)
 				)
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
 	}

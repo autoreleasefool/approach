@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
@@ -26,6 +27,7 @@ public struct Export: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapRetryButton
 		}
@@ -50,6 +52,9 @@ public struct Export: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return .merge(
 						fetchExportData(&state),
@@ -79,6 +84,13 @@ public struct Export: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}
@@ -134,6 +146,7 @@ public struct ExportView: View {
 			}
 			.navigationTitle(Strings.Export.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 

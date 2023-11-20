@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import ExtensionsLibrary
@@ -17,6 +18,7 @@ public struct Onboarding: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapGetStarted
 			case didTapAddBowler
@@ -56,6 +58,9 @@ public struct Onboarding: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return .run { send in
 						try await clock.sleep(for: .milliseconds(300))
@@ -101,6 +106,13 @@ public struct Onboarding: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

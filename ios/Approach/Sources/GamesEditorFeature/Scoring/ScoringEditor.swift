@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
@@ -12,6 +13,7 @@ public struct ScoringEditor: Reducer {
 
 	public enum Action: Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case toggleManualScoring(Bool)
 			case binding(BindingAction<State>)
 		}
@@ -37,6 +39,9 @@ public struct ScoringEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case let .toggleManualScoring(isManual):
 					state.scoringMethod = isManual ? .manual : .byFrame
 					switch state.scoringMethod {
@@ -71,6 +76,13 @@ public struct ScoringEditor: Reducer {
 				return .none
 			}
 		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
+		}
 	}
 }
 
@@ -102,6 +114,7 @@ public struct ScoringEditorView: View {
 				}
 			}
 			.navigationTitle(Strings.Scoring.title)
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 }

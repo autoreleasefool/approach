@@ -45,6 +45,7 @@ public struct GearListView: View {
 					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(

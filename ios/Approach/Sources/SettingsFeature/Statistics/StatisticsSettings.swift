@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
@@ -33,6 +34,7 @@ public struct StatisticsSettings: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
@@ -52,6 +54,9 @@ public struct StatisticsSettings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .binding(\.$isHidingZeroStatistics):
 					return .run { [updatedValue = state.isHidingZeroStatistics] _ in
 						preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
@@ -149,6 +154,7 @@ public struct StatisticsSettingsView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.Statistics.title)
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 }

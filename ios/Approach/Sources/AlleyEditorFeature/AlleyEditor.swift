@@ -70,6 +70,7 @@ public struct AlleyEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapAddressField
 			case didTapManageLanes
 			case binding(BindingAction<State>)
@@ -116,6 +117,9 @@ public struct AlleyEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapAddressField:
 					if state.location == nil {
 						state.addressLookup = .init(initialQuery: state.location?.title ?? "")
@@ -254,6 +258,13 @@ public struct AlleyEditor: Reducer {
 				return Analytics.Alley.Deleted()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

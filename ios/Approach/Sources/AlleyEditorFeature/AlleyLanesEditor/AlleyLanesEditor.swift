@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
@@ -31,6 +32,7 @@ public struct AlleyLanesEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapAddLaneButton
 			case didTapAddMultipleLanesButton
 			case alert(PresentationAction<AlertAction>)
@@ -78,6 +80,9 @@ public struct AlleyLanesEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapAddLaneButton:
 					// FIXME: is it possible to focus on this lane's input when it appears
 					return didFinishAddingLanes(&state, count: 1)
@@ -170,6 +175,13 @@ public struct AlleyLanesEditor: Reducer {
 		}
 		.ifLet(\.$addLaneForm, action: /Action.internal..Action.InternalAction.addLaneForm) {
 			AddLaneForm()
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
 		}
 	}
 

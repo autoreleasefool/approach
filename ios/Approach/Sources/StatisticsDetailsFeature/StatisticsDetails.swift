@@ -46,6 +46,7 @@ public struct StatisticsDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapSourcePicker
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
@@ -126,6 +127,9 @@ public struct StatisticsDetails: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					let loadingChartEffect: Effect<Action>
 					if let statisticId = state.selectedStatistic, let statisticToLoad = Statistics.type(of: statisticId) {
@@ -325,6 +329,13 @@ public struct StatisticsDetails: Reducer {
 				)
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

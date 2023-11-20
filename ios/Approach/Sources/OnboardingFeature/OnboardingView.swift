@@ -101,6 +101,7 @@ public struct OnboardingView: View {
 			}
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.toolbar(.hidden, for: .navigationBar)
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 }

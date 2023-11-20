@@ -44,6 +44,7 @@ public struct SharingView: View {
 			.onFirstAppear {
 				viewStore.send(.binding(.set(\.$displayScale, displayScale)))
 			}
+			.onAppear { viewStore.send(.onAppear) }
 			.onChange(of: displayScale) {
 				viewStore.send(.binding(.set(\.$displayScale, $0)))
 			}

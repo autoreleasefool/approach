@@ -34,6 +34,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didObserveData
 			case didTapAddNew
 			case didTapDeleteButton
@@ -94,6 +95,9 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didObserveData:
 					return .merge(
 						.run { send in
@@ -249,6 +253,13 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				)
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

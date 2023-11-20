@@ -37,6 +37,7 @@ public struct Settings: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapPopulateDatabase
 			case didTapFeatureFlags
@@ -117,6 +118,9 @@ public struct Settings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return .run { send in
 						await send(.internal(.didFetchIcon(TaskResult {
@@ -249,6 +253,13 @@ public struct Settings: Reducer {
 				return Analytics.Settings.ViewedAppIcons()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

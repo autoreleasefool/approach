@@ -60,6 +60,7 @@ public struct OpponentsList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapSortOrderButton
 			case didTapOpponent(Bowler.ID)
 		}
@@ -129,6 +130,9 @@ public struct OpponentsList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case let .didTapOpponent(id):
 					guard state.isOpponentDetailsEnabled, let opponent = state.list.findResource(byId: id) else { return .none }
 					state.destination = .details(.init(opponent: opponent.summary))
@@ -241,6 +245,13 @@ public struct OpponentsList: Reducer {
 				return Analytics.Bowler.Archived(kind: Bowler.Kind.opponent.rawValue)
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

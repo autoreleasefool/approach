@@ -86,6 +86,7 @@ public struct LeagueEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapAlley
 			case binding(BindingAction<State>)
 		}
@@ -129,6 +130,9 @@ public struct LeagueEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapAlley:
 					state.alleyPicker = .init(
 						selected: Set([state.location?.id].compactMap { $0 }),
@@ -227,6 +231,13 @@ public struct LeagueEditor: Reducer {
 				return Analytics.League.Archived()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

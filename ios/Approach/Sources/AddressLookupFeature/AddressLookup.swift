@@ -1,4 +1,5 @@
 import AddressLookupServiceInterface
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import Foundation
@@ -23,6 +24,7 @@ public struct AddressLookup: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapCancelButton
 			case didTapResult(AddressLookupResult.ID)
@@ -56,6 +58,9 @@ public struct AddressLookup: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return .merge(
 						.run { send in
@@ -125,6 +130,13 @@ public struct AddressLookup: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

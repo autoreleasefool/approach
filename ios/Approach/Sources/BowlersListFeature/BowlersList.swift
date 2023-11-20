@@ -364,7 +364,7 @@ public struct BowlersList: Reducer {
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
-			case .view(.onAppear): return Breadcrumb("BowlersList")
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
 		}

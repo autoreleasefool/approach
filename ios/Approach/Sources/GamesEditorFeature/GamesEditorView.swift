@@ -121,6 +121,7 @@ public struct GamesEditorView: View {
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
 			}
+			.onAppear { viewStore.send(.onAppear) }
 			.onFirstAppear {
 				viewStore.send(.didFirstAppear)
 				Task.detached {

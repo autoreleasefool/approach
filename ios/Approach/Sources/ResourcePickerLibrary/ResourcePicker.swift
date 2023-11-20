@@ -127,6 +127,14 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 				return .none
 			}
 		}
+
+		// TODO: Add Breadcrumb + Analaytics to ResourcePickerLibrary
+//		BreadcrumbReducer<State, Action> { _, action in
+//			switch action {
+//			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+//			default: return nil
+//			}
+//		}
 	}
 
 	private func beginObservation(query: Query) -> Effect<Action> {

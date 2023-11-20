@@ -61,6 +61,7 @@ public struct GearEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapOwner
 			case didTapAvatar
 			case binding(BindingAction<State>)
@@ -136,7 +137,7 @@ public struct GearEditor: Reducer {
 					))
 					return .none
 
-				case .binding:
+				case .binding, .onAppear:
 					return .none
 				}
 
@@ -201,6 +202,13 @@ public struct GearEditor: Reducer {
 				return Analytics.Gear.Deleted()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

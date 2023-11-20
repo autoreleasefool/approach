@@ -105,6 +105,7 @@ public struct StatisticsDetailsView: View {
 				)
 			}
 			.task { await viewStore.send(.didFirstAppear).finish() }
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(

@@ -58,6 +58,7 @@ public struct AlleyLanesEditorView: View {
 				}
 			}
 			.navigationTitle(Strings.Lane.List.title)
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))

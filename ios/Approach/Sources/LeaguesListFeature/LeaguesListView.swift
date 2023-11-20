@@ -66,6 +66,7 @@ public struct LeaguesListView: View {
 				}
 			}
 			.task { viewStore.send(.didStartTask) }
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.sheet(

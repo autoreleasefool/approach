@@ -76,6 +76,7 @@ public struct LeaguesList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didStartTask
 			case didTapLeague(id: League.ID)
 			case didTapFilterButton
@@ -177,6 +178,9 @@ public struct LeaguesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didStartTask:
 					return .run { send in
 						for await _ in preferences.observe(keys: [.statisticsWidgetHideInLeagueList]) {
@@ -342,6 +346,13 @@ public struct LeaguesList: Reducer {
 				return Analytics.League.Archived()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

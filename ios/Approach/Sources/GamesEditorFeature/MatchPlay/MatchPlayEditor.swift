@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
@@ -30,6 +31,7 @@ public struct MatchPlayEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapOpponent
 			case didSetScore(String)
 			case didSetResult(MatchPlay.Result?)
@@ -58,6 +60,9 @@ public struct MatchPlayEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapOpponent:
 					state.opponentPicker = .init(
 						selected: Set([state.matchPlay.opponent?.id].compactMap { $0 }),
@@ -111,6 +116,13 @@ public struct MatchPlayEditor: Reducer {
 		}
 		.ifLet(\.$opponentPicker, action: /Action.internal..Action.InternalAction.opponentPicker) {
 			ResourcePicker { _ in bowlers.opponents(ordering: .byName) }
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
 		}
 	}
 }
@@ -175,6 +187,7 @@ public struct MatchPlayEditorView: View {
 					DeleteButton { viewStore.send(.didTapDeleteButton) }
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.navigationTitle(Strings.MatchPlay.title)
 		.navigationDestination(

@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
@@ -62,6 +63,7 @@ public struct Sharing: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapShareToStoriesButton
 			case didTapShareToOtherButton
@@ -108,6 +110,9 @@ public struct Sharing: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return .run { [dataSource = state.dataSource] send in
 						await send(.internal(.didLoadGames(TaskResult {
@@ -173,6 +178,13 @@ public struct Sharing: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

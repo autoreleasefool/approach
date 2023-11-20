@@ -71,6 +71,7 @@ public struct SeriesList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapEditButton
 			case didTapSortOrderButton
 			case didTapSeries(Series.ID)
@@ -159,6 +160,9 @@ public struct SeriesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case let .didTapSeries(id):
 					if let series = state.list.findResource(byId: id) {
 						state.destination = .games(.init(series: series.asSummary, host: state.league))
@@ -317,6 +321,13 @@ public struct SeriesList: Reducer {
 				return Analytics.Series.Archived()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

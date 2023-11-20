@@ -31,6 +31,7 @@ public struct AccessoriesOverview: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didObserveData
 			case didTapViewAllAlleys
 			case didTapViewAllGear
@@ -136,6 +137,9 @@ public struct AccessoriesOverview: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didObserveData:
 					return .merge(observeAlleys(), observeGear())
 
@@ -311,6 +315,13 @@ public struct AccessoriesOverview: Reducer {
 //				return Analytics.Alley.Deleted()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

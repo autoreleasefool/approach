@@ -128,6 +128,7 @@ public struct AccessoriesOverviewView: View {
 					}
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 			.task { await viewStore.send(.didObserveData).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
