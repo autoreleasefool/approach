@@ -209,6 +209,7 @@ repositories = [ "Statistics" ]
 
 [services.AppInfo]
 services = [ "Preference" ]
+libraries = [ "Constants" ]
 
 [services.AddressLookup]
 [services.AddressLookup.interface]

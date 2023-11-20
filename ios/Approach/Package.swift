@@ -1142,6 +1142,7 @@ let package = Package(
 			name: "AppInfoService",
 			dependencies: [
 				"AppInfoServiceInterface",
+				"ConstantsLibrary",
 				"PreferenceServiceInterface",
 			]
 		),
