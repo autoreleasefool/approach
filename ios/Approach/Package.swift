@@ -81,6 +81,8 @@ let package = Package(
 		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
 		.library(name: "AppIconService", targets: ["AppIconService"]),
 		.library(name: "AppIconServiceInterface", targets: ["AppIconServiceInterface"]),
+		.library(name: "AppInfoService", targets: ["AppInfoService"]),
+		.library(name: "AppInfoServiceInterface", targets: ["AppInfoServiceInterface"]),
 		.library(name: "AvatarService", targets: ["AvatarService"]),
 		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
 		.library(name: "DatabaseMockingService", targets: ["DatabaseMockingService"]),
@@ -237,6 +239,7 @@ let package = Package(
 			name: "AppFeature",
 			dependencies: [
 				"AccessoriesOverviewFeature",
+				"AppInfoServiceInterface",
 				"BowlersListFeature",
 				"OnboardingFeature",
 				"SettingsFeature",
@@ -1131,6 +1134,26 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				"AssetsLibrary",
+			]
+		),
+		.target(
+			name: "AppInfoService",
+			dependencies: [
+				"AppInfoServiceInterface",
+				"PreferenceServiceInterface",
+			]
+		),
+		.target(
+			name: "AppInfoServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "AppInfoServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AppInfoService",
 			]
 		),
 		.target(
