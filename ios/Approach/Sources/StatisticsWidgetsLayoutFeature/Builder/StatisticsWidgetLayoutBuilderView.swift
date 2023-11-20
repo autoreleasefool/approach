@@ -80,6 +80,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 			}
 			.navigationTitle(Strings.Widget.LayoutBuilder.title)
 			.task { await viewStore.send(.didObserveData).finish() }
+			.onAppear { viewStore.send(.onAppear) }
 			.sheet(
 				store: store.scope(state: \.$editor, action: { .internal(.editor($0)) }),
 				onDismiss: { viewStore.send(.didFinishDismissingEditor) },

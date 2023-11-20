@@ -75,6 +75,7 @@ public struct GearEditorView: View {
 					.buttonStyle(.navigation)
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.navigationDestination(
 			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),

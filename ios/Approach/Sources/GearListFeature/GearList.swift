@@ -57,6 +57,7 @@ public struct GearList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapFilterButton
 			case didTapSortOrderButton
 		}
@@ -133,6 +134,9 @@ public struct GearList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapFilterButton:
 					state.destination = .filters(.init(kind: state.kindFilter))
 					return .none
@@ -244,6 +248,13 @@ public struct GearList: Reducer {
 				return Analytics.Gear.Deleted()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

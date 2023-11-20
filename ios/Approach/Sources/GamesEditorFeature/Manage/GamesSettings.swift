@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
@@ -35,6 +36,7 @@ public struct GamesSettings: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapDone
 			case didSwitchGame(to: Int)
 			case didSwitchBowler(to: Bowler.ID)
@@ -63,6 +65,9 @@ public struct GamesSettings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapDone:
 					return .run { _ in await dismiss() }
 
@@ -99,6 +104,13 @@ public struct GamesSettings: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}
@@ -167,6 +179,7 @@ public struct GamesSettingsView: View {
 					Button(Strings.Action.done) { viewStore.send(.didTapDone) }
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 }

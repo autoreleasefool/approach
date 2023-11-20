@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatableLibrary
@@ -60,6 +61,7 @@ public struct StatisticsWidgetEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
@@ -153,6 +155,9 @@ public struct StatisticsWidgetEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return loadSources(&state)
 
@@ -330,6 +335,13 @@ public struct StatisticsWidgetEditor: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
 		}
 	}
 

@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import ExtensionsLibrary
@@ -59,6 +60,7 @@ public struct AvatarEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapCancel
 			case didTapDone
 			case didTapRandomColorButton
@@ -99,6 +101,9 @@ public struct AvatarEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapSwapColorsButton:
 					let tempColor = state.backgroundColor
 					state.backgroundColor = state.secondaryBackgroundColor
@@ -134,6 +139,13 @@ public struct AvatarEditor: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

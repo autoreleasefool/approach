@@ -59,6 +59,7 @@ public struct GameDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didStartTask
 			case didToggleLock
 			case didToggleExclude
@@ -149,6 +150,9 @@ public struct GameDetails: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didStartTask:
 					return .merge(
 						.run { [gameId = state.gameId] send in
@@ -333,6 +337,13 @@ public struct GameDetails: Reducer {
 				return Analytics.Game.ManualScoreSet(gameId: gameId)
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

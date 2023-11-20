@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import DateTimeLibrary
@@ -42,6 +43,7 @@ public struct ArchiveList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case observeData
 			case didSwipe(ArchiveItem)
 			case alert(PresentationAction<AlertAction>)
@@ -92,6 +94,9 @@ public struct ArchiveList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .observeData:
 					return .merge(
 						observeBowlers(),
@@ -201,6 +206,13 @@ public struct ArchiveList: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import EquatableLibrary
@@ -60,6 +61,7 @@ public struct GamesList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapGame(Game.ID)
 			case didTapShareButton
 			case didTapEditButton
@@ -139,6 +141,9 @@ public struct GamesList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapShareButton:
 					state.destination = .sharing(.init(dataSource: .series(state.series.id)))
 					return .none
@@ -285,6 +290,13 @@ public struct GamesList: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
 		}
 	}
 

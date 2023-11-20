@@ -48,6 +48,7 @@ public struct AlleyEditorView: View {
 				Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
 					.listRowInsets(EdgeInsets())
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
 			NavigationStack {

@@ -46,6 +46,7 @@ public struct OpponentsListView: View {
 					Text(Strings.Opponent.List.description)
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.navigationTitle(Strings.Opponent.List.title)
 		.toolbar {

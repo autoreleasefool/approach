@@ -51,6 +51,7 @@ public struct OpponentDetailsView: View {
 			}
 			.navigationTitle(viewStore.opponentName)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}

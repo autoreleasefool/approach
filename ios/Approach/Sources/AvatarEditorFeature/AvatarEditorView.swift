@@ -62,6 +62,7 @@ public struct AvatarEditorView: View {
 						.disabled(!viewStore.hasChanges)
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 

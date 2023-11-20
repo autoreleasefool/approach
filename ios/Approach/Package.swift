@@ -186,6 +186,7 @@ let package = Package(
 			name: "AddressLookupFeature",
 			dependencies: [
 				"AddressLookupServiceInterface",
+				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
 				"LocationsRepositoryInterface",
 				"LoggingServiceInterface",
@@ -205,7 +206,6 @@ let package = Package(
 			dependencies: [
 				"AddressLookupFeature",
 				"AlleysRepositoryInterface",
-				"AnalyticsServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"LaneEditorFeature",
@@ -272,6 +272,7 @@ let package = Package(
 		.target(
 			name: "AvatarEditorFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"AvatarServiceInterface",
 				"ExtensionsLibrary",
 				"FeatureActionLibrary",
@@ -289,7 +290,6 @@ let package = Package(
 		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
-				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"FormFeature",
 			]
@@ -319,6 +319,7 @@ let package = Package(
 		.target(
 			name: "ErrorsFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
 				"EmailServiceInterface",
 				"EquatableLibrary",
@@ -339,6 +340,7 @@ let package = Package(
 		.target(
 			name: "FeatureFlagsListFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
 				"FeatureFlagsServiceInterface",
 				"LoggingServiceInterface",
@@ -402,7 +404,6 @@ let package = Package(
 		.target(
 			name: "GearEditorFeature",
 			dependencies: [
-				"AnalyticsServiceInterface",
 				"AvatarEditorFeature",
 				"BowlersRepositoryInterface",
 				"FeatureFlagsServiceInterface",
@@ -437,6 +438,7 @@ let package = Package(
 		.target(
 			name: "ImportExportFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"DateTimeLibrary",
 				"FeatureActionLibrary",
 				"ImportExportServiceInterface",
@@ -456,6 +458,7 @@ let package = Package(
 		.target(
 			name: "LaneEditorFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
 				"ModelsLibrary",
@@ -474,7 +477,6 @@ let package = Package(
 			name: "LeagueEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"AnalyticsServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"LeaguesRepositoryInterface",
@@ -506,6 +508,7 @@ let package = Package(
 		.target(
 			name: "OnboardingFeature",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"ExtensionsLibrary",
 				"FeatureActionLibrary",
@@ -571,7 +574,6 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"AnalyticsServiceInterface",
 				"DateTimeLibrary",
 				"FeatureFlagsServiceInterface",
 				"FormFeature",
@@ -641,7 +643,6 @@ let package = Package(
 		.target(
 			name: "StatisticsDetailsFeature",
 			dependencies: [
-				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
 				"ErrorsFeature",
 				"FeatureFlagsServiceInterface",

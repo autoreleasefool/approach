@@ -29,6 +29,7 @@ public struct AppIconList: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didFirstAppear
 			case didTapIcon(AppIcon)
 			case didTapReset
@@ -53,6 +54,9 @@ public struct AppIconList: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return fetchCurrentAppIcon()
 
@@ -120,6 +124,13 @@ public struct AppIconList: Reducer {
 				return nil
 			}
 		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
+		}
 	}
 
 	private func fetchCurrentAppIcon() -> Effect<Action> {
@@ -158,6 +169,7 @@ public struct AppIconListView: View {
 			}
 			.navigationTitle(Strings.Settings.AppIcon.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onAppear { viewStore.send(.onAppear) }
 			.alert(store: self.store.scope(state: \.$alert, action: { .internal(.alert($0)) }))
 		})
 	}

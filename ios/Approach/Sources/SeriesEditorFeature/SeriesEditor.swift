@@ -63,6 +63,7 @@ public struct SeriesEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case didTapAlley
 			case binding(BindingAction<State>)
 		}
@@ -112,6 +113,9 @@ public struct SeriesEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didTapAlley:
 					state.alleyPicker = .init(
 						selected: Set([state.location?.id].compactMap { $0 }),
@@ -224,6 +228,13 @@ public struct SeriesEditor: Reducer {
 				return Analytics.Series.Archived()
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

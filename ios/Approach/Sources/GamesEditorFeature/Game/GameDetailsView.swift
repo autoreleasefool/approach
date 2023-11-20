@@ -93,6 +93,7 @@ public struct GameDetailsView: View {
 					}
 				}
 				.task { await viewStore.send(.didStartTask).finish() }
+				.onAppear { viewStore.send(.onAppear) }
 			})
 			.toolbar(.hidden)
 			.navigationDestination(

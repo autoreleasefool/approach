@@ -51,6 +51,7 @@ public struct LeagueEditorView: View {
 				additionalPinfallSection(viewStore)
 			}
 			.interactiveDismissDisabled(viewStore.isDismissDisabled)
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.navigationDestination(
 			store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })

@@ -23,6 +23,7 @@ public struct AnalyticsSettings: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
@@ -46,6 +47,9 @@ public struct AnalyticsSettings: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .binding(\.$analyticsOptIn):
 					return .run { [optedIn = state.analyticsOptIn] send in
 						let status = optedIn ? Analytics.OptInStatus.optedIn : Analytics.OptInStatus.optedOut
@@ -70,6 +74,13 @@ public struct AnalyticsSettings: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}
@@ -110,6 +121,7 @@ public struct AnalyticsSettingsView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.Analytics.title)
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 }

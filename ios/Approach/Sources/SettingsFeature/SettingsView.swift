@@ -117,6 +117,7 @@ public struct SettingsView: View {
 			}
 			.navigationTitle(Strings.Settings.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onAppear { viewStore.send(.onAppear) }
 		})
 		.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
 		.archive(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))

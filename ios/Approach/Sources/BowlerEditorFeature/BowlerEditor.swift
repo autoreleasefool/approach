@@ -38,6 +38,7 @@ public struct BowlerEditor: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case onAppear
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
@@ -73,6 +74,9 @@ public struct BowlerEditor: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .binding:
 					return .none
 				}
@@ -116,6 +120,13 @@ public struct BowlerEditor: Reducer {
 				return Analytics.Bowler.Archived(kind: state.kind.rawValue)
 			default:
 				return nil
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

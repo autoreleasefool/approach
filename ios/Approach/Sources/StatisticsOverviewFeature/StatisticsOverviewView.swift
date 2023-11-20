@@ -59,6 +59,7 @@ public struct StatisticsOverviewView: View {
 				}
 			}
 			.navigationTitle(Strings.Statistics.title)
+			.onAppear { viewStore.send(.onAppear) }
 			.sheet(
 				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
 				state: /StatisticsOverview.Destination.State.sourcePicker,

@@ -29,6 +29,7 @@ public struct BowlerEditorView: View {
 					.textContentType(.name)
 				}
 			}
+			.onAppear { viewStore.send(.onAppear) }
 		})
 	}
 }

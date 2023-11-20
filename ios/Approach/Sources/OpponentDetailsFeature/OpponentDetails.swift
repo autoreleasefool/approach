@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
@@ -24,6 +25,7 @@ public struct OpponentDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didFirstAppear
 		}
 		public enum DelegateAction: Equatable {}
@@ -53,6 +55,9 @@ public struct OpponentDetails: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .didFirstAppear:
 					return refreshDetails(forOpponent: state.opponent.id)
 				}
@@ -80,6 +85,13 @@ public struct OpponentDetails: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
 			}
 		}
 	}

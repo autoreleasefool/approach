@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import StatisticsDetailsFeature
@@ -25,6 +26,7 @@ public struct StatisticsOverview: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case onAppear
 			case didTapDismissOverviewTip
 			case didTapDismissDetailsTip
 			case didTapViewDetailedStatistics
@@ -71,6 +73,9 @@ public struct StatisticsOverview: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return .none
+
 				case .sourcePickerDidDismiss:
 					guard let filter = state.filter else { return .none }
 					state.destination = .details(.init(filter: filter))
@@ -127,6 +132,13 @@ public struct StatisticsOverview: Reducer {
 		}
 		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
 			Destination()
+		}
+
+		BreadcrumbReducer<State, Action> { _, action in
+			switch action {
+			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
+			default: return nil
+			}
 		}
 	}
 }

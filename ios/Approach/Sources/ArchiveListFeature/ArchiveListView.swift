@@ -35,6 +35,7 @@ public struct ArchiveListView: View {
 			}
 			.navigationTitle(Strings.Archive.title)
 			.task { await viewStore.send(.observeData).finish() }
+			.onAppear { viewStore.send(.onAppear) }
 			.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
 		})
