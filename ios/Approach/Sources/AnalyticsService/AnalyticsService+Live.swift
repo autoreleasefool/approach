@@ -51,6 +51,11 @@ extension AnalyticsService: DependencyKey {
 
 				TelemetryManager.send(event.name, with: payload)
 			},
+			breadcrumb: { breadcrumb in
+				let crumb = Sentry.Breadcrumb(level: .info, category: breadcrumb.category.rawValue)
+				crumb.message = breadcrumb.message
+				SentrySDK.addBreadcrumb(crumb)
+			},
 			resetGameSessionID: {
 				gameSessionID.setValue(uuid())
 			},

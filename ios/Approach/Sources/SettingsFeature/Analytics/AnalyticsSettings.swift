@@ -124,6 +124,7 @@ struct AnalyticsSettingsPreview: PreviewProvider {
 						initialize: { },
 						setGlobalProperty: { _, _ in },
 						trackEvent: { _ in },
+						breadcrumb: { _ in },
 						resetGameSessionID: { },
 						getOptInStatus: { .optedIn },
 						setOptInStatus: { _ in .optedIn },
