@@ -30,6 +30,7 @@ libraries = [ "ResourceList" ]
 
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
+services = [ "AppInfo" ]
 
 [features.ArchiveList]
 features = [ "Errors" ]
@@ -205,6 +206,9 @@ repositories = [ "Statistics" ]
 repositories = [ "Statistics" ]
 
 # Services
+
+[services.AppInfo]
+services = [ "Preference" ]
 
 [services.AddressLookup]
 [services.AddressLookup.interface]
