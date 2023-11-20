@@ -1,9 +1,11 @@
 # Most recent version
 
-## iOS 1.2.2b16
+## iOS 1.3.0b17
 
 ```
-- Feat: Add Sentry SDK
+- Feat: Quick Play button to create a new series in last played game
+- Chore: Set up breadcrumbs for Sentry
+- Chore: Prompt for app reviews after certain conditions met
 ```
 
 ## Android v3.2.0
@@ -19,6 +21,12 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.2.2b16
+
+```
+- Feat: Add Sentry SDK
+```
 
 ## iOS 1.2.1b15
 
