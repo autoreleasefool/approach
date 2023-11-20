@@ -63,7 +63,7 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing", "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
-services = [ "Avatar", "RecentlyUsed" ]
+services = [ "Avatar", "RecentlyUsed", "StoreReview" ]
 
 [features.GamesList]
 features = [ "GamesEditor", "SeriesEditor" ]

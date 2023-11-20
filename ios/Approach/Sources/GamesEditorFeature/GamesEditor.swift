@@ -16,6 +16,7 @@ import RecentlyUsedServiceInterface
 import ResourcePickerLibrary
 import ScoreSheetLibrary
 import ScoresRepositoryInterface
+import StoreReviewServiceInterface
 import StringsLibrary
 import SwiftUI
 import ToastLibrary
@@ -30,6 +31,8 @@ public struct GamesEditor: Reducer {
 		public var gameDetailsHeaderSize: CGSize = .zero
 		public var gameDetailsMinimumContentSize: CGSize = .zero
 		public var isScoreSheetVisible = true
+
+		public var shouldRequestAppStoreReview: Bool = false
 
 		public var didPromptLaneDuplication = false
 		public var willShowDuplicateLanesAlert = false
@@ -101,6 +104,7 @@ public struct GamesEditor: Reducer {
 			case didAdjustBackdropSize(CGSize)
 			case didDismissGameDetails
 			case didDismissOpenSheet
+			case didRequestReview
 			case binding(BindingAction<State>)
 		}
 		public enum DelegateAction: Equatable {}
@@ -163,6 +167,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.matchPlays) var matchPlays
 	@Dependency(\.recentlyUsed) var recentlyUsed
 	@Dependency(\.scores) var scores
+	@Dependency(\.storeReview) var storeReview
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: /Action.view)
@@ -198,6 +203,10 @@ public struct GamesEditor: Reducer {
 						loadBowlers(state: &state),
 						loadGameDetails(state: &state)
 					)
+
+				case .didRequestReview:
+					state.shouldRequestAppStoreReview = false
+					return .run { _ in await storeReview.didRequestReview() }
 
 				case let .didAdjustBackdropSize(newSize):
 					state.backdropSize = newSize

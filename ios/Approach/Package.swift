@@ -382,6 +382,7 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"SharingFeature",
 				"StatisticsDetailsFeature",
+				"StoreReviewServiceInterface",
 			]
 		),
 		.testTarget(

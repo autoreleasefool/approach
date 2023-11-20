@@ -8,6 +8,7 @@ import ModelsLibrary
 import ResourcePickerLibrary
 import ScoreSheetLibrary
 import SharingFeature
+import StoreKit
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -18,6 +19,7 @@ public struct GamesEditorView: View {
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
+	@Environment(\.requestReview) private var requestReview
 	@State private var headerContentSize: CGSize = .zero
 	@State private var rollEditorSize: CGSize = .zero
 	@State private var frameContentSize: CGSize = .zero
@@ -30,6 +32,8 @@ public struct GamesEditorView: View {
 		let gameDetailsMinimumContentSize: CGSize
 		let willAdjustLaneLayoutAt: Date
 		let backdropSize: CGSize
+
+		let shouldRequestAppStoreReview: Bool
 
 		let isScoreSheetVisible: Bool
 		let score: ScoredGame?
@@ -120,6 +124,12 @@ public struct GamesEditorView: View {
 			)
 			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
 				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
+			}
+			.onChange(of: viewStore.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
+				if shouldRequestAppStoreReview {
+					requestReview()
+					viewStore.send(.didRequestReview)
+				}
 			}
 			.onAppear { viewStore.send(.onAppear) }
 			.onFirstAppear {
@@ -270,6 +280,7 @@ extension GamesEditorView.ViewState {
 		self.score = store.score
 		self.bowlerName = store.game?.bowler.name
 		self.leagueName = store.game?.league.name
+		self.shouldRequestAppStoreReview = store.shouldRequestAppStoreReview
 		if let game = store.game {
 			switch game.scoringMethod {
 			case .byFrame:

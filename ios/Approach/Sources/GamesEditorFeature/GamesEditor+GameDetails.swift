@@ -72,6 +72,8 @@ extension GamesEditor {
 					state.frames?[currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
 					return save(frame: state.frames?[state.currentFrameIndex])
 				case let .game(_, bowler, game):
+					state.shouldRequestAppStoreReview = storeReview.shouldRequestReview()
+
 					let saveGameEffect = lockGameIfFinished(in: &state)
 					state.setCurrent(gameId: game, bowlerId: bowler)
 					return .merge(
