@@ -17,6 +17,7 @@ interface Statistic {
 	val formattedValue: String
 	val isEmpty: Boolean
 
+	fun supportsSource(source: TrackableFilter.Source): Boolean
 	fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration)
 	fun adjustByGame(game: TrackableGame, configuration: TrackablePerGameConfiguration)
 	fun adjustBySeries(series: TrackableSeries, configuration: TrackablePerSeriesConfiguration)
@@ -38,6 +39,25 @@ enum class StatisticCategory {
 	PINS_LEFT_ON_DECK,
 	MATCH_PLAY_RESULTS,
 	SERIES;
+
+	val titleResourceId: Int
+		get() = when (this) {
+			OVERALL -> R.string.statistic_category_overall
+			MIDDLE_HITS -> R.string.statistic_category_middle_hits
+			STRIKES_AND_SPARES -> R.string.statistic_category_strikes_and_spares
+			HEAD_PINS -> R.string.statistic_category_head_pins
+			FIVES -> R.string.statistic_category_fives
+			THREES -> R.string.statistic_category_threes
+			ACES -> R.string.statistic_category_aces
+			CHOPS -> R.string.statistic_category_chops
+			SPLITS -> R.string.statistic_category_splits
+			TAPS -> R.string.statistic_category_taps
+			TWELVES -> R.string.statistic_category_twelves
+			FOULS -> R.string.statistic_category_fouls
+			PINS_LEFT_ON_DECK -> R.string.statistic_category_pins_left_on_deck
+			MATCH_PLAY_RESULTS -> R.string.statistic_category_match_play_results
+			SERIES -> R.string.statistic_category_series
+		}
 }
 
 enum class PreferredTrendDirection {

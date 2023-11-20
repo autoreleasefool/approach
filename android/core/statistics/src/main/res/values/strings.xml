@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="statistic_title_aces">Aces</string>
+
+	<string name="statistic_category_overall">Overall</string>
+	<string name="statistic_category_middle_hits">Middle Hits</string>
+	<string name="statistic_category_strikes_and_spares">Strikes and Spares</string>
+	<string name="statistic_category_head_pins">Head Pins</string>
+	<string name="statistic_category_fives">Fives</string>
+	<string name="statistic_category_threes">Threes</string>
+	<string name="statistic_category_aces">Aces</string>
+	<string name="statistic_category_chops">Chop Offs</string>
+	<string name="statistic_category_splits">Splits</string>
+	<string name="statistic_category_taps">Taps</string>
+	<string name="statistic_category_twelves">Twelves</string>
+	<string name="statistic_category_fouls">Fouls</string>
+	<string name="statistic_category_pins_left_on_deck">Pins Left on Deck</string>
+	<string name="statistic_category_match_play_results">Match Play Results</string>
+	<string name="statistic_category_series">Series</string>
 </resources>
