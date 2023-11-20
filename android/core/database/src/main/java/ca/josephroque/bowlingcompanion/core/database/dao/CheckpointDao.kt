@@ -10,7 +10,7 @@ interface CheckpointDao {
 	@RawQuery
 	fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Long
 
-	suspend fun recordCheckpoint() {
+	fun recordCheckpoint() {
 		checkpoint(SimpleSQLiteQuery("PRAGMA wal_checkpoint(full)"))
 	}
 }

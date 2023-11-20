@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
+import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamBowlerDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
@@ -81,6 +82,8 @@ abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun gearDao(): GearDao
 	abstract fun alleyDao(): AlleyDao
 	abstract fun laneDao(): LaneDao
+
+	abstract fun statisticsDao(): StatisticsDao
 
 	abstract fun legacyIDMappingDao(): LegacyIDMappingDao
 

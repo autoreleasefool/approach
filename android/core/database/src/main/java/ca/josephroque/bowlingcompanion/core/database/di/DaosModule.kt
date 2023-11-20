@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
+import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamBowlerDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
@@ -83,6 +84,11 @@ object DaosModule {
 	fun providesLegacyIDMappingDao(
 		database: ApproachDatabase,
 	): LegacyIDMappingDao = database.legacyIDMappingDao()
+
+	@Provides
+	fun providesStatisticsDao(
+		database: ApproachDatabase,
+	): StatisticsDao = database.statisticsDao()
 
 	@Provides
 	fun providesTransactionRunnerDao(

@@ -6,7 +6,7 @@ data class TrackableGameQueryComponents(
 	val tableAlias: String = "games",
 	val filter: TrackableFilter.GameFilter,
 ) {
-	val matchPlayTableAlias = "${tableAlias}MatchPlays
+	val matchPlayTableAlias = "${tableAlias}MatchPlays"
 
 	fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String = listOf(
 		"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
