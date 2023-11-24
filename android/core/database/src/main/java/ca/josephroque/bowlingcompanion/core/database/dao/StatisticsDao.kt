@@ -1,11 +1,18 @@
 package ca.josephroque.bowlingcompanion.core.database.dao
 
-import android.database.Cursor
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.RawQuery
+import androidx.room.RoomWarnings
 import androidx.sqlite.db.SimpleSQLiteQuery
+import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableFilterSourceSummariesEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TrackableFrameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.TrackableSeriesEntity
 import java.util.UUID
 
 @Dao
@@ -19,6 +26,7 @@ interface StatisticsDao {
 			WHERE bowlers.id = :bowlerId
 		"""
 	)
+	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getBowlerSourceDetails(bowlerId: UUID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -33,6 +41,7 @@ interface StatisticsDao {
 			WHERE leagues.id = :leagueId
 		"""
 	)
+	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getLeagueSourceDetails(leagueId: UUID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -50,6 +59,7 @@ interface StatisticsDao {
 			WHERE series.id = :seriesId 
 		"""
 	)
+	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getSeriesSourceDetails(seriesId: UUID): TrackableFilterSourceSummariesEntity
 
 	@Query(
@@ -71,10 +81,24 @@ interface StatisticsDao {
 			WHERE games.id = :gameId 
 		"""
 	)
+	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getGameSourceDetails(gameId: UUID): TrackableFilterSourceSummariesEntity
 
-	@RawQuery
-	fun getTrackableStatistics(query: SimpleSQLiteQuery): Cursor
-	fun getTrackableStatistics(query: String, args: List<Any>): Cursor =
-		getTrackableStatistics(SimpleSQLiteQuery(query, args.toTypedArray()))
+	@RawQuery(observedEntities = [SeriesEntity::class])
+	fun getTrackableSeries(query: SimpleSQLiteQuery): PagingSource<Int, TrackableSeriesEntity>
+	fun getTrackableSeries(query: String, args: List<Any>): PagingSource<Int, TrackableSeriesEntity> =
+		getTrackableSeries(SimpleSQLiteQuery(query, args.toTypedArray()))
+
+	@RawQuery(observedEntities = [GameEntity::class])
+	fun getTrackableGames(query: SimpleSQLiteQuery): PagingSource<Int, TrackableGameEntity>
+	fun getTrackableGames(query: String, args: List<Any>): PagingSource<Int, TrackableGameEntity> =
+		getTrackableGames(SimpleSQLiteQuery(query, args.toTypedArray()))
+
+
+	@RawQuery(observedEntities = [FrameEntity::class])
+	fun getTrackableFrames(query: SimpleSQLiteQuery): PagingSource<Int, TrackableFrameEntity>
+	fun getTrackableFrames(query: String, args: List<Any>): PagingSource<Int, TrackableFrameEntity> =
+		getTrackableFrames(SimpleSQLiteQuery(query, args.toTypedArray()))
+
+
 }

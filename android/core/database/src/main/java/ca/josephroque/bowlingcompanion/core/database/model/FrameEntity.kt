@@ -9,6 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
+import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 @Entity(
@@ -96,6 +98,31 @@ fun FrameEdit.asEntity(): FrameEntity = FrameEntity(
 	ball1 = this.rolls.getOrNull(1)?.bowlingBall?.id,
 	ball2 = this.rolls.getOrNull(2)?.bowlingBall?.id,
 )
+
+data class TrackableFrameEntity(
+	val seriesId: UUID,
+	val gameId: UUID,
+	val gameIndex: Int,
+	val index: Int,
+	@ColumnInfo(name = "roll0") val roll0: FrameEntity.Roll?,
+	@ColumnInfo(name = "roll1") val roll1: FrameEntity.Roll?,
+	@ColumnInfo(name = "roll2") val roll2: FrameEntity.Roll?,
+	val date: LocalDate,
+) {
+	fun asModel(): TrackableFrame = TrackableFrame(
+		seriesId = this.seriesId,
+		gameId = this.gameId,
+		gameIndex = this.gameIndex,
+		index = this.index,
+		rolls = listOfNotNull(
+			this.roll0?.let { TrackableFrame.Roll(0, it.pinsDowned, it.didFoul) },
+			this.roll1?.let { TrackableFrame.Roll(1, it.pinsDowned, it.didFoul) },
+			this.roll2?.let { TrackableFrame.Roll(2, it.pinsDowned, it.didFoul) },
+		),
+		date = this.date,
+	)
+
+}
 
 data class FrameEditEntity(
 	@Embedded val properties: Properties,
