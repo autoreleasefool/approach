@@ -24,7 +24,7 @@ data class TrackableGame(
 	val index: Int,
 	val score: Int,
 	val date: LocalDate,
-	val matchPlay: MatchPlay,
+	val matchPlay: MatchPlay?,
 ) {
 	data class MatchPlay(
 		val id: UUID,

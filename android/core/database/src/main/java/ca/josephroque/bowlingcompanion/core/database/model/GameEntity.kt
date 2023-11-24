@@ -43,7 +43,7 @@ data class TrackableGameEntity(
 	val index: Int,
 	val score: Int,
 	val date: LocalDate,
-	@Embedded(prefix = "match_play_") val matchPlay: TrackableGame.MatchPlay,
+	@Embedded(prefix = "match_play_") val matchPlay: TrackableGame.MatchPlay?,
 ) {
 	fun asModel(): TrackableGame = TrackableGame(
 		seriesId = this.seriesId,

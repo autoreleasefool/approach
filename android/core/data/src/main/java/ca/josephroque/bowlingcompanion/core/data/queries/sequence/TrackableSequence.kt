@@ -1,12 +1,14 @@
 package ca.josephroque.bowlingcompanion.core.data.queries.sequence
 
-import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
-import ca.josephroque.bowlingcompanion.core.database.util.ReadableCursor
+import androidx.paging.PagingSource
+import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 
-abstract class TrackableSequence<T>(
-	private val statisticsDao: StatisticsDao,
-) {
-	fun build(): Sequence<T> = sequence {
+abstract class TrackableSequence<Entity: Any, Model: Any> {
+	companion object {
+		private const val PAGE_SIZE = 50
+	}
+
+	suspend fun applyToStatistics(statistics: List<Statistic>) {
 		val columnsStatement = buildColumnsStatement()
 		val tablesStatement = buildTablesStatement()
 		val whereStatement = buildWhereStatement()
@@ -20,25 +22,36 @@ abstract class TrackableSequence<T>(
 			$whereStatement
 			$groupByStatement
 			$orderByStatement
-		"""
-			.trimIndent()
+		""".trimIndent()
 
 		val whereArgIndices = whereArgs.keys
 			.associateWithTo(mutableMapOf()) { index -> unorderedWhereQuery.indexOf(index) }
 
 		val query = unorderedWhereQuery.replace("\\?\\w+".toRegex(), "?")
 		val orderedWhereArgs = whereArgs.keys
+			.filter { whereArgIndices[it] != -1 }
 			.sortedBy { whereArgIndices[it] }
 
-		statisticsDao.getTrackableStatistics(query, orderedWhereArgs).use { cursor ->
-			val readableCursor = ReadableCursor(cursor)
-			if (cursor.moveToFirst()) {
-				while (!cursor.isAfterLast) {
-					val item = parseCursor(readableCursor)
-					yield(item)
-					cursor.moveToNext()
-				}
-			}
+		val pagingSource = getPagingSource(query, orderedWhereArgs)
+		var result = pagingSource.load(PagingSource.LoadParams.Refresh(
+			key = 0,
+			loadSize = PAGE_SIZE,
+			placeholdersEnabled = false
+		))
+
+		while (result is PagingSource.LoadResult.Page) {
+			result.data
+				.map(::mapEntityToModel)
+				.forEach { adjustByItem(statistics, it) }
+
+			result = result.nextKey
+				?.let {
+					pagingSource.load(PagingSource.LoadParams.Append(
+						key = it,
+						loadSize = PAGE_SIZE,
+						placeholdersEnabled = false
+					))
+				} ?: break
 		}
 	}
 
@@ -48,5 +61,8 @@ abstract class TrackableSequence<T>(
 	abstract fun buildWhereArgs(): Map<String, String>
 	abstract fun buildGroupByStatement(): String
 	abstract fun buildOrderByStatement(): String
-	abstract fun parseCursor(cursor: ReadableCursor): T
+
+	abstract fun getPagingSource(query: String, whereArgs: List<Any>): PagingSource<Int, Entity>
+	abstract fun adjustByItem(statistics: List<Statistic>, item: Model)
+	abstract fun mapEntityToModel(entity: Entity): Model
 }

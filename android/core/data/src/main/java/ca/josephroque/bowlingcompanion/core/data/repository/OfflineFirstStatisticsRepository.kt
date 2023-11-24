@@ -1,12 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableFramesSequence
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableGamesSequence
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableSeriesSequence
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
-import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
-import ca.josephroque.bowlingcompanion.core.model.TrackableGame
-import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
@@ -17,13 +16,16 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfigu
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OfflineFirstStatisticsRepository @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val userDataRepository: UserDataRepository,
 	private val statisticsDao: StatisticsDao,
+	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): StatisticsRepository {
 	override suspend fun getSourceDetails(source: TrackableFilter.Source): TrackableFilter.SourceSummaries =
 		when (source) {
@@ -44,44 +46,20 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		)
 	}
 
-	override suspend fun getStatisticsList(filter: TrackableFilter): List<StatisticListEntryGroup> {
+	override suspend fun getStatisticsList(filter: TrackableFilter): List<StatisticListEntryGroup> = withContext(ioDispatcher) {
 		val statistics = allStatistics(filter.source)
-		val series = TrackableSeriesSequence(filter, statisticsDao).build()
-		val games = TrackableGamesSequence(filter, statisticsDao).build()
-		val frames = TrackableFramesSequence(filter, statisticsDao).build()
+		val userData = userDataRepository.userData.first()
 
-		adjustStatisticsBySeries(statistics, series)
-		adjustStatisticsByGames(statistics, games)
-		adjustStatisticsByFrames(statistics, frames)
+		TrackableSeriesSequence(filter, statisticsDao, perSeriesConfiguration())
+			.applyToStatistics(statistics)
 
-		return statisticsAsListEntries(statistics)
-	}
+		TrackableGamesSequence(filter, statisticsDao, perGameConfiguration())
+			.applyToStatistics(statistics)
 
-	private suspend fun adjustStatisticsBySeries(statistics: List<Statistic>, series: Sequence<TrackableSeries>) {
-		val perSeriesConfiguration = userDataRepository.userData.first().perSeriesConfiguration()
-		for (item in series) {
-			for (statistic in statistics) {
-				statistic.adjustBySeries(item, perSeriesConfiguration)
-			}
-		}
-	}
+		TrackableFramesSequence(filter, statisticsDao, userData.perFrameConfiguration())
+			.applyToStatistics(statistics)
 
-	private suspend fun adjustStatisticsByGames(statistics: List<Statistic>, games: Sequence<TrackableGame>) {
-		val perGameConfiguration = userDataRepository.userData.first().perGameConfiguration()
-		for (item in games) {
-			for (statistic in statistics) {
-				statistic.adjustByGame(item, perGameConfiguration)
-			}
-		}
-	}
-
-	private suspend fun adjustStatisticsByFrames(statistics: List<Statistic>, frames: Sequence<TrackableFrame>) {
-		val perFrameConfiguration = userDataRepository.userData.first().perFrameConfiguration()
-		for (item in frames) {
-			for (statistic in statistics) {
-				statistic.adjustByFrame(item, perFrameConfiguration)
-			}
-		}
+		statisticsAsListEntries(statistics)
 	}
 
 	private suspend fun statisticsAsListEntries(statistics: List<Statistic>): List<StatisticListEntryGroup> {
@@ -91,7 +69,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 
 		return StatisticCategory.values().mapNotNull { category ->
 			val categoryStatistics = statistics
-				.filter { it.category == it.category }
+				.filter { it.category == category }
 				.filter { !isHidingZeroStatistics || !it.isEmpty }
 
 			if (categoryStatistics.isEmpty()) return@mapNotNull null
@@ -117,6 +95,6 @@ fun UserData.perFrameConfiguration(): TrackablePerFrameConfiguration = Trackable
 	countSplitWithBonusAsSplit = !isCountingSplitWithBonusAsSplitDisabled
 )
 
-fun UserData.perGameConfiguration(): TrackablePerGameConfiguration = TrackablePerGameConfiguration
+fun perGameConfiguration(): TrackablePerGameConfiguration = TrackablePerGameConfiguration
 
-fun UserData.perSeriesConfiguration(): TrackablePerSeriesConfiguration = TrackablePerSeriesConfiguration
+fun perSeriesConfiguration(): TrackablePerSeriesConfiguration = TrackablePerSeriesConfiguration

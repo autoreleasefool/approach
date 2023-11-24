@@ -1,42 +1,42 @@
 package ca.josephroque.bowlingcompanion.core.data.queries.sequence
 
+import androidx.paging.PagingSource
 import ca.josephroque.bowlingcompanion.core.data.queries.TrackableGameQueryComponents
 import ca.josephroque.bowlingcompanion.core.data.queries.TrackableLeagueQueryComponents
 import ca.josephroque.bowlingcompanion.core.data.queries.TrackableSeriesQueryComponents
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
-import ca.josephroque.bowlingcompanion.core.database.util.ReadableCursor
-import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
+import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
+import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
-import kotlinx.datetime.LocalDate
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 
 data class TrackableGamesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
-): TrackableSequence<TrackableGame>(statisticsDao) {
+	val configuration: TrackablePerGameConfiguration,
+): TrackableSequence<TrackableGameEntity, TrackableGame>() {
 	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
 	private val gamesQuery = TrackableGameQueryComponents(filter = filter.games)
 
-	override fun parseCursor(cursor: ReadableCursor): TrackableGame = TrackableGame(
-		seriesId = UUID.fromString(cursor.getString(0)),
-		id = UUID.fromString(cursor.getString(1)),
-		index = cursor.getInt(2),
-		score = cursor.getInt(3),
-		date = LocalDate.parse(cursor.getString(4)),
-		matchPlay = TrackableGame.MatchPlay(
-			id = UUID.fromString(cursor.getString(5)),
-			result = cursor.getString(6).let { MatchPlayResult.valueOf(it) },
-		),
-	)
+	override fun getPagingSource(
+		query: String,
+		whereArgs: List<Any>
+	): PagingSource<Int, TrackableGameEntity> = statisticsDao.getTrackableGames(query, whereArgs)
+
+	override fun adjustByItem(statistics: List<Statistic>, item: TrackableGame) {
+		statistics.forEach { it.adjustByGame(game = item, configuration = configuration) }
+	}
+
+	override fun mapEntityToModel(entity: TrackableGameEntity) = entity.asModel()
 
 	override fun buildColumnsStatement(): String = listOf(
 		"${gamesQuery.tableAlias}.id AS id",
 		"${gamesQuery.tableAlias}.series_id AS seriesId",
-		"${gamesQuery.tableAlias}.\"index\" AS \"index\"",
+		"${gamesQuery.tableAlias}.`index` AS `index`",
 		"${gamesQuery.tableAlias}.score AS score",
-		"${seriesQuery.tableAlias}.\"date\" AS date",
+		"${seriesQuery.tableAlias}.`date` AS date",
 		"${gamesQuery.matchPlayTableAlias}.id AS matchPlayId",
 		"${gamesQuery.matchPlayTableAlias}.result AS matchPlayResult",
 	).joinToString(prefix = "SELECT ", separator = ", ")
@@ -51,7 +51,9 @@ data class TrackableGamesSequence(
 		leaguesQuery.buildWhereClauses(),
 		seriesQuery.buildWhereClause(),
 		gamesQuery.buildWhereClause(),
-	).joinToString(prefix = "WHERE ", separator = " AND ")
+	)
+		.flatten()
+		.joinToString(prefix = "WHERE ", separator = " AND ")
 
 	override fun buildWhereArgs() = mutableMapOf<String, String>().apply {
 		putAll(leaguesQuery.whereClauseArgs())
@@ -66,5 +68,7 @@ data class TrackableGamesSequence(
 		leaguesQuery.buildOrderClause(),
 		seriesQuery.buildOrderClause(),
 		gamesQuery.buildOrderClause(),
-	).joinToString(prefix = "ORDER BY", separator = ", ")
+	)
+		.flatten()
+		.joinToString(prefix = "ORDER BY ", separator = ", ")
 }
