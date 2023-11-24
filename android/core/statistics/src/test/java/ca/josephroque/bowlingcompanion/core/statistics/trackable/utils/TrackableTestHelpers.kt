@@ -44,3 +44,37 @@ fun series(numberOfGames: Int = 0, total: Int = 0): TrackableSeries =
 		numberOfGames = numberOfGames,
 		total = total,
 	)
+
+fun mockSeries(): List<TrackableSeries> = (0..100).map {
+	TrackableSeries(
+		id = id(it),
+		numberOfGames = it,
+		total = 123,
+		date = LocalDate(2023, 1, 1),
+	)
+}
+
+fun mockGames(): List<TrackableGame> = (0..20).map {
+	TrackableGame(
+		seriesId = id(0),
+		id = id(it),
+		index = 0,
+		score = 123,
+		date = LocalDate(2023, 1, 1),
+		matchPlay = matchPlay(MatchPlayResult.LOST),
+	)
+}
+
+fun mockFrames(): List<TrackableFrame> = (0..<10).map {
+	TrackableFrame(
+		seriesId = id(0),
+		gameId = id(0),
+		gameIndex = 0,
+		index = it,
+		date = LocalDate(2023, 1, 1),
+		rolls = listOf(
+			roll(0, setOf()),
+			roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN), didFoul = true),
+		)
+	)
+}

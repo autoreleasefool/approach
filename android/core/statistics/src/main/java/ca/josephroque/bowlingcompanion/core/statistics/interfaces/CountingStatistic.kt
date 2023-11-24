@@ -17,9 +17,9 @@ interface CountingStatistic: Statistic {
 	override val isEmpty: Boolean
 		get() = count == 0
 
-	fun aggregateWithStatistic(other: Statistic) {
-		if (other is CountingStatistic) {
-			count += other.count
+	override fun aggregateWithStatistic(statistic: Statistic) {
+		if (statistic is CountingStatistic) {
+			count += statistic.count
 		}
 	}
 }

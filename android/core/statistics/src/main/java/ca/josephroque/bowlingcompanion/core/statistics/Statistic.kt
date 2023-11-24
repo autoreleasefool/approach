@@ -21,6 +21,7 @@ interface Statistic {
 	fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration)
 	fun adjustByGame(game: TrackableGame, configuration: TrackablePerGameConfiguration)
 	fun adjustBySeries(series: TrackableSeries, configuration: TrackablePerSeriesConfiguration)
+	fun aggregateWithStatistic(statistic: Statistic)
 }
 
 enum class StatisticCategory {

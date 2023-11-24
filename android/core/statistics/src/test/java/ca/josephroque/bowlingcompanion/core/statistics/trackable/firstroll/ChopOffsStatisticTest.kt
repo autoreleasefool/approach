@@ -4,6 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertCounting
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertStatisticAdjusts
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.frame
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockGames
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockSeries
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.roll
 import org.junit.Test
 
@@ -60,11 +62,19 @@ class ChopOffsStatisticTest {
 
 	@Test
 	fun testAdjustBySeries_DoesNothing() {
-		TODO()
+		val statistic = assertStatisticAdjusts(
+			statistic = ChopOffsStatistic(),
+			bySeries = mockSeries(),
+		)
+		assertCounting(statistic, 0)
 	}
 
 	@Test
 	fun testAdjustByGames_DoesNothing() {
-		TODO()
+		val statistic = assertStatisticAdjusts(
+			statistic = ChopOffsStatistic(),
+			byGames = mockGames(),
+		)
+		assertCounting(statistic, 0)
 	}
 }

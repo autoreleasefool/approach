@@ -17,9 +17,9 @@ interface HighestOfStatistic: Statistic {
 	override val isEmpty: Boolean
 		get() = highest == 0
 
-	fun aggregateWithStatistic(other: Statistic) {
-		if (other is HighestOfStatistic) {
-			highest = maxOf(highest, other.highest)
+	override fun aggregateWithStatistic(statistic: Statistic) {
+		if (statistic is HighestOfStatistic) {
+			highest = maxOf(highest, statistic.highest)
 		}
 	}
 }

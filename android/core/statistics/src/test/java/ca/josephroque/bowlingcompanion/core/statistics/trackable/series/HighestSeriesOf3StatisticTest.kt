@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.core.statistics.trackable.series
 
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertHighestOf
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertStatisticAdjusts
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockFrames
+import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockGames
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.series
 import org.junit.Test
 
@@ -33,12 +35,20 @@ class HighestSeriesOf3StatisticTest {
 	}
 
 	@Test
-	fun testAdjust_ByGames_DoesNothing() {
-		TODO()
+	fun testAdjustByFrames_DoesNothing() {
+		val statistic = assertStatisticAdjusts(
+			statistic = HighSeriesOf3Statistic(),
+			byFrames = mockFrames(),
+		)
+		assertHighestOf(statistic, 0)
 	}
 
 	@Test
-	fun testAdjust_ByFrames_DoesNothing() {
-		TODO()
+	fun testAdjustByGames_DoesNothing() {
+		val statistic = assertStatisticAdjusts(
+			statistic = HighSeriesOf3Statistic(),
+			byGames = mockGames(),
+		)
+		assertHighestOf(statistic, 0)
 	}
 }
