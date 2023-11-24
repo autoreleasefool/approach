@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui
+package ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -25,21 +25,24 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.LegacyUserOnboardingUiState
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 
 @Composable
-internal fun LegacyCompanionHeader(
-	uiState: LegacyUserOnboardingUiState,
+fun LegacyCompanionHeader(
+	state: LegacyUserOnboardingUiState,
 	modifier: Modifier = Modifier,
 ) {
 	val visibleState = remember { MutableTransitionState(false) }
 
-	LaunchedEffect(uiState) {
-		when (uiState) {
-			LegacyUserOnboardingUiState.Started -> visibleState.targetState = true
+	LaunchedEffect(Unit) {
+		visibleState.targetState = true
+	}
+
+	LaunchedEffect(state) {
+		when (state) {
+			LegacyUserOnboardingUiState.Started, LegacyUserOnboardingUiState.ImportingData -> Unit
 			is LegacyUserOnboardingUiState.ShowingApproachHeader -> visibleState.targetState = false
-			is LegacyUserOnboardingUiState.ImportingData, LegacyUserOnboardingUiState.Complete -> Unit
 		}
 	}
 

@@ -59,6 +59,8 @@
             <option value="$PROJECT_DIR$/feature/gearform/ui" />
             <option value="$PROJECT_DIR$/feature/gearlist" />
             <option value="$PROJECT_DIR$/feature/gearlist/ui" />
+            <option value="$PROJECT_DIR$/feature/onboarding" />
+            <option value="$PROJECT_DIR$/feature/onboarding/ui" />
             <option value="$PROJECT_DIR$/feature/resourcepicker" />
             <option value="$PROJECT_DIR$/feature/resourcepicker/ui" />
             <option value="$PROJECT_DIR$/feature/settings" />

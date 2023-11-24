@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui
+package ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
@@ -30,14 +30,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.LegacyUserOnboardingUiState
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 
 @Composable
-internal fun NewApproachHeader(
-	uiState: LegacyUserOnboardingUiState,
-	onHeaderClicked: () -> Unit,
-	onHeaderAnimationFinished: () -> Unit,
+fun NewApproachHeader(
+	state: LegacyUserOnboardingUiState,
+	onAction: (LegacyUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	BoxWithConstraints(
@@ -59,16 +60,14 @@ internal fun NewApproachHeader(
 
 		LaunchedEffect(sharedTransition.currentState) {
 			if (sharedTransition.currentState == HeaderState.AtTop) {
-				onHeaderAnimationFinished()
+				onAction(LegacyUserOnboardingUiAction.NewApproachHeaderAnimationFinished)
 			}
 		}
 
-		LaunchedEffect(uiState) {
-			when (uiState) {
+		LaunchedEffect(state) {
+			when (state) {
+				LegacyUserOnboardingUiState.Started, LegacyUserOnboardingUiState.ImportingData -> Unit
 				is LegacyUserOnboardingUiState.ShowingApproachHeader -> headerState = HeaderState.AtTop
-				LegacyUserOnboardingUiState.Started,
-				LegacyUserOnboardingUiState.Complete,
-				is LegacyUserOnboardingUiState.ImportingData -> Unit
 			}
 		}
 
@@ -79,11 +78,11 @@ internal fun NewApproachHeader(
 				.offset(y = scope.maxHeight - 80.dp - bounceOffset.dp + positionOffset.dp)
 				.clickable(
 					enabled = headerState == HeaderState.Bouncing,
-					onClick = onHeaderClicked,
+					onClick = { onAction(LegacyUserOnboardingUiAction.NewApproachHeaderClicked) },
 				),
 		) {
 			Image(
-				painter = painterResource(R.drawable.ic_double_arrow_up),
+				painter = painterResource(RCoreDesign.drawable.ic_double_arrow_up),
 				contentDescription = stringResource(R.string.onboarding_legacy_user_content_description_next),
 				modifier = Modifier
 					.padding(bottom = 8.dp)

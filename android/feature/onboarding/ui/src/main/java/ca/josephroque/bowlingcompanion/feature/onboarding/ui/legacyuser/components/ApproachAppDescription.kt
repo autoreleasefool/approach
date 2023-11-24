@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.ui
+package ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
@@ -15,29 +15,28 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.feature.onboarding.legacyuser.LegacyUserOnboardingUiState
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 
 @Composable
-internal fun ApproachAppDescription(
-	uiState: LegacyUserOnboardingUiState,
-	onGetStartedClicked: () -> Unit,
+fun ApproachAppDescription(
+	state: LegacyUserOnboardingUiState,
+	onAction: (LegacyUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val visibleState = remember { MutableTransitionState(false) }
 
-	LaunchedEffect(uiState) {
-		when (uiState) {
-			is LegacyUserOnboardingUiState.ShowingApproachHeader -> visibleState.targetState = uiState.isDetailsVisible
-			is LegacyUserOnboardingUiState.ImportingData,
-			LegacyUserOnboardingUiState.Complete,
-			LegacyUserOnboardingUiState.Started -> Unit
+	LaunchedEffect(state) {
+		when (state) {
+			LegacyUserOnboardingUiState.Started, LegacyUserOnboardingUiState.ImportingData -> Unit
+			is LegacyUserOnboardingUiState.ShowingApproachHeader -> visibleState.targetState = state.isDetailsVisible
 		}
 	}
 
 	Description(
 		visibleState = visibleState,
-		onGetStartedClicked = onGetStartedClicked,
+		onAction = onAction,
 		modifier = modifier,
 	)
 }
@@ -45,7 +44,7 @@ internal fun ApproachAppDescription(
 @Composable
 private fun Description(
 	visibleState: MutableTransitionState<Boolean>,
-	onGetStartedClicked: () -> Unit,
+	onAction: (LegacyUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	AnimatedVisibility(
@@ -82,7 +81,7 @@ private fun Description(
 
 			Spacer(modifier = Modifier.weight(1f))
 
-			Button(onClick = onGetStartedClicked) {
+			Button(onClick = { onAction(LegacyUserOnboardingUiAction.GetStartedClicked) }) {
 				Text(
 					text = stringResource(R.string.onboarding_legacy_user_get_started),
 					style = MaterialTheme.typography.bodyLarge,
