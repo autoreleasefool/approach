@@ -1,8 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="statistic_title_high_single">High Single</string>
+	<string name="statistic_title_total_pin_fall">Total Pinfall</string>
+	<string name="statistic_title_number_of_games">Number of Games</string>
+	<string name="statistic_title_game_average">Game Average</string>
+	<string name="statistic_title_total_rolls">Total Rolls</string>
+
+	<string name="statistic_title_middle_hits">Middle Hits</string>
+	<string name="statistic_title_left_of_middle_hits">Left of Middle Hits</string>
+	<string name="statistic_title_right_of_middle_hits">Right of Middle Hits</string>
+	<string name="statistic_title_strike_middle_hits">Strike Middle Hits</string>
+
+	<string name="statistic_title_strikes">Strikes</string>
+	<string name="statistic_title_spare_conversions">Spare Conversions</string>
+
+	<string name="statistic_title_head_pins">Head Pins</string>
+	<string name="statistic_title_head_pins_spared">Head Pins Spared</string>
+
+	<string name="statistic_title_fives">Fives</string>
+	<string name="statistic_title_fives_spared">Fives Spared</string>
+	<string name="statistic_title_left_fives">Left Fives</string>
+	<string name="statistic_title_left_fives_spared">Left Fives Spared</string>
+	<string name="statistic_title_right_fives">Right Fives</string>
+	<string name="statistic_title_right_fives_spared">Right Fives Spared</string>
+
+	<string name="statistic_title_threes">Threes</string>
+	<string name="statistic_title_threes_spared">Threes Spared</string>
+	<string name="statistic_title_left_threes">Left Threes</string>
+	<string name="statistic_title_left_threes_spared">Left Threes Spared</string>
+	<string name="statistic_title_right_threes">Right Threes</string>
+	<string name="statistic_title_right_threes_spared">Right Threes Spared</string>
+
+	<string name="statistic_title_taps">Taps</string>
+	<string name="statistic_title_taps_spared">Taps Spared</string>
+	<string name="statistic_title_left_taps">Lefts</string>
+	<string name="statistic_title_left_taps_spared">Lefts Spared</string>
+	<string name="statistic_title_right_taps">Rights</string>
+	<string name="statistic_title_right_taps_spared">Rights Spared</string>
+
 	<string name="statistic_title_aces">Aces</string>
+	<string name="statistic_title_aces_spared">Aces Spared</string>
+
 	<string name="statistic_title_chop_offs">Chop Offs</string>
+	<string name="statistic_title_chop_offs_spared">Chop Offs Spared</string>
+	<string name="statistic_title_left_chop_offs">Left Chop Offs</string>
+	<string name="statistic_title_left_chop_offs_spared">Left Chop Offs Spared</string>
+	<string name="statistic_title_right_chop_offs">Right Chop Offs</string>
+	<string name="statistic_title_right_chop_offs_spared">Right Chop Offs Spared</string>
+
+	<string name="statistic_title_splits">Splits</string>
+	<string name="statistic_title_splits_spared">Splits Spared</string>
+	<string name="statistic_title_left_splits">Left Splits</string>
+	<string name="statistic_title_left_splits_spared">Left Splits Spared</string>
+	<string name="statistic_title_right_splits">Right Splits</string>
+	<string name="statistic_title_right_splits_spared">Right Splits Spared</string>
+
+	<string name="statistic_title_twelves">Twelves</string>
+	<string name="statistic_title_twelves_spared">Twelves Spared</string>
+	<string name="statistic_title_left_twelves">Left Twelves</string>
+	<string name="statistic_title_left_twelves_spared">Left Twelves Spared</string>
+	<string name="statistic_title_right_twelves">Right Twelves</string>
+	<string name="statistic_title_right_twelves_spared">Right Twelves Spared</string>
+
+	<string name="statistic_title_fouls">Fouls</string>
+
+	<string name="statistic_title_pins_left_on_deck">Pins Left on Deck</string>
+	<string name="statistic_title_average_pins_left_on_deck">Average Pins Left on Deck</string>
+
+	<string name="statistic_title_match_play_results">Match Play Results</string>
+	<string name="statistic_title_match_play_wins">Match Play Wins</string>
+	<string name="statistic_title_match_play_losses">Match Play Losses</string>
+	<string name="statistic_title_match_play_ties">Match Play Ties</string>
+
 	<string name="statistic_title_high_series_of_3">High Series of 3</string>
 
 	<string name="statistic_category_overall">Overall</string>
