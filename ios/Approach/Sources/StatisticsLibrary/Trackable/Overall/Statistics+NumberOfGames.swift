@@ -18,6 +18,7 @@ extension Statistics {
 		init(numberOfGames: Int) { self.numberOfGames = numberOfGames }
 
 		public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {
+			guard byGame.score > 0 else { return }
 			numberOfGames += 1
 		}
 
