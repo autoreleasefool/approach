@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.feature.overview.OverviewRoute
 import java.util.UUID
 
-const val overviewNavigationRoute = "overview"
+const val overviewNavigationRoute = "app_overview"
 
 fun NavController.navigateToOverview(navOptions: NavOptions? = null) {
 	this.navigate(overviewNavigationRoute, navOptions)

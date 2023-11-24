@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.AccessoriesRoute
 import java.util.UUID
 
-const val accessoriesNavigationRoute = "accessories"
+const val accessoriesNavigationRoute = "accessories_overview"
 
 fun NavController.navigateToAccessories(navOptions: NavOptions? = null) {
 	this.navigate(accessoriesNavigationRoute, navOptions)

@@ -38,10 +38,10 @@ class ApproachAppState(
 
 	val currentTopLevelDestination: TopLevelDestination?
 		@Composable get() = when(currentDestination?.route) {
-			overviewNavigationRoute -> TopLevelDestination.OVERVIEW
-			accessoriesNavigationRoute -> TopLevelDestination.ACCESSORIES
-			settingsNavigationRoute -> TopLevelDestination.SETTINGS
-			statisticsNavigationRoute -> TopLevelDestination.STATISTICS
+			overviewNavigationRoute -> TopLevelDestination.APP_OVERVIEW
+			accessoriesNavigationRoute -> TopLevelDestination.ACCESSORIES_OVERVIEW
+			settingsNavigationRoute -> TopLevelDestination.SETTINGS_OVERVIEW
+			statisticsNavigationRoute -> TopLevelDestination.STATISTICS_OVERVIEW
 			else -> null
 		}
 
@@ -58,10 +58,10 @@ class ApproachAppState(
 		}
 
 		when (topLevelDestination) {
-			TopLevelDestination.OVERVIEW -> navController.navigateToOverview(topLevelNavOptions)
-			TopLevelDestination.STATISTICS -> navController.navigateToStatistics(topLevelNavOptions)
-			TopLevelDestination.ACCESSORIES -> navController.navigateToAccessories(topLevelNavOptions)
-			TopLevelDestination.SETTINGS -> navController.navigateToSettings(topLevelNavOptions)
+			TopLevelDestination.APP_OVERVIEW -> navController.navigateToOverview(topLevelNavOptions)
+			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatistics(topLevelNavOptions)
+			TopLevelDestination.ACCESSORIES_OVERVIEW -> navController.navigateToAccessories(topLevelNavOptions)
+			TopLevelDestination.SETTINGS_OVERVIEW -> navController.navigateToSettings(topLevelNavOptions)
 		}
 	}
 }

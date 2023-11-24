@@ -10,28 +10,28 @@ enum class TopLevelDestination(
 	val iconTextId: Int,
 	val titleTextId: Int,
 ) {
-	OVERVIEW(
+	APP_OVERVIEW(
 		selectedIcon = RCoreDesign.drawable.ic_bowling_ball,
 		unselectedIcon = RCoreDesign.drawable.ic_bowling_ball,
 		iconTextId = R.string.destination_overview,
 		titleTextId = R.string.app_name,
 	),
 
-	STATISTICS(
+	STATISTICS_OVERVIEW(
 		selectedIcon = RCoreDesign.drawable.ic_monitoring,
 		unselectedIcon = RCoreDesign.drawable.ic_monitoring,
 		iconTextId = R.string.destination_statistics,
 		titleTextId = R.string.destination_statistics,
 	),
 
-	ACCESSORIES(
+	ACCESSORIES_OVERVIEW(
 		selectedIcon = RCoreDesign.drawable.ic_accessory,
 		unselectedIcon = RCoreDesign.drawable.ic_accessory,
 		iconTextId = R.string.destination_accessories,
 		titleTextId = R.string.destination_accessories,
 	),
 
-	SETTINGS(
+	SETTINGS_OVERVIEW(
 		selectedIcon = RCoreDesign.drawable.ic_settings,
 		unselectedIcon = RCoreDesign.drawable.ic_settings,
 		iconTextId = R.string.destination_settings,

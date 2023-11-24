@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.feature.settings.SettingsRoute
 
-const val settingsNavigationRoute = "settings"
+const val settingsNavigationRoute = "settings_overview"
 
 fun NavController.navigateToSettings(navOptions: NavOptions? = null) {
 	this.navigate(settingsNavigationRoute, navOptions)
