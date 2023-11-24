@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="statistic_title_high_single">High Single</string>
 	<string name="statistic_title_aces">Aces</string>
+	<string name="statistic_title_high_series_of_3">High Series of 3</string>
 
 	<string name="statistic_category_overall">Overall</string>
 	<string name="statistic_category_middle_hits">Middle Hits</string>

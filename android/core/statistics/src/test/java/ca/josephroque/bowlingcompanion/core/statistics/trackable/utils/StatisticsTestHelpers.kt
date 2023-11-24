@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll.utils
+package ca.josephroque.bowlingcompanion.core.statistics.trackable.utils
 
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame

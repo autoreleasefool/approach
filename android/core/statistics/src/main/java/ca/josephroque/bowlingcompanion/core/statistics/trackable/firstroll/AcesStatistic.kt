@@ -13,10 +13,10 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatis
 data class AcesStatistic(
 	var aces: Int = 0,
 ): TrackablePerFirstRoll, CountingStatistic {
-	override val titleResourceId: Int = R.string.statistic_title_aces
-	override val category: StatisticCategory = StatisticCategory.ACES
-	override val isEligibleForNewLabel: Boolean = false
-	override val preferredTrendDirection: PreferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override val titleResourceId = R.string.statistic_title_aces
+	override val category = StatisticCategory.ACES
+	override val isEligibleForNewLabel = false
+	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
 
 	override var count: Int
 		get() = aces
