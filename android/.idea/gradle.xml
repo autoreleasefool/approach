@@ -63,6 +63,8 @@
             <option value="$PROJECT_DIR$/feature/resourcepicker/ui" />
             <option value="$PROJECT_DIR$/feature/settings" />
             <option value="$PROJECT_DIR$/feature/settings/ui" />
+            <option value="$PROJECT_DIR$/feature/statisticsdetails" />
+            <option value="$PROJECT_DIR$/feature/statisticsdetails/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
           </set>
         </option>

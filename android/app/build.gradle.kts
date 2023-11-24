@@ -68,6 +68,7 @@ dependencies {
 	implementation(project(":feature:gearform"))
 	implementation(project(":feature:resourcepicker"))
 	implementation(project(":feature:settings"))
+	implementation(project(":feature:statisticsdetails"))
 	implementation(project(":feature:statisticswidget"))
 
 	implementation(platform(libs.androidx.compose.bom))

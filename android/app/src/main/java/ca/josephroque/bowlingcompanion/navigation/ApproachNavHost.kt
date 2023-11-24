@@ -56,6 +56,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScree
 import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToStatisticsSettings
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.statisticsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 
 @Composable
@@ -194,6 +195,9 @@ fun ApproachNavHost(
 					navResultCallback = result,
 				)
 			}
+		)
+		statisticsDetailsScreen(
+			onBackPressed = navController::popBackStack,
 		)
 	}
 }
