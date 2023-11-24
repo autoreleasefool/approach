@@ -58,7 +58,6 @@ fun ScoreSheet(
 		items(
 			items = state.game?.frames ?: emptyList(),
 			key = { it.index },
-			contentType = { "frame" },
 		) { frame ->
 			val isFrameSelected = state.selection.frameIndex == frame.index
 

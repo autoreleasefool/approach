@@ -17,7 +17,6 @@ fun LazyListScope.seriesList(
 			items(
 				items = seriesListState.list,
 				key = { it.id },
-				contentType = { "series" },
 			) { series ->
 				SeriesItemRow(
 					series = series,

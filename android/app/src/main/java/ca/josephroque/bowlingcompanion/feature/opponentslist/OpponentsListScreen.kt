@@ -74,7 +74,6 @@ internal fun OpponentsListScreen(
 					items(
 						items = opponentsListState.list,
 						key = { it.id },
-						contentType = { "opponent" },
 					) { opponent ->
 						OpponentItemRow(
 							opponent = opponent,

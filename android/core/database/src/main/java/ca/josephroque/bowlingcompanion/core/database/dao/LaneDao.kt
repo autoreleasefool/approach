@@ -14,7 +14,6 @@ abstract class LaneDao {
 	@Query(
 		"""
 			SELECT
-				lanes.alley_id AS alleyId,
 				lanes.id AS id,
 				lanes.label AS label,
 				lanes.position AS position

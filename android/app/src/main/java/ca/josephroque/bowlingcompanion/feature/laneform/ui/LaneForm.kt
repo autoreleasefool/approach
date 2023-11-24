@@ -66,7 +66,6 @@ internal fun LaneForm(
 				items(
 					laneFormState.lanes,
 					key = { it.id },
-					contentType = { "lane" },
 				) {
 					LaneItemRow(
 						lane = it.asLaneListItem(),

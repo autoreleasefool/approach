@@ -27,7 +27,6 @@ fun Acknowledgements(
 		items(
 			state.acknowledgements,
 			key = { it.name },
-			contentType = { "acknowledgement" }
 		) { acknowledgement ->
 			AcknowledgementItem(
 				acknowledgement = acknowledgement,

@@ -15,7 +15,6 @@ fun LazyListScope.leaguesList(
 			items(
 				items = leaguesListState.list,
 				key = { it.id },
-				contentType = { "league" },
 			) { league ->
 				LeagueItemRow(
 					league = league,

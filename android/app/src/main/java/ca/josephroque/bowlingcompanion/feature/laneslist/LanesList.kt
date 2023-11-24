@@ -13,7 +13,6 @@ fun LazyListScope.lanesList(
 			items(
 				items = lanesListState.list,
 				key = { it.id },
-				contentType = { "lane" },
 			) { lane ->
 				LaneItemRow(lane = lane)
 			}

@@ -18,7 +18,6 @@ fun LazyListScope.gamesList(
 			items(
 				items = gamesListState.list,
 				key = { it.id },
-				contentType = { "games" },
 			) { game ->
 				GameItemRow(
 					game = game,

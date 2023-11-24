@@ -29,7 +29,6 @@ fun <T: Resource> ResourcePicker(
 			items(
 				items = state.items,
 				key = { it.id },
-				contentType = { "resource" },
 			) { item ->
 				PickableRow(
 					isSelected = state.selectedItems.contains(item.id),

@@ -15,7 +15,6 @@ fun LazyListScope.alleysList(
 			items(
 				items = alleysListState.list,
 				key = { it.id },
-				contentType = { "alley" },
 			) { alley ->
 				AlleyItemRow(
 					alley = alley,

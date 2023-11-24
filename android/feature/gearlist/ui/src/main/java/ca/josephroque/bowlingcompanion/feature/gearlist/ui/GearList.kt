@@ -67,7 +67,6 @@ fun LazyListScope.gearList(
 	items(
 		items = list,
 		key = { it.id },
-		contentType = { "gear" },
 	) { gear ->
 		val deleteAction = SwipeAction(
 			icon = rememberVectorPainter(Icons.Filled.Delete),

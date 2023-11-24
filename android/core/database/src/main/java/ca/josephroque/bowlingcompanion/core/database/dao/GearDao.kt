@@ -57,7 +57,7 @@ abstract class GearDao {
 				gear.name AS name,
 				gear.kind AS kind,
 				gear.avatar AS avatar,
-				gear.owner_id AS ownerId
+				gear.owner_id AS owner_id
 			FROM gear WHERE gear.id = :id
 		"""
 	)

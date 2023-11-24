@@ -87,7 +87,6 @@ fun LazyListScope.bowlersList(
 	items(
 		items = list,
 		key = { it.id },
-		contentType = { "bowler" },
 	) { bowler ->
 		val archiveAction = SwipeAction(
 			icon = painterResource(RCoreDesign.drawable.ic_archive),
