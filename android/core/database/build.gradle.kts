@@ -13,4 +13,6 @@ dependencies {
 	implementation(project(":core:statistics"))
 
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.paging)
+	implementation(libs.room.paging)
 }

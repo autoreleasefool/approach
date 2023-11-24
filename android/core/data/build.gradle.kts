@@ -17,4 +17,5 @@ dependencies {
 
 	implementation(libs.androidx.core.ktx)
 	implementation(libs.kotlinx.datetime)
+	implementation(libs.paging)
 }
