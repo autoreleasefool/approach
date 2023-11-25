@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 
@@ -55,6 +56,13 @@ fun GearForm(
 				nameErrorId = state.nameErrorId,
 				modifier = Modifier.padding(horizontal = 16.dp),
 			)
+
+			PickableResourceCard(
+				resourceName = stringResource(R.string.gear_form_section_owner),
+				selectedName = if (state.owner == null) stringResource(R.string.gear_form_owner_none) else state.owner.name,
+				onClick = { onAction(GearFormUiAction.OwnerClicked) },
+				modifier = Modifier.padding(horizontal = 16.dp),
+			)
 		}
 
 		FormSection(
@@ -70,27 +78,6 @@ fun GearForm(
 				AvatarImage(
 					avatar = state.avatar,
 					modifier = Modifier.size(48.dp)
-				)
-			}
-		}
-
-		FormSection(
-			titleResourceId = R.string.gear_form_section_owner,
-			modifier = Modifier.padding(bottom = 16.dp)
-		) {
-			if (state.owner == null) {
-				Text(
-					text = stringResource(id = R.string.gear_form_owner_none),
-					style = MaterialTheme.typography.bodyLarge,
-					modifier = Modifier
-						.fillMaxWidth()
-						.clickable(onClick = { onAction(GearFormUiAction.OwnerClicked) })
-						.padding(16.dp),
-				)
-			} else {
-				BowlerRow(
-					name = state.owner.name,
-					onClick = { onAction(GearFormUiAction.OwnerClicked) },
 				)
 			}
 		}
