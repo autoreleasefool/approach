@@ -63,7 +63,7 @@ private fun ResourcePickerScreen(
 					onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
 					itemContent = {
 						when (state.picker.resourceType) {
-							ResourcePickerType.Bowler -> BowlerRow(name = it.name)
+							ResourcePickerType.BOWLER -> BowlerRow(name = it.name)
 						}
 					},
 					modifier = modifier.padding(padding),

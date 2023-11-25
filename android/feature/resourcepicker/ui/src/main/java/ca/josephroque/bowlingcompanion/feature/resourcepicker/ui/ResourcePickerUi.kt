@@ -4,7 +4,7 @@ import androidx.annotation.PluralsRes
 import java.util.UUID
 
 enum class ResourcePickerType {
-	Bowler,
+	BOWLER,
 }
 
 data class ResourceItem(

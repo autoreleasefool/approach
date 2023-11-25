@@ -34,7 +34,7 @@ class ResourcePickerViewModel @Inject constructor(
 	val events = _events.asStateFlow()
 
 	private val resourceType = savedStateHandle.get<String>(RESOURCE_TYPE)
-		?.let { ResourcePickerType.valueOf(it) } ?: ResourcePickerType.Bowler
+		?.let { ResourcePickerType.valueOf(it) } ?: ResourcePickerType.BOWLER
 
 	private val initiallySelectedIds = (savedStateHandle.get<String>(SELECTED_IDS) ?: "nan")
 		.let { if (it == "nan") emptySet() else it.split(",").toSet() }
@@ -44,7 +44,7 @@ class ResourcePickerViewModel @Inject constructor(
 	private val limit = savedStateHandle.get<Int>(SELECTION_LIMIT) ?: 0
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
-		ResourcePickerType.Bowler -> BowlerPickerDataProvider(bowlersRepository)
+		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? {

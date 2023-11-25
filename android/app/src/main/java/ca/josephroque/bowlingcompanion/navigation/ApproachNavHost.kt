@@ -93,7 +93,7 @@ fun ApproachNavHost(
 					selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 					limit = 1,
 					navResultCallback = result,
-					resourceType = ResourcePickerType.Bowler,
+					resourceType = ResourcePickerType.BOWLER,
 				)
 			},
 			onPickLeague = { _, _ -> /* TODO: onPickLeague */ },
@@ -208,7 +208,7 @@ fun ApproachNavHost(
 					selectedIds = owner?.let { setOf(it) } ?: emptySet(),
 					limit = 1,
 					navResultCallback = result,
-					resourceType = ResourcePickerType.Bowler,
+					resourceType = ResourcePickerType.BOWLER,
 				)
 			}
 		)

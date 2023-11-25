@@ -29,17 +29,17 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 ): ViewModel() {
 	private val _sourceType = savedStateHandle.get<String>(SOURCE_TYPE)
-		?.let { SourceType.valueOf(it) } ?: SourceType.Bowler
+		?.let { SourceType.valueOf(it) } ?: SourceType.BOWLER
 
 	private val _sourceId = savedStateHandle.get<String>(SOURCE_ID)
 		?.let { UUID.fromString(it) } ?: UUID.randomUUID()
 
 	private val _filter: MutableStateFlow<TrackableFilter> =
 		MutableStateFlow(TrackableFilter(source = when (_sourceType) {
-			SourceType.Bowler -> TrackableFilter.Source.Bowler(_sourceId)
-			SourceType.League -> TrackableFilter.Source.League(_sourceId)
-			SourceType.Series -> TrackableFilter.Source.Series(_sourceId)
-			SourceType.Game -> TrackableFilter.Source.Game(_sourceId)
+			SourceType.BOWLER -> TrackableFilter.Source.Bowler(_sourceId)
+			SourceType.LEAGUE -> TrackableFilter.Source.League(_sourceId)
+			SourceType.SERIES -> TrackableFilter.Source.Series(_sourceId)
+			SourceType.GAME -> TrackableFilter.Source.Game(_sourceId)
 		}))
 
 	private val _statisticsList = _filter.map { statisticsRepository.getStatisticsList(it) }
@@ -99,15 +99,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 }
 
 enum class SourceType {
-	Bowler,
-	League,
-	Series,
-	Game,
+	BOWLER,
+	LEAGUE,
+	SERIES,
+	GAME,
 }
 
 fun TrackableFilter.Source.sourceType(): SourceType = when (this) {
-	is TrackableFilter.Source.Bowler -> SourceType.Bowler
-	is TrackableFilter.Source.League -> SourceType.League
-	is TrackableFilter.Source.Series -> SourceType.Series
-	is TrackableFilter.Source.Game -> SourceType.Game
+	is TrackableFilter.Source.Bowler -> SourceType.BOWLER
+	is TrackableFilter.Source.League -> SourceType.LEAGUE
+	is TrackableFilter.Source.Series -> SourceType.SERIES
+	is TrackableFilter.Source.Game -> SourceType.GAME
 }
