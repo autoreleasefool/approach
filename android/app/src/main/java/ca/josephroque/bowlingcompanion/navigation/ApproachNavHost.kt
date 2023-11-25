@@ -55,6 +55,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToDev
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToStatisticsSettings
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.statisticsSettingsScreen
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsOverviewScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
@@ -96,7 +97,7 @@ fun ApproachNavHost(
 			onPickLeague = { _, _ -> /* TODO: onPickLeague */ },
 			onPickSeries = { _, _ -> /* TODO: onPickSeries */ },
 			onPickGame = { _, _ -> /* TODO: onPickGame */ },
-			onShowStatistics = { /* TODO: onShowStatistics */ },
+			onShowStatistics = navController::navigateToStatisticsDetails,
 		)
 		accessoriesScreen(
 			onAddAlley = navController::navigateToNewAlleyForm,

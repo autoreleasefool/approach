@@ -104,3 +104,10 @@ enum class SourceType {
 	Series,
 	Game,
 }
+
+fun TrackableFilter.Source.sourceType(): SourceType = when (this) {
+	is TrackableFilter.Source.Bowler -> SourceType.Bowler
+	is TrackableFilter.Source.League -> SourceType.League
+	is TrackableFilter.Source.Series -> SourceType.Series
+	is TrackableFilter.Source.Game -> SourceType.Game
+}

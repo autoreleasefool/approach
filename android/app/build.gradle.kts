@@ -56,6 +56,7 @@ dependencies {
 	implementation(project(":core:featureflags"))
 	implementation(project(":core:model"))
 	implementation(project(":core:model:ui"))
+	implementation(project(":core:statistics"))
 	implementation(project(":feature:accessoriesoverview"))
 	implementation(project(":feature:alleyslist"))
 	implementation(project(":feature:avatarform"))
