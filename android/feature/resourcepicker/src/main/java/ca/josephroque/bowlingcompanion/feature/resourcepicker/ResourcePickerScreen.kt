@@ -11,13 +11,14 @@ import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import java.util.UUID
 
 @Composable
-internal fun BowlerPickerRoute(
+internal fun ResourcePickerRoute(
 	onDismissWithResult: (Set<UUID>) -> Unit,
 	modifier: Modifier = Modifier,
-	viewModel: BowlerPickerViewModel = hiltViewModel(),
+	viewModel: ResourcePickerViewModel = hiltViewModel(),
 ) {
 	val resourcePickerScreenState = viewModel.uiState.collectAsState().value
 
@@ -26,7 +27,7 @@ internal fun BowlerPickerRoute(
 		else -> Unit
 	}
 
-	BowlerPickerScreen(
+	ResourcePickerScreen(
 		state = resourcePickerScreenState,
 		onAction = viewModel::handleAction,
 		modifier = modifier,
@@ -34,9 +35,9 @@ internal fun BowlerPickerRoute(
 }
 
 @Composable
-private fun BowlerPickerScreen(
-	state: ResourcePickerScreenUiState<BowlerResource>,
-	onAction: (ResourcePickerScreenUiAction<BowlerResource>) -> Unit,
+private fun ResourcePickerScreen(
+	state: ResourcePickerScreenUiState,
+	onAction: (ResourcePickerScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	LaunchedEffect(Unit) {
@@ -60,7 +61,11 @@ private fun BowlerPickerScreen(
 				ResourcePicker(
 					state = state.picker,
 					onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
-					itemContent = { BowlerRow(name = it.name) },
+					itemContent = {
+						when (state.picker.resourceType) {
+							ResourcePickerType.Bowler -> BowlerRow(name = it.name)
+						}
+					},
 					modifier = modifier.padding(padding),
 				)
 		}

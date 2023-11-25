@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 
 @Composable
-fun <T: Resource> ResourcePicker(
-	state: ResourcePickerUiState<T>,
+fun ResourcePicker(
+	state: ResourcePickerUiState,
 	onAction: (ResourcePickerUiAction) -> Unit,
-	itemContent: @Composable BoxScope.(item: T) -> Unit,
+	itemContent: @Composable BoxScope.(item: ResourceItem) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	LazyColumn(modifier = modifier) {

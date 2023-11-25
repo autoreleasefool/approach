@@ -1,26 +1,25 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker
 
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.Resource
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiState
 import java.util.UUID
 
-sealed interface ResourcePickerScreenUiState<out T> {
-	data object Loading: ResourcePickerScreenUiState<Nothing>
+sealed interface ResourcePickerScreenUiState {
+	data object Loading: ResourcePickerScreenUiState
 
-	data class Loaded<T: Resource>(
-		val picker: ResourcePickerUiState<T>,
+	data class Loaded(
+		val picker: ResourcePickerUiState,
 		val topBar: ResourcePickerTopBarUiState,
-	): ResourcePickerScreenUiState<T>
+	): ResourcePickerScreenUiState
 }
 
-sealed interface ResourcePickerScreenUiAction<out T> {
-	data object LoadResources: ResourcePickerScreenUiAction<Nothing>
+sealed interface ResourcePickerScreenUiAction {
+	data object LoadResources: ResourcePickerScreenUiAction
 
-	data class ResourcePickerAction<T: Resource>(
+	data class ResourcePickerAction(
 		val action: ResourcePickerUiAction,
-	): ResourcePickerScreenUiAction<T>
+	): ResourcePickerScreenUiAction
 }
 
 sealed interface ResourcePickerScreenEvent {

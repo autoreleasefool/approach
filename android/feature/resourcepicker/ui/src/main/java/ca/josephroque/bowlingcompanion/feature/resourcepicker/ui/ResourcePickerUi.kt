@@ -3,8 +3,18 @@ package ca.josephroque.bowlingcompanion.feature.resourcepicker.ui
 import androidx.annotation.PluralsRes
 import java.util.UUID
 
-data class ResourcePickerUiState<T: Resource>(
-	val items: List<T>,
+enum class ResourcePickerType {
+	Bowler,
+}
+
+data class ResourceItem(
+	val id: UUID,
+	val name: String,
+)
+
+data class ResourcePickerUiState(
+	val resourceType: ResourcePickerType,
+	val items: List<ResourceItem>,
 	val selectedItems: Set<UUID>,
 )
 

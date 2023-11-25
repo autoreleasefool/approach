@@ -4,56 +4,64 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_TYPE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTED_IDS
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTION_LIMIT
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.R
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.Resource
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class BowlerPickerViewModel @Inject constructor(
+class ResourcePickerViewModel @Inject constructor(
+	bowlersRepository: BowlersRepository,
 	savedStateHandle: SavedStateHandle,
-	private val bowlersRepository: BowlersRepository
 ): ViewModel() {
-	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState<BowlerResource>> =
+	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
 		MutableStateFlow(ResourcePickerScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
 	private val _events: MutableStateFlow<ResourcePickerScreenEvent?> = MutableStateFlow(null)
 	val events = _events.asStateFlow()
 
-	private val bowlerIds = (savedStateHandle.get<String>(SELECTED_IDS) ?: "nan")
+	private val resourceType = savedStateHandle.get<String>(RESOURCE_TYPE)
+		?.let { ResourcePickerType.valueOf(it) } ?: ResourcePickerType.Bowler
+
+	private val initiallySelectedIds = (savedStateHandle.get<String>(SELECTED_IDS) ?: "nan")
 		.let { if (it == "nan") emptySet() else it.split(",").toSet() }
 		.map(UUID::fromString)
 		.toSet()
 
 	private val limit = savedStateHandle.get<Int>(SELECTION_LIMIT) ?: 0
 
-	private fun getPickerUiState(): ResourcePickerUiState<BowlerResource>? {
+	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
+		ResourcePickerType.Bowler -> BowlerPickerDataProvider(bowlersRepository)
+	}
+
+	private fun getPickerUiState(): ResourcePickerUiState? {
 		return when (val state = _uiState.value) {
 			ResourcePickerScreenUiState.Loading -> null
 			is ResourcePickerScreenUiState.Loaded -> state.picker
 		}
 	}
 
-	private fun setPickerUiState(state: ResourcePickerUiState<BowlerResource>) {
+	private fun setPickerUiState(state: ResourcePickerUiState) {
 		when (val uiState = _uiState.value) {
 			ResourcePickerScreenUiState.Loading -> Unit
 			is ResourcePickerScreenUiState.Loaded -> _uiState.value = uiState.copy(picker = state)
 		}
 	}
 
-	fun handleAction(action: ResourcePickerScreenUiAction<BowlerResource>) {
+	fun handleAction(action: ResourcePickerScreenUiAction) {
 		when (action) {
 			ResourcePickerScreenUiAction.LoadResources -> loadResources()
 			is ResourcePickerScreenUiAction.ResourcePickerAction -> handleResourcePickerAction(action.action)
@@ -62,23 +70,15 @@ class BowlerPickerViewModel @Inject constructor(
 
 	private fun handleResourcePickerAction(action: ResourcePickerUiAction) {
 		when (action) {
-			ResourcePickerUiAction.BackClicked -> _events.value = ResourcePickerScreenEvent.Dismissed(bowlerIds)
-			ResourcePickerUiAction.DoneClicked -> _events.value = ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: bowlerIds)
+			ResourcePickerUiAction.BackClicked -> _events.value = ResourcePickerScreenEvent.Dismissed(initiallySelectedIds)
+			ResourcePickerUiAction.DoneClicked -> _events.value = ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: initiallySelectedIds)
 			is ResourcePickerUiAction.ItemClicked -> onResourceClicked(action.itemId)
 		}
 	}
 
 	private fun loadResources() {
 		viewModelScope.launch {
-			val bowlers = bowlersRepository.getBowlersList()
-			val resources = bowlers.map { list ->
-				list.map {
-					BowlerResource(
-						id = it.id,
-						name = it.name,
-					)
-				}
-			}.first()
+			val resources = dataProvider.loadResources()
 
 			_uiState.value = ResourcePickerScreenUiState.Loaded(
 				topBar = ResourcePickerTopBarUiState(
@@ -87,7 +87,8 @@ class BowlerPickerViewModel @Inject constructor(
 				),
 				picker = ResourcePickerUiState(
 					items = resources,
-					selectedItems = bowlerIds,
+					selectedItems = initiallySelectedIds,
+					resourceType = resourceType,
 				),
 			)
 		}
@@ -112,8 +113,3 @@ class BowlerPickerViewModel @Inject constructor(
 		}
 	}
 }
-
-data class BowlerResource(
-	override val id: UUID,
-	val name: String,
-): Resource

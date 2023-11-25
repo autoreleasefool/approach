@@ -8,35 +8,39 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.BowlerPickerRoute
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ResourcePickerRoute
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import java.util.UUID
 
+const val RESOURCE_TYPE = "resource_type"
 const val SELECTED_IDS = "selected_ids"
 const val SELECTION_LIMIT = "limit"
-const val bowlerPickerNavigationRoute = "pick_bowlers/{$SELECTED_IDS}/{$SELECTION_LIMIT}"
+const val resourcePickerNavigationRoute = "resource_picker/{$RESOURCE_TYPE}/{$SELECTED_IDS}/{$SELECTION_LIMIT}"
 
-fun NavController.navigateToBowlerPickerForResult(
+fun NavController.navigateToResourcePickerForResult(
 	selectedIds: Set<UUID>,
+	resourceType: ResourcePickerType,
 	limit: Int = 0,
 	navResultCallback: NavResultCallback<Set<UUID>>,
 ) {
 	val ids = selectedIds.joinToString(separator = ",") { it.toString() }
 	val encodedIds = Uri.encode(ids.ifEmpty { "nan" })
 	val encodedLimit = Uri.encode(limit.toString())
-	this.navigateForResult("pick_bowlers/$encodedIds/$encodedLimit", navResultCallback)
+	this.navigateForResult("resource_picker/$resourceType/$encodedIds/$encodedLimit", navResultCallback)
 }
 
-fun NavGraphBuilder.bowlerPickerScreen(
+fun NavGraphBuilder.resourcePickerScreen(
 	onDismissWithResult: (Set<UUID>) -> Unit,
 ) {
 	composable(
-		route = bowlerPickerNavigationRoute,
+		route = resourcePickerNavigationRoute,
 		arguments = listOf(
+			navArgument(RESOURCE_TYPE) { type = NavType.StringType },
 			navArgument(SELECTED_IDS) { type = NavType.StringType },
 			navArgument(SELECTION_LIMIT) { type = NavType.IntType },
 		),
 	) {
-		BowlerPickerRoute(
+		ResourcePickerRoute(
 			onDismissWithResult = onDismissWithResult,
 		)
 	}

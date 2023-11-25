@@ -42,8 +42,9 @@ import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.opponentsListScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.bowlerPickerScreen
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToBowlerPickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerScreen
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementDetailsScreen
@@ -88,10 +89,11 @@ fun ApproachNavHost(
 		)
 		statisticsOverviewScreen(
 			onPickBowler = { bowler, result ->
-				navController.navigateToBowlerPickerForResult(
+				navController.navigateToResourcePickerForResult(
 					selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
 					limit = 1,
 					navResultCallback = result,
+					resourceType = ResourcePickerType.Bowler,
 				)
 			},
 			onPickLeague = { _, _ -> /* TODO: onPickLeague */ },
@@ -195,17 +197,18 @@ fun ApproachNavHost(
 		gamesEditorScreen(
 			onBackPressed = navController::popBackStack,
 		)
-		bowlerPickerScreen(
+		resourcePickerScreen(
 			onDismissWithResult = navController::popBackStackWithResult,
 		)
 		gearFormScreen(
 			onBackPressed = navController::popBackStack,
 			onEditAvatar = navController::navigateToAvatarFormForResult,
 			onEditOwner = { owner, result ->
-				navController.navigateToBowlerPickerForResult(
+				navController.navigateToResourcePickerForResult(
 					selectedIds = owner?.let { setOf(it) } ?: emptySet(),
 					limit = 1,
 					navResultCallback = result,
+					resourceType = ResourcePickerType.Bowler,
 				)
 			}
 		)
