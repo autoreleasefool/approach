@@ -9,7 +9,10 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.TotalPi
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.TotalRollsStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.series.HighSeriesOf3Statistic
 
-fun allStatistics(source: TrackableFilter.Source? = null): List<Statistic> = listOf(
+fun allStatistics(
+	source: TrackableFilter.Source? = null,
+	supportingWidgets: Boolean? = null,
+): List<Statistic> = listOf(
 	// Overall
 	HighSingleStatistic(),
 	TotalPinFallStatistic(),
@@ -27,4 +30,6 @@ fun allStatistics(source: TrackableFilter.Source? = null): List<Statistic> = lis
 	HighSeriesOf3Statistic(),
 ).filter {
 	source == null || it.supportsSource(source)
+}.filter {
+	supportingWidgets == null || !supportingWidgets || it.supportsWidgets
 }

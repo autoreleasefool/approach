@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="statistics_overview_title">Statistics</string>
+
+	<string name="statistics_filter">Filter Statistics</string>
+	<string name="statistics_filter_bowler">Bowler</string>
+	<string name="statistics_filter_league">League</string>
+	<string name="statistics_filter_series">Series</string>
+	<string name="statistics_filter_game">Game</string>
+
+	<string name="statistics_filter_apply">Apply</string>
+
+	<string name="statistics_get_an_overview_title">Get an overview</string>
+	<string name="statistics_get_an_overview_description">You\'ll see an overview of all your statistics any time you open this screen. We\'ll show you some key statistics you\'ll probably want to keep in mind, for all your leagues.</string>
+	<string name="coming_soon">Coming soon</string>
+
+	<string name="statistics_view_more_title">View more detailed statistics</string>
+	<string name="statistics_view_more_description">You can look up detailed statistics for bowlers, leagues, and more. Select the filters you\'re interested in exploring and see how your bowling improves over time, and what you need to focus on.</string>
+
+	<string name="view_detailed_statistics">View detailed statistics</string>
+
+</resources>

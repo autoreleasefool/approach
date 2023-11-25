@@ -67,6 +67,8 @@
             <option value="$PROJECT_DIR$/feature/settings/ui" />
             <option value="$PROJECT_DIR$/feature/statisticsdetails" />
             <option value="$PROJECT_DIR$/feature/statisticsdetails/ui" />
+            <option value="$PROJECT_DIR$/feature/statisticsoverview" />
+            <option value="$PROJECT_DIR$/feature/statisticsoverview/ui" />
             <option value="$PROJECT_DIR$/feature/statisticswidget" />
           </set>
         </option>

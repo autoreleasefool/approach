@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToOve
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToSettings
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsNavigationRoute
-import ca.josephroque.bowlingcompanion.feature.statistics.navigation.navigateToStatistics
-import ca.josephroque.bowlingcompanion.feature.statistics.navigation.statisticsNavigationRoute
+import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.navigateToStatisticsOverview
+import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsOverviewNavigationRoute
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
 @Composable
@@ -41,7 +41,7 @@ class ApproachAppState(
 			overviewNavigationRoute -> TopLevelDestination.APP_OVERVIEW
 			accessoriesNavigationRoute -> TopLevelDestination.ACCESSORIES_OVERVIEW
 			settingsNavigationRoute -> TopLevelDestination.SETTINGS_OVERVIEW
-			statisticsNavigationRoute -> TopLevelDestination.STATISTICS_OVERVIEW
+			statisticsOverviewNavigationRoute -> TopLevelDestination.STATISTICS_OVERVIEW
 			else -> null
 		}
 
@@ -59,7 +59,7 @@ class ApproachAppState(
 
 		when (topLevelDestination) {
 			TopLevelDestination.APP_OVERVIEW -> navController.navigateToOverview(topLevelNavOptions)
-			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatistics(topLevelNavOptions)
+			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatisticsOverview(topLevelNavOptions)
 			TopLevelDestination.ACCESSORIES_OVERVIEW -> navController.navigateToAccessories(topLevelNavOptions)
 			TopLevelDestination.SETTINGS_OVERVIEW -> navController.navigateToSettings(topLevelNavOptions)
 		}

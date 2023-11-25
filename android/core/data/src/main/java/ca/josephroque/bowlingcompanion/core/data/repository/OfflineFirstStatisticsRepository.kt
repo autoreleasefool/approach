@@ -28,17 +28,20 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): StatisticsRepository {
 	override suspend fun getSourceDetails(source: TrackableFilter.Source): TrackableFilter.SourceSummaries =
-		when (source) {
-			is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.id)
-			is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.id)
-			is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.id)
-			is TrackableFilter.Source.Game -> statisticsDao.getGameSourceDetails(source.id)
-		}.asModel()
+		withContext(ioDispatcher) {
+			when (source) {
+				is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.id)
+				is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.id)
+				is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.id)
+				is TrackableFilter.Source.Game -> statisticsDao.getGameSourceDetails(source.id)
+			}.asModel()
+		}
 
-	override suspend fun getDefaultSource(): TrackableFilter.SourceSummaries? {
+	override suspend fun getDefaultSource(): TrackableFilter.SourceSummaries? = withContext(ioDispatcher) {
 		val bowlers = bowlersRepository.getBowlersList().first()
-		if (bowlers.size != 1) return null
-		return TrackableFilter.SourceSummaries(
+		if (bowlers.size != 1) return@withContext null
+
+		TrackableFilter.SourceSummaries(
 			bowlers.first().asSummary(),
 			league = null,
 			series = null,
