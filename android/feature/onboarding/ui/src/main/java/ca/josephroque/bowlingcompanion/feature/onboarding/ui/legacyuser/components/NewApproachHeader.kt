@@ -52,7 +52,6 @@ fun NewApproachHeader(
 		val sharedTransition = updateTransition(targetState = headerState, label = "NewApproachHeader.sharedTransition")
 		val positionOffset = rememberPositionAnimation(
 			sharedTransition,
-			initialOffset = bounceOffset,
 			maxHeight = scope.maxHeight.value,
 		)
 		val buttonSize = rememberButtonSizeAnimation(sharedTransition)
@@ -124,6 +123,12 @@ private fun rememberBounceAnimation(
 			) {
 				lastBouncePosition = value
 			}
+		} else {
+			bounceAnimation.animateTo(
+				targetValue = 0f,
+			) {
+				lastBouncePosition = value
+			}
 		}
 	}
 
@@ -133,7 +138,6 @@ private fun rememberBounceAnimation(
 @Composable
 private fun rememberPositionAnimation(
 	transition: Transition<HeaderState>,
-	initialOffset: Float,
 	maxHeight: Float,
 ): Float {
 	val positionOffset by transition.animateFloat(
@@ -144,7 +148,7 @@ private fun rememberPositionAnimation(
 	) { state ->
 		when (state) {
 			HeaderState.Bouncing -> 0f
-			HeaderState.AtTop -> -maxHeight - initialOffset + 112.dp.value
+			HeaderState.AtTop -> -maxHeight + 96.dp.value
 		}
 	}
 	return positionOffset
