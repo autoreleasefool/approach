@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
+import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 
 data class TrackableLeagueQueryComponents(
@@ -22,8 +23,8 @@ data class TrackableLeagueQueryComponents(
 		return whereConditions
 	}
 
-	fun whereClauseArgs(): Map<String, String> = mapOf(
-		"$tableAlias.recurrence" to filter.recurrence.toString(),
+	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues(
+		"$tableAlias.recurrence" to filter.recurrence,
 	)
 
 	fun buildOrderClause(): List<String> = listOf("$tableAlias.name ASC")

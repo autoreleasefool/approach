@@ -31,6 +31,7 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 		val orderedWhereArgs = whereArgs.keys
 			.filter { whereArgIndices[it] != -1 }
 			.sortedBy { whereArgIndices[it] }
+			.map { whereArgs[it]!! }
 
 		val pagingSource = getPagingSource(query, orderedWhereArgs)
 		var result = pagingSource.load(PagingSource.LoadParams.Refresh(
@@ -58,7 +59,7 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 	abstract fun buildColumnsStatement(): String
 	abstract fun buildTablesStatement(): String
 	abstract fun buildWhereStatement(): String
-	abstract fun buildWhereArgs(): Map<String, String>
+	abstract fun buildWhereArgs(): Map<String, Any>
 	abstract fun buildGroupByStatement(): String
 	abstract fun buildOrderByStatement(): String
 

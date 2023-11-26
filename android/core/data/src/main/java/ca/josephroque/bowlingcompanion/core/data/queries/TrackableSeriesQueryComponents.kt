@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
+import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 
 data class TrackableSeriesQueryComponents(
@@ -48,14 +49,14 @@ data class TrackableSeriesQueryComponents(
 		return whereConditions
 	}
 
-	fun whereClauseArgs(): Map<String, String> = mapOf(
-		"$tableAlias.startDate" to filter.startDate.toString(),
-		"$tableAlias.endDate" to filter.endDate.toString(),
-		"$tableAlias.alleyId" to (filter.alleys as? TrackableFilter.AlleyFilter.Alley)?.id.toString(),
-		"$tableAlias.alleyMaterial" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.material.toString(),
-		"$tableAlias.alleyMechanism" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.mechanism.toString(),
-		"$tableAlias.alleyPinFall" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinFall.toString(),
-		"$tableAlias.alleyPinBase" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinBase.toString(),
+	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues(
+		"$tableAlias.startDate" to filter.startDate,
+		"$tableAlias.endDate" to filter.endDate,
+		"$tableAlias.alleyId" to (filter.alleys as? TrackableFilter.AlleyFilter.Alley)?.id,
+		"$tableAlias.alleyMaterial" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.material,
+		"$tableAlias.alleyMechanism" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.mechanism,
+		"$tableAlias.alleyPinFall" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinFall,
+		"$tableAlias.alleyPinBase" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinBase,
 	)
 
 	fun buildOrderClause(): List<String> = listOf("$tableAlias.date ASC")

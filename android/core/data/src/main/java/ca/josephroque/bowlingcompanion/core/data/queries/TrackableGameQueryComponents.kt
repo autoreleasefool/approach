@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries
 
+import ca.josephroque.bowlingcompanion.core.common.utils.mapOfNullableValues
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 
 data class TrackableGameQueryComponents(
@@ -42,7 +43,7 @@ data class TrackableGameQueryComponents(
 		return whereConditions
 	}
 
-	fun whereClauseArgs(): Map<String, String> = mapOf()
+	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()
 
 	fun buildOrderClause(): List<String> = listOf("$tableAlias.`index` ASC")
 }
