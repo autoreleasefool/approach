@@ -36,7 +36,11 @@ private fun StatisticsDetailsScreen(
 	modifier: Modifier = Modifier,
 ) {
 	Scaffold(
-
+		topBar = {
+			StatisticsDetailsTopBar(
+				onAction = { onAction(StatisticsDetailsScreenUiAction.StatisticsDetailsListAction(it)) },
+			)
+		}
 	) { padding ->
 		when (state) {
 			StatisticsDetailsScreenUiState.Loading -> Unit
