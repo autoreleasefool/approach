@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.leagueslist
+package ca.josephroque.bowlingcompanion.core.model.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,49 +19,57 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ui.utils.formatAsAverage
-import ca.josephroque.bowlingcompanion.feature.leagueslist.utils.seriesDate
+import ca.josephroque.bowlingcompanion.core.model.ui.utils.seriesDate
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 @Composable
-internal fun LeagueItemRow(
-	league: LeagueListItem,
-	onClick: () -> Unit,
+fun LeagueRow(
+	name: String,
 	modifier: Modifier = Modifier,
+	onClick: (() -> Unit)? = null,
+	recurrence: LeagueRecurrence? = null,
+	lastSeriesDate: LocalDate? = null,
+	average: Double? = null,
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.clickable(onClick = onClick)
-			.padding(16.dp),
+			.then(if (onClick != null)
+				Modifier
+					.clickable(onClick = onClick)
+					.padding(16.dp)
+			else Modifier),
 	) {
-		Icon(
-			league.recurrence.listIcon(),
-			contentDescription = null,
-			tint = MaterialTheme.colorScheme.onSurface,
-			modifier = Modifier.size(24.dp),
-		)
-
-		Column(modifier = Modifier.weight(1f)) {
-			Text(
-				text = league.name,
-				style = MaterialTheme.typography.titleMedium,
-			)
-			Text(
-				text = league.lastSeriesDate.seriesDate(recurrence = league.recurrence),
-				style = MaterialTheme.typography.bodyMedium,
-				fontStyle = FontStyle.Italic,
+		recurrence?.let {
+			Icon(
+				it.listIcon(),
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.onSurface,
+				modifier = Modifier.size(24.dp),
 			)
 		}
 
+		Column(modifier = Modifier.weight(1f)) {
+			Text(
+				text = name,
+				style = MaterialTheme.typography.titleMedium,
+			)
+
+			if (lastSeriesDate != null && recurrence != null) {
+				Text(
+					text = lastSeriesDate.seriesDate(recurrence = recurrence),
+					style = MaterialTheme.typography.bodyMedium,
+					fontStyle = FontStyle.Italic,
+				)
+			}
+		}
+
 		Text(
-			text = league.average.formatAsAverage(),
+			text = average.formatAsAverage(),
 			style = MaterialTheme.typography.bodyLarge,
 			maxLines = 1,
 		)
@@ -78,14 +86,11 @@ private fun LeagueRecurrence.listIcon(): Painter = when (this) {
 @Composable
 private fun LeagueItemPreview() {
 	Surface {
-		LeagueItemRow(
-			league = LeagueListItem(
-				id = UUID.randomUUID(),
-				name = "Majors, 23/24",
-				recurrence = LeagueRecurrence.REPEATING,
-				average = 234.0,
-				lastSeriesDate = LocalDate.parse("2023-10-01"),
-			),
+		LeagueRow(
+			name = "Majors, 23/24",
+			recurrence = LeagueRecurrence.REPEATING,
+			average = 234.0,
+			lastSeriesDate = LocalDate.parse("2023-10-01"),
 			onClick = {},
 		)
 	}

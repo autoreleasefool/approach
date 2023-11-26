@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.leagueslist
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
 import java.util.UUID
 
 fun LazyListScope.leaguesList(
@@ -16,8 +17,11 @@ fun LazyListScope.leaguesList(
 				items = leaguesListState.list,
 				key = { it.id },
 			) { league ->
-				LeagueItemRow(
-					league = league,
+				LeagueRow(
+					name = league.name,
+					recurrence = league.recurrence,
+					lastSeriesDate = league.lastSeriesDate,
+					average = league.average,
 					onClick = { onLeagueClick(league.id) },
 				)
 			}

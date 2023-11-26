@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
+import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
@@ -64,6 +65,7 @@ private fun ResourcePickerScreen(
 					itemContent = {
 						when (state.picker.resourceType) {
 							ResourcePickerType.BOWLER -> BowlerRow(name = it.name)
+							ResourcePickerType.LEAGUE -> LeagueRow(name = it.name)
 						}
 					},
 					modifier = modifier.padding(padding),

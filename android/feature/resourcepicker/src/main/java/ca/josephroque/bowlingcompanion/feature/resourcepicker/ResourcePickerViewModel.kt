@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_PARENT_ID
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_TYPE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTED_IDS
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTION_LIMIT
@@ -24,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ResourcePickerViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
+	leaguesRepository: LeaguesRepository,
 	savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
@@ -43,8 +47,13 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private val limit = savedStateHandle.get<Int>(SELECTION_LIMIT) ?: 0
 
+	private val parentId = savedStateHandle.get<String>(RESOURCE_PARENT_ID)
+		?.let { if (it == "nan") null else UUID.fromString(it) }
+		?: UUID.randomUUID()
+
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
+		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, parentId)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? {
@@ -82,7 +91,10 @@ class ResourcePickerViewModel @Inject constructor(
 
 			_uiState.value = ResourcePickerScreenUiState.Loaded(
 				topBar = ResourcePickerTopBarUiState(
-					titleResourceId = R.plurals.bowler_picker_title,
+					titleResourceId = when (resourceType) {
+						ResourcePickerType.BOWLER -> R.plurals.bowler_picker_title
+						ResourcePickerType.LEAGUE -> R.plurals.league_picker_title
+					},
 					limit = limit,
 				),
 				picker = ResourcePickerUiState(

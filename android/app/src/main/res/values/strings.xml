@@ -60,9 +60,6 @@
 
 	<string name="league_list_title">Leagues</string>
 	<string name="league_list_add">Add League</string>
-	<string name="league_list_item_series_missing">No games yet</string>
-	<string name="league_list_item_latest_series">%1$s</string>
-	<string name="league_list_item_bowled_once">%1$s</string>
 
 	<string name="league_form_title_new">New League</string>
 	<string name="league_form_title_edit">Edit %1$s</string>

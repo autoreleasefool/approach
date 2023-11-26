@@ -29,7 +29,7 @@ sealed interface StatisticsOverviewScreenEvent {
 	data class ShowStatistics(val filter: TrackableFilter): StatisticsOverviewScreenEvent
 
 	data class EditBowler(val bowler: UUID?): StatisticsOverviewScreenEvent
-	data class EditLeague(val league: UUID?): StatisticsOverviewScreenEvent
+	data class EditLeague(val bowler: UUID, val league: UUID?): StatisticsOverviewScreenEvent
 	data class EditSeries(val series: UUID?): StatisticsOverviewScreenEvent
 	data class EditGame(val game: UUID?): StatisticsOverviewScreenEvent
 }

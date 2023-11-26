@@ -3,4 +3,8 @@
 	<string name="match_play_result_won">Won</string>
 	<string name="match_play_result_lost">Lost</string>
 	<string name="match_play_result_tied">Tied</string>
+
+	<string name="league_series_missing">No games yet</string>
+	<string name="league_latest_series">%1$s</string>
+	<string name="league_bowled_once">%1$s</string>
 </resources>

@@ -5,6 +5,7 @@ import java.util.UUID
 
 enum class ResourcePickerType {
 	BOWLER,
+	LEAGUE,
 }
 
 data class ResourceItem(

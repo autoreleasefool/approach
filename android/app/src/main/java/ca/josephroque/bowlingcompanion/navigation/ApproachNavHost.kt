@@ -96,7 +96,15 @@ fun ApproachNavHost(
 					resourceType = ResourcePickerType.BOWLER,
 				)
 			},
-			onPickLeague = { _, _ -> /* TODO: onPickLeague */ },
+			onPickLeague = { bowler, league, result ->
+				navController.navigateToResourcePickerForResult(
+					selectedIds = league?.let { setOf(it) } ?: emptySet(),
+					limit = 1,
+					navResultCallback = result,
+					resourceType = ResourcePickerType.LEAGUE,
+					resourceParentId = bowler,
+				)
+			},
 			onPickSeries = { _, _ -> /* TODO: onPickSeries */ },
 			onPickGame = { _, _ -> /* TODO: onPickGame */ },
 			onShowStatistics = navController::navigateToStatisticsDetails,

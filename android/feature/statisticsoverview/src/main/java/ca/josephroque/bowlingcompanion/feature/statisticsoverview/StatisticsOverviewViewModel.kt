@@ -118,7 +118,7 @@ class StatisticsOverviewViewModel @Inject constructor(
 			// Only show league picker if bowler is selected
 			if (source?.bowler == null) return@launch
 			_isShowingSourcePicker.value = false
-			_events.value = StatisticsOverviewScreenEvent.EditLeague(source.league?.id)
+			_events.value = StatisticsOverviewScreenEvent.EditLeague(source.bowler.id, source.league?.id)
 		}
 	}
 

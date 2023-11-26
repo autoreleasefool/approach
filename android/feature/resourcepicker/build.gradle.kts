@@ -10,4 +10,6 @@ android {
 dependencies {
 	implementation(project(":core:model:ui"))
 	implementation(project(":feature:resourcepicker:ui"))
+
+	implementation(libs.kotlinx.datetime)
 }

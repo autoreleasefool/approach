@@ -17,7 +17,7 @@ import java.util.UUID
 @Composable
 internal fun StatisticsOverviewRoute(
 	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickLeague: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickSeries: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickGame: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
@@ -39,7 +39,7 @@ internal fun StatisticsOverviewRoute(
 		}
 		is StatisticsOverviewScreenEvent.EditLeague -> {
 			viewModel.handleAction(StatisticsOverviewScreenUiAction.FinishedNavigation)
-			onPickLeague(event.league) { ids ->
+			onPickLeague(event.bowler, event.league) { ids ->
 				viewModel.handleAction(StatisticsOverviewScreenUiAction.UpdatedLeague(ids.firstOrNull()))
 			}
 		}
