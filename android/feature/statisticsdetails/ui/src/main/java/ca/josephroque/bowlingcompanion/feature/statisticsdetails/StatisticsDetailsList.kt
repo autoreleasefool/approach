@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,15 +36,24 @@ fun StatisticsDetailsList(
 					Text(
 						text = stringResource(group.title),
 						style = MaterialTheme.typography.titleMedium,
-						modifier = Modifier.fillMaxWidth(),
+						modifier = Modifier
+							.fillMaxWidth()
+							.background(MaterialTheme.colorScheme.surfaceVariant)
+							.padding(horizontal = 16.dp, vertical = 8.dp),
 					)
 				}
 
-				items(
+				itemsIndexed(
 					items = group.entries,
-					key = { it.title },
-				) { entry ->
+					key = { index, entry -> entry.title },
+				) { index, entry ->
 					ListEntry(entry, onAction)
+					if (index < group.entries.size - 1) {
+						Divider(
+							thickness = 1.dp,
+							modifier = Modifier.padding(start = 16.dp),
+						)
+					}
 				}
 			}
 		}
@@ -60,18 +72,18 @@ private fun ListEntry(
 		modifier = modifier
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(StatisticsDetailsListUiAction.StatisticClicked(entry.title)) })
-			.padding(horizontal = 16.dp, vertical = 8.dp),
+			.padding(16.dp),
 	) {
 		Text(
 			text = stringResource(entry.title),
-			style = MaterialTheme.typography.bodyMedium,
+			style = MaterialTheme.typography.titleMedium,
 			color = MaterialTheme.colorScheme.onSurface,
 			modifier = Modifier.weight(1f).padding(end = 16.dp),
 		)
 
 		Text(
 			text = entry.value,
-			style = MaterialTheme.typography.bodySmall,
+			style = MaterialTheme.typography.bodyMedium,
 			color = MaterialTheme.colorScheme.onSurfaceVariant,
 		)
 	}
