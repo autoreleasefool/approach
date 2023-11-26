@@ -30,8 +30,8 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
-import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
-import ca.josephroque.bowlingcompanion.feature.leagueslist.leaguesList
+import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
+import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.leaguesList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.StatisticsWidgetPlaceholderCard
 import java.util.UUID
 

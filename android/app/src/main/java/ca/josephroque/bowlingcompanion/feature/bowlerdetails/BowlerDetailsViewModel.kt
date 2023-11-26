@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
-import ca.josephroque.bowlingcompanion.feature.leagueslist.LeaguesListUiState
+import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

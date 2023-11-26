@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="bowler_list_add">Add Bowler</string>
+
+	<string name="bowler_list_empty_title">No bowlers found</string>
+	<string name="bowler_list_empty_message">You haven\'t added any bowlers yet. Try adding yourself to get started.</string>
+</resources>

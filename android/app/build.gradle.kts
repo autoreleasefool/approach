@@ -67,6 +67,7 @@ dependencies {
 	implementation(project(":feature:gearlist"))
 	implementation(project(":feature:gearlist:ui"))
 	implementation(project(":feature:gearform"))
+	implementation(project(":feature:leagueslist:ui"))
 	implementation(project(":feature:onboarding"))
 	implementation(project(":feature:resourcepicker"))
 	implementation(project(":feature:resourcepicker:ui")) // Require UI module to get `ResourcePickerType`
