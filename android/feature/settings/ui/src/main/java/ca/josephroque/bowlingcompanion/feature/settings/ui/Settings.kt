@@ -44,6 +44,10 @@ fun Settings(
 
 		Divider()
 
+		ArchivesSection(onAction = onAction)
+
+		Divider()
+
 		HelpSection(
 			versionName = state.versionName,
 			versionCode = state.versionCode,
@@ -87,6 +91,17 @@ private fun MainSection(
 		titleResourceId = R.string.settings_item_statistics_title,
 		descriptionResourceId = R.string.settings_item_statistics_description,
 		onClick = { onAction(SettingsUiAction.StatisticsSettingsClicked) },
+	)
+}
+
+@Composable
+private fun ArchivesSection(
+	onAction: (SettingsUiAction) -> Unit,
+) {
+	NavigationItem(
+		titleResourceId = R.string.settings_item_archives_title,
+		descriptionResourceId = R.string.settings_item_archives_description,
+		onClick = { onAction(SettingsUiAction.ArchivesClicked) },
 	)
 }
 

@@ -27,4 +27,5 @@ sealed interface SettingsScreenEvent {
 	data object NavigateToDataImportSettings: SettingsScreenEvent
 	data object NavigateToDataExportSettings: SettingsScreenEvent
 	data object NavigateToDeveloperSettings: SettingsScreenEvent
+	data object NavigateToArchives: SettingsScreenEvent
 }

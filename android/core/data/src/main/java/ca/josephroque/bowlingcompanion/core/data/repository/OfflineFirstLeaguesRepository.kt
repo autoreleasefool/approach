@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
+import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,6 +25,9 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	override fun getLeaguesList(bowlerId: UUID): Flow<List<LeagueListItem>> =
 		leagueDao.getLeagueAverages(bowlerId = bowlerId)
 
+	override fun getArchivedLeagues(): Flow<List<ArchivedLeague>> =
+		leagueDao.getArchivedLeagues()
+
 	override suspend fun insertLeague(league: LeagueCreate) = withContext(ioDispatcher) {
 		leagueDao.insertLeague(league)
 	}
@@ -38,5 +42,9 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 
 	override suspend fun archiveLeague(id: UUID) = withContext(ioDispatcher) {
 		leagueDao.archiveLeague(id, archivedOn = Clock.System.now())
+	}
+
+	override suspend fun unarchiveLeague(id: UUID) = withContext(ioDispatcher) {
+		leagueDao.unarchiveLeague(id)
 	}
 }

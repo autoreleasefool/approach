@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
@@ -67,6 +68,16 @@ data class GameListItem(
 	val id: UUID,
 	val index: Int,
 	val score: Int,
+)
+
+data class ArchivedGame(
+	val id: UUID,
+	val scoringMethod: GameScoringMethod,
+	val score: Int,
+	val bowlerName: String,
+	val leagueName: String,
+	val seriesDate: LocalDate,
+	val archivedOn: Instant,
 )
 
 enum class GameLockState {

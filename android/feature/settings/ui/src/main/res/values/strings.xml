@@ -7,6 +7,9 @@
 	<string name="settings_item_statistics_title">Statistics</string>
 	<string name="settings_item_statistics_description">Fine-tune your preferences when it comes to which statistics to show</string>
 
+	<string name="settings_item_archives_title">Archives</string>
+	<string name="settings_item_archives_description">An archive of your old data, hidden from the rest of the app</string>
+
 	<string name="settings_item_help">Help</string>
 	<string name="settings_item_report_bug">Report Bug</string>
 	<string name="settings_item_send_feedback">Send Feedback</string>

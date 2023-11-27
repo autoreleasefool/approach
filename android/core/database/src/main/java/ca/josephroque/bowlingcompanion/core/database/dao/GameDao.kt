@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
+import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -56,4 +57,30 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 		"""
 	)
 	abstract fun getGameIndex(gameId: UUID): Flow<Int>
+
+	@Query(
+		"""
+			SELECT
+				games.id AS id,
+				games.score AS score,
+				games.scoring_method AS scoringMethod,
+				games.archived_on AS archivedOn,
+				series.date AS seriesDate,
+				bowlers.name AS bowlerName,
+				leagues.name AS leagueName
+			FROM games
+			JOIN series ON series.id = games.series_id
+			JOIN leagues ON leagues.id = series.league_id
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			WHERE games.archived_on IS NOT NULL
+			ORDER BY games.archived_on DESC
+		"""
+	)
+	abstract fun getArchivedGames(): Flow<List<ArchivedGame>>
+
+	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
+	abstract fun unarchiveGame(gameId: UUID)
+
+	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
+	abstract fun archiveGame(gameId: UUID)
 }

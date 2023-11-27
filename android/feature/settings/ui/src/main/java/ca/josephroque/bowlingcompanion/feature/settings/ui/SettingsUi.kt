@@ -18,4 +18,5 @@ sealed interface SettingsUiAction {
 	data object DataImportSettingsClicked: SettingsUiAction
 	data object DataExportSettingsClicked: SettingsUiAction
 	data object DeveloperSettingsClicked: SettingsUiAction
+	data object ArchivesClicked: SettingsUiAction
 }

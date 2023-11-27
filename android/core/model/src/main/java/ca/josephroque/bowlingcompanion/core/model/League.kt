@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
@@ -28,6 +29,15 @@ data class LeagueListItem(
 	val recurrence: LeagueRecurrence,
 	val lastSeriesDate: LocalDate?,
 	val average: Double?,
+)
+
+data class ArchivedLeague(
+	val id: UUID,
+	val name: String,
+	val bowlerName: String,
+	val numberOfSeries: Int,
+	val numberOfGames: Int,
+	val archivedOn: Instant,
 )
 
 enum class LeagueRecurrence {

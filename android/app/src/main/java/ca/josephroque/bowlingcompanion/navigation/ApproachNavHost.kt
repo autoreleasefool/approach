@@ -12,6 +12,8 @@ import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScr
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.alleysListScreen
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.navigateToAlleysList
+import ca.josephroque.bowlingcompanion.feature.archives.navigation.archivesList
+import ca.josephroque.bowlingcompanion.feature.archives.navigation.navigateToArchivesList
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.analyticsSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToAnalyticsSettings
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
@@ -125,6 +127,7 @@ fun ApproachNavHost(
 			openDeveloperSettings = navController::navigateToDeveloperSettings,
 			openDataExportSettings = navController::navigateToDataExport,
 			openDataImportSettings = { /* TODO: openDataImportSettings */ },
+			openArchives = navController::navigateToArchivesList,
 		)
 		dataExportScreen(
 			onBackPressed = navController::popBackStack,
@@ -180,6 +183,9 @@ fun ApproachNavHost(
 			onShowAcknowledgementDetails = navController::navigateToAcknowledgementDetails,
 		)
 		acknowledgementDetailsScreen(
+			onBackPressed = navController::popBackStack,
+		)
+		archivesList(
 			onBackPressed = navController::popBackStack,
 		)
 		alleysListScreen(

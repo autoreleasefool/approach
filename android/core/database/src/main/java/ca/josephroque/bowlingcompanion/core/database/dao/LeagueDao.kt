@@ -7,6 +7,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
+import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import kotlinx.coroutines.flow.Flow
@@ -54,6 +55,26 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 	)
 	abstract fun getLeagueAverages(bowlerId: UUID): Flow<List<LeagueListItem>>
 
+	@Query(
+		"""
+			SELECT
+				leagues.id AS id,
+				leagues.name AS name,
+				leagues.archived_on AS archivedOn,
+				bowlers.name AS bowlerName,
+				COUNT(series.id) AS numberOfSeries,
+				COUNT(games.id) AS numberOfGames
+			FROM leagues
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			LEFT JOIN series on series.league_id = leagues.id
+			LEFT JOIN games on games.series_id = series.id
+			WHERE leagues.archived_on IS NOT NULL
+			GROUP BY leagues.id
+			ORDER BY leagues.archived_on DESC
+		"""
+	)
+	abstract fun getArchivedLeagues(): Flow<List<ArchivedLeague>>
+
 	@Insert(entity = LeagueEntity::class)
 	abstract fun insertLeague(league: LeagueCreate)
 
@@ -65,4 +86,7 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 
 	@Query("UPDATE leagues SET archived_on = :archivedOn WHERE id = :leagueId")
 	abstract fun archiveLeague(leagueId: UUID, archivedOn: Instant)
+
+	@Query("UPDATE leagues SET archived_on = NULL WHERE id = :leagueId")
+	abstract fun unarchiveLeague(leagueId: UUID)
 }

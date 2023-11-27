@@ -27,6 +27,7 @@ internal fun SettingsRoute(
 	openDataImportSettings: () -> Unit,
 	openDataExportSettings: () -> Unit,
 	openDeveloperSettings: () -> Unit,
+	openArchives: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -46,6 +47,7 @@ internal fun SettingsRoute(
 						SettingsScreenEvent.NavigateToDeveloperSettings -> openDeveloperSettings()
 						SettingsScreenEvent.NavigateToOpponents -> openOpponents()
 						SettingsScreenEvent.NavigateToStatisticsSettings -> openStatisticsSettings()
+						SettingsScreenEvent.NavigateToArchives -> openArchives()
 					}
 				}
 		}

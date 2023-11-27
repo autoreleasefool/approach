@@ -59,6 +59,7 @@ dependencies {
 	implementation(project(":core:statistics"))
 	implementation(project(":feature:accessoriesoverview"))
 	implementation(project(":feature:alleyslist"))
+	implementation(project(":feature:archives"))
 	implementation(project(":feature:avatarform"))
 	implementation(project(":feature:bowlerdetails"))
 	implementation(project(":feature:bowlerform"))

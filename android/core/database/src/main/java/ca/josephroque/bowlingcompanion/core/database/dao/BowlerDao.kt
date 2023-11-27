@@ -7,9 +7,9 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdateEntity
+import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
-import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import java.util.UUID
@@ -67,6 +67,26 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 	)
 	abstract fun getOpponentsList(): Flow<List<BowlerListItem>>
 
+	@Query(
+		"""
+			SELECT
+				bowlers.id AS id,
+				bowlers.name AS name,
+				bowlers.archived_on AS archivedOn,
+				COUNT(leagues.id) AS numberOfLeagues,
+				COUNT(series.id) AS numberOfSeries,
+				COUNT(games.id) AS numberOfGames
+			FROM bowlers
+			LEFT JOIN leagues on leagues.bowler_id = bowlers.id
+			LEFT JOIN series on series.league_id = leagues.id
+			LEFT JOIN games on games.series_id = series.id
+			WHERE bowlers.archived_on IS NOT NULL
+			GROUP BY bowlers.id
+			ORDER BY bowlers.archived_on DESC
+		"""
+	)
+	abstract fun getArchivedBowlers(): Flow<List<ArchivedBowler>>
+
 	@Insert(entity = BowlerEntity::class)
 	abstract fun insertBowler(bowler: BowlerCreateEntity)
 
@@ -75,4 +95,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 
 	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id = :bowlerId")
 	abstract fun archiveBowler(bowlerId: UUID, archivedOn: Instant)
+
+	@Query("UPDATE bowlers SET archived_on = NULL WHERE id = :bowlerId")
+	abstract fun unarchiveBowler(bowlerId: UUID)
 }

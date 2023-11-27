@@ -10,7 +10,9 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Dao
@@ -51,6 +53,26 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 	)
 	abstract fun getSeriesList(leagueId: UUID): Flow<List<SeriesListItem>>
 
+	@Query(
+		"""
+			SELECT
+				series.id AS id,
+				series."date" AS "date",
+				series.archived_on AS archivedOn,
+				bowlers.name AS bowlerName,
+				leagues.name AS leagueName,
+				COUNT(games.id) AS numberOfGames
+			FROM series
+			JOIN leagues ON leagues.id = series.league_id
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			LEFT JOIN games ON games.series_id = series.id
+			WHERE series.archived_on IS NOT NULL
+			GROUP BY series.id
+			ORDER BY series.archived_on DESC
+		"""
+	)
+	abstract fun getArchivedSeries(): Flow<List<ArchivedSeries>>
+
 	@Insert(entity = SeriesEntity::class)
 	abstract fun insertSeries(series: SeriesCreate)
 
@@ -59,4 +81,10 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 
 	@Query("DELETE FROM series WHERE id = :seriesId")
 	abstract fun deleteSeries(seriesId: UUID)
+
+	@Query("UPDATE series SET archived_on = :archivedOn WHERE id = :seriesId")
+	abstract fun archiveSeries(seriesId: UUID, archivedOn: Instant)
+
+	@Query("UPDATE series SET archived_on = NULL WHERE id = :seriesId")
+	abstract fun unarchiveSeries(seriesId: UUID)
 }

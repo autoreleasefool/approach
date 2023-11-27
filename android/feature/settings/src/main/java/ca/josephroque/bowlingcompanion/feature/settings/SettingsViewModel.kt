@@ -51,6 +51,7 @@ class SettingsViewModel @Inject constructor(
 			SettingsUiAction.DataImportSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDataImportSettings)
 			SettingsUiAction.DataExportSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDataExportSettings)
 			SettingsUiAction.DeveloperSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDeveloperSettings)
+			SettingsUiAction.ArchivesClicked -> sendEvent(SettingsScreenEvent.NavigateToArchives)
 		}
 	}
 

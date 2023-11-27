@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
@@ -29,6 +30,9 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	override fun getOpponentsList(): Flow<List<BowlerListItem>> =
 		bowlerDao.getOpponentsList()
 
+	override fun getArchivedBowlers(): Flow<List<ArchivedBowler>> =
+		bowlerDao.getArchivedBowlers()
+
 	override suspend fun insertBowler(bowler: BowlerCreate) = withContext(ioDispatcher) {
 		bowlerDao.insertBowler(bowler.asEntity())
 	}
@@ -39,5 +43,9 @@ class OfflineFirstBowlersRepository @Inject constructor(
 
 	override suspend fun archiveBowler(id: UUID) = withContext(ioDispatcher) {
 		bowlerDao.archiveBowler(id, archivedOn = Clock.System.now())
+	}
+
+	override suspend fun unarchiveBowler(id: UUID) = withContext(ioDispatcher) {
+		bowlerDao.unarchiveBowler(id)
 	}
 }
