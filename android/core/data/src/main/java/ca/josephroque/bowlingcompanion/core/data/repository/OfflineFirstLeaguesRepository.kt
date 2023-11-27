@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
 import java.util.UUID
 import javax.inject.Inject
 
@@ -33,5 +34,9 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 
 	override suspend fun deleteLeague(id: UUID) = withContext(ioDispatcher) {
 		leagueDao.deleteLeague(id)
+	}
+
+	override suspend fun archiveLeague(id: UUID) = withContext(ioDispatcher) {
+		leagueDao.archiveLeague(id, archivedOn = Clock.System.now())
 	}
 }

@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Dao
@@ -61,4 +62,7 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 
 	@Query("DELETE FROM leagues WHERE id = :leagueId")
 	abstract fun deleteLeague(leagueId: UUID)
+
+	@Query("UPDATE leagues SET archived_on = :archivedOn WHERE id = :leagueId")
+	abstract fun archiveLeague(leagueId: UUID, archivedOn: Instant)
 }
