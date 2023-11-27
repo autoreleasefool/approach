@@ -6,6 +6,10 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_ID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_TYPE
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -58,8 +62,14 @@ class StatisticsDetailsViewModel @Inject constructor(
 		)
 	}
 
-	val uiState: StateFlow<StatisticsDetailsScreenUiState> = _statistics.map {
-		StatisticsDetailsScreenUiState.Loaded(list = it)
+	val uiState: StateFlow<StatisticsDetailsScreenUiState> = combine(
+		_filter,
+		_statistics,
+	) { filter, statistics ->
+		StatisticsDetailsScreenUiState.Loaded(
+			list = statistics,
+			chart = StatisticsDetailsChartUiState(filter.aggregation),
+		)
 	}.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5_000),
@@ -71,7 +81,9 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
-			is StatisticsDetailsScreenUiAction.StatisticsDetailsListAction -> handleListAction(action.action)
+			is StatisticsDetailsScreenUiAction.ListAction -> handleListAction(action.action)
+			is StatisticsDetailsScreenUiAction.TopBarAction -> handleTopBarAction(action.action)
+			is StatisticsDetailsScreenUiAction.ChartAction -> handleChartAction(action.action)
 		}
 	}
 
@@ -81,8 +93,19 @@ class StatisticsDetailsViewModel @Inject constructor(
 				showStatisticChart(statistic = action.title)
 			is StatisticsDetailsListUiAction.HidingZeroStatisticsToggled ->
 				toggleHidingZeroStatistics(action.newValue)
-			is StatisticsDetailsListUiAction.BackClicked ->
-				_events.value = StatisticsDetailsScreenEvent.Dismissed
+		}
+	}
+
+	private fun handleTopBarAction(action: StatisticsDetailsTopBarUiAction) {
+		when (action) {
+			StatisticsDetailsTopBarUiAction.BackClicked -> _events.value = StatisticsDetailsScreenEvent.Dismissed
+		}
+	}
+
+	private fun handleChartAction(action: StatisticsDetailsChartUiAction) {
+		when (action) {
+			is StatisticsDetailsChartUiAction.AggregationChanged ->
+				toggleAggregation(action.newValue)
 		}
 	}
 
@@ -95,6 +118,10 @@ class StatisticsDetailsViewModel @Inject constructor(
 			val currentValue = !userDataRepository.userData.first().isShowingZeroStatistics
 			userDataRepository.setIsHidingZeroStatistics(newValue ?: !currentValue)
 		}
+	}
+
+	private fun toggleAggregation(newValue: TrackableFilter.AggregationFilter) {
+		_filter.value = _filter.value.copy(aggregation = newValue)
 	}
 }
 

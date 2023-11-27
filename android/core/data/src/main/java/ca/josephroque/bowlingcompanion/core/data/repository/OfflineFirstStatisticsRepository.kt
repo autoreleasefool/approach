@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
 import kotlinx.coroutines.CoroutineDispatcher
@@ -90,6 +91,26 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 				}
 			)
 		}
+	}
+
+	override suspend fun getStatisticsChart(
+		statistic: Statistic,
+		filter: TrackableFilter
+	): StatisticChartContent {
+		if (!statistic.supportsSource(filter.source)) {
+			return StatisticChartContent.ChartUnavailable(statistic.titleResourceId)
+		}
+
+		return StatisticChartContent.DataMissing(statistic.titleResourceId)
+
+//		val chartContent = when (filter.source) {
+//			is TrackableFilter.Source.Bowler, is TrackableFilter.Source.League, is TrackableFilter.Source.Game -> {
+//				val entries = buildEntries<EntryDate>
+//			}
+//			is TrackableFilter.Source.Series -> {
+//
+//			}
+//		}
 	}
 }
 
