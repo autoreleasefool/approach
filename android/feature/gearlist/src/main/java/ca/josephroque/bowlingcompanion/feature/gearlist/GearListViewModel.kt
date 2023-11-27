@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gearlist
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -23,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GearListViewModel @Inject constructor(
 	private val gearRepository: GearRepository,
-): ViewModel() {
+): ApproachViewModel<GearListScreenEvent>() {
 	private val _gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
 
 	private val _gearKind: MutableStateFlow<GearKind?> = MutableStateFlow(null)
@@ -57,22 +56,18 @@ class GearListViewModel @Inject constructor(
 			initialValue = GearListScreenUiState.Loading,
 		)
 
-	private val _events: MutableStateFlow<GearListScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
-
 	fun handleAction(action: GearListScreenUiAction) {
 		when (action) {
-			GearListScreenUiAction.HandledNavigation -> _events.value = null
 			is GearListScreenUiAction.GearListAction -> handleGearListAction(action.action)
 		}
 	}
 
 	private fun handleGearListAction(action: GearListUiAction) {
 		when (action) {
-			GearListUiAction.BackClicked -> _events.value = GearListScreenEvent.Dismissed
-			GearListUiAction.AddGearClicked -> _events.value = GearListScreenEvent.NavigateToAddGear
-			is GearListUiAction.GearClicked -> _events.value = GearListScreenEvent.NavigateToEditGear(action.id)
-			is GearListUiAction.GearEdited -> _events.value = GearListScreenEvent.NavigateToEditGear(action.id)
+			GearListUiAction.BackClicked -> sendEvent(GearListScreenEvent.Dismissed)
+			GearListUiAction.AddGearClicked -> sendEvent(GearListScreenEvent.NavigateToAddGear)
+			is GearListUiAction.GearClicked -> sendEvent(GearListScreenEvent.NavigateToEditGear(action.id))
+			is GearListUiAction.GearEdited -> sendEvent(GearListScreenEvent.NavigateToEditGear(action.id))
 			is GearListUiAction.GearDeleted -> setDeleteGearPrompt(gear = action.gear)
 			GearListUiAction.ConfirmDeleteClicked -> deleteGear()
 			GearListUiAction.DismissDeleteClicked -> setDeleteGearPrompt(gear = null)

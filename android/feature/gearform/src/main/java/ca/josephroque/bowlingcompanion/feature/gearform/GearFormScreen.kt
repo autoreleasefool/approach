@@ -6,12 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -24,21 +29,25 @@ internal fun GearFormRoute(
 ) {
 	val gearFormScreenState = viewModel.uiState.collectAsState().value
 
-	when (val event = viewModel.events.collectAsState().value) {
-		GearFormScreenEvent.Dismissed -> onDismiss()
-		is GearFormScreenEvent.EditAvatar -> {
-			viewModel.handleAction(GearFormScreenUiAction.FinishedNavigation)
-			onEditAvatar(event.avatar) {
-				viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(it))
-			}
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						GearFormScreenEvent.Dismissed -> onDismiss()
+						is GearFormScreenEvent.EditAvatar ->
+							onEditAvatar(it.avatar) {
+								viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(it))
+							}
+						is GearFormScreenEvent.EditOwner ->
+							onEditOwner(it.owner) { ids ->
+								viewModel.handleAction(GearFormScreenUiAction.UpdatedOwner(ids.firstOrNull()))
+							}
+					}
+				}
 		}
-		is GearFormScreenEvent.EditOwner -> {
-			viewModel.handleAction(GearFormScreenUiAction.FinishedNavigation)
-			onEditOwner(event.owner) { ids ->
-				viewModel.handleAction(GearFormScreenUiAction.UpdatedOwner(ids.firstOrNull()))
-			}
-		}
-		null -> Unit
 	}
 
 	GearFormScreen(

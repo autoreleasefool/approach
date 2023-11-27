@@ -12,7 +12,6 @@ sealed interface AcknowledgementsSettingsScreenUiState {
 }
 
 sealed interface AcknowledgementsSettingsScreenUiAction {
-	data object HandledNavigation: AcknowledgementsSettingsScreenUiAction
 	data class AcknowledgementsAction(val action: AcknowledgementsUiAction) : AcknowledgementsSettingsScreenUiAction
 }
 

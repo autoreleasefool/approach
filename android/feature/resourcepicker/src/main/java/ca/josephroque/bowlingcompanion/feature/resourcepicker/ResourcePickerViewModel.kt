@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
@@ -29,13 +29,10 @@ class ResourcePickerViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
 	leaguesRepository: LeaguesRepository,
 	savedStateHandle: SavedStateHandle,
-): ViewModel() {
+): ApproachViewModel<ResourcePickerScreenEvent>() {
 	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
 		MutableStateFlow(ResourcePickerScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
-
-	private val _events: MutableStateFlow<ResourcePickerScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
 
 	private val resourceType = savedStateHandle.get<String>(RESOURCE_TYPE)
 		?.let { ResourcePickerType.valueOf(it) } ?: ResourcePickerType.BOWLER
@@ -79,8 +76,8 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private fun handleResourcePickerAction(action: ResourcePickerUiAction) {
 		when (action) {
-			ResourcePickerUiAction.BackClicked -> _events.value = ResourcePickerScreenEvent.Dismissed(initiallySelectedIds)
-			ResourcePickerUiAction.DoneClicked -> _events.value = ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: initiallySelectedIds)
+			ResourcePickerUiAction.BackClicked -> sendEvent(ResourcePickerScreenEvent.Dismissed(initiallySelectedIds))
+			ResourcePickerUiAction.DoneClicked -> sendEvent(ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: initiallySelectedIds))
 			is ResourcePickerUiAction.ItemClicked -> onResourceClicked(action.itemId)
 		}
 	}
@@ -121,7 +118,7 @@ class ResourcePickerViewModel @Inject constructor(
 		setPickerUiState(state.copy(selectedItems = newSelectedIds))
 
 		if (limit == 1 && newSelectedIds.size == 1) {
-			_events.value = ResourcePickerScreenEvent.Dismissed(newSelectedIds)
+			sendEvent(ResourcePickerScreenEvent.Dismissed(newSelectedIds))
 		}
 	}
 }

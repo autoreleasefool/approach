@@ -3,13 +3,18 @@ package ca.josephroque.bowlingcompanion.feature.settings.statistics
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.StatisticsSettings
 import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.StatisticsSettingsTopBar
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun StatisticsSettingsRoute(
@@ -19,9 +24,17 @@ internal fun StatisticsSettingsRoute(
 ) {
 	val statisticsSettingsState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	when (viewModel.events.collectAsState().value) {
-		null -> Unit
-		StatisticsSettingsScreenEvent.Dismissed -> onBackPressed()
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						StatisticsSettingsScreenEvent.Dismissed -> onBackPressed()
+					}
+				}
+		}
 	}
 
 	StatisticsSettingsScreen(

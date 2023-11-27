@@ -1,16 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.settings.statistics
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.StatisticsSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.StatisticsSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -20,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StatisticsSettingsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
-): ViewModel() {
+): ApproachViewModel<StatisticsSettingsScreenEvent>() {
 
 	private val _settingsState: Flow<StatisticsSettingsUiState> = userDataRepository.userData.map {
 		StatisticsSettingsUiState(
@@ -40,9 +38,6 @@ class StatisticsSettingsViewModel @Inject constructor(
 		initialValue = StatisticsSettingsScreenUiState.Loading,
 	)
 
-	private val _events: MutableStateFlow<StatisticsSettingsScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
-
 	fun handleAction(action: StatisticsSettingsScreenUiAction) {
 		when (action) {
 			is StatisticsSettingsScreenUiAction.StatisticsSettingsAction -> handleStatisticsSettingsAction(action.action)
@@ -51,7 +46,7 @@ class StatisticsSettingsViewModel @Inject constructor(
 
 	private fun handleStatisticsSettingsAction(action: StatisticsSettingsUiAction) {
 		when (action) {
-			StatisticsSettingsUiAction.BackClicked -> _events.value = StatisticsSettingsScreenEvent.Dismissed
+			StatisticsSettingsUiAction.BackClicked -> sendEvent(StatisticsSettingsScreenEvent.Dismissed)
 			is StatisticsSettingsUiAction.ToggleIsCountingH2AsH -> toggleIsCountingH2AsH(action.newValue)
 			is StatisticsSettingsUiAction.ToggleIsCountingSplitWithBonusAsSplit -> toggleIsCountingSplitWithBonusAsSplit(action.newValue)
 			is StatisticsSettingsUiAction.ToggleIsHidingZeroStatistics -> toggleIsHidingZeroStatistics(action.newValue)

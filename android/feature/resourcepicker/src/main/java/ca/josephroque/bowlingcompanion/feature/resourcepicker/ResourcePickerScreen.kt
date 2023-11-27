@@ -6,13 +6,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -23,9 +28,17 @@ internal fun ResourcePickerRoute(
 ) {
 	val resourcePickerScreenState = viewModel.uiState.collectAsState().value
 
-	when (val event = viewModel.events.collectAsState().value) {
-		is ResourcePickerScreenEvent.Dismissed -> onDismissWithResult(event.result)
-		else -> Unit
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						is ResourcePickerScreenEvent.Dismissed -> onDismissWithResult(it.result)
+					}
+				}
+		}
 	}
 
 	ResourcePickerScreen(

@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.SourcePickerUiState
@@ -10,7 +10,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -21,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StatisticsOverviewViewModel @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,
-): ViewModel() {
+): ApproachViewModel<StatisticsOverviewScreenEvent>() {
 
 	private val _source: MutableStateFlow<TrackableFilter.Source?> = MutableStateFlow(null)
 	private val _sourceSummaries = _source.map {
@@ -52,9 +51,6 @@ class StatisticsOverviewViewModel @Inject constructor(
 		initialValue = StatisticsOverviewScreenUiState.Loading,
 	)
 
-	private val _events: MutableStateFlow<StatisticsOverviewScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
-
 	fun handleAction(action: StatisticsOverviewScreenUiAction) {
 		when (action) {
 			is StatisticsOverviewScreenUiAction.UpdatedBowler -> {
@@ -73,9 +69,6 @@ class StatisticsOverviewViewModel @Inject constructor(
 				_isShowingSourcePicker.value = true
 				_source.value = action.game?.let { TrackableFilter.Source.Game(it) }
 			}
-			is StatisticsOverviewScreenUiAction.FinishedNavigation -> {
-				_events.value = null
-			}
 			is StatisticsOverviewScreenUiAction.StatisticsOverviewAction ->
 				handleStatisticsOverviewAction(action.action)
 		}
@@ -92,9 +85,9 @@ class StatisticsOverviewViewModel @Inject constructor(
 			StatisticsOverviewUiAction.ApplyFilterClicked -> {
 				val source = _source.value ?: return
 				_isShowingSourcePicker.value = false
-				_events.value = StatisticsOverviewScreenEvent.ShowStatistics(
+				sendEvent(StatisticsOverviewScreenEvent.ShowStatistics(
 					TrackableFilter(source = source)
-				)
+				))
 			}
 			is StatisticsOverviewUiAction.SourcePickerBowlerClicked -> showBowlerPicker()
 			is StatisticsOverviewUiAction.SourcePickerLeagueClicked -> showLeaguePicker()
@@ -107,7 +100,7 @@ class StatisticsOverviewViewModel @Inject constructor(
 		viewModelScope.launch {
 			val source = _sourceSummaries.first()
 			_isShowingSourcePicker.value = false
-			_events.value = StatisticsOverviewScreenEvent.EditBowler(source?.bowler?.id)
+			sendEvent(StatisticsOverviewScreenEvent.EditBowler(source?.bowler?.id))
 		}
 	}
 
@@ -118,7 +111,7 @@ class StatisticsOverviewViewModel @Inject constructor(
 			// Only show league picker if bowler is selected
 			if (source?.bowler == null) return@launch
 			_isShowingSourcePicker.value = false
-			_events.value = StatisticsOverviewScreenEvent.EditLeague(source.bowler.id, source.league?.id)
+			sendEvent(StatisticsOverviewScreenEvent.EditLeague(source.bowler.id, source.league?.id))
 		}
 	}
 
@@ -129,7 +122,7 @@ class StatisticsOverviewViewModel @Inject constructor(
 			// Only show series picker if league is selected
 			if (source?.league == null) return@launch
 			_isShowingSourcePicker.value = false
-			_events.value = StatisticsOverviewScreenEvent.EditSeries(source.series?.id)
+			sendEvent(StatisticsOverviewScreenEvent.EditSeries(source.series?.id))
 		}
 	}
 
@@ -139,7 +132,7 @@ class StatisticsOverviewViewModel @Inject constructor(
 			// Only show game picker if series is selected
 			if (source?.series == null) return@launch
 			_isShowingSourcePicker.value = false
-			_events.value = StatisticsOverviewScreenEvent.EditGame(source.game?.id)
+			sendEvent(StatisticsOverviewScreenEvent.EditGame(source.game?.id))
 		}
 	}
 }

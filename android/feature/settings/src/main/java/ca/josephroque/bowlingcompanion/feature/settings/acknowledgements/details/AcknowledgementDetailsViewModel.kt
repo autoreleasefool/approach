@@ -1,17 +1,15 @@
 package ca.josephroque.bowlingcompanion.feature.settings.acknowledgements.details
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.ACKNOWLEDGEMENT
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -20,7 +18,7 @@ import javax.inject.Inject
 class AcknowledgementDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	acknowledgementsRepository: AcknowledgementsRepository,
-): ViewModel() {
+): ApproachViewModel<AcknowledgementDetailsScreenEvent>() {
 	private val _acknowledgementName = savedStateHandle.get<String>(ACKNOWLEDGEMENT) ?: ""
 
 	private val _acknowledgementDetails = acknowledgementsRepository.getAcknowledgement(_acknowledgementName)
@@ -39,9 +37,6 @@ class AcknowledgementDetailsViewModel @Inject constructor(
 			initialValue = AcknowledgementDetailsScreenUiState.Loading,
 		)
 
-	private val _events: MutableStateFlow<AcknowledgementDetailsScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
-
 	fun handleAction(action: AcknowledgementDetailsScreenUiAction) {
 		when (action) {
 			is AcknowledgementDetailsScreenUiAction.AcknowledgementDetailsAction -> handleAcknowledgementDetailsAction(action.action)
@@ -50,7 +45,7 @@ class AcknowledgementDetailsViewModel @Inject constructor(
 
 	private fun handleAcknowledgementDetailsAction(action: AcknowledgementDetailsUiAction) {
 		when (action) {
-			AcknowledgementDetailsUiAction.BackClicked -> _events.value = AcknowledgementDetailsScreenEvent.Dismissed
+			AcknowledgementDetailsUiAction.BackClicked -> sendEvent(AcknowledgementDetailsScreenEvent.Dismissed)
 		}
 	}
 }

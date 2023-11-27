@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -31,7 +30,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
-): ViewModel() {
+): ApproachViewModel<StatisticsDetailsScreenEvent>() {
 	private val _sourceType = savedStateHandle.get<String>(SOURCE_TYPE)
 		?.let { SourceType.valueOf(it) } ?: SourceType.BOWLER
 
@@ -76,9 +75,6 @@ class StatisticsDetailsViewModel @Inject constructor(
 		initialValue = StatisticsDetailsScreenUiState.Loading,
 	)
 
-	private val _events: MutableStateFlow<StatisticsDetailsScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
-
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
 			is StatisticsDetailsScreenUiAction.ListAction -> handleListAction(action.action)
@@ -98,7 +94,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	private fun handleTopBarAction(action: StatisticsDetailsTopBarUiAction) {
 		when (action) {
-			StatisticsDetailsTopBarUiAction.BackClicked -> _events.value = StatisticsDetailsScreenEvent.Dismissed
+			StatisticsDetailsTopBarUiAction.BackClicked -> sendEvent(StatisticsDetailsScreenEvent.Dismissed)
 		}
 	}
 

@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.settings
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.feature.settings.ui.SettingsUiAction
@@ -10,7 +10,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -18,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
 	featureFlagsClient: FeatureFlagsClient,
-): ViewModel() {
+): ApproachViewModel<SettingsScreenEvent>() {
 	private val _settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
 		SettingsUiState(
 			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
@@ -36,12 +35,8 @@ class SettingsViewModel @Inject constructor(
 			initialValue = SettingsScreenUiState.Loading,
 		)
 
-	private val _events: MutableStateFlow<SettingsScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
-
 	fun handleAction(action: SettingsScreenUiAction) {
 		when (action) {
-			SettingsScreenUiAction.HandledNavigation -> _events.value = null
 			is SettingsScreenUiAction.ReceivedVersionInfo -> updateVersionInfo(action.versionName, action.versionCode)
 			is SettingsScreenUiAction.SettingsAction -> handleSettingsAction(action.settingsUiAction)
 		}
@@ -49,13 +44,13 @@ class SettingsViewModel @Inject constructor(
 
 	private fun handleSettingsAction(action: SettingsUiAction) {
 		when (action) {
-			SettingsUiAction.OpponentsClicked -> _events.value = SettingsScreenEvent.NavigateToOpponents
-			SettingsUiAction.StatisticsSettingsClicked -> _events.value = SettingsScreenEvent.NavigateToStatisticsSettings
-			SettingsUiAction.AcknowledgementsClicked -> _events.value = SettingsScreenEvent.NavigateToAcknowledgements
-			SettingsUiAction.AnalyticsSettingsClicked -> _events.value = SettingsScreenEvent.NavigateToAnalyticsSettings
-			SettingsUiAction.DataImportSettingsClicked -> _events.value = SettingsScreenEvent.NavigateToDataImportSettings
-			SettingsUiAction.DataExportSettingsClicked -> _events.value = SettingsScreenEvent.NavigateToDataExportSettings
-			SettingsUiAction.DeveloperSettingsClicked -> _events.value = SettingsScreenEvent.NavigateToDeveloperSettings
+			SettingsUiAction.OpponentsClicked -> sendEvent(SettingsScreenEvent.NavigateToOpponents)
+			SettingsUiAction.StatisticsSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToStatisticsSettings)
+			SettingsUiAction.AcknowledgementsClicked -> sendEvent(SettingsScreenEvent.NavigateToAcknowledgements)
+			SettingsUiAction.AnalyticsSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToAnalyticsSettings)
+			SettingsUiAction.DataImportSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDataImportSettings)
+			SettingsUiAction.DataExportSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDataExportSettings)
+			SettingsUiAction.DeveloperSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDeveloperSettings)
 		}
 	}
 

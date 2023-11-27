@@ -3,14 +3,19 @@ package ca.josephroque.bowlingcompanion.feature.settings.acknowledgements.detail
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetails
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsTopBarUiState
+import kotlinx.coroutines.launch
 
 @Composable
 fun AcknowledgementDetailsRoute(
@@ -20,9 +25,17 @@ fun AcknowledgementDetailsRoute(
 ) {
 	val acknowledgementDetailsState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	when (viewModel.events.collectAsState().value) {
-		AcknowledgementDetailsScreenEvent.Dismissed -> onBackPressed()
-		null -> Unit
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						AcknowledgementDetailsScreenEvent.Dismissed -> onBackPressed()
+					}
+				}
+		}
 	}
 
 	AcknowledgementDetailsScreen(

@@ -6,13 +6,18 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChart
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsList
+import kotlinx.coroutines.launch
 
 @Composable
 fun StatisticsDetailsRoute(
@@ -22,9 +27,17 @@ fun StatisticsDetailsRoute(
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	when (viewModel.events.collectAsState().value) {
-		null -> Unit
-		StatisticsDetailsScreenEvent.Dismissed -> onBackPressed()
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						StatisticsDetailsScreenEvent.Dismissed -> onBackPressed()
+					}
+				}
+		}
 	}
 
 	StatisticsDetailsScreen(

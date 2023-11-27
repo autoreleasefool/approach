@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.avatarform
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.ui.randomPastel
 import ca.josephroque.bowlingcompanion.core.model.ui.toComposeColor
@@ -19,13 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class AvatarFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-): ViewModel() {
+): ApproachViewModel<AvatarFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<AvatarFormScreenUiState> =
 		MutableStateFlow(AvatarFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
-
-	private val _events: MutableStateFlow<AvatarFormScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
 
 	private val existingAvatar = savedStateHandle.get<String>(AVATAR_VALUE)?.let {
 		Avatar.fromString(it)
@@ -54,7 +51,7 @@ class AvatarFormViewModel @Inject constructor(
 
 	private fun handleAvatarFormAction(action: AvatarFormUiAction) {
 		when (action) {
-			AvatarFormUiAction.BackClicked -> _events.value = AvatarFormScreenEvent.Dismissed(existingAvatar)
+			AvatarFormUiAction.BackClicked -> sendEvent(AvatarFormScreenEvent.Dismissed(existingAvatar))
 			AvatarFormUiAction.DoneClicked -> saveAvatar()
 			is AvatarFormUiAction.PrimaryColorClicked -> onPrimaryColorClicked()
 			is AvatarFormUiAction.SecondaryColorClicked -> onSecondaryColorClicked()
@@ -81,8 +78,8 @@ class AvatarFormViewModel @Inject constructor(
 
 	private fun saveAvatar() {
 		when (val state = _uiState.value) {
-			AvatarFormScreenUiState.Loading -> _events.value = AvatarFormScreenEvent.Dismissed(existingAvatar)
-			is AvatarFormScreenUiState.Loaded -> _events.value = AvatarFormScreenEvent.Dismissed(state.form.avatar)
+			AvatarFormScreenUiState.Loading -> sendEvent(AvatarFormScreenEvent.Dismissed(existingAvatar))
+			is AvatarFormScreenUiState.Loaded -> sendEvent(AvatarFormScreenEvent.Dismissed(state.form.avatar))
 		}
 	}
 

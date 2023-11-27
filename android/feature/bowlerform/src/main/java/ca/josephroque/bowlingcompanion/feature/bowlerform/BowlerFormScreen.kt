@@ -6,10 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBarUiState
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun BowlerFormRoute(
@@ -19,9 +24,17 @@ internal fun BowlerFormRoute(
 ) {
 	val bowlerFormScreenState = viewModel.uiState.collectAsState().value
 
-	when (viewModel.events.collectAsState().value) {
-		BowlerFormScreenEvent.Dismissed -> onDismiss()
-		null -> Unit
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						BowlerFormScreenEvent.Dismissed -> onDismiss()
+					}
+				}
+		}
 	}
 
 	BowlerFormScreen(

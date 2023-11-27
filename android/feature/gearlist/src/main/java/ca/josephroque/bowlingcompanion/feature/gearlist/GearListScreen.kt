@@ -3,14 +3,19 @@ package ca.josephroque.bowlingcompanion.feature.gearlist
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearList
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBar
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBarUiState
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -23,17 +28,19 @@ internal fun GearListRoute(
 ) {
 	val gearListScreenState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	when (val event = viewModel.events.collectAsState().value) {
-		GearListScreenEvent.Dismissed -> onBackPressed()
-		is GearListScreenEvent.NavigateToAddGear -> {
-			viewModel.handleAction(GearListScreenUiAction.HandledNavigation)
-			onAddGear()
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						GearListScreenEvent.Dismissed -> onBackPressed()
+						GearListScreenEvent.NavigateToAddGear -> onAddGear()
+						is GearListScreenEvent.NavigateToEditGear -> onEditGear(it.id)
+					}
+				}
 		}
-		is GearListScreenEvent.NavigateToEditGear -> {
-			viewModel.handleAction(GearListScreenUiAction.HandledNavigation)
-			onEditGear(event.id)
-		}
-		null -> Unit
 	}
 
 	GearListScreen(

@@ -39,7 +39,6 @@ sealed interface GearFormScreenUiAction {
 	data object LoadGear: GearFormScreenUiAction
 	data class UpdatedAvatar(val avatar: Avatar): GearFormScreenUiAction
 	data class UpdatedOwner(val owner: UUID?): GearFormScreenUiAction
-	data object FinishedNavigation: GearFormScreenUiAction
 
 	data class GearFormAction(
 		val action: GearFormUiAction,

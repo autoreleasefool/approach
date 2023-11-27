@@ -12,7 +12,6 @@ sealed interface SettingsScreenUiState {
 }
 
 sealed interface SettingsScreenUiAction {
-	data object HandledNavigation: SettingsScreenUiAction
 	data class ReceivedVersionInfo(
 		val versionName: String,
 		val versionCode: String,

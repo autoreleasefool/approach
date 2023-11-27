@@ -15,7 +15,6 @@ sealed interface GearListScreenUiState {
 }
 
 sealed interface GearListScreenUiAction {
-	data object HandledNavigation: GearListScreenUiAction
 	data class GearListAction(
 		val action: GearListUiAction,
 	): GearListScreenUiAction

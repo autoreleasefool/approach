@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.migration.MigrationManager
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
@@ -15,10 +15,7 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnbo
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -30,7 +27,7 @@ class OnboardingViewModel @Inject constructor(
 	private val migrationManager: MigrationManager,
 	private val userDataRepository: UserDataRepository,
 	fileManager: FileManager,
-): ViewModel() {
+): ApproachViewModel<OnboardingScreenEvent>() {
 	private val _uiState: MutableStateFlow<OnboardingScreenUiState> = MutableStateFlow(
 		if (fileManager.fileExists(fileManager.getDatabasePath(LegacyDatabaseHelper.DATABASE_NAME))) {
 			OnboardingScreenUiState.LegacyUser()
@@ -40,22 +37,15 @@ class OnboardingViewModel @Inject constructor(
 	)
 	val uiState = _uiState.asStateFlow()
 
-	private val _events: MutableStateFlow<OnboardingScreenEvent?> = MutableStateFlow(null)
-	val events = combine(
-		userDataRepository.userData,
-		_events,
-	) { userData, events ->
-		if (userData.isOnboardingComplete) {
-			OnboardingScreenEvent.FinishedOnboarding
-		} else {
-			events
+	init {
+		viewModelScope.launch {
+			userDataRepository.userData.collect {
+				if (it.isOnboardingComplete) {
+					sendEvent(OnboardingScreenEvent.FinishedOnboarding)
+				}
+			}
 		}
 	}
-		.stateIn(
-			scope = viewModelScope,
-			started = SharingStarted.WhileSubscribed(5_000),
-			initialValue = null,
-		)
 
 	fun handleAction(action: OnboardingScreenUiAction) {
 		when (action) {

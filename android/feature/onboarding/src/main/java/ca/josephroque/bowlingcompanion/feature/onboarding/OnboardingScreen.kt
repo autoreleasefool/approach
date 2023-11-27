@@ -3,13 +3,18 @@ package ca.josephroque.bowlingcompanion.feature.onboarding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboarding
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboarding
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun OnboardingRoute(
@@ -19,9 +24,17 @@ internal fun OnboardingRoute(
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-	when (viewModel.events.collectAsState().value) {
-		OnboardingScreenEvent.FinishedOnboarding -> onCompleteOnboarding()
-		null -> Unit
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						OnboardingScreenEvent.FinishedOnboarding -> onCompleteOnboarding()
+					}
+				}
+		}
 	}
 
 	OnboardingScreen(

@@ -3,11 +3,16 @@ package ca.josephroque.bowlingcompanion.feature.settings.developer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.settings.ui.developer.DeveloperSettings
 import ca.josephroque.bowlingcompanion.feature.settings.ui.developer.DeveloperSettingsTopBar
+import kotlinx.coroutines.launch
 
 @Composable
 fun DeveloperSettingsRoute(
@@ -15,9 +20,17 @@ fun DeveloperSettingsRoute(
 	modifier: Modifier = Modifier,
 	viewModel: DeveloperSettingsViewModel = hiltViewModel(),
 ) {
-	when (viewModel.events.collectAsState().value) {
-		DeveloperSettingsScreenEvent.Dismissed -> onBackPressed()
-		null -> Unit
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						DeveloperSettingsScreenEvent.Dismissed -> onBackPressed()
+					}
+				}
+		}
 	}
 
 	DeveloperSettingsScreen(

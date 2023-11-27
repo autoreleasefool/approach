@@ -6,10 +6,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarForm
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormTopBar
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun AvatarFormRoute(
@@ -19,9 +24,17 @@ internal fun AvatarFormRoute(
 ) {
 	val avatarFormScreenState = viewModel.uiState.collectAsState().value
 
-	when (val avatarFormScreenEvent = viewModel.events.collectAsState().value) {
-		is AvatarFormScreenEvent.Dismissed -> onDismissWithResult(avatarFormScreenEvent.result)
-		else -> Unit
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						is AvatarFormScreenEvent.Dismissed -> onDismissWithResult(it.result)
+					}
+				}
+		}
 	}
 
 	AvatarFormScreen(

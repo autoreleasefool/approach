@@ -18,7 +18,6 @@ sealed interface StatisticsOverviewScreenUiAction {
 	data class UpdatedLeague(val league: UUID?): StatisticsOverviewScreenUiAction
 	data class UpdatedSeries(val series: UUID?): StatisticsOverviewScreenUiAction
 	data class UpdatedGame(val game: UUID?): StatisticsOverviewScreenUiAction
-	data object FinishedNavigation: StatisticsOverviewScreenUiAction
 
 	data class StatisticsOverviewAction(
 		val action: StatisticsOverviewUiAction,

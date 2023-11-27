@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import java.util.UUID
 import javax.inject.Inject
 
@@ -26,14 +25,11 @@ import javax.inject.Inject
 class BowlerFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val bowlersRepository: BowlersRepository,
-) : ViewModel() {
+) : ApproachViewModel<BowlerFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<BowlerFormScreenUiState> =
 		MutableStateFlow(BowlerFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
-
-	private val _events: MutableStateFlow<BowlerFormScreenEvent?> = MutableStateFlow(null)
-	val events = _events.asStateFlow()
 
 	private val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
 		UUID.fromString(it)
@@ -53,7 +49,7 @@ class BowlerFormViewModel @Inject constructor(
 
 	private fun handleBowlerFormAction(action: BowlerFormUiAction) {
 		when (action) {
-			BowlerFormUiAction.BackClicked -> _events.value = BowlerFormScreenEvent.Dismissed
+			BowlerFormUiAction.BackClicked -> sendEvent(BowlerFormScreenEvent.Dismissed)
 			BowlerFormUiAction.DoneClicked -> saveBowler()
 			BowlerFormUiAction.ArchiveClicked -> setArchiveBowlerPrompt(isVisible = true)
 			BowlerFormUiAction.ConfirmArchiveClicked -> archiveBowler()
@@ -139,7 +135,7 @@ class BowlerFormViewModel @Inject constructor(
 			is BowlerFormScreenUiState.Edit -> viewModelScope.launch {
 				bowlersRepository.archiveBowler(state.initialValue.id)
 				setFormUiState(state = formState.copy(isShowingArchiveDialog = false))
-				_events.value = BowlerFormScreenEvent.Dismissed
+				sendEvent(BowlerFormScreenEvent.Dismissed)
 			}
 		}
 	}
@@ -156,7 +152,7 @@ class BowlerFormViewModel @Inject constructor(
 					)
 
 					bowlersRepository.insertBowler(bowler)
-					_events.value = BowlerFormScreenEvent.Dismissed
+					sendEvent(BowlerFormScreenEvent.Dismissed)
 				} else {
 					_uiState.value = state.copy(
 						form = state.form.copy(
@@ -167,7 +163,7 @@ class BowlerFormViewModel @Inject constructor(
 				is BowlerFormScreenUiState.Edit -> if (state.isSavable()) {
 					val bowler = state.form.update(id = state.initialValue.id)
 					bowlersRepository.updateBowler(bowler)
-					_events.value = BowlerFormScreenEvent.Dismissed
+					sendEvent(BowlerFormScreenEvent.Dismissed)
 				} else {
 					_uiState.value = state.copy(
 						form = state.form.copy(
