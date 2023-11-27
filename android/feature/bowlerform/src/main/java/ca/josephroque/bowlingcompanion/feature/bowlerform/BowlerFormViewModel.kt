@@ -137,10 +137,7 @@ class BowlerFormViewModel @Inject constructor(
 		when (val state = _uiState.value) {
 			BowlerFormScreenUiState.Loading, is BowlerFormScreenUiState.Create -> Unit
 			is BowlerFormScreenUiState.Edit -> viewModelScope.launch {
-				bowlersRepository.archiveBowler(
-					id = state.initialValue.id,
-					archivedOn = Clock.System.now(),
-				)
+				bowlersRepository.archiveBowler(state.initialValue.id)
 				setFormUiState(state = formState.copy(isShowingArchiveDialog = false))
 				_events.value = BowlerFormScreenEvent.Dismissed
 			}

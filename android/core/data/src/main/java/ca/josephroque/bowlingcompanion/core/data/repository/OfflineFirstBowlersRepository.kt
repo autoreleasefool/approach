@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Instant
+import kotlinx.datetime.Clock
 import java.util.UUID
 import javax.inject.Inject
 
@@ -37,7 +37,7 @@ class OfflineFirstBowlersRepository @Inject constructor(
 		bowlerDao.updateBowler(bowler.asEntity())
 	}
 
-	override suspend fun archiveBowler(id: UUID, archivedOn: Instant) = withContext(ioDispatcher) {
-		bowlerDao.archiveBowler(id, archivedOn)
+	override suspend fun archiveBowler(id: UUID) = withContext(ioDispatcher) {
+		bowlerDao.archiveBowler(id, archivedOn = Clock.System.now())
 	}
 }

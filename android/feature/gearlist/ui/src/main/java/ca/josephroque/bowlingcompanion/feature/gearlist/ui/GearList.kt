@@ -24,9 +24,9 @@ fun GearList(
 	onAction: (GearListUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	if (state.gearToDelete != null) {
+	state.gearToDelete?.let {
 		DeleteDialog(
-			itemName = state.gearToDelete.name,
+			itemName = it.name,
 			onDelete = { onAction(GearListUiAction.ConfirmDeleteClicked) },
 			onDismiss = { onAction(GearListUiAction.DismissDeleteClicked) },
 		)

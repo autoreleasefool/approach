@@ -48,9 +48,6 @@
 	<string name="lane_property_position_wall_on_right">Wall on Right</string>
 	<string name="lane_property_position_wall_on_left">Wall on Left</string>
 
-	<string name="bowler_list_add">Add Bowler</string>
-	<string name="bowler_list_title">Bowlers</string>
-
 	<string name="opponent_list_title">Opponents</string>
 	<string name="opponent_list_description">Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents</string>
 	<string name="opponent_list_add">Add Opponent</string>

@@ -23,66 +23,53 @@ import me.saket.swipe.SwipeableActionsBox
 import java.util.UUID
 
 @Composable
-fun BowlerList(
+fun BowlersList(
 	state: BowlersListUiState,
-	onBowlerClick: (UUID) -> Unit,
-	onArchiveBowler: (UUID?) -> Unit,
-	onEditBowler: (UUID) -> Unit,
-	onAddBowler: () -> Unit,
+	onAction: (BowlersListUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 	header: (@Composable LazyItemScope.() -> Unit)? = null,
 ) {
-	when (state) {
-		BowlersListUiState.Loading -> Unit
-		is BowlersListUiState.Success -> {
-			state.bowlerToArchive?.let { bowler ->
-				ArchiveDialog(
-					itemName = bowler.name,
-					onArchive = { onArchiveBowler(bowler.id) },
-					onDismiss = { onArchiveBowler(null) },
-				)
-			}
-		}
+	state.bowlerToArchive?.let {
+		ArchiveDialog(
+			itemName = it.name,
+			onArchive = { onAction(BowlersListUiAction.ConfirmArchiveClicked) },
+			onDismiss = { onAction(BowlersListUiAction.DismissArchiveClicked) },
+		)
 	}
 
 	LazyColumn(modifier = modifier) {
-		when (state) {
-			BowlersListUiState.Loading -> Unit
-			is BowlersListUiState.Success -> {
-				if (state.list.isEmpty()) {
-					item {
-						DefaultEmptyState(
-							title = R.string.bowler_list_empty_title,
-							icon = R.drawable.bowler_list_empty_state,
-							message = R.string.bowler_list_empty_message,
-							action = R.string.bowler_list_add,
-							onActionClick = onAddBowler,
-						)
-					}
-				} else {
-					header?.also {
-						item {
-							it()
-						}
-					}
-
-					bowlersList(
-						list = state.list,
-						onBowlerClick = onBowlerClick,
-						onArchiveBowler = onArchiveBowler,
-						onEditBowler = onEditBowler,
-					)
+		if (state.list.isEmpty()) {
+			item {
+				DefaultEmptyState(
+					title = R.string.bowler_list_empty_title,
+					icon = R.drawable.bowler_list_empty_state,
+					message = R.string.bowler_list_empty_message,
+					action = R.string.bowler_list_add,
+					onActionClick = { onAction(BowlersListUiAction.AddBowlerClicked) },
+				)
+			}
+		} else {
+			header?.also {
+				item {
+					it()
 				}
 			}
+
+			bowlersList(
+				list = state.list,
+				onBowlerClick = { onAction(BowlersListUiAction.BowlerClicked(it.id)) },
+				onArchiveBowler = { onAction(BowlersListUiAction.BowlerArchived(it)) },
+				onEditBowler = { onAction(BowlersListUiAction.BowlerEdited(it.id)) },
+			)
 		}
 	}
 }
 
 fun LazyListScope.bowlersList(
 	list: List<BowlerListItem>,
-	onBowlerClick: (UUID) -> Unit,
-	onArchiveBowler: (UUID) -> Unit,
-	onEditBowler: (UUID) -> Unit,
+	onBowlerClick: (BowlerListItem) -> Unit,
+	onArchiveBowler: (BowlerListItem) -> Unit,
+	onEditBowler: (BowlerListItem) -> Unit,
 ) {
 	items(
 		items = list,
@@ -91,13 +78,13 @@ fun LazyListScope.bowlersList(
 		val archiveAction = SwipeAction(
 			icon = painterResource(RCoreDesign.drawable.ic_archive),
 			background = colorResource(RCoreDesign.color.destructive),
-			onSwipe = { onArchiveBowler(bowler.id) },
+			onSwipe = { onArchiveBowler(bowler) },
 		)
 
 		val editAction = SwipeAction(
 			icon = rememberVectorPainter(Icons.Default.Edit),
 			background = colorResource(RCoreDesign.color.blue_300),
-			onSwipe = { onEditBowler(bowler.id) },
+			onSwipe = { onEditBowler(bowler) },
 		)
 
 		SwipeableActionsBox(
@@ -107,26 +94,18 @@ fun LazyListScope.bowlersList(
 			BowlerRow(
 				name = bowler.name,
 				average = bowler.average,
-				onClick = { onBowlerClick(bowler.id) },
+				onClick = { onBowlerClick(bowler) },
 			)
 		}
 	}
-}
-
-sealed interface BowlersListUiState {
-	data object Loading: BowlersListUiState
-	data class Success(
-		val bowlerToArchive: BowlerListItem?,
-		val list: List<BowlerListItem>,
-	): BowlersListUiState
 }
 
 @Preview
 @Composable
 fun BowlersListPreview() {
 	Surface {
-		BowlerList(
-			state = BowlersListUiState.Success(
+		BowlersList(
+			state = BowlersListUiState(
 				bowlerToArchive = null,
 				list = listOf(
 					BowlerListItem(
@@ -141,10 +120,7 @@ fun BowlersListPreview() {
 					),
 				),
 			),
-			onAddBowler = {},
-			onBowlerClick = {},
-			onArchiveBowler = {},
-			onEditBowler = {},
+			onAction = {},
 		)
 	}
 }
