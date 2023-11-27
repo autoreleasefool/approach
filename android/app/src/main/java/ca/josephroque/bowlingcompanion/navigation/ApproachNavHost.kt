@@ -167,6 +167,7 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 			onAddOpponent = { navController.navigateToNewBowlerForm(BowlerKind.OPPONENT) },
 			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
+			onEditOpponent = navController::navigateToBowlerForm,
 		)
 		analyticsSettingsScreen(
 			onBackPressed = navController::popBackStack,

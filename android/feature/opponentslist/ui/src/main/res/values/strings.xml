@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="opponent_list_title">Opponents</string>
+	<string name="opponent_list_add">Add Opponent</string>
+
+	<string name="opponent_list_empty_title">No opponents found</string>
+	<string name="opponent_list_empty_message">Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.</string>
+
+	<string name="opponent_list_description">Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.</string>
+</resources>

@@ -17,6 +17,7 @@ fun NavGraphBuilder.opponentsListScreen(
 	onBackPressed: () -> Unit,
 	onAddOpponent: () -> Unit,
 	onOpenOpponentDetails: (UUID) -> Unit,
+	onEditOpponent: (UUID) -> Unit,
 ) {
 	composable(
 		route = opponentsListNavigationRoute,
@@ -25,6 +26,7 @@ fun NavGraphBuilder.opponentsListScreen(
 			onBackPressed = onBackPressed,
 			onAddOpponent = onAddOpponent,
 			onOpenOpponentDetails = onOpenOpponentDetails,
+			onEditOpponent = onEditOpponent,
 		)
 	}
 }

@@ -65,6 +65,8 @@
             <option value="$PROJECT_DIR$/feature/leagueslist/ui" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/onboarding/ui" />
+            <option value="$PROJECT_DIR$/feature/opponentslist" />
+            <option value="$PROJECT_DIR$/feature/opponentslist/ui" />
             <option value="$PROJECT_DIR$/feature/overview" />
             <option value="$PROJECT_DIR$/feature/overview/ui" />
             <option value="$PROJECT_DIR$/feature/resourcepicker" />

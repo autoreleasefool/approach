@@ -26,7 +26,7 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	override fun getBowlersList(): Flow<List<BowlerListItem>> =
 		bowlerDao.getBowlersList()
 
-	override fun getOpponentsList(): Flow<List<OpponentListItem>> =
+	override fun getOpponentsList(): Flow<List<BowlerListItem>> =
 		bowlerDao.getOpponentsList()
 
 	override suspend fun insertBowler(bowler: BowlerCreate) = withContext(ioDispatcher) {

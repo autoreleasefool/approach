@@ -59,14 +59,13 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 		"""
 			SELECT
 				bowlers.id AS id,
-				bowlers.name AS name,
-				bowlers.kind AS kind
+				bowlers.name AS name
 			FROM bowlers
 			WHERE bowlers.archived_on IS NULL
 			ORDER BY bowlers.name
 		"""
 	)
-	abstract fun getOpponentsList(): Flow<List<OpponentListItem>>
+	abstract fun getOpponentsList(): Flow<List<BowlerListItem>>
 
 	@Insert(entity = BowlerEntity::class)
 	abstract fun insertBowler(bowler: BowlerCreateEntity)

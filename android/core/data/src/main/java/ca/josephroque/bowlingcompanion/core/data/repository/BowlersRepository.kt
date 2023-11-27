@@ -10,7 +10,7 @@ import java.util.UUID
 
 interface BowlersRepository {
 	fun getBowlersList(): Flow<List<BowlerListItem>>
-	fun getOpponentsList(): Flow<List<OpponentListItem>>
+	fun getOpponentsList(): Flow<List<BowlerListItem>>
 
 	fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
 
