@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="bowler_list_add">Add Bowler</string>
+	<string name="league_list_add">Add League</string>
 
-	<string name="bowler_list_empty_title">No bowlers found</string>
-	<string name="bowler_list_empty_message">You haven\'t added any bowlers yet. Try adding yourself to get started.</string>
+	<string name="league_list_empty_title">No leagues found</string>
+	<string name="league_list_empty_message">You haven\'t added any leagues or events yet. Track your progress week over week for each league you\'re in. See how you measure up in tournaments with events.</string>
 </resources>

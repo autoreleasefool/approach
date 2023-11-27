@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="bowler_details_league_list_title">Leagues</string>
+	<string name="bowler_details_league_list_add">Add League</string>
+
+	<string name="bowler_details_preferred_gear_title">Preferred Gear</string>
+	<string name="bowler_details_preferred_gear_description">Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.</string>
+</resources>

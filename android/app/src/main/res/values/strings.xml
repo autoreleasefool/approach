@@ -55,10 +55,6 @@
 	<string name="opponent_list_description">Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents</string>
 	<string name="opponent_list_add">Add Opponent</string>
 
-	<string name="bowler_details_preferred_gear_title">Preferred Gear</string>
-	<string name="bowler_details_preferred_gear_description">Pre-select all the gear you typically use, and it will automatically be added to every game. You can remove or add more gear to a game later.</string>
-
-	<string name="league_list_title">Leagues</string>
 	<string name="league_list_add">Add League</string>
 
 	<string name="league_form_title_new">New League</string>

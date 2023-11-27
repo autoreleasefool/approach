@@ -22,8 +22,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.R
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

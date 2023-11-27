@@ -60,8 +60,8 @@ dependencies {
 	implementation(project(":feature:accessoriesoverview"))
 	implementation(project(":feature:alleyslist"))
 	implementation(project(":feature:avatarform"))
+	implementation(project(":feature:bowlerdetails"))
 	implementation(project(":feature:bowlerform"))
-	implementation(project(":feature:bowlerslist:ui"))
 	implementation(project(":feature:datamanagement"))
 	implementation(project(":feature:gameseditor"))
 	implementation(project(":feature:gearlist"))
@@ -74,7 +74,6 @@ dependencies {
 	implementation(project(":feature:settings"))
 	implementation(project(":feature:statisticsdetails"))
 	implementation(project(":feature:statisticsoverview"))
-	implementation(project(":feature:statisticswidget"))
 
 	implementation(platform(libs.androidx.compose.bom))
 	implementation(libs.androidx.compose.foundation)
