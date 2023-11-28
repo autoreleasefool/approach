@@ -7,6 +7,7 @@ import LocationsRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
 
+@Reducer
 public struct AddressLookup: Reducer {
 	public struct State: Equatable {
 		@BindingState public var query: String
@@ -42,8 +43,14 @@ public struct AddressLookup: Reducer {
 	}
 
 	enum SearchID { case lookup }
-	enum LookupError: Error {
+	enum LookupError: Error, LocalizedError {
 		case addressNotFound
+
+		public var errorDescription: String? {
+			switch self {
+			case .addressNotFound: return Strings.Address.Error.notFound
+			}
+		}
 	}
 
 	public init() {}
@@ -138,14 +145,6 @@ public struct AddressLookup: Reducer {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
-		}
-	}
-}
-
-extension AddressLookup.LookupError: LocalizedError {
-	public var errorDescription: String? {
-		switch self {
-		case .addressNotFound: return Strings.Address.Error.notFound
 		}
 	}
 }

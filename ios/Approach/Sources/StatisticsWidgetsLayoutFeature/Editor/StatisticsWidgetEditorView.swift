@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import EquatableLibrary
 import ErrorsFeature
 import ModelsLibrary
 import ModelsViewsLibrary
@@ -119,33 +120,54 @@ public struct StatisticsWidgetEditorView: View {
 			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+		.bowlerPicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.leaguePicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.statisticPicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.help(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+	}
+}
+
+@MainActor extension View {
+	fileprivate typealias State = PresentationState<StatisticsWidgetEditor.Destination.State>
+	fileprivate typealias Action = PresentationAction<StatisticsWidgetEditor.Destination.Action>
+
+	fileprivate func bowlerPicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsWidgetEditor.Destination.State.bowlerPicker,
 			action: StatisticsWidgetEditor.Destination.Action.bowlerPicker
-		) { store in
+		) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
 			ResourcePickerView(store: store) { bowler in
 				Bowler.View(bowler)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func leaguePicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsWidgetEditor.Destination.State.leaguePicker,
 			action: StatisticsWidgetEditor.Destination.Action.leaguePicker
-		) { store in
+		) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func statisticPicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsWidgetEditor.Destination.State.statisticPicker,
 			action: StatisticsWidgetEditor.Destination.Action.statisticPicker
-		) { store in
+		) { (store: StoreOf<StatisticPicker>) in
 			StatisticPickerView(store: store)
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func help(_ store: Store<State, Action>) -> some View {
+		sheet(
+			store: store,
 			state: /StatisticsWidgetEditor.Destination.State.help,
 			action: StatisticsWidgetEditor.Destination.Action.help
 		) { (store: StoreOf<StatisticsWidgetHelp>) in

@@ -5,6 +5,7 @@ import StatisticsChartsLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct StatisticsWidgetHelp: Reducer {
 	public struct State: Equatable {
 		public let missingStatistic: StatisticsWidget.Configuration

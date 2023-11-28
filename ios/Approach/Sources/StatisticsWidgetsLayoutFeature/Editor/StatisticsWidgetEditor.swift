@@ -46,6 +46,18 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
+		var configuration: StatisticsWidget.Configuration? {
+			guard let source else { return nil }
+			return .init(id: id, bowlerId: source.bowlerId, leagueId: source.leagueId, timeline: timeline, statistic: statistic)
+		}
+
+		var isBowlerEditable: Bool {
+			switch initialSource {
+			case .bowler, .league: return false
+			case .none: return true
+			}
+		}
+
 		public init(context: String, priority: Int, source: StatisticsWidget.Source?) {
 			@Dependency(\.uuid) var uuid
 			self.id = uuid()
@@ -386,20 +398,6 @@ public struct StatisticsWidgetEditor: Reducer {
 			}
 		)
 		.cancellable(id: CancelID.loadingPreview, cancelInFlight: true)
-	}
-}
-
-extension StatisticsWidgetEditor.State {
-	var configuration: StatisticsWidget.Configuration? {
-		guard let source else { return nil }
-		return .init(id: id, bowlerId: source.bowlerId, leagueId: source.leagueId, timeline: timeline, statistic: statistic)
-	}
-
-	var isBowlerEditable: Bool {
-		switch initialSource {
-		case .bowler, .league: return false
-		case .none: return true
-		}
 	}
 }
 

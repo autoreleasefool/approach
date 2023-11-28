@@ -20,6 +20,29 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 		@PresentationState public var report: ErrorReport.State?
 
 		public init() {}
+
+		public mutating func enqueue(_ error: Errors.ErrorToastState) -> Effect<Errors.Action> {
+			let timesSeen = errorCount[error.id] ?? 1
+			errorCount[error.id] = timesSeen + 1
+
+			let toast: ToastState<Errors.ToastAction> = .init(
+				from: error,
+				withReportButton: timesSeen >= ERROR_REPORT_THRESHOLD
+			)
+
+			if self.currentToast == nil {
+				self.currentToast = toast
+			} else {
+				// Insert at 0 because we popLast() for FIFO
+				self.toastQueue.insert(toast, at: 0)
+			}
+
+			return .none
+		}
+
+		public mutating func enqueue(_ errorId: ErrorID, thrownError: Error, toastMessage: String) -> Effect<Errors.Action> {
+			enqueue(.init(id: errorId, thrownError: thrownError, message: .init(toastMessage), icon: .exclamationmarkTriangle))
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -144,31 +167,6 @@ extension Errors {
 		public let additionalErrors: [Error]
 		public let logDataUrl: URL?
 		public let canSendEmail: Bool
-	}
-}
-
-extension Errors.State {
-	public mutating func enqueue(_ error: Errors.ErrorToastState) -> Effect<Errors.Action> {
-		let timesSeen = errorCount[error.id] ?? 1
-		errorCount[error.id] = timesSeen + 1
-
-		let toast: ToastState<Errors.ToastAction> = .init(
-			from: error,
-			withReportButton: timesSeen >= ERROR_REPORT_THRESHOLD
-		)
-
-		if self.currentToast == nil {
-			self.currentToast = toast
-		} else {
-			// Insert at 0 because we popLast() for FIFO
-			self.toastQueue.insert(toast, at: 0)
-		}
-
-		return .none
-	}
-
-	public mutating func enqueue(_ errorId: ErrorID, thrownError: Error, toastMessage: String) -> Effect<Errors.Action> {
-		enqueue(.init(id: errorId, thrownError: thrownError, message: .init(toastMessage), icon: .exclamationmarkTriangle))
 	}
 }
 

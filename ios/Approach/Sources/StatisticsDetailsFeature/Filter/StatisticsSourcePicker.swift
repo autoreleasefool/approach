@@ -362,38 +362,59 @@ public struct StatisticsSourcePickerView: View {
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+		.bowlerPicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.leaguePicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.seriesPicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.gamePicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+	}
+}
+
+@MainActor extension View {
+	fileprivate typealias State = PresentationState<StatisticsSourcePicker.Destination.State>
+	fileprivate typealias Action = PresentationAction<StatisticsSourcePicker.Destination.Action>
+
+	fileprivate func bowlerPicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsSourcePicker.Destination.State.bowlerPicker,
 			action: StatisticsSourcePicker.Destination.Action.bowlerPicker
-		) { store in
+		) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
 			ResourcePickerView(store: store) { bowler in
 				Bowler.View(bowler)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func leaguePicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsSourcePicker.Destination.State.leaguePicker,
 			action: StatisticsSourcePicker.Destination.Action.leaguePicker
-		) { store in
+		) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func seriesPicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsSourcePicker.Destination.State.seriesPicker,
 			action: StatisticsSourcePicker.Destination.Action.seriesPicker
-		) { store in
+		) { (store: StoreOf<ResourcePicker<Series.Summary, League.ID>>) in
 			ResourcePickerView(store: store) { series in
 				Text(series.date.longFormat)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func gamePicker(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /StatisticsSourcePicker.Destination.State.gamePicker,
 			action: StatisticsSourcePicker.Destination.Action.gamePicker
-		) { store in
+		) { (store: StoreOf<ResourcePicker<Game.Summary, Series.ID>>) in
 			ResourcePickerView(store: store) { game in
 				Text(Strings.Game.titleWithOrdinal(game.index + 1))
 			}

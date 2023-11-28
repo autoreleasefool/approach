@@ -57,26 +57,44 @@ public struct SeriesListView: View {
 			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+		.seriesEditor(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.leagueEditor(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.sortOrder(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.gamesList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+	}
+}
+
+@MainActor extension View {
+	fileprivate typealias State = PresentationState<SeriesList.Destination.State>
+	fileprivate typealias Action = PresentationAction<SeriesList.Destination.Action>
+
+	fileprivate func seriesEditor(_ store: Store<State, Action>) -> some View {
+		sheet(
+			store: store,
 			state: /SeriesList.Destination.State.seriesEditor,
 			action: SeriesList.Destination.Action.seriesEditor
-		) { store in
+		) { (store: StoreOf<SeriesEditor>) in
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func leagueEditor(_ store: Store<State, Action>) -> some View {
+		sheet(
+			store: store,
 			state: /SeriesList.Destination.State.leagueEditor,
 			action: SeriesList.Destination.Action.leagueEditor
-		) { store in
+		) { (store: StoreOf<LeagueEditor>) in
 			NavigationStack {
 				LeagueEditorView(store: store)
 			}
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func sortOrder(_ store: Store<State, Action>) -> some View {
+		sheet(
+			store: store,
 			state: /SeriesList.Destination.State.sortOrder,
 			action: SeriesList.Destination.Action.sortOrder
 		) { (store: StoreOf<SortOrderLibrary.SortOrder<Series.Ordering>>) in
@@ -85,11 +103,14 @@ public struct SeriesListView: View {
 			}
 			.presentationDetents([.medium])
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+	}
+
+	fileprivate func gamesList(_ store: Store<State, Action>) -> some View {
+		navigationDestination(
+			store: store,
 			state: /SeriesList.Destination.State.games,
 			action: SeriesList.Destination.Action.games
-		) { store in
+		) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
 		}
 	}

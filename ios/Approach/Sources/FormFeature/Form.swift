@@ -93,6 +93,58 @@ public struct Form<
 			self.value = currentValue
 			self.modelName = modelName
 		}
+
+		mutating func discard() {
+			self = .init(initialValue: initialValue, currentValue: initialValue)
+		}
+
+		public mutating func didFinishCreating(_ record: TaskResult<New>) -> Effect<Form.Action> {
+			isLoading = false
+			switch record {
+			case let .success(new):
+				return .send(.delegate(.didFinishCreating(new)))
+			case let .failure(error):
+				return errors
+					.enqueue(.failedToCreate, thrownError: error, toastMessage: Strings.Error.Toast.itemNotCreated(New.modelName))
+					.map { .internal(.errors($0)) }
+			}
+		}
+
+		public mutating func didFinishUpdating(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+			isLoading = false
+			switch record {
+			case let .success(existing):
+				return .send(.delegate(.didFinishUpdating(existing)))
+			case let .failure(error):
+				return errors
+					.enqueue(.failedToUpdate, thrownError: error, toastMessage: Strings.Error.Toast.itemNotUpdated(New.modelName))
+					.map { .internal(.errors($0)) }
+			}
+		}
+
+		public mutating func didFinishDeleting(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+			isLoading = false
+			switch record {
+			case let .success(existing):
+				return .send(.delegate(.didFinishDeleting(existing)))
+			case let .failure(error):
+				return errors
+					.enqueue(.failedToDelete, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
+					.map { .internal(.errors($0)) }
+			}
+		}
+
+		public mutating func didFinishArchiving(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+			isLoading = false
+			switch record {
+			case let .success(existing):
+				return .send(.delegate(.didFinishArchiving(existing)))
+			case let .failure(error):
+				return errors
+					.enqueue(.failedToArchive, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
+					.map { .internal(.errors($0)) }
+			}
+		}
 	}
 
 	public enum Action: Equatable {
@@ -255,59 +307,5 @@ public struct Form<
 			}
 		}
 		.ifLet(\.$alert, action: /Action.view..Action.ViewAction.alert)
-	}
-}
-
-extension Form.State {
-	mutating func discard() {
-		self = .init(initialValue: initialValue, currentValue: initialValue)
-	}
-
-	public mutating func didFinishCreating(_ record: TaskResult<New>) -> Effect<Form.Action> {
-		isLoading = false
-		switch record {
-		case let .success(new):
-			return .send(.delegate(.didFinishCreating(new)))
-		case let .failure(error):
-			return errors
-				.enqueue(.failedToCreate, thrownError: error, toastMessage: Strings.Error.Toast.itemNotCreated(New.modelName))
-				.map { .internal(.errors($0)) }
-		}
-	}
-
-	public mutating func didFinishUpdating(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
-		isLoading = false
-		switch record {
-		case let .success(existing):
-			return .send(.delegate(.didFinishUpdating(existing)))
-		case let .failure(error):
-			return errors
-				.enqueue(.failedToUpdate, thrownError: error, toastMessage: Strings.Error.Toast.itemNotUpdated(New.modelName))
-				.map { .internal(.errors($0)) }
-		}
-	}
-
-	public mutating func didFinishDeleting(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
-		isLoading = false
-		switch record {
-		case let .success(existing):
-			return .send(.delegate(.didFinishDeleting(existing)))
-		case let .failure(error):
-			return errors
-				.enqueue(.failedToDelete, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
-				.map { .internal(.errors($0)) }
-		}
-	}
-
-	public mutating func didFinishArchiving(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
-		isLoading = false
-		switch record {
-		case let .success(existing):
-			return .send(.delegate(.didFinishArchiving(existing)))
-		case let .failure(error):
-			return errors
-				.enqueue(.failedToArchive, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
-				.map { .internal(.errors($0)) }
-		}
 	}
 }

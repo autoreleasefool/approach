@@ -14,6 +14,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 
 // swiftlint:disable:next type_body_length
+@Reducer
 public struct AccessoriesOverview: Reducer {
 	static let recentAlleysLimit = 5
 	static let recentGearLimit = 10
@@ -56,6 +57,7 @@ public struct AccessoriesOverview: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case alleyEditor(AlleyEditor.State)
