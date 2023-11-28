@@ -159,7 +159,7 @@ let package = Package(
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.15.2"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.21.0"),
 		.package(url: "https://github.com/markiv/SwiftUI-Shimmer.git", from: "1.4.0"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.3.0"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.5.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.14.2"),
@@ -210,7 +210,6 @@ let package = Package(
 			dependencies: [
 				"AddressLookupFeature",
 				"AlleysRepositoryInterface",
-				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"LaneEditorFeature",
 				"ModelsViewsLibrary",
@@ -227,6 +226,7 @@ let package = Package(
 			name: "AlleysListFeature",
 			dependencies: [
 				"AlleyEditorFeature",
+				"FeatureFlagsServiceInterface",
 				"ResourceListLibrary",
 			]
 		),
@@ -412,7 +412,6 @@ let package = Package(
 			dependencies: [
 				"AvatarEditorFeature",
 				"BowlersRepositoryInterface",
-				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"GearRepositoryInterface",
 				"PickableModelsLibrary",
@@ -483,7 +482,6 @@ let package = Package(
 			name: "LeagueEditorFeature",
 			dependencies: [
 				"AlleysRepositoryInterface",
-				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
@@ -581,7 +579,6 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"DateTimeLibrary",
-				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
