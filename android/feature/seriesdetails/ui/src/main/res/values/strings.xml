@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<plurals name="games_count">
+		<item quantity="one">%d game</item>
+		<item quantity="other">%d games</item>
+	</plurals>
+
+	<string name="series_details_high_game">High of %d</string>
+	<string name="series_details_low_game">Low of %d</string>
+	<string name="series_details_total">Series total</string>
+</resources>

@@ -32,6 +32,20 @@ data class ArchivedSeries(
 	val archivedOn: Instant,
 )
 
+data class SeriesDetails(
+	val properties: SeriesDetailsProperties,
+	val scores: List<Int>,
+)
+
+data class SeriesDetailsProperties(
+	val id: UUID,
+	val date: LocalDate,
+	val total: Int,
+	val numberOfGames: Int,
+	val preBowl: SeriesPreBowl,
+	val excludeFromStatistics: ExcludeFromStatistics,
+)
+
 enum class SeriesPreBowl {
 	REGULAR,
 	PRE_BOWL,

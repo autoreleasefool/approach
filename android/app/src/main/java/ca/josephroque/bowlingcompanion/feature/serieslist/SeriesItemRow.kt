@@ -161,7 +161,7 @@ private fun ScoreSummary(
 @Composable
 private fun ScoreChart(scores: ChartEntryModel) {
 	ProvideChartStyle(
-		chartStyle = rememberChartStyle(
+		chartStyle = ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle(
 			chartColors = listOf(colorResource(RCoreDesign.color.purple_300))
 		),
 	) {

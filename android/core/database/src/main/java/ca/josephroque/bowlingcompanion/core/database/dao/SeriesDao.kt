@@ -7,7 +7,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreate
-import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetails
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
@@ -33,7 +33,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 			WHERE series.id = :seriesId
 		"""
 	)
-	abstract fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails>
+	abstract fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetailsEntity>
 
 	@Transaction
 	@Query(

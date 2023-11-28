@@ -77,10 +77,6 @@
 	<string name="series_list_add">Add Series</string>
 	<string name="series_list_score_range">%d — %d</string>
 
-	<string name="series_details_high_game">High of %d</string>
-	<string name="series_details_low_game">Low of %d</string>
-	<string name="series_details_total">Series total</string>
-
 	<plurals name="games_count">
 		<item quantity="one">%d game</item>
 		<item quantity="other">%d games</item>

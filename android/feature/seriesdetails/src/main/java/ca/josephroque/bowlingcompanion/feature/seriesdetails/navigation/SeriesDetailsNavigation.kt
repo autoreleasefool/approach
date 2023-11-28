@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.EditGameArgs
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.SeriesDetailsRoute
 import java.util.UUID
 
@@ -21,7 +22,7 @@ fun NavController.navigateToSeriesDetails(seriesId: UUID) {
 
 fun NavGraphBuilder.seriesDetailsScreen(
 	onBackPressed: () -> Unit,
-	onEditGame: (UUID, UUID) -> Unit,
+	onEditGame: (EditGameArgs) -> Unit,
 ) {
 	composable(
 		route = seriesDetailsNavigationRoute,
