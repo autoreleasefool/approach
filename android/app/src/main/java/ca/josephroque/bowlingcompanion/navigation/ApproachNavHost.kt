@@ -37,6 +37,7 @@ import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLan
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.leagueDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.navigateToLeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.leagueFormScreen
+import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToLeagueForm
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToNewLeagueForm
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOnboarding
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
@@ -139,7 +140,7 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 		)
 		bowlerDetailsScreen(
-			onEditLeague = { /* TODO: onEditLeague */ },
+			onEditLeague = navController::navigateToLeagueForm,
 			onAddLeague = navController::navigateToNewLeagueForm,
 			onBackPressed = navController::popBackStack,
 			onShowLeagueDetails = navController::navigateToLeagueDetails,
