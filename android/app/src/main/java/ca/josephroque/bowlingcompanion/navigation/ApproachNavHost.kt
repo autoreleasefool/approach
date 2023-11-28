@@ -157,7 +157,9 @@ fun ApproachNavHost(
 		)
 		seriesDetailsScreen(
 			onBackPressed = navController::popBackStack,
-			onEditGame = navController::navigateToGamesEditor,
+			onEditGame = {
+				navController.navigateToGamesEditor(seriesId = it.seriesId, initialGameId = it.gameId)
+			},
 		)
 		onboardingScreen(
 			finishActivity = finishActivity,
