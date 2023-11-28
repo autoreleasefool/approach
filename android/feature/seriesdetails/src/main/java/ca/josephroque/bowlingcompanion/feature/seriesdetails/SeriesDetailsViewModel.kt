@@ -9,7 +9,6 @@ import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiState
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.SERIES_ID
-import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -49,9 +48,6 @@ class SeriesDetailsViewModel @Inject constructor(
 					list = games,
 					gameToArchive = gameToArchive,
 				),
-				topBar = SeriesDetailsTopBarUiState(
-					seriesDate = seriesDetails.properties.date,
-				)
 			),
 		)
 	}.stateIn(

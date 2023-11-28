@@ -14,7 +14,6 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBar
-import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBarUiState
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -62,9 +61,9 @@ internal fun SeriesDetailsScreen(
 	Scaffold(
 		topBar = {
 			SeriesDetailsTopBar(
-				state = when (state) {
-					SeriesDetailsScreenUiState.Loading -> SeriesDetailsTopBarUiState()
-					is SeriesDetailsScreenUiState.Loaded -> state.seriesDetails.topBar
+				seriesDate = when (state) {
+					SeriesDetailsScreenUiState.Loading -> null
+					is SeriesDetailsScreenUiState.Loaded -> state.seriesDetails.details.date
 				},
 				onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
 			)

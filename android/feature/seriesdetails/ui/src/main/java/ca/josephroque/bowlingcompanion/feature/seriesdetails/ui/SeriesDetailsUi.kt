@@ -10,11 +10,6 @@ data class SeriesDetailsUiState(
 	val details: SeriesDetailsProperties,
 	val scores: ChartEntryModel?,
 	val gamesList: GamesListUiState,
-	val topBar: SeriesDetailsTopBarUiState,
-)
-
-data class SeriesDetailsTopBarUiState(
-	val seriesDate: LocalDate? = null,
 )
 
 sealed interface SeriesDetailsUiAction {
