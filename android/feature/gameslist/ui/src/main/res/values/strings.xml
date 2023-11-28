@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="game_list_title">Games</string>
+	<string name="game_list_add">Add Game</string>
+
+	<string name="game_list_empty_title">No games found</string>
+	<string name="game_list_empty_message">You haven\'t added any games to this series yet.</string>
+</resources>
