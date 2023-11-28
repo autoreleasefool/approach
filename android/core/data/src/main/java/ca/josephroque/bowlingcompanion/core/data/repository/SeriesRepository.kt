@@ -1,10 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreate
-import ca.josephroque.bowlingcompanion.core.database.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
+import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 

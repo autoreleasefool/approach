@@ -8,7 +8,7 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
-import ca.josephroque.bowlingcompanion.core.database.model.SeriesListItem
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import kotlinx.coroutines.flow.Flow
@@ -51,7 +51,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 		ORDER BY series."date" DESC
 		"""
 	)
-	abstract fun getSeriesList(leagueId: UUID): Flow<List<SeriesListItem>>
+	abstract fun getSeriesList(leagueId: UUID): Flow<List<SeriesListEntity>>
 
 	@Query(
 		"""

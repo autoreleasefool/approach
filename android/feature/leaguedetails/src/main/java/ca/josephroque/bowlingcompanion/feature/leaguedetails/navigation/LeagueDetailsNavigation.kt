@@ -22,7 +22,7 @@ fun NavController.navigateToLeagueDetails(leagueId: UUID) {
 fun NavGraphBuilder.leagueDetailsScreen(
 	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
-	onAddSeries: () -> Unit,
+	onAddSeries: (UUID) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
 ) {
 	composable(

@@ -5,10 +5,11 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
-import ca.josephroque.bowlingcompanion.core.database.model.SeriesListItem
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
+import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -25,7 +26,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		seriesDao.getSeriesDetails(seriesId).map(SeriesDetailsEntity::asModel)
 
 	override fun getSeriesList(leagueId: UUID): Flow<List<SeriesListItem>> =
-		seriesDao.getSeriesList(leagueId)
+		seriesDao.getSeriesList(leagueId).map { it.map(SeriesListEntity::asModel) }
 
 	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> =
 		seriesDao.getArchivedSeries()

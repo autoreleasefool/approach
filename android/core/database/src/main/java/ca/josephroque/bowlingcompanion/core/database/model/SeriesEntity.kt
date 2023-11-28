@@ -10,6 +10,7 @@ import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetailsProperties
+import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
@@ -94,7 +95,7 @@ data class SeriesDetailsEntity(
 	)
 }
 
-data class SeriesListItem(
+data class SeriesListEntity(
 	@Embedded
 	val properties: SeriesListProperties,
 	@Relation(
@@ -104,4 +105,9 @@ data class SeriesListItem(
 		projection = ["score"],
 	)
 	val scores: List<Int>,
-)
+) {
+	fun asModel(): SeriesListItem = SeriesListItem(
+		properties = properties,
+		scores = scores,
+	)
+}

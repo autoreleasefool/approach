@@ -9,6 +9,11 @@ data class SeriesSummary(
 	val date: LocalDate,
 )
 
+data class SeriesListItem(
+	val properties: SeriesListProperties,
+	val scores: List<Int>,
+)
+
 data class SeriesListProperties(
 	val id: UUID,
 	val date: LocalDate,

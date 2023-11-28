@@ -66,6 +66,8 @@
             <option value="$PROJECT_DIR$/feature/gearform/ui" />
             <option value="$PROJECT_DIR$/feature/gearlist" />
             <option value="$PROJECT_DIR$/feature/gearlist/ui" />
+            <option value="$PROJECT_DIR$/feature/leaguedetails" />
+            <option value="$PROJECT_DIR$/feature/leaguedetails/ui" />
             <option value="$PROJECT_DIR$/feature/leagueslist" />
             <option value="$PROJECT_DIR$/feature/leagueslist/ui" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
