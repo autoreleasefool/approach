@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
+import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import java.util.UUID
@@ -48,10 +49,14 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 			ON games.series_id = series.id AND games.archived_on IS NULL
 		WHERE series.league_id = :leagueId
 		GROUP BY series.id
-		ORDER BY series."date" DESC
+		ORDER BY
+		CASE WHEN :seriesSortOrder = "OLDEST_TO_NEWEST" THEN series."date" END ASC,
+		CASE WHEN :seriesSortOrder = "NEWEST_TO_OLDEST" THEN series."date" END DESC,
+		CASE WHEN :seriesSortOrder = "HIGHEST_TO_LOWEST" THEN total END DESC,
+		CASE WHEN :seriesSortOrder = "LOWEST_TO_HIGHEST" THEN total END ASC
 		"""
 	)
-	abstract fun getSeriesList(leagueId: UUID): Flow<List<SeriesListEntity>>
+	abstract fun getSeriesList(leagueId: UUID, seriesSortOrder: SeriesSortOrder): Flow<List<SeriesListEntity>>
 
 	@Query(
 		"""

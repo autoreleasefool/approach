@@ -14,6 +14,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBar
+import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -60,9 +61,9 @@ private fun LeagueDetailsScreen(
 	Scaffold(
 		topBar = {
 			LeagueDetailsTopBar(
-				leagueName = when (state) {
-					is LeagueDetailsScreenUiState.Loaded -> state.leagueDetails.leagueName
-					LeagueDetailsScreenUiState.Loading -> ""
+				state = when (state) {
+					is LeagueDetailsScreenUiState.Loaded -> state.leagueDetails.topBar
+					LeagueDetailsScreenUiState.Loading -> LeagueDetailsTopBarUiState()
 				},
 				onAction = { onAction(LeagueDetailsScreenUiAction.LeagueDetails(it)) },
 			)

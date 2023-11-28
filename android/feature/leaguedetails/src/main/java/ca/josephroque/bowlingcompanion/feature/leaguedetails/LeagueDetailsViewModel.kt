@@ -6,7 +6,9 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
+import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.LEAGUE_ID
+import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListChartItem
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -33,15 +36,27 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val leagueId = UUID.fromString(savedStateHandle[LEAGUE_ID])
 
 	private val _seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)
+	private val _isSeriesSortOrderShowing: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	private val _seriesSortOrder: MutableStateFlow<SeriesSortOrder> = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
+
+	private val _seriesList = _seriesSortOrder.flatMapLatest { sortOrder ->
+		seriesRepository.getSeriesList(leagueId, sortOrder)
+	}
 
 	val uiState: StateFlow<LeagueDetailsScreenUiState> = combine(
+		_isSeriesSortOrderShowing,
+		_seriesSortOrder,
 		_seriesToArchive,
 		leaguesRepository.getLeagueDetails(leagueId),
-		seriesRepository.getSeriesList(leagueId),
-	) { seriesToArchive, league, series ->
+		_seriesList,
+	) { isSeriesSortOrderShowing, seriesSortOrder, seriesToArchive, league, series ->
 		LeagueDetailsScreenUiState.Loaded(
 			leagueDetails = LeagueDetailsUiState(
-				leagueName = league.name,
+				topBar = LeagueDetailsTopBarUiState(
+					leagueName = league.name,
+					isSortOrderMenuExpanded = isSeriesSortOrderShowing,
+					sortOrder = seriesSortOrder,
+				),
 				seriesList = SeriesListUiState(
 					list = series.map(SeriesListItem::withChart),
 					seriesToArchive = seriesToArchive,
@@ -65,6 +80,12 @@ class LeagueDetailsViewModel @Inject constructor(
 			LeagueDetailsUiAction.BackClicked -> sendEvent(LeagueDetailsScreenEvent.Dismissed)
 			LeagueDetailsUiAction.AddSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.AddSeries(leagueId))
 			is LeagueDetailsUiAction.SeriesList -> handleSeriesListAction(action.action)
+			LeagueDetailsUiAction.SortClicked -> _isSeriesSortOrderShowing.value = true
+			LeagueDetailsUiAction.SortDismissed -> _isSeriesSortOrderShowing.value = false
+			is LeagueDetailsUiAction.SortOrderClicked -> {
+				_seriesSortOrder.value = action.sortOrder
+				_isSeriesSortOrderShowing.value = false
+			}
 		}
 	}
 

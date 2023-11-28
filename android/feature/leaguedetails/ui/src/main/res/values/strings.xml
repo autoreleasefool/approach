@@ -2,4 +2,12 @@
 <resources>
 	<string name="series_list_add">Add Series</string>
 	<string name="series_list_title">Series</string>
+
+	<string name="series_list_sort">Sort</string>
+
+	<string name="series_list_sort_order">Sort Order</string>
+	<string name="series_list_sort_order_newest_to_oldest">Newest to Oldest</string>
+	<string name="series_list_sort_order_oldest_to_newest">Oldest to Newest</string>
+	<string name="series_list_sort_order_highest_to_lowest">Highest to Lowest</string>
+	<string name="series_list_sort_order_lowest_to_highest">Lowest to Highest</string>
 </resources>

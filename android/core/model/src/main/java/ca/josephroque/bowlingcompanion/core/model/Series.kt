@@ -4,6 +4,13 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
+enum class SeriesSortOrder {
+	OLDEST_TO_NEWEST,
+	NEWEST_TO_OLDEST,
+	HIGHEST_TO_LOWEST,
+	LOWEST_TO_HIGHEST,
+}
+
 data class SeriesSummary(
 	val id: UUID,
 	val date: LocalDate,
