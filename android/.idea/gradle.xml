@@ -78,6 +78,8 @@
             <option value="$PROJECT_DIR$/feature/resourcepicker/ui" />
             <option value="$PROJECT_DIR$/feature/seriesdetails" />
             <option value="$PROJECT_DIR$/feature/seriesdetails/ui" />
+            <option value="$PROJECT_DIR$/feature/serieslist" />
+            <option value="$PROJECT_DIR$/feature/serieslist/ui" />
             <option value="$PROJECT_DIR$/feature/settings" />
             <option value="$PROJECT_DIR$/feature/settings/ui" />
             <option value="$PROJECT_DIR$/feature/statisticsdetails" />

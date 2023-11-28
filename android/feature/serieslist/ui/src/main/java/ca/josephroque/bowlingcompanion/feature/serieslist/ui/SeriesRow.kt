@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.serieslist
+package ca.josephroque.bowlingcompanion.feature.serieslist.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +27,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
-import ca.josephroque.bowlingcompanion.core.common.utils.format
+import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -43,19 +42,10 @@ import kotlinx.datetime.LocalDate
 import java.util.UUID
 import kotlin.math.roundToInt
 
-data class SeriesChartable(
-	val id: UUID,
-	val date: LocalDate,
-	val preBowl: SeriesPreBowl,
-	val total: Int,
-	val numberOfGames: Int,
-	val scores: ChartEntryModel?,
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun SeriesItemRow(
-	series: SeriesChartable,
+fun SeriesRow(
+	series: SeriesListChartItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -105,14 +95,14 @@ private fun Header(date: LocalDate) {
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 	) {
 		Icon(
-			painterResource(R.drawable.ic_calendar),
+			painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event),
 			contentDescription = null,
 			tint = MaterialTheme.colorScheme.onSurface,
 			modifier = Modifier.size(16.dp),
 		)
 
 		Text(
-			text = date.format("MMMM d, yyyy"),
+			text = date.simpleFormat(),
 			style = MaterialTheme.typography.titleMedium,
 		)
 	}
@@ -161,7 +151,7 @@ private fun ScoreSummary(
 @Composable
 private fun ScoreChart(scores: ChartEntryModel) {
 	ProvideChartStyle(
-		chartStyle = ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle(
+		chartStyle = rememberChartStyle(
 			chartColors = listOf(colorResource(RCoreDesign.color.purple_300))
 		),
 	) {
@@ -191,8 +181,8 @@ private fun ScoreChart(scores: ChartEntryModel) {
 private fun SeriesItemPreview() {
 	Surface {
 		Column {
-			SeriesItemRow(
-				series = SeriesChartable(
+			SeriesRow(
+				series = SeriesListChartItem(
 					id = UUID.randomUUID(),
 					date = LocalDate.parse("2023-09-24"),
 					total = 880,
@@ -203,8 +193,8 @@ private fun SeriesItemPreview() {
 				onClick = {},
 				modifier = Modifier.padding(bottom = 16.dp),
 			)
-			SeriesItemRow(
-				series = SeriesChartable(
+			SeriesRow(
+				series = SeriesListChartItem(
 					id = UUID.randomUUID(),
 					date = LocalDate.parse("2023-10-01"),
 					total = 880,
