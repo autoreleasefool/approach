@@ -181,9 +181,9 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Returns the games
 		XCTAssertEqual(fetched, [
-			.init(id: UUID(2), bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0, archivedOn: Date(timeIntervalSince1970: 3)),
-			.init(id: UUID(3), bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0, archivedOn: Date(timeIntervalSince1970: 2)),
-			.init(id: UUID(1), bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0, archivedOn: Date(timeIntervalSince1970: 1)),
+			.init(id: UUID(2), scoringMethod: .byFrame, bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0, archivedOn: Date(timeIntervalSince1970: 3)),
+			.init(id: UUID(3), scoringMethod: .byFrame, bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0, archivedOn: Date(timeIntervalSince1970: 2)),
+			.init(id: UUID(1), scoringMethod: .byFrame, bowlerName: "Joseph", leagueName: "Majors", seriesDate: Date(timeIntervalSince1970: 123_456_000), score: 0, archivedOn: Date(timeIntervalSince1970: 1)),
 		])
 	}
 
@@ -444,6 +444,7 @@ final class GamesRepositoryTests: XCTestCase {
 				score: 0,
 				locked: .open,
 				scoringMethod: .byFrame,
+				duration: 0,
 				excludeFromStatistics: .include,
 				matchPlay: nil,
 				gear: [],
@@ -493,6 +494,7 @@ final class GamesRepositoryTests: XCTestCase {
 				score: 0,
 				locked: .open,
 				scoringMethod: .byFrame,
+				duration: 0,
 				excludeFromStatistics: .include,
 				matchPlay: .init(
 					gameId: UUID(0),
@@ -546,6 +548,7 @@ final class GamesRepositoryTests: XCTestCase {
 				score: 0,
 				locked: .open,
 				scoringMethod: .byFrame,
+				duration: 0,
 				excludeFromStatistics: .include,
 				matchPlay: nil,
 				gear: [
@@ -598,6 +601,7 @@ final class GamesRepositoryTests: XCTestCase {
 				score: 0,
 				locked: .open,
 				scoringMethod: .byFrame,
+				duration: 0,
 				excludeFromStatistics: .include,
 				matchPlay: nil,
 				gear: [],
@@ -686,6 +690,7 @@ final class GamesRepositoryTests: XCTestCase {
 			score: 123,
 			locked: .locked,
 			scoringMethod: .manual,
+			duration: 0,
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			gear: [],
@@ -733,6 +738,7 @@ final class GamesRepositoryTests: XCTestCase {
 			score: 0,
 			locked: .open,
 			scoringMethod: .byFrame,
+			duration: 0,
 			excludeFromStatistics: .include,
 			matchPlay: .init(
 				gameId: UUID(0),
@@ -793,6 +799,7 @@ final class GamesRepositoryTests: XCTestCase {
 			score: 0,
 			locked: .open,
 			scoringMethod: .byFrame,
+			duration: 0,
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			gear: [
@@ -837,6 +844,7 @@ final class GamesRepositoryTests: XCTestCase {
 			score: 0,
 			locked: .open,
 			scoringMethod: .byFrame,
+			duration: 0,
 			excludeFromStatistics: .include,
 			matchPlay: nil,
 			gear: [],
@@ -878,6 +886,7 @@ final class GamesRepositoryTests: XCTestCase {
 				score: 0,
 				locked: .locked,
 				scoringMethod: .byFrame,
+				duration: 0,
 				excludeFromStatistics: .exclude,
 				matchPlay: nil,
 				gear: [],

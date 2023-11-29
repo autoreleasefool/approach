@@ -60,6 +60,8 @@ public struct GamesEditor: Reducer {
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement? { _nextHeaderElement }
 		public var forceNextHeaderElementNilOrNextGame: Bool = false
 
+		public var lastLoadedGameAt: GameLoadDate? = nil
+
 		// Loaded details for the current entity being edited
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
 		public var game: Game.Edit?
@@ -153,6 +155,12 @@ public struct GamesEditor: Reducer {
 		case failedToSaveFrame
 		case failedToSaveMatchPlay
 		case failedToSaveLanes
+	}
+
+	public struct GameLoadDate: Equatable {
+		let gameId: Game.ID
+		let durationWhenLoaded: TimeInterval
+		let loadedAt: Date
 	}
 
 	public init() {}
@@ -334,6 +342,9 @@ public struct GamesEditor: Reducer {
 						loadGameDetailsEffect = nil
 					}
 					state.game = game
+					if state.lastLoadedGameAt?.gameId != state.currentGameId {
+						state.lastLoadedGameAt = .init(gameId: game.id, durationWhenLoaded: game.duration, loadedAt: date())
+					}
 					state.elementsRefreshing.remove(.game)
 					state.hideNextHeaderIfNecessary()
 					return loadGameDetailsEffect ?? .none
@@ -370,7 +381,10 @@ public struct GamesEditor: Reducer {
 						return .none
 					case .byFrame:
 						state.game?.score = score.frames.gameScore() ?? 0
-						return save(game: state.game)
+						if let lastLoaded = state.lastLoadedGameAt, lastLoaded.gameId == state.game?.id {
+							state.game?.duration += lastLoaded.loadedAt.distance(to: date())
+						}
+						return save(game: state.game, in: state)
 					}
 
 				case .adjustBackdrop:

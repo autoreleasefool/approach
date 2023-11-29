@@ -13,6 +13,7 @@ extension Game.Database {
 		locked: Game.Lock = .open,
 		scoringMethod: Game.ScoringMethod = .byFrame,
 		excludeFromStatistics: Game.ExcludeFromStatistics = .include,
+		duration: TimeInterval = 0,
 		archivedOn: Date? = nil
 	) -> Self {
 		.init(
@@ -23,6 +24,7 @@ extension Game.Database {
 			locked: locked,
 			scoringMethod: scoringMethod,
 			excludeFromStatistics: excludeFromStatistics,
+			duration: duration,
 			archivedOn: archivedOn
 		)
 	}

@@ -64,11 +64,14 @@ extension GamesEditor {
 		}.cancellable(id: frame.id, cancelInFlight: true)
 	}
 
-	func save(game: Game.Edit?) -> Effect<Action> {
-		guard let game else { return .none }
-		return .run { send in
+	func save(game: Game.Edit?, in state: GamesEditor.State) -> Effect<Action> {
+		guard var game else { return .none }
+		game.duration = state.lastLoadedGameAt?.calculateDuration(at: date()) ?? game.duration
+
+		return .run { [game = game] send in
 			do {
 				try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+
 				try await games.update(game)
 				await send(.internal(.didUpdateGame(.success(game))))
 			} catch {
@@ -88,5 +91,11 @@ extension GamesEditor {
 				await send(.internal(.didUpdateMatchPlay(.failure(error))))
 			}
 		}.cancellable(id: matchPlay.id, cancelInFlight: true)
+	}
+}
+
+extension GamesEditor.GameLoadDate {
+	func calculateDuration(at date: Date) -> TimeInterval {
+		durationWhenLoaded + loadedAt.distance(to: date)
 	}
 }
