@@ -7,4 +7,8 @@
 	<string name="accessory_list_alleys_title">Alleys</string>
 	<string name="accessory_list_gear_title">Gear</string>
 	<string name="accessory_list_x_most_recent">Only showing %1d$ most recent</string>
+
+	<string name="accessory_list_alley_empty">You haven\'t added any alleys yet.</string>
+
+	<string name="accessory_list_gear_empty">You haven\'t added any gear yet.</string>
 </resources>

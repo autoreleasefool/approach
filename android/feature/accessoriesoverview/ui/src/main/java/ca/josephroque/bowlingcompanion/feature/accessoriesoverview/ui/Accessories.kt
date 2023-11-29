@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
@@ -34,11 +35,6 @@ fun Accessories(
 			)
 		)
 
-		alleysList(
-			alleysListState = alleysListState,
-			onAlleyClick = onShowAlleyDetails,
-		)
-
 		when (alleysListState) {
 			AlleysListUiState.Loading -> Unit
 			is AlleysListUiState.Success -> {
@@ -47,6 +43,32 @@ fun Accessories(
 						ListSectionFooter(
 							footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.alleysItemLimit)
 						)
+					}
+				}
+			}
+		}
+
+
+		when (alleysListState) {
+			AlleysListUiState.Loading -> Unit
+			is AlleysListUiState.Success -> {
+				if (alleysListState.list.isEmpty()) {
+					footer(R.string.accessory_list_alley_empty)
+				} else {
+					alleysList(
+						alleysListState = alleysListState,
+						onAlleyClick = onShowAlleyDetails,
+					)
+
+					item {
+						if (alleysListState.list.size > accessoriesState.alleysItemLimit) {
+							ListSectionFooter(
+								footer = stringResource(
+									R.string.accessory_list_x_most_recent,
+									accessoriesState.alleysItemLimit
+								)
+							)
+						}
 					}
 				}
 			}
@@ -61,16 +83,20 @@ fun Accessories(
 		)
 
 		if (gearListState != null) {
-			gearList(
-				list = gearListState.list,
-				onGearClick = { onShowGearDetails(it.id) },
-			)
+			if (gearListState.list.isEmpty()) {
+				footer(R.string.accessory_list_gear_empty)
+			} else {
+				gearList(
+					list = gearListState.list,
+					onGearClick = { onShowGearDetails(it.id) },
+				)
 
-			item {
-				if (gearListState.list.size > accessoriesState.gearItemLimit) {
-					ListSectionFooter(
-						footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.gearItemLimit)
-					)
+				item {
+					if (gearListState.list.size > accessoriesState.gearItemLimit) {
+						ListSectionFooter(
+							footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.gearItemLimit)
+						)
+					}
 				}
 			}
 		}
