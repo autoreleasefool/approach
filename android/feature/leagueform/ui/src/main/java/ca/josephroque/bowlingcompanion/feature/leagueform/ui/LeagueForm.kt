@@ -15,94 +15,99 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSwitch
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.feature.leagueform.GamesPerSeries
-import ca.josephroque.bowlingcompanion.feature.leagueform.IncludeAdditionalPinFall
-import ca.josephroque.bowlingcompanion.R
 
 @Composable
-internal fun LeagueForm(
-	name: String,
-	nameErrorId: Int?,
-	excludeFromStatistics: ExcludeFromStatistics,
-	includeAdditionalPinFall: IncludeAdditionalPinFall,
-	additionalPinFall: Int,
-	additionalGames: Int,
+fun LeagueForm(
+	state: LeagueFormUiState,
+	onAction: (LeagueFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	recurrence: LeagueRecurrence? = null,
-	numberOfGames: Int? = null,
-	gamesPerSeries: GamesPerSeries? = null,
-	onRecurrenceChanged: ((LeagueRecurrence) -> Unit)? = null,
-	onNumberOfGamesChanged: ((Int) -> Unit)? = null,
-	onGamesPerSeriesChanged: ((GamesPerSeries) -> Unit)? = null,
-	onNameChanged: ((String) -> Unit)? = null,
-	onExcludeFromStatisticsChanged: ((ExcludeFromStatistics) -> Unit)? = null,
-	onIncludeAdditionalPinFallChanged: ((IncludeAdditionalPinFall) -> Unit)? = null,
-	onAdditionalPinFallChanged: ((Int) -> Unit)? = null,
-	onAdditionalGamesChanged: ((Int) -> Unit)? = null,
 ) {
+	if (state.isShowingArchiveDialog) {
+		ArchiveDialog(
+			itemName = state.name,
+			onArchive = { onAction(LeagueFormUiAction.ConfirmArchiveClicked) },
+			onDismiss = { onAction(LeagueFormUiAction.DismissArchiveClicked) },
+		)
+	}
+
 	Column(
 		modifier = modifier
 			.verticalScroll(rememberScrollState())
 			.fillMaxSize(),
-	)
-	{
+	) {
 		FormSection(titleResourceId = R.string.league_form_details_title) {
-			LeagueNameField(name, onNameChanged, nameErrorId)
+			LeagueNameField(
+				name = state.name,
+				onNameChanged = { onAction(LeagueFormUiAction.NameChanged(it)) },
+				errorId = state.nameErrorId,
+			)
 		}
 
-		recurrence?.let {
+		state.recurrence?.let {
 			Divider()
 			FormSection(Modifier.padding(top = 16.dp)) {
-				RecurrencePicker(it, onRecurrenceChanged)
+				RecurrencePicker(
+					recurrence = it,
+					onRecurrenceChanged = { onAction(LeagueFormUiAction.RecurrenceChanged(it)) }
+				)
 			}
 		}
 
-		if (recurrence != null || gamesPerSeries != null) {
+		if (state.recurrence != null || state.gamesPerSeries != null) {
 			Divider()
 
-			when (recurrence) {
+			when (state.recurrence) {
 				LeagueRecurrence.ONCE, null -> Unit
-				LeagueRecurrence.REPEATING -> gamesPerSeries?.let {
+				LeagueRecurrence.REPEATING -> state.gamesPerSeries?.let {
 					FormSection(Modifier.padding(top = 16.dp)) {
-						GamesPerSeriesPicker(it, onGamesPerSeriesChanged)
+						GamesPerSeriesPicker(
+							gamesPerSeries = it,
+							onGamesPerSeriesChanged = { onAction(LeagueFormUiAction.GamesPerSeriesChanged(it)) },
+						)
 					}
 				}
 			}
 
-			when (gamesPerSeries) {
+			when (state.gamesPerSeries) {
 				GamesPerSeries.DYNAMIC, null -> Unit
-				GamesPerSeries.STATIC -> numberOfGames?.let {
+				GamesPerSeries.STATIC -> state.numberOfGames?.let {
 					FormSection(
-						titleResourceId = when (recurrence) {
+						titleResourceId = when (state.recurrence) {
 							LeagueRecurrence.ONCE -> R.string.league_form_property_number_of_games
 							LeagueRecurrence.REPEATING, null -> null
 						},
 						modifier = Modifier.padding(vertical = 16.dp)
 					) {
-						NumberOfGamesSlider(it, onNumberOfGamesChanged)
+						NumberOfGamesSlider(
+							numberOfGames = it,
+							onNumberOfGamesChanged = { onAction(LeagueFormUiAction.NumberOfGamesChanged(it)) },
+						)
 					}
 				}
 			}
 		}
 
 		Divider()
-		IncludeAdditionalPinFallSwitch(includeAdditionalPinFall, onIncludeAdditionalPinFallChanged)
-		when (includeAdditionalPinFall) {
+		IncludeAdditionalPinFallSwitch(
+			includeAdditionalPinFall = state.includeAdditionalPinFall,
+			onIncludeAdditionalPinFallChanged = { onAction(LeagueFormUiAction.IncludeAdditionalPinFallChanged(it)) },
+		)
+
+		when (state.includeAdditionalPinFall) {
 			IncludeAdditionalPinFall.INCLUDE -> {
 				Column(
 					verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -110,8 +115,15 @@ internal fun LeagueForm(
 						.fillMaxWidth()
 						.padding(bottom = 16.dp),
 				) {
-					AdditionalPinFallField(additionalPinFall, onAdditionalPinFallChanged)
-					AdditionalGamesField(additionalGames, onAdditionalGamesChanged)
+					AdditionalPinFallField(
+						additionalPinFall = state.additionalPinFall,
+						onAdditionalPinFallChanged = { onAction(LeagueFormUiAction.AdditionalPinFallChanged(it)) },
+					)
+
+					AdditionalGamesField(
+						additionalGames = state.additionalGames,
+						onAdditionalGamesChanged = { onAction(LeagueFormUiAction.AdditionalGamesChanged(it)) },
+					)
 				}
 			}
 			IncludeAdditionalPinFall.NONE -> Unit
@@ -119,16 +131,23 @@ internal fun LeagueForm(
 
 		Divider()
 		FormSection(Modifier.padding(top = 16.dp)) {
-			ExcludeFromStatisticsPicker(excludeFromStatistics, onExcludeFromStatisticsChanged)
+			ExcludeFromStatisticsPicker(
+				excludeFromStatistics = state.excludeFromStatistics,
+				onExcludeFromStatisticsChanged = { onAction(LeagueFormUiAction.ExcludeFromStatisticsChanged(it)) },
+			)
 		}
 	}
 }
 
 @Composable
-private fun LeagueNameField(name: String, onNameChanged: ((String) -> Unit)?, errorId: Int?) {
+private fun LeagueNameField(
+	name: String,
+	onNameChanged: (String) -> Unit,
+	errorId: Int?
+) {
 	OutlinedTextField(
 		value = name,
-		onValueChange = onNameChanged ?: {},
+		onValueChange = onNameChanged,
 		label = { Text(stringResource(R.string.league_form_property_name)) },
 		singleLine = true,
 		isError = errorId != null,
@@ -157,7 +176,10 @@ private fun LeagueNameField(name: String, onNameChanged: ((String) -> Unit)?, er
 }
 
 @Composable
-private fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged: ((LeagueRecurrence) -> Unit)?) {
+private fun RecurrencePicker(
+	recurrence: LeagueRecurrence,
+	onRecurrenceChanged: (LeagueRecurrence) -> Unit,
+) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_repeat),
 		subtitle = stringResource(
@@ -176,13 +198,16 @@ private fun RecurrencePicker(recurrence: LeagueRecurrence, onRecurrenceChanged: 
 		},
 		onOptionSelected = {
 			it ?: return@FormRadioGroup
-			onRecurrenceChanged?.invoke(it)
+			onRecurrenceChanged(it)
 		}
 	)
 }
 
 @Composable
-private fun ExcludeFromStatisticsPicker(excludeFromStatistics: ExcludeFromStatistics, onExcludeFromStatisticsChanged: ((ExcludeFromStatistics) -> Unit)?) {
+private fun ExcludeFromStatisticsPicker(
+	excludeFromStatistics: ExcludeFromStatistics,
+	onExcludeFromStatisticsChanged: (ExcludeFromStatistics) -> Unit,
+) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_exclude),
 		subtitle = stringResource(R.string.league_form_property_exclude_footer),
@@ -197,13 +222,16 @@ private fun ExcludeFromStatisticsPicker(excludeFromStatistics: ExcludeFromStatis
 		},
 		onOptionSelected = {
 			it ?: return@FormRadioGroup
-			onExcludeFromStatisticsChanged?.invoke(it)
+			onExcludeFromStatisticsChanged(it)
 		}
 	)
 }
 
 @Composable
-private fun GamesPerSeriesPicker(gamesPerSeries: GamesPerSeries, onGamesPerSeriesChanged: ((GamesPerSeries) -> Unit)?) {
+private fun GamesPerSeriesPicker(
+	gamesPerSeries: GamesPerSeries,
+	onGamesPerSeriesChanged: (GamesPerSeries) -> Unit,
+) {
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_number_of_games),
 		subtitle = stringResource(
@@ -222,13 +250,16 @@ private fun GamesPerSeriesPicker(gamesPerSeries: GamesPerSeries, onGamesPerSerie
 		},
 		onOptionSelected = {
 			it ?: return@FormRadioGroup
-			onGamesPerSeriesChanged?.invoke(it)
+			onGamesPerSeriesChanged(it)
 		}
 	)
 }
 
 @Composable
-private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((Int) -> Unit)?) {
+private fun NumberOfGamesSlider(
+	numberOfGames: Int,
+	onNumberOfGamesChanged: (Int) -> Unit,
+) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -240,7 +271,7 @@ private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((In
 			value = numberOfGames.toString(),
 			onValueChange = {
 				val intValue = it.toIntOrNull() ?: 1
-				onNumberOfGamesChanged?.invoke(intValue)
+				onNumberOfGamesChanged(intValue)
 			},
 			label = { Text(stringResource(R.string.league_form_property_number_of_games)) },
 			singleLine = true,
@@ -250,7 +281,7 @@ private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((In
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
 		) {
-			IconButton(onClick = { onNumberOfGamesChanged?.invoke(numberOfGames - 1) }) {
+			IconButton(onClick = { onNumberOfGamesChanged(numberOfGames - 1) }) {
 				Icon(
 					painter = painterResource(RCoreDesign.drawable.ic_minus_circle),
 					contentDescription = stringResource(RCoreDesign.string.cd_decrement),
@@ -258,7 +289,7 @@ private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((In
 				)
 			}
 
-			IconButton(onClick = { onNumberOfGamesChanged?.invoke(numberOfGames + 1) }) {
+			IconButton(onClick = { onNumberOfGamesChanged(numberOfGames + 1) }) {
 				Icon(
 					painter = painterResource(RCoreDesign.drawable.ic_add_circle),
 					contentDescription = stringResource(RCoreDesign.string.cd_increment),
@@ -270,12 +301,15 @@ private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: ((In
 }
 
 @Composable
-private fun IncludeAdditionalPinFallSwitch(includeAdditionalPinFall: IncludeAdditionalPinFall, onIncludeAdditionalPinFallChanged: ((IncludeAdditionalPinFall) -> Unit)?) {
+private fun IncludeAdditionalPinFallSwitch(
+	includeAdditionalPinFall: IncludeAdditionalPinFall,
+	onIncludeAdditionalPinFallChanged: (IncludeAdditionalPinFall) -> Unit,
+) {
 	FormSwitch(
 		titleResourceId = R.string.league_form_property_pinfall,
 		isChecked = includeAdditionalPinFall == IncludeAdditionalPinFall.INCLUDE,
 		onCheckChanged = {
-			onIncludeAdditionalPinFallChanged?.invoke(if (it) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE)
+			onIncludeAdditionalPinFallChanged(if (it) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE)
 		},
 		modifier = Modifier
 			.fillMaxWidth()
@@ -284,12 +318,15 @@ private fun IncludeAdditionalPinFallSwitch(includeAdditionalPinFall: IncludeAddi
 }
 
 @Composable
-private fun AdditionalPinFallField(additionalPinFall: Int, onAdditionalPinFallChanged: ((Int) -> Unit)?) {
+private fun AdditionalPinFallField(
+	additionalPinFall: Int,
+	onAdditionalPinFallChanged: (Int) -> Unit,
+) {
 	OutlinedTextField(
 		value = additionalPinFall.toString(),
 		onValueChange = {
 			val intValue = it.toIntOrNull() ?: 0
-			onAdditionalPinFallChanged?.invoke(intValue)
+			onAdditionalPinFallChanged(intValue)
 		},
 		label = { Text(stringResource(R.string.league_form_property_pinfall_additional_pinfall)) },
 		singleLine = true,
@@ -300,12 +337,15 @@ private fun AdditionalPinFallField(additionalPinFall: Int, onAdditionalPinFallCh
 }
 
 @Composable
-private fun AdditionalGamesField(additionalGames: Int, onAdditionalGamesChanged: ((Int) -> Unit)?) {
+private fun AdditionalGamesField(
+	additionalGames: Int,
+	onAdditionalGamesChanged: (Int) -> Unit,
+) {
 	OutlinedTextField(
 		value = additionalGames.toString(),
 		onValueChange = {
 			val intValue = it.toIntOrNull() ?: 0
-			onAdditionalGamesChanged?.invoke(intValue)
+			onAdditionalGamesChanged(intValue)
 		},
 		label = { Text(stringResource(R.string.league_form_property_pinfall_additional_games)) },
 		singleLine = true,
@@ -313,22 +353,4 @@ private fun AdditionalGamesField(additionalGames: Int, onAdditionalGamesChanged:
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp)
 	)
-}
-
-@Preview
-@Composable
-private fun LeagueFormPreview() {
-	Surface {
-		LeagueForm(
-			name = "Majors 2022/2023",
-			nameErrorId = null,
-			excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-			includeAdditionalPinFall = IncludeAdditionalPinFall.INCLUDE,
-			numberOfGames = 4,
-			additionalPinFall = 860,
-			additionalGames = 4,
-			recurrence = LeagueRecurrence.REPEATING,
-			gamesPerSeries = GamesPerSeries.STATIC,
-		)
-	}
 }

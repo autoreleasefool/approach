@@ -4,9 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
+import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
-import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
@@ -76,10 +76,10 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 	abstract fun getArchivedLeagues(): Flow<List<ArchivedLeague>>
 
 	@Insert(entity = LeagueEntity::class)
-	abstract fun insertLeague(league: LeagueCreate)
+	abstract fun insertLeague(league: LeagueCreateEntity)
 
 	@Update(entity = LeagueEntity::class)
-	abstract fun updateLeague(league: LeagueUpdate)
+	abstract fun updateLeague(league: LeagueUpdateEntity)
 
 	@Query("DELETE FROM leagues WHERE id = :leagueId")
 	abstract fun deleteLeague(leagueId: UUID)

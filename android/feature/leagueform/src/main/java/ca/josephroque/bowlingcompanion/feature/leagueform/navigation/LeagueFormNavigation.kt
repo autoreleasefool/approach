@@ -38,7 +38,6 @@ fun NavGraphBuilder.leagueFormScreen(
 		),
 	) {
 		LeagueFormRoute(
-			onBackPressed = onBackPressed,
 			onDismiss = onBackPressed,
 		)
 	}
@@ -49,7 +48,6 @@ fun NavGraphBuilder.leagueFormScreen(
 		),
 	) {
 		LeagueFormRoute(
-			onBackPressed = onBackPressed,
 			onDismiss = onBackPressed,
 		)
 	}

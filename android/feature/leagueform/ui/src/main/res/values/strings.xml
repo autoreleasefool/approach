@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="league_form_title_new">New League</string>
+	<string name="league_form_title_edit">Edit %1$s</string>
+
+	<string name="league_form_details_title">Details</string>
+
+	<string name="league_form_property_name">Name</string>
+	<string name="league_form_property_name_missing">Name cannot be blank</string>
+
+	<string name="league_form_property_repeat">Repeat?</string>
+	<string name="league_form_property_repeat_repeats">Repeats</string>
+	<string name="league_form_property_repeat_never">Never</string>
+	<string name="league_form_property_repeat_footer">Choose \'%1$s\' for leagues that happen semi-frequently, such as once a week, or choose \'%2$s\' for tournaments and one-off events.</string>
+
+	<string name="league_form_property_exclude">Exclude from statistics?</string>
+	<string name="league_form_property_exclude_exclude">Exclude</string>
+	<string name="league_form_property_exclude_include">Include</string>
+	<string name="league_form_property_exclude_footer">This league and all of its games will not count towards any statistics. They will still appear in the app, but won\'t affect your overall average or other statistics.</string>
+
+	<string name="league_form_property_number_of_games">Number of games</string>
+	<string name="league_form_property_number_of_games_constant">Constant</string>
+	<string name="league_form_property_number_of_games_always_ask">Always ask me</string>
+	<string name="league_form_property_number_of_games_footer">Choose \'%1$s\' if you always play the same number of games each series, or \'%2$s\' to choose to number of games each time you bowl.</string>
+
+	<string name="league_form_property_pinfall">Include additional pinfall?</string>
+	<string name="league_form_property_pinfall_footer">If you\'re starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average determined by your league.</string>
+	<string name="league_form_property_pinfall_additional_pinfall">Additional pinfall</string>
+	<string name="league_form_property_pinfall_additional_games">Games played</string>
+	<string name="league_form_property_pinfall_calculated_average">Calculated average</string>
+</resources>

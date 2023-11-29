@@ -117,7 +117,7 @@ private fun AlleyNameField(name: String, onNameChanged: ((String) -> Unit)?, err
 	OutlinedTextField(
 		value = name,
 		onValueChange = onNameChanged ?: {},
-		label = { Text(stringResource(R.string.league_form_property_name)) },
+		label = { Text(stringResource(R.string.alley_form_property_name)) },
 		singleLine = true,
 		isError = errorId != null,
 		supportingText = {

@@ -40,6 +40,25 @@ data class ArchivedLeague(
 	val archivedOn: Instant,
 )
 
+data class LeagueCreate(
+	val bowlerId: UUID,
+	val id: UUID,
+	val name: String,
+	val recurrence: LeagueRecurrence,
+	val numberOfGames: Int?,
+	val additionalPinFall: Int?,
+	val additionalGames: Int?,
+	val excludeFromStatistics: ExcludeFromStatistics,
+)
+
+data class LeagueUpdate(
+	val id: UUID,
+	val name: String,
+	val additionalPinFall: Int?,
+	val additionalGames: Int?,
+	val excludeFromStatistics: ExcludeFromStatistics,
+)
+
 enum class LeagueRecurrence {
 	REPEATING,
 	ONCE,

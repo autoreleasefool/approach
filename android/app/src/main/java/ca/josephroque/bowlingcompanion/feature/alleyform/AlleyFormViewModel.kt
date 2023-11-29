@@ -200,7 +200,7 @@ sealed interface AlleyFormUiState {
 
 		fun fieldErrors(): AlleyFormFieldErrors =
 			AlleyFormFieldErrors(
-				nameErrorId = if (properties.name.isBlank()) R.string.league_form_property_name_missing else null
+				nameErrorId = if (properties.name.isBlank()) R.string.alley_form_property_name_missing else null
 			)
 	}
 
@@ -215,7 +215,7 @@ sealed interface AlleyFormUiState {
 
 		fun fieldErrors(): AlleyFormFieldErrors =
 			AlleyFormFieldErrors(
-				nameErrorId = if (properties.name.isBlank()) R.string.league_form_property_name_missing else null
+				nameErrorId = if (properties.name.isBlank()) R.string.alley_form_property_name_missing else null
 			)
 	}
 }

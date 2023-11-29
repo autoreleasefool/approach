@@ -144,33 +144,35 @@ class BowlerFormViewModel @Inject constructor(
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
 				BowlerFormScreenUiState.Loading -> Unit
-				is BowlerFormScreenUiState.Create -> if (state.isSavable()) {
-					val bowler = BowlerCreate(
-						id = bowlerId ?: UUID.randomUUID(),
-						name = state.form.name,
-						kind = kind ?: BowlerKind.PLAYABLE,
-					)
+				is BowlerFormScreenUiState.Create ->
+					if (state.isSavable()) {
+						val bowler = BowlerCreate(
+							id = bowlerId ?: UUID.randomUUID(),
+							name = state.form.name,
+							kind = kind ?: BowlerKind.PLAYABLE,
+						)
 
-					bowlersRepository.insertBowler(bowler)
-					sendEvent(BowlerFormScreenEvent.Dismissed)
-				} else {
-					_uiState.value = state.copy(
-						form = state.form.copy(
-							nameErrorId = if (state.form.name.isBlank()) R.string.bowler_form_name_missing else null
+						bowlersRepository.insertBowler(bowler)
+						sendEvent(BowlerFormScreenEvent.Dismissed)
+					} else {
+						_uiState.value = state.copy(
+							form = state.form.copy(
+								nameErrorId = if (state.form.name.isBlank()) R.string.bowler_form_name_missing else null
+							)
 						)
-					)
-				}
-				is BowlerFormScreenUiState.Edit -> if (state.isSavable()) {
-					val bowler = state.form.update(id = state.initialValue.id)
-					bowlersRepository.updateBowler(bowler)
-					sendEvent(BowlerFormScreenEvent.Dismissed)
-				} else {
-					_uiState.value = state.copy(
-						form = state.form.copy(
-							nameErrorId = if (state.form.name.isBlank()) R.string.bowler_form_name_missing else null
+					}
+				is BowlerFormScreenUiState.Edit ->
+					if (state.isSavable()) {
+						val bowler = state.form.update(id = state.initialValue.id)
+						bowlersRepository.updateBowler(bowler)
+						sendEvent(BowlerFormScreenEvent.Dismissed)
+					} else {
+						_uiState.value = state.copy(
+							form = state.form.copy(
+								nameErrorId = if (state.form.name.isBlank()) R.string.bowler_form_name_missing else null
+							)
 						)
-					)
-				}
+					}
 			}
 		}
 	}

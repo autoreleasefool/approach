@@ -3,11 +3,12 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
-import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreate
-import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
+import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -29,11 +30,11 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 		leagueDao.getArchivedLeagues()
 
 	override suspend fun insertLeague(league: LeagueCreate) = withContext(ioDispatcher) {
-		leagueDao.insertLeague(league)
+		leagueDao.insertLeague(league.asEntity())
 	}
 
 	override suspend fun updateLeague(league: LeagueUpdate) = withContext(ioDispatcher) {
-		leagueDao.updateLeague(league)
+		leagueDao.updateLeague(league.asEntity())
 	}
 
 	override suspend fun deleteLeague(id: UUID) = withContext(ioDispatcher) {
