@@ -23,13 +23,13 @@ extension GamesEditor {
 				guard let game, state.currentGameId == game.id else { return .none }
 				state.game = game
 				state.hideNextHeaderIfNecessary()
-				return save(game: state.game)
+				return save(game: state.game, in: state)
 
 			case .didClearManualScore:
 				state.hideNextHeaderIfNecessary()
 				state.game?.scoringMethod = .byFrame
 				state.game?.score = state.score?.frames.gameScore() ?? 0
-				return save(game: state.game)
+				return save(game: state.game, in: state)
 
 			case .didSelectLanes:
 				let hasOtherGames = Set(state.bowlerGameIds.flatMap { $0.value }).count > 1
@@ -91,7 +91,7 @@ extension GamesEditor {
 	func lockGameIfFinished(in state: inout State) -> Effect<Action> {
 		if Frame.isLast(state.currentFrameIndex) && Frame.isLastRoll(state.currentRollIndex) {
 			state.game?.locked = .locked
-			return save(game: state.game)
+			return save(game: state.game, in: state)
 		}
 
 		return .none

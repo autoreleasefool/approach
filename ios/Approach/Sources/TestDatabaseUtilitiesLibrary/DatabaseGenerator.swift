@@ -145,6 +145,7 @@ private func generateGames(forSeries: [(Series.Database, numberOfGames: Int)]) -
 				locked: .locked,
 				scoringMethod: .byFrame,
 				excludeFromStatistics: .include,
+				duration: 0,
 				archivedOn: nil
 			)
 		}

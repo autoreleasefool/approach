@@ -11,6 +11,7 @@ extension Game {
 		public var locked: Lock
 		public var scoringMethod: ScoringMethod
 		public var excludeFromStatistics: ExcludeFromStatistics
+		public var duration: TimeInterval
 		public var archivedOn: Date?
 
 		public init(
@@ -21,6 +22,7 @@ extension Game {
 			locked: Lock,
 			scoringMethod: ScoringMethod,
 			excludeFromStatistics: ExcludeFromStatistics,
+			duration: TimeInterval,
 			archivedOn: Date?
 		) {
 			self.seriesId = seriesId
@@ -30,6 +32,7 @@ extension Game {
 			self.locked = locked
 			self.scoringMethod = scoringMethod
 			self.excludeFromStatistics = excludeFromStatistics
+			self.duration = duration
 			self.archivedOn = archivedOn
 		}
 	}
@@ -52,6 +55,7 @@ extension Game.Database {
 		public static let locked = Column(CodingKeys.locked)
 		public static let scoringMethod = Column(CodingKeys.scoringMethod)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
+		public static let duration = Column(CodingKeys.duration)
 		public static let archivedOn = Column(CodingKeys.archivedOn)
 	}
 }

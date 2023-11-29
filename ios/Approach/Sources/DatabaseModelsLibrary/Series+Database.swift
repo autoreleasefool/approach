@@ -98,6 +98,7 @@ extension Series {
 				locked: .open,
 				scoringMethod: .byFrame,
 				excludeFromStatistics: .init(from: excludeFromStatistics),
+				duration: 0,
 				archivedOn: nil
 			)
 			try game.insert(db)

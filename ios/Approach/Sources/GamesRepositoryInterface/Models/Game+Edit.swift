@@ -15,6 +15,7 @@ extension Game {
 		public var locked: Game.Lock
 		public var scoringMethod: Game.ScoringMethod
 		public var excludeFromStatistics: Game.ExcludeFromStatistics
+		public var duration: TimeInterval
 		public var matchPlay: MatchPlay.Edit?
 		public var gear: IdentifiedArrayOf<Gear.Summary>
 		public var lanes: IdentifiedArrayOf<Lane.Summary>
@@ -25,6 +26,7 @@ extension Game {
 			score: Int,
 			locked: Game.Lock,
 			scoringMethod: Game.ScoringMethod,
+			duration: TimeInterval,
 			excludeFromStatistics: Game.ExcludeFromStatistics,
 			matchPlay: MatchPlay.Edit?,
 			gear: IdentifiedArrayOf<Gear.Summary>,
@@ -37,6 +39,7 @@ extension Game {
 			self.index = index
 			self.score = score
 			self.locked = locked
+			self.duration = duration
 			self.scoringMethod = scoringMethod
 			self.excludeFromStatistics = excludeFromStatistics
 			self.matchPlay = matchPlay
