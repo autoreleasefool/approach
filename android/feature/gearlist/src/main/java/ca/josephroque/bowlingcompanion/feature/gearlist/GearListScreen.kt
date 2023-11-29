@@ -23,6 +23,7 @@ internal fun GearListRoute(
 	onBackPressed: () -> Unit,
 	onEditGear: (UUID) -> Unit,
 	onAddGear: () -> Unit,
+	onShowGearDetails: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GearListViewModel = hiltViewModel(),
 ) {

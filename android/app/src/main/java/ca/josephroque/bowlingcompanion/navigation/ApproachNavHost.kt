@@ -205,6 +205,7 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 			onEditGear = navController::navigateToGearForm,
 			onAddGear = navController::navigateToNewGearForm,
+			onShowGearDetails = { /* TODO: onShowGearDetails */ },
 		)
 		avatarFormScreen(
 			onDismissWithResult = navController::popBackStackWithResult,

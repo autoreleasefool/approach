@@ -49,8 +49,6 @@ fun GearList(
 				onGearClick = { onAction(GearListUiAction.GearClicked(it.id)) },
 				onGearDelete = { onAction(GearListUiAction.GearDeleted(it)) },
 				onGearEdit = { onAction(GearListUiAction.GearEdited(it.id)) },
-				isDeleteEnabled = true,
-				isEditEnabled = true,
 			)
 		}
 	}
@@ -59,30 +57,32 @@ fun GearList(
 fun LazyListScope.gearList(
 	list: List<GearListItem>,
 	onGearClick: (GearListItem) -> Unit,
-	onGearDelete: (GearListItem) -> Unit = {},
-	onGearEdit: (GearListItem) -> Unit = {},
-	isDeleteEnabled: Boolean = false,
-	isEditEnabled: Boolean = false,
+	onGearDelete: ((GearListItem) -> Unit)? = null,
+	onGearEdit: ((GearListItem) -> Unit)? = null,
 ) {
 	items(
 		items = list,
 		key = { it.id },
 	) { gear ->
-		val deleteAction = SwipeAction(
-			icon = rememberVectorPainter(Icons.Filled.Delete),
-			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
-			onSwipe = { onGearDelete(gear) },
-		)
+		val deleteAction = onGearDelete?.let {
+			SwipeAction(
+				icon = rememberVectorPainter(Icons.Filled.Delete),
+				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+				onSwipe = { it(gear) },
+			)
+		}
 
-		val editAction = SwipeAction(
-			icon = rememberVectorPainter(Icons.Default.Edit),
-			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
-			onSwipe = { onGearEdit(gear) },
-		)
+		val editAction = onGearEdit?.let {
+			SwipeAction(
+				icon = rememberVectorPainter(Icons.Default.Edit),
+				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
+				onSwipe = { it(gear) },
+			)
+		}
 
 		SwipeableActionsBox(
-			startActions = if (isDeleteEnabled) listOf(deleteAction) else emptyList(),
-			endActions = if (isEditEnabled) listOf(editAction) else emptyList(),
+			startActions = listOfNotNull(deleteAction),
+			endActions = listOfNotNull(editAction),
 		) {
 			GearItemRow(
 				gear = gear,

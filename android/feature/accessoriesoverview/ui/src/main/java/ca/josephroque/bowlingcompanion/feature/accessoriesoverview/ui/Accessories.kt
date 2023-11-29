@@ -19,7 +19,7 @@ import java.util.UUID
 fun Accessories(
 	modifier: Modifier = Modifier,
 	accessoriesState: AccessoriesUiState,
-	alleysListState: AlleysListUiState,
+	alleysListState: AlleysListUiState?,
 	gearListState: GearListUiState?,
 	onViewAllAlleys: () -> Unit,
 	onViewAllGear: () -> Unit,
@@ -35,40 +35,23 @@ fun Accessories(
 			)
 		)
 
-		when (alleysListState) {
-			AlleysListUiState.Loading -> Unit
-			is AlleysListUiState.Success -> {
+		if (alleysListState != null) {
+			if (alleysListState.list.isEmpty()) {
+				footer(R.string.accessory_list_alley_empty)
+			} else {
+				alleysList(
+					list = alleysListState.list,
+					onAlleyClick = {  onShowAlleyDetails(it.id) },
+				)
+
 				item {
 					if (alleysListState.list.size > accessoriesState.alleysItemLimit) {
 						ListSectionFooter(
-							footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.alleysItemLimit)
-						)
-					}
-				}
-			}
-		}
-
-
-		when (alleysListState) {
-			AlleysListUiState.Loading -> Unit
-			is AlleysListUiState.Success -> {
-				if (alleysListState.list.isEmpty()) {
-					footer(R.string.accessory_list_alley_empty)
-				} else {
-					alleysList(
-						alleysListState = alleysListState,
-						onAlleyClick = onShowAlleyDetails,
-					)
-
-					item {
-						if (alleysListState.list.size > accessoriesState.alleysItemLimit) {
-							ListSectionFooter(
-								footer = stringResource(
-									R.string.accessory_list_x_most_recent,
-									accessoriesState.alleysItemLimit
-								)
+							footer = stringResource(
+								R.string.accessory_list_x_most_recent,
+								accessoriesState.alleysItemLimit
 							)
-						}
+						)
 					}
 				}
 			}

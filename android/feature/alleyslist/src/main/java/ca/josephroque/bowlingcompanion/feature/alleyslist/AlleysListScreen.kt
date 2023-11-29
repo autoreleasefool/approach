@@ -1,17 +1,20 @@
 package ca.josephroque.bowlingcompanion.feature.alleyslist
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysList
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListTopBar
-import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
-import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -23,39 +26,50 @@ internal fun AlleysListRoute(
 	modifier: Modifier = Modifier,
 	viewModel: AlleysListViewModel = hiltViewModel(),
 ) {
-	val alleysListState by viewModel.alleysListState.collectAsStateWithLifecycle()
+	val alleysListScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	val lifecycleOwner = LocalLifecycleOwner.current
+	LaunchedEffect(Unit) {
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						AlleysListScreenEvent.Dismissed -> onBackPressed()
+						AlleysListScreenEvent.NavigateToAddAlley -> onAddAlley()
+						is AlleysListScreenEvent.NavigateToEditAlley -> onEditAlley(it.id)
+					}
+				}
+		}
+	}
 
 	AlleysListScreen(
-		alleysListState = alleysListState,
-		onBackPressed = onBackPressed,
-		onAddAlley = onAddAlley,
-		onAlleyClick = onShowAlleyDetails,
+		state = alleysListScreenState,
+		onAction = viewModel::handleAction,
 		modifier = modifier,
 	)
 }
 
 @Composable
 private fun AlleysListScreen(
-	alleysListState: AlleysListUiState,
-	onBackPressed: () -> Unit,
-	onAlleyClick: (UUID) -> Unit,
-	onAddAlley: () -> Unit,
+	state: AlleysListScreenUiState,
+	onAction: (AlleysListScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Scaffold(
 		topBar = {
-			AlleysListTopBar(onAddAlley = onAddAlley, onBackPressed = onBackPressed)
+			AlleysListTopBar(onAction = { onAction(AlleysListScreenUiAction.AlleysList(it)) })
 		}
 	) { padding ->
-		LazyColumn(
-			modifier = modifier
-				.fillMaxSize()
-				.padding(padding),
-		) {
-			alleysList(
-				alleysListState = alleysListState,
-				onAlleyClick = onAlleyClick,
-			)
+		when (state) {
+			AlleysListScreenUiState.Loading -> Unit
+			is AlleysListScreenUiState.Loaded -> {
+				AlleysList(
+					state = state.alleysList,
+					onAction = { onAction(AlleysListScreenUiAction.AlleysList(it)) },
+					modifier = modifier.padding(padding),
+				)
+			}
 		}
 	}
 }

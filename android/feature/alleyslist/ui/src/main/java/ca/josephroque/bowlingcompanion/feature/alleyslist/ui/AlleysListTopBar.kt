@@ -17,8 +17,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlleysListTopBar(
-	onBackPressed: () -> Unit,
-	onAddAlley: () -> Unit,
+	onAction: (AlleysListUiAction) -> Unit,
 ) {
 	TopAppBar(
 		colors = TopAppBarDefaults.topAppBarColors(),
@@ -30,9 +29,11 @@ fun AlleysListTopBar(
 				overflow = TextOverflow.Ellipsis,
 			)
 		},
-		navigationIcon = { BackButton(onClick = onBackPressed) },
+		navigationIcon = {
+			BackButton(onClick = { onAction(AlleysListUiAction.BackClicked) })
+		},
 		actions = {
-			IconButton(onClick = onAddAlley) {
+			IconButton(onClick = { onAction(AlleysListUiAction.AddAlleyClicked) }) {
 				Icon(
 					imageVector = Icons.Filled.Add,
 					contentDescription = stringResource(R.string.alley_list_add),

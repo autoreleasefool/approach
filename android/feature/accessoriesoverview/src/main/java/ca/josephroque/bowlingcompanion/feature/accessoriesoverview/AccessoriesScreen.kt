@@ -54,7 +54,7 @@ internal fun AccessoriesRoute(
 @Composable
 internal fun AccessoriesScreen(
 	accessoriesState: AccessoriesUiState,
-	alleysListState: AlleysListUiState,
+	alleysListState: AlleysListUiState?,
 	gearListState: GearListUiState?,
 	onAddAccessory: () -> Unit,
 	onMinimizeAddAccessoryMenu: () -> Unit,

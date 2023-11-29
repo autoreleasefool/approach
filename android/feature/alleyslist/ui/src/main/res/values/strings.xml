@@ -2,4 +2,7 @@
 <resources>
 	<string name="alley_list_title">Alleys</string>
 	<string name="alley_list_add">Add Alley</string>
+
+	<string name="alleys_list_empty_title">No alleys found</string>
+	<string name="alleys_list_empty_message">You haven\'t added any alleys yet. Compare how you bowl across alleys, or even across lanes.</string>
 </resources>

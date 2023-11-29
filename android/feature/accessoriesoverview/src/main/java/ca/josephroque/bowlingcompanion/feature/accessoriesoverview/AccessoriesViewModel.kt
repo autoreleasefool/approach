@@ -28,13 +28,14 @@ class AccessoriesViewModel @Inject constructor(
 	val uiState: StateFlow<AccessoriesUiState> =
 		_uiState.asStateFlow()
 
-	val alleysListState: StateFlow<AlleysListUiState> =
+	// TODO: Refactor to AccessoriesScreenUiState, remove optional
+	val alleysListState: StateFlow<AlleysListUiState?> =
 		alleysRepository.getRecentAlleysList(limit = alleysListItemLimit)
-			.map(AlleysListUiState::Success)
+			.map { AlleysListUiState(it, alleyToDelete = null) }
 			.stateIn(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(5_000),
-				initialValue = AlleysListUiState.Loading,
+				initialValue = null,
 			)
 
 	// TODO: Refactor to AccessoriesScreenUiState, remove optional

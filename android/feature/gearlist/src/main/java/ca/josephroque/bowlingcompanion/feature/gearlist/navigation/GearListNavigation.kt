@@ -17,6 +17,7 @@ fun NavGraphBuilder.gearListScreen(
 	onBackPressed: () -> Unit,
 	onEditGear: (UUID) -> Unit,
 	onAddGear: () -> Unit,
+	onShowGearDetails: (UUID) -> Unit,
 ) {
 	composable(
 		route = gearListNavigationRoute,
@@ -25,6 +26,7 @@ fun NavGraphBuilder.gearListScreen(
 			onBackPressed = onBackPressed,
 			onEditGear = onEditGear,
 			onAddGear = onAddGear,
+			onShowGearDetails = onShowGearDetails,
 		)
 	}
 }
