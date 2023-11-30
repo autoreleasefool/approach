@@ -1,3 +1,4 @@
+import AnnouncementsFeature
 import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
@@ -62,6 +63,7 @@ public struct BowlersListView: View {
 			.onAppear { viewStore.send(.onAppear) }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.announcements(store: store.scope(state: \.announcements, action: { .internal(.announcements($0)) }))
 		.bowlerEditor(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
 		.sortOrder(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
 		.seriesEditor(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))

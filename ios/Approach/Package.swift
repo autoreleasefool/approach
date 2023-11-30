@@ -14,6 +14,7 @@ let package = Package(
 		.library(name: "AddressLookupFeature", targets: ["AddressLookupFeature"]),
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
+		.library(name: "AnnouncementsFeature", targets: ["AnnouncementsFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "ArchiveListFeature", targets: ["ArchiveListFeature"]),
 		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
@@ -238,6 +239,24 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "AnnouncementsFeature",
+			dependencies: [
+				"AnalyticsServiceInterface",
+				"FeatureActionLibrary",
+				"LoggingServiceInterface",
+				"PreferenceServiceInterface",
+				"SwiftUIExtensionsLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AnnouncementsFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AnnouncementsFeature",
+			]
+		),
+		.target(
 			name: "AppFeature",
 			dependencies: [
 				"AccessoriesOverviewFeature",
@@ -309,6 +328,7 @@ let package = Package(
 		.target(
 			name: "BowlersListFeature",
 			dependencies: [
+				"AnnouncementsFeature",
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
 				"QuickLaunchRepositoryInterface",

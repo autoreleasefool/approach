@@ -661,6 +661,11 @@
 "list..averages.showAverages" = "Show averages";
 "list.averages.allBowlers" = "All bowlers";
 
+/* Announcements */
+"announcement.christmas2023.title" = "Happy Holidays!";
+"announcement.christmas2023.message" = "A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!";
+"announcement.christmas2023.openSettings" = "Open Settings";
+
 /* Errors */
 
 "error.generic.title" = "Something went wrong!";

@@ -204,6 +204,16 @@ public enum Strings {
       public static let bowlingAlley = Strings.tr("Localizable", "alley.title.bowlingAlley", fallback: "Bowling Alley")
     }
   }
+  public enum Announcement {
+    public enum Christmas2023 {
+      /// Happy Holidays! A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!
+      public static let message = Strings.tr("Localizable", "announcement.christmas2023.message", fallback: "Happy Holidays! A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!")
+      /// Open Settings
+      public static let openSettings = Strings.tr("Localizable", "announcement.christmas2023.openSettings", fallback: "Open Settings")
+      /// Announcements
+      public static let title = Strings.tr("Localizable", "announcement.christmas2023.title", fallback: "New Icon Available")
+    }
+  }
   public enum App {
     /// App
     public static let name = Strings.tr("Localizable", "app.name", fallback: "Approach")

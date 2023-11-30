@@ -100,6 +100,10 @@ public struct TabbedContent: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .bowlersList(.internal(.announcements(.internal(.christmas(.presented(.delegate(.openAppIconSettings))))))):
+					state.selectedTab = .settings
+					return state.settings.showAppIconList().map { .internal(.settings($0)) }
+
 				case let .didChangeTabs(tabs):
 					state.tabs = tabs
 					return .none

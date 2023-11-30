@@ -20,6 +20,7 @@ public protocol GameSessionTrackableEvent: TrackableEvent {
 
 extension Analytics {
 	public enum Alley {}
+	public enum Announcement {}
 	public enum App {}
 	public enum Bowler {}
 	public enum Feature {}

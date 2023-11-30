@@ -1,4 +1,5 @@
 import AnalyticsServiceInterface
+import AnnouncementsFeature
 import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
@@ -44,6 +45,7 @@ public struct BowlersList: Reducer {
 		public var quickLaunch: QuickLaunchSource?
 
 		public var errors: Errors<ErrorID>.State = .init()
+		public var announcements: Announcements.State = .init()
 
 		@PresentationState public var destination: Destination.State?
 
@@ -100,6 +102,7 @@ public struct BowlersList: Reducer {
 			case widgets(StatisticsWidgetLayout.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
+			case announcements(Announcements.Action)
 		}
 
 		case view(ViewAction)
@@ -171,6 +174,10 @@ public struct BowlersList: Reducer {
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
 			Errors()
+		}
+
+		Scope(state: \.announcements, action: /Action.internal..Action.InternalAction.announcements) {
+			Announcements()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -258,6 +265,12 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
+				case let .announcements(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
@@ -327,6 +340,9 @@ public struct BowlersList: Reducer {
 					return .none
 
 				case .errors(.view), .errors(.internal):
+					return .none
+
+				case .announcements(.view), .announcements(.internal):
 					return .none
 
 				case .destination(.dismiss),

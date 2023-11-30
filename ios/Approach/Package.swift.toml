@@ -28,6 +28,10 @@ features = [ "AlleyEditor" ]
 services = [ "FeatureFlags" ]
 libraries = [ "ResourceList" ]
 
+[features.Announcements]
+services = [ "Preference" ]
+libraries = [ "SwiftUIExtensions", "Views" ]
+
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "AppInfo" ]
@@ -46,7 +50,7 @@ features = [ "Form" ]
 repositories = [ "Bowlers" ]
 
 [features.BowlersList]
-features = [ "BowlerEditor", "LeaguesList" ]
+features = [ "Announcements", "BowlerEditor", "LeaguesList" ]
 repositories = [ "QuickLaunch" ]
 
 [features.Errors]

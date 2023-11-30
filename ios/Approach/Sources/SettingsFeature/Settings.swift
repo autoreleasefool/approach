@@ -28,6 +28,11 @@ public struct Settings: Reducer {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 		}
+
+		public mutating func showAppIconList() -> Effect<Settings.Action> {
+			self.destination = .appIcon(.init())
+			return .none
+		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
