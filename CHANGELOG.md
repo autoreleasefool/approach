@@ -1,11 +1,10 @@
 # Most recent version
 
-## iOS 1.3.0b17
+## iOS 1.3.1b18
 
 ```
-- Feat: Quick Play button to create a new series in last played game
-- Chore: Set up breadcrumbs for Sentry
-- Chore: Prompt for app reviews after certain conditions met
+- Feat: Track game duration
+- Feat: Add Christmas icon
 ```
 
 ## Android v3.2.0
@@ -21,6 +20,14 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.3.0b17
+
+```
+- Feat: Quick Play button to create a new series in last played game
+- Chore: Set up breadcrumbs for Sentry
+- Chore: Prompt for app reviews after certain conditions met
+```
 
 ## iOS 1.2.2b16
 
