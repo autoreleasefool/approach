@@ -629,9 +629,11 @@
 "app.tabs.statistics" = "Statistics";
 "tab" = "Tab";
 "app.icon.category.pride" = "Pride";
+"app.icon.category.seasonal" = "Seasonal";
 "app.icon.category.standard" = "Standard";
 "app.icon.primary" = "Primary";
 "app.icon.bisexual" = "Bisexual Pride";
+"app.icon.christmas" = "Christmas";
 "app.icon.pride" = "Pride";
 "app.icon.trans" = "Trans Pride";
 "app.icon.current" = "Current icon";

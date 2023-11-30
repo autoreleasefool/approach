@@ -210,6 +210,8 @@ public enum Strings {
     public enum Icon {
       /// Bisexual Pride
       public static let bisexual = Strings.tr("Localizable", "app.icon.bisexual", fallback: "Bisexual Pride")
+      /// Christmas
+      public static let christmas = Strings.tr("Localizable", "app.icon.christmas", fallback: "Christmas")
       /// Current icon
       public static let current = Strings.tr("Localizable", "app.icon.current", fallback: "Current icon")
       /// Pride
@@ -223,6 +225,8 @@ public enum Strings {
       public enum Category {
         /// Pride
         public static let pride = Strings.tr("Localizable", "app.icon.category.pride", fallback: "Pride")
+        /// Seasonal
+        public static let seasonal = Strings.tr("Localizable", "app.icon.category.seasonal", fallback: "Seasonal")
         /// Standard
         public static let standard = Strings.tr("Localizable", "app.icon.category.standard", fallback: "Standard")
       }

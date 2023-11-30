@@ -1,5 +1,6 @@
 public enum AppIcon: String, CaseIterable, Identifiable {
 	case primary = "AppIcon"
+	case christmas = "AppIcon-Christmas"
 	case bisexual = "AppIcon-Bisexual"
 	case pride = "AppIcon-Pride"
 	case trans = "AppIcon-Trans"
@@ -9,6 +10,7 @@ public enum AppIcon: String, CaseIterable, Identifiable {
 	public var category: Category {
 		switch self {
 		case .primary: return .standard
+		case .christmas: return .seasonal
 		case .bisexual, .pride, .trans: return .pride
 		}
 	}
@@ -17,6 +19,7 @@ public enum AppIcon: String, CaseIterable, Identifiable {
 extension AppIcon {
 	public enum Category: Int, CaseIterable, Identifiable {
 		case standard
+		case seasonal
 		case pride
 
 		public var id: Int { rawValue }
