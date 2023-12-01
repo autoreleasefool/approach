@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.core.model.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import ca.josephroque.bowlingcompanion.core.common.utils.format
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ui.R

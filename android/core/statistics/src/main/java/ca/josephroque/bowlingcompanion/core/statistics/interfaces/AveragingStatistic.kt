@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.statistics.interfaces
 
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.utils.formatAsAverage
 
 interface AveragingStatistic: Statistic {
 	var total: Int
@@ -16,7 +17,7 @@ interface AveragingStatistic: Statistic {
 		get() = if (divisor == 0) 0.0 else total.toDouble() / divisor.toDouble()
 
 	override val formattedValue: String
-		get() = if (average == 0.0) "-" else String.format("%.1f", average)
+		get() = average.formatAsAverage
 
 	override val isEmpty: Boolean
 		get() = divisor == 0
