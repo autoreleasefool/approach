@@ -9,7 +9,7 @@ val TrackableFrame.firstRolls: List<TrackableFrame.Roll>
 	get() {
 		val firstRoll = rolls.firstOrNull() ?: return emptyList()
 		return if (Frame.isLastFrame(index)) {
-			val firstRolls = mutableListOf<TrackableFrame.Roll>()
+			val firstRolls = mutableListOf(firstRoll)
 			var pinsDowned = mutableSetOf<Pin>()
 			rolls.withIndex().forEach { (index, roll) ->
 				pinsDowned += roll.pinsDowned
