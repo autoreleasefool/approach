@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.trackable.utils
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.AveragingStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.HighestOfStatistic
+import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
 import kotlin.test.assertEquals
 
 fun <S: CountingStatistic> assertCounting(
@@ -30,9 +31,24 @@ fun <S: AveragingStatistic> assertAveraging(
 	formattedAs: String,
 ) {
 	val average = if (divisor == 0) 0.0 else total.toDouble() / divisor.toDouble()
-	assertEquals(statistic.total, total)
-	assertEquals(statistic.divisor, divisor)
-	assertEquals(statistic.isEmpty, divisor == 0)
+	assertEquals(total, statistic.total)
+	assertEquals(divisor, statistic.divisor)
+	assertEquals(divisor == 0, statistic.isEmpty)
 	assertEquals(average, statistic.average)
 	assertEquals(formattedAs, statistic.formattedValue)
+}
+
+fun <S: PercentageStatistic> assertPercentage(
+statistic: S,
+	numerator: Int,
+	denominator: Int,
+	formattedAs: String,
+	overridingIsEmptyExpectation: Boolean? = null,
+) {
+	val percentage = if (denominator > 0) numerator.toDouble() / denominator.toDouble() else 0.0
+	assertEquals(numerator, statistic.numerator)
+	assertEquals(denominator, statistic.denominator)
+	assertEquals(overridingIsEmptyExpectation ?: (denominator == 0), statistic.isEmpty)
+	assertEquals(statistic.percentage, percentage)
+	assertEquals(statistic.formattedValue, formattedAs)
 }

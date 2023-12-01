@@ -55,14 +55,26 @@ fun mockSeries(): List<TrackableSeries> = (0..100).map {
 	)
 }
 
-fun mockGames(): List<TrackableGame> = (0..20).map {
-	TrackableGame(
-		seriesId = id(0),
-		id = id(it),
-		index = 0,
-		score = 123,
-		date = LocalDate(2023, 1, 1),
-		matchPlay = matchPlay(MatchPlayResult.LOST),
+fun mockGames(): List<TrackableGame> = (1..<10).flatMap {
+	listOf(
+		TrackableGame(
+			seriesId = id(0),
+			id = id(it),
+			index = 0,
+			score = 123,
+			date = LocalDate(2023, 1, 1),
+			matchPlay = null,
+		),
+		TrackableGame(
+			seriesId = id(0),
+			id = id(it),
+			index = 1,
+			score = 234,
+			date = LocalDate(2023, 1, 1),
+			matchPlay = matchPlay(
+				arrayOf(MatchPlayResult.LOST, MatchPlayResult.TIED, MatchPlayResult.WON)[it % 3]
+			),
+		)
 	)
 }
 

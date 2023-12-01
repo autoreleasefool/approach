@@ -30,6 +30,7 @@ interface FirstRollStatistic: PercentageStatistic, TrackablePerFirstRoll {
 		firstRoll: TrackableFrame.Roll,
 		configuration: TrackablePerFrameConfiguration
 	) {
+		totalRolls++
 		if (tracksRoll(firstRoll, configuration)) {
 			numerator++
 		}
