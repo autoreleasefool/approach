@@ -7,15 +7,16 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.testing.id
 import kotlinx.datetime.LocalDate
+import java.util.UUID
 
 fun roll(index: Int, pinsDowned: Set<Pin>, didFoul: Boolean = false): TrackableFrame.Roll =
 	TrackableFrame.Roll(index, pinsDowned, didFoul)
 
-fun frame(index: Int, rolls: List<TrackableFrame.Roll>): TrackableFrame =
+fun frame(index: Int, rolls: List<TrackableFrame.Roll>, gameId: UUID = id(0)): TrackableFrame =
 	TrackableFrame(
 		seriesId = id(0),
 		date = LocalDate(2023, 1, 1),
-		gameId = id(0),
+		gameId = gameId,
 		gameIndex = 0,
 		index = index,
 		rolls = rolls,
