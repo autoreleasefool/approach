@@ -75,3 +75,20 @@ val TrackableFrame.rollPairs: List<RollPair>
 			RollPair(matchingFirstRoll, it)
 		}
 	}
+
+val TrackableFrame.pinsLeftOnDeck: Set<Pin>
+	get() = if (Frame.isLastFrame(index)) {
+		val pinsStanding = Pin.fullDeck().toMutableSet()
+		rolls.forEachIndexed { index, roll ->
+			pinsStanding -= roll.pinsDowned
+			if (pinsStanding.isEmpty() && index < Frame.NumberOfRolls - 1) {
+				pinsStanding.addAll(Pin.fullDeck())
+			}
+		}
+		pinsStanding
+	} else {
+		rolls.fold(Pin.fullDeck().toMutableSet()) { pinsStanding, roll ->
+			pinsStanding -= roll.pinsDowned
+			pinsStanding
+		}
+	}
