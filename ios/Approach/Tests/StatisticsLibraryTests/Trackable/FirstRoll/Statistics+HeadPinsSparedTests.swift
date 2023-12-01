@@ -106,78 +106,78 @@ final class HeadPinsSparedTests: XCTestCase {
 	}
 
 	func testAdjust_InLastFrame_ByFramesWithHeadPinsSpared_Adjusts() {
-			let statistic = create(
-				statistic: Statistics.HeadPinsSpared.self,
-				adjustedByFrames: [
-					// Open attempt
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.headPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.leftThreePin, .leftTwoPin])),
-							.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
-						]
-					),
-					// Spared attempt, followed by strike
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.headPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin])),
-							.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-						]
-					),
-					// Spared attempt, followed by open
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.headPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin])),
-							.init(index: 2, roll: .init(pinsDowned: [])),
-						]
-					),
-					// Strike, followed by spared attempt
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.headPin, .leftTwoPin])),
-							.init(index: 2, roll: .init(pinsDowned: [.leftThreePin, .rightTwoPin, .rightThreePin])),
-						]
-					),
-					// Strike followed by open attempt
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.headPin, .rightTwoPin])),
-							.init(index: 2, roll: .init(pinsDowned: [])),
-						]
-					),
-					// Two strikes, followed by spareable shot
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-							.init(index: 2, roll: .init(pinsDowned: [.headPin])),
-						]
-					),
-					// Three strikes
-					Frame.TrackableEntry(
-						index: Game.NUMBER_OF_FRAMES - 1,
-						rolls: [
-							.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-							.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-							.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
-						]
-					),
-				],
-				withFrameConfiguration: .init(countHeadPin2AsHeadPin: true, countSplitWithBonusAsSplit: false)
-			)
+		let statistic = create(
+			statistic: Statistics.HeadPinsSpared.self,
+			adjustedByFrames: [
+				// Open attempt
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftThreePin, .leftTwoPin])),
+						.init(index: 2, roll: .init(pinsDowned: [.rightTwoPin, .rightThreePin])),
+					]
+				),
+				// Spared attempt, followed by strike
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin])),
+						.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+					]
+				),
+				// Spared attempt, followed by open
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.headPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .rightTwoPin, .rightThreePin])),
+						.init(index: 2, roll: .init(pinsDowned: [])),
+					]
+				),
+				// Strike, followed by spared attempt
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.headPin, .leftTwoPin])),
+						.init(index: 2, roll: .init(pinsDowned: [.leftThreePin, .rightTwoPin, .rightThreePin])),
+					]
+				),
+				// Strike followed by open attempt
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.headPin, .rightTwoPin])),
+						.init(index: 2, roll: .init(pinsDowned: [])),
+					]
+				),
+				// Two strikes, followed by spareable shot
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+						.init(index: 2, roll: .init(pinsDowned: [.headPin])),
+					]
+				),
+				// Three strikes
+				Frame.TrackableEntry(
+					index: Game.NUMBER_OF_FRAMES - 1,
+					rolls: [
+						.init(index: 0, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+						.init(index: 1, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+						.init(index: 2, roll: .init(pinsDowned: [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin])),
+					]
+				),
+			],
+			withFrameConfiguration: .init(countHeadPin2AsHeadPin: true, countSplitWithBonusAsSplit: false)
+		)
 
-			AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60% (3)")
-		}
+		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60% (3)")
+	}
 
 	func testAdjustBySeries_DoesNothing() {
 		let statistic = create(statistic: Statistics.HeadPinsSpared.self, adjustedBySeries: Series.TrackableEntry.mocks)

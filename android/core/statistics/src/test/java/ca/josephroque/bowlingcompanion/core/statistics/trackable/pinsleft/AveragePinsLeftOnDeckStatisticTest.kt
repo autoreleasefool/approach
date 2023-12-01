@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.roll
 import ca.josephroque.bowlingcompanion.core.testing.id
 import org.junit.Test
 
-class AveragePinsLeftOnDeckStatisticTests {
+class AveragePinsLeftOnDeckStatisticTest {
 	@Test
 	fun testAdjustByFrames() {
 		val statistic = assertStatisticAdjusts(

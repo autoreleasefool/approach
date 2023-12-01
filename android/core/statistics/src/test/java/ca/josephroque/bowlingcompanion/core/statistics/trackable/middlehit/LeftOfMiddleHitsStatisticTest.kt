@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockSerie
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.roll
 import org.junit.Test
 
-class LeftOfMiddleHitsStatisticTests {
+class LeftOfMiddleHitsStatisticTest {
 	@Test
 	fun testAdjust_ByFramesWithLeftOfMiddleHit_Adjusts() {
 		val statistic = assertStatisticAdjusts(

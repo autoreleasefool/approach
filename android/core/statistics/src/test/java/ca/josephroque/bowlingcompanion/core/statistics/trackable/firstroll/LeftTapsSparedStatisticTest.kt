@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.statistics.trackable.mark
+package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.Pin
@@ -10,71 +10,54 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockSerie
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.roll
 import org.junit.Test
 
-class SpareConversionsStatisticTest {
+class LeftTapsSparedStatisticTest {
 	@Test
-	fun testAdjust_ByFramesWithSpare_Adjusts() {
+	fun testAdjust_ByFramesWithLeftsSpared_Adjusts() {
 		val statistic = assertStatisticAdjusts(
-			statistic = SpareConversionsStatistic(),
+			statistic = LeftTapsSparedStatistic(),
 			byFrames = listOf(
 				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-					roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.LEFT_TWO_PIN)),
+					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+					roll(1, setOf(Pin.LEFT_TWO_PIN)),
 				)),
 				frame(1, listOf(
-					roll(0, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
+					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+					roll(1, emptySet()),
+					roll(2, setOf(Pin.LEFT_TWO_PIN)),
 				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(3, listOf(
-					roll(0, emptySet()),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(4, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(5, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(6, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-			)
+			),
 		)
 
-		assertPercentage(statistic, 3, 4, "75% (3)")
+		assertPercentage(statistic, 1, 2, "50% (1)")
 	}
 
 	@Test
-	fun testAdjust_ByFramesWithoutSpare_DoesNotAdjust() {
+	fun testAdjust_ByFramesWithoutLeftsSpared_DoesNotAdjust() {
 		val statistic = assertStatisticAdjusts(
-			statistic = SpareConversionsStatistic(),
+			statistic = LeftTapsSparedStatistic(),
 			byFrames = listOf(
 				frame(0, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-					roll(2, setOf(Pin.HEAD_PIN)),
+					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+					roll(1, emptySet()),
 				)),
 				frame(1, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
+					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+					roll(1, emptySet()),
+					roll(2, setOf(Pin.LEFT_TWO_PIN)),
 				)),
-			)
+			),
 		)
 
-		assertPercentage(statistic, 0, 1, "0%", true)
+		assertPercentage(statistic, 0, 2, "0%", overridingIsEmptyExpectation = true)
 	}
 
 	@Test
-	fun testAdjust_InLastFrame_ByFramesWithSpare_Adjusts() {
+	fun testAdjust_InLastFrame_ByFramesWithLeftTapsSpared_Adjusts() {
 		val statistic = assertStatisticAdjusts(
-			statistic = SpareConversionsStatistic(),
+			statistic = LeftTapsSparedStatistic(),
 			byFrames = listOf(
 				// Open attempt
-				frame(
-					Game.NumberOfFrames - 1, listOf(
+				frame(Game.NumberOfFrames - 1, listOf(
 					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
 					roll(1, emptySet()),
 					roll(2, setOf(Pin.LEFT_TWO_PIN)),
@@ -115,7 +98,7 @@ class SpareConversionsStatisticTest {
 					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
 					roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
 				)),
-			)
+			),
 		)
 
 		assertPercentage(statistic, 3, 5, "60% (3)")
@@ -124,18 +107,20 @@ class SpareConversionsStatisticTest {
 	@Test
 	fun testAdjustBySeries_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
-			statistic = SpareConversionsStatistic(),
-			bySeries = mockSeries()
+			statistic = LeftTapsSparedStatistic(),
+			bySeries = mockSeries(),
 		)
+
 		assertPercentage(statistic, 0, 0, "0%")
 	}
 
 	@Test
 	fun testAdjustByGame_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
-			statistic = SpareConversionsStatistic(),
-			byGames = mockGames()
+			statistic = LeftTapsSparedStatistic(),
+			byGames = mockGames(),
 		)
+
 		assertPercentage(statistic, 0, 0, "0%")
 	}
 }

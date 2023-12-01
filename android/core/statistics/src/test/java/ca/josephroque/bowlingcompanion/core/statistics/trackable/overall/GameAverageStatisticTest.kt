@@ -18,7 +18,7 @@ class GameAverageStatisticTest {
 				game(index = 3, score = 99),
 			),
 		)
-		assertAveraging(statistic, total = 456, divisor = 3, formattedAs = "152.0")
+		assertAveraging(statistic, total = 456, divisor = 3, formattedAs = "152")
 	}
 
 	@Test
@@ -31,7 +31,7 @@ class GameAverageStatisticTest {
 				game(index = 3, score = 99),
 			),
 		)
-		assertAveraging(statistic, total = 222, divisor = 2, formattedAs = "111.0")
+		assertAveraging(statistic, total = 222, divisor = 2, formattedAs = "111")
 	}
 
 	@Test

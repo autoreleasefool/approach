@@ -7,7 +7,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockGames
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockSeries
 import org.junit.Test
 
-class MatchesWonStatisticTests {
+class MatchesWonStatisticTest {
 	@Test
 	fun testAdjustByGame() {
 		val statistic = assertStatisticAdjusts(
