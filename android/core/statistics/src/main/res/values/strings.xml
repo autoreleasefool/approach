@@ -12,6 +12,7 @@
 	<string name="statistic_title_strike_middle_hits">Strike Middle Hits</string>
 
 	<string name="statistic_title_strikes">Strikes</string>
+	<string name="statistic_title_spare_chances">Opportunities to Spare</string>
 	<string name="statistic_title_spare_conversions">Spare Conversions</string>
 
 	<string name="statistic_title_head_pins">Head Pins</string>
@@ -68,6 +69,7 @@
 	<string name="statistic_title_average_pins_left_on_deck">Average Pins Left on Deck</string>
 
 	<string name="statistic_title_match_play_results">Match Play Results</string>
+	<string name="statistic_title_match_plays">Matches Played</string>
 	<string name="statistic_title_match_play_wins">Match Play Wins</string>
 	<string name="statistic_title_match_play_losses">Match Play Losses</string>
 	<string name="statistic_title_match_play_ties">Match Play Ties</string>
