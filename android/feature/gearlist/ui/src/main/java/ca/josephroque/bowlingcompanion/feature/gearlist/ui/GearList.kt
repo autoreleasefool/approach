@@ -10,13 +10,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import java.util.UUID
 
 @Composable
 fun GearList(
@@ -84,8 +83,11 @@ fun LazyListScope.gearList(
 			startActions = listOfNotNull(deleteAction),
 			endActions = listOfNotNull(editAction),
 		) {
-			GearItemRow(
-				gear = gear,
+			GearRow(
+				name = gear.name,
+				ownerName = gear.ownerName,
+				kind = gear.kind,
+				avatar = gear.avatar,
 				onClick = { onGearClick(gear) },
 			)
 		}

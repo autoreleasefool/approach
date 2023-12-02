@@ -7,4 +7,6 @@
 	<string name="league_series_missing">No games yet</string>
 	<string name="league_latest_series">%1$s</string>
 	<string name="league_bowled_once">%1$s</string>
+
+	<string name="gear_owned_by">Owned by %1$s</string>
 </resources>

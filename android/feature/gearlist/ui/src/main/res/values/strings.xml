@@ -11,6 +11,4 @@
 	<string name="gear_kind_filter_shoes">Shoes</string>
 	<string name="gear_kind_filter_other">Other</string>
 	<string name="gear_kind_filter_towel">Towels</string>
-
-	<string name="gear_list_owned_by">Owned by %1$s</string>
 </resources>
