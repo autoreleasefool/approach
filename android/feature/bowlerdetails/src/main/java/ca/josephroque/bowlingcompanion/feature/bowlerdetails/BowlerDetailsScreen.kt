@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
@@ -25,7 +26,7 @@ internal fun BowlerDetailsRoute(
 	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
-	onShowPreferredGearPicker: () -> Unit,
+	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
 ) {
@@ -43,8 +44,10 @@ internal fun BowlerDetailsRoute(
 						is BowlerDetailsScreenEvent.EditLeague -> onEditLeague(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowLeagueDetails -> onShowLeagueDetails(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowGearDetails -> onShowGearDetails(it.gearId)
-						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker()
 						is BowlerDetailsScreenEvent.EditStatisticsWidget -> Unit // TODO: Show edit widget screen
+						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(it.selectedGear) { selectedGear ->
+							viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(selectedGear))
+						}
 					}
 				}
 		}

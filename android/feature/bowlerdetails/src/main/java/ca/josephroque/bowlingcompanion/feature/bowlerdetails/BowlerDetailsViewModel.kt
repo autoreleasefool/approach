@@ -29,7 +29,7 @@ import javax.inject.Inject
 class BowlerDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	bowlersRepository: BowlersRepository,
-	gearRepository: GearRepository,
+	private val gearRepository: GearRepository,
 	private val leaguesRepository: LeaguesRepository,
 ): ApproachViewModel<BowlerDetailsScreenEvent>() {
 	private val bowlerId = UUID.fromString(savedStateHandle[BOWLER_ID])
@@ -67,6 +67,7 @@ class BowlerDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: BowlerDetailsScreenUiAction) {
 		when (action) {
+			is BowlerDetailsScreenUiAction.PreferredGearSelected -> setBowlerPreferredGear(action.gear)
 			is BowlerDetailsScreenUiAction.BowlerDetailsAction -> handleBowlerDetailsAction(action.action)
 		}
 	}
@@ -76,7 +77,7 @@ class BowlerDetailsViewModel @Inject constructor(
 			BowlerDetailsUiAction.BackClicked -> sendEvent(BowlerDetailsScreenEvent.Dismissed)
 			BowlerDetailsUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
 			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget)
-			BowlerDetailsUiAction.ManageGearClicked -> sendEvent(BowlerDetailsScreenEvent.ShowPreferredGearPicker)
+			BowlerDetailsUiAction.ManageGearClicked -> showPreferredGearPicker()
 			is BowlerDetailsUiAction.GearClicked -> sendEvent(BowlerDetailsScreenEvent.ShowGearDetails(action.id))
 			is BowlerDetailsUiAction.LeaguesListAction -> handleLeaguesListAction(action.action)
 		}
@@ -93,6 +94,12 @@ class BowlerDetailsViewModel @Inject constructor(
 		}
 	}
 
+	private fun setBowlerPreferredGear(gear: Set<UUID>) {
+		viewModelScope.launch {
+			gearRepository.setBowlerPreferredGear(bowlerId, gear)
+		}
+	}
+
 	private fun setLeagueArchivePrompt(league: LeagueListItem?) {
 		_leagueToArchive.value = league
 	}
@@ -103,5 +110,12 @@ class BowlerDetailsViewModel @Inject constructor(
 			leaguesRepository.archiveLeague(leagueToArchive.id)
 			setLeagueArchivePrompt(null)
 		}
+	}
+
+	private fun showPreferredGearPicker() {
+		val selectedGear =
+			(uiState.value as? BowlerDetailsScreenUiState.Loaded)?.bowler?.gearList?.list?.map { it.id }?.toSet()
+				?: return
+		sendEvent(BowlerDetailsScreenEvent.ShowPreferredGearPicker(selectedGear))
 	}
 }

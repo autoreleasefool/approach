@@ -13,6 +13,6 @@ class LeaguePickerDataProvider @Inject constructor(
 ): ResourcePickerDataProvider {
 	override suspend fun loadResources(): List<ResourceItem> =
 		leaguesRepository.getLeaguesList(bowlerId)
-			.map { leagues -> leagues.map { ResourceItem(it.id, it.name) } }
+			.map { leagues -> leagues.map { ResourceItem.League(it.id, it.name) } }
 			.first()
 }

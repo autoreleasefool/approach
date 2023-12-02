@@ -4,8 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.GearPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_PARENT_ID
@@ -28,6 +30,7 @@ import javax.inject.Inject
 class ResourcePickerViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
 	leaguesRepository: LeaguesRepository,
+	gearRepository: GearRepository,
 	savedStateHandle: SavedStateHandle,
 ): ApproachViewModel<ResourcePickerScreenEvent>() {
 	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
@@ -51,6 +54,7 @@ class ResourcePickerViewModel @Inject constructor(
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
 		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, parentId)
+		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? {
@@ -91,6 +95,7 @@ class ResourcePickerViewModel @Inject constructor(
 					titleResourceId = when (resourceType) {
 						ResourcePickerType.BOWLER -> R.plurals.bowler_picker_title
 						ResourcePickerType.LEAGUE -> R.plurals.league_picker_title
+						ResourcePickerType.GEAR -> R.plurals.gear_picker_title
 					},
 					limit = limit,
 				),

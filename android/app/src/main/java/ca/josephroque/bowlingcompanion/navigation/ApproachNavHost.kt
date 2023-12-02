@@ -147,7 +147,13 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 			onShowLeagueDetails = navController::navigateToLeagueDetails,
 			onShowGearDetails = { /* TODO: onShowGearDetails */ },
-			onShowPreferredGearPicker = { /* TODO: onShowPreferredGearPicker */ },
+			onShowPreferredGearPicker = { selectedGear, result ->
+				navController.navigateToResourcePickerForResult(
+					selectedIds = selectedGear,
+					navResultCallback = result,
+					resourceType = ResourcePickerType.GEAR,
+				)
+			},
 		)
 		leagueFormScreen(
 			onBackPressed = navController::popBackStack,

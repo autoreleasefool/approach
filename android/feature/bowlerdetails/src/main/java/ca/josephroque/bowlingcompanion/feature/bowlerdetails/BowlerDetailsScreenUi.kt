@@ -13,14 +13,15 @@ sealed interface BowlerDetailsScreenUiState {
 }
 
 sealed interface BowlerDetailsScreenUiAction {
+	data class PreferredGearSelected(val gear: Set<UUID>): BowlerDetailsScreenUiAction
 	data class BowlerDetailsAction(val action: BowlerDetailsUiAction): BowlerDetailsScreenUiAction
 }
 
 sealed interface BowlerDetailsScreenEvent {
 	data object Dismissed: BowlerDetailsScreenEvent
-	data object ShowPreferredGearPicker: BowlerDetailsScreenEvent
 	data object EditStatisticsWidget: BowlerDetailsScreenEvent
 
+	data class ShowPreferredGearPicker(val selectedGear: Set<UUID>): BowlerDetailsScreenEvent
 	data class EditLeague(val leagueId: UUID): BowlerDetailsScreenEvent
 	data class AddLeague(val bowlerId: UUID): BowlerDetailsScreenEvent
 	data class ShowGearDetails(val gearId: UUID): BowlerDetailsScreenEvent

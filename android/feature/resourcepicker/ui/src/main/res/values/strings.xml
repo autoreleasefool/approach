@@ -19,6 +19,10 @@
 		<item quantity="other">Select Leagues</item>
 	</plurals>
 
+	<plurals name="gear_picker_title">
+		<item quantity="other">Select Gear</item>
+	</plurals>
+
 	<string name="cd_resource_selected">Selected</string>
 	<string name="cd_resource_deselected">Not Selected</string>
 </resources>

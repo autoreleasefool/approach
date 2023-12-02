@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.BowlerDetailsRoute
 import java.util.UUID
 
@@ -25,7 +26,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
-	onShowPreferredGearPicker: () -> Unit,
+	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
 		route = bowlerDetailsNavigationRoute,
