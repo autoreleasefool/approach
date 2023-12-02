@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
@@ -14,8 +15,10 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 @Composable
 fun AvatarFormTopBar(
 	onAction: (AvatarFormUiAction) -> Unit,
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
+		scrollBehavior = scrollBehavior,
 		title = {
 			Text(
 				text = stringResource(R.string.avatar_form_title),

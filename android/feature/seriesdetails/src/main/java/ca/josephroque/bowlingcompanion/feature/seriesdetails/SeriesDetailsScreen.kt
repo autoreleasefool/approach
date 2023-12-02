@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.seriesdetails
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -52,12 +55,15 @@ internal fun SeriesDetailsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SeriesDetailsScreen(
 	state: SeriesDetailsScreenUiState,
 	onAction: (SeriesDetailsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			SeriesDetailsTopBar(
@@ -66,15 +72,17 @@ internal fun SeriesDetailsScreen(
 					is SeriesDetailsScreenUiState.Loaded -> state.seriesDetails.details.date
 				},
 				onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
+				scrollBehavior = scrollBehavior,
 			)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			SeriesDetailsScreenUiState.Loading -> Unit
 			is SeriesDetailsScreenUiState.Loaded -> SeriesDetails(
 				state = state.seriesDetails,
 				onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.settings.statistics
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -44,23 +47,29 @@ internal fun StatisticsSettingsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StatisticsSettingsScreen(
 	state: StatisticsSettingsScreenUiState,
 	onAction: (StatisticsSettingsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
-			StatisticsSettingsTopBar(onAction = { onAction(StatisticsSettingsScreenUiAction.StatisticsSettingsAction(it)) })
-		}
+			StatisticsSettingsTopBar(
+				onAction = { onAction(StatisticsSettingsScreenUiAction.StatisticsSettingsAction(it)) },
+				scrollBehavior = scrollBehavior,
+			)
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			StatisticsSettingsScreenUiState.Loading -> Unit
 			is StatisticsSettingsScreenUiState.Loaded -> StatisticsSettings(
 				state = state.statisticsSettings,
 				onAction = { onAction(StatisticsSettingsScreenUiAction.StatisticsSettingsAction(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

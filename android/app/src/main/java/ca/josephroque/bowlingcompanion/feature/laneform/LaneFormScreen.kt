@@ -10,10 +10,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -62,6 +65,7 @@ internal fun LaneFormRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LaneFormScreen(
 	laneFormState: LaneFormUiState,
@@ -79,19 +83,23 @@ internal fun LaneFormScreen(
 	finishLaneEdits: (Boolean) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			LaneFormTopBar(
 				onBackPressed = onBackPressed,
 				saveLanes = onSave,
+				scrollBehavior = scrollBehavior,
 			)
 		},
 		floatingActionButton = {
 			FloatingActions(showAddLanesDialog = showAddLanesDialog)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		Box(
-			modifier = modifier.padding(padding),
+			modifier = Modifier.padding(padding),
 		) {
 			LaneForm(
 				laneFormState = laneFormState,
@@ -114,11 +122,13 @@ internal fun LaneFormScreen(
 private fun LaneFormTopBar(
 	onBackPressed: () -> Unit,
 	saveLanes: () -> Unit,
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		title = { Title() },
 		navigationIcon = { BackButton(onClick = onBackPressed) },
 		actions = { Actions(saveLanes = saveLanes) },
+		scrollBehavior = scrollBehavior,
 	)
 }
 

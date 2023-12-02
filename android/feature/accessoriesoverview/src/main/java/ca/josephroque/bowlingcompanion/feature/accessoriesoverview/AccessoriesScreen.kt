@@ -1,10 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.accessoriesoverview
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.Accessories
@@ -51,6 +54,7 @@ internal fun AccessoriesRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AccessoriesScreen(
 	accessoriesState: AccessoriesUiState,
@@ -66,6 +70,7 @@ internal fun AccessoriesScreen(
 	onShowGearDetails: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
 			AccessoriesTopBar(
@@ -74,8 +79,10 @@ internal fun AccessoriesScreen(
 				onMinimizeAddAccessoryMenu = onMinimizeAddAccessoryMenu,
 				onAddAlley = onAddAlley,
 				onAddGear = onAddGear,
+				scrollBehavior = scrollBehavior,
 			)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		Accessories(
 			accessoriesState = accessoriesState,
@@ -85,7 +92,7 @@ internal fun AccessoriesScreen(
 			onViewAllGear = onViewAllGear,
 			onShowAlleyDetails = onShowAlleyDetails,
 			onShowGearDetails = onShowGearDetails,
-			modifier = modifier.padding(padding),
+			modifier = Modifier.padding(padding),
 		)
 	}
 }

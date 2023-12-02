@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.opponentslist
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -51,18 +54,23 @@ internal fun OpponentsListRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OpponentsListScreen(
 	state: OpponentsListScreenUiState,
 	onAction: (OpponentsListScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			OpponentsListTopBar(
 				onAction = { onAction(OpponentsListScreenUiAction.OpponentsListAction(it)) },
+				scrollBehavior = scrollBehavior,
 			)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			OpponentsListScreenUiState.Loading -> Unit
@@ -70,7 +78,7 @@ private fun OpponentsListScreen(
 				OpponentsList(
 					state = state.list,
 					onAction = { onAction(OpponentsListScreenUiAction.OpponentsListAction(it)) },
-					modifier = modifier.padding(padding),
+					modifier = Modifier.padding(padding),
 				)
 			}
 		}

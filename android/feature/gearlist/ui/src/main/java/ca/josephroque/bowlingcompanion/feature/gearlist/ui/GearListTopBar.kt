@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,8 +28,10 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.components.filterDesc
 fun GearListTopBar(
 	state: GearListTopBarUiState,
 	onAction: (GearListUiAction) -> Unit,
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
+		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(

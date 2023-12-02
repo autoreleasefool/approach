@@ -2,9 +2,11 @@ package ca.josephroque.bowlingcompanion.feature.seriesdetails.ui
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.style.TextOverflow
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
@@ -16,8 +18,10 @@ import kotlinx.datetime.LocalDate
 fun SeriesDetailsTopBar(
 	seriesDate: LocalDate?,
 	onAction: (SeriesDetailsUiAction) -> Unit,
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
-	TopAppBar(
+	MediumTopAppBar(
+		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(

@@ -2,11 +2,14 @@ package ca.josephroque.bowlingcompanion.feature.settings
 
 import android.os.Build
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -60,6 +63,7 @@ internal fun SettingsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
 	state: SettingsScreenUiState,
@@ -89,17 +93,22 @@ private fun SettingsScreen(
 		}
 	}
 
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
-			SettingsTopBar()
-		}
+			SettingsTopBar(
+				scrollBehavior = scrollBehavior,
+			)
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			is SettingsScreenUiState.Loading -> Unit
 			is SettingsScreenUiState.Loaded -> Settings(
 				state = state.settings,
 				onAction = { onAction(SettingsScreenUiAction.SettingsAction(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

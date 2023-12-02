@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerdetails
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -60,12 +63,15 @@ internal fun BowlerDetailsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BowlerDetailsScreen(
 	state: BowlerDetailsScreenUiState,
 	onAction: (BowlerDetailsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			BowlerDetailsTopBar(
@@ -74,15 +80,17 @@ internal fun BowlerDetailsScreen(
 					is BowlerDetailsScreenUiState.Loaded -> state.bowler.topBar
 				},
 				onAction = { onAction(BowlerDetailsScreenUiAction.BowlerDetailsAction(it)) },
+				scrollBehavior = scrollBehavior,
 			)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			BowlerDetailsScreenUiState.Loading -> Unit
 			is BowlerDetailsScreenUiState.Loaded -> BowlerDetails(
 				state = state.bowler,
 				onAction = { onAction(BowlerDetailsScreenUiAction.BowlerDetailsAction(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

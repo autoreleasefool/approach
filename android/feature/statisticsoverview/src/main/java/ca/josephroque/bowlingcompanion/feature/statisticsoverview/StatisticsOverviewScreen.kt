@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -68,23 +71,28 @@ internal fun StatisticsOverviewRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StatisticsOverviewScreen(
 	state: StatisticsOverviewScreenUiState,
 	onAction: (StatisticsOverviewScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
-			StatisticsOverviewTopBar()
+			StatisticsOverviewTopBar(
+				scrollBehavior = scrollBehavior,
+			)
 		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			StatisticsOverviewScreenUiState.Loading -> Unit
 			is StatisticsOverviewScreenUiState.Loaded -> StatisticsOverview(
 				state = state.statisticsOverview,
 				onAction = { onAction(StatisticsOverviewScreenUiAction.StatisticsOverviewAction(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

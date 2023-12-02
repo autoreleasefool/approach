@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.settings.acknowledgements
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -47,18 +50,22 @@ fun AcknowledgementsSettingsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AcknowledgementsSettingsScreen(
 	state: AcknowledgementsSettingsScreenUiState,
 	onAction: (AcknowledgementsSettingsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
 			AcknowledgementsTopBar(
 				onAction = { onAction(AcknowledgementsSettingsScreenUiAction.AcknowledgementsAction(it)) },
+				scrollBehavior = scrollBehavior,
 			)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			AcknowledgementsSettingsScreenUiState.Loading -> Unit
@@ -66,7 +73,7 @@ private fun AcknowledgementsSettingsScreen(
 				Acknowledgements(
 					state = state.acknowledgements,
 					onAction = { onAction(AcknowledgementsSettingsScreenUiAction.AcknowledgementsAction(it)) },
-					modifier = modifier.padding(padding),
+					modifier = Modifier.padding(padding),
 				)
 		}
 	}

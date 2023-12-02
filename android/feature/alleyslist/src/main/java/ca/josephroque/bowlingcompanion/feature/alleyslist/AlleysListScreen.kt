@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.alleyslist
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -50,16 +53,22 @@ internal fun AlleysListRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AlleysListScreen(
 	state: AlleysListScreenUiState,
 	onAction: (AlleysListScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
-			AlleysListTopBar(onAction = { onAction(AlleysListScreenUiAction.AlleysList(it)) })
-		}
+			AlleysListTopBar(
+				onAction = { onAction(AlleysListScreenUiAction.AlleysList(it)) },
+				scrollBehavior = scrollBehavior,
+			)
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			AlleysListScreenUiState.Loading -> Unit
@@ -67,7 +76,7 @@ private fun AlleysListScreen(
 				AlleysList(
 					state = state.alleysList,
 					onAction = { onAction(AlleysListScreenUiAction.AlleysList(it)) },
-					modifier = modifier.padding(padding),
+					modifier = Modifier.padding(padding),
 				)
 			}
 		}

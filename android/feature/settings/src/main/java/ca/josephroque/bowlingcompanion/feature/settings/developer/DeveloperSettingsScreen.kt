@@ -1,10 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.settings.developer
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -39,16 +42,22 @@ fun DeveloperSettingsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DeveloperSettingsScreen(
 	onAction: (DeveloperSettingsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
-			DeveloperSettingsTopBar(onAction = { onAction(DeveloperSettingsScreenUiAction.DeveloperSettingsAction(it)) })
-		}
+			DeveloperSettingsTopBar(
+				onAction = { onAction(DeveloperSettingsScreenUiAction.DeveloperSettingsAction(it)) },
+				scrollBehavior = scrollBehavior,
+			)
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
-		DeveloperSettings(modifier = modifier.padding(padding))
+		DeveloperSettings(modifier = Modifier.padding(padding))
 	}
 }

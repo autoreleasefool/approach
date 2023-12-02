@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.overview
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -50,23 +53,30 @@ internal fun OverviewRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OverviewScreen(
 	state: OverviewScreenUiState,
 	onAction: (OverviewScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
-			OverviewTopBar(onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) })
-		}
+			OverviewTopBar(
+				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
+				scrollBehavior = scrollBehavior,
+			)
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			OverviewScreenUiState.Loading -> Unit
 			is OverviewScreenUiState.Loaded -> Overview(
 				state = state.overview,
 				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

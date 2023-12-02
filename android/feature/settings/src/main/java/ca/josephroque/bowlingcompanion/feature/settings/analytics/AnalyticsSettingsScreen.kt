@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.settings.analytics
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -44,23 +47,29 @@ internal fun AnalyticsSettingsRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun AnalyticsSettingsScreen(
 	state: AnalyticsSettingsScreenUiState,
 	onAction: (AnalyticsSettingsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {
-			AnalyticsSettingsTopBar(onAction = { onAction(AnalyticsSettingsScreenUiAction.AnalyticsSettingsAction(it)) })
-		}
+			AnalyticsSettingsTopBar(
+				onAction = { onAction(AnalyticsSettingsScreenUiAction.AnalyticsSettingsAction(it)) },
+				scrollBehavior = scrollBehavior,
+			)
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			AnalyticsSettingsScreenUiState.Loading -> Unit
 			is AnalyticsSettingsScreenUiState.Loaded -> AnalyticsSettings(
 				state = state.analyticsSettings,
 				onAction = { onAction(AnalyticsSettingsScreenUiAction.AnalyticsSettingsAction(it)) },
-				modifier = modifier.padding(padding),
+				modifier = Modifier.padding(padding),
 			)
 		}
 	}

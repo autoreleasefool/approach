@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.leagueform
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -44,6 +47,7 @@ internal fun LeagueFormRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun LeagueFormScreen(
 	state: LeagueFormScreenUiState,
@@ -54,6 +58,8 @@ internal fun LeagueFormScreen(
 		onAction(LeagueFormScreenUiAction.LoadLeague)
 	}
 
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			LeagueFormTopBar(
@@ -63,8 +69,10 @@ internal fun LeagueFormScreen(
 					is LeagueFormScreenUiState.Edit -> state.topBar
 				},
 				onAction = { onAction(LeagueFormScreenUiAction.LeagueForm(it)) },
+				scrollBehavior = scrollBehavior,
 			)
-		}
+		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			LeagueFormScreenUiState.Loading -> Unit
@@ -72,13 +80,13 @@ internal fun LeagueFormScreen(
 				LeagueForm(
 					state = state.form,
 					onAction = { onAction(LeagueFormScreenUiAction.LeagueForm(it)) },
-					modifier = modifier.padding(padding),
+					modifier = Modifier.padding(padding),
 				)
 			is LeagueFormScreenUiState.Edit ->
 				LeagueForm(
 					state = state.form,
 					onAction = { onAction(LeagueFormScreenUiAction.LeagueForm(it)) },
-					modifier = modifier.padding(padding),
+					modifier = Modifier.padding(padding),
 				)
 		}
 	}

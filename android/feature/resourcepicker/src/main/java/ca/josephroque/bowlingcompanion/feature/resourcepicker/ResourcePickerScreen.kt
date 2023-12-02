@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -49,6 +52,7 @@ internal fun ResourcePickerRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ResourcePickerScreen(
 	state: ResourcePickerScreenUiState,
@@ -59,6 +63,8 @@ private fun ResourcePickerScreen(
 		onAction(ResourcePickerScreenUiAction.LoadResources)
 	}
 
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			ResourcePickerTopBar(
@@ -67,8 +73,10 @@ private fun ResourcePickerScreen(
 					is ResourcePickerScreenUiState.Loaded -> state.topBar
 			  },
 				onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
+				scrollBehavior = scrollBehavior,
 			)
 		},
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			ResourcePickerScreenUiState.Loading -> Unit
@@ -88,7 +96,7 @@ private fun ResourcePickerScreen(
 							)
 						}
 					},
-					modifier = modifier.padding(padding),
+					modifier = Modifier.padding(padding),
 				)
 		}
 	}

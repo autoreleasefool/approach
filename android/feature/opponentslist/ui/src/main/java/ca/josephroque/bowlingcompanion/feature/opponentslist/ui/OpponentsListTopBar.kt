@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
@@ -17,8 +18,10 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 @Composable
 fun OpponentsListTopBar(
 	onAction: (OpponentsListUiAction) -> Unit,
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
+		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
