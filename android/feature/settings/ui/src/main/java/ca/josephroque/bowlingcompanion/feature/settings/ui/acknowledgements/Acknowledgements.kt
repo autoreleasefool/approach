@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,14 +26,18 @@ fun Acknowledgements(
 		modifier = modifier
 			.fillMaxSize(),
 	) {
-		items(
+		itemsIndexed(
 			state.acknowledgements,
-			key = { it.name },
-		) { acknowledgement ->
+			key = { _, acknowledgement -> acknowledgement.name },
+		) { index, acknowledgement ->
 			AcknowledgementItem(
 				acknowledgement = acknowledgement,
 				onClick = { onAction(AcknowledgementsUiAction.AcknowledgementClicked(acknowledgement.name)) },
 			)
+
+			if (index < state.acknowledgements.size - 1) {
+				Divider(modifier = Modifier.padding(start = 16.dp))
+			}
 		}
 	}
 }
@@ -46,7 +52,7 @@ private fun AcknowledgementItem(
 		modifier = modifier
 			.fillMaxWidth()
 			.clickable(onClick = onClick)
-			.padding(horizontal = 16.dp, vertical = 8.dp),
+			.padding(16.dp),
 	) {
 		Text(
 			text = acknowledgement.name,

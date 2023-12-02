@@ -89,7 +89,7 @@ private fun Description(
 				modifier = Modifier.padding(bottom = 16.dp),
 			)
 
-			Spacer(modifier = Modifier.weight(1f))
+			Spacer(modifier = Modifier.weight(2f))
 
 			Text(
 				text = stringResource(R.string.onboarding_legacy_user_description_vancouver),
