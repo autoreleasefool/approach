@@ -206,12 +206,12 @@ public enum Strings {
   }
   public enum Announcement {
     public enum Christmas2023 {
-      /// Happy Holidays! A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!
-      public static let message = Strings.tr("Localizable", "announcement.christmas2023.message", fallback: "Happy Holidays! A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!")
+      /// A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!
+      public static let message = Strings.tr("Localizable", "announcement.christmas2023.message", fallback: "A new Christmas-themed icon has been launched. Open the app settings to try out the new icon!")
       /// Open Settings
       public static let openSettings = Strings.tr("Localizable", "announcement.christmas2023.openSettings", fallback: "Open Settings")
       /// Announcements
-      public static let title = Strings.tr("Localizable", "announcement.christmas2023.title", fallback: "New Icon Available")
+      public static let title = Strings.tr("Localizable", "announcement.christmas2023.title", fallback: "Happy Holidays!")
     }
   }
   public enum App {
@@ -1842,8 +1842,8 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "widget.builder.tapThrough.title", fallback: "Widgets are a convenient way to access your favourite stats!")
       }
       public enum Timeline {
-        /// Choose a shorter timespan to only be shown recent stats, or a longer timespan to measurements over years.
-        public static let description = Strings.tr("Localizable", "widget.builder.timeline.description", fallback: "Choose a shorter timespan to only be shown recent stats, or a longer timespan to measurements over years.")
+        /// Choose a shorter timeline to only be shown recent stats, or a longer timeline to see measurements over multiple years.
+        public static let description = Strings.tr("Localizable", "widget.builder.timeline.description", fallback: "Choose a shorter timeline to only be shown recent stats, or a longer timeline to see measurements over multiple years.")
       }
     }
     public enum Chart {
