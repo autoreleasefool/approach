@@ -20,6 +20,7 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 				games.locked AS locked,
 				games.scoring_method AS scoringMethod,
 				games.exclude_from_statistics AS excludeFromStatistics,
+				games.duration AS duration,
 				series.`date` AS series_date,
 				series.pre_bowl AS series_preBowl,
 				series.exclude_from_statistics AS series_excludeFromStatistics,

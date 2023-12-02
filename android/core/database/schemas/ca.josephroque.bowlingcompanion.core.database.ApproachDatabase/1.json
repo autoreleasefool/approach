@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7ef16396dc4a67f9598f85025886cc90",
+    "identityHash": "0d74daf2416e7f9ba3874cf529050393",
     "entities": [
       {
         "tableName": "bowlers",
@@ -263,7 +263,7 @@
       },
       {
         "tableName": "games",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `series_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `score` INTEGER NOT NULL, `locked` TEXT NOT NULL, `scoring_method` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `series_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `score` INTEGER NOT NULL, `locked` TEXT NOT NULL, `scoring_method` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, `duration` REAL NOT NULL DEFAULT 0, PRIMARY KEY(`id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -313,6 +313,13 @@
             "affinity": "INTEGER",
             "notNull": false,
             "defaultValue": "NULL"
+          },
+          {
+            "fieldPath": "duration",
+            "columnName": "duration",
+            "affinity": "REAL",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -1385,7 +1392,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7ef16396dc4a67f9598f85025886cc90')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0d74daf2416e7f9ba3874cf529050393')"
     ]
   }
 }

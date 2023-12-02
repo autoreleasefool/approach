@@ -35,6 +35,7 @@ data class GameEntity(
 	@ColumnInfo(name = "scoring_method") val scoringMethod: GameScoringMethod,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
+	@ColumnInfo(name = "duration", defaultValue = "0") val duration: Double = 0.0,
 )
 
 data class TrackableGameEntity(
