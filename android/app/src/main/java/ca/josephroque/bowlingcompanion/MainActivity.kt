@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
 
 					ApproachApp(
 						isOnboardingComplete = when (val state = uiState) {
-							MainActivityUiState.Loading -> false
+							MainActivityUiState.Loading -> null
 							is MainActivityUiState.Success -> state.isOnboardingComplete
 						},
 						finishActivity = { finish() },

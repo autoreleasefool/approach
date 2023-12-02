@@ -68,11 +68,13 @@ import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 fun ApproachNavHost(
 	appState: ApproachAppState,
 	modifier: Modifier = Modifier,
-	isOnboardingComplete: Boolean = true,
+	isOnboardingComplete: Boolean?,
 	finishActivity: () -> Unit = {},
 	startDestination: String = overviewNavigationRoute
 ) {
 	val navController = appState.navController
+
+	isOnboardingComplete ?: return
 
 	val shouldShowOnboarding = remember(isOnboardingComplete) {
 		mutableStateOf(!isOnboardingComplete)

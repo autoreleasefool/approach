@@ -25,7 +25,7 @@ import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
 @Composable
 fun ApproachApp(
-	isOnboardingComplete: Boolean,
+	isOnboardingComplete: Boolean?,
 	finishActivity: () -> Unit,
 	appState: ApproachAppState = rememberApproachAppState(),
 ) {
