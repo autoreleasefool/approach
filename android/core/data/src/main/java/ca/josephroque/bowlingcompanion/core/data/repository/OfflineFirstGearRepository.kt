@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -39,6 +40,13 @@ class OfflineFirstGearRepository @Inject constructor(
 
 	override fun getGearUpdate(id: UUID): Flow<GearUpdate> =
 		gearDao.getGearUpdate(id).map { it.asModel() }
+
+	override suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>) {
+		withContext(ioDispatcher) {
+			gearDao.removeBowlerPreferredGear(bowlerId)
+			gearDao.setBowlerPreferredGear(gear.map { BowlerPreferredGearCrossRef(bowlerId, it) })
+		}
+	}
 
 	override suspend fun insertGear(gear: GearCreate) = withContext(ioDispatcher) {
 		gearDao.insertGear(gear.asEntity())

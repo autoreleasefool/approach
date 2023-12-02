@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
@@ -25,7 +26,7 @@ abstract class GearDao {
 			FROM gear
 			JOIN bowler_preferred_gear
 				ON gear.id = bowler_preferred_gear.gear_id
-				AND bowler_preferred_gear.gear_id = :bowlerId
+				AND bowler_preferred_gear.bowler_id = :bowlerId
 			LEFT JOIN bowlers AS owner 
 				ON gear.owner_id = owner.id
 			ORDER BY gear.name
@@ -62,6 +63,17 @@ abstract class GearDao {
 		"""
 	)
 	abstract fun getGearUpdate(id: UUID): Flow<GearUpdateEntity>
+
+	@Query(
+		"""
+			DELETE FROM bowler_preferred_gear
+			WHERE bowler_id = :bowlerId
+		"""
+	)
+	abstract fun removeBowlerPreferredGear(bowlerId: UUID)
+
+	@Insert
+	abstract fun setBowlerPreferredGear(gear: List<BowlerPreferredGearCrossRef>)
 
 	@Insert(entity = GearEntity::class)
 	abstract fun insertGear(gear: GearCreateEntity)

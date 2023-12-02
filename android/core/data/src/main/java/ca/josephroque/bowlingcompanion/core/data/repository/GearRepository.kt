@@ -14,6 +14,8 @@ interface GearRepository {
 
 	fun getGearUpdate(id: UUID): Flow<GearUpdate>
 
+	suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>)
+
 	suspend fun insertGear(gear: GearCreate)
 	suspend fun updateGear(gear: GearUpdate)
 	suspend fun deleteGear(id: UUID)
