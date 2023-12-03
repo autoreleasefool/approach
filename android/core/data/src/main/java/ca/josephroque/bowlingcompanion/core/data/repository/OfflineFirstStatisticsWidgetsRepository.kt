@@ -6,8 +6,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsWidgetDao
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetPriorityUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asModel
-import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreateBowler
-import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreateLeague
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -19,15 +18,9 @@ class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): StatisticsWidgetsRepository {
 	override fun getStatisticsWidgets(context: String) =
-		statisticsWidgetDao.getStatisticsWidgets(context).map {
-			it.mapNotNull { widget -> widget.asModel() }
-		}
+		statisticsWidgetDao.getStatisticsWidgets(context).map { it.map { widget -> widget.asModel() } }
 
-	override suspend fun insertStatisticWidget(widget: StatisticsWidgetCreateBowler) = withContext(ioDispatcher) {
-		statisticsWidgetDao.insertStatisticWidget(widget.asEntity())
-	}
-
-	override suspend fun insertStatisticWidget(widget: StatisticsWidgetCreateLeague) = withContext(ioDispatcher) {
+	override suspend fun insertStatisticWidget(widget: StatisticsWidgetCreate) = withContext(ioDispatcher) {
 		statisticsWidgetDao.insertStatisticWidget(widget.asEntity())
 	}
 

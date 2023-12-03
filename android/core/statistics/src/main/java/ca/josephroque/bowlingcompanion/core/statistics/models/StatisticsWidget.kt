@@ -11,17 +11,9 @@ data class StatisticsWidget(
 	val priority: Int,
 )
 
-data class StatisticsWidgetCreateBowler(
+data class StatisticsWidgetCreate(
 	val bowlerId: UUID,
-	val id: UUID,
-	val timeline: StatisticsWidgetTimeline,
-	val statistic: Int,
-	val context: String,
-	val priority: Int,
-)
-
-data class StatisticsWidgetCreateLeague(
-	val leagueId: UUID,
+	val leagueId: UUID?,
 	val id: UUID,
 	val timeline: StatisticsWidgetTimeline,
 	val statistic: Int,

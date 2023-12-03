@@ -4,7 +4,7 @@ import java.util.UUID
 
 sealed interface StatisticsWidgetSource {
 	data class Bowler(val bowlerId: UUID): StatisticsWidgetSource
-	data class League(val leagueId: UUID): StatisticsWidgetSource
+	data class League(val bowlerId: UUID, val leagueId: UUID): StatisticsWidgetSource
 }
 
 enum class StatisticsWidgetTimeline {

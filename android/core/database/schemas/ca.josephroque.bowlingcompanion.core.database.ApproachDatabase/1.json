@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0d74daf2416e7f9ba3874cf529050393",
+    "identityHash": "304fbee4c0f8f5a8b72c15a9c070cae9",
     "entities": [
       {
         "tableName": "bowlers",
@@ -1387,12 +1387,101 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "statistics_widget",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `bowler_id` BLOB NOT NULL, `league_id` BLOB, `timeline` TEXT NOT NULL, `statistic` INTEGER NOT NULL, `context` TEXT NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`bowler_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bowlerId",
+            "columnName": "bowler_id",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "leagueId",
+            "columnName": "league_id",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeline",
+            "columnName": "timeline",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statistic",
+            "columnName": "statistic",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "context",
+            "columnName": "context",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "priority",
+            "columnName": "priority",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_statistics_widget_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_statistics_widget_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "bowlers",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "bowler_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "leagues",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "league_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0d74daf2416e7f9ba3874cf529050393')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '304fbee4c0f8f5a8b72c15a9c070cae9')"
     ]
   }
 }
