@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.dao.MatchPlayDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
+import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsWidgetDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamBowlerDao
 import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
@@ -33,6 +34,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.LocationEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesLaneCrossRef
+import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetEntity
 import ca.josephroque.bowlingcompanion.core.database.model.TeamBowlerCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.TeamEntity
 import ca.josephroque.bowlingcompanion.core.database.util.AvatarConverter
@@ -61,6 +63,7 @@ const val DATABASE_NAME = "approach-database"
 		TeamEntity::class,
 		TeamBowlerCrossRef::class,
 		LegacyIDMappingEntity::class,
+		StatisticsWidgetEntity::class,
 	],
 	version = 1,
 )
@@ -84,6 +87,7 @@ abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun laneDao(): LaneDao
 
 	abstract fun statisticsDao(): StatisticsDao
+	abstract fun statisticsWidgetDao(): StatisticsWidgetDao
 
 	abstract fun legacyIDMappingDao(): LegacyIDMappingDao
 

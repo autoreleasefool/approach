@@ -24,11 +24,13 @@ import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstRecently
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstSeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstStatisticsRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstStatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstUserDataRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import dagger.Binds
 import dagger.Module
@@ -112,4 +114,9 @@ interface DataModule {
 	fun bindsStatisticsRepository(
 		statisticsRepository: OfflineFirstStatisticsRepository,
 	): StatisticsRepository
+
+	@Binds
+	fun bindsStatisticsWidgetsRepository(
+		statisticsWidgetsRepository: OfflineFirstStatisticsWidgetsRepository,
+	): StatisticsWidgetsRepository
 }
