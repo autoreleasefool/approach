@@ -98,6 +98,7 @@ fun ApproachNavHost(
 			// TODO: Change to appropriate navigation for statistics widget editor
 //			onEditStatisticsWidgets = navController::navigateToStatisticsWidgetLayoutEditor,
 			onEditStatisticsWidgets = { navController.navigateToStatisticsWidgetEditor(it, null, 0) },
+			onShowStatistics = { /* TODO: onShowStatistics */ },
 		)
 		statisticsOverviewScreen(
 			onPickBowler = { bowler, result ->
@@ -162,6 +163,7 @@ fun ApproachNavHost(
 				)
 			},
 			onEditStatisticsWidgets = { /* TODO: onEditStatisticsWidgets */ },
+			onShowStatistics = { /* TODO: onShowStatistics */ },
 		)
 		leagueFormScreen(
 			onBackPressed = navController::popBackStack,

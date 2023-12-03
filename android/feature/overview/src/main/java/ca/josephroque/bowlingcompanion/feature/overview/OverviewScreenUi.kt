@@ -22,4 +22,5 @@ sealed interface OverviewScreenEvent {
 	data class EditStatisticsWidget(val context: String): OverviewScreenEvent
 	data class EditBowler(val id: UUID): OverviewScreenEvent
 	data class ShowBowlerDetails(val id: UUID): OverviewScreenEvent
+	data class ShowStatistics(val widget: UUID): OverviewScreenEvent
 }

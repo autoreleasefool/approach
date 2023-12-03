@@ -28,6 +28,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
+	onShowStatistics: (UUID) -> Unit,
 ) {
 	composable(
 		route = bowlerDetailsNavigationRoute,
@@ -43,6 +44,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 			onShowGearDetails = onShowGearDetails,
 			onShowPreferredGearPicker = onShowPreferredGearPicker,
 			onEditStatisticsWidgets = onEditStatisticsWidgets,
+			onShowStatistics = onShowStatistics,
 		)
 	}
 }

@@ -26,6 +26,7 @@ internal fun OverviewRoute(
 	onAddBowler: () -> Unit,
 	onShowBowlerDetails: (UUID) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
+	onShowStatistics: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OverviewViewModel = hiltViewModel(),
 ) {
@@ -41,6 +42,7 @@ internal fun OverviewRoute(
 						is OverviewScreenEvent.ShowBowlerDetails -> onShowBowlerDetails(it.id)
 						is OverviewScreenEvent.EditBowler -> onEditBowler(it.id)
 						is OverviewScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
+						is OverviewScreenEvent.ShowStatistics -> onShowStatistics(it.widget)
 						OverviewScreenEvent.AddBowler -> onAddBowler()
 					}
 				}

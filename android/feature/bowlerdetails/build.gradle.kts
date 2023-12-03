@@ -8,7 +8,9 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:statistics"))
 	implementation(project(":feature:bowlerdetails:ui"))
 	implementation(project(":feature:leagueslist:ui"))
 	implementation(project(":feature:gearlist:ui"))
+	implementation(project(":feature:statisticswidget:ui"))
 }

@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersList
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayout
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
 
 @Composable
@@ -21,12 +22,15 @@ fun Overview(
 		onAction = { onAction(OverviewUiAction.BowlersListAction(it)) },
 		modifier = modifier,
 		header = {
-			StatisticsWidgetPlaceholderCard(
-				onClick = { onAction(OverviewUiAction.EditStatisticsWidgetClicked) },
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 16.dp),
-			)
+			state.widgets?.let { layout ->
+				StatisticsWidgetLayout(
+					state = layout,
+					onAction = { onAction(OverviewUiAction.StatisticsWidgetLayout(it)) },
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 16.dp),
+				)
+			}
 
 			Text(
 				text = stringResource(R.string.bowler_list_title),

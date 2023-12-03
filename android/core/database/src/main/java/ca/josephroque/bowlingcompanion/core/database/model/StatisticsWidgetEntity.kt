@@ -58,7 +58,7 @@ data class StatisticsWidgetPriorityUpdateEntity(
 )
 
 data class StatisticsWidgetCreateEntity(
-	@ColumnInfo(name = "bowler_id") val bowlerId: UUID?,
+	@ColumnInfo(name = "bowler_id") val bowlerId: UUID,
 	@ColumnInfo(name = "league_id") val leagueId: UUID?,
 	val id: UUID,
 	val timeline: StatisticsWidgetTimeline,

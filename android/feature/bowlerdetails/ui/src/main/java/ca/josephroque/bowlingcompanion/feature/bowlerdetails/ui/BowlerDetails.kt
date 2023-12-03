@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.leaguesList
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayout
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
 
 @Composable
@@ -38,13 +39,16 @@ fun BowlerDetails(
 		modifier = modifier
 			.fillMaxSize()
 	) {
-		item {
-			StatisticsWidgetPlaceholderCard(
-				onClick = { onAction(BowlerDetailsUiAction.EditStatisticsWidgetClicked) },
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 16.dp),
-			)
+		state.widgets?.let { layout ->
+			item(contentType = "statistics_widget_layout") {
+				StatisticsWidgetLayout(
+					state = layout,
+					onAction = { onAction(BowlerDetailsUiAction.StatisticsWidgetLayout(it)) },
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 16.dp),
+				)
+			}
 		}
 
 		bowlerLeaguesList(
