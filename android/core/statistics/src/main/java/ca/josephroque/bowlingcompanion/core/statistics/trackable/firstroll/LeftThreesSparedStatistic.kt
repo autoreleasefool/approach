@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isLeftThree
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -15,7 +16,7 @@ data class LeftThreesSparedStatistic(
 	var leftThrees: Int = 0,
 	var leftThreesSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_left_threes_spared
+	override val id = StatisticID.LEFT_THREES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_left_threes
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = false

@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.editor
 
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiState
 import java.util.UUID
@@ -23,7 +24,7 @@ sealed interface StatisticsWidgetEditorScreenUiAction {
 
 	data class UpdatedBowler(val bowler: UUID?): StatisticsWidgetEditorScreenUiAction
 	data class UpdatedLeague(val league: UUID?): StatisticsWidgetEditorScreenUiAction
-	data class UpdatedStatistic(val statistic: Int): StatisticsWidgetEditorScreenUiAction
+	data class UpdatedStatistic(val statistic: StatisticID): StatisticsWidgetEditorScreenUiAction
 }
 
 sealed interface StatisticsWidgetEditorScreenEvent {

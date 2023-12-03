@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
@@ -14,7 +15,7 @@ data class MatchesLostStatistic(
 	var matchesPlayed: Int = 0,
 	var matchesLost: Int = 0,
 ): PercentageStatistic, TrackablePerGame {
-	override val titleResourceId = R.string.statistic_title_match_play_losses
+	override val id = StatisticID.MATCHES_LOST
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS

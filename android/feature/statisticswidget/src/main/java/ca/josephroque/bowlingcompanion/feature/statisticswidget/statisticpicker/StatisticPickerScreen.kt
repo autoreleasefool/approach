@@ -15,13 +15,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPicker
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPickerTopBar
 import kotlinx.coroutines.launch
 
 @Composable
 internal fun StatisticPickerRoute(
-	onDismissWithResult: (Int) -> Unit,
+	onDismissWithResult: (StatisticID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: StatisticPickerViewModel = hiltViewModel()
 ) {

@@ -43,6 +43,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 ): ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
 	private val _context = savedStateHandle.get<String>(CONTEXT) ?: ""
 	private val _initialSource: StatisticsWidgetInitialSource? = savedStateHandle.get<String>(INITIAL_SOURCE)?.let {
+		if (it == "nan") return@let null
 		val split = it.split("_")
 		when (split[0]) {
 			"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
@@ -113,7 +114,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 			is StatisticsWidgetEditorScreenUiAction.StatisticsWidgetEditor -> handleStatisticsWidgetEditorAction(action.action)
 			is StatisticsWidgetEditorScreenUiAction.UpdatedBowler -> updateSourceBowler(bowlerId = action.bowler)
 			is StatisticsWidgetEditorScreenUiAction.UpdatedLeague -> updateSourceLeague(leagueId = action.league)
-			is StatisticsWidgetEditorScreenUiAction.UpdatedStatistic -> _statistic.value = allStatistics().first { it.titleResourceId == action.statistic }
+			is StatisticsWidgetEditorScreenUiAction.UpdatedStatistic -> _statistic.value = allStatistics().first { it.id == action.statistic }
 		}
 	}
 
@@ -140,7 +141,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 					context = _context,
 					priority = _priority,
 					timeline = _timeline.value,
-					statistic = _statistic.value.titleResourceId,
+					statistic = _statistic.value.id,
 				)
 				is StatisticsWidgetSource.League -> StatisticsWidgetCreate(
 					bowlerId = source.bowlerId,
@@ -149,7 +150,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 					context = _context,
 					priority = _priority,
 					timeline = _timeline.value,
-					statistic = _statistic.value.titleResourceId,
+					statistic = _statistic.value.id,
 				)
 			}
 

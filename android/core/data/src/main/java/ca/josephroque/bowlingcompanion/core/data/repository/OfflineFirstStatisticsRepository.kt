@@ -83,7 +83,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 				images = emptyList(),
 				entries = categoryStatistics.map {
 					StatisticListEntry(
-						title = it.titleResourceId,
+						title = it.id.titleResourceId,
 						description = null, // TODO: Showing Statistics Descriptions
 						value = it.formattedValue,
 						isHighlightedAsNew = false, // TODO: use isEligibleForNewLabel && isSeenKey
@@ -98,10 +98,11 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		filter: TrackableFilter
 	): StatisticChartContent {
 		if (!statistic.supportsSource(filter.source)) {
-			return StatisticChartContent.ChartUnavailable(statistic.titleResourceId)
+			return StatisticChartContent.ChartUnavailable(statistic.id)
 		}
 
-		return StatisticChartContent.DataMissing(statistic.titleResourceId)
+		// TODO: Remove following line
+		return StatisticChartContent.ChartUnavailable(statistic.id)
 
 //		val chartContent = when (filter.source) {
 //			is TrackableFilter.Source.Bowler, is TrackableFilter.Source.League, is TrackableFilter.Source.Game -> {

@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
@@ -12,7 +13,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.HighestOfStati
 data class HighSingleStatistic(
 	var highSingle: Int = 0,
 ): TrackablePerGame, HighestOfStatistic {
-	override val titleResourceId = R.string.statistic_title_high_single
+	override val id = StatisticID.HIGH_SINGLE_GAME
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS

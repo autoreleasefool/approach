@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker
 
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPickerUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPickerUiState
 
@@ -12,5 +13,5 @@ sealed interface StatisticPickerScreenUiAction {
 }
 
 sealed interface StatisticPickerScreenEvent {
-	data class Dismissed(val result: Int): StatisticPickerScreenEvent
+	data class Dismissed(val result: StatisticID): StatisticPickerScreenEvent
 }

@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetEditorRoute
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import java.util.UUID
@@ -39,7 +40,7 @@ fun NavGraphBuilder.statisticsWidgetEditorScreen(
 	onBackPressed: () -> Unit,
 	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickStatistic: (Int, NavResultCallback<Int>) -> Unit,
+	onPickStatistic: (StatisticID, NavResultCallback<StatisticID>) -> Unit,
 ) {
 	composable(
 		route = statisticsWidgetEditorNavigationRoute,

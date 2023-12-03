@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker
 
 import androidx.lifecycle.SavedStateHandle
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.widgetStatistics
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.SELECTED_STATISTIC
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPickerUiAction
@@ -15,7 +16,7 @@ import javax.inject.Inject
 class StatisticPickerViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 ): ApproachViewModel<StatisticPickerScreenEvent>() {
-	private val _initiallySelectedStatisticTitle = savedStateHandle.get<Int>(SELECTED_STATISTIC) ?: 0
+	private val _initiallySelectedStatisticTitle = savedStateHandle.get<StatisticID>(SELECTED_STATISTIC) ?: StatisticID.GAME_AVERAGE
 
 	private val _uiState: MutableStateFlow<StatisticPickerScreenUiState> = widgetStatistics().let {
 		MutableStateFlow(StatisticPickerScreenUiState(
@@ -23,7 +24,7 @@ class StatisticPickerViewModel @Inject constructor(
 				statistics = it,
 				selectedStatistic = it.firstNotNullOfOrNull { group ->
 					group.statistics.firstOrNull { statistic ->
-						statistic.titleResourceId == _initiallySelectedStatisticTitle
+						statistic.id == _initiallySelectedStatisticTitle
 					}
 				} ?: it.first().statistics.first(),
 			)
@@ -49,7 +50,7 @@ class StatisticPickerViewModel @Inject constructor(
 						selectedStatistic = action.statistic,
 					)
 				)
-				sendEvent(StatisticPickerScreenEvent.Dismissed(action.statistic.titleResourceId))
+				sendEvent(StatisticPickerScreenEvent.Dismissed(action.statistic.id))
 			}
 		}
 	}

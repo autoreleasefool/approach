@@ -3,8 +3,8 @@ package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.isAce
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
-import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatis
 data class AcesStatistic(
 	var aces: Int = 0,
 ): TrackablePerFirstRoll, CountingStatistic {
-	override val titleResourceId = R.string.statistic_title_aces
+	override val id = StatisticID.ACES
 	override val category = StatisticCategory.ACES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS

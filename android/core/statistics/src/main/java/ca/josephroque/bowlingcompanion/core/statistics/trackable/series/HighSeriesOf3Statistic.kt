@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeries
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfiguration
@@ -12,7 +13,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.HighestOfStati
 data class HighSeriesOf3Statistic(
 	var highSeries: Int = 0,
 ): TrackablePerSeries, HighestOfStatistic {
-	override val titleResourceId = R.string.statistic_title_high_series_of_3
+	override val id = StatisticID.HIGH_SERIES_OF_3
 	override val category = StatisticCategory.SERIES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS

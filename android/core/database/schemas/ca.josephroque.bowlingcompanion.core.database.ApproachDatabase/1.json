@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "304fbee4c0f8f5a8b72c15a9c070cae9",
+    "identityHash": "f487301fc322bac7163c291aa7fd0c4d",
     "entities": [
       {
         "tableName": "bowlers",
@@ -1390,7 +1390,7 @@
       },
       {
         "tableName": "statistics_widget",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `bowler_id` BLOB NOT NULL, `league_id` BLOB, `timeline` TEXT NOT NULL, `statistic` INTEGER NOT NULL, `context` TEXT NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`bowler_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `bowler_id` BLOB NOT NULL, `league_id` BLOB, `timeline` TEXT NOT NULL, `statistic` TEXT NOT NULL, `context` TEXT NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`bowler_id`) REFERENCES `bowlers`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`league_id`) REFERENCES `leagues`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -1419,7 +1419,7 @@
           {
             "fieldPath": "statistic",
             "columnName": "statistic",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -1481,7 +1481,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '304fbee4c0f8f5a8b72c15a9c070cae9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f487301fc322bac7163c291aa7fd0c4d')"
     ]
   }
 }

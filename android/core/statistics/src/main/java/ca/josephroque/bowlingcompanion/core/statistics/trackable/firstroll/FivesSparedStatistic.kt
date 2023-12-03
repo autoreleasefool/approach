@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isFive
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -15,7 +16,7 @@ data class FivesSparedStatistic(
 	var fives: Int = 0,
 	var fivesSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_fives_spared
+	override val id = StatisticID.FIVES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_fives
 	override val category = StatisticCategory.FIVES
 	override val isEligibleForNewLabel = false

@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.trackable.overall
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -11,7 +12,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatis
 data class TotalRollsStatistic(
 	var totalRolls: Int = 0,
 ): TrackablePerFrame, CountingStatistic {
-	override val titleResourceId = R.string.statistic_title_total_rolls
+	override val id = StatisticID.TOTAL_ROLLS
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null

@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.isMiddleHit
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -14,7 +15,7 @@ data class MiddleHitsStatistic(
 	var middleHits: Int = 0,
 	override var totalRolls: Int = 0,
 ): TrackablePerFirstRoll, FirstRollStatistic {
-	override val titleResourceId = R.string.statistic_title_middle_hits
+	override val id = StatisticID.MIDDLE_HITS
 	override val category = StatisticCategory.MIDDLE_HITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS

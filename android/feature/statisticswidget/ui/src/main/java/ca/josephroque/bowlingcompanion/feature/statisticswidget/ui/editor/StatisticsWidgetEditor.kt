@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
-import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionHeader
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 
@@ -52,7 +51,7 @@ fun StatisticsWidgetEditor(
 
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_widget_editor_statistic),
-			selectedName = stringResource(state.statistic.titleResourceId),
+			selectedName = stringResource(state.statistic.id.titleResourceId),
 			onClick = { onAction(StatisticsWidgetEditorUiAction.StatisticClicked) },
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)

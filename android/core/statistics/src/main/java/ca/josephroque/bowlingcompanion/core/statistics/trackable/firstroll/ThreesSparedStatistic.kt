@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.isThree
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -16,7 +17,7 @@ data class ThreesSparedStatistic(
 	var threes: Int = 0,
 	var threesSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_threes_spared
+	override val id = StatisticID.THREES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_threes
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = false

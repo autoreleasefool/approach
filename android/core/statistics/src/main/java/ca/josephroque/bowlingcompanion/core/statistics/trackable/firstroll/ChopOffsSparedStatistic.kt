@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isChop
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -15,7 +16,7 @@ data class ChopOffsSparedStatistic(
 	var chopOffs: Int = 0,
 	var chopOffsSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_chop_offs_spared
+	override val id = StatisticID.CHOPS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_chop_offs
 	override val category = StatisticCategory.CHOPS
 	override val isEligibleForNewLabel = false

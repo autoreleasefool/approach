@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isRightSplitWithBonus
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -14,7 +15,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatis
 data class RightSplitsStatistic(
 	var rightSplits: Int = 0,
 ): TrackablePerFirstRoll, CountingStatistic {
-	override val titleResourceId = R.string.statistic_title_right_splits
+	override val id = StatisticID.RIGHT_SPLITS
 	override val category = StatisticCategory.SPLITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS

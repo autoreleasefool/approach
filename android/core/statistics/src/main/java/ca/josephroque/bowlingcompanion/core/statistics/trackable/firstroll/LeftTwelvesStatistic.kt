@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.isLeftTwelve
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -13,7 +14,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatis
 data class LeftTwelvesStatistic(
 	var leftTwelves: Int = 0,
 ): TrackablePerFirstRoll, CountingStatistic {
-	override val titleResourceId = R.string.statistic_title_left_twelves
+	override val id = StatisticID.LEFT_TWELVES
 	override val category = StatisticCategory.TWELVES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS

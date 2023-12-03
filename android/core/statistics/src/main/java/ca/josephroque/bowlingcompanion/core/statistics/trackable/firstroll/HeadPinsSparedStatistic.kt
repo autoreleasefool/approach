@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.isHeadPin2
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -16,7 +17,7 @@ data class HeadPinsSparedStatistic(
 	var headPins: Int = 0,
 	var headPinsSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_head_pins_spared
+	override val id = StatisticID.HEAD_PINS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_head_pins
 	override val category = StatisticCategory.HEAD_PINS
 	override val isEligibleForNewLabel = false

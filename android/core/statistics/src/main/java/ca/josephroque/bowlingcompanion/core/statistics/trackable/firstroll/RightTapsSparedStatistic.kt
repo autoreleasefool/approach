@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isRightTap
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -15,7 +16,7 @@ data class RightTapsSparedStatistic(
 	var rightTaps: Int = 0,
 	var rightTapsSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_right_taps_spared
+	override val id = StatisticID.RIGHT_TAPS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_right_taps
 	override val category = StatisticCategory.TAPS
 	override val isEligibleForNewLabel = false

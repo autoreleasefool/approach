@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.trackable.matchplay
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
@@ -11,7 +12,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatis
 data class MatchesPlayedStatistic(
 	var matchesPlayed: Int = 0,
 ): CountingStatistic, TrackablePerGame {
-	override val titleResourceId = R.string.statistic_title_match_plays
+	override val id = StatisticID.MATCHES_PLAYED
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null

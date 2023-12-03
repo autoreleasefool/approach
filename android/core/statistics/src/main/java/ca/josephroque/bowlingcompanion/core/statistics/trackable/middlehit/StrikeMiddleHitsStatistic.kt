@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isMiddleHit
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -16,7 +17,7 @@ data class StrikeMiddleHitsStatistic(
 	var middleHits: Int = 0,
 	var strikes: Int = 0,
 ): TrackablePerFrame, PercentageStatistic {
-	override val titleResourceId = R.string.statistic_title_strike_middle_hits
+	override val id = StatisticID.STRIKE_MIDDLE_HITS
 	override val category = StatisticCategory.MIDDLE_HITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS

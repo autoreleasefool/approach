@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -13,7 +14,7 @@ data class FoulsStatistic(
 	var fouls: Int = 0,
 	var totalRolls: Int = 0,
 ): PercentageStatistic, TrackablePerFrame {
-	override val titleResourceId = R.string.statistic_title_fouls
+	override val id = StatisticID.FOULS
 	override val category = StatisticCategory.FOULS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS

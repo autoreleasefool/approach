@@ -4,7 +4,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 
 interface SecondRollStatistic: PercentageStatistic, TrackablePerSecondRoll {
 	override val numeratorTitleResourceId: Int
-		get() = titleResourceId
+		get() = id.titleResourceId
 
 	override val includeNumeratorInFormattedValue: Boolean
 		get() = true

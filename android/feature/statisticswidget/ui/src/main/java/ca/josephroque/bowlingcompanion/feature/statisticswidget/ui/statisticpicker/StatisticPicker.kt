@@ -37,10 +37,10 @@ fun StatisticPicker(
 
 			itemsIndexed(
 				items = group.statistics,
-				key = { _, statistic -> statistic.titleResourceId },
+				key = { _, statistic -> statistic.id },
 			) { index, statistic ->
 				StatisticRow(
-					title = statistic.titleResourceId,
+					title = statistic.id.titleResourceId,
 					isSelected = statistic == state.selectedStatistic,
 					onClick = { onAction(StatisticPickerUiAction.StatisticClicked(statistic)) },
 				)

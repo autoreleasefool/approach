@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker.StatisticPickerRoute
 
 const val SELECTED_STATISTIC = "selected_statistic"
@@ -14,8 +15,8 @@ const val SELECTED_STATISTIC = "selected_statistic"
 const val statisticPickerNavigationRoute = "statistic_picker/{$SELECTED_STATISTIC}"
 
 fun NavController.navigateToStatisticPickerForResult(
-	selectedStatistic: Int,
-	navResultCallback: NavResultCallback<Int>,
+	selectedStatistic: StatisticID,
+	navResultCallback: NavResultCallback<StatisticID>,
 ) {
 	this.navigateForResult(
 		"statistic_picker/$selectedStatistic",
@@ -26,12 +27,12 @@ fun NavController.navigateToStatisticPickerForResult(
 }
 
 fun NavGraphBuilder.statisticPickerScreen(
-	onDismissWithResult: (Int) -> Unit,
+	onDismissWithResult: (StatisticID) -> Unit,
 ) {
 	composable(
 		route = statisticPickerNavigationRoute,
 		arguments = listOf(
-			navArgument(SELECTED_STATISTIC) { type = NavType.IntType },
+			navArgument(SELECTED_STATISTIC) { type = NavType.EnumType(StatisticID::class.java) },
 		),
 	) {
 		StatisticPickerRoute(

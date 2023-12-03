@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
@@ -17,7 +18,7 @@ data class AveragePinsLeftOnDeckStatistic(
 	var totalPinsLeftOnDeck: Int = 0,
 	var gamesPlayed: MutableSet<UUID> = mutableSetOf(),
 ): TrackablePerFrame, AveragingStatistic {
-	override val titleResourceId = R.string.statistic_title_average_pins_left_on_deck
+	override val id = StatisticID.AVERAGE_PINS_LEFT_ON_DECK
 	override val category = StatisticCategory.PINS_LEFT_ON_DECK
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS

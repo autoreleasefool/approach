@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.isLeftSplitWithBonus
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -17,7 +18,7 @@ data class LeftSplitsSparedStatistic(
 	var leftSplits: Int = 0,
 	var leftSplitsSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_left_splits_spared
+	override val id = StatisticID.LEFT_SPLITS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_left_splits
 	override val category = StatisticCategory.SPLITS
 	override val isEligibleForNewLabel = false

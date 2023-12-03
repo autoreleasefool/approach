@@ -14,7 +14,7 @@ interface FirstRollStatistic: PercentageStatistic, TrackablePerFirstRoll {
 	): Boolean
 
 	override val numeratorTitleResourceId: Int
-		get() = titleResourceId
+		get() = id.titleResourceId
 
 	override val denominatorTitleResourceId: Int
 		get() = R.string.statistic_title_total_rolls

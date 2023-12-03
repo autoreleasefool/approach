@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorTopBar
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ fun StatisticsWidgetEditorRoute(
 	onBackPressed: () -> Unit,
 	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickStatistic: (Int, NavResultCallback<Int>) -> Unit,
+	onPickStatistic: (StatisticID, NavResultCallback<StatisticID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: StatisticsWidgetEditorViewModel = hiltViewModel(),
 ) {
@@ -49,7 +50,7 @@ fun StatisticsWidgetEditorRoute(
 								viewModel.handleAction(StatisticsWidgetEditorScreenUiAction.UpdatedLeague(ids.firstOrNull()))
 							}
 						is StatisticsWidgetEditorScreenEvent.EditStatistic ->
-							onPickStatistic(it.statistic.titleResourceId) { id ->
+							onPickStatistic(it.statistic.id) { id ->
 								viewModel.handleAction(StatisticsWidgetEditorScreenUiAction.UpdatedStatistic(id))
 							}
 					}

@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.isLeftTwelve
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
@@ -15,7 +16,7 @@ data class LeftTwelvesSparedStatistic(
 	var leftTwelves: Int = 0,
 	var leftTwelvesSpared: Int = 0,
 ): TrackablePerSecondRoll, SecondRollStatistic {
-	override val titleResourceId = R.string.statistic_title_left_twelves_spared
+	override val id = StatisticID.LEFT_TWELVES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_left_twelves
 	override val category = StatisticCategory.TWELVES
 	override val isEligibleForNewLabel = false

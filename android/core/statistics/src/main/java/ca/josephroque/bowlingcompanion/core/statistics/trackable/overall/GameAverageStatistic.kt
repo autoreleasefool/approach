@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
@@ -13,7 +14,7 @@ data class GameAverageStatistic(
 	var totalPinFall: Int = 0,
 	var totalGames: Int = 0,
 ): TrackablePerGame, AveragingStatistic {
-	override val titleResourceId = R.string.statistic_title_game_average
+	override val id = StatisticID.GAME_AVERAGE
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
