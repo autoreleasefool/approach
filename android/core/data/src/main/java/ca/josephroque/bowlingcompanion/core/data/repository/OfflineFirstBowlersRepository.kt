@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +22,9 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): BowlersRepository {
+	override fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary> =
+		bowlerDao.getBowlerSummary(bowlerId)
+
 	override fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails> =
 		bowlerDao.getBowlerDetails(bowlerId)
 

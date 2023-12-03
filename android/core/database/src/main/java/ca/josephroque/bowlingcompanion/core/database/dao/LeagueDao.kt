@@ -8,14 +8,40 @@ import ca.josephroque.bowlingcompanion.core.database.model.LeagueCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Dao
 abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
+	@Query(
+		"""
+			SELECT
+				bowlers.id AS id,
+				bowlers.name AS name
+			FROM leagues
+			JOIN bowlers ON leagues.bowler_id = bowlers.id
+			WHERE leagues.id = :leagueId
+		"""
+	)
+	abstract fun getLeagueBowler(leagueId: UUID): Flow<BowlerSummary>
+
+	@Query(
+		"""
+			SELECT
+				leagues.id AS id,
+				leagues.name AS name
+			FROM leagues
+			WHERE leagues.id = :leagueId
+
+		"""
+	)
+	abstract fun getLeagueSummary(leagueId: UUID): Flow<LeagueSummary>
+
 	@Query("""
 		SELECT 
 		 id,

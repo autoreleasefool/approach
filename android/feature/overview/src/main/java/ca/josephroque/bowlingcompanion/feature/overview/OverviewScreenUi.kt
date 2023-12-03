@@ -18,8 +18,8 @@ sealed interface OverviewScreenUiAction {
 
 sealed interface OverviewScreenEvent {
 	data object AddBowler: OverviewScreenEvent
-	data object EditStatisticsWidget: OverviewScreenEvent
 
+	data class EditStatisticsWidget(val context: String): OverviewScreenEvent
 	data class EditBowler(val id: UUID): OverviewScreenEvent
 	data class ShowBowlerDetails(val id: UUID): OverviewScreenEvent
 }

@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.overview
+package ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,21 +15,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
-import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBar
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPicker
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker.StatisticPickerTopBar
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @Composable
-internal fun OverviewRoute(
-	onEditBowler: (UUID) -> Unit,
-	onAddBowler: () -> Unit,
-	onShowBowlerDetails: (UUID) -> Unit,
-	onEditStatisticsWidgets: (String) -> Unit,
+internal fun StatisticPickerRoute(
+	onDismissWithResult: (Int) -> Unit,
 	modifier: Modifier = Modifier,
-	viewModel: OverviewViewModel = hiltViewModel(),
+	viewModel: StatisticPickerViewModel = hiltViewModel()
 ) {
-	val overviewScreenState by viewModel.uiState.collectAsStateWithLifecycle()
+	val statisticPickerState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -38,17 +34,14 @@ internal fun OverviewRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is OverviewScreenEvent.ShowBowlerDetails -> onShowBowlerDetails(it.id)
-						is OverviewScreenEvent.EditBowler -> onEditBowler(it.id)
-						is OverviewScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
-						OverviewScreenEvent.AddBowler -> onAddBowler()
+						is StatisticPickerScreenEvent.Dismissed -> onDismissWithResult(it.result)
 					}
 				}
 		}
 	}
 
-	OverviewScreen(
-		state = overviewScreenState,
+	StatisticPickerScreen(
+		state = statisticPickerState,
 		onAction = viewModel::handleAction,
 		modifier = modifier,
 	)
@@ -56,29 +49,26 @@ internal fun OverviewRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun OverviewScreen(
-	state: OverviewScreenUiState,
-	onAction: (OverviewScreenUiAction) -> Unit,
+private fun StatisticPickerScreen(
+	state: StatisticPickerScreenUiState,
+	onAction: (StatisticPickerScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
 	Scaffold(
 		topBar = {
-			OverviewTopBar(
-				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
+			StatisticPickerTopBar(
+				onAction = { onAction(StatisticPickerScreenUiAction.StatisticPicker(it)) },
 				scrollBehavior = scrollBehavior,
 			)
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
-		when (state) {
-			OverviewScreenUiState.Loading -> Unit
-			is OverviewScreenUiState.Loaded -> Overview(
-				state = state.overview,
-				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
-				modifier = Modifier.padding(padding),
-			)
-		}
+		StatisticPicker(
+			state = state.statisticPicker,
+			onAction = { onAction(StatisticPickerScreenUiAction.StatisticPicker(it)) },
+			modifier = Modifier.padding(padding),
+		)
 	}
 }

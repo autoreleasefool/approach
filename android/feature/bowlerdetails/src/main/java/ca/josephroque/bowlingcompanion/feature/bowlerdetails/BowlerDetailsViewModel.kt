@@ -25,6 +25,8 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
+private const val STATISTICS_WIDGET_CONTEXT = "bowlerdetails"
+
 @HiltViewModel
 class BowlerDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
@@ -76,7 +78,7 @@ class BowlerDetailsViewModel @Inject constructor(
 		when (action) {
 			BowlerDetailsUiAction.BackClicked -> sendEvent(BowlerDetailsScreenEvent.Dismissed)
 			BowlerDetailsUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
-			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget)
+			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
 			BowlerDetailsUiAction.ManageGearClicked -> showPreferredGearPicker()
 			is BowlerDetailsUiAction.GearClicked -> sendEvent(BowlerDetailsScreenEvent.ShowGearDetails(action.id))
 			is BowlerDetailsUiAction.LeaguesListAction -> handleLeaguesListAction(action.action)

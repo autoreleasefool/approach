@@ -62,6 +62,10 @@ import ca.josephroque.bowlingcompanion.feature.settings.navigation.statisticsSet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsOverviewScreen
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticPickerForResult
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetEditor
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticPickerScreen
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetEditorScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 
 @Composable
@@ -91,6 +95,9 @@ fun ApproachNavHost(
 			onEditBowler = navController::navigateToBowlerForm,
 			onAddBowler = { navController.navigateToNewBowlerForm(BowlerKind.PLAYABLE) },
 			onShowBowlerDetails = navController::navigateToBowlerDetails,
+			// TODO: Change to appropriate navigation for statistics widget editor
+//			onEditStatisticsWidgets = navController::navigateToStatisticsWidgetLayoutEditor,
+			onEditStatisticsWidgets = { navController.navigateToStatisticsWidgetEditor(it, null, 0) },
 		)
 		statisticsOverviewScreen(
 			onPickBowler = { bowler, result ->
@@ -154,6 +161,7 @@ fun ApproachNavHost(
 					resourceType = ResourcePickerType.GEAR,
 				)
 			},
+			onEditStatisticsWidgets = { /* TODO: onEditStatisticsWidgets */ },
 		)
 		leagueFormScreen(
 			onBackPressed = navController::popBackStack,
@@ -241,6 +249,35 @@ fun ApproachNavHost(
 		)
 		statisticsDetailsScreen(
 			onBackPressed = navController::popBackStack,
+		)
+		statisticsWidgetEditorScreen(
+			onBackPressed = navController::popBackStack,
+			onPickBowler = { bowler, result ->
+				navController.navigateToResourcePickerForResult(
+					selectedIds = bowler?.let { setOf(it) } ?: emptySet(),
+					limit = 1,
+					navResultCallback = result,
+					resourceType = ResourcePickerType.BOWLER,
+				)
+			},
+			onPickLeague = { bowler, league, result ->
+				navController.navigateToResourcePickerForResult(
+					selectedIds = league?.let { setOf(it) } ?: emptySet(),
+					limit = 1,
+					navResultCallback = result,
+					resourceType = ResourcePickerType.LEAGUE,
+					resourceParentId = bowler,
+				)
+			},
+			onPickStatistic = { statistic, result ->
+				navController.navigateToStatisticPickerForResult(
+					selectedStatistic = statistic,
+					navResultCallback = result,
+				)
+			},
+		)
+		statisticPickerScreen(
+			onDismissWithResult = navController::popBackStackWithResult,
 		)
 	}
 }

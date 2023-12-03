@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics
 
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticGroup
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll.AcesSparedStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll.AcesStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll.ChopOffsSparedStatistic
@@ -157,3 +158,9 @@ fun allStatistics(
 }.filter {
 	supportingWidgets == null || !supportingWidgets || it.supportsWidgets
 }
+
+fun widgetStatistics(): List<StatisticGroup> =
+	allStatistics(supportingWidgets = true)
+		.groupBy { it.category }
+		.toSortedMap { o1, o2 -> o1.ordinal.compareTo(o2.ordinal) }
+		.map { StatisticGroup(it.key.titleResourceId, it.value) }

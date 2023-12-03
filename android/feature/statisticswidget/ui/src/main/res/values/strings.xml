@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="statistics_widget_editor_title">Create a Widget</string>
+
+	<string name="statistics_widget_editor_timeline_description">Choose a shorter timeline to only be shown recent stats, or a longer timeline to be shown measurements over years.</string>
+
+	<string name="statistics_widget_editor_filter_bowler">Bowler</string>
+	<string name="statistics_widget_editor_filter_league">League</string>
+	<string name="statistics_widget_editor_filter_description">Filter to a specific league for a better look at how you perform in one setting.</string>
+
+	<string name="statistics_widget_editor_statistic">Statistic</string>
+
+	<string name="statistics_widget_editor_preview">Preview</string>
+
+	<string name="statistics_widget_timeline">Timeline</string>
+	<string name="statistics_widget_timeline_one_month">Past Month</string>
+	<string name="statistics_widget_timeline_three_months">Past 3 Months</string>
+	<string name="statistics_widget_timeline_six_months">Past 6 Months</string>
+	<string name="statistics_widget_timeline_one_year">Past Year</string>
+	<string name="statistics_widget_timeline_all_time">All Time</string>
+
+	<string name="statistic_picker_title">Statistic</string>
+
 	<string name="statistics_widget_placeholder_title">Statistics at a glance</string>
 	<string name="statistics_widget_placeholder_message">Tap here to configure the stats you want to see</string>
 </resources>

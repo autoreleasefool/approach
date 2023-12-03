@@ -76,6 +76,7 @@ dependencies {
 	implementation(project(":feature:settings"))
 	implementation(project(":feature:statisticsdetails"))
 	implementation(project(":feature:statisticsoverview"))
+	implementation(project(":feature:statisticswidget"))
 
 	implementation(platform(libs.androidx.compose.bom))
 	implementation(libs.androidx.compose.foundation)

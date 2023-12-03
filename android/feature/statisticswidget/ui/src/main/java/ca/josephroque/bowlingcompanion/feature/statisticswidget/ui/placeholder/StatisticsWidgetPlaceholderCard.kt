@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui
+package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

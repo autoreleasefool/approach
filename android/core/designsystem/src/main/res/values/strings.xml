@@ -23,6 +23,8 @@
 	<string name="cd_decrement">Decrement</string>
 	<string name="cd_increment">Increment</string>
 	<string name="cd_selected">Selected</string>
+	<string name="cd_resource_selected">Selected</string>
+	<string name="cd_resource_deselected">Not Selected</string>
 
 	<string name="none">None</string>
 	<string name="all">All</string>

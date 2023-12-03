@@ -30,6 +30,7 @@ internal fun BowlerDetailsRoute(
 	onShowLeagueDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditStatisticsWidgets: (String) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
 ) {
@@ -47,7 +48,7 @@ internal fun BowlerDetailsRoute(
 						is BowlerDetailsScreenEvent.EditLeague -> onEditLeague(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowLeagueDetails -> onShowLeagueDetails(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowGearDetails -> onShowGearDetails(it.gearId)
-						is BowlerDetailsScreenEvent.EditStatisticsWidget -> Unit // TODO: Show edit widget screen
+						is BowlerDetailsScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
 						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(it.selectedGear) { selectedGear ->
 							viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(selectedGear))
 						}

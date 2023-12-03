@@ -19,6 +19,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val STATISTICS_WIDGET_CONTEXT = "overview"
+
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
@@ -57,7 +59,7 @@ class OverviewViewModel @Inject constructor(
 	private fun handleOverviewAction(action: OverviewUiAction) {
 		when (action) {
 			is OverviewUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
-			is OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget)
+			is OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
 			is OverviewUiAction.BowlersListAction -> handleBowlersListAction(action.action)
 		}
 	}

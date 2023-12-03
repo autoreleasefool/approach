@@ -5,9 +5,11 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +22,12 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): LeaguesRepository {
+	override fun getLeagueBowler(id: UUID): Flow<BowlerSummary> =
+		leagueDao.getLeagueBowler(id)
+
+	override fun getLeagueSummary(id: UUID): Flow<LeagueSummary> =
+		leagueDao.getLeagueSummary(id)
+
 	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> =
 		leagueDao.getLeagueDetails(id)
 

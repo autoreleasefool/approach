@@ -10,12 +10,24 @@ import ca.josephroque.bowlingcompanion.core.database.model.BowlerUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import java.util.UUID
 
 @Dao
 abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
+	@Query(
+		"""
+			SELECT
+				bowlers.id AS id,
+				bowlers.name AS name
+			FROM bowlers
+			WHERE bowlers.id = :bowlerId
+		"""
+	)
+	abstract fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary>
+
 	@Query(
 		"""
 			SELECT

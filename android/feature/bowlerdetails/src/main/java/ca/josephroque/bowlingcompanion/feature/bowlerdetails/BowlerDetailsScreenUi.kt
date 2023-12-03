@@ -19,8 +19,8 @@ sealed interface BowlerDetailsScreenUiAction {
 
 sealed interface BowlerDetailsScreenEvent {
 	data object Dismissed: BowlerDetailsScreenEvent
-	data object EditStatisticsWidget: BowlerDetailsScreenEvent
 
+	data class EditStatisticsWidget(val context: String): BowlerDetailsScreenEvent
 	data class ShowPreferredGearPicker(val selectedGear: Set<UUID>): BowlerDetailsScreenEvent
 	data class EditLeague(val leagueId: UUID): BowlerDetailsScreenEvent
 	data class AddLeague(val bowlerId: UUID): BowlerDetailsScreenEvent

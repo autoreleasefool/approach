@@ -13,13 +13,12 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialo
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
-import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiAction
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.leaguesList
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.StatisticsWidgetPlaceholderCard
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
 
 @Composable
 fun BowlerDetails(
