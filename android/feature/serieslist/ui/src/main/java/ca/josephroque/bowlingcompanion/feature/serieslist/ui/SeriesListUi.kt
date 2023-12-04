@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.serieslist.ui
 
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
-import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import kotlinx.datetime.LocalDate
 import java.util.UUID

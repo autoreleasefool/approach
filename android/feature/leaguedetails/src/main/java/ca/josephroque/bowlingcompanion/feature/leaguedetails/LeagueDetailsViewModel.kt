@@ -14,9 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiS
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListChartItem
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiAction
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiState
-import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.patrykandpatrick.vico.core.entry.ChartModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
