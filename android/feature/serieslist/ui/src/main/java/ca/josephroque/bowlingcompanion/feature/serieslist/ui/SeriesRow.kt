@@ -36,11 +36,10 @@ import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
-import com.patrykandpatrick.vico.core.entry.ChartEntryModel
-import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
 import java.util.UUID
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +56,11 @@ fun SeriesRow(
 			contentAlignment = Alignment.BottomStart,
 		) {
 			if (series.scores != null) {
-				ScoreChart(series.scores)
+				ScoreChart(
+					scores = series.scores,
+					seriesLow = series.lowestScore,
+					seriesHigh = series.highestScore,
+				)
 			}
 
 			Column(
@@ -82,6 +85,8 @@ fun SeriesRow(
 				ScoreSummary(
 					numberOfGames = series.numberOfGames,
 					scores = series.scores,
+					seriesLow = series.lowestScore,
+					seriesHigh = series.highestScore,
 				)
 			}
 		}
@@ -111,7 +116,9 @@ private fun Header(date: LocalDate) {
 @Composable
 private fun ScoreSummary(
 	numberOfGames: Int,
-	scores: ChartEntryModel?,
+	seriesLow: Int,
+	seriesHigh: Int,
+	scores: ChartEntryModelProducer?,
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -138,8 +145,8 @@ private fun ScoreSummary(
 			Text(
 				text = stringResource(
 					R.string.series_list_score_range,
-					scores.minY.roundToInt(),
-					scores.maxY.roundToInt()
+					seriesLow,
+					seriesHigh,
 				),
 				style = MaterialTheme.typography.bodyMedium,
 				fontStyle = FontStyle.Italic,
@@ -149,7 +156,11 @@ private fun ScoreSummary(
 }
 
 @Composable
-private fun ScoreChart(scores: ChartEntryModel) {
+private fun ScoreChart(
+	seriesLow: Int,
+	seriesHigh: Int,
+	scores: ChartEntryModelProducer,
+) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
 			chartColors = listOf(colorResource(RCoreDesign.color.purple_300))
@@ -163,11 +174,11 @@ private fun ScoreChart(scores: ChartEntryModel) {
 					// Android sets the range to minScore..maxScore
 					// Results in iOS having less dramatic charts, but are relative to one another
 					// Android has greater variation in charts, but cannot be compared to one another
-					minY = scores.minY - 5,
-					maxY = scores.maxY + 5,
+					minY = seriesLow.toFloat() - 5,
+					maxY = seriesHigh.toFloat() + 5,
 				),
 			),
-			model = scores,
+			chartModelProducer = scores,
 			horizontalLayout = HorizontalLayout.FullWidth(),
 			modifier = Modifier
 				.fillMaxWidth()
@@ -188,7 +199,14 @@ private fun SeriesItemPreview() {
 					total = 880,
 					preBowl = SeriesPreBowl.REGULAR,
 					numberOfGames = 4,
-					scores = entryModelOf(220, 230, 215, 225),
+					lowestScore = 215,
+					highestScore = 230,
+					scores = ChartEntryModelProducer(listOf(
+						entryOf(0, 220),
+						entryOf(1, 230),
+						entryOf(2, 215),
+						entryOf(3, 225),
+					)),
 				),
 				onClick = {},
 				modifier = Modifier.padding(bottom = 16.dp),
@@ -200,7 +218,9 @@ private fun SeriesItemPreview() {
 					total = 880,
 					preBowl = SeriesPreBowl.REGULAR,
 					numberOfGames = 1,
-					scores = null,
+					lowestScore = 220,
+					highestScore = 220,
+					scores = ChartEntryModelProducer(listOf(entryOf(0, 220))),
 				),
 				onClick = {},
 			)

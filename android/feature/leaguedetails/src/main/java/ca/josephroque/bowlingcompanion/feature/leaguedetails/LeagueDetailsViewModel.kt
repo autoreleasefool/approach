@@ -14,7 +14,9 @@ import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiS
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListChartItem
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiAction
 import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiState
+import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.ChartModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,6 +40,7 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val _seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)
 	private val _isSeriesSortOrderShowing: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	private val _seriesSortOrder: MutableStateFlow<SeriesSortOrder> = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
+	private val _seriesChartModelProducers: MutableMap<UUID, ChartEntryModelProducer> = mutableMapOf()
 
 	private val _seriesList = _seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder)
@@ -58,7 +61,13 @@ class LeagueDetailsViewModel @Inject constructor(
 					sortOrder = seriesSortOrder,
 				),
 				seriesList = SeriesListUiState(
-					list = series.map(SeriesListItem::withChart),
+					list = series.map {
+						val chartModelProducer = _seriesChartModelProducers.getOrPut(it.properties.id) { ChartEntryModelProducer() }
+						chartModelProducer.setEntries(
+							it.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
+						)
+						it.withChart(chartModelProducer)
+					},
 					seriesToArchive = seriesToArchive,
 				)
 			),
@@ -109,13 +118,13 @@ class LeagueDetailsViewModel @Inject constructor(
 	}
 }
 
-private fun SeriesListItem.withChart(): SeriesListChartItem = SeriesListChartItem(
+private fun SeriesListItem.withChart(chartModelProducer: ChartEntryModelProducer): SeriesListChartItem = SeriesListChartItem(
 	id = properties.id,
 	date = properties.date,
 	preBowl = properties.preBowl,
 	total = properties.total,
 	numberOfGames = scores.size,
-	scores = ChartEntryModelProducer(
-		scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
-	).getModel()
+	lowestScore = scores.minOrNull() ?: 0,
+	highestScore = scores.maxOrNull() ?: 0,
+	scores = chartModelProducer,
 )

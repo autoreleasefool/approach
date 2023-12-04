@@ -29,15 +29,16 @@ import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
-import com.patrykandpatrick.vico.core.entry.ChartEntryModel
-import com.patrykandpatrick.vico.core.entry.entryModelOf
-import kotlin.math.roundToInt
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.entry.entryOf
 
 @Composable
 fun SeriesDetailsHeader(
 	numberOfGames: Int,
 	seriesTotal: Int,
-	scores: ChartEntryModel?,
+	seriesLow: Int?,
+	seriesHigh: Int?,
+	scores: ChartEntryModelProducer?,
 	modifier: Modifier = Modifier,
 ) {
 	Card(
@@ -60,16 +61,16 @@ fun SeriesDetailsHeader(
 					style = MaterialTheme.typography.titleMedium,
 				)
 
-				if (numberOfGames > 1 && scores != null) {
+				if (numberOfGames > 1 && seriesLow != null && seriesHigh != null) {
 					Column {
 						Text(
-							text = stringResource(R.string.series_details_high_game, scores.maxY.roundToInt()),
+							text = stringResource(R.string.series_details_high_game, seriesHigh),
 							style = MaterialTheme.typography.bodyLarge,
 							fontStyle = FontStyle.Italic,
 						)
 
 						Text(
-							text = stringResource(R.string.series_details_low_game, scores.minY.roundToInt()),
+							text = stringResource(R.string.series_details_low_game, seriesLow),
 							style = MaterialTheme.typography.bodyLarge,
 							fontStyle = FontStyle.Italic,
 						)
@@ -102,7 +103,7 @@ fun SeriesDetailsHeader(
 }
 
 @Composable
-private fun ScoreChart(scores: ChartEntryModel) {
+private fun ScoreChart(scores: ChartEntryModelProducer) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(chartColors = listOf(colorResource(RCoreDesign.color.purple_300))),
 	) {
@@ -118,7 +119,7 @@ private fun ScoreChart(scores: ChartEntryModel) {
 					maxY = 450F,
 				),
 			),
-			model = scores,
+			chartModelProducer = scores,
 			horizontalLayout = HorizontalLayout.FullWidth(),
 			modifier = Modifier
 				.fillMaxWidth()
@@ -134,7 +135,14 @@ private fun SeriesDetailsHeaderPreview() {
 		SeriesDetailsHeader(
 			numberOfGames = 4,
 			seriesTotal = 880,
-			scores = entryModelOf(200, 240,215, 225),
+			seriesLow = 200,
+			seriesHigh = 280,
+			scores = ChartEntryModelProducer(listOf(
+				entryOf(0, 200),
+				entryOf(1, 240),
+				entryOf(2, 215),
+				entryOf(3, 225),
+			)),
 			modifier = Modifier.padding(16.dp)
 		)
 	}

@@ -33,17 +33,23 @@ class SeriesDetailsViewModel @Inject constructor(
 
 	private val _gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
 
+	private val _chartModelProducer = ChartEntryModelProducer()
+
 	val uiState: StateFlow<SeriesDetailsScreenUiState> = combine(
 		_gameToArchive,
 		seriesRepository.getSeriesDetails(seriesId),
 		gamesRepository.getGamesList(seriesId),
 	) { gameToArchive, seriesDetails, games ->
-		SeriesDetailsScreenUiState.Loaded(
+		_chartModelProducer.setEntries(
+			seriesDetails.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
+		)
+
+		return@combine SeriesDetailsScreenUiState.Loaded(
 			seriesDetails = SeriesDetailsUiState(
 				details = seriesDetails.properties,
-				scores = ChartEntryModelProducer(
-					seriesDetails.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
-				).getModel(),
+				scores = _chartModelProducer,
+				seriesLow = seriesDetails.scores.minOrNull(),
+				seriesHigh = seriesDetails.scores.maxOrNull(),
 				gamesList = GamesListUiState(
 					list = games,
 					gameToArchive = gameToArchive,

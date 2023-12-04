@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.serieslist.ui
 
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
@@ -11,7 +12,9 @@ data class SeriesListChartItem(
 	val preBowl: SeriesPreBowl,
 	val total: Int,
 	val numberOfGames: Int,
-	val scores: ChartEntryModel?,
+	val lowestScore: Int,
+	val highestScore: Int,
+	val scores: ChartEntryModelProducer?,
 )
 
 data class SeriesListUiState(
