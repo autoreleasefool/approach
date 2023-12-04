@@ -9,5 +9,8 @@ android {
 
 dependencies {
 	implementation(project(":core:statistics"))
+	implementation(project(":core:statistics:charts"))
 	implementation(project(":feature:statisticsdetails:ui"))
+
+	implementation(libs.vico.compose)
 }

@@ -44,7 +44,7 @@ fun StatisticsDetailsList(
 
 				itemsIndexed(
 					items = group.entries,
-					key = { index, entry -> entry.title },
+					key = { _, entry -> entry.id },
 				) { index, entry ->
 					ListEntry(entry, onAction)
 					if (index < group.entries.size - 1) {
@@ -70,11 +70,11 @@ private fun ListEntry(
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = modifier
 			.fillMaxWidth()
-			.clickable(onClick = { onAction(StatisticsDetailsListUiAction.StatisticClicked(entry.title)) })
+			.clickable(onClick = { onAction(StatisticsDetailsListUiAction.StatisticClicked(entry.id)) })
 			.padding(16.dp),
 	) {
 		Text(
-			text = stringResource(entry.title),
+			text = stringResource(entry.id.titleResourceId),
 			style = MaterialTheme.typography.titleMedium,
 			color = MaterialTheme.colorScheme.onSurface,
 			modifier = Modifier.weight(1f).padding(end = 16.dp),

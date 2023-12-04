@@ -1,9 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.statistics.models
 
 import androidx.annotation.StringRes
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 
 data class StatisticListEntry(
-	@StringRes val title: Int,
+	val id: StatisticID,
 	@StringRes val description: Int?,
 	val value: String,
 	val isHighlightedAsNew: Boolean,

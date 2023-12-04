@@ -9,14 +9,11 @@ import ca.josephroque.bowlingcompanion.core.data.queries.utils.whereClauseArgs
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
-import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 
 data class TrackableGamesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
-	val configuration: TrackablePerGameConfiguration,
 ): TrackableSequence<TrackableGameEntity, TrackableGame>() {
 	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
@@ -26,10 +23,6 @@ data class TrackableGamesSequence(
 		query: String,
 		whereArgs: List<Any>
 	): PagingSource<Int, TrackableGameEntity> = statisticsDao.getTrackableGames(query, whereArgs)
-
-	override fun adjustByItem(statistics: List<Statistic>, item: TrackableGame) {
-		statistics.forEach { it.adjustByGame(game = item, configuration = configuration) }
-	}
 
 	override fun mapEntityToModel(entity: TrackableGameEntity) = entity.asModel()
 

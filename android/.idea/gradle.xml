@@ -40,6 +40,7 @@
             <option value="$PROJECT_DIR$/core/scoresheet" />
             <option value="$PROJECT_DIR$/core/scoring" />
             <option value="$PROJECT_DIR$/core/statistics" />
+            <option value="$PROJECT_DIR$/core/statistics/charts" />
             <option value="$PROJECT_DIR$/core/testing" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/accessoriesoverview" />

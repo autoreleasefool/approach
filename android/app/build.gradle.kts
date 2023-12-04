@@ -89,8 +89,6 @@ dependencies {
 	implementation(libs.androidx.navigation.compose)
 
 	implementation(libs.kotlinx.datetime)
-	implementation(libs.vico.compose)
-	implementation(libs.vico.compose.m3)
 
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
 }

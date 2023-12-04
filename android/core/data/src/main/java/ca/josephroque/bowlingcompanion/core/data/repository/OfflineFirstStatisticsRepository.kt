@@ -5,15 +5,17 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableFramesSequence
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableGamesSequence
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableSeriesSequence
+import ca.josephroque.bowlingcompanion.core.data.queries.statistics.buildChartWithEntries
+import ca.josephroque.bowlingcompanion.core.data.queries.statistics.buildEntries
+import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perFrameConfiguration
+import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perGameConfiguration
+import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perSeriesConfiguration
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
-import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
-import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
-import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
-import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
+import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
@@ -54,14 +56,17 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		val statistics = allStatistics(filter.source)
 		val userData = userDataRepository.userData.first()
 
-		TrackableSeriesSequence(filter, statisticsDao, perSeriesConfiguration())
-			.applyToStatistics(statistics)
+		val perSeriesConfiguration = userData.perSeriesConfiguration()
+		TrackableSeriesSequence(filter, statisticsDao)
+			.applySequence { series -> statistics.forEach { it.adjustBySeries(series, perSeriesConfiguration) } }
 
-		TrackableGamesSequence(filter, statisticsDao, perGameConfiguration())
-			.applyToStatistics(statistics)
+		val perGameConfiguration = userData.perGameConfiguration()
+		TrackableGamesSequence(filter, statisticsDao)
+			.applySequence { game -> statistics.forEach { it.adjustByGame(game, perGameConfiguration) } }
 
-		TrackableFramesSequence(filter, statisticsDao, userData.perFrameConfiguration())
-			.applyToStatistics(statistics)
+		val perFrameConfiguration = userData.perFrameConfiguration()
+		TrackableFramesSequence(filter, statisticsDao)
+			.applySequence { frame -> statistics.forEach { it.adjustByFrame(frame, perFrameConfiguration) } }
 
 		statisticsAsListEntries(statistics)
 	}
@@ -83,7 +88,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 				images = emptyList(),
 				entries = categoryStatistics.map {
 					StatisticListEntry(
-						title = it.id.titleResourceId,
+						id = it.id,
 						description = null, // TODO: Showing Statistics Descriptions
 						value = it.formattedValue,
 						isHighlightedAsNew = false, // TODO: use isEligibleForNewLabel && isSeenKey
@@ -101,25 +106,53 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 			return StatisticChartContent.ChartUnavailable(statistic.id)
 		}
 
-		// TODO: Remove following line
-		return StatisticChartContent.ChartUnavailable(statistic.id)
+		val userData = userDataRepository.userData.first()
 
-//		val chartContent = when (filter.source) {
-//			is TrackableFilter.Source.Bowler, is TrackableFilter.Source.League, is TrackableFilter.Source.Game -> {
-//				val entries = buildEntries<EntryDate>
-//			}
-//			is TrackableFilter.Source.Series -> {
-//
-//			}
-//		}
+		val chartContent = when (filter.source) {
+			is TrackableFilter.Source.Bowler, is TrackableFilter.Source.League, is TrackableFilter.Source.Game -> {
+				val entries = buildEntries(
+					statistic = statistic,
+					filter = filter,
+					statisticsDao = statisticsDao,
+					userData = userData,
+					createEntryKeyFromSeries = { ChartEntryKey.Date(it.date, 0) },
+					createEntryKeyFromGame = { ChartEntryKey.Date(it.date, 0) },
+					createEntryKeyFromFrame = { ChartEntryKey.Date(it.date, 0) },
+				)
+				buildChartWithEntries(entries, statistic, filter.aggregation)
+			}
+			is TrackableFilter.Source.Series -> {
+				val entries = buildEntries(
+					statistic = statistic,
+					filter = filter,
+					statisticsDao = statisticsDao,
+					userData = userData,
+					createEntryKeyFromSeries = { ChartEntryKey.Game(0) },
+					createEntryKeyFromGame = { ChartEntryKey.Game(it.index) },
+					createEntryKeyFromFrame = { ChartEntryKey.Game(it.gameIndex) },
+				)
+				buildChartWithEntries(entries, statistic, filter.aggregation)
+			}
+		}
+
+		return when (chartContent) {
+			is StatisticChartContent.CountableChart -> if (chartContent.data.isEmpty) {
+				StatisticChartContent.DataMissing(statistic.id)
+			} else {
+				chartContent
+			}
+			is StatisticChartContent.AveragingChart -> if (chartContent.data.isEmpty) {
+				StatisticChartContent.DataMissing(statistic.id)
+			} else {
+				chartContent
+			}
+			is StatisticChartContent.PercentageChart -> if (chartContent.data.isEmpty) {
+				StatisticChartContent.DataMissing(statistic.id)
+			} else {
+				chartContent
+			}
+			is StatisticChartContent.ChartUnavailable -> chartContent
+			is StatisticChartContent.DataMissing -> chartContent
+		}
 	}
 }
-
-fun UserData.perFrameConfiguration(): TrackablePerFrameConfiguration = TrackablePerFrameConfiguration(
-	countHeadPin2AsHeadPin = !isCountingH2AsHDisabled,
-	countSplitWithBonusAsSplit = !isCountingSplitWithBonusAsSplitDisabled
-)
-
-fun perGameConfiguration(): TrackablePerGameConfiguration = TrackablePerGameConfiguration
-
-fun perSeriesConfiguration(): TrackablePerSeriesConfiguration = TrackablePerSeriesConfiguration

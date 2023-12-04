@@ -1,10 +1,9 @@
 package ca.josephroque.bowlingcompanion.core.statistics.models
 
-import kotlinx.datetime.LocalDate
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 
 data class CountableChartData(
-	val title: Int,
+	val id: StatisticID,
 	val entries: List<CountableChartEntry>,
 	val isAccumulating: Boolean,
 ) {
@@ -13,12 +12,6 @@ data class CountableChartData(
 }
 
 data class CountableChartEntry(
-	val id: UUID,
+	val key: ChartEntryKey,
 	val value: Int,
-	val xAxis: XAxisValue
-) {
-	sealed interface XAxisValue {
-		data class Date(val date: LocalDate, val duration: Long): XAxisValue
-		data class Game(val ordinal: Int): XAxisValue
-	}
-}
+)

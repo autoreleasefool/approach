@@ -8,7 +8,7 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 		private const val PAGE_SIZE = 50
 	}
 
-	suspend fun applyToStatistics(statistics: List<Statistic>) {
+	suspend fun applySequence(apply: (Model) -> Unit) {
 		val columnsStatement = buildColumnsStatement()
 		val tablesStatement = buildTablesStatement()
 		val whereStatement = buildWhereStatement()
@@ -43,7 +43,7 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 		while (result is PagingSource.LoadResult.Page) {
 			result.data
 				.map(::mapEntityToModel)
-				.forEach { adjustByItem(statistics, it) }
+				.forEach(apply)
 
 			result = result.nextKey
 				?.let {
@@ -64,6 +64,5 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 	abstract fun buildOrderByStatement(): String
 
 	abstract fun getPagingSource(query: String, whereArgs: List<Any>): PagingSource<Int, Entity>
-	abstract fun adjustByItem(statistics: List<Statistic>, item: Model)
 	abstract fun mapEntityToModel(entity: Entity): Model
 }

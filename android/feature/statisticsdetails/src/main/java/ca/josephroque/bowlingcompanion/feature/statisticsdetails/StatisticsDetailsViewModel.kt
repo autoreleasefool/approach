@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModel
+import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
@@ -47,9 +50,47 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	private val _statisticsList = _filter.map { statisticsRepository.getStatisticsList(it) }
 
-	private val _highlightedEntry: MutableStateFlow<Int?> = MutableStateFlow(null)
+	private val _highlightedEntry: MutableStateFlow<StatisticID?> = MutableStateFlow(null)
 
-	private val _statistics: Flow<StatisticsDetailsListUiState> = combine(
+	private val _chartContent: Flow<StatisticsDetailsChartUiState.ChartContent?> = combine(
+		_filter,
+		_highlightedEntry,
+	) { filter, highlightedEntry ->
+		if (highlightedEntry == null) return@combine null
+		val chart = statisticsRepository.getStatisticsChart(
+			statistic = statisticInstanceFromID(highlightedEntry),
+			filter = filter,
+		)
+
+		StatisticsDetailsChartUiState.ChartContent(
+			chart = chart,
+			model = chart.getModel(),
+		)
+	}
+
+	private val _statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
+		_filter,
+		_chartContent
+	) { filter, chartContent ->
+		if (chartContent == null)
+			StatisticsDetailsChartUiState(
+				aggregation = filter.aggregation,
+				filterSource = filter.source,
+				isLoadingNextChart = true,
+				isFilterTooNarrow = false,
+				chartContent = null,
+			)
+		else
+			StatisticsDetailsChartUiState(
+				aggregation = filter.aggregation,
+				filterSource = filter.source,
+				isLoadingNextChart = false,
+				isFilterTooNarrow = false,
+				chartContent = chartContent,
+			)
+	}
+
+	private val _statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
 		_statisticsList,
 		_highlightedEntry,
 		userDataRepository.userData,
@@ -62,12 +103,12 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	val uiState: StateFlow<StatisticsDetailsScreenUiState> = combine(
-		_filter,
-		_statistics,
-	) { filter, statistics ->
+		_statisticsListState,
+		_statisticsChartState,
+	) { statisticsList, statisticsChart ->
 		StatisticsDetailsScreenUiState.Loaded(
-			list = statistics,
-			chart = StatisticsDetailsChartUiState(filter.aggregation),
+			list = statisticsList,
+			chart = statisticsChart,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -86,7 +127,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private fun handleListAction(action: StatisticsDetailsListUiAction) {
 		when (action) {
 			is StatisticsDetailsListUiAction.StatisticClicked ->
-				showStatisticChart(statistic = action.title)
+				showStatisticChart(statistic = action.id)
 			is StatisticsDetailsListUiAction.HidingZeroStatisticsToggled ->
 				toggleHidingZeroStatistics(action.newValue)
 		}
@@ -105,7 +146,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 		}
 	}
 
-	private fun showStatisticChart(statistic: Int) {
+	private fun showStatisticChart(statistic: StatisticID) {
 		_highlightedEntry.value = statistic
 	}
 
