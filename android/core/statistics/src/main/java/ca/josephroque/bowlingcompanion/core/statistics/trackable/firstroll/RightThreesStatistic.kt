@@ -18,6 +18,7 @@ data class RightThreesStatistic(
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = RightThreesStatistic()
 
 	override var count: Int
 		get() = rightThrees

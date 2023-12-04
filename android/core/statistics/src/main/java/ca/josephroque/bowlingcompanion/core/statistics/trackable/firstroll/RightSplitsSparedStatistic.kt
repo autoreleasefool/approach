@@ -22,6 +22,7 @@ data class RightSplitsSparedStatistic(
 	override val category = StatisticCategory.SPLITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = RightSplitsSparedStatistic()
 
 	override var denominator: Int
 		get() = rightSplits

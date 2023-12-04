@@ -19,6 +19,7 @@ data class StrikesStatistic(
 	override val category = StatisticCategory.STRIKES_AND_SPARES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = StrikesStatistic()
 
 	override var numerator: Int
 		get() = strikes

@@ -18,6 +18,7 @@ data class TapsStatistic(
 	override val category = StatisticCategory.TAPS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = TapsStatistic()
 
 	override var count: Int
 		get() = taps

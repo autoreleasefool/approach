@@ -18,6 +18,7 @@ data class ThreesStatistic(
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = ThreesStatistic()
 
 	override var count: Int
 		get() = threes

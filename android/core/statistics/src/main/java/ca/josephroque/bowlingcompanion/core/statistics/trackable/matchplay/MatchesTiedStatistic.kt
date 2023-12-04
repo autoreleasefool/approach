@@ -19,6 +19,7 @@ data class MatchesTiedStatistic(
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = MatchesTiedStatistic()
 
 	override val numeratorTitleResourceId = R.string.statistic_title_match_play_ties
 	override val denominatorTitleResourceId = R.string.statistic_title_match_plays

@@ -17,6 +17,7 @@ data class HighSeriesOf3Statistic(
 	override val category = StatisticCategory.SERIES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = HighSeriesOf3Statistic()
 
 	override var highest: Int
 		get() = highSeries

@@ -17,6 +17,7 @@ data class HighSingleStatistic(
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = HighSingleStatistic()
 
 	override var highest: Int
 		get() = highSingle

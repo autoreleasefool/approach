@@ -19,6 +19,7 @@ data class HeadPinsStatistic(
 	override val category = StatisticCategory.HEAD_PINS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = HeadPinsStatistic()
 
 	override var count: Int
 		get() = headPins

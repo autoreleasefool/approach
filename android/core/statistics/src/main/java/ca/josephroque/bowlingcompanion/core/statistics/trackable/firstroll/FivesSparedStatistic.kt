@@ -21,6 +21,7 @@ data class FivesSparedStatistic(
 	override val category = StatisticCategory.FIVES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = FivesSparedStatistic()
 
 	override var denominator: Int
 		get() = fives

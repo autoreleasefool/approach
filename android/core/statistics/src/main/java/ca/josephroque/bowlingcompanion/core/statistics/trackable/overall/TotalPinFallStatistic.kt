@@ -16,6 +16,7 @@ data class TotalPinFallStatistic(
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null
+	override fun emptyClone() = TotalPinFallStatistic()
 
 	override var count: Int
 		get() = totalPinFall

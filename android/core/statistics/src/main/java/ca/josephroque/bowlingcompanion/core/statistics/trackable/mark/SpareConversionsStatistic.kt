@@ -23,6 +23,7 @@ data class SpareConversionsStatistic(
 	override val category = StatisticCategory.STRIKES_AND_SPARES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = SpareConversionsStatistic()
 
 	override val denominatorTitleResourceId = R.string.statistic_title_spare_chances
 

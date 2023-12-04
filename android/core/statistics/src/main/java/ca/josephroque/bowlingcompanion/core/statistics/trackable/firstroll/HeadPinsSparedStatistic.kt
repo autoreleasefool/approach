@@ -22,6 +22,7 @@ data class HeadPinsSparedStatistic(
 	override val category = StatisticCategory.HEAD_PINS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = HeadPinsSparedStatistic()
 
 	override var denominator: Int
 		get() = headPins

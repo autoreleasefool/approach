@@ -18,6 +18,7 @@ data class FoulsStatistic(
 	override val category = StatisticCategory.FOULS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = FoulsStatistic()
 
 	override val numeratorTitleResourceId = R.string.statistic_title_fouls
 	override val denominatorTitleResourceId = R.string.statistic_title_total_rolls

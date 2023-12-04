@@ -22,6 +22,7 @@ data class ThreesSparedStatistic(
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = ThreesSparedStatistic()
 
 	override var denominator: Int
 		get() = threes

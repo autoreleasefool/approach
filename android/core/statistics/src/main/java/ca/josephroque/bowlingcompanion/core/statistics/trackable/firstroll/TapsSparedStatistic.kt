@@ -21,6 +21,7 @@ data class TapsSparedStatistic(
 	override val category = StatisticCategory.TAPS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = TapsSparedStatistic()
 
 	override var denominator: Int
 		get() = taps

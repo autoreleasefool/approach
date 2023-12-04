@@ -21,6 +21,7 @@ data class LeftChopOffsSparedStatistic(
 	override val category = StatisticCategory.CHOPS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = LeftChopOffsSparedStatistic()
 
 	override var denominator: Int
 		get() = leftChops

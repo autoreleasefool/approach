@@ -21,6 +21,7 @@ data class StrikeMiddleHitsStatistic(
 	override val category = StatisticCategory.MIDDLE_HITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = StrikeMiddleHitsStatistic()
 
 	override val numeratorTitleResourceId = R.string.statistic_title_strike_middle_hits
 	override val denominatorTitleResourceId = R.string.statistic_title_middle_hits

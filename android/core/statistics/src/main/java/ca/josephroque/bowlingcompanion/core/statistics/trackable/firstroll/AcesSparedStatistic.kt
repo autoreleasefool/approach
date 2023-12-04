@@ -21,6 +21,7 @@ data class AcesSparedStatistic(
 	override val category = StatisticCategory.ACES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = AcesSparedStatistic()
 
 	override var denominator: Int
 		get() = aces

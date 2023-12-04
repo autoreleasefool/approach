@@ -19,6 +19,7 @@ data class RightOfMiddleHitsStatistic(
 	override val category = StatisticCategory.MIDDLE_HITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = RightOfMiddleHitsStatistic()
 
 	override var numerator: Int
 		get() = rightOfMiddleHits

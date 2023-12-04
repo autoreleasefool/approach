@@ -19,6 +19,7 @@ data class RightChopOffsStatistic(
 	override val category = StatisticCategory.CHOPS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = RightChopOffsStatistic()
 
 	override var count: Int
 		get() = rightChops

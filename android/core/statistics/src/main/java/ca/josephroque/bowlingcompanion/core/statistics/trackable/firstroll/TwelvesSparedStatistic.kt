@@ -21,6 +21,7 @@ data class TwelvesSparedStatistic(
 	override val category = StatisticCategory.TWELVES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = TwelvesSparedStatistic()
 
 	override var denominator: Int
 		get() = twelves

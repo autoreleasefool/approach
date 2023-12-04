@@ -18,6 +18,7 @@ data class LeftTapsStatistic(
 	override val category = StatisticCategory.TAPS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = LeftTapsStatistic()
 
 	override var count: Int
 		get() = leftTaps

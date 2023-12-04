@@ -17,6 +17,7 @@ data class AcesStatistic(
 	override val category = StatisticCategory.ACES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = AcesStatistic()
 
 	override var count: Int
 		get() = aces

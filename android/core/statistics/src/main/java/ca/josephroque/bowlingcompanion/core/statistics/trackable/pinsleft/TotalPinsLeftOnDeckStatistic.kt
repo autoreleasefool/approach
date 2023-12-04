@@ -18,6 +18,7 @@ data class TotalPinsLeftOnDeckStatistic(
 	override val category = StatisticCategory.PINS_LEFT_ON_DECK
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null
+	override fun emptyClone() = TotalPinsLeftOnDeckStatistic()
 
 	override var count: Int
 		get() = totalPinsLeftOnDeck

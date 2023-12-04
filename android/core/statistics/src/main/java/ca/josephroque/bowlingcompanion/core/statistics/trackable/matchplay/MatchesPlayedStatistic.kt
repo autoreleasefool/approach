@@ -16,6 +16,7 @@ data class MatchesPlayedStatistic(
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null
+	override fun emptyClone() = MatchesPlayedStatistic()
 
 	override var count: Int
 		get() = matchesPlayed

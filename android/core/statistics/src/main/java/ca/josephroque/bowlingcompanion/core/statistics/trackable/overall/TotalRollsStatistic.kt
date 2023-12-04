@@ -16,6 +16,7 @@ data class TotalRollsStatistic(
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null
+	override fun emptyClone() = TotalRollsStatistic()
 
 	override var count: Int
 		get() = totalRolls

@@ -18,6 +18,7 @@ data class GameAverageStatistic(
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = GameAverageStatistic()
 
 	override var total: Int
 		get() = totalPinFall

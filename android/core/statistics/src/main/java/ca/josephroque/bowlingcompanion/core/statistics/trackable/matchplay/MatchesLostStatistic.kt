@@ -19,6 +19,7 @@ data class MatchesLostStatistic(
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = MatchesLostStatistic()
 
 	override val numeratorTitleResourceId = R.string.statistic_title_match_play_losses
 	override val denominatorTitleResourceId = R.string.statistic_title_match_plays

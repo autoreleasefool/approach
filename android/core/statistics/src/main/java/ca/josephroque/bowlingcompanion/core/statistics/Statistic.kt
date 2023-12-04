@@ -22,6 +22,11 @@ interface Statistic {
 	fun adjustByGame(game: TrackableGame, configuration: TrackablePerGameConfiguration)
 	fun adjustBySeries(series: TrackableSeries, configuration: TrackablePerSeriesConfiguration)
 	fun aggregateWithStatistic(statistic: Statistic)
+	fun emptyClone(): Statistic
+
+	fun clone(): Statistic = emptyClone().apply {
+		aggregateWithStatistic(this@Statistic)
+	}
 }
 
 enum class StatisticCategory {

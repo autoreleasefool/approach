@@ -16,6 +16,7 @@ data class NumberOfGamesStatistic(
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = null
+	override fun emptyClone() = NumberOfGamesStatistic()
 
 	override var count: Int
 		get() = numberOfGames

@@ -21,6 +21,7 @@ data class RightThreesSparedStatistic(
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
+	override fun emptyClone() = RightThreesSparedStatistic()
 
 	override var denominator: Int
 		get() = rightThrees

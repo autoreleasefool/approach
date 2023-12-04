@@ -18,6 +18,7 @@ data class TwelvesStatistic(
 	override val category = StatisticCategory.TWELVES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = TwelvesStatistic()
 
 	override var count: Int
 		get() = twelves

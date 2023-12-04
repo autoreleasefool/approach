@@ -19,6 +19,7 @@ data class RightSplitsStatistic(
 	override val category = StatisticCategory.SPLITS
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = RightSplitsStatistic()
 
 	override var count: Int
 		get() = rightSplits

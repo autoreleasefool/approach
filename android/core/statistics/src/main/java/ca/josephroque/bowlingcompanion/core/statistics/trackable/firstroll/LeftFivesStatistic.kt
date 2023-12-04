@@ -18,6 +18,7 @@ data class LeftFivesStatistic(
 	override val category = StatisticCategory.FIVES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = LeftFivesStatistic()
 
 	override var count: Int
 		get() = leftFives

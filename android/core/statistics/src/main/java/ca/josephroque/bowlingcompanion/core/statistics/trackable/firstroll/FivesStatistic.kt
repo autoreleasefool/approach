@@ -17,6 +17,7 @@ data class FivesStatistic(
 	override val category = StatisticCategory.FIVES
 	override val isEligibleForNewLabel = false
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
+	override fun emptyClone() = FivesStatistic()
 
 	override var count: Int
 		get() = fives
