@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModel
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
@@ -15,6 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.Statistics
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_ID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_TYPE
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,51 +36,56 @@ class StatisticsDetailsViewModel @Inject constructor(
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
 ): ApproachViewModel<StatisticsDetailsScreenEvent>() {
-	private val _sourceType = savedStateHandle.get<String>(SOURCE_TYPE)
-		?.let { SourceType.valueOf(it) } ?: SourceType.BOWLER
-
+	private val _sourceType = savedStateHandle.get<SourceType>(SOURCE_TYPE) ?: SourceType.BOWLER
 	private val _sourceId = savedStateHandle.get<String>(SOURCE_ID)
 		?.let { UUID.fromString(it) } ?: UUID.randomUUID()
+	private val _initialFilterSource = when (_sourceType) {
+		SourceType.BOWLER -> TrackableFilter.Source.Bowler(_sourceId)
+		SourceType.LEAGUE -> TrackableFilter.Source.League(_sourceId)
+		SourceType.SERIES -> TrackableFilter.Source.Series(_sourceId)
+		SourceType.GAME -> TrackableFilter.Source.Game(_sourceId)
+	}
+
+	private val _chartEntryModelProducer = ChartEntryModelProducer()
 
 	private val _filter: MutableStateFlow<TrackableFilter> =
-		MutableStateFlow(TrackableFilter(source = when (_sourceType) {
-			SourceType.BOWLER -> TrackableFilter.Source.Bowler(_sourceId)
-			SourceType.LEAGUE -> TrackableFilter.Source.League(_sourceId)
-			SourceType.SERIES -> TrackableFilter.Source.Series(_sourceId)
-			SourceType.GAME -> TrackableFilter.Source.Game(_sourceId)
-		}))
+		MutableStateFlow(TrackableFilter(source = _initialFilterSource))
 
 	private val _statisticsList = _filter.map { statisticsRepository.getStatisticsList(it) }
 
-	private val _highlightedEntry: MutableStateFlow<StatisticID?> = MutableStateFlow(null)
+	private val _selectedStatistic: MutableStateFlow<StatisticID?> = MutableStateFlow(
+		allStatistics(source = _initialFilterSource).firstOrNull()?.id
+	)
 
 	private val _chartContent: Flow<StatisticsDetailsChartUiState.ChartContent?> = combine(
 		_filter,
-		_highlightedEntry,
-	) { filter, highlightedEntry ->
-		if (highlightedEntry == null) return@combine null
+		_selectedStatistic,
+	) { filter, selectedStatistic ->
+		if (selectedStatistic == null) return@combine null
 		val chart = statisticsRepository.getStatisticsChart(
-			statistic = statisticInstanceFromID(highlightedEntry),
+			statistic = statisticInstanceFromID(selectedStatistic),
 			filter = filter,
 		)
 
 		StatisticsDetailsChartUiState.ChartContent(
 			chart = chart,
-			model = chart.getModel(),
+			modelProducer = _chartEntryModelProducer,
 		)
 	}
 
 	private val _statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
 		_filter,
+		_selectedStatistic,
 		_chartContent
-	) { filter, chartContent ->
-		if (chartContent == null)
+	) { filter, selectedStatistic, chartContent ->
+		if (chartContent == null || selectedStatistic == null)
 			StatisticsDetailsChartUiState(
 				aggregation = filter.aggregation,
 				filterSource = filter.source,
 				isLoadingNextChart = true,
 				isFilterTooNarrow = false,
 				chartContent = null,
+				supportsAggregation = false,
 			)
 		else
 			StatisticsDetailsChartUiState(
@@ -87,17 +94,18 @@ class StatisticsDetailsViewModel @Inject constructor(
 				isLoadingNextChart = false,
 				isFilterTooNarrow = false,
 				chartContent = chartContent,
+				supportsAggregation = statisticInstanceFromID(selectedStatistic).supportsAggregation,
 			)
 	}
 
 	private val _statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
 		_statisticsList,
-		_highlightedEntry,
+		_selectedStatistic,
 		userDataRepository.userData,
-	) { statistics, highlightedEntry, userData ->
+	) { statistics, selectedStatistic, userData ->
 		StatisticsDetailsListUiState(
 			statistics = statistics,
-			highlightedEntry = highlightedEntry,
+			highlightedEntry = selectedStatistic,
 			isHidingZeroStatistics = !userData.isShowingZeroStatistics,
 		)
 	}
@@ -147,7 +155,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private fun showStatisticChart(statistic: StatisticID) {
-		_highlightedEntry.value = statistic
+		_selectedStatistic.value = statistic
 	}
 
 	private fun toggleHidingZeroStatistics(newValue: Boolean?) {

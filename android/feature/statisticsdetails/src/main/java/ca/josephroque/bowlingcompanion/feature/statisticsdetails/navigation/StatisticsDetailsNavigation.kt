@@ -36,7 +36,7 @@ fun NavGraphBuilder.statisticsDetailsScreen(
 	composable(
 		route = statisticsDetailsNavigationRoute,
 		arguments = listOf(
-			navArgument(SOURCE_TYPE) { type = NavType.StringType },
+			navArgument(SOURCE_TYPE) { type = NavType.EnumType(SourceType::class.java) },
 			navArgument(SOURCE_ID) { type = NavType.StringType },
 		),
 	) {

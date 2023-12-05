@@ -68,6 +68,13 @@ data class TrackableFilter(
 	enum class AggregationFilter {
 		ACCUMULATE,
 		PERIODIC,
+		;
+
+		val next: AggregationFilter
+			get() = when (this) {
+				ACCUMULATE -> PERIODIC
+				PERIODIC -> ACCUMULATE
+			}
 	}
 
 	data class SourceSummaries(
