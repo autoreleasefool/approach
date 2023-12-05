@@ -12,6 +12,7 @@
 	<string name="game_editor_gear_description">Choose any additional gear you\'re using this game</string>
 
 	<string name="game_editor_match_play_title">Match Play</string>
+	<string name="game_editor_match_play_subtitle">Record an opponent\'s score and whether you won, to get a fuller look at your match play history</string>
 	<string name="game_editor_match_play_opponent">Opponent</string>
 	<string name="game_editor_match_play_no_opponent">No opponent</string>
 	<string name="game_editor_match_play_score">Score</string>
@@ -21,8 +22,7 @@
 	<string name="game_editor_match_play_result_not_recorded">Result not recorded</string>
 
 	<string name="game_editor_scoring_method_title">Scoring</string>
-	<string name="game_editor_scoring_method_set_manual_score">Set manual score</string>
-	<string name="game_editor_scoring_method_edit_manual_score">Edit manual score</string>
+	<string name="game_editor_scoring_method_subtitle">Override your score manually here to skip recording frame-by-frame</string>
 
 	<string name="scoring_method_manual">Manual</string>
 	<string name="scoring_method_frame_by_frame">Frame-by-Frame</string>

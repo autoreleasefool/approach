@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,15 +41,23 @@ fun GameDetails(
 		Header(
 			state = state.header,
 			onAction = onAction,
-			modifier = Modifier.onGloballyPositioned {
-				onAction(GameDetailsUiAction.HeaderHeightMeasured(it.size.height.toFloat()))
-			},
+			modifier = Modifier
+				.onGloballyPositioned {
+					onAction(GameDetailsUiAction.HeaderHeightMeasured(it.size.height.toFloat()))
+				}
+				.padding(horizontal = 16.dp)
+				.padding(top = 8.dp),
 		)
+
+		Divider(thickness = 8.dp)
 
 		StatisticsButtons(
 			gameIndex = state.currentGameIndex,
 			onAction = onAction,
+			modifier = Modifier.padding(horizontal = 16.dp),
 		)
+
+		Divider(thickness = 8.dp)
 
 		GearCard(
 			state = state.gear,
@@ -56,11 +65,15 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
+		Divider(thickness = 8.dp)
+
 		MatchPlayCard(
 			state = state.matchPlay,
 			onAction = onAction,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
+
+		Divider(thickness = 8.dp)
 
 		ScoringMethodCard(
 			state = state.scoringMethod,
@@ -68,10 +81,11 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
+		Divider(thickness = 8.dp)
+
 		GamePropertiesCard(
 			state = state.gameProperties,
 			onAction = onAction,
-			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 	}
 }

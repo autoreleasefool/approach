@@ -2,13 +2,17 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,7 +28,8 @@ import ca.josephroque.bowlingcompanion.core.model.ui.contentDescription
 import ca.josephroque.bowlingcompanion.core.model.ui.icon
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailCard
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.SectionHeader
 
 @Composable
 internal fun MatchPlayCard(
@@ -32,65 +37,62 @@ internal fun MatchPlayCard(
 	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	DetailCard(
-		title = stringResource(R.string.game_editor_match_play_title),
-		action = {
-			RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) }) {
+	Column(modifier = modifier) {
+		SectionHeader(
+			title = stringResource(R.string.game_editor_match_play_title),
+			subtitle = stringResource(R.string.game_editor_match_play_subtitle),
+			action = {
+				RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) }) {
+					Icon(
+						Icons.Default.Edit,
+						contentDescription = stringResource(RCoreDesign.string.action_manage),
+						tint = MaterialTheme.colorScheme.onSurface,
+					)
+				}
+			},
+			modifier = Modifier.padding(bottom = 16.dp),
+		)
+
+		NavigationButton(
+			title = stringResource(R.string.game_editor_match_play_opponent),
+			subtitle = state.opponentName ?: stringResource(R.string.game_editor_match_play_no_opponent),
+			onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) },
+			icon = {
 				Icon(
-					Icons.Default.Edit,
-					contentDescription = stringResource(RCoreDesign.string.action_manage),
+					painter = painterResource(if (state.opponentName == null) R.drawable.ic_person_none else R.drawable.ic_person),
+					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
-		},
-		modifier = modifier,
-	) {
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.spacedBy(8.dp),
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 8.dp),
-		) {
-			Icon(
-				painter = painterResource(if (state.opponentName == null) R.drawable.ic_person_none else R.drawable.ic_person),
-				contentDescription = null,
-				tint = MaterialTheme.colorScheme.onSurface,
-			)
-
-			Label(
-				title = stringResource(R.string.game_editor_match_play_opponent),
-				value = state.opponentName,
-				placeholder = stringResource(R.string.game_editor_match_play_no_opponent),
-				modifier = Modifier.weight(1f),
-			)
-
-			Label(
-				title = stringResource(R.string.game_editor_match_play_score),
-				value = state.opponentScore?.toString(),
-				placeholder = stringResource(R.string.game_editor_match_play_score_not_recorded),
-				horizontalAlignment = Alignment.End,
-			)
-		}
+		)
 
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.spacedBy(8.dp),
+			horizontalArrangement = Arrangement.spacedBy(16.dp),
 			modifier = Modifier
+				.height(IntrinsicSize.Min)
 				.fillMaxWidth()
-				.padding(8.dp),
+				.padding(top = 16.dp),
 		) {
-			Icon(
-				painter = state.result.icon(),
-				contentDescription = state.result.contentDescription(),
-				tint = MaterialTheme.colorScheme.onSurface,
-			)
-
-			Label(
+			NavigationButton(
 				title = stringResource(R.string.game_editor_match_play_result),
-				value = state.result?.contentDescription(),
-				placeholder = stringResource(R.string.game_editor_match_play_result_not_recorded),
-				modifier = Modifier.weight(1f),
+				subtitle = state.result?.contentDescription() ?: stringResource(R.string.game_editor_match_play_result_not_recorded),
+				onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) },
+				icon = {
+					Icon(
+						painter = state.result.icon(),
+						contentDescription = state.result.contentDescription(),
+						tint = MaterialTheme.colorScheme.onSurface,
+					)
+				},
+				modifier = Modifier.weight(1f).fillMaxHeight(),
+			)
+
+			NavigationButton(
+				title = stringResource(R.string.game_editor_match_play_score),
+				subtitle = state.opponentScore?.toString() ?: stringResource(R.string.game_editor_match_play_score_not_recorded),
+				onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) },
+				modifier = Modifier.weight(1f).fillMaxHeight(),
 			)
 		}
 	}
@@ -131,12 +133,14 @@ private fun Label(
 @Preview
 @Composable
 private fun MatchPlayCardPreview() {
-	MatchPlayCard(
-		state = GameDetailsUiState.MatchPlayCardUiState(
-			opponentName = "Joseph",
-			opponentScore = 250,
-			result = MatchPlayResult.WON,
-		),
-		onAction = {},
-	)
+	Surface {
+		MatchPlayCard(
+			state = GameDetailsUiState.MatchPlayCardUiState(
+				opponentName = "Joseph",
+				opponentScore = 250,
+				result = MatchPlayResult.WON,
+			),
+			onAction = {},
+		)
+	}
 }

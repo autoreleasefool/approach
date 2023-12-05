@@ -11,7 +11,6 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailCard
 
 @Composable
 internal fun GamePropertiesCard(
@@ -19,58 +18,59 @@ internal fun GamePropertiesCard(
 	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	DetailCard(modifier = modifier) {
-		Column(
-			verticalArrangement = Arrangement.spacedBy(8.dp),
-		) {
-			LabeledSwitch(
-				checked = when (state.locked) {
-					GameLockState.LOCKED -> true
-					GameLockState.UNLOCKED -> false
-				},
-				onCheckedChange = { onAction(GameDetailsUiAction.LockToggled(it)) },
-				titleResourceId = R.string.game_editor_lock_state_title,
-				subtitleResourceId = R.string.game_editor_lock_state_description,
-			)
+	Column(
+		verticalArrangement = Arrangement.spacedBy(8.dp),
+		modifier = modifier,
+	) {
+		LabeledSwitch(
+			checked = when (state.locked) {
+				GameLockState.LOCKED -> true
+				GameLockState.UNLOCKED -> false
+			},
+			onCheckedChange = { onAction(GameDetailsUiAction.LockToggled(it)) },
+			titleResourceId = R.string.game_editor_lock_state_title,
+			subtitleResourceId = R.string.game_editor_lock_state_description,
+			compact = true,
+		)
 
-			LabeledSwitch(
-				checked = when (state.leagueExcludeFromStatistics) {
-					ExcludeFromStatistics.EXCLUDE -> true
-					ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
-						SeriesPreBowl.PRE_BOWL -> true
-						SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
+		LabeledSwitch(
+			checked = when (state.leagueExcludeFromStatistics) {
+				ExcludeFromStatistics.EXCLUDE -> true
+				ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
+					SeriesPreBowl.PRE_BOWL -> true
+					SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
+						ExcludeFromStatistics.EXCLUDE -> true
+						ExcludeFromStatistics.INCLUDE -> when (state.gameExcludeFromStatistics) {
 							ExcludeFromStatistics.EXCLUDE -> true
-							ExcludeFromStatistics.INCLUDE -> when (state.gameExcludeFromStatistics) {
-								ExcludeFromStatistics.EXCLUDE -> true
-								ExcludeFromStatistics.INCLUDE -> false
-							}
-						}
-					}
-				},
-				onCheckedChange = { onAction(GameDetailsUiAction.ExcludeFromStatisticsToggled(it)) },
-				titleResourceId = R.string.game_editor_exclude_from_statistics_title,
-				subtitleResourceId = when (state.leagueExcludeFromStatistics) {
-					ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_league_excluded
-					ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
-						SeriesPreBowl.PRE_BOWL -> R.string.game_editor_exclude_from_statistics_series_pre_bowl
-						SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
-							ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_series_excluded
-							ExcludeFromStatistics.INCLUDE -> R.string.game_editor_exclude_from_statistics_description
-						}
-					}
-				},
-				enabled = when (state.leagueExcludeFromStatistics) {
-					ExcludeFromStatistics.EXCLUDE -> false
-					ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
-						SeriesPreBowl.PRE_BOWL -> false
-						SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
-							ExcludeFromStatistics.EXCLUDE -> false
-							ExcludeFromStatistics.INCLUDE -> true
+							ExcludeFromStatistics.INCLUDE -> false
 						}
 					}
 				}
-			)
-		}
+			},
+			onCheckedChange = { onAction(GameDetailsUiAction.ExcludeFromStatisticsToggled(it)) },
+			titleResourceId = R.string.game_editor_exclude_from_statistics_title,
+			subtitleResourceId = when (state.leagueExcludeFromStatistics) {
+				ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_league_excluded
+				ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
+					SeriesPreBowl.PRE_BOWL -> R.string.game_editor_exclude_from_statistics_series_pre_bowl
+					SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
+						ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_series_excluded
+						ExcludeFromStatistics.INCLUDE -> R.string.game_editor_exclude_from_statistics_description
+					}
+				}
+			},
+			enabled = when (state.leagueExcludeFromStatistics) {
+				ExcludeFromStatistics.EXCLUDE -> false
+				ExcludeFromStatistics.INCLUDE -> when (state.seriesPreBowl) {
+					SeriesPreBowl.PRE_BOWL -> false
+					SeriesPreBowl.REGULAR -> when (state.seriesExcludeFromStatistics) {
+						ExcludeFromStatistics.EXCLUDE -> false
+						ExcludeFromStatistics.INCLUDE -> true
+					}
+				}
+			},
+			compact = true,
+		)
 	}
 }
 

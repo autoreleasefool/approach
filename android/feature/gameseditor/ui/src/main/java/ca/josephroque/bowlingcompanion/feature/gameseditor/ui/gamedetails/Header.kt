@@ -1,7 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -16,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.DetailRow
 
 @Composable
 internal fun Header(
@@ -24,7 +25,11 @@ internal fun Header(
 	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	DetailRow(modifier = modifier.padding(bottom = 8.dp)) {
+	Row(
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(16.dp),
+		modifier = modifier.fillMaxWidth(),
+	) {
 		Column(
 			horizontalAlignment = Alignment.Start,
 			modifier = Modifier.weight(1f),
