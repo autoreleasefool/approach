@@ -38,8 +38,8 @@ class MainActivityViewModel @Inject constructor(
 	fun didFirstLaunch() {
 		if (isLaunchComplete.value) return
 
-		analyticsClient.initialize()
 		viewModelScope.launch {
+			analyticsClient.initialize()
 			analyticsClient.trackEvent(AppLaunched)
 		}
 

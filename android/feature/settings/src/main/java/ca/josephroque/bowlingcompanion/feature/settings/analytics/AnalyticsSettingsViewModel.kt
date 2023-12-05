@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.settings.analytics
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
-import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.feature.settings.ui.analytics.AnalyticsSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.analytics.AnalyticsSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,11 +17,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnalyticsSettingsViewModel @Inject constructor(
-	private val userDataRepository: UserDataRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<AnalyticsSettingsScreenEvent>() {
 
-	private val _analyticsSettings = userDataRepository.userData.map {
-		AnalyticsSettingsUiState(analyticsOptInStatus = it.analyticsOptIn)
+	private val _analyticsSettings = analyticsClient.optInStatus.map {
+		AnalyticsSettingsUiState(analyticsOptInStatus = it)
 	}
 
 	val uiState: StateFlow<AnalyticsSettingsScreenUiState> = _analyticsSettings.map {
@@ -47,13 +47,13 @@ class AnalyticsSettingsViewModel @Inject constructor(
 
 	private fun toggleAnalyticsOptInStatus(value: Boolean?) {
 		viewModelScope.launch {
-			val status = userDataRepository.userData.first().analyticsOptIn
+			val status = analyticsClient.optInStatus.first()
 			val updatedStatus = when (value) {
 				null -> status.next
 				true -> AnalyticsOptInStatus.OPTED_IN
 				false -> AnalyticsOptInStatus.OPTED_OUT
 			}
-			userDataRepository.setAnalyticsOptInStatus(updatedStatus)
+			analyticsClient.setOptInStatus(updatedStatus)
 		}
 	}
 }

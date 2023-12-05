@@ -4,7 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import kotlinx.coroutines.flow.Flow
 
 interface AnalyticsClient {
-	fun initialize()
+	suspend fun initialize()
 
 	suspend fun trackEvent(event: TrackableEvent)
 	suspend fun setGlobalProperty(key: String, value: String?)

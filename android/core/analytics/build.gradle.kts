@@ -1,3 +1,4 @@
+
 plugins {
 	id("approach.android.library")
 	id("approach.android.hilt")
@@ -16,6 +17,7 @@ secrets {
 }
 
 dependencies {
+	implementation(project(":core:data"))
 	implementation(project(":core:model"))
 
 	implementation(libs.telemetrydeck.kotlinsdk)
