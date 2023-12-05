@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.core.analytics
 import android.app.Application
 import android.content.Context
 import android.util.Log
-// import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import com.telemetrydeck.sdk.TelemetryManager
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,6 +19,7 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 		private const val TAG = "ca.josephroque.bowlingcompanion.core.analytics.TelemetryDeckAnalyticsClient"
 	}
 
+	// TODO: Read opt in status
 //	 override val optInStatus = userDataRepository.userData
 //	 	.map { it.analyticsOptIn }
 	override val optInStatus: Flow<AnalyticsOptInStatus>

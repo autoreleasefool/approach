@@ -12,8 +12,3 @@ interface AnalyticsClient {
 	val optInStatus: Flow<AnalyticsOptInStatus>
 	suspend fun setOptInStatus(status: AnalyticsOptInStatus)
 }
-
-fun AnalyticsOptInStatus.toggle(): AnalyticsOptInStatus = when (this) {
-	AnalyticsOptInStatus.OPTED_IN -> AnalyticsOptInStatus.OPTED_OUT
-	AnalyticsOptInStatus.OPTED_OUT -> AnalyticsOptInStatus.OPTED_IN
-}

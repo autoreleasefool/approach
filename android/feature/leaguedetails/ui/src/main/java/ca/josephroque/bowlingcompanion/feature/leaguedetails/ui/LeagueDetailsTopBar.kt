@@ -20,6 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
+import ca.josephroque.bowlingcompanion.core.model.ui.contentDescription
+import ca.josephroque.bowlingcompanion.core.model.ui.icon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +45,14 @@ fun LeagueDetailsTopBar(
 			BackButton(onClick = { onAction(LeagueDetailsUiAction.BackClicked) })
 		},
 		actions = {
+			IconButton(onClick = { onAction(LeagueDetailsUiAction.SeriesItemSizeToggled(state.seriesItemSize.next)) }) {
+				Icon(
+					painter = state.seriesItemSize.icon(),
+					contentDescription = state.seriesItemSize.contentDescription(),
+					tint = MaterialTheme.colorScheme.onSurface,
+				)
+			}
+
 			Box {
 				IconButton(onClick = { onAction(LeagueDetailsUiAction.SortClicked) }) {
 					Icon(

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "ca.josephroque.bowlingcompanion.core.datastore";
+option java_multiple_files = true;
+
+enum SeriesItemSizeProto {
+	SERIES_ITEM_SIZE_DEFAULT = 0;
+	SERIES_ITEM_SIZE_COMPACT = 1;
+}

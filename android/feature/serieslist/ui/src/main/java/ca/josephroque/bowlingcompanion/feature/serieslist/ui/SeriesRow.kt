@@ -1,17 +1,16 @@
 package ca.josephroque.bowlingcompanion.feature.serieslist.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -41,75 +41,119 @@ import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeriesRow(
+	series: SeriesListChartItem,
+	itemSize: SeriesItemSize,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	when (itemSize) {
+		SeriesItemSize.DEFAULT -> DefaultSeriesRow(series, onClick, modifier)
+		SeriesItemSize.COMPACT -> CompactSeriesRow(series, onClick, modifier)
+	}
+}
+
+@Composable
+private fun CompactSeriesRow(
 	series: SeriesListChartItem,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Card(
-		onClick = onClick,
-		modifier = modifier.padding(horizontal = 16.dp),
+	Header(
+		date = series.date,
+		total = series.total,
+		itemSize = SeriesItemSize.COMPACT,
+		modifier = modifier
+			.clickable(onClick = onClick)
+			.padding(16.dp),
+	)
+}
+
+@Composable
+private fun DefaultSeriesRow(
+	series: SeriesListChartItem,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	Box(
+		contentAlignment = Alignment.BottomStart,
+		modifier = modifier
+			.clickable(onClick = onClick)
+			.padding(bottom = 8.dp),
 	) {
-		Box(
-			contentAlignment = Alignment.BottomStart,
+		if (series.scores != null) {
+			ScoreChart(
+				scores = series.scores,
+				seriesLow = series.lowestScore,
+				seriesHigh = series.highestScore,
+			)
+		}
+
+		Column(
+			verticalArrangement = Arrangement.spacedBy(16.dp),
+			modifier = Modifier.padding(16.dp),
 		) {
-			if (series.scores != null) {
-				ScoreChart(
-					scores = series.scores,
-					seriesLow = series.lowestScore,
-					seriesHigh = series.highestScore,
-				)
-			}
+			Header(
+				date = series.date,
+				total = series.total,
+				itemSize = SeriesItemSize.DEFAULT,
+			)
 
-			Column(
-				verticalArrangement = Arrangement.spacedBy(16.dp),
-				modifier = Modifier.padding(16.dp),
-			) {
-				Row {
-					Header(series.date)
-
-					Spacer(modifier = Modifier.weight(1f))
-
-					if (series.total > 0) {
-						Text(
-							text = series.total.toString(),
-							style = MaterialTheme.typography.headlineMedium,
-							fontWeight = FontWeight.Black,
-							fontStyle = FontStyle.Italic,
-						)
-					}
-				}
-
-				ScoreSummary(
-					numberOfGames = series.numberOfGames,
-					scores = series.scores,
-					seriesLow = series.lowestScore,
-					seriesHigh = series.highestScore,
-				)
-			}
+			ScoreSummary(
+				numberOfGames = series.numberOfGames,
+				seriesLow = series.lowestScore,
+				seriesHigh = series.highestScore,
+				scores = series.scores,
+			)
 		}
 	}
 }
 
 @Composable
-private fun Header(date: LocalDate) {
+private fun Header(
+	date: LocalDate,
+	total: Int,
+	itemSize: SeriesItemSize,
+	modifier: Modifier = Modifier,
+) {
 	Row(
-		verticalAlignment = Alignment.CenterVertically,
-		horizontalArrangement = Arrangement.spacedBy(8.dp),
+		horizontalArrangement = Arrangement.spacedBy(16.dp),
+		verticalAlignment = when (itemSize) {
+			SeriesItemSize.DEFAULT -> Alignment.Top
+			SeriesItemSize.COMPACT -> Alignment.CenterVertically
+		},
+		modifier = modifier.fillMaxWidth(),
 	) {
-		Icon(
-			painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event),
-			contentDescription = null,
-			tint = MaterialTheme.colorScheme.onSurface,
-			modifier = Modifier.size(16.dp),
-		)
+		Row(
+			horizontalArrangement = Arrangement.spacedBy(16.dp),
+			verticalAlignment = Alignment.CenterVertically,
+			modifier = Modifier.weight(1f),
+		) {
+			Icon(
+				painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event),
+				contentDescription = null,
+				tint = MaterialTheme.colorScheme.onSurface,
+				modifier = Modifier.size(16.dp),
+			)
 
-		Text(
-			text = date.simpleFormat(),
-			style = MaterialTheme.typography.titleMedium,
-		)
+			Text(
+				text = date.simpleFormat(),
+				style = MaterialTheme.typography.titleMedium,
+			)
+		}
+
+		if (total > 0) {
+			Text(
+				text = total.toString(),
+				style = when (itemSize) {
+					SeriesItemSize.DEFAULT -> MaterialTheme.typography.headlineMedium
+					SeriesItemSize.COMPACT -> MaterialTheme.typography.headlineSmall
+				},
+				fontWeight = FontWeight.Black,
+				fontStyle = FontStyle.Italic,
+			)
+		}
 	}
 }
 
@@ -208,9 +252,12 @@ private fun SeriesItemPreview() {
 						entryOf(3, 225),
 					)),
 				),
+				itemSize = SeriesItemSize.DEFAULT,
 				onClick = {},
-				modifier = Modifier.padding(bottom = 16.dp),
 			)
+
+			Divider(modifier = Modifier.padding(start = 16.dp))
+
 			SeriesRow(
 				series = SeriesListChartItem(
 					id = UUID.randomUUID(),
@@ -220,8 +267,11 @@ private fun SeriesItemPreview() {
 					numberOfGames = 1,
 					lowestScore = 220,
 					highestScore = 220,
-					scores = ChartEntryModelProducer(listOf(entryOf(0, 220))),
+					scores = ChartEntryModelProducer(
+						listOf(entryOf(0, 220))
+					),
 				),
+				itemSize = SeriesItemSize.COMPACT,
 				onClick = {},
 			)
 		}

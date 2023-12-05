@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.datastore.ApproachPreferencesDataSource
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -24,6 +25,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 
 	override suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus) {
 		approachPreferencesDataSource.setAnalyticsOptInStatus(status)
+	}
+
+	override suspend fun setSeriesItemSize(size: SeriesItemSize) {
+		approachPreferencesDataSource.setSeriesItemSize(size)
 	}
 
 	override suspend fun setIsCountingH2AsH(isCountingH2AsH: Boolean) {

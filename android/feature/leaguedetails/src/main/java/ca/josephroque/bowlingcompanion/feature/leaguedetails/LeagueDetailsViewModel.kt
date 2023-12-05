@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.LEAGUE_ID
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -32,31 +35,47 @@ class LeagueDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
+	private val userDataRepository: UserDataRepository,
 ): ApproachViewModel<LeagueDetailsScreenEvent>() {
 	private val leagueId = UUID.fromString(savedStateHandle[LEAGUE_ID])
 
+	private val _seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
 	private val _seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)
 	private val _isSeriesSortOrderShowing: MutableStateFlow<Boolean> = MutableStateFlow(false)
 	private val _seriesSortOrder: MutableStateFlow<SeriesSortOrder> = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
+
 	private val _seriesChartModelProducers: MutableMap<UUID, ChartEntryModelProducer> = mutableMapOf()
+
+	private val _config = combine(
+		_seriesItemSize,
+		_seriesToArchive,
+		_isSeriesSortOrderShowing,
+		_seriesSortOrder,
+	) { seriesItemSize, seriesToArchive, isSeriesSortOrderShowing, seriesSortOrder ->
+		Config(
+			seriesItemSize = seriesItemSize,
+			seriesToArchive = seriesToArchive,
+			isSeriesSortOrderShowing = isSeriesSortOrderShowing,
+			seriesSortOrder = seriesSortOrder,
+		)
+	}
 
 	private val _seriesList = _seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder)
 	}
 
 	val uiState: StateFlow<LeagueDetailsScreenUiState> = combine(
-		_isSeriesSortOrderShowing,
-		_seriesSortOrder,
-		_seriesToArchive,
+		_config,
 		leaguesRepository.getLeagueDetails(leagueId),
 		_seriesList,
-	) { isSeriesSortOrderShowing, seriesSortOrder, seriesToArchive, league, series ->
+	) { config, league, series ->
 		LeagueDetailsScreenUiState.Loaded(
 			leagueDetails = LeagueDetailsUiState(
 				topBar = LeagueDetailsTopBarUiState(
 					leagueName = league.name,
-					isSortOrderMenuExpanded = isSeriesSortOrderShowing,
-					sortOrder = seriesSortOrder,
+					isSortOrderMenuExpanded = config.isSeriesSortOrderShowing,
+					sortOrder = config.seriesSortOrder,
+					seriesItemSize = config.seriesItemSize,
 				),
 				seriesList = SeriesListUiState(
 					list = series.map {
@@ -66,7 +85,8 @@ class LeagueDetailsViewModel @Inject constructor(
 						)
 						it.withChart(chartModelProducer)
 					},
-					seriesToArchive = seriesToArchive,
+					seriesToArchive = config.seriesToArchive,
+					itemSize = config.seriesItemSize,
 				)
 			),
 		)
@@ -92,6 +112,9 @@ class LeagueDetailsViewModel @Inject constructor(
 			is LeagueDetailsUiAction.SortOrderClicked -> {
 				_seriesSortOrder.value = action.sortOrder
 				_isSeriesSortOrderShowing.value = false
+			}
+			is LeagueDetailsUiAction.SeriesItemSizeToggled -> viewModelScope.launch {
+				userDataRepository.setSeriesItemSize(action.itemSize)
 			}
 		}
 	}
@@ -125,4 +148,11 @@ private fun SeriesListItem.withChart(chartModelProducer: ChartEntryModelProducer
 	lowestScore = scores.minOrNull() ?: 0,
 	highestScore = scores.maxOrNull() ?: 0,
 	scores = chartModelProducer,
+)
+
+private data class Config(
+	val seriesItemSize: SeriesItemSize,
+	val seriesToArchive: SeriesListChartItem?,
+	val isSeriesSortOrderShowing: Boolean,
+	val seriesSortOrder: SeriesSortOrder,
 )

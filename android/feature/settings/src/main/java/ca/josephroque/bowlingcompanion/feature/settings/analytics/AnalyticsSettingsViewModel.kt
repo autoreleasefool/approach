@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.settings.analytics
 
 import androidx.lifecycle.viewModelScope
-import ca.josephroque.bowlingcompanion.core.analytics.toggle
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
@@ -50,7 +49,7 @@ class AnalyticsSettingsViewModel @Inject constructor(
 		viewModelScope.launch {
 			val status = userDataRepository.userData.first().analyticsOptIn
 			val updatedStatus = when (value) {
-				null -> status.toggle()
+				null -> status.next
 				true -> AnalyticsOptInStatus.OPTED_IN
 				false -> AnalyticsOptInStatus.OPTED_OUT
 			}

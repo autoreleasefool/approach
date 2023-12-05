@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "ca/josephroque/bowlingcompanion/core/data/analytics_opt_in.proto";
+import "ca/josephroque/bowlingcompanion/core/data/series_item_size.proto";
 
 option java_package = "ca.josephroque.bowlingcompanion.core.datastore";
 option java_multiple_files = true;
@@ -26,4 +27,7 @@ message UserPreferences {
   repeated string recently_used_league_ids = 2;
   repeated string recently_used_alley_ids = 3;
   repeated string recently_used_gear_ids = 4;
+
+  // Series
+  SeriesItemSizeProto series_item_size = 24;
 }

@@ -11,6 +11,18 @@ enum class SeriesSortOrder {
 	LOWEST_TO_HIGHEST,
 }
 
+enum class SeriesItemSize {
+	DEFAULT,
+	COMPACT,
+	;
+
+	val next: SeriesItemSize
+		get() = when (this) {
+			DEFAULT -> COMPACT
+			COMPACT -> DEFAULT
+		}
+}
+
 data class SeriesSummary(
 	val id: UUID,
 	val date: LocalDate,

@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.flow.Flow
 
@@ -11,6 +12,8 @@ interface UserDataRepository {
 	suspend fun didCompleteLegacyMigration()
 
 	suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus)
+
+	suspend fun setSeriesItemSize(size: SeriesItemSize)
 
 	suspend fun setIsCountingH2AsH(isCountingH2AsH: Boolean)
 	suspend fun setIsCountingSplitWithBonusAsSplit(isCountingSplitWithBonusAsSplit: Boolean)

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.serieslist.ui
 
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import kotlinx.datetime.LocalDate
@@ -18,6 +19,7 @@ data class SeriesListChartItem(
 
 data class SeriesListUiState(
 	val list: List<SeriesListChartItem>,
+	val itemSize: SeriesItemSize,
 	val seriesToArchive: SeriesListChartItem?,
 )
 

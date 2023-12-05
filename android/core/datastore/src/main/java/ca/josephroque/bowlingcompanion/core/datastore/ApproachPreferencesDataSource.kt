@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.datastore
 
 import androidx.datastore.core.DataStore
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -19,6 +20,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 					AnalyticsOptInProto.UNRECOGNIZED,
 					null -> AnalyticsOptInStatus.OPTED_IN
 					AnalyticsOptInProto.ANALYTICS_OPT_IN_OPTED_OUT -> AnalyticsOptInStatus.OPTED_OUT
+				},
+				seriesItemSize = when (it.seriesItemSize) {
+					SeriesItemSizeProto.SERIES_ITEM_SIZE_COMPACT -> SeriesItemSize.COMPACT
+					SeriesItemSizeProto.SERIES_ITEM_SIZE_DEFAULT,
+					SeriesItemSizeProto.UNRECOGNIZED,
+					null -> SeriesItemSize.DEFAULT
 				},
 				isCountingH2AsHDisabled = it.isCountingH2AsHDisabled,
 				isCountingSplitWithBonusAsSplitDisabled = it.isCountingSplitWithBonusAsSplitDisabled,
@@ -44,6 +51,17 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			it.copy {
 				this.isLegacyMigrationComplete = isLegacyMigrationComplete
+			}
+		}
+	}
+
+	suspend fun setSeriesItemSize(size: SeriesItemSize) {
+		userPreferences.updateData {
+			it.copy {
+				this.seriesItemSize = when (size) {
+					SeriesItemSize.COMPACT -> SeriesItemSizeProto.SERIES_ITEM_SIZE_COMPACT
+					SeriesItemSize.DEFAULT -> SeriesItemSizeProto.SERIES_ITEM_SIZE_DEFAULT
+				}
 			}
 		}
 	}
