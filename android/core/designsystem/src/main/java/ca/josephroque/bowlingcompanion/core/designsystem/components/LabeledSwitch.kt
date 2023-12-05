@@ -23,6 +23,7 @@ fun LabeledSwitch(
 	onCheckedChange: (Boolean?) -> Unit,
 	modifier: Modifier = Modifier,
 	enabled: Boolean = true,
+	compact: Boolean = false,
 	@StringRes subtitleResourceId: Int? = null,
 ) {
 	Row(
@@ -41,13 +42,13 @@ fun LabeledSwitch(
 		) {
 			Text(
 				text = stringResource(titleResourceId),
-				style = MaterialTheme.typography.titleMedium,
+				style = if (compact) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium,
 			)
 
 			subtitleResourceId?.let {
 				Text(
 					text = stringResource(subtitleResourceId),
-					style = MaterialTheme.typography.bodyMedium,
+					style = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
 					color = MaterialTheme.colorScheme.onSurfaceVariant,
 				)
 			}
