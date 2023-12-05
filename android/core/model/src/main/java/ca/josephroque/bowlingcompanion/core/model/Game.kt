@@ -53,6 +53,7 @@ data class GameEdit(
 		val date: LocalDate,
 		val preBowl: SeriesPreBowl,
 		val excludeFromStatistics: ExcludeFromStatistics,
+		val numberOfGames: Int,
 	)
 
 	data class League(
@@ -84,6 +85,14 @@ data class ArchivedGame(
 enum class GameLockState {
 	LOCKED,
 	UNLOCKED,
+	;
+
+	val next: GameLockState
+		get() = when (this) {
+			LOCKED -> UNLOCKED
+			UNLOCKED -> LOCKED
+		}
+
 }
 
 enum class GameScoringMethod {

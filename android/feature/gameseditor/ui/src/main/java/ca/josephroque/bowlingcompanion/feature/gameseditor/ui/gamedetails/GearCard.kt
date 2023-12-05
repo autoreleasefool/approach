@@ -30,14 +30,14 @@ import java.util.UUID
 
 @Composable
 internal fun GearCard(
-	state: GearCardUiState,
-	manageGear: () -> Unit,
+	state: GameDetailsUiState.GearCardUiState,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	DetailCard(
 		title = stringResource(R.string.game_editor_gear_title),
 		action = {
-			RoundIconButton(onClick = manageGear) {
+			RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageGearClicked) }) {
 				Icon(
 					Icons.Default.Edit,
 					contentDescription = stringResource(RCoreDesign.string.action_manage),
@@ -66,8 +66,8 @@ internal fun GearCard(
 
 @Composable
 private fun GearItemRow(
-	modifier: Modifier = Modifier,
 	gear: GearListItem,
+	modifier: Modifier = Modifier,
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
@@ -93,20 +93,28 @@ private fun GearItemRow(
 	}
 }
 
-data class GearCardUiState(
-	val selectedGear: List<GearListItem> = emptyList(),
-)
-
 @Preview
 @Composable
 private fun GearCardPreview() {
 	GearCard(
-		state = GearCardUiState(
+		state = GameDetailsUiState.GearCardUiState(
 			selectedGear = listOf(
-				GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph", avatar = Avatar.default()),
-				GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah", avatar = Avatar.default()),
+				GearListItem(
+					id = UUID.randomUUID(),
+					name = "Yellow Ball",
+					kind = GearKind.BOWLING_BALL,
+					ownerName = "Joseph",
+					avatar = Avatar.default()
+				),
+				GearListItem(
+					id = UUID.randomUUID(),
+					name = "Green Towel",
+					kind = GearKind.TOWEL,
+					ownerName = "Sarah",
+					avatar = Avatar.default()
+				),
 			),
 		),
-		manageGear = {},
+		onAction = {},
 	)
 }

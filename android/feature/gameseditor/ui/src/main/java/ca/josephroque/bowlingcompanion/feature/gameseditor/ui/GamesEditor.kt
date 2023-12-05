@@ -16,7 +16,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
 import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
@@ -31,14 +30,9 @@ import java.util.UUID
 
 @Composable
 fun GamesEditor(
+	state: GamesEditorUiState,
+	onAction: (GamesEditorUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	frameEditorState: FrameEditorUiState,
-	rollEditorState: RollEditorUiState,
-	scoreSheetState: ScoreSheetUiState,
-	onDownedPinsChanged: (Set<Pin>) -> Unit,
-	onSelectBall: (UUID) -> Unit,
-	onToggleFoul: (Boolean) -> Unit,
-	onFrameSelectionChanged: (ScoreSheetUiState.Selection) -> Unit,
 ) {
 	Column(modifier = modifier.fillMaxSize()) {
 		Box(modifier = modifier.weight(1f)) {
@@ -52,8 +46,8 @@ fun GamesEditor(
 				Spacer(modifier = Modifier.weight(1f))
 
 				FrameEditor(
-					state = frameEditorState,
-					onDownedPinsChanged = onDownedPinsChanged,
+					state = state.frameEditor,
+					onAction = { onAction(GamesEditorUiAction.FrameEditor(it)) },
 					modifier = Modifier.padding(horizontal = 16.dp),
 				)
 
@@ -63,14 +57,13 @@ fun GamesEditor(
 
 		Box(modifier = Modifier.background(Color.Black)) {
 			RollEditor(
-				state = rollEditorState,
-				onSelectBall = onSelectBall,
-				onToggleFoul = onToggleFoul,
+				state = state.rollEditor,
+				onAction = { onAction(GamesEditorUiAction.RollEditor(it)) },
 			)
 
 			ScoreSheet(
-				state = scoreSheetState,
-				onSelectionChanged = onFrameSelectionChanged,
+				state = state.scoreSheet,
+				onAction = { onAction(GamesEditorUiAction.ScoreSheet(it)) },
 				modifier = Modifier
 					.padding(horizontal = 8.dp)
 					.padding(top = 8.dp),
@@ -128,118 +121,117 @@ private fun BackgroundImage() {
 @Composable
 private fun GamesEditorPreview() {
 	GamesEditor(
-		frameEditorState = FrameEditorUiState(
-			downedPins = setOf(),
-			lockedPins = setOf(),
-		),
-		rollEditorState = RollEditorUiState(
-			recentBalls = emptyList(),
-			selectedBall = null,
-			didFoulRoll = false,
-		),
-		scoreSheetState = ScoreSheetUiState(
-			configuration = ScoreSheetConfiguration(ScoreSheetConfiguration.Style.PLAIN),
-			selection = ScoreSheetUiState.Selection(frameIndex = 0, rollIndex = 0),
-			game = ScoringGame(
-				id = UUID.randomUUID(),
-				index = 0,
-				frames = listOf(
-					ScoringFrame(
-						index = 0,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = true, display = "A"),
-							ScoringRoll(index = 1, didFoul = false, display = "2"),
-							ScoringRoll(index = 2, didFoul = false, display = "2"),
+		state = GamesEditorUiState(
+			frameEditor = FrameEditorUiState(
+				downedPins = setOf(),
+				lockedPins = setOf(),
+			),
+			rollEditor = RollEditorUiState(
+				recentBalls = emptyList(),
+				selectedBall = null,
+				didFoulRoll = false,
+			),
+			scoreSheet = ScoreSheetUiState(
+				configuration = ScoreSheetConfiguration(ScoreSheetConfiguration.Style.PLAIN),
+				selection = ScoreSheetUiState.Selection(frameIndex = 0, rollIndex = 0),
+				game = ScoringGame(
+					id = UUID.randomUUID(),
+					index = 0,
+					frames = listOf(
+						ScoringFrame(
+							index = 0,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = true, display = "A"),
+								ScoringRoll(index = 1, didFoul = false, display = "2"),
+								ScoringRoll(index = 2, didFoul = false, display = "2"),
+							),
+							score = 0,
 						),
-						score = 0,
-					),
-					ScoringFrame(
-						index = 1,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = true, display = "HS"),
-							ScoringRoll(index = 1, didFoul = false, display = "5"),
-							ScoringRoll(index = 2, didFoul = false, display = "2"),
+						ScoringFrame(
+							index = 1,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = true, display = "HS"),
+								ScoringRoll(index = 1, didFoul = false, display = "5"),
+								ScoringRoll(index = 2, didFoul = false, display = "2"),
+							),
+							score = 0,
 						),
-						score = 0,
-					),
-					ScoringFrame(
-						index = 2,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = true, display = "12"),
-							ScoringRoll(index = 1, didFoul = false, display = "/"),
-							ScoringRoll(index = 2, didFoul = false, display = "12"),
+						ScoringFrame(
+							index = 2,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = true, display = "12"),
+								ScoringRoll(index = 1, didFoul = false, display = "/"),
+								ScoringRoll(index = 2, didFoul = false, display = "12"),
+							),
+							score = 12,
 						),
-						score = 12,
-					),
-					ScoringFrame(
-						index = 3,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = true, display = "12"),
-							ScoringRoll(index = 1, didFoul = false, display = "/"),
-							ScoringRoll(index = 2, didFoul = false, display = "10"),
+						ScoringFrame(
+							index = 3,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = true, display = "12"),
+								ScoringRoll(index = 1, didFoul = false, display = "/"),
+								ScoringRoll(index = 2, didFoul = false, display = "10"),
+							),
+							score = 22,
 						),
-						score = 22,
-					),
-					ScoringFrame(
-						index = 4,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = false, display = "C/O"),
-							ScoringRoll(index = 1, didFoul = false, display = "-"),
-							ScoringRoll(index = 2, didFoul = false, display = "5"),
+						ScoringFrame(
+							index = 4,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = false, display = "C/O"),
+								ScoringRoll(index = 1, didFoul = false, display = "-"),
+								ScoringRoll(index = 2, didFoul = false, display = "5"),
+							),
+							score = 37,
 						),
-						score = 37,
-					),
-					ScoringFrame(
-						index = 5,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = false, display = "C/O"),
-							ScoringRoll(index = 1, didFoul = false, display = "/"),
-							ScoringRoll(index = 2, didFoul = false, display = "10"),
+						ScoringFrame(
+							index = 5,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = false, display = "C/O"),
+								ScoringRoll(index = 1, didFoul = false, display = "/"),
+								ScoringRoll(index = 2, didFoul = false, display = "10"),
+							),
+							score = 62,
 						),
-						score = 62,
-					),
-					ScoringFrame(
-						index = 6,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = false, display = "C/O"),
-							ScoringRoll(index = 1, didFoul = false, display = "-"),
-							ScoringRoll(index = 2, didFoul = false, display = "5"),
+						ScoringFrame(
+							index = 6,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = false, display = "C/O"),
+								ScoringRoll(index = 1, didFoul = false, display = "-"),
+								ScoringRoll(index = 2, didFoul = false, display = "5"),
+							),
+							score = 77,
 						),
-						score = 77,
-					),
-					ScoringFrame(
-						index = 7,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = false, display = "HS"),
-							ScoringRoll(index = 1, didFoul = false, display = "/"),
-							ScoringRoll(index = 2, didFoul = false, display = "11"),
+						ScoringFrame(
+							index = 7,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = false, display = "HS"),
+								ScoringRoll(index = 1, didFoul = false, display = "/"),
+								ScoringRoll(index = 2, didFoul = false, display = "11"),
+							),
+							score = 103,
 						),
-						score = 103,
-					),
-					ScoringFrame(
-						index = 8,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = false, display = "A"),
-							ScoringRoll(index = 1, didFoul = false, display = "/"),
-							ScoringRoll(index = 2, didFoul = false, display = "15"),
+						ScoringFrame(
+							index = 8,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = false, display = "A"),
+								ScoringRoll(index = 1, didFoul = false, display = "/"),
+								ScoringRoll(index = 2, didFoul = false, display = "15"),
+							),
+							score = 133,
 						),
-						score = 133,
-					),
-					ScoringFrame(
-						index = 9,
-						rolls = listOf(
-							ScoringRoll(index = 0, didFoul = false, display = "X"),
-							ScoringRoll(index = 1, didFoul = false, display = "HS"),
-							ScoringRoll(index = 2, didFoul = false, display = "/"),
+						ScoringFrame(
+							index = 9,
+							rolls = listOf(
+								ScoringRoll(index = 0, didFoul = false, display = "X"),
+								ScoringRoll(index = 1, didFoul = false, display = "HS"),
+								ScoringRoll(index = 2, didFoul = false, display = "/"),
+							),
+							score = 163,
 						),
-						score = 163,
 					),
 				),
-			)
+			),
 		),
-		onDownedPinsChanged = {},
-		onSelectBall = {},
-		onToggleFoul = {},
-		onFrameSelectionChanged = {},
+		onAction = {},
 	)
 }

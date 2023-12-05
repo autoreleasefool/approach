@@ -15,10 +15,9 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 
 @Composable
 internal fun GamePropertiesCard(
+	state: GameDetailsUiState.GamePropertiesCardUiState,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	state: GamePropertiesCardUiState,
-	onToggleLock: (Boolean?) -> Unit,
-	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
 ) {
 	DetailCard(modifier = modifier) {
 		Column(
@@ -29,7 +28,7 @@ internal fun GamePropertiesCard(
 					GameLockState.LOCKED -> true
 					GameLockState.UNLOCKED -> false
 				},
-				onCheckedChange = onToggleLock,
+				onCheckedChange = { onAction(GameDetailsUiAction.LockToggled(it)) },
 				titleResourceId = R.string.game_editor_lock_state_title,
 				subtitleResourceId = R.string.game_editor_lock_state_description,
 			)
@@ -48,7 +47,7 @@ internal fun GamePropertiesCard(
 						}
 					}
 				},
-				onCheckedChange = onToggleExcludeFromStatistics,
+				onCheckedChange = { onAction(GameDetailsUiAction.ExcludeFromStatisticsToggled(it)) },
 				titleResourceId = R.string.game_editor_exclude_from_statistics_title,
 				subtitleResourceId = when (state.leagueExcludeFromStatistics) {
 					ExcludeFromStatistics.EXCLUDE -> R.string.game_editor_exclude_from_statistics_league_excluded
@@ -75,26 +74,17 @@ internal fun GamePropertiesCard(
 	}
 }
 
-data class GamePropertiesCardUiState(
-	val locked: GameLockState = GameLockState.LOCKED,
-	val gameExcludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-	val seriesExcludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-	val leagueExcludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-	val seriesPreBowl: SeriesPreBowl = SeriesPreBowl.REGULAR,
-)
-
 @Preview
 @Composable
 private fun GamePropertiesCardPreview() {
 	GamePropertiesCard(
-		state = GamePropertiesCardUiState(
+		state = GameDetailsUiState.GamePropertiesCardUiState(
 			locked = GameLockState.LOCKED,
 			gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 			seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 			leagueExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 			seriesPreBowl = SeriesPreBowl.REGULAR,
 		),
-		onToggleLock = {},
-		onToggleExcludeFromStatistics = {},
+		onAction = {},
 	)
 }

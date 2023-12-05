@@ -20,8 +20,8 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 
 @Composable
 internal fun Header(
-	state: HeaderUiState,
-	goToNext: (NextGameEditableElement) -> Unit,
+	state: GameDetailsUiState.HeaderUiState,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	DetailRow(modifier = modifier.padding(bottom = 8.dp)) {
@@ -41,7 +41,7 @@ internal fun Header(
 		}
 
 		if (state.nextElement != null) {
-			RoundIconButton(onClick = { goToNext(state.nextElement) }) {
+			RoundIconButton(onClick = { onAction(GameDetailsUiAction.NextGameElementClicked(state.nextElement)) }) {
 				Icon(
 					painter = painterResource(R.drawable.ic_chevron_right),
 					contentDescription = when (state.nextElement) {
@@ -56,23 +56,19 @@ internal fun Header(
 	}
 }
 
-data class HeaderUiState(
-	val bowlerName: String = "",
-	val leagueName: String = "",
-	val nextElement: NextGameEditableElement? = null,
-)
+
 
 @Preview
 @Composable
 private fun HeaderPreview() {
 	Surface {
 		Header(
-			state = HeaderUiState(
+			state = GameDetailsUiState.HeaderUiState(
 				bowlerName = "Joseph",
 				leagueName = "Majors 22/23",
 				nextElement = null
 			),
-			goToNext = {},
+			onAction = {},
 		)
 	}
 }

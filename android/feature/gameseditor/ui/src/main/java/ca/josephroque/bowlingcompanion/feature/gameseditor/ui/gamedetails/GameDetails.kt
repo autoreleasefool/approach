@@ -26,15 +26,7 @@ import java.util.UUID
 @Composable
 fun GameDetails(
 	state: GameDetailsUiState,
-	goToNext: (NextGameEditableElement) -> Unit,
-	onOpenSeriesStats: () -> Unit,
-	onOpenGameStats: () -> Unit,
-	onManageGear: () -> Unit,
-	onManageMatchPlay: () -> Unit,
-	onManageScore: () -> Unit,
-	onToggleLock: (Boolean?) -> Unit,
-	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
-	onMeasureHeaderHeight: (Float) -> Unit,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -47,56 +39,41 @@ fun GameDetails(
 	) {
 		Header(
 			state = state.header,
-			goToNext = goToNext,
-			modifier = Modifier.onGloballyPositioned { onMeasureHeaderHeight(it.size.height.toFloat()) }
+			onAction = onAction,
+			modifier = Modifier.onGloballyPositioned {
+				onAction(GameDetailsUiAction.HeaderHeightMeasured(it.size.height.toFloat()))
+			},
 		)
 
 		StatisticsButtons(
 			gameIndex = state.currentGameIndex,
-			openSeriesStats = onOpenSeriesStats,
-			openGameStats = onOpenGameStats,
+			onAction = onAction,
 		)
 
 		GearCard(
 			state = state.gear,
-			manageGear = onManageGear,
+			onAction = onAction,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		MatchPlayCard(
 			state = state.matchPlay,
-			manageMatchPlay = onManageMatchPlay,
+			onAction = onAction,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		ScoringMethodCard(
 			state = state.scoringMethod,
-			manageScore = onManageScore,
+			onAction = onAction,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		GamePropertiesCard(
 			state = state.gameProperties,
-			onToggleLock = onToggleLock,
-			onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
+			onAction = onAction,
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 	}
-}
-
-data class GameDetailsUiState(
-	val currentGameIndex: Int = 0,
-	val header: HeaderUiState = HeaderUiState(),
-	val gear: GearCardUiState = GearCardUiState(),
-	val matchPlay: MatchPlayCardUiState = MatchPlayCardUiState(),
-	val scoringMethod: ScoringMethodCardUiState = ScoringMethodCardUiState(),
-	val gameProperties: GamePropertiesCardUiState = GamePropertiesCardUiState(),
-)
-
-sealed interface NextGameEditableElement {
-	data class Roll(val rollIndex: Int): NextGameEditableElement
-	data class Frame(val frameIndex: Int): NextGameEditableElement
-	data class Game(val gameIndex: Int, val game: UUID): NextGameEditableElement
 }
 
 @Preview
@@ -106,27 +83,39 @@ private fun GameDetailsPreview() {
 		GameDetails(
 			state = GameDetailsUiState(
 				currentGameIndex = 0,
-				header = HeaderUiState(
+				header = GameDetailsUiState.HeaderUiState(
 					bowlerName = "Jordan",
 					leagueName = "1 Sunday Nights 2019",
 					nextElement = NextGameEditableElement.Roll(rollIndex = 1)
 				),
-				gear = GearCardUiState(
+				gear = GameDetailsUiState.GearCardUiState(
 					selectedGear = listOf(
-						GearListItem(id = UUID.randomUUID(), name = "Yellow Ball", kind = GearKind.BOWLING_BALL, ownerName = "Joseph", avatar = Avatar.default()),
-						GearListItem(id = UUID.randomUUID(), name = "Green Towel", kind = GearKind.TOWEL, ownerName = "Sarah", avatar = Avatar.default()),
+						GearListItem(
+							id = UUID.randomUUID(),
+							name = "Yellow Ball",
+							kind = GearKind.BOWLING_BALL,
+							ownerName = "Joseph",
+							avatar = Avatar.default()
+						),
+						GearListItem(
+							id = UUID.randomUUID(),
+							name = "Green Towel",
+							kind = GearKind.TOWEL,
+							ownerName = "Sarah",
+							avatar = Avatar.default()
+						),
 					),
 				),
-				matchPlay = MatchPlayCardUiState(
+				matchPlay = GameDetailsUiState.MatchPlayCardUiState(
 					opponentName = "Joseph",
 					opponentScore = 145,
 					result = MatchPlayResult.WON,
 				),
-				scoringMethod = ScoringMethodCardUiState(
+				scoringMethod = GameDetailsUiState.ScoringMethodCardUiState(
 					score = 234,
 					scoringMethod = GameScoringMethod.BY_FRAME,
 				),
-				gameProperties = GamePropertiesCardUiState(
+				gameProperties = GameDetailsUiState.GamePropertiesCardUiState(
 					locked = GameLockState.UNLOCKED,
 					gameExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 					seriesExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
@@ -134,15 +123,7 @@ private fun GameDetailsPreview() {
 					seriesPreBowl = SeriesPreBowl.REGULAR,
 				),
 			),
-			goToNext = {},
-			onOpenSeriesStats = {},
-			onOpenGameStats = {},
-			onManageGear = {},
-			onManageMatchPlay = {},
-			onManageScore = {},
-			onToggleLock = {},
-			onToggleExcludeFromStatistics = {},
-			onMeasureHeaderHeight = {},
+			onAction = {},
 		)
 	}
 }

@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomSheetScaffold
@@ -14,13 +15,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
@@ -31,6 +37,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDe
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
@@ -39,34 +46,24 @@ internal fun GamesEditorRoute(
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
-	val frameEditorState by viewModel.frameEditorState.collectAsStateWithLifecycle()
-	val rollEditorState by viewModel.rollEditorState.collectAsStateWithLifecycle()
-	val scoreSheetState by viewModel.scoreSheetState.collectAsStateWithLifecycle()
-	val gameDetailsState by viewModel.gameDetailsState.collectAsStateWithLifecycle()
+	val gamesEditorScreenState by viewModel.uiState.collectAsStateWithLifecycle()
 
+	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
-		viewModel.loadGame()
+		lifecycleOwner.lifecycleScope.launch {
+			viewModel.events
+				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+				.collect {
+					when (it) {
+						GamesEditorScreenEvent.Dismissed -> onBackPressed()
+					}
+				}
+		}
 	}
 
 	GamesEditorScreen(
-		frameEditorState = frameEditorState,
-		rollEditorState = rollEditorState,
-		scoreSheetState = scoreSheetState,
-		gameDetailsState = gameDetailsState,
-		onBackPressed = onBackPressed,
-		onOpenSettings = viewModel::openGameSettings,
-		onGoToNext = viewModel::goToNext,
-		onOpenSeriesStats = viewModel::openSeriesStats,
-		onOpenGameStats = viewModel::openGameStats,
-		onManageGear = viewModel::openGearPicker,
-		onManageMatchPlay = viewModel::openMatchPlayManager,
-		onManageScore = viewModel::openScoreSettings,
-		onDownedPinsChanged = viewModel::updateDownedPins,
-		onSelectBall = viewModel::updateSelectedBall,
-		onToggleFoul = viewModel::toggleFoul,
-		onToggleLock = viewModel::toggleGameLocked,
-		onToggleExcludeFromStatistics = viewModel::toggleGameExcludedFromStatistics,
-		onFrameSelectionChanged = viewModel::updateFrameSelection,
+		state = gamesEditorScreenState,
+		onAction = viewModel::handleAction,
 		modifier = modifier,
 	)
 }
@@ -74,37 +71,26 @@ internal fun GamesEditorRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun GamesEditorScreen(
-	frameEditorState: FrameEditorUiState,
-	rollEditorState: RollEditorUiState,
-	scoreSheetState: ScoreSheetUiState,
-	gameDetailsState: GameDetailsUiState,
-	onBackPressed: () -> Unit,
-	onOpenSettings: () -> Unit,
-	onGoToNext: (NextGameEditableElement) -> Unit,
-	onOpenSeriesStats: () -> Unit,
-	onOpenGameStats: () -> Unit,
-	onManageGear: () -> Unit,
-	onManageMatchPlay: () -> Unit,
-	onManageScore: () -> Unit,
-	onDownedPinsChanged: (Set<Pin>) -> Unit,
-	onSelectBall: (UUID) -> Unit,
-	onToggleFoul: (Boolean) -> Unit,
-	onToggleLock: (Boolean?) -> Unit,
-	onToggleExcludeFromStatistics: (Boolean?) -> Unit,
-	onFrameSelectionChanged: (ScoreSheetUiState.Selection) -> Unit,
+	state: GamesEditorScreenUiState,
+	onAction: (GamesEditorScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val scaffoldState = rememberBottomSheetScaffoldState()
-	val headerHeight = remember { mutableFloatStateOf(0f) }
 	val handleHeight = remember { mutableFloatStateOf(56f) }
+
+	LaunchedEffect(Unit) {
+		onAction(GamesEditorScreenUiAction.LoadInitialGame)
+	}
 
 	BottomSheetScaffold(
 		scaffoldState = scaffoldState,
 		topBar = {
 			GamesEditorTopBar(
-				gameDetailsState = gameDetailsState,
-				onBackPressed = onBackPressed,
-				openSettings = onOpenSettings,
+				currentGameIndex = when (state) {
+					is GamesEditorScreenUiState.Loaded -> state.gameDetails.currentGameIndex
+					else -> 0
+				},
+				onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
 			)
 		},
 		sheetDragHandle = {
@@ -120,30 +106,29 @@ internal fun GamesEditorScreen(
 				Box(modifier = Modifier.size(width = 32.dp, height = 4.dp))
 			}
 		},
-		sheetPeekHeight = (headerHeight.floatValue + handleHeight.floatValue).dp,
+		sheetPeekHeight = ((state as? GamesEditorScreenUiState.Loaded)?.headerPeekHeight?.plus(handleHeight.floatValue) ?: 0f).dp,
 		sheetContent = {
-			GameDetails(
-				state = gameDetailsState,
-				goToNext = onGoToNext,
-				onOpenSeriesStats = onOpenSeriesStats,
-				onOpenGameStats = onOpenGameStats,
-				onManageGear = onManageGear,
-				onManageMatchPlay = onManageMatchPlay,
-				onManageScore = onManageScore,
-				onToggleLock = onToggleLock,
-				onToggleExcludeFromStatistics = onToggleExcludeFromStatistics,
-				onMeasureHeaderHeight = { headerHeight.floatValue = it }
-			)
+			when (state) {
+				GamesEditorScreenUiState.Loading -> Unit
+				is GamesEditorScreenUiState.Loaded -> GameDetails(
+					state = state.gameDetails,
+					onAction = { onAction(GamesEditorScreenUiAction.GameDetails(it)) },
+				)
+			}
 		},
-	) {
-		GamesEditor(
-			frameEditorState = frameEditorState,
-			rollEditorState = rollEditorState,
-			scoreSheetState = scoreSheetState,
-			onDownedPinsChanged = onDownedPinsChanged,
-			onSelectBall = onSelectBall,
-			onToggleFoul = onToggleFoul,
-			onFrameSelectionChanged = onFrameSelectionChanged,
-		)
+	) { padding ->
+		Surface(
+			color = Color.Black,
+			modifier = Modifier.fillMaxSize(),
+		) {
+			when (state) {
+				GamesEditorScreenUiState.Loading -> Unit
+				is GamesEditorScreenUiState.Loaded -> GamesEditor(
+					state = state.gamesEditor,
+					onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
+					modifier = Modifier.padding(padding),
+				)
+			}
+		}
 	}
 }

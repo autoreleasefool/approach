@@ -14,8 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 @Composable
 internal fun StatisticsButtons(
 	gameIndex: Int,
-	openGameStats: () -> Unit,
-	openSeriesStats: () -> Unit,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	DetailRow(modifier = modifier) {
@@ -28,14 +27,14 @@ internal fun StatisticsButtons(
 		DetailNavigationButton(
 			title = stringResource(R.string.game_editor_view_stats_series),
 			subtitle = stringResource(R.string.game_editor_view_stats),
-			onClick = openSeriesStats,
+			onClick = { onAction(GameDetailsUiAction.ViewSeriesStatsClicked) },
 			modifier = Modifier.weight(1f),
 		)
 
 		DetailNavigationButton(
 			title = stringResource(R.string.game_editor_view_stats_game, gameIndex + 1),
 			subtitle = stringResource(R.string.game_editor_view_stats),
-			onClick = openGameStats,
+			onClick = { onAction(GameDetailsUiAction.ViewGameStatsClicked) },
 			modifier = Modifier.weight(1f),
 		)
 	}

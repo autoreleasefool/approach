@@ -30,9 +30,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun FrameEditor(
-	modifier: Modifier = Modifier,
 	state: FrameEditorUiState,
-	onDownedPinsChanged: (Set<Pin>) -> Unit,
+	onAction: (FrameEditorUiAction) -> Unit,
+	modifier: Modifier = Modifier,
 ) {
 	var downedPins by remember(state.downedPins) { mutableStateOf(state.downedPins) }
 	var maxX by remember { mutableFloatStateOf(0f) }
@@ -42,13 +42,14 @@ fun FrameEditor(
 
 	LaunchedEffect(isDragging) {
 		if (!isDragging && downedPins != state.downedPins) {
-			onDownedPinsChanged(downedPins.toSet())
+			onAction(FrameEditorUiAction.DownedPinsChanged(downedPins.toSet()))
 		}
 	}
 
-	Box(modifier = modifier
-		.fillMaxWidth()
-		.onSizeChanged { maxX = it.width.toFloat() },
+	Box(
+		modifier = modifier
+			.fillMaxWidth()
+			.onSizeChanged { maxX = it.width.toFloat() },
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
@@ -108,11 +109,6 @@ private fun Pin.weight(): Float = when (this) {
 	Pin.HEAD_PIN -> 0.215f
 }
 
-data class FrameEditorUiState(
-	val lockedPins: Set<Pin> = emptySet(),
-	val downedPins: Set<Pin> = emptySet(),
-)
-
 @Preview
 @Composable
 private fun FrameEditorPreview() {
@@ -128,7 +124,11 @@ private fun FrameEditorPreview() {
 	Surface {
 		FrameEditor(
 			state = state,
-			onDownedPinsChanged = { state = state.copy(downedPins = it) },
+			onAction = {
+				when (it) {
+					is FrameEditorUiAction.DownedPinsChanged -> state = state.copy(downedPins = it.downedPins)
+				}
+			},
 			modifier = Modifier.size(300.dp),
 		)
 	}

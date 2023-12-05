@@ -25,9 +25,9 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 
 @Composable
 internal fun ScoringMethodCard(
+	state: GameDetailsUiState.ScoringMethodCardUiState,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	state: ScoringMethodCardUiState,
-	manageScore: () -> Unit,
 ) {
 	DetailCard(
 		title = stringResource(R.string.game_editor_scoring_method_title),
@@ -67,7 +67,7 @@ internal fun ScoringMethodCard(
 			)
 		}
 
-		TextButton(onClick = manageScore) {
+		TextButton(onClick = { onAction(GameDetailsUiAction.ManageScoreClicked) }) {
 			Text(
 				text = stringResource(when (state.scoringMethod) {
 					GameScoringMethod.BY_FRAME -> R.string.game_editor_scoring_method_set_manual_score
@@ -78,19 +78,14 @@ internal fun ScoringMethodCard(
 	}
 }
 
-data class ScoringMethodCardUiState(
-	val score: Int = 0,
-	val scoringMethod: GameScoringMethod = GameScoringMethod.BY_FRAME,
-)
-
 @Preview
 @Composable
 private fun ScoringMethodCardPreview() {
 	ScoringMethodCard(
-		state = ScoringMethodCardUiState(
+		state = GameDetailsUiState.ScoringMethodCardUiState(
 			score = 234,
 			scoringMethod = GameScoringMethod.BY_FRAME,
 		),
-		manageScore = {},
+		onAction = {},
 	)
 }

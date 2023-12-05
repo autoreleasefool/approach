@@ -20,11 +20,11 @@ import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 internal fun DetailNavigationButton(
-	modifier: Modifier = Modifier,
 	title: String,
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
 	subtitle: String? = null,
 	icon: (@Composable () -> Unit)? = null,
-	onClick: () -> Unit,
 ) {
 	Surface(
 		modifier = modifier.heightIn(min = 56.dp),

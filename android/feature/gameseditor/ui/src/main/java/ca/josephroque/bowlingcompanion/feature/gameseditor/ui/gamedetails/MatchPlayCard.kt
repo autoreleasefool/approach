@@ -28,14 +28,14 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.compon
 
 @Composable
 internal fun MatchPlayCard(
+	state: GameDetailsUiState.MatchPlayCardUiState,
+	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	state: MatchPlayCardUiState,
-	manageMatchPlay: () -> Unit,
 ) {
 	DetailCard(
 		title = stringResource(R.string.game_editor_match_play_title),
 		action = {
-			RoundIconButton(onClick = manageMatchPlay) {
+			RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) }) {
 				Icon(
 					Icons.Default.Edit,
 					contentDescription = stringResource(RCoreDesign.string.action_manage),
@@ -128,21 +128,15 @@ private fun Label(
 	}
 }
 
-data class MatchPlayCardUiState(
-	val opponentName: String? = null,
-	val opponentScore: Int? = null,
-	val result: MatchPlayResult? = null,
-)
-
 @Preview
 @Composable
 private fun MatchPlayCardPreview() {
 	MatchPlayCard(
-		state = MatchPlayCardUiState(
+		state = GameDetailsUiState.MatchPlayCardUiState(
 			opponentName = "Joseph",
 			opponentScore = 250,
 			result = MatchPlayResult.WON,
 		),
-		manageMatchPlay = {},
+		onAction = {},
 	)
 }

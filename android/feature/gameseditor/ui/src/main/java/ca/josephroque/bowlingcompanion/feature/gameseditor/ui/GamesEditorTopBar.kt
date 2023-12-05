@@ -12,28 +12,26 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GamesEditorTopBar(
-	gameDetailsState: GameDetailsUiState,
-	onBackPressed: () -> Unit,
-	openSettings: () -> Unit,
+	currentGameIndex: Int,
+	onAction: (GamesEditorUiAction) -> Unit,
 ) {
 	TopAppBar(
 		title = {
 			Text(
 				stringResource(
 					RCoreDesign.string.game_with_ordinal,
-					gameDetailsState.currentGameIndex + 1
+					currentGameIndex + 1
 				)
 			)
 		},
 		colors = TopAppBarDefaults.topAppBarColors(),
-		navigationIcon = { BackButton(onClick = onBackPressed) },
+		navigationIcon = { BackButton(onClick = { onAction(GamesEditorUiAction.BackClicked) }) },
 		actions = {
-			IconButton(onClick = openSettings) {
+			IconButton(onClick = { onAction(GamesEditorUiAction.SettingsClicked) }) {
 				Icon(
 					painter = painterResource(RCoreDesign.drawable.ic_settings),
 					contentDescription = stringResource(R.string.cd_settings),

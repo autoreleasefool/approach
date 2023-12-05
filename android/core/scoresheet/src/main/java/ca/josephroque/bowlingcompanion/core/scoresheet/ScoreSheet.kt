@@ -37,9 +37,9 @@ import java.util.UUID
 
 @Composable
 fun ScoreSheet(
-	modifier: Modifier = Modifier,
 	state: ScoreSheetUiState,
-	onSelectionChanged: (ScoreSheetUiState.Selection) -> Unit,
+	onAction: (ScoreSheetUiAction) -> Unit,
+	modifier: Modifier = Modifier,
 ) {
 	val listState = rememberLazyListState()
 	val coroutineScope = rememberCoroutineScope()
@@ -71,7 +71,7 @@ fun ScoreSheet(
 					isFrameSelected = isFrameSelected,
 					selectedRollIndex = state.selection.rollIndex,
 				) {
-					onSelectionChanged(ScoreSheetUiState.Selection(frame.index, it))
+					onAction(ScoreSheetUiAction.RollClicked(frame.index, it))
 				}
 
 				FrameCell(
@@ -80,7 +80,7 @@ fun ScoreSheet(
 					isSelected = isFrameSelected,
 					modifier = Modifier.fillMaxWidth(),
 				) {
-					onSelectionChanged(ScoreSheetUiState.Selection(frame.index, 0))
+					onAction(ScoreSheetUiAction.FrameClicked(frame.index))
 				}
 
 				RailCell(
@@ -246,17 +246,6 @@ private fun RailCell(
 	}
 }
 
-data class ScoreSheetUiState(
-		val game: ScoringGame? = null,
-		val configuration: ScoreSheetConfiguration = ScoreSheetConfiguration(),
-		val selection: Selection = Selection()
-) {
-	data class Selection(
-		val frameIndex: Int = 0,
-		val rollIndex: Int = 0,
-	)
-}
-
 @Preview
 @Composable
 private fun ScoreSheetPreview() {
@@ -362,7 +351,7 @@ private fun ScoreSheetPreview() {
 					),
 				)
 			),
-			onSelectionChanged = {},
+			onAction = {},
 		)
 	}
 }

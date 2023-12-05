@@ -11,6 +11,7 @@ import java.util.UUID
 
 @Dao
 abstract class GameDao: LegacyMigratingDao<GameEntity> {
+	// TODO: Fetch actual number of games in the series
 	@Query(
 		"""
 			SELECT
@@ -24,6 +25,7 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 				series.`date` AS series_date,
 				series.pre_bowl AS series_preBowl,
 				series.exclude_from_statistics AS series_excludeFromStatistics,
+				0 AS series_numberOfGames,
 				leagues.name AS league_name,
 				leagues.exclude_from_statistics AS league_excludeFromStatistics,
 				bowlers.name AS bowler_name

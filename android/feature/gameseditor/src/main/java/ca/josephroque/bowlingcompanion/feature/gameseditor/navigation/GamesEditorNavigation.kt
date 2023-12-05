@@ -16,7 +16,7 @@ const val gamesEditorNavigationRoute = "edit_games/{$SERIES_ID}/{$INITIAL_GAME_I
 fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID) {
 	val seriesIdEncoded = Uri.encode(seriesId.toString())
 	val gameIdEncoded = Uri.encode(initialGameId.toString())
-	this.navigate("edit_games/$seriesId/$gameIdEncoded") {
+	this.navigate("edit_games/$seriesIdEncoded/$gameIdEncoded") {
 		launchSingleTop = true
 	}
 }
