@@ -8,7 +8,10 @@
 	<string name="accessory_list_gear_title">Gear</string>
 	<string name="accessory_list_x_most_recent">Only showing %1d$ most recent</string>
 
-	<string name="accessory_list_alley_empty">You haven\'t added any alleys yet.</string>
+	<string name="accessory_list_alley_empty_title">No alleys found</string>
+	<string name="accessory_list_alley_empty_message">Compare how you bowl across alleys or even lanes.</string>
 
-	<string name="accessory_list_gear_empty">You haven\'t added any gear yet.</string>
+	<string name="accessory_list_gear_empty_title">No alleys found</string>
+	<string name="accessory_list_gear_empty_message">Track usage stats for your shoes, balls, and more.</string>
+
 </resources>
