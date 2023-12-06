@@ -65,6 +65,8 @@ dependencies {
 	implementation(project(":feature:gameseditor"))
 	implementation(project(":feature:gearlist"))
 	implementation(project(":feature:gearform"))
+	implementation(project(":feature:laneform"))
+	implementation(project(":feature:laneslist:ui"))
 	implementation(project(":feature:leaguedetails"))
 	implementation(project(":feature:leagueform"))
 	implementation(project(":feature:onboarding"))

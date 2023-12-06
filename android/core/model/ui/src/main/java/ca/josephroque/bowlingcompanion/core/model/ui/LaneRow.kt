@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.laneslist
+package ca.josephroque.bowlingcompanion.core.model.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,12 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
+import ca.josephroque.bowlingcompanion.core.model.ui.R.*
 
 @Composable
-internal fun LaneItemRow(
+fun LaneRow(
 	lane: LaneListItem,
 	modifier: Modifier = Modifier,
 	onClick: (() -> Unit)? = null,
@@ -40,13 +40,13 @@ internal fun LaneItemRow(
 
 		when (lane.position) {
 			LanePosition.LEFT_WALL -> Icon(
-				painter = painterResource(R.drawable.ic_lane_position_left_wall),
+				painter = painterResource(drawable.ic_lane_position_left_wall),
 				contentDescription = null,
 				tint = MaterialTheme.colorScheme.onSurfaceVariant,
 				modifier = Modifier.size(24.dp),
 			)
 			LanePosition.RIGHT_WALL -> Icon(
-				painter = painterResource(R.drawable.ic_lane_position_right_wall),
+				painter = painterResource(drawable.ic_lane_position_right_wall),
 				contentDescription = null,
 				tint = MaterialTheme.colorScheme.onSurfaceVariant,
 				modifier = Modifier.size(24.dp),

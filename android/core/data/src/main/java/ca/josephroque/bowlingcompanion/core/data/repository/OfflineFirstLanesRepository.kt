@@ -4,7 +4,8 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
-import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
+import ca.josephroque.bowlingcompanion.core.database.model.asEntity
+import ca.josephroque.bowlingcompanion.core.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -24,7 +25,7 @@ class OfflineFirstLanesRepository @Inject constructor(
 		withContext(ioDispatcher) {
 			transactionRunner {
 				laneDao.deleteAlleyLanes(alleyId)
-				laneDao.insertAll(lanes)
+				laneDao.insertAll(lanes.map(LaneCreate::asEntity))
 			}
 		}
 }

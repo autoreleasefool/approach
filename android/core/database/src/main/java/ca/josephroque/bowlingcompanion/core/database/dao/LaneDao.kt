@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import ca.josephroque.bowlingcompanion.core.database.model.LaneCreate
+import ca.josephroque.bowlingcompanion.core.database.model.LaneCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import kotlinx.coroutines.flow.Flow
@@ -28,5 +28,5 @@ abstract class LaneDao {
 	abstract fun deleteAlleyLanes(alleyId: UUID)
 
 	@Insert(entity = LaneEntity::class)
-	abstract fun insertAll(lanes: List<LaneCreate>)
+	abstract fun insertAll(lanes: List<LaneCreateEntity>)
 }

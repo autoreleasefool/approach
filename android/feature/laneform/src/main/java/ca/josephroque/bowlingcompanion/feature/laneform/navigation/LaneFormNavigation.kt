@@ -29,7 +29,6 @@ fun NavGraphBuilder.laneFormScreen(
 		),
 	) {
 		LaneFormRoute(
-			onBackPressed = onBackPressed,
 			onDismiss = onBackPressed,
 		)
 	}
