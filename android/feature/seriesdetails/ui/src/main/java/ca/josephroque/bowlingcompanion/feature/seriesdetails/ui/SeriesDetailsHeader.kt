@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -41,19 +42,15 @@ fun SeriesDetailsHeader(
 	scores: ChartEntryModelProducer?,
 	modifier: Modifier = Modifier,
 ) {
-	Card(
-		modifier = modifier
-			.fillMaxWidth(),
-		elevation = CardDefaults.elevatedCardElevation(),
-	) {
+	Column(modifier = modifier) {
 		Row(
 			horizontalArrangement = Arrangement.SpaceBetween,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(16.dp),
+				.padding(horizontal = 16.dp)
 		) {
 			Column(
-				verticalArrangement = Arrangement.spacedBy(8.dp),
+				verticalArrangement = Arrangement.spacedBy(16.dp),
 				modifier = Modifier.alignBy(FirstBaseline),
 			) {
 				Text(
@@ -79,7 +76,7 @@ fun SeriesDetailsHeader(
 			}
 
 			Column(
-				verticalArrangement = Arrangement.spacedBy(8.dp),
+				verticalArrangement = Arrangement.spacedBy(16.dp),
 				horizontalAlignment = Alignment.End,
 				modifier = Modifier.alignBy(FirstBaseline),
 			) {
@@ -98,6 +95,11 @@ fun SeriesDetailsHeader(
 
 		if (scores != null) {
 			ScoreChart(scores)
+
+			Divider(
+				thickness = 8.dp,
+				modifier = Modifier.padding(vertical = 8.dp),
+			)
 		}
 	}
 }
@@ -143,7 +145,6 @@ private fun SeriesDetailsHeaderPreview() {
 				entryOf(2, 215),
 				entryOf(3, 225),
 			)),
-			modifier = Modifier.padding(16.dp)
 		)
 	}
 }

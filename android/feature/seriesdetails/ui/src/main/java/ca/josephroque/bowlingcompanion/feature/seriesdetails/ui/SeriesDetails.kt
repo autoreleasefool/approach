@@ -23,9 +23,6 @@ fun SeriesDetails(
 				scores = state.scores,
 				seriesLow = state.seriesLow,
 				seriesHigh = state.seriesHigh,
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 16.dp),
 			)
 		}
 	)
