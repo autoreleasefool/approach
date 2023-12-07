@@ -1,11 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.gameslist.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,7 +11,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
@@ -69,28 +66,24 @@ fun LazyListScope.gamesList(
 	onGameClick: (GameListItem) -> Unit,
 	onArchiveGame: (GameListItem) -> Unit,
 ) {
-	itemsIndexed(
+	items(
 		items = list,
-		key = { _, game -> game.id },
-	) { index, game ->
+		key = { it.id },
+	) {
 		val archiveAction = SwipeAction(
 			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
 			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
-			onSwipe = { onArchiveGame(game) },
+			onSwipe = { onArchiveGame(it) },
 		)
 
 		SwipeableActionsBox(
 			startActions = listOf(archiveAction),
 		) {
 			GameRow(
-				index = game.index,
-				score = game.score,
-				onClick = { onGameClick(game) },
+				index = it.index,
+				score = it.score,
+				onClick = { onGameClick(it) },
 			)
-		}
-
-		if (index < list.size - 1) {
-			Divider(modifier = Modifier.padding(start = 16.dp))
 		}
 	}
 }

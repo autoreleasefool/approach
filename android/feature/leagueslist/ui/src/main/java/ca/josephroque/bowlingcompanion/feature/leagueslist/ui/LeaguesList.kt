@@ -1,14 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.leagueslist.ui
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +13,6 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
@@ -77,20 +73,20 @@ fun LazyListScope.leaguesList(
 	onArchiveLeague: (LeagueListItem) -> Unit,
 	onEditLeague: (LeagueListItem) -> Unit,
 ) {
-	itemsIndexed(
+	items(
 		items = list,
-		key = { _, league -> league.id },
-	) { index, league ->
+		key = { it.id },
+	) {
 		val archiveAction = SwipeAction(
 			icon = painterResource(RCoreDesign.drawable.ic_archive),
 			background = colorResource(RCoreDesign.color.destructive),
-			onSwipe = { onArchiveLeague(league) },
+			onSwipe = { onArchiveLeague(it) },
 		)
 
 		val editAction = SwipeAction(
 			icon = rememberVectorPainter(Icons.Default.Edit),
 			background = colorResource(RCoreDesign.color.blue_300),
-			onSwipe = { onEditLeague(league) },
+			onSwipe = { onEditLeague(it) },
 		)
 
 		SwipeableActionsBox(
@@ -98,16 +94,12 @@ fun LazyListScope.leaguesList(
 			endActions = listOf(editAction),
 		) {
 			LeagueRow(
-				name = league.name,
-				recurrence = league.recurrence,
-				lastSeriesDate = league.lastSeriesDate,
-				average = league.average,
-				onClick = { onLeagueClick(league) },
+				name = it.name,
+				recurrence = it.recurrence,
+				lastSeriesDate = it.lastSeriesDate,
+				average = it.average,
+				onClick = { onLeagueClick(it) },
 			)
-		}
-
-		if (index < list.size - 1) {
-			Divider(modifier = Modifier.padding(start = 56.dp))
 		}
 	}
 }

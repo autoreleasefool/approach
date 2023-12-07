@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpicker
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,8 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,19 +33,15 @@ fun StatisticPicker(
 				StatisticCategoryHeader(group.title)
 			}
 
-			itemsIndexed(
+			items(
 				items = group.statistics,
-				key = { _, statistic -> statistic.id },
-			) { index, statistic ->
+				key = { it.id },
+			) {
 				StatisticRow(
-					title = statistic.id.titleResourceId,
-					isSelected = statistic == state.selectedStatistic,
-					onClick = { onAction(StatisticPickerUiAction.StatisticClicked(statistic)) },
+					title = it.id.titleResourceId,
+					isSelected = it == state.selectedStatistic,
+					onClick = { onAction(StatisticPickerUiAction.StatisticClicked(it)) },
 				)
-
-				if (index < group.statistics.size - 1) {
-					Divider(modifier = Modifier.padding(start = 56.dp))
-				}
 			}
 		}
 	}

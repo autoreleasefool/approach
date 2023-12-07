@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,17 +41,11 @@ fun StatisticsDetailsList(
 					)
 				}
 
-				itemsIndexed(
+				items(
 					items = group.entries,
-					key = { _, entry -> entry.id },
-				) { index, entry ->
-					ListEntry(entry, onAction)
-					if (index < group.entries.size - 1) {
-						Divider(
-							thickness = 1.dp,
-							modifier = Modifier.padding(start = 16.dp),
-						)
-					}
+					key = { it.id },
+				) {
+					ListEntry(it, onAction)
 				}
 			}
 		}
