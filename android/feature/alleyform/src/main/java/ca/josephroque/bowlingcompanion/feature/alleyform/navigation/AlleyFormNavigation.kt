@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.alleyform.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -15,6 +16,13 @@ const val addAlleyNavigationRoute = "add_alley"
 
 fun NavController.navigateToNewAlleyForm() {
 	this.navigate(addAlleyNavigationRoute) {
+		launchSingleTop = true
+	}
+}
+
+fun NavController.navigateToAlleyForm(alleyId: UUID) {
+	val encoded = Uri.encode(alleyId.toString())
+	this.navigate("edit_alley/$encoded") {
 		launchSingleTop = true
 	}
 }

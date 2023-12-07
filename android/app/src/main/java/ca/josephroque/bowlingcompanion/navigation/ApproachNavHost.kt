@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.common.navigation.popBackStackWithRe
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
+import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToAlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.navigateToNewAlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.alleysListScreen
 import ca.josephroque.bowlingcompanion.feature.alleyslist.navigation.navigateToAlleysList
@@ -211,7 +212,7 @@ fun ApproachNavHost(
 		)
 		alleysListScreen(
 			onBackPressed = navController::popBackStack,
-			onEditAlley = { /* TODO: onEditAlley */ },
+			onEditAlley = navController::navigateToAlleyForm,
 			onAddAlley = navController::navigateToNewAlleyForm,
 			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
 		)
