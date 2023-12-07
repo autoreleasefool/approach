@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f487301fc322bac7163c291aa7fd0c4d",
+    "identityHash": "80a3312086226e4a0fc1d24fde8f1d90",
     "entities": [
       {
         "tableName": "bowlers",
@@ -493,7 +493,7 @@
       },
       {
         "tableName": "alleys",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `material` TEXT, `pin_fall` TEXT, `mechanism` TEXT, `pin_base` TEXT, `location_id` BLOB, PRIMARY KEY(`id`), FOREIGN KEY(`location_id`) REFERENCES `locations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `name` TEXT NOT NULL, `material` TEXT, `pin_fall` TEXT, `mechanism` TEXT, `pin_base` TEXT, `location_id` BLOB DEFAULT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`location_id`) REFERENCES `locations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -535,7 +535,8 @@
             "fieldPath": "locationId",
             "columnName": "location_id",
             "affinity": "BLOB",
-            "notNull": false
+            "notNull": false,
+            "defaultValue": "NULL"
           }
         ],
         "primaryKey": {
@@ -580,7 +581,7 @@
       },
       {
         "tableName": "lanes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `alley_id` BLOB NOT NULL, `label` TEXT NOT NULL, `position` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `alley_id` BLOB DEFAULT NULL, `label` TEXT NOT NULL, `position` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -592,7 +593,8 @@
             "fieldPath": "alleyId",
             "columnName": "alley_id",
             "affinity": "BLOB",
-            "notNull": true
+            "notNull": false,
+            "defaultValue": "NULL"
           },
           {
             "fieldPath": "label",
@@ -1450,6 +1452,24 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_statistics_widget_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_statistics_widget_bowler_id",
+            "unique": false,
+            "columnNames": [
+              "bowler_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_statistics_widget_bowler_id` ON `${TABLE_NAME}` (`bowler_id`)"
+          },
+          {
+            "name": "index_statistics_widget_league_id",
+            "unique": false,
+            "columnNames": [
+              "league_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_statistics_widget_league_id` ON `${TABLE_NAME}` (`league_id`)"
           }
         ],
         "foreignKeys": [
@@ -1481,7 +1501,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f487301fc322bac7163c291aa7fd0c4d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '80a3312086226e4a0fc1d24fde8f1d90')"
     ]
   }
 }

@@ -5,7 +5,6 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
-import ca.josephroque.bowlingcompanion.core.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -18,14 +17,18 @@ class OfflineFirstLanesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): LanesRepository {
-	override fun alleyLanes(alleyId: UUID): Flow<List<LaneListItem>> =
-		laneDao.getAlleyLanes(alleyId)
+	override fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>> =
+		laneDao.getLanes(ids)
 
-	override suspend fun overwriteAlleyLanes(alleyId: UUID, lanes: List<LaneCreate>) =
+	override suspend fun insertLanes(lanes: List<LaneListItem>) {
+		laneDao.insertAll(lanes.map(LaneListItem::asEntity))
+	}
+
+	override suspend fun setAlleyLanes(alleyId: UUID, lanes: List<LaneListItem>) =
 		withContext(ioDispatcher) {
 			transactionRunner {
 				laneDao.deleteAlleyLanes(alleyId)
-				laneDao.insertAll(lanes.map(LaneCreate::asEntity))
+				laneDao.insertAll(lanes.map { it.asEntity(alleyId) })
 			}
 		}
 }

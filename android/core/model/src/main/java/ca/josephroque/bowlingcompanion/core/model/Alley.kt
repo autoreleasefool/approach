@@ -3,16 +3,6 @@ package ca.josephroque.bowlingcompanion.core.model
 import ca.josephroque.bowlingcompanion.core.model.utils.SortableByUUID
 import java.util.UUID
 
-data class AlleyDetails(
-	val id: UUID,
-	val name: String,
-	val material: AlleyMaterial?,
-	val pinFall: AlleyPinFall?,
-	val mechanism: AlleyMechanism?,
-	val pinBase: AlleyPinBase?,
-	val numberOfLanes: Int,
-)
-
 data class AlleyListItem(
 	override val id: UUID,
 	val name: String,
@@ -21,6 +11,35 @@ data class AlleyListItem(
 	val mechanism: AlleyMechanism?,
 	val pinBase: AlleyPinBase?,
 ): SortableByUUID
+
+data class AlleyCreate(
+	val id: UUID,
+	val name: String,
+	val material: AlleyMaterial?,
+	val pinFall: AlleyPinFall?,
+	val mechanism: AlleyMechanism?,
+	val pinBase: AlleyPinBase?,
+	val lanes: List<LaneListItem>,
+)
+
+data class AlleyUpdate(
+	val id: UUID,
+	val name: String,
+	val material: AlleyMaterial?,
+	val pinFall: AlleyPinFall?,
+	val mechanism: AlleyMechanism?,
+	val pinBase: AlleyPinBase?,
+	val lanes: List<LaneListItem>,
+) {
+	data class Properties(
+		val id: UUID,
+		val name: String,
+		val material: AlleyMaterial?,
+		val pinFall: AlleyPinFall?,
+		val mechanism: AlleyMechanism?,
+		val pinBase: AlleyPinBase?,
+	)
+}
 
 enum class AlleyMaterial {
 	SYNTHETIC,

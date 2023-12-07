@@ -45,6 +45,8 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/accessoriesoverview" />
             <option value="$PROJECT_DIR$/feature/accessoriesoverview/ui" />
+            <option value="$PROJECT_DIR$/feature/alleyform" />
+            <option value="$PROJECT_DIR$/feature/alleyform/ui" />
             <option value="$PROJECT_DIR$/feature/alleyslist" />
             <option value="$PROJECT_DIR$/feature/alleyslist/ui" />
             <option value="$PROJECT_DIR$/feature/archives" />

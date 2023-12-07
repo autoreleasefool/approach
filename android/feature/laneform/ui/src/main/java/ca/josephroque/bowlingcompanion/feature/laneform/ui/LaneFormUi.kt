@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.laneform.ui
 
-import ca.josephroque.bowlingcompanion.core.model.LaneCreate
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import java.util.UUID

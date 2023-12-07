@@ -48,9 +48,9 @@ class GearFormViewModel @Inject constructor(
 		when (action) {
 			GearFormUiAction.BackClicked -> sendEvent(GearFormScreenEvent.Dismissed)
 			GearFormUiAction.DoneClicked -> saveGear()
-			GearFormUiAction.DeleteClicked -> setArchiveGearPrompt(isVisible = true)
-			GearFormUiAction.ConfirmDeleteClicked -> archiveGear()
-			GearFormUiAction.DismissDeleteClicked -> setArchiveGearPrompt(isVisible = false)
+			GearFormUiAction.DeleteClicked -> setDeleteGearPrompt(isVisible = true)
+			GearFormUiAction.ConfirmDeleteClicked -> deleteGear()
+			GearFormUiAction.DismissDeleteClicked -> setDeleteGearPrompt(isVisible = false)
 			GearFormUiAction.AvatarClicked -> sendEvent(
 				GearFormScreenEvent.EditAvatar(
 					avatar = getFormUiState()?.avatar ?: Avatar.default(),
@@ -137,15 +137,18 @@ class GearFormViewModel @Inject constructor(
 
 	private fun updateName(name: String) {
 		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(name = name))
+		setFormUiState(state.copy(
+			name = name,
+			nameErrorId = null,
+		))
 	}
 
-	private fun setArchiveGearPrompt(isVisible: Boolean) {
+	private fun setDeleteGearPrompt(isVisible: Boolean) {
 		val state = getFormUiState() ?: return
 		setFormUiState(state.copy(isShowingDeleteDialog = isVisible))
 	}
 
-	private fun archiveGear() {
+	private fun deleteGear() {
 		val formState = getFormUiState() ?: return
 		viewModelScope.launch {
 			val gear = when (val uiState = _uiState.value) {

@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.laneform
 
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiState
+import java.util.UUID
 
 sealed interface LaneFormScreenUiState {
 	data object Loading: LaneFormScreenUiState
@@ -17,5 +18,5 @@ sealed interface LaneFormScreenUiAction {
 }
 
 sealed interface LaneFormScreenEvent {
-	data object Dismissed: LaneFormScreenEvent
+	data class DismissedWithResult(val lanes: List<UUID>): LaneFormScreenEvent
 }

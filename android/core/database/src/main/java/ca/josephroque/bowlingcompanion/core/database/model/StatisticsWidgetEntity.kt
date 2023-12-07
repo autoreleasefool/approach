@@ -32,8 +32,8 @@ import java.util.UUID
 )
 data class StatisticsWidgetEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
-	@ColumnInfo(name = "bowler_id") val bowlerId: UUID,
-	@ColumnInfo(name = "league_id") val leagueId: UUID?,
+	@ColumnInfo(name = "bowler_id", index = true) val bowlerId: UUID,
+	@ColumnInfo(name = "league_id", index = true) val leagueId: UUID?,
 	@ColumnInfo(name = "timeline") val timeline: StatisticsWidgetTimeline,
 	@ColumnInfo(name = "statistic") val statistic: StatisticID,
 	@ColumnInfo(name = "context") val context: String,

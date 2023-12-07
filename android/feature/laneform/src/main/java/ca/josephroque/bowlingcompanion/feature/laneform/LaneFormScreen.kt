@@ -20,10 +20,11 @@ import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneForm
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBar
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 internal fun LaneFormRoute(
-	onDismiss: () -> Unit,
+	onDismissWithResult: (List<UUID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: LaneFormViewModel = hiltViewModel(),
 ) {
@@ -36,7 +37,7 @@ internal fun LaneFormRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						LaneFormScreenEvent.Dismissed -> onDismiss()
+						is LaneFormScreenEvent.DismissedWithResult -> onDismissWithResult(it.lanes)
 					}
 				}
 		}

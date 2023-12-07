@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import ca.josephroque.bowlingcompanion.core.database.model.LaneCreateEntity
+import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import kotlinx.coroutines.flow.Flow
@@ -18,15 +18,15 @@ abstract class LaneDao {
 				lanes.label AS label,
 				lanes.position AS position
 			FROM lanes
-			WHERE lanes.alley_id = :alleyId
+			WHERE lanes.id IN (:ids)
 			ORDER BY lanes.label
 		"""
 	)
-	abstract fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>>
+	abstract fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>>
 
 	@Query("DELETE FROM lanes WHERE alley_id = :alleyId")
 	abstract fun deleteAlleyLanes(alleyId: UUID)
 
-	@Insert(entity = LaneEntity::class)
-	abstract fun insertAll(lanes: List<LaneCreateEntity>)
+	@Insert
+	abstract fun insertAll(lanes: List<LaneEntity>)
 }

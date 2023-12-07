@@ -1,9 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.alleyform.ui
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,15 +14,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
@@ -34,20 +29,9 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.designsystem.text.quantityStringResource
 
 @Composable
-internal fun AlleyForm(
-	name: String,
-	nameErrorId: Int?,
-	onNameChanged: (String) -> Unit,
-	numberOfLanes: Int,
-	onManageLanes: () -> Unit,
-	material: AlleyMaterial?,
-	onMaterialChanged: (AlleyMaterial?) -> Unit,
-	pinFall: AlleyPinFall?,
-	onPinFallChanged: (AlleyPinFall?) -> Unit,
-	mechanism: AlleyMechanism?,
-	onMechanismChanged: (AlleyMechanism?) -> Unit,
-	pinBase: AlleyPinBase?,
-	onPinBaseChanged: (AlleyPinBase?) -> Unit,
+fun AlleyForm(
+	state: AlleyFormUiState,
+	onAction: (AlleyFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Column(
@@ -56,54 +40,60 @@ internal fun AlleyForm(
 			.fillMaxSize(),
 	) {
 		FormSection(titleResourceId = R.string.alley_form_details_title) {
-			AlleyNameField(name = name, onNameChanged = onNameChanged, errorId = nameErrorId)
+			AlleyNameField(
+				name = state.name,
+				onNameChanged = { onAction(AlleyFormUiAction.NameChanged(it)) },
+				errorId = state.nameErrorId,
+			)
 
-			Row(
-				horizontalArrangement = Arrangement.spacedBy(8.dp),
-				verticalAlignment = Alignment.CenterVertically,
+			PickableResourceCard(
+				resourceName = stringResource(R.string.alley_form_manage_lanes),
+				selectedName = quantityStringResource(
+					R.plurals.alley_form_property_lanes_created,
+					quantity = state.lanes.size,
+					state.lanes.size,
+				),
+				onClick = { onAction(AlleyFormUiAction.ManageLanesClicked) },
 				modifier = Modifier
-					.fillMaxWidth()
-					.clickable(onClick = onManageLanes)
-					.padding(horizontal = 16.dp, vertical = 16.dp),
-			) {
-				Text(
-					text = stringResource(R.string.alley_form_manage_lanes),
-					style = MaterialTheme.typography.titleMedium,
-					modifier = Modifier.weight(1f),
-				)
-
-				Text(
-					text = quantityStringResource(R.plurals.alley_form_property_lanes_created, quantity = numberOfLanes, numberOfLanes),
-					style = MaterialTheme.typography.bodyMedium,
-					color = MaterialTheme.colorScheme.onSurfaceVariant,
-				)
-
-				Icon(
-					painter = painterResource(RCoreDesign.drawable.ic_chevron_right),
-					contentDescription = null,
-					tint = MaterialTheme.colorScheme.onSurfaceVariant,
-				)
-			}
+					.padding(horizontal = 16.dp)
+					.padding(bottom = 16.dp),
+			)
 		}
 
 		Divider()
+
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
-			MaterialPicker(material, onMaterialChanged)
+			MaterialPicker(
+				material = state.material,
+				onMaterialChanged = { onAction(AlleyFormUiAction.MaterialChanged(it)) },
+			)
 		}
 
 		Divider()
+
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
-			MechanismPicker(mechanism, onMechanismChanged)
+			MechanismPicker(
+				mechanism = state.mechanism,
+				onMechanismChanged = { onAction(AlleyFormUiAction.MechanismChanged(it)) },
+			)
 		}
 
 		Divider()
+
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
-			PinFallPicker(pinFall, onPinFallChanged)
+			PinFallPicker(
+				pinFall = state.pinFall,
+				onPinFallChanged = { onAction(AlleyFormUiAction.PinFallChanged(it)) },
+			)
 		}
 
 		Divider()
+
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
-			PinBasePicker(pinBase, onPinBaseChanged)
+			PinBasePicker(
+				pinBase = state.pinBase,
+				onPinBaseChanged = { onAction(AlleyFormUiAction.PinBaseChanged(it)) },
+			)
 		}
 
 		Divider()

@@ -6,7 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
-import ca.josephroque.bowlingcompanion.feature.laneform.navigation.ALLEY_ID
+import ca.josephroque.bowlingcompanion.feature.laneform.navigation.LANE_IDS
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.AddLanesDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.AddLanesDialogUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
@@ -29,7 +29,9 @@ class LaneFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val lanesRepository: LanesRepository,
 ): ApproachViewModel<LaneFormScreenEvent>() {
-	private val alleyId = UUID.fromString(savedStateHandle[ALLEY_ID])
+	private val existingLaneIds = savedStateHandle.get<String>(LANE_IDS)
+		?.let { if (it == "nan") emptyList() else it.split(",").map { uuid -> UUID.fromString(uuid) }
+	} ?: emptyList()
 
 	private val _form: MutableStateFlow<LaneFormUiState> = MutableStateFlow(LaneFormUiState())
 
@@ -52,7 +54,7 @@ class LaneFormViewModel @Inject constructor(
 
 	private fun handleLaneFormAction(action: LaneFormUiAction) {
 		when (action) {
-			LaneFormUiAction.BackClicked -> sendEvent(LaneFormScreenEvent.Dismissed)
+			LaneFormUiAction.BackClicked -> sendEvent(LaneFormScreenEvent.DismissedWithResult(existingLaneIds))
 			LaneFormUiAction.DoneClicked -> saveLanes()
 			is LaneFormUiAction.AddLanesClicked -> showAddLanesDialog()
 			is LaneFormUiAction.LaneClicked -> showLaneLabelDialog(action.lane.id)
@@ -83,7 +85,7 @@ class LaneFormViewModel @Inject constructor(
 
 	private fun loadLanes() {
 		viewModelScope.launch {
-			val existingLanes = lanesRepository.alleyLanes(alleyId).first()
+			val existingLanes = lanesRepository.getLanes(existingLaneIds).first()
 
 			_form.value = LaneFormUiState(
 				lanes = existingLanes,
@@ -104,13 +106,11 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun saveLanes() {
+		val lanes = _form.value.lanes
 		viewModelScope.launch {
-			lanesRepository.overwriteAlleyLanes(
-				alleyId,
-				_form.value.lanes.map { it.createForAlley(alleyId )},
-			)
+			lanesRepository.insertLanes(lanes)
 
-			sendEvent(LaneFormScreenEvent.Dismissed)
+			sendEvent(LaneFormScreenEvent.DismissedWithResult(lanes.map(LaneListItem::id)))
 		}
 	}
 

@@ -5,36 +5,4 @@
 	<string name="destination_statistics">Statistics</string>
 	<string name="destination_accessories">Utilities</string>
 	<string name="destination_settings">Settings</string>
-
-	<string name="alley_form_title_new">New Alley</string>
-	<string name="alley_form_title_edit">Edit %1$s</string>
-	<string name="alley_form_details_title">Details</string>
-	<string name="alley_form_property_name">Name</string>
-	<string name="alley_form_property_name_missing">Name cannot be blank</string>
-	<string name="alley_form_property_material">Material</string>
-	<string name="alley_form_property_material_footer">To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother</string>
-	<string name="alley_form_property_mechanism">Mechanism</string>
-	<string name="alley_form_property_mechanism_footer">Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?</string>
-	<string name="alley_form_property_pin_fall">Pin Fall</string>
-	<string name="alley_form_property_pin_fall_footer">Look at the pin set up. Do you notice the pins are pushed off the lane after each ball (freefall), or are they attached to strings and pulled up?</string>
-	<string name="alley_form_property_pin_base">Pin Base</string>
-	<string name="alley_form_property_pin_base_footer">What kind of base do the pins have?</string>
-	<string name="alley_form_manage_lanes">Manage Lanes</string>
-	<string name="alley_form_properties_help">Not sure about any of the settings? Ask a staff member! They\'ll probably be happy to help</string>
-
-	<plurals name="alley_form_property_lanes_created">
-		<item quantity="zero">No lanes created</item>
-		<item quantity="one">%1$d lane</item>
-		<item quantity="other">%1$d lanes</item>
-	</plurals>
-
-	<string name="alley_property_material_wood">Wood</string>
-	<string name="alley_property_material_synthetic">Synthetic</string>
-	<string name="alley_property_mechanism_dedicated">Dedicated</string>
-	<string name="alley_property_mechanism_interchangeable">Interchangeable</string>
-	<string name="alley_property_pin_fall_freefall">Freefall</string>
-	<string name="alley_property_pin_fall_strings">Strings</string>
-	<string name="alley_property_pin_base_black">Black</string>
-	<string name="alley_property_pin_base_white">White</string>
-	<string name="alley_property_pin_base_other">Other</string>
 </resources>

@@ -33,7 +33,7 @@ import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToNew
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.gearListScreen
 import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.navigateToGearList
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
-import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneForm
+import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneFormForResult
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.leagueDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.navigateToLeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.leagueFormScreen
@@ -217,7 +217,12 @@ fun ApproachNavHost(
 		)
 		alleyFormScreen(
 			onBackPressed = navController::popBackStack,
-			onManageLanes = navController::navigateToLaneForm,
+			onManageLanes = { lanes, result ->
+				navController.navigateToLaneFormForResult(
+					existingLanes = lanes,
+					navResultCallback = result,
+				)
+			},
 		)
 		gearListScreen(
 			onBackPressed = navController::popBackStack,
@@ -229,7 +234,7 @@ fun ApproachNavHost(
 			onDismissWithResult = navController::popBackStackWithResult,
 		)
 		laneFormScreen(
-			onBackPressed = navController::popBackStack,
+			onDismissWithResult = navController::popBackStackWithResult,
 		)
 		gamesEditorScreen(
 			onBackPressed = navController::popBackStack,

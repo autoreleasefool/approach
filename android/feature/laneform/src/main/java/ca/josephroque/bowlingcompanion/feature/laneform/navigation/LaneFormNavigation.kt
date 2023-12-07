@@ -6,30 +6,33 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.laneform.LaneFormRoute
 import java.util.UUID
 
-const val ALLEY_ID = "alleyid"
-const val editLanesNavigationRoute = "edit_alley/{$ALLEY_ID}/lanes"
+const val LANE_IDS = "laneids"
+const val editLanesNavigationRoute = "edit_lanes/{$LANE_IDS}"
 
-fun NavController.navigateToLaneForm(alleyId: UUID) {
-	val encoded = Uri.encode(alleyId.toString())
-	this.navigate("edit_alley/$encoded/lanes") {
-		launchSingleTop = true
-	}
+fun NavController.navigateToLaneFormForResult(
+	existingLanes: List<UUID>,
+	navResultCallback: NavResultCallback<List<UUID>>,
+) {
+	val encoded = Uri.encode(existingLanes.joinToString(",") { it.toString() }).ifEmpty { "nan" }
+	this.navigateForResult("edit_lanes/$encoded", navResultCallback)
 }
 
 fun NavGraphBuilder.laneFormScreen(
-	onBackPressed: () -> Unit,
+	onDismissWithResult: (List<UUID>) -> Unit,
 ) {
 	composable(
 		route = editLanesNavigationRoute,
 		arguments = listOf(
-			navArgument(ALLEY_ID) { type = NavType.StringType },
+			navArgument(LANE_IDS) { type = NavType.StringType },
 		),
 	) {
 		LaneFormRoute(
-			onDismiss = onBackPressed,
+			onDismissWithResult = onDismissWithResult
 		)
 	}
 }
