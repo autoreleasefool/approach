@@ -23,6 +23,7 @@
 
 	<string name="game_editor_scoring_method_title">Scoring</string>
 	<string name="game_editor_scoring_method_subtitle">Override your score manually here to skip recording frame-by-frame</string>
+	<string name="score_editor_score">Score</string>
 
 	<string name="scoring_method_manual">Manual</string>
 	<string name="scoring_method_frame_by_frame">Frame-by-Frame</string>

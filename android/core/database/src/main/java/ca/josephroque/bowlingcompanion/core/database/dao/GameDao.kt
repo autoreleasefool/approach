@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
@@ -80,6 +81,9 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 		"""
 	)
 	abstract fun getArchivedGames(): Flow<List<ArchivedGame>>
+
+	@Query("UPDATE games SET scoring_method = :scoringMethod, score = :score WHERE id = :gameId")
+	abstract fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int)
 
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
 	abstract fun unarchiveGame(gameId: UUID)

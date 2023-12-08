@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
@@ -23,6 +24,9 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDe
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditor
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,15 +57,19 @@ class GamesEditorViewModel @Inject constructor(
 
 	private val _scoreSheetState = MutableStateFlow(ScoreSheetUiState())
 
+	private val _scoreEditor: MutableStateFlow<ScoreEditorUiState?> = MutableStateFlow(null)
+
 	private val _gamesEditorState = combine(
 		_frameEditorState,
 		_rollEditorState,
 		_scoreSheetState,
-	) { frameEditor, rollEditor, scoreSheet ->
+		_scoreEditor,
+	) { frameEditor, rollEditor, scoreSheet, scoreEditor ->
 		GamesEditorUiState(
 			frameEditor = frameEditor,
 			rollEditor = rollEditor,
 			scoreSheet = scoreSheet,
+			scoreEditor = scoreEditor,
 		)
 	}
 
@@ -114,6 +122,7 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorUiAction.FrameEditor -> handleFrameEditorAction(action.action)
 			is GamesEditorUiAction.RollEditor -> handleRollEditorAction(action.action)
 			is GamesEditorUiAction.ScoreSheet -> handleScoreSheetAction(action.action)
+			is GamesEditorUiAction.ScoreEditor -> handleScoreEditorAction(action.action)
 		}
 	}
 
@@ -135,6 +144,15 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			is ScoreSheetUiAction.RollClicked -> updateSelectedRoll(action.frameIndex, action.rollIndex)
 			is ScoreSheetUiAction.FrameClicked -> updateSelectedFrame(action.frameIndex)
+		}
+	}
+
+	private fun handleScoreEditorAction(action: ScoreEditorUiAction) {
+		when (action) {
+			ScoreEditorUiAction.CancelClicked -> dismissScoreEditor(didSave = false)
+			ScoreEditorUiAction.SaveClicked -> dismissScoreEditor(didSave = true)
+			is ScoreEditorUiAction.ScoreChanged -> _scoreEditor.value = _scoreEditor.value?.copy(score = action.score?.toIntOrNull() ?: 0)
+			is ScoreEditorUiAction.ScoringMethodChanged -> _scoreEditor.value = _scoreEditor.value?.copy(scoringMethod = action.scoringMethod)
 		}
 	}
 
@@ -227,7 +245,31 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openScoreSettings() {
-		/* TODO: openScoreSettings */
+		val state = _gameDetailsState.value
+		_scoreEditor.value = ScoreEditorUiState(
+			score = state.scoringMethod.score,
+			scoringMethod = state.scoringMethod.scoringMethod,
+		)
+	}
+
+	private fun dismissScoreEditor(didSave: Boolean) {
+		val gameId = _gameDetailsState.value.currentGameId ?: return
+		val scoreEditor = _scoreEditor.value ?: return
+		if (didSave) {
+			viewModelScope.launch {
+				when (scoreEditor.scoringMethod) {
+					GameScoringMethod.MANUAL ->
+						gamesRepository.setGameScoringMethod(gameId, scoreEditor.scoringMethod, scoreEditor.score)
+					GameScoringMethod.BY_FRAME -> {
+						// TODO: Calculate score of game from frames
+						gamesRepository.setGameScoringMethod(gameId, scoreEditor.scoringMethod, 0)
+					}
+				}
+
+				loadGame(gameId)
+			}
+		}
+		_scoreEditor.value = null
 	}
 
 	private fun openBallRolledPicker() {

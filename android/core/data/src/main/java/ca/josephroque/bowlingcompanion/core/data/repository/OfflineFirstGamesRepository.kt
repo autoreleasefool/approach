@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -29,6 +30,11 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override fun getGameIndex(gameId: UUID): Flow<Int> =
 		gameDao.getGameIndex(gameId)
+
+	override suspend fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int) =
+		withContext(ioDispatcher) {
+			gameDao.setGameScoringMethod(gameId, scoringMethod, score)
+		}
 
 	override suspend fun archiveGame(gameId: UUID) = withContext(ioDispatcher) {
 		gameDao.archiveGame(gameId)
