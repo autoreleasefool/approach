@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
@@ -24,7 +25,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDe
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,8 +33,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -45,16 +45,19 @@ class GamesEditorViewModel @Inject constructor(
 	private val gamesRepository: GamesRepository,
 	private val gearRepository: GearRepository,
 	private val matchPlaysRepository: MatchPlaysRepository,
+	private val scoresRepository: ScoresRepository,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
 	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
 	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
+	private var _currentGameId: UUID = initialGameId
 
 	private val _headerPeekHeight = MutableStateFlow(0f)
 
+	private var _framesJob: Job? = null
 	private val _frameEditorState = MutableStateFlow(FrameEditorUiState())
-
 	private val _rollEditorState = MutableStateFlow(RollEditorUiState())
 
+	private var _scoresJob: Job? = null
 	private val _scoreSheetState = MutableStateFlow(ScoreSheetUiState())
 
 	private val _scoreEditor: MutableStateFlow<ScoreEditorUiState?> = MutableStateFlow(null)
@@ -74,6 +77,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private var _gameDetailsJob: Job? = null
+	private var _gearJob: Job? = null
+	private var _matchPlayJob: Job? = null
 	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState())
 
 	val uiState: StateFlow<GamesEditorScreenUiState> = combine(
@@ -151,69 +156,92 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			ScoreEditorUiAction.CancelClicked -> dismissScoreEditor(didSave = false)
 			ScoreEditorUiAction.SaveClicked -> dismissScoreEditor(didSave = true)
-			is ScoreEditorUiAction.ScoreChanged -> _scoreEditor.value = _scoreEditor.value?.copy(score = action.score?.toIntOrNull() ?: 0)
+			is ScoreEditorUiAction.ScoreChanged -> _scoreEditor.value = _scoreEditor.value?.copy(score = action.score.toIntOrNull() ?: 0)
 			is ScoreEditorUiAction.ScoringMethodChanged -> _scoreEditor.value = _scoreEditor.value?.copy(scoringMethod = action.scoringMethod)
 		}
 	}
 
 	private fun loadGame(gameId: UUID? = null) {
-		val gameToLoad = gameId ?: initialGameId
+		_currentGameId = gameId ?: initialGameId
+		val gameToLoad = _currentGameId
+
 		_gameDetailsJob?.cancel()
-
 		_gameDetailsJob = viewModelScope.launch {
-			val gameDetails = gamesRepository.getGameDetails(gameToLoad).first()
-			val gear = gearRepository.getGameGear(gameToLoad).first()
-			val matchPlay = matchPlaysRepository.getMatchPlay(gameToLoad).first()
+			gamesRepository.getGameDetails(gameToLoad).collect { gameDetails ->
+				_gameDetailsState.update {
+					it.copy(
+						currentGameId = gameDetails.properties.id,
+						currentGameIndex = gameDetails.properties.index,
+						header = it.header.copy(
+							bowlerName = gameDetails.bowler.name,
+							leagueName = gameDetails.league.name,
+							nextElement = null, // TODO: Update next header element
+						),
+						scoringMethod = it.scoringMethod.copy(
+							score = gameDetails.properties.score,
+							scoringMethod = gameDetails.properties.scoringMethod,
+						),
+						gameProperties = it.gameProperties.copy(
+							locked = gameDetails.properties.locked,
+							gameExcludeFromStatistics = gameDetails.properties.excludeFromStatistics,
+							seriesExcludeFromStatistics = gameDetails.series.excludeFromStatistics,
+							leagueExcludeFromStatistics = gameDetails.league.excludeFromStatistics,
+							seriesPreBowl = gameDetails.series.preBowl,
+						),
+					)
+				}
+			}
+		}
 
-			_gameDetailsState.value = GameDetailsUiState(
-				currentGameId = gameToLoad,
-				currentGameIndex = gameDetails.properties.index,
-				header = GameDetailsUiState.HeaderUiState(
-					bowlerName = gameDetails.bowler.name,
-					leagueName = gameDetails.league.name,
-					nextElement = null, // TODO: update next header element
-				),
-				gear = GameDetailsUiState.GearCardUiState(
-					selectedGear = gear,
-				),
-				matchPlay = GameDetailsUiState.MatchPlayCardUiState(
-					opponentName = matchPlay?.opponent?.name,
-					opponentScore = matchPlay?.opponentScore,
-					result = matchPlay?.result,
-				),
-				scoringMethod = GameDetailsUiState.ScoringMethodCardUiState(
-					score = gameDetails.properties.score,
-					scoringMethod = gameDetails.properties.scoringMethod,
-				),
-				gameProperties = GameDetailsUiState.GamePropertiesCardUiState(
-					locked = gameDetails.properties.locked,
-					gameExcludeFromStatistics = gameDetails.properties.excludeFromStatistics,
-					seriesExcludeFromStatistics = gameDetails.series.excludeFromStatistics,
-					leagueExcludeFromStatistics = gameDetails.league.excludeFromStatistics,
-					seriesPreBowl = gameDetails.series.preBowl,
-				),
-			)
+		_gearJob?.cancel()
+		_gearJob = viewModelScope.launch {
+			gearRepository.getGameGear(gameToLoad).collect { gear ->
+				_gameDetailsState.update {
+					it.copy(
+						gear = it.gear.copy(
+							selectedGear = gear,
+						)
+					)
+				}
+			}
+		}
 
+		_matchPlayJob?.cancel()
+		_matchPlayJob = viewModelScope.launch {
+			matchPlaysRepository.getMatchPlay(gameToLoad).collect { matchPlay ->
+				_gameDetailsState.update {
+					it.copy(
+						matchPlay = it.matchPlay.copy(
+							opponentName = matchPlay?.opponent?.name,
+							opponentScore = matchPlay?.opponentScore,
+							result = matchPlay?.result,
+						)
+					)
+				}
+			}
+		}
+
+		_scoresJob?.cancel()
+		_scoresJob = viewModelScope.launch {
+			scoresRepository.getScore(gameToLoad).collect { score ->
+				_scoreSheetState.update {
+					it.copy(
+						game = score
+					)
+				}
+			}
+		}
+
+		_framesJob?.cancel()
+		_framesJob = viewModelScope.launch {
 			// TODO: update frame state
-			_frameEditorState.value = FrameEditorUiState(
-				lockedPins = emptySet(),
-				downedPins = emptySet(),
-			)
-
 			// TODO: update roll state
-			_rollEditorState.value = RollEditorUiState(
-				recentBalls = emptyList(),
-				didFoulRoll = false,
-				selectedBall = null,
-			)
 		}
 	}
 
 	private fun updateGear(gearIds: Set<UUID>) {
 		viewModelScope.launch {
-			val currentGameId = _gameDetailsState.value.currentGameId ?: return@launch
-			gearRepository.setGameGear(currentGameId, gearIds)
-			loadGame(currentGameId)
+			gearRepository.setGameGear(_currentGameId, gearIds)
 		}
 	}
 
@@ -228,8 +256,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openMatchPlayManager() {
-		val gameId = _gameDetailsState.value.currentGameId ?: return
-		sendEvent(GamesEditorScreenEvent.EditMatchPlay(gameId))
+		sendEvent(GamesEditorScreenEvent.EditMatchPlay(_currentGameId))
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {
@@ -253,20 +280,18 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismissScoreEditor(didSave: Boolean) {
-		val gameId = _gameDetailsState.value.currentGameId ?: return
+		val currentGameId = _currentGameId
 		val scoreEditor = _scoreEditor.value ?: return
 		if (didSave) {
 			viewModelScope.launch {
 				when (scoreEditor.scoringMethod) {
 					GameScoringMethod.MANUAL ->
-						gamesRepository.setGameScoringMethod(gameId, scoreEditor.scoringMethod, scoreEditor.score)
+						gamesRepository.setGameScoringMethod(currentGameId, scoreEditor.scoringMethod, scoreEditor.score)
 					GameScoringMethod.BY_FRAME -> {
 						// TODO: Calculate score of game from frames
-						gamesRepository.setGameScoringMethod(gameId, scoreEditor.scoringMethod, 0)
+						gamesRepository.setGameScoringMethod(currentGameId, scoreEditor.scoringMethod, 0)
 					}
 				}
-
-				loadGame(gameId)
 			}
 		}
 		_scoreEditor.value = null
@@ -276,39 +301,40 @@ class GamesEditorViewModel @Inject constructor(
 		/* TODO: openBallRolledPicker */
 	}
 
-	private fun toggleGameLocked(isLocked: Boolean?) {
+	private fun toggleGameLocked(isLocked: Boolean) {
 		val state = _gameDetailsState.value
+		val gameLockState = when (isLocked) {
+			true -> GameLockState.LOCKED
+			false -> GameLockState.UNLOCKED
+		}
+
 		_gameDetailsState.value = state.copy(
 			gameProperties = state.gameProperties.copy(
-				locked = when (isLocked) {
-					true -> GameLockState.LOCKED
-					false -> GameLockState.UNLOCKED
-					null -> state.gameProperties.locked.next
-				}
+				locked = gameLockState
 			)
 		)
 
 		viewModelScope.launch {
-			val gameId = _gameDetailsState.value.currentGameId ?: return@launch
-			gamesRepository.setGameLockState(gameId, state.gameProperties.locked)
+			gamesRepository.setGameLockState(_currentGameId, gameLockState)
 		}
 	}
 
-	private fun toggleGameExcludedFromStatistics(isExcluded: Boolean?) {
-		val state = _gameDetailsState.value
-		_gameDetailsState.value = state.copy(
-			gameProperties = state.gameProperties.copy(
-				gameExcludeFromStatistics = when (isExcluded) {
-					true -> ExcludeFromStatistics.EXCLUDE
-					false -> ExcludeFromStatistics.INCLUDE
-					null -> state.gameProperties.gameExcludeFromStatistics.next
-				}
+	private fun toggleGameExcludedFromStatistics(isExcluded: Boolean) {
+		val excludeFromStatistics = when (isExcluded) {
+			true -> ExcludeFromStatistics.EXCLUDE
+			false -> ExcludeFromStatistics.INCLUDE
+		}
+
+		_gameDetailsState.update {
+			it.copy(
+				gameProperties = it.gameProperties.copy(
+					gameExcludeFromStatistics = excludeFromStatistics
+				),
 			)
-		)
+		}
 
 		viewModelScope.launch {
-			val gameId = _gameDetailsState.value.currentGameId ?: return@launch
-			gamesRepository.setGameExcludedFromStatistics(gameId, state.gameProperties.gameExcludeFromStatistics)
+			gamesRepository.setGameExcludedFromStatistics(_currentGameId, excludeFromStatistics)
 		}
 	}
 
