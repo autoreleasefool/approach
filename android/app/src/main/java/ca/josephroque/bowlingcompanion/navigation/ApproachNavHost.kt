@@ -130,8 +130,8 @@ fun ApproachNavHost(
 			onAddGear = navController::navigateToNewGearForm,
 			onViewAllAlleys = navController::navigateToAlleysList,
 			onViewAllGear = navController::navigateToGearList,
-			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
-			onShowGearDetails = { /* TODO: onShowGearDetails */ },
+			onShowAlleyDetails = { /* FIXME: onShowAlleyDetails */ },
+			onShowGearDetails = { /* FIXME: onShowGearDetails */ },
 		)
 		settingsScreen(
 			openOpponents = navController::navigateToOpponentsList,
@@ -140,7 +140,7 @@ fun ApproachNavHost(
 			openAnalyticsSettings = navController::navigateToAnalyticsSettings,
 			openDeveloperSettings = navController::navigateToDeveloperSettings,
 			openDataExportSettings = navController::navigateToDataExport,
-			openDataImportSettings = { /* TODO: openDataImportSettings */ },
+			openDataImportSettings = { /* FIXME: openDataImportSettings */ },
 			openArchives = navController::navigateToArchivesList,
 		)
 		dataExportScreen(
@@ -157,7 +157,7 @@ fun ApproachNavHost(
 			onAddLeague = navController::navigateToNewLeagueForm,
 			onBackPressed = navController::popBackStack,
 			onShowLeagueDetails = navController::navigateToLeagueDetails,
-			onShowGearDetails = { /* TODO: onShowGearDetails */ },
+			onShowGearDetails = { /* FIXME: onShowGearDetails */ },
 			onShowPreferredGearPicker = { selectedGear, result ->
 				navController.navigateToResourcePickerForResult(
 					selectedIds = selectedGear,
@@ -193,7 +193,7 @@ fun ApproachNavHost(
 		opponentsListScreen(
 			onBackPressed = navController::popBackStack,
 			onAddOpponent = { navController.navigateToNewBowlerForm(BowlerKind.OPPONENT) },
-			onOpenOpponentDetails = { /* TODO: onOpenOpponentDetails */ },
+			onOpenOpponentDetails = { /* FIXME: onOpenOpponentDetails */ },
 			onEditOpponent = navController::navigateToBowlerForm,
 		)
 		analyticsSettingsScreen(
@@ -216,7 +216,7 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 			onEditAlley = navController::navigateToAlleyForm,
 			onAddAlley = navController::navigateToNewAlleyForm,
-			onShowAlleyDetails = { /* TODO: onShowAlleyDetails */ },
+			onShowAlleyDetails = { /* FIXME: onShowAlleyDetails */ },
 		)
 		alleyFormScreen(
 			onBackPressed = navController::popBackStack,
@@ -231,7 +231,7 @@ fun ApproachNavHost(
 			onBackPressed = navController::popBackStack,
 			onEditGear = navController::navigateToGearForm,
 			onAddGear = navController::navigateToNewGearForm,
-			onShowGearDetails = { /* TODO: onShowGearDetails */ },
+			onShowGearDetails = { /* FIXME: onShowGearDetails */ },
 		)
 		avatarFormScreen(
 			onDismissWithResult = navController::popBackStackWithResult,

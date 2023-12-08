@@ -87,7 +87,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 	}
 
 	private fun updateOpponent(opponentId: UUID?) {
-		// TODO: prevent other form updates while opponent is loading
+		// FIXME: prevent other form updates while opponent is loading
 		viewModelScope.launch {
 			val state = _matchPlayEditor.value ?: return@launch
 			val opponent = opponentId?.let { bowlersRepository.getBowlerSummary(it).first() }

@@ -64,8 +64,8 @@ private fun ApproachBottomBar(
 	onNavigateToDestination: (TopLevelDestination) -> Unit,
 	currentDestination: NavDestination?
 ) {
-	// TODO: Find a better way to determine if NavigationBar should be hidden
-	// TODO: Animate NavigationBar disappearing https://stackoverflow.com/questions/66837991/
+	// FIXME: Find a better way to determine if NavigationBar should be hidden
+	// FIXME: Animate NavigationBar disappearing https://stackoverflow.com/questions/66837991/
 	if (!bottomBarHiddenRoutes.contains(currentDestination?.route)) {
 		NavigationBar {
 			destinations.forEach { destination ->

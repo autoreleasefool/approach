@@ -14,7 +14,7 @@ data class TrackableFrameQueryComponents(
 		val whereConditions = mutableListOf<String>()
 
 		if (filter.bowlingBallsUsed.isNotEmpty()) {
-			// TODO: Filter by bowlingBallsUsed
+			// FIXME: Filter by bowlingBallsUsed
 		}
 
 		return whereConditions

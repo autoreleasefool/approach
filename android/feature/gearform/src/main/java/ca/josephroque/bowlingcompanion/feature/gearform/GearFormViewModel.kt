@@ -122,7 +122,7 @@ class GearFormViewModel @Inject constructor(
 	}
 
 	private fun updateOwner(owner: UUID?) {
-		// TODO: prevent other form updates while owner is loading
+		// FIXME: prevent other form updates while owner is loading
 		viewModelScope.launch {
 			val state = getFormUiState() ?: return@launch
 			val ownerDetails = owner?.let { bowlersRepository.getBowlerDetails(it).first() }

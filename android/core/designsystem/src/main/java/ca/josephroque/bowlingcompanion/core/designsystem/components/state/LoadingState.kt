@@ -5,5 +5,5 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun LoadingState(modifier: Modifier = Modifier) {
-	// TODO: Implement LoadingState
+	// FIXME: Implement LoadingState
 }

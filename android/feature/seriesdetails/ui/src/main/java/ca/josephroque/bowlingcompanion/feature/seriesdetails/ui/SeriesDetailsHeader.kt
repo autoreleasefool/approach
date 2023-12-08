@@ -112,7 +112,7 @@ private fun ScoreChart(scores: ChartEntryModelProducer) {
 		Chart(
 			chart = lineChart(
 				axisValuesOverrider = AxisValuesOverrider.fixed(
-					// TODO: Decide how the yRange is calculated for iOS and Android
+					// FIXME: Decide how the yRange is calculated for iOS and Android
 					// iOS currently sets the yRange to 0..450
 					// Android sets the range to minScore..maxScore
 					// Results in iOS having less dramatic charts, but are relative to one another

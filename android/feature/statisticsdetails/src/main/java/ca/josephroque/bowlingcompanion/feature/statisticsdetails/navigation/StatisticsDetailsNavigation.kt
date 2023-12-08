@@ -19,7 +19,7 @@ const val statisticsDetailsNavigationRoute = "statistics_details/{$SOURCE_TYPE}/
 fun NavController.navigateToStatisticsDetails(filter: TrackableFilter) {
 	val type = filter.source.sourceType()
 	val id = filter.source.id
-	// TODO: Parse and pass the rest of the filter as arguments
+	// FIXME: Parse and pass the rest of the filter as arguments
 	navigateToStatisticsDetails(type, id)
 }
 

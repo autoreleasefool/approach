@@ -94,7 +94,7 @@ dependencies {
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
 }
 
-// TODO: Move to Gradle Convention Plugin
+// FIXME: Move to Gradle Convention Plugin
 kapt {
 	correctErrorTypes = true
 }
