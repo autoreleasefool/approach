@@ -28,11 +28,17 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 				0 AS series_numberOfGames,
 				leagues.name AS league_name,
 				leagues.exclude_from_statistics AS league_excludeFromStatistics,
-				bowlers.name AS bowler_name
+				bowlers.name AS bowler_name,
+				match_play_bowler.id AS match_play_bowler_id,
+				match_play_bowler.name AS match_play_bowler_name,
+				match_plays.opponent_score as match_play_opponentScore,
+				match_plays.result as match_play_result
 			FROM games
 			JOIN series ON series.id = games.series_id
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			LEFT JOIN match_plays ON match_plays.game_id = games.id
+			LEFT JOIN bowlers as match_play_bowler ON match_play_bowler.id = match_plays.opponent_id
 			WHERE games.id = :gameId
 		"""
 	)

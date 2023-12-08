@@ -79,6 +79,8 @@
             <option value="$PROJECT_DIR$/feature/leagueform/ui" />
             <option value="$PROJECT_DIR$/feature/leagueslist" />
             <option value="$PROJECT_DIR$/feature/leagueslist/ui" />
+            <option value="$PROJECT_DIR$/feature/matchplayeditor" />
+            <option value="$PROJECT_DIR$/feature/matchplayeditor/ui" />
             <option value="$PROJECT_DIR$/feature/onboarding" />
             <option value="$PROJECT_DIR$/feature/onboarding/ui" />
             <option value="$PROJECT_DIR$/feature/opponentslist" />

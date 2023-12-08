@@ -23,6 +23,7 @@ fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID) {
 
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
+	onEditMatchPlay: (UUID) -> Unit,
 ) {
 	composable(
 		route = gamesEditorNavigationRoute,
@@ -33,6 +34,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 	) {
 		GamesEditorRoute(
 			onBackPressed = onBackPressed,
+			onEditMatchPlay = onEditMatchPlay,
 		)
 	}
 }

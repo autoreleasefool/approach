@@ -27,22 +27,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.core.model.Pin
-import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetails
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
 internal fun GamesEditorRoute(
 	onBackPressed: () -> Unit,
+	onEditMatchPlay: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -56,6 +51,7 @@ internal fun GamesEditorRoute(
 				.collect {
 					when (it) {
 						GamesEditorScreenEvent.Dismissed -> onBackPressed()
+						is GamesEditorScreenEvent.EditMatchPlay -> onEditMatchPlay(it.gameId)
 					}
 				}
 		}

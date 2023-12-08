@@ -1,10 +1,15 @@
 package ca.josephroque.bowlingcompanion.core.database.model
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import androidx.room.Relation
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
 import java.util.UUID
 
 @Entity(
@@ -32,4 +37,50 @@ data class MatchPlayEntity(
 	@ColumnInfo(name = "opponent_id", index = true) val opponentId: UUID?,
 	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
 	@ColumnInfo(name = "result") val result: MatchPlayResult?,
+)
+
+data class MatchPlayCreateEntity(
+	val id: UUID,
+	@ColumnInfo(name = "game_id") val gameId: UUID,
+	@ColumnInfo(name = "opponent_id") val opponentId: UUID?,
+	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
+	val result: MatchPlayResult?,
+)
+
+fun MatchPlayCreate.asEntity(): MatchPlayCreateEntity = MatchPlayCreateEntity(
+	id = id,
+	gameId = gameId,
+	opponentId = opponentId,
+	opponentScore = opponentScore,
+	result = result,
+)
+
+data class MatchPlayUpdateEntity(
+	@Embedded val properties: MatchPlayUpdate.Properties,
+	@Relation(
+		parentColumn = "opponentId",
+		entityColumn = "id",
+		entity = BowlerEntity::class,
+	) val opponent: BowlerSummary?,
+) {
+	fun asModel(): MatchPlayUpdate = MatchPlayUpdate(
+		id = properties.id,
+		opponent = opponent,
+		opponentScore = properties.opponentScore,
+		result = properties.result,
+	)
+}
+
+data class MatchPlayDetailsUpdateEntity(
+	val id: UUID,
+	@ColumnInfo(name = "opponent_id") val opponentId: UUID?,
+	@ColumnInfo(name = "opponent_score") val opponentScore: Int?,
+	val result: MatchPlayResult?,
+)
+
+fun MatchPlayUpdate.asEntity(): MatchPlayDetailsUpdateEntity = MatchPlayDetailsUpdateEntity(
+	id = id,
+	opponentId = opponent?.id,
+	opponentScore = opponentScore,
+	result = result,
 )

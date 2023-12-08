@@ -40,6 +40,8 @@ import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.leagueFormScreen
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToLeagueForm
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToNewLeagueForm
+import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.matchPlayEditorScreen
+import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.navigateToMatchPlayEditor
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOnboarding
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
 import ca.josephroque.bowlingcompanion.feature.opponentslist.navigation.navigateToOpponentsList
@@ -239,6 +241,7 @@ fun ApproachNavHost(
 		)
 		gamesEditorScreen(
 			onBackPressed = navController::popBackStack,
+			onEditMatchPlay = navController::navigateToMatchPlayEditor,
 		)
 		resourcePickerScreen(
 			onDismissWithResult = navController::popBackStackWithResult,
@@ -286,6 +289,17 @@ fun ApproachNavHost(
 		)
 		statisticPickerScreen(
 			onDismissWithResult = navController::popBackStackWithResult,
+		)
+		matchPlayEditorScreen(
+			onBackPressed = navController::popBackStack,
+			onEditOpponent = { opponent, result ->
+				navController.navigateToResourcePickerForResult(
+					selectedIds = opponent?.let { setOf(it) } ?: emptySet(),
+					limit = 1,
+					navResultCallback = result,
+					resourceType = ResourcePickerType.BOWLER,
+				)
+			},
 		)
 	}
 }

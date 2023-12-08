@@ -140,6 +140,7 @@ class GamesEditorViewModel @Inject constructor(
 			gamesRepository.getGameDetails(gameToLoad)
 				.collect {
 					_gameDetailsState.value = GameDetailsUiState(
+						currentGameId = it.properties.id,
 						currentGameIndex = it.properties.index,
 						header = GameDetailsUiState.HeaderUiState(
 							bowlerName = it.bowler.name,
@@ -150,9 +151,9 @@ class GamesEditorViewModel @Inject constructor(
 							selectedGear = emptyList(), // TODO: load selected gear
 						),
 						matchPlay = GameDetailsUiState.MatchPlayCardUiState(
-							opponentName = null, // TODO: load opponent name
-							opponentScore = null, // TODO: load opponent score
-							result = null, // TODO: load match play result
+							opponentName = it.matchPlay?.opponent?.name,
+							opponentScore = it.matchPlay?.opponentScore,
+							result = it.matchPlay?.result,
 						),
 						scoringMethod = GameDetailsUiState.ScoringMethodCardUiState(
 							score = it.properties.score,
@@ -192,7 +193,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openMatchPlayManager() {
-		/* TODO: openMatchPlayManager */
+		val gameId = _gameDetailsState.value.currentGameId ?: return
+		sendEvent(GamesEditorScreenEvent.EditMatchPlay(gameId))
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {

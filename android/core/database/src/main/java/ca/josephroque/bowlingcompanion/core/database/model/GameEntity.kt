@@ -5,10 +5,12 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -61,11 +63,25 @@ data class GameEditEntity(
 	@Embedded(prefix = "series_") val series: GameEdit.Series,
 	@Embedded(prefix = "league_") val league: GameEdit.League,
 	@Embedded(prefix = "bowler_") val bowler: GameEdit.Bowler,
+	@Embedded(prefix = "match_play_") val matchPlay: MatchPlayEntity?,
 ) {
+	data class MatchPlayEntity(
+		@Embedded(prefix = "bowler_") val opponent: BowlerSummary,
+		val opponentScore: Int?,
+		val result: MatchPlayResult?,
+	)
+
 	fun asModel(): GameEdit = GameEdit(
 		properties = this.properties,
 		series = this.series,
 		league = this.league,
-		bowler = this.bowler
+		bowler = this.bowler,
+		matchPlay = this.matchPlay?.let {
+			GameEdit.MatchPlay(
+				opponent = it.opponent,
+				opponentScore = it.opponentScore,
+				result = it.result,
+			)
+		},
 	)
 }

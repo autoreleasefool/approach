@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiActio
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
+import java.util.UUID
 
 sealed interface GamesEditorScreenUiState {
 	data object Loading: GamesEditorScreenUiState
@@ -24,4 +25,6 @@ sealed interface GamesEditorScreenUiAction {
 
 sealed interface GamesEditorScreenEvent {
 	data object Dismissed: GamesEditorScreenEvent
+
+	data class EditMatchPlay(val gameId: UUID): GamesEditorScreenEvent
 }

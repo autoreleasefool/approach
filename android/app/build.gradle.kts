@@ -67,6 +67,7 @@ dependencies {
 	implementation(project(":feature:laneform"))
 	implementation(project(":feature:leaguedetails"))
 	implementation(project(":feature:leagueform"))
+	implementation(project(":feature:matchplayeditor"))
 	implementation(project(":feature:onboarding"))
 	implementation(project(":feature:opponentslist"))
 	implementation(project(":feature:overview"))
