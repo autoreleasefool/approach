@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURC
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_TYPE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTED_IDS
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTION_LIMIT
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.TITLE_OVERRIDE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.R
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
@@ -50,6 +51,9 @@ class ResourcePickerViewModel @Inject constructor(
 	private val parentId = savedStateHandle.get<String>(RESOURCE_PARENT_ID)
 		?.let { if (it == "nan") null else UUID.fromString(it) }
 		?: UUID.randomUUID()
+
+	private val titleOverride = savedStateHandle.get<String>(TITLE_OVERRIDE)
+		?.let { if (it == "nan") null else it }
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
@@ -97,6 +101,7 @@ class ResourcePickerViewModel @Inject constructor(
 						ResourcePickerType.LEAGUE -> R.plurals.league_picker_title
 						ResourcePickerType.GEAR -> R.plurals.gear_picker_title
 					},
+					titleOverride = titleOverride,
 					limit = limit,
 				),
 				picker = ResourcePickerUiState(

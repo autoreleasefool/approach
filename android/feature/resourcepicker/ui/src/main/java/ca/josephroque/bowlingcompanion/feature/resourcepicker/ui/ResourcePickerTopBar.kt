@@ -25,7 +25,7 @@ fun ResourcePickerTopBar(
 		scrollBehavior = scrollBehavior,
 		title = {
 			Text(
-				text = pluralStringResource(state.titleResourceId, count = state.limit),
+				text = state.titleOverride ?: pluralStringResource(state.titleResourceId, count = state.limit),
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},

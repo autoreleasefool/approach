@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
@@ -28,6 +29,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val bowlersRepository: BowlersRepository,
 	private val matchPlaysRepository: MatchPlaysRepository,
+	private val gamesRepository: GamesRepository,
 ): ApproachViewModel<MatchPlayEditorScreenEvent>() {
 	private val gameId = savedStateHandle.get<String>(GAME_ID)!!.let { UUID.fromString(it) }
 
@@ -74,7 +76,9 @@ class MatchPlayEditorViewModel @Inject constructor(
 		viewModelScope.launch {
 			didLoadInitialValue = true
 			_existingMatchPlay = matchPlaysRepository.getMatchPlay(gameId).first()
+			val gameIndex = gamesRepository.getGameIndex(gameId).first()
 			_matchPlayEditor.value = MatchPlayEditorUiState(
+				gameIndex = gameIndex,
 				opponent = _existingMatchPlay?.opponent,
 				opponentScore = _existingMatchPlay?.opponentScore,
 				result = _existingMatchPlay?.result,

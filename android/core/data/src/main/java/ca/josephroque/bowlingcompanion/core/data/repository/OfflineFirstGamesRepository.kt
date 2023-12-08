@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
+import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem

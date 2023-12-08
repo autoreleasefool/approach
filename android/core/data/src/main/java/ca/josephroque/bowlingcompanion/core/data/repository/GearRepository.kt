@@ -9,12 +9,15 @@ import java.util.UUID
 
 interface GearRepository {
 	fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
+	fun getGameGear(gameId: UUID): Flow<List<GearListItem>>
+
 	fun getRecentlyUsedGear(limit: Int): Flow<List<GearListItem>>
 	fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
 	fun getGearUpdate(id: UUID): Flow<GearUpdate>
 
 	suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>)
+	suspend fun setGameGear(gameId: UUID, gear: Set<UUID>)
 
 	suspend fun insertGear(gear: GearCreate)
 	suspend fun updateGear(gear: GearUpdate)

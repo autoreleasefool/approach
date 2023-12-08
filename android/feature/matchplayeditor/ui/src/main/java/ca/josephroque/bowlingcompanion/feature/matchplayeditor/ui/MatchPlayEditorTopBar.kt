@@ -16,13 +16,14 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchPlayEditorTopBar(
+	gameIndex: Int,
 	onAction: (MatchPlayEditorUiAction) -> Unit,
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		title = {
 			Text(
-				text = stringResource(R.string.match_play_editor_title),
+				text = stringResource(R.string.match_play_editor_title, gameIndex + 1),
 			)
 		},
 		navigationIcon = {

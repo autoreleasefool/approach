@@ -242,6 +242,13 @@ fun ApproachNavHost(
 		gamesEditorScreen(
 			onBackPressed = navController::popBackStack,
 			onEditMatchPlay = navController::navigateToMatchPlayEditor,
+			onEditGear = { gear, result ->
+				navController.navigateToResourcePickerForResult(
+					selectedIds = gear,
+					navResultCallback = result,
+					resourceType = ResourcePickerType.GEAR,
+				)
+			}
 		)
 		resourcePickerScreen(
 			onDismissWithResult = navController::popBackStackWithResult,

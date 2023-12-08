@@ -39,7 +39,6 @@ data class GameEdit(
 	val series: Series,
 	val league: League,
 	val bowler: Bowler,
-	val matchPlay: MatchPlay?,
 ) {
 	data class Properties(
 		val id: UUID,
@@ -65,12 +64,6 @@ data class GameEdit(
 
 	data class Bowler(
 		val name: String,
-	)
-
-	data class MatchPlay(
-		val opponent: BowlerSummary?,
-		val opponentScore: Int?,
-		val result: MatchPlayResult?,
 	)
 }
 

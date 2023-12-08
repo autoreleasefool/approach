@@ -4,8 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
@@ -26,6 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -35,6 +39,8 @@ import javax.inject.Inject
 class GamesEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val gamesRepository: GamesRepository,
+	private val gearRepository: GearRepository,
+	private val matchPlaysRepository: MatchPlaysRepository,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
 	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
 	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
@@ -83,6 +89,7 @@ class GamesEditorViewModel @Inject constructor(
 			GamesEditorScreenUiAction.LoadInitialGame -> loadGame()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
+			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
 		}
 	}
 
@@ -133,54 +140,62 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun loadGame(gameId: UUID? = null) {
 		val gameToLoad = gameId ?: initialGameId
-
 		_gameDetailsJob?.cancel()
 
+		_gameDetailsJob = viewModelScope.launch {
+			val gameDetails = gamesRepository.getGameDetails(gameToLoad).first()
+			val gear = gearRepository.getGameGear(gameToLoad).first()
+			val matchPlay = matchPlaysRepository.getMatchPlay(gameToLoad).first()
+
+			_gameDetailsState.value = GameDetailsUiState(
+				currentGameId = gameToLoad,
+				currentGameIndex = gameDetails.properties.index,
+				header = GameDetailsUiState.HeaderUiState(
+					bowlerName = gameDetails.bowler.name,
+					leagueName = gameDetails.league.name,
+					nextElement = null, // TODO: update next header element
+				),
+				gear = GameDetailsUiState.GearCardUiState(
+					selectedGear = gear,
+				),
+				matchPlay = GameDetailsUiState.MatchPlayCardUiState(
+					opponentName = matchPlay?.opponent?.name,
+					opponentScore = matchPlay?.opponentScore,
+					result = matchPlay?.result,
+				),
+				scoringMethod = GameDetailsUiState.ScoringMethodCardUiState(
+					score = gameDetails.properties.score,
+					scoringMethod = gameDetails.properties.scoringMethod,
+				),
+				gameProperties = GameDetailsUiState.GamePropertiesCardUiState(
+					locked = gameDetails.properties.locked,
+					gameExcludeFromStatistics = gameDetails.properties.excludeFromStatistics,
+					seriesExcludeFromStatistics = gameDetails.series.excludeFromStatistics,
+					leagueExcludeFromStatistics = gameDetails.league.excludeFromStatistics,
+					seriesPreBowl = gameDetails.series.preBowl,
+				),
+			)
+
+			// TODO: update frame state
+			_frameEditorState.value = FrameEditorUiState(
+				lockedPins = emptySet(),
+				downedPins = emptySet(),
+			)
+
+			// TODO: update roll state
+			_rollEditorState.value = RollEditorUiState(
+				recentBalls = emptyList(),
+				didFoulRoll = false,
+				selectedBall = null,
+			)
+		}
+	}
+
+	private fun updateGear(gearIds: Set<UUID>) {
 		viewModelScope.launch {
-			gamesRepository.getGameDetails(gameToLoad)
-				.collect {
-					_gameDetailsState.value = GameDetailsUiState(
-						currentGameId = it.properties.id,
-						currentGameIndex = it.properties.index,
-						header = GameDetailsUiState.HeaderUiState(
-							bowlerName = it.bowler.name,
-							leagueName = it.league.name,
-							nextElement = null, // TODO: update next header element
-						),
-						gear = GameDetailsUiState.GearCardUiState(
-							selectedGear = emptyList(), // TODO: load selected gear
-						),
-						matchPlay = GameDetailsUiState.MatchPlayCardUiState(
-							opponentName = it.matchPlay?.opponent?.name,
-							opponentScore = it.matchPlay?.opponentScore,
-							result = it.matchPlay?.result,
-						),
-						scoringMethod = GameDetailsUiState.ScoringMethodCardUiState(
-							score = it.properties.score,
-							scoringMethod = it.properties.scoringMethod,
-						),
-						gameProperties = GameDetailsUiState.GamePropertiesCardUiState(
-							locked = it.properties.locked,
-							gameExcludeFromStatistics = it.properties.excludeFromStatistics,
-							seriesExcludeFromStatistics = it.series.excludeFromStatistics,
-							leagueExcludeFromStatistics = it.league.excludeFromStatistics,
-							seriesPreBowl = it.series.preBowl,
-						),
-					)
-
-					// TODO: update frame state
-					_frameEditorState.value = FrameEditorUiState(
-						lockedPins = emptySet(),
-						downedPins = emptySet(),
-					)
-
-					// TODO: update roll state
-					_rollEditorState.value = RollEditorUiState(
-						recentBalls = emptyList(),
-						didFoulRoll = false,
-						selectedBall = null,
-					)
-				}
+			val currentGameId = _gameDetailsState.value.currentGameId ?: return@launch
+			gearRepository.setGameGear(currentGameId, gearIds)
+			loadGame(currentGameId)
 		}
 	}
 
@@ -189,7 +204,9 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGearPicker() {
-		/* TODO: openGearPicker */
+		sendEvent(GamesEditorScreenEvent.EditGear(
+			_gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet()
+		))
 	}
 
 	private fun openMatchPlayManager() {

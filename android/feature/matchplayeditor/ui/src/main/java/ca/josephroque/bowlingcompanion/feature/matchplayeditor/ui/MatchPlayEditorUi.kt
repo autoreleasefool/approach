@@ -1,10 +1,10 @@
 package ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui
 
-import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 
 data class MatchPlayEditorUiState(
+	val gameIndex: Int,
 	val opponent: BowlerSummary?,
 	val opponentScore: Int? = null,
 	val result: MatchPlayResult? = null,

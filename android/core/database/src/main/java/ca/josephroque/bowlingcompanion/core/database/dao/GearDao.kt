@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
+import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
@@ -33,6 +34,25 @@ abstract class GearDao {
 		"""
 	)
 	abstract fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
+
+	@Query(
+		"""
+			SELECT
+				gear.id AS id,
+				gear.name AS name,
+				gear.kind AS kind,
+				gear.avatar as avatar,
+				owner.name AS ownerName
+			FROM gear
+			JOIN game_gear
+				ON gear.id = game_gear.gear_id
+				AND game_gear.game_id = :gameId
+			LEFT JOIN bowlers AS owner
+				ON gear.owner_id = owner.id
+			ORDER BY gear.name
+		"""
+	)
+	abstract fun getGameGear(gameId: UUID): Flow<List<GearListItem>>
 
 	@Query(
 		"""
@@ -74,6 +94,17 @@ abstract class GearDao {
 
 	@Insert
 	abstract fun setBowlerPreferredGear(gear: List<BowlerPreferredGearCrossRef>)
+
+	@Query(
+		"""
+			DELETE FROM game_gear
+			WHERE game_id = :gameId
+		"""
+	)
+	abstract fun removeGameGear(gameId: UUID)
+
+	@Insert
+	abstract fun setGameGear(gear: List<GameGearCrossRef>)
 
 	@Insert(entity = GearEntity::class)
 	abstract fun insertGear(gear: GearCreateEntity)

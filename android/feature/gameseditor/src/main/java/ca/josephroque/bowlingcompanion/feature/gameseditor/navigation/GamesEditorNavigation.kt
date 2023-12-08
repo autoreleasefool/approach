@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 import java.util.UUID
 
@@ -24,6 +25,7 @@ fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID) {
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (UUID) -> Unit,
+	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
 		route = gamesEditorNavigationRoute,
@@ -35,6 +37,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 		GamesEditorRoute(
 			onBackPressed = onBackPressed,
 			onEditMatchPlay = onEditMatchPlay,
+			onEditGear = onEditGear,
 		)
 	}
 }

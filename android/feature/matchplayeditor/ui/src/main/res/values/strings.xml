@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="match_play_editor_title">Match Play</string>
+	<string name="match_play_editor_title">Game %1$d Match Play</string>
 
 	<string name="match_play_editor_opponent">Opponent</string>
 	<string name="match_play_editor_opponent_none">None</string>
