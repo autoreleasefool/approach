@@ -59,7 +59,7 @@ fun StatisticsDetailsChart(
 		if (state.supportsAggregation) {
 			LabeledSwitch(
 				checked = state.aggregation == TrackableFilter.AggregationFilter.ACCUMULATE,
-				onCheckedChange = { onAction(StatisticsDetailsChartUiAction.AggregationChanged(state.aggregation.next)) },
+				onCheckedChange = { onAction(StatisticsDetailsChartUiAction.AggregationChanged(it)) },
 				titleResourceId = R.string.statistics_details_aggregation_title,
 				subtitleResourceId = when (state.aggregation) {
 					TrackableFilter.AggregationFilter.ACCUMULATE -> R.string.statistics_details_aggregation_accumulate_subtitle

@@ -51,7 +51,7 @@ fun AnalyticsSettings(
 
 		LabeledSwitch(
 			checked = state.analyticsOptInStatus == AnalyticsOptInStatus.OPTED_IN,
-			onCheckedChange = { onAction(AnalyticsSettingsUiAction.ToggleOptInStatus(it)) },
+			onCheckedChange = { onAction(AnalyticsSettingsUiAction.OptInStatusToggled(it)) },
 			titleResourceId = R.string.analytics_settings_share_anonymous_analytics
 		)
 

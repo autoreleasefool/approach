@@ -20,7 +20,5 @@ data class StatisticsDetailsChartUiState(
 }
 
 sealed interface StatisticsDetailsChartUiAction {
-	data class AggregationChanged(
-		val newValue: TrackableFilter.AggregationFilter
-	): StatisticsDetailsChartUiAction
+	data class AggregationChanged(val newValue: Boolean): StatisticsDetailsChartUiAction
 }

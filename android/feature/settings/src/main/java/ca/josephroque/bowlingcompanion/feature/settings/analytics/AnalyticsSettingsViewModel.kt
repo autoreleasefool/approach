@@ -41,19 +41,16 @@ class AnalyticsSettingsViewModel @Inject constructor(
 	private fun handleAnalyticsSettingsAction(action: AnalyticsSettingsUiAction) {
 		when (action) {
 			is AnalyticsSettingsUiAction.BackClicked -> sendEvent(AnalyticsSettingsScreenEvent.Dismissed)
-			is AnalyticsSettingsUiAction.ToggleOptInStatus -> toggleAnalyticsOptInStatus(action.value)
+			is AnalyticsSettingsUiAction.OptInStatusToggled -> toggleAnalyticsOptInStatus(action.value)
 		}
 	}
 
-	private fun toggleAnalyticsOptInStatus(value: Boolean?) {
+	private fun toggleAnalyticsOptInStatus(value: Boolean) {
 		viewModelScope.launch {
-			val status = analyticsClient.optInStatus.first()
-			val updatedStatus = when (value) {
-				null -> status.next
+			analyticsClient.setOptInStatus(when (value) {
 				true -> AnalyticsOptInStatus.OPTED_IN
 				false -> AnalyticsOptInStatus.OPTED_OUT
-			}
-			analyticsClient.setOptInStatus(updatedStatus)
+			})
 		}
 	}
 }

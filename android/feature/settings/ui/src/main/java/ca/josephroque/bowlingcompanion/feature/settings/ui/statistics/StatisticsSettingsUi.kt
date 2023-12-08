@@ -11,9 +11,9 @@ data class StatisticsSettingsUiState(
 sealed interface StatisticsSettingsUiAction {
 	data object BackClicked: StatisticsSettingsUiAction
 
-	data class ToggleIsCountingH2AsH(val newValue: Boolean?): StatisticsSettingsUiAction
-	data class ToggleIsCountingSplitWithBonusAsSplit(val newValue: Boolean?): StatisticsSettingsUiAction
-	data class ToggleIsHidingZeroStatistics(val newValue: Boolean?): StatisticsSettingsUiAction
-	data class ToggleIsHidingWidgetsInBowlersList(val newValue: Boolean?): StatisticsSettingsUiAction
-	data class ToggleIsHidingWidgetsInLeaguesList(val newValue: Boolean?): StatisticsSettingsUiAction
+	data class IsCountingH2AsHToggled(val newValue: Boolean): StatisticsSettingsUiAction
+	data class IsCountingSplitWithBonusAsSplitToggled(val newValue: Boolean): StatisticsSettingsUiAction
+	data class IsHidingZeroStatisticsToggled(val newValue: Boolean): StatisticsSettingsUiAction
+	data class IsHidingWidgetsInBowlersListToggled(val newValue: Boolean): StatisticsSettingsUiAction
+	data class IsHidingWidgetsInLeaguesListToggled(val newValue: Boolean): StatisticsSettingsUiAction
 }

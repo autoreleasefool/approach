@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -47,46 +46,41 @@ class StatisticsSettingsViewModel @Inject constructor(
 	private fun handleStatisticsSettingsAction(action: StatisticsSettingsUiAction) {
 		when (action) {
 			StatisticsSettingsUiAction.BackClicked -> sendEvent(StatisticsSettingsScreenEvent.Dismissed)
-			is StatisticsSettingsUiAction.ToggleIsCountingH2AsH -> toggleIsCountingH2AsH(action.newValue)
-			is StatisticsSettingsUiAction.ToggleIsCountingSplitWithBonusAsSplit -> toggleIsCountingSplitWithBonusAsSplit(action.newValue)
-			is StatisticsSettingsUiAction.ToggleIsHidingZeroStatistics -> toggleIsHidingZeroStatistics(action.newValue)
-			is StatisticsSettingsUiAction.ToggleIsHidingWidgetsInBowlersList -> toggleIsHidingWidgetsInBowlersList(action.newValue)
-			is StatisticsSettingsUiAction.ToggleIsHidingWidgetsInLeaguesList -> toggleIsHidingWidgetsInLeaguesList(action.newValue)
+			is StatisticsSettingsUiAction.IsCountingH2AsHToggled -> toggleIsCountingH2AsH(action.newValue)
+			is StatisticsSettingsUiAction.IsCountingSplitWithBonusAsSplitToggled -> toggleIsCountingSplitWithBonusAsSplit(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingZeroStatisticsToggled -> toggleIsHidingZeroStatistics(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingWidgetsInBowlersListToggled -> toggleIsHidingWidgetsInBowlersList(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingWidgetsInLeaguesListToggled -> toggleIsHidingWidgetsInLeaguesList(action.newValue)
 		}
 	}
 
-	private fun toggleIsCountingH2AsH(newValue: Boolean?) {
+	private fun toggleIsCountingH2AsH(newValue: Boolean) {
 		viewModelScope.launch {
-			val currentValue = !userDataRepository.userData.first().isCountingH2AsHDisabled
-			userDataRepository.setIsCountingH2AsH(newValue ?: !currentValue)
+			userDataRepository.setIsCountingH2AsH(newValue)
 		}
 	}
 
-	private fun toggleIsCountingSplitWithBonusAsSplit(newValue: Boolean?) {
+	private fun toggleIsCountingSplitWithBonusAsSplit(newValue: Boolean) {
 		viewModelScope.launch {
-			val currentValue = userDataRepository.userData.first().isCountingSplitWithBonusAsSplitDisabled
-			userDataRepository.setIsCountingSplitWithBonusAsSplit(newValue ?: !currentValue)
+			userDataRepository.setIsCountingSplitWithBonusAsSplit(newValue)
 		}
 	}
 
-	private fun toggleIsHidingZeroStatistics(newValue: Boolean?) {
+	private fun toggleIsHidingZeroStatistics(newValue: Boolean) {
 		viewModelScope.launch {
-			val currentValue = !userDataRepository.userData.first().isShowingZeroStatistics
-			userDataRepository.setIsHidingZeroStatistics(newValue ?: !currentValue)
+			userDataRepository.setIsHidingZeroStatistics(newValue)
 		}
 	}
 
-	private fun toggleIsHidingWidgetsInBowlersList(newValue: Boolean?) {
+	private fun toggleIsHidingWidgetsInBowlersList(newValue: Boolean) {
 		viewModelScope.launch {
-			val currentValue = userDataRepository.userData.first().isHidingWidgetsInBowlersList
-			userDataRepository.setIsHidingWidgetsInBowlersList(newValue ?: !currentValue)
+			userDataRepository.setIsHidingWidgetsInBowlersList(newValue)
 		}
 	}
 
-	private fun toggleIsHidingWidgetsInLeaguesList(newValue: Boolean?) {
+	private fun toggleIsHidingWidgetsInLeaguesList(newValue: Boolean) {
 		viewModelScope.launch {
-			val currentValue = userDataRepository.userData.first().isHidingWidgetsInLeaguesList
-			userDataRepository.setIsHidingWidgetsInLeaguesList(newValue ?: !currentValue)
+			userDataRepository.setIsHidingWidgetsInLeaguesList(newValue)
 		}
 	}
 }

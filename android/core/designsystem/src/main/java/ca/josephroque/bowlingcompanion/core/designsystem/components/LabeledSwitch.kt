@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 fun LabeledSwitch(
 	@StringRes titleResourceId: Int,
 	checked: Boolean,
-	onCheckedChange: (Boolean?) -> Unit,
+	onCheckedChange: (Boolean) -> Unit,
 	modifier: Modifier = Modifier,
 	enabled: Boolean = true,
 	compact: Boolean = false,
@@ -31,7 +31,7 @@ fun LabeledSwitch(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.clickable(onClick = { onCheckedChange(null) }, enabled = enabled)
+			.clickable(onClick = { onCheckedChange(!checked) }, enabled = enabled)
 			.padding(vertical = 8.dp, horizontal = 16.dp)
 	) {
 		Column(

@@ -165,8 +165,11 @@ class StatisticsDetailsViewModel @Inject constructor(
 		}
 	}
 
-	private fun toggleAggregation(newValue: TrackableFilter.AggregationFilter) {
-		_filter.value = _filter.value.copy(aggregation = newValue)
+	private fun toggleAggregation(newValue: Boolean) {
+		_filter.value = _filter.value.copy(aggregation = when (newValue) {
+			true -> TrackableFilter.AggregationFilter.ACCUMULATE
+			false -> TrackableFilter.AggregationFilter.PERIODIC
+		})
 	}
 }
 
