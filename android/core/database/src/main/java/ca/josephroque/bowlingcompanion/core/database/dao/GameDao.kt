@@ -5,7 +5,9 @@ import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
@@ -84,6 +86,12 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 
 	@Query("UPDATE games SET scoring_method = :scoringMethod, score = :score WHERE id = :gameId")
 	abstract fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int)
+
+	@Query("UPDATE games SET locked = :locked WHERE id = :gameId")
+	abstract fun setGameLockState(gameId: UUID, locked: GameLockState)
+
+	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
+	abstract fun setGameExcludedFromStatistics(gameId: UUID, excludeFromStatistics: ExcludeFromStatistics)
 
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
 	abstract fun unarchiveGame(gameId: UUID)

@@ -5,8 +5,10 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -31,10 +33,24 @@ class OfflineFirstGamesRepository @Inject constructor(
 	override fun getGameIndex(gameId: UUID): Flow<Int> =
 		gameDao.getGameIndex(gameId)
 
-	override suspend fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int) =
-		withContext(ioDispatcher) {
-			gameDao.setGameScoringMethod(gameId, scoringMethod, score)
-		}
+	override suspend fun setGameScoringMethod(
+		gameId: UUID,
+		scoringMethod: GameScoringMethod,
+		score: Int
+	) = withContext(ioDispatcher) {
+		gameDao.setGameScoringMethod(gameId, scoringMethod, score)
+	}
+
+	override suspend fun setGameExcludedFromStatistics(
+		gameId: UUID,
+		excludeFromStatistics: ExcludeFromStatistics
+	) = withContext(ioDispatcher) {
+		gameDao.setGameExcludedFromStatistics(gameId, excludeFromStatistics)
+	}
+
+	override suspend fun setGameLockState(gameId: UUID, locked: GameLockState) = withContext(ioDispatcher) {
+		gameDao.setGameLockState(gameId, locked)
+	}
 
 	override suspend fun archiveGame(gameId: UUID) = withContext(ioDispatcher) {
 		gameDao.archiveGame(gameId)

@@ -287,7 +287,11 @@ class GamesEditorViewModel @Inject constructor(
 				}
 			)
 		)
-		// TODO: save game
+
+		viewModelScope.launch {
+			val gameId = _gameDetailsState.value.currentGameId ?: return@launch
+			gamesRepository.setGameLockState(gameId, state.gameProperties.locked)
+		}
 	}
 
 	private fun toggleGameExcludedFromStatistics(isExcluded: Boolean?) {
@@ -301,7 +305,11 @@ class GamesEditorViewModel @Inject constructor(
 				}
 			)
 		)
-		// TODO: save game
+
+		viewModelScope.launch {
+			val gameId = _gameDetailsState.value.currentGameId ?: return@launch
+			gamesRepository.setGameExcludedFromStatistics(gameId, state.gameProperties.gameExcludeFromStatistics)
+		}
 	}
 
 	private fun updateSelectedFrame(frameIndex: Int) {
