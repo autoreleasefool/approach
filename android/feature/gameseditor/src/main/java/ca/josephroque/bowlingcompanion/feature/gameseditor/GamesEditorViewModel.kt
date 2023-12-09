@@ -3,15 +3,21 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.Frame
+import ca.josephroque.bowlingcompanion.core.model.FrameEdit
+import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
+import ca.josephroque.bowlingcompanion.core.model.ScoringGame
+import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
@@ -27,6 +33,11 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEdi
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.ensureFramesExist
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.ensureRollExists
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setBallRolled
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setDidFoul
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setPinsDowned
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +46,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -42,6 +54,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GamesEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
+	private val framesRepository: FramesRepository,
 	private val gamesRepository: GamesRepository,
 	private val gearRepository: GearRepository,
 	private val matchPlaysRepository: MatchPlaysRepository,
@@ -50,17 +63,30 @@ class GamesEditorViewModel @Inject constructor(
 	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
 	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
 	private var _currentGameId: UUID = initialGameId
+	private var _currentSelection: MutableStateFlow<ScoreSheetUiState.Selection> =
+		MutableStateFlow(ScoreSheetUiState.Selection())
 
 	private val _headerPeekHeight = MutableStateFlow(0f)
 
 	private var _framesJob: Job? = null
+	private val _frames = MutableStateFlow(emptyList<FrameEdit>())
 	private val _frameEditorState = MutableStateFlow(FrameEditorUiState())
 	private val _rollEditorState = MutableStateFlow(RollEditorUiState())
 
-	private var _scoresJob: Job? = null
-	private val _scoreSheetState = MutableStateFlow(ScoreSheetUiState())
-
 	private val _scoreEditor: MutableStateFlow<ScoreEditorUiState?> = MutableStateFlow(null)
+
+	private var _scoresJob: Job? = null
+	private val _scoringGame: MutableStateFlow<ScoringGame?> = MutableStateFlow(null)
+
+	private val _scoreSheetState = combine(
+		_scoringGame,
+		_currentSelection
+	) { game, selection ->
+		ScoreSheetUiState(
+			game = game,
+			selection = selection,
+		)
+	}
 
 	private val _gamesEditorState = combine(
 		_frameEditorState,
@@ -156,7 +182,7 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			ScoreEditorUiAction.CancelClicked -> dismissScoreEditor(didSave = false)
 			ScoreEditorUiAction.SaveClicked -> dismissScoreEditor(didSave = true)
-			is ScoreEditorUiAction.ScoreChanged -> _scoreEditor.value = _scoreEditor.value?.copy(score = action.score.toIntOrNull() ?: 0)
+			is ScoreEditorUiAction.ScoreChanged -> _scoreEditor.value = _scoreEditor.value?.copy(score = action.score.toIntOrNull()?.coerceIn(0, Game.MaxScore) ?: 0)
 			is ScoreEditorUiAction.ScoringMethodChanged -> _scoreEditor.value = _scoreEditor.value?.copy(scoringMethod = action.scoringMethod)
 		}
 	}
@@ -166,6 +192,7 @@ class GamesEditorViewModel @Inject constructor(
 		val gameToLoad = _currentGameId
 
 		_gameDetailsJob?.cancel()
+		var isInitialGameLoad = true
 		_gameDetailsJob = viewModelScope.launch {
 			gamesRepository.getGameDetails(gameToLoad).collect { gameDetails ->
 				_gameDetailsState.update {
@@ -175,7 +202,6 @@ class GamesEditorViewModel @Inject constructor(
 						header = it.header.copy(
 							bowlerName = gameDetails.bowler.name,
 							leagueName = gameDetails.league.name,
-							nextElement = null, // TODO: Update next header element
 						),
 						scoringMethod = it.scoringMethod.copy(
 							score = gameDetails.properties.score,
@@ -189,6 +215,17 @@ class GamesEditorViewModel @Inject constructor(
 							seriesPreBowl = gameDetails.series.preBowl,
 						),
 					)
+				}
+
+				if (isInitialGameLoad) {
+					isInitialGameLoad = false
+					_gameDetailsState.update {
+						it.copy(
+							header = it.header.copy(
+								nextElement = null, // TODO: Update next header element
+							)
+						)
+					}
 				}
 			}
 		}
@@ -224,18 +261,30 @@ class GamesEditorViewModel @Inject constructor(
 		_scoresJob?.cancel()
 		_scoresJob = viewModelScope.launch {
 			scoresRepository.getScore(gameToLoad).collect { score ->
-				_scoreSheetState.update {
-					it.copy(
-						game = score
-					)
+				_scoringGame.update { score }
+				_gameDetailsState.update {
+					when (it.scoringMethod.scoringMethod) {
+						GameScoringMethod.MANUAL -> it
+						GameScoringMethod.BY_FRAME -> it.copy(
+							scoringMethod = it.scoringMethod.copy(score = score.score ?: 0),
+						)
+					}
 				}
 			}
 		}
 
+		var isInitialFrameLoad = false
 		_framesJob?.cancel()
 		_framesJob = viewModelScope.launch {
-			// TODO: update frame state
-			// TODO: update roll state
+			framesRepository.getFrames(gameToLoad).collect { frames ->
+				_frames.update { frames }
+
+				if (isInitialFrameLoad) {
+					isInitialFrameLoad = false
+					updateSelectedRoll(0, 0)
+					// TODO: find last frame
+				}
+			}
 		}
 	}
 
@@ -284,14 +333,14 @@ class GamesEditorViewModel @Inject constructor(
 		val scoreEditor = _scoreEditor.value ?: return
 		if (didSave) {
 			viewModelScope.launch {
-				when (scoreEditor.scoringMethod) {
-					GameScoringMethod.MANUAL ->
-						gamesRepository.setGameScoringMethod(currentGameId, scoreEditor.scoringMethod, scoreEditor.score)
-					GameScoringMethod.BY_FRAME -> {
-						// TODO: Calculate score of game from frames
-						gamesRepository.setGameScoringMethod(currentGameId, scoreEditor.scoringMethod, 0)
-					}
-				}
+				gamesRepository.setGameScoringMethod(
+					currentGameId,
+					scoreEditor.scoringMethod,
+					when (scoreEditor.scoringMethod) {
+						GameScoringMethod.MANUAL -> scoreEditor.score
+						GameScoringMethod.BY_FRAME -> _scoringGame.value?.score ?: 0
+				  },
+				)
 			}
 		}
 		_scoreEditor.value = null
@@ -343,25 +392,109 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun updateSelectedRoll(frameIndex: Int, rollIndex: Int) {
-		// TODO: update roll selection
+		val frames = _frames.value.toMutableList()
+		val newSelection = _currentSelection.updateAndGet {
+			it.copy(
+				frameIndex = frameIndex,
+				rollIndex = rollIndex,
+			)
+		}
+
+		frames.ensureFramesExist(upTo = newSelection.frameIndex)
+		frames[newSelection.frameIndex] = frames[newSelection.frameIndex].ensureRollExists(upTo = newSelection.rollIndex)
+		val frame = frames[newSelection.frameIndex]
+		val roll = frame.rolls[newSelection.rollIndex]
+
+		if (frame != _frames.value[newSelection.frameIndex]) {
+			saveFrame(frame)
+		}
+
+		_frameEditorState.update {
+			val pinsDownLastFrame = if (roll.index > 0) frame.deckForRoll(roll.index - 1) else emptySet()
+			val lockedPins = if (Frame.isLastFrame(frame.properties.index) && pinsDownLastFrame.arePinsCleared()) {
+				emptySet()
+			} else {
+				pinsDownLastFrame
+			}
+
+			it.copy(
+				lockedPins = lockedPins,
+				downedPins = frame.deckForRoll(roll.index).minus(lockedPins),
+			)
+		}
+
+		_rollEditorState.update {
+			it.copy(
+				selectedBall = roll.bowlingBall?.id,
+				didFoulRoll = roll.didFoul,
+			)
+		}
 	}
 
 	private fun updateDownedPins(downedPins: Set<Pin>) {
-		_frameEditorState.value = _frameEditorState.value.copy(downedPins = downedPins)
-		// TODO: save frame
+		val currentSelection = _currentSelection.value
+		_frameEditorState.update {
+			it.copy(downedPins = downedPins)
+		}
+
+		val updatedFrames = _frames.updateAndGet { prevFrames ->
+			prevFrames.toMutableList().also {
+				it.setPinsDowned(
+					currentSelection.frameIndex,
+					currentSelection.rollIndex,
+					pinsDowned = downedPins,
+				)
+			}
+		}
+
+		saveFrame(updatedFrames[currentSelection.frameIndex])
 	}
 
-	private fun updateSelectedBall(ballId: UUID) {
-		_rollEditorState.value = _rollEditorState.value.copy(selectedBall = ballId)
-		// TODO: save selected ball
+	private fun updateSelectedBall(ball: GearListItem) {
+		val currentSelection = _currentSelection.value
+		_rollEditorState.update {
+			it.copy(selectedBall = if (it.selectedBall == ball.id) null else ball.id)
+		}
+
+		val updatedFrames = _frames.updateAndGet { prevFrames ->
+			prevFrames.toMutableList().also {
+				it.setBallRolled(
+					currentSelection.frameIndex,
+					currentSelection.rollIndex,
+					ball,
+				)
+			}
+		}
+
+		saveFrame(updatedFrames[currentSelection.frameIndex])
 	}
 
 	private fun toggleFoul(isFoul: Boolean) {
-		_rollEditorState.value = _rollEditorState.value.copy(didFoulRoll = isFoul)
-		// TODO: save frame
+		val currentSelection = _currentSelection.value
+		_rollEditorState.update {
+			it.copy(didFoulRoll = isFoul)
+		}
+
+		val updatedFrames = _frames.updateAndGet { prevFrames ->
+			prevFrames.toMutableList().also {
+				it.setDidFoul(
+					currentSelection.frameIndex,
+					currentSelection.rollIndex,
+					didFoul = isFoul,
+				)
+			}
+		}
+
+		saveFrame(updatedFrames[currentSelection.frameIndex])
 	}
 
 	private fun setHeaderPeekHeight(height: Float) {
 		_headerPeekHeight.value = height
+	}
+
+	private fun saveFrame(frame: FrameEdit) {
+		viewModelScope.launch {
+			framesRepository.updateFrame(frame)
+		}
 	}
 }
