@@ -76,7 +76,7 @@ data class FrameEdit(
 
 	val lastAccessibleRollIndex: Int
 		get() {
-			if (Frame.isLastFrame(properties.index)) {
+			if (!Frame.isLastFrame(properties.index)) {
 				val deck = mutableSetOf<Pin>()
 				for (roll in rolls) {
 					deck += roll.pinsDowned
