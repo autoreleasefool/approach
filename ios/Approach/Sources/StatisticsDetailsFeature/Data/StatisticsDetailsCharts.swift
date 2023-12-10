@@ -45,7 +45,7 @@ public struct StatisticsDetailsCharts: Reducer {
 					return .none
 				}
 
-			case let .internal(.doNothing):
+			case .internal(.doNothing):
 				return .none
 
 			case .delegate:

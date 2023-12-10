@@ -17,15 +17,15 @@ extension LoggingService: DependencyKey {
 			log: { message, level in
 				switch level {
 				case .error:
-					DDLogError(message)
+					DDLogError("\(message)")
 				case .warning:
-					DDLogWarn(message)
+					DDLogWarn("\(message)")
 				case .info:
-					DDLogInfo(message)
+					DDLogInfo("\(message)")
 				case .debug:
-					DDLogDebug(message)
+					DDLogDebug("\(message)")
 				case .verbose:
-					DDLogDebug(message)
+					DDLogDebug("\(message)")
 				}
 			},
 			fetchLogData: {
