@@ -22,7 +22,7 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 			case itemDidMove(from: IndexSet, to: Int)
 			case didFinishReordering
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -43,11 +43,8 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 					return .send(.delegate(.didFinishReordering))
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

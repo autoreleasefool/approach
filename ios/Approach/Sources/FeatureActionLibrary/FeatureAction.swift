@@ -13,7 +13,7 @@ public protocol FeatureAction {
 extension Store where Action: FeatureAction {
 	public func scope<ChildState, ChildAction>(
 		state toChildState: @escaping (State) -> ChildState,
-		action fromChildAction: CasePath<Action.InternalAction, ChildAction>
+		action fromChildAction: AnyCasePath<Action.InternalAction, ChildAction>
 	) -> Store<ChildState, ChildAction> {
 		scope(
 			state: toChildState,

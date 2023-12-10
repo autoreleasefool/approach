@@ -53,7 +53,7 @@ public struct AlleysList: Reducer {
 			case didTapBowler
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes>)
@@ -183,17 +183,11 @@ public struct AlleysList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case let .destination(.presented(.editor(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.editor(.delegate(.doNothing)))):
+					return .none
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .list(.internal), .list(.view):
 					return .none

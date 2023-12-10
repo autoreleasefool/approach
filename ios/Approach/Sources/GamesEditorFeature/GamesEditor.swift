@@ -60,7 +60,7 @@ public struct GamesEditor: Reducer {
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement? { _nextHeaderElement }
 		public var forceNextHeaderElementNilOrNextGame: Bool = false
 
-		public var lastLoadedGameAt: GameLoadDate? = nil
+		public var lastLoadedGameAt: GameLoadDate?
 
 		// Loaded details for the current entity being edited
 		public var bowlers: IdentifiedArrayOf<Bowler.Summary>?
@@ -109,7 +109,7 @@ public struct GamesEditor: Reducer {
 			case didRequestReview
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case bowlersResponse(TaskResult<[Bowler.Summary]>)
 			case framesResponse(TaskResult<[Frame.Edit]>)

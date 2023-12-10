@@ -32,7 +32,7 @@ public struct Paywall: Reducer {
 			case didTapRestorePurchasesButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case setProductAvailability(Bool)
 			case didFinishRestoringPurchases(TaskResult<Bool>)
@@ -104,13 +104,7 @@ public struct Paywall: Reducer {
 						.enqueue(.failedToRestorePurchases, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
-				case .errors(.internal), .errors(.view):
+				case .errors(.delegate(.doNothing)), .errors(.internal), .errors(.view):
 					return .none
 				}
 

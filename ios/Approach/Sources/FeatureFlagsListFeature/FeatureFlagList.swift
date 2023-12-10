@@ -19,7 +19,7 @@ public struct FeatureFlagsList: Reducer {
 			case didTapMatchDevelopmentButton
 			case didTapMatchTestButton
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didLoadFlags([FeatureFlagItem])
 		}

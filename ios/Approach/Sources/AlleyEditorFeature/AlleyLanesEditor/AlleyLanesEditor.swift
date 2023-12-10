@@ -38,7 +38,7 @@ public struct AlleyLanesEditor: Reducer {
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 
 		public enum InternalAction: Equatable {
 			case didDeleteLane(TaskResult<Lane.ID>)
@@ -145,11 +145,8 @@ public struct AlleyLanesEditor: Reducer {
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .laneEditor(_, .view), .laneEditor(_, .internal):
 					return .none

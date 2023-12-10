@@ -68,7 +68,7 @@ public struct GamesList: Reducer {
 			case didTapAddButton
 			case didTapArchiveTipDismissButton
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didLoadEditableSeries(TaskResult<Series.Edit>)
 			case didReorderGames(TaskResult<Never>)
@@ -239,11 +239,8 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.gameEditor(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.gameEditor(.delegate(.doNothing)))):
+					return .none
 
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -258,17 +255,11 @@ public struct GamesList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.sharing(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.sharing(.delegate(.doNothing)))):
+					return .none
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case let .didLoadEditableSeries(.failure(error)):
 					return state.errors

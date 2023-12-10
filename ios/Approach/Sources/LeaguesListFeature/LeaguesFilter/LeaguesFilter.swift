@@ -20,7 +20,7 @@ public struct LeaguesFilter: Reducer {
 		public enum DelegateAction: Equatable {
 			case didChangeFilters(League.Recurrence?)
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
@@ -51,11 +51,8 @@ public struct LeaguesFilter: Reducer {
 					return .send(.delegate(.didChangeFilters(state.recurrence)))
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

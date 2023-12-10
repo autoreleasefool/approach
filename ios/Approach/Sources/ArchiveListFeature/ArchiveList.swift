@@ -49,7 +49,7 @@ public struct ArchiveList: Reducer {
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case bowlersResponse(TaskResult<[Bowler.Archived]>)
 			case leaguesResponse(TaskResult<[League.Archived]>)
@@ -194,11 +194,8 @@ public struct ArchiveList: Reducer {
 						.enqueue(.failedToLoadGames, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .errors(.view), .errors(.internal):
 					return .none

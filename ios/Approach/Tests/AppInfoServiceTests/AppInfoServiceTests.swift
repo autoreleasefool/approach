@@ -54,7 +54,7 @@ final class AppInfoServiceTests: XCTestCase {
 			$0.preferences.contains = { _ in true }
 			$0.preferences.getDouble = { _ in installDate.value }
 			$0.preferences.setDouble = { _, newValue in installDate.setValue(newValue) }
-			
+
 			$0.appInfo.recordInstallDate = AppInfoService.liveValue.recordInstallDate
 		} operation: {
 			await appInfo.recordInstallDate()

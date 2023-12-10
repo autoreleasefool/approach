@@ -30,7 +30,7 @@ public struct App: Reducer {
 		public enum ViewAction: Equatable {
 			case didFirstAppear
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case onboarding(Onboarding.Action)
 			case content(TabbedContent.Action)
@@ -71,11 +71,8 @@ public struct App: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .content(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .content(.delegate(.doNothing)):
+					return .none
 
 				case let .onboarding(.delegate(delegateAction)):
 					switch delegateAction {

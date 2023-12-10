@@ -90,7 +90,7 @@ public struct BowlersList: Reducer {
 			case didTapQuickLaunchButton
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
@@ -259,18 +259,6 @@ public struct BowlersList: Reducer {
 					// Intentionally drop quick launch errors
 					return .none
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
-				case let .announcements(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishCreating(created):
@@ -307,12 +295,6 @@ public struct BowlersList: Reducer {
 						return .none
 					}
 
-				case let .widgets(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didTapOption(option):
@@ -321,41 +303,24 @@ public struct BowlersList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case let .destination(.presented(.editor(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
-				case let .destination(.presented(.leagues(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
-				case .list(.internal), .list(.view):
-					return .none
-
-				case .widgets(.internal), .widgets(.view):
-					return .none
-
-				case .errors(.view), .errors(.internal):
-					return .none
-
-				case .announcements(.view), .announcements(.internal):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
+						.destination(.presented(.editor(.delegate(.doNothing)))),
 						.destination(.presented(.leagues(.internal))),
 						.destination(.presented(.leagues(.view))),
+						.destination(.presented(.leagues(.delegate(.doNothing)))),
 						.destination(.presented(.sortOrder(.internal))),
 						.destination(.presented(.sortOrder(.view))),
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.games(.internal))),
-						.destination(.presented(.games(.view))):
+						.destination(.presented(.games(.view))),
+						.destination(.presented(.games(.delegate(.doNothing)))),
+						.list(.internal), .list(.view),
+						.widgets(.internal), .widgets(.view), .widgets(.delegate(.doNothing)),
+						.errors(.view), .errors(.internal), .errors(.delegate(.doNothing)),
+						.announcements(.view), .announcements(.internal), .announcements(.delegate(.doNothing)):
 					return .none
 				}
 

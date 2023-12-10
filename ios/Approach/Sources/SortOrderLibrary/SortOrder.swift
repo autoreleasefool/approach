@@ -17,7 +17,7 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapOption(Ordering)
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 		public enum DelegateAction: Equatable {
 			case didTapOption(Ordering)
 		}
@@ -44,11 +44,8 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 					)
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

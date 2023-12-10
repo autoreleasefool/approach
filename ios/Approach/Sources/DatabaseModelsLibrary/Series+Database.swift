@@ -80,6 +80,7 @@ extension Series.List: FetchableRecord {}
 extension Series.Archived: FetchableRecord {}
 
 extension Series {
+	// swiftlint:disable:next function_parameter_count
 	public static func insertGames(
 		forSeries seriesId: Series.ID,
 		excludeFromStatistics: Series.ExcludeFromStatistics,

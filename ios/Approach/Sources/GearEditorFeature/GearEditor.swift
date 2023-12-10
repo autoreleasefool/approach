@@ -59,7 +59,7 @@ public struct GearEditor: Reducer {
 			case didTapAvatar
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case form(GearForm.Action)
 			case destination(PresentationAction<Destination.Action>)

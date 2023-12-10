@@ -28,7 +28,7 @@ public struct OpponentDetails: Reducer {
 			case onAppear
 			case didFirstAppear
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didLoadDetails(TaskResult<Bowler.OpponentDetails>)
 			case errors(Errors<ErrorID>.Action)
@@ -73,11 +73,8 @@ public struct OpponentDetails: Reducer {
 						.enqueue(.failedToLoadDetails, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .errors(.internal), .errors(.view):
 					return .none

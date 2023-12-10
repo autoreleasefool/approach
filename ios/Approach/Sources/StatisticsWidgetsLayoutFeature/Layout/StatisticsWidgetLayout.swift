@@ -35,7 +35,7 @@ public struct StatisticsWidgetLayout: Reducer {
 			case didTapConfigureStatisticsButton
 			case didTapWidget(id: StatisticsWidget.ID)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case widgetsResponse(TaskResult<[StatisticsWidget.Configuration]>)
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
@@ -152,29 +152,20 @@ public struct StatisticsWidgetLayout: Reducer {
 						.enqueue(.failedToLoadChart, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
 
-				case let .destination(.presented(.details(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.details(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.layout(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.layout(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.help(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.help(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.layout(.internal))), .destination(.presented(.layout(.view))),
 						.destination(.presented(.details(.internal))), .destination(.presented(.details(.view))),
 						.destination(.presented(.help(.internal))), .destination(.presented(.help(.view))),
-						.errors(.internal), .errors(.view):
+						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 

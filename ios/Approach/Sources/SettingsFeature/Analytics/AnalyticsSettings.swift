@@ -26,7 +26,7 @@ public struct AnalyticsSettings: Reducer {
 			case onAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case updatedOptInStatus(Analytics.OptInStatus)
 		}

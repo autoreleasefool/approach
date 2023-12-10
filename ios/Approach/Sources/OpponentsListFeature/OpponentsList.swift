@@ -64,7 +64,7 @@ public struct OpponentsList: Reducer {
 			case didTapSortOrderButton
 			case didTapOpponent(Bowler.ID)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didLoadEditableOpponent(TaskResult<Bowler.Edit>)
 			case didArchiveOpponent(TaskResult<Bowler.Opponent>)
@@ -195,23 +195,14 @@ public struct OpponentsList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case let .destination(.presented(.editor(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.editor(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.details(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.details(.delegate(.doNothing)))):
+					return .none
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .list(.internal), .list(.view):
 					return .none

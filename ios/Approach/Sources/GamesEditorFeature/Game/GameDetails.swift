@@ -241,11 +241,8 @@ public struct GameDetails: Reducer {
 					// TODO: Handle error observing game -- not actually sure we need to care about the error here
 					return .none
 
-				case let .destination(.presented(.statistics(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.statistics(.delegate(.doNothing)))):
+					return .none
 
 				case let .destination(.presented(.lanePicker(.delegate(delegateAction)))):
 					switch delegateAction {

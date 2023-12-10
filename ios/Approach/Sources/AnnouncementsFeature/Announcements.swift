@@ -24,7 +24,7 @@ public struct Announcements: Reducer {
 			case christmas(PresentationAction<Christmas2023Announcement.Action>)
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)

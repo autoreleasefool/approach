@@ -28,8 +28,8 @@ extension FeatureFlagsService: DependencyKey {
 		@Sendable func areFlagsEnabled(flags: [FeatureFlag]) -> [FeatureFlag: Bool] {
 			#if DEBUG
 			let overrides = flagManager.getOverrides(flags: flags)
-			return zip(flags, overrides).reduce(into: [:]) {
-				acc, override in acc[override.0] = override.1 ?? override.0.isEnabled
+			return zip(flags, overrides).reduce(into: [:]) { acc, override in
+				acc[override.0] = override.1 ?? override.0.isEnabled
 			}
 			#else
 			return flags.reduce(into: [:]) { acc, flag in acc[flag] = flag.isEnabled }

@@ -32,7 +32,7 @@ public struct StatisticsOverview: Reducer {
 			case didTapViewDetailedStatistics
 			case sourcePickerDidDismiss
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -105,11 +105,8 @@ public struct StatisticsOverview: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.details(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.details(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.dismiss):
 					switch state.destination {

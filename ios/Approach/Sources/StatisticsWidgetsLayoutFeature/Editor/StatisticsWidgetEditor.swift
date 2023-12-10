@@ -18,6 +18,7 @@ import StringsLibrary
 import TipsLibrary
 import TipsServiceInterface
 
+// swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 public struct StatisticsWidgetEditor: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
@@ -313,11 +314,8 @@ public struct StatisticsWidgetEditor: Reducer {
 						return refreshChart(withConfiguration: state.configuration, state: &state)
 					}
 
-				case let .destination(.presented(.help(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.help(.delegate(.doNothing)))):
+					return .none
 
 				case let .destination(.presented(.statisticPicker(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -326,11 +324,8 @@ public struct StatisticsWidgetEditor: Reducer {
 						return refreshChart(withConfiguration: state.configuration, state: &state)
 					}
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.bowlerPicker(.internal))), .destination(.presented(.bowlerPicker(.view))),

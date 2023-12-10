@@ -34,7 +34,7 @@ public struct AppIconList: Reducer {
 			case didTapIcon(AppIcon)
 			case didTapReset
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didUpdateIcon(TaskResult<Never>)
 			case didFetchIcon(TaskResult<AppIcon?>)

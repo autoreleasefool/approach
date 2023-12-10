@@ -40,7 +40,7 @@ public struct ResourceList<
 	}
 
 	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable { case doNothing }
 
 		public enum DelegateAction: Equatable {
 			case didDelete(R)
@@ -74,11 +74,8 @@ public struct ResourceList<
 
 		Reduce<State, Action> { _, action in
 			switch action {
-			case let .view(viewAction):
-				switch viewAction {
-				case .never:
-					return .none
-				}
+			case .view(.doNothing):
+				return .none
 
 			case let .internal(internalAction):
 				switch internalAction {

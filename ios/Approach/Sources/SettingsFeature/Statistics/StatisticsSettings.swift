@@ -37,8 +37,8 @@ public struct StatisticsSettings: Reducer {
 			case onAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
-		public enum InternalAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -97,11 +97,8 @@ public struct StatisticsSettings: Reducer {
 					return .none
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

@@ -33,7 +33,7 @@ public struct StatisticPicker: Reducer {
 		public enum DelegateAction: Equatable {
 			case didSelectStatistic(String)
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -61,11 +61,8 @@ public struct StatisticPicker: Reducer {
 					)
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

@@ -25,8 +25,8 @@ public struct StatisticsWidgetHelp: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapDoneButton
 		}
-		public enum DelegateAction: Equatable {}
-		public enum InternalAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -44,11 +44,8 @@ public struct StatisticsWidgetHelp: Reducer {
 					return .run { _ in await dismiss() }
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

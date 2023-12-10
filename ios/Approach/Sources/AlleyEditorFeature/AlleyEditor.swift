@@ -68,7 +68,7 @@ public struct AlleyEditor: Reducer {
 			case didTapManageLanes
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didCreateLanes(TaskResult<Alley.Create>)
 			case didUpdateLanes(TaskResult<Alley.Edit>)
@@ -185,11 +185,8 @@ public struct AlleyEditor: Reducer {
 						return .run { _ in await dismiss() }
 					}
 
-				case let .alleyLanesEditor(.presented(.delegate(delegateAction))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .alleyLanesEditor(.presented(.delegate(.doNothing))):
+					return .none
 
 				case .alleyLanesEditor(.dismiss):
 					guard let newLanes = state.alleyLanesEditor?.newLanes,
@@ -210,11 +207,8 @@ public struct AlleyEditor: Reducer {
 					state.coordinate = .init(coordinate: state.location?.coordinate.mapCoordinate ?? .init())
 					return .none
 
-				case let .addressLookup(.presented(.delegate(delegateAction))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .addressLookup(.presented(.delegate(.doNothing))):
+					return .none
 
 				case .alleyLanesEditor(.presented(.internal)),
 						.alleyLanesEditor(.presented(.view)):

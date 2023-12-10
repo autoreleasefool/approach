@@ -25,7 +25,7 @@ public struct TabbedContent: Reducer {
 			case didAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didChangeTabs([Tab])
 			case accessories(AccessoriesOverview.Action)
@@ -108,29 +108,17 @@ public struct TabbedContent: Reducer {
 					state.tabs = tabs
 					return .none
 
-				case let .accessories(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .accessories(.delegate(.doNothing)):
+					return .none
 
-				case let .bowlersList(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .bowlersList(.delegate(.doNothing)):
+					return .none
 
-				case let .settings(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .settings(.delegate(.doNothing)):
+					return .none
 
-				case let .statistics(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .statistics(.delegate(.doNothing)):
+					return .none
 
 				case .accessories(.view), .accessories(.internal):
 					return .none

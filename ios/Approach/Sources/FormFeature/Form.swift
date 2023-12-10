@@ -292,11 +292,8 @@ public struct Form<
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .errors(.internal), .errors(.view):
 					return .none

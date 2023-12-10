@@ -52,7 +52,7 @@ public struct StatisticsDetails: Reducer {
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
@@ -294,11 +294,8 @@ public struct StatisticsDetails: Reducer {
 						await send(.internal(.didLoadListEntries(.success(entries.elements))))
 					}
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .destination(.presented(.list(.internal))),
 						.destination(.presented(.list(.view))),

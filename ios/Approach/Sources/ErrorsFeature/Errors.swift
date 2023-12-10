@@ -49,7 +49,7 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 		public enum ViewAction: Equatable {
 			case didFinishDismissingReport
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didReceiveReport(AlwaysEqual<Report>)
 
@@ -94,11 +94,8 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 					)
 					return .none
 
-				case let .report(.presented(.delegate(delegateAction))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .report(.presented(.delegate(.doNothing))):
+					return .none
 
 				case let .toast(toastAction):
 					switch toastAction {

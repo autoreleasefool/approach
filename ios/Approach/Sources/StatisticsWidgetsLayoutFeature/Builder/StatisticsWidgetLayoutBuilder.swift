@@ -45,7 +45,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case binding(BindingAction<State>)
 
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case widgetsResponse(TaskResult<[StatisticsWidget.Configuration]>)
 			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
@@ -226,7 +226,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 						.editor(.presented(.internal)),
 						.editor(.presented(.view)),
 						.reordering(.internal), .reordering(.view),
-						.errors(.internal), .errors(.view):
+						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 

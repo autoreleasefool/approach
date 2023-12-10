@@ -71,7 +71,7 @@ public struct Sharing: Reducer {
 			case didTapDoneButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didLoadGames(TaskResult<[Game.Shareable]>)
 			case didLoadScore(ScoredGame)
@@ -166,11 +166,8 @@ public struct Sharing: Reducer {
 						.enqueue(.gamesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .errors(.internal), .errors(.view):
 					return .none

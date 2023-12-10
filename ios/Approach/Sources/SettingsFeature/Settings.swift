@@ -47,7 +47,7 @@ public struct Settings: Reducer {
 			case didTapAppIcon
 			case didTapVersionNumber
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didFetchIcon(TaskResult<AppIcon?>)
 			case didCopyToClipboard
@@ -179,11 +179,8 @@ public struct Settings: Reducer {
 					state.isLoadingAppIcon = false
 					return .none
 
-				case let .helpSettings(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .helpSettings(.delegate(.doNothing)):
+					return .none
 
 				case let .toast(toastAction):
 					switch toastAction {
@@ -195,35 +192,20 @@ public struct Settings: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.archive(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.archive(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.featureFlags(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.featureFlags(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.opponentsList(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.opponentsList(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.statistics(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.statistics(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.appIcon(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.appIcon(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.featureFlags(.internal))), .destination(.presented(.featureFlags(.view))),

@@ -21,7 +21,7 @@ public struct ScoringEditor: Reducer {
 			case didSetManualScore(Int)
 			case didClearManualScore
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -66,11 +66,8 @@ public struct ScoringEditor: Reducer {
 					return .none
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

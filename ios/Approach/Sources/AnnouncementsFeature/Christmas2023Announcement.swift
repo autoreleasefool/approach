@@ -28,7 +28,7 @@ public struct Christmas2023Announcement: Reducer {
 		public enum DelegateAction: Equatable {
 			case openAppIconSettings
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -40,7 +40,7 @@ public struct Christmas2023Announcement: Reducer {
 	init() {}
 
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
@@ -57,11 +57,8 @@ public struct Christmas2023Announcement: Reducer {
 					return .run { _ in await dismiss() }
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none
@@ -85,7 +82,7 @@ public struct Christmas2023AnnouncementView: View {
 	public var body: some View {
 		VStack(spacing: 0) {
 			Spacer()
-			
+
 			Text(Strings.Announcement.Christmas2023.title)
 				.font(.headline)
 				.multilineTextAlignment(.center)

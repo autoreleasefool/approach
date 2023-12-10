@@ -230,11 +230,8 @@ public struct StatisticsSourcePicker: Reducer {
 						return .none
 					}
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.bowlerPicker(.internal))),

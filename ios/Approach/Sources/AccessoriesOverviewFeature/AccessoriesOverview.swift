@@ -13,8 +13,8 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
-// swiftlint:disable:next type_body_length
 @Reducer
+// swiftlint:disable:next type_body_length
 public struct AccessoriesOverview: Reducer {
 	static let recentAlleysLimit = 5
 	static let recentGearLimit = 10
@@ -41,7 +41,7 @@ public struct AccessoriesOverview: Reducer {
 			case didTapAddGear
 			case didSwipe(SwipeAction, Item)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case itemsResponse(TaskResult<[Item]>)
 			case didFinishDeletingItem(TaskResult<Item>)
@@ -256,35 +256,20 @@ public struct AccessoriesOverview: Reducer {
 						}
 					}
 
-				case let .destination(.presented(.alleyEditor(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.alleyEditor(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.alleysList(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.alleysList(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.gearEditor(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.gearEditor(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.gearList(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.gearList(.delegate(.doNothing)))):
+					return .none
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.gearEditor(.view))),

@@ -31,7 +31,7 @@ public struct Export: Reducer {
 			case didFirstAppear
 			case didTapRetryButton
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didReceiveEvent(TaskResult<ExportService.Event>)
 		}

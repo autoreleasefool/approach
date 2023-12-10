@@ -88,7 +88,7 @@ public struct SeriesList: Reducer {
 				.FetchRequest>.Action)
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
@@ -275,11 +275,8 @@ public struct SeriesList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.games(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.games(.delegate(.doNothing)))):
+					return .none
 
 				case let .destination(.presented(.sortOrder(.delegate(delegateAction)))):
 					switch delegateAction {
@@ -289,11 +286,8 @@ public struct SeriesList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .destination(.dismiss),
 						.destination(.presented(.seriesEditor(.view))), .destination(.presented(.seriesEditor(.internal))),

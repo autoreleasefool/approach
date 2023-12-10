@@ -42,7 +42,7 @@ public struct HelpSettings: Reducer {
 			case didTapForceCrashButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -135,17 +135,11 @@ public struct HelpSettings: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case let .destination(.presented(.analytics(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.analytics(.delegate(.doNothing)))):
+					return .none
 
-				case let .destination(.presented(.export(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.export(.delegate(.doNothing)))):
+					return .none
 
 				case .destination(.dismiss):
 					switch state.destination {

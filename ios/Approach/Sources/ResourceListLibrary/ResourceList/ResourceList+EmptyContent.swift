@@ -60,7 +60,7 @@ public struct ResourceListEmpty: Reducer {
 		public enum ViewAction: Equatable {
 			case didTapActionButton
 		}
-		public enum InternalAction: Equatable {}
+		public enum InternalAction: Equatable { case doNothing }
 		public enum DelegateAction: Equatable {
 			case didTapActionButton
 		}
@@ -86,11 +86,8 @@ public struct ResourceListEmpty: Reducer {
 					return .send(.delegate(.didTapActionButton))
 				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case .never:
-					return .none
-				}
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none

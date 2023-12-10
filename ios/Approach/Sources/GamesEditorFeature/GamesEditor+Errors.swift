@@ -23,11 +23,8 @@ extension GamesEditor {
 		errorsAction: Errors<ErrorID>.Action
 	) -> Effect<Action> {
 		switch errorsAction {
-		case let .delegate(delegateAction):
-			switch delegateAction {
-			case .never:
-				return .none
-			}
+		case .delegate(.doNothing):
+			return .none
 
 		case .view, .internal:
 			return .none

@@ -41,7 +41,7 @@ public struct MidGameStatisticsDetails: Reducer {
 			case didFirstAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didLoadListEntries(TaskResult<[Statistics.ListEntryGroup]>)
 
@@ -119,11 +119,8 @@ public struct MidGameStatisticsDetails: Reducer {
 						return refreshStatistics(state: state)
 					}
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .errors(.delegate(.doNothing)):
+					return .none
 
 				case .errors(.internal), .errors(.view),
 						.list(.internal), .list(.view):

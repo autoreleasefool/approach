@@ -54,7 +54,7 @@ public struct ErrorReport: Reducer {
 			case didTapEmailButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 		public enum InternalAction: Equatable {
 			case didCopyToClipboard
 			case toast(ToastAction)

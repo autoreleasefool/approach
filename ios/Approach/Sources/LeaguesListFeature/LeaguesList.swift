@@ -83,7 +83,7 @@ public struct LeaguesList: Reducer {
 			case didTapSortOrderButton
 		}
 
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable { case doNothing }
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableLeague(TaskResult<League.Edit>)
@@ -236,11 +236,8 @@ public struct LeaguesList: Reducer {
 						.enqueue(.failedToArchiveLeague, thrownError: error, toastMessage: Strings.Error.Toast.failedToArchive)
 						.map { .internal(.errors($0)) }
 
-				case let .widgets(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .widgets(.delegate(.doNothing)):
+					return .none
 
 				case let .preferredGear(.delegate(delegateAction)):
 					switch delegateAction {
@@ -302,18 +299,11 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
-				case let .destination(.presented(.series(.delegate(delegateAction)))):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
+				case .destination(.presented(.series(.delegate(.doNothing)))):
+					return .none
 
-				case let .errors(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
-						return .none
-					}
-
+				case .errors(.delegate(.doNothing)):
+					return .none
 				case .destination(.dismiss),
 						.destination(.presented(.series(.internal))),
 						.destination(.presented(.series(.view))),
