@@ -416,7 +416,7 @@ libraries = [ "Assets", "Strings" ]
 
 [dependencies.Algorithms]
 url = "https://github.com/apple/swift-algorithms.git"
-from = "1.1.0"
+from = "1.2.0"
 
 [dependencies.AsyncAlgorithms]
 url = "https://github.com/apple/swift-async-algorithms.git"
