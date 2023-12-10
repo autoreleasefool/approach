@@ -1,11 +1,11 @@
 import AccessoriesOverviewFeature
 import AnalyticsServiceInterface
-import AppInfoServiceInterface
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
+import LaunchServiceInterface
 import OnboardingFeature
 import PreferenceServiceInterface
 import SettingsFeature
@@ -40,7 +40,6 @@ public struct App: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	@Dependency(\.appInfo) var appInfo
 	@Dependency(\.preferences) var preferences
 	@Dependency(\.statistics) var statistics
 
@@ -52,20 +51,11 @@ public struct App: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didFirstAppear:
-					let launchEvents: Effect<Action> = .merge(
-						.run { _ in await appInfo.recordNewSession() },
-						.run { _ in await appInfo.recordInstallDate() }
-					)
-
 					switch state {
 					case .content:
-						return launchEvents
+						return .none
 					case .onboarding:
-						// TODO: Move this to a 'first launch' service
-						return .merge(
-							.run { _ in await statistics.hideNewStatisticLabels() },
-							launchEvents
-						)
+						return .run { _ in await statistics.hideNewStatisticLabels() }
 					}
 				}
 

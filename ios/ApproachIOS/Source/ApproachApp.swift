@@ -1,7 +1,6 @@
-import AnalyticsServiceInterface
 import ConstantsLibrary
 import Dependencies
-import ProductsServiceInterface
+import LaunchServiceInterface
 import Sentry
 import SwiftUI
 import XCTestDynamicOverlay
@@ -21,13 +20,9 @@ public struct ApproachApp: App {
 			options.dsn = AppConstants.ApiKey.sentry
 		}
 
-		@Dependency(\.products) var products
-		products.initialize()
-
-		@Dependency(\.analytics) var analytics
-		analytics.initialize()
-		Task.detached {
-			await analytics.trackEvent(Analytics.App.Launched())
+		@Dependency(\.launch) var launch
+		Task.detached(priority: .high) {
+			await launch.didLaunch()
 		}
 	}
 }
