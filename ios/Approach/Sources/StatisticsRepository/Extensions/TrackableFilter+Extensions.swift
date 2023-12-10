@@ -68,6 +68,12 @@ extension TrackableFilter {
 				.annotated(withRequired: Frame.Database.game.select(
 					Game.Database.Columns.index.forKey("gameIndex")
 				))
+				.filter(
+					!(Frame.Database.Columns.roll1 == nil &&
+						Frame.Database.Columns.roll2 == nil &&
+						(Frame.Database.Columns.roll0 == nil || Frame.Database.Columns.roll0 == "000000")
+						)
+				)
 				.asRequest(of: Frame.TrackableEntry.self)
 		)
 	}
