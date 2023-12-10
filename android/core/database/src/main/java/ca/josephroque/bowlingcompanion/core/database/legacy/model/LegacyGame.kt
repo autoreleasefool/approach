@@ -19,7 +19,7 @@ enum class LegacyMatchPlayResult {
 	TIED;
 
 	companion object {
-		private val map = LegacyMatchPlayResult.values().associateBy(LegacyMatchPlayResult::ordinal)
+		private val map = entries.associateBy(LegacyMatchPlayResult::ordinal)
 		fun fromInt(type: Int) = map[type]
 	}
 }

@@ -139,7 +139,7 @@ private fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMa
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_material),
 		subtitle = stringResource(R.string.alley_form_property_material_footer),
-		options = AlleyMaterial.values(),
+		options = AlleyMaterial.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = material,
 		titleForOption = {
@@ -158,7 +158,7 @@ private fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (All
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_mechanism),
 		subtitle = stringResource(R.string.alley_form_property_mechanism_footer),
-		options = AlleyMechanism.values(),
+		options = AlleyMechanism.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = mechanism,
 		titleForOption = {
@@ -177,7 +177,7 @@ private fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFal
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_pin_fall),
 		subtitle = stringResource(R.string.alley_form_property_pin_fall_footer),
-		options = AlleyPinFall.values(),
+		options = AlleyPinFall.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = pinFall,
 		titleForOption = {
@@ -196,7 +196,7 @@ private fun PinBasePicker(pinBase: AlleyPinBase?, onPinBaseChanged: (AlleyPinBas
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_pin_base),
 		subtitle = stringResource(R.string.alley_form_property_pin_base_footer),
-		options = AlleyPinBase.values(),
+		options = AlleyPinBase.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = pinBase,
 		titleForOption = {

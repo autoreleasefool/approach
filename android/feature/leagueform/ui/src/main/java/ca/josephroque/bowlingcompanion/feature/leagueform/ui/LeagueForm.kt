@@ -187,7 +187,7 @@ private fun RecurrencePicker(
 			stringResource(R.string.league_form_property_repeat_repeats),
 			stringResource(R.string.league_form_property_repeat_never),
 		),
-		options = LeagueRecurrence.values(),
+		options = LeagueRecurrence.entries.toTypedArray(),
 		selected = recurrence,
 		titleForOption = {
 			when (it) {
@@ -211,7 +211,7 @@ private fun ExcludeFromStatisticsPicker(
 	FormRadioGroup(
 		title = stringResource(R.string.league_form_property_exclude),
 		subtitle = stringResource(R.string.league_form_property_exclude_footer),
-		options = ExcludeFromStatistics.values(),
+		options = ExcludeFromStatistics.entries.toTypedArray(),
 		selected = excludeFromStatistics,
 		titleForOption = {
 			when (it) {
@@ -239,7 +239,7 @@ private fun GamesPerSeriesPicker(
 			stringResource(R.string.league_form_property_number_of_games_constant),
 			stringResource(R.string.league_form_property_number_of_games_always_ask),
 		),
-		options = GamesPerSeries.values(),
+		options = GamesPerSeries.entries.toTypedArray(),
 		selected = gamesPerSeries,
 		titleForOption = {
 			when (it) {

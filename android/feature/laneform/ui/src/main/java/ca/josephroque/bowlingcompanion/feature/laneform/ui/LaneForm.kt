@@ -97,7 +97,7 @@ private fun LaneLabelDialog(
 					expanded = state.isPositionDropDownExpanded,
 					onDismissRequest = { onAction(LaneLabelDialogUiAction.PositionDropDownToggled(false)) },
 					) {
-					LanePosition.values().forEach {
+					LanePosition.entries.forEach {
 						DropdownMenuItem(
 							text = { Text(it.text()) },
 							onClick = { onAction(LaneLabelDialogUiAction.PositionChanged(it)) }

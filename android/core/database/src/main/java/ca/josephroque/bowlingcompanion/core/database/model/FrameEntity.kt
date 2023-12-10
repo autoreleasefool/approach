@@ -67,7 +67,7 @@ data class FrameEntity(
 		fun toBitString(): String {
 			val bitString = StringBuilder()
 			bitString.append(if (didFoul) '1' else '0')
-			Pin.values().forEach { pin ->
+			Pin.entries.forEach { pin ->
 				bitString.append(if (pin in pinsDowned) '1' else '0')
 			}
 			return bitString.toString()
@@ -79,7 +79,7 @@ data class FrameEntity(
 
 				val didFoul = string.first() != '0'
 				val pinsDowned = string.drop(1).mapIndexedNotNull { index, bit ->
-					if (bit == '0') null else Pin.values()[index]
+					if (bit == '0') null else Pin.entries[index]
 				}
 
 				return Roll(pinsDowned.toSet(), didFoul)

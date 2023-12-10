@@ -76,7 +76,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		val isHidingZeroStatistics = !userData.isShowingZeroStatistics
 //		TODO: val isShowingStatisticDescriptions
 
-		return StatisticCategory.values().mapNotNull { category ->
+		return StatisticCategory.entries.mapNotNull { category ->
 			val categoryStatistics = statistics
 				.filter { it.category == category }
 				.filter { !isHidingZeroStatistics || !it.isEmpty }

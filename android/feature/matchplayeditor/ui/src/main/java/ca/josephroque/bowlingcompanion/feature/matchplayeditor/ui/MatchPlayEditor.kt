@@ -54,7 +54,7 @@ fun MatchPlayEditor(
 		FormRadioGroup(
 			title = stringResource(R.string.match_play_result_outcome),
 			subtitle = stringResource(R.string.match_play_result_outcome_description),
-			options = MatchPlayResult.values(),
+			options = MatchPlayResult.entries.toTypedArray(),
 			allowNullableSelection = true,
 			selected = state.result,
 			titleForOption = {

@@ -66,7 +66,7 @@ fun LeagueDetailsTopBar(
 					expanded = state.isSortOrderMenuExpanded,
 					onDismissRequest = { onAction(LeagueDetailsUiAction.SortDismissed) },
 				) {
-					SeriesSortOrder.values().forEach { order ->
+					SeriesSortOrder.entries.forEach { order ->
 						DropdownMenuItem(
 							text = {
 								Text(

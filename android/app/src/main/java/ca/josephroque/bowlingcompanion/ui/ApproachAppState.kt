@@ -45,7 +45,7 @@ class ApproachAppState(
 			else -> null
 		}
 
-	val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.values().asList()
+	val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
 	fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
 		val topLevelNavOptions = navOptions {

@@ -41,7 +41,7 @@ class SQLiteMigrationManager @Inject constructor(
 		transactionRunner {
 			val legacyDb = LegacyDatabaseHelper.getInstance(context).readableDatabase
 
-			for (step in MigrationStep.values()) {
+			for (step in MigrationStep.entries) {
 				_currentStep.emit(step)
 
 				run(step, legacyDb)

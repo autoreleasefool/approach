@@ -63,7 +63,7 @@ fun FrameEditor(
 							event.changes.forEach {
 								val x = it.position.x.coerceIn(0f, maxX - 1)
 								val pinIndex = (x / (maxX / 5)).toInt()
-								val pin = Pin.values()[pinIndex]
+								val pin = Pin.entries[pinIndex]
 
 								if (!state.lockedPins.contains(pin)) {
 									if (!isDragging) {
@@ -86,7 +86,7 @@ fun FrameEditor(
 					}
 				}
 		) {
-			Pin.values().forEach {
+			Pin.entries.forEach {
 				val isPinLocked = state.lockedPins.contains(it)
 				val isPinDown = isPinLocked || downedPins.contains(it)
 

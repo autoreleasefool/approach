@@ -36,7 +36,7 @@ class BowlerFormViewModel @Inject constructor(
 	}
 
 	private val kind = savedStateHandle.get<String>(BOWLER_KIND).let { string ->
-		BowlerKind.values()
+		BowlerKind.entries
 			.firstOrNull { it.name == string }
 	}
 

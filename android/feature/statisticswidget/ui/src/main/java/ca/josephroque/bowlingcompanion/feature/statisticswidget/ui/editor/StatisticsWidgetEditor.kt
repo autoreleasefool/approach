@@ -61,7 +61,7 @@ fun StatisticsWidgetEditor(
 		FormRadioGroup(
 			titleResourceId = R.string.statistics_widget_timeline,
 			subtitleResourceId = R.string.statistics_widget_editor_timeline_description,
-			options = StatisticsWidgetTimeline.values(),
+			options = StatisticsWidgetTimeline.entries.toTypedArray(),
 			selected = state.timeline,
 			titleForOption = {
 				when (it) {

@@ -81,7 +81,7 @@ private fun FilterMenuItem(
 			expanded = state.isFilterMenuVisible,
 			onDismissRequest = onMinimizeGearFilter
 		) {
-			GearKind.values().forEach {
+			GearKind.entries.forEach {
 				DropdownMenuItem(
 					text = {
 						Text(

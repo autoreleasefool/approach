@@ -42,7 +42,7 @@ fun ScoreEditor(
 				FormRadioGroup(
 					title = stringResource(R.string.game_editor_scoring_method_title),
 					subtitle = stringResource(R.string.game_editor_scoring_method_subtitle),
-					options = GameScoringMethod.values(),
+					options = GameScoringMethod.entries.toTypedArray(),
 					selected = state.scoringMethod,
 					titleForOption = {
 						when (it) {
