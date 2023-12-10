@@ -130,7 +130,7 @@ fun GameDetailsUiState.updateHeader(
 	frames: List<FrameEdit>,
 ): GameDetailsUiState {
 	val isManualGame = scoringMethod.scoringMethod == GameScoringMethod.MANUAL
-	val isGameFinished = false //!frames.nextFrameToRecord().hasUntouchedRoll
+	val isGameFinished = false // TODO: !frames.nextFrameToRecord().hasUntouchedRoll
 	val isGameLocked = gameProperties.locked == GameLockState.LOCKED
 
 	val nextElement: NextGameEditableElement? = if (isManualGame || isGameFinished || isGameLocked) {

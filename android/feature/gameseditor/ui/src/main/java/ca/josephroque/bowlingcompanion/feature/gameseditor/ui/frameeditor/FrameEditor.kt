@@ -40,12 +40,6 @@ fun FrameEditor(
 	var isKnockingDownPins by remember { mutableStateOf(false) }
 	var toggledPins by remember { mutableStateOf(setOf<Pin>()) }
 
-	LaunchedEffect(isDragging) {
-		if (!isDragging && downedPins != state.downedPins) {
-			onAction(FrameEditorUiAction.DownedPinsChanged(downedPins.toSet()))
-		}
-	}
-
 	Box(
 		modifier = modifier
 			.fillMaxWidth()
@@ -83,6 +77,10 @@ fun FrameEditor(
 
 						isDragging = false
 						toggledPins = setOf()
+
+						if (downedPins != state.downedPins) {
+							onAction(FrameEditorUiAction.DownedPinsChanged(downedPins.toSet()))
+						}
 					}
 				}
 		) {
