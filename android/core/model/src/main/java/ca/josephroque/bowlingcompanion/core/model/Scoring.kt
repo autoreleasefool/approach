@@ -6,6 +6,7 @@ data class ScoringRoll(
 	val index: Int,
 	val display: String?,
 	val didFoul: Boolean,
+	val isSecondaryValue: Boolean,
 )
 
 fun ScoringRoll.isLastRoll(): Boolean =

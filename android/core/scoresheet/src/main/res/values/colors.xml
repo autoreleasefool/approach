@@ -6,8 +6,10 @@
 	<color name="scoresheet_default_rail_background">#443C68</color>
 	<color name="scoresheet_default_rail_background_highlight">#635985</color>
 	<color name="scoresheet_default_text_on_background">#ECE3FF</color>
+	<color name="scoresheet_default_text_secondary_on_background">#B2ECE3FF</color>
 	<color name="scoresheet_default_text_foul_on_background">#F45050</color>
 	<color name="scoresheet_default_text_highlight_on_background">#ECE3FF</color>
+	<color name="scoresheet_default_text_highlight_secondary_on_background">#ECE3FF</color>
 	<color name="scoresheet_default_text_highlight_foul_on_background">#D21312</color>
 	<color name="scoresheet_default_text_on_card">#000000</color>
 	<color name="scoresheet_default_text_on_rail">#ECE3FF</color>

@@ -89,6 +89,7 @@ class FivePinScoreKeeper @Inject constructor(
 						index = rollSteps.size,
 						display = pinsDown.displayAt(rollIndex),
 						didFoul = roll.didFoul,
+						isSecondaryValue = false,
 					)
 				)
 
@@ -104,6 +105,7 @@ class FivePinScoreKeeper @Inject constructor(
 								index = rollSteps.size,
 								display = it.pinsDowned.displayAt(-1),
 								didFoul = false,
+								isSecondaryValue = true,
 							)
 						)
 					}
@@ -115,6 +117,7 @@ class FivePinScoreKeeper @Inject constructor(
 						index = rollSteps.size,
 						display = roll.pinsDowned.displayAt(rollIndex),
 						didFoul = roll.didFoul,
+						isSecondaryValue = false,
 					)
 				)
 
@@ -163,6 +166,7 @@ class FivePinScoreKeeper @Inject constructor(
 						index = rollSteps.size,
 						display = pinsDown.displayAt(roll.rollIndex - initialRollIndex),
 						didFoul = roll.didFoul,
+						isSecondaryValue = false,
 					)
 				)
 
@@ -178,6 +182,7 @@ class FivePinScoreKeeper @Inject constructor(
 						index = rollSteps.size,
 						display = roll.pinsDowned.displayAt(rollIndex = roll.rollIndex - initialRollIndex),
 						didFoul = roll.didFoul,
+						isSecondaryValue = false,
 					)
 				)
 
@@ -201,7 +206,7 @@ class FivePinScoreKeeper @Inject constructor(
 			ScoringFrame(
 				index = frameIndex,
 				rolls = Frame.RollIndices.map { rollIndex ->
-					ScoringRoll(index = rollIndex, display = null, didFoul = false)
+					ScoringRoll(index = rollIndex, display = null, didFoul = false, isSecondaryValue = false,)
 				},
 				score = null,
 			)
@@ -287,7 +292,7 @@ class FivePinScoreKeeper @Inject constructor(
 
 	private fun padRolls(rolls: MutableList<ScoringRoll>, display: String?) {
 		rolls.addAll(Frame.rollIndicesAfter(rolls.lastIndex).map {
-			ScoringRoll(index = it, display = display, didFoul = false)
+			ScoringRoll(index = it, display = display, didFoul = false, isSecondaryValue = false,)
 		})
 	}
 

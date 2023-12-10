@@ -10,8 +10,10 @@ data class ScoreSheetConfiguration(
 	enum class Style(
 		@StringRes val title: Int,
 		@ColorRes val textColorOnBackground: Int,
+		@ColorRes val textSecondaryColorOnBackground: Int,
 		@ColorRes val textFoulColorOnBackground: Int,
 		@ColorRes val textHighlightColorOnBackground: Int,
+		@ColorRes val textHighlightSecondaryColorOnBackground: Int,
 		@ColorRes val textHighlightFoulColorOnBackground: Int,
 		@ColorRes val textColorOnRail: Int,
 		@ColorRes val textHighlightColorOnRail: Int,
@@ -27,8 +29,10 @@ data class ScoreSheetConfiguration(
 		PLAIN(
 			title = R.string.scoresheet_style_plain_title,
 			textColorOnBackground = R.color.scoresheet_default_text_on_background,
+			textSecondaryColorOnBackground = R.color.scoresheet_default_text_secondary_on_background,
 			textFoulColorOnBackground = R.color.scoresheet_default_text_foul_on_background,
 			textHighlightColorOnBackground = R.color.scoresheet_default_text_highlight_on_background,
+			textHighlightSecondaryColorOnBackground = R.color.scoresheet_default_text_highlight_secondary_on_background,
 			textHighlightFoulColorOnBackground = R.color.scoresheet_default_text_highlight_foul_on_background,
 			textColorOnRail = R.color.scoresheet_default_text_on_rail,
 			textHighlightColorOnRail = R.color.scoresheet_default_text_highlight_on_rail,

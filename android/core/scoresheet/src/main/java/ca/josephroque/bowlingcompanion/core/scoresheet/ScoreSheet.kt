@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.bottomBorder
@@ -82,13 +83,6 @@ fun ScoreSheet(
 				) {
 					onAction(ScoreSheetUiAction.FrameClicked(frame.index))
 				}
-
-				RailCell(
-					frameIndex = frame.index,
-					style = state.configuration.style,
-					isSelected = isFrameSelected,
-					modifier = Modifier.fillMaxWidth(),
-				)
 			}
 		}
 	}
@@ -158,11 +152,16 @@ private fun RollCell(
 			text = roll.display ?: " ",
 			style = MaterialTheme.typography.bodySmall,
 			maxLines = 1,
-			color = colorResource(if (isSelected) {
-				if (roll.didFoul) style.textHighlightFoulColorOnBackground else style.textHighlightColorOnBackground
-			} else {
-				if (roll.didFoul) style.textFoulColorOnBackground else style.textColorOnBackground
-			}),
+			color = colorResource(
+				when {
+					isSelected && roll.didFoul -> style.textHighlightFoulColorOnBackground
+					isSelected && roll.isSecondaryValue -> style.textHighlightSecondaryColorOnBackground
+					isSelected -> style.textHighlightColorOnBackground
+					!isSelected && roll.didFoul -> style.textFoulColorOnBackground
+					!isSelected && roll.isSecondaryValue -> style.textSecondaryColorOnBackground
+					else -> style.textColorOnBackground
+				}
+			),
 			modifier = Modifier.align(Alignment.Center),
 		)
 	}
@@ -176,7 +175,7 @@ private fun FrameCell(
 	isSelected: Boolean,
 	onClick: () -> Unit,
 ) {
-	Box(
+	Column(
 		modifier = modifier
 			.clickable(onClick = onClick)
 			.background(
@@ -192,18 +191,27 @@ private fun FrameCell(
 					2.dp,
 					colorResource(style.borderColor)
 				)
-			)
-			.padding(vertical = 8.dp),
+			),
 	) {
 		Text(
 			text = frame.display ?: " ",
 			style = MaterialTheme.typography.bodyMedium,
+			textAlign = TextAlign.Center,
 			color = colorResource(if (isSelected)
 				style.textHighlightColorOnBackground
 			else
 				style.textColorOnBackground
 			),
-			modifier = Modifier.align(Alignment.Center),
+			modifier = Modifier
+				.padding(vertical = 8.dp)
+				.align(Alignment.CenterHorizontally),
+		)
+
+		RailCell(
+			frameIndex = frame.index,
+			style = style,
+			isSelected = isSelected,
+			modifier = Modifier.fillMaxWidth(),
 		)
 	}
 }
@@ -261,90 +269,90 @@ private fun ScoreSheetPreview() {
 						ScoringFrame(
 							index = 0,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "A"),
-								ScoringRoll(index = 1, didFoul = false, display = "2"),
-								ScoringRoll(index = 2, didFoul = false, display = "2"),
+								ScoringRoll(index = 0, didFoul = true, display = "A", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "2", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "2", isSecondaryValue = false),
 							),
 							score = 0,
 						),
 						ScoringFrame(
 							index = 1,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "HS"),
-								ScoringRoll(index = 1, didFoul = false, display = "5"),
-								ScoringRoll(index = 2, didFoul = false, display = "2"),
+								ScoringRoll(index = 0, didFoul = true, display = "HS", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "5", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "2", isSecondaryValue = false),
 							),
 							score = 0,
 						),
 						ScoringFrame(
 							index = 2,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "12"),
-								ScoringRoll(index = 1, didFoul = false, display = "/"),
-								ScoringRoll(index = 2, didFoul = false, display = "12"),
+								ScoringRoll(index = 0, didFoul = true, display = "12", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "12", isSecondaryValue = true),
 							),
 							score = 12,
 						),
 						ScoringFrame(
 							index = 3,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "12"),
-								ScoringRoll(index = 1, didFoul = false, display = "/"),
-								ScoringRoll(index = 2, didFoul = false, display = "10"),
+								ScoringRoll(index = 0, didFoul = true, display = "12", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "10", isSecondaryValue = true),
 							),
 							score = 22,
 						),
 						ScoringFrame(
 							index = 4,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "C/O"),
-								ScoringRoll(index = 1, didFoul = false, display = "-"),
-								ScoringRoll(index = 2, didFoul = false, display = "5"),
+								ScoringRoll(index = 0, didFoul = false, display = "C/O", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "-", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "5", isSecondaryValue = false),
 							),
 							score = 37,
 						),
 						ScoringFrame(
 							index = 5,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "C/O"),
-								ScoringRoll(index = 1, didFoul = false, display = "/"),
-								ScoringRoll(index = 2, didFoul = false, display = "10"),
+								ScoringRoll(index = 0, didFoul = false, display = "C/O", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "10", isSecondaryValue = true),
 							),
 							score = 62,
 						),
 						ScoringFrame(
 							index = 6,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "C/O"),
-								ScoringRoll(index = 1, didFoul = false, display = "-"),
-								ScoringRoll(index = 2, didFoul = false, display = "5"),
+								ScoringRoll(index = 0, didFoul = false, display = "C/O", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "-", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "5", isSecondaryValue = false),
 							),
 							score = 77,
 						),
 						ScoringFrame(
 							index = 7,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "HS"),
-								ScoringRoll(index = 1, didFoul = false, display = "/"),
-								ScoringRoll(index = 2, didFoul = false, display = "11"),
+								ScoringRoll(index = 0, didFoul = false, display = "HS", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "11", isSecondaryValue = true),
 							),
 							score = 103,
 						),
 						ScoringFrame(
 							index = 8,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "A"),
-								ScoringRoll(index = 1, didFoul = false, display = "/"),
-								ScoringRoll(index = 2, didFoul = false, display = "15"),
+								ScoringRoll(index = 0, didFoul = false, display = "A", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "15", isSecondaryValue = true),
 							),
 							score = 133,
 						),
 						ScoringFrame(
 							index = 9,
 							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "X"),
-								ScoringRoll(index = 1, didFoul = false, display = "HS"),
-								ScoringRoll(index = 2, didFoul = false, display = "/"),
+								ScoringRoll(index = 0, didFoul = false, display = "X", isSecondaryValue = false),
+								ScoringRoll(index = 1, didFoul = false, display = "HS", isSecondaryValue = false),
+								ScoringRoll(index = 2, didFoul = false, display = "/", isSecondaryValue = false),
 							),
 							score = 163,
 						),
