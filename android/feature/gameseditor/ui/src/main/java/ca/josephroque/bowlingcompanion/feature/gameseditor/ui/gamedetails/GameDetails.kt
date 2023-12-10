@@ -96,6 +96,7 @@ private fun GameDetailsPreview() {
 	Surface {
 		GameDetails(
 			state = GameDetailsUiState(
+				gameId = UUID.randomUUID(),
 				currentGameIndex = 0,
 				header = GameDetailsUiState.HeaderUiState(
 					bowlerName = "Jordan",

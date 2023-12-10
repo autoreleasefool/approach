@@ -90,6 +90,9 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 	@Query("UPDATE games SET locked = :locked WHERE id = :gameId")
 	abstract fun setGameLockState(gameId: UUID, locked: GameLockState)
 
+	@Query("UPDATE games SET score = :score WHERE id = :gameId")
+	abstract fun setGameScore(gameId: UUID, score: Int)
+
 	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
 	abstract fun setGameExcludedFromStatistics(gameId: UUID, excludeFromStatistics: ExcludeFromStatistics)
 

@@ -19,6 +19,7 @@ interface GamesRepository {
 	suspend fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int)
 	suspend fun setGameLockState(gameId: UUID, locked: GameLockState)
 	suspend fun setGameExcludedFromStatistics(gameId: UUID, excludeFromStatistics: ExcludeFromStatistics)
+	suspend fun setGameScore(gameId: UUID, score: Int)
 
 	suspend fun archiveGame(gameId: UUID)
 	suspend fun unarchiveGame(gameId: UUID)

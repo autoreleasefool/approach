@@ -52,6 +52,10 @@ class OfflineFirstGamesRepository @Inject constructor(
 		gameDao.setGameLockState(gameId, locked)
 	}
 
+	override suspend fun setGameScore(gameId: UUID, score: Int) = withContext(ioDispatcher) {
+		gameDao.setGameScore(gameId, score)
+	}
+
 	override suspend fun archiveGame(gameId: UUID) = withContext(ioDispatcher) {
 		gameDao.archiveGame(gameId)
 	}
