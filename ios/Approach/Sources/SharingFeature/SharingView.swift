@@ -235,9 +235,9 @@ struct SharingViewPreview: PreviewProvider {
 								.init(
 									index: $0,
 									rolls: [
-										.init(index: 0, displayValue: "10", didFoul: true),
-										.init(index: 1, displayValue: "HP", didFoul: false),
-										.init(index: 2, displayValue: "3", didFoul: false),
+										.init(index: 0, displayValue: "10", didFoul: true, isSecondary: false),
+										.init(index: 1, displayValue: "HP", didFoul: false, isSecondary: false),
+										.init(index: 2, displayValue: "3", didFoul: false, isSecondary: false),
 									],
 									score: 32
 								)
@@ -250,9 +250,9 @@ struct SharingViewPreview: PreviewProvider {
 								.init(
 									index: $0,
 									rolls: [
-										.init(index: 0, displayValue: "10", didFoul: true),
-										.init(index: 1, displayValue: "HP", didFoul: false),
-										.init(index: 2, displayValue: "3", didFoul: false),
+										.init(index: 0, displayValue: "10", didFoul: true, isSecondary: false),
+										.init(index: 1, displayValue: "HP", didFoul: false, isSecondary: false),
+										.init(index: 2, displayValue: "3", didFoul: false, isSecondary: false),
 									],
 									score: 32
 								)

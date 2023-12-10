@@ -11,7 +11,7 @@ public class ScoreKeeper {
 
 	private func padRolls(_ rolls: [ScoredRoll], displayValue: String?) -> [ScoredRoll] {
 		rolls + Frame.rollIndices(after: rolls.endIndex - 1)
-			.map { .init(index: $0, displayValue: displayValue, didFoul: false) }
+			.map { .init(index: $0, displayValue: displayValue, didFoul: false, isSecondary: false) }
 	}
 
 	private func padFrames(_ frames: [ScoredFrame]) -> [ScoredFrame] {
@@ -62,7 +62,7 @@ public class ScoreKeeper {
 					.init(
 						index: index,
 						rolls: Frame.ROLL_INDICES.map { rollIndex in
-								.init(index: rollIndex, displayValue: nil, didFoul: false)
+								.init(index: rollIndex, displayValue: nil, didFoul: false, isSecondary: false)
 						},
 						score: nil
 					)
@@ -88,7 +88,8 @@ public class ScoreKeeper {
 				rollSteps.append(.init(
 					index: rollSteps.count,
 					displayValue: pinsDown.displayValue(rollIndex: roll.rollIndex),
-					didFoul: roll.roll.didFoul
+					didFoul: roll.roll.didFoul,
+					isSecondary: false
 				))
 
 				var stepScore = pinsDown.value
@@ -117,7 +118,8 @@ public class ScoreKeeper {
 						rollSteps.append(.init(
 							index: rollSteps.count,
 							displayValue: pinsToAdd.displayValue(rollIndex: -1),
-							didFoul: false
+							didFoul: false,
+							isSecondary: true
 						))
 					}
 				}
@@ -135,7 +137,8 @@ public class ScoreKeeper {
 				rollSteps.append(.init(
 					index: rollSteps.count,
 					displayValue: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex),
-					didFoul: roll.roll.didFoul
+					didFoul: roll.roll.didFoul,
+					isSecondary: false
 				))
 
 				// For the last roll of a frame, add the total value of pins downed this frame to the score
@@ -169,7 +172,8 @@ public class ScoreKeeper {
 				rollSteps.append(.init(
 					index: rollSteps.count,
 					displayValue: pinsDown.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
-					didFoul: roll.roll.didFoul
+					didFoul: roll.roll.didFoul,
+					isSecondary: false
 				))
 
 				stepScore += pinsDown.value
@@ -180,7 +184,8 @@ public class ScoreKeeper {
 				rollSteps.append(.init(
 					index: rollSteps.count,
 					displayValue: roll.roll.pinsDowned.displayValue(rollIndex: roll.rollIndex - initialRollIndex),
-					didFoul: roll.roll.didFoul
+					didFoul: roll.roll.didFoul,
+					isSecondary: false
 				))
 
 				// Update the score after the last roll in the game

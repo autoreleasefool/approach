@@ -94,7 +94,14 @@ public struct ScoreSheet: View {
 					.lineLimit(1)
 					.frame(width: contentSize.width / 12)
 					.padding(.smallSpacing)
-					.foregroundColor(foreground(forRollIndex: roll.index, inFrame: frame.index, didFoul: roll.didFoul))
+					.foregroundColor(
+						foreground(
+							forRollIndex: roll.index,
+							inFrame: frame.index,
+							didFoul: roll.didFoul,
+							isSecondary: roll.isSecondary
+						)
+					)
 					.background(background(forRollIndex: roll.index, inFrame: frame.index))
 					.roundCorners(
 						topLeading: frame.index == 0 && roll.index == 0,
@@ -145,7 +152,16 @@ public struct ScoreSheet: View {
 		}
 	}
 
-	private func foreground(forRollIndex: Int, inFrame: Int, didFoul: Bool) -> ColorAsset {
+	private func foreground(
+		forRollIndex: Int,
+		inFrame: Int,
+		didFoul: Bool,
+		isSecondary: Bool
+	) -> ColorAsset {
+		if isSecondary {
+			return Asset.Colors.ScoreSheet.Text.OnBackground.secondary
+		}
+
 		if selection.frameIndex == inFrame && selection.rollIndex == forRollIndex {
 			if didFoul {
 				return Asset.Colors.ScoreSheet.Text.OnBackground.highlightFoul
@@ -201,9 +217,9 @@ struct ScoreSheetPreviews: PreviewProvider {
 						.init(
 							index: $0,
 							rolls: [
-								.init(index: 0, displayValue: "HP", didFoul: true),
-								.init(index: 0, displayValue: "10", didFoul: false),
-								.init(index: 0, displayValue: "-", didFoul: false),
+								.init(index: 0, displayValue: "HP", didFoul: true, isSecondary: false),
+								.init(index: 0, displayValue: "10", didFoul: false, isSecondary: false),
+								.init(index: 0, displayValue: "-", didFoul: false, isSecondary: false),
 							],
 							score: 255
 						)

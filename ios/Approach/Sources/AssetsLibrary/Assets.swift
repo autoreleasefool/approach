@@ -156,6 +156,7 @@ public enum Asset {
           public static let highlightFoul = ColorAsset(name: "ScoreSheet/Text/OnBackground/HighlightFoul")
           public static let plain = ColorAsset(name: "ScoreSheet/Text/OnBackground/Plain")
           public static let pride = ColorAsset(name: "ScoreSheet/Text/OnBackground/Pride")
+          public static let secondary = ColorAsset(name: "ScoreSheet/Text/OnBackground/Secondary")
         }
         public enum OnCard {
           public static let `default` = ColorAsset(name: "ScoreSheet/Text/OnCard/Default")
