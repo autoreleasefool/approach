@@ -13,6 +13,7 @@
 		CA2FA1552A2559C3008341A5 /* NotificationsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FA1542A2559C3008341A5 /* NotificationsService */; };
 		CA2FCE912A14908C0061A7FE /* MatchPlaysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FCE902A14908C0061A7FE /* MatchPlaysRepository */; };
 		CA2FCE932A1490910061A7FE /* MatchPlaysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA2FCE922A1490910061A7FE /* MatchPlaysRepository */; };
+		CA30F8E22B2670A100A80543 /* LaunchService in Frameworks */ = {isa = PBXBuildFile; productRef = CA30F8E12B2670A100A80543 /* LaunchService */; };
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E4F29E2949400B09020 /* AlleysRepository */; };
 		CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5129E32A9900B09020 /* LeaguesRepository */; };
@@ -127,6 +128,7 @@
 				CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
 				CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */,
+				CA30F8E22B2670A100A80543 /* LaunchService in Frameworks */,
 				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
 				CA4A66182B09F37E00DCD52B /* QuickLaunchRepository in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
@@ -338,6 +340,7 @@
 				CA4A66172B09F37E00DCD52B /* QuickLaunchRepository */,
 				CA58FB382B0B209100151821 /* StoreReviewService */,
 				CA58FB3A2B0B234800151821 /* AppInfoService */,
+				CA30F8E12B2670A100A80543 /* LaunchService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -559,6 +562,10 @@
 		CA2FCE922A1490910061A7FE /* MatchPlaysRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MatchPlaysRepository;
+		};
+		CA30F8E12B2670A100A80543 /* LaunchService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LaunchService;
 		};
 		CA318B3F2999E1F500BD4BEC /* AnalyticsService */ = {
 			isa = XCSwiftPackageProductDependency;

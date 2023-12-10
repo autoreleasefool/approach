@@ -34,7 +34,7 @@ libraries = [ "SwiftUIExtensions", "Views" ]
 
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
-services = [ "AppInfo" ]
+services = [ "Launch" ]
 
 [features.ArchiveList]
 features = [ "Errors" ]
@@ -208,10 +208,6 @@ repositories = [ "Statistics" ]
 
 # Services
 
-[services.AppInfo]
-services = [ "Preference" ]
-libraries = [ "Constants" ]
-
 [services.AddressLookup]
 [services.AddressLookup.interface]
 libraries = [ "Equatable", "Models" ]
@@ -228,6 +224,10 @@ dependencies = [ "ComposableArchitecture" ]
 skip_tests = true
 [services.AppIcon.interface]
 libraries = [ "Assets" ]
+
+[services.AppInfo]
+services = [ "Preference" ]
+libraries = [ "Constants" ]
 
 [services.Avatar]
 libraries = [ "Extensions" ]
@@ -257,6 +257,9 @@ dependencies = [ "ZIPFoundation" ]
 [services.ImportExport]
 services = [ "Database", "FileManager" ]
 libraries = [ "DateTime" ]
+
+[services.Launch]
+services = [ "Analytics", "AppInfo", "FeatureFlags", "Products" ]
 
 [services.Logging]
 services = [ "FileManager" ]

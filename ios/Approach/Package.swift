@@ -98,6 +98,8 @@ let package = Package(
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "ImportExportService", targets: ["ImportExportService"]),
 		.library(name: "ImportExportServiceInterface", targets: ["ImportExportServiceInterface"]),
+		.library(name: "LaunchService", targets: ["LaunchService"]),
+		.library(name: "LaunchServiceInterface", targets: ["LaunchServiceInterface"]),
 		.library(name: "LoggingService", targets: ["LoggingService"]),
 		.library(name: "LoggingServiceInterface", targets: ["LoggingServiceInterface"]),
 		.library(name: "NotificationsService", targets: ["NotificationsService"]),
@@ -260,8 +262,8 @@ let package = Package(
 			name: "AppFeature",
 			dependencies: [
 				"AccessoriesOverviewFeature",
-				"AppInfoServiceInterface",
 				"BowlersListFeature",
+				"LaunchServiceInterface",
 				"OnboardingFeature",
 				"SettingsFeature",
 				"StatisticsOverviewFeature",
@@ -1312,6 +1314,29 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"ImportExportService",
+			]
+		),
+		.target(
+			name: "LaunchService",
+			dependencies: [
+				"AnalyticsServiceInterface",
+				"AppInfoServiceInterface",
+				"FeatureFlagsServiceInterface",
+				"LaunchServiceInterface",
+				"ProductsServiceInterface",
+			]
+		),
+		.target(
+			name: "LaunchServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "LaunchServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"LaunchService",
 			]
 		),
 		.target(
