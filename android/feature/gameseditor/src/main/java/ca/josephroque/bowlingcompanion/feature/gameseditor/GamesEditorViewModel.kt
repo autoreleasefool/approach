@@ -354,7 +354,11 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {
-		/* TODO: goToNext */
+		when (next) {
+			is NextGameEditableElement.Roll -> setCurrentSelection(rollIndex = next.rollIndex)
+			is NextGameEditableElement.Frame -> setCurrentSelection(frameIndex = next.frameIndex, rollIndex = 0)
+			is NextGameEditableElement.Game -> Unit // TODO: Change game
+		}
 	}
 
 	private fun updateSelectedFrame(frameIndex: Int) {
