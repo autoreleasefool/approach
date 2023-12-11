@@ -1,10 +1,10 @@
 # Most recent version
 
-## iOS 1.3.1b18
+## iOS 1.4.0b19
 
 ```
-- Feat: Track game duration
-- Feat: Add Christmas icon
+- Fix: Frames with a single roll no longer count towards statistics
+- Chore: New launch service colocates all launch initialization code
 ```
 
 ## Android v3.2.0
@@ -20,6 +20,13 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.3.1b18
+
+```
+- Feat: Track game duration
+- Feat: Add Christmas icon
+```
 
 ## iOS 1.3.0b17
 
