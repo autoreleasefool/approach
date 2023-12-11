@@ -45,7 +45,7 @@ fun ScoreSheet(
 	val listState = rememberLazyListState()
 	val coroutineScope = rememberCoroutineScope()
 
-	LaunchedEffect(state.selection) {
+	LaunchedEffect(state.selection, state.game?.frames?.size) {
 		coroutineScope.launch {
 			listState.animateScrollToItem(index = state.selection.frameIndex)
 		}
