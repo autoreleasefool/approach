@@ -41,8 +41,9 @@ public struct MidGameStatisticsDetailsView: View {
 			}
 			.navigationTitle(Strings.Statistics.title)
 			.navigationBarTitleDisplayMode(.inline)
-			.task { await viewStore.send(.didFirstAppear).finish() }
 			.onAppear { viewStore.send(.onAppear) }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.task { await viewStore.send(.task).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 	}

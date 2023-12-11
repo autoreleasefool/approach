@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ExtensionsLibrary
 import FeatureActionLibrary
 import ListContentLibrary
 import ViewsLibrary
@@ -38,7 +39,8 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didObserveData
+			case task
+			case didFirstAppear
 			case didTapCancelButton
 			case didTapSaveButton
 			case didTapResource(Resource)
@@ -48,7 +50,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			case didChangeSelection([Resource])
 		}
 		public enum InternalAction: Equatable {
-			case observeData
+			case refreshObservation
 			case didLoadResources(TaskResult<[Resource]>)
 		}
 
@@ -71,8 +73,10 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didObserveData:
-					state.error = nil
+				case .task:
+					return .cancelling(id: CancelID.observation)
+
+				case .didFirstAppear:
 					return beginObservation(query: state.query)
 
 				case .didTapCancelButton:
@@ -110,7 +114,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .observeData:
+				case .refreshObservation:
 					state.error = nil
 					return beginObservation(query: state.query)
 
@@ -152,6 +156,6 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 extension ResourcePicker.State {
 	public mutating func updateQuery(to query: Query) -> Effect<ResourcePicker.Action> {
 		self.query = query
-		return .send(.internal(.observeData))
+		return .send(.internal(.refreshObservation))
 	}
 }

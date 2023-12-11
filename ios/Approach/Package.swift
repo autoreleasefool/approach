@@ -1568,7 +1568,9 @@ let package = Package(
 		),
 		.target(
 			name: "ExtensionsLibrary",
-			dependencies: []
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
 		),
 		.testTarget(
 			name: "ExtensionsLibraryTests",

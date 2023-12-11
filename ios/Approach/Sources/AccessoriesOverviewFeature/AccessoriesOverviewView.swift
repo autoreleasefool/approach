@@ -11,6 +11,7 @@ import ModelsLibrary
 import ModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 struct GearKindGroup: Identifiable {
@@ -47,7 +48,6 @@ public struct AccessoriesOverviewView: View {
 							Alley.View(alley)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .alley(alley))) }
-//									DeleteButton { viewStore.send(.didSwipe(.delete, .alley(alley))) }
 								}
 						}
 					}
@@ -107,7 +107,6 @@ public struct AccessoriesOverviewView: View {
 							Gear.ViewWithAvatar(gear)
 								.swipeActions(allowsFullSwipe: true) {
 									EditButton { viewStore.send(.didSwipe(.edit, .gear(gear))) }
-//									DeleteButton { viewStore.send(.didSwipe(.delete, .gear(gear))) }
 								}
 						}
 					}
@@ -129,7 +128,7 @@ public struct AccessoriesOverviewView: View {
 				}
 			}
 			.onAppear { viewStore.send(.onAppear) }
-			.task { await viewStore.send(.didObserveData).finish() }
+			.task { await viewStore.send(.task).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(

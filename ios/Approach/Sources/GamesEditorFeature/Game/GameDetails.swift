@@ -50,8 +50,9 @@ public struct GameDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case task
 			case onAppear
-			case didStartTask
+			case didFirstAppear
 			case didToggleLock
 			case didToggleExclude
 			case didTapMatchPlay
@@ -74,6 +75,7 @@ public struct GameDetails: Reducer {
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
 		public enum InternalAction: Equatable {
+			case refreshObservation
 			case didLoadGame(TaskResult<Game.Edit?>)
 			case gameDetailsHeader(GameDetailsHeader.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -144,16 +146,12 @@ public struct GameDetails: Reducer {
 				case .onAppear:
 					return .none
 
-				case .didStartTask:
+				case .task:
+					return .cancelling(id: CancelID.observation)
+
+				case .didFirstAppear:
 					return .merge(
-						.run { [gameId = state.gameId] send in
-							for try await game in games.observe(gameId) {
-								await send(.internal(.didLoadGame(.success(game))))
-							}
-						} catch: { error, send in
-							await send(.internal(.didLoadGame(.failure(error))))
-						}
-						.cancellable(id: CancelID.observation, cancelInFlight: true),
+						observeGame(gameId: state.gameId),
 						state.startShimmer()
 					)
 
@@ -232,6 +230,9 @@ public struct GameDetails: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .refreshObservation:
+					return observeGame(gameId: state.gameId)
+
 				case let .didLoadGame(.success(game)):
 					guard let game, game.id == state.gameId else { return .none }
 					state.game = game
@@ -336,6 +337,17 @@ public struct GameDetails: Reducer {
 		}
 	}
 
+	private func observeGame(gameId: UUID) -> Effect<Action> {
+		.run { send in
+			for try await game in games.observe(gameId) {
+				await send(.internal(.didLoadGame(.success(game))))
+			}
+		} catch: { error, send in
+			await send(.internal(.didLoadGame(.failure(error))))
+		}
+		.cancellable(id: CancelID.observation, cancelInFlight: true)
+	}
+
 	private func createMatchPlay(_ matchPlay: MatchPlay.Edit) -> Effect<Action> {
 		return .run { send in
 			await send(.delegate(.didEditMatchPlay(TaskResult {
@@ -364,7 +376,10 @@ extension GameDetails.State {
 	mutating func loadGameDetails(forGameId: Game.ID, didChangeBowler: Bool) -> Effect<GameDetails.Action> {
 		gameId = forGameId
 		shouldHeaderShimmer = didChangeBowler
-		return .send(.view(.didStartTask))
+		return .merge(
+			.send(.internal(.refreshObservation)),
+			startShimmer()
+		)
 	}
 
 	mutating func startShimmer() -> Effect<GameDetails.Action> {

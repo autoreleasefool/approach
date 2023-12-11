@@ -31,7 +31,7 @@ public struct StatisticsWidgetLayout: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didObserveData
+			case task
 			case didTapConfigureStatisticsButton
 			case didTapWidget(id: StatisticsWidget.ID)
 		}
@@ -96,7 +96,7 @@ public struct StatisticsWidgetLayout: Reducer {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didObserveData:
+				case .task:
 					return .run { [context = state.context] send in
 						for try await widgets in self.statisticsWidgets.fetchAll(forContext: context) {
 							await send(.internal(.widgetsResponse(.success(widgets))))
@@ -277,7 +277,7 @@ public struct StatisticsWidgetLayoutView: View {
 					Text("")
 				}
 			}
-			.task { await viewStore.send(.didObserveData).finish() }
+			.task { await viewStore.send(.task).finish() }
 		})
 		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
 		.navigationDestination(

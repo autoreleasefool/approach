@@ -79,7 +79,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 				}
 			}
 			.navigationTitle(Strings.Widget.LayoutBuilder.title)
-			.task { await viewStore.send(.didObserveData).finish() }
+			.task { await viewStore.send(.task).finish() }
 			.onAppear { viewStore.send(.onAppear) }
 			.sheet(
 				store: store.scope(state: \.$editor, action: { .internal(.editor($0)) }),

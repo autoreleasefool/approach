@@ -3,6 +3,7 @@ import ComposableArchitecture
 import ListContentLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct SectionResourceListView<
@@ -170,7 +171,8 @@ public struct SectionResourceListView<
 				}
 			}
 			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
-			.task { await viewStore.send(.didObserveData).finish() }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.task { await viewStore.send(.task).finish() }
 		})
 	}
 

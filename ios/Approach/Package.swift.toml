@@ -316,6 +316,7 @@ dependencies = [ "Dependencies", "GRDB" ]
 [libraries.Equatable]
 
 [libraries.Extensions]
+dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureAction]
 skip_tests = true

@@ -90,8 +90,9 @@ public struct GameDetailsView: View {
 						}
 					}
 				}
-				.task { await viewStore.send(.didStartTask).finish() }
+				.task { await viewStore.send(.task).finish() }
 				.onAppear { viewStore.send(.onAppear) }
+				.onFirstAppear { viewStore.send(.didFirstAppear) }
 			})
 			.toolbar(.hidden)
 			.navigationDestination(

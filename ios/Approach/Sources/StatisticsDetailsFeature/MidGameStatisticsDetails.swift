@@ -37,6 +37,7 @@ public struct MidGameStatisticsDetails: Reducer {
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
+			case task
 			case onAppear
 			case didFirstAppear
 			case binding(BindingAction<State>)
@@ -83,6 +84,9 @@ public struct MidGameStatisticsDetails: Reducer {
 				switch viewAction {
 				case .onAppear:
 					return .none
+
+				case .task:
+					return .cancelling(id: CancelID.loadingStaticValues)
 
 				case .didFirstAppear:
 					return refreshStatistics(state: state)

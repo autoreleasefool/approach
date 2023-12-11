@@ -35,7 +35,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
 			case onAppear
-			case didObserveData
+			case task
 			case didTapAddNew
 			case didTapDeleteButton
 			case didTapCancelDeleteButton
@@ -98,7 +98,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				case .onAppear:
 					return .none
 
-				case .didObserveData:
+				case .task:
 					return .merge(
 						.run { send in
 							try await self.clock.sleep(for: .milliseconds(300))

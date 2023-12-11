@@ -3,6 +3,7 @@ import ComposableArchitecture
 import ListContentLibrary
 import StringsLibrary
 import SwiftUI
+import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, Row: View>: View {
@@ -103,7 +104,8 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				}
 			}
 			.navigationBarBackButtonHidden(viewStore.isCancellable)
-			.task { await viewStore.send(.didObserveData).finish() }
+			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.task { await viewStore.send(.task).finish() }
 		})
 	}
 }

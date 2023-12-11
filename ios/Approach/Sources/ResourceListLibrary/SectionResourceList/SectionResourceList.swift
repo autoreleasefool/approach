@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import EquatableLibrary
+import ExtensionsLibrary
 import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
@@ -69,7 +70,8 @@ public struct SectionResourceList<
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: BindableAction, Equatable {
-			case didObserveData
+			case task
+			case didFirstAppear
 			case didTapAddButton
 			case didTapReorderButton
 			case didSwipe(SwipeAction, R)
@@ -90,8 +92,7 @@ public struct SectionResourceList<
 		}
 
 		public enum InternalAction: Equatable {
-			case observeData
-			case cancelObservation
+			case refreshObservation
 			case sectionsResponse(TaskResult<[Section]>)
 			case empty(ResourceListEmpty.Action)
 			case error(ResourceListEmpty.Action)
@@ -134,9 +135,11 @@ public struct SectionResourceList<
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didObserveData:
-					state.errorState = nil
+				case .didFirstAppear:
 					return beginObservation(query: state.query)
+
+				case .task:
+					return .cancelling(id: CancelID.observation)
 
 				case let .didSwipe(.delete, resource):
 					guard state.features.contains(.swipeToDelete) else {
@@ -218,12 +221,9 @@ public struct SectionResourceList<
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .observeData:
+				case .refreshObservation:
 					state.errorState = nil
 					return beginObservation(query: state.query)
-
-				case .cancelObservation:
-					return .cancel(id: CancelID.observation)
 
 				case let .sectionsResponse(.success(sections)):
 					state.sections = .init(uniqueElements: sections)
@@ -276,7 +276,7 @@ public struct SectionResourceList<
 extension SectionResourceList.State {
 	public mutating func updateQuery(to query: Q) -> Effect<SectionResourceList.Action> {
 		self.query = query
-		return .send(.internal(.observeData))
+		return .send(.internal(.refreshObservation))
 	}
 }
 
