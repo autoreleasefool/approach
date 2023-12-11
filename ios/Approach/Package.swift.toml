@@ -352,10 +352,10 @@ libraries = [ "Sorting" ]
 dependencies = [ "AsyncAlgorithms" ]
 
 [libraries.ResourceList]
-libraries = [ "Equatable", "FeatureAction", "ListContent" ]
+libraries = [ "Equatable", "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
 
 [libraries.ResourcePicker]
-libraries = [ "FeatureAction", "ListContent" ]
+libraries = [ "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
 
 [libraries.ScoreKeeper]
 libraries = [ "ScoreKeeperModels" ]

@@ -1690,8 +1690,10 @@ let package = Package(
 			name: "ResourceListLibrary",
 			dependencies: [
 				"EquatableLibrary",
+				"ExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -1704,8 +1706,10 @@ let package = Package(
 		.target(
 			name: "ResourcePickerLibrary",
 			dependencies: [
+				"ExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",
+				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
