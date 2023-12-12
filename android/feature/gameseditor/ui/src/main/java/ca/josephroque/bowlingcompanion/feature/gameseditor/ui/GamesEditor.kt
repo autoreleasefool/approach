@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -63,18 +64,22 @@ fun GamesEditor(
 			}
 		}
 
-		Box(modifier = Modifier.background(Color.Black)) {
+		Column(
+			verticalArrangement = Arrangement.spacedBy(8.dp),
+			modifier = Modifier.background(Color.Black),
+		) {
 			RollEditor(
 				state = state.rollEditor,
 				onAction = { onAction(GamesEditorUiAction.RollEditor(it)) },
+				modifier = Modifier.padding(horizontal = 16.dp),
 			)
 
 			ScoreSheet(
 				state = state.scoreSheet,
 				onAction = { onAction(GamesEditorUiAction.ScoreSheet(it)) },
 				modifier = Modifier
-					.padding(horizontal = 8.dp)
-					.padding(top = 8.dp, bottom = 16.dp),
+					.padding(horizontal = 16.dp)
+					.padding(bottom = 16.dp),
 			)
 		}
 	}

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+	<string name="game_editor_foul">Foul?</string>
+
 	<string name="game_editor_next_roll">Go to Ball %1$d</string>
 	<string name="game_editor_next_frame">Go to Frame %1$d</string>
 	<string name="game_editor_next_game">Go to Game %1$d</string>
