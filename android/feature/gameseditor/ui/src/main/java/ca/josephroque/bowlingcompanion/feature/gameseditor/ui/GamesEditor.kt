@@ -44,7 +44,7 @@ fun GamesEditor(
 	}
 
 	Column(modifier = modifier.fillMaxSize()) {
-		Box(modifier = modifier.weight(1f)) {
+		Box(modifier = Modifier.weight(1f)) {
 			BackgroundImage()
 
 			BlackCover()

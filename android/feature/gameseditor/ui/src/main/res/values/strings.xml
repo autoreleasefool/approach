@@ -46,6 +46,7 @@
 	<string name="cd_pin_head_pin">Head Pin</string>
 	<string name="cd_pin_right_three_pin">Right Three Pin</string>
 	<string name="cd_pin_right_two_pin">Right Two Pin</string>
+	<string name="cd_select_ball">Pick Ball Rolled</string>
 
 	<string name="bottom_sheet_drag_handle_description" tools:override="true">Drag handle</string>
 </resources>
