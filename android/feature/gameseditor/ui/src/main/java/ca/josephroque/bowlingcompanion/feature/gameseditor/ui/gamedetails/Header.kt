@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,18 +46,23 @@ internal fun Header(
 			)
 		}
 
-		if (state.nextElement != null) {
-			RoundIconButton(onClick = { onAction(GameDetailsUiAction.NextGameElementClicked(state.nextElement)) }) {
-				Icon(
-					painter = painterResource(R.drawable.ic_chevron_right),
-					contentDescription = when (state.nextElement) {
-						is NextGameEditableElement.Roll -> stringResource(ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R.string.game_editor_next_roll, state.nextElement.rollIndex + 1)
-						is NextGameEditableElement.Frame -> stringResource(ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R.string.game_editor_next_frame, state.nextElement.frameIndex + 1)
-						is NextGameEditableElement.Game -> stringResource(ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R.string.game_editor_next_game, state.nextElement.gameIndex + 1)
-					},
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
-			}
+		RoundIconButton(
+			onClick = {
+				state.nextElement ?: return@RoundIconButton
+				onAction(GameDetailsUiAction.NextGameElementClicked(state.nextElement))
+			},
+			modifier = Modifier.alpha(if (state.nextElement != null) 1f else 0f),
+		) {
+			Icon(
+				painter = painterResource(R.drawable.ic_chevron_right),
+				contentDescription = when (state.nextElement) {
+					is NextGameEditableElement.Roll -> stringResource(ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R.string.game_editor_next_roll, state.nextElement.rollIndex + 1)
+					is NextGameEditableElement.Frame -> stringResource(ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R.string.game_editor_next_frame, state.nextElement.frameIndex + 1)
+					is NextGameEditableElement.Game -> stringResource(ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R.string.game_editor_next_game, state.nextElement.gameIndex + 1)
+					null -> null
+				},
+				tint = MaterialTheme.colorScheme.onSurface,
+			)
 		}
 	}
 }
