@@ -9,15 +9,13 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
-import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
-import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
-import ca.josephroque.bowlingcompanion.core.model.nextFrameToRecord
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
@@ -72,6 +70,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val _currentGameId = MutableStateFlow(initialGameId)
 	private val _headerPeekHeight = MutableStateFlow(0f)
 
+	private var _ballsJob: Job? = null
 	private var _framesJob: Job? = null
 	private var _scoresJob: Job? = null
 	private val _gamesEditorState = MutableStateFlow(GamesEditorUiState(gameId = initialGameId))
@@ -185,6 +184,21 @@ class GamesEditorViewModel @Inject constructor(
 							seriesExcludeFromStatistics = gameDetails.series.excludeFromStatistics,
 							leagueExcludeFromStatistics = gameDetails.league.excludeFromStatistics,
 							seriesPreBowl = gameDetails.series.preBowl,
+						),
+					)
+				}
+			}
+		}
+
+		_ballsJob?.cancel()
+		_ballsJob = viewModelScope.launch {
+			gearRepository.getRecentlyUsedGear(GearKind.BOWLING_BALL, limit = 4).collect { gear ->
+				_gamesEditorState.updateGamesEditor(gameToLoad) {
+					it.copy(
+						rollEditor = it.rollEditor.copy(
+							recentBalls = gear
+								.sortedBy { item -> item.name }
+								.map { item -> FrameEdit.Gear(id = item.id, name = item.name, kind = item.kind, avatar = item.avatar) },
 						),
 					)
 				}
@@ -407,12 +421,12 @@ class GamesEditorViewModel @Inject constructor(
 		saveFrame(gamesEditorState.selectedFrame())
 	}
 
-	private fun updateSelectedBall(ball: GearListItem) {
+	private fun updateSelectedBall(ball: FrameEdit.Gear) {
 		val gameId = _currentGameId.value
 		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.copy(
 				rollEditor = it.rollEditor.copy(
-					selectedBall = ball.id,
+					selectedBall = ball,
 				),
 				frames = it.frames.toMutableList().also { frames ->
 					frames.setBallRolled(

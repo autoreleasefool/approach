@@ -31,9 +31,9 @@ class OfflineFirstGearRepository @Inject constructor(
 		gearDao.getGameGear(gameId)
 
 
-	override fun getRecentlyUsedGear(limit: Int): Flow<List<GearListItem>> =
+	override fun getRecentlyUsedGear(kind: GearKind?, limit: Int): Flow<List<GearListItem>> =
 		combine(
-			gearDao.getGearList(),
+			gearDao.getGearList(kind),
 			userDataRepository.userData.map { it.recentlyUsedGearIds }
 		) { gear, recentlyUsed ->
 			gear.sortByUUIDs(recentlyUsed)

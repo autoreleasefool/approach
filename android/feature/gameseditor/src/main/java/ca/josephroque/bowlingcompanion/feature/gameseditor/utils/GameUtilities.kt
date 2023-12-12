@@ -122,6 +122,10 @@ fun GamesEditorUiState.updateSelection(frameIndex: Int?, rollIndex: Int?): Games
 		scoreSheet = scoreSheet.copy(
 			selection = selection,
 		),
+		rollEditor = rollEditor.copy(
+			didFoulRoll = frames[selection.frameIndex].rolls[selection.rollIndex].didFoul,
+			selectedBall = frames[selection.frameIndex].rolls[selection.rollIndex].bowlingBall,
+		),
 	)
 }
 

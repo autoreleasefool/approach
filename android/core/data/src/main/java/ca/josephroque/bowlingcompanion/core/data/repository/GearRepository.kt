@@ -11,7 +11,7 @@ interface GearRepository {
 	fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
 	fun getGameGear(gameId: UUID): Flow<List<GearListItem>>
 
-	fun getRecentlyUsedGear(limit: Int): Flow<List<GearListItem>>
+	fun getRecentlyUsedGear(kind: GearKind? = null, limit: Int): Flow<List<GearListItem>>
 	fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
 	fun getGearUpdate(id: UUID): Flow<GearUpdate>

@@ -60,6 +60,7 @@ data class FrameEdit(
 		val id: UUID,
 		val name: String,
 		val kind: GearKind,
+		val avatar: Avatar,
 	)
 
 	val hasUntouchedRoll: Boolean =

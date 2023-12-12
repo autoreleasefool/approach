@@ -2,11 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.utils
 
 import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
-import ca.josephroque.bowlingcompanion.core.model.Game
-import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 
 fun MutableList<FrameEdit>.setPinsDowned(
 	frameIndex: Int,
@@ -36,14 +33,14 @@ fun MutableList<FrameEdit>.setDidFoul(
 fun MutableList<FrameEdit>.setBallRolled(
 	frameIndex: Int,
 	rollIndex: Int,
-	ballRolled: GearListItem,
+	ballRolled: FrameEdit.Gear
 ) {
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
 	val rolls = frame.rolls.toMutableList()
 	if (rolls[rollIndex].bowlingBall?.id == ballRolled.id) {
 		rolls[rollIndex] = rolls[rollIndex].copy(bowlingBall = null)
 	} else {
-		rolls[rollIndex] = rolls[rollIndex].copy(bowlingBall = FrameEdit.Gear(id = ballRolled.id, name = ballRolled.name, kind = ballRolled.kind))
+		rolls[rollIndex] = rolls[rollIndex].copy(bowlingBall = ballRolled)
 	}
 
 	this[frameIndex] = frame.copy(rolls = rolls)

@@ -6,7 +6,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
-import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
@@ -126,9 +125,9 @@ data class TrackableFrameEntity(
 
 data class FrameEditEntity(
 	@Embedded val properties: Properties,
-	@Embedded(prefix = "ball0_") val ball0: Gear?,
-	@Embedded(prefix = "ball1_") val ball1: Gear?,
-	@Embedded(prefix = "ball2_") val ball2: Gear?,
+	@Embedded(prefix = "ball0_") val ball0: FrameEdit.Gear?,
+	@Embedded(prefix = "ball1_") val ball1: FrameEdit.Gear?,
+	@Embedded(prefix = "ball2_") val ball2: FrameEdit.Gear?,
 ) {
 	data class Properties(
 		val gameId: UUID,
@@ -143,24 +142,12 @@ data class FrameEditEntity(
 		)
 	}
 
-	data class Gear(
-		val id: UUID,
-		val name: String,
-		val kind: GearKind,
-	) {
-		fun asModel(): FrameEdit.Gear = FrameEdit.Gear(
-			id = this.id,
-			name = this.name,
-			kind = this.kind,
-		)
-	}
-
 	fun asModel(): FrameEdit = FrameEdit(
 		properties = this.properties.asModel(),
 		rolls = listOfNotNull(
-			this.properties.roll0?.let { FrameEdit.Roll(0, it.pinsDowned, it.didFoul, this.ball0?.asModel()) },
-			this.properties.roll1?.let { FrameEdit.Roll(1, it.pinsDowned, it.didFoul, this.ball1?.asModel()) },
-			this.properties.roll2?.let { FrameEdit.Roll(2, it.pinsDowned, it.didFoul, this.ball2?.asModel()) },
+			this.properties.roll0?.let { FrameEdit.Roll(0, it.pinsDowned, it.didFoul, this.ball0) },
+			this.properties.roll1?.let { FrameEdit.Roll(1, it.pinsDowned, it.didFoul, this.ball1) },
+			this.properties.roll2?.let { FrameEdit.Roll(2, it.pinsDowned, it.didFoul, this.ball2) },
 		)
 	)
 }

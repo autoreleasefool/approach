@@ -18,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,8 +28,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GearKind
-import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import java.util.UUID
@@ -50,7 +51,6 @@ fun RollEditor(
 			onEmptySlotSelected = { onAction(RollEditorUiAction.PickBallClicked) },
 			modifier = Modifier.weight(1f),
 		)
-		// TODO: Implement ball rolled
 
 		FoulChip(
 			isEnabled = state.didFoulRoll,
@@ -61,9 +61,9 @@ fun RollEditor(
 
 @Composable
 private fun BallPicker(
-	balls: List<GearListItem>,
-	selectedBall: UUID?,
-	onBallSelected: (GearListItem) -> Unit,
+	balls: List<FrameEdit.Gear>,
+	selectedBall: FrameEdit.Gear?,
+	onBallSelected: (FrameEdit.Gear) -> Unit,
 	onEmptySlotSelected: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -71,15 +71,23 @@ private fun BallPicker(
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = modifier,
 	) {
-		if (balls.isNotEmpty()) {
-			balls.forEachIndexed { index, ball ->
+		val selectableBalls = remember(balls, selectedBall) {
+			if (selectedBall != null && !balls.contains(selectedBall)) {
+				balls.plus(selectedBall).sortedBy { it.name }
+			} else {
+				balls
+			}
+		}
+
+		if (selectableBalls.isNotEmpty()) {
+			selectableBalls.forEachIndexed { index, ball ->
 				AvatarImage(
 					avatar = ball.avatar,
 					modifier = Modifier
 						.clickable(onClick = { onBallSelected(ball) })
 						.border(
 							width = 2.dp,
-							color = if (ball.id == selectedBall) Color.White else Color.Transparent,
+							color = if (ball.id == selectedBall?.id) Color.White else Color.Transparent,
 							shape = CircleShape,
 						)
 						.padding(start = if (index == 0) 0.dp else 8.dp)
@@ -148,18 +156,16 @@ private fun FoulChip(
 private fun RollEditorPreview() {
 	Surface(color = Color.Black) {
 		val balls = listOf(
-			GearListItem(
+			FrameEdit.Gear(
 				id = UUID.randomUUID(),
 				name = "Red",
 				kind = GearKind.BOWLING_BALL,
-				ownerName = null,
 				avatar = Avatar.default()
 			),
-			GearListItem(
+			FrameEdit.Gear(
 				id = UUID.randomUUID(),
 				name = "Red",
 				kind = GearKind.BOWLING_BALL,
-				ownerName = null,
 				avatar = Avatar.default()
 			),
 		)
@@ -167,7 +173,7 @@ private fun RollEditorPreview() {
 		RollEditor(
 			state = RollEditorUiState(
 				recentBalls = balls,
-				selectedBall = balls.first().id,
+				selectedBall = balls.first(),
 				didFoulRoll = true,
 			),
 			onAction = {},

@@ -24,12 +24,15 @@ abstract class FrameDao: LegacyMigratingDao<FrameEntity> {
 				ball0.id AS ball0_id,
 				ball0.kind AS ball0_kind,
 				ball0.name AS ball0_name,
+				ball0.avatar AS ball0_avatar,
 				ball1.id AS ball1_id,
 				ball1.kind AS ball1_kind,
 				ball1.name AS ball1_name,
+				ball1.avatar AS ball1_avatar,
 				ball2.id AS ball2_id,
 				ball2.kind AS ball2_kind,
-				ball2.name AS ball2_name
+				ball2.name AS ball2_name,
+				ball2.avatar AS ball2_avatar
 			FROM frames
 			LEFT JOIN gear AS ball0
 				ON ball0.id = frames.ball0
