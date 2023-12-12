@@ -7,6 +7,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@Reducer
 public struct Christmas2023Announcement: Reducer {
 	static func meetsExpectationsToShow() -> Bool {
 		@Dependency(\.preferences) var preferences

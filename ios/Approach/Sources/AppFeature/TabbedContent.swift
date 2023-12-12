@@ -8,6 +8,7 @@ import FeatureFlagsServiceInterface
 import SettingsFeature
 import StatisticsOverviewFeature
 
+@Reducer
 public struct TabbedContent: Reducer {
 	public struct State: Equatable {
 		public var tabs: [Tab] = [.overview]

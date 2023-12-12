@@ -12,6 +12,7 @@ import StringsLibrary
 
 public typealias LeagueForm = Form<League.Create, League.Edit>
 
+@Reducer
 public struct LeagueEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var name: String
@@ -70,9 +71,16 @@ public struct LeagueEditor: Reducer {
 		}
 	}
 
-	public enum GamesPerSeries: Int, Equatable, Identifiable, CaseIterable {
+	public enum GamesPerSeries: Int, Equatable, Identifiable, CaseIterable, CustomStringConvertible {
 		case `static`
 		case dynamic
+
+		public var description: String {
+			switch self {
+			case .static: return Strings.League.Editor.Fields.GamesPerSeries.constant
+			case .dynamic: return Strings.League.Editor.Fields.GamesPerSeries.alwaysAskMe
+			}
+		}
 
 		public var id: Int { rawValue }
 	}
@@ -236,37 +244,6 @@ public struct LeagueEditor: Reducer {
 	}
 }
 
-extension LeagueEditor.State {
-	var form: LeagueForm.State {
-		get {
-			var form = _form
-			switch initialValue {
-			case var .create(new):
-				new.name = name
-				new.recurrence = recurrence
-				new.numberOfGames = gamesPerSeries == .static ? max(1, Int(numberOfGames)) : nil
-				new.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
-				new.additionalPinfall = hasAdditionalPinfall && (new.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
-				new.excludeFromStatistics = excludeFromStatistics
-				new.location = location
-				form.value = .create(new)
-			case var .edit(existing):
-				existing.name = name
-				existing.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
-				existing.additionalPinfall =
-					hasAdditionalPinfall && (existing.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
-				existing.excludeFromStatistics = excludeFromStatistics
-				existing.location = location
-				form.value = .edit(existing)
-			}
-			return form
-		}
-		set {
-			_form = newValue
-		}
-	}
-}
-
 extension League.Create: CreateableRecord {
 	public static var modelName = Strings.League.title
 
@@ -306,15 +283,6 @@ extension League.ExcludeFromStatistics: CustomStringConvertible {
 		switch self {
 		case .include: return Strings.League.Properties.ExcludeFromStatistics.include
 		case .exclude: return Strings.League.Properties.ExcludeFromStatistics.exclude
-		}
-	}
-}
-
-extension LeagueEditor.GamesPerSeries: CustomStringConvertible {
-	public var description: String {
-		switch self {
-		case .static: return Strings.League.Editor.Fields.GamesPerSeries.constant
-		case .dynamic: return Strings.League.Editor.Fields.GamesPerSeries.alwaysAskMe
 		}
 	}
 }

@@ -11,6 +11,7 @@ import ResourceListLibrary
 import StringsLibrary
 import ViewsLibrary
 
+@Reducer
 public struct OpponentDetails: Reducer {
 	public struct State: Equatable {
 		public let opponent: Bowler.Summary

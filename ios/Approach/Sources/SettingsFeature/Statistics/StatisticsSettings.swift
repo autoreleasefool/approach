@@ -6,6 +6,7 @@ import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct StatisticsSettings: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isHidingZeroStatistics: Bool

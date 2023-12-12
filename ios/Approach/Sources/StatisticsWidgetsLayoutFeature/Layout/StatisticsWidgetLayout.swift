@@ -11,6 +11,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@Reducer
 public struct StatisticsWidgetLayout: Reducer {
 	public struct State: Equatable {
 		public let context: String
@@ -49,6 +50,7 @@ public struct StatisticsWidgetLayout: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case details(StatisticsDetails.State)

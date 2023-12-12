@@ -29,6 +29,7 @@ extension FormRecord {
 	}
 }
 
+@Reducer
 public struct Form<
 	New: CreateableRecord,
 	Existing: EditableRecord

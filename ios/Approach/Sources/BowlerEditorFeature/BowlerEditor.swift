@@ -9,6 +9,7 @@ import StringsLibrary
 
 public typealias BowlerForm = Form<Bowler.Create, Bowler.Edit>
 
+@Reducer
 public struct BowlerEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var name: String
@@ -128,26 +129,6 @@ public struct BowlerEditor: Reducer {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
-		}
-	}
-}
-
-extension BowlerEditor.State {
-	var form: BowlerForm.State {
-		get {
-			var form = _form
-			switch initialValue {
-			case var .create(new):
-				new.name = name
-				form.value = .create(new)
-			case var .edit(existing):
-				existing.name = name
-				form.value = .edit(existing)
-			}
-			return form
-		}
-		set {
-			_form = newValue
 		}
 	}
 }

@@ -8,6 +8,7 @@ import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct PreferredGear: Reducer {
 	public struct State: Equatable {
 		public let bowler: Bowler.ID

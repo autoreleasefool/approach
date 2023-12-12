@@ -1,5 +1,6 @@
 import ComposableArchitecture
 
+@Reducer
 public struct AnalyticsReducer<State, Action>: Reducer {
 	let reducer: (State, Action) -> TrackableEvent?
 

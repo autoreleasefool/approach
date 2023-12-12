@@ -11,6 +11,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@Reducer
 public struct RollEditor: Reducer {
 	public struct State: Equatable {
 		public var ballRolled: Gear.Summary?

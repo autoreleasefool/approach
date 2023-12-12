@@ -9,6 +9,7 @@ public protocol ResourceListItem: Equatable, Identifiable {
 	var name: String { get }
 }
 
+@Reducer
 public struct ResourceList<
 	R: ResourceListItem,
 	Q: Equatable
@@ -111,28 +112,5 @@ public struct ResourceList<
 				return .none
 			}
 		}
-	}
-
-	private func fetchResources(query: Q) -> AsyncThrowingStream<[SectionResourceList<R, Q>.Section], Swift.Error> {
-		return .init { continuation in
-			let task = Task {
-				do {
-					for try await resources in self.fetchResources(query) {
-						continuation.yield([.init(id: "", items: .init(uniqueElements: resources))])
-					}
-				} catch {
-					continuation.finish(throwing: error)
-				}
-			}
-
-			continuation.onTermination = { _ in task.cancel() }
-		}
-	}
-}
-
-extension ResourceList.State {
-	public mutating func updateQuery(to query: Q) -> Effect<ResourceList.Action> {
-		self.sectionList.updateQuery(to: query)
-			.map { .internal(.sectionList($0)) }
 	}
 }

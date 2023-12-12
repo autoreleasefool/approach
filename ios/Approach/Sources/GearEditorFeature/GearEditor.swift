@@ -21,6 +21,7 @@ public struct AvatarImage: Equatable {
 	public let image: AlwaysEqual<UIImage>
 }
 
+@Reducer
 public struct GearEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var name: String
@@ -70,6 +71,7 @@ public struct GearEditor: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
@@ -203,31 +205,6 @@ public struct GearEditor: Reducer {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
-		}
-	}
-}
-
-extension GearEditor.State {
-	var form: GearForm.State {
-		get {
-			var form = _form
-			switch initialValue {
-			case var .create(new):
-				new.name = name
-				new.kind = kind
-				new.owner = owner
-				new.avatar = avatar
-				form.value = .create(new)
-			case var .edit(existing):
-				existing.name = name
-				existing.owner = owner
-				existing.avatar = avatar
-				form.value = .edit(existing)
-			}
-			return form
-		}
-		set {
-			_form = newValue
 		}
 	}
 }

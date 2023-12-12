@@ -34,6 +34,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 	}
 }
 
+@Reducer
 // swiftlint:disable:next type_body_length
 public struct BowlersList: Reducer {
 	public static let widgetContext = "bowlersList"
@@ -110,6 +111,7 @@ public struct BowlersList: Reducer {
 		case delegate(DelegateAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case editor(BowlerEditor.State)

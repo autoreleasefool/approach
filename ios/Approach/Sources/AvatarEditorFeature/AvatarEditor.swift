@@ -7,6 +7,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct AvatarEditor: Reducer {
 	public struct State: Equatable {
 		public let id: UUID

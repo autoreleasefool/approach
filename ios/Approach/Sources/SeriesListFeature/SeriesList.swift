@@ -35,6 +35,7 @@ extension Series.List: ResourceListItem {
 	}
 }
 
+@Reducer
 // swiftlint:disable:next type_body_length
 public struct SeriesList: Reducer {
 	public struct State: Equatable {
@@ -106,6 +107,7 @@ public struct SeriesList: Reducer {
 		case preBowl
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case seriesEditor(SeriesEditor.State)

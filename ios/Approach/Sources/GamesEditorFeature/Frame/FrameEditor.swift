@@ -6,6 +6,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@Reducer
 public struct FrameEditor: Reducer {
 	public struct State: Equatable {
 		public var isDragging = false

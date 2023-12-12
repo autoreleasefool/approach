@@ -11,6 +11,7 @@ import SwiftUI
 import ToastLibrary
 import ViewsLibrary
 
+@Reducer
 public struct ErrorReport: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isIncludingDeviceLogs = true

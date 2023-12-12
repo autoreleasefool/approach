@@ -6,6 +6,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@Reducer
 public struct AnalyticsSettings: Reducer {
 	public struct State: Equatable {
 		@BindingState public var analyticsOptIn: Bool

@@ -6,6 +6,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@Reducer
 public struct SectionResourceList<
 	R: ResourceListItem,
 	Q: Equatable
@@ -258,66 +259,6 @@ public struct SectionResourceList<
 			}
 		}.ifLet(\.errorState, action: /Action.internal..Action.InternalAction.error) {
 			ResourceListEmpty()
-		}
-	}
-
-	private func beginObservation(query: Q) -> Effect<Action> {
-		return .run { send in
-			for try await sections in fetchSections(query) {
-				await send(.internal(.sectionsResponse(.success(sections))))
-			}
-		} catch: { error, send in
-			await send(.internal(.sectionsResponse(.failure(error))))
-		}
-		.cancellable(id: CancelID.observation, cancelInFlight: true)
-	}
-}
-
-extension SectionResourceList.State {
-	public mutating func updateQuery(to query: Q) -> Effect<SectionResourceList.Action> {
-		self.query = query
-		return .send(.internal(.refreshObservation))
-	}
-}
-
-// MARK: - AlertAction
-
-extension SectionResourceList {
-	public enum AlertAction: Equatable {
-		case didTapArchiveButton(R)
-		case didTapDeleteButton(R)
-		case didTapDismissButton
-	}
-}
-
-extension SectionResourceList {
-	static func alert(toDelete resource: R) -> AlertState<AlertAction> {
-		AlertState {
-			TextState(Strings.Form.Prompt.delete(resource.name))
-		} actions: {
-			ButtonState(role: .destructive, action: .didTapDeleteButton(resource)) {
-				TextState(Strings.Action.delete)
-			}
-
-			ButtonState(role: .cancel, action: .didTapDismissButton) {
-				TextState(Strings.Action.cancel)
-			}
-		}
-	}
-
-	static func alert(toArchive resource: R) -> AlertState<AlertAction> {
-		AlertState {
-			TextState(Strings.Form.Prompt.archive(resource.name))
-		} actions: {
-			ButtonState(role: .destructive, action: .didTapArchiveButton(resource)) {
-				TextState(Strings.Action.archive)
-			}
-
-			ButtonState(role: .cancel, action: .didTapDismissButton) {
-				TextState(Strings.Action.cancel)
-			}
-		} message: {
-			TextState(Strings.Form.Prompt.Archive.message)
 		}
 	}
 }

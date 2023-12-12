@@ -9,6 +9,7 @@ import ResourcePickerLibrary
 import SharingFeature
 
 extension GamesEditor {
+	@Reducer
 	public struct SheetsDestination: Reducer {
 		public enum State: Equatable {
 			case settings(GamesSettings.State)
@@ -38,6 +39,7 @@ extension GamesEditor {
 		}
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case gameDetails(GameDetails.State)

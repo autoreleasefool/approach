@@ -11,6 +11,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@Reducer
 public struct Export: Reducer {
 	public struct State: Equatable {
 		public var exportUrl: URL?

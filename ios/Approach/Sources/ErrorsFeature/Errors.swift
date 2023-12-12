@@ -11,6 +11,7 @@ import ToastLibrary
 
 private let ERROR_REPORT_THRESHOLD = 3
 
+@Reducer
 public struct Errors<ErrorID: Hashable>: Reducer {
 	public struct State: Equatable {
 		public var errorCount: [ErrorID: Int] = [:]

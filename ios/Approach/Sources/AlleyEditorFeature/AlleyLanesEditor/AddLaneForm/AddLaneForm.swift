@@ -5,6 +5,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct AddLaneForm: Reducer {
 	public struct State: Equatable {
 		@BindingState var lanesToAdd = 1

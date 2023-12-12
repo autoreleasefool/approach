@@ -23,6 +23,7 @@ extension Game.List: ResourceListItem {
 	public var name: String { Strings.Game.titleWithOrdinal(index + 1) }
 }
 
+@Reducer
 public struct GamesList: Reducer {
 	public struct State: Equatable {
 		public var series: Series.Summary
@@ -84,6 +85,7 @@ public struct GamesList: Reducer {
 		case delegate(DelegateAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case sharing(Sharing.State)

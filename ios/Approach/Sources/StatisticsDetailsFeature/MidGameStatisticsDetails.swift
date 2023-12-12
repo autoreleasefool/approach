@@ -8,6 +8,7 @@ import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct MidGameStatisticsDetails: Reducer {
 	public struct State: Equatable {
 		public var filter: TrackableFilter
@@ -141,28 +142,6 @@ public struct MidGameStatisticsDetails: Reducer {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
-		}
-	}
-
-	private func refreshStatistics(state: State) -> Effect<Action> {
-		.run { [filter = state.filter] send in
-			await send(.internal(.didLoadListEntries(TaskResult {
-				try await statistics.load(for: filter)
-			})))
-		}
-		.cancellable(id: CancelID.loadingStaticValues, cancelInFlight: true)
-	}
-}
-
-extension MidGameStatisticsDetails.State {
-	var list: StatisticsDetailsList.State {
-		get {
-			var list = _list
-			list.listEntries = listEntries
-			return list
-		}
-		set {
-			_list = newValue
 		}
 	}
 }

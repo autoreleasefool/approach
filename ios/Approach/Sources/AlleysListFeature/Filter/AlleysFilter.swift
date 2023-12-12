@@ -6,6 +6,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct AlleysFilter: Reducer {
 	public struct State: Equatable {
 		@BindingState public var filter: Alley.List.FetchRequest.Filter

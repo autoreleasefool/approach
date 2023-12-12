@@ -6,6 +6,7 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct LeaguesFilter: Reducer {
 	public struct State: Equatable {
 		@BindingState public var recurrence: League.Recurrence?

@@ -18,6 +18,7 @@ import StringsLibrary
 import TipsLibrary
 import TipsServiceInterface
 
+@Reducer
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 public struct StatisticsWidgetEditor: Reducer {
@@ -104,6 +105,7 @@ public struct StatisticsWidgetEditor: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)

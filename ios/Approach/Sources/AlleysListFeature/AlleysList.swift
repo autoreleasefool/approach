@@ -13,6 +13,7 @@ import ViewsLibrary
 
 extension Alley.List: ResourceListItem {}
 
+@Reducer
 public struct AlleysList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Alley.List, Alley.List.FetchRequest>.State
@@ -69,6 +70,7 @@ public struct AlleysList: Reducer {
 		case delegate(DelegateAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case editor(AlleyEditor.State)

@@ -9,6 +9,7 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
+@Reducer
 public struct AppIconList: Reducer {
 	public struct State: Equatable {
 		public var isLoadingAppIcon = true
@@ -132,12 +133,6 @@ public struct AppIconList: Reducer {
 			}
 		}
 	}
-
-	private func fetchCurrentAppIcon() -> Effect<Action> {
-		.run { send in
-			await send(.internal(.didFetchIcon(TaskResult { AppIcon(rawValue: await appIcon.getAppIconName() ?? "") })))
-		}
-	}
 }
 
 public struct AppIconListView: View {
@@ -172,18 +167,6 @@ public struct AppIconListView: View {
 			.onAppear { viewStore.send(.onAppear) }
 			.alert(store: self.store.scope(state: \.$alert, action: { .internal(.alert($0)) }))
 		})
-	}
-}
-
-extension AppIconList.State {
-	var appIconImage: UIImage {
-		if let currentAppIcon {
-			return UIImage(named: currentAppIcon.rawValue) ?? UIImage()
-		} else if isLoadingAppIcon {
-			return UIImage()
-		} else {
-			return UIImage(named: "AppIcon") ?? UIImage()
-		}
 	}
 }
 

@@ -12,6 +12,7 @@ import TipsLibrary
 import TipsServiceInterface
 import ViewsLibrary
 
+@Reducer
 public struct StatisticsDetailsList: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isHidingZeroStatistics: Bool
@@ -116,12 +117,6 @@ public struct StatisticsDetailsList: Reducer {
 				return .none
 			}
 		}
-	}
-}
-
-extension StatisticsDetailsList.State {
-	func scrollTo(id: Statistics.ListEntry.ID?) -> Effect<StatisticsDetailsList.Action> {
-		return .send(.internal(.scrollToEntry(id: id)), animation: .easeInOut)
 	}
 }
 

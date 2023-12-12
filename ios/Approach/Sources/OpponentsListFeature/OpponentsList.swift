@@ -26,6 +26,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 	}
 }
 
+@Reducer
 public struct OpponentsList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.Opponent, Bowler.Ordering>.State
@@ -79,6 +80,7 @@ public struct OpponentsList: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case details(OpponentDetails.State)

@@ -13,6 +13,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@Reducer
 public struct MatchPlayEditor: Reducer {
 	public struct State: Equatable {
 		public var matchPlay: MatchPlay.Edit

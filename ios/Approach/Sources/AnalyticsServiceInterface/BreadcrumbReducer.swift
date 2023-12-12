@@ -1,5 +1,6 @@
 import ComposableArchitecture
 
+@Reducer
 public struct BreadcrumbReducer<State, Action>: Reducer {
 	let reducer: (State, Action) -> Breadcrumb?
 

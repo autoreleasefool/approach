@@ -32,6 +32,7 @@ public struct ResourceListEmptyContent: Equatable {
 	)
 }
 
+@Reducer
 public struct ResourceListEmpty: Reducer {
 	public struct State: Equatable {
 		public var content: ResourceListEmptyContent

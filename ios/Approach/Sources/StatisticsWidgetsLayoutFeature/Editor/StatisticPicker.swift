@@ -6,6 +6,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@Reducer
 public struct StatisticPicker: Reducer {
 	public struct State: Equatable {
 		let groups: [StatisticsGroup]

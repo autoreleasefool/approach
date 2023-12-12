@@ -3,6 +3,7 @@ import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 
+@Reducer
 public struct FeatureFlagsList: Reducer {
 	public struct State: Equatable {
 		public var featureFlags: [FeatureFlagItem] = []

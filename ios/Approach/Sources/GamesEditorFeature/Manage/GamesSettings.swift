@@ -9,6 +9,7 @@ import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct GamesSettings: Reducer {
 	public struct State: Equatable {
 		public let bowlers: IdentifiedArrayOf<Bowler.Summary>

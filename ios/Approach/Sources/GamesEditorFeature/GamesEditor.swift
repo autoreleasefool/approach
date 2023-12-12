@@ -21,6 +21,7 @@ import StringsLibrary
 import SwiftUI
 import ToastLibrary
 
+@Reducer
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 public struct GamesEditor: Reducer {
@@ -450,6 +451,7 @@ public struct GamesEditor: Reducer {
 	}
 }
 
+@Reducer
 public struct GamesEditorAnalyticsReducer: Reducer {
 	public var body: some ReducerOf<GamesEditor> {
 		AnalyticsReducer<State, Action> { _, action in

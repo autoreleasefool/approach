@@ -8,6 +8,7 @@ import StringsLibrary
 import TipsLibrary
 import TipsServiceInterface
 
+@Reducer
 public struct StatisticsOverview: Reducer {
 	public struct State: Equatable {
 		public var isShowingOverviewTip: Bool
@@ -42,6 +43,7 @@ public struct StatisticsOverview: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case sourcePicker(StatisticsSourcePicker.State)

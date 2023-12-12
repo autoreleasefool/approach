@@ -10,6 +10,7 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@Reducer
 public struct HelpSettings: Reducer {
 	public struct State: Equatable {
 		@BindingState public var isShowingBugReportEmail: Bool = false
@@ -52,6 +53,7 @@ public struct HelpSettings: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case analytics(AnalyticsSettings.State)

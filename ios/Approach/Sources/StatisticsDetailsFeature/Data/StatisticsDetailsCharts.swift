@@ -6,6 +6,7 @@ import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct StatisticsDetailsCharts: Reducer {
 	public struct State: Equatable {
 		@BindingState public var aggregation: TrackableFilter.Aggregation

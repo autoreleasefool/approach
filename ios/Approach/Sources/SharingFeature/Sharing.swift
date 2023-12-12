@@ -9,6 +9,7 @@ import ScoresRepositoryInterface
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct Sharing: Reducer {
 	public struct State: Equatable {
 		public let dataSource: DataSource

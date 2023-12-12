@@ -11,6 +11,7 @@ import PreferenceServiceInterface
 import SettingsFeature
 import StatisticsRepositoryInterface
 
+@Reducer
 public struct App: Reducer {
 	public enum State: Equatable {
 		case onboarding(Onboarding.State)

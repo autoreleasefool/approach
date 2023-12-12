@@ -3,6 +3,7 @@ import FeatureActionLibrary
 
 public typealias Orderable = Hashable & Equatable & CaseIterable & CustomStringConvertible
 
+@Reducer
 public struct SortOrder<Ordering: Orderable>: Reducer {
 	public struct State: Equatable {
 		public let options: [Ordering] = Array(Ordering.allCases)

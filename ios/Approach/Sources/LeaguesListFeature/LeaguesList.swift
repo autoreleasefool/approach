@@ -27,6 +27,7 @@ extension League.Ordering: CustomStringConvertible {
 	}
 }
 
+@Reducer
 // swiftlint:disable:next type_body_length
 public struct LeaguesList: Reducer {
 	public struct State: Equatable {
@@ -44,6 +45,11 @@ public struct LeaguesList: Reducer {
 		public var errors: Errors<ErrorID>.State = .init()
 
 		@PresentationState public var destination: Destination.State?
+
+		var filters: LeaguesFilter.State {
+			get { .init(recurrence: filter.recurrence) }
+			set { filter.recurrence = newValue.recurrence }
+		}
 
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
@@ -103,6 +109,7 @@ public struct LeaguesList: Reducer {
 		case delegate(DelegateAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case editor(LeagueEditor.State)
@@ -351,12 +358,5 @@ public struct LeaguesList: Reducer {
 extension LeaguesList {
 	public static func widgetContext(forBowler: Bowler.ID) -> String {
 		"leaguesList-\(forBowler)"
-	}
-}
-
-extension LeaguesList.State {
-	var filters: LeaguesFilter.State {
-		get { .init(recurrence: filter.recurrence) }
-		set { filter.recurrence = newValue.recurrence }
 	}
 }

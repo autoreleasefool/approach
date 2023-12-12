@@ -5,6 +5,7 @@ import ExtensionsLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 
+@Reducer
 public struct Onboarding: Reducer {
 	public struct State: Equatable {
 		public var step: Step = .empty
@@ -43,6 +44,42 @@ public struct Onboarding: Reducer {
 		case headerMessage
 		case headerMessageCrafted
 		case headerMessageCraftedGetStarted
+
+		var isShowingHeader: Bool {
+			switch self {
+			case .empty:
+				return false
+			case .header, .headerMessage, .headerMessageCrafted, .headerMessageCraftedGetStarted:
+				return true
+			}
+		}
+
+		var isShowingMessage: Bool {
+			switch self {
+			case .empty, .header:
+				return false
+			case .headerMessage, .headerMessageCrafted, .headerMessageCraftedGetStarted:
+				return true
+			}
+		}
+
+		var isShowingGetStarted: Bool {
+			switch self {
+			case .empty, .header, .headerMessage, .headerMessageCrafted:
+				return false
+			case .headerMessageCraftedGetStarted:
+				return true
+			}
+		}
+
+		var isShowingCrafted: Bool {
+			switch self {
+			case .empty, .header, .headerMessage:
+				return false
+			case .headerMessageCrafted, .headerMessageCraftedGetStarted:
+				return true
+			}
+		}
 	}
 
 	public init() {}
@@ -114,41 +151,6 @@ public struct Onboarding: Reducer {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
-		}
-	}
-}
-
-extension Onboarding.Step {
-	var isShowingHeader: Bool {
-		switch self {
-		case .empty:
-			return false
-		case .header, .headerMessage, .headerMessageCrafted, .headerMessageCraftedGetStarted:
-			return true
-		}
-	}
-	var isShowingMessage: Bool {
-		switch self {
-		case .empty, .header:
-			return false
-		case .headerMessage, .headerMessageCrafted, .headerMessageCraftedGetStarted:
-			return true
-		}
-	}
-	var isShowingGetStarted: Bool {
-		switch self {
-		case .empty, .header, .headerMessage, .headerMessageCrafted:
-			return false
-		case .headerMessageCraftedGetStarted:
-			return true
-		}
-	}
-	var isShowingCrafted: Bool {
-		switch self {
-		case .empty, .header, .headerMessage:
-			return false
-		case .headerMessageCrafted, .headerMessageCraftedGetStarted:
-			return true
 		}
 	}
 }

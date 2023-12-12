@@ -6,6 +6,7 @@ import ProductsLibrary
 import ProductsServiceInterface
 import StringsLibrary
 
+@Reducer
 public struct Paywall: Reducer {
 	public struct State: Equatable {
 		public let product: Product

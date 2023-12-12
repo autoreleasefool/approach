@@ -4,6 +4,7 @@ import IdentifiedCollections
 import SwiftUI
 import UniformTypeIdentifiers
 
+@Reducer
 public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reducer {
 	public struct State: Equatable {
 		public var items: IdentifiedArrayOf<Item>

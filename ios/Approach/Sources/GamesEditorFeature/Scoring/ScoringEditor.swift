@@ -5,6 +5,7 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
+@Reducer
 public struct ScoringEditor: Reducer {
 	public struct State: Equatable {
 		public var scoringMethod: Game.ScoringMethod

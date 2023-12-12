@@ -10,6 +10,7 @@ import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
 
+@Reducer
 public struct StatisticsWidgetLayoutBuilder: Reducer {
 	public struct State: Equatable {
 		public let context: String
@@ -261,19 +262,6 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
 			}
-		}
-	}
-}
-
-extension StatisticsWidgetLayoutBuilder.State {
-	var reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State {
-		get {
-			var reordering = _reordering
-			reordering.items = widgets
-			return reordering
-		}
-		set {
-			self.widgets = newValue.items
 		}
 	}
 }

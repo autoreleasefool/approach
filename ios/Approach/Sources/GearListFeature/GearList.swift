@@ -25,6 +25,7 @@ extension Gear.Ordering: CustomStringConvertible {
 	}
 }
 
+@Reducer
 public struct GearList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Gear.Summary, Query>.State
@@ -81,6 +82,7 @@ public struct GearList: Reducer {
 		public var sortOrder: Gear.Ordering
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case editor(GearEditor.State)

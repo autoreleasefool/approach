@@ -13,6 +13,7 @@ import OpponentsListFeature
 import StringsLibrary
 import ToastLibrary
 
+@Reducer
 public struct Settings: Reducer {
 	public struct State: Equatable {
 		public var isShowingDeveloperOptions: Bool
@@ -62,6 +63,7 @@ public struct Settings: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case archive(ArchiveList.State)
