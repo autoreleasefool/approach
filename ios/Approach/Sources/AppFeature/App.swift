@@ -27,12 +27,12 @@ public struct App: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		public enum ViewAction {
 			case didFirstAppear
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case onboarding(Onboarding.Action)
 			case content(TabbedContent.Action)
 		}
@@ -83,10 +83,10 @@ public struct App: Reducer {
 				return .none
 			}
 		}
-		.ifCaseLet(/State.content, action: /Action.internal..Action.InternalAction.content) {
+		.ifCaseLet(\.content, action: \.internal.content) {
 			TabbedContent()
 		}
-		.ifCaseLet(/State.onboarding, action: /Action.internal..Action.InternalAction.onboarding) {
+		.ifCaseLet(\.onboarding, action: \.internal.onboarding) {
 			Onboarding()
 		}
 

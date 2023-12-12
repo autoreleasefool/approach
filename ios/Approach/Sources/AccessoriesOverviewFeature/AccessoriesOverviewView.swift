@@ -5,6 +5,7 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
+import ExtensionsLibrary
 import GearEditorFeature
 import GearListFeature
 import ModelsLibrary
@@ -130,35 +131,37 @@ public struct AccessoriesOverviewView: View {
 			.onAppear { viewStore.send(.onAppear) }
 			.task { await viewStore.send(.task).finish() }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /AccessoriesOverview.Destination.State.gearList,
-			action: AccessoriesOverview.Destination.Action.gearList
-		) { (store: StoreOf<GearList>) in
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.gearList(store.scope(state: \.$destination.gearList, action: \.internal.destination.gearList))
+		.alleysList(store.scope(state: \.$destination.alleysList, action: \.internal.destination.alleysList))
+		.alleyEditor(store.scope(state: \.$destination.alleyEditor, action: \.internal.destination.alleyEditor))
+		.gearEditor(store.scope(state: \.$destination.gearEditor, action: \.internal.destination.gearEditor))
+	}
+}
+
+@MainActor extension View {
+	fileprivate func gearList(_ store: PresentationStoreOf<GearList>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<GearList>) in
 			GearListView(store: store)
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /AccessoriesOverview.Destination.State.alleysList,
-			action: AccessoriesOverview.Destination.Action.alleysList
-		) { (store: StoreOf<AlleysList>) in
+	}
+
+	fileprivate func alleysList(_ store: PresentationStoreOf<AlleysList>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<AlleysList>) in
 			AlleysListView(store: store)
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /AccessoriesOverview.Destination.State.alleyEditor,
-			action: AccessoriesOverview.Destination.Action.alleyEditor
-		) { (store: StoreOf<AlleyEditor>) in
+	}
+
+	fileprivate func alleyEditor(_ store: PresentationStoreOf<AlleyEditor>) -> some View {
+		sheet(store: store) { (store: StoreOf<AlleyEditor>) in
 			NavigationStack {
 				AlleyEditorView(store: store)
 			}
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /AccessoriesOverview.Destination.State.gearEditor,
-			action: AccessoriesOverview.Destination.Action.gearEditor
-		) { (store: StoreOf<GearEditor>) in
+	}
+
+	fileprivate func gearEditor(_ store: PresentationStoreOf<GearEditor>) -> some View {
+		sheet(store: store) { (store: StoreOf<GearEditor>) in
 			NavigationStack {
 				GearEditorView(store: store)
 			}

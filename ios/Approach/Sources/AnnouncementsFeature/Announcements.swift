@@ -8,7 +8,7 @@ import SwiftUIExtensionsLibrary
 @Reducer
 public struct Announcements: Reducer {
 	public struct State: Equatable {
-		@PresentationState public var christmas: Christmas2023Announcement.State?
+		@PresentationState public var destination: Christmas2023Announcement.State?
 
 		public init() {}
 	}
@@ -19,12 +19,12 @@ public struct Announcements: Reducer {
 			case didFinishDismissingAnnouncement
 		}
 
-		public enum InternalAction: Equatable {
-			case showChristmasAnnouncement
-			case christmas(PresentationAction<Christmas2023Announcement.Action>)
-		}
-
 		public enum DelegateAction: Equatable { case doNothing }
+
+		@CasePathable public enum InternalAction: Equatable {
+			case showChristmasAnnouncement
+			case destination(PresentationAction<Christmas2023Announcement.Action>)
+		}
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
@@ -54,16 +54,16 @@ public struct Announcements: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case .showChristmasAnnouncement:
-					state.christmas = .init()
+					state.destination = .init()
 					return .none
 
-				case let .christmas(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .openAppIconSettings:
 						return .none
 					}
 
-				case .christmas(.presented(.view)), .christmas(.presented(.internal)), .christmas(.dismiss):
+				case .destination(.presented(.view)), .destination(.presented(.internal)), .destination(.dismiss):
 					return .none
 				}
 
@@ -71,7 +71,7 @@ public struct Announcements: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$christmas, action: /Action.internal..Action.InternalAction.christmas) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Christmas2023Announcement()
 		}
 	}
@@ -86,7 +86,7 @@ extension View {
 		self
 			.onFirstAppear { store.send(.view(.onFirstAppear)) }
 			.sheet(
-				store: store.scope(state: \.$christmas, action: { .internal(.christmas($0)) }),
+				store: store.scope(state: \.$destination, action: \.internal.destination),
 				onDismiss: { store.send(.view(.didFinishDismissingAnnouncement)) },
 				content: { store in
 					Christmas2023AnnouncementView(store: store)

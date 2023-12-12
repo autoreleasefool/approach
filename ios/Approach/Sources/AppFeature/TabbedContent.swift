@@ -21,13 +21,13 @@ public struct TabbedContent: Reducer {
 		public init() {}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		public enum ViewAction: BindableAction {
 			case didAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		public enum DelegateAction { case doNothing }
+		public enum InternalAction {
 			case didChangeTabs([Tab])
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
@@ -101,7 +101,7 @@ public struct TabbedContent: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .bowlersList(.internal(.announcements(.internal(.christmas(.presented(.delegate(.openAppIconSettings))))))):
+				case .bowlersList(.internal(.announcements(.internal(.destination(.presented(.delegate(.openAppIconSettings))))))):
 					state.selectedTab = .settings
 					return state.settings.showAppIconList().map { .internal(.settings($0)) }
 
@@ -109,28 +109,10 @@ public struct TabbedContent: Reducer {
 					state.tabs = tabs
 					return .none
 
-				case .accessories(.delegate(.doNothing)):
-					return .none
-
-				case .bowlersList(.delegate(.doNothing)):
-					return .none
-
-				case .settings(.delegate(.doNothing)):
-					return .none
-
-				case .statistics(.delegate(.doNothing)):
-					return .none
-
-				case .accessories(.view), .accessories(.internal):
-					return .none
-
-				case .bowlersList(.view), .bowlersList(.internal):
-					return .none
-
-				case .settings(.view), .settings(.internal):
-					return .none
-
-				case .statistics(.view), .statistics(.internal):
+				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
+						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
+						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)),
+						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)):
 					return .none
 				}
 

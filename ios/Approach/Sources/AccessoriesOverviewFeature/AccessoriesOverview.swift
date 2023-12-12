@@ -30,8 +30,8 @@ public struct AccessoriesOverview: Reducer {
 		public init() {}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		public enum ViewAction {
 			case task
 			case onAppear
 			case didTapViewAllAlleys
@@ -41,12 +41,14 @@ public struct AccessoriesOverview: Reducer {
 			case didTapAddGear
 			case didSwipe(SwipeAction, Item)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case itemsResponse(TaskResult<[Item]>)
-			case didFinishDeletingItem(TaskResult<Item>)
-			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes>)
-			case didLoadEditableGear(TaskResult<Gear.Edit>)
+		public enum DelegateAction { case doNothing }
+
+		@CasePathable
+		public enum InternalAction {
+			case itemsResponse(Result<[Item], Error>)
+			case didFinishDeletingItem(Result<Item, Error>)
+			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
+			case didLoadEditableGear(Result<Gear.Edit, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -76,16 +78,16 @@ public struct AccessoriesOverview: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.alleyEditor, action: /Action.alleyEditor) {
+			Scope(state: \.alleyEditor, action: \.alleyEditor) {
 				AlleyEditor()
 			}
-			Scope(state: /State.alleysList, action: /Action.alleysList) {
+			Scope(state: \.alleysList, action: \.alleysList) {
 				AlleysList()
 			}
-			Scope(state: /State.gearEditor, action: /Action.gearEditor) {
+			Scope(state: \.gearEditor, action: \.gearEditor) {
 				GearEditor()
 			}
-			Scope(state: /State.gearList, action: /Action.gearList) {
+			Scope(state: \.gearList, action: \.gearList) {
 				GearList()
 			}
 		}
@@ -130,7 +132,7 @@ public struct AccessoriesOverview: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
@@ -148,13 +150,13 @@ public struct AccessoriesOverview: Reducer {
 					switch item {
 					case let .alley(alley):
 						return .run { send in
-							await send(.internal(.didLoadEditableAlley(TaskResult {
+							await send(.internal(.didLoadEditableAlley(Result {
 								try await self.alleys.edit(alley.id)
 							})))
 						}
 					case let .gear(gear):
 						return .run { send in
-							await send(.internal(.didLoadEditableGear(TaskResult {
+							await send(.internal(.didLoadEditableGear(Result {
 								try await self.gear.edit(gear.id)
 							})))
 						}
@@ -237,47 +239,36 @@ public struct AccessoriesOverview: Reducer {
 					switch item {
 					case let .alley(alley):
 						return .run { send in
-							await send(.internal(.didFinishDeletingItem(TaskResult {
+							await send(.internal(.didFinishDeletingItem(Result {
 								try await self.alleys.delete(alley.id)
 								return .alley(alley)
 							})))
 						}
 					case let .gear(gear):
 						return .run { send in
-							await send(.internal(.didFinishDeletingItem(TaskResult {
+							await send(.internal(.didFinishDeletingItem(Result {
 								try await self.gear.delete(gear.id)
 								return .gear(gear)
 							})))
 						}
 					}
 
-				case .destination(.presented(.alleyEditor(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.alleysList(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.gearEditor(.delegate(.doNothing)))):
-					return .none
-
-				case .destination(.presented(.gearList(.delegate(.doNothing)))):
-					return .none
-
-				case .errors(.delegate(.doNothing)):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.gearEditor(.view))),
 						.destination(.presented(.gearEditor(.internal))),
+						.destination(.presented(.gearEditor(.delegate(.doNothing)))),
 						.destination(.presented(.alleyEditor(.view))),
 						.destination(.presented(.alleyEditor(.internal))),
+						.destination(.presented(.alleyEditor(.delegate(.doNothing)))),
 						.destination(.presented(.alleysList(.internal))),
 						.destination(.presented(.alleysList(.view))),
+						.destination(.presented(.alleysList(.delegate(.doNothing)))),
 						.destination(.presented(.gearList(.internal))),
 						.destination(.presented(.gearList(.view))),
+						.destination(.presented(.gearList(.delegate(.doNothing)))),
 						.destination(.presented(.alert(.dismiss))),
 						.destination(.presented(.alert(.presented(.didTapDismissButton)))),
-						.errors(.internal), .errors(.view):
+						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 
@@ -285,7 +276,7 @@ public struct AccessoriesOverview: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 
