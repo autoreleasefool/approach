@@ -98,38 +98,6 @@ internal fun MatchPlayCard(
 	}
 }
 
-@Composable
-private fun Label(
-	modifier: Modifier = Modifier,
-	title: String,
-	value: String?,
-	placeholder: String,
-	horizontalAlignment: Alignment.Horizontal = Alignment.Start
-) {
-	Column(
-		horizontalAlignment = horizontalAlignment,
-		modifier = modifier,
-	) {
-		if (value == null) {
-			Text(
-				text = placeholder,
-				style = MaterialTheme.typography.bodyLarge,
-				fontStyle = FontStyle.Italic,
-			)
-		} else {
-			Text(
-				text = title,
-				style = MaterialTheme.typography.labelSmall,
-			)
-
-			Text(
-				text = value,
-				style = MaterialTheme.typography.bodyLarge,
-			)
-		}
-	}
-}
-
 @Preview
 @Composable
 private fun MatchPlayCardPreview() {

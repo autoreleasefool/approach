@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
+import ca.josephroque.bowlingcompanion.core.model.ui.icon
 
 @Composable
 fun MatchPlayEditor(
@@ -57,6 +59,12 @@ fun MatchPlayEditor(
 			options = MatchPlayResult.entries.toTypedArray(),
 			allowNullableSelection = true,
 			selected = state.result,
+			iconForOption = {
+				Icon(
+					painter = it.icon(),
+					contentDescription = null
+				)
+			},
 			titleForOption = {
 				when (it) {
 					MatchPlayResult.WON -> stringResource(ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_won)

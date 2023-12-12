@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.designsystem.components.form
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ fun <T>FormRadioGroup(
 	titleForOption: @Composable (T?) -> String,
 	onOptionSelected: (T?) -> Unit,
 	modifier: Modifier = Modifier,
+	iconForOption: (@Composable (T?) -> Unit)? = null,
 	allowNullableSelection: Boolean = false,
 	subtitle: String? = null,
 ) {
@@ -71,6 +73,7 @@ fun <T>FormRadioGroup(
 			FormRadioButton(
 				isSelected = selected == null,
 				title = titleForOption(null),
+				icon = { iconForOption?.invoke(null) },
 				onClick = { onOptionSelected(null) },
 			)
 		}
@@ -81,6 +84,7 @@ fun <T>FormRadioGroup(
 			FormRadioButton(
 				isSelected = isSelected,
 				title = titleForOption(it),
+				icon = { iconForOption?.invoke(it) },
 				onClick = { onOptionSelected(it) },
 			)
 		}
@@ -91,6 +95,7 @@ fun <T>FormRadioGroup(
 private fun FormRadioButton(
 	isSelected: Boolean,
 	title: String,
+	icon: @Composable () -> Unit,
 	onClick: () -> Unit,
 ) {
 	Surface(
@@ -104,11 +109,14 @@ private fun FormRadioButton(
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.spacedBy(16.dp),
 			modifier = Modifier
 				.fillMaxWidth()
 				.defaultMinSize(minHeight = 44.dp)
 				.padding(horizontal = 16.dp, vertical = 8.dp),
 		) {
+			icon()
+
 			Text(
 				text = title,
 				style = MaterialTheme.typography.bodyLarge,
