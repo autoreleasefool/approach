@@ -73,8 +73,8 @@ public struct StatisticsWidgetEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didFirstAppear
 			case didTapBowler
@@ -85,18 +85,18 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didTapDismissTapThroughTip
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didCreateConfiguration(StatisticsWidget.Configuration)
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
 
 			case didStartLoadingPreview
-			case didLoadSources(TaskResult<StatisticsWidget.Sources>)
-			case didLoadDefaultSources(TaskResult<StatisticsWidget.Sources?>)
-			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
-			case didFinishSavingConfiguration(TaskResult<StatisticsWidget.Configuration>)
+			case didLoadSources(Result<StatisticsWidget.Sources, Error>)
+			case didLoadDefaultSources(Result<StatisticsWidget.Sources?, Error>)
+			case didLoadChartContent(Result<Statistics.ChartContent, Error>)
+			case didFinishSavingConfiguration(Result<StatisticsWidget.Configuration, Error>)
 			case hideChart
 		}
 
@@ -114,7 +114,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			case statisticPicker(StatisticPicker.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.Action)
 			case help(StatisticsWidgetHelp.Action)
@@ -215,7 +215,7 @@ public struct StatisticsWidgetEditor: Reducer {
 						return .none
 					}
 					return .run { send in
-						await send(.internal(.didFinishSavingConfiguration(TaskResult {
+						await send(.internal(.didFinishSavingConfiguration(Result {
 							try await self.statisticsWidgets.create(widget)
 							return configuration
 						})))
@@ -358,13 +358,13 @@ public struct StatisticsWidgetEditor: Reducer {
 		state.isLoadingSources = true
 		if let source = state.source {
 			return .run { send in
-				await send(.internal(.didLoadSources(TaskResult {
+				await send(.internal(.didLoadSources(Result {
 					try await statisticsWidgets.loadSources(source)
 				})))
 			}
 		} else {
 			return .run { send in
-				await send(.internal(.didLoadDefaultSources(TaskResult {
+				await send(.internal(.didLoadDefaultSources(Result {
 					try await statisticsWidgets.loadDefaultSources()
 				})))
 			}
@@ -384,7 +384,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			.run { send in
 				let startTime = date()
 
-				let result = await TaskResult { try await statisticsWidgets.chart(configuration) }
+				let result = await Result { try await statisticsWidgets.chart(configuration) }
 
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {

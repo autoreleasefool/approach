@@ -36,16 +36,16 @@ public struct MidGameStatisticsDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case task
 			case onAppear
 			case didFirstAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didLoadListEntries(TaskResult<[Statistics.ListEntryGroup]>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didLoadListEntries(Result<[Statistics.ListEntryGroup], Error>)
 
 			case list(StatisticsDetailsList.Action)
 			case errors(Errors<ErrorID>.Action)

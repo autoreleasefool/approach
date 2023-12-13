@@ -17,7 +17,7 @@ extension GamesEditor {
 			case sharing(Sharing.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case settings(GamesSettings.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case sharing(Sharing.Action)
@@ -47,7 +47,7 @@ extension GamesEditor {
 			case sheets(SheetsDestination.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case gameDetails(GameDetails.Action)
 			case duplicateLanesAlert(AlertAction)
 			case sheets(SheetsDestination.Action)

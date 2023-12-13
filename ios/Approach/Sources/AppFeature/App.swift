@@ -28,10 +28,10 @@ public struct App: Reducer {
 	}
 
 	public enum Action: FeatureAction {
-		public enum ViewAction {
+		@CasePathable public enum ViewAction {
 			case didFirstAppear
 		}
-		public enum DelegateAction { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 		@CasePathable public enum InternalAction {
 			case onboarding(Onboarding.Action)
 			case content(TabbedContent.Action)

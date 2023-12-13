@@ -82,8 +82,8 @@ public struct BowlersList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didStartTask
 			case didTapSortOrderButton
@@ -91,12 +91,12 @@ public struct BowlersList: Reducer {
 			case didTapQuickLaunchButton
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 
-		public enum InternalAction: Equatable {
-			case didLoadEditableBowler(TaskResult<Bowler.Edit>)
-			case didLoadQuickLaunch(TaskResult<QuickLaunchSource?>)
-			case didArchiveBowler(TaskResult<Bowler.List>)
+		@CasePathable public enum InternalAction {
+			case didLoadEditableBowler(Result<Bowler.Edit, Error>)
+			case didLoadQuickLaunch(Result<QuickLaunchSource?, Error>)
+			case didArchiveBowler(Result<Bowler.List, Error>)
 			case didSetIsShowingWidgets(Bool)
 
 			case list(ResourceList<Bowler.List, Bowler.Ordering>.Action)
@@ -121,7 +121,7 @@ public struct BowlersList: Reducer {
 			case games(GamesList.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
@@ -276,14 +276,14 @@ public struct BowlersList: Reducer {
 					switch delegateAction {
 					case let .didEdit(bowler):
 						return .run { send in
-							await send(.internal(.didLoadEditableBowler(TaskResult {
+							await send(.internal(.didLoadEditableBowler(Result {
 								try await bowlers.edit(bowler.id)
 							})))
 						}
 
 					case let .didArchive(bowler):
 						return .run { send in
-							await send(.internal(.didArchiveBowler(TaskResult {
+							await send(.internal(.didArchiveBowler(Result {
 								try await bowlers.archive(bowler.id)
 								return bowler
 							})))

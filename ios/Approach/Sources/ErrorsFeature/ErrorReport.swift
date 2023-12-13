@@ -47,16 +47,16 @@ public struct ErrorReport: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didTapCopyErrorButton
 			case didTapDismissButton
 			case didTapEmailButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case didCopyToClipboard
 			case toast(ToastAction)
 		}

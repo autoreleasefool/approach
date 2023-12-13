@@ -12,17 +12,17 @@ public struct ScoringEditor: Reducer {
 		@BindingState public var score: Int
 	}
 
-	public enum Action: Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case toggleManualScoring(Bool)
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didSetManualScore(Int)
 			case didClearManualScore
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)

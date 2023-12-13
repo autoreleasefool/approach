@@ -42,22 +42,22 @@ public struct ArchiveList: Reducer {
 		public init() {}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case observeData
 			case didSwipe(ArchiveItem)
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case bowlersResponse(TaskResult<[Bowler.Archived]>)
-			case leaguesResponse(TaskResult<[League.Archived]>)
-			case seriesResponse(TaskResult<[Series.Archived]>)
-			case gamesResponse(TaskResult<[Game.Archived]>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case bowlersResponse(Result<[Bowler.Archived], Error>)
+			case leaguesResponse(Result<[League.Archived], Error>)
+			case seriesResponse(Result<[Series.Archived], Error>)
+			case gamesResponse(Result<[Game.Archived], Error>)
 
-			case unarchived(TaskResult<ArchiveItem>)
+			case unarchived(Result<ArchiveItem, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 		}
@@ -108,7 +108,7 @@ public struct ArchiveList: Reducer {
 
 				case let .didSwipe(item):
 					return .run { send in
-						await send(.internal(.unarchived(TaskResult {
+						await send(.internal(.unarchived(Result {
 							switch item.id {
 							case let .bowler(bowlerId):
 								try await self.bowlers.unarchive(bowlerId)

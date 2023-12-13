@@ -26,17 +26,17 @@ public struct Paywall: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didStartTask
 			case didTapRestorePurchasesButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case setProductAvailability(Bool)
-			case didFinishRestoringPurchases(TaskResult<Bool>)
+			case didFinishRestoringPurchases(Result<Bool, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 		}

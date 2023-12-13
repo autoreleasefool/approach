@@ -13,15 +13,15 @@ public struct Announcements: Reducer {
 		public init() {}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onFirstAppear
 			case didFinishDismissingAnnouncement
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 
-		@CasePathable public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case showChristmasAnnouncement
 			case destination(PresentationAction<Christmas2023Announcement.Action>)
 		}

@@ -27,22 +27,22 @@ public struct LaneEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case didSwipe(SwipeAction)
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didDeleteLane
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
 	}
 
-	public enum SwipeAction: Equatable {
+	public enum SwipeAction {
 		case delete
 	}
 

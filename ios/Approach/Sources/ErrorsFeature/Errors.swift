@@ -46,12 +46,12 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didFinishDismissingReport
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case didReceiveReport(AlwaysEqual<Report>)
 
 			case toast(ToastAction)

@@ -56,18 +56,18 @@ public struct SeriesEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didTapAlley
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didFinishCreating(Series.Create)
 			case didFinishArchiving(Series.Edit)
 			case didFinishUpdating(Series.Edit)
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case form(SeriesForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 		}

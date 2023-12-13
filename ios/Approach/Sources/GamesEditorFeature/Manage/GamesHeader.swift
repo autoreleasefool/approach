@@ -26,20 +26,20 @@ public struct GamesHeader: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didStartTask
 			case didTapCloseButton
 			case didTapSettingsButton
 			case didTapShareButton
 			case didStartShimmering
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didCloseEditor
 			case didOpenSettings
 			case didShareGame
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}

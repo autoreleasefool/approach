@@ -30,8 +30,8 @@ public struct HelpSettings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case didTapReportBugButton
 			case didTapSendFeedbackButton
 			case didShowAcknowledgements
@@ -43,8 +43,8 @@ public struct HelpSettings: Reducer {
 			case didTapForceCrashButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -60,7 +60,7 @@ public struct HelpSettings: Reducer {
 			case export(Export.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case analytics(AnalyticsSettings.Action)
 			case export(Export.Action)
 		}

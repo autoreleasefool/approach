@@ -20,16 +20,16 @@ public struct Christmas2023Announcement: Reducer {
 	}
 
 	public struct State: Equatable {}
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onFirstAppear
 			case didTapOpenAppSettings
 			case didTapDismiss
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case openAppIconSettings
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)

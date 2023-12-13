@@ -56,16 +56,16 @@ public struct GearList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapFilterButton
 			case didTapSortOrderButton
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didLoadEditableGear(TaskResult<Gear.Edit>)
-			case didDeleteGear(TaskResult<Gear.Summary>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didLoadEditableGear(Result<Gear.Edit, Error>)
+			case didDeleteGear(Result<Gear.Summary, Error>)
 
 			case list(ResourceList<Gear.Summary, Query>.Action)
 			case errors(Errors<ErrorID>.Action)
@@ -90,7 +90,7 @@ public struct GearList: Reducer {
 			case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case editor(GearEditor.Action)
 			case filters(GearFilter.Action)
 			case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>.Action)
@@ -171,14 +171,14 @@ public struct GearList: Reducer {
 					switch delegateAction {
 					case let .didEdit(gear):
 						return .run { send in
-							await send(.internal(.didLoadEditableGear(TaskResult {
+							await send(.internal(.didLoadEditableGear(Result {
 								try await self.gear.edit(gear.id)
 							})))
 						}
 
 					case let .didDelete(gear):
 						return .run { send in
-							await send(.internal(.didDeleteGear(TaskResult {
+							await send(.internal(.didDeleteGear(Result {
 								try await self.gear.delete(gear.id)
 								return gear
 							})))

@@ -70,18 +70,18 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapEditButton
 			case didTapSortOrderButton
 			case didTapSeries(Series.ID)
 		}
 
-		public enum InternalAction: Equatable {
-			case didArchiveSeries(TaskResult<Series.List>)
-			case didLoadEditableSeries(TaskResult<Series.Edit>)
-			case didLoadEditableLeague(TaskResult<League.Edit>)
+		@CasePathable public enum InternalAction {
+			case didArchiveSeries(Result<Series.List, Error>)
+			case didLoadEditableSeries(Result<Series.Edit, Error>)
+			case didLoadEditableLeague(Result<League.Edit, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -89,7 +89,7 @@ public struct SeriesList: Reducer {
 				.FetchRequest>.Action)
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
@@ -116,7 +116,7 @@ public struct SeriesList: Reducer {
 			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case seriesEditor(SeriesEditor.Action)
 			case leagueEditor(LeagueEditor.Action)
 			case games(GamesList.Action)
@@ -173,7 +173,7 @@ public struct SeriesList: Reducer {
 
 				case .didTapEditButton:
 					return .run { [id = state.league.id] send in
-						await send(.internal(.didLoadEditableLeague(TaskResult {
+						await send(.internal(.didLoadEditableLeague(Result {
 							try await leagues.edit(id)
 						})))
 					}
@@ -226,14 +226,14 @@ public struct SeriesList: Reducer {
 					switch delegateAction {
 					case let .didEdit(series):
 						return .run { send in
-							await send(.internal(.didLoadEditableSeries(TaskResult {
+							await send(.internal(.didLoadEditableSeries(Result {
 								try await self.series.edit(series.id)
 							})))
 						}
 
 					case let .didArchive(series):
 						return .run { send in
-							await send(.internal(.didArchiveSeries(TaskResult {
+							await send(.internal(.didArchiveSeries(Result {
 								try await self.series.archive(series.id)
 								return series
 							})))

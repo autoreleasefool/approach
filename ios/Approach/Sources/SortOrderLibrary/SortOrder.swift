@@ -14,12 +14,12 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didTapOption(Ordering)
 		}
-		public enum InternalAction: Equatable { case doNothing }
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum DelegateAction {
 			case didTapOption(Ordering)
 		}
 

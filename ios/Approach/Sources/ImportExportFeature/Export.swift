@@ -26,15 +26,15 @@ public struct Export: Reducer {
 		public var shareUrl: URL { exportUrl ?? URL(string: "https://tryapproach.app")! }
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didFirstAppear
 			case didTapRetryButton
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didReceiveEvent(TaskResult<ExportService.Event>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didReceiveEvent(Result<ExportService.Event, Error>)
 		}
 
 		case view(ViewAction)

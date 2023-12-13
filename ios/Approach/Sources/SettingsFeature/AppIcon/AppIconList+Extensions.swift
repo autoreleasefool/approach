@@ -6,7 +6,7 @@ import UIKit
 extension AppIconList {
 	func fetchCurrentAppIcon() -> Effect<Action> {
 		.run { send in
-			await send(.internal(.didFetchIcon(TaskResult { AppIcon(rawValue: await appIcon.getAppIconName() ?? "") })))
+			await send(.internal(.didFetchIcon(Result { AppIcon(rawValue: await appIcon.getAppIconName() ?? "") })))
 		}
 	}
 }

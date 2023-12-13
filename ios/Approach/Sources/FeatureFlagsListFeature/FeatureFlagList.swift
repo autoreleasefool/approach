@@ -11,8 +11,8 @@ public struct FeatureFlagsList: Reducer {
 		public init() {}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didStartObservingFlags
 			case didToggle(FeatureFlag)
 			case didTapResetOverridesButton
@@ -20,8 +20,8 @@ public struct FeatureFlagsList: Reducer {
 			case didTapMatchDevelopmentButton
 			case didTapMatchTestButton
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case didLoadFlags([FeatureFlagItem])
 		}
 

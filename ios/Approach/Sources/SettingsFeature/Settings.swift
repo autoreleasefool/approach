@@ -36,8 +36,8 @@ public struct Settings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didFirstAppear
 			case didTapPopulateDatabase
@@ -48,9 +48,9 @@ public struct Settings: Reducer {
 			case didTapAppIcon
 			case didTapVersionNumber
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didFetchIcon(TaskResult<AppIcon?>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didFetchIcon(Result<AppIcon?, Error>)
 			case didCopyToClipboard
 
 			case toast(ToastAction)
@@ -73,7 +73,7 @@ public struct Settings: Reducer {
 			case statistics(StatisticsSettings.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case archive(ArchiveList.Action)
 			case appIcon(AppIconList.Action)
 			case featureFlags(FeatureFlagsList.Action)
@@ -125,7 +125,7 @@ public struct Settings: Reducer {
 
 				case .didFirstAppear:
 					return .run { send in
-						await send(.internal(.didFetchIcon(TaskResult {
+						await send(.internal(.didFetchIcon(Result {
 							AppIcon(rawValue: await appIcon.getAppIconName() ?? "")
 						})))
 					}

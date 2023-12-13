@@ -99,7 +99,7 @@ public struct Form<
 			self = .init(initialValue: initialValue, currentValue: initialValue)
 		}
 
-		public mutating func didFinishCreating(_ record: TaskResult<New>) -> Effect<Form.Action> {
+		public mutating func didFinishCreating(_ record: Result<New, Error>) -> Effect<Form.Action> {
 			isLoading = false
 			switch record {
 			case let .success(new):
@@ -111,7 +111,7 @@ public struct Form<
 			}
 		}
 
-		public mutating func didFinishUpdating(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+		public mutating func didFinishUpdating(_ record: Result<Existing, Error>) -> Effect<Form.Action> {
 			isLoading = false
 			switch record {
 			case let .success(existing):
@@ -123,7 +123,7 @@ public struct Form<
 			}
 		}
 
-		public mutating func didFinishDeleting(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+		public mutating func didFinishDeleting(_ record: Result<Existing, Error>) -> Effect<Form.Action> {
 			isLoading = false
 			switch record {
 			case let .success(existing):
@@ -135,7 +135,7 @@ public struct Form<
 			}
 		}
 
-		public mutating func didFinishArchiving(_ record: TaskResult<Existing>) -> Effect<Form.Action> {
+		public mutating func didFinishArchiving(_ record: Result<Existing, Error>) -> Effect<Form.Action> {
 			isLoading = false
 			switch record {
 			case let .success(existing):
@@ -148,8 +148,8 @@ public struct Form<
 		}
 	}
 
-	public enum Action: Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action {
+		@CasePathable public enum ViewAction {
 			case didTapSaveButton
 			case didTapDiscardButton
 			case didTapDeleteButton
@@ -157,15 +157,15 @@ public struct Form<
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		public enum DelegateAction: Equatable {
-			case didCreate(TaskResult<New>)
-			case didUpdate(TaskResult<Existing>)
-			case didDelete(TaskResult<Existing>)
-			case didArchive(TaskResult<Existing>)
+		@CasePathable public enum DelegateAction {
+			case didCreate(Result<New, Error>)
+			case didUpdate(Result<Existing, Error>)
+			case didDelete(Result<Existing, Error>)
+			case didArchive(Result<Existing, Error>)
 			case didFinishCreating(New)
 			case didFinishUpdating(Existing)
 			case didFinishDeleting(Existing)
@@ -213,7 +213,7 @@ public struct Form<
 					switch state.value {
 					case let .edit(existing):
 						return .run { send in
-							await send(.delegate(.didUpdate(TaskResult {
+							await send(.delegate(.didUpdate(Result {
 								try await records.update?(existing)
 								return existing
 							})))
@@ -221,7 +221,7 @@ public struct Form<
 
 					case let .create(new):
 						return .run { send in
-							await send(.delegate(.didCreate(TaskResult {
+							await send(.delegate(.didCreate(Result {
 								try await records.create?(new)
 								return new
 							})))
@@ -266,7 +266,7 @@ public struct Form<
 						guard case let .edit(record) = state.initialValue else { return .none }
 						state.isLoading = true
 						return .run { send in
-							await send(.delegate(.didDelete(TaskResult {
+							await send(.delegate(.didDelete(Result {
 								try await records.delete?(record.id)
 								return record
 							})))
@@ -276,7 +276,7 @@ public struct Form<
 						guard case let .edit(record) = state.initialValue else { return .none }
 						state.isLoading = true
 						return .run { send in
-							await send(.delegate(.didArchive(TaskResult {
+							await send(.delegate(.didArchive(Result {
 								try await records.archive?(record.id)
 								return record
 							})))

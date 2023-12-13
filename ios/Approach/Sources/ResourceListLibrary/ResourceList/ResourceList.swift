@@ -40,10 +40,10 @@ public struct ResourceList<
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable { case doNothing }
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction { case doNothing }
 
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didDelete(R)
 			case didArchive(R)
 			case didEdit(R)
@@ -53,7 +53,7 @@ public struct ResourceList<
 			case didTapEmptyStateButton
 		}
 
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case sectionList(SectionResourceList<R, Q>.Action)
 		}
 

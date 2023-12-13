@@ -80,8 +80,8 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didStartTask
 			case didTapLeague(id: League.ID)
@@ -89,12 +89,12 @@ public struct LeaguesList: Reducer {
 			case didTapSortOrderButton
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 
-		public enum InternalAction: Equatable {
-			case didLoadEditableLeague(TaskResult<League.Edit>)
-			case didArchiveLeague(TaskResult<League.List>)
-			case didLoadSeriesLeague(TaskResult<League.SeriesHost>)
+		@CasePathable public enum InternalAction {
+			case didLoadEditableLeague(Result<League.Edit, Error>)
+			case didArchiveLeague(Result<League.List, Error>)
+			case didLoadSeriesLeague(Result<League.SeriesHost, Error>)
 			case didSetIsShowingWidgets(Bool)
 
 			case errors(Errors<ErrorID>.Action)
@@ -118,7 +118,7 @@ public struct LeaguesList: Reducer {
 			case sortOrder(SortOrder<League.Ordering>.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
@@ -207,7 +207,7 @@ public struct LeaguesList: Reducer {
 
 				case let .didTapLeague(id):
 					return .run { send in
-						await send(.internal(.didLoadSeriesLeague(TaskResult {
+						await send(.internal(.didLoadSeriesLeague(Result {
 							try await leagues.seriesHost(id)
 						})))
 					}
@@ -263,14 +263,14 @@ public struct LeaguesList: Reducer {
 					switch delegateAction {
 					case let .didEdit(league):
 						return .run { send in
-							await send(.internal(.didLoadEditableLeague(TaskResult {
+							await send(.internal(.didLoadEditableLeague(Result {
 								try await leagues.edit(league.id)
 							})))
 						}
 
 					case let .didArchive(league):
 						return .run { send in
-							await send(.internal(.didArchiveLeague(TaskResult {
+							await send(.internal(.didArchiveLeague(Result {
 								try await leagues.archive(league.id)
 								return league
 							})))

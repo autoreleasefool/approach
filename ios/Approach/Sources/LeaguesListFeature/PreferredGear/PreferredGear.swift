@@ -18,18 +18,18 @@ public struct PreferredGear: Reducer {
 		@PresentationState var gearPicker: ResourcePicker<Gear.Summary, Bowler.ID>.State?
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didFirstAppear
 			case didTapManageButton
 		}
-		public enum DelegateAction: Equatable {
-			case errorLoadingGear(TaskResult<Never>)
-			case errorUpdatingPreferredGear(TaskResult<Never>)
+		@CasePathable public enum DelegateAction {
+			case errorLoadingGear(Result<Never, Error>)
+			case errorUpdatingPreferredGear(Result<Never, Error>)
 		}
-		public enum InternalAction: Equatable {
-			case didLoadGear(TaskResult<[Gear.Summary]>)
-			case didUpdatePreferredGear(TaskResult<[Gear.Summary]>)
+		@CasePathable public enum InternalAction {
+			case didLoadGear(Result<[Gear.Summary], Error>)
+			case didUpdatePreferredGear(Result<[Gear.Summary], Error>)
 			case gearPicker(PresentationAction<ResourcePicker<Gear.Summary, Bowler.ID>.Action>)
 		}
 
@@ -50,7 +50,7 @@ public struct PreferredGear: Reducer {
 				switch viewAction {
 				case .didFirstAppear:
 					return .run { [bowler = state.bowler] send in
-						await send(.internal(.didLoadGear(TaskResult {
+						await send(.internal(.didLoadGear(Result {
 							try await gear.preferredGear(forBowler: bowler)
 						})))
 					}
@@ -85,7 +85,7 @@ public struct PreferredGear: Reducer {
 					case let .didChangeSelection(gear):
 						state.gear = .init(uniqueElements: gear)
 						return .run { [gear = state.gear, bowler = state.bowler] send in
-							await send(.internal(.didUpdatePreferredGear(TaskResult {
+							await send(.internal(.didUpdatePreferredGear(Result {
 								try await self.gear.updatePreferredGear(gear.map(\.id), forBowler: bowler)
 								return Array(gear)
 							})))

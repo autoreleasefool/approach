@@ -23,18 +23,18 @@ public struct AddressLookup: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didFirstAppear
 			case didTapCancelButton
 			case didTapResult(AddressLookupResult.ID)
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didReceiveResults(TaskResult<[AddressLookupResult]>)
-			case didLoadAddress(TaskResult<Location.Edit>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didReceiveResults(Result<[AddressLookupResult], Error>)
+			case didLoadAddress(Result<Location.Edit, Error>)
 		}
 
 		case view(ViewAction)
@@ -90,7 +90,7 @@ public struct AddressLookup: Reducer {
 					guard let address = state.results[id: id] else { return .none }
 					state.isLoadingAddress = true
 					return .run { send in
-						await send(.internal(.didLoadAddress(TaskResult {
+						await send(.internal(.didLoadAddress(Result {
 							guard let location = try await addressLookup.lookUpAddress(address) else {
 								throw LookupError.addressNotFound
 							}

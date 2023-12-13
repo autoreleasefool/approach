@@ -62,8 +62,8 @@ public struct Sharing: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didFirstAppear
 			case didTapShareToStoriesButton
@@ -72,9 +72,9 @@ public struct Sharing: Reducer {
 			case didTapDoneButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didLoadGames(TaskResult<[Game.Shareable]>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didLoadGames(Result<[Game.Shareable], Error>)
 			case didLoadScore(ScoredGame)
 
 			case errors(Errors<ErrorID>.Action)
@@ -116,7 +116,7 @@ public struct Sharing: Reducer {
 
 				case .didFirstAppear:
 					return .run { [dataSource = state.dataSource] send in
-						await send(.internal(.didLoadGames(TaskResult {
+						await send(.internal(.didLoadGames(Result {
 							switch dataSource {
 							case let .games(ids):
 								return try await games.shareGames(ids)

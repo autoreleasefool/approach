@@ -39,8 +39,8 @@ public struct StatisticsSourcePicker: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
@@ -48,11 +48,11 @@ public struct StatisticsSourcePicker: Reducer {
 			case didTapGame
 			case didTapConfirmButton
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didChangeSource(TrackableFilter.Source)
 		}
-		public enum InternalAction: Equatable {
-			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
+		@CasePathable public enum InternalAction {
+			case didLoadSources(Result<TrackableFilter.Sources?, Error>)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
 		}
@@ -70,7 +70,7 @@ public struct StatisticsSourcePicker: Reducer {
 			case gamePicker(ResourcePicker<Game.Summary, Series.ID>.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
 			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.Action)
 			case seriesPicker(ResourcePicker<Series.Summary, League.ID>.Action)
@@ -120,13 +120,13 @@ public struct StatisticsSourcePicker: Reducer {
 					state.isLoadingSources = true
 					if let source = state.sourceToLoad {
 						return .run { send in
-							await send(.internal(.didLoadSources(TaskResult {
+							await send(.internal(.didLoadSources(Result {
 								try await statistics.loadSources(source)
 							})))
 						}
 					} else {
 						return .run { send in
-							await send(.internal(.didLoadSources(TaskResult {
+							await send(.internal(.didLoadSources(Result {
 								try await statistics.loadDefaultSources()
 							})))
 						}

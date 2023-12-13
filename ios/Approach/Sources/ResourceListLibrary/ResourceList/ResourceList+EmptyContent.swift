@@ -57,12 +57,12 @@ public struct ResourceListEmpty: Reducer {
 		)
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didTapActionButton
 		}
-		public enum InternalAction: Equatable { case doNothing }
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum DelegateAction {
 			case didTapActionButton
 		}
 

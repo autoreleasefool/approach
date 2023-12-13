@@ -31,7 +31,7 @@ public struct AccessoriesOverview: Reducer {
 	}
 
 	public enum Action: FeatureAction {
-		public enum ViewAction {
+		@CasePathable public enum ViewAction {
 			case task
 			case onAppear
 			case didTapViewAllAlleys
@@ -41,10 +41,8 @@ public struct AccessoriesOverview: Reducer {
 			case didTapAddGear
 			case didSwipe(SwipeAction, Item)
 		}
-		public enum DelegateAction { case doNothing }
-
-		@CasePathable
-		public enum InternalAction {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case itemsResponse(Result<[Item], Error>)
 			case didFinishDeletingItem(Result<Item, Error>)
 			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
@@ -69,7 +67,7 @@ public struct AccessoriesOverview: Reducer {
 			case alert(AlertState<AlertAction>)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case alleyEditor(AlleyEditor.Action)
 			case alleysList(AlleysList.Action)
 			case gearEditor(GearEditor.Action)
@@ -105,7 +103,7 @@ public struct AccessoriesOverview: Reducer {
 		}
 	}
 
-	public enum SwipeAction: Equatable {
+	public enum SwipeAction {
 		case edit
 	}
 

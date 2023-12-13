@@ -7,7 +7,7 @@ extension GamesEditor {
 	func loadBowlers(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.bowlers)
 		return .run { [bowlerIds = state.bowlerIds] send in
-			await send(.internal(.bowlersResponse(TaskResult {
+			await send(.internal(.bowlersResponse(Result {
 				try await bowlers.summaries(forIds: bowlerIds)
 			})))
 		}

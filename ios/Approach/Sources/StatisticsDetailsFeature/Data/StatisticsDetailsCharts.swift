@@ -16,14 +16,14 @@ public struct StatisticsDetailsCharts: Reducer {
 		public var isLoadingNextChart: Bool
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didChangeAggregation(TrackableFilter.Aggregation)
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)

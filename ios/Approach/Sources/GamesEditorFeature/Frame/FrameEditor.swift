@@ -24,18 +24,18 @@ public struct FrameEditor: Reducer {
 		}
 	}
 
-	public enum Action: Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action {
+		@CasePathable public enum ViewAction {
 			case didStartDragging
 			case didDragOverPin(Pin)
 			case didStopDragging
 			case didTapPin(Pin)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didProvokeLock
 			case didEditFrame
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)

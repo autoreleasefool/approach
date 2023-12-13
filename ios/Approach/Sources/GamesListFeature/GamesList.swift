@@ -60,8 +60,8 @@ public struct GamesList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapGame(Game.ID)
 			case didTapShareButton
@@ -69,12 +69,12 @@ public struct GamesList: Reducer {
 			case didTapAddButton
 			case didTapArchiveTipDismissButton
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didLoadEditableSeries(TaskResult<Series.Edit>)
-			case didReorderGames(TaskResult<Never>)
-			case didAddGameToSeries(TaskResult<Never>)
-			case didArchiveGame(TaskResult<Never>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didLoadEditableSeries(Result<Series.Edit, Error>)
+			case didReorderGames(Result<Never, Error>)
+			case didAddGameToSeries(Result<Never, Error>)
+			case didArchiveGame(Result<Never, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Game.List, Series.ID>.Action)
@@ -93,7 +93,7 @@ public struct GamesList: Reducer {
 			case seriesEditor(SeriesEditor.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case sharing(Sharing.Action)
 			case gameEditor(GamesEditor.Action)
 			case seriesEditor(SeriesEditor.Action)
@@ -163,7 +163,7 @@ public struct GamesList: Reducer {
 
 				case .didTapEditButton:
 					return .run { [id = state.series.id] send in
-						await send(.internal(.didLoadEditableSeries(TaskResult {
+						await send(.internal(.didLoadEditableSeries(Result {
 							try await self.series.edit(id)
 						})))
 					}

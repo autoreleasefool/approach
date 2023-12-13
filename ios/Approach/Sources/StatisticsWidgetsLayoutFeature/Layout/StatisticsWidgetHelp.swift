@@ -21,12 +21,12 @@ public struct StatisticsWidgetHelp: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didTapDoneButton
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)
