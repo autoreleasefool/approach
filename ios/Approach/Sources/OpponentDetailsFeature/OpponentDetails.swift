@@ -24,14 +24,14 @@ public struct OpponentDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didFirstAppear
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didLoadDetails(TaskResult<Bowler.OpponentDetails>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didLoadDetails(Result<Bowler.OpponentDetails, Error>)
 			case errors(Errors<ErrorID>.Action)
 		}
 
@@ -96,7 +96,7 @@ public struct OpponentDetails: Reducer {
 
 	private func refreshDetails(forOpponent: Bowler.ID) -> Effect<Action> {
 		.run { send in
-			await send(.internal(.didLoadDetails(TaskResult {
+			await send(.internal(.didLoadDetails(Result {
 				try await bowlers.record(againstOpponent: forOpponent)
 			})))
 		}

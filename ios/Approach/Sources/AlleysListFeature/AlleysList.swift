@@ -48,17 +48,17 @@ public struct AlleysList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didTapFiltersButton
 			case didTapBowler
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 
-		public enum InternalAction: Equatable {
-			case didLoadEditableAlley(TaskResult<Alley.EditWithLanes>)
-			case didDeleteAlley(TaskResult<Alley.List>)
+		@CasePathable public enum InternalAction {
+			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
+			case didDeleteAlley(Result<Alley.List, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case list(ResourceList<Alley.List, Alley.List.FetchRequest>.Action)
@@ -77,7 +77,7 @@ public struct AlleysList: Reducer {
 			case filters(AlleysFilter.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case editor(AlleyEditor.Action)
 			case filters(AlleysFilter.Action)
 		}
@@ -156,14 +156,14 @@ public struct AlleysList: Reducer {
 					switch delegateAction {
 					case let .didEdit(alley):
 						return .run { send in
-							await send(.internal(.didLoadEditableAlley(TaskResult {
+							await send(.internal(.didLoadEditableAlley(Result {
 								try await alleys.edit(alley.id)
 							})))
 						}
 
 					case let .didDelete(alley):
 						return .run { send in
-							await send(.internal(.didDeleteAlley(TaskResult {
+							await send(.internal(.didDeleteAlley(Result {
 								try await alleys.delete(alley.id)
 								return alley
 							})))

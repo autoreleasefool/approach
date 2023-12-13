@@ -22,12 +22,12 @@ public struct TabbedContent: Reducer {
 	}
 
 	public enum Action: FeatureAction {
-		public enum ViewAction: BindableAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case didAppear
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction { case doNothing }
-		public enum InternalAction {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case didChangeTabs([Tab])
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)

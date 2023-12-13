@@ -44,16 +44,16 @@ public struct StatisticsDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didFirstAppear
 			case didTapSourcePicker
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
 			case errors(Errors<ErrorID>.Action)
@@ -61,9 +61,9 @@ public struct StatisticsDetails: Reducer {
 			case didStartLoadingChart
 			case adjustBackdrop
 			case scrollListToEntry(Statistics.ListEntry.ID)
-			case didLoadSources(TaskResult<TrackableFilter.Sources?>)
-			case didLoadListEntries(TaskResult<[Statistics.ListEntryGroup]>)
-			case didLoadChartContent(TaskResult<Statistics.ChartContent>)
+			case didLoadSources(Result<TrackableFilter.Sources?, Error>)
+			case didLoadListEntries(Result<[Statistics.ListEntryGroup], Error>)
+			case didLoadChartContent(Result<Statistics.ChartContent, Error>)
 			case orientationChange(UIDeviceOrientation)
 		}
 
@@ -79,7 +79,7 @@ public struct StatisticsDetails: Reducer {
 			case sourcePicker(StatisticsSourcePicker.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case list(StatisticsDetailsList.Action)
 			case sourcePicker(StatisticsSourcePicker.Action)
 		}

@@ -25,18 +25,18 @@ public struct MatchPlayEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapOpponent
 			case didSetScore(String)
 			case didSetResult(MatchPlay.Result?)
 			case didTapDeleteButton
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didEditMatchPlay(MatchPlay.Edit?)
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case opponentPicker(PresentationAction<ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.Action>)
 		}
 

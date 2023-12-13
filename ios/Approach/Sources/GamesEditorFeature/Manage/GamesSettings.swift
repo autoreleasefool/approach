@@ -35,8 +35,8 @@ public struct GamesSettings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didTapDone
 			case didSwitchGame(to: Int)
@@ -44,12 +44,12 @@ public struct GamesSettings: Reducer {
 			case didMoveBowlers(source: IndexSet, destination: Int)
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case movedBowlers(source: IndexSet, destination: Int)
 			case switchedGame(to: Int)
 			case switchedBowler(to: Bowler.ID)
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case delegate(DelegateAction)

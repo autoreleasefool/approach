@@ -33,8 +33,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case task
 			case didTapAddNew
@@ -46,12 +46,12 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case binding(BindingAction<State>)
 
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case widgetsResponse(TaskResult<[StatisticsWidget.Configuration]>)
-			case didLoadChartContent(id: StatisticsWidget.ID, TaskResult<Statistics.ChartContent>)
-			case didUpdatePriorities(TaskResult<Never>)
-			case didDeleteWidget(TaskResult<Never>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case widgetsResponse(Result<[StatisticsWidget.Configuration], Error>)
+			case didLoadChartContent(id: StatisticsWidget.ID, Result<Statistics.ChartContent, Error>)
+			case didUpdatePriorities(Result<Never, Error>)
+			case didDeleteWidget(Result<Never, Error>)
 
 			case startAnimatingWidgets
 			case stopAnimatingWidgets
@@ -169,7 +169,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 					let chartTasks: [Effect<Action>] = state.widgets.map { widget in
 						.run { send in
-							await send(.internal(.didLoadChartContent(id: widget.id, TaskResult {
+							await send(.internal(.didLoadChartContent(id: widget.id, Result {
 								try await self.statisticsWidgets.chart(widget)
 							})))
 						}

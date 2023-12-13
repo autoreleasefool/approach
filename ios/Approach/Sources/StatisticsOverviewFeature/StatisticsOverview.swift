@@ -25,16 +25,16 @@ public struct StatisticsOverview: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapDismissOverviewTip
 			case didTapDismissDetailsTip
 			case didTapViewDetailedStatistics
 			case sourcePickerDidDismiss
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -50,7 +50,7 @@ public struct StatisticsOverview: Reducer {
 			case details(StatisticsDetails.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case sourcePicker(StatisticsSourcePicker.Action)
 			case details(StatisticsDetails.Action)
 		}

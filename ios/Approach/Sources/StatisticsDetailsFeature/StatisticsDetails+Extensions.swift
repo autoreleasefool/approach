@@ -6,12 +6,12 @@ extension StatisticsDetails {
 	func refreshStatistics(state: State) -> Effect<Action> {
 		.merge(
 			.run { [filter = state.filter] send in
-				await send(.internal(.didLoadListEntries(TaskResult {
+				await send(.internal(.didLoadListEntries(Result {
 					try await statistics.load(for: filter)
 				})))
 			},
 			.run { [source = state.filter.source] send in
-				await send(.internal(.didLoadSources(TaskResult {
+				await send(.internal(.didLoadSources(Result {
 					try await statistics.loadSources(source)
 				})))
 			}
@@ -25,7 +25,7 @@ extension StatisticsDetails {
 			.run { send in
 				let startTime = date()
 
-				let result = await TaskResult { try await self.statistics.chart(statistic: forStatistic, filter: withFilter) }
+				let result = await Result { try await self.statistics.chart(statistic: forStatistic, filter: withFilter) }
 
 				let timeSpent = date().timeIntervalSince(startTime)
 				if timeSpent < Self.chartLoadingAnimationTime {

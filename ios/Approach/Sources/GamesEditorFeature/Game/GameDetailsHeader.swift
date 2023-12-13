@@ -28,17 +28,17 @@ public struct GameDetailsHeader: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didStartTask
 			case didTapNext(State.NextElement)
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case startShimmering
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didProceed(to: State.NextElement)
 		}
 

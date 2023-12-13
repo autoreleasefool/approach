@@ -12,16 +12,16 @@ public struct AlleysFilter: Reducer {
 		@BindingState public var filter: Alley.List.FetchRequest.Filter
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case didTapClearButton
 			case didTapApplyButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didChangeFilters(Alley.List.FetchRequest.Filter)
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case `internal`(InternalAction)

@@ -26,17 +26,17 @@ public struct RollEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case didStartTask
 			case didTapBall(Gear.ID)
 			case didTapOtherButton
 			case didToggleFoul
 		}
-		public enum InternalAction: Equatable {
-			case didLoadGear(TaskResult<[Gear.Summary]>)
+		@CasePathable public enum InternalAction {
+			case didLoadGear(Result<[Gear.Summary], Error>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didEditRoll
 			case didRequestBallPicker
 			case didChangeBall(Gear.Summary?)

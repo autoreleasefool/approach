@@ -69,8 +69,8 @@ public struct SectionResourceList<
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case task
 			case didFirstAppear
 			case didTapAddButton
@@ -82,7 +82,7 @@ public struct SectionResourceList<
 			case binding(BindingAction<State>)
 		}
 
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didDelete(R)
 			case didArchive(R)
 			case didEdit(R)
@@ -92,9 +92,9 @@ public struct SectionResourceList<
 			case didTapEmptyStateButton
 		}
 
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case refreshObservation
-			case sectionsResponse(TaskResult<[Section]>)
+			case sectionsResponse(Result<[Section], Error>)
 			case empty(ResourceListEmpty.Action)
 			case error(ResourceListEmpty.Action)
 		}
@@ -113,7 +113,7 @@ public struct SectionResourceList<
 		case add
 	}
 
-	public enum SwipeAction: Equatable {
+	public enum SwipeAction {
 		case edit
 		case delete
 		case archive

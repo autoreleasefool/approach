@@ -38,8 +38,8 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case task
 			case didFirstAppear
 			case didTapCancelButton
@@ -47,12 +47,12 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			case didTapResource(Resource)
 			case didTapDeselectAllButton
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didChangeSelection([Resource])
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case refreshObservation
-			case didLoadResources(TaskResult<[Resource]>)
+			case didLoadResources(Result<[Resource], Error>)
 		}
 
 		case view(ViewAction)

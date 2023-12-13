@@ -49,8 +49,8 @@ public struct GameDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case task
 			case onAppear
 			case didFirstAppear
@@ -65,19 +65,19 @@ public struct GameDetails: Reducer {
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didSelectLanes
 			case didProceed(to: GameDetailsHeader.State.NextElement)
-			case didEditMatchPlay(TaskResult<MatchPlay.Edit?>)
+			case didEditMatchPlay(Result<MatchPlay.Edit?, Error>)
 			case didClearManualScore
 			case didProvokeLock
 			case didEditGame(Game.Edit?)
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
-		public enum InternalAction: Equatable {
+		@CasePathable public enum InternalAction {
 			case refreshObservation
-			case didLoadGame(TaskResult<Game.Edit?>)
+			case didLoadGame(Result<Game.Edit?, Error>)
 			case gameDetailsHeader(GameDetailsHeader.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
@@ -96,7 +96,7 @@ public struct GameDetails: Reducer {
 			case scoring(ScoringEditor.State)
 			case statistics(MidGameStatisticsDetails.State)
 		}
-		public enum Action: Equatable {
+		public enum Action {
 			case lanePicker(ResourcePicker<Lane.Summary, Alley.ID>.Action)
 			case gearPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
 			case matchPlay(MatchPlayEditor.Action)

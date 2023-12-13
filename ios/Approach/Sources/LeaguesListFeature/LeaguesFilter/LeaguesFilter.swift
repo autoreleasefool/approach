@@ -12,16 +12,16 @@ public struct LeaguesFilter: Reducer {
 		@BindingState public var recurrence: League.Recurrence?
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case didTapClearButton
 			case didTapApplyButton
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable {
+		@CasePathable public enum DelegateAction {
 			case didChangeFilters(League.Recurrence?)
 		}
-		public enum InternalAction: Equatable { case doNothing }
+		@CasePathable public enum InternalAction { case doNothing }
 
 		case view(ViewAction)
 		case `internal`(InternalAction)

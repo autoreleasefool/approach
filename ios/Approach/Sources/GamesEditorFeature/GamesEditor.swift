@@ -100,8 +100,8 @@ public struct GamesEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: BindableAction, Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case didFirstAppear
 			case didAdjustBackdropSize(CGSize)
@@ -110,16 +110,16 @@ public struct GamesEditor: Reducer {
 			case didRequestReview
 			case binding(BindingAction<State>)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case bowlersResponse(TaskResult<[Bowler.Summary]>)
-			case framesResponse(TaskResult<[Frame.Edit]>)
-			case gameResponse(TaskResult<Game.Edit?>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case bowlersResponse(Result<[Bowler.Summary], Error>)
+			case framesResponse(Result<[Frame.Edit], Error>)
+			case gameResponse(Result<Game.Edit?, Error>)
 
-			case didUpdateFrame(TaskResult<Frame.Edit>)
-			case didUpdateGame(TaskResult<Game.Edit>)
-			case didUpdateMatchPlay(TaskResult<MatchPlay.Edit>)
-			case didDuplicateLanes(TaskResult<Never>)
+			case didUpdateFrame(Result<Frame.Edit, Error>)
+			case didUpdateGame(Result<Game.Edit, Error>)
+			case didUpdateMatchPlay(Result<MatchPlay.Edit, Error>)
+			case didDuplicateLanes(Result<Never, Error>)
 
 			case showDuplicateLanesAlert
 

@@ -31,18 +31,18 @@ public struct AlleyLanesEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapAddLaneButton
 			case didTapAddMultipleLanesButton
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		public enum DelegateAction: Equatable { case doNothing }
+		@CasePathable public enum DelegateAction { case doNothing }
 
-		public enum InternalAction: Equatable {
-			case didDeleteLane(TaskResult<Lane.ID>)
+		@CasePathable public enum InternalAction {
+			case didDeleteLane(Result<Lane.ID, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case laneEditor(id: LaneEditor.State.ID, action: LaneEditor.Action)
@@ -96,7 +96,7 @@ public struct AlleyLanesEditor: Reducer {
 					switch alertAction {
 					case let .didTapDeleteButton(lane):
 						return .run { send in
-							await send(.internal(.didDeleteLane(TaskResult {
+							await send(.internal(.didDeleteLane(Result {
 								try await lanes.delete([lane])
 								return lane
 							})))

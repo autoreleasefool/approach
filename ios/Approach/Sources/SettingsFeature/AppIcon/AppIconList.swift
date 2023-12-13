@@ -28,17 +28,17 @@ public struct AppIconList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didFirstAppear
 			case didTapIcon(AppIcon)
 			case didTapReset
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didUpdateIcon(TaskResult<Never>)
-			case didFetchIcon(TaskResult<AppIcon?>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didUpdateIcon(Result<Never, Error>)
+			case didFetchIcon(Result<AppIcon?, Error>)
 			case alert(PresentationAction<Alert>)
 		}
 		public enum Alert: Equatable {}

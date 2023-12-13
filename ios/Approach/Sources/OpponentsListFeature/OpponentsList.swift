@@ -59,16 +59,16 @@ public struct OpponentsList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
-		public enum ViewAction: Equatable {
+	public enum Action: FeatureAction {
+		@CasePathable public enum ViewAction {
 			case onAppear
 			case didTapSortOrderButton
 			case didTapOpponent(Bowler.ID)
 		}
-		public enum DelegateAction: Equatable { case doNothing }
-		public enum InternalAction: Equatable {
-			case didLoadEditableOpponent(TaskResult<Bowler.Edit>)
-			case didArchiveOpponent(TaskResult<Bowler.Opponent>)
+		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum InternalAction {
+			case didLoadEditableOpponent(Result<Bowler.Edit, Error>)
+			case didArchiveOpponent(Result<Bowler.Opponent, Error>)
 
 			case list(ResourceList<Bowler.Opponent, Bowler.Ordering>.Action)
 			case errors(Errors<ErrorID>.Action)
@@ -88,7 +88,7 @@ public struct OpponentsList: Reducer {
 			case sortOrder(SortOrder<Bowler.Ordering>.State)
 		}
 
-		public enum Action: Equatable {
+		public enum Action {
 			case details(OpponentDetails.Action)
 			case editor(BowlerEditor.Action)
 			case sortOrder(SortOrder<Bowler.Ordering>.Action)
@@ -168,14 +168,14 @@ public struct OpponentsList: Reducer {
 					switch delegateAction {
 					case let .didEdit(opponent):
 						return .run { send in
-							await send(.internal(.didLoadEditableOpponent(TaskResult {
+							await send(.internal(.didLoadEditableOpponent(Result {
 								try await bowlers.edit(opponent.id)
 							})))
 						}
 
 					case let .didArchive(bowler):
 						return .run { send in
-							await send(.internal(.didArchiveOpponent(TaskResult {
+							await send(.internal(.didArchiveOpponent(Result {
 								try await bowlers.archive(bowler.id)
 								return bowler
 							})))
