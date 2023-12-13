@@ -87,7 +87,7 @@ public struct ArchiveList: Reducer {
 	@Dependency(\.games) var games
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 

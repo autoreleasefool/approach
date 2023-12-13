@@ -45,7 +45,7 @@ public struct AlleyLanesEditor: Reducer {
 			case didDeleteLane(Result<Lane.ID, Error>)
 
 			case errors(Errors<ErrorID>.Action)
-			case laneEditor(id: LaneEditor.State.ID, action: LaneEditor.Action)
+			case laneEditor(IdentifiedActionOf<LaneEditor>)
 			case addLaneForm(PresentationAction<AddLaneForm.Action>)
 		}
 
@@ -73,7 +73,7 @@ public struct AlleyLanesEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
@@ -123,7 +123,7 @@ public struct AlleyLanesEditor: Reducer {
 						.enqueue(.failedToDeleteLane, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
 						.map { .internal(.errors($0)) }
 
-				case let .laneEditor(id, .delegate(delegateAction)):
+				case let .laneEditor(.element(id, .delegate(delegateAction))):
 					switch delegateAction {
 					case .didDeleteLane:
 						if let deleted = state.existingLanes.first(where: { $0.id == id }) {
@@ -146,18 +146,9 @@ public struct AlleyLanesEditor: Reducer {
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
-				case .errors(.delegate(.doNothing)):
-					return .none
-
-				case .laneEditor(_, .view), .laneEditor(_, .internal):
-					return .none
-
-				case .errors(.internal), .errors(.view):
-					return .none
-
-				case .addLaneForm(.presented(.internal)),
-						.addLaneForm(.presented(.view)),
-						.addLaneForm(.dismiss):
+				case .addLaneForm(.presented(.internal)), .addLaneForm(.presented(.view)), .addLaneForm(.dismiss),
+						.laneEditor(.element(_, .view)), .laneEditor(.element(_, .internal)),
+						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 
@@ -165,13 +156,13 @@ public struct AlleyLanesEditor: Reducer {
 				return .none
 			}
 		}
-		.forEach(\.existingLaneEditors, action: /Action.internal..Action.InternalAction.laneEditor(id:action:)) {
+		.forEach(\.existingLaneEditors, action: \.internal.laneEditor) {
 			LaneEditor()
 		}
-		.forEach(\.newLaneEditors, action: /Action.internal..Action.InternalAction.laneEditor(id:action:)) {
+		.forEach(\.newLaneEditors, action: \.internal.laneEditor) {
 			LaneEditor()
 		}
-		.ifLet(\.$addLaneForm, action: /Action.internal..Action.InternalAction.addLaneForm) {
+		.ifLet(\.$addLaneForm, action: \.internal.addLaneForm) {
 			AddLaneForm()
 		}
 

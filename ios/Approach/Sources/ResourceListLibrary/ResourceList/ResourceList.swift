@@ -69,7 +69,7 @@ public struct ResourceList<
 	let fetchResources: (Q) -> AsyncThrowingStream<[R], Swift.Error>
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.sectionList, action: /Action.internal..Action.InternalAction.sectionList) {
+		Scope(state: \.sectionList, action: \.internal.sectionList) {
 			SectionResourceList(fetchSections: fetchResources(query:))
 		}
 

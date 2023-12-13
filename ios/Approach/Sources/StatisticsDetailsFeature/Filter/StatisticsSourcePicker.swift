@@ -3,6 +3,7 @@ import ComposableArchitecture
 import DateTimeLibrary
 import EquatableLibrary
 import ErrorsFeature
+import ExtensionsLibrary
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import LeaguesRepositoryInterface
@@ -19,7 +20,6 @@ import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 @Reducer
-// swiftlint:disable file_length
 public struct StatisticsSourcePicker: Reducer {
 	public struct State: Equatable {
 		public var sourceToLoad: TrackableFilter.Source?
@@ -62,6 +62,7 @@ public struct StatisticsSourcePicker: Reducer {
 		case `internal`(InternalAction)
 	}
 
+	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
@@ -83,16 +84,16 @@ public struct StatisticsSourcePicker: Reducer {
 		@Dependency(\.series) var series
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.bowlerPicker, action: /Action.bowlerPicker) {
+			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
 				ResourcePicker { _ in bowlers.pickable() }
 			}
-			Scope(state: /State.leaguePicker, action: /Action.leaguePicker) {
+			Scope(state: \.leaguePicker, action: \.leaguePicker) {
 				ResourcePicker { bowler in leagues.pickable(bowledBy: bowler, ordering: .byName) }
 			}
-			Scope(state: /State.seriesPicker, action: /Action.seriesPicker) {
+			Scope(state: \.seriesPicker, action: \.seriesPicker) {
 				ResourcePicker { league in series.summaries(bowledIn: league) }
 			}
-			Scope(state: /State.gamePicker, action: /Action.gamePicker) {
+			Scope(state: \.gamePicker, action: \.gamePicker) {
 				ResourcePicker { series in games.seriesGamesSummaries(forId: series, ordering: .byIndex) }
 			}
 		}
@@ -108,7 +109,7 @@ public struct StatisticsSourcePicker: Reducer {
 	@Dependency(\.statistics) var statistics
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
@@ -251,7 +252,7 @@ public struct StatisticsSourcePicker: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 	}
@@ -343,60 +344,43 @@ public struct StatisticsSourcePickerView: View {
 			.navigationTitle(Strings.Statistics.Filter.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.bowlerPicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.leaguePicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.seriesPicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.gamePicker(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.bowlerPicker(store.scope(state: \.$destination.bowlerPicker, action: \.internal.destination.bowlerPicker))
+		.leaguePicker(store.scope(state: \.$destination.leaguePicker, action: \.internal.destination.leaguePicker))
+		.seriesPicker(store.scope(state: \.$destination.seriesPicker, action: \.internal.destination.seriesPicker))
+		.gamePicker(store.scope(state: \.$destination.gamePicker, action: \.internal.destination.gamePicker))
 	}
 }
 
 @MainActor extension View {
-	fileprivate typealias State = PresentationState<StatisticsSourcePicker.Destination.State>
-	fileprivate typealias Action = PresentationAction<StatisticsSourcePicker.Destination.Action>
-
-	fileprivate func bowlerPicker(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /StatisticsSourcePicker.Destination.State.bowlerPicker,
-			action: StatisticsSourcePicker.Destination.Action.bowlerPicker
-		) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+	fileprivate func bowlerPicker(
+		_ store: PresentationStoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>
+	) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
 			ResourcePickerView(store: store) { bowler in
 				Bowler.View(bowler)
 			}
 		}
 	}
 
-	fileprivate func leaguePicker(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /StatisticsSourcePicker.Destination.State.leaguePicker,
-			action: StatisticsSourcePicker.Destination.Action.leaguePicker
-		) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
+	fileprivate func leaguePicker(_ store: PresentationStoreOf<ResourcePicker<League.Summary, Bowler.ID>>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
 		}
 	}
 
-	fileprivate func seriesPicker(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /StatisticsSourcePicker.Destination.State.seriesPicker,
-			action: StatisticsSourcePicker.Destination.Action.seriesPicker
-		) { (store: StoreOf<ResourcePicker<Series.Summary, League.ID>>) in
+	fileprivate func seriesPicker(_ store: PresentationStoreOf<ResourcePicker<Series.Summary, League.ID>>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Series.Summary, League.ID>>) in
 			ResourcePickerView(store: store) { series in
 				Text(series.date.longFormat)
 			}
 		}
 	}
 
-	fileprivate func gamePicker(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /StatisticsSourcePicker.Destination.State.gamePicker,
-			action: StatisticsSourcePicker.Destination.Action.gamePicker
-		) { (store: StoreOf<ResourcePicker<Game.Summary, Series.ID>>) in
+	fileprivate func gamePicker(_ store: PresentationStoreOf<ResourcePicker<Game.Summary, Series.ID>>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Game.Summary, Series.ID>>) in
 			ResourcePickerView(store: store) { game in
 				Text(Strings.Game.titleWithOrdinal(game.index + 1))
 			}

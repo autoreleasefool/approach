@@ -130,19 +130,19 @@ public struct BowlersList: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: \.editor, action: \.editor) {
 				BowlerEditor()
 			}
-			Scope(state: /State.leagues, action: /Action.leagues) {
+			Scope(state: \.leagues, action: \.leagues) {
 				LeaguesList()
 			}
-			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+			Scope(state: \.sortOrder, action: \.sortOrder) {
 				SortOrder()
 			}
-			Scope(state: /State.seriesEditor, action: /Action.seriesEditor) {
+			Scope(state: \.seriesEditor, action: \.seriesEditor) {
 				SeriesEditor()
 			}
-			Scope(state: /State.games, action: /Action.games) {
+			Scope(state: \.games, action: \.games) {
 				GamesList()
 			}
 		}
@@ -166,19 +166,19 @@ public struct BowlersList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceList(fetchResources: bowlers.list)
 		}
 
-		Scope(state: \.widgets, action: /Action.internal..Action.InternalAction.widgets) {
+		Scope(state: \.widgets, action: \.internal.widgets) {
 			StatisticsWidgetLayout()
 		}
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.announcements, action: /Action.internal..Action.InternalAction.announcements) {
+		Scope(state: \.announcements, action: \.internal.announcements) {
 			Announcements()
 		}
 
@@ -330,7 +330,7 @@ public struct BowlersList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

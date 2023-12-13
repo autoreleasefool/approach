@@ -22,7 +22,7 @@ public struct GameDetailsView: View {
 				Form {
 					Section {
 						GameDetailsHeaderView(
-							store: store.scope(state: \.gameDetailsHeader, action: /GameDetails.Action.InternalAction.gameDetailsHeader)
+							store: store.scope(state: \.gameDetailsHeader, action: \.internal.gameDetailsHeader)
 						)
 						.listRowInsets(EdgeInsets())
 						.listRowBackground(Color.clear)
@@ -96,7 +96,7 @@ public struct GameDetailsView: View {
 			})
 			.toolbar(.hidden)
 			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) })
+				store: store.scope(state: \.$destination, action: \.internal.destination)
 			) {
 				SwitchStore($0) { state in
 					switch state {

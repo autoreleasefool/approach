@@ -2,6 +2,7 @@ import ArchiveListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
+import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsListFeature
 import OpponentsListFeature
@@ -94,7 +95,7 @@ public struct SettingsView: View {
 					Text(Strings.Settings.Archive.footer)
 				}
 
-				HelpSettingsView(store: store.scope(state: \.helpSettings, action: /Settings.Action.InternalAction.helpSettings))
+				HelpSettingsView(store: store.scope(state: \.helpSettings, action: \.internal.helpSettings))
 
 				Section {
 					Button {
@@ -115,61 +116,43 @@ public struct SettingsView: View {
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
-		.archive(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.appIconList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.opponentsList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.featureFlagsList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.statisticsSettings(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.toast(store: store.scope(state: \.toast, action: \.internal.toast))
+		.archive(store.scope(state: \.$destination.archive, action: \.internal.destination.archive))
+		.appIconList(store.scope(state: \.$destination.appIcon, action: \.internal.destination.appIcon))
+		.opponentsList(store.scope(state: \.$destination.opponentsList, action: \.internal.destination.opponentsList))
+		.featureFlagsList(store.scope(state: \.$destination.featureFlags, action: \.internal.destination.featureFlags))
+		.statisticsSettings(store.scope(state: \.$destination.statistics, action: \.internal.destination.statistics))
 	}
 }
 
 @MainActor extension View {
-	fileprivate typealias State = PresentationState<Settings.Destination.State>
-	fileprivate typealias Action = PresentationAction<Settings.Destination.Action>
-
-	fileprivate func archive(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /Settings.Destination.State.archive,
-			action: Settings.Destination.Action.archive,
-			destination: { ArchiveListView(store: $0) }
-		)
+	fileprivate func archive(_ store: PresentationStoreOf<ArchiveList>) -> some View {
+		navigationDestination(store: store) {
+			ArchiveListView(store: $0)
+		}
 	}
 
-	fileprivate func appIconList(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /Settings.Destination.State.appIcon,
-			action: Settings.Destination.Action.appIcon,
-			destination: { AppIconListView(store: $0) }
-		)
+	fileprivate func appIconList(_ store: PresentationStoreOf<AppIconList>) -> some View {
+		navigationDestination(store: store) {
+			AppIconListView(store: $0)
+		}
 	}
 
-	fileprivate func opponentsList(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /Settings.Destination.State.opponentsList,
-			action: Settings.Destination.Action.opponentsList,
-			destination: { OpponentsListView(store: $0) }
-		)
+	fileprivate func opponentsList(_ store: PresentationStoreOf<OpponentsList>) -> some View {
+		navigationDestination(store: store) {
+			OpponentsListView(store: $0)
+		}
 	}
 
-	fileprivate func featureFlagsList(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /Settings.Destination.State.featureFlags,
-			action: Settings.Destination.Action.featureFlags,
-			destination: { FeatureFlagsListView(store: $0) }
-		)
+	fileprivate func featureFlagsList(_ store: PresentationStoreOf<FeatureFlagsList>) -> some View {
+		navigationDestination(store: store) {
+			FeatureFlagsListView(store: $0)
+		}
 	}
 
-	fileprivate func statisticsSettings(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /Settings.Destination.State.statistics,
-			action: Settings.Destination.Action.statistics,
-			destination: { StatisticsSettingsView(store: $0) }
-		)
+	fileprivate func statisticsSettings(_ store: PresentationStoreOf<StatisticsSettings>) -> some View {
+		navigationDestination(store: store) {
+			StatisticsSettingsView(store: $0)
+		}
 	}
 }

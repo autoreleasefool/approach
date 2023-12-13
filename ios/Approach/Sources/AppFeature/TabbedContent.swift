@@ -64,19 +64,19 @@ public struct TabbedContent: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
+		Scope(state: \.bowlersList, action: \.internal.bowlersList) {
 			BowlersList()
 		}
 
-		Scope(state: \.settings, action: /Action.internal..Action.InternalAction.settings) {
+		Scope(state: \.settings, action: \.internal.settings) {
 			Settings()
 		}
 
-		Scope(state: \.accessories, action: /Action.internal..Action.InternalAction.accessories) {
+		Scope(state: \.accessories, action: \.internal.accessories) {
 			AccessoriesOverview()
 		}
 
-		Scope(state: \.statistics, action: /Action.internal..Action.InternalAction.statistics) {
+		Scope(state: \.statistics, action: \.internal.statistics) {
 			StatisticsOverview()
 		}
 

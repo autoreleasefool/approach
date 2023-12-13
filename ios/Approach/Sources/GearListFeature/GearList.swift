@@ -97,13 +97,13 @@ public struct GearList: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: \.editor, action: \.editor) {
 				GearEditor()
 			}
-			Scope(state: /State.filters, action: /Action.filters) {
+			Scope(state: \.filters, action: \.filters) {
 				GearFilter()
 			}
-			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+			Scope(state: \.sortOrder, action: \.sortOrder) {
 				SortOrder()
 			}
 		}
@@ -122,11 +122,11 @@ public struct GearList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceList {
 				gear.list(ownedBy: nil, ofKind: $0.kind, ordered: $0.sortOrder)
 			}
@@ -234,7 +234,7 @@ public struct GearList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

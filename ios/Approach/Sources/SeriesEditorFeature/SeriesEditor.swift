@@ -94,7 +94,7 @@ public struct SeriesEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+		Scope(state: \.form, action: \.internal.form) {
 			SeriesForm()
 				.dependency(\.records, .init(
 					create: series.create,
@@ -207,7 +207,7 @@ public struct SeriesEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
+		.ifLet(\.$alleyPicker, action: \.internal.alleyPicker) {
 			ResourcePicker { _ in
 				alleys.pickable()
 			}

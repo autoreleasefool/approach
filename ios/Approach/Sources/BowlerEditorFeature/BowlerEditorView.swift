@@ -20,7 +20,7 @@ public struct BowlerEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			FormView(store: store.scope(state: \.form, action: /BowlerEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,

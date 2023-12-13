@@ -71,11 +71,11 @@ public struct MidGameStatisticsDetails: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			StatisticsDetailsList()
 		}
 

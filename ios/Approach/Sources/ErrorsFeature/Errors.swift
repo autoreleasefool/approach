@@ -137,7 +137,7 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$report, action: /Action.internal..Action.InternalAction.report) {
+		.ifLet(\.$report, action: \.internal.report) {
 			ErrorReport()
 		}
 	}
@@ -194,9 +194,9 @@ extension View {
 		store: Store<Errors<ErrorID>.State, Errors<ErrorID>.Action>
 	) -> some View {
 		self
-			.toast(store: store.scope(state: \.currentToast, action: { .internal(.toast($0)) }))
+			.toast(store: store.scope(state: \.currentToast, action: \.internal.toast))
 			.sheet(
-				store: store.scope(state: \.$report, action: { .internal(.report($0)) }),
+				store: store.scope(state: \.$report, action: \.internal.report),
 				onDismiss: { store.send(.view(.didFinishDismissingReport)) },
 				content: { store in
 					ErrorReportView(store: store)

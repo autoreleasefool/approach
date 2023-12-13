@@ -65,13 +65,13 @@ public struct StatisticsWidgetLayout: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.details, action: /Action.details) {
+			Scope(state: \.details, action: \.details) {
 				StatisticsDetails()
 			}
-			Scope(state: /State.layout, action: /Action.layout) {
+			Scope(state: \.layout, action: \.layout) {
 				StatisticsWidgetLayoutBuilder()
 			}
-			Scope(state: /State.help, action: /Action.help) {
+			Scope(state: \.help, action: \.help) {
 				StatisticsWidgetHelp()
 			}
 		}
@@ -90,7 +90,7 @@ public struct StatisticsWidgetLayout: Reducer {
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
@@ -175,7 +175,7 @@ public struct StatisticsWidgetLayout: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 	}
@@ -281,18 +281,14 @@ public struct StatisticsWidgetLayoutView: View {
 			}
 			.task { await viewStore.send(.task).finish() }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsWidgetLayout.Destination.State.details,
-			action: StatisticsWidgetLayout.Destination.Action.details
+			store: store.scope(state: \.$destination.details, action: \.internal.destination.details)
 		) { (store: StoreOf<StatisticsDetails>) in
 			StatisticsDetailsView(store: store)
 		}
 		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsWidgetLayout.Destination.State.layout,
-			action: StatisticsWidgetLayout.Destination.Action.layout
+			store: store.scope(state: \.$destination.layout, action: \.internal.destination.layout)
 		) { (store: StoreOf<StatisticsWidgetLayoutBuilder>) in
 			NavigationStack {
 				StatisticsWidgetLayoutBuilderView(store: store)
@@ -300,9 +296,7 @@ public struct StatisticsWidgetLayoutView: View {
 			.interactiveDismissDisabled()
 		}
 		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsWidgetLayout.Destination.State.help,
-			action: StatisticsWidgetLayout.Destination.Action.help
+			store: store.scope(state: \.$destination.help, action: \.internal.destination.help)
 		) { (store: StoreOf<StatisticsWidgetHelp>) in
 			NavigationStack {
 				StatisticsWidgetHelpView(store: store)

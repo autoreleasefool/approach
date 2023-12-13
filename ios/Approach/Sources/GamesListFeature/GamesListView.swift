@@ -2,6 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
+import ExtensionsLibrary
 import FeatureActionLibrary
 import GamesEditorFeature
 import ModelsLibrary
@@ -40,7 +41,7 @@ public struct GamesListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
-				store: store.scope(state: \.list, action: /GamesList.Action.InternalAction.list)
+				store: store.scope(state: \.list, action: \.internal.list)
 			) { game in
 				Button { viewStore.send(.didTapGame(game.id)) } label: {
 					LabeledContent(Strings.Game.titleWithOrdinal(game.index + 1), value: "\(game.score)")
@@ -80,28 +81,30 @@ public struct GamesListView: View {
 			.navigationTitle(viewStore.title)
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesList.Destination.State.sharing,
-			action: GamesList.Destination.Action.sharing
-		) { store in
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.sharing(store.scope(state: \.$destination.sharing, action: \.internal.destination.sharing))
+		.gameEditor(store.scope(state: \.$destination.gameEditor, action: \.internal.destination.gameEditor))
+		.seriesEditor(store.scope(state: \.$destination.seriesEditor, action: \.internal.destination.seriesEditor))
+	}
+}
+
+@MainActor extension View {
+	fileprivate func sharing(_ store: PresentationStoreOf<Sharing>) -> some View {
+		sheet(store: store) { store in
 			NavigationStack {
 				SharingView(store: store)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesList.Destination.State.gameEditor,
-			action: GamesList.Destination.Action.gameEditor
-		) { store in
+	}
+
+	fileprivate func gameEditor(_ store: PresentationStoreOf<GamesEditor>) -> some View {
+		navigationDestination(store: store) { store in
 			GamesEditorView(store: store)
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GamesList.Destination.State.seriesEditor,
-			action: GamesList.Destination.Action.seriesEditor
-		) { store in
+	}
+
+	fileprivate func seriesEditor(_ store: PresentationStoreOf<SeriesEditor>) -> some View {
+		sheet(store: store) { store in
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}

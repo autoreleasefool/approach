@@ -61,9 +61,7 @@ public struct StatisticsOverviewView: View {
 			.navigationTitle(Strings.Statistics.title)
 			.onAppear { viewStore.send(.onAppear) }
 			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /StatisticsOverview.Destination.State.sourcePicker,
-				action: StatisticsOverview.Destination.Action.sourcePicker,
+				store: store.scope(state: \.$destination.sourcePicker, action: \.internal.destination.sourcePicker),
 				onDismiss: { viewStore.send(.sourcePickerDidDismiss) },
 				content: { store in
 					NavigationStack {
@@ -74,9 +72,7 @@ public struct StatisticsOverviewView: View {
 			)
 		})
 		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsOverview.Destination.State.details,
-			action: StatisticsOverview.Destination.Action.details
+			store: store.scope(state: \.$destination.details, action: \.internal.destination.details)
 		) { store in
 			StatisticsDetailsView(store: store)
 		}

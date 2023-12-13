@@ -52,7 +52,7 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			VStack {
-				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: /GamesEditor.Action.InternalAction.gamesHeader))
+				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
 					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
 
 				VStack {
@@ -114,7 +114,7 @@ public struct GamesEditorView: View {
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+				store: store.scope(state: \.$destination, action: \.internal.destination),
 				state: /GamesEditor.Destination.State.gameDetails,
 				action: GamesEditor.Destination.Action.gameDetails,
 				onDismiss: { viewStore.send(.didDismissGameDetails) },
@@ -142,14 +142,14 @@ public struct GamesEditorView: View {
 				}
 			}
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.alert(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			store: store.scope(state: \.$destination, action: \.internal.destination),
 			state: /GamesEditor.Destination.State.duplicateLanesAlert,
 			action: GamesEditor.Destination.Action.duplicateLanesAlert
 		)
 		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
+			store: store.scope(state: \.$destination, action: \.internal.destination),
 			state: /GamesEditor.Destination.State.sheets,
 			action: GamesEditor.Destination.Action.sheets,
 			onDismiss: { store.send(.view(.didDismissOpenSheet)) },
@@ -201,7 +201,7 @@ public struct GamesEditorView: View {
 			)
 			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 			.interactiveDismissDisabled(true)
-			.toast(store: store.scope(state: \.toast, action: { .internal(.toast($0)) }))
+			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 	}
 
@@ -226,13 +226,13 @@ public struct GamesEditorView: View {
 	}
 
 	private var frameEditor: some View {
-		IfLetStore(store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)) {
+		IfLetStore(store.scope(state: \.frameEditor, action: \.internal.frameEditor)) {
 			FrameEditorView(store: $0)
 		}
 	}
 
 	private var rollEditor: some View {
-		IfLetStore(store.scope(state: \.rollEditor, action: /GamesEditor.Action.InternalAction.rollEditor)) {
+		IfLetStore(store.scope(state: \.rollEditor, action: \.internal.rollEditor)) {
 			RollEditorView(store: $0)
 		}
 	}

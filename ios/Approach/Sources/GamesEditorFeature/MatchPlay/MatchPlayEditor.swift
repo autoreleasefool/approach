@@ -110,7 +110,7 @@ public struct MatchPlayEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$opponentPicker, action: /Action.internal..Action.InternalAction.opponentPicker) {
+		.ifLet(\.$opponentPicker, action: \.internal.opponentPicker) {
 			ResourcePicker { _ in bowlers.opponents(ordering: .byName) }
 		}
 
@@ -183,7 +183,7 @@ public struct MatchPlayEditorView: View {
 		})
 		.navigationTitle(Strings.MatchPlay.title)
 		.navigationDestination(
-			store: store.scope(state: \.$opponentPicker, action: { .internal(.opponentPicker($0)) })
+			store: store.scope(state: \.$opponentPicker, action: \.internal.opponentPicker)
 		) { store in
 			ResourcePickerView(store: store) {
 				Bowler.View($0)

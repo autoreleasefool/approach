@@ -61,7 +61,7 @@ public struct BowlerEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+		Scope(state: \.form, action: \.internal.form) {
 			BowlerForm()
 				.dependency(\.records, .init(
 					create: bowlers.create,
