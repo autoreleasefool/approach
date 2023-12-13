@@ -2,6 +2,7 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
+import ExtensionsLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
 import StatisticsDetailsFeature
@@ -95,53 +96,11 @@ public struct GameDetailsView: View {
 				.onFirstAppear { viewStore.send(.didFirstAppear) }
 			})
 			.toolbar(.hidden)
-			.navigationDestination(
-				store: store.scope(state: \.$destination, action: \.internal.destination)
-			) {
-				SwitchStore($0) { state in
-					switch state {
-					case .gearPicker:
-						CaseLet(
-							/GameDetails.Destination.State.gearPicker,
-							 action: GameDetails.Destination.Action.gearPicker
-						) {
-							ResourcePickerView(store: $0) {
-								Gear.ViewWithAvatar($0)
-							}
-						}
-					case .lanePicker:
-						CaseLet(
-							/GameDetails.Destination.State.lanePicker,
-							 action: GameDetails.Destination.Action.lanePicker
-						) {
-							ResourcePickerView(store: $0) {
-								Lane.View($0)
-							}
-						}
-					case .matchPlay:
-						CaseLet(
-							/GameDetails.Destination.State.matchPlay,
-							 action: GameDetails.Destination.Action.matchPlay
-						) {
-							MatchPlayEditorView(store: $0)
-						}
-					case .scoring:
-						CaseLet(
-							/GameDetails.Destination.State.scoring,
-							 action: GameDetails.Destination.Action.scoring
-						) {
-							ScoringEditorView(store: $0)
-						}
-					case .statistics:
-						CaseLet(
-							/GameDetails.Destination.State.statistics,
-							 action: GameDetails.Destination.Action.statistics
-						) {
-							MidGameStatisticsDetailsView(store: $0)
-						}
-					}
-				}
-			}
+			.gearPicker(store.scope(state: \.$destination.gearPicker, action: \.internal.destination.gearPicker))
+			.lanePicker(store.scope(state: \.$destination.lanePicker, action: \.internal.destination.lanePicker))
+			.matchPlay(store.scope(state: \.$destination.matchPlay, action: \.internal.destination.matchPlay))
+			.scoring(store.scope(state: \.$destination.scoring, action: \.internal.destination.scoring))
+			.statistics(store.scope(state: \.$destination.statistics, action: \.internal.destination.statistics))
 		}
 	}
 
@@ -168,6 +127,44 @@ public struct GameDetailsView: View {
 					Text(Strings.Game.Editor.Fields.ExcludeFromStatistics.help)
 				}
 			}
+		}
+	}
+}
+
+@MainActor extension View {
+	fileprivate func gearPicker(
+		_ store: PresentationStoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>
+	) -> some View {
+		navigationDestination(store: store) {
+			ResourcePickerView(store: $0) {
+				Gear.ViewWithAvatar($0)
+			}
+		}
+	}
+
+	fileprivate func lanePicker(_ store: PresentationStoreOf<ResourcePicker<Lane.Summary, Alley.ID>>) -> some View {
+		navigationDestination(store: store) {
+			ResourcePickerView(store: $0) {
+				Lane.View($0)
+			}
+		}
+	}
+
+	fileprivate func matchPlay(_ store: PresentationStoreOf<MatchPlayEditor>) -> some View {
+		navigationDestination(store: store) {
+			MatchPlayEditorView(store: $0)
+		}
+	}
+
+	fileprivate func scoring(_ store: PresentationStoreOf<ScoringEditor>) -> some View {
+		navigationDestination(store: store) {
+			ScoringEditorView(store: $0)
+		}
+	}
+
+	fileprivate func statistics(_ store: PresentationStoreOf<MidGameStatisticsDetails>) -> some View {
+		navigationDestination(store: store) {
+			MidGameStatisticsDetailsView(store: $0)
 		}
 	}
 }

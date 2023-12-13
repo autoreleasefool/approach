@@ -3,6 +3,7 @@ import AvatarServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import ErrorsFeature
+import ExtensionsLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
@@ -144,42 +145,22 @@ public struct GamesEditorView: View {
 		})
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.alert(
-			store: store.scope(state: \.$destination, action: \.internal.destination),
-			state: /GamesEditor.Destination.State.duplicateLanesAlert,
-			action: GamesEditor.Destination.Action.duplicateLanesAlert
+			store: store.scope(
+				state: \.$destination.duplicateLanesAlert,
+				action: \.internal.destination.duplicateLanesAlert
+			)
 		)
-		.sheet(
-			store: store.scope(state: \.$destination, action: \.internal.destination),
-			state: /GamesEditor.Destination.State.sheets,
-			action: GamesEditor.Destination.Action.sheets,
-			onDismiss: { store.send(.view(.didDismissOpenSheet)) },
-			content: {
-				SwitchStore($0) { state in
-					switch state {
-					case .ballPicker:
-						CaseLet(
-							/GamesEditor.SheetsDestination.State.ballPicker,
-							action: GamesEditor.SheetsDestination.Action.ballPicker
-						) {
-							ballPicker(store: $0)
-						}
-					case .settings:
-						CaseLet(
-							/GamesEditor.SheetsDestination.State.settings,
-							action: GamesEditor.SheetsDestination.Action.settings
-						) {
-							gamesSettings(store: $0)
-						}
-					case .sharing:
-						CaseLet(
-							/GamesEditor.SheetsDestination.State.sharing,
-							action: GamesEditor.SheetsDestination.Action.sharing
-						) {
-							sharing(store: $0)
-						}
-					}
-				}
-			}
+		.ballPicker(
+			store.scope(state: \.$destination.sheets.ballPicker, action: \.internal.destination.sheets.ballPicker),
+			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
+		)
+		.settings(
+			store.scope(state: \.$destination.sheets.settings, action: \.internal.destination.sheets.settings),
+			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
+		)
+		.sharing(
+			store.scope(state: \.$destination.sheets.sharing, action: \.internal.destination.sheets.sharing),
+			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
 		)
 	}
 
@@ -203,26 +184,6 @@ public struct GamesEditorView: View {
 			.interactiveDismissDisabled(true)
 			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
-	}
-
-	private func ballPicker(store: StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>) -> some View {
-		NavigationStack {
-			ResourcePickerView(store: store) {
-				Gear.ViewWithAvatar($0)
-			}
-		}
-	}
-
-	private func gamesSettings(store: StoreOf<GamesSettings>) -> some View {
-		NavigationStack {
-			GamesSettingsView(store: store)
-		}
-	}
-
-	private func sharing(store: StoreOf<Sharing>) -> some View {
-		NavigationStack {
-			SharingView(store: store)
-		}
 	}
 
 	private var frameEditor: some View {
@@ -290,6 +251,43 @@ extension GamesEditorView.ViewState {
 			}
 		} else {
 			self.manualScore = nil
+		}
+	}
+}
+
+@MainActor extension View {
+	fileprivate func ballPicker(
+		_ store: PresentationStoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>,
+		onDismiss: @escaping () -> Void
+	) -> some View {
+		sheet(store: store, onDismiss: onDismiss) { store in
+			NavigationStack {
+				ResourcePickerView(store: store) {
+					Gear.ViewWithAvatar($0)
+				}
+			}
+		}
+	}
+
+	fileprivate func settings(
+		_ store: PresentationStoreOf<GamesSettings>,
+		onDismiss: @escaping () -> Void
+	) -> some View {
+		sheet(store: store, onDismiss: onDismiss) { store in
+			NavigationStack {
+				GamesSettingsView(store: store)
+			}
+		}
+	}
+
+	fileprivate func sharing(
+		_ store: PresentationStoreOf<Sharing>,
+		onDismiss: @escaping () -> Void
+	) -> some View {
+		sheet(store: store, onDismiss: onDismiss) { store in
+			NavigationStack {
+				SharingView(store: store)
+			}
 		}
 	}
 }
