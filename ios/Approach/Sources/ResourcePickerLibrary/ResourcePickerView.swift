@@ -104,7 +104,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				}
 			}
 			.navigationBarBackButtonHidden(viewStore.isCancellable)
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onAppear { viewStore.send(.onAppear) }
 			.task { await viewStore.send(.task).finish() }
 		})
 	}

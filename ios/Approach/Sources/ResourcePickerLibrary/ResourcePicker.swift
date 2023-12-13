@@ -41,7 +41,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 	public enum Action: FeatureAction {
 		@CasePathable public enum ViewAction {
 			case task
-			case didFirstAppear
+			case onAppear
 			case didTapCancelButton
 			case didTapSaveButton
 			case didTapResource(Resource)
@@ -74,11 +74,11 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .onAppear:
+					return beginObservation(query: state.query)
+
 				case .task:
 					return .cancelling(id: CancelID.observation)
-
-				case .didFirstAppear:
-					return beginObservation(query: state.query)
 
 				case .didTapCancelButton:
 					state.selected = state.initialSelection

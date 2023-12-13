@@ -146,16 +146,13 @@ public struct GameDetails: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
+					return observeGame(gameId: state.gameId)
 
 				case .task:
 					return .cancelling(id: CancelID.observation)
 
 				case .didFirstAppear:
-					return .merge(
-						observeGame(gameId: state.gameId),
-						state.startShimmer()
-					)
+					return state.startShimmer()
 
 				case .didTapSeriesStatisticsButton:
 					guard let seriesId = state.game?.series.id else { return .none }

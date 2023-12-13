@@ -171,7 +171,7 @@ public struct SectionResourceListView<
 				}
 			}
 			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
+			.onAppear { viewStore.send(.onAppear) }
 			.task { await viewStore.send(.task).finish() }
 		})
 	}

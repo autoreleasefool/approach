@@ -72,7 +72,7 @@ public struct SectionResourceList<
 	public enum Action: FeatureAction {
 		@CasePathable public enum ViewAction: BindableAction {
 			case task
-			case didFirstAppear
+			case onAppear
 			case didTapAddButton
 			case didTapReorderButton
 			case didSwipe(SwipeAction, R)
@@ -136,7 +136,7 @@ public struct SectionResourceList<
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didFirstAppear:
+				case .onAppear:
 					return beginObservation(query: state.query)
 
 				case .task:
