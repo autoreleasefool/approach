@@ -103,7 +103,7 @@ public struct GearEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
 			GearForm()

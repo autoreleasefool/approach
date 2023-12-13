@@ -49,7 +49,7 @@ public struct LaneEditor: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Reduce<State, Action> { _, action in
 			switch action {

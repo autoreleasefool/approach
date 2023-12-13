@@ -76,7 +76,7 @@ public struct ErrorReport: Reducer {
 	@Dependency(\.pasteboard) var pasteboard
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {

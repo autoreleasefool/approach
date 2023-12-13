@@ -81,7 +81,7 @@ public struct HelpSettings: Reducer {
 	@Dependency(\.openURL) var openURL
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {

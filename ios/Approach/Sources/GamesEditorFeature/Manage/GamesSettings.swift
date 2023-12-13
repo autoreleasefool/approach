@@ -60,7 +60,7 @@ public struct GamesSettings: Reducer {
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
