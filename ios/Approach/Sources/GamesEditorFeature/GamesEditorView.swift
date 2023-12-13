@@ -115,9 +115,7 @@ public struct GamesEditorView: View {
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(
-				store: store.scope(state: \.$destination, action: \.internal.destination),
-				state: /GamesEditor.Destination.State.gameDetails,
-				action: GamesEditor.Destination.Action.gameDetails,
+				store: store.scope(state: \.$destination.gameDetails, action: \.internal.destination.gameDetails),
 				onDismiss: { viewStore.send(.didDismissGameDetails) },
 				content: { (store: StoreOf<GameDetails>) in
 					gameDetails(viewStore: viewStore, gameDetailsStore: store)
