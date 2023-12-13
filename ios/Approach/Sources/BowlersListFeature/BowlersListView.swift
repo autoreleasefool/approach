@@ -3,6 +3,7 @@ import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
 import ErrorsFeature
+import ExtensionsLibrary
 import GamesListFeature
 import LeaguesListFeature
 import ModelsLibrary
@@ -43,7 +44,7 @@ public struct BowlersListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
-				store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
+				store: store.scope(state: \.list, action: \.internal.list)
 			) { bowler in
 				Button { viewStore.send(.didTapBowler(bowler.id)) } label: {
 					LabeledContent(bowler.name, value: format(average: bowler.average))
@@ -62,13 +63,13 @@ public struct BowlersListView: View {
 			.task { viewStore.send(.didStartTask) }
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.announcements(store: store.scope(state: \.announcements, action: { .internal(.announcements($0)) }))
-		.bowlerEditor(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.sortOrder(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.seriesEditor(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.leaguesList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
-		.gamesList(store.scope(state: \.$destination, action: { .internal(.destination($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
+		.bowlerEditor(store.scope(state: \.$destination.editor, action: \.internal.destination.editor))
+		.sortOrder(store.scope(state: \.$destination.sortOrder, action: \.internal.destination.sortOrder))
+		.seriesEditor(store.scope(state: \.$destination.seriesEditor, action: \.internal.destination.seriesEditor))
+		.leaguesList(store.scope(state: \.$destination.leagues, action: \.internal.destination.leagues))
+		.gamesList(store.scope(state: \.$destination.games, action: \.internal.destination.games))
 	}
 
 	@ViewBuilder private func quickLaunch(
@@ -119,7 +120,7 @@ public struct BowlersListView: View {
 	) -> some View {
 		if viewStore.isShowingWidgets {
 			Section {
-				StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: { .internal(.widgets($0)) }))
+				StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
 			}
 			.listRowSeparator(.hidden)
 			.listRowInsets(EdgeInsets())
@@ -130,27 +131,16 @@ public struct BowlersListView: View {
 }
 
 @MainActor extension View {
-	fileprivate typealias State = PresentationState<BowlersList.Destination.State>
-	fileprivate typealias Action = PresentationAction<BowlersList.Destination.Action>
-
-	fileprivate func bowlerEditor(_ store: Store<State, Action>) -> some View {
-		sheet(
-			store: store,
-			state: /BowlersList.Destination.State.editor,
-			action: BowlersList.Destination.Action.editor
-		) { (store: StoreOf<BowlerEditor>) in
+	fileprivate func bowlerEditor(_ store: PresentationStoreOf<BowlerEditor>) -> some View {
+		sheet(store: store) { (store: StoreOf<BowlerEditor>) in
 			NavigationStack {
 				BowlerEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func sortOrder(_ store: Store<State, Action>) -> some View {
-		sheet(
-			store: store,
-			state: /BowlersList.Destination.State.sortOrder,
-			action: BowlersList.Destination.Action.sortOrder
-		) { (store: StoreOf<SortOrderLibrary.SortOrder<Bowler.Ordering>>) in
+	fileprivate func sortOrder(_ store: PresentationStoreOf<SortOrderLibrary.SortOrder<Bowler.Ordering>>) -> some View {
+		sheet(store: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Bowler.Ordering>>) in
 			NavigationStack {
 				SortOrderView(store: store)
 			}
@@ -158,34 +148,22 @@ public struct BowlersListView: View {
 		}
 	}
 
-	fileprivate func seriesEditor(_ store: Store<State, Action>) -> some View {
-		sheet(
-			store: store,
-			state: /BowlersList.Destination.State.seriesEditor,
-			action: BowlersList.Destination.Action.seriesEditor
-		) { (store: StoreOf<SeriesEditor>) in
+	fileprivate func seriesEditor(_ store: PresentationStoreOf<SeriesEditor>) -> some View {
+		sheet(store: store) { (store: StoreOf<SeriesEditor>) in
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func leaguesList(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /BowlersList.Destination.State.leagues,
-			action: BowlersList.Destination.Action.leagues
-		) { (store: StoreOf<LeaguesList>) in
+	fileprivate func leaguesList(_ store: PresentationStoreOf<LeaguesList>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<LeaguesList>) in
 			LeaguesListView(store: store)
 		}
 	}
 
-	fileprivate func gamesList(_ store: Store<State, Action>) -> some View {
-		navigationDestination(
-			store: store,
-			state: /BowlersList.Destination.State.games,
-			action: BowlersList.Destination.Action.games
-		) { (store: StoreOf<GamesList>) in
+	fileprivate func gamesList(_ store: PresentationStoreOf<GamesList>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
 		}
 	}

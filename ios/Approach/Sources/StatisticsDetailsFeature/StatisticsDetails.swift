@@ -85,10 +85,10 @@ public struct StatisticsDetails: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.list, action: /Action.list) {
+			Scope(state: \.list, action: \.list) {
 				StatisticsDetailsList()
 			}
-			Scope(state: /State.sourcePicker, action: /Action.sourcePicker) {
+			Scope(state: \.sourcePicker, action: \.sourcePicker) {
 				StatisticsSourcePicker()
 			}
 		}
@@ -116,11 +116,11 @@ public struct StatisticsDetails: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.charts, action: /Action.internal..Action.InternalAction.charts) {
+		Scope(state: \.charts, action: \.internal.charts) {
 			StatisticsDetailsCharts()
 		}
 
@@ -311,7 +311,7 @@ public struct StatisticsDetails: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

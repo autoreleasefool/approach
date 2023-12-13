@@ -2,6 +2,7 @@ import AlleyEditorFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
+import ExtensionsLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 import ModelsViewsLibrary
@@ -33,7 +34,7 @@ public struct AlleysListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
-				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
+				store: store.scope(state: \.list, action: \.internal.list)
 			) { alley in
 				if viewStore.isShowingAverages {
 					VStack {
@@ -56,26 +57,9 @@ public struct AlleysListView: View {
 				}
 			}
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /AlleysList.Destination.State.editor,
-			action: AlleysList.Destination.Action.editor
-		) { store in
-			NavigationStack {
-				AlleyEditorView(store: store)
-			}
-		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /AlleysList.Destination.State.filters,
-			action: AlleysList.Destination.Action.filters
-		) { store in
-			NavigationStack {
-				AlleysFilterView(store: store)
-			}
-			.presentationDetents([.medium, .large])
-		}
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.alleyEditor(store.scope(state: \.$destination.editor, action: \.internal.destination.editor))
+		.alleysFilter(store.scope(state: \.$destination.filters, action: \.internal.destination.filters))
 	}
 
 	@MainActor @ViewBuilder private func header(
@@ -93,6 +77,25 @@ public struct AlleysListView: View {
 			}
 		} else {
 			EmptyView()
+		}
+	}
+}
+
+@MainActor extension View {
+	fileprivate func alleyEditor(_ store: PresentationStoreOf<AlleyEditor>) -> some View {
+		sheet(store: store) { store in
+			NavigationStack {
+				AlleyEditorView(store: store)
+			}
+		}
+	}
+
+	fileprivate func alleysFilter(_ store: PresentationStoreOf<AlleysFilter>) -> some View {
+		sheet(store: store) { store in
+			NavigationStack {
+				AlleysFilterView(store: store)
+			}
+			.presentationDetents([.medium, .large])
 		}
 	}
 }

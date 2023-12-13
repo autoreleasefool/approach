@@ -84,11 +84,11 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.reordering, action: /Action.internal..Action.InternalAction.reordering) {
+		Scope(state: \.reordering, action: \.internal.reordering) {
 			Reorderable()
 		}
 
@@ -235,7 +235,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.$editor, action: \.internal.editor) {
 			StatisticsWidgetEditor()
 		}
 

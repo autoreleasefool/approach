@@ -82,19 +82,19 @@ public struct Settings: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.archive, action: /Action.archive) {
+			Scope(state: \.archive, action: \.archive) {
 				ArchiveList()
 			}
-			Scope(state: /State.appIcon, action: /Action.appIcon) {
+			Scope(state: \.appIcon, action: \.appIcon) {
 				AppIconList()
 			}
-			Scope(state: /State.featureFlags, action: /Action.featureFlags) {
+			Scope(state: \.featureFlags, action: \.featureFlags) {
 				FeatureFlagsList()
 			}
-			Scope(state: /State.opponentsList, action: /Action.opponentsList) {
+			Scope(state: \.opponentsList, action: \.opponentsList) {
 				OpponentsList()
 			}
-			Scope(state: /State.statistics, action: /Action.statistics) {
+			Scope(state: \.statistics, action: \.statistics) {
 				StatisticsSettings()
 			}
 		}
@@ -112,7 +112,7 @@ public struct Settings: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.helpSettings, action: /Action.internal..Action.InternalAction.helpSettings) {
+		Scope(state: \.helpSettings, action: \.internal.helpSettings) {
 			HelpSettings()
 		}
 
@@ -223,7 +223,7 @@ public struct Settings: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

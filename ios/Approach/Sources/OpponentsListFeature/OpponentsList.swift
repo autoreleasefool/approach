@@ -95,13 +95,13 @@ public struct OpponentsList: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.details, action: /Action.details) {
+			Scope(state: \.details, action: \.details) {
 				OpponentDetails()
 			}
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: \.editor, action: \.editor) {
 				BowlerEditor()
 			}
-			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+			Scope(state: \.sortOrder, action: \.sortOrder) {
 				SortOrder()
 			}
 		}
@@ -120,11 +120,11 @@ public struct OpponentsList: Reducer {
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceList(fetchResources: bowlers.opponents(ordering:))
 		}
 
@@ -226,7 +226,7 @@ public struct OpponentsList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

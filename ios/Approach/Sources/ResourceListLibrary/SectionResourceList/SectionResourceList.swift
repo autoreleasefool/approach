@@ -128,7 +128,7 @@ public struct SectionResourceList<
 	let fetchSections: (Q) -> AsyncThrowingStream<[Section], Swift.Error>
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.emptyState, action: /Action.internal..Action.InternalAction.empty) {
+		Scope(state: \.emptyState, action: \.internal.empty) {
 			ResourceListEmpty()
 		}
 
@@ -257,7 +257,7 @@ public struct SectionResourceList<
 			case .delegate:
 				return .none
 			}
-		}.ifLet(\.errorState, action: /Action.internal..Action.InternalAction.error) {
+		}.ifLet(\.errorState, action: \.internal.error) {
 			ResourceListEmpty()
 		}
 	}

@@ -41,7 +41,7 @@ public struct LeagueEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			FormView(store: store.scope(state: \.form, action: /LeagueEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
 				locationSection(viewStore)
@@ -53,7 +53,7 @@ public struct LeagueEditorView: View {
 			.onAppear { viewStore.send(.onAppear) }
 		})
 		.navigationDestination(
-			store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
+			store: store.scope(state: \.$alleyPicker, action: \.internal.alleyPicker)
 		) { store in
 			ResourcePickerView(store: store) { alley in
 				Alley.View(alley)

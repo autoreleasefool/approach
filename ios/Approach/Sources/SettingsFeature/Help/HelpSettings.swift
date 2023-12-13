@@ -66,10 +66,10 @@ public struct HelpSettings: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.analytics, action: /Action.analytics) {
+			Scope(state: \.analytics, action: \.analytics) {
 				AnalyticsSettings()
 			}
-			Scope(state: /State.export, action: /Action.export) {
+			Scope(state: \.export, action: \.export) {
 				Export()
 			}
 		}
@@ -160,7 +160,7 @@ public struct HelpSettings: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 
@@ -255,16 +255,12 @@ public struct HelpSettingsView: View {
 				)
 			}
 			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /HelpSettings.Destination.State.analytics,
-				action: HelpSettings.Destination.Action.analytics
+				store: store.scope(state: \.$destination.analytics, action: \.internal.destination.analytics)
 			) {
 				AnalyticsSettingsView(store: $0)
 			}
 			.navigationDestination(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /HelpSettings.Destination.State.export,
-				action: HelpSettings.Destination.Action.export
+				store: store.scope(state: \.$destination.export, action: \.internal.destination.export)
 			) {
 				ExportView(store: $0)
 			}

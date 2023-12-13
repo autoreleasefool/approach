@@ -100,13 +100,13 @@ public struct GamesList: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.sharing, action: /Action.sharing) {
+			Scope(state: \.sharing, action: \.sharing) {
 				Sharing()
 			}
-			Scope(state: /State.gameEditor, action: /Action.gameEditor) {
+			Scope(state: \.gameEditor, action: \.gameEditor) {
 				GamesEditor()
 			}
-			Scope(state: /State.seriesEditor, action: /Action.seriesEditor) {
+			Scope(state: \.seriesEditor, action: \.seriesEditor) {
 				SeriesEditor()
 			}
 		}
@@ -131,11 +131,11 @@ public struct GamesList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceList(fetchResources: fetchGames(seriesId:))
 		}
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
@@ -281,7 +281,7 @@ public struct GamesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

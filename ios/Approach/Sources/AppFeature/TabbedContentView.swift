@@ -31,19 +31,19 @@ public struct TabbedContentView: View {
 						switch tab {
 						case .overview:
 							BowlersListView(
-								store: store.scope(state: \.bowlersList, action: /TabbedContent.Action.InternalAction.bowlersList)
+								store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
 							)
 						case .statistics:
 							StatisticsOverviewView(
-								store: store.scope(state: \.statistics, action: /TabbedContent.Action.InternalAction.statistics)
+								store: store.scope(state: \.statistics, action: \.internal.statistics)
 							)
 						case .accessories:
 							AccessoriesOverviewView(
-								store: store.scope(state: \.accessories, action: /TabbedContent.Action.InternalAction.accessories)
+								store: store.scope(state: \.accessories, action: \.internal.accessories)
 							)
 						case .settings:
 							SettingsView(
-								store: store.scope(state: \.settings, action: /TabbedContent.Action.InternalAction.settings)
+								store: store.scope(state: \.settings, action: \.internal.settings)
 							)
 						}
 					}

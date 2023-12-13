@@ -125,16 +125,16 @@ public struct StatisticsWidgetEditor: Reducer {
 		@Dependency(\.leagues) var leagues
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.bowlerPicker, action: /Action.bowlerPicker) {
+			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
 				ResourcePicker { _ in bowlers.pickable() }
 			}
-			Scope(state: /State.leaguePicker, action: /Action.leaguePicker) {
+			Scope(state: \.leaguePicker, action: \.leaguePicker) {
 				ResourcePicker { bowler in leagues.pickable(bowledBy: bowler, ordering: .byName) }
 			}
-			Scope(state: /State.help, action: /Action.help) {
+			Scope(state: \.help, action: \.help) {
 				StatisticsWidgetHelp()
 			}
-			Scope(state: /State.statisticPicker, action: /Action.statisticPicker) {
+			Scope(state: \.statisticPicker, action: \.statisticPicker) {
 				StatisticPicker()
 			}
 		}
@@ -162,7 +162,7 @@ public struct StatisticsWidgetEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
@@ -342,7 +342,7 @@ public struct StatisticsWidgetEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

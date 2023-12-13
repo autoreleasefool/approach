@@ -1,6 +1,8 @@
 import AvatarEditorFeature
 import AvatarServiceInterface
 import ComposableArchitecture
+import EquatableLibrary
+import ExtensionsLibrary
 import FeatureActionLibrary
 import FormFeature
 import ModelsLibrary
@@ -28,7 +30,7 @@ public struct GearEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			FormView(store: store.scope(state: \.form, action: /GearEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
@@ -73,20 +75,24 @@ public struct GearEditorView: View {
 			}
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GearEditor.Destination.State.bowlerPicker,
-			action: GearEditor.Destination.Action.bowlerPicker
-		) {
+		.bowlerPicker(store.scope(state: \.$destination.bowlerPicker, action: \.internal.destination.bowlerPicker))
+		.avatar(store.scope(state: \.$destination.avatar, action: \.internal.destination.avatar))
+	}
+}
+
+@MainActor extension View {
+	fileprivate func bowlerPicker(
+		_ store: PresentationStoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>
+	) -> some View {
+		navigationDestination(store: store) {
 			ResourcePickerView(store: $0) { bowler in
 				Bowler.View(bowler)
 			}
 		}
-		.navigationDestination(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GearEditor.Destination.State.avatar,
-			action: GearEditor.Destination.Action.avatar
-		) {
+	}
+
+	fileprivate func avatar(_ store: PresentationStoreOf<AvatarEditor>) -> some View {
+		navigationDestination(store: store) {
 			AvatarEditorView(store: $0)
 		}
 	}

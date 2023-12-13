@@ -32,7 +32,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 					spacing: .largeSpacing
 				) {
 					ReorderableView(
-						store: store.scope(state: \.reordering, action: { .internal(.reordering($0)) })
+						store: store.scope(state: \.reordering, action: \.internal.reordering)
 					) { widget in
 						MoveableWidget(
 							configuration: widget,
@@ -82,7 +82,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 			.task { await viewStore.send(.task).finish() }
 			.onAppear { viewStore.send(.onAppear) }
 			.sheet(
-				store: store.scope(state: \.$editor, action: { .internal(.editor($0)) }),
+				store: store.scope(state: \.$editor, action: \.internal.editor),
 				onDismiss: { viewStore.send(.didFinishDismissingEditor) },
 				content: { store in
 					NavigationStack {
@@ -91,7 +91,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 				}
 			)
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 }
 

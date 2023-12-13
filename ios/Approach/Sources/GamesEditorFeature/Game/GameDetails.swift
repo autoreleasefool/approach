@@ -108,19 +108,19 @@ public struct GameDetails: Reducer {
 		@Dependency(\.lanes) var lanes
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.lanePicker, action: /Action.lanePicker) {
+			Scope(state: \.lanePicker, action: \.lanePicker) {
 				ResourcePicker { alley in lanes.list(alley) }
 			}
-			Scope(state: /State.gearPicker, action: /Action.gearPicker) {
+			Scope(state: \.gearPicker, action: \.gearPicker) {
 				ResourcePicker { _ in gear.list(ordered: .byName) }
 			}
-			Scope(state: /State.matchPlay, action: /Action.matchPlay) {
+			Scope(state: \.matchPlay, action: \.matchPlay) {
 				MatchPlayEditor()
 			}
-			Scope(state: /State.scoring, action: /Action.scoring) {
+			Scope(state: \.scoring, action: \.scoring) {
 				ScoringEditor()
 			}
-			Scope(state: /State.statistics, action: /Action.statistics) {
+			Scope(state: \.statistics, action: \.statistics) {
 				MidGameStatisticsDetails()
 			}
 		}
@@ -137,7 +137,7 @@ public struct GameDetails: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.gameDetailsHeader, action: /Action.internal..Action.InternalAction.gameDetailsHeader) {
+		Scope(state: \.gameDetailsHeader, action: \.internal.gameDetailsHeader) {
 			GameDetailsHeader()
 		}
 
@@ -317,7 +317,7 @@ public struct GameDetails: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

@@ -34,7 +34,7 @@ public struct SeriesEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			FormView(store: store.scope(state: \.form, action: /SeriesEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					Stepper(
 						Strings.Series.Editor.Fields.numberOfGames(viewStore.numberOfGames),
@@ -87,7 +87,7 @@ public struct SeriesEditorView: View {
 			.onAppear { viewStore.send(.onAppear) }
 		})
 		.navigationDestination(
-			store: store.scope(state: \.$alleyPicker, action: { .internal(.alleyPicker($0)) })
+			store: store.scope(state: \.$alleyPicker, action: \.internal.alleyPicker)
 		) { store in
 			ResourcePickerView(store: store) { alley in
 				Alley.View(alley)

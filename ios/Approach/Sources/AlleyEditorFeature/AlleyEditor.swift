@@ -97,7 +97,7 @@ public struct AlleyEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+		Scope(state: \.form, action: \.internal.form) {
 			AlleyForm()
 				.dependency(\.records, .init(
 					create: alleys.create,
@@ -227,10 +227,10 @@ public struct AlleyEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$addressLookup, action: /Action.internal..Action.InternalAction.addressLookup) {
+		.ifLet(\.$addressLookup, action: \.internal.addressLookup) {
 			AddressLookup()
 		}
-		.ifLet(\.$alleyLanesEditor, action: /Action.internal..Action.InternalAction.alleyLanesEditor) {
+		.ifLet(\.$alleyLanesEditor, action: \.internal.alleyLanesEditor) {
 			AlleyLanesEditor()
 		}
 

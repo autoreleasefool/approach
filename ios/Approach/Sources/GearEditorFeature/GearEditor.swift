@@ -86,10 +86,10 @@ public struct GearEditor: Reducer {
 		@Dependency(\.bowlers) var bowlers
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.bowlerPicker, action: /Action.bowlerPicker) {
+			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
 				ResourcePicker { _ in bowlers.pickable() }
 			}
-			Scope(state: /State.avatar, action: /Action.avatar) {
+			Scope(state: \.avatar, action: \.avatar) {
 				AvatarEditor()
 			}
 		}
@@ -105,7 +105,7 @@ public struct GearEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+		Scope(state: \.form, action: \.internal.form) {
 			GearForm()
 				.dependency(\.records, .init(
 					create: gear.create,
@@ -183,7 +183,7 @@ public struct GearEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

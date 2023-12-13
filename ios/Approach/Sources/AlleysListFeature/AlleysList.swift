@@ -83,10 +83,10 @@ public struct AlleysList: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: \.editor, action: \.editor) {
 				AlleyEditor()
 			}
-			Scope(state: /State.filters, action: /Action.filters) {
+			Scope(state: \.filters, action: \.filters) {
 				AlleysFilter()
 			}
 		}
@@ -104,11 +104,11 @@ public struct AlleysList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceList { request in
 				alleys.filteredList(
 					withMaterial: request.filter.material,
@@ -208,7 +208,7 @@ public struct AlleysList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

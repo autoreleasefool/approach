@@ -117,7 +117,7 @@ public struct LeagueEditor: Reducer {
 	public var body: some ReducerOf<Self> {
 		BindingReducer(action: \.view)
 
-		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+		Scope(state: \.form, action: \.internal.form) {
 			LeagueForm()
 				.dependency(\.records, .init(
 					create: leagues.create,
@@ -218,7 +218,7 @@ public struct LeagueEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
+		.ifLet(\.$alleyPicker, action: \.internal.alleyPicker) {
 			ResourcePicker { _ in alleys.pickable() }
 		}
 

@@ -126,16 +126,16 @@ public struct LeaguesList: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.editor, action: /Action.editor) {
+			Scope(state: \.editor, action: \.editor) {
 				LeagueEditor()
 			}
-			Scope(state: /State.filters, action: /Action.filters) {
+			Scope(state: \.filters, action: \.filters) {
 				LeaguesFilter()
 			}
-			Scope(state: /State.series, action: /Action.series) {
+			Scope(state: \.series, action: \.series) {
 				SeriesList()
 			}
-			Scope(state: /State.sortOrder, action: /Action.sortOrder) {
+			Scope(state: \.sortOrder, action: \.sortOrder) {
 				SortOrder()
 			}
 		}
@@ -159,11 +159,11 @@ public struct LeaguesList: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+		Scope(state: \.list, action: \.internal.list) {
 			ResourceList { request in
 				leagues.list(
 					bowledBy: request.filter.bowler,
@@ -173,11 +173,11 @@ public struct LeaguesList: Reducer {
 			}
 		}
 
-		Scope(state: \.preferredGear, action: /Action.internal..Action.InternalAction.preferredGear) {
+		Scope(state: \.preferredGear, action: \.internal.preferredGear) {
 			PreferredGear()
 		}
 
-		Scope(state: \.widgets, action: /Action.internal..Action.InternalAction.widgets) {
+		Scope(state: \.widgets, action: \.internal.widgets) {
 			StatisticsWidgetLayout()
 		}
 
@@ -331,7 +331,7 @@ public struct LeaguesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

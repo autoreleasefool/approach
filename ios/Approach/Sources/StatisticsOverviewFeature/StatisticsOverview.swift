@@ -56,10 +56,10 @@ public struct StatisticsOverview: Reducer {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.sourcePicker, action: /Action.sourcePicker) {
+			Scope(state: \.sourcePicker, action: \.sourcePicker) {
 				StatisticsSourcePicker()
 			}
-			Scope(state: /State.details, action: /Action.details) {
+			Scope(state: \.details, action: \.details) {
 				StatisticsDetails()
 			}
 		}
@@ -129,7 +129,7 @@ public struct StatisticsOverview: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 

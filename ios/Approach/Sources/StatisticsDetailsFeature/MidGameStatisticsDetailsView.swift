@@ -24,7 +24,7 @@ public struct MidGameStatisticsDetailsView: View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			VStack {
 				StatisticsDetailsListView(
-					store: store.scope(state: \.list, action: { .internal(.list($0)) })
+					store: store.scope(state: \.list, action: \.internal.list)
 				) {
 					Section {
 						Picker(
@@ -45,7 +45,7 @@ public struct MidGameStatisticsDetailsView: View {
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.task { await viewStore.send(.task).finish() }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 }
 

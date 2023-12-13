@@ -2,6 +2,7 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
+import ExtensionsLibrary
 import FeatureActionLibrary
 import GearEditorFeature
 import ModelsLibrary
@@ -30,7 +31,7 @@ public struct GearListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			ResourceListView(
-				store: store.scope(state: \.list, action: /GearList.Action.InternalAction.list)
+				store: store.scope(state: \.list, action: \.internal.list)
 			) {
 				Gear.ViewWithAvatar($0)
 			}
@@ -47,31 +48,33 @@ public struct GearListView: View {
 			}
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GearList.Destination.State.editor,
-			action: GearList.Destination.Action.editor
-		) { store in
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.gearEditor(store.scope(state: \.$destination.editor, action: \.internal.destination.editor))
+		.gearFilters(store.scope(state: \.$destination.filters, action: \.internal.destination.filters))
+		.sortOrder(store.scope(state: \.$destination.sortOrder, action: \.internal.destination.sortOrder))
+	}
+}
+
+@MainActor extension View {
+	fileprivate func gearEditor(_ store: PresentationStoreOf<GearEditor>) -> some View {
+		sheet(store: store) { store in
 			NavigationStack {
 				GearEditorView(store: store)
 			}
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GearList.Destination.State.filters,
-			action: GearList.Destination.Action.filters
-		) { store in
+	}
+
+	fileprivate func gearFilters(_ store: PresentationStoreOf<GearFilter>) -> some View {
+		sheet(store: store) { store in
 			NavigationStack {
 				GearFilterView(store: store)
 			}
 			.presentationDetents([.medium, .large])
 		}
-		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /GearList.Destination.State.sortOrder,
-			action: GearList.Destination.Action.sortOrder
-		) { store in
+	}
+
+	fileprivate func sortOrder(_ store: PresentationStoreOf<SortOrderLibrary.SortOrder<Gear.Ordering>>) -> some View {
+		sheet(store: store) { store in
 			NavigationStack {
 				SortOrderView(store: store)
 			}

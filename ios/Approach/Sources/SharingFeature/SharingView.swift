@@ -49,7 +49,7 @@ public struct SharingView: View {
 				viewStore.send(.binding(.set(\.$displayScale, $0)))
 			}
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 
 	@MainActor private func preview(

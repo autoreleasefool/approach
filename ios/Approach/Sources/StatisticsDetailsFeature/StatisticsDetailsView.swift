@@ -44,7 +44,7 @@ public struct StatisticsDetailsView: View {
 					}
 
 					StatisticsDetailsChartsView(
-						store: store.scope(state: \.charts, action: /StatisticsDetails.Action.InternalAction.charts)
+						store: store.scope(state: \.charts, action: \.internal.charts)
 					)
 					.padding(.horizontal)
 					.layoutPriority(1)
@@ -66,9 +66,7 @@ public struct StatisticsDetailsView: View {
 				}
 			}
 			.sheet(
-				store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-				state: /StatisticsDetails.Destination.State.list,
-				action: StatisticsDetails.Destination.Action.list
+				store: store.scope(state: \.$destination.list, action: \.internal.destination.list)
 			) { store in
 				NavigationStack {
 					StatisticsDetailsListView(store: store)
@@ -107,11 +105,9 @@ public struct StatisticsDetailsView: View {
 			.task { await viewStore.send(.didFirstAppear).finish() }
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.sheet(
-			store: store.scope(state: \.$destination, action: { .internal(.destination($0)) }),
-			state: /StatisticsDetails.Destination.State.sourcePicker,
-			action: StatisticsDetails.Destination.Action.sourcePicker
+			store: store.scope(state: \.$destination.sourcePicker, action: \.internal.destination.sourcePicker)
 		) { store in
 			NavigationStack {
 				StatisticsSourcePickerView(store: store)

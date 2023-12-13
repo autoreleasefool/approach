@@ -53,7 +53,7 @@ public struct OpponentDetailsView: View {
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 }
 

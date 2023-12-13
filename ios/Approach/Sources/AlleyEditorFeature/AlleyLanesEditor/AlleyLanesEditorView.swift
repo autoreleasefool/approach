@@ -33,14 +33,10 @@ public struct AlleyLanesEditorView: View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
 			List {
 				Section {
-					ForEachStore(
-						store.scope(state: \.existingLaneEditors, action: /AlleyLanesEditor.Action.InternalAction.laneEditor(id:action:))
-					) {
+					ForEachStore(store.scope(state: \.existingLaneEditors, action: \.internal.laneEditor)) {
 						LaneEditorView(store: $0)
 					}
-					ForEachStore(
-						store.scope(state: \.newLaneEditors, action: /AlleyLanesEditor.Action.InternalAction.laneEditor(id:action:))
-					) {
+					ForEachStore(store.scope(state: \.newLaneEditors, action: \.internal.laneEditor)) {
 						LaneEditorView(store: $0)
 					}
 				} footer: {
@@ -60,9 +56,9 @@ public struct AlleyLanesEditorView: View {
 			.navigationTitle(Strings.Lane.List.title)
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
-		.errors(store: store.scope(state: \.errors, action: { .internal(.errors($0)) }))
-		.sheet(store: store.scope(state: \.$addLaneForm, action: { .internal(.addLaneForm($0)) })) {
+		.alert(store: store.scope(state: \.$alert, action: \.view.alert))
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.sheet(store: store.scope(state: \.$addLaneForm, action: \.internal.addLaneForm)) {
 			AddLaneFormView(store: $0)
 				.padding()
 				.overlay {

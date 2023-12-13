@@ -48,7 +48,7 @@ public struct OpponentDetails: Reducer {
 	@Dependency(\.bowlers) var bowlers
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 

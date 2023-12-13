@@ -100,7 +100,7 @@ public struct PreferredGear: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$gearPicker, action: /Action.internal..Action.InternalAction.gearPicker) {
+		.ifLet(\.$gearPicker, action: \.internal.gearPicker) {
 			ResourcePicker { _ in gear.list(ordered: .byName) }
 		}
 	}
@@ -143,7 +143,7 @@ public struct PreferredGearView: View {
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 		})
 		.navigationDestination(
-			store: store.scope(state: \.$gearPicker, action: { .internal(.gearPicker($0)) })
+			store: store.scope(state: \.$gearPicker, action: \.internal.gearPicker)
 		) { store in
 			ResourcePickerView(store: store) {
 				Gear.ViewWithAvatar($0)

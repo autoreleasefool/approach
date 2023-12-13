@@ -34,7 +34,7 @@ public struct AlleyEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			FormView(store: store.scope(state: \.form, action: /AlleyEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				detailsSection(viewStore)
 				mapSection(viewStore)
 				materialSection(viewStore)
@@ -47,7 +47,7 @@ public struct AlleyEditorView: View {
 			}
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.sheet(store: store.scope(state: \.$addressLookup, action: { .internal(.addressLookup($0)) })) { scopedStore in
+		.sheet(store: store.scope(state: \.$addressLookup, action: \.internal.addressLookup)) { scopedStore in
 			NavigationStack {
 				AddressLookupView(store: scopedStore)
 					.navigationTitle(Strings.Alley.Editor.Fields.Address.editorTitle)
@@ -55,7 +55,7 @@ public struct AlleyEditorView: View {
 			}
 		}
 		.navigationDestination(
-			store: store.scope(state: \.$alleyLanesEditor, action: { .internal(.alleyLanesEditor($0)) })
+			store: store.scope(state: \.$alleyLanesEditor, action: \.internal.alleyLanesEditor)
 		) {
 			AlleyLanesEditorView(store: $0)
 		}

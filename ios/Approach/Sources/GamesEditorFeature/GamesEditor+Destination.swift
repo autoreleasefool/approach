@@ -27,13 +27,13 @@ extension GamesEditor {
 		@Dependency(\.gear) var gear
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.settings, action: /Action.settings) {
+			Scope(state: \.settings, action: \.settings) {
 				GamesSettings()
 			}
-			Scope(state: /State.ballPicker, action: /Action.ballPicker) {
+			Scope(state: \.ballPicker, action: \.ballPicker) {
 				ResourcePicker { _ in gear.list(ofKind: .bowlingBall, ordered: .byName) }
 			}
-			Scope(state: /State.sharing, action: /Action.sharing) {
+			Scope(state: \.sharing, action: \.sharing) {
 				Sharing()
 			}
 		}
@@ -59,10 +59,10 @@ extension GamesEditor {
 		}
 
 		public var body: some ReducerOf<Self> {
-			Scope(state: /State.gameDetails, action: /Action.gameDetails) {
+			Scope(state: \.gameDetails, action: \.gameDetails) {
 				GameDetails()
 			}
-			Scope(state: /State.sheets, action: /Action.sheets) {
+			Scope(state: \.sheets, action: \.sheets) {
 				SheetsDestination()
 			}
 		}

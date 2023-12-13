@@ -113,7 +113,7 @@ public struct AppIconList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$alert, action: /Action.internal..Action.InternalAction.alert)
+		.ifLet(\.$alert, action: \.internal.alert)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {
@@ -165,7 +165,7 @@ public struct AppIconListView: View {
 			.navigationTitle(Strings.Settings.AppIcon.title)
 			.onFirstAppear { viewStore.send(.didFirstAppear) }
 			.onAppear { viewStore.send(.onAppear) }
-			.alert(store: self.store.scope(state: \.$alert, action: { .internal(.alert($0)) }))
+			.alert(store: self.store.scope(state: \.$alert, action: \.internal.alert))
 		})
 	}
 }

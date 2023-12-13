@@ -192,11 +192,11 @@ public struct GamesEditor: Reducer {
 			return save(frame: state.frames?[currentFrameIndex])
 		}
 
-		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
+		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
 		}
 
-		Scope(state: \.gamesHeader, action: /Action.internal..Action.InternalAction.gamesHeader) {
+		Scope(state: \.gamesHeader, action: \.internal.gamesHeader) {
 			GamesHeader()
 		}
 
@@ -430,13 +430,13 @@ public struct GamesEditor: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
+		.ifLet(\.frameEditor, action: \.internal.frameEditor) {
 			FrameEditor()
 		}
-		.ifLet(\.rollEditor, action: /Action.internal..Action.InternalAction.rollEditor) {
+		.ifLet(\.rollEditor, action: \.internal.rollEditor) {
 			RollEditor()
 		}
-		.ifLet(\.$destination, action: /Action.internal..Action.InternalAction.destination) {
+		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
 		}
 
