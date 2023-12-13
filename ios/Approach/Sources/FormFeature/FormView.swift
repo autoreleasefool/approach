@@ -86,6 +86,6 @@ public struct FormView<
 			}
 		})
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
+		.alert(store: store.scope(state: \.$alert, action: \.view.alert))
 	}
 }

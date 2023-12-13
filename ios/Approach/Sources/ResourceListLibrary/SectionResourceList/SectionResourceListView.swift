@@ -94,7 +94,7 @@ public struct SectionResourceListView<
 				case let .loaded(sections):
 					if sections.isEmpty {
 						ResourceListEmptyView(
-							store: store.scope(state: \.emptyState, action: { SectionList.Action.internal(.empty($0)) })
+							store: store.scope(state: \.emptyState, action: \.internal.empty)
 						)
 					} else {
 						List {
@@ -157,7 +157,7 @@ public struct SectionResourceListView<
 
 				case .error:
 					IfLetStore(
-						store.scope(state: \.errorState, action: { SectionList.Action.internal(.error($0)) })
+						store.scope(state: \.errorState, action: \.internal.error)
 					) {
 						ResourceListEmptyView(store: $0)
 					}
@@ -170,7 +170,7 @@ public struct SectionResourceListView<
 					}
 				}
 			}
-			.alert(store: store.scope(state: \.$alert, action: { .view(.alert($0)) }))
+			.alert(store: store.scope(state: \.$alert, action: \.view.alert))
 			.onAppear { viewStore.send(.onAppear) }
 			.task { await viewStore.send(.task).finish() }
 		})
