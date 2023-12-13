@@ -304,6 +304,6 @@ public struct Form<
 				return .none
 			}
 		}
-		.ifLet(\.$alert, action: /Action.view..Action.ViewAction.alert)
+		.ifLet(\.$alert, action: \.view.alert)
 	}
 }

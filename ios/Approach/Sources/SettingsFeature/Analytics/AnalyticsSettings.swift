@@ -42,7 +42,7 @@ public struct AnalyticsSettings: Reducer {
 	@Dependency(\.analytics) var analytics
 
 	public var body: some Reducer<State, Action> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Reduce { state, action in
 			switch action {

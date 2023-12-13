@@ -69,7 +69,7 @@ public struct MidGameStatisticsDetails: Reducer {
 	@Dependency(\.statistics) var statistics
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
 			Errors()

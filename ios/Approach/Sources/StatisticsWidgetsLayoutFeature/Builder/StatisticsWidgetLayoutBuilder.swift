@@ -82,7 +82,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
 			Errors()

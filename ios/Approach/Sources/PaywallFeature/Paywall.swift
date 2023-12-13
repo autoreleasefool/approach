@@ -56,7 +56,7 @@ public struct Paywall: Reducer {
 	@Dependency(\.products) var products
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Scope(state: \.errors, action: /Action.internal..Action.InternalAction.errors) {
 			Errors()

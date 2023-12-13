@@ -179,7 +179,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.storeReview) var storeReview
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		// We explicitly handle this action before all others so that we can guarantee we are on a valid frame/roll
 		Reduce<State, Action> { state, action in

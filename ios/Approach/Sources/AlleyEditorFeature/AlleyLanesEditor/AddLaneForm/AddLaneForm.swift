@@ -31,7 +31,7 @@ public struct AddLaneForm: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: /Action.view)
+		BindingReducer(action: \.view)
 
 		Reduce<State, Action> { state, action in
 			switch action {
