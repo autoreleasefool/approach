@@ -1,10 +1,11 @@
 # Most recent version
 
-## iOS 1.4.0b19
+## iOS 1.4.1b20
 
 ```
-- Fix: Frames with a single roll no longer count towards statistics
-- Chore: New launch service colocates all launch initialization code
+- Chore: Updated swift-composable-architecture to 1.5.5
+- Chore: Refactored Reducers to use new @Reducer macro
+- Chore: Refactored Stores to use new CaseKeyPaths
 ```
 
 ## Android v3.2.0
@@ -20,6 +21,13 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.4.0b19
+
+```
+- Fix: Frames with a single roll no longer count towards statistics
+- Chore: New launch service colocates all launch initialization code
+```
 
 ## iOS 1.3.1b18
 
