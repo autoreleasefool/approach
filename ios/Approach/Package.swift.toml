@@ -473,7 +473,7 @@ from = "1.4.0"
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
-from = "1.14.2"
+from = "1.15.1"
 
 [dependencies.TelemetryClient]
 url = "https://github.com/TelemetryDeck/SwiftClient.git"
