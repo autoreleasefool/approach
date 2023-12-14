@@ -485,7 +485,7 @@ from = "1.0.2"
 
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"
-from = "0.9.16"
+from = "0.9.17"
 
 # Default Imports
 
