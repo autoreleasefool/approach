@@ -456,7 +456,7 @@ from = "2.8.3"
 
 [dependencies.RevenueCat]
 url = "https://github.com/RevenueCat/purchases-ios.git"
-from = "4.31.2"
+from = "4.31.3"
 
 [dependencies.SFSafeSymbols]
 url = "https://github.com/SFSafeSymbols/SFSafeSymbols.git"
