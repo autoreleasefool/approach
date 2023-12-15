@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
@@ -36,6 +37,7 @@ class LeagueDetailsViewModel @Inject constructor(
 	leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val userDataRepository: UserDataRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<LeagueDetailsScreenEvent>() {
 	private val leagueId = UUID.fromString(savedStateHandle[LEAGUE_ID])
 
@@ -95,6 +97,12 @@ class LeagueDetailsViewModel @Inject constructor(
 		started = SharingStarted.WhileSubscribed(5_000),
 		initialValue = LeagueDetailsScreenUiState.Loading,
 	)
+
+	init {
+		viewModelScope.launch {
+			recentlyUsedRepository.didRecentlyUseLeague(leagueId)
+		}
+	}
 
 	fun handleAction(action: LeagueDetailsScreenUiAction) {
 		when (action) {

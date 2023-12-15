@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
@@ -29,6 +30,7 @@ class AlleyFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val alleysRepository: AlleysRepository,
 	private val lanesRepository: LanesRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<AlleyFormScreenEvent>() {
 	private val alleyId = savedStateHandle.get<String>(ALLEY_ID)?.let {
 		UUID.fromString(it)
@@ -154,6 +156,7 @@ class AlleyFormViewModel @Inject constructor(
 
 					alleysRepository.insertAlley(alley)
 					lanesRepository.setAlleyLanes(alley.id, alley.lanes)
+					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
 				} else {
 					_uiState.value = state.copy(
@@ -165,6 +168,7 @@ class AlleyFormViewModel @Inject constructor(
 				is AlleyFormScreenUiState.Edit -> if (state.isSavable()) {
 					val alley = state.form.updatedModel(existing = state.initialValue)
 					alleysRepository.updateAlley(alley)
+					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
 				} else {
 					_uiState.value = state.copy(

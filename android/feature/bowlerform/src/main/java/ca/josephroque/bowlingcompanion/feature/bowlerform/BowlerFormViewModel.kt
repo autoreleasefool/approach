@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
@@ -25,6 +26,7 @@ import javax.inject.Inject
 class BowlerFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val bowlersRepository: BowlersRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ) : ApproachViewModel<BowlerFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<BowlerFormScreenUiState> =
@@ -153,6 +155,7 @@ class BowlerFormViewModel @Inject constructor(
 						)
 
 						bowlersRepository.insertBowler(bowler)
+						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)
 					} else {
 						_uiState.value = state.copy(
@@ -165,6 +168,7 @@ class BowlerFormViewModel @Inject constructor(
 					if (state.isSavable()) {
 						val bowler = state.form.update(id = state.initialValue.id)
 						bowlersRepository.updateBowler(bowler)
+						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)
 					} else {
 						_uiState.value = state.copy(

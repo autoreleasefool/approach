@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
@@ -32,7 +33,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
 
-private const val STATISTICS_WIDGET_CONTEXT = "bowlerdetails"
+private const val STATISTICS_WIDGET_CONTEXT = "bowler_details"
 
 @HiltViewModel
 class BowlerDetailsViewModel @Inject constructor(
@@ -42,6 +43,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	private val gearRepository: GearRepository,
 	private val leaguesRepository: LeaguesRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<BowlerDetailsScreenEvent>() {
 	private val bowlerId = UUID.fromString(savedStateHandle[BOWLER_ID])
 
@@ -84,6 +86,12 @@ class BowlerDetailsViewModel @Inject constructor(
 		started = SharingStarted.WhileSubscribed(5_000),
 		initialValue = BowlerDetailsScreenUiState.Loading,
 	)
+
+	init {
+		viewModelScope.launch {
+			recentlyUsedRepository.didRecentlyUseBowler(bowlerId)
+		}
+	}
 
 	fun handleAction(action: BowlerDetailsScreenUiAction) {
 		when (action) {

@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
@@ -30,6 +31,7 @@ import javax.inject.Inject
 class LeagueFormViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	private val leaguesRepository: LeaguesRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<LeagueFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<LeagueFormScreenUiState> = MutableStateFlow(LeagueFormScreenUiState.Loading)
@@ -157,27 +159,28 @@ class LeagueFormViewModel @Inject constructor(
 						val additionalGames = if (stateAdditionalGames > 0) stateAdditionalGames else null
 						val additionalPinFall = if ((additionalGames ?: 0) > 0) stateAdditionalPinFall else null
 
-						leaguesRepository.insertLeague(
-							LeagueCreate(
-								bowlerId = bowlerId,
-								id = leagueId ?: UUID.randomUUID(),
-								name = state.form.name,
-								recurrence = state.form.recurrence ?: LeagueRecurrence.REPEATING,
-								numberOfGames = when (state.form.gamesPerSeries) {
-									GamesPerSeries.DYNAMIC, null -> null
-									GamesPerSeries.STATIC -> state.form.numberOfGames
-								},
-								additionalPinFall = when (state.form.includeAdditionalPinFall) {
-									IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
-									IncludeAdditionalPinFall.NONE -> null
-								},
-								additionalGames = when (state.form.includeAdditionalPinFall) {
-									IncludeAdditionalPinFall.INCLUDE -> additionalGames
-									IncludeAdditionalPinFall.NONE -> null
-								},
-								excludeFromStatistics = state.form.excludeFromStatistics,
-							)
+						val league = LeagueCreate(
+							bowlerId = bowlerId,
+							id = leagueId ?: UUID.randomUUID(),
+							name = state.form.name,
+							recurrence = state.form.recurrence ?: LeagueRecurrence.REPEATING,
+							numberOfGames = when (state.form.gamesPerSeries) {
+								GamesPerSeries.DYNAMIC, null -> null
+								GamesPerSeries.STATIC -> state.form.numberOfGames
+							},
+							additionalPinFall = when (state.form.includeAdditionalPinFall) {
+								IncludeAdditionalPinFall.INCLUDE -> additionalPinFall
+								IncludeAdditionalPinFall.NONE -> null
+							},
+							additionalGames = when (state.form.includeAdditionalPinFall) {
+								IncludeAdditionalPinFall.INCLUDE -> additionalGames
+								IncludeAdditionalPinFall.NONE -> null
+							},
+							excludeFromStatistics = state.form.excludeFromStatistics,
 						)
+
+						leaguesRepository.insertLeague(league)
+						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
 					} else {
 						_uiState.value = state.copy(
@@ -188,8 +191,9 @@ class LeagueFormViewModel @Inject constructor(
 					}
 				is LeagueFormScreenUiState.Edit ->
 					if (state.isSavable()) {
-						val update = state.form.update(id = state.initialValue.id)
-						leaguesRepository.updateLeague(update)
+						val league = state.form.update(id = state.initialValue.id)
+						leaguesRepository.updateLeague(league)
+						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
 					} else {
 						_uiState.value = state.copy(

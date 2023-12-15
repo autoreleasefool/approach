@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
@@ -63,6 +64,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val gearRepository: GearRepository,
 	private val matchPlaysRepository: MatchPlaysRepository,
 	private val scoresRepository: ScoresRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
 	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
 	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
@@ -424,18 +426,27 @@ class GamesEditorViewModel @Inject constructor(
 	private fun updateSelectedBall(ball: FrameEdit.Gear) {
 		val gameId = _currentGameId.value
 		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
+			val updatedFrames = it.frames.toMutableList().also { frames ->
+				frames.setBallRolled(
+					frameIndex = it.scoreSheet.selection.frameIndex,
+					rollIndex = it.scoreSheet.selection.rollIndex,
+					ballRolled = ball,
+				)
+			}
+
 			it.copy(
 				rollEditor = it.rollEditor.copy(
-					selectedBall = ball,
+					selectedBall = updatedFrames[it.scoreSheet.selection.frameIndex].rolls[it.scoreSheet.selection.rollIndex].bowlingBall
 				),
-				frames = it.frames.toMutableList().also { frames ->
-					frames.setBallRolled(
-						frameIndex = it.scoreSheet.selection.frameIndex,
-						rollIndex = it.scoreSheet.selection.rollIndex,
-						ballRolled = ball,
-					)
-				},
+				frames = updatedFrames,
 			)
+		}
+
+		val updatedBallId = gamesEditorState.rollEditor.selectedBall?.id
+		if (updatedBallId != null) {
+			viewModelScope.launch {
+				recentlyUsedRepository.didRecentlyUseGear(updatedBallId)
+			}
 		}
 
 		saveFrame(gamesEditorState.selectedFrame())
