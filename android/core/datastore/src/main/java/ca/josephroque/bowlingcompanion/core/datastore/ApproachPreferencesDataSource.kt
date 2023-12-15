@@ -7,6 +7,8 @@ import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+const val RECENTLY_USED_LIMIT = 10
+
 class ApproachPreferencesDataSource @Inject constructor(
 	private val userPreferences: DataStore<UserPreferences>,
 ) {
@@ -109,8 +111,9 @@ class ApproachPreferencesDataSource @Inject constructor(
 
 	suspend fun insertRecentlyUsedBowler(id: String) {
 		userPreferences.updateData {
-			val recentBowlers = it.recentlyUsedBowlerIdsList.toMutableList()
-			recentBowlers.replaceOrInsert(id)
+			val recentBowlers = it.recentlyUsedBowlerIdsList
+				.toMutableList()
+				.insertAndTrim(id, RECENTLY_USED_LIMIT)
 
 			it.toBuilder()
 				.clearRecentlyUsedBowlerIds()
@@ -121,8 +124,9 @@ class ApproachPreferencesDataSource @Inject constructor(
 
 	suspend fun insertRecentlyUsedAlley(id: String) {
 		userPreferences.updateData {
-			val recentAlleys = it.recentlyUsedAlleyIdsList.toMutableList()
-			recentAlleys.replaceOrInsert(id)
+			val recentAlleys = it.recentlyUsedAlleyIdsList
+				.toMutableList()
+				.insertAndTrim(id, RECENTLY_USED_LIMIT)
 
 			it.toBuilder()
 				.clearRecentlyUsedAlleyIds()
@@ -133,8 +137,9 @@ class ApproachPreferencesDataSource @Inject constructor(
 
 	suspend fun insertRecentlyUsedGear(id: String) {
 		userPreferences.updateData {
-			val recentGear = it.recentlyUsedGearIdsList.toMutableList()
-			recentGear.replaceOrInsert(id)
+			val recentGear = it.recentlyUsedGearIdsList
+				.toMutableList()
+				.insertAndTrim(id, RECENTLY_USED_LIMIT)
 
 			it.toBuilder()
 				.clearRecentlyUsedGearIds()
@@ -145,8 +150,9 @@ class ApproachPreferencesDataSource @Inject constructor(
 
 	suspend fun insertRecentlyUsedLeague(id: String) {
 		userPreferences.updateData {
-			val recentLeagues = it.recentlyUsedLeagueIdsList.toMutableList()
-			recentLeagues.replaceOrInsert(id)
+			val recentLeagues = it.recentlyUsedLeagueIdsList
+				.toMutableList()
+				.insertAndTrim(id, RECENTLY_USED_LIMIT)
 
 			it.toBuilder()
 				.clearRecentlyUsedLeagueIds()
@@ -156,7 +162,13 @@ class ApproachPreferencesDataSource @Inject constructor(
 	}
 }
 
-private fun MutableList<String>.replaceOrInsert(id: String) {
+private fun <T> MutableList<T>.insertAndTrim(id: T, limit: Int): List<T> {
+	this.remove(id)
+	this.add(0, id)
+	return this.take(limit)
+}
+
+private fun <T> MutableList<T>.replaceOrInsert(id: T) {
 	this.remove(id)
 	this.add(0, id)
 }
