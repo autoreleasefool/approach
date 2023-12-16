@@ -228,6 +228,8 @@ public enum Strings {
       public static let pride = Strings.tr("Localizable", "app.icon.pride", fallback: "Pride")
       /// Primary
       public static let primary = Strings.tr("Localizable", "app.icon.primary", fallback: "Primary")
+      /// Purple
+      public static let purple = Strings.tr("Localizable", "app.icon.purple", fallback: "Purple")
       /// Tap to Reset
       public static let tapToReset = Strings.tr("Localizable", "app.icon.tapToReset", fallback: "Tap to Reset")
       /// Trans Pride
