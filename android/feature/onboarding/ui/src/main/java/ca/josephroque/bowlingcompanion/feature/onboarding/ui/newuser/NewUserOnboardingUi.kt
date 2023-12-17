@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser
 
 sealed interface NewUserOnboardingUiState {
 	data object ShowingWelcomeMessage: NewUserOnboardingUiState
+
 	data class ShowingLogbook(
 		val name: String
 	): NewUserOnboardingUiState

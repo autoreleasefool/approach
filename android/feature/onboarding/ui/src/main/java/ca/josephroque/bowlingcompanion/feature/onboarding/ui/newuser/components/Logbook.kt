@@ -59,7 +59,9 @@ fun Logbook(
 			text = stringResource(R.string.onboarding_new_user_logbook),
 			style = MaterialTheme.typography.bodyLarge,
 			textAlign = TextAlign.Center,
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(bottom = 16.dp),
 		)
 
 		BasicTextField(

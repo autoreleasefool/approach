@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="onboarding_new_user_title_welcome">Welcome</string>
-	<string name="onboarding_new_user_title_to_your_new">to your new</string>
+	<string name="onboarding_new_user_title_welcome">Welcome to your new</string>
 	<string name="onboarding_new_user_title_approach">Approach</string>
 	<string name="onboarding_new_user_description_arrived">Your 5 Pin Bowling Companion has arrived, with all the tracking, stats, and charts you could have ever wanted.</string>
 	<string name="onboarding_new_user_description_wish">Arrive is the 5 pin bowling app I always wish existed, and I hope you feel the same.</string>

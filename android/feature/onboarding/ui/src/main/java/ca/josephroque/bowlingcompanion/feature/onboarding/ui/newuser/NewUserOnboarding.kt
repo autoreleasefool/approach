@@ -1,33 +1,39 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.OnboardingBackground
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.components.Logbook
 
 @Composable
@@ -36,42 +42,22 @@ fun NewUserOnboarding(
 	onAction: (NewUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Column(
-		modifier = modifier
-			.fillMaxSize()
-			.verticalScroll(rememberScrollState()),
-	) {
-		Card(
-			modifier = Modifier
-				.padding(top = 16.dp)
-				.padding(horizontal = 16.dp)
+	val visibleState = remember { MutableTransitionState(false) }
+	LaunchedEffect(Unit) {
+		visibleState.targetState = true
+	}
+
+	Box(modifier = modifier.fillMaxSize()) {
+		AnimatedVisibility(
+			visibleState = visibleState,
+			enter = slideInVertically { it / 2 } + fadeIn(),
 		) {
-			Title(modifier = Modifier.padding(16.dp))
+			OnboardingBackground()
+			AppDescription(onAction = onAction)
 		}
-
-		Spacer(modifier = Modifier.height(16.dp))
-
-		Card(
-			modifier = Modifier.padding(horizontal = 16.dp),
-		) {
-			Description(modifier = Modifier.padding(16.dp))
-		}
-
-		Spacer(modifier = Modifier.height(32.dp))
-
-		TagLine(modifier = Modifier.padding(bottom = 16.dp))
-
-		Spacer(modifier = Modifier.weight(1.0f))
-
-		Actions(
-			onAction = onAction,
-			modifier = Modifier
-				.padding(horizontal = 16.dp)
-				.padding(bottom = 16.dp),
-		)
 
 		when (state) {
-			NewUserOnboardingUiState.ShowingWelcomeMessage -> Unit
+			is NewUserOnboardingUiState.ShowingWelcomeMessage -> Unit
 			is NewUserOnboardingUiState.ShowingLogbook -> Logbook(
 				name = state.name,
 				onAction = onAction,
@@ -81,87 +67,83 @@ fun NewUserOnboarding(
 }
 
 @Composable
-private fun Title(
+private fun AppDescription(
+	onAction: (NewUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Row(
-		horizontalArrangement = Arrangement.SpaceBetween,
-		modifier = modifier.fillMaxWidth(),
+	Box(
+		modifier = modifier
+			.background(
+				Brush.verticalGradient(
+					0f to Color.Transparent,
+					0.1f to Color.White,
+					0.9f to Color.White,
+					1f to Color.Transparent,
+				)
+			),
 	) {
 		Column(
-			verticalArrangement = Arrangement.Center,
+			horizontalAlignment = Alignment.CenterHorizontally,
+			modifier = Modifier
+				.fillMaxWidth()
+				.verticalScroll(rememberScrollState())
+				.padding(horizontal = 16.dp)
+				.padding(top = 64.dp, bottom = 32.dp),
 		) {
+			Image(
+				painter = painterResource(R.drawable.ic_approach_squircle),
+				contentDescription = null,
+				contentScale = ContentScale.FillWidth,
+				modifier = Modifier
+					.padding(horizontal = 16.dp)
+					.align(Alignment.CenterHorizontally)
+					.size(96.dp),
+			)
+
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_welcome),
 				style = MaterialTheme.typography.titleMedium,
 				fontStyle = FontStyle.Italic,
+				modifier = Modifier.padding(top = 32.dp),
 			)
-			Text(
-				text = stringResource(R.string.onboarding_new_user_title_to_your_new),
-				style = MaterialTheme.typography.titleMedium,
-				fontStyle = FontStyle.Italic,
-			)
+
 			Text(
 				text = stringResource(R.string.onboarding_new_user_title_approach),
 				style = MaterialTheme.typography.headlineMedium,
+				modifier = Modifier.padding(bottom = 16.dp),
 			)
+
+			Text(
+				text = stringResource(R.string.onboarding_new_user_description_arrived),
+				style = MaterialTheme.typography.bodyMedium,
+				fontWeight = FontWeight.Bold,
+				modifier = Modifier.padding(bottom = 8.dp),
+			)
+
+			Text(
+				text = stringResource(R.string.onboarding_new_user_description_wish),
+				style = MaterialTheme.typography.bodyMedium,
+				fontWeight = FontWeight.Bold,
+				modifier = Modifier.padding(bottom = 16.dp),
+			)
+
+			Text(
+				text = stringResource(R.string.onboarding_new_user_description_vancouver),
+				style = MaterialTheme.typography.bodySmall,
+				fontWeight = FontWeight.Bold,
+				fontStyle = FontStyle.Italic,
+				modifier = Modifier.padding(bottom = 16.dp),
+			)
+
+			Button(
+				onClick = { onAction(NewUserOnboardingUiAction.GetStartedClicked) },
+			) {
+				Text(
+					text = stringResource(R.string.onboarding_legacy_user_get_started),
+					style = MaterialTheme.typography.bodyLarge,
+				)
+			}
 		}
-
-		Spacer(modifier = Modifier.width(16.dp))
-
-		Image(
-			painter = painterResource(RCoreDesign.drawable.pin),
-			contentDescription = null,
-			contentScale = ContentScale.Fit,
-			modifier = Modifier.width(36.dp),
-		)
-	}
-}
-
-@Composable
-private fun Description(
-	modifier: Modifier = Modifier,
-) {
-	Column(
-		modifier = modifier,
-	) {
-		Text(
-			text = stringResource(R.string.onboarding_new_user_description_arrived),
-			style = MaterialTheme.typography.bodyLarge,
-		)
-		Spacer(modifier = Modifier.height(16.dp))
-		Text(
-			text = stringResource(R.string.onboarding_new_user_description_wish),
-			style = MaterialTheme.typography.bodyLarge,
-		)
-	}
-}
-
-@Composable
-private fun TagLine(
-	modifier: Modifier = Modifier,
-) {
-	Text(
-		text = stringResource(R.string.onboarding_new_user_description_vancouver),
-		textAlign = TextAlign.Center,
-		style = MaterialTheme.typography.bodyMedium,
-		modifier = modifier.fillMaxWidth(),
-	)
-}
-
-@Composable
-private fun Actions(
-	onAction: (NewUserOnboardingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
-) {
-	Button(
-		onClick = { onAction(NewUserOnboardingUiAction.GetStartedClicked) },
-		modifier = modifier.fillMaxWidth(),
-	) {
-		Text(
-			text = stringResource(R.string.onboarding_new_user_get_started),
-			style = MaterialTheme.typography.titleLarge,
-		)
 	}
 }
 
