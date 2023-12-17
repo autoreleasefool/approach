@@ -17,15 +17,11 @@ const val addBowlerNavigationRoute = "add_bowler/{$BOWLER_KIND}"
 
 fun NavController.navigateToBowlerForm(bowlerId: UUID) {
 	val encoded = Uri.encode(bowlerId.toString())
-	this.navigate("edit_bowler/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("edit_bowler/$encoded")
 }
 
 fun NavController.navigateToNewBowlerForm(kind: BowlerKind) {
-	this.navigate("add_bowler/${kind.name}") {
-		launchSingleTop = true
-	}
+	this.navigate("add_bowler/${kind.name}")
 }
 
 fun NavGraphBuilder.bowlerFormScreen(

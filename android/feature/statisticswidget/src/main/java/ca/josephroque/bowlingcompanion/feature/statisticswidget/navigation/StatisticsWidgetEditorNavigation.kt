@@ -31,9 +31,7 @@ fun NavController.navigateToStatisticsWidgetEditor(
 			}
 		)
 	} ?: "nan"
-	this.navigate("statisticswidgeteditor/$encodedContext/$encodedInitialSource/$priority") {
-		launchSingleTop = true
-	}
+	this.navigate("statisticswidgeteditor/$encodedContext/$encodedInitialSource/$priority")
 }
 
 fun NavGraphBuilder.statisticsWidgetEditorScreen(

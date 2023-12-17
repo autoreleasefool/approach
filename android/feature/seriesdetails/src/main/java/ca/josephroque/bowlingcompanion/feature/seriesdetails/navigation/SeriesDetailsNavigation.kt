@@ -15,9 +15,7 @@ const val seriesDetailsNavigationRoute = "series/{$SERIES_ID}"
 
 fun NavController.navigateToSeriesDetails(seriesId: UUID) {
 	val encoded = Uri.encode(seriesId.toString())
-	this.navigate("series/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("series/$encoded")
 }
 
 fun NavGraphBuilder.seriesDetailsScreen(

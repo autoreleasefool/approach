@@ -14,9 +14,7 @@ const val leagueDetailsNavigationRoute = "league/{$LEAGUE_ID}"
 
 fun NavController.navigateToLeagueDetails(leagueId: UUID) {
 	val encoded = Uri.encode(leagueId.toString())
-	this.navigate("league/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("league/$encoded")
 }
 
 fun NavGraphBuilder.leagueDetailsScreen(

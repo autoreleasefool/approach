@@ -16,16 +16,12 @@ const val addLeagueNavigationRoute = "add_league/{$BOWLER_ID}"
 
 fun NavController.navigateToLeagueForm(leagueId: UUID) {
 	val encoded = Uri.encode(leagueId.toString())
-	this.navigate("edit_league/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("edit_league/$encoded")
 }
 
 fun NavController.navigateToNewLeagueForm(bowlerId: UUID) {
 	val encoded = Uri.encode(bowlerId.toString())
-	this.navigate("add_league/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("add_league/$encoded")
 }
 
 fun NavGraphBuilder.leagueFormScreen(

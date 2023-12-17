@@ -18,12 +18,7 @@ fun NavController.navigateToStatisticPickerForResult(
 	selectedStatistic: StatisticID,
 	navResultCallback: NavResultCallback<StatisticID>,
 ) {
-	this.navigateForResult(
-		"statistic_picker/$selectedStatistic",
-		navResultCallback,
-	) {
-		launchSingleTop = true
-	}
+	this.navigateForResult("statistic_picker/$selectedStatistic", navResultCallback,)
 }
 
 fun NavGraphBuilder.statisticPickerScreen(

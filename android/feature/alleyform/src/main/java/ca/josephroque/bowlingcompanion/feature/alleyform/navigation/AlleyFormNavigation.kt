@@ -15,16 +15,12 @@ const val editAlleyNavigationRoute = "edit_alley/{$ALLEY_ID}"
 const val addAlleyNavigationRoute = "add_alley"
 
 fun NavController.navigateToNewAlleyForm() {
-	this.navigate(addAlleyNavigationRoute) {
-		launchSingleTop = true
-	}
+	this.navigate(addAlleyNavigationRoute)
 }
 
 fun NavController.navigateToAlleyForm(alleyId: UUID) {
 	val encoded = Uri.encode(alleyId.toString())
-	this.navigate("edit_alley/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("edit_alley/$encoded")
 }
 
 fun NavGraphBuilder.alleyFormScreen(

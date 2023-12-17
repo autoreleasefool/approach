@@ -15,9 +15,7 @@ const val bowlerDetailsNavigationRoute = "bowler/{$BOWLER_ID}"
 
 fun NavController.navigateToBowlerDetails(bowlerId: UUID) {
 	val encoded = Uri.encode(bowlerId.toString())
-	this.navigate("bowler/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("bowler/$encoded")
 }
 
 fun NavGraphBuilder.bowlerDetailsScreen(

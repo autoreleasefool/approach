@@ -25,9 +25,7 @@ fun NavController.navigateToStatisticsDetails(filter: TrackableFilter) {
 
 fun NavController.navigateToStatisticsDetails(sourceType: SourceType, sourceId: UUID) {
 	val encodedId = Uri.encode(sourceId.toString())
-	this.navigate("statistics_details/$sourceType/$encodedId") {
-		launchSingleTop = true
-	}
+	this.navigate("statistics_details/$sourceType/$encodedId")
 }
 
 fun NavGraphBuilder.statisticsDetailsScreen(

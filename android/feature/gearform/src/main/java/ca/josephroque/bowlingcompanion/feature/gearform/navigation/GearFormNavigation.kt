@@ -17,15 +17,11 @@ const val addGearNavigationRoute = "add_gear"
 
 fun NavController.navigateToGearForm(gearId: UUID) {
 	val encoded = UUID.fromString(gearId.toString())
-	this.navigate("edit_gear/$encoded") {
-		launchSingleTop = true
-	}
+	this.navigate("edit_gear/$encoded")
 }
 
 fun NavController.navigateToNewGearForm() {
-	this.navigate("add_gear") {
-		launchSingleTop = true
-	}
+	this.navigate("add_gear")
 }
 
 fun NavGraphBuilder.gearFormScreen(
