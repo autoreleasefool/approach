@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialo
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
+import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiAction
@@ -57,7 +58,7 @@ fun BowlerDetails(
 		)
 
 		item {
-			Divider(modifier = Modifier.padding(bottom = 8.dp))
+			Divider(thickness = 8.dp)
 		}
 
 		bowlerGearList(
@@ -72,12 +73,23 @@ private fun LazyListScope.bowlerLeaguesList(
 	onAction: (LeaguesListUiAction) -> Unit,
 ) {
 	header(R.string.bowler_details_league_list_title)
-	leaguesList(
-		list = state.list,
-		onLeagueClick = { onAction(LeaguesListUiAction.LeagueClicked(it.id)) },
-		onArchiveLeague = { onAction(LeaguesListUiAction.LeagueArchived(it)) },
-		onEditLeague = { onAction(LeaguesListUiAction.LeagueEdited(it.id)) },
-	)
+	if (state.list.isEmpty()) {
+		item {
+			MutedEmptyState(
+				title = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_title,
+				message = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_message,
+				icon = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.drawable.league_list_empty_state,
+				modifier = Modifier.padding(bottom = 16.dp),
+			)
+		}
+	} else {
+		leaguesList(
+			list = state.list,
+			onLeagueClick = { onAction(LeaguesListUiAction.LeagueClicked(it.id)) },
+			onArchiveLeague = { onAction(LeaguesListUiAction.LeagueArchived(it)) },
+			onEditLeague = { onAction(LeaguesListUiAction.LeagueEdited(it.id)) },
+		)
+	}
 }
 
 private fun LazyListScope.bowlerGearList(

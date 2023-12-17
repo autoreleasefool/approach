@@ -68,7 +68,7 @@ fun Accessories(
 		}
 
 		item {
-			Divider(thickness = 8.dp)
+			Divider(thickness = 8.dp, modifier = Modifier.padding(vertical = 16.dp))
 		}
 
 		header(
