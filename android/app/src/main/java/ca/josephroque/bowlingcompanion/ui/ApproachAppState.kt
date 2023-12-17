@@ -4,20 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesNavigationRoute
-import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.navigateToAccessories
-import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToOverview
-import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewNavigationRoute
-import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToSettings
-import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsNavigationRoute
-import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.navigateToStatisticsOverview
-import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsOverviewNavigationRoute
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
+import ca.josephroque.bowlingcompanion.navigation.navigateToAccessoriesGraph
+import ca.josephroque.bowlingcompanion.navigation.navigateToOverviewGraph
+import ca.josephroque.bowlingcompanion.navigation.navigateToSettingsGraph
+import ca.josephroque.bowlingcompanion.navigation.navigateToStatisticsGraph
 
 @Composable
 fun rememberApproachAppState(
@@ -36,18 +33,13 @@ class ApproachAppState(
 		@Composable get() = navController
 			.currentBackStackEntryAsState().value?.destination
 
-	val currentTopLevelDestination: TopLevelDestination?
-		@Composable get() = when(currentDestination?.route) {
-			overviewNavigationRoute -> TopLevelDestination.APP_OVERVIEW
-			accessoriesNavigationRoute -> TopLevelDestination.ACCESSORIES_OVERVIEW
-			settingsNavigationRoute -> TopLevelDestination.SETTINGS_OVERVIEW
-			statisticsOverviewNavigationRoute -> TopLevelDestination.STATISTICS_OVERVIEW
-			else -> null
-		}
-
 	val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
 	fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
+		if (navController.currentDestination?.isTopLevelDestinationInHierarchy(topLevelDestination) == true) {
+			return
+		}
+
 		val topLevelNavOptions = navOptions {
 			popUpTo(navController.graph.findStartDestination().id) {
 				saveState = true
@@ -58,10 +50,15 @@ class ApproachAppState(
 		}
 
 		when (topLevelDestination) {
-			TopLevelDestination.APP_OVERVIEW -> navController.navigateToOverview(topLevelNavOptions)
-			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatisticsOverview(topLevelNavOptions)
-			TopLevelDestination.ACCESSORIES_OVERVIEW -> navController.navigateToAccessories(topLevelNavOptions)
-			TopLevelDestination.SETTINGS_OVERVIEW -> navController.navigateToSettings(topLevelNavOptions)
+			TopLevelDestination.APP_OVERVIEW -> navController.navigateToOverviewGraph(topLevelNavOptions)
+			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatisticsGraph(topLevelNavOptions)
+			TopLevelDestination.ACCESSORIES_OVERVIEW -> navController.navigateToAccessoriesGraph(topLevelNavOptions)
+			TopLevelDestination.SETTINGS_OVERVIEW -> navController.navigateToSettingsGraph(topLevelNavOptions)
 		}
 	}
 }
+
+fun NavDestination?.isTopLevelDestinationInHierarchy(destination: TopLevelDestination) =
+	this?.hierarchy?.any {
+		return@any it.route?.contains(destination.name, true) ?: false
+	} ?: false
