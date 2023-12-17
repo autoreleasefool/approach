@@ -9,6 +9,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
@@ -36,23 +37,20 @@ fun StatisticsOverview(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxSize()
-			.verticalScroll(rememberScrollState())
-			.padding(16.dp),
+			.verticalScroll(rememberScrollState()),
 	) {
-		Card {
+		Column(
+			verticalArrangement = Arrangement.spacedBy(8.dp),
+			modifier = Modifier.padding(horizontal = 16.dp),
+		) {
 			Text(
 				text = stringResource(R.string.statistics_get_an_overview_title),
 				style = MaterialTheme.typography.titleMedium,
-				modifier = Modifier
-					.padding(horizontal = 16.dp, vertical = 8.dp),
 			)
 
 			Text(
 				text = stringResource(R.string.statistics_get_an_overview_description),
 				style = MaterialTheme.typography.bodyMedium,
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 8.dp),
 			)
 			
 			SuggestionChip(
@@ -63,16 +61,17 @@ fun StatisticsOverview(
 						style = MaterialTheme.typography.labelSmall,
 					)
 				},
-				modifier = Modifier
-					.align(Alignment.End)
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 8.dp),
+				modifier = Modifier.align(Alignment.End)
 			)
 		}
 
+		Divider(thickness = 8.dp)
+
 		Button(
 			onClick = { onAction(StatisticsOverviewUiAction.ViewMoreClicked) },
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
 		) {
 			Text(
 				text = stringResource(R.string.view_detailed_statistics),
@@ -80,20 +79,18 @@ fun StatisticsOverview(
 			)
 		}
 
-		Card {
+		Column(
+			verticalArrangement = Arrangement.spacedBy(8.dp),
+			modifier = Modifier.padding(horizontal = 16.dp),
+		) {
 			Text(
 				text = stringResource(R.string.statistics_view_more_title),
 				style = MaterialTheme.typography.titleMedium,
-				modifier = Modifier
-					.padding(horizontal = 16.dp, vertical = 8.dp),
 			)
 
 			Text(
 				text = stringResource(R.string.statistics_view_more_description),
 				style = MaterialTheme.typography.bodyMedium,
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 8.dp),
 			)
 		}
 	}
