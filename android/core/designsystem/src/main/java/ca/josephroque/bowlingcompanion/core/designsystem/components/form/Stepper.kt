@@ -30,6 +30,14 @@ fun Stepper(
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp),
 	) {
+		IconButton(onClick = { onValueChanged(value - 1) }) {
+			Icon(
+				painter = painterResource(R.drawable.ic_minus_circle),
+				contentDescription = stringResource(R.string.cd_decrement),
+				tint = MaterialTheme.colorScheme.onSurface,
+			)
+		}
+
 		OutlinedTextField(
 			value = value.toString(),
 			onValueChange = {
@@ -41,24 +49,12 @@ fun Stepper(
 			modifier = Modifier.weight(1f),
 		)
 
-		Row(
-			verticalAlignment = Alignment.CenterVertically,
-		) {
-			IconButton(onClick = { onValueChanged(value - 1) }) {
-				Icon(
-					painter = painterResource(R.drawable.ic_minus_circle),
-					contentDescription = stringResource(R.string.cd_decrement),
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
-			}
-
-			IconButton(onClick = { onValueChanged(value + 1) }) {
-				Icon(
-					painter = painterResource(R.drawable.ic_add_circle),
-					contentDescription = stringResource(R.string.cd_increment),
-					tint = MaterialTheme.colorScheme.onSurface,
-				)
-			}
+		IconButton(onClick = { onValueChanged(value + 1) }) {
+			Icon(
+				painter = painterResource(R.drawable.ic_add_circle),
+				contentDescription = stringResource(R.string.cd_increment),
+				tint = MaterialTheme.colorScheme.onSurface,
+			)
 		}
 	}
 }

@@ -41,7 +41,7 @@ data class LaneLabelDialogUiState(
 sealed interface LaneLabelDialogUiAction {
 	data object PositionClicked: LaneLabelDialogUiAction
 	data object SaveClicked: LaneLabelDialogUiAction
-	data object DiscardClicked: LaneLabelDialogUiAction
+	data object CancelClicked: LaneLabelDialogUiAction
 
 	data class PositionDropDownToggled(val newValue: Boolean): LaneLabelDialogUiAction
 	data class LabelChanged(val label: String): LaneLabelDialogUiAction

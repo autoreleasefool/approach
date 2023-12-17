@@ -78,7 +78,7 @@ class LaneFormViewModel @Inject constructor(
 			is LaneLabelDialogUiAction.PositionChanged -> updateLaneLabelDialogPosition(action.position)
 			is LaneLabelDialogUiAction.PositionDropDownToggled -> toggleLaneLabelDialogPositionDropDown(action.newValue)
 			LaneLabelDialogUiAction.PositionClicked -> toggleLaneLabelDialogPositionDropDown(true)
-			LaneLabelDialogUiAction.DiscardClicked -> dismissLaneLabelDialog(false)
+			LaneLabelDialogUiAction.CancelClicked -> dismissLaneLabelDialog(false)
 			LaneLabelDialogUiAction.SaveClicked -> dismissLaneLabelDialog(true)
 		}
 	}
