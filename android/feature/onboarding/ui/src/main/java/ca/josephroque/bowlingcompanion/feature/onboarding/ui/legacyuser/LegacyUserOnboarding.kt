@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components.ApproachAppAnimatedIcons
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components.ApproachAppDescription
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components.LegacyCompanionHeader
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components.NewApproachHeader
@@ -20,6 +21,7 @@ fun LegacyUserOnboarding(
 	modifier: Modifier = Modifier,
 ) {
 	Box(modifier = modifier.fillMaxSize()) {
+		ApproachAppAnimatedIcons(state = state)
 		LegacyCompanionHeader(state = state)
 		NewApproachHeader(state = state, onAction = onAction)
 		ApproachAppDescription(
@@ -35,7 +37,7 @@ fun LegacyUserOnboarding(
 private fun LegacyUserOnboardingPreview() {
 	Surface {
 		LegacyUserOnboarding(
-			state = LegacyUserOnboardingUiState.ShowingApproachHeader(isDetailsVisible = true),
+			state = LegacyUserOnboardingUiState.ImportingData,
 			onAction = {},
 		)
 	}

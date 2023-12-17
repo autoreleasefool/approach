@@ -4,9 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,8 +18,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
@@ -56,57 +59,68 @@ private fun Description(
 	AnimatedVisibility(
 		visibleState = visibleState,
 		enter = slideInVertically(initialOffsetY = { it / 2 }) + fadeIn(),
+		modifier = modifier,
 	) {
-		Column(
-			horizontalAlignment = Alignment.CenterHorizontally,
-			modifier = modifier
-				.fillMaxSize()
-				.padding(horizontal = 16.dp),
+		Box(
+			modifier = Modifier
+				.background(
+					Brush.verticalGradient(
+						0f to Color.Transparent,
+						0.1f to Color.White,
+						0.9f to Color.White,
+						1f to Color.Transparent,
+					)
+				),
 		) {
-			Text(
-				text = stringResource(R.string.onboarding_legacy_user_title_is_taking_a_new),
-				style = MaterialTheme.typography.titleMedium,
-				fontStyle = FontStyle.Italic,
-			)
-
-			Text(
-				text = stringResource(R.string.onboarding_legacy_user_title_approach),
-				style = MaterialTheme.typography.headlineMedium,
-				modifier = Modifier.padding(bottom = 16.dp),
-			)
-
-			Spacer(modifier = Modifier.weight(1f))
-
-			Text(
-				text = stringResource(R.string.onboarding_legacy_user_description_updated),
-				style = MaterialTheme.typography.bodyMedium,
-				modifier = Modifier.padding(bottom = 8.dp),
-			)
-
-			Text(
-				text = stringResource(R.string.onboarding_legacy_user_description_wish),
-				style = MaterialTheme.typography.bodyMedium,
-				modifier = Modifier.padding(bottom = 16.dp),
-			)
-
-			Spacer(modifier = Modifier.weight(2f))
-
-			Text(
-				text = stringResource(R.string.onboarding_legacy_user_description_vancouver),
-				style = MaterialTheme.typography.bodySmall,
-				modifier = Modifier.padding(bottom = 16.dp),
-			)
-
-			Button(
-				onClick = { onAction(LegacyUserOnboardingUiAction.GetStartedClicked) },
+			Column(
+				horizontalAlignment = Alignment.CenterHorizontally,
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(bottom = 16.dp),
+					.padding(horizontal = 16.dp, vertical = 32.dp),
 			) {
 				Text(
-					text = stringResource(R.string.onboarding_legacy_user_get_started),
-					style = MaterialTheme.typography.bodyLarge,
+					text = stringResource(R.string.onboarding_legacy_user_title_is_taking_a_new),
+					style = MaterialTheme.typography.titleMedium,
+					fontStyle = FontStyle.Italic,
 				)
+
+				Text(
+					text = stringResource(R.string.onboarding_legacy_user_title_approach),
+					style = MaterialTheme.typography.headlineMedium,
+					modifier = Modifier.padding(bottom = 16.dp),
+				)
+
+				Text(
+					text = stringResource(R.string.onboarding_legacy_user_description_updated),
+					style = MaterialTheme.typography.bodyMedium,
+					fontWeight = FontWeight.Bold,
+					modifier = Modifier.padding(bottom = 8.dp),
+				)
+
+				Text(
+					text = stringResource(R.string.onboarding_legacy_user_description_wish),
+					style = MaterialTheme.typography.bodyMedium,
+					fontWeight = FontWeight.Bold,
+					modifier = Modifier.padding(bottom = 16.dp),
+				)
+
+				Text(
+					text = stringResource(R.string.onboarding_legacy_user_description_vancouver),
+					style = MaterialTheme.typography.bodySmall,
+					fontWeight = FontWeight.Bold,
+					fontStyle = FontStyle.Italic,
+					modifier = Modifier.padding(bottom = 16.dp),
+				)
+
+				Button(
+					onClick = { onAction(LegacyUserOnboardingUiAction.GetStartedClicked) },
+//					modifier = Modifier.fillMaxWidth(),
+				) {
+					Text(
+						text = stringResource(R.string.onboarding_legacy_user_get_started),
+						style = MaterialTheme.typography.bodyLarge,
+					)
+				}
 			}
 		}
 	}
