@@ -40,15 +40,17 @@ fun BowlerDetails(
 		modifier = modifier
 			.fillMaxSize()
 	) {
-		state.widgets?.let { layout ->
-			item(contentType = "statistics_widget_layout") {
-				StatisticsWidgetLayout(
-					state = layout,
-					onAction = { onAction(BowlerDetailsUiAction.StatisticsWidgetLayout(it)) },
-					modifier = Modifier
-						.padding(horizontal = 16.dp)
-						.padding(bottom = 16.dp),
-				)
+		if (state.leaguesList.list.isNotEmpty()) {
+			state.widgets?.let { layout ->
+				item(contentType = "statistics_widget_layout") {
+					StatisticsWidgetLayout(
+						state = layout,
+						onAction = { onAction(BowlerDetailsUiAction.StatisticsWidgetLayout(it)) },
+						modifier = Modifier
+							.padding(horizontal = 16.dp)
+							.padding(bottom = 16.dp),
+					)
+				}
 			}
 		}
 
