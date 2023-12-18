@@ -190,7 +190,7 @@ class LaneFormViewModel @Inject constructor(
 
 	private fun updateLanesToAdd(numberOfLanes: Int) {
 		_form.value = _form.value.copy(
-			addLanes = _form.value.addLanes?.copy(lanesToAdd = numberOfLanes)
+			addLanes = _form.value.addLanes?.copy(lanesToAdd = numberOfLanes.coerceAtLeast(1))
 		)
 	}
 
