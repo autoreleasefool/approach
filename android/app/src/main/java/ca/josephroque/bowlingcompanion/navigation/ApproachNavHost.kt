@@ -55,6 +55,9 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourc
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToNewSeriesForm
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesForm
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.acknowledgementsSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.developerSettingsScreen
@@ -141,10 +144,21 @@ fun ApproachNavHost(
 				onBackPressed = navController::popBackStack,
 			)
 			leagueDetailsScreen(
-				onEditSeries = { /* TODO: onEditSeries */ },
-				onAddSeries = { /* TODO: onAddSeries */ },
+				onEditSeries = navController::navigateToSeriesForm,
+				onAddSeries = navController::navigateToNewSeriesForm,
 				onShowSeriesDetails = navController::navigateToSeriesDetails,
 				onBackPressed = navController::popBackStack,
+			)
+			seriesFormScreen(
+				onBackPressed = navController::popBackStack,
+				onEditAlley = { alley, result ->
+					navController.navigateToResourcePickerForResult(
+						selectedIds = alley?.let { setOf(it) } ?: emptySet(),
+						limit = 1,
+						navResultCallback = result,
+						resourceType = ResourcePickerType.ALLEY,
+					)
+				},
 			)
 			seriesDetailsScreen(
 				onBackPressed = navController::popBackStack,

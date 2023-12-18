@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="series_form_new_series_title">Add Series</string>
+	<string name="series_form_edit_title">Edit %1$s</string>
+
+	<string name="series_form_section_details">Details</string>
+	<string name="series_form_number_of_games">Number of Games</string>
+
+	<string name="series_form_section_alley">Alley</string>
+	<string name="series_form_section_alley_description">This is where you plan on bowling this series.</string>
+	<string name="series_form_bowling_alley">Bowling Alley</string>
+
+	<string name="series_form_section_pre_bowl">Pre-Bowl</string>
+	<string name="series_form_section_pre_bowl_description">Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and change their date for when you plan to use them.</string>
+	<string name="series_form_pre_bowl">Pre-Bowling?</string>
+	<string name="series_form_pre_bowl_no">No</string>
+	<string name="series_form_pre_bowl_yes">Yes</string>
+
+	<string name="series_form_section_statistics">Statistics</string>
+	<string name="series_form_section_statistics_description">This series and all of its games will not count towards any statistics. They will still appear in the app, but won\'t affect your average or other statistics.</string>
+	<string name="series_form_section_statistics_description_excluded_when_pre_bowl">Pre-bowls are automatically excluded from all statistics.</string>
+	<string name="series_form_section_statistics_description_excluded_when_league_excluded">All of this league\'s series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.</string>
+	<string name="series_form_exclude_include">Include</string>
+	<string name="series_form_exclude_exclude">Exclude</string>
+
+	<string name="series_form_archive">Archive Series</string>
+</resources>

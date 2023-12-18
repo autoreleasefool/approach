@@ -74,6 +74,7 @@ dependencies {
 	implementation(project(":feature:resourcepicker"))
 	implementation(project(":feature:resourcepicker:ui")) // Require UI module to get `ResourcePickerType`
 	implementation(project(":feature:seriesdetails"))
+	implementation(project(":feature:seriesform"))
 	implementation(project(":feature:settings"))
 	implementation(project(":feature:statisticsdetails"))
 	implementation(project(":feature:statisticsoverview"))
