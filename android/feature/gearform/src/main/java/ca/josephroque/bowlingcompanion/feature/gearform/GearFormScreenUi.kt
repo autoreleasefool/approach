@@ -29,7 +29,6 @@ sealed interface GearFormScreenUiState {
 }
 
 fun GearFormUiState.updatedModel(existing: GearUpdate): GearUpdate = existing.copy(
-	id = existing.id,
 	name = name,
 	avatar = avatar,
 	ownerId = owner?.id,

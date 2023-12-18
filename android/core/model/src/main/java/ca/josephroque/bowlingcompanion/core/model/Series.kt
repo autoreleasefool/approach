@@ -58,16 +58,36 @@ data class ArchivedSeries(
 
 data class SeriesDetails(
 	val properties: SeriesDetailsProperties,
+	val alley: AlleyDetails?,
 	val scores: List<Int>,
 )
 
 data class SeriesDetailsProperties(
+	val leagueId: UUID,
 	val id: UUID,
 	val date: LocalDate,
 	val total: Int,
 	val numberOfGames: Int,
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
+)
+
+data class SeriesCreate(
+	val leagueId: UUID,
+	val id: UUID,
+	val date: LocalDate,
+	val numberOfGames: Int,
+	val preBowl: SeriesPreBowl,
+	val excludeFromStatistics: ExcludeFromStatistics,
+	val alleyId: UUID?,
+)
+
+data class SeriesUpdate(
+	val id: UUID,
+	val date: LocalDate,
+	val preBowl: SeriesPreBowl,
+	val excludeFromStatistics: ExcludeFromStatistics,
+	val alleyId: UUID?,
 )
 
 enum class SeriesPreBowl {

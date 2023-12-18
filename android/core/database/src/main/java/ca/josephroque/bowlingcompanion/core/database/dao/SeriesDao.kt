@@ -6,10 +6,10 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
-import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
-import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdate
+import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +22,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 	@Query(
 		"""
 			SELECT
+				series.league_id AS leagueId,
 				series.id AS id,
 				series."date" AS "date",
 				series.pre_bowl AS preBowl,
@@ -79,10 +80,10 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 	abstract fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 
 	@Insert(entity = SeriesEntity::class)
-	abstract fun insertSeries(series: SeriesCreate)
+	abstract fun insertSeries(series: SeriesCreateEntity)
 
 	@Update(entity = SeriesEntity::class)
-	abstract fun updateSeries(series: SeriesUpdate)
+	abstract fun updateSeries(series: SeriesUpdateEntity)
 
 	@Query("DELETE FROM series WHERE id = :seriesId")
 	abstract fun deleteSeries(seriesId: UUID)

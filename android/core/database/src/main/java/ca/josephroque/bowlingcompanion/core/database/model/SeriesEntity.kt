@@ -7,12 +7,15 @@ import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetailsProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -62,7 +65,7 @@ data class TrackableSeriesEntity(
 
 }
 
-data class SeriesCreate(
+data class SeriesCreateEntity(
 	@ColumnInfo(name = "league_id") val leagueId: UUID,
 	val id: UUID,
 	val date: LocalDate,
@@ -71,16 +74,38 @@ data class SeriesCreate(
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )
 
-data class SeriesUpdate(
+fun SeriesCreate.asEntity(): SeriesCreateEntity = SeriesCreateEntity(
+	leagueId = leagueId,
+	id = id,
+	date = date,
+	numberOfGames = numberOfGames,
+	preBowl = preBowl,
+	excludeFromStatistics = excludeFromStatistics,
+)
+
+data class SeriesUpdateEntity(
 	val id: UUID,
 	val date: LocalDate,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 )
 
+fun SeriesUpdate.asEntity(): SeriesUpdateEntity = SeriesUpdateEntity(
+	id = id,
+	date = date,
+	preBowl = preBowl,
+	excludeFromStatistics = excludeFromStatistics,
+)
+
 data class SeriesDetailsEntity(
 	@Embedded
 	val properties: SeriesDetailsProperties,
+	@Relation(
+		parentColumn = "alley_id",
+		entityColumn = "id",
+		entity = AlleyEntity::class,
+	)
+	val alley: AlleyDetailsEntity?,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "series_id",
@@ -92,6 +117,7 @@ data class SeriesDetailsEntity(
 	fun asModel(): SeriesDetails = SeriesDetails(
 		properties = properties,
 		scores = scores,
+		alley = alley?.asModel(),
 	)
 }
 
