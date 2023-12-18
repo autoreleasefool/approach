@@ -23,6 +23,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 		"""
 			SELECT
 				series.league_id AS leagueId,
+				series.alley_id AS alleyId,
 				series.id AS id,
 				series."date" AS "date",
 				series.pre_bowl AS preBowl,

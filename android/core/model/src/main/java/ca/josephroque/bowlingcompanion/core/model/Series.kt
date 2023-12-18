@@ -64,6 +64,7 @@ data class SeriesDetails(
 
 data class SeriesDetailsProperties(
 	val leagueId: UUID,
+	val alleyId: UUID?,
 	val id: UUID,
 	val date: LocalDate,
 	val total: Int,

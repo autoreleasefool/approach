@@ -2,19 +2,21 @@ package ca.josephroque.bowlingcompanion.feature.seriesform.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
-import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 
@@ -40,6 +42,7 @@ fun SeriesForm(
 		DetailsSection(
 			numberOfGames = state.numberOfGames,
 			onNumberOfGamesChanged = { onAction(SeriesFormUiAction.NumberOfGamesChanged(it)) },
+			modifier = Modifier.padding(bottom = 16.dp),
 		)
 
 		Divider()
@@ -47,6 +50,7 @@ fun SeriesForm(
 		AlleySection(
 			alley = state.alley,
 			onClick = { onAction(SeriesFormUiAction.AlleyClicked) },
+			modifier = Modifier.padding(16.dp),
 		)
 
 		Divider()
@@ -54,6 +58,7 @@ fun SeriesForm(
 		PreBowlSection(
 			preBowl = state.preBowl,
 			onPreBowlChanged = { onAction(SeriesFormUiAction.PreBowlChanged(it)) },
+			modifier = Modifier.padding(top = 16.dp),
 		)
 
 		Divider()
@@ -63,6 +68,7 @@ fun SeriesForm(
 			leagueExcludeFromStatistics = state.leagueExcludeFromStatistics,
 			seriesPreBowl = state.preBowl,
 			onExcludeFromStatisticsChanged = { onAction(SeriesFormUiAction.ExcludeFromStatisticsChanged(it)) },
+			modifier = Modifier.padding(top = 16.dp),
 		)
 	}
 }
@@ -91,12 +97,11 @@ private fun DetailsSection(
 
 @Composable
 private fun AlleySection(
-	alley: AlleyListItem?,
+	alley: AlleyDetails?,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	FormSection(
-//		titleResourceId = R.string.series_form_section_alley,
 		modifier = modifier,
 	) {
 		PickableResourceCard(
@@ -114,11 +119,11 @@ private fun PreBowlSection(
 	modifier: Modifier = Modifier,
 ) {
 	FormSection(
-//		titleResourceId = R.string.series_form_section_pre_bowl,
 		modifier = modifier,
 	) {
 		FormRadioGroup(
 			titleResourceId = R.string.series_form_pre_bowl,
+			subtitleResourceId = R.string.series_form_section_pre_bowl_description,
 			options = SeriesPreBowl.entries.toTypedArray(),
 			selected = preBowl,
 			titleForOption = {

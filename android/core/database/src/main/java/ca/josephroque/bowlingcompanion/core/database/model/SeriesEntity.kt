@@ -101,7 +101,7 @@ data class SeriesDetailsEntity(
 	@Embedded
 	val properties: SeriesDetailsProperties,
 	@Relation(
-		parentColumn = "alley_id",
+		parentColumn = "alleyId",
 		entityColumn = "id",
 		entity = AlleyEntity::class,
 	)
