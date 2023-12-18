@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
@@ -21,6 +22,9 @@ class OfflineFirstAlleysRepository @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): AlleysRepository {
+	override fun getAlleyDetails(id: UUID): Flow<AlleyDetails> =
+		alleyDao.getAlleyDetails(id).map { it.asModel() }
+
 	override fun getRecentAlleysList(limit: Int): Flow<List<AlleyListItem>> =
 		combine(
 			alleyDao.getAlleysList(),

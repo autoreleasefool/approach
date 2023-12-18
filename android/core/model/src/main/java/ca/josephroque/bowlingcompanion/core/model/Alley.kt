@@ -12,6 +12,15 @@ data class AlleyListItem(
 	val pinBase: AlleyPinBase?,
 ): SortableByUUID
 
+data class AlleyDetails(
+	val id: UUID,
+	val name: String,
+	val material: AlleyMaterial?,
+	val pinFall: AlleyPinFall?,
+	val mechanism: AlleyMechanism?,
+	val pinBase: AlleyPinBase?,
+)
+
 data class AlleyCreate(
 	val id: UUID,
 	val name: String,

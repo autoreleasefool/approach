@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
@@ -36,6 +37,24 @@ data class AlleyEntity(
 	@ColumnInfo(name = "pin_base") val pinBase: AlleyPinBase?,
 	@ColumnInfo(name = "location_id", index = true, defaultValue = "NULL") val locationId: UUID?,
 )
+
+data class AlleyDetailsEntity(
+	val id: UUID,
+	val name: String,
+	val material: AlleyMaterial?,
+	@ColumnInfo(name = "pin_fall") val pinFall: AlleyPinFall?,
+	val mechanism: AlleyMechanism?,
+	@ColumnInfo(name = "pin_base") val pinBase: AlleyPinBase?,
+) {
+	fun asModel(): AlleyDetails = AlleyDetails(
+		id = this.id,
+		name = this.name,
+		material = this.material,
+		pinFall = this.pinFall,
+		mechanism = this.mechanism,
+		pinBase = this.pinBase,
+	)
+}
 
 data class AlleyCreateEntity(
 	val id: UUID,

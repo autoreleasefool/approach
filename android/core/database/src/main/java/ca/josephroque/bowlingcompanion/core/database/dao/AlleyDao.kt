@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyCreateEntity
+import ca.josephroque.bowlingcompanion.core.database.model.AlleyDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyDetailsUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdateEntity
@@ -29,6 +30,9 @@ abstract class AlleyDao {
 		"""
 	)
 	abstract fun getAlleysList(): Flow<List<AlleyListItem>>
+
+	@Query("SELECT * FROM alleys WHERE alleys.id = :id")
+	abstract fun getAlleyDetails(id: UUID): Flow<AlleyDetailsEntity>
 
 	@Transaction
 	@Query(
