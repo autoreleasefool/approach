@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
@@ -175,14 +176,17 @@ class SeriesFormViewModel @Inject constructor(
 	}
 
 	private fun updateExcludeFromStatistics(excludeFromStatistics: ExcludeFromStatistics) {
-		// TODO: do not allow change based on pre-bowl/league
 		val state = getFormUiState() ?: return
+		when {
+			state.leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> return
+			state.preBowl == SeriesPreBowl.PRE_BOWL -> return
+		}
 		setFormUiState(state.copy(excludeFromStatistics = excludeFromStatistics))
 	}
 
 	private fun updateNumberOfGames(numberOfGames: Int) {
 		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(numberOfGames = numberOfGames))
+		setFormUiState(state.copy(numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange)))
 	}
 
 	private fun saveSeries() {

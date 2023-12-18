@@ -28,6 +28,7 @@ fun <T>FormRadioGroup(
 	titleForOption: @Composable (T?) -> String,
 	onOptionSelected: (T?) -> Unit,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
 	@StringRes subtitleResourceId: Int? = null,
 ) {
 	FormRadioGroup(
@@ -38,6 +39,7 @@ fun <T>FormRadioGroup(
 		onOptionSelected = onOptionSelected,
 		modifier = modifier,
 		subtitle = subtitleResourceId?.let { stringResource(it) },
+		enabled = enabled,
 	)
 }
 
@@ -49,6 +51,7 @@ fun <T>FormRadioGroup(
 	titleForOption: @Composable (T?) -> String,
 	onOptionSelected: (T?) -> Unit,
 	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
 	iconForOption: (@Composable (T?) -> Unit)? = null,
 	allowNullableSelection: Boolean = false,
 	subtitle: String? = null,
@@ -74,6 +77,7 @@ fun <T>FormRadioGroup(
 				isSelected = selected == null,
 				title = titleForOption(null),
 				icon = { iconForOption?.invoke(null) },
+				enabled = enabled,
 				onClick = { onOptionSelected(null) },
 			)
 		}
@@ -85,6 +89,7 @@ fun <T>FormRadioGroup(
 				isSelected = isSelected,
 				title = titleForOption(it),
 				icon = { iconForOption?.invoke(it) },
+				enabled = enabled,
 				onClick = { onOptionSelected(it) },
 			)
 		}
@@ -96,6 +101,7 @@ private fun FormRadioButton(
 	isSelected: Boolean,
 	title: String,
 	icon: @Composable () -> Unit,
+	enabled: Boolean,
 	onClick: () -> Unit,
 ) {
 	Surface(
@@ -104,6 +110,7 @@ private fun FormRadioButton(
 			.selectable(
 				selected = isSelected,
 				onClick = onClick,
+				enabled = enabled,
 				role = Role.RadioButton,
 			)
 	) {
@@ -120,11 +127,12 @@ private fun FormRadioButton(
 			Text(
 				text = title,
 				style = MaterialTheme.typography.bodyLarge,
+				color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (enabled) 1f else 0.5f),
 				modifier = Modifier.weight(1f),
 			)
 
 			Box(modifier = Modifier.padding(horizontal = 8.dp)) {
-				RadioButton(selected = isSelected, onClick = null)
+				RadioButton(selected = isSelected, onClick = null, enabled = enabled)
 			}
 		}
 	}

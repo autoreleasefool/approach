@@ -157,7 +157,16 @@ private fun ExcludeFromStatisticsSection(
 				else -> R.string.series_form_section_statistics_description
 			},
 			options = ExcludeFromStatistics.entries.toTypedArray(),
-			selected = excludeFromStatistics,
+			selected = when {
+				leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> ExcludeFromStatistics.EXCLUDE
+				seriesPreBowl == SeriesPreBowl.PRE_BOWL -> ExcludeFromStatistics.EXCLUDE
+				else -> excludeFromStatistics
+			},
+			enabled = when {
+				leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> false
+				seriesPreBowl == SeriesPreBowl.PRE_BOWL -> false
+				else -> true
+			},
 			titleForOption = {
 				when (it) {
 					ExcludeFromStatistics.INCLUDE -> stringResource(R.string.series_form_exclude_include)
