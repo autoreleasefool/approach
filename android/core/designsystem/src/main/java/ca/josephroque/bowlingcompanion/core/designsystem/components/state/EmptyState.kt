@@ -4,6 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -109,7 +111,7 @@ fun DefaultEmptyState(
 
 @Composable
 fun EmptyState(
-	icon: @Composable ColumnScope.() -> Unit,
+	icon: @Composable BoxScope.() -> Unit,
 	title: @Composable ColumnScope.() -> Unit,
 	modifier: Modifier = Modifier,
 	message: (@Composable ColumnScope.() -> Unit)? = null,
@@ -123,7 +125,9 @@ fun EmptyState(
 	) {
 		Spacer(modifier = Modifier.weight(1f))
 
-		icon()
+		Box(modifier = Modifier.heightIn(max = 160.dp)) {
+			icon()
+		}
 
 		Spacer(modifier = Modifier.weight(1f))
 

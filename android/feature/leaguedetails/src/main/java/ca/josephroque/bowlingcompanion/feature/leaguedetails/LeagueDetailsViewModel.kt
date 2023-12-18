@@ -75,8 +75,10 @@ class LeagueDetailsViewModel @Inject constructor(
 			leagueDetails = LeagueDetailsUiState(
 				topBar = LeagueDetailsTopBarUiState(
 					leagueName = league.name,
+					isSortOrderMenuVisible = series.isNotEmpty(),
 					isSortOrderMenuExpanded = config.isSeriesSortOrderShowing,
 					sortOrder = config.seriesSortOrder,
+					isSeriesItemSizeVisible = series.isNotEmpty(),
 					seriesItemSize = config.seriesItemSize,
 				),
 				seriesList = SeriesListUiState(

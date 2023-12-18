@@ -7,8 +7,10 @@ import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiState
 
 data class LeagueDetailsTopBarUiState(
 	val leagueName: String? = null,
+	val isSortOrderMenuVisible: Boolean = false,
 	val isSortOrderMenuExpanded: Boolean = false,
 	val sortOrder: SeriesSortOrder = SeriesSortOrder.NEWEST_TO_OLDEST,
+	val isSeriesItemSizeVisible: Boolean = false,
 	val seriesItemSize: SeriesItemSize = SeriesItemSize.DEFAULT,
 )
 
