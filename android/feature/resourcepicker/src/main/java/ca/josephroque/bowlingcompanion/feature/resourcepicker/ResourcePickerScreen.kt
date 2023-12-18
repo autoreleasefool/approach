@@ -14,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.ui.AlleyRow
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
@@ -94,6 +95,7 @@ private fun ResourcePickerScreen(
 								kind = it.kind,
 								avatar = it.avatar,
 							)
+							is ResourceItem.Alley -> AlleyRow(name = it.name)
 						}
 					},
 					modifier = Modifier.padding(padding),

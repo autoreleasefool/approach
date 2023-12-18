@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.alleyslist.ui
+package ca.josephroque.bowlingcompanion.core.model.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,40 +14,49 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
-import ca.josephroque.bowlingcompanion.core.model.ui.icon
-import java.util.UUID
 
 @Composable
-fun AlleyItemRow(
-	alley: AlleyListItem,
-	onClick: () -> Unit,
+fun AlleyRow(
+	name: String,
 	modifier: Modifier = Modifier,
+	material: AlleyMaterial? = null,
+	mechanism: AlleyMechanism? = null,
+	pinBase: AlleyPinBase? = null,
+	pinFall: AlleyPinFall? = null,
+	onClick: (() -> Unit)? = null,
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.clickable(onClick = onClick)
-			.padding(16.dp)
+			.then(if (onClick != null)
+				Modifier
+					.clickable(onClick = onClick)
+					.padding(16.dp)
+			else Modifier)
 	) {
 		// TODO: Add location name
 
 		Text(
-			text = alley.name,
+			text = name,
 			style = MaterialTheme.typography.titleMedium,
 			modifier = Modifier.weight(1f),
 		)
 
-		val alleyProperties = alley.properties().chunked(2)
+		val alleyProperties = listOfNotNull(
+			material?.icon(),
+			pinFall?.icon(),
+			mechanism?.icon(),
+			pinBase?.icon(),
+		).chunked(2)
+
 		Column {
 			alleyProperties.forEach { row ->
 				Row(horizontalArrangement = Arrangement.Start) {
@@ -67,29 +76,16 @@ fun AlleyItemRow(
 	}
 }
 
-@Composable
-private fun AlleyListItem.properties(): List<Painter> {
-	val properties = mutableListOf<Painter>()
-	this.material?.let { properties.add(it.icon()) }
-	this.pinFall?.let { properties.add(it.icon()) }
-	this.mechanism?.let { properties.add(it.icon()) }
-	this.pinBase?.let { properties.add(it.icon()) }
-	return properties
-}
-
 @Preview
 @Composable
-private fun AlleyItemRowPreview() {
+private fun AlleyRowPreview() {
 	Surface {
-		AlleyItemRow(
-			alley = AlleyListItem(
-				id = UUID.randomUUID(),
-				name = "Grandview Lanes",
-				material = AlleyMaterial.SYNTHETIC,
-				pinFall = AlleyPinFall.STRINGS,
-				mechanism = AlleyMechanism.INTERCHANGEABLE,
-				pinBase = AlleyPinBase.BLACK,
-			),
+		AlleyRow(
+			name = "Grandview Lanes",
+			material = AlleyMaterial.SYNTHETIC,
+			pinFall = AlleyPinFall.STRINGS,
+			mechanism = AlleyMechanism.INTERCHANGEABLE,
+			pinBase = AlleyPinBase.BLACK,
 			onClick = {}
 		)
 	}

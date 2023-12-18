@@ -9,6 +9,7 @@ enum class ResourcePickerType {
 	BOWLER,
 	LEAGUE,
 	GEAR,
+	ALLEY,
 }
 
 sealed interface ResourceItem {
@@ -31,6 +32,11 @@ sealed interface ResourceItem {
 		val kind: GearKind,
 		val ownerName: String?,
 		val avatar: Avatar,
+	): ResourceItem
+
+	data class Alley(
+		override val id: UUID,
+		override val name: String,
 	): ResourceItem
 }
 

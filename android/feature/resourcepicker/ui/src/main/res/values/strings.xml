@@ -22,4 +22,9 @@
 	<plurals name="gear_picker_title">
 		<item quantity="other">Select Gear</item>
 	</plurals>
+
+	<plurals name="alley_picker_title">
+		<item quantity="one">Select Alley</item>
+		<item quantity="other">Select Alleys</item>
+	</plurals>
 </resources>

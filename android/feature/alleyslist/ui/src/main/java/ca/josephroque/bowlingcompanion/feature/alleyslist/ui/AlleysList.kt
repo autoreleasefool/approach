@@ -13,6 +13,7 @@ import androidx.compose.ui.res.colorResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
+import ca.josephroque.bowlingcompanion.core.model.ui.AlleyRow
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
 
@@ -82,8 +83,12 @@ fun LazyListScope.alleysList(
 			startActions = listOfNotNull(deleteAction),
 			endActions = listOfNotNull(editAction),
 		) {
-			AlleyItemRow(
-				alley = alley,
+			AlleyRow(
+				name = alley.name,
+				material = alley.material,
+				mechanism = alley.mechanism,
+				pinBase = alley.pinBase,
+				pinFall = alley.pinFall,
 				onClick = { onAlleyClick(alley) },
 			)
 		}
