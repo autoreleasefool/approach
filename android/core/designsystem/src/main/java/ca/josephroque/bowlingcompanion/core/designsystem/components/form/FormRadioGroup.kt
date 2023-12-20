@@ -30,6 +30,7 @@ fun <T>FormRadioGroup(
 	modifier: Modifier = Modifier,
 	enabled: Boolean = true,
 	@StringRes subtitleResourceId: Int? = null,
+	@StringRes errorResourceId: Int? = null,
 ) {
 	FormRadioGroup(
 		title = stringResource(titleResourceId),
@@ -39,6 +40,7 @@ fun <T>FormRadioGroup(
 		onOptionSelected = onOptionSelected,
 		modifier = modifier,
 		subtitle = subtitleResourceId?.let { stringResource(it) },
+		error = errorResourceId?.let { stringResource(it) },
 		enabled = enabled,
 	)
 }
@@ -55,6 +57,7 @@ fun <T>FormRadioGroup(
 	iconForOption: (@Composable (T?) -> Unit)? = null,
 	allowNullableSelection: Boolean = false,
 	subtitle: String? = null,
+	error: String? = null,
 ) {
 	Column(modifier = modifier) {
 		Text(
@@ -67,8 +70,7 @@ fun <T>FormRadioGroup(
 			Text(
 				text = subtitle,
 				style = MaterialTheme.typography.bodySmall,
-				modifier = Modifier
-					.padding(horizontal = 16.dp, vertical = 8.dp),
+				modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
 			)
 		}
 
@@ -91,6 +93,15 @@ fun <T>FormRadioGroup(
 				icon = { iconForOption?.invoke(it) },
 				enabled = enabled,
 				onClick = { onOptionSelected(it) },
+			)
+		}
+
+		error?.let {
+			Text(
+				text = error,
+				style = MaterialTheme.typography.bodySmall,
+				color = MaterialTheme.colorScheme.error,
+				modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
 			)
 		}
 	}

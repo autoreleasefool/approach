@@ -8,6 +8,7 @@ import kotlinx.datetime.LocalDate
 data class SeriesFormUiState(
 	val numberOfGames: Int?,
 	val date: LocalDate,
+	val isDatePickerVisible: Boolean,
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
 	val leagueExcludeFromStatistics: ExcludeFromStatistics,
@@ -25,6 +26,9 @@ sealed interface SeriesFormUiAction {
 	data object DismissArchiveClicked : SeriesFormUiAction
 
 	data object AlleyClicked : SeriesFormUiAction
+
+	data object DateClicked: SeriesFormUiAction
+	data object DatePickerDismissed : SeriesFormUiAction
 
 	data class NumberOfGamesChanged(val numberOfGames: Int) : SeriesFormUiAction
 	data class DateChanged(val date: LocalDate) : SeriesFormUiAction

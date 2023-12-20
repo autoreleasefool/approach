@@ -63,6 +63,8 @@ class SeriesFormViewModel @Inject constructor(
 			SeriesFormUiAction.ConfirmArchiveClicked -> archiveSeries()
 			SeriesFormUiAction.DismissArchiveClicked -> setArchiveSeriesPrompt(isVisible = false)
 			SeriesFormUiAction.AlleyClicked -> sendEvent(SeriesFormScreenEvent.EditAlley(alleyId = getFormUiState()?.alley?.id))
+			SeriesFormUiAction.DateClicked -> setDatePicker(isVisible = true)
+			SeriesFormUiAction.DatePickerDismissed -> setDatePicker(isVisible = false)
 			is SeriesFormUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
 			is SeriesFormUiAction.DateChanged -> updateDate(action.date)
 			is SeriesFormUiAction.PreBowlChanged -> updatePreBowl(action.preBowl)
@@ -100,6 +102,7 @@ class SeriesFormViewModel @Inject constructor(
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 						leagueExcludeFromStatistics = league.excludeFromStatistics,
 						alley = null,
+						isDatePickerVisible = false,
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = false,
 					),
@@ -119,6 +122,7 @@ class SeriesFormViewModel @Inject constructor(
 					form = SeriesFormUiState(
 						numberOfGames = null,
 						date = series.properties.date,
+						isDatePickerVisible = false,
 						preBowl = series.properties.preBowl,
 						excludeFromStatistics = series.properties.excludeFromStatistics,
 						leagueExcludeFromStatistics = league.excludeFromStatistics,
@@ -145,6 +149,11 @@ class SeriesFormViewModel @Inject constructor(
 		}
 	}
 
+	private fun setDatePicker(isVisible: Boolean) {
+		val uiState = getFormUiState() ?: return
+		setFormUiState(uiState.copy(isDatePickerVisible = isVisible))
+	}
+
 	private fun setArchiveSeriesPrompt(isVisible: Boolean) {
 		val uiState = getFormUiState() ?: return
 		setFormUiState(uiState.copy(isShowingArchiveDialog = isVisible))
@@ -168,6 +177,7 @@ class SeriesFormViewModel @Inject constructor(
 	private fun updateDate(date: LocalDate) {
 		val state = getFormUiState() ?: return
 		setFormUiState(state.copy(date = date))
+		setDatePicker(isVisible = false)
 	}
 
 	private fun updatePreBowl(preBowl: SeriesPreBowl) {

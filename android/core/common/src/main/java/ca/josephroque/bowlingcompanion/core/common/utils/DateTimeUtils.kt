@@ -2,10 +2,13 @@ package ca.josephroque.bowlingcompanion.core.common.utils
 
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.until
 import java.time.format.DateTimeFormatter
 
@@ -19,6 +22,9 @@ fun firstDayOfMonth(year: Int, month: Month): DayOfWeek {
 	val start = LocalDate(year, month, 1)
 	return start.dayOfWeek
 }
+
+fun Instant.toLocalDate(): LocalDate =
+	toLocalDateTime(TimeZone.currentSystemDefault()).date
 
 fun LocalDate.format(format: String): String =
 	DateTimeFormatter.ofPattern(format).format(this.toJavaLocalDate())

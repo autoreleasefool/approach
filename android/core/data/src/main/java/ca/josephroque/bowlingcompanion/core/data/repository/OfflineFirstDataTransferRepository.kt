@@ -4,16 +4,13 @@ import android.content.Context
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
+import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.DATABASE_NAME
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.io.File
 import javax.inject.Inject
 
@@ -46,6 +43,3 @@ class OfflineFirstDataTransferRepository @Inject constructor(
 		checkpointDao.recordCheckpoint()
 	}
 }
-
-private fun Instant.toLocalDate(): LocalDate =
-	toLocalDateTime(TimeZone.currentSystemDefault()).date

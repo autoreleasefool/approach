@@ -5,6 +5,7 @@
 
 	<string name="series_form_section_details">Details</string>
 	<string name="series_form_number_of_games">Number of Games</string>
+	<string name="series_form_date">Date</string>
 
 	<string name="series_form_section_alley">Alley</string>
 	<string name="series_form_section_alley_description">This is where you plan on bowling this series.</string>
@@ -17,7 +18,7 @@
 	<string name="series_form_pre_bowl_yes">Yes</string>
 
 	<string name="series_form_section_statistics">Statistics</string>
-	<string name="series_form_section_statistics_description">This series and all of its games will not count towards any statistics. They will still appear in the app, but won\'t affect your average or other statistics.</string>
+	<string name="series_form_section_statistics_description">If excluded, this series and all of its games will not count towards any statistics. They will still appear in the app, but won\'t affect your average or other statistics.</string>
 	<string name="series_form_section_statistics_description_excluded_when_pre_bowl">Pre-bowls are automatically excluded from all statistics.</string>
 	<string name="series_form_section_statistics_description_excluded_when_league_excluded">All of this league\'s series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.</string>
 	<string name="series_form_exclude_include">Include</string>
