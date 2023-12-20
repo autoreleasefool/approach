@@ -1,11 +1,9 @@
 # Most recent version
 
-## iOS 1.4.1b20
+## iOS 1.4.2b21
 
 ```
-- Chore: Updated swift-composable-architecture to 1.5.5
-- Chore: Refactored Reducers to use new @Reducer macro
-- Chore: Refactored Stores to use new CaseKeyPaths
+- Fix: Ensure TelemetryDeck is initiated immediately, instead of in a later task to avoid crash when newSessionSignal is sent
 ```
 
 ## Android v3.2.0
@@ -21,6 +19,14 @@ This update also comes with some quality of life fixes:
 ---
 
 # Legacy versions
+
+## iOS 1.4.1b20
+
+```
+- Chore: Updated swift-composable-architecture to 1.5.5
+- Chore: Refactored Reducers to use new @Reducer macro
+- Chore: Refactored Stores to use new CaseKeyPaths
+```
 
 ## iOS 1.4.0b19
 
