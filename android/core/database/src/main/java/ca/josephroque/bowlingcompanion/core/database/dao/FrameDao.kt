@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -62,4 +63,7 @@ abstract class FrameDao: LegacyMigratingDao<FrameEntity> {
 
 	@Update
 	abstract fun updateFrame(frame: FrameEntity)
+
+	@Insert
+	abstract fun insertFrames(frames: List<FrameEntity>)
 }

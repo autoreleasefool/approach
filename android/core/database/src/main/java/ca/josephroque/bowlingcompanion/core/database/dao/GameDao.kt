@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
@@ -101,4 +102,7 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
 	abstract fun archiveGame(gameId: UUID)
+
+	@Insert
+	abstract fun insertGames(games: List<GameEntity>)
 }
