@@ -244,6 +244,9 @@ public enum Asset {
       public static let galaxy = ImageAsset(name: "Lane/Galaxy")
       public static let wood = ImageAsset(name: "Lane/Wood")
     }
+    public enum Onboarding {
+      public static let background = ImageAsset(name: "Onboarding/Background")
+    }
   }
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name
