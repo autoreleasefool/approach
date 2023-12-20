@@ -3,6 +3,8 @@
 	<string name="league_form_title_new">New League</string>
 	<string name="league_form_title_edit">Edit %1$s</string>
 
+	<string name="league_form_archive">Archive League</string>
+
 	<string name="league_form_details_title">Details</string>
 
 	<string name="league_form_property_name">Name</string>

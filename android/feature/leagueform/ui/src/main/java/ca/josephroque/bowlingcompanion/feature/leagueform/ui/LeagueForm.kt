@@ -10,6 +10,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -135,6 +138,18 @@ fun LeagueForm(
 				excludeFromStatistics = state.excludeFromStatistics,
 				onExcludeFromStatisticsChanged = { onAction(LeagueFormUiAction.ExcludeFromStatisticsChanged(it)) },
 			)
+		}
+
+		if (state.isArchiveButtonEnabled) {
+			Button(
+				onClick = { onAction(LeagueFormUiAction.ArchiveClicked) },
+				colors = ButtonDefaults.buttonColors(containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive)),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(horizontal = 16.dp, vertical = 8.dp),
+			) {
+				Text(text = stringResource(R.string.league_form_archive))
+			}
 		}
 	}
 }

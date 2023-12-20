@@ -9,6 +9,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
@@ -24,6 +26,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -99,6 +102,20 @@ fun SeriesForm(
 			onExcludeFromStatisticsChanged = { onAction(SeriesFormUiAction.ExcludeFromStatisticsChanged(it)) },
 			modifier = Modifier.padding(top = 16.dp),
 		)
+
+		Divider()
+
+		if (state.isArchiveButtonEnabled) {
+			Button(
+				onClick = { onAction(SeriesFormUiAction.ArchiveClicked) },
+				colors = ButtonDefaults.buttonColors(containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive)),
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(horizontal = 16.dp, vertical = 8.dp),
+			) {
+				Text(text = stringResource(R.string.series_form_archive))
+			}
+		}
 	}
 }
 

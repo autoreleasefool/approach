@@ -31,4 +31,6 @@
 	<string name="alley_property_pin_base_black">Black</string>
 	<string name="alley_property_pin_base_white">White</string>
 	<string name="alley_property_pin_base_other">Other</string>
+
+	<string name="alley_form_delete">Delete Alley</string>
 </resources>

@@ -13,5 +13,5 @@
 	<string name="gear_form_section_owner">Owner</string>
 	<string name="gear_form_owner_none">No owner</string>
 
-	<string name="gear_form_archive">Archive Gear</string>
+	<string name="gear_form_delete">Delete Gear</string>
 </resources>
