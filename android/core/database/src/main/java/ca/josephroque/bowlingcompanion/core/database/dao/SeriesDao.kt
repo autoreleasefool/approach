@@ -50,6 +50,7 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 		LEFT JOIN games
 			ON games.series_id = series.id AND games.archived_on IS NULL
 		WHERE series.league_id = :leagueId
+			AND series.archived_on IS NULL
 		GROUP BY series.id
 		ORDER BY
 		CASE WHEN :seriesSortOrder = "OLDEST_TO_NEWEST" THEN series."date" END ASC,
