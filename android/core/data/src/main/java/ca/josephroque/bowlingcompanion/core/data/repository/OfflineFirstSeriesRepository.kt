@@ -41,10 +41,6 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		seriesDao.updateSeries(series.asEntity())
 	}
 
-	override suspend fun deleteSeries(id: UUID) = withContext(ioDispatcher) {
-		seriesDao.deleteSeries(id)
-	}
-
 	override suspend fun archiveSeries(id: UUID) = withContext(ioDispatcher) {
 		seriesDao.archiveSeries(id, archivedOn = Clock.System.now())
 	}

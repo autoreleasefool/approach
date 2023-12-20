@@ -45,10 +45,6 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 		leagueDao.updateLeague(league.asEntity())
 	}
 
-	override suspend fun deleteLeague(id: UUID) = withContext(ioDispatcher) {
-		leagueDao.deleteLeague(id)
-	}
-
 	override suspend fun archiveLeague(id: UUID) = withContext(ioDispatcher) {
 		leagueDao.archiveLeague(id, archivedOn = Clock.System.now())
 	}

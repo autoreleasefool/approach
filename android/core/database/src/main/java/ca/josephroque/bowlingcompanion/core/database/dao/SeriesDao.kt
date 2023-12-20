@@ -86,9 +86,6 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 	@Update(entity = SeriesEntity::class)
 	abstract fun updateSeries(series: SeriesUpdateEntity)
 
-	@Query("DELETE FROM series WHERE id = :seriesId")
-	abstract fun deleteSeries(seriesId: UUID)
-
 	@Query("UPDATE series SET archived_on = :archivedOn WHERE id = :seriesId")
 	abstract fun archiveSeries(seriesId: UUID, archivedOn: Instant)
 

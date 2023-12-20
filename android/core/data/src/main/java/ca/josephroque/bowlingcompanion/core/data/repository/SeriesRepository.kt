@@ -16,7 +16,6 @@ interface SeriesRepository {
 
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
-	suspend fun deleteSeries(id: UUID)
 	suspend fun archiveSeries(id: UUID)
 	suspend fun unarchiveSeries(id: UUID)
 }
