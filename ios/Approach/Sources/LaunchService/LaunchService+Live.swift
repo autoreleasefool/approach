@@ -28,9 +28,12 @@ extension LaunchService: DependencyKey {
 		}
 
 		return Self(
-			didLaunch: {
+			didInit: {
+				// For sync initializars that must run before anything else in the app
 				initializeAnalytics()
-
+			},
+			didLaunch: {
+				// For async initializers that can wait until task
 				@Dependency(\.featureFlags) var features
 				let isProductsEnabled = features.isEnabled(.purchases)
 				if isProductsEnabled {

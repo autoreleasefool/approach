@@ -21,6 +21,7 @@ public struct ApproachApp: App {
 		}
 
 		@Dependency(\.launch) var launch
+		launch.didInit()
 		Task.detached(priority: .high) {
 			await launch.didLaunch()
 		}
