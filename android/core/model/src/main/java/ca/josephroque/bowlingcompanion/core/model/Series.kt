@@ -4,6 +4,10 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
+object Series {
+	const val DefaultNumberOfGames = 4
+}
+
 enum class SeriesSortOrder {
 	OLDEST_TO_NEWEST,
 	NEWEST_TO_OLDEST,

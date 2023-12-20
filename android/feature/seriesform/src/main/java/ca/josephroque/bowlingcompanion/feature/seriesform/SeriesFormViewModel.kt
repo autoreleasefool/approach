@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
+import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
@@ -96,7 +97,7 @@ class SeriesFormViewModel @Inject constructor(
 			val uiState = if (series == null) {
 				SeriesFormScreenUiState.Create(
 					form = SeriesFormUiState(
-						numberOfGames = league.numberOfGames ?: 4,
+						numberOfGames = league.numberOfGames ?: Series.DefaultNumberOfGames,
 						date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
@@ -211,7 +212,7 @@ class SeriesFormViewModel @Inject constructor(
 						date = state.form.date,
 						preBowl = state.form.preBowl,
 						excludeFromStatistics = state.form.excludeFromStatistics,
-						numberOfGames = state.form.numberOfGames ?: 4,
+						numberOfGames = state.form.numberOfGames ?: Series.DefaultNumberOfGames,
 					)
 
 					seriesRepository.insertSeries(series)
