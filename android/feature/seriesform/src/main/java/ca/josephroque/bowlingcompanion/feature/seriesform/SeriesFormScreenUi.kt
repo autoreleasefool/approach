@@ -38,6 +38,6 @@ sealed interface SeriesFormScreenUiAction {
 }
 
 sealed interface SeriesFormScreenEvent {
-	data object Dismissed: SeriesFormScreenEvent
+	data class Dismissed(val id: UUID?): SeriesFormScreenEvent
 	data class EditAlley(val alleyId: UUID?): SeriesFormScreenEvent
 }

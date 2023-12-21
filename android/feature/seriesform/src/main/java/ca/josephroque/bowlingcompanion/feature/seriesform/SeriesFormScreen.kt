@@ -23,7 +23,7 @@ import java.util.UUID
 
 @Composable
 internal fun SeriesFormRoute(
-	onDismiss: () -> Unit,
+	onDismissWithResult: (UUID?) -> Unit,
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: SeriesFormViewModel = hiltViewModel(),
@@ -37,7 +37,7 @@ internal fun SeriesFormRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						SeriesFormScreenEvent.Dismissed -> onDismiss()
+						is SeriesFormScreenEvent.Dismissed -> onDismissWithResult(it.id)
 						is SeriesFormScreenEvent.EditAlley ->
 							onEditAlley(it.alleyId) { ids ->
 								viewModel.handleAction(SeriesFormScreenUiAction.AlleyUpdated(ids.firstOrNull()))

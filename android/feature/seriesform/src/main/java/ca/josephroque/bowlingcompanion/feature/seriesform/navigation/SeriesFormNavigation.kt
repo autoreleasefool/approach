@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.seriesform.SeriesFormRoute
 import java.util.UUID
 
@@ -20,13 +21,13 @@ fun NavController.navigateToSeriesForm(seriesId: UUID) {
 	this.navigate("edit_series/$encoded")
 }
 
-fun NavController.navigateToNewSeriesForm(leagueId: UUID) {
+fun NavController.navigateToNewSeriesForm(leagueId: UUID, result: NavResultCallback<UUID?>) {
 	val encoded = UUID.fromString(leagueId.toString())
-	this.navigate("add_series/$encoded")
+	this.navigateForResult("add_series/$encoded", result)
 }
 
 fun NavGraphBuilder.seriesFormScreen(
-	onBackPressed: () -> Unit,
+	onDismissWithResult: (UUID?) -> Unit,
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
@@ -36,7 +37,7 @@ fun NavGraphBuilder.seriesFormScreen(
 		),
 	) {
 		SeriesFormRoute(
-			onDismiss = onBackPressed,
+			onDismissWithResult = onDismissWithResult,
 			onEditAlley = onEditAlley,
 		)
 	}
@@ -47,7 +48,7 @@ fun NavGraphBuilder.seriesFormScreen(
 		),
 	) {
 		SeriesFormRoute(
-			onDismiss = onBackPressed,
+			onDismissWithResult = onDismissWithResult,
 			onEditAlley = onEditAlley,
 		)
 	}
