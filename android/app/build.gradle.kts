@@ -5,6 +5,7 @@ plugins {
 	id("approach.android.application.compose")
 	id("approach.android.room")
 	id("approach.android.hilt")
+	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -92,7 +93,13 @@ dependencies {
 
 	implementation(libs.kotlinx.datetime)
 
+	implementation(libs.sentry)
+
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
+}
+
+secrets {
+	propertiesFileName = "secrets.properties"
 }
 
 // FIXME: Move to Gradle Convention Plugin

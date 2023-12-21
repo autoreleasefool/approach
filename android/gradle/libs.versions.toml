@@ -24,6 +24,7 @@ protobuf = "3.24.0"
 protobufPlugin = "0.9.4"
 room = "2.6.1"
 secrets = "2.0.1"
+sentry = "7.1.0"
 swipe = "1.2.0"
 telemetryDeck = "1.1.0"
 vico = "1.12.0"
@@ -55,6 +56,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
+sentry = { group = "io.sentry", name = "sentry-android", version.ref = "sentry" }
 swipe = { group = "me.saket.swipe", name = "swipe", version.ref = "swipe" }
 telemetrydeck-kotlinsdk = { group = "com.github.TelemetryDeck", name = "KotlinSDK", version.ref = "telemetryDeck" }
 vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
