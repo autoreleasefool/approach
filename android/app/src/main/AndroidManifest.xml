@@ -13,6 +13,8 @@
 			android:theme="@style/Theme.Approach"
 			tools:targetApi="31">
 
+		<meta-data android:name="io.sentry.dsn" android:value="${sentryAppDsn}" />
+
 		<activity
 				android:name=".MainActivity"
 				android:exported="true"
