@@ -23,6 +23,7 @@ fun SeriesDetails(
 				scores = state.scores,
 				seriesLow = state.seriesLow,
 				seriesHigh = state.seriesHigh,
+				isShowingPlaceholder = state.isShowingPlaceholder,
 			)
 		}
 	)

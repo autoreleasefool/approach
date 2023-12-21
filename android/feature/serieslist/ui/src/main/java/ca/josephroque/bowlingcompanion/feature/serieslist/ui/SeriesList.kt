@@ -91,7 +91,16 @@ fun LazyListScope.seriesList(
 			endActions = listOf(editAction),
 		) {
 			SeriesRow(
-				series = series,
+				date = series.date,
+				total = series.total,
+				scores = series.scores?.let {
+					ScoreData(
+						seriesLow = series.lowestScore,
+						seriesHigh = series.highestScore,
+						numberOfGames = series.numberOfGames,
+						model = it,
+					)
+				},
 				onClick = { onSeriesClick(series) },
 				itemSize = itemSize,
 			)

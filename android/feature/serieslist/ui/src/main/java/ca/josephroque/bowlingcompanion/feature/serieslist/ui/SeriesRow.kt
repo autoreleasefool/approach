@@ -41,28 +41,43 @@ import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 
+data class ScoreData(
+	val numberOfGames: Int,
+	val seriesLow: Int,
+	val seriesHigh: Int,
+	val model: ChartEntryModelProducer,
+)
+
 @Composable
 fun SeriesRow(
-	series: SeriesListChartItem,
+	date: LocalDate,
+	total: Int,
 	itemSize: SeriesItemSize,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	scores: ScoreData? = null,
 ) {
+	if (scores == null) {
+		CompactSeriesRow(date, total, onClick, modifier)
+		return
+	}
+
 	when (itemSize) {
-		SeriesItemSize.DEFAULT -> DefaultSeriesRow(series, onClick, modifier)
-		SeriesItemSize.COMPACT -> CompactSeriesRow(series, onClick, modifier)
+		SeriesItemSize.DEFAULT -> DefaultSeriesRow(date, total, scores, onClick, modifier)
+		SeriesItemSize.COMPACT -> CompactSeriesRow(date, total, onClick, modifier)
 	}
 }
 
 @Composable
 private fun CompactSeriesRow(
-	series: SeriesListChartItem,
+	date: LocalDate,
+	total: Int,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	Header(
-		date = series.date,
-		total = series.total,
+		date = date,
+		total = total,
 		itemSize = SeriesItemSize.COMPACT,
 		modifier = modifier
 			.clickable(onClick = onClick)
@@ -72,7 +87,9 @@ private fun CompactSeriesRow(
 
 @Composable
 private fun DefaultSeriesRow(
-	series: SeriesListChartItem,
+	date: LocalDate,
+	total: Int,
+	scores: ScoreData,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -82,29 +99,27 @@ private fun DefaultSeriesRow(
 			.clickable(onClick = onClick)
 			.padding(bottom = 8.dp),
 	) {
-		if (series.scores != null) {
-			ScoreChart(
-				scores = series.scores,
-				seriesLow = series.lowestScore,
-				seriesHigh = series.highestScore,
-			)
-		}
+		ScoreChart(
+			scores = scores.model,
+			seriesLow = scores.seriesLow,
+			seriesHigh = scores.seriesHigh,
+		)
 
 		Column(
 			verticalArrangement = Arrangement.spacedBy(16.dp),
 			modifier = Modifier.padding(16.dp),
 		) {
 			Header(
-				date = series.date,
-				total = series.total,
+				date = date,
+				total = total,
 				itemSize = SeriesItemSize.DEFAULT,
 			)
 
 			ScoreSummary(
-				numberOfGames = series.numberOfGames,
-				seriesLow = series.lowestScore,
-				seriesHigh = series.highestScore,
-				scores = series.scores,
+				numberOfGames = scores.numberOfGames,
+				seriesLow = scores.seriesLow,
+				seriesHigh = scores.seriesHigh,
+				scores = scores.model,
 			)
 		}
 	}
@@ -180,22 +195,21 @@ private fun ScoreSummary(
 			)
 			.padding(vertical = 2.dp, horizontal = 4.dp)
 	) {
+
 		Text(
 			text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
 			style = MaterialTheme.typography.bodyMedium,
 		)
 
-		if (scores != null) {
-			Text(
-				text = stringResource(
-					R.string.series_list_score_range,
-					seriesLow,
-					seriesHigh,
-				),
-				style = MaterialTheme.typography.bodyMedium,
-				fontStyle = FontStyle.Italic,
-			)
-		}
+		Text(
+			text = stringResource(
+				R.string.series_list_score_range,
+				seriesLow,
+				seriesHigh,
+			),
+			style = MaterialTheme.typography.bodyMedium,
+			fontStyle = FontStyle.Italic,
+		)
 	}
 }
 
@@ -237,15 +251,13 @@ private fun SeriesItemPreview() {
 	Surface {
 		Column {
 			SeriesRow(
-				series = SeriesListChartItem(
-					id = UUID.randomUUID(),
-					date = LocalDate.parse("2023-09-24"),
-					total = 880,
-					preBowl = SeriesPreBowl.REGULAR,
+				date = LocalDate.parse("2023-09-24"),
+				total = 880,
+				scores = ScoreData(
 					numberOfGames = 4,
-					lowestScore = 215,
-					highestScore = 230,
-					scores = ChartEntryModelProducer(listOf(
+					seriesLow = 215,
+					seriesHigh = 230,
+					model = ChartEntryModelProducer(listOf(
 						entryOf(0, 220),
 						entryOf(1, 230),
 						entryOf(2, 215),
@@ -259,18 +271,19 @@ private fun SeriesItemPreview() {
 			Divider(modifier = Modifier.padding(start = 16.dp))
 
 			SeriesRow(
-				series = SeriesListChartItem(
-					id = UUID.randomUUID(),
-					date = LocalDate.parse("2023-10-01"),
-					total = 880,
-					preBowl = SeriesPreBowl.REGULAR,
-					numberOfGames = 1,
-					lowestScore = 220,
-					highestScore = 220,
-					scores = ChartEntryModelProducer(
-						listOf(entryOf(0, 220))
-					),
-				),
+				date = LocalDate.parse("2023-10-01"),
+				total = 880,
+				scores = null,
+				itemSize = SeriesItemSize.DEFAULT,
+				onClick = {},
+			)
+
+			Divider(modifier = Modifier.padding(start = 16.dp))
+
+			SeriesRow(
+				date = LocalDate.parse("2023-10-01"),
+				total = 880,
+				scores = null,
 				itemSize = SeriesItemSize.COMPACT,
 				onClick = {},
 			)

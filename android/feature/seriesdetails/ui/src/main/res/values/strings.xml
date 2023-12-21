@@ -8,4 +8,5 @@
 	<string name="series_details_high_game">High of %d</string>
 	<string name="series_details_low_game">Low of %d</string>
 	<string name="series_details_total">Series total</string>
+	<string name="series_details_placeholder">Start bowling to see your scores charted here</string>
 </resources>

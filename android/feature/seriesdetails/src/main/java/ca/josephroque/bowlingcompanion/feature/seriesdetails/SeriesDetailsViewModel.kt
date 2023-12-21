@@ -40,8 +40,23 @@ class SeriesDetailsViewModel @Inject constructor(
 		seriesRepository.getSeriesDetails(seriesId),
 		gamesRepository.getGamesList(seriesId),
 	) { gameToArchive, seriesDetails, games ->
+		val isShowingPlaceholder = seriesDetails.scores.all { it == 0 }
 		_chartModelProducer.setEntries(
-			seriesDetails.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
+			if (isShowingPlaceholder) {
+				listOf(
+					entryOf(0f, 75f),
+					entryOf(1f, 200f),
+					entryOf(2f, 125f),
+					entryOf(3f, 300f),
+				)
+			} else {
+				seriesDetails.scores.mapIndexed { index, value ->
+					entryOf(
+						index.toFloat(),
+						value.toFloat()
+					)
+				}
+			}
 		)
 
 		return@combine SeriesDetailsScreenUiState.Loaded(
@@ -50,6 +65,7 @@ class SeriesDetailsViewModel @Inject constructor(
 				scores = _chartModelProducer,
 				seriesLow = seriesDetails.scores.minOrNull(),
 				seriesHigh = seriesDetails.scores.maxOrNull(),
+				isShowingPlaceholder = isShowingPlaceholder,
 				gamesList = GamesListUiState(
 					list = games,
 					gameToArchive = gameToArchive,

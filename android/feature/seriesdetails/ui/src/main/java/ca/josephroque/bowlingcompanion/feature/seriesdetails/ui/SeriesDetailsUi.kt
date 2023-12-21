@@ -11,6 +11,7 @@ data class SeriesDetailsUiState(
 	val scores: ChartEntryModelProducer?,
 	val seriesLow: Int?,
 	val seriesHigh: Int?,
+	val isShowingPlaceholder: Boolean,
 )
 
 sealed interface SeriesDetailsUiAction {

@@ -39,6 +39,7 @@ fun SeriesDetailsHeader(
 	seriesTotal: Int,
 	seriesLow: Int?,
 	seriesHigh: Int?,
+	isShowingPlaceholder: Boolean,
 	scores: ChartEntryModelProducer?,
 	modifier: Modifier = Modifier,
 ) {
@@ -58,19 +59,27 @@ fun SeriesDetailsHeader(
 					style = MaterialTheme.typography.titleMedium,
 				)
 
-				if (numberOfGames > 1 && seriesLow != null && seriesHigh != null) {
-					Column {
-						Text(
-							text = stringResource(R.string.series_details_high_game, seriesHigh),
-							style = MaterialTheme.typography.bodyLarge,
-							fontStyle = FontStyle.Italic,
-						)
+				if (isShowingPlaceholder) {
+					Text(
+						text = stringResource(R.string.series_details_placeholder),
+						style = MaterialTheme.typography.bodyMedium,
+						fontStyle = FontStyle.Italic,
+					)
+				} else {
+					if (numberOfGames > 1 && seriesLow != null && seriesHigh != null) {
+						Column {
+							Text(
+								text = stringResource(R.string.series_details_high_game, seriesHigh),
+								style = MaterialTheme.typography.bodyLarge,
+								fontStyle = FontStyle.Italic,
+							)
 
-						Text(
-							text = stringResource(R.string.series_details_low_game, seriesLow),
-							style = MaterialTheme.typography.bodyLarge,
-							fontStyle = FontStyle.Italic,
-						)
+							Text(
+								text = stringResource(R.string.series_details_low_game, seriesLow),
+								style = MaterialTheme.typography.bodyLarge,
+								fontStyle = FontStyle.Italic,
+							)
+						}
 					}
 				}
 			}
@@ -139,6 +148,7 @@ private fun SeriesDetailsHeaderPreview() {
 			seriesTotal = 880,
 			seriesLow = 200,
 			seriesHigh = 280,
+			isShowingPlaceholder = false,
 			scores = ChartEntryModelProducer(listOf(
 				entryOf(0, 200),
 				entryOf(1, 240),
