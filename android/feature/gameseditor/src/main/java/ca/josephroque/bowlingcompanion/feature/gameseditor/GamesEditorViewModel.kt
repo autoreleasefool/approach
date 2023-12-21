@@ -71,6 +71,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private val _currentGameId = MutableStateFlow(initialGameId)
 	private val _headerPeekHeight = MutableStateFlow(0f)
+	private val _isGameLockSnackBarVisible = MutableStateFlow(false)
 
 	private var _ballsJob: Job? = null
 	private var _framesJob: Job? = null
@@ -86,11 +87,13 @@ class GamesEditorViewModel @Inject constructor(
 		_gamesEditorState,
 		_gameDetailsState,
 		_headerPeekHeight,
-	) { gamesEditor, gameDetails, headerPeekHeight ->
+		_isGameLockSnackBarVisible,
+	) { gamesEditor, gameDetails, headerPeekHeight, isGameLockSnackBarVisible ->
 		GamesEditorScreenUiState.Loaded(
 			gamesEditor = gamesEditor,
 			gameDetails = gameDetails,
 			headerPeekHeight = headerPeekHeight,
+			isGameLockSnackBarVisible = isGameLockSnackBarVisible
 		)
 	}.stateIn(
 		viewModelScope,
@@ -101,6 +104,7 @@ class GamesEditorViewModel @Inject constructor(
 	fun handleAction(action: GamesEditorScreenUiAction) {
 		when (action) {
 			GamesEditorScreenUiAction.LoadInitialGame -> loadGame()
+			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
@@ -134,6 +138,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun handleFrameEditorAction(action: FrameEditorUiAction) {
 		when (action) {
+			FrameEditorUiAction.FrameEditorInteractionStarted -> handleInteractionWithPins()
 			is FrameEditorUiAction.DownedPinsChanged -> updateDownedPins(action.downedPins)
 		}
 	}
@@ -292,12 +297,22 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGearPicker() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		sendEvent(GamesEditorScreenEvent.EditGear(
 			_gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet()
 		))
 	}
 
 	private fun openMatchPlayManager() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		sendEvent(GamesEditorScreenEvent.EditMatchPlay(_currentGameId.value))
 	}
 
@@ -310,10 +325,20 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openBallRolledPicker() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		/* TODO: openBallRolledPicker */
 	}
 
 	private fun openScoreSettings() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		val gameDetails = _gameDetailsState.value
 		_gamesEditorState.updateGamesEditor(gameDetails.gameId) {
 			it.copy(
@@ -331,7 +356,15 @@ class GamesEditorViewModel @Inject constructor(
 			false -> GameLockState.UNLOCKED
 		}
 
-		val gameDetailsState = _gameDetailsState.updateGameDetailsAndGet(_currentGameId.value) {
+		val currentGameId = _currentGameId.value
+
+		_gamesEditorState.updateGamesEditor(currentGameId) {
+			it.copy(
+				frameEditor = it.frameEditor.copy(isEnabled = !isLocked)
+			)
+		}
+
+		val gameDetailsState = _gameDetailsState.updateGameDetailsAndGet(currentGameId) {
 			it.copy(
 				gameProperties = it.gameProperties.copy(
 					locked = gameLockState,
@@ -348,6 +381,11 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun toggleGameExcludedFromStatistics(isExcluded: Boolean) {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		val excludeFromStatistics = when (isExcluded) {
 			true -> ExcludeFromStatistics.EXCLUDE
 			false -> ExcludeFromStatistics.INCLUDE
@@ -367,6 +405,10 @@ class GamesEditorViewModel @Inject constructor(
 				gameDetailState.gameProperties.gameExcludeFromStatistics,
 			)
 		}
+	}
+
+	private fun dismissGameLockSnackBar() {
+		_isGameLockSnackBarVisible.value = false
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {
@@ -403,7 +445,19 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
+	private fun handleInteractionWithPins() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+	}
+
 	private fun updateDownedPins(downedPins: Set<Pin>) {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		val gameId = _currentGameId.value
 		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.copy(
@@ -424,6 +478,11 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun updateSelectedBall(ball: FrameEdit.Gear) {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		val gameId = _currentGameId.value
 		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
 			val updatedFrames = it.frames.toMutableList().also { frames ->
@@ -453,6 +512,11 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun toggleDidFoul(didFoul: Boolean) {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
 		val gameId = _currentGameId.value
 		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.copy(
@@ -498,7 +562,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		val scoreEditor = gamesEditorState.scoreEditor ?: return
-		if (didSave) {
+		if (didSave && !isGameLocked) {
 			viewModelScope.launch {
 				val score = when (scoreEditor.scoringMethod) {
 					GameScoringMethod.MANUAL -> scoreEditor.score
@@ -515,6 +579,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun updateGear(gearIds: Set<UUID>) {
+		if (isGameLocked) return
+
 		val gameId = _currentGameId.value
 		viewModelScope.launch {
 			gearRepository.setGameGear(gameId, gearIds)
@@ -526,8 +592,17 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun saveFrame(frame: FrameEdit) {
+		if (isGameLocked) return
+
 		viewModelScope.launch {
 			framesRepository.updateFrame(frame)
 		}
+	}
+
+	private val isGameLocked: Boolean
+		get() = _gameDetailsState.value.gameProperties.locked == GameLockState.LOCKED
+
+	private fun notifyGameLocked() {
+		_isGameLockSnackBarVisible.value = true
 	}
 }

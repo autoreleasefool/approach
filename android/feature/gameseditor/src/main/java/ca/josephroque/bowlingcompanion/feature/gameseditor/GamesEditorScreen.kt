@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -14,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -81,6 +85,25 @@ internal fun GamesEditorScreen(
 
 	LaunchedEffect(Unit) {
 		onAction(GamesEditorScreenUiAction.LoadInitialGame)
+	}
+
+	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)
+	val coroutineScope = rememberCoroutineScope()
+	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded && state.isGameLockSnackBarVisible
+	LaunchedEffect(isGameLockSnackBarVisible) {
+		if (isGameLockSnackBarVisible) {
+			coroutineScope.launch {
+				val result = scaffoldState.snackbarHostState.showSnackbar(
+					message = snackBarLockedMessage,
+					duration = SnackbarDuration.Short,
+				)
+
+				when (result) {
+					SnackbarResult.Dismissed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
+					SnackbarResult.ActionPerformed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
+				}
+			}
+		}
 	}
 
 	BottomSheetScaffold(
