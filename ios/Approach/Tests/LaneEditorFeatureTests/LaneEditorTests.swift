@@ -7,14 +7,13 @@ import XCTest
 final class LaneEditorTests: XCTestCase {
 	func testTogglesAgainstWall() async {
 		let id0 = UUID(0)
-		let store = TestStore(
-			initialState: LaneEditor.State(id: id0, label: "1", position: .noWall),
-			reducer: LaneEditor()
-		)
+		let store = TestStore(initialState: LaneEditor.State(id: id0, label: "1", position: .noWall)) {
+			LaneEditor()
+		}
 
 		XCTAssertEqual(store.state.position, .noWall)
 
-		await store.send(.set(\.$position, .leftWall)) {
+		await store.send(.view(.set(\.$position, .leftWall))) {
 			$0.position = .leftWall
 		}
 	}

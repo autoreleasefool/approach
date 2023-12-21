@@ -415,9 +415,10 @@ final class LeaguesRepositoryTests: XCTestCase {
 			.init(
 				id: UUID(0),
 				name: "Majors",
-				numberOfGames: 4,
+				defaultNumberOfGames: 4,
 				alley: nil,
-				excludeFromStatistics: .include
+				excludeFromStatistics: .include,
+				recurrence: .repeating
 			)
 		)
 	}
@@ -450,7 +451,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			id: UUID(0),
 			name: "Minors",
 			recurrence: league1.recurrence,
-			numberOfGames: league1.numberOfGames,
+			defaultNumberOfGames: league1.defaultNumberOfGames,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: league1.excludeFromStatistics
@@ -484,7 +485,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			id: UUID(0),
 			name: "Minors",
 			recurrence: .once,
-			numberOfGames: 1,
+			defaultNumberOfGames: 1,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude
@@ -506,7 +507,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let created = try await db.read { try League.Database.fetchOne($0, id: UUID(0)) }
 		XCTAssertEqual(created?.id, UUID(0))
 		XCTAssertEqual(created?.name, "Minors")
-		XCTAssertEqual(created?.numberOfGames, 1)
+		XCTAssertEqual(created?.defaultNumberOfGames, 1)
 	}
 
 	func testCreate_WhenLeagueRepeats_DoesNotCreateGames() async throws {
@@ -519,7 +520,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			id: UUID(0),
 			name: "Minors",
 			recurrence: .repeating,
-			numberOfGames: 1,
+			defaultNumberOfGames: 1,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude
@@ -554,7 +555,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			id: UUID(0),
 			name: "Minors",
 			recurrence: .once,
-			numberOfGames: 1,
+			defaultNumberOfGames: 1,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude
@@ -583,7 +584,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			id: UUID(0),
 			name: "Minors",
 			recurrence: .once,
-			numberOfGames: 2,
+			defaultNumberOfGames: 2,
 			additionalPinfall: 123,
 			additionalGames: 123,
 			excludeFromStatistics: .exclude
@@ -619,7 +620,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let existing = League.Edit(
 			id: UUID(0),
 			recurrence: .repeating,
-			numberOfGames: 4,
+			defaultNumberOfGames: 4,
 			name: "Minors",
 			additionalPinfall: 123,
 			additionalGames: 123,
@@ -650,7 +651,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 		let existing = League.Edit(
 			id: UUID(0),
 			recurrence: .once,
-			numberOfGames: 1,
+			defaultNumberOfGames: 1,
 			name: "Minors",
 			additionalPinfall: 123,
 			additionalGames: 123,
@@ -695,7 +696,7 @@ final class LeaguesRepositoryTests: XCTestCase {
 			.init(
 				id: UUID(0),
 				recurrence: .repeating,
-				numberOfGames: 4,
+				defaultNumberOfGames: 4,
 				name: "Majors",
 				additionalPinfall: nil,
 				additionalGames: nil,

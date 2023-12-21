@@ -221,9 +221,9 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with 3 series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
 		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000))
-		let series3 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000), archivedOn: Date())
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000), archivedOn: Date())
 
-		let db = try initializeDatabase(withSeries: .custom([series1, series2]))
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]))
 
 		// Fetching the series
 		let series = withDependencies {
@@ -459,6 +459,7 @@ final class SeriesRepositoryTests: XCTestCase {
 			leagueId: UUID(0),
 			id: UUID(0),
 			numberOfGames: 3,
+			leagueRecurrence: .repeating,
 			date: Date(timeIntervalSince1970: 123_456_999),
 			preBowl: .regular,
 			excludeFromStatistics: series1.excludeFromStatistics,
@@ -490,6 +491,7 @@ final class SeriesRepositoryTests: XCTestCase {
 			leagueId: UUID(0),
 			id: UUID(0),
 			numberOfGames: 4,
+			leagueRecurrence: .repeating,
 			date: Date(timeIntervalSince1970: 123_456_999),
 			preBowl: .regular,
 			excludeFromStatistics: .exclude,
@@ -638,6 +640,7 @@ final class SeriesRepositoryTests: XCTestCase {
 				leagueId: UUID(0),
 				id: UUID(0),
 				numberOfGames: 0,
+				leagueRecurrence: .repeating,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
@@ -666,6 +669,7 @@ final class SeriesRepositoryTests: XCTestCase {
 				leagueId: UUID(0),
 				id: UUID(0),
 				numberOfGames: 0,
+				leagueRecurrence: .repeating,
 				date: Date(timeIntervalSince1970: 123_456_000),
 				preBowl: .regular,
 				excludeFromStatistics: .include,
