@@ -16,7 +16,7 @@ extension RecentlyUsedService: DependencyKey {
 		@Dependency(\.preferences) var preferences
 		@Dependency(\.date) var date
 
-		let encoder = JSONEncoder()
+		// FIXME: Replace with a @Dependency
 		let decoder = JSONDecoder()
 
 		@Sendable func key(forCategory category: Resource) -> String {
@@ -44,6 +44,7 @@ extension RecentlyUsedService: DependencyKey {
 				recentlyUsed = Array(recentlyUsed.prefix(maximumEntries - 1))
 				recentlyUsed.insert(entry, at: 0)
 
+				@Dependency(\.jsonEncoder) var encoder
 				guard let recentlyUsedData = try? encoder.encode(recentlyUsed),
 							let recentlyUsedString = String(data: recentlyUsedData, encoding: .utf8) else {
 					return

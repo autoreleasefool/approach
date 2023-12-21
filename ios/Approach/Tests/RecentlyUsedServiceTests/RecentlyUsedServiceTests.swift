@@ -7,6 +7,12 @@ import XCTest
 final class RecentlyUsedServiceTests: XCTestCase {
 	@Dependency(\.recentlyUsed) var recentlyUsed
 
+	static let encoder: JSONEncoder = {
+		let encoder = JSONEncoder()
+		encoder.outputFormatting = [.sortedKeys]
+		return encoder
+	}()
+
 	func testDidRecentlyUseResource_UpdatesEntries() {
 		let cache = LockIsolated<String?>(nil)
 		let now = Date(timeIntervalSince1970: 1672519204)
@@ -14,6 +20,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.date = .constant(now)
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -38,6 +45,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.date = .constant(now)
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
 
 			$0.preferences.getString = { _ in
 				return cache.value
@@ -70,6 +78,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.date = .constant(now)
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -109,6 +118,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		await withDependencies {
 			$0.recentlyUsed = .liveValue
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
@@ -146,6 +157,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		await withDependencies {
 			$0.recentlyUsed = .liveValue
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
@@ -163,6 +176,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.date = .constant(now)
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
@@ -184,6 +198,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		await withDependencies {
 			$0.recentlyUsed = .liveValue
 			$0.date = .constant(now)
+			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
 
 			$0.preferences.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
@@ -206,7 +221,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 	}
 
 	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1672519204)) -> String {
-		guard let entries = try? JSONEncoder().encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }) else {
+		guard let entries = try? encoder.encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }) else {
 			XCTFail("Failed to encode entries")
 			return ""
 		}
