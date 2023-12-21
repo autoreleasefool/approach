@@ -81,27 +81,14 @@ extension Frame.Edit {
 	}
 
 	public mutating func setBowlingBall(_ bowlingBall: Gear.Summary?, forRoll rollIndex: Int) {
-		guaranteeRollExists(upTo: rollIndex)
 		rolls[rollIndex].bowlingBall = bowlingBall
 	}
 
 	public mutating func setDidFoul(_ didFoul: Bool, forRoll rollIndex: Int) {
-		guaranteeRollExists(upTo: rollIndex)
 		rolls[rollIndex].roll.didFoul = didFoul
 	}
 
-	public mutating func toggle(_ pin: Pin, rollIndex: Int, newValue: Bool? = nil) {
-		guaranteeRollExists(upTo: rollIndex)
-		rolls[rollIndex].toggle(pin, newValue: newValue)
-
-		// Raise pins in subsequent rolls
-		for roll in (rollIndex + 1..<rolls.endIndex) {
-			rolls[roll].toggle(pin, newValue: false)
-		}
-	}
-
 	public mutating func setDownedPins(rollIndex: Int, to downedPins: Set<Pin>) {
-		guaranteeRollExists(upTo: rollIndex)
 		rolls[rollIndex].roll.pinsDowned = downedPins
 		for roll in (rollIndex + 1..<rolls.endIndex) {
 			rolls[roll].roll.pinsDowned.subtract(downedPins)
@@ -112,11 +99,6 @@ extension Frame.Edit {
 		while rolls.count < index + 1 {
 			rolls.append(.init(index: rolls.count, roll: .default, bowlingBall: nil))
 		}
-	}
-
-	public mutating func roll(at index: Int) -> Frame.Roll {
-		guaranteeRollExists(upTo: index)
-		return rolls[index].roll
 	}
 
 	public func deck(forRoll index: Int) -> Set<Pin> {
