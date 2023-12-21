@@ -6,8 +6,10 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
+import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiState
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.EVENT_ID
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiState
@@ -18,6 +20,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -29,16 +34,25 @@ class SeriesDetailsViewModel @Inject constructor(
 	seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
 ): ApproachViewModel<SeriesDetailsScreenEvent>() {
-	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
+	private val seriesId = MutableStateFlow(savedStateHandle.get<String>(SERIES_ID)?.let { UUID.fromString(it) })
+	private val eventId = savedStateHandle.get<String>(EVENT_ID)?.let { UUID.fromString(it)}
 
 	private val _gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
 
 	private val _chartModelProducer = ChartEntryModelProducer()
 
+	private val _seriesDetails = seriesId
+		.filterNotNull()
+		.flatMapLatest { seriesRepository.getSeriesDetails(it) }
+
+	private val _gamesList = seriesId
+		.filterNotNull()
+		.flatMapLatest { gamesRepository.getGamesList(it) }
+
 	val uiState: StateFlow<SeriesDetailsScreenUiState> = combine(
 		_gameToArchive,
-		seriesRepository.getSeriesDetails(seriesId),
-		gamesRepository.getGamesList(seriesId),
+		_seriesDetails,
+		_gamesList,
 	) { gameToArchive, seriesDetails, games ->
 		val isShowingPlaceholder = seriesDetails.scores.all { it == 0 }
 		_chartModelProducer.setEntries(
@@ -78,6 +92,15 @@ class SeriesDetailsViewModel @Inject constructor(
 		initialValue = SeriesDetailsScreenUiState.Loading,
 	)
 
+	init {
+		if (eventId != null) {
+			viewModelScope.launch {
+				val series = seriesRepository.getSeriesList(eventId, SeriesSortOrder.NEWEST_TO_OLDEST)
+				seriesId.value = series.first().firstOrNull()?.properties?.id
+			}
+		}
+	}
+
 	fun handleAction(action: SeriesDetailsScreenUiAction) {
 		when (action) {
 			is SeriesDetailsScreenUiAction.SeriesDetails -> handleSeriesDetailsAction(action.action)
@@ -98,7 +121,7 @@ class SeriesDetailsViewModel @Inject constructor(
 			is GamesListUiAction.GameArchived -> _gameToArchive.value = action.game
 			is GamesListUiAction.ConfirmArchiveClicked -> archiveGame()
 			is GamesListUiAction.DismissArchiveClicked -> _gameToArchive.value = null
-			is GamesListUiAction.GameClicked -> sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(seriesId, action.id)))
+			is GamesListUiAction.GameClicked -> sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(seriesId.value!!, action.id)))
 		}
 	}
 

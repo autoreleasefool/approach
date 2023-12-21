@@ -59,9 +59,9 @@ fun LeaguesList(
 
 			leaguesList(
 				list = state.list,
-				onLeagueClick = { onAction(LeaguesListUiAction.LeagueClicked(it.id)) },
+				onLeagueClick = { onAction(LeaguesListUiAction.LeagueClicked(it)) },
 				onArchiveLeague = { onAction(LeaguesListUiAction.LeagueArchived(it)) },
-				onEditLeague = { onAction(LeaguesListUiAction.LeagueEdited(it.id)) },
+				onEditLeague = { onAction(LeaguesListUiAction.LeagueEdited(it)) },
 			)
 		}
 	}

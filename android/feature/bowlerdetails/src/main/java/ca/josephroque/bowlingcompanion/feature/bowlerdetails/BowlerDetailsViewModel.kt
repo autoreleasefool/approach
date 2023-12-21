@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.BOWLER_ID
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
@@ -115,8 +116,8 @@ class BowlerDetailsViewModel @Inject constructor(
 	private fun handleLeaguesListAction(action: LeaguesListUiAction) {
 		when (action) {
 			LeaguesListUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
-			is LeaguesListUiAction.LeagueClicked -> sendEvent(BowlerDetailsScreenEvent.ShowLeagueDetails(action.id))
-			is LeaguesListUiAction.LeagueEdited -> sendEvent(BowlerDetailsScreenEvent.EditLeague(action.id))
+			is LeaguesListUiAction.LeagueClicked -> showLeagueDetails(action.league)
+			is LeaguesListUiAction.LeagueEdited -> sendEvent(BowlerDetailsScreenEvent.EditLeague(action.league.id))
 			is LeaguesListUiAction.LeagueArchived -> setLeagueArchivePrompt(action.league)
 			is LeaguesListUiAction.ConfirmArchiveClicked -> archiveLeague()
 			is LeaguesListUiAction.DismissArchiveClicked -> setLeagueArchivePrompt(null)
@@ -153,5 +154,12 @@ class BowlerDetailsViewModel @Inject constructor(
 			(uiState.value as? BowlerDetailsScreenUiState.Loaded)?.bowler?.gearList?.list?.map { it.id }?.toSet()
 				?: return
 		sendEvent(BowlerDetailsScreenEvent.ShowPreferredGearPicker(selectedGear))
+	}
+
+	private fun showLeagueDetails(league: LeagueListItem) {
+		when (league.recurrence) {
+			LeagueRecurrence.REPEATING -> sendEvent(BowlerDetailsScreenEvent.ShowLeagueDetails(league.id))
+			LeagueRecurrence.ONCE -> sendEvent(BowlerDetailsScreenEvent.ShowEventDetails(league.id))
+		}
 	}
 }

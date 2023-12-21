@@ -53,6 +53,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScree
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerScreen
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
+import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToNewSeriesForm
@@ -129,6 +130,7 @@ fun ApproachNavHost(
 				onAddLeague = navController::navigateToNewLeagueForm,
 				onBackPressed = navController::popBackStack,
 				onShowLeagueDetails = navController::navigateToLeagueDetails,
+				onShowEventDetails = navController::navigateToEvent,
 				onShowGearDetails = { /* FIXME: onShowGearDetails */ },
 				onShowPreferredGearPicker = { selectedGear, result ->
 					navController.navigateToResourcePickerForResult(

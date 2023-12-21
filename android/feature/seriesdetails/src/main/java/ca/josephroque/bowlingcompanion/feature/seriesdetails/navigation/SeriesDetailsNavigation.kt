@@ -11,7 +11,14 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.SeriesDetailsRoute
 import java.util.UUID
 
 const val SERIES_ID = "seriesid"
+const val EVENT_ID = "eventid"
 const val seriesDetailsNavigationRoute = "series/{$SERIES_ID}"
+const val eventDetailsNavigationRoute = "event/{$EVENT_ID}"
+
+fun NavController.navigateToEvent(leagueId: UUID) {
+	val encoded = Uri.encode(leagueId.toString())
+	this.navigate("event/$encoded")
+}
 
 fun NavController.navigateToSeriesDetails(seriesId: UUID) {
 	val encoded = Uri.encode(seriesId.toString())
@@ -26,6 +33,17 @@ fun NavGraphBuilder.seriesDetailsScreen(
 		route = seriesDetailsNavigationRoute,
 		arguments = listOf(
 			navArgument(SERIES_ID) { type = NavType.StringType },
+		),
+	) {
+		SeriesDetailsRoute(
+			onBackPressed = onBackPressed,
+			onEditGame = onEditGame,
+		)
+	}
+	composable(
+		route = eventDetailsNavigationRoute,
+		arguments = listOf(
+			navArgument(EVENT_ID) { type = NavType.StringType },
 		),
 	) {
 		SeriesDetailsRoute(

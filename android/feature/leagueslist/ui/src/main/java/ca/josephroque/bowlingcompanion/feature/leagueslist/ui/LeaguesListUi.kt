@@ -11,8 +11,8 @@ data class LeaguesListUiState(
 sealed interface LeaguesListUiAction {
 	data object AddLeagueClicked: LeaguesListUiAction
 
-	data class LeagueClicked(val id: UUID): LeaguesListUiAction
-	data class LeagueEdited(val id: UUID): LeaguesListUiAction
+	data class LeagueClicked(val league: LeagueListItem): LeaguesListUiAction
+	data class LeagueEdited(val league: LeagueListItem): LeaguesListUiAction
 	data class LeagueArchived(val league: LeagueListItem): LeaguesListUiAction
 
 	data object ConfirmArchiveClicked: LeaguesListUiAction

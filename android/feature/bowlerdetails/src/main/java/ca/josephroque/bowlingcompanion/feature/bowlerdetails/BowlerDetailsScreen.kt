@@ -28,6 +28,7 @@ internal fun BowlerDetailsRoute(
 	onEditLeague: (UUID) -> Unit,
 	onAddLeague: (UUID) -> Unit,
 	onShowLeagueDetails: (UUID) -> Unit,
+	onShowEventDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
@@ -48,6 +49,7 @@ internal fun BowlerDetailsRoute(
 						is BowlerDetailsScreenEvent.AddLeague -> onAddLeague(it.bowlerId)
 						is BowlerDetailsScreenEvent.EditLeague -> onEditLeague(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowLeagueDetails -> onShowLeagueDetails(it.leagueId)
+						is BowlerDetailsScreenEvent.ShowEventDetails -> onShowEventDetails(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowGearDetails -> onShowGearDetails(it.gearId)
 						is BowlerDetailsScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
 						is BowlerDetailsScreenEvent.ShowStatistics -> onShowStatistics(it.widget)

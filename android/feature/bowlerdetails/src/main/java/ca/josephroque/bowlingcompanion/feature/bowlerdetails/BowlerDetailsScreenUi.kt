@@ -26,5 +26,6 @@ sealed interface BowlerDetailsScreenEvent {
 	data class AddLeague(val bowlerId: UUID): BowlerDetailsScreenEvent
 	data class ShowGearDetails(val gearId: UUID): BowlerDetailsScreenEvent
 	data class ShowLeagueDetails(val leagueId: UUID): BowlerDetailsScreenEvent
+	data class ShowEventDetails(val leagueId: UUID): BowlerDetailsScreenEvent
 	data class ShowStatistics(val widget: UUID): BowlerDetailsScreenEvent
 }

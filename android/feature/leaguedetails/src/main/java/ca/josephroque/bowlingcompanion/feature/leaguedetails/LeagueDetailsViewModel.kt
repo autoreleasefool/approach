@@ -82,12 +82,17 @@ class LeagueDetailsViewModel @Inject constructor(
 					seriesItemSize = config.seriesItemSize,
 				),
 				seriesList = SeriesListUiState(
-					list = series.map {
-						val chartModelProducer = _seriesChartModelProducers.getOrPut(it.properties.id) { ChartEntryModelProducer() }
+					list = series.map { item ->
+						val chartModelProducer = _seriesChartModelProducers.getOrPut(item.properties.id) { ChartEntryModelProducer() }
 						chartModelProducer.setEntries(
-							it.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
+							item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
 						)
-						it.withChart(chartModelProducer)
+
+						if (item.scores.all { it == 0 } || item.scores.size == 1) {
+							item.withoutChart()
+						} else {
+							item.withChart(chartModelProducer)
+						}
 					},
 					seriesToArchive = config.seriesToArchive,
 					itemSize = config.seriesItemSize,
@@ -148,6 +153,17 @@ class LeagueDetailsViewModel @Inject constructor(
 		}
 	}
 }
+
+private fun SeriesListItem.withoutChart(): SeriesListChartItem = SeriesListChartItem(
+	id = properties.id,
+	date = properties.date,
+	preBowl = properties.preBowl,
+	total = properties.total,
+	numberOfGames = scores.size,
+	lowestScore = scores.minOrNull() ?: 0,
+	highestScore = scores.maxOrNull() ?: 0,
+	scores = null,
+)
 
 private fun SeriesListItem.withChart(chartModelProducer: ChartEntryModelProducer): SeriesListChartItem = SeriesListChartItem(
 	id = properties.id,
