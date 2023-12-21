@@ -7,6 +7,7 @@ extension Series {
 		public let leagueId: League.ID
 		public let id: Series.ID
 		public let numberOfGames: Int
+		public let leagueRecurrence: League.Recurrence
 
 		public var date: Date
 		public var preBowl: PreBowl

@@ -13,6 +13,7 @@ extension Series {
 public struct SeriesRepository: Sendable {
 	public var list: @Sendable (League.ID, Series.Ordering) -> AsyncThrowingStream<[Series.List], Error>
 	public var summaries: @Sendable (League.ID) -> AsyncThrowingStream<[Series.Summary], Error>
+	public var eventSeries: @Sendable (League.ID) async throws -> Series.Summary
 	public var archived: @Sendable () -> AsyncThrowingStream<[Series.Archived], Error>
 	public var edit: @Sendable (Series.ID) async throws -> Series.Edit
 	public var create: @Sendable (Series.Create) async throws -> Void
@@ -24,6 +25,7 @@ public struct SeriesRepository: Sendable {
 	public init(
 		list: @escaping @Sendable (League.ID, Series.Ordering) -> AsyncThrowingStream<[Series.List], Error>,
 		summaries: @escaping @Sendable (League.ID) -> AsyncThrowingStream<[Series.Summary], Error>,
+		eventSeries: @escaping @Sendable (League.ID) async throws -> Series.Summary,
 		archived: @escaping @Sendable () -> AsyncThrowingStream<[Series.Archived], Error>,
 		edit: @escaping @Sendable (Series.ID) async throws -> Series.Edit,
 		create: @escaping @Sendable (Series.Create) async throws -> Void,
@@ -34,6 +36,7 @@ public struct SeriesRepository: Sendable {
 	) {
 		self.list = list
 		self.summaries = summaries
+		self.eventSeries = eventSeries
 		self.archived = archived
 		self.edit = edit
 		self.create = create
@@ -56,6 +59,7 @@ extension SeriesRepository: TestDependencyKey {
 	public static var testValue = Self(
 		list: { _, _ in unimplemented("\(Self.self).list") },
 		summaries: { _ in unimplemented("\(Self.self).summaries") },
+		eventSeries: { _ in unimplemented("\(Self.self).eventSeries") },
 		archived: { unimplemented("\(Self.self).archived") },
 		edit: { _ in unimplemented("\(Self.self).edit") },
 		create: { _ in unimplemented("\(Self.self).create") },

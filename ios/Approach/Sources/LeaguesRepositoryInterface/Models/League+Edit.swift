@@ -18,7 +18,8 @@ extension League {
 				name: name,
 				numberOfGames: numberOfGames,
 				alley: location,
-				excludeFromStatistics: excludeFromStatistics
+				excludeFromStatistics: excludeFromStatistics,
+				recurrence: recurrence
 			)
 		}
 	}

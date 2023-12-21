@@ -3,6 +3,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
+import GamesListFeature
 import GearRepositoryInterface
 import LeagueEditorFeature
 import LeaguesRepositoryInterface
@@ -11,6 +12,7 @@ import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SeriesListFeature
+import SeriesRepositoryInterface
 import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
@@ -95,6 +97,7 @@ public struct LeaguesList: Reducer {
 			case didLoadEditableLeague(Result<League.Edit, Error>)
 			case didArchiveLeague(Result<League.List, Error>)
 			case didLoadSeriesLeague(Result<League.SeriesHost, Error>)
+			case didLoadEventSeries(Result<EventSeries, Error>)
 			case didSetIsShowingWidgets(Bool)
 
 			case errors(Errors<ErrorID>.Action)
@@ -115,6 +118,7 @@ public struct LeaguesList: Reducer {
 			case editor(LeagueEditor.State)
 			case filters(LeaguesFilter.State)
 			case series(SeriesList.State)
+			case games(GamesList.State)
 			case sortOrder(SortOrder<League.Ordering>.State)
 		}
 
@@ -122,6 +126,7 @@ public struct LeaguesList: Reducer {
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
+			case games(GamesList.Action)
 			case sortOrder(SortOrder<League.Ordering>.Action)
 		}
 
@@ -137,6 +142,9 @@ public struct LeaguesList: Reducer {
 			}
 			Scope(state: \.sortOrder, action: \.sortOrder) {
 				SortOrder()
+			}
+			Scope(state: \.games, action: \.games) {
+				GamesList()
 			}
 		}
 	}
@@ -156,6 +164,7 @@ public struct LeaguesList: Reducer {
 	@Dependency(\.leagues) var leagues
 	@Dependency(\.preferences) var preferences
 	@Dependency(\.recentlyUsed) var recentlyUsed
+	@Dependency(\.series) var series
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -207,9 +216,18 @@ public struct LeaguesList: Reducer {
 
 				case let .didTapLeague(id):
 					return .run { send in
-						await send(.internal(.didLoadSeriesLeague(Result {
-							try await leagues.seriesHost(id)
-						})))
+						let seriesHost = try await leagues.seriesHost(id)
+						switch seriesHost.recurrence {
+						case .once:
+							await send(.internal(.didLoadEventSeries(Result {
+								let series = try await self.series.eventSeries(seriesHost.id)
+								return EventSeries(host: seriesHost, series: series)
+							})))
+						case .repeating:
+							await send(.internal(.didLoadSeriesLeague(.success(seriesHost))))
+						}
+					} catch: { error, send in
+						await send(.internal(.didLoadSeriesLeague(.failure(error))))
 					}
 				}
 
@@ -230,10 +248,19 @@ public struct LeaguesList: Reducer {
 						recentlyUsed.didRecentlyUseResource(.leagues, league.id)
 					}
 
+				case let .didLoadEventSeries(.success(event)):
+					state.destination = .games(.init(series: event.series, host: event.host))
+					return .run { _ in
+						try await clock.sleep(for: .seconds(1))
+						recentlyUsed.didRecentlyUseResource(.leagues, event.host.id)
+					}
+
 				case .didArchiveLeague(.success):
 					return .none
 
-				case let .didLoadSeriesLeague(.failure(error)), let .didLoadEditableLeague(.failure(error)):
+				case let .didLoadSeriesLeague(.failure(error)),
+					let .didLoadEditableLeague(.failure(error)),
+					let .didLoadEventSeries(.failure(error)):
 					return state.errors
 						.enqueue(.leagueNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
@@ -306,20 +333,21 @@ public struct LeaguesList: Reducer {
 						return .none
 					}
 
-				case .destination(.presented(.series(.delegate(.doNothing)))):
-					return .none
-
 				case .errors(.delegate(.doNothing)):
 					return .none
 				case .destination(.dismiss),
 						.destination(.presented(.series(.internal))),
 						.destination(.presented(.series(.view))),
+						.destination(.presented(.series(.delegate(.doNothing)))),
 						.destination(.presented(.filters(.internal))),
 						.destination(.presented(.filters(.view))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
 						.destination(.presented(.sortOrder(.internal))),
 						.destination(.presented(.sortOrder(.view))),
+						.destination(.presented(.games(.internal))),
+						.destination(.presented(.games(.view))),
+						.destination(.presented(.games(.delegate(.doNothing)))),
 						.preferredGear(.internal), .preferredGear(.view),
 						.list(.internal), .list(.view),
 						.widgets(.internal), .widgets(.view),
@@ -358,5 +386,12 @@ public struct LeaguesList: Reducer {
 extension LeaguesList {
 	public static func widgetContext(forBowler: Bowler.ID) -> String {
 		"leaguesList-\(forBowler)"
+	}
+}
+
+extension LeaguesList {
+	public struct EventSeries {
+		let host: League.SeriesHost
+		let series: Series.Summary
 	}
 }

@@ -246,7 +246,12 @@ extension Series.Create: CreateableRecord {
 
 extension Series.Edit: EditableRecord {
 	public var isDeleteable: Bool { false }
-	public var isArchivable: Bool { true }
+	public var isArchivable: Bool {
+		switch leagueRecurrence {
+		case .once: return false
+		case .repeating: return true
+		}
+	}
 	public var isSaveable: Bool { true }
 	public var name: String { date.longFormat }
 }

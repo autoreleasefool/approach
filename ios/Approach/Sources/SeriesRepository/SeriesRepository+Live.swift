@@ -64,6 +64,17 @@ extension SeriesRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
+			eventSeries: { league in
+				try await database.reader().read {
+					try Series.Database
+						.all()
+						.isNotArchived()
+						.orderByDate()
+						.bowled(inLeague: league)
+						.asRequest(of: Series.Summary.self)
+						.fetchOneGuaranteed($0)
+				}
+			},
 			archived: {
 				database.reader().observe {
 					try Series.Database
@@ -87,6 +98,9 @@ extension SeriesRepository: DependencyKey {
 								.alley
 								.including(optional: Alley.Database.location)
 								.forKey("location")
+						)
+						.annotated(
+							withRequired: Series.Database.league.select(League.Database.Columns.recurrence.forKey("leagueRecurrence"))
 						)
 						.withNumberOfGames()
 						.asRequest(of: Series.Edit.self)

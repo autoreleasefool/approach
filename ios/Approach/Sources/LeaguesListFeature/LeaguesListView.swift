@@ -2,6 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import ExtensionsLibrary
+import GamesListFeature
 import LeagueEditorFeature
 import ModelsLibrary
 import ResourceListLibrary
@@ -74,6 +75,7 @@ public struct LeaguesListView: View {
 		.leaguesFilter(store.scope(state: \.$destination.filters, action: \.internal.destination.filters))
 		.sortOrder(store.scope(state: \.$destination.sortOrder, action: \.internal.destination.sortOrder))
 		.seriesList(store.scope(state: \.$destination.series, action: \.internal.destination.series))
+		.gamesList(store.scope(state: \.$destination.games, action: \.internal.destination.games))
 	}
 }
 
@@ -107,6 +109,12 @@ public struct LeaguesListView: View {
 	fileprivate func seriesList(_ store: PresentationStoreOf<SeriesList>) -> some View {
 		navigationDestination(store: store) { (store: StoreOf<SeriesList>) in
 			SeriesListView(store: store)
+		}
+	}
+
+	fileprivate func gamesList(_ store: PresentationStoreOf<GamesList>) -> some View {
+		navigationDestination(store: store) { (store: StoreOf<GamesList>) in
+			GamesListView(store: store)
 		}
 	}
 }
