@@ -6,7 +6,6 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.Roll
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
-import ca.josephroque.bowlingcompanion.core.model.nextFrameToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
@@ -116,6 +115,17 @@ fun GamesEditorUiState.updateSelection(frameIndex: Int?, rollIndex: Int?): Games
 	val lastAccessibleRollInFrame = frames[selection.frameIndex].lastAccessibleRollIndex
 	if (lastAccessibleRollInFrame < selection.rollIndex) {
 		selection = selection.copy(rollIndex = lastAccessibleRollInFrame)
+	}
+
+
+	val frames = if (frames.doesRollExistInFrame(selection.frameIndex, selection.rollIndex)) {
+		this.frames
+	} else {frames.toMutableList().also {
+			it.guaranteeRollExists(
+				frameIndex = selection.frameIndex,
+				rollIndex = selection.rollIndex,
+			)
+		}
 	}
 
 	return copy(
