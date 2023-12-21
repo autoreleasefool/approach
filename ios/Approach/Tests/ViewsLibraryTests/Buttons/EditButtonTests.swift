@@ -9,6 +9,6 @@ final class EditButtonTests: XCTestCase {
 		let vc = UIHostingController(rootView: editButton)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 }

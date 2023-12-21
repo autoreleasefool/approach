@@ -20,6 +20,6 @@ final class ConditionalViewModifierTests: XCTestCase {
 		let vc = UIHostingController(rootView: conditionalView)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 }

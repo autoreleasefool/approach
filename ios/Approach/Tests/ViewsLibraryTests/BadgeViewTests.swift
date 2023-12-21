@@ -17,6 +17,6 @@ final class BadgeViewTests: XCTestCase {
 		let vc = UIHostingController(rootView: badges)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 }

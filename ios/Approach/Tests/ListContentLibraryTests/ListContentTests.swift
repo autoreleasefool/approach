@@ -18,7 +18,7 @@ final class ListContentTests: XCTestCase {
 		let vc = UIHostingController(rootView: emptyContent)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 
 	func testEmptyErrorContentSnapshot() {
@@ -34,6 +34,6 @@ final class ListContentTests: XCTestCase {
 		let vc = UIHostingController(rootView: emptyContent)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 }

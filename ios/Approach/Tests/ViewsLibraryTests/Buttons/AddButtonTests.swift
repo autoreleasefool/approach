@@ -10,6 +10,6 @@ final class AddButtonTests: XCTestCase {
 		let vc = UIHostingController(rootView: addButton)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 }

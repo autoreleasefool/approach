@@ -10,8 +10,7 @@ extension AnalyticsService: DependencyKey {
 	public static var liveValue: Self = {
 		let properties = PropertyManager()
 
-		@Dependency(\.uuid) var uuid
-		let gameSessionID: LockIsolated<UUID> = .init(uuid())
+		let gameSessionID: LockIsolated<UUID?> = .init(nil)
 
 		@Sendable func getOptInStatus() -> Analytics.OptInStatus {
 			@Dependency(\.preferences) var preferences
@@ -45,7 +44,8 @@ extension AnalyticsService: DependencyKey {
 				let payload = (await properties.globalProperties).merging(event.payload ?? [:]) { first, _ in first }
 
 				if let sessionEvent = event as? GameSessionTrackableEvent,
-					 !(await properties.shouldRecordEvent(sessionEvent.eventId, toSession: gameSessionID.value)) {
+					 let gameSessionID = gameSessionID.value,
+					 !(await properties.shouldRecordEvent(sessionEvent.eventId, toSession: gameSessionID)) {
 					return
 				}
 
@@ -57,6 +57,7 @@ extension AnalyticsService: DependencyKey {
 				SentrySDK.addBreadcrumb(crumb)
 			},
 			resetGameSessionID: {
+				@Dependency(\.uuid) var uuid
 				gameSessionID.setValue(uuid())
 			},
 			getOptInStatus: getOptInStatus,

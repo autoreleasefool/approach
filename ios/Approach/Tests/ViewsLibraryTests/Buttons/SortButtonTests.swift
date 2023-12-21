@@ -10,7 +10,7 @@ final class SortButtonTests: XCTestCase {
 		let vc = UIHostingController(rootView: sortButton)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 
 	func testInactiveSortButtonSnapshot() {
@@ -19,6 +19,6 @@ final class SortButtonTests: XCTestCase {
 		let vc = UIHostingController(rootView: sortButton)
 		vc.view.frame = UIScreen.main.bounds
 
-		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+		assertSnapshot(matching: vc, as: .image(on: .iPhoneSe))
 	}
 }

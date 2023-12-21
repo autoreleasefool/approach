@@ -29,7 +29,7 @@ final class TrackableFiltersTests: XCTestCase {
 	let game7 = Game.Database.mock(seriesId: UUID(3), id: UUID(6), index: 0, score: 123, excludeFromStatistics: .include)
 	let game8 = Game.Database.mock(seriesId: UUID(3), id: UUID(7), index: 1, score: 123, excludeFromStatistics: .exclude)
 
-	let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
+	let frame1 = Frame.Database.mock(gameId: UUID(0), index: 0, roll0: "000100", roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
 	let frame2 = Frame.Database.mock(gameId: UUID(1), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
 	let frame3 = Frame.Database.mock(gameId: UUID(2), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
 	let frame4 = Frame.Database.mock(gameId: UUID(3), index: 0, roll0: nil, roll1: nil, roll2: nil, ball0: nil, ball1: nil, ball2: nil)
@@ -319,7 +319,19 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [.init(seriesId: UUID(0), gameId: UUID(0), gameIndex: 0, index: 0, rolls: [], date: Date(timeIntervalSince1970: 123))])
+		XCTAssertEqual(
+			frames,
+			[
+				.init(
+					seriesId: UUID(0),
+					gameId: UUID(0),
+					gameIndex: 0,
+					index: 0,
+					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+					date: Date(timeIntervalSince1970: 123)
+				),
+			]
+		)
 	}
 
 	func testBuildTrackableQueries_WithBowlerSource_WhenBowlerMissing_ThrowsError() async throws {
@@ -373,7 +385,18 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [.init(seriesId: UUID(0), gameId: UUID(0), gameIndex: 0, index: 0, rolls: [], date: Date(timeIntervalSince1970: 123))])
+		XCTAssertEqual(
+			frames, [
+				.init(
+					seriesId: UUID(0),
+					gameId: UUID(0),
+					gameIndex: 0,
+					index: 0,
+					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+					date: Date(timeIntervalSince1970: 123)
+				),
+			]
+		)
 	}
 
 	func testBuildTrackableQueries_WithLeagueSource_WhenLeagueMissing_ThrowsError() async throws {
@@ -427,7 +450,18 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [.init(seriesId: UUID(0), gameId: UUID(0), gameIndex: 0, index: 0, rolls: [], date: Date(timeIntervalSince1970: 123))])
+		XCTAssertEqual(
+			frames, [
+				.init(
+					seriesId: UUID(0),
+					gameId: UUID(0),
+					gameIndex: 0,
+					index: 0,
+					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+					date: Date(timeIntervalSince1970: 123)
+				),
+			]
+		)
 	}
 
 	func testBuildTrackableQueries_WithSeriesSource_WhenSeriesMissing_ThrowsError() async throws {
@@ -481,7 +515,18 @@ final class TrackableFiltersTests: XCTestCase {
 			return try framesRequest?.fetchAll($0)
 		}
 
-		XCTAssertEqual(frames, [.init(seriesId: UUID(0), gameId: UUID(0), gameIndex: 0, index: 0, rolls: [], date: Date(timeIntervalSince1970: 123))])
+		XCTAssertEqual(
+			frames, [
+				.init(
+					seriesId: UUID(0),
+					gameId: UUID(0),
+					gameIndex: 0,
+					index: 0,
+					rolls: [.init(index: 0, roll: .init(pinsDowned: [.headPin], didFoul: false), bowlingBall: nil)],
+					date: Date(timeIntervalSince1970: 123)
+				),
+			]
+		)
 	}
 
 	func testBuildTrackableQueries_WithGameSource_WhenGameMissing_ThrowsError() async throws {
