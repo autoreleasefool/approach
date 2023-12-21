@@ -58,7 +58,7 @@ class SeriesFormViewModel @Inject constructor(
 
 	private fun handleSeriesFormAction(action: SeriesFormUiAction) {
 		when (action) {
-			SeriesFormUiAction.BackClicked -> sendEvent(SeriesFormScreenEvent.Dismissed)
+			SeriesFormUiAction.BackClicked -> dismiss()
 			SeriesFormUiAction.DoneClicked -> saveSeries()
 			SeriesFormUiAction.ArchiveClicked -> setArchiveSeriesPrompt(isVisible = true)
 			SeriesFormUiAction.ConfirmArchiveClicked -> archiveSeries()
@@ -171,7 +171,7 @@ class SeriesFormViewModel @Inject constructor(
 
 			seriesRepository.archiveSeries(series.id)
 			setFormUiState(state = formState.copy(isShowingArchiveDialog = false))
-			sendEvent(SeriesFormScreenEvent.Dismissed)
+			dismiss()
 		}
 	}
 
@@ -216,14 +216,18 @@ class SeriesFormViewModel @Inject constructor(
 					)
 
 					seriesRepository.insertSeries(series)
-					sendEvent(SeriesFormScreenEvent.Dismissed)
+					dismiss(seriesId = series.id)
 				}
 				is SeriesFormScreenUiState.Edit -> {
 					val series = state.form.updatedModel(state.initialValue)
 					seriesRepository.updateSeries(series)
-					sendEvent(SeriesFormScreenEvent.Dismissed)
+					dismiss()
 				}
 			}
 		}
+	}
+
+	private fun dismiss(seriesId: UUID? = null) {
+		sendEvent(SeriesFormScreenEvent.Dismissed(seriesId))
 	}
 }

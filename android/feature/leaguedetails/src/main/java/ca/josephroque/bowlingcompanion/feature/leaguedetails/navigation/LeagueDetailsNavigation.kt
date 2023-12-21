@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.LeagueDetailsRoute
 import java.util.UUID
 
@@ -20,7 +21,7 @@ fun NavController.navigateToLeagueDetails(leagueId: UUID) {
 fun NavGraphBuilder.leagueDetailsScreen(
 	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
-	onAddSeries: (UUID) -> Unit,
+	onAddSeries: (UUID, NavResultCallback<UUID?>) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
 ) {
 	composable(

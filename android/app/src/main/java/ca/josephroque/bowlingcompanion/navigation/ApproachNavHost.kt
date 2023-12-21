@@ -147,12 +147,14 @@ fun ApproachNavHost(
 			)
 			leagueDetailsScreen(
 				onEditSeries = navController::navigateToSeriesForm,
-				onAddSeries = navController::navigateToNewSeriesForm,
+				onAddSeries = { leagueId, result ->
+					navController.navigateToNewSeriesForm(leagueId, result)
+				},
 				onShowSeriesDetails = navController::navigateToSeriesDetails,
 				onBackPressed = navController::popBackStack,
 			)
 			seriesFormScreen(
-				onBackPressed = navController::popBackStack,
+				onDismissWithResult = navController::popBackStackWithResult,
 				onEditAlley = { alley, result ->
 					navController.navigateToResourcePickerForResult(
 						selectedIds = alley?.let { setOf(it) } ?: emptySet(),

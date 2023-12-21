@@ -113,6 +113,7 @@ class LeagueDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: LeagueDetailsScreenUiAction) {
 		when (action) {
+			is LeagueDetailsScreenUiAction.SeriesAdded -> showSeriesDetails(action.seriesId)
 			is LeagueDetailsScreenUiAction.LeagueDetails -> handleLeagueDetailsAction(action.action)
 		}
 	}
@@ -136,13 +137,17 @@ class LeagueDetailsViewModel @Inject constructor(
 
 	private fun handleSeriesListAction(action: SeriesListUiAction) {
 		when (action) {
-			is SeriesListUiAction.SeriesClicked -> sendEvent(LeagueDetailsScreenEvent.ShowSeriesDetails(action.id))
+			is SeriesListUiAction.SeriesClicked -> showSeriesDetails(action.id)
 			is SeriesListUiAction.EditSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.EditSeries(action.id))
 			SeriesListUiAction.AddSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.AddSeries(leagueId))
 			is SeriesListUiAction.ArchiveSeriesClicked -> _seriesToArchive.value = action.series
 			SeriesListUiAction.ConfirmArchiveClicked -> archiveSeries()
 			SeriesListUiAction.DismissArchiveClicked -> _seriesToArchive.value = null
 		}
+	}
+
+	private fun showSeriesDetails(seriesId: UUID) {
+		sendEvent(LeagueDetailsScreenEvent.ShowSeriesDetails(seriesId))
 	}
 
 	private fun archiveSeries() {

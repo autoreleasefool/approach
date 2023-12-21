@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
@@ -25,7 +26,7 @@ import java.util.UUID
 internal fun LeagueDetailsRoute(
 	onBackPressed: () -> Unit,
 	onEditSeries: (UUID) -> Unit,
-	onAddSeries: (UUID) -> Unit,
+	onAddSeries: (UUID, NavResultCallback<UUID?>) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: LeagueDetailsViewModel = hiltViewModel(),
@@ -39,7 +40,10 @@ internal fun LeagueDetailsRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is LeagueDetailsScreenEvent.AddSeries -> onAddSeries(it.leagueId)
+						is LeagueDetailsScreenEvent.AddSeries -> onAddSeries(it.leagueId) { seriesId ->
+							seriesId ?: return@onAddSeries
+							viewModel.handleAction(LeagueDetailsScreenUiAction.SeriesAdded(seriesId))
+						}
 						is LeagueDetailsScreenEvent.EditSeries -> onEditSeries(it.seriesId)
 						is LeagueDetailsScreenEvent.Dismissed -> onBackPressed()
 						is LeagueDetailsScreenEvent.ShowSeriesDetails -> onShowSeriesDetails(it.seriesId)

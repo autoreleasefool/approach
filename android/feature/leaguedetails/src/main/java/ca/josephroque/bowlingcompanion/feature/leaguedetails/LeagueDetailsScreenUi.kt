@@ -13,6 +13,7 @@ sealed interface LeagueDetailsScreenUiState {
 }
 
 sealed interface LeagueDetailsScreenUiAction {
+	data class SeriesAdded(val seriesId: UUID): LeagueDetailsScreenUiAction
 	data class LeagueDetails(val action: LeagueDetailsUiAction): LeagueDetailsScreenUiAction
 }
 
