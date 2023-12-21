@@ -46,18 +46,18 @@ fun MutableList<FrameEdit>.setBallRolled(
 	this[frameIndex] = frame.copy(rolls = rolls)
 }
 
-fun MutableList<FrameEdit>.ensureFramesExist(upTo: Int) {
-	for (frameIndex in 0..upTo) {
-		val numberOfRolls = this[frameIndex].rolls.size
-		if (numberOfRolls == Frame.NumberOfRolls) continue
-		val lastRollIndex = numberOfRolls - 1
-		if (!this[frameIndex].deckForRoll(lastRollIndex).arePinsCleared()) {
-			this[frameIndex] = this[frameIndex].ensureRollExists(upTo = Frame.NumberOfRolls - 1)
-		}
-	}
+fun List<FrameEdit>.doesRollExistInFrame(frameIndex: Int, rollIndex: Int): Boolean {
+	if (frameIndex >= this.size) return false
+	return rollIndex < this[frameIndex].rolls.size
+}
+
+fun MutableList<FrameEdit>.guaranteeRollExists(frameIndex: Int, rollIndex: Int) {
+	this[frameIndex] = this[frameIndex].ensureRollExists(upTo = rollIndex)
 }
 
 fun FrameEdit.ensureRollExists(upTo: Int): FrameEdit {
+	if (this.rolls.size == upTo + 1) return this
+
 	val rolls = this.rolls.toMutableList()
 	for (rollIndex in this.rolls.size..upTo) {
 		rolls.add(FrameEdit.Roll(index = rollIndex, pinsDowned = emptySet(), didFoul = false, bowlingBall = null))
