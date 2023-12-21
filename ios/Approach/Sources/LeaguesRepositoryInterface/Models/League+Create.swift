@@ -8,7 +8,7 @@ extension League {
 
 		public var name: String
 		public var recurrence: Recurrence
-		public var numberOfGames: Int?
+		public var defaultNumberOfGames: Int?
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
@@ -20,7 +20,7 @@ extension League {
 				id: withId,
 				name: "",
 				recurrence: .repeating,
-				numberOfGames: League.DEFAULT_NUMBER_OF_GAMES,
+				defaultNumberOfGames: League.DEFAULT_NUMBER_OF_GAMES,
 				excludeFromStatistics: .include
 			)
 		}

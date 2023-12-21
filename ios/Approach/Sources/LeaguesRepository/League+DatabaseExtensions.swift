@@ -29,7 +29,7 @@ extension League.Create: PersistableRecord {
 		container[Columns.id] = id
 		container[Columns.name] = name
 		container[Columns.recurrence] = recurrence
-		container[Columns.numberOfGames] = numberOfGames
+		container[Columns.defaultNumberOfGames] = defaultNumberOfGames
 		container[Columns.additionalPinfall] = additionalPinfall
 		container[Columns.additionalGames] = additionalGames
 		container[Columns.excludeFromStatistics] = excludeFromStatistics

@@ -60,11 +60,11 @@ public func generatePopulatedDatabase(db: (any DatabaseWriter)? = nil) throws ->
 		.mock(id: UUID(4), name: "Red Paramount", kind: .bowlingBall, bowlerId: UUID(1), avatarId: UUID(3)),
 	]
 	let leagues: [League.Database] = [
-		.init(bowlerId: UUID(0), id: UUID(0), name: "Majors, 2022-23", recurrence: .repeating, numberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
-		.init(bowlerId: UUID(0), id: UUID(1), name: "Beer League, 2022-23", recurrence: .repeating, numberOfGames: 3, additionalPinfall: 1000, additionalGames: 4, excludeFromStatistics: .include, archivedOn: nil),
-		.init(bowlerId: UUID(0), id: UUID(2), name: "Practice", recurrence: .repeating, numberOfGames: nil, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .exclude, archivedOn: nil),
-		.init(bowlerId: UUID(0), id: UUID(3), name: "The Open, 2023", recurrence: .once, numberOfGames: 20, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
-		.init(bowlerId: UUID(1), id: UUID(4), name: "Majors, 2023-24", recurrence: .repeating, numberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
+		.init(bowlerId: UUID(0), id: UUID(0), name: "Majors, 2022-23", recurrence: .repeating, defaultNumberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
+		.init(bowlerId: UUID(0), id: UUID(1), name: "Beer League, 2022-23", recurrence: .repeating, defaultNumberOfGames: 3, additionalPinfall: 1000, additionalGames: 4, excludeFromStatistics: .include, archivedOn: nil),
+		.init(bowlerId: UUID(0), id: UUID(2), name: "Practice", recurrence: .repeating, defaultNumberOfGames: nil, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .exclude, archivedOn: nil),
+		.init(bowlerId: UUID(0), id: UUID(3), name: "The Open, 2023", recurrence: .once, defaultNumberOfGames: 20, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
+		.init(bowlerId: UUID(1), id: UUID(4), name: "Majors, 2023-24", recurrence: .repeating, defaultNumberOfGames: 4, additionalPinfall: nil, additionalGames: nil, excludeFromStatistics: .include, archivedOn: nil),
 	]
 	let series = [
 		generateSeries(startDate: Date(timeIntervalSince1970: 1662512400 /* September 6, 2022 */), numberOfSeries: 32, numberOfGames: 4, firstId: 0, league: UUID(0), alley: UUID(1)),

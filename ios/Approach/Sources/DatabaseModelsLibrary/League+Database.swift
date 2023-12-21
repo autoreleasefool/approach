@@ -8,7 +8,7 @@ extension League {
 		public let id: League.ID
 		public var name: String
 		public var recurrence: Recurrence
-		public var numberOfGames: Int?
+		public var defaultNumberOfGames: Int?
 		public var additionalPinfall: Int?
 		public var additionalGames: Int?
 		public var excludeFromStatistics: ExcludeFromStatistics
@@ -19,7 +19,7 @@ extension League {
 			id: League.ID,
 			name: String,
 			recurrence: Recurrence,
-			numberOfGames: Int?,
+			defaultNumberOfGames: Int?,
 			additionalPinfall: Int?,
 			additionalGames: Int?,
 			excludeFromStatistics: ExcludeFromStatistics,
@@ -29,7 +29,7 @@ extension League {
 			self.id = id
 			self.name = name
 			self.recurrence = recurrence
-			self.numberOfGames = numberOfGames
+			self.defaultNumberOfGames = defaultNumberOfGames
 			self.additionalPinfall = additionalPinfall
 			self.additionalGames = additionalGames
 			self.excludeFromStatistics = excludeFromStatistics
@@ -51,7 +51,7 @@ extension League.Database {
 		public static let id = Column(CodingKeys.id)
 		public static let name = Column(CodingKeys.name)
 		public static let recurrence = Column(CodingKeys.recurrence)
-		public static let numberOfGames = Column(CodingKeys.numberOfGames)
+		public static let defaultNumberOfGames = Column(CodingKeys.defaultNumberOfGames)
 		public static let additionalPinfall = Column(CodingKeys.additionalPinfall)
 		public static let additionalGames = Column(CodingKeys.additionalGames)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)

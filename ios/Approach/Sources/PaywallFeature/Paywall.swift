@@ -24,6 +24,11 @@ public struct Paywall: Reducer {
 			@Dependency(\.products) var products
 			self.isProductAvailable = products.peekIsAvailable(product)
 		}
+
+		public mutating func presentPaywall() -> Effect<Paywall.Action> {
+			isPaywallPresented = true
+			return .none
+		}
 	}
 
 	public enum Action: FeatureAction {
@@ -120,12 +125,5 @@ public struct Paywall: Reducer {
 			default: return nil
 			}
 		}
-	}
-}
-
-extension Paywall.State {
-	public mutating func presentPaywall() -> Effect<Paywall.Action> {
-		isPaywallPresented = true
-		return .none
 	}
 }

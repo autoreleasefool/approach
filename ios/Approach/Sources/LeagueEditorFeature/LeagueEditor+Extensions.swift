@@ -8,7 +8,7 @@ extension LeagueEditor.State {
 			case var .create(new):
 				new.name = name
 				new.recurrence = recurrence
-				new.numberOfGames = gamesPerSeries == .static ? max(1, Int(numberOfGames)) : nil
+				new.defaultNumberOfGames = gamesPerSeries == .static ? max(1, Int(defaultNumberOfGames)) : nil
 				new.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
 				new.additionalPinfall = hasAdditionalPinfall && (new.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
 				new.excludeFromStatistics = excludeFromStatistics

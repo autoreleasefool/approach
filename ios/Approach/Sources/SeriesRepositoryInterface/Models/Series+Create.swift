@@ -20,7 +20,7 @@ extension Series {
 				date: onDate,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
-				numberOfGames: inLeague.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,
+				numberOfGames: inLeague.defaultNumberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,
 				location: inLeague.alley
 			)
 		}

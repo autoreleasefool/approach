@@ -54,7 +54,7 @@ extension League {
 	public struct SeriesHost: Identifiable, Codable, Equatable {
 		public let id: League.ID
 		public let name: String
-		public let numberOfGames: Int?
+		public let defaultNumberOfGames: Int?
 		public let alley: Alley.Summary?
 		public let excludeFromStatistics: League.ExcludeFromStatistics
 		public let recurrence: League.Recurrence
@@ -62,14 +62,14 @@ extension League {
 		public init(
 			id: League.ID,
 			name: String,
-			numberOfGames: Int?,
+			defaultNumberOfGames: Int?,
 			alley: Alley.Summary?,
 			excludeFromStatistics: League.ExcludeFromStatistics,
 			recurrence: League.Recurrence
 		) {
 			self.id = id
 			self.name = name
-			self.numberOfGames = numberOfGames
+			self.defaultNumberOfGames = defaultNumberOfGames
 			self.alley = alley
 			self.excludeFromStatistics = excludeFromStatistics
 			self.recurrence = recurrence

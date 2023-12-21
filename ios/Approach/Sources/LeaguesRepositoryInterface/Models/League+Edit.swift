@@ -4,7 +4,7 @@ extension League {
 	public struct Edit: Identifiable, Equatable, Codable {
 		public let id: League.ID
 		public let recurrence: League.Recurrence
-		public let numberOfGames: Int?
+		public let defaultNumberOfGames: Int?
 
 		public var name: String
 		public var additionalPinfall: Int?
@@ -16,7 +16,7 @@ extension League {
 			.init(
 				id: id,
 				name: name,
-				numberOfGames: numberOfGames,
+				defaultNumberOfGames: defaultNumberOfGames,
 				alley: location,
 				excludeFromStatistics: excludeFromStatistics,
 				recurrence: recurrence

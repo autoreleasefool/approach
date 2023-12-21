@@ -17,7 +17,7 @@ public struct LeagueEditor: Reducer {
 	public struct State: Equatable {
 		@BindingState public var name: String
 		@BindingState public var recurrence: League.Recurrence
-		@BindingState public var numberOfGames: Int
+		@BindingState public var defaultNumberOfGames: Int
 		@BindingState public var additionalPinfall: String
 		@BindingState public var additionalGames: String
 		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics
@@ -34,7 +34,7 @@ public struct LeagueEditor: Reducer {
 		@PresentationState public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: LeagueForm.Value) {
-			let numberOfGames: Int
+			let defaultNumberOfGames: Int
 			let additionalGames: Int
 			switch value {
 			case let .create(new):
@@ -45,7 +45,7 @@ public struct LeagueEditor: Reducer {
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
 				self.coordinate = .init(coordinate: .init())
-				numberOfGames = new.numberOfGames ?? 0
+				defaultNumberOfGames = new.defaultNumberOfGames ?? 0
 				additionalGames = new.additionalGames ?? 0
 				self.gamesPerSeries = .dynamic
 				self.shouldShowLocationSection = new.recurrence.shouldShowLocationSection
@@ -58,15 +58,15 @@ public struct LeagueEditor: Reducer {
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
 				self.coordinate = .init(coordinate: existing.location?.location?.coordinate.mapCoordinate ?? .init())
-				numberOfGames = existing.numberOfGames ?? 0
+				defaultNumberOfGames = existing.defaultNumberOfGames ?? 0
 				additionalGames = existing.additionalGames ?? 0
 				self.shouldShowLocationSection = existing.recurrence.shouldShowLocationSection
-				self.gamesPerSeries = numberOfGames == 0 ? .dynamic : .static
+				self.gamesPerSeries = defaultNumberOfGames == 0 ? .dynamic : .static
 				self.initialValue = .edit(existing)
 			}
 			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
 			self.hasAdditionalPinfall = additionalGames > 0
-			self.numberOfGames = max(numberOfGames, 1)
+			self.defaultNumberOfGames = max(defaultNumberOfGames, 1)
 			self.additionalGames = additionalGames > 0 ? String(additionalGames) : ""
 		}
 	}

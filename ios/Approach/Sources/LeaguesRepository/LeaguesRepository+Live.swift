@@ -106,7 +106,7 @@ extension LeaguesRepository: DependencyKey {
 						try league.insert(db)
 
 						try dependencies.yield {
-							if league.recurrence == .once, let numberOfGames = league.numberOfGames {
+							if league.recurrence == .once, let numberOfGames = league.defaultNumberOfGames {
 								let series = Series.Database(
 									leagueId: league.id,
 									id: uuid(),

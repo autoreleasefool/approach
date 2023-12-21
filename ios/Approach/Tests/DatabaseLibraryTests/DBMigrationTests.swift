@@ -34,6 +34,7 @@ final class DBMigrationTests: XCTestCase {
 		"Migration20231024IsArchivedToArchivedOn",
 		"Migration20231128AddDurationToGame",
 		"Migration20231220MigrateRecurringLeagues",
+		"Migration20231220RenameLeagueNumberOfGames",
 	]
 
 	func testIdentifier() {

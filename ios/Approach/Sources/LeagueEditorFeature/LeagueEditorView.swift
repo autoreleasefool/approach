@@ -18,7 +18,7 @@ public struct LeagueEditorView: View {
 	struct ViewState: Equatable {
 		@BindingViewState var name: String
 		@BindingViewState var recurrence: League.Recurrence
-		@BindingViewState var numberOfGames: Int
+		@BindingViewState var defaultNumberOfGames: Int
 		@BindingViewState var additionalPinfall: String
 		@BindingViewState var additionalGames: String
 		@BindingViewState var excludeFromStatistics: League.ExcludeFromStatistics
@@ -152,8 +152,8 @@ public struct LeagueEditorView: View {
 
 				if viewStore.gamesPerSeries == .static {
 					Stepper(
-						"\(viewStore.numberOfGames)",
-						value: viewStore.$numberOfGames,
+						"\(viewStore.defaultNumberOfGames)",
+						value: viewStore.$defaultNumberOfGames,
 						in: League.NUMBER_OF_GAMES_RANGE
 					)
 				}
@@ -199,7 +199,7 @@ extension LeagueEditorView.ViewState {
 	init(store: BindingViewStore<LeagueEditor.State>) {
 		self._name = store.$name
 		self._recurrence = store.$recurrence
-		self._numberOfGames = store.$numberOfGames
+		self._defaultNumberOfGames = store.$defaultNumberOfGames
 		self._additionalGames = store.$additionalGames
 		self._additionalPinfall = store.$additionalPinfall
 		self._excludeFromStatistics = store.$excludeFromStatistics
