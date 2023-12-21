@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,9 +48,13 @@ fun FrameEditor(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
 				.fillMaxWidth()
-				.pointerInput(state.downedPins) {
+				.pointerInput(state.isEnabled, state.downedPins) {
 					awaitEachGesture {
 						awaitFirstDown()
+
+						onAction(FrameEditorUiAction.FrameEditorInteractionStarted)
+						if (!state.isEnabled) return@awaitEachGesture
+
 						do {
 							val event: PointerEvent = awaitPointerEvent()
 							event.changes.forEach {
@@ -69,7 +72,9 @@ fun FrameEditor(
 										toggledPins = toggledPins
 											.toMutableSet()
 											.apply { add(pin) }
-										downedPins = downedPins.toMutableSet().toggle(pin)
+										downedPins = downedPins
+											.toMutableSet()
+											.toggle(pin)
 									}
 								}
 							}
@@ -124,6 +129,7 @@ private fun FrameEditorPreview() {
 			state = state,
 			onAction = {
 				when (it) {
+					FrameEditorUiAction.FrameEditorInteractionStarted -> Unit
 					is FrameEditorUiAction.DownedPinsChanged -> state = state.copy(downedPins = it.downedPins)
 				}
 			},

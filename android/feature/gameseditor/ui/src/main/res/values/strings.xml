@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+	<string name="game_editor_locked">Locked! Unlock your game first</string>
+
 	<string name="game_editor_foul">Foul?</string>
 
 	<string name="game_editor_next_roll">Go to Ball %1$d</string>

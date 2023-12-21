@@ -11,6 +11,7 @@ sealed interface GamesEditorScreenUiState {
 
 	data class Loaded(
 		val headerPeekHeight: Float = 0f,
+		val isGameLockSnackBarVisible: Boolean = false,
 		val gameDetails: GameDetailsUiState,
 		val gamesEditor: GamesEditorUiState,
 	): GamesEditorScreenUiState
@@ -18,6 +19,7 @@ sealed interface GamesEditorScreenUiState {
 
 sealed interface GamesEditorScreenUiAction {
 	data object LoadInitialGame: GamesEditorScreenUiAction
+	data object GameLockSnackBarDismissed: GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<UUID>): GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction): GamesEditorScreenUiAction
