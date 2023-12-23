@@ -213,6 +213,7 @@ public enum Asset {
       public static let pinDown = ImageAsset(name: "Frame/PinDown")
     }
     public enum Icons {
+      public static let alley = ImageAsset(name: "Icons/Alley")
       public static let analytics = ImageAsset(name: "Icons/Analytics")
       public enum Pins {
         public static let aces = ImageAsset(name: "Icons/Pins/Aces")

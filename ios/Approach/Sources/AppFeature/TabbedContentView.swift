@@ -49,7 +49,7 @@ public struct TabbedContentView: View {
 					}
 					.tag(tab)
 					.tabItem {
-						Label(tab.name, systemSymbol: tab.symbol)
+						Label(title: { Text(tab.name) }, icon: { Image(uiImage: tab.icon) })
 					}
 				}
 			}
@@ -80,16 +80,16 @@ extension TabbedContent.Tab {
 		}
 	}
 
-	var symbol: SFSymbol {
+	var icon: UIImage {
 		switch self {
 		case .accessories:
-			return .bag
+			return Asset.Media.Icons.alley.image
 		case .settings:
-			return .gear
+			return UIImage(systemSymbol: .gear)
 		case .overview:
-			return .figureBowling
+			return UIImage(systemSymbol: .figureBowling)
 		case .statistics:
-			return .chartBar
+			return UIImage(systemSymbol: .chartBar)
 		}
 	}
 }
