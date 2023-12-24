@@ -20,7 +20,8 @@ import ca.josephroque.bowlingcompanion.core.model.ui.R.*
 
 @Composable
 fun LaneRow(
-	lane: LaneListItem,
+	label: String,
+	position: LanePosition,
 	modifier: Modifier = Modifier,
 	onClick: (() -> Unit)? = null,
 ) {
@@ -36,12 +37,12 @@ fun LaneRow(
 			else Modifier),
 	) {
 		Text(
-			text = lane.label,
+			text = label,
 			style = MaterialTheme.typography.titleMedium,
 			modifier = Modifier.weight(1f),
 		)
 
-		when (lane.position) {
+		when (position) {
 			LanePosition.LEFT_WALL -> Icon(
 				painter = painterResource(drawable.ic_lane_position_left_wall),
 				contentDescription = null,

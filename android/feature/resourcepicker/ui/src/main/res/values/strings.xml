@@ -27,4 +27,9 @@
 		<item quantity="one">Select Alley</item>
 		<item quantity="other">Select Alleys</item>
 	</plurals>
+
+	<plurals name="lane_picker_title">
+		<item quantity="one">Select Lane</item>
+		<item quantity="other">Select Lanes</item>
+	</plurals>
 </resources>

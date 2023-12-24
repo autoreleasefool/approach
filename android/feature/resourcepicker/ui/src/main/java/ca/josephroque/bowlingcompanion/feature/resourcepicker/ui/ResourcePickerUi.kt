@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.resourcepicker.ui
 import androidx.annotation.PluralsRes
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearKind
+import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import java.util.UUID
 
 enum class ResourcePickerType {
@@ -10,6 +11,7 @@ enum class ResourcePickerType {
 	LEAGUE,
 	GEAR,
 	ALLEY,
+	LANE,
 }
 
 sealed interface ResourceItem {
@@ -37,6 +39,12 @@ sealed interface ResourceItem {
 	data class Alley(
 		override val id: UUID,
 		override val name: String,
+	): ResourceItem
+
+	data class Lane(
+		override val id: UUID,
+		override val name: String,
+		val position: LanePosition,
 	): ResourceItem
 }
 
