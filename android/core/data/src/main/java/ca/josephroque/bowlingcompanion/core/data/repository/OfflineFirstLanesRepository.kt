@@ -26,7 +26,7 @@ class OfflineFirstLanesRepository @Inject constructor(
 	override fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>> =
 		laneDao.getGameLanes(gameId)
 
-	override suspend fun insertLanes(lanes: List<LaneListItem>) {
+	override suspend fun insertLanes(lanes: List<LaneListItem>) = withContext(ioDispatcher) {
 		laneDao.insertAll(lanes.map(LaneListItem::asEntity))
 	}
 
