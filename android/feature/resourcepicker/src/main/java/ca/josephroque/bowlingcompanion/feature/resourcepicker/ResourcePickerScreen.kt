@@ -17,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.ui.AlleyRow
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
 import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
+import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourceItem
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
@@ -96,6 +97,7 @@ private fun ResourcePickerScreen(
 								avatar = it.avatar,
 							)
 							is ResourceItem.Alley -> AlleyRow(name = it.name)
+							is ResourceItem.Lane -> LaneRow(label = it.name, position = it.position)
 						}
 					},
 					modifier = Modifier.padding(padding),

@@ -33,7 +33,8 @@ fun LazyListScope.lanesList(
 			startActions = listOfNotNull(deleteAction),
 		) {
 			LaneRow(
-				lane = lane,
+				label = lane.label,
+				position = lane.position,
 				onClick = { onLaneClick(lane) },
 			)
 		}

@@ -6,10 +6,12 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.AlleyPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.GearPickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LanePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_PARENT_ID
@@ -35,6 +37,7 @@ class ResourcePickerViewModel @Inject constructor(
 	leaguesRepository: LeaguesRepository,
 	gearRepository: GearRepository,
 	alleysRepository: AlleysRepository,
+	lanesRepository: LanesRepository,
 	savedStateHandle: SavedStateHandle,
 ): ApproachViewModel<ResourcePickerScreenEvent>() {
 	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
@@ -63,6 +66,7 @@ class ResourcePickerViewModel @Inject constructor(
 		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, parentId)
 		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository)
 		ResourcePickerType.ALLEY -> AlleyPickerDataProvider(alleysRepository)
+		ResourcePickerType.LANE -> LanePickerDataProvider(lanesRepository, parentId)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? {
@@ -105,6 +109,7 @@ class ResourcePickerViewModel @Inject constructor(
 						ResourcePickerType.LEAGUE -> R.plurals.league_picker_title
 						ResourcePickerType.GEAR -> R.plurals.gear_picker_title
 						ResourcePickerType.ALLEY -> R.plurals.alley_picker_title
+						ResourcePickerType.LANE -> R.plurals.lane_picker_title
 					},
 					titleOverride = titleOverride,
 					limit = limit,
