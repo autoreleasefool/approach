@@ -6,6 +6,8 @@ import java.util.UUID
 
 interface LanesRepository {
 	fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>>
+	fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>>
+	fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>>
 
 	suspend fun insertLanes(lanes: List<LaneListItem>)
 	suspend fun setAlleyLanes(alleyId: UUID, lanes: List<LaneListItem>)

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEditEntity
+import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
@@ -96,6 +97,12 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 
 	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
 	abstract fun setGameExcludedFromStatistics(gameId: UUID, excludeFromStatistics: ExcludeFromStatistics)
+
+	@Query("DELETE FROM game_lanes WHERE game_id = :gameId")
+	abstract fun deleteGameLanes(gameId: UUID)
+
+	@Insert
+	abstract fun insertGameLanes(gameLanes: List<GameLaneCrossRef>)
 
 	@Query("UPDATE games SET archived_on = NULL WHERE id = :gameId")
 	abstract fun unarchiveGame(gameId: UUID)

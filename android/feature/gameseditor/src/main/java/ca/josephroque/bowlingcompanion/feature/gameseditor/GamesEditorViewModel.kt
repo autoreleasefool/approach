@@ -3,12 +3,15 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Game
@@ -16,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
@@ -65,6 +69,9 @@ class GamesEditorViewModel @Inject constructor(
 	private val matchPlaysRepository: MatchPlaysRepository,
 	private val scoresRepository: ScoresRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val alleysRepository: AlleysRepository,
+	private val lanesRepository: LanesRepository,
+	private val seriesRepository: SeriesRepository,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
 	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
 	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
@@ -78,6 +85,8 @@ class GamesEditorViewModel @Inject constructor(
 	private var _scoresJob: Job? = null
 	private val _gamesEditorState = MutableStateFlow(GamesEditorUiState(gameId = initialGameId))
 
+	private var _alleyJob: Job? = null
+	private var _lanesJob: Job? = null
 	private var _gearJob: Job? = null
 	private var _matchPlayJob: Job? = null
 	private var _gameDetailsJob: Job? = null
@@ -108,6 +117,8 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
+			is GamesEditorScreenUiAction.AlleyUpdated -> updateAlley(action.alleyId)
+			is GamesEditorScreenUiAction.LanesUpdated -> updateLanes(action.laneIds)
 		}
 	}
 
@@ -242,6 +253,32 @@ class GamesEditorViewModel @Inject constructor(
 			}
 		}
 
+		_alleyJob?.cancel()
+		_alleyJob = viewModelScope.launch {
+			alleysRepository.getGameAlleyDetails(gameToLoad).collect { alley ->
+				_gameDetailsState.updateGameDetails(gameToLoad) {
+					it.copy(
+						alley = it.alley.copy(
+							selectedAlley = alley,
+						)
+					)
+				}
+			}
+		}
+
+		_lanesJob?.cancel()
+		_lanesJob = viewModelScope.launch {
+			lanesRepository.getGameLanes(gameToLoad).collect { lanes ->
+				_gameDetailsState.updateGameDetails(gameToLoad) {
+					it.copy(
+						alley = it.alley.copy(
+							selectedLanes = lanes,
+						)
+					)
+				}
+			}
+		}
+
 		_scoresJob?.cancel()
 		_scoresJob = viewModelScope.launch {
 			scoresRepository.getScore(gameToLoad).collect { score ->
@@ -330,7 +367,7 @@ class GamesEditorViewModel @Inject constructor(
 
 		val gameDetails = _gameDetailsState.value
 		sendEvent(GamesEditorScreenEvent.EditAlley(
-			alleyId = gameDetails.alley.selectedAlley?.id ?: return
+			alleyId = gameDetails.alley.selectedAlley?.id
 		))
 	}
 
@@ -602,6 +639,22 @@ class GamesEditorViewModel @Inject constructor(
 					score,
 				)
 			}
+		}
+	}
+
+	private fun updateAlley(alleyId: UUID?) {
+		if (isGameLocked) return
+
+		viewModelScope.launch {
+			seriesRepository.setSeriesAlley(seriesId, alleyId)
+		}
+	}
+
+	private fun updateLanes(laneIds: Set<UUID>) {
+		if (isGameLocked) return
+
+		viewModelScope.launch {
+			gamesRepository.setGameLanes(_currentGameId.value, laneIds)
 		}
 	}
 

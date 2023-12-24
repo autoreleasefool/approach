@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
@@ -77,6 +78,22 @@ class OfflineFirstSeriesRepository @Inject constructor(
 
 			gameDao.insertGames(games)
 			frameDao.insertFrames(frames)
+		}
+	}
+
+	override suspend fun setSeriesAlley(seriesId: UUID, alleyId: UUID?) = withContext(ioDispatcher) {
+		transactionRunner {
+			val series = seriesDao.getSeriesDetails(seriesId).firstOrNull() ?: return@transactionRunner
+
+			if (series.alley?.id == alleyId) {
+				return@transactionRunner
+			}
+
+			val games = gameDao.getGamesList(seriesId).firstOrNull() ?: return@transactionRunner
+			seriesDao.setSeriesAlley(seriesId, alleyId)
+			games.forEach {
+				gameDao.deleteGameLanes(it.id)
+			}
 		}
 	}
 

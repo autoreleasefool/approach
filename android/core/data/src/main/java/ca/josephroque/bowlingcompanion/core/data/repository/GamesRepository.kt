@@ -20,6 +20,7 @@ interface GamesRepository {
 	suspend fun setGameLockState(gameId: UUID, locked: GameLockState)
 	suspend fun setGameExcludedFromStatistics(gameId: UUID, excludeFromStatistics: ExcludeFromStatistics)
 	suspend fun setGameScore(gameId: UUID, score: Int)
+	suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>)
 
 	suspend fun archiveGame(gameId: UUID)
 	suspend fun unarchiveGame(gameId: UUID)
