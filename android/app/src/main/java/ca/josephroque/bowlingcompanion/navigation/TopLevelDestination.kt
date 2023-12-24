@@ -22,8 +22,8 @@ enum class TopLevelDestination(
 	),
 
 	ACCESSORIES_OVERVIEW(
-		selectedIcon = RCoreDesign.drawable.ic_accessory,
-		unselectedIcon = RCoreDesign.drawable.ic_accessory,
+		selectedIcon = RCoreDesign.drawable.ic_alley,
+		unselectedIcon = RCoreDesign.drawable.ic_alley,
 		iconTextId = R.string.destination_accessories,
 	),
 
