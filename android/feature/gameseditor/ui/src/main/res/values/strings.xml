@@ -12,6 +12,14 @@
 	<string name="game_editor_view_stats_series">Series</string>
 	<string name="game_editor_view_stats_game">Game %1$d</string>
 
+	<string name="game_editor_alley_title">Alley</string>
+	<string name="game_editor_alley_description">Choose the alley you\'re bowling at</string>
+	<string name="game_editor_alley_alley">Alley</string>
+	<string name="game_editor_alley_no_alley">No alley</string>
+	<string name="game_editor_lanes">Lanes</string>
+	<string name="game_editor_lanes_description">Choose the lanes you\'re bowling on for more detailed statistics</string>
+
+
 	<string name="game_editor_gear_title">Gear</string>
 	<string name="game_editor_gear_description">Choose any additional gear you\'re using this game</string>
 

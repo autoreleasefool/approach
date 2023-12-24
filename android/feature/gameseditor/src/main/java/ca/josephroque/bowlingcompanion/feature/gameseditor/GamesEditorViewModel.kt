@@ -118,6 +118,8 @@ class GamesEditorViewModel @Inject constructor(
 			GameDetailsUiAction.ManageScoreClicked -> openScoreSettings()
 			GameDetailsUiAction.ViewGameStatsClicked -> openGameStats()
 			GameDetailsUiAction.ViewSeriesStatsClicked -> openSeriesStats()
+			GameDetailsUiAction.ManageLanesClicked -> openLanesPicker()
+			GameDetailsUiAction.ManageAlleyClicked -> openAlleyPicker()
 			is GameDetailsUiAction.LockToggled -> toggleGameLocked(action.locked)
 			is GameDetailsUiAction.ExcludeFromStatisticsToggled -> toggleGameExcludedFromStatistics(action.excludeFromStatistics)
 			is GameDetailsUiAction.NextGameElementClicked -> goToNext(action.nextGameElement)
@@ -304,6 +306,31 @@ class GamesEditorViewModel @Inject constructor(
 
 		sendEvent(GamesEditorScreenEvent.EditGear(
 			_gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet()
+		))
+	}
+
+	private fun openLanesPicker() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
+		val gameDetails = _gameDetailsState.value
+		sendEvent(GamesEditorScreenEvent.EditLanes(
+			alleyId = gameDetails.alley.selectedAlley?.id ?: return,
+			laneIds = gameDetails.alley.selectedLanes.map(LaneListItem::id).toSet()
+		))
+	}
+
+	private fun openAlleyPicker() {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
+		}
+
+		val gameDetails = _gameDetailsState.value
+		sendEvent(GamesEditorScreenEvent.EditAlley(
+			alleyId = gameDetails.alley.selectedAlley?.id ?: return
 		))
 	}
 

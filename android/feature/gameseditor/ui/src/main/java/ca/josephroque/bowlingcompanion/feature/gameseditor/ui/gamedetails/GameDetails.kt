@@ -67,6 +67,14 @@ fun GameDetails(
 
 		Divider(thickness = 8.dp)
 
+		AlleyCard(
+			state = state.alley,
+			onAction = onAction,
+			modifier = Modifier.padding(horizontal = 16.dp),
+		)
+
+		Divider(thickness = 8.dp)
+
 		MatchPlayCard(
 			state = state.matchPlay,
 			onAction = onAction,

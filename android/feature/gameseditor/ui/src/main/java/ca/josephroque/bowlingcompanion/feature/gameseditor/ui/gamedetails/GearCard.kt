@@ -36,10 +36,7 @@ internal fun GearCard(
 	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Column(
-		verticalArrangement = Arrangement.spacedBy(8.dp),
-		modifier = modifier,
-	) {
+	Column(modifier = modifier) {
 		SectionHeader(
 			title = stringResource(R.string.game_editor_gear_title),
 			subtitle = stringResource(R.string.game_editor_gear_description),

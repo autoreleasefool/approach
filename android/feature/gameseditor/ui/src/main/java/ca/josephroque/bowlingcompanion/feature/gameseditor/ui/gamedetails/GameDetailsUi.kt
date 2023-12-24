@@ -1,9 +1,11 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
+import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
+import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import java.util.UUID
@@ -19,6 +21,7 @@ data class GameDetailsUiState(
 	val currentGameIndex: Int = 0,
 	val header: HeaderUiState = HeaderUiState(),
 	val gear: GearCardUiState = GearCardUiState(),
+	val alley: AlleyCardUiState = AlleyCardUiState(),
 	val matchPlay: MatchPlayCardUiState = MatchPlayCardUiState(),
 	val scoringMethod: ScoringMethodCardUiState = ScoringMethodCardUiState(),
 	val gameProperties: GamePropertiesCardUiState = GamePropertiesCardUiState(),
@@ -35,6 +38,11 @@ data class GameDetailsUiState(
 		val bowlerName: String = "",
 		val leagueName: String = "",
 		val nextElement: NextGameEditableElement? = null,
+	)
+
+	data class AlleyCardUiState(
+		val selectedAlley: AlleyDetails? = null,
+		val selectedLanes: List<LaneListItem> = emptyList(),
 	)
 
 	data class GearCardUiState(
@@ -55,6 +63,8 @@ data class GameDetailsUiState(
 
 sealed interface GameDetailsUiAction {
 	data object ManageGearClicked: GameDetailsUiAction
+	data object ManageAlleyClicked: GameDetailsUiAction
+	data object ManageLanesClicked: GameDetailsUiAction
 	data object ManageMatchPlayClicked: GameDetailsUiAction
 	data object ManageScoreClicked: GameDetailsUiAction
 	data object ViewGameStatsClicked: GameDetailsUiAction
