@@ -31,4 +31,6 @@ sealed interface GamesEditorScreenEvent {
 
 	data class EditMatchPlay(val gameId: UUID): GamesEditorScreenEvent
 	data class EditGear(val gearIds: Set<UUID>): GamesEditorScreenEvent
+	data class EditAlley(val alleyId: UUID): GamesEditorScreenEvent
+	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>): GamesEditorScreenEvent
 }
