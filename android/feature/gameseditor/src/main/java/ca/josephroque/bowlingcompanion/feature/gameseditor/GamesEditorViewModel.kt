@@ -207,6 +207,14 @@ class GamesEditorViewModel @Inject constructor(
 						),
 					)
 				}
+
+				_gamesEditorState.updateGamesEditor(gameToLoad) {
+					it.copy(
+						frameEditor = it.frameEditor.copy(
+							isEnabled = gameDetails.properties.locked != GameLockState.LOCKED,
+						),
+					)
+				}
 			}
 		}
 
