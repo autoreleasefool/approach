@@ -185,6 +185,21 @@ fun ApproachNavHost(
 						navResultCallback = result,
 						resourceType = ResourcePickerType.GEAR,
 					)
+				},
+				onEditAlley = { alley, result ->
+					navController.navigateToResourcePickerForResult(
+						selectedIds = alley?.let { setOf(it) } ?: emptySet(),
+						limit = 1,
+						navResultCallback = result,
+						resourceType = ResourcePickerType.ALLEY,
+					)
+				},
+				onEditLanes = { alleyId, lanes, result ->
+					navController.navigateToResourcePickerForResult(
+						selectedIds = lanes,
+						navResultCallback = result,
+						resourceType = ResourcePickerType.LANE,
+						resourceParentId = alleyId,)
 				}
 			)
 			resourcePickerScreen(

@@ -14,6 +14,8 @@ interface SeriesRepository {
 	fun getSeriesList(leagueId: UUID, sortOrder: SeriesSortOrder): Flow<List<SeriesListItem>>
 	fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 
+	suspend fun setSeriesAlley(seriesId: UUID, alleyId: UUID?)
+
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
 	suspend fun archiveSeries(id: UUID)

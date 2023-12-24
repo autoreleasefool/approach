@@ -14,6 +14,8 @@ interface AlleysRepository {
 
 	fun getAlleyUpdate(id: UUID): Flow<AlleyUpdate>
 
+	fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetails?>
+
 	suspend fun insertAlley(alley: AlleyCreate)
 	suspend fun updateAlley(alley: AlleyUpdate)
 	suspend fun deleteAlley(id: UUID)

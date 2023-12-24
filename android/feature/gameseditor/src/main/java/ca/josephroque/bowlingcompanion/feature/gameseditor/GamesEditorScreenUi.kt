@@ -22,6 +22,8 @@ sealed interface GamesEditorScreenUiAction {
 	data object GameLockSnackBarDismissed: GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<UUID>): GamesEditorScreenUiAction
+	data class AlleyUpdated(val alleyId: UUID?): GamesEditorScreenUiAction
+	data class LanesUpdated(val laneIds: Set<UUID>): GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction): GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction): GamesEditorScreenUiAction
 }
@@ -31,6 +33,6 @@ sealed interface GamesEditorScreenEvent {
 
 	data class EditMatchPlay(val gameId: UUID): GamesEditorScreenEvent
 	data class EditGear(val gearIds: Set<UUID>): GamesEditorScreenEvent
-	data class EditAlley(val alleyId: UUID): GamesEditorScreenEvent
+	data class EditAlley(val alleyId: UUID?): GamesEditorScreenEvent
 	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>): GamesEditorScreenEvent
 }

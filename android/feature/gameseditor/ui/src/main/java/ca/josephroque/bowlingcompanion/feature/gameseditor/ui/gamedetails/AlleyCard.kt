@@ -72,7 +72,11 @@ internal fun AlleyCard(
 			}
 
 			state.selectedLanes.forEach { lane ->
-				LaneRow(lane = lane, modifier = Modifier.padding(vertical = 8.dp))
+				LaneRow(
+					label = lane.label,
+					position = lane.position,
+					modifier = Modifier.padding(vertical = 8.dp),
+				)
 			}
 		}
 	}

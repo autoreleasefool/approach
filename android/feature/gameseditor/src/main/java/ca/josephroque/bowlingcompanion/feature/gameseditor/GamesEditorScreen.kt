@@ -43,6 +43,8 @@ internal fun GamesEditorRoute(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (UUID) -> Unit,
 	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -59,6 +61,12 @@ internal fun GamesEditorRoute(
 						is GamesEditorScreenEvent.EditMatchPlay -> onEditMatchPlay(it.gameId)
 						is GamesEditorScreenEvent.EditGear -> onEditGear(it.gearIds) { ids ->
 							viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
+						}
+						is GamesEditorScreenEvent.EditAlley -> onEditAlley(it.alleyId) { ids ->
+							viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
+						}
+						is GamesEditorScreenEvent.EditLanes -> onEditLanes(it.alleyId, it.laneIds) { ids ->
+							viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
 						}
 					}
 				}
@@ -116,6 +124,7 @@ internal fun GamesEditorScreen(
 				onAction = { onAction(GamesEditorScreenUiAction.GamesEditor(it)) },
 			)
 		},
+		sheetSwipeEnabled = false,
 		sheetDragHandle = {
 			val dragHandleDescription = stringResource(R.string.bottom_sheet_drag_handle_description)
 			Surface(

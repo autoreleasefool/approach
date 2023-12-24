@@ -17,8 +17,14 @@ class OfflineFirstLanesRepository @Inject constructor(
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): LanesRepository {
+	override fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>> =
+		laneDao.getAlleyLanes(alleyId)
+
 	override fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>> =
 		laneDao.getLanes(ids)
+
+	override fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>> =
+		laneDao.getGameLanes(gameId)
 
 	override suspend fun insertLanes(lanes: List<LaneListItem>) {
 		laneDao.insertAll(lanes.map(LaneListItem::asEntity))

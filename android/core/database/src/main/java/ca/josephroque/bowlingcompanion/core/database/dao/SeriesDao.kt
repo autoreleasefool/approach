@@ -81,6 +81,9 @@ abstract class SeriesDao: LegacyMigratingDao<SeriesEntity> {
 	)
 	abstract fun getArchivedSeries(): Flow<List<ArchivedSeries>>
 
+	@Query("UPDATE series SET alley_id = :alleyId WHERE id = :seriesId")
+	abstract fun setSeriesAlley(seriesId: UUID, alleyId: UUID?)
+
 	@Insert(entity = SeriesEntity::class)
 	abstract fun insertSeries(series: SeriesCreateEntity)
 

@@ -3,7 +3,8 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
-import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
+import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
+import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
@@ -19,6 +20,7 @@ import javax.inject.Inject
 
 class OfflineFirstGamesRepository @Inject constructor(
 	private val gameDao: GameDao,
+	private val transactionRunner: TransactionRunner,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): GamesRepository {
 	override fun getGameDetails(gameId: UUID): Flow<GameEdit> =
@@ -54,6 +56,13 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override suspend fun setGameScore(gameId: UUID, score: Int) = withContext(ioDispatcher) {
 		gameDao.setGameScore(gameId, score)
+	}
+
+	override suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>) = withContext(ioDispatcher) {
+		transactionRunner {
+			gameDao.deleteGameLanes(gameId)
+			gameDao.insertGameLanes(lanes.map { GameLaneCrossRef(gameId, it) })
+		}
 	}
 
 	override suspend fun archiveGame(gameId: UUID) = withContext(ioDispatcher) {

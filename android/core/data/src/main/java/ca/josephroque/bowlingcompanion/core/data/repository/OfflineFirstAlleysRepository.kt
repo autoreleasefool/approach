@@ -37,6 +37,9 @@ class OfflineFirstAlleysRepository @Inject constructor(
 	override fun getAlleysList(): Flow<List<AlleyListItem>> =
 		alleyDao.getAlleysList()
 
+	override fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetails?> =
+		alleyDao.getGameAlleyDetails(gameId).map { it?.asModel() }
+
 	override fun getAlleyUpdate(id: UUID): Flow<AlleyUpdate> =
 		alleyDao.getAlleyUpdate(id).map { it.asModel() }
 
