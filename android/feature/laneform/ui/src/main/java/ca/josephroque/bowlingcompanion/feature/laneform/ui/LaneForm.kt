@@ -54,8 +54,8 @@ fun LaneForm(
 	) {
 		lanesList(
 			state.lanes,
-			onLaneClick = { LaneFormUiAction.LaneClicked(it) },
-			onLaneDelete = { LaneFormUiAction.LaneDeleted(it) },
+			onLaneClick = { onAction(LaneFormUiAction.LaneClicked(it)) },
+			onLaneDelete = { onAction(LaneFormUiAction.LaneDeleted(it)) },
 		)
 	}
 }
