@@ -32,8 +32,10 @@ class AlleyFormViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<AlleyFormScreenEvent>() {
-	private val alleyId = savedStateHandle.get<String>(ALLEY_ID)?.let {
-		UUID.fromString(it)
+	private val isEditing = savedStateHandle.get<String>(ALLEY_ID) != null
+	private val alleyId = savedStateHandle.get<String>(ALLEY_ID).let {
+		if (it == null) UUID.randomUUID().also { savedStateHandle[ALLEY_ID] = it.toString() }
+		else UUID.fromString(it)
 	}
 
 	private val _uiState: MutableStateFlow<AlleyFormScreenUiState> =
@@ -44,7 +46,7 @@ class AlleyFormViewModel @Inject constructor(
 		when (action) {
 			AlleyFormScreenUiAction.LoadAlley -> loadAlley()
 			is AlleyFormScreenUiAction.AlleyForm -> handleAlleyFormAction(action.action)
-			is AlleyFormScreenUiAction.LanesUpdated -> updateLanes(alleyId, lanes = action.lanes)
+			is AlleyFormScreenUiAction.LanesUpdated -> updateLanes(action.lanes)
 		}
 	}
 
@@ -82,7 +84,7 @@ class AlleyFormViewModel @Inject constructor(
 	private fun loadAlley() {
 		if (getFormUiState() != null) return
 		viewModelScope.launch {
-			val alley = alleyId?.let { alleysRepository.getAlleyUpdate(it).first() }
+			val alley = if (isEditing) alleysRepository.getAlleyUpdate(alleyId).first() else null
 			val uiState = if (alley == null) {
 				AlleyFormScreenUiState.Create(
 					form = AlleyFormUiState(
@@ -145,7 +147,7 @@ class AlleyFormViewModel @Inject constructor(
 				AlleyFormScreenUiState.Loading -> Unit
 				is AlleyFormScreenUiState.Create -> if (state.isSavable()) {
 					val alley = AlleyCreate(
-						id = alleyId ?: UUID.randomUUID(),
+						id = alleyId,
 						name = state.form.name,
 						material = state.form.material,
 						pinFall = state.form.pinFall,
@@ -168,6 +170,7 @@ class AlleyFormViewModel @Inject constructor(
 				is AlleyFormScreenUiState.Edit -> if (state.isSavable()) {
 					val alley = state.form.updatedModel(existing = state.initialValue)
 					alleysRepository.updateAlley(alley)
+					lanesRepository.setAlleyLanes(alleyId, alley.lanes)
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
 				} else {
@@ -181,12 +184,10 @@ class AlleyFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun updateLanes(alleyId: UUID?, lanes: List<UUID>) {
+	private fun updateLanes(lanes: List<UUID>) {
 		val state = getFormUiState() ?: return
-		alleyId ?: return
 		viewModelScope.launch {
 			val alleyLanes = lanesRepository.getLanes(lanes).first()
-			lanesRepository.setAlleyLanes(alleyId, alleyLanes)
 			setFormUiState(state.copy(lanes = alleyLanes))
 		}
 	}

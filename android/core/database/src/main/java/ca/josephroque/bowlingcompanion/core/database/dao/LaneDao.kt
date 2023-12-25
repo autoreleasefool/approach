@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
@@ -55,6 +56,6 @@ abstract class LaneDao {
 	@Query("DELETE FROM lanes WHERE alley_id = :alleyId")
 	abstract fun deleteAlleyLanes(alleyId: UUID)
 
-	@Insert
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract fun insertAll(lanes: List<LaneEntity>)
 }

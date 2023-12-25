@@ -22,7 +22,7 @@ import java.util.UUID
 )
 data class LaneEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
-	@ColumnInfo(name = "alley_id", index = true, defaultValue = "NULL") val alleyId: UUID?,
+	@ColumnInfo(name = "alley_id", index = true) val alleyId: UUID?,
 	@ColumnInfo(name = "label") val label: String,
 	@ColumnInfo(name = "position") val position: LanePosition,
 )
