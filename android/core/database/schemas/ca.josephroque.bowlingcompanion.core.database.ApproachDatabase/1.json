@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "80a3312086226e4a0fc1d24fde8f1d90",
+    "identityHash": "47f59e32b0e248651178d53f5ed098c6",
     "entities": [
       {
         "tableName": "bowlers",
@@ -581,7 +581,7 @@
       },
       {
         "tableName": "lanes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `alley_id` BLOB DEFAULT NULL, `label` TEXT NOT NULL, `position` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `alley_id` BLOB, `label` TEXT NOT NULL, `position` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`alley_id`) REFERENCES `alleys`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -593,8 +593,7 @@
             "fieldPath": "alleyId",
             "columnName": "alley_id",
             "affinity": "BLOB",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "label",
@@ -1501,7 +1500,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '80a3312086226e4a0fc1d24fde8f1d90')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47f59e32b0e248651178d53f5ed098c6')"
     ]
   }
 }
