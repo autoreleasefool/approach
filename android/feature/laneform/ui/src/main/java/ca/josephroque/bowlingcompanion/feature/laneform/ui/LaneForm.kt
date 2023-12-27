@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.Tip
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
@@ -34,6 +35,13 @@ fun LaneForm(
 	state: LaneFormUiState,
 	onAction: (LaneFormUiAction) -> Unit,
 ) {
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(LaneFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(LaneFormUiAction.CancelDiscardChangesClicked) },
+		)
+	}
+
 	state.laneLabel?.let { dialog ->
 		LaneLabelDialog(
 			state = dialog,

@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -64,9 +65,11 @@ class LaneFormViewModel @Inject constructor(
 
 	private fun handleLaneFormAction(action: LaneFormUiAction) {
 		when (action) {
-			LaneFormUiAction.BackClicked -> sendEvent(LaneFormScreenEvent.DismissedWithResult(existingLaneIds))
+			LaneFormUiAction.BackClicked -> handleBackClicked()
 			LaneFormUiAction.DoneClicked -> saveLanes()
 			LaneFormUiAction.SwipeToEditTipDismissed -> dismissSwipeToEditTip()
+			LaneFormUiAction.DiscardChangesClicked -> dismissForm()
+			LaneFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is LaneFormUiAction.AddLanesClicked -> showAddLanesDialog()
 			is LaneFormUiAction.LaneClicked -> showLaneLabelDialog(action.lane.id)
 			is LaneFormUiAction.LaneDeleted -> deleteLane(action.lane.id)
@@ -95,14 +98,36 @@ class LaneFormViewModel @Inject constructor(
 		}
 	}
 
+	private fun dismissForm() {
+		sendEvent(LaneFormScreenEvent.DismissedWithResult(existingLaneIds))
+	}
+
 	private fun loadLanes() {
 		viewModelScope.launch {
 			val existingLanes = lanesRepository.getLanes(existingLaneIds).first()
 
 			_form.value = LaneFormUiState(
+				existingLanes = existingLanes,
 				lanes = existingLanes,
 				addLanes = null,
 				laneLabel = null,
+				isShowingDiscardChangesDialog = false,
+			)
+		}
+	}
+
+	private fun handleBackClicked() {
+		if (_form.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			dismissForm()
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		_form.update {
+			it.copy(
+				isShowingDiscardChangesDialog = isVisible,
 			)
 		}
 	}
