@@ -48,9 +48,6 @@ fun LaneForm(
 		)
 	}
 
-	// TODO: add description on how to edit lanes
-	// TODO: add swipe to lanes to edit
-
 	LazyColumn(
 		modifier = Modifier.fillMaxSize(),
 	) {
