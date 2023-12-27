@@ -4,15 +4,19 @@ import androidx.annotation.StringRes
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 
 data class BowlerFormUiState(
-	val name: String,
-	@StringRes val nameErrorId: Int?,
-	val isShowingArchiveDialog: Boolean,
-	val isArchiveButtonEnabled: Boolean,
+	val name: String = "",
+	@StringRes val nameErrorId: Int? = null,
+	val isShowingArchiveDialog: Boolean = false,
+	val isArchiveButtonEnabled: Boolean = false,
+	val isShowingDiscardChangesDialog: Boolean = false,
 )
 
 sealed interface BowlerFormUiAction {
 	data object BackClicked: BowlerFormUiAction
 	data object DoneClicked: BowlerFormUiAction
+
+	data object DiscardChangesClicked: BowlerFormUiAction
+	data object CancelDiscardChangesClicked: BowlerFormUiAction
 
 	data object ArchiveClicked: BowlerFormUiAction
 	data object ConfirmArchiveClicked: BowlerFormUiAction

@@ -40,7 +40,7 @@ class BowlerFormViewModel @Inject constructor(
 	private val kind = savedStateHandle.get<String>(BOWLER_KIND).let { string ->
 		BowlerKind.entries
 			.firstOrNull { it.name == string }
-	}
+	} ?: BowlerKind.PLAYABLE
 
 	fun handleAction(action: BowlerFormScreenUiAction) {
 		when (action) {
@@ -51,8 +51,10 @@ class BowlerFormViewModel @Inject constructor(
 
 	private fun handleBowlerFormAction(action: BowlerFormUiAction) {
 		when (action) {
-			BowlerFormUiAction.BackClicked -> sendEvent(BowlerFormScreenEvent.Dismissed)
+			BowlerFormUiAction.BackClicked -> handleBackClicked()
 			BowlerFormUiAction.DoneClicked -> saveBowler()
+			BowlerFormUiAction.DiscardChangesClicked -> sendEvent(BowlerFormScreenEvent.Dismissed)
+			BowlerFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			BowlerFormUiAction.ArchiveClicked -> setArchiveBowlerPrompt(isVisible = true)
 			BowlerFormUiAction.ConfirmArchiveClicked -> archiveBowler()
 			BowlerFormUiAction.DismissArchiveClicked -> setArchiveBowlerPrompt(isVisible = false)
@@ -80,15 +82,10 @@ class BowlerFormViewModel @Inject constructor(
 			if (bowlerId == null) {
 				_uiState.value = BowlerFormScreenUiState.Create(
 					topBar = BowlerFormTopBarUiState(
-						kind = kind ?: BowlerKind.PLAYABLE,
+						kind = kind,
 						existingName = null,
 					),
-					form = BowlerFormUiState(
-						name = "",
-						nameErrorId = null,
-						isShowingArchiveDialog = false,
-						isArchiveButtonEnabled = false,
-					)
+					form = BowlerFormUiState(),
 				)
 			} else {
 				val bowler = bowlersRepository.getBowlerDetails(bowlerId)
@@ -109,10 +106,26 @@ class BowlerFormViewModel @Inject constructor(
 						nameErrorId = null,
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = true,
+						isShowingDiscardChangesDialog = false,
 					),
 				)
 			}
 		}
+	}
+
+	private fun handleBackClicked() {
+		if (_uiState.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			sendEvent(BowlerFormScreenEvent.Dismissed)
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			isShowingDiscardChangesDialog = isVisible,
+		))
 	}
 
 	private fun updateName(name: String) {
@@ -151,7 +164,7 @@ class BowlerFormViewModel @Inject constructor(
 						val bowler = BowlerCreate(
 							id = bowlerId ?: UUID.randomUUID(),
 							name = state.form.name,
-							kind = kind ?: BowlerKind.PLAYABLE,
+							kind = kind,
 						)
 
 						bowlersRepository.insertBowler(bowler)
@@ -166,7 +179,7 @@ class BowlerFormViewModel @Inject constructor(
 					}
 				is BowlerFormScreenUiState.Edit ->
 					if (state.isSavable()) {
-						val bowler = state.form.update(id = state.initialValue.id)
+						val bowler = state.form.updatedModel(id = state.initialValue.id)
 						bowlersRepository.updateBowler(bowler)
 						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)

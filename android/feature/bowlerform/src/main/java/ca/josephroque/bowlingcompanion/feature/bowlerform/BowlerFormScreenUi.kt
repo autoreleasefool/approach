@@ -7,14 +7,23 @@ import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiState
 import java.util.UUID
 
 sealed interface BowlerFormScreenUiState {
-	data object Loading: BowlerFormScreenUiState
+	fun hasAnyChanges(): Boolean
+	fun isSavable(): Boolean
+
+	data object Loading: BowlerFormScreenUiState {
+		override fun hasAnyChanges(): Boolean = false
+		override fun isSavable(): Boolean = false
+	}
 
 	data class Create(
 		val form: BowlerFormUiState,
 		val topBar: BowlerFormTopBarUiState,
 	): BowlerFormScreenUiState {
-		fun isSavable(): Boolean =
+		override fun isSavable(): Boolean =
 			form.name.isNotBlank()
+
+		override fun hasAnyChanges(): Boolean =
+			form != BowlerFormUiState()
 	}
 
 	data class Edit(
@@ -22,12 +31,15 @@ sealed interface BowlerFormScreenUiState {
 		val form: BowlerFormUiState,
 		val topBar: BowlerFormTopBarUiState,
 	): BowlerFormScreenUiState {
-		fun isSavable(): Boolean =
-			form.name.isNotBlank() && form.update(id = initialValue.id) != initialValue
+		override fun isSavable(): Boolean =
+			form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
+
+		override fun hasAnyChanges(): Boolean =
+			form.updatedModel(id = initialValue.id) != initialValue
 	}
 }
 
-fun BowlerFormUiState.update(id: UUID): BowlerUpdate = BowlerUpdate(
+fun BowlerFormUiState.updatedModel(id: UUID): BowlerUpdate = BowlerUpdate(
 	id = id,
 	name = name,
 )
