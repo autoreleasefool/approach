@@ -5,6 +5,8 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.ui.IncludeAdditionalPi
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 sealed interface LeagueFormScreenUiState {
@@ -63,4 +65,16 @@ sealed interface LeagueFormScreenUiAction {
 
 sealed interface LeagueFormScreenEvent {
 	data object Dismissed: LeagueFormScreenEvent
+}
+
+fun MutableStateFlow<LeagueFormScreenUiState>.updateForm(
+	function: (LeagueFormUiState) -> LeagueFormUiState,
+) {
+	this.update { state ->
+		when (state) {
+			LeagueFormScreenUiState.Loading -> state
+			is LeagueFormScreenUiState.Create -> state.copy(form = function(state.form))
+			is LeagueFormScreenUiState.Edit -> state.copy(form = function(state.form))
+		}
+	}
 }

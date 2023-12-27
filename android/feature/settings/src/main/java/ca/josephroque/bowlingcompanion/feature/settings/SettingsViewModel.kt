@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,9 +57,6 @@ class SettingsViewModel @Inject constructor(
 	}
 
 	private fun updateVersionInfo(versionName: String, versionCode: String) {
-		_settingsState.value = _settingsState.value.copy(
-			versionName = versionName,
-			versionCode = versionCode,
-		)
+		_settingsState.update { it.copy(versionName = versionName, versionCode = versionCode) }
 	}
 }

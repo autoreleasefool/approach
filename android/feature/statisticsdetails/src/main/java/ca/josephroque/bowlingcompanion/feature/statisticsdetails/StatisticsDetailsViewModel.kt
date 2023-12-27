@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -166,10 +167,12 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private fun toggleAggregation(newValue: Boolean) {
-		_filter.value = _filter.value.copy(aggregation = when (newValue) {
-			true -> TrackableFilter.AggregationFilter.ACCUMULATE
-			false -> TrackableFilter.AggregationFilter.PERIODIC
-		})
+		_filter.update {
+			it.copy(aggregation = when (newValue) {
+				true -> TrackableFilter.AggregationFilter.ACCUMULATE
+				false -> TrackableFilter.AggregationFilter.PERIODIC
+			})
+		}
 	}
 }
 

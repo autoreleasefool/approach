@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.statisticpick
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,11 +46,13 @@ class StatisticPickerViewModel @Inject constructor(
 				sendEvent(StatisticPickerScreenEvent.Dismissed(_initiallySelectedStatisticTitle))
 			}
 			is StatisticPickerUiAction.StatisticClicked -> {
-				_uiState.value = _uiState.value.copy(
-					statisticPicker = _uiState.value.statisticPicker.copy(
-						selectedStatistic = action.statistic,
+				_uiState.update {
+					it.copy(
+						statisticPicker = it.statisticPicker.copy(
+							selectedStatistic = action.statistic,
+						)
 					)
-				)
+				}
 				sendEvent(StatisticPickerScreenEvent.Dismissed(action.statistic.id))
 			}
 		}

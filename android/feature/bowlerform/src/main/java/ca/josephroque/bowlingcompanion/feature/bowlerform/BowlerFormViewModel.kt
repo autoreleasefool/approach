@@ -33,6 +33,9 @@ class BowlerFormViewModel @Inject constructor(
 		MutableStateFlow(BowlerFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
+	private val hasLoadedInitialState: Boolean
+		get() = _uiState.value !is BowlerFormScreenUiState.Loading
+
 	private val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
 		UUID.fromString(it)
 	}
@@ -62,22 +65,8 @@ class BowlerFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun getFormUiState(): BowlerFormUiState? =
-		when (val state = _uiState.value) {
-			BowlerFormScreenUiState.Loading -> null
-			is BowlerFormScreenUiState.Create -> state.form
-			is BowlerFormScreenUiState.Edit -> state.form
-		}
-
-	private fun setFormUiState(state: BowlerFormUiState) {
-		when (val uiState = _uiState.value) {
-			BowlerFormScreenUiState.Loading -> Unit
-			is BowlerFormScreenUiState.Create -> _uiState.value = uiState.copy(form = state)
-			is BowlerFormScreenUiState.Edit -> _uiState.value = uiState.copy(form = state)
-		}
-	}
-
 	private fun loadBowler() {
+		if (hasLoadedInitialState) return
 		viewModelScope.launch {
 			if (bowlerId == null) {
 				_uiState.value = BowlerFormScreenUiState.Create(
@@ -122,34 +111,28 @@ class BowlerFormViewModel @Inject constructor(
 	}
 
 	private fun setDiscardChangesDialog(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingDiscardChangesDialog = isVisible,
-		))
+		_uiState.updateForm {
+			it.copy(isShowingDiscardChangesDialog = isVisible)
+		}
 	}
 
 	private fun updateName(name: String) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			name = name,
-			nameErrorId = null,
-		))
+		_uiState.updateForm {
+			it.copy(name = name, nameErrorId = null)
+		}
 	}
 
 	private fun setArchiveBowlerPrompt(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingArchiveDialog = isVisible,
-		))
+		_uiState.updateForm {
+			it.copy(isShowingArchiveDialog = isVisible)
+		}
 	}
 
 	private fun archiveBowler() {
-		val formState = getFormUiState() ?: return
 		when (val state = _uiState.value) {
 			BowlerFormScreenUiState.Loading, is BowlerFormScreenUiState.Create -> Unit
 			is BowlerFormScreenUiState.Edit -> viewModelScope.launch {
 				bowlersRepository.archiveBowler(state.initialValue.id)
-				setFormUiState(state = formState.copy(isShowingArchiveDialog = false))
 				sendEvent(BowlerFormScreenEvent.Dismissed)
 			}
 		}
@@ -171,11 +154,11 @@ class BowlerFormViewModel @Inject constructor(
 						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)
 					} else {
-						_uiState.value = state.copy(
-							form = state.form.copy(
-								nameErrorId = if (state.form.name.isBlank()) R.string.bowler_form_name_missing else null
+						_uiState.updateForm { form ->
+							form.copy(
+								nameErrorId = if (form.name.isBlank()) R.string.bowler_form_name_missing else null
 							)
-						)
+						}
 					}
 				is BowlerFormScreenUiState.Edit ->
 					if (state.isSavable()) {
@@ -184,11 +167,11 @@ class BowlerFormViewModel @Inject constructor(
 						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)
 					} else {
-						_uiState.value = state.copy(
-							form = state.form.copy(
-								nameErrorId = if (state.form.name.isBlank()) R.string.bowler_form_name_missing else null
+						_uiState.updateForm { form ->
+							form.copy(
+								nameErrorId = if (form.name.isBlank()) R.string.bowler_form_name_missing else null
 							)
-						)
+						}
 					}
 			}
 		}

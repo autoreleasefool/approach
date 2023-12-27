@@ -4,6 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 sealed interface BowlerFormScreenUiState {
@@ -53,4 +55,16 @@ sealed interface BowlerFormScreenUiAction {
 
 sealed interface BowlerFormScreenEvent {
 	data object Dismissed: BowlerFormScreenEvent
+}
+
+fun MutableStateFlow<BowlerFormScreenUiState>.updateForm(
+	function: (BowlerFormUiState) -> BowlerFormUiState,
+) {
+	this.update { state ->
+		when (state) {
+			BowlerFormScreenUiState.Loading -> state
+			is BowlerFormScreenUiState.Create -> state.copy(form = function(state.form))
+			is BowlerFormScreenUiState.Edit -> state.copy(form = function(state.form))
+		}
+	}
 }

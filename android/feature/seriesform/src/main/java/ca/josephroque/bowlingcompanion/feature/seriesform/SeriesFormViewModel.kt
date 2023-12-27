@@ -40,6 +40,9 @@ class SeriesFormViewModel @Inject constructor(
 		MutableStateFlow(SeriesFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
+	private val hasLoadedInitialState: Boolean
+		get() = _uiState.value !is SeriesFormScreenUiState.Loading
+
 	private val leagueId = savedStateHandle.get<String>(LEAGUE_ID)?.let {
 		UUID.fromString(it)
 	}
@@ -63,7 +66,7 @@ class SeriesFormViewModel @Inject constructor(
 			SeriesFormUiAction.ArchiveClicked -> setArchiveSeriesPrompt(isVisible = true)
 			SeriesFormUiAction.ConfirmArchiveClicked -> archiveSeries()
 			SeriesFormUiAction.DismissArchiveClicked -> setArchiveSeriesPrompt(isVisible = false)
-			SeriesFormUiAction.AlleyClicked -> sendEvent(SeriesFormScreenEvent.EditAlley(alleyId = getFormUiState()?.alley?.id))
+			SeriesFormUiAction.AlleyClicked -> editAlley()
 			SeriesFormUiAction.DateClicked -> setDatePicker(isVisible = true)
 			SeriesFormUiAction.DatePickerDismissed -> setDatePicker(isVisible = false)
 			SeriesFormUiAction.DiscardChangesClicked -> dismiss()
@@ -75,23 +78,9 @@ class SeriesFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun getFormUiState(): SeriesFormUiState? =
-		when (val uiState = uiState.value) {
-			is SeriesFormScreenUiState.Create -> uiState.form
-			is SeriesFormScreenUiState.Edit -> uiState.form
-			else -> null
-		}
-
-	private fun setFormUiState(state: SeriesFormUiState) {
-		when (val uiState = uiState.value) {
-			is SeriesFormScreenUiState.Create -> _uiState.value = uiState.copy(form = state)
-			is SeriesFormScreenUiState.Edit -> _uiState.value = uiState.copy(form = state)
-			else -> Unit
-		}
-	}
-
 	private fun loadSeries() {
-		if (getFormUiState() != null) return
+		if (hasLoadedInitialState) return
+
 		viewModelScope.launch {
 			val series = seriesId?.let { seriesRepository.getSeriesDetails(it).first() }
 			val league = (leagueId ?: series?.properties?.leagueId)?.let { leaguesRepository.getLeagueDetails(it).first() } ?: return@launch
@@ -145,12 +134,19 @@ class SeriesFormViewModel @Inject constructor(
 		}
 	}
 
+	private fun editAlley() {
+		sendEvent(SeriesFormScreenEvent.EditAlley(alleyId = when (val state = _uiState.value) {
+			SeriesFormScreenUiState.Loading -> return
+			is SeriesFormScreenUiState.Create -> state.form.alley?.id
+			is SeriesFormScreenUiState.Edit -> state.form.alley?.id
+		}))
+	}
+
 	private fun updateAlley(alleyId: UUID?) {
-		// FIXME: prevent other form updates while alley is loading
-		val uiState = getFormUiState() ?: return
+		if (!hasLoadedInitialState) return
 		viewModelScope.launch {
 			val alleyDetails = alleyId?.let { alleysRepository.getAlleyDetails(it).first() }
-			setFormUiState(uiState.copy(alley = alleyDetails))
+			_uiState.updateForm { it.copy(alley = alleyDetails) }
 		}
 	}
 
@@ -163,24 +159,18 @@ class SeriesFormViewModel @Inject constructor(
 	}
 
 	private fun setDiscardChangesDialog(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingDiscardChangesDialog = isVisible,
-		))
+		_uiState.updateForm { it.copy(isShowingDiscardChangesDialog = isVisible) }
 	}
 
 	private fun setDatePicker(isVisible: Boolean) {
-		val uiState = getFormUiState() ?: return
-		setFormUiState(uiState.copy(isDatePickerVisible = isVisible))
+		_uiState.updateForm { it.copy(isDatePickerVisible = isVisible) }
 	}
 
 	private fun setArchiveSeriesPrompt(isVisible: Boolean) {
-		val uiState = getFormUiState() ?: return
-		setFormUiState(uiState.copy(isShowingArchiveDialog = isVisible))
+		_uiState.updateForm { it.copy(isShowingArchiveDialog = isVisible) }
 	}
 
 	private fun archiveSeries() {
-		val formState = getFormUiState() ?: return
 		viewModelScope.launch {
 			val series = when (val uiState = _uiState.value) {
 				SeriesFormScreenUiState.Loading -> return@launch
@@ -189,34 +179,30 @@ class SeriesFormViewModel @Inject constructor(
 			}
 
 			seriesRepository.archiveSeries(series.id)
-			setFormUiState(state = formState.copy(isShowingArchiveDialog = false))
 			dismiss()
 		}
 	}
 
 	private fun updateDate(date: LocalDate) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(date = date))
-		setDatePicker(isVisible = false)
+		_uiState.updateForm { it.copy(date = date, isDatePickerVisible = false) }
 	}
 
 	private fun updatePreBowl(preBowl: SeriesPreBowl) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(preBowl = preBowl))
+		_uiState.updateForm { it.copy(preBowl = preBowl) }
 	}
 
 	private fun updateExcludeFromStatistics(excludeFromStatistics: ExcludeFromStatistics) {
-		val state = getFormUiState() ?: return
-		when {
-			state.leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> return
-			state.preBowl == SeriesPreBowl.PRE_BOWL -> return
+		_uiState.updateForm {
+			when {
+				it.leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> return@updateForm it
+				it.preBowl == SeriesPreBowl.PRE_BOWL -> return@updateForm it
+			}
+			it.copy(excludeFromStatistics = excludeFromStatistics)
 		}
-		setFormUiState(state.copy(excludeFromStatistics = excludeFromStatistics))
 	}
 
 	private fun updateNumberOfGames(numberOfGames: Int) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange)))
+		_uiState.updateForm { it.copy(numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange)) }
 	}
 
 	private fun saveSeries() {

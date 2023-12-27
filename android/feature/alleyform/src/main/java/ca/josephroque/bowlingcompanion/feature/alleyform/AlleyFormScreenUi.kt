@@ -4,6 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 sealed interface AlleyFormScreenUiState {
@@ -60,4 +62,16 @@ sealed interface AlleyFormScreenEvent {
 	data object Dismissed: AlleyFormScreenEvent
 
 	data class ManageLanes(val existingLanes: List<UUID>): AlleyFormScreenEvent
+}
+
+fun MutableStateFlow<AlleyFormScreenUiState>.updateForm(
+	function: (AlleyFormUiState) -> AlleyFormUiState,
+) {
+	this.update { state ->
+		when (state) {
+			AlleyFormScreenUiState.Loading -> state
+			is AlleyFormScreenUiState.Create -> state.copy(form = function(state.form))
+			is AlleyFormScreenUiState.Edit -> state.copy(form = function(state.form))
+		}
+	}
 }

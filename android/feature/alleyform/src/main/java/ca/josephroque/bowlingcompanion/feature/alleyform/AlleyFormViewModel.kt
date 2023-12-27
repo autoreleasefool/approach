@@ -42,6 +42,9 @@ class AlleyFormViewModel @Inject constructor(
 		MutableStateFlow(AlleyFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
+	private val hasLoadedInitialState: Boolean
+		get() = _uiState.value !is AlleyFormScreenUiState.Loading
+
 	fun handleAction(action: AlleyFormScreenUiAction) {
 		when (action) {
 			AlleyFormScreenUiAction.LoadAlley -> loadAlley()
@@ -68,23 +71,8 @@ class AlleyFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun getFormUiState(): AlleyFormUiState? =
-		when (val state = _uiState.value) {
-			AlleyFormScreenUiState.Loading -> null
-			is AlleyFormScreenUiState.Create -> state.form
-			is AlleyFormScreenUiState.Edit -> state.form
-		}
-
-	private fun setFormUiState(state: AlleyFormUiState) {
-		when (val uiState = _uiState.value) {
-			AlleyFormScreenUiState.Loading -> Unit
-			is AlleyFormScreenUiState.Create -> _uiState.value = uiState.copy(form = state)
-			is AlleyFormScreenUiState.Edit -> _uiState.value = uiState.copy(form = state)
-		}
-	}
-
 	private fun loadAlley() {
-		if (getFormUiState() != null) return
+		if (hasLoadedInitialState) return
 		viewModelScope.launch {
 			val alley = if (isEditing) alleysRepository.getAlleyUpdate(alleyId).first() else null
 			val uiState = if (alley == null) {
@@ -128,14 +116,10 @@ class AlleyFormViewModel @Inject constructor(
 	}
 
 	private fun setDiscardChangesDialog(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingDiscardChangesDialog = isVisible,
-		))
+		_uiState.updateForm { it.copy(isShowingDiscardChangesDialog = isVisible) }
 	}
 
 	private fun deleteAlley() {
-		val formState = getFormUiState() ?: return
 		viewModelScope.launch {
 			val alley = when (val uiState = _uiState.value) {
 				AlleyFormScreenUiState.Loading -> return@launch
@@ -144,7 +128,6 @@ class AlleyFormViewModel @Inject constructor(
 			}
 
 			alleysRepository.deleteAlley(alley.id)
-			setFormUiState(state = formState.copy(isShowingDeleteDialog = false))
 			sendEvent(AlleyFormScreenEvent.Dismissed)
 		}
 	}
@@ -169,11 +152,11 @@ class AlleyFormViewModel @Inject constructor(
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
 				} else {
-					_uiState.value = state.copy(
-						form = state.form.copy(
-							nameErrorId = if (state.form.name.isBlank()) R.string.alley_form_property_name_missing else null,
-						),
-					)
+					_uiState.updateForm {
+						it.copy(
+							nameErrorId = if (it.name.isBlank()) R.string.alley_form_property_name_missing else null,
+						)
+					}
 				}
 				is AlleyFormScreenUiState.Edit -> if (state.isSavable()) {
 					val alley = state.form.updatedModel(existing = state.initialValue)
@@ -182,59 +165,52 @@ class AlleyFormViewModel @Inject constructor(
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
 				} else {
-					_uiState.value = state.copy(
-						form = state.form.copy(
-							nameErrorId = if (state.form.name.isBlank()) R.string.alley_form_property_name_missing else null,
-						),
-					)
+					_uiState.updateForm {
+						it.copy(
+							nameErrorId = if (it.name.isBlank()) R.string.alley_form_property_name_missing else null,
+						)
+					}
 				}
 			}
 		}
 	}
 
 	private fun updateLanes(lanes: List<UUID>) {
-		val state = getFormUiState() ?: return
 		viewModelScope.launch {
 			val alleyLanes = lanesRepository.getLanes(lanes).first()
-			setFormUiState(state.copy(lanes = alleyLanes))
+			_uiState.updateForm { it.copy(lanes = alleyLanes) }
 		}
 	}
 
 	private fun manageLanes() {
-		val state = getFormUiState() ?: return
-		sendEvent(AlleyFormScreenEvent.ManageLanes(existingLanes = state.lanes.map(LaneListItem::id)))
+		sendEvent(AlleyFormScreenEvent.ManageLanes(existingLanes = when (val state = _uiState.value) {
+			AlleyFormScreenUiState.Loading -> return
+			is AlleyFormScreenUiState.Create -> state.form.lanes.map(LaneListItem::id)
+			is AlleyFormScreenUiState.Edit -> state.form.lanes.map(LaneListItem::id)
+		}))
 	}
 
 	private fun updateName(name: String) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			name = name,
-			nameErrorId = null,
-		))
+		_uiState.updateForm { it.copy(name = name, nameErrorId = null) }
 	}
 
 	private fun updateMaterial(material: AlleyMaterial?) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(material = material))
+		_uiState.updateForm { it.copy(material = material) }
 	}
 
 	private fun updateMechanism(mechanism: AlleyMechanism?) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(mechanism = mechanism))
+		_uiState.updateForm { it.copy(mechanism = mechanism) }
 	}
 
 	private fun updatePinBase(pinBase: AlleyPinBase?) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(pinBase = pinBase))
+		_uiState.updateForm { it.copy(pinBase = pinBase) }
 	}
 
 	private fun updatePinFall(pinFall: AlleyPinFall?) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(pinFall = pinFall))
+		_uiState.updateForm { it.copy(pinFall = pinFall) }
 	}
 
 	private fun setDeleteAlleyPrompt(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(isShowingDeleteDialog = isVisible))
+		_uiState.updateForm { it.copy(isShowingDeleteDialog = isVisible) }
 	}
 }
