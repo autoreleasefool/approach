@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gearform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -19,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -69,6 +71,10 @@ private fun GearFormScreen(
 ) {
 	LaunchedEffect(Unit) {
 		onAction(GearFormScreenUiAction.LoadGear)
+	}
+
+	BackHandler {
+		onAction(GearFormScreenUiAction.GearFormAction(GearFormUiAction.BackClicked))
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()

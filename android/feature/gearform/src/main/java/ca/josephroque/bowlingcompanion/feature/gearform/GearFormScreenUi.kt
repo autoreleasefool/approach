@@ -8,14 +8,23 @@ import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
 import java.util.UUID
 
 sealed interface GearFormScreenUiState {
-	data object Loading: GearFormScreenUiState
+	fun hasAnyChanges(): Boolean
+	fun isSavable(): Boolean
+
+	data object Loading: GearFormScreenUiState {
+		override fun hasAnyChanges(): Boolean = false
+		override fun isSavable(): Boolean = false
+	}
 
 	data class Create(
 		val form: GearFormUiState,
 		val topBar: GearFormTopBarUiState,
 	): GearFormScreenUiState {
-		fun isSavable(): Boolean =
+		override fun isSavable(): Boolean =
 			form.name.isNotBlank()
+
+		override fun hasAnyChanges(): Boolean =
+			form != GearFormUiState()
 	}
 
 	data class Edit(
@@ -23,8 +32,11 @@ sealed interface GearFormScreenUiState {
 		val form: GearFormUiState,
 		val topBar: GearFormTopBarUiState,
 	): GearFormScreenUiState {
-		fun isSavable(): Boolean =
+		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
+
+		override fun hasAnyChanges(): Boolean =
+			form.updatedModel(existing = initialValue) != initialValue
 	}
 }
 
