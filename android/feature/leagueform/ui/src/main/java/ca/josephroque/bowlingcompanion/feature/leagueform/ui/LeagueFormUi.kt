@@ -19,17 +19,18 @@ data class LeagueFormTopBarUiState(
 )
 
 data class LeagueFormUiState(
-	val name: String,
-	@StringRes val nameErrorId: Int?,
-	val excludeFromStatistics: ExcludeFromStatistics,
-	val includeAdditionalPinFall: IncludeAdditionalPinFall,
-	val additionalPinFall: Int,
-	val additionalGames: Int,
-	val recurrence: LeagueRecurrence? = null,
-	val numberOfGames: Int? = null,
-	val gamesPerSeries: GamesPerSeries? = null,
-	val isShowingArchiveDialog: Boolean,
-	val isArchiveButtonEnabled: Boolean,
+	val name: String = "",
+	@StringRes val nameErrorId: Int? = null,
+	val excludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+	val includeAdditionalPinFall: IncludeAdditionalPinFall = IncludeAdditionalPinFall.NONE,
+	val additionalPinFall: Int = 0,
+	val additionalGames: Int = 0,
+	val recurrence: LeagueRecurrence? = LeagueRecurrence.REPEATING,
+	val numberOfGames: Int? = 4,
+	val gamesPerSeries: GamesPerSeries? = GamesPerSeries.DYNAMIC,
+	val isShowingArchiveDialog: Boolean = false,
+	val isArchiveButtonEnabled: Boolean = false,
+	val isShowingDiscardChangesDialog: Boolean = false,
 )
 
 sealed interface LeagueFormUiAction {
@@ -39,6 +40,9 @@ sealed interface LeagueFormUiAction {
 	data object ArchiveClicked: LeagueFormUiAction
 	data object ConfirmArchiveClicked: LeagueFormUiAction
 	data object DismissArchiveClicked: LeagueFormUiAction
+
+	data object DiscardChangesClicked: LeagueFormUiAction
+	data object CancelDiscardChangesClicked: LeagueFormUiAction
 
 	data class NameChanged(val name: String): LeagueFormUiAction
 	data class RecurrenceChanged(val recurrence: LeagueRecurrence): LeagueFormUiAction

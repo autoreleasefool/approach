@@ -54,8 +54,10 @@ class LeagueFormViewModel @Inject constructor(
 
 	private fun handleLeagueFormAction(action: LeagueFormUiAction) {
 		when (action) {
-			LeagueFormUiAction.BackClicked -> sendEvent(LeagueFormScreenEvent.Dismissed)
+			LeagueFormUiAction.BackClicked -> handleBackClicked()
 			LeagueFormUiAction.DoneClicked -> saveLeague()
+			LeagueFormUiAction.DiscardChangesClicked -> sendEvent(LeagueFormScreenEvent.Dismissed)
+			LeagueFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is LeagueFormUiAction.NameChanged -> updateName(action.name)
 			is LeagueFormUiAction.RecurrenceChanged -> updateRecurrence(action.recurrence)
 			is LeagueFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(action.excludeFromStatistics)
@@ -95,19 +97,7 @@ class LeagueFormViewModel @Inject constructor(
 					topBar = LeagueFormTopBarUiState(
 						existingName = null,
 					),
-					form = LeagueFormUiState(
-						name = "",
-						nameErrorId = null,
-						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-						includeAdditionalPinFall = IncludeAdditionalPinFall.NONE,
-						additionalPinFall = 0,
-						additionalGames = 0,
-						recurrence = LeagueRecurrence.REPEATING,
-						numberOfGames = 4,
-						gamesPerSeries = GamesPerSeries.DYNAMIC,
-						isShowingArchiveDialog = false,
-						isArchiveButtonEnabled = false,
-					),
+					form = LeagueFormUiState(),
 				)
 			} else {
 				val league = leaguesRepository.getLeagueDetails(leagueId)
@@ -139,6 +129,7 @@ class LeagueFormViewModel @Inject constructor(
 						gamesPerSeries = null,
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = true,
+						isShowingDiscardChangesDialog = false,
 					),
 				)
 			}
@@ -191,7 +182,7 @@ class LeagueFormViewModel @Inject constructor(
 					}
 				is LeagueFormScreenUiState.Edit ->
 					if (state.isSavable()) {
-						val league = state.form.update(id = state.initialValue.id)
+						val league = state.form.updatedModel(id = state.initialValue.id)
 						leaguesRepository.updateLeague(league)
 						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
@@ -204,6 +195,21 @@ class LeagueFormViewModel @Inject constructor(
 					}
 			}
 		}
+	}
+
+	private fun handleBackClicked() {
+		if (_uiState.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			sendEvent(LeagueFormScreenEvent.Dismissed)
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			isShowingDiscardChangesDialog = isVisible,
+		))
 	}
 
 	private fun archiveLeague() {

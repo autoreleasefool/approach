@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.leagueform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueForm
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBar
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiAction
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,6 +58,10 @@ internal fun LeagueFormScreen(
 ) {
 	LaunchedEffect(Unit) {
 		onAction(LeagueFormScreenUiAction.LoadLeague)
+	}
+
+	BackHandler {
+		onAction(LeagueFormScreenUiAction.LeagueForm(LeagueFormUiAction.BackClicked))
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()

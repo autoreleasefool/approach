@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 fun LeagueFormTopBar(
 	state: LeagueFormTopBarUiState,
 	onAction: (LeagueFormUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior
+	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		title = { Title(state.existingName) },

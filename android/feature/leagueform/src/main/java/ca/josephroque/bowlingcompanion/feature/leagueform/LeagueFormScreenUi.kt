@@ -8,14 +8,23 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiState
 import java.util.UUID
 
 sealed interface LeagueFormScreenUiState {
-	data object Loading: LeagueFormScreenUiState
+	fun hasAnyChanges(): Boolean
+	fun isSavable(): Boolean
+
+	data object Loading: LeagueFormScreenUiState {
+		override fun hasAnyChanges(): Boolean = false
+		override fun isSavable(): Boolean = false
+	}
 
 	data class Create(
 		val form: LeagueFormUiState,
 		val topBar: LeagueFormTopBarUiState,
 	): LeagueFormScreenUiState {
-		fun isSavable(): Boolean =
+		override fun isSavable(): Boolean =
 			form.name.isNotBlank()
+
+		override fun hasAnyChanges(): Boolean =
+			form != LeagueFormUiState()
 	}
 
 	data class Edit(
@@ -23,12 +32,15 @@ sealed interface LeagueFormScreenUiState {
 		val form: LeagueFormUiState,
 		val topBar: LeagueFormTopBarUiState,
 	): LeagueFormScreenUiState {
-		fun isSavable(): Boolean =
-			form.name.isNotBlank() && form.update(id = initialValue.id) != initialValue
+		override fun isSavable(): Boolean =
+			form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
+
+		override fun hasAnyChanges(): Boolean =
+			form.updatedModel(id = initialValue.id) != initialValue
 	}
 }
 
-fun LeagueFormUiState.update(id: UUID): LeagueUpdate = LeagueUpdate(
+fun LeagueFormUiState.updatedModel(id: UUID): LeagueUpdate = LeagueUpdate(
 	id = id,
 	name = name,
 	additionalGames = when (includeAdditionalPinFall) {
