@@ -8,11 +8,16 @@
 	<string name="delete_dialog_title">Are you sure you want to delete %1$s?</string>
 	<string name="delete_dialog_message">It will be deleted from all your games. It cannot be recovered.</string>
 
+	<string name="discard_changes_dialog_title">Discard changes?</string>
+	<string name="discard_changes_dialog_message">Are you sure you want to discard your changes?</string>
+
 	<string name="action_confirm">Confirm</string>
 	<string name="action_cancel">Cancel</string>
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
 	<string name="action_dismiss">Dismiss</string>
+	<string name="action_discard">Discard</string>
+	<string name="action_keep_editing">Keep Editing</string>
 	<string name="action_archive">Archive</string>
 	<string name="action_manage">Manage</string>
 	<string name="action_send_email">Send Email</string>
