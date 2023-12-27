@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.avatarform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -17,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarForm
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormTopBar
+import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiAction
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,6 +58,10 @@ private fun AvatarFormScreen(
 ) {
 	LaunchedEffect(Unit) {
 		onAction(AvatarFormScreenUiAction.LoadAvatar)
+	}
+
+	BackHandler {
+		onAction(AvatarFormScreenUiAction.AvatarFormAction(AvatarFormUiAction.BackClicked))
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()

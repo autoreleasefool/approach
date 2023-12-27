@@ -51,8 +51,10 @@ class AvatarFormViewModel @Inject constructor(
 
 	private fun handleAvatarFormAction(action: AvatarFormUiAction) {
 		when (action) {
-			AvatarFormUiAction.BackClicked -> sendEvent(AvatarFormScreenEvent.Dismissed(existingAvatar))
+			AvatarFormUiAction.BackClicked -> handleBackClicked()
 			AvatarFormUiAction.DoneClicked -> saveAvatar()
+			AvatarFormUiAction.DiscardChangesClicked -> dismissEditor()
+			AvatarFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is AvatarFormUiAction.PrimaryColorClicked -> onPrimaryColorClicked()
 			is AvatarFormUiAction.SecondaryColorClicked -> onSecondaryColorClicked()
 			is AvatarFormUiAction.RandomizeColorsClicked -> onRandomizeColorsClicked()
@@ -67,13 +69,34 @@ class AvatarFormViewModel @Inject constructor(
 		}
 	}
 
+	private fun dismissEditor() {
+		sendEvent(AvatarFormScreenEvent.Dismissed(existingAvatar))
+	}
+
 	private fun loadAvatar() {
 		_uiState.value = AvatarFormScreenUiState.Loaded(
 			form = AvatarFormUiState(
+				initialValue = existingAvatar,
 				avatar = existingAvatar,
 				colorPickerState = ColorPickerUiState.Hidden,
+				isShowingDiscardChangesDialog = false,
 			),
 		)
+	}
+
+	private fun handleBackClicked() {
+		if (_uiState.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			dismissEditor()
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			isShowingDiscardChangesDialog = isVisible,
+		))
 	}
 
 	private fun saveAvatar() {
