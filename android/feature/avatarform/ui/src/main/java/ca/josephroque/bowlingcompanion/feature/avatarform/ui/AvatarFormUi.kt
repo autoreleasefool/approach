@@ -4,8 +4,10 @@ import androidx.compose.ui.graphics.Color
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 
 data class AvatarFormUiState(
+	val initialValue: Avatar,
 	val avatar: Avatar,
-	val colorPickerState: ColorPickerUiState
+	val colorPickerState: ColorPickerUiState,
+	val isShowingDiscardChangesDialog: Boolean,
 )
 
 sealed interface AvatarFormUiAction {
@@ -15,6 +17,9 @@ sealed interface AvatarFormUiAction {
 	data object PrimaryColorClicked: AvatarFormUiAction
 	data object SecondaryColorClicked: AvatarFormUiAction
 	data object RandomizeColorsClicked: AvatarFormUiAction
+
+	data object DiscardChangesClicked: AvatarFormUiAction
+	data object CancelDiscardChangesClicked: AvatarFormUiAction
 
 	data class LabelChanged(val label: String): AvatarFormUiAction
 	data class ColorPickerAction(val event: ColorPickerUiAction): AvatarFormUiAction

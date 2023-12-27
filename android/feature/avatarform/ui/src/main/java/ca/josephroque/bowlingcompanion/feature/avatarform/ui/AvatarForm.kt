@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
 import ca.josephroque.bowlingcompanion.core.model.ui.toComposeColor
@@ -36,6 +37,13 @@ fun AvatarForm(
 	onAction: (AvatarFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(AvatarFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(AvatarFormUiAction.CancelDiscardChangesClicked) },
+		)
+	}
+
 	ColorPicker(
 		state = state.colorPickerState,
 		onAction = { onAction(AvatarFormUiAction.ColorPickerAction(it)) },
@@ -131,8 +139,10 @@ private fun AvatarFormPreview() {
 	Surface {
 		AvatarForm(
 			state = AvatarFormUiState(
+				initialValue = Avatar.default(),
 				avatar = Avatar.default(),
 				colorPickerState = ColorPickerUiState.Hidden,
+				isShowingDiscardChangesDialog = false,
 			),
 			onAction = {},
 		)
