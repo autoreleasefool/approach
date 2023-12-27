@@ -37,6 +37,9 @@ class LeagueFormViewModel @Inject constructor(
 	private val _uiState: MutableStateFlow<LeagueFormScreenUiState> = MutableStateFlow(LeagueFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
+	private val hasLoadedInitialState: Boolean
+		get() = _uiState.value !is LeagueFormScreenUiState.Loading
+
 	private val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
 		UUID.fromString(it)
 	}
@@ -72,22 +75,9 @@ class LeagueFormViewModel @Inject constructor(
 		}
 	}
 
-	private fun getFormUiState(): LeagueFormUiState? =
-		when (val state = _uiState.value) {
-			LeagueFormScreenUiState.Loading -> null
-			is LeagueFormScreenUiState.Create -> state.form
-			is LeagueFormScreenUiState.Edit -> state.form
-		}
-
-	private fun setFormUiState(state: LeagueFormUiState) {
-		when (val uiState = _uiState.value) {
-			LeagueFormScreenUiState.Loading -> Unit
-			is LeagueFormScreenUiState.Create -> _uiState.value = uiState.copy(form = state)
-			is LeagueFormScreenUiState.Edit -> _uiState.value = uiState.copy(form = state)
-		}
-	}
-
 	private fun loadLeague() {
+		if (hasLoadedInitialState) return
+
 		viewModelScope.launch {
 			val leagueId = savedStateHandle.get<String>(LEAGUE_ID)?.let {
 				UUID.fromString(it)
@@ -174,11 +164,11 @@ class LeagueFormViewModel @Inject constructor(
 						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
 					} else {
-						_uiState.value = state.copy(
-							form = state.form.copy(
+						_uiState.updateForm { form ->
+							form.copy(
 								nameErrorId = if (state.form.name.isBlank()) ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing else null
 							)
-						)
+						}
 					}
 				is LeagueFormScreenUiState.Edit ->
 					if (state.isSavable()) {
@@ -187,11 +177,11 @@ class LeagueFormViewModel @Inject constructor(
 						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
 					} else {
-						_uiState.value = state.copy(
-							form = state.form.copy(
+						_uiState.updateForm { form ->
+							form.copy(
 								nameErrorId = if (state.form.name.isBlank()) ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing else null
 							)
-						)
+						}
 					}
 			}
 		}
@@ -206,10 +196,9 @@ class LeagueFormViewModel @Inject constructor(
 	}
 
 	private fun setDiscardChangesDialog(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingDiscardChangesDialog = isVisible,
-		))
+		_uiState.updateForm {
+			it.copy(isShowingDiscardChangesDialog = isVisible)
+		}
 	}
 
 	private fun archiveLeague() {
@@ -227,70 +216,64 @@ class LeagueFormViewModel @Inject constructor(
 	}
 
 	private fun setArchiveLeaguePrompt(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingArchiveDialog = isVisible,
-		))
+		_uiState.updateForm {
+			it.copy(isShowingArchiveDialog = isVisible)
+		}
 	}
 
 	private fun updateName(name: String) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			name = name,
-			nameErrorId = null,
-		))
+		_uiState.updateForm {
+			it.copy(name = name, nameErrorId = null)
+		}
 	}
 
 	private fun updateRecurrence(recurrence: LeagueRecurrence) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			recurrence = recurrence,
-			gamesPerSeries = when (recurrence) {
-				LeagueRecurrence.REPEATING -> state.gamesPerSeries
-				LeagueRecurrence.ONCE -> GamesPerSeries.STATIC
-			}
-		))
+		_uiState.updateForm {
+			it.copy(
+				recurrence = recurrence,
+				gamesPerSeries = when (recurrence) {
+					LeagueRecurrence.REPEATING -> it.gamesPerSeries
+					LeagueRecurrence.ONCE -> GamesPerSeries.STATIC
+				}
+			)
+		}
 	}
 
 	private fun updateNumberOfGames(numberOfGames: Int) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			numberOfGames = max(min(numberOfGames, League.NumberOfGamesRange.last), League.NumberOfGamesRange.first),
-		))
+		_uiState.updateForm {
+			it.copy(
+				numberOfGames = max(min(numberOfGames, League.NumberOfGamesRange.last), League.NumberOfGamesRange.first),
+			)
+		}
 	}
 
 	private fun updateGamesPerSeries(gamesPerSeries: GamesPerSeries) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			gamesPerSeries = gamesPerSeries,
-		))
+		_uiState.updateForm {
+			it.copy(gamesPerSeries = gamesPerSeries)
+		}
 	}
 
 	private fun updateExcludeFromStatistics(excludeFromStatistics: ExcludeFromStatistics) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			excludeFromStatistics = excludeFromStatistics,
-		))
+		_uiState.updateForm {
+			it.copy(excludeFromStatistics = excludeFromStatistics)
+		}
 	}
 
 	private fun updateIncludeAdditionalPinFall(includeAdditionalPinFall: IncludeAdditionalPinFall) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			includeAdditionalPinFall = includeAdditionalPinFall,
-		))
+		_uiState.updateForm {
+			it.copy(includeAdditionalPinFall = includeAdditionalPinFall)
+		}
 	}
 
 	private fun updateAdditionalPinFall(additionalPinFall: Int) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			additionalPinFall = additionalPinFall,
-		))
+		_uiState.updateForm {
+			it.copy(additionalPinFall = additionalPinFall)
+		}
 	}
 
 	private fun updateAdditionalGames(additionalGames: Int) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			additionalGames = additionalGames,
-		))
+		_uiState.updateForm {
+			it.copy(additionalGames = additionalGames)
+		}
 	}
 }

@@ -4,6 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 sealed interface SeriesFormScreenUiState {
@@ -55,4 +57,16 @@ sealed interface SeriesFormScreenUiAction {
 sealed interface SeriesFormScreenEvent {
 	data class Dismissed(val id: UUID?): SeriesFormScreenEvent
 	data class EditAlley(val alleyId: UUID?): SeriesFormScreenEvent
+}
+
+fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(
+	function: (SeriesFormUiState) -> SeriesFormUiState,
+) {
+	this.update { state ->
+		when (state) {
+			SeriesFormScreenUiState.Loading -> state
+			is SeriesFormScreenUiState.Create -> state.copy(form = function(state.form))
+			is SeriesFormScreenUiState.Edit -> state.copy(form = function(state.form))
+		}
+	}
 }

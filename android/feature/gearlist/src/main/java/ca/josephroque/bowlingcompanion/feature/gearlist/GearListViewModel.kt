@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -90,14 +91,18 @@ class GearListViewModel @Inject constructor(
 	}
 
 	private fun setGearFilterMenu(isVisible: Boolean) {
-		_gearListTopBarState.value = _gearListTopBarState.value.copy(isFilterMenuVisible = isVisible)
+		_gearListTopBarState.update {
+			it.copy(isFilterMenuVisible = isVisible)
+		}
 	}
 
 	private fun setGearFilter(gearKind: GearKind?) {
-		_gearListTopBarState.value = _gearListTopBarState.value.copy(
-			isFilterMenuVisible = false,
-			kindFilter = gearKind,
-		)
+		_gearListTopBarState.update {
+			it.copy(
+				isFilterMenuVisible = false,
+				kindFilter = gearKind,
+			)
+		}
 		_gearKind.value = gearKind
 	}
 }

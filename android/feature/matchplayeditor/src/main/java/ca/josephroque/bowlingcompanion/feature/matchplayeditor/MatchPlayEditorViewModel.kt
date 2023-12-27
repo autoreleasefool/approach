@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -87,22 +88,18 @@ class MatchPlayEditorViewModel @Inject constructor(
 	}
 
 	private fun updateOpponent(opponentId: UUID?) {
-		// FIXME: prevent other form updates while opponent is loading
 		viewModelScope.launch {
-			val state = _matchPlayEditor.value ?: return@launch
 			val opponent = opponentId?.let { bowlersRepository.getBowlerSummary(it).first() }
-			_matchPlayEditor.value = state.copy(opponent = opponent)
+			_matchPlayEditor.update { it?.copy(opponent = opponent) }
 		}
 	}
 
 	private fun updateOpponentScore(score: String) {
-		val state = _matchPlayEditor.value ?: return
-		_matchPlayEditor.value = state.copy(opponentScore = score.toIntOrNull()?.coerceIn(0, Game.MaxScore))
+		_matchPlayEditor.update { it?.copy(opponentScore = score.toIntOrNull()?.coerceIn(0, Game.MaxScore)) }
 	}
 
 	private fun updateResult(result: MatchPlayResult?) {
-		val state = _matchPlayEditor.value ?: return
-		_matchPlayEditor.value = state.copy(result = result)
+		_matchPlayEditor.update { it?.copy(result = result) }
 	}
 
 	private fun saveMatchPlay() {

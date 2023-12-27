@@ -8,7 +8,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
-import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.GEAR_ID
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.R
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
@@ -33,6 +32,9 @@ class GearFormViewModel @Inject constructor(
 		MutableStateFlow(GearFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
+	private val hasLoadedInitialState: Boolean
+		get() = _uiState.value !is GearFormScreenUiState.Loading
+
 	private val gearId = savedStateHandle.get<String>(GEAR_ID)?.let {
 		UUID.fromString(it)
 	}
@@ -55,37 +57,14 @@ class GearFormViewModel @Inject constructor(
 			GearFormUiAction.DismissDeleteClicked -> setDeleteGearPrompt(isVisible = false)
 			GearFormUiAction.DiscardChangesClicked -> sendEvent(GearFormScreenEvent.Dismissed)
 			GearFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
-			GearFormUiAction.AvatarClicked -> sendEvent(
-				GearFormScreenEvent.EditAvatar(
-					avatar = getFormUiState()?.avatar ?: Avatar.default(),
-				)
-			)
-			GearFormUiAction.OwnerClicked -> sendEvent(
-				GearFormScreenEvent.EditOwner(
-					owner = getFormUiState()?.owner?.id,
-				)
-			)
+			GearFormUiAction.AvatarClicked -> editAvatar()
+			GearFormUiAction.OwnerClicked -> editOwner()
 			is GearFormUiAction.NameChanged -> updateName(name = action.name)
 		}
 	}
 
-	private fun getFormUiState(): GearFormUiState? =
-		when (val state = _uiState.value) {
-			GearFormScreenUiState.Loading -> null
-			is GearFormScreenUiState.Create -> state.form
-			is GearFormScreenUiState.Edit -> state.form
-		}
-
-	private fun setFormUiState(state: GearFormUiState) {
-		when (val uiState = _uiState.value) {
-			GearFormScreenUiState.Loading -> Unit
-			is GearFormScreenUiState.Create -> _uiState.value = uiState.copy(form = state)
-			is GearFormScreenUiState.Edit -> _uiState.value = uiState.copy(form = state)
-		}
-	}
-
 	private fun loadGear() {
-		if (getFormUiState() != null) return
+		if (hasLoadedInitialState) return
 		viewModelScope.launch {
 			val gear = gearId?.let { gearRepository.getGearUpdate(it).first() }
 			val owner = gear?.ownerId?.let { bowlersRepository.getBowlerDetails(it).first() }
@@ -127,41 +106,49 @@ class GearFormViewModel @Inject constructor(
 	}
 
 	private fun setDiscardChangesDialog(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			isShowingDiscardChangesDialog = isVisible,
+		_uiState.updateForm { it.copy(isShowingDiscardChangesDialog = isVisible) }
+	}
+
+	private fun editOwner() {
+		sendEvent(GearFormScreenEvent.EditOwner(
+			owner = when (val state = _uiState.value) {
+				GearFormScreenUiState.Loading -> return
+				is GearFormScreenUiState.Create -> state.form.owner?.id
+				is GearFormScreenUiState.Edit -> state.form.owner?.id
+			},
 		))
 	}
 
 	private fun updateOwner(owner: UUID?) {
-		// FIXME: prevent other form updates while owner is loading
 		viewModelScope.launch {
-			val state = getFormUiState() ?: return@launch
 			val ownerDetails = owner?.let { bowlersRepository.getBowlerDetails(it).first() }
-			setFormUiState(state.copy(owner = ownerDetails))
+			_uiState.updateForm { it.copy(owner = ownerDetails) }
 		}
 	}
 
-	private fun updateAvatar(avatar: Avatar) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(avatar = avatar))
-	}
-
-	private fun updateName(name: String) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(
-			name = name,
-			nameErrorId = null,
+	private fun editAvatar() {
+		sendEvent(GearFormScreenEvent.EditAvatar(
+			avatar = when (val state = _uiState.value) {
+				GearFormScreenUiState.Loading -> return
+				is GearFormScreenUiState.Create -> state.form.avatar
+				is GearFormScreenUiState.Edit -> state.form.avatar
+			},
 		))
 	}
 
+	private fun updateAvatar(avatar: Avatar) {
+		_uiState.updateForm { it.copy(avatar = avatar) }
+	}
+
+	private fun updateName(name: String) {
+		_uiState.updateForm { it.copy(name = name, nameErrorId = null) }
+	}
+
 	private fun setDeleteGearPrompt(isVisible: Boolean) {
-		val state = getFormUiState() ?: return
-		setFormUiState(state.copy(isShowingDeleteDialog = isVisible))
+		_uiState.updateForm { it.copy(isShowingDeleteDialog = isVisible) }
 	}
 
 	private fun deleteGear() {
-		val formState = getFormUiState() ?: return
 		viewModelScope.launch {
 			val gear = when (val uiState = _uiState.value) {
 				GearFormScreenUiState.Loading -> return@launch
@@ -170,7 +157,6 @@ class GearFormViewModel @Inject constructor(
 			}
 
 			gearRepository.deleteGear(gear.id)
-			setFormUiState(state = formState.copy(isShowingDeleteDialog = false))
 			sendEvent(GearFormScreenEvent.Dismissed)
 		}
 	}
@@ -192,11 +178,11 @@ class GearFormViewModel @Inject constructor(
 					recentlyUsedRepository.didRecentlyUseGear(gear.id)
 					sendEvent(GearFormScreenEvent.Dismissed)
 				} else {
-					_uiState.value = state.copy(
-						form = state.form.copy(
+					_uiState.updateForm {
+						it.copy(
 							nameErrorId = if (state.form.name.isBlank()) R.string.gear_form_name_missing else null,
-						),
-					)
+						)
+					}
 				}
 				is GearFormScreenUiState.Edit -> if (state.isSavable()) {
 					val gear = state.form.updatedModel(existing = state.initialValue)
@@ -204,11 +190,11 @@ class GearFormViewModel @Inject constructor(
 					recentlyUsedRepository.didRecentlyUseGear(gear.id)
 					sendEvent(GearFormScreenEvent.Dismissed)
 				} else {
-					_uiState.value = state.copy(
-						form = state.form.copy(
+					_uiState.updateForm {
+						it.copy(
 							nameErrorId = if (state.form.name.isBlank()) R.string.gear_form_name_missing else null,
-						),
-					)
+						)
+					}
 				}
 			}
 		}

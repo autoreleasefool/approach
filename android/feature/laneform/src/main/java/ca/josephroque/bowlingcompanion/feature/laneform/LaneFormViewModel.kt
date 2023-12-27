@@ -133,12 +133,16 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun deleteLane(id: UUID) {
-		val laneToDelete = _form.value.lanes.indexOfFirst { it.id == id }
-		if (laneToDelete >= 0) {
-			_form.value = _form.value.copy(
-				lanes = _form.value.lanes.toMutableList()
-					.apply { removeAt(laneToDelete) }
-			)
+		_form.update { form ->
+			val laneToDelete = form.lanes.indexOfFirst { it.id == id }
+			if (laneToDelete >= 0) {
+				form.copy(
+					lanes = form.lanes.toMutableList()
+						.apply { removeAt(laneToDelete) }
+				)
+			} else {
+				form
+			}
 		}
 	}
 
@@ -158,102 +162,120 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun showLaneLabelDialog(id: UUID) {
-		val laneToEdit = _form.value.lanes.firstOrNull { it.id == id } ?: return
+		_form.update { form ->
+			val laneToEdit = form.lanes.firstOrNull { it.id == id } ?: return@update form
 
-		_form.value = _form.value.copy(
-			laneLabel = LaneLabelDialogUiState(
-				laneId = laneToEdit.id,
-				label = laneToEdit.label,
-				position = laneToEdit.position,
-				isPositionDropDownExpanded = false,
+			form.copy(
+				laneLabel = LaneLabelDialogUiState(
+					laneId = laneToEdit.id,
+					label = laneToEdit.label,
+					position = laneToEdit.position,
+					isPositionDropDownExpanded = false,
+				)
 			)
-		)
+		}
 	}
 
 	private fun toggleLaneLabelDialogPositionDropDown(expanded: Boolean) {
-		_form.value = _form.value.copy(
-			laneLabel = _form.value.laneLabel?.copy(
-				isPositionDropDownExpanded = expanded,
+		_form.update {
+			it.copy(
+				laneLabel = it.laneLabel?.copy(
+					isPositionDropDownExpanded = expanded,
+				)
 			)
-		)
+		}
 	}
 
 	private fun updateLaneLabelDialogLabel(label: String) {
-		_form.value = _form.value.copy(
-			laneLabel = _form.value.laneLabel?.copy(
-				label = label,
-				isPositionDropDownExpanded = false,
+		_form.update {
+			it.copy(
+				laneLabel = it.laneLabel?.copy(
+					label = label,
+					isPositionDropDownExpanded = false,
+				)
 			)
-		)
+		}
 	}
 
 	private fun updateLaneLabelDialogPosition(position: LanePosition) {
-		_form.value = _form.value.copy(
-			laneLabel = _form.value.laneLabel?.copy(
-				position = position,
-				isPositionDropDownExpanded = false,
+		_form.update {
+			it.copy(
+				laneLabel = it.laneLabel?.copy(
+					position = position,
+					isPositionDropDownExpanded = false,
+				)
 			)
-		)
+		}
 	}
 
 	private fun dismissLaneLabelDialog(confirmChanges: Boolean) {
 		val laneEdited = _form.value.laneLabel ?: return
 
-		_form.value = _form.value.copy(
-			lanes = if (confirmChanges) {
-				_form.value.lanes.toMutableList().map {
-					if (laneEdited.laneId == it.id) {
-						LaneListItem(
-							id = laneEdited.laneId,
-							position = laneEdited.position,
-							label = laneEdited.label,
-						)
-					} else {
-						it
+		_form.update { form ->
+			form.copy(
+				lanes = if (confirmChanges) {
+					form.lanes.toMutableList().map {
+						if (laneEdited.laneId == it.id) {
+							LaneListItem(
+								id = laneEdited.laneId,
+								position = laneEdited.position,
+								label = laneEdited.label,
+							)
+						} else {
+							it
+						}
 					}
-				}
-			} else {
-				_form.value.lanes
-			},
-			laneLabel = null,
-		)
+				} else {
+					form.lanes
+				},
+				laneLabel = null,
+			)
+		}
 	}
 
 	private fun showAddLanesDialog() {
-		_form.value = _form.value.copy(
-			addLanes = AddLanesDialogUiState(1),
-		)
+		_form.update {
+			it.copy(
+				addLanes = AddLanesDialogUiState(1),
+			)
+		}
 	}
 
 	private fun dismissAddLanesDialog() {
-		_form.value = _form.value.copy(
-			addLanes = null,
-		)
+		_form.update {
+			it.copy(
+				addLanes = null,
+			)
+		}
 	}
 
 	private fun updateLanesToAdd(numberOfLanes: Int) {
-		_form.value = _form.value.copy(
-			addLanes = _form.value.addLanes?.copy(lanesToAdd = numberOfLanes.coerceAtLeast(1))
-		)
+		_form.update {
+			it.copy(
+				addLanes = it.addLanes?.copy(lanesToAdd = numberOfLanes.coerceAtLeast(1)),
+			)
+		}
 	}
 
 	private fun addMultipleLanes(numberOfLanes: Int) {
-		_form.value = _form.value.copy(
-			lanes = _form.value.lanes.toMutableList().apply {
-				val labels = getNextLabels(numberOfLanes, _form.value.lanes)
-				labels.forEach {
-					add(
-						LaneListItem(
-							id = UUID.randomUUID(),
-							label = it,
-							position = LanePosition.NO_WALL,
+		_form.update {
+			it.copy(
+				addLanes = null,
+				laneLabel = null,
+				lanes = it.lanes.toMutableList().apply {
+					val labels = getNextLabels(numberOfLanes, _form.value.lanes)
+					labels.forEach { label ->
+						add(
+							LaneListItem(
+								id = UUID.randomUUID(),
+								label = label,
+								position = LanePosition.NO_WALL,
+							)
 						)
-					)
+					}
 				}
-			},
-			addLanes = null,
-			laneLabel = null,
-		)
+			)
+		}
 	}
 
 	private fun getNextLabels(count: Int, list: List<LaneListItem>): List<String> {

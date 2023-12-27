@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 const val alleysListItemLimit = 5
@@ -49,10 +50,10 @@ class AccessoriesViewModel @Inject constructor(
 			)
 
 	fun expandAccessoryMenu() {
-		_uiState.value = _uiState.value.copy(isAccessoryMenuExpanded = true)
+		_uiState.update { it.copy(isAccessoryMenuExpanded = true)  }
 	}
 
 	fun minimizeAccessoryMenu() {
-		_uiState.value = _uiState.value.copy(isAccessoryMenuExpanded = false)
+		_uiState.update { it.copy(isAccessoryMenuExpanded = false)  }
 	}
 }

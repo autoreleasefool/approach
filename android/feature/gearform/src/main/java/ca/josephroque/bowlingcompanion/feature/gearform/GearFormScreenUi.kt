@@ -5,6 +5,8 @@ import ca.josephroque.bowlingcompanion.core.model.GearUpdate
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import java.util.UUID
 
 sealed interface GearFormScreenUiState {
@@ -61,4 +63,16 @@ sealed interface GearFormScreenEvent {
 
 	data class EditAvatar(val avatar: Avatar): GearFormScreenEvent
 	data class EditOwner(val owner: UUID?): GearFormScreenEvent
+}
+
+fun MutableStateFlow<GearFormScreenUiState>.updateForm(
+	function: (GearFormUiState) -> GearFormUiState,
+) {
+	this.update { state ->
+		when (state) {
+			GearFormScreenUiState.Loading -> state
+			is GearFormScreenUiState.Create -> state.copy(form = function(state.form))
+			is GearFormScreenUiState.Edit -> state.copy(form = function(state.form))
+		}
+	}
 }
