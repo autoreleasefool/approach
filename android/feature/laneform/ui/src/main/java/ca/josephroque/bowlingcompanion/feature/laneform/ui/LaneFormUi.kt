@@ -6,16 +6,24 @@ import java.util.UUID
 
 data class LaneFormUiState(
 	val isShowingSwipeToEditTip: Boolean = false,
+	val existingLanes: List<LaneListItem> = emptyList(),
 	val lanes: List<LaneListItem> = emptyList(),
 	val addLanes: AddLanesDialogUiState? = null,
 	val laneLabel: LaneLabelDialogUiState? = null,
-)
+	val isShowingDiscardChangesDialog: Boolean = false,
+) {
+	fun hasAnyChanges(): Boolean =
+		existingLanes != lanes
+}
 
 sealed interface LaneFormUiAction {
 	data object BackClicked: LaneFormUiAction
 	data object DoneClicked: LaneFormUiAction
 	data object SwipeToEditTipDismissed: LaneFormUiAction
 	data object AddLanesClicked: LaneFormUiAction
+
+	data object DiscardChangesClicked: LaneFormUiAction
+	data object CancelDiscardChangesClicked: LaneFormUiAction
 
 	data class AddLanesDialog(val action: AddLanesDialogUiAction): LaneFormUiAction
 	data class LaneLabelDialog(val action: LaneLabelDialogUiAction): LaneFormUiAction

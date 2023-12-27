@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.laneform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneForm
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBar
+import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -61,6 +63,10 @@ private fun LaneFormScreen(
 
 	LaunchedEffect(Unit) {
 		onAction(LaneFormScreenUiAction.LoadLanes)
+	}
+
+	BackHandler {
+		onAction(LaneFormScreenUiAction.LaneForm(LaneFormUiAction.BackClicked))
 	}
 
 	Scaffold(

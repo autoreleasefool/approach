@@ -5,11 +5,22 @@ import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiState
 import java.util.UUID
 
 sealed interface LaneFormScreenUiState {
-	data object Loading: LaneFormScreenUiState
+	fun hasAnyChanges(): Boolean
+	fun isSavable(): Boolean
+
+	data object Loading: LaneFormScreenUiState {
+		override fun hasAnyChanges(): Boolean = false
+		override fun isSavable(): Boolean = false
+	}
 
 	data class Loaded(
 		val laneForm: LaneFormUiState,
-	): LaneFormScreenUiState
+	): LaneFormScreenUiState {
+		override fun isSavable(): Boolean = true
+
+		override fun hasAnyChanges(): Boolean =
+			laneForm.hasAnyChanges()
+	}
 }
 
 sealed interface LaneFormScreenUiAction {
