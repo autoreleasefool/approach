@@ -25,6 +25,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 
 @Composable
@@ -38,6 +39,13 @@ fun BowlerForm(
 			itemName = state.name,
 			onArchive = { onAction(BowlerFormUiAction.ConfirmArchiveClicked) },
 			onDismiss = { onAction(BowlerFormUiAction.DismissArchiveClicked) },
+		)
+	}
+
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(BowlerFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(BowlerFormUiAction.CancelDiscardChangesClicked) },
 		)
 	}
 

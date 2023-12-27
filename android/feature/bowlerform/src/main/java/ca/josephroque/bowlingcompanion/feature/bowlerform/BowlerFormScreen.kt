@@ -1,7 +1,10 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -14,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerForm
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiAction
 import kotlinx.coroutines.launch
 
 @Composable
@@ -44,6 +48,7 @@ internal fun BowlerFormRoute(
 	)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BowlerFormScreen(
 	state: BowlerFormScreenUiState,
@@ -54,6 +59,12 @@ private fun BowlerFormScreen(
 		onAction(BowlerFormScreenUiAction.LoadBowler)
 	}
 
+	BackHandler {
+		onAction(BowlerFormScreenUiAction.BowlerFormAction(BowlerFormUiAction.BackClicked))
+	}
+
+	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
 	Scaffold(
 		topBar = {
 			BowlerFormTopBar(
@@ -63,6 +74,7 @@ private fun BowlerFormScreen(
 					is BowlerFormScreenUiState.Edit -> state.topBar
 			  },
 				onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
+				scrollBehavior = scrollBehavior,
 			)
 		},
 	) { padding ->
