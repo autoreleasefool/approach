@@ -7,14 +7,23 @@ import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiState
 import java.util.UUID
 
 sealed interface AlleyFormScreenUiState {
-	data object Loading: AlleyFormScreenUiState
+	fun hasAnyChanges(): Boolean
+	fun isSavable(): Boolean
+
+	data object Loading: AlleyFormScreenUiState {
+		override fun hasAnyChanges(): Boolean = false
+		override fun isSavable(): Boolean = false
+	}
 
 	data class Create(
 		val form: AlleyFormUiState,
 		val topBar: AlleyFormTopBarUiState,
 	): AlleyFormScreenUiState {
-		fun isSavable(): Boolean =
+		override fun isSavable(): Boolean =
 			form.name.isNotBlank()
+
+		override fun hasAnyChanges(): Boolean =
+			form != AlleyFormUiState()
 	}
 
 	data class Edit(
@@ -22,8 +31,11 @@ sealed interface AlleyFormScreenUiState {
 		val form: AlleyFormUiState,
 		val topBar: AlleyFormTopBarUiState,
 	): AlleyFormScreenUiState {
-		fun isSavable(): Boolean =
+		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
+
+		override fun hasAnyChanges(): Boolean =
+			form.updatedModel(existing = initialValue) != initialValue
 	}
 }
 
