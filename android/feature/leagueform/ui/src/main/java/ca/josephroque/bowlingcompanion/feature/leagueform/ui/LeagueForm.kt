@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
@@ -44,6 +45,13 @@ fun LeagueForm(
 			itemName = state.name,
 			onArchive = { onAction(LeagueFormUiAction.ConfirmArchiveClicked) },
 			onDismiss = { onAction(LeagueFormUiAction.DismissArchiveClicked) },
+		)
+	}
+
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(LeagueFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(LeagueFormUiAction.CancelDiscardChangesClicked) },
 		)
 	}
 
