@@ -48,11 +48,13 @@ class GearFormViewModel @Inject constructor(
 
 	private fun handleGearFormAction(action: GearFormUiAction) {
 		when (action) {
-			GearFormUiAction.BackClicked -> sendEvent(GearFormScreenEvent.Dismissed)
+			GearFormUiAction.BackClicked -> handleBackClicked()
 			GearFormUiAction.DoneClicked -> saveGear()
 			GearFormUiAction.DeleteClicked -> setDeleteGearPrompt(isVisible = true)
 			GearFormUiAction.ConfirmDeleteClicked -> deleteGear()
 			GearFormUiAction.DismissDeleteClicked -> setDeleteGearPrompt(isVisible = false)
+			GearFormUiAction.DiscardChangesClicked -> sendEvent(GearFormScreenEvent.Dismissed)
+			GearFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			GearFormUiAction.AvatarClicked -> sendEvent(
 				GearFormScreenEvent.EditAvatar(
 					avatar = getFormUiState()?.avatar ?: Avatar.default(),
@@ -89,15 +91,7 @@ class GearFormViewModel @Inject constructor(
 			val owner = gear?.ownerId?.let { bowlersRepository.getBowlerDetails(it).first() }
 			val uiState = if (gear == null) {
 				GearFormScreenUiState.Create(
-					form = GearFormUiState(
-						name = "",
-						kind = GearKind.BOWLING_BALL,
-						nameErrorId = null,
-						owner = null,
-						avatar = Avatar.default(),
-						isDeleteButtonEnabled = false,
-						isShowingDeleteDialog = false,
-					),
+					form = GearFormUiState(),
 					topBar = GearFormTopBarUiState(
 						existingName = null,
 					),
@@ -113,6 +107,7 @@ class GearFormViewModel @Inject constructor(
 						avatar = gear.avatar,
 						isDeleteButtonEnabled = true,
 						isShowingDeleteDialog = false,
+						isShowingDiscardChangesDialog = false,
 					),
 					topBar = GearFormTopBarUiState(
 						existingName = gear.name,
@@ -121,6 +116,21 @@ class GearFormViewModel @Inject constructor(
 			}
 			_uiState.value = uiState
 		}
+	}
+
+	private fun handleBackClicked() {
+		if (_uiState.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			sendEvent(GearFormScreenEvent.Dismissed)
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			isShowingDiscardChangesDialog = isVisible,
+		))
 	}
 
 	private fun updateOwner(owner: UUID?) {

@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
@@ -41,6 +42,13 @@ fun GearForm(
 			itemName = state.name,
 			onDelete = { onAction(GearFormUiAction.ConfirmDeleteClicked) },
 			onDismiss = { onAction(GearFormUiAction.DismissDeleteClicked) },
+		)
+	}
+
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(GearFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(GearFormUiAction.CancelDiscardChangesClicked) },
 		)
 	}
 
