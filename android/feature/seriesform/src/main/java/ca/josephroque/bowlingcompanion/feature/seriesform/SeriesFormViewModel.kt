@@ -58,7 +58,7 @@ class SeriesFormViewModel @Inject constructor(
 
 	private fun handleSeriesFormAction(action: SeriesFormUiAction) {
 		when (action) {
-			SeriesFormUiAction.BackClicked -> dismiss()
+			SeriesFormUiAction.BackClicked -> handleBackClicked()
 			SeriesFormUiAction.DoneClicked -> saveSeries()
 			SeriesFormUiAction.ArchiveClicked -> setArchiveSeriesPrompt(isVisible = true)
 			SeriesFormUiAction.ConfirmArchiveClicked -> archiveSeries()
@@ -66,6 +66,8 @@ class SeriesFormViewModel @Inject constructor(
 			SeriesFormUiAction.AlleyClicked -> sendEvent(SeriesFormScreenEvent.EditAlley(alleyId = getFormUiState()?.alley?.id))
 			SeriesFormUiAction.DateClicked -> setDatePicker(isVisible = true)
 			SeriesFormUiAction.DatePickerDismissed -> setDatePicker(isVisible = false)
+			SeriesFormUiAction.DiscardChangesClicked -> dismiss()
+			SeriesFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is SeriesFormUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
 			is SeriesFormUiAction.DateChanged -> updateDate(action.date)
 			is SeriesFormUiAction.PreBowlChanged -> updatePreBowl(action.preBowl)
@@ -106,6 +108,7 @@ class SeriesFormViewModel @Inject constructor(
 						isDatePickerVisible = false,
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = false,
+						isShowingDiscardChangesDialog = false,
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = null,
@@ -130,6 +133,7 @@ class SeriesFormViewModel @Inject constructor(
 						alley = series.alley,
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = true,
+						isShowingDiscardChangesDialog = false,
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = series.properties.date,
@@ -148,6 +152,21 @@ class SeriesFormViewModel @Inject constructor(
 			val alleyDetails = alleyId?.let { alleysRepository.getAlleyDetails(it).first() }
 			setFormUiState(uiState.copy(alley = alleyDetails))
 		}
+	}
+
+	private fun handleBackClicked() {
+		if (_uiState.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			dismiss()
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			isShowingDiscardChangesDialog = isVisible,
+		))
 	}
 
 	private fun setDatePicker(isVisible: Boolean) {
