@@ -15,7 +15,7 @@ fun LaneFormFloatingActionButton(
 		Icon(
 			painter = painterResource(R.drawable.ic_list_add),
 			contentDescription = stringResource(R.string.lane_form_add_multiple_lanes),
-			tint = MaterialTheme.colorScheme.onSecondary,
+			tint = MaterialTheme.colorScheme.onSurface,
 		)
 	}
 }

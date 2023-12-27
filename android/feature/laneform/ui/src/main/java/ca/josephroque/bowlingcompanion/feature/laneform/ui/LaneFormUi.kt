@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import java.util.UUID
 
 data class LaneFormUiState(
+	val isShowingSwipeToEditTip: Boolean = false,
 	val lanes: List<LaneListItem> = emptyList(),
 	val addLanes: AddLanesDialogUiState? = null,
 	val laneLabel: LaneLabelDialogUiState? = null,
@@ -13,12 +14,14 @@ data class LaneFormUiState(
 sealed interface LaneFormUiAction {
 	data object BackClicked: LaneFormUiAction
 	data object DoneClicked: LaneFormUiAction
+	data object SwipeToEditTipDismissed: LaneFormUiAction
 	data object AddLanesClicked: LaneFormUiAction
 
 	data class AddLanesDialog(val action: AddLanesDialogUiAction): LaneFormUiAction
 	data class LaneLabelDialog(val action: LaneLabelDialogUiAction): LaneFormUiAction
 	data class LaneClicked(val lane: LaneListItem): LaneFormUiAction
 	data class LaneDeleted(val lane: LaneListItem): LaneFormUiAction
+	data class LaneEdited(val lane: LaneListItem): LaneFormUiAction
 }
 
 data class AddLanesDialogUiState(

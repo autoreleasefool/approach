@@ -22,5 +22,8 @@ data class UserData(
 	val recentlyUsedGearIds: List<String>,
 
 	// Series
-	val seriesItemSize: SeriesItemSize
+	val seriesItemSize: SeriesItemSize,
+
+	// Tips
+	val isLaneFormSwipeToEditTipDismissed: Boolean,
 )

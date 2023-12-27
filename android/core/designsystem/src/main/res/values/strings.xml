@@ -12,6 +12,7 @@
 	<string name="action_cancel">Cancel</string>
 	<string name="action_save">Save</string>
 	<string name="action_delete">Delete</string>
+	<string name="action_dismiss">Dismiss</string>
 	<string name="action_archive">Archive</string>
 	<string name="action_manage">Manage</string>
 	<string name="action_send_email">Send Email</string>

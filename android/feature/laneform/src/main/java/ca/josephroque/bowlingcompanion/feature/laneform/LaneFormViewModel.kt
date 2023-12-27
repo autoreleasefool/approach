@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.LANE_IDS
@@ -17,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -28,16 +30,24 @@ import javax.inject.Inject
 class LaneFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val lanesRepository: LanesRepository,
+	private val userDataRepository: UserDataRepository,
 ): ApproachViewModel<LaneFormScreenEvent>() {
 	private val existingLaneIds = savedStateHandle.get<String>(LANE_IDS)
 		?.let { if (it == "nan") emptyList() else it.split(",").map { uuid -> UUID.fromString(uuid) }
 	} ?: emptyList()
 
+	private val _isSwipeToEditTipDismissed = userDataRepository.userData.map { it.isLaneFormSwipeToEditTipDismissed }
+
 	private val _form: MutableStateFlow<LaneFormUiState> = MutableStateFlow(LaneFormUiState())
 
-	val uiState: StateFlow<LaneFormScreenUiState> = _form.map {
+	val uiState: StateFlow<LaneFormScreenUiState> = combine(
+		_isSwipeToEditTipDismissed,
+		_form,
+	) { isSwipeToEditTipDismissed, form ->
 		LaneFormScreenUiState.Loaded(
-			laneForm = it
+			laneForm = form.copy(
+				isShowingSwipeToEditTip = !isSwipeToEditTipDismissed,
+			)
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -56,9 +66,11 @@ class LaneFormViewModel @Inject constructor(
 		when (action) {
 			LaneFormUiAction.BackClicked -> sendEvent(LaneFormScreenEvent.DismissedWithResult(existingLaneIds))
 			LaneFormUiAction.DoneClicked -> saveLanes()
+			LaneFormUiAction.SwipeToEditTipDismissed -> dismissSwipeToEditTip()
 			is LaneFormUiAction.AddLanesClicked -> showAddLanesDialog()
 			is LaneFormUiAction.LaneClicked -> showLaneLabelDialog(action.lane.id)
 			is LaneFormUiAction.LaneDeleted -> deleteLane(action.lane.id)
+			is LaneFormUiAction.LaneEdited -> showLaneLabelDialog(action.lane.id)
 			is LaneFormUiAction.AddLanesDialog -> handleAddLanesDialogAction(action.action)
 			is LaneFormUiAction.LaneLabelDialog -> handleLaneLabelDialogAction(action.action)
 		}
@@ -111,6 +123,12 @@ class LaneFormViewModel @Inject constructor(
 			lanesRepository.insertLanes(lanes)
 
 			sendEvent(LaneFormScreenEvent.DismissedWithResult(lanes.map(LaneListItem::id)))
+		}
+	}
+
+	private fun dismissSwipeToEditTip() {
+		viewModelScope.launch {
+			userDataRepository.didDismissLaneFormSwipeToEditTip()
 		}
 	}
 

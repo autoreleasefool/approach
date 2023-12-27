@@ -38,6 +38,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				recentlyUsedLeagueIds = it.recentlyUsedLeagueIdsList,
 				recentlyUsedAlleyIds = it.recentlyUsedAlleyIdsList,
 				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
+				isLaneFormSwipeToEditTipDismissed = it.isLaneFormSwipeToEditTipDismissed,
 			)
 		}
 
@@ -106,6 +107,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setIsHidingWidgetsInLeaguesList(isHiding: Boolean) {
 		userPreferences.updateData {
 			it.copy { this.isHidingWidgetsInLeaguesList = isHiding }
+		}
+	}
+
+	suspend fun setIsLaneFormSwipeToEditTipDismissed(isDismissed: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isLaneFormSwipeToEditTipDismissed = isDismissed }
 		}
 	}
 

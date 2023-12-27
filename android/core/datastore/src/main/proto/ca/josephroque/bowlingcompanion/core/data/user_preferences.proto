@@ -30,4 +30,9 @@ message UserPreferences {
 
   // Series
   SeriesItemSizeProto series_item_size = 24;
+
+  // Tips
+  bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
+
+  // Next ID: 26
 }

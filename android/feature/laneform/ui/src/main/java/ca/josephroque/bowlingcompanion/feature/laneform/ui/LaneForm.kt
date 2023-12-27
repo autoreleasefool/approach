@@ -23,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.Tip
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.feature.laneslist.ui.lanesList
 
@@ -52,10 +54,26 @@ fun LaneForm(
 	LazyColumn(
 		modifier = Modifier.fillMaxSize(),
 	) {
+		footer(R.string.lane_form_description)
+
+		footer(R.string.lane_form_position_descriptions)
+
+		if (state.lanes.isNotEmpty() && state.isShowingSwipeToEditTip) {
+			item {
+				Tip(
+					title = R.string.lane_form_swipe_tip_title,
+					message = R.string.lane_form_swipe_tip_description,
+					onDismiss = { onAction(LaneFormUiAction.SwipeToEditTipDismissed) },
+					modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+				)
+			}
+		}
+
 		lanesList(
 			state.lanes,
 			onLaneClick = { onAction(LaneFormUiAction.LaneClicked(it)) },
 			onLaneDelete = { onAction(LaneFormUiAction.LaneDeleted(it)) },
+			onLaneEdit = { onAction(LaneFormUiAction.LaneEdited(it)) },
 		)
 	}
 }
@@ -127,6 +145,7 @@ private fun LaneLabelDialogMenu(
 	ExposedDropdownMenuBox(
 		expanded = isExpanded,
 		onExpandedChange = { onAction(LaneLabelDialogUiAction.PositionDropDownToggled(it)) },
+		modifier = Modifier.padding(horizontal = 16.dp),
 	) {
 		TextField(
 			readOnly = true,

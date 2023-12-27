@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="lane_form_title">Lanes</string>
+	<string name="lane_form_description">Add one entry for each lane in your bowling alley, so you can track which lanes each of your games is bowled on, and get detailed stats at which lanes you bowl best on.</string>
+	<string name="lane_form_position_descriptions">For lanes against a wall, like the first or last lanes, include this in the entry by setting the Position.</string>
+	<string name="lane_form_swipe_tip_title">Need to edit or remove an entry?</string>
+	<string name="lane_form_swipe_tip_description">Tap or swipe left on a lane to edit. Swipe right to delete.</string>
+
 	<string name="lane_form_add_multiple_lanes">Add Lanes</string>
 	<string name="lane_form_property_label">Label</string>
 	<string name="lane_form_property_position">Position by walls?</string>
