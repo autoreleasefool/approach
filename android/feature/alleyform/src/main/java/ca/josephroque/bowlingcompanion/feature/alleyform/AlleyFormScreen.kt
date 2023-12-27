@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.alleyform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -18,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyForm
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBar
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -63,6 +65,10 @@ private fun AlleyFormScreen(
 ) {
 	LaunchedEffect(Unit) {
 		onAction(AlleyFormScreenUiAction.LoadAlley)
+	}
+
+	BackHandler {
+		onAction(AlleyFormScreenUiAction.AlleyForm(AlleyFormUiAction.BackClicked))
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()

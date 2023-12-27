@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
@@ -37,6 +38,13 @@ fun AlleyForm(
 	onAction: (AlleyFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(AlleyFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(AlleyFormUiAction.CancelDiscardChangesClicked) },
+		)
+	}
+
 	Column(
 		modifier = modifier
 			.verticalScroll(rememberScrollState())

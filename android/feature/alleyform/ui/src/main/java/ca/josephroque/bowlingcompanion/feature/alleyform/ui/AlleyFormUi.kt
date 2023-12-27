@@ -8,16 +8,17 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 
 data class AlleyFormUiState(
-	val name: String,
-	@StringRes val nameErrorId: Int?,
-	val material: AlleyMaterial?,
-	val pinFall: AlleyPinFall?,
-	val mechanism: AlleyMechanism?,
-	val pinBase: AlleyPinBase?,
-	val lanes: List<LaneListItem>,
+	val name: String = "",
+	@StringRes val nameErrorId: Int? = null,
+	val material: AlleyMaterial? = null,
+	val pinFall: AlleyPinFall? = null,
+	val mechanism: AlleyMechanism? = null,
+	val pinBase: AlleyPinBase? = null,
+	val lanes: List<LaneListItem> = emptyList(),
 
-	val isShowingDeleteDialog: Boolean,
-	val isDeleteButtonEnabled: Boolean,
+	val isShowingDeleteDialog: Boolean = false,
+	val isDeleteButtonEnabled: Boolean = false,
+	val isShowingDiscardChangesDialog: Boolean = false,
 )
 
 sealed interface AlleyFormUiAction {
@@ -27,6 +28,9 @@ sealed interface AlleyFormUiAction {
 	data object DeleteClicked: AlleyFormUiAction
 	data object ConfirmDeleteClicked: AlleyFormUiAction
 	data object DismissDeleteClicked: AlleyFormUiAction
+
+	data object DiscardChangesClicked: AlleyFormUiAction
+	data object CancelDiscardChangesClicked: AlleyFormUiAction
 
 	data object ManageLanesClicked: AlleyFormUiAction
 

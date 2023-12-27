@@ -52,12 +52,14 @@ class AlleyFormViewModel @Inject constructor(
 
 	private fun handleAlleyFormAction(action: AlleyFormUiAction) {
 		when (action) {
-			AlleyFormUiAction.BackClicked -> sendEvent(AlleyFormScreenEvent.Dismissed)
+			AlleyFormUiAction.BackClicked -> handleBackClicked()
 			AlleyFormUiAction.DoneClicked -> saveAlley()
 			AlleyFormUiAction.DeleteClicked -> setDeleteAlleyPrompt(isVisible = true)
 			AlleyFormUiAction.ConfirmDeleteClicked -> deleteAlley()
 			AlleyFormUiAction.DismissDeleteClicked -> setDeleteAlleyPrompt(isVisible = false)
 			AlleyFormUiAction.ManageLanesClicked -> manageLanes()
+			AlleyFormUiAction.DiscardChangesClicked -> sendEvent(AlleyFormScreenEvent.Dismissed)
+			AlleyFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is AlleyFormUiAction.NameChanged -> updateName(action.name)
 			is AlleyFormUiAction.MaterialChanged -> updateMaterial(action.material)
 			is AlleyFormUiAction.MechanismChanged -> updateMechanism(action.mechanism)
@@ -87,17 +89,7 @@ class AlleyFormViewModel @Inject constructor(
 			val alley = if (isEditing) alleysRepository.getAlleyUpdate(alleyId).first() else null
 			val uiState = if (alley == null) {
 				AlleyFormScreenUiState.Create(
-					form = AlleyFormUiState(
-						name = "",
-						nameErrorId = null,
-						mechanism = null,
-						pinFall = null,
-						pinBase = null,
-						material = null,
-						isDeleteButtonEnabled = false,
-						isShowingDeleteDialog = false,
-						lanes = emptyList(),
-					),
+					form = AlleyFormUiState(),
 					topBar = AlleyFormTopBarUiState(
 						existingName = null,
 					),
@@ -115,6 +107,7 @@ class AlleyFormViewModel @Inject constructor(
 						lanes = alley.lanes,
 						isDeleteButtonEnabled = true,
 						isShowingDeleteDialog = false,
+						isShowingDiscardChangesDialog = false,
 					),
 					topBar = AlleyFormTopBarUiState(
 						existingName = alley.name,
@@ -124,6 +117,21 @@ class AlleyFormViewModel @Inject constructor(
 
 			_uiState.value = uiState
 		}
+	}
+
+	private fun handleBackClicked() {
+		if (_uiState.value.hasAnyChanges()) {
+			setDiscardChangesDialog(isVisible = true)
+		} else {
+			sendEvent(AlleyFormScreenEvent.Dismissed)
+		}
+	}
+
+	private fun setDiscardChangesDialog(isVisible: Boolean) {
+		val state = getFormUiState() ?: return
+		setFormUiState(state.copy(
+			isShowingDiscardChangesDialog = isVisible,
+		))
 	}
 
 	private fun deleteAlley() {
