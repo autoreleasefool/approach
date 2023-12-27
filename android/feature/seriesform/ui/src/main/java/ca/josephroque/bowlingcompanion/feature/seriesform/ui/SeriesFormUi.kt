@@ -15,6 +15,7 @@ data class SeriesFormUiState(
 	val alley: AlleyDetails?,
 	val isShowingArchiveDialog: Boolean,
 	val isArchiveButtonEnabled: Boolean,
+	val isShowingDiscardChangesDialog: Boolean,
 )
 
 sealed interface SeriesFormUiAction {
@@ -24,6 +25,9 @@ sealed interface SeriesFormUiAction {
 	data object ArchiveClicked : SeriesFormUiAction
 	data object ConfirmArchiveClicked : SeriesFormUiAction
 	data object DismissArchiveClicked : SeriesFormUiAction
+
+	data object DiscardChangesClicked: SeriesFormUiAction
+	data object CancelDiscardChangesClicked: SeriesFormUiAction
 
 	data object AlleyClicked : SeriesFormUiAction
 

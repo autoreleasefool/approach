@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
@@ -58,6 +59,13 @@ fun SeriesForm(
 			itemName = state.date.simpleFormat(),
 			onArchive = { onAction(SeriesFormUiAction.ConfirmArchiveClicked) },
 			onDismiss = { onAction(SeriesFormUiAction.DismissArchiveClicked) },
+		)
+	}
+
+	if (state.isShowingDiscardChangesDialog) {
+		DiscardChangesDialog(
+			onDiscardChanges = { onAction(SeriesFormUiAction.DiscardChangesClicked) },
+			onDismiss = { onAction(SeriesFormUiAction.CancelDiscardChangesClicked) },
 		)
 	}
 
@@ -345,6 +353,7 @@ private fun SeriesFormPreview() {
 				isDatePickerVisible = false,
 				isShowingArchiveDialog = false,
 				isArchiveButtonEnabled = true,
+				isShowingDiscardChangesDialog = false,
 			),
 			onAction = {},
 		)

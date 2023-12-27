@@ -7,18 +7,33 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
 import java.util.UUID
 
 sealed interface SeriesFormScreenUiState {
-	data object Loading: SeriesFormScreenUiState
+	fun hasAnyChanges(): Boolean
+	fun isSavable(): Boolean
+
+	data object Loading: SeriesFormScreenUiState {
+		override fun hasAnyChanges(): Boolean = false
+		override fun isSavable(): Boolean = false
+	}
 
 	data class Create(
 		val form: SeriesFormUiState,
 		val topBar: SeriesFormTopBarUiState,
-	): SeriesFormScreenUiState
+	): SeriesFormScreenUiState {
+		override fun isSavable(): Boolean = true
+		override fun hasAnyChanges(): Boolean = true
+	}
 
 	data class Edit(
 		val initialValue: SeriesUpdate,
 		val form: SeriesFormUiState,
 		val topBar: SeriesFormTopBarUiState,
-	): SeriesFormScreenUiState
+	): SeriesFormScreenUiState {
+		override fun isSavable(): Boolean =
+			form.updatedModel(existing = initialValue) != initialValue
+
+		override fun hasAnyChanges(): Boolean =
+			form.updatedModel(existing = initialValue) != initialValue
+	}
 }
 
 fun SeriesFormUiState.updatedModel(existing: SeriesUpdate): SeriesUpdate = existing.copy(

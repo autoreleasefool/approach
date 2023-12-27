@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -18,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBar
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -63,6 +65,10 @@ private fun SeriesFormScreen(
 ) {
 	LaunchedEffect(Unit) {
 		onAction(SeriesFormScreenUiAction.LoadSeries)
+	}
+
+	BackHandler {
+		onAction(SeriesFormScreenUiAction.SeriesForm(SeriesFormUiAction.BackClicked))
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
