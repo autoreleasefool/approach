@@ -54,7 +54,6 @@ data class GameEdit(
 		val date: LocalDate,
 		val preBowl: SeriesPreBowl,
 		val excludeFromStatistics: ExcludeFromStatistics,
-		val numberOfGames: Int,
 	)
 
 	data class League(

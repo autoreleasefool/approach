@@ -14,6 +14,7 @@ interface GamesRepository {
 
 	fun getGameDetails(gameId: UUID): Flow<GameEdit>
 	fun getGamesList(seriesId: UUID): Flow<List<GameListItem>>
+	fun getGameIds(seriesId: UUID): Flow<List<UUID>>
 	fun getGameIndex(gameId: UUID): Flow<Int>
 
 	suspend fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int)

@@ -19,6 +19,7 @@ sealed interface NextGameEditableElement {
 data class GameDetailsUiState(
 	val gameId: UUID,
 	val currentGameIndex: Int = 0,
+	val seriesGameIds: List<UUID> = emptyList(),
 	val header: HeaderUiState = HeaderUiState(),
 	val gear: GearCardUiState = GearCardUiState(),
 	val alley: AlleyCardUiState = AlleyCardUiState(),

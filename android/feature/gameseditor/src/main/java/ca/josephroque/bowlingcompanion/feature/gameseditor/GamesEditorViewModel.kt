@@ -89,6 +89,7 @@ class GamesEditorViewModel @Inject constructor(
 	private var _lanesJob: Job? = null
 	private var _gearJob: Job? = null
 	private var _matchPlayJob: Job? = null
+	private var _seriesDetailsJob: Job? = null
 	private var _gameDetailsJob: Job? = null
 	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState(gameId = initialGameId))
 
@@ -182,6 +183,8 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun loadGame(gameId: UUID? = null) {
 		val gameToLoad = _currentGameId.updateAndGet { gameId ?: initialGameId }
+		_gameDetailsState.update { it.copy(gameId = gameToLoad) }
+		_gamesEditorState.update { it.copy(gameId = gameToLoad) }
 
 		_gameDetailsJob?.cancel()
 		_gameDetailsJob = viewModelScope.launch {
@@ -214,6 +217,15 @@ class GamesEditorViewModel @Inject constructor(
 							isEnabled = gameDetails.properties.locked != GameLockState.LOCKED,
 						),
 					)
+				}
+			}
+		}
+
+		_seriesDetailsJob?.cancel()
+		_seriesDetailsJob = viewModelScope.launch {
+			gamesRepository.getGameIds(seriesId).collect { ids ->
+				_gameDetailsState.updateGameDetails(gameToLoad) {
+					it.copy(seriesGameIds = ids)
 				}
 			}
 		}
@@ -487,7 +499,7 @@ class GamesEditorViewModel @Inject constructor(
 		when (next) {
 			is NextGameEditableElement.Roll -> setCurrentSelection(rollIndex = next.rollIndex)
 			is NextGameEditableElement.Frame -> setCurrentSelection(frameIndex = next.frameIndex, rollIndex = 0)
-			is NextGameEditableElement.Game -> Unit // TODO: Change game
+			is NextGameEditableElement.Game -> loadGame(next.game)
 		}
 	}
 

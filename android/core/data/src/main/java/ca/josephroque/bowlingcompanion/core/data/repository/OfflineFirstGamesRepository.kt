@@ -29,6 +29,9 @@ class OfflineFirstGamesRepository @Inject constructor(
 	override fun getGamesList(seriesId: UUID): Flow<List<GameListItem>> =
 		gameDao.getGamesList(seriesId)
 
+	override fun getGameIds(seriesId: UUID): Flow<List<UUID>> =
+		gameDao.getGameIds(seriesId)
+
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> =
 		gameDao.getArchivedGames()
 

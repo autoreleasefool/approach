@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.Roll
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
+import ca.josephroque.bowlingcompanion.core.model.nextFrameToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
@@ -144,12 +145,16 @@ fun GameDetailsUiState.updateHeader(
 	frames: List<FrameEdit>,
 ): GameDetailsUiState {
 	val isManualGame = scoringMethod.scoringMethod == GameScoringMethod.MANUAL
-	val isGameFinished = false // TODO: !frames.nextFrameToRecord().hasUntouchedRoll
+	val isGameFinished = !frames.nextFrameToRecord().hasUntouchedRoll
 	val isGameLocked = gameProperties.locked == GameLockState.LOCKED
+	val nextGameIndex = currentGameIndex + 1
 
 	val nextElement: NextGameEditableElement? = if (isManualGame || isGameFinished || isGameLocked) {
-		// TODO: Show the next game or nothing
-		null
+		if (nextGameIndex < seriesGameIds.size) {
+			NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
+		} else {
+			null
+		}
 	} else {
 		// If the current roll isn't the last, and there are still pins standing or it's the last frame,
 		// show the next roll
@@ -164,8 +169,11 @@ fun GameDetailsUiState.updateHeader(
 
 			if (Frame.isLastFrame(selection.frameIndex)) {
 				// If the frame is the last, show the next game if there is one
-				// TODO: Check if there is a next game
-				null
+				if (nextGameIndex < seriesGameIds.size) {
+					NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
+				} else {
+					null
+				}
 			} else {
 				// Otherwise, show the next frame
 				NextGameEditableElement.Frame(selection.frameIndex + 1)
