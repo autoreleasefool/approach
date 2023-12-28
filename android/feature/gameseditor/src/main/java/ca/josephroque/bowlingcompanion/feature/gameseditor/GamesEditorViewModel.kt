@@ -214,6 +214,7 @@ class GamesEditorViewModel @Inject constructor(
 				_gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
 						frameEditor = it.frameEditor.copy(
+							gameIndex = gameDetails.properties.index,
 							isEnabled = gameDetails.properties.locked != GameLockState.LOCKED,
 						),
 					)

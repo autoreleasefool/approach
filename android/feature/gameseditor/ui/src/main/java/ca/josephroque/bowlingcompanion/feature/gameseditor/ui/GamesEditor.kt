@@ -23,7 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheet
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetConfiguration
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditor
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.AnimatedFrameEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
@@ -54,7 +54,7 @@ fun GamesEditor(
 			) {
 				Spacer(modifier = Modifier.weight(1f))
 
-				FrameEditor(
+				AnimatedFrameEditor(
 					state = state.frameEditor,
 					onAction = { onAction(GamesEditorUiAction.FrameEditor(it)) },
 					modifier = Modifier.padding(horizontal = 16.dp),
