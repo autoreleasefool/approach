@@ -29,7 +29,7 @@ class AccessoriesViewModel @Inject constructor(
 	val uiState: StateFlow<AccessoriesUiState> =
 		_uiState.asStateFlow()
 
-	// TODO: Refactor to AccessoriesScreenUiState, remove optional
+	// FIXME: Refactor to AccessoriesScreenUiState, remove optional
 	val alleysListState: StateFlow<AlleysListUiState?> =
 		alleysRepository.getRecentAlleysList(limit = alleysListItemLimit)
 			.map { AlleysListUiState(it, alleyToDelete = null) }
@@ -39,7 +39,7 @@ class AccessoriesViewModel @Inject constructor(
 				initialValue = null,
 			)
 
-	// TODO: Refactor to AccessoriesScreenUiState, remove optional
+	// FIXME: Refactor to AccessoriesScreenUiState, remove optional
 	val gearListState: StateFlow<GearListUiState?> =
 		gearRepository.getRecentlyUsedGear(limit = gearListItemLimit)
 			.map { GearListUiState(it, gearToDelete = null) }

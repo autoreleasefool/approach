@@ -42,7 +42,7 @@ fun AlleyRow(
 					.padding(16.dp)
 			else Modifier)
 	) {
-		// TODO: Add location name
+		// FIXME: Add location name
 
 		Text(
 			text = name,

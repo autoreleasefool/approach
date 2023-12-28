@@ -23,19 +23,19 @@ data class TrackableGameQueryComponents(
 		whereConditions.add("$tableAlias.score > 0")
 
 		if (filter.opponent != null) {
-			// TODO: Filter by opponent in MatchPlay
+			// FIXME: Filter by opponent in MatchPlay
 		}
 
 		if (filter.gearUsed.isNotEmpty()) {
-			// TODO: Filter by gearUsed
+			// FIXME: Filter by gearUsed
 		}
 
 		when (filter.lanes) {
 			is TrackableFilter.LaneFilter.Lanes -> {
-				// TODO: Filter by lanes
+				// FIXME: Filter by lanes
 			}
 			is TrackableFilter.LaneFilter.Positions -> {
-				// TODO: Filter by lane positions
+				// FIXME: Filter by lane positions
 			}
 			null -> Unit
 		}
