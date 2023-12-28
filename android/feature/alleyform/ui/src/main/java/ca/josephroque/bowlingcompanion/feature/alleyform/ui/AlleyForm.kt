@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
@@ -38,6 +39,14 @@ fun AlleyForm(
 	onAction: (AlleyFormUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	if (state.isShowingDeleteDialog) {
+		DeleteDialog(
+			itemName = state.name,
+			onDelete = { onAction(AlleyFormUiAction.ConfirmDeleteClicked) },
+			onDismiss = { onAction(AlleyFormUiAction.DismissDeleteClicked) },
+		)
+	}
+
 	if (state.isShowingDiscardChangesDialog) {
 		DiscardChangesDialog(
 			onDiscardChanges = { onAction(AlleyFormUiAction.DiscardChangesClicked) },
