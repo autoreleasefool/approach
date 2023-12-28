@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourceItem
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -63,6 +65,10 @@ private fun ResourcePickerScreen(
 ) {
 	LaunchedEffect(Unit) {
 		onAction(ResourcePickerScreenUiAction.LoadResources)
+	}
+
+	BackHandler {
+		onAction(ResourcePickerScreenUiAction.ResourcePickerAction(ResourcePickerUiAction.BackClicked))
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
