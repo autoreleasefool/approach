@@ -49,6 +49,9 @@
 	<string name="game_editor_exclude_from_statistics_series_pre_bowl">This series is a pre-bowl and all of its games are automatically excluded from statistics. You must toggle this setting for the series before this game can be counted towards any statistics</string>
 	<string name="game_editor_exclude_from_statistics_league_excluded">All of this league\'s games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics</string>
 
+	<string name="game_settings_title">Game Settings</string>
+	<string name="game_settings_current_game">Current Game</string>
+
 	<string name="cd_settings">Settings</string>
 
 	<string name="cd_pin_left_two_pin">Left Two Pin</string>

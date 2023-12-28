@@ -23,8 +23,8 @@ import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.EDITOR_SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
-import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiAction
@@ -73,9 +73,10 @@ class GamesEditorViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
-	private val seriesId = UUID.fromString(savedStateHandle[SERIES_ID])
+	private val seriesId = UUID.fromString(savedStateHandle[EDITOR_SERIES_ID])
 	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
 
+	private var initialGameLoaded = false
 	private val _currentGameId = MutableStateFlow(initialGameId)
 	private val _headerPeekHeight = MutableStateFlow(0f)
 	private val _isGameLockSnackBarVisible = MutableStateFlow(false)
@@ -113,13 +114,14 @@ class GamesEditorViewModel @Inject constructor(
 
 	fun handleAction(action: GamesEditorScreenUiAction) {
 		when (action) {
-			GamesEditorScreenUiAction.LoadInitialGame -> loadGame()
+			GamesEditorScreenUiAction.LoadInitialGame -> loadInitialGame()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
 			is GamesEditorScreenUiAction.AlleyUpdated -> updateAlley(action.alleyId)
 			is GamesEditorScreenUiAction.LanesUpdated -> updateLanes(action.laneIds)
+			is GamesEditorScreenUiAction.CurrentGameUpdated -> loadGameIfChanged(action.gameId)
 		}
 	}
 
@@ -181,8 +183,19 @@ class GamesEditorViewModel @Inject constructor(
 		}
 	}
 
-	private fun loadGame(gameId: UUID? = null) {
-		val gameToLoad = _currentGameId.updateAndGet { gameId ?: initialGameId }
+	private fun loadGameIfChanged(gameId: UUID) {
+		if (_currentGameId.value == gameId) return
+		loadGame(gameId)
+	}
+
+	private fun loadInitialGame() {
+		if (initialGameLoaded) return
+		initialGameLoaded = true
+		loadGame(initialGameId)
+	}
+
+	private fun loadGame(gameId: UUID) {
+		val gameToLoad = _currentGameId.updateAndGet { gameId }
 		_gameDetailsState.update { it.copy(gameId = gameToLoad) }
 		_gamesEditorState.update { it.copy(gameId = gameToLoad) }
 
@@ -353,7 +366,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGameSettings() {
-		/* TODO: openGameSettings */
+		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesId, _currentGameId.value))
 	}
 
 	private fun openGearPicker() {

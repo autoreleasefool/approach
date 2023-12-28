@@ -45,6 +45,7 @@ internal fun GamesEditorRoute(
 	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -67,6 +68,9 @@ internal fun GamesEditorRoute(
 						}
 						is GamesEditorScreenEvent.EditLanes -> onEditLanes(it.alleyId, it.laneIds) { ids ->
 							viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
+						}
+						is GamesEditorScreenEvent.ShowGamesSettings -> onShowGamesSettings(it.seriesId, it.currentGameId) {
+							viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(it))
 						}
 					}
 				}

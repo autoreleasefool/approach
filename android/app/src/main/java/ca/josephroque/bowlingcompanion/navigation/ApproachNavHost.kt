@@ -29,7 +29,9 @@ import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToN
 import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.dataExportScreen
 import ca.josephroque.bowlingcompanion.feature.datamanagement.navigation.navigateToDataExport
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorScreen
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesSettingsForResult
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.gearFormScreen
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToGearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.navigateToNewGearForm
@@ -200,7 +202,11 @@ fun ApproachNavHost(
 						navResultCallback = result,
 						resourceType = ResourcePickerType.LANE,
 						resourceParentId = alleyId,)
-				}
+				},
+				onShowGamesSettings = navController::navigateToGamesSettingsForResult,
+			)
+			gamesSettingsScreen(
+				onDismissWithResult = navController::popBackStackWithResult,
 			)
 			resourcePickerScreen(
 				onDismissWithResult = navController::popBackStackWithResult,

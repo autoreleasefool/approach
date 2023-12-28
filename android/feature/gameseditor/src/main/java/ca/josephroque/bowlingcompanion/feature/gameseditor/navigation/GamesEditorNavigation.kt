@@ -8,11 +8,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
+import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorScreenEvent
 import java.util.UUID
 
-const val SERIES_ID = "seriesid"
+const val EDITOR_SERIES_ID = "seriesid"
 const val INITIAL_GAME_ID = "gameid"
-const val gamesEditorNavigationRoute = "edit_games/{$SERIES_ID}/{$INITIAL_GAME_ID}"
+const val gamesEditorNavigationRoute = "edit_games/{$EDITOR_SERIES_ID}/{$INITIAL_GAME_ID}"
 
 fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID) {
 	val seriesIdEncoded = Uri.encode(seriesId.toString())
@@ -26,11 +27,12 @@ fun NavGraphBuilder.gamesEditorScreen(
 	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
 ) {
 	composable(
 		route = gamesEditorNavigationRoute,
 		arguments = listOf(
-			navArgument(SERIES_ID) { type = NavType.StringType },
+			navArgument(EDITOR_SERIES_ID) { type = NavType.StringType },
 			navArgument(INITIAL_GAME_ID) { type = NavType.StringType },
 		),
 	) {
@@ -40,6 +42,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 			onEditGear = onEditGear,
 			onEditAlley = onEditAlley,
 			onEditLanes = onEditLanes,
+			onShowGamesSettings = onShowGamesSettings,
 		)
 	}
 }
