@@ -513,7 +513,10 @@ class GamesEditorViewModel @Inject constructor(
 		when (next) {
 			is NextGameEditableElement.Roll -> setCurrentSelection(rollIndex = next.rollIndex)
 			is NextGameEditableElement.Frame -> setCurrentSelection(frameIndex = next.frameIndex, rollIndex = 0)
-			is NextGameEditableElement.Game -> loadGame(next.game)
+			is NextGameEditableElement.Game -> {
+				toggleGameLocked(isLocked = true)
+				loadGame(next.game)
+			}
 		}
 	}
 
