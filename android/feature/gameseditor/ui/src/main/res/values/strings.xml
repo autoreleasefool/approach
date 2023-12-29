@@ -4,9 +4,12 @@
 
 	<string name="game_editor_foul">Foul?</string>
 
-	<string name="game_editor_next_roll">Go to Ball %1$d</string>
-	<string name="game_editor_next_frame">Go to Frame %1$d</string>
-	<string name="game_editor_next_game">Go to Game %1$d</string>
+	<string name="game_editor_ball_ordinal">Ball %1$d</string>
+	<string name="game_editor_next_roll">Next Ball</string>
+	<string name="game_editor_frame_ordinal">Frame %1$d</string>
+	<string name="game_editor_next_frame">Next Frame</string>
+	<string name="game_editor_game_ordinal">Game %1$d</string>
+	<string name="game_editor_next_game">Next Game</string>
 
 	<string name="game_editor_view_stats">View stats</string>
 	<string name="game_editor_view_stats_series">Series</string>

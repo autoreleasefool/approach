@@ -33,9 +33,9 @@ internal fun NavigationButton(
 			.border(
 				width = 1.dp,
 				color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-				shape = RoundedCornerShape(8.dp),
+				shape = MaterialTheme.shapes.medium,
 			),
-		shape = RoundedCornerShape(corner = CornerSize(8.dp)),
+		shape = MaterialTheme.shapes.medium,
 		color = MaterialTheme.colorScheme.surface,
 		onClick = onClick,
 	) {
