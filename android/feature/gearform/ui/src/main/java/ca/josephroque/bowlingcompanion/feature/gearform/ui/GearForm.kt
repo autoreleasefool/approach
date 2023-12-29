@@ -95,7 +95,8 @@ fun GearForm(
 				onClick = { onAction(GearFormUiAction.DeleteClicked) },
 				modifier = Modifier
 					.padding(top = 16.dp)
-					.fillMaxWidth(),
+					.fillMaxWidth()
+					.padding(horizontal = 16.dp),
 				colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = RCoreDesign.color.destructive)),
 			) {
 				Text(text = stringResource(id = R.string.gear_form_delete))
