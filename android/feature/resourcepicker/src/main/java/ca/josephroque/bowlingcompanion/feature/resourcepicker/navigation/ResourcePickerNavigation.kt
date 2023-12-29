@@ -13,13 +13,13 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerT
 import java.util.UUID
 
 const val RESOURCE_TYPE = "resource_type"
-const val RESOURCE_PARENT_ID = "resource_parent_id"
+const val RESOURCE_FILTER = "resource_filter"
 const val SELECTED_IDS = "selected_ids"
 const val SELECTION_LIMIT = "limit"
 const val TITLE_OVERRIDE = "title_override"
 const val resourcePickerNavigationRoute = "resource_picker?" +
 		"type={$RESOURCE_TYPE}&" +
-		"parentId={$RESOURCE_PARENT_ID}&" +
+		"filter={$RESOURCE_FILTER}&" +
 		"selected={$SELECTED_IDS}&" +
 		"limit={$SELECTION_LIMIT}&" +
 		"title={$TITLE_OVERRIDE}"
@@ -27,19 +27,19 @@ const val resourcePickerNavigationRoute = "resource_picker?" +
 fun NavController.navigateToResourcePickerForResult(
 	selectedIds: Set<UUID>,
 	resourceType: ResourcePickerType,
-	resourceParentId: UUID? = null,
+	resourceFilter: String? = null,
 	titleOverride: String? = null,
 	limit: Int = 0,
 	navResultCallback: NavResultCallback<Set<UUID>>,
 ) {
 	val ids = selectedIds.joinToString(separator = ",") { it.toString() }
-	val encodedParentId = Uri.encode(resourceParentId?.toString() ?: "nan")
+	val encodedFilter = Uri.encode(resourceFilter ?: "nan")
 	val encodedIds = Uri.encode(ids.ifEmpty { "nan" })
 	val encodedLimit = Uri.encode(limit.toString())
 	this.navigateForResult(
 		resourcePickerNavigationRoute
 			.replace("{$RESOURCE_TYPE}", resourceType.toString())
-			.replace("{$RESOURCE_PARENT_ID}", encodedParentId)
+			.replace("{$RESOURCE_FILTER}", encodedFilter)
 			.replace("{$SELECTED_IDS}", encodedIds)
 			.replace("{$SELECTION_LIMIT}", encodedLimit)
 			.replace("{$TITLE_OVERRIDE}", titleOverride ?: "nan"),
@@ -54,7 +54,7 @@ fun NavGraphBuilder.resourcePickerScreen(
 		route = resourcePickerNavigationRoute,
 		arguments = listOf(
 			navArgument(RESOURCE_TYPE) { type = NavType.StringType },
-			navArgument(RESOURCE_PARENT_ID) { type = NavType.StringType },
+			navArgument(RESOURCE_FILTER) { type = NavType.StringType },
 			navArgument(SELECTED_IDS) { type = NavType.StringType },
 			navArgument(SELECTION_LIMIT) { type = NavType.IntType },
 			navArgument(TITLE_OVERRIDE) { type = NavType.StringType },

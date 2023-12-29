@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
 import ca.josephroque.bowlingcompanion.core.common.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesScreen
 import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.alleyFormScreen
@@ -201,7 +202,8 @@ fun ApproachNavHost(
 						selectedIds = lanes,
 						navResultCallback = result,
 						resourceType = ResourcePickerType.LANE,
-						resourceParentId = alleyId,)
+						resourceFilter = alleyId.toString(),
+					)
 				},
 				onShowGamesSettings = navController::navigateToGamesSettingsForResult,
 			)
@@ -227,7 +229,7 @@ fun ApproachNavHost(
 						limit = 1,
 						navResultCallback = result,
 						resourceType = ResourcePickerType.LEAGUE,
-						resourceParentId = bowler,
+						resourceFilter = bowler.toString(),
 					)
 				},
 				onPickStatistic = { statistic, result ->
@@ -272,7 +274,7 @@ fun ApproachNavHost(
 						limit = 1,
 						navResultCallback = result,
 						resourceType = ResourcePickerType.LEAGUE,
-						resourceParentId = bowler,
+						resourceFilter = bowler.toString(),
 					)
 				},
 				onPickSeries = { _, _ -> /* TODO: onPickSeries */ },

@@ -8,18 +8,20 @@ import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.AlleyPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.GearPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LanePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_PARENT_ID
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_FILTER
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_TYPE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTED_IDS
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTION_LIMIT
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.TITLE_OVERRIDE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.R
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerFilter
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
@@ -54,19 +56,25 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private val limit = savedStateHandle.get<Int>(SELECTION_LIMIT) ?: 0
 
-	private val parentId = savedStateHandle.get<String>(RESOURCE_PARENT_ID)
-		?.let { if (it == "nan") null else UUID.fromString(it) }
-		?: UUID.randomUUID()
+	private val filter: ResourcePickerFilter? = savedStateHandle.get<String>(RESOURCE_FILTER)
+		?.let {
+			if (it == "nan") null else when (resourceType) {
+				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Bowler(UUID.fromString(it))
+				ResourcePickerType.GEAR -> ResourcePickerFilter.Gear(GearKind.valueOf(it))
+				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(UUID.fromString(it))
+				ResourcePickerType.BOWLER, ResourcePickerType.ALLEY -> null
+			}
+		}
 
 	private val titleOverride = savedStateHandle.get<String>(TITLE_OVERRIDE)
 		?.let { if (it == "nan") null else it }
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
-		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, parentId)
-		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository)
+		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, (filter as? ResourcePickerFilter.Bowler)?.id)
+		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository, (filter as? ResourcePickerFilter.Gear)?.kind)
 		ResourcePickerType.ALLEY -> AlleyPickerDataProvider(alleysRepository)
-		ResourcePickerType.LANE -> LanePickerDataProvider(lanesRepository, parentId)
+		ResourcePickerType.LANE -> LanePickerDataProvider(lanesRepository, (filter as? ResourcePickerFilter.Alley)?.id)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? {

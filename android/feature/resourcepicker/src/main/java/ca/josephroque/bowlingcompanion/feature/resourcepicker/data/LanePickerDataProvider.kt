@@ -9,10 +9,13 @@ import javax.inject.Inject
 
 class LanePickerDataProvider @Inject constructor(
 	private val lanesRepository: LanesRepository,
-	private val alleyId: UUID,
+	private val alleyId: UUID?,
 ): ResourcePickerDataProvider {
-	override suspend fun loadResources(): List<ResourceItem> =
+	override suspend fun loadResources(): List<ResourceItem> = if (alleyId == null) {
+		emptyList()
+	} else {
 		lanesRepository.getAlleyLanes(alleyId)
 			.map { lanes -> lanes.map { ResourceItem.Lane(it.id, it.label, it.position) } }
 			.first()
+	}
 }

@@ -9,10 +9,13 @@ import javax.inject.Inject
 
 class LeaguePickerDataProvider @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
-	private val bowlerId: UUID,
+	private val bowlerId: UUID?,
 ): ResourcePickerDataProvider {
-	override suspend fun loadResources(): List<ResourceItem> =
+	override suspend fun loadResources(): List<ResourceItem> = if (bowlerId == null) {
+		emptyList()
+	} else {
 		leaguesRepository.getLeaguesList(bowlerId)
 			.map { leagues -> leagues.map { ResourceItem.League(it.id, it.name) } }
 			.first()
+	}
 }

@@ -14,6 +14,12 @@ enum class ResourcePickerType {
 	LANE,
 }
 
+sealed interface ResourcePickerFilter {
+	data class Bowler(val id: UUID): ResourcePickerFilter
+	data class Gear(val kind: GearKind): ResourcePickerFilter
+	data class Alley(val id: UUID): ResourcePickerFilter
+}
+
 sealed interface ResourceItem {
 	val id: UUID
 	val name: String
