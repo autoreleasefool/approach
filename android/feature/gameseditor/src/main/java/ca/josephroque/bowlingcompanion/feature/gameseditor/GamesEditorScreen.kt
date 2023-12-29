@@ -43,6 +43,7 @@ internal fun GamesEditorRoute(
 	onBackPressed: () -> Unit,
 	onEditMatchPlay: (UUID) -> Unit,
 	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
+	onEditRolledBall: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
@@ -69,8 +70,11 @@ internal fun GamesEditorRoute(
 						is GamesEditorScreenEvent.EditLanes -> onEditLanes(it.alleyId, it.laneIds) { ids ->
 							viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
 						}
-						is GamesEditorScreenEvent.ShowGamesSettings -> onShowGamesSettings(it.seriesId, it.currentGameId) {
-							viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(it))
+						is GamesEditorScreenEvent.ShowGamesSettings -> onShowGamesSettings(it.seriesId, it.currentGameId) { gameId ->
+							viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(gameId))
+						}
+						is GamesEditorScreenEvent.EditRolledBall -> onEditRolledBall(it.ballId) { ids ->
+							viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
 						}
 					}
 				}

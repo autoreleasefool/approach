@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
+import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.GearUpdate
@@ -15,6 +16,7 @@ interface GearRepository {
 	fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
 	fun getGearUpdate(id: UUID): Flow<GearUpdate>
+	fun getGearDetails(id: UUID): Flow<GearDetails>
 
 	suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>)
 	suspend fun setGameGear(gameId: UUID, gear: Set<UUID>)

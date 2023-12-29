@@ -122,6 +122,7 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorScreenUiAction.AlleyUpdated -> updateAlley(action.alleyId)
 			is GamesEditorScreenUiAction.LanesUpdated -> updateLanes(action.laneIds)
 			is GamesEditorScreenUiAction.CurrentGameUpdated -> loadGameIfChanged(action.gameId)
+			is GamesEditorScreenUiAction.SelectedBallUpdated -> updateSelectedBall(id = action.ballId)
 		}
 	}
 
@@ -428,7 +429,7 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		/* TODO: openBallRolledPicker */
+		sendEvent(GamesEditorScreenEvent.EditRolledBall(_gamesEditorState.value.rollEditor.selectedBall?.id))
 	}
 
 	private fun openScoreSettings() {
@@ -578,7 +579,23 @@ class GamesEditorViewModel @Inject constructor(
 		saveFrame(gamesEditorState.selectedFrame())
 	}
 
-	private fun updateSelectedBall(ball: FrameEdit.Gear) {
+	private fun updateSelectedBall(id: UUID?) {
+		if (id == null) {
+			updateSelectedBall(ball = null)
+		} else {
+			viewModelScope.launch {
+				val gear = gearRepository.getGearDetails(id).first()
+				updateSelectedBall(FrameEdit.Gear(
+					id = gear.id,
+					name = gear.name,
+					kind = gear.kind,
+					avatar = gear.avatar,
+				))
+			}
+		}
+	}
+
+	private fun updateSelectedBall(ball: FrameEdit.Gear?) {
 		if (isGameLocked) {
 			notifyGameLocked()
 			return

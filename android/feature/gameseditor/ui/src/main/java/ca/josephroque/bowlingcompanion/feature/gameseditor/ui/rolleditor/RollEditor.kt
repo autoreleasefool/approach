@@ -85,12 +85,12 @@ private fun BallPicker(
 					avatar = ball.avatar,
 					modifier = Modifier
 						.clickable(onClick = { onBallSelected(ball) })
+						.padding(start = if (index == 0) 0.dp else 8.dp)
 						.border(
 							width = 2.dp,
 							color = if (ball.id == selectedBall?.id) Color.White else Color.Transparent,
 							shape = CircleShape,
 						)
-						.padding(start = if (index == 0) 0.dp else 8.dp)
 						.size(32.dp),
 				)
 			}

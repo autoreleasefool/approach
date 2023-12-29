@@ -206,6 +206,15 @@ fun ApproachNavHost(
 					)
 				},
 				onShowGamesSettings = navController::navigateToGamesSettingsForResult,
+				onEditRolledBall = { ball, result ->
+					navController.navigateToResourcePickerForResult(
+						selectedIds = ball?.let { setOf(it) } ?: emptySet(),
+						limit = 1,
+						navResultCallback = result,
+						resourceType = ResourcePickerType.GEAR,
+						resourceFilter = GearKind.BOWLING_BALL.name,
+					)
+				}
 			)
 			gamesSettingsScreen(
 				onDismissWithResult = navController::popBackStackWithResult,

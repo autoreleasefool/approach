@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
+import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import kotlinx.coroutines.flow.Flow
@@ -83,6 +84,18 @@ abstract class GearDao {
 		"""
 	)
 	abstract fun getGearUpdate(id: UUID): Flow<GearUpdateEntity>
+
+	@Query(
+		"""
+			SELECT
+				gear.id As id,
+				gear.name AS name,
+				gear.kind AS kind,
+				gear.avatar AS avatar
+			FROM gear WHERE gear.id = :id
+		"""
+	)
+	abstract fun getGearDetails(id: UUID): Flow<GearDetails>
 
 	@Query(
 		"""

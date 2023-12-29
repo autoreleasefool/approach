@@ -27,6 +27,7 @@ sealed interface GamesEditorScreenUiAction {
 	data class GamesEditor(val action: GamesEditorUiAction): GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction): GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: UUID): GamesEditorScreenUiAction
+	data class SelectedBallUpdated(val ballId: UUID?): GamesEditorScreenUiAction
 }
 
 sealed interface GamesEditorScreenEvent {
@@ -36,5 +37,6 @@ sealed interface GamesEditorScreenEvent {
 	data class EditGear(val gearIds: Set<UUID>): GamesEditorScreenEvent
 	data class EditAlley(val alleyId: UUID?): GamesEditorScreenEvent
 	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>): GamesEditorScreenEvent
+	data class EditRolledBall(val ballId: UUID?): GamesEditorScreenEvent
 	data class ShowGamesSettings(val seriesId: UUID, val currentGameId: UUID): GamesEditorScreenEvent
 }

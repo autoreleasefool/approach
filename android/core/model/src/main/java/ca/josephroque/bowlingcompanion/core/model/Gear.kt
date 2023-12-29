@@ -11,6 +11,13 @@ data class GearListItem(
 	val avatar: Avatar,
 ): SortableByUUID
 
+data class GearDetails(
+	val id: UUID,
+	val name: String,
+	val kind: GearKind,
+	val avatar: Avatar,
+)
+
 data class GearCreate(
 	val id: UUID,
 	val name: String,

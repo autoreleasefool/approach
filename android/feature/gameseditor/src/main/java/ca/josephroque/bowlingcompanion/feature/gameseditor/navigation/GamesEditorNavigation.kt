@@ -28,6 +28,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
+	onEditRolledBall: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
 		route = gamesEditorNavigationRoute,
@@ -43,6 +44,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 			onEditAlley = onEditAlley,
 			onEditLanes = onEditLanes,
 			onShowGamesSettings = onShowGamesSettings,
+			onEditRolledBall = onEditRolledBall,
 		)
 	}
 }
