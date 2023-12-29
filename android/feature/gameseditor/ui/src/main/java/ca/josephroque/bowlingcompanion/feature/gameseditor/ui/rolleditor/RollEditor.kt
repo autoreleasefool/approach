@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -27,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.dashedBorder
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -86,10 +86,11 @@ private fun BallPicker(
 					modifier = Modifier
 						.clickable(onClick = { onBallSelected(ball) })
 						.padding(start = if (index == 0) 0.dp else 8.dp)
-						.border(
-							width = 2.dp,
+						.dashedBorder(
 							color = if (ball.id == selectedBall?.id) Color.White else Color.Transparent,
 							shape = CircleShape,
+							strokeWidth = 2.dp,
+							gapWidth = 5.dp,
 						)
 						.size(32.dp),
 				)
