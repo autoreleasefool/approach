@@ -31,21 +31,21 @@ import javax.inject.Inject
 @HiltViewModel
 class SeriesDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	seriesRepository: SeriesRepository,
+	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
 ): ApproachViewModel<SeriesDetailsScreenEvent>() {
-	private val seriesId = MutableStateFlow(savedStateHandle.get<String>(SERIES_ID)?.let { UUID.fromString(it) })
-	private val eventId = savedStateHandle.get<String>(EVENT_ID)?.let { UUID.fromString(it)}
+	private val _seriesId = MutableStateFlow(savedStateHandle.get<String>(SERIES_ID)?.let { UUID.fromString(it) })
+	private val _eventId = savedStateHandle.get<String>(EVENT_ID)?.let { UUID.fromString(it)}
 
 	private val _gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
 
 	private val _chartModelProducer = ChartEntryModelProducer()
 
-	private val _seriesDetails = seriesId
+	private val _seriesDetails = _seriesId
 		.filterNotNull()
 		.flatMapLatest { seriesRepository.getSeriesDetails(it) }
 
-	private val _gamesList = seriesId
+	private val _gamesList = _seriesId
 		.filterNotNull()
 		.flatMapLatest { gamesRepository.getGamesList(it) }
 
@@ -93,10 +93,10 @@ class SeriesDetailsViewModel @Inject constructor(
 	)
 
 	init {
-		if (eventId != null) {
+		if (_eventId != null) {
 			viewModelScope.launch {
-				val series = seriesRepository.getSeriesList(eventId, SeriesSortOrder.NEWEST_TO_OLDEST)
-				seriesId.value = series.first().firstOrNull()?.properties?.id
+				val series = seriesRepository.getSeriesList(_eventId, SeriesSortOrder.NEWEST_TO_OLDEST)
+				_seriesId.value = series.first().firstOrNull()?.properties?.id
 			}
 		}
 	}
@@ -121,12 +121,15 @@ class SeriesDetailsViewModel @Inject constructor(
 			is GamesListUiAction.GameArchived -> _gameToArchive.value = action.game
 			is GamesListUiAction.ConfirmArchiveClicked -> archiveGame()
 			is GamesListUiAction.DismissArchiveClicked -> _gameToArchive.value = null
-			is GamesListUiAction.GameClicked -> sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(seriesId.value!!, action.id)))
+			is GamesListUiAction.GameClicked -> sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(_seriesId.value!!, action.id)))
 		}
 	}
 
 	private fun addGameToSeries() {
-		TODO()
+		val seriesId = _seriesId.value ?: return
+		viewModelScope.launch {
+			seriesRepository.addGameToSeries(seriesId)
+		}
 	}
 
 	private fun archiveGame() {

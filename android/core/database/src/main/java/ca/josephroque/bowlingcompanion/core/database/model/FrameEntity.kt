@@ -5,6 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
@@ -96,6 +97,17 @@ fun FrameEdit.asEntity(): FrameEntity = FrameEntity(
 	ball0 = this.rolls.getOrNull(0)?.bowlingBall?.id,
 	ball1 = this.rolls.getOrNull(1)?.bowlingBall?.id,
 	ball2 = this.rolls.getOrNull(2)?.bowlingBall?.id,
+)
+
+fun FrameCreate.asEntity(): FrameEntity = FrameEntity(
+	gameId = gameId,
+	index = index,
+	roll0 = null,
+	roll1 = null,
+	roll2 = null,
+	ball0 = null,
+	ball1 = null,
+	ball2 = null,
 )
 
 data class TrackableFrameEntity(

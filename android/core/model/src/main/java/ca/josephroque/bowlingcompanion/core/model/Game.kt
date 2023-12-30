@@ -34,6 +34,16 @@ data class TrackableGame(
 	)
 }
 
+data class GameCreate(
+	val id: UUID,
+	val seriesId: UUID,
+	val index: Int,
+	val score: Int = 0,
+	val locked: GameLockState = GameLockState.UNLOCKED,
+	val scoringMethod: GameScoringMethod = GameScoringMethod.BY_FRAME,
+	val excludeFromStatistics: ExcludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+)
+
 data class GameEdit(
 	val properties: Properties,
 	val series: Series,

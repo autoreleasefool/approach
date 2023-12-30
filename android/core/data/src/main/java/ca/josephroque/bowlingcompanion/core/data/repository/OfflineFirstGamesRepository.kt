@@ -2,24 +2,36 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
+import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
+import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
+import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
+import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.FrameCreate
+import ca.josephroque.bowlingcompanion.core.model.Game
+import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
 class OfflineFirstGamesRepository @Inject constructor(
+	private val bowlerDao: BowlerDao,
 	private val gameDao: GameDao,
+	private val gearDao: GearDao,
+	private val framesRepository: FramesRepository,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): GamesRepository {
@@ -65,6 +77,30 @@ class OfflineFirstGamesRepository @Inject constructor(
 		transactionRunner {
 			gameDao.deleteGameLanes(gameId)
 			gameDao.insertGameLanes(lanes.map { GameLaneCrossRef(gameId, it) })
+		}
+	}
+
+	override suspend fun insertGames(games: List<GameCreate>) = withContext(ioDispatcher) {
+		if (games.isEmpty()) return@withContext
+
+		transactionRunner {
+			val frames = games.flatMap { game ->
+				Game.FrameIndices.map { frameIndex ->
+					FrameCreate(
+						gameId = game.id,
+						index = frameIndex,
+					)
+				}
+			}
+
+			gameDao.insertGames(games.map(GameCreate::asEntity))
+			framesRepository.insertFrames(frames)
+
+			val bowler = bowlerDao.getSeriesBowler(games.first().seriesId).first()
+			val preferredGear = gearDao.getBowlerPreferredGear(bowler.id).first()
+			games.forEach { game ->
+				gearDao.setGameGear(preferredGear.map { GameGearCrossRef(gameId = game.id, gearId = it.id) })
+			}
 		}
 	}
 

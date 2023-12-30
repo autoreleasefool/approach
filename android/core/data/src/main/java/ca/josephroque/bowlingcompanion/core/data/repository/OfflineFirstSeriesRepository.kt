@@ -14,15 +14,18 @@ import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.Game
+import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -33,7 +36,7 @@ import javax.inject.Inject
 class OfflineFirstSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
 	private val gameDao: GameDao,
-	private val frameDao: FrameDao,
+	private val gamesRepository: GamesRepository,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ): SeriesRepository {
@@ -50,34 +53,15 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		transactionRunner {
 			seriesDao.insertSeries(series.asEntity())
 			val games = (0..<series.numberOfGames).map { index ->
-				GameEntity(
+				GameCreate(
 					id = UUID.randomUUID(),
 					seriesId = series.id,
 					index = index,
-					score = 0,
-					locked = GameLockState.UNLOCKED,
-					scoringMethod = GameScoringMethod.BY_FRAME,
-					excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					excludeFromStatistics = series.excludeFromStatistics,
 				)
 			}
 
-			val frames = games.flatMap { game ->
-				Game.FrameIndices.map { frameIndex ->
-					FrameEntity(
-						gameId = game.id,
-						index = frameIndex,
-						roll0 = null,
-						roll1 = null,
-						roll2 = null,
-						ball0 = null,
-						ball1 = null,
-						ball2 = null,
-					)
-				}
-			}
-
-			gameDao.insertGames(games)
-			frameDao.insertFrames(frames)
+			gamesRepository.insertGames(games)
 		}
 	}
 
@@ -97,8 +81,39 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		}
 	}
 
+	override suspend fun addGameToSeries(seriesId: UUID) = withContext(ioDispatcher) {
+		transactionRunner {
+			val existingGames = gamesRepository.getGamesList(seriesId).first()
+
+			val game = GameCreate(
+				id = UUID.randomUUID(),
+				seriesId = seriesId,
+				index = if (existingGames.isEmpty()) 0 else existingGames.maxOf { it.index } + 1,
+			)
+
+			gamesRepository.insertGames(listOf(game))
+		}
+	}
+
 	override suspend fun updateSeries(series: SeriesUpdate) = withContext(ioDispatcher) {
-		seriesDao.updateSeries(series.asEntity())
+		transactionRunner {
+			val existingSeries = seriesDao.getSeriesDetails(series.id).first()
+
+			if (existingSeries.properties.preBowl != series.preBowl) {
+				val games = gameDao.getGamesList(series.id).first()
+				games.forEach {
+					gameDao.setGameExcludedFromStatistics(
+						gameId = it.id,
+						excludeFromStatistics = when (series.preBowl) {
+							SeriesPreBowl.PRE_BOWL -> ExcludeFromStatistics.EXCLUDE
+							SeriesPreBowl.REGULAR -> ExcludeFromStatistics.INCLUDE
+						},
+					)
+				}
+			}
+
+			seriesDao.updateSeries(series.asEntity())
+		}
 	}
 
 	override suspend fun archiveSeries(id: UUID) = withContext(ioDispatcher) {

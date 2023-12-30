@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.model.ArchivedGame
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -23,6 +24,7 @@ interface GamesRepository {
 	suspend fun setGameScore(gameId: UUID, score: Int)
 	suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>)
 
+	suspend fun insertGames(games: List<GameCreate>)
 	suspend fun archiveGame(gameId: UUID)
 	suspend fun unarchiveGame(gameId: UUID)
 }

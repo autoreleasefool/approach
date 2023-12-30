@@ -16,6 +16,7 @@ interface SeriesRepository {
 
 	suspend fun setSeriesAlley(seriesId: UUID, alleyId: UUID?)
 
+	suspend fun addGameToSeries(seriesId: UUID)
 	suspend fun insertSeries(series: SeriesCreate)
 	suspend fun updateSeries(series: SeriesUpdate)
 	suspend fun archiveSeries(id: UUID)

@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
@@ -36,6 +37,16 @@ data class GameEntity(
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
 	@ColumnInfo(name = "archived_on", defaultValue = "NULL") val archivedOn: Instant? = null,
 	@ColumnInfo(name = "duration", defaultValue = "0") val duration: Double = 0.0,
+)
+
+fun GameCreate.asEntity(): GameEntity = GameEntity(
+	id = id,
+	seriesId = seriesId,
+	index = index,
+	score = score,
+	locked = locked,
+	scoringMethod = scoringMethod,
+	excludeFromStatistics = excludeFromStatistics,
 )
 
 data class TrackableGameEntity(

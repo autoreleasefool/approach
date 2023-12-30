@@ -40,6 +40,11 @@ data class TrackableFrame(
 	)
 }
 
+data class FrameCreate(
+	val gameId: UUID,
+	val index: Int,
+)
+
 data class FrameEdit(
 	val properties: Properties,
 	val rolls: List<Roll>,

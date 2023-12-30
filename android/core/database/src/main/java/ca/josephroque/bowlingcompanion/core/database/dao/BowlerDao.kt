@@ -31,6 +31,19 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
+			 	bowlers.id AS id,
+			 	bowlers.name AS name
+			FROM series
+			JOIN leagues ON leagues.id = series.league_id
+			JOIN bowlers ON bowlers.id = leagues.bowler_id
+			WHERE series.id = :seriesId
+		"""
+	)
+	abstract fun getSeriesBowler(seriesId: UUID): Flow<BowlerSummary>
+
+	@Query(
+		"""
+			SELECT
 				bowlers.id as id,
 				bowlers.name as name,
 				bowlers.kind as kind
