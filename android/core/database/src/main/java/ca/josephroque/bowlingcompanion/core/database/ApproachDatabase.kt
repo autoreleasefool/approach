@@ -73,7 +73,7 @@ const val DATABASE_NAME = "approach-database"
 	RollConverter::class,
 	InstantConverter::class,
 )
-abstract class ApproachDatabase : RoomDatabase() {
+abstract class ApproachDatabase: RoomDatabase() {
 	abstract fun bowlerDao(): BowlerDao
 	abstract fun teamDao(): TeamDao
 	abstract fun leagueDao(): LeagueDao

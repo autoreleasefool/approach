@@ -16,8 +16,7 @@ import javax.inject.Inject
 class OfflineFirstMatchPlaysRepository @Inject constructor(
 	private val matchPlayDao: MatchPlayDao,
 	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-
-	) : MatchPlaysRepository {
+): MatchPlaysRepository {
 	override fun getMatchPlay(gameId: UUID): Flow<MatchPlayUpdate?> =
 		matchPlayDao.getMatchPlayForGame(gameId).map { it?.asModel() }
 

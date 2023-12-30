@@ -17,7 +17,7 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	userDataRepository: UserDataRepository,
-) : ViewModel() {
+): ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	val mainActivityUiState = combine(

@@ -19,25 +19,25 @@ data class SeriesFormUiState(
 )
 
 sealed interface SeriesFormUiAction {
-	data object BackClicked : SeriesFormUiAction
-	data object DoneClicked : SeriesFormUiAction
+	data object BackClicked: SeriesFormUiAction
+	data object DoneClicked: SeriesFormUiAction
 
-	data object ArchiveClicked : SeriesFormUiAction
-	data object ConfirmArchiveClicked : SeriesFormUiAction
-	data object DismissArchiveClicked : SeriesFormUiAction
+	data object ArchiveClicked: SeriesFormUiAction
+	data object ConfirmArchiveClicked: SeriesFormUiAction
+	data object DismissArchiveClicked: SeriesFormUiAction
 
 	data object DiscardChangesClicked: SeriesFormUiAction
 	data object CancelDiscardChangesClicked: SeriesFormUiAction
 
-	data object AlleyClicked : SeriesFormUiAction
+	data object AlleyClicked: SeriesFormUiAction
 
 	data object DateClicked: SeriesFormUiAction
-	data object DatePickerDismissed : SeriesFormUiAction
+	data object DatePickerDismissed: SeriesFormUiAction
 
-	data class NumberOfGamesChanged(val numberOfGames: Int) : SeriesFormUiAction
-	data class DateChanged(val date: LocalDate) : SeriesFormUiAction
-	data class PreBowlChanged(val preBowl: SeriesPreBowl) : SeriesFormUiAction
-	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics) : SeriesFormUiAction
+	data class NumberOfGamesChanged(val numberOfGames: Int): SeriesFormUiAction
+	data class DateChanged(val date: LocalDate): SeriesFormUiAction
+	data class PreBowlChanged(val preBowl: SeriesPreBowl): SeriesFormUiAction
+	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics): SeriesFormUiAction
 }
 
 data class SeriesFormTopBarUiState(

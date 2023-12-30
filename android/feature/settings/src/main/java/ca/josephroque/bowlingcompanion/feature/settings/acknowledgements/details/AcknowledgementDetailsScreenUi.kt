@@ -9,11 +9,11 @@ sealed interface AcknowledgementDetailsScreenUiState {
 		data class Loaded(
 			val acknowledgementDetails: AcknowledgementDetailsUiState,
 			val topBar: AcknowledgementDetailsTopBarUiState,
-		) : AcknowledgementDetailsScreenUiState
+		): AcknowledgementDetailsScreenUiState
 }
 
 sealed interface AcknowledgementDetailsScreenUiAction {
-	data class AcknowledgementDetailsAction(val action: AcknowledgementDetailsUiAction) : AcknowledgementDetailsScreenUiAction
+	data class AcknowledgementDetailsAction(val action: AcknowledgementDetailsUiAction): AcknowledgementDetailsScreenUiAction
 }
 
 sealed interface AcknowledgementDetailsScreenEvent {

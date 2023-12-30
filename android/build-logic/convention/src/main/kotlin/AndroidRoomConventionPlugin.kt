@@ -10,7 +10,7 @@ import org.gradle.kotlin.dsl.dependencies
 import org.gradle.process.CommandLineArgumentProvider
 import java.io.File
 
-class AndroidRoomConventionPlugin : Plugin<Project> {
+class AndroidRoomConventionPlugin: Plugin<Project> {
 
 	override fun apply(target: Project) {
 		with(target) {
@@ -41,7 +41,7 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
 		@get:InputDirectory
 		@get:PathSensitive(PathSensitivity.RELATIVE)
 		val schemaDir: File,
-	) : CommandLineArgumentProvider {
+	): CommandLineArgumentProvider {
 		override fun asArguments() = listOf("room.schemaLocation=${schemaDir.path}")
 	}
 }

@@ -8,5 +8,5 @@ data class AnalyticsSettingsUiState(
 
 sealed interface AnalyticsSettingsUiAction {
 	data object BackClicked: AnalyticsSettingsUiAction
-	data class OptInStatusToggled(val value: Boolean) : AnalyticsSettingsUiAction
+	data class OptInStatusToggled(val value: Boolean): AnalyticsSettingsUiAction
 }

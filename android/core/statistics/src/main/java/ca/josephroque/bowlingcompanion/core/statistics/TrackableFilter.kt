@@ -24,10 +24,10 @@ data class TrackableFilter(
 	sealed interface Source {
 		val id: UUID
 
-		data class Bowler(override val id: UUID) : Source
-		data class League(override val id: UUID) : Source
-		data class Series(override val id: UUID) : Source
-		data class Game(override val id: UUID) : Source
+		data class Bowler(override val id: UUID): Source
+		data class League(override val id: UUID): Source
+		data class Series(override val id: UUID): Source
+		data class Game(override val id: UUID): Source
 	}
 
 	data class LeagueFilter(

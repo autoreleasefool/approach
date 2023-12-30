@@ -27,7 +27,7 @@ class BowlerFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val bowlersRepository: BowlersRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
-) : ApproachViewModel<BowlerFormScreenEvent>() {
+): ApproachViewModel<BowlerFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<BowlerFormScreenUiState> =
 		MutableStateFlow(BowlerFormScreenUiState.Loading)
