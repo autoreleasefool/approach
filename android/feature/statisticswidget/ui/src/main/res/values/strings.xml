@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="statistics_widget_layout_editor_title">Widgets</string>
+
+	<string name="cd_add_widget">Add New Widget</string>
+
 	<string name="statistics_widget_editor_title">Create a Widget</string>
 
 	<string name="statistics_widget_editor_timeline_description">Choose a shorter timeline to only be shown recent stats, or a longer timeline to be shown measurements over years.</string>

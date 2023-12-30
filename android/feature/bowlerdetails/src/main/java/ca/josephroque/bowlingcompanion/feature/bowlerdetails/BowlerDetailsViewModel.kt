@@ -79,7 +79,7 @@ class BowlerDetailsViewModel @Inject constructor(
 				leaguesList = leaguesList,
 				gearList = GearListUiState(gearList, gearToDelete = null),
 				topBar = BowlerDetailsTopBarUiState(bowlerDetails.name),
-				widgets = widgets?.let { StatisticsWidgetLayoutUiState(isEditing = false, widgets = it) },
+				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
 			),
 		)
 	}.stateIn(
@@ -105,7 +105,7 @@ class BowlerDetailsViewModel @Inject constructor(
 		when (action) {
 			BowlerDetailsUiAction.BackClicked -> sendEvent(BowlerDetailsScreenEvent.Dismissed)
 			BowlerDetailsUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
-			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId))
 			BowlerDetailsUiAction.ManageGearClicked -> showPreferredGearPicker()
 			is BowlerDetailsUiAction.GearClicked -> sendEvent(BowlerDetailsScreenEvent.ShowGearDetails(action.id))
 			is BowlerDetailsUiAction.LeaguesListAction -> handleLeaguesListAction(action.action)
@@ -127,7 +127,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(BowlerDetailsScreenEvent.ShowStatistics(action.widget.id))
-			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId))
 		}
 	}
 

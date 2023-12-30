@@ -1,0 +1,136 @@
+package ca.josephroque.bowlingcompanion.feature.statisticswidget.layout
+
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
+import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.CONTEXT
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.INITIAL_SOURCE
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiAction
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.util.UUID
+import javax.inject.Inject
+
+@HiltViewModel
+class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
+	savedStateHandle: SavedStateHandle,
+	private val statisticsWidgetRepository: StatisticsWidgetsRepository,
+): ApproachViewModel<StatisticsWidgetLayoutEditorScreenEvent>() {
+	private val context = savedStateHandle.get<String>(CONTEXT) ?: ""
+	private val initialSource: StatisticsWidgetInitialSource? = savedStateHandle.get<String>(INITIAL_SOURCE)?.let {
+		if (it == "nan") return@let null
+		val split = it.split("_")
+		when (split[0]) {
+			"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
+			else -> null
+		}
+	}
+
+	private val _uiState: MutableStateFlow<StatisticsWidgetLayoutEditorScreenUiState> =
+		MutableStateFlow(StatisticsWidgetLayoutEditorScreenUiState.Loading)
+	val uiState = _uiState.asStateFlow()
+	private val hasLoadedWidgets = _uiState.value is StatisticsWidgetLayoutEditorScreenUiState.Loaded
+
+	fun handleAction(action: StatisticsWidgetLayoutEditorScreenUiAction) {
+		when (action) {
+			StatisticsWidgetLayoutEditorScreenUiAction.LoadWidgets -> loadWidgets()
+			is StatisticsWidgetLayoutEditorScreenUiAction.LayoutEditor -> handleLayoutEditorAction(action.action)
+		}
+	}
+
+	private fun handleLayoutEditorAction(action: StatisticsWidgetLayoutEditorUiAction) {
+		when (action) {
+			StatisticsWidgetLayoutEditorUiAction.BackClicked -> dismiss()
+			StatisticsWidgetLayoutEditorUiAction.AddWidgetClicked -> addWidget()
+			is StatisticsWidgetLayoutEditorUiAction.WidgetMoved -> moveWidget(action.from, action.to)
+			is StatisticsWidgetLayoutEditorUiAction.WidgetClicked -> handleWidgetClicked(action.widget)
+			is StatisticsWidgetLayoutEditorUiAction.ToggleDeleteMode -> toggleDeleteMode(action.deleteMode)
+		}
+	}
+
+	private fun loadWidgets() {
+		if (hasLoadedWidgets) return
+		viewModelScope.launch {
+			val widgets = statisticsWidgetRepository.getStatisticsWidgets(context).first()
+			_uiState.update {
+				StatisticsWidgetLayoutEditorScreenUiState.Loaded(
+					layoutEditor = StatisticsWidgetLayoutEditorUiState(
+						widgets = widgets,
+					)
+				)
+			}
+		}
+	}
+
+	private fun dismiss() {
+		sendEvent(StatisticsWidgetLayoutEditorScreenEvent.Dismissed)
+	}
+
+	private fun addWidget() {
+		when (val state = _uiState.value) {
+			StatisticsWidgetLayoutEditorScreenUiState.Loading -> Unit
+			is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
+				sendEvent(StatisticsWidgetLayoutEditorScreenEvent.AddWidget(
+					context = context,
+					initialSource = initialSource,
+					priority = state.layoutEditor.widgets.size,
+				))
+		}
+	}
+
+	private fun moveWidget(from: Int, to: Int) {
+		val state = _uiState.updateWidgets {
+			it.copy(
+				widgets = it.widgets.toMutableList()
+					.apply { add(to, removeAt(from)) }
+			)
+		}
+
+		when (state) {
+			StatisticsWidgetLayoutEditorScreenUiState.Loading -> Unit
+			is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
+				viewModelScope.launch {
+					statisticsWidgetRepository.updateStatisticsWidgetsOrder(
+						widgets = state.layoutEditor.widgets.map(StatisticsWidget::id),
+					)
+				}
+		}
+	}
+
+	private fun handleWidgetClicked(widget: StatisticsWidget) {
+		val state = _uiState.updateWidgets {
+			if (it.isDeleteModeEnabled) {
+				it.copy(
+					widgets = it.widgets.toMutableList()
+						.apply { remove(widget) }
+				)
+			} else {
+				it
+			}
+		}
+
+		when (state) {
+			StatisticsWidgetLayoutEditorScreenUiState.Loading -> Unit
+			is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
+				if (state.layoutEditor.isDeleteModeEnabled) {
+					viewModelScope.launch {
+						statisticsWidgetRepository.deleteStatisticWidget(widget.id)
+					}
+				}
+		}
+	}
+
+	private fun toggleDeleteMode(isDeleteModeEnabled: Boolean) {
+		_uiState.updateWidgets {
+			it.copy(isDeleteModeEnabled = isDeleteModeEnabled)
+		}
+	}
+}

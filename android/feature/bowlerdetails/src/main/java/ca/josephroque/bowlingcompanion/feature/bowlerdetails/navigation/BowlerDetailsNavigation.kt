@@ -26,7 +26,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onShowEventDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditStatisticsWidgets: (String) -> Unit,
+	onEditStatisticsWidgets: (String, UUID) -> Unit,
 	onShowStatistics: (UUID) -> Unit,
 ) {
 	composable(

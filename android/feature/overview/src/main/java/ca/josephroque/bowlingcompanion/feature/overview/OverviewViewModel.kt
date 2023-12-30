@@ -60,7 +60,7 @@ class OverviewViewModel @Inject constructor(
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
-				widgets = widgets?.let { StatisticsWidgetLayoutUiState(isEditing = false, widgets = it) },
+				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
 			)
 		)
 	}.stateIn(

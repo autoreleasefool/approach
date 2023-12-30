@@ -9,4 +9,6 @@ android {
 
 dependencies {
 	implementation(project(":core:statistics"))
+
+	implementation(libs.compose.reorderable)
 }

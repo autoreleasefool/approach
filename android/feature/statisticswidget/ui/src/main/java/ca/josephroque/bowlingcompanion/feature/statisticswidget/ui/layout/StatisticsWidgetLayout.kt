@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -19,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
 
 @Composable
 fun StatisticsWidgetLayout(
@@ -42,15 +41,13 @@ fun StatisticsWidgetLayout(
 			}
 
 
-			if (!state.isEditing) {
-				Row {
-					Spacer(modifier = Modifier.weight(1f))
-					TextButton(onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) }) {
-						Text(
-							stringResource(R.string.statistics_widget_layout_change),
-							style = MaterialTheme.typography.labelSmall,
-						)
-					}
+			Row {
+				Spacer(modifier = Modifier.weight(1f))
+				TextButton(onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) }) {
+					Text(
+						stringResource(R.string.statistics_widget_layout_change),
+						style = MaterialTheme.typography.labelSmall,
+					)
 				}
 			}
 		}
@@ -76,16 +73,5 @@ private fun StatisticsWidgetRow(
 					.aspectRatio(if (widgets.size == 1) 2f else 1f),
 			)
 		}
-	}
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun StatisticsWidgetCard(
-	widget: StatisticsWidget,
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
-	Card(modifier = modifier, onClick = onClick) {
 	}
 }

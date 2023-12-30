@@ -76,10 +76,13 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navi
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsOverviewNavigationRoute
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsOverviewScreen
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticPickerForResult
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetEditor
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetLayoutEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticPickerScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetEditorScreen
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetLayoutEditorScreen
 import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 
 @Composable
@@ -113,9 +116,9 @@ fun ApproachNavHost(
 				onEditBowler = navController::navigateToBowlerForm,
 				onAddBowler = { navController.navigateToNewBowlerForm(BowlerKind.PLAYABLE) },
 				onShowBowlerDetails = navController::navigateToBowlerDetails,
-				// TODO: Change to appropriate navigation for statistics widget editor
-//			onEditStatisticsWidgets = navController::navigateToStatisticsWidgetLayoutEditor,
-				onEditStatisticsWidgets = { navController.navigateToStatisticsWidgetEditor(it, null, 0) },
+				onEditStatisticsWidgets = {
+					navController.navigateToStatisticsWidgetLayoutEditor(it, null)
+				},
 				onShowStatistics = { /* TODO: onShowStatistics */ },
 			)
 			onboardingScreen(
@@ -142,7 +145,12 @@ fun ApproachNavHost(
 						resourceType = ResourcePickerType.GEAR,
 					)
 				},
-				onEditStatisticsWidgets = { /* TODO: onEditStatisticsWidgets */ },
+				onEditStatisticsWidgets = { context, bowlerId ->
+					navController.navigateToStatisticsWidgetLayoutEditor(
+						context = context,
+						initialSource = StatisticsWidgetInitialSource.Bowler(bowlerId),
+					)
+				},
 				onShowStatistics = { /* TODO: onShowStatistics */ },
 			)
 			leagueFormScreen(
@@ -221,6 +229,10 @@ fun ApproachNavHost(
 			)
 			resourcePickerScreen(
 				onDismissWithResult = navController::popBackStackWithResult,
+			)
+			statisticsWidgetLayoutEditorScreen(
+				onBackPressed = navController::popBackStack,
+				onAddWidget = navController::navigateToStatisticsWidgetEditor,
 			)
 			statisticsWidgetEditorScreen(
 				onBackPressed = navController::popBackStack,
