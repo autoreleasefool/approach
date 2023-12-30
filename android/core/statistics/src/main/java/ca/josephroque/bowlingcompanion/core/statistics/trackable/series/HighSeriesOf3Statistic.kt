@@ -2,10 +2,9 @@ package ca.josephroque.bowlingcompanion.core.statistics.trackable.series
 
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
-import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeries
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.HighestOfStatistic

@@ -1,15 +1,5 @@
-package ca.josephroque.bowlingcompanion.core.statistics
+package ca.josephroque.bowlingcompanion.core.model
 
-import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
-import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
-import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
-import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
-import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
-import ca.josephroque.bowlingcompanion.core.model.GameSummary
-import ca.josephroque.bowlingcompanion.core.model.LanePosition
-import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
-import ca.josephroque.bowlingcompanion.core.model.SeriesSummary
 import kotlinx.datetime.LocalDate
 import java.util.UUID
 

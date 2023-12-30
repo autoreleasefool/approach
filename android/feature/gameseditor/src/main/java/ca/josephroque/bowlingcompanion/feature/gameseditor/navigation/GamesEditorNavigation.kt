@@ -7,9 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
-import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorScreenEvent
 import java.util.UUID
 
 const val EDITOR_SERIES_ID = "seriesid"

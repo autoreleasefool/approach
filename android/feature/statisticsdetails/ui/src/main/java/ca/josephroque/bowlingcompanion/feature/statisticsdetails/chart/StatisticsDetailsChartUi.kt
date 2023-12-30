@@ -1,8 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart
 
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
-import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 
 data class StatisticsDetailsChartUiState(

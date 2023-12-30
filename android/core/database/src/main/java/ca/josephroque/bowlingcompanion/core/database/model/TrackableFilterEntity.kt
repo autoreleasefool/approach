@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.SeriesSummary
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableFilterSourceSummariesEntity(
 	@Embedded(prefix = "bowler_") val bowlerSummary: BowlerSummary,

@@ -6,7 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.SourceType
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.StatisticsDetailsRoute
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.sourceType

@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.queries.utils.whereClauseArgs
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class TrackableGamesSequence(
 	val filter: TrackableFilter,

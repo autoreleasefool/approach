@@ -23,7 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.EDITOR_SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction

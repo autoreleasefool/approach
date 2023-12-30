@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.queries.utils
 
 import ca.josephroque.bowlingcompanion.core.common.utils.asBytes
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 fun TrackableFilter.Source.buildWhereClause(
 	leagueTableAlias: String,

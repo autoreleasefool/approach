@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui
 
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 
 data class StatisticsOverviewUiState(
 	val sourcePicker: SourcePickerUiState = SourcePickerUiState(),

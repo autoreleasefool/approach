@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perSeriesCon
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
