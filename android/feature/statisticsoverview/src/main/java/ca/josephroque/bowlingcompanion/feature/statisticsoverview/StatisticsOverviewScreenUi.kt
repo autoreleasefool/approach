@@ -14,6 +14,7 @@ sealed interface StatisticsOverviewScreenUiState {
 }
 
 sealed interface StatisticsOverviewScreenUiAction {
+	data object LoadDefaultSource: StatisticsOverviewScreenUiAction
 	data class UpdatedBowler(val bowler: UUID?): StatisticsOverviewScreenUiAction
 	data class UpdatedLeague(val league: UUID?): StatisticsOverviewScreenUiAction
 	data class UpdatedSeries(val series: UUID?): StatisticsOverviewScreenUiAction

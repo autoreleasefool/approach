@@ -1,13 +1,17 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
-import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.SourcePickerUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsOverviewUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsOverviewUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -20,8 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class StatisticsOverviewViewModel @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,
+	private val userDataRepository: UserDataRepository,
+	@ApplicationScope private val externalScope: CoroutineScope,
 ): ApproachViewModel<StatisticsOverviewScreenEvent>() {
-
+	private var _didLoadDefaultSource = false
 	private val _source: MutableStateFlow<TrackableFilter.Source?> = MutableStateFlow(null)
 	private val _sourceSummaries = _source.map {
 		if (it == null) {
@@ -53,6 +59,7 @@ class StatisticsOverviewViewModel @Inject constructor(
 
 	fun handleAction(action: StatisticsOverviewScreenUiAction) {
 		when (action) {
+			is StatisticsOverviewScreenUiAction.LoadDefaultSource -> loadDefaultSource()
 			is StatisticsOverviewScreenUiAction.UpdatedBowler -> {
 				_isShowingSourcePicker.value = true
 				_source.value = action.bowler?.let { TrackableFilter.Source.Bowler(it) }
@@ -76,24 +83,39 @@ class StatisticsOverviewViewModel @Inject constructor(
 
 	private fun handleStatisticsOverviewAction(action: StatisticsOverviewUiAction) {
 		when (action) {
-			StatisticsOverviewUiAction.SourcePickerDismissed -> {
-				_isShowingSourcePicker.value = false
-			}
-			StatisticsOverviewUiAction.ViewMoreClicked -> {
-				_isShowingSourcePicker.value = true
-			}
-			StatisticsOverviewUiAction.ApplyFilterClicked -> {
-				val source = _source.value ?: return
-				_isShowingSourcePicker.value = false
-				sendEvent(StatisticsOverviewScreenEvent.ShowStatistics(
-					TrackableFilter(source = source)
-				))
-			}
+			StatisticsOverviewUiAction.SourcePickerDismissed -> setSourcePicker(isVisible = false)
+			StatisticsOverviewUiAction.ViewMoreClicked -> setSourcePicker(isVisible = true)
+			StatisticsOverviewUiAction.ApplyFilterClicked -> showDetailedStatistics()
 			is StatisticsOverviewUiAction.SourcePickerBowlerClicked -> showBowlerPicker()
 			is StatisticsOverviewUiAction.SourcePickerLeagueClicked -> showLeaguePicker()
 			is StatisticsOverviewUiAction.SourcePickerSeriesClicked -> showSeriesPicker()
 			is StatisticsOverviewUiAction.SourcePickerGameClicked -> showGamePicker()
 		}
+	}
+
+	private fun showDetailedStatistics() {
+		val source = _source.value ?: return
+		setSourcePicker(isVisible = false)
+		sendEvent(StatisticsOverviewScreenEvent.ShowStatistics(
+			TrackableFilter(source = source)
+		))
+
+		externalScope.launch {
+			userDataRepository.setLastTrackableFilterSource(source)
+		}
+	}
+
+	private fun loadDefaultSource() {
+		if (_didLoadDefaultSource) return
+		_didLoadDefaultSource = true
+		viewModelScope.launch {
+			val defaultSource = userDataRepository.userData.first().lastTrackableFilter
+			_source.value = defaultSource
+		}
+	}
+
+	private fun setSourcePicker(isVisible: Boolean) {
+		_isShowingSourcePicker.value = isVisible
 	}
 
 	private fun showBowlerPicker() {

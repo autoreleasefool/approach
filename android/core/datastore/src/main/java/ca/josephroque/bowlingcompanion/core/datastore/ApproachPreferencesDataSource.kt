@@ -2,9 +2,12 @@ package ca.josephroque.bowlingcompanion.core.datastore
 
 import androidx.datastore.core.DataStore
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
+import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.flow.map
+import java.util.UUID
 import javax.inject.Inject
 
 const val RECENTLY_USED_LIMIT = 10
@@ -39,6 +42,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				recentlyUsedAlleyIds = it.recentlyUsedAlleyIdsList,
 				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
 				isLaneFormSwipeToEditTipDismissed = it.isLaneFormSwipeToEditTipDismissed,
+				lastTrackableFilter = it.parseTrackableFilterSource()
 			)
 		}
 
@@ -107,6 +111,35 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setIsHidingWidgetsInLeaguesList(isHiding: Boolean) {
 		userPreferences.updateData {
 			it.copy { this.isHidingWidgetsInLeaguesList = isHiding }
+		}
+	}
+
+	suspend fun setLastTrackableFilterSource(source: TrackableFilter.Source?) {
+		userPreferences.updateData {
+			it.copy {
+				when (source) {
+					null -> {
+						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_NONE
+						this.trackableFilterSourceId = ""
+					}
+					is TrackableFilter.Source.Bowler -> {
+						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_BOWLER
+						this.trackableFilterSourceId = source.id.toString()
+					}
+					is TrackableFilter.Source.League -> {
+						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_LEAGUE
+						this.trackableFilterSourceId = source.id.toString()
+					}
+					is TrackableFilter.Source.Series -> {
+						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_SERIES
+						this.trackableFilterSourceId = source.id.toString()
+					}
+					is TrackableFilter.Source.Game -> {
+						this.trackableFilterSource = TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_GAME
+						this.trackableFilterSourceId = source.id.toString()
+					}
+				}
+			}
 		}
 	}
 
@@ -179,3 +212,29 @@ private fun <T> MutableList<T>.replaceOrInsert(id: T) {
 	this.remove(id)
 	this.add(0, id)
 }
+
+private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source? =
+	if (this.trackableFilterSourceId != null && this.trackableFilterSourceId.isNotBlank()) {
+		try {
+			UUID.fromString(this.trackableFilterSourceId).let {
+				when (this.trackableFilterSource) {
+
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_BOWLER ->
+						TrackableFilter.Source.Bowler(it)
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_LEAGUE ->
+						TrackableFilter.Source.League(it)
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_SERIES ->
+						TrackableFilter.Source.Series(it)
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_GAME ->
+						TrackableFilter.Source.Game(it)
+					null,
+					TrackableFilterSourceProto.UNRECOGNIZED,
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_NONE -> null
+				}
+			}
+		} catch (ex: Exception) {
+			null
+		}
+	} else {
+		null
+	}

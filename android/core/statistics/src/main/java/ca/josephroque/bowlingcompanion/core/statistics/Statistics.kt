@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticGroup
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll.AcesSparedStatistic
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll.AcesStatistic

@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 import ca.josephroque.bowlingcompanion.core.datastore.ApproachPreferencesDataSource
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -49,6 +50,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 
 	override suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean) {
 		approachPreferencesDataSource.setIsHidingWidgetsInBowlersList(isHiding = isHidingWidgetsInBowlersList)
+	}
+
+	override suspend fun setLastTrackableFilterSource(source: TrackableFilter.Source?) {
+		approachPreferencesDataSource.setLastTrackableFilterSource(source = source)
 	}
 
 	override suspend fun didRecentlyUseAlley(id: String) {

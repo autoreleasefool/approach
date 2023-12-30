@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries

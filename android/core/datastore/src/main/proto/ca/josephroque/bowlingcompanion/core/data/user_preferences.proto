@@ -2,6 +2,7 @@ syntax = "proto3";
 
 import "ca/josephroque/bowlingcompanion/core/data/analytics_opt_in.proto";
 import "ca/josephroque/bowlingcompanion/core/data/series_item_size.proto";
+import "ca/josephroque/bowlingcompanion/core/data/trackable_filter_source.proto";
 
 option java_package = "ca.josephroque.bowlingcompanion.core.datastore";
 option java_multiple_files = true;
@@ -18,6 +19,8 @@ message UserPreferences {
   bool is_hiding_widgets_in_bowlers_list = 21;
   bool is_hiding_widgets_in_leagues_list = 22;
   bool is_showing_zero_statistics = 23;
+  TrackableFilterSourceProto trackable_filter_source = 26;
+  string trackable_filter_source_id = 27;
 
   // Analytics
   AnalyticsOptInProto analytics_opt_in = 18;
@@ -34,5 +37,5 @@ message UserPreferences {
   // Tips
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
 
-  // Next ID: 26
+  // Next ID: 28
 }

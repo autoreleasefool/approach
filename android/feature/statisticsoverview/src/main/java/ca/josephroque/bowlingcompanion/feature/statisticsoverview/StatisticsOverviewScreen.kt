@@ -78,6 +78,10 @@ private fun StatisticsOverviewScreen(
 	onAction: (StatisticsOverviewScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	LaunchedEffect(Unit) {
+		onAction(StatisticsOverviewScreenUiAction.LoadDefaultSource)
+	}
+
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	Scaffold(
 		topBar = {

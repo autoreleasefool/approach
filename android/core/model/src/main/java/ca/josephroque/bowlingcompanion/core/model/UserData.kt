@@ -14,6 +14,7 @@ data class UserData(
 	val isShowingZeroStatistics: Boolean,
 	val isHidingWidgetsInBowlersList: Boolean,
 	val isHidingWidgetsInLeaguesList: Boolean,
+	val lastTrackableFilter: TrackableFilter.Source?,
 
 	// Recently Used
 	val recentlyUsedBowlerIds: List<String>,

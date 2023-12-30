@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "ca.josephroque.bowlingcompanion.core.datastore";
+option java_multiple_files = true;
+
+enum TrackableFilterSourceProto {
+  TRACKABLE_FILTER_SOURCE_NONE = 0;
+  TRACKABLE_FILTER_SOURCE_BOWLER = 1;
+  TRACKABLE_FILTER_SOURCE_LEAGUE = 2;
+  TRACKABLE_FILTER_SOURCE_SERIES = 3;
+  TRACKABLE_FILTER_SOURCE_GAME = 4;
+}
