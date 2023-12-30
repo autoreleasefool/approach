@@ -9,15 +9,13 @@ sealed interface StatisticsDetailsScreenUiState {
 	data object Loading: StatisticsDetailsScreenUiState
 
 	data class Loaded(
-		val list: StatisticsDetailsListUiState,
-		val chart: StatisticsDetailsChartUiState,
+		val details: StatisticsDetailsUiState,
 	): StatisticsDetailsScreenUiState
 }
 
 sealed interface StatisticsDetailsScreenUiAction {
-	data class ListAction(val action: StatisticsDetailsListUiAction): StatisticsDetailsScreenUiAction
-	data class TopBarAction(val action: StatisticsDetailsTopBarUiAction): StatisticsDetailsScreenUiAction
-	data class ChartAction(val action: StatisticsDetailsChartUiAction): StatisticsDetailsScreenUiAction
+	data class Details(val action: StatisticsDetailsUiAction): StatisticsDetailsScreenUiAction
+	data class TopBar(val action: StatisticsDetailsTopBarUiAction): StatisticsDetailsScreenUiAction
 }
 
 sealed interface StatisticsDetailsScreenEvent {

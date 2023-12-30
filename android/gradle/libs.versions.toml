@@ -13,6 +13,7 @@ androidxHiltNavigationCompose = "1.1.0"
 androidxLifecycle = "2.6.2"
 colorpickerCompose = "1.0.5"
 composeReorderable = "0.9.6"
+flexibleBottomSheet = "0.1.2"
 hilt = "2.48"
 junit4 = "4.13.2"
 kotlinxCoroutines = "1.7.3"
@@ -46,6 +47,8 @@ androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "life
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 colorpicker-compose = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpickerCompose" }
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version.ref = "composeReorderable" }
+flexiblebottomsheet = { group = "com.github.skydoves", name = "flexible-bottomsheet-material", version.ref = "flexibleBottomSheet" }
+flexiblebottomsheet-m3 = { group = "com.github.skydoves", name = "flexible-bottomsheet-material3", version.ref = "flexibleBottomSheet" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 junit4 = { group = "junit", name = "junit", version.ref = "junit4" }

@@ -11,5 +11,7 @@ dependencies {
 	implementation(project(":core:statistics"))
 	implementation(project(":core:statistics:charts"))
 
+	implementation(libs.flexiblebottomsheet)
+	implementation(libs.flexiblebottomsheet.m3)
 	implementation(libs.vico.compose)
 }

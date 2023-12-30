@@ -8,7 +8,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
-import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModel
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
@@ -116,8 +115,10 @@ class StatisticsDetailsViewModel @Inject constructor(
 		_statisticsChartState,
 	) { statisticsList, statisticsChart ->
 		StatisticsDetailsScreenUiState.Loaded(
-			list = statisticsList,
-			chart = statisticsChart,
+			details = StatisticsDetailsUiState(
+				list = statisticsList,
+				chart = statisticsChart,
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -127,9 +128,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
-			is StatisticsDetailsScreenUiAction.ListAction -> handleListAction(action.action)
-			is StatisticsDetailsScreenUiAction.TopBarAction -> handleTopBarAction(action.action)
-			is StatisticsDetailsScreenUiAction.ChartAction -> handleChartAction(action.action)
+			is StatisticsDetailsScreenUiAction.Details -> handleDetailsAction(action.action)
+			is StatisticsDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
+		}
+	}
+
+	private fun handleDetailsAction(action: StatisticsDetailsUiAction) {
+		when (action) {
+			is StatisticsDetailsUiAction.StatisticsDetailsList -> handleListAction(action.action)
+			is StatisticsDetailsUiAction.StatisticsDetailsChart -> handleChartAction(action.action)
 		}
 	}
 

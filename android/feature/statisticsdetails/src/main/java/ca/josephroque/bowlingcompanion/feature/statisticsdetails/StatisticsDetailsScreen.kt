@@ -1,10 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,8 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChart
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsList
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,38 +42,24 @@ fun StatisticsDetailsRoute(
 	)
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StatisticsDetailsScreen(
 	state: StatisticsDetailsScreenUiState,
 	onAction: (StatisticsDetailsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val scaffoldState = rememberBottomSheetScaffoldState()
-
-	BottomSheetScaffold(
-		scaffoldState = scaffoldState,
+	Scaffold(
 		topBar = {
 			StatisticsDetailsTopBar(
-				onAction = { onAction(StatisticsDetailsScreenUiAction.TopBarAction(it)) },
+				onAction = { onAction(StatisticsDetailsScreenUiAction.TopBar(it)) },
 			)
-		},
-		sheetContent = {
-			when (state) {
-				StatisticsDetailsScreenUiState.Loading -> Unit
-				is StatisticsDetailsScreenUiState.Loaded -> StatisticsDetailsList(
-					state = state.list,
-					onAction = { onAction(StatisticsDetailsScreenUiAction.ListAction(it)) },
-					modifier = Modifier.fillMaxHeight(0.5f),
-				)
-			}
 		},
 	) { padding ->
 		when (state) {
 			StatisticsDetailsScreenUiState.Loading -> Unit
-			is StatisticsDetailsScreenUiState.Loaded -> StatisticsDetailsChart(
-				state = state.chart,
-				onAction = { onAction(StatisticsDetailsScreenUiAction.ChartAction(it)) },
+			is StatisticsDetailsScreenUiState.Loaded -> StatisticsDetails(
+				state = state.details,
+				onAction = { onAction(StatisticsDetailsScreenUiAction.Details(it)) },
 				modifier = modifier.padding(padding),
 			)
 		}
