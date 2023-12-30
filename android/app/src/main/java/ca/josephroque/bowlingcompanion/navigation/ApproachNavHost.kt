@@ -222,7 +222,8 @@ fun ApproachNavHost(
 						resourceType = ResourcePickerType.GEAR,
 						resourceFilter = GearKind.BOWLING_BALL.name,
 					)
-				}
+				},
+				onShowStatistics = navController::navigateToStatisticsDetails,
 			)
 			gamesSettingsScreen(
 				onDismissWithResult = navController::popBackStackWithResult,
@@ -273,6 +274,9 @@ fun ApproachNavHost(
 						resourceType = ResourcePickerType.BOWLER,
 					)
 				},
+			)
+			statisticsDetailsScreen(
+				onBackPressed = navController::popBackStack,
 			)
 		}
 

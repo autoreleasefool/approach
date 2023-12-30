@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiAction
@@ -39,4 +40,5 @@ sealed interface GamesEditorScreenEvent {
 	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>): GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: UUID?): GamesEditorScreenEvent
 	data class ShowGamesSettings(val seriesId: UUID, val currentGameId: UUID): GamesEditorScreenEvent
+	data class ShowStatistics(val filter: TrackableFilter): GamesEditorScreenEvent
 }

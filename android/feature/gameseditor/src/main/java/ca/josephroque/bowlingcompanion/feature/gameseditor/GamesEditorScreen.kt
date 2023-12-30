@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
@@ -47,6 +48,7 @@ internal fun GamesEditorRoute(
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
+	onShowStatistics: (TrackableFilter) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -76,6 +78,7 @@ internal fun GamesEditorRoute(
 						is GamesEditorScreenEvent.EditRolledBall -> onEditRolledBall(it.ballId) { ids ->
 							viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
 						}
+						is GamesEditorScreenEvent.ShowStatistics -> onShowStatistics(it.filter)
 					}
 				}
 		}

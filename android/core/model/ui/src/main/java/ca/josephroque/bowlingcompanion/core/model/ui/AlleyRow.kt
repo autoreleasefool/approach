@@ -63,7 +63,7 @@ fun AlleyRow(
 					row.forEach {
 						Icon(
 							painter = it,
-							// TODO: add content description
+							// FIXME: add content description
 							contentDescription = null,
 							modifier = Modifier
 								.padding(2.dp)

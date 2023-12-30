@@ -23,6 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
+import ca.josephroque.bowlingcompanion.core.statistics.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.EDITOR_SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
@@ -416,11 +417,19 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openSeriesStats() {
-		/* TODO: openSeriesStats */
+		sendEvent(GamesEditorScreenEvent.ShowStatistics(
+			filter = TrackableFilter(
+				source = TrackableFilter.Source.Series(seriesId),
+			),
+		))
 	}
 
 	private fun openGameStats() {
-		/* TODO: openGameStats */
+		sendEvent(GamesEditorScreenEvent.ShowStatistics(
+			filter = TrackableFilter(
+				source = TrackableFilter.Source.Game(_currentGameId.value),
+			),
+		))
 	}
 
 	private fun openBallRolledPicker() {
