@@ -2,7 +2,12 @@
 <resources>
 	<string name="statistics_widget_layout_editor_title">Widgets</string>
 
+	<string name="statistics_widget_layout_editor_tap_and_hold_to_reorder">Tap and hold widgets to reorder</string>
+	<string name="statistics_widget_layout_editor_tap_to_delete_widget">Tap a widget to remove</string>
+
 	<string name="cd_add_widget">Add New Widget</string>
+	<string name="cd_delete_widgets">Toggle Delete Mode</string>
+	<string name="cd_delete_widget">Delete Widget</string>
 
 	<string name="statistics_widget_editor_title">Create a Widget</string>
 

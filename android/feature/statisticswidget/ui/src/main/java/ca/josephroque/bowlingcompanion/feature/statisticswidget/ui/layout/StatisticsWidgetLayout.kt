@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,16 +9,22 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
+import java.util.UUID
 
 @Composable
 fun StatisticsWidgetLayout(
@@ -43,12 +50,13 @@ fun StatisticsWidgetLayout(
 
 			Row {
 				Spacer(modifier = Modifier.weight(1f))
-				TextButton(onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) }) {
-					Text(
-						stringResource(R.string.statistics_widget_layout_change),
-						style = MaterialTheme.typography.labelSmall,
-					)
-				}
+				Text(
+					stringResource(R.string.statistics_widget_layout_change),
+					style = MaterialTheme.typography.labelSmall,
+					modifier = Modifier
+						.clickable { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) }
+						.padding(8.dp),
+				)
 			}
 		}
 	}
@@ -73,5 +81,27 @@ private fun StatisticsWidgetRow(
 					.aspectRatio(if (widgets.size == 1) 2f else 1f),
 			)
 		}
+	}
+}
+
+@Preview
+@Composable
+private fun StatisticsWidgetLayoutPreview() {
+	Surface {
+		StatisticsWidgetLayout(
+			state = StatisticsWidgetLayoutUiState(
+				widgets = listOf(
+					StatisticsWidget(
+						source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
+						id = UUID.randomUUID(),
+						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
+						statistic = StatisticID.ACES,
+						context = "",
+						priority = 0,
+					),
+				)
+			),
+			onAction = {},
+		)
 	}
 }

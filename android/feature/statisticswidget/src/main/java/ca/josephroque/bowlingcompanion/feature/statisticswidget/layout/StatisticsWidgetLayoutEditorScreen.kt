@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorTopBar
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorTopBarUiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,6 +71,10 @@ private fun StatisticsWidgetLayoutEditorScreen(
 			StatisticsWidgetLayoutEditorTopBar(
 				onAction = { onAction(StatisticsWidgetLayoutEditorScreenUiAction.LayoutEditor(it)) },
 				scrollBehavior = scrollBehavior,
+				state = when (state) {
+					StatisticsWidgetLayoutEditorScreenUiState.Loading -> StatisticsWidgetLayoutEditorTopBarUiState()
+					is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> state.topBar
+				}
 			)
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

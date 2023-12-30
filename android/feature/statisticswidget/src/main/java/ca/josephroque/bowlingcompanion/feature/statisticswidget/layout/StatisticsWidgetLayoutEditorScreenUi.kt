@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.layout
 
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +11,8 @@ sealed interface StatisticsWidgetLayoutEditorScreenUiState {
 	data object Loading: StatisticsWidgetLayoutEditorScreenUiState
 
 	data class Loaded(
-		val layoutEditor: StatisticsWidgetLayoutEditorUiState
+		val layoutEditor: StatisticsWidgetLayoutEditorUiState,
+		val topBar: StatisticsWidgetLayoutEditorTopBarUiState,
 	): StatisticsWidgetLayoutEditorScreenUiState
 }
 
@@ -29,12 +31,12 @@ sealed interface StatisticsWidgetLayoutEditorScreenEvent {
 }
 
 inline fun MutableStateFlow<StatisticsWidgetLayoutEditorScreenUiState>.updateWidgets(
-	function: (StatisticsWidgetLayoutEditorUiState) -> StatisticsWidgetLayoutEditorUiState,
-): StatisticsWidgetLayoutEditorScreenUiState {
+	function: (StatisticsWidgetLayoutEditorScreenUiState.Loaded) -> StatisticsWidgetLayoutEditorScreenUiState.Loaded,
+): StatisticsWidgetLayoutEditorScreenUiState.Loaded? {
 	return this.updateAndGet { state ->
 		when (state) {
 			StatisticsWidgetLayoutEditorScreenUiState.Loading -> state
-			is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> state.copy(layoutEditor = function(state.layoutEditor))
+			is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> function(state.copy())
 		}
-	}
+	} as? StatisticsWidgetLayoutEditorScreenUiState.Loaded
 }

@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.CONTEXT
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.INITIAL_SOURCE
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,9 +63,10 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 			val widgets = statisticsWidgetRepository.getStatisticsWidgets(context).first()
 			_uiState.update {
 				StatisticsWidgetLayoutEditorScreenUiState.Loaded(
+					topBar = StatisticsWidgetLayoutEditorTopBarUiState(),
 					layoutEditor = StatisticsWidgetLayoutEditorUiState(
 						widgets = widgets,
-					)
+					),
 				)
 			}
 		}
@@ -87,50 +89,61 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 	}
 
 	private fun moveWidget(from: Int, to: Int) {
+		when (val state = _uiState.value) {
+			StatisticsWidgetLayoutEditorScreenUiState.Loading -> return
+			is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> {
+				val validIndexRange = 0..<state.layoutEditor.widgets.size
+				if (!validIndexRange.contains(from) || !validIndexRange.contains(to)) {
+					return
+				}
+			}
+		}
+
 		val state = _uiState.updateWidgets {
 			it.copy(
-				widgets = it.widgets.toMutableList()
-					.apply { add(to, removeAt(from)) }
+				layoutEditor = it.layoutEditor.copy(
+					widgets = it.layoutEditor.widgets.toMutableList()
+						.apply { add(to.coerceAtMost(it.layoutEditor.widgets.size - 1), removeAt(from)) }
+				)
 			)
 		}
 
-		when (state) {
-			StatisticsWidgetLayoutEditorScreenUiState.Loading -> Unit
-			is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
-				viewModelScope.launch {
-					statisticsWidgetRepository.updateStatisticsWidgetsOrder(
-						widgets = state.layoutEditor.widgets.map(StatisticsWidget::id),
-					)
-				}
+		if (state != null) {
+			viewModelScope.launch {
+				statisticsWidgetRepository.updateStatisticsWidgetsOrder(
+					widgets = state.layoutEditor.widgets.map(StatisticsWidget::id),
+				)
+			}
 		}
 	}
 
 	private fun handleWidgetClicked(widget: StatisticsWidget) {
 		val state = _uiState.updateWidgets {
-			if (it.isDeleteModeEnabled) {
+			if (it.layoutEditor.isDeleteModeEnabled) {
 				it.copy(
-					widgets = it.widgets.toMutableList()
-						.apply { remove(widget) }
+					layoutEditor = it.layoutEditor.copy(
+						widgets = it.layoutEditor.widgets.toMutableList()
+							.apply { remove(widget) },
+					),
 				)
 			} else {
 				it
 			}
 		}
 
-		when (state) {
-			StatisticsWidgetLayoutEditorScreenUiState.Loading -> Unit
-			is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
-				if (state.layoutEditor.isDeleteModeEnabled) {
-					viewModelScope.launch {
-						statisticsWidgetRepository.deleteStatisticWidget(widget.id)
-					}
-				}
+		if (state?.layoutEditor?.isDeleteModeEnabled == true) {
+			viewModelScope.launch {
+				statisticsWidgetRepository.deleteStatisticWidget(widget.id)
+			}
 		}
 	}
 
 	private fun toggleDeleteMode(isDeleteModeEnabled: Boolean) {
 		_uiState.updateWidgets {
-			it.copy(isDeleteModeEnabled = isDeleteModeEnabled)
+			it.copy(
+				layoutEditor = it.layoutEditor.copy(isDeleteModeEnabled = isDeleteModeEnabled),
+				topBar = it.topBar.copy(isDeleteModeEnabled = isDeleteModeEnabled),
+			)
 		}
 	}
 }

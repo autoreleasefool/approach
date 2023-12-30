@@ -7,6 +7,10 @@ data class StatisticsWidgetLayoutEditorUiState(
 	val isDeleteModeEnabled: Boolean = false,
 )
 
+data class StatisticsWidgetLayoutEditorTopBarUiState(
+	val isDeleteModeEnabled: Boolean = false,
+)
+
 sealed interface StatisticsWidgetLayoutEditorUiAction {
 	data object BackClicked: StatisticsWidgetLayoutEditorUiAction
 	data object AddWidgetClicked: StatisticsWidgetLayoutEditorUiAction
