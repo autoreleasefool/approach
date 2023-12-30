@@ -302,8 +302,24 @@ fun ApproachNavHost(
 						resourceFilter = bowler.toString(),
 					)
 				},
-				onPickSeries = { _, _ -> /* TODO: onPickSeries */ },
-				onPickGame = { _, _ -> /* TODO: onPickGame */ },
+				onPickSeries = { league, series, result ->
+					navController.navigateToResourcePickerForResult(
+						selectedIds = series?.let { setOf(it) } ?: emptySet(),
+						limit = 1,
+						navResultCallback = result,
+						resourceType = ResourcePickerType.SERIES,
+						resourceFilter = league.toString(),
+					)
+				},
+				onPickGame = { series, game, result ->
+					navController.navigateToResourcePickerForResult(
+						selectedIds = game?.let { setOf(it) } ?: emptySet(),
+						limit = 1,
+						navResultCallback = result,
+						resourceType = ResourcePickerType.GAME,
+						resourceFilter = series.toString(),
+					)
+				},
 				onShowStatistics = navController::navigateToStatisticsDetails,
 			)
 			statisticsDetailsScreen(

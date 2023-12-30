@@ -11,7 +11,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsO
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsOverviewUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -131,9 +130,10 @@ class StatisticsOverviewViewModel @Inject constructor(
 			val source = _sourceSummaries.first()
 
 			// Only show league picker if bowler is selected
-			if (source?.bowler == null) return@launch
+			val bowler = source?.bowler ?: return@launch
+
 			_isShowingSourcePicker.value = false
-			sendEvent(StatisticsOverviewScreenEvent.EditLeague(source.bowler.id, source.league?.id))
+			sendEvent(StatisticsOverviewScreenEvent.EditLeague(bowler.id, source.league?.id))
 		}
 	}
 
@@ -142,19 +142,22 @@ class StatisticsOverviewViewModel @Inject constructor(
 			val source = _sourceSummaries.first()
 
 			// Only show series picker if league is selected
-			if (source?.league == null) return@launch
+			val league = source?.league ?: return@launch
+
 			_isShowingSourcePicker.value = false
-			sendEvent(StatisticsOverviewScreenEvent.EditSeries(source.series?.id))
+			sendEvent(StatisticsOverviewScreenEvent.EditSeries(league.id, source.series?.id))
 		}
 	}
 
 	private fun showGamePicker() {
 		viewModelScope.launch {
 			val source = _sourceSummaries.first()
+
 			// Only show game picker if series is selected
-			if (source?.series == null) return@launch
+			val series = source?.series ?: return@launch
+
 			_isShowingSourcePicker.value = false
-			sendEvent(StatisticsOverviewScreenEvent.EditGame(source.game?.id))
+			sendEvent(StatisticsOverviewScreenEvent.EditGame(series.id, source.game?.id))
 		}
 	}
 }

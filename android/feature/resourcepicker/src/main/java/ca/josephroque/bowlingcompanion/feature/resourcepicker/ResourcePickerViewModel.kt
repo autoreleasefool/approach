@@ -5,16 +5,20 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.AlleyPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.GamePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.GearPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LanePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
+import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.SeriesPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_FILTER
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_TYPE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTED_IDS
@@ -37,6 +41,8 @@ import javax.inject.Inject
 class ResourcePickerViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
 	leaguesRepository: LeaguesRepository,
+	seriesRepository: SeriesRepository,
+	gamesRepository: GamesRepository,
 	gearRepository: GearRepository,
 	alleysRepository: AlleysRepository,
 	lanesRepository: LanesRepository,
@@ -62,6 +68,8 @@ class ResourcePickerViewModel @Inject constructor(
 				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Bowler(UUID.fromString(it))
 				ResourcePickerType.GEAR -> ResourcePickerFilter.Gear(GearKind.valueOf(it))
 				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(UUID.fromString(it))
+				ResourcePickerType.SERIES -> ResourcePickerFilter.League(UUID.fromString(it))
+				ResourcePickerType.GAME -> ResourcePickerFilter.Series(UUID.fromString(it))
 				ResourcePickerType.BOWLER, ResourcePickerType.ALLEY -> null
 			}
 		}
@@ -72,6 +80,8 @@ class ResourcePickerViewModel @Inject constructor(
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
 		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, (filter as? ResourcePickerFilter.Bowler)?.id)
+		ResourcePickerType.SERIES -> SeriesPickerDataProvider(seriesRepository, (filter as? ResourcePickerFilter.League)?.id)
+		ResourcePickerType.GAME -> GamePickerDataProvider(gamesRepository, (filter as? ResourcePickerFilter.Series)?.id)
 		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository, (filter as? ResourcePickerFilter.Gear)?.kind)
 		ResourcePickerType.ALLEY -> AlleyPickerDataProvider(alleysRepository)
 		ResourcePickerType.LANE -> LanePickerDataProvider(lanesRepository, (filter as? ResourcePickerFilter.Alley)?.id)
@@ -115,6 +125,8 @@ class ResourcePickerViewModel @Inject constructor(
 					titleResourceId = when (resourceType) {
 						ResourcePickerType.BOWLER -> R.plurals.bowler_picker_title
 						ResourcePickerType.LEAGUE -> R.plurals.league_picker_title
+						ResourcePickerType.SERIES -> R.plurals.series_picker_title
+						ResourcePickerType.GAME -> R.plurals.game_picker_title
 						ResourcePickerType.GEAR -> R.plurals.gear_picker_title
 						ResourcePickerType.ALLEY -> R.plurals.alley_picker_title
 						ResourcePickerType.LANE -> R.plurals.lane_picker_title

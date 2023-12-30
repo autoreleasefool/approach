@@ -75,7 +75,7 @@ private fun CompactSeriesRow(
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Header(
+	ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow(
 		date = date,
 		total = total,
 		itemSize = SeriesItemSize.COMPACT,
@@ -109,7 +109,7 @@ private fun DefaultSeriesRow(
 			verticalArrangement = Arrangement.spacedBy(16.dp),
 			modifier = Modifier.padding(16.dp),
 		) {
-			Header(
+			ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow(
 				date = date,
 				total = total,
 				itemSize = SeriesItemSize.DEFAULT,
@@ -120,53 +120,6 @@ private fun DefaultSeriesRow(
 				seriesLow = scores.seriesLow,
 				seriesHigh = scores.seriesHigh,
 				scores = scores.model,
-			)
-		}
-	}
-}
-
-@Composable
-private fun Header(
-	date: LocalDate,
-	total: Int,
-	itemSize: SeriesItemSize,
-	modifier: Modifier = Modifier,
-) {
-	Row(
-		horizontalArrangement = Arrangement.spacedBy(16.dp),
-		verticalAlignment = when (itemSize) {
-			SeriesItemSize.DEFAULT -> Alignment.Top
-			SeriesItemSize.COMPACT -> Alignment.CenterVertically
-		},
-		modifier = modifier.fillMaxWidth(),
-	) {
-		Row(
-			horizontalArrangement = Arrangement.spacedBy(16.dp),
-			verticalAlignment = Alignment.CenterVertically,
-			modifier = Modifier.weight(1f),
-		) {
-			Icon(
-				painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event),
-				contentDescription = null,
-				tint = MaterialTheme.colorScheme.onSurface,
-				modifier = Modifier.size(16.dp),
-			)
-
-			Text(
-				text = date.simpleFormat(),
-				style = MaterialTheme.typography.titleMedium,
-			)
-		}
-
-		if (total > 0) {
-			Text(
-				text = total.toString(),
-				style = when (itemSize) {
-					SeriesItemSize.DEFAULT -> MaterialTheme.typography.headlineMedium
-					SeriesItemSize.COMPACT -> MaterialTheme.typography.headlineSmall
-				},
-				fontWeight = FontWeight.Black,
-				fontStyle = FontStyle.Italic,
 			)
 		}
 	}

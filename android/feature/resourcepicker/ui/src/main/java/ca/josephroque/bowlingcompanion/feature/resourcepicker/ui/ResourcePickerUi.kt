@@ -1,14 +1,18 @@
 package ca.josephroque.bowlingcompanion.feature.resourcepicker.ui
 
 import androidx.annotation.PluralsRes
+import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
+import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 enum class ResourcePickerType {
 	BOWLER,
 	LEAGUE,
+	SERIES,
+	GAME,
 	GEAR,
 	ALLEY,
 	LANE,
@@ -16,6 +20,8 @@ enum class ResourcePickerType {
 
 sealed interface ResourcePickerFilter {
 	data class Bowler(val id: UUID): ResourcePickerFilter
+	data class League(val id: UUID): ResourcePickerFilter
+	data class Series(val id: UUID): ResourcePickerFilter
 	data class Gear(val kind: GearKind): ResourcePickerFilter
 	data class Alley(val id: UUID): ResourcePickerFilter
 }
@@ -33,6 +39,22 @@ sealed interface ResourceItem {
 		override val id: UUID,
 		override val name: String,
 	): ResourceItem
+
+	data class Series(
+		override val id: UUID,
+		val date: LocalDate,
+		val total: Int,
+	): ResourceItem {
+		override val name: String = date.simpleFormat()
+	}
+
+	data class Game(
+		override val id: UUID,
+		val index: Int,
+		val score: Int,
+	): ResourceItem {
+		override val name: String = "Game ${index + 1}"
+	}
 
 	data class Gear(
 		override val id: UUID,

@@ -30,6 +30,6 @@ sealed interface StatisticsOverviewScreenEvent {
 
 	data class EditBowler(val bowler: UUID?): StatisticsOverviewScreenEvent
 	data class EditLeague(val bowler: UUID, val league: UUID?): StatisticsOverviewScreenEvent
-	data class EditSeries(val series: UUID?): StatisticsOverviewScreenEvent
-	data class EditGame(val game: UUID?): StatisticsOverviewScreenEvent
+	data class EditSeries(val league: UUID, val series: UUID?): StatisticsOverviewScreenEvent
+	data class EditGame(val series: UUID, val game: UUID?): StatisticsOverviewScreenEvent
 }

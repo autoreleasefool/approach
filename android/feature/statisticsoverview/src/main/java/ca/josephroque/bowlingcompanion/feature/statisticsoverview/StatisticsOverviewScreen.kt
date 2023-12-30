@@ -26,8 +26,8 @@ import java.util.UUID
 internal fun StatisticsOverviewRoute(
 	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickSeries: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickGame: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickSeries: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickGame: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: StatisticsOverviewViewModel = hiltViewModel(),
@@ -52,11 +52,11 @@ internal fun StatisticsOverviewRoute(
 								viewModel.handleAction(StatisticsOverviewScreenUiAction.UpdatedLeague(ids.firstOrNull()))
 							}
 						is StatisticsOverviewScreenEvent.EditSeries ->
-							onPickSeries(it.series) { ids ->
+							onPickSeries(it.league, it.series) { ids ->
 								viewModel.handleAction(StatisticsOverviewScreenUiAction.UpdatedSeries(ids.firstOrNull()))
 							}
 						is StatisticsOverviewScreenEvent.EditGame ->
-							onPickGame(it.game) { ids ->
+							onPickGame(it.series, it.game) { ids ->
 								viewModel.handleAction(StatisticsOverviewScreenUiAction.UpdatedGame(ids.firstOrNull()))
 							}
 					}

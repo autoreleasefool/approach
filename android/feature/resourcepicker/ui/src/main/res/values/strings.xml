@@ -19,6 +19,15 @@
 		<item quantity="other">Select Leagues</item>
 	</plurals>
 
+	<plurals name="series_picker_title">
+		<item quantity="other">Select Series</item>
+	</plurals>
+
+	<plurals name="game_picker_title">
+		<item quantity="one">Select Game</item>
+		<item quantity="other">Select Games</item>
+	</plurals>
+
 	<plurals name="gear_picker_title">
 		<item quantity="other">Select Gear</item>
 	</plurals>

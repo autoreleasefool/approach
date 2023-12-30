@@ -17,9 +17,11 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.model.ui.AlleyRow
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
+import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
 import ca.josephroque.bowlingcompanion.core.model.ui.GearRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
+import ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourceItem
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
@@ -96,6 +98,8 @@ private fun ResourcePickerScreen(
 						when (it) {
 							is ResourceItem.Bowler -> BowlerRow(name = it.name)
 							is ResourceItem.League -> LeagueRow(name = it.name)
+							is ResourceItem.Series -> SeriesRow(date = it.date, total = it.total)
+							is ResourceItem.Game -> GameRow(index = it.index, score = it.score)
 							is ResourceItem.Gear -> GearRow(
 								name = it.name,
 								ownerName = it.ownerName,

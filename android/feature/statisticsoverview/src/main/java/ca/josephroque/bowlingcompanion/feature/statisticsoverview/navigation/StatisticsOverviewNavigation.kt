@@ -18,8 +18,8 @@ fun NavController.navigateToStatisticsOverview(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.statisticsOverviewScreen(
 	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickSeries: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickGame: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickSeries: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onPickGame: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowStatistics: (TrackableFilter) -> Unit,
 ) {
 	composable(
