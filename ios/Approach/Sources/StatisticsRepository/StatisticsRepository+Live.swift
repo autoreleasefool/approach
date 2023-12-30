@@ -129,47 +129,56 @@ extension StatisticsRepository: DependencyKey {
 			return nil
 		}
 
+		@Sendable func loadSources(source: TrackableFilter.Source) async throws -> TrackableFilter.Sources {
+			try await database.reader().read {
+				switch source {
+				case let .bowler(id):
+					let request = Bowler.Database
+						.filter(id: id)
+					let sources = try TrackableFilter.SourcesByBowler
+						.fetchOneGuaranteed($0, request)
+					return .init(bowler: sources.bowler, league: nil, series: nil, game: nil)
+				case let .league(id):
+					let request = League.Database
+						.filter(id: id)
+						.including(required: League.Database.bowler)
+					let sources = try TrackableFilter.SourcesByLeague
+						.fetchOneGuaranteed($0, request)
+					return .init(bowler: sources.bowler, league: sources.league, series: nil, game: nil)
+				case let .series(id):
+					let request = Series.Database
+						.filter(id: id)
+						.including(required: Series.Database.league)
+						.including(required: Series.Database.bowler)
+					let sources = try TrackableFilter.SourcesBySeries
+						.fetchOneGuaranteed($0, request)
+					return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: nil)
+				case let .game(id):
+					let request = Game.Database
+						.filter(id: id)
+						.including(required: Game.Database.series)
+						.including(required: Game.Database.league)
+						.including(required: Game.Database.bowler)
+					let sources = try TrackableFilter.SourcesByGame
+						.fetchOneGuaranteed($0, request)
+					return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: sources.game)
+				}
+			}
+		}
+
 		// MARK: - Implementation
 
 		return Self(
-			loadSources: { source in
-				try await database.reader().read {
-					switch source {
-					case let .bowler(id):
-						let request = Bowler.Database
-							.filter(id: id)
-						let sources = try TrackableFilter.SourcesByBowler
-							.fetchOneGuaranteed($0, request)
-						return .init(bowler: sources.bowler, league: nil, series: nil, game: nil)
-					case let .league(id):
-						let request = League.Database
-							.filter(id: id)
-							.including(required: League.Database.bowler)
-						let sources = try TrackableFilter.SourcesByLeague
-							.fetchOneGuaranteed($0, request)
-						return .init(bowler: sources.bowler, league: sources.league, series: nil, game: nil)
-					case let .series(id):
-						let request = Series.Database
-							.filter(id: id)
-							.including(required: Series.Database.league)
-							.including(required: Series.Database.bowler)
-						let sources = try TrackableFilter.SourcesBySeries
-							.fetchOneGuaranteed($0, request)
-						return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: nil)
-					case let .game(id):
-						let request = Game.Database
-							.filter(id: id)
-							.including(required: Game.Database.series)
-							.including(required: Game.Database.league)
-							.including(required: Game.Database.bowler)
-						let sources = try TrackableFilter.SourcesByGame
-							.fetchOneGuaranteed($0, request)
-						return .init(bowler: sources.bowler, league: sources.league, series: sources.series, game: sources.game)
-					}
-				}
-			},
+			loadSources: loadSources(source:),
 			loadDefaultSources: {
-				try await database.reader().read {
+				let decoder = JSONDecoder()
+				if let lastUsedSource = preferences.string(forKey: .statisticsLastUsedTrackableFilterSource),
+					 let data = lastUsedSource.data(using: .utf8),
+					 let source = try? decoder.decode(TrackableFilter.Source.self, from: data) {
+					return try await loadSources(source: source)
+				}
+
+				return try await database.reader().read {
 					let bowlers = try Bowler.Database
 						.limit(2)
 						.filter(byKind: .playable)
@@ -182,6 +191,15 @@ extension StatisticsRepository: DependencyKey {
 
 					return TrackableFilter.Sources(bowler: bowler, league: nil, series: nil, game: nil)
 				}
+			},
+			saveLastUsedSource: { source in
+				let encoder = JSONEncoder()
+				guard let data = try? encoder.encode(source),
+							let lastUsed = String(data: data, encoding: .utf8) else {
+					return
+				}
+
+				preferences.setKey(.statisticsLastUsedTrackableFilterSource, toString: lastUsed)
 			},
 			loadValues: { filter in
 				let statistics = try await database.reader().read {

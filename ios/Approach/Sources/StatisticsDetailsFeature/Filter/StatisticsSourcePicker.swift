@@ -175,6 +175,7 @@ public struct StatisticsSourcePicker: Reducer {
 				case .didTapConfirmButton:
 					if let source = state.source {
 						return .concatenate(
+							.run { _ in await statistics.saveLastUsedSource(source) },
 							.send(.delegate(.didChangeSource(source))),
 							.run { _ in await dismiss() }
 						)

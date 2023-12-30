@@ -18,6 +18,7 @@ public enum PreferenceKey: String {
 	case statisticsCountSplitWithBonusAsSplit       // default: true
 	case statisticsHideZeroStatistics               // default: true
 	case statisticsHideStatisticsDescriptions       // default: false
+	case statisticsLastUsedTrackableFilterSource    // default: null
 
 	// MARK: - Statistics Widgets
 

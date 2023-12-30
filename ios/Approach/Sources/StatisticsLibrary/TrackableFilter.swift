@@ -39,7 +39,7 @@ public struct TrackableFilter: Equatable {
 // MARK: - Source
 
 extension TrackableFilter {
-	public enum Source: Equatable {
+	public enum Source: Equatable, Codable {
 		case bowler(Bowler.ID)
 		case league(League.ID)
 		case series(Series.ID)
