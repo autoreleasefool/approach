@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -14,6 +15,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
@@ -93,6 +95,7 @@ private fun ScoreTextField(
 		value = score.toString(),
 		onValueChange = onScoreChanged,
 		singleLine = true,
+		keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 		label = {
 			Text(
 				stringResource(R.string.score_editor_score),

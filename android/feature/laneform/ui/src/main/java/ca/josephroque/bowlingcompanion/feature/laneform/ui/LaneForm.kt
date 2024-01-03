@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -21,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
@@ -134,6 +136,7 @@ private fun LaneLabelTextField(
 		onValueChange = onLabelChanged,
 		label = { Text(stringResource(R.string.lane_form_property_label)) },
 		singleLine = true,
+		keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp),

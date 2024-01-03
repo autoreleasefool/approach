@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
@@ -123,7 +124,10 @@ private fun NameTextField(
 				)
 			}
 		},
-		keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+		keyboardOptions = KeyboardOptions(
+			imeAction = ImeAction.Done,
+			capitalization = KeyboardCapitalization.Words,
+		),
 		keyboardActions = KeyboardActions(onDone = { onDoneClicked() }),
 		modifier = modifier.fillMaxWidth(),
 	)

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -24,6 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
@@ -174,6 +177,7 @@ private fun LeagueNameField(
 		label = { Text(stringResource(R.string.league_form_property_name)) },
 		singleLine = true,
 		isError = errorId != null,
+		keyboardOptions = KeyboardOptions(KeyboardCapitalization.Words),
 		supportingText = {
 			errorId?.let {
 				Text(
@@ -296,6 +300,7 @@ private fun NumberOfGamesSlider(
 				val intValue = it.toIntOrNull() ?: 1
 				onNumberOfGamesChanged(intValue)
 			},
+			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 			label = { Text(stringResource(R.string.league_form_property_number_of_games)) },
 			singleLine = true,
 			modifier = Modifier.weight(1f),
@@ -351,6 +356,7 @@ private fun AdditionalPinFallField(
 			val intValue = it.toIntOrNull() ?: 0
 			onAdditionalPinFallChanged(intValue)
 		},
+		keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 		label = { Text(stringResource(R.string.league_form_property_pinfall_additional_pinfall)) },
 		singleLine = true,
 		modifier = Modifier
@@ -371,6 +377,7 @@ private fun AdditionalGamesField(
 			onAdditionalGamesChanged(intValue)
 		},
 		label = { Text(stringResource(R.string.league_form_property_pinfall_additional_games)) },
+		keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 		singleLine = true,
 		modifier = Modifier
 			.fillMaxWidth()
