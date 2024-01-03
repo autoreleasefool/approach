@@ -97,8 +97,10 @@ fun String.initials(): String {
 	val words = words()
 	return if (words.size > 1) {
 		words[0].first().toString() + words[1].first().toString()
-	} else {
+	} else if (words.size == 1) {
 		words[0].take(2)
+	} else {
+		""
 	}
 }
 
