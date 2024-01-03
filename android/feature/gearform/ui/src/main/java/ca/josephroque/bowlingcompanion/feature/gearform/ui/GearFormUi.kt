@@ -31,6 +31,7 @@ sealed interface GearFormUiAction {
 	data object OwnerClicked: GearFormUiAction
 
 	data class NameChanged(val name: String): GearFormUiAction
+	data class KindChanged(val kind: GearKind): GearFormUiAction
 }
 
 data class GearFormTopBarUiState(

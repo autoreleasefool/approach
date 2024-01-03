@@ -10,6 +10,14 @@
 	<string name="gear_form_section_avatar">Avatar</string>
 	<string name="gear_form_section_avatar_description">Create a unique avatar so you can quickly and easily recognize this item in the app.</string>
 
+	<string name="gear_form_section_kind">Kind</string>
+	<string name="gear_form_section_kind_description">Select the kind of gear you\'re creating</string>
+
+	<string name="gear_property_kind_shoes">Shoes</string>
+	<string name="gear_property_kind_ball">Bowling Ball</string>
+	<string name="gear_property_kind_towel">Towel</string>
+	<string name="gear_property_kind_other">Other</string>
+
 	<string name="gear_form_section_owner">Owner</string>
 	<string name="gear_form_owner_none">No owner</string>
 

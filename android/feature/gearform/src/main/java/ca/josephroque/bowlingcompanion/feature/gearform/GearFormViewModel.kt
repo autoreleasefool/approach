@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
+import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.feature.gearform.navigation.GEAR_ID
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.R
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
@@ -60,6 +61,7 @@ class GearFormViewModel @Inject constructor(
 			GearFormUiAction.AvatarClicked -> editAvatar()
 			GearFormUiAction.OwnerClicked -> editOwner()
 			is GearFormUiAction.NameChanged -> updateName(name = action.name)
+			is GearFormUiAction.KindChanged -> updateKind(kind = action.kind)
 		}
 	}
 
@@ -142,6 +144,10 @@ class GearFormViewModel @Inject constructor(
 
 	private fun updateName(name: String) {
 		_uiState.updateForm { it.copy(name = name, nameErrorId = null) }
+	}
+
+	private fun updateKind(kind: GearKind) {
+		_uiState.updateForm { it.copy(kind = kind) }
 	}
 
 	private fun setDeleteGearPrompt(isVisible: Boolean) {
