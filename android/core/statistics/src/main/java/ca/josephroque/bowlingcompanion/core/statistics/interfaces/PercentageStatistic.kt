@@ -22,7 +22,7 @@ interface PercentageStatistic: Statistic {
 
 	override val formattedValue: String
 		get() = if (includeNumeratorInFormattedValue && numerator > 0) {
-			String.format("%s (%d)", percentage.formatAsPercentage, numerator)
+			String.format("%s (%d/%d)", percentage.formatAsPercentage, numerator, denominator)
 		} else {
 			percentage.formatAsPercentage
 		}
