@@ -32,7 +32,7 @@ extension PercentageStatistic {
 
 	public var formattedValue: String {
 		if Self.includeNumeratorInFormattedValue && numerator > 0 {
-			return "\(format(percentage: percentage)) (\(numerator))"
+			return format(percentage: percentage, withNumerator: numerator, withDenominator: denominator)
 		} else {
 			return format(percentage: percentage)
 		}

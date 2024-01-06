@@ -22,9 +22,17 @@ public let percentageFormatter: NumberFormatter = {
 	return formatter
 }()
 
-public func format(percentage: Double?) -> String {
+public func format(
+	percentage: Double?,
+	withNumerator: Int? = nil,
+	withDenominator: Int? = nil
+) -> String {
 	guard let percentage else { return emptyValue }
-	return percentageFormatter.string(for: percentage) ?? emptyValue
+	if let withNumerator, let withDenominator, let percentage = percentageFormatter.string(for: percentage) {
+		return "\(percentage) (\(withNumerator)/\(withDenominator))"
+	} else {
+		return percentageFormatter.string(for: percentage) ?? emptyValue
+	}
 }
 
 public func format(percentageWithModifier: Double?) -> String {
