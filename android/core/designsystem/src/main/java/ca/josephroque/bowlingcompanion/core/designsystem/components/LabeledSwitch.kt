@@ -32,7 +32,7 @@ fun LabeledSwitch(
 		modifier = modifier
 			.fillMaxWidth()
 			.clickable(onClick = { onCheckedChange(!checked) }, enabled = enabled)
-			.padding(vertical = 8.dp, horizontal = 16.dp)
+			.padding(horizontal = 16.dp)
 	) {
 		Column(
 			horizontalAlignment = Alignment.Start,
