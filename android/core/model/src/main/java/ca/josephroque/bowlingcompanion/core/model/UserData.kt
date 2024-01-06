@@ -12,6 +12,7 @@ data class UserData(
 	val isCountingH2AsHDisabled: Boolean,
 	val isCountingSplitWithBonusAsSplitDisabled: Boolean,
 	val isShowingZeroStatistics: Boolean,
+	val isHidingStatisticDescriptions: Boolean,
 	val isHidingWidgetsInBowlersList: Boolean,
 	val isHidingWidgetsInLeaguesList: Boolean,
 	val lastTrackableFilter: TrackableFilter.Source?,

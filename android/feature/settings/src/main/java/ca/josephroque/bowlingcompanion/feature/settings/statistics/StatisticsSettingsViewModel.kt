@@ -26,6 +26,7 @@ class StatisticsSettingsViewModel @Inject constructor(
 			isHidingZeroStatistics = !it.isShowingZeroStatistics,
 			isHidingWidgetsInBowlersList = it.isHidingWidgetsInBowlersList,
 			isHidingWidgetsInLeaguesList = it.isHidingWidgetsInLeaguesList,
+			isHidingStatisticDescriptions = it.isHidingStatisticDescriptions,
 		)
 	}
 
@@ -51,6 +52,7 @@ class StatisticsSettingsViewModel @Inject constructor(
 			is StatisticsSettingsUiAction.IsHidingZeroStatisticsToggled -> toggleIsHidingZeroStatistics(action.newValue)
 			is StatisticsSettingsUiAction.IsHidingWidgetsInBowlersListToggled -> toggleIsHidingWidgetsInBowlersList(action.newValue)
 			is StatisticsSettingsUiAction.IsHidingWidgetsInLeaguesListToggled -> toggleIsHidingWidgetsInLeaguesList(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingStatisticDescriptionsToggled -> toggleIsHidingStatisticDescriptions(action.newValue)
 		}
 	}
 
@@ -69,6 +71,12 @@ class StatisticsSettingsViewModel @Inject constructor(
 	private fun toggleIsHidingZeroStatistics(newValue: Boolean) {
 		viewModelScope.launch {
 			userDataRepository.setIsHidingZeroStatistics(newValue)
+		}
+	}
+
+	private fun toggleIsHidingStatisticDescriptions(newValue: Boolean) {
+		viewModelScope.launch {
+			userDataRepository.setIsHidingStatisticDescriptions(newValue)
 		}
 	}
 

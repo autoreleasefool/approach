@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
@@ -56,6 +58,18 @@ fun StatisticsDetailsList(
 						.padding(horizontal = 16.dp),
 				)
 			}
+		}
+
+		item(contentType = "settings") {
+			Settings(
+				isHidingZeroStatistics = state.isHidingZeroStatistics,
+				isHidingStatisticDescriptions = state.isHidingStatisticDescriptions,
+				onAction = onAction,
+				modifier = Modifier
+					.padding(bottom = 16.dp)
+					.padding(horizontal = 16.dp),
+
+			)
 		}
 	}
 }
@@ -133,6 +147,39 @@ private fun ListEntry(
 			text = entry.value,
 			style = MaterialTheme.typography.bodyMedium,
 			color = MaterialTheme.colorScheme.onSurface,
+		)
+	}
+}
+
+@Composable
+private fun Settings(
+	isHidingZeroStatistics: Boolean,
+	isHidingStatisticDescriptions: Boolean,
+	onAction: (StatisticsDetailsListUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	Card(modifier = modifier) {
+		Text(
+			text = stringResource(R.string.statistics_list_settings),
+			style = MaterialTheme.typography.bodyMedium,
+			fontWeight = FontWeight.Bold,
+			color = MaterialTheme.colorScheme.onSurface,
+			modifier = Modifier
+				.padding(horizontal = 16.dp, vertical = 8.dp),
+		)
+
+		LabeledSwitch(
+			checked = isHidingZeroStatistics,
+			onCheckedChange = { onAction(StatisticsDetailsListUiAction.HidingZeroStatisticsToggled(it)) },
+			titleResourceId = R.string.statistics_list_setting_hide_zero,
+			compact = true,
+		)
+
+		LabeledSwitch(
+			checked = isHidingStatisticDescriptions,
+			onCheckedChange = { onAction(StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled(it)) },
+			titleResourceId = R.string.statistics_list_setting_hide_descriptions,
+			compact = true,
 		)
 	}
 }

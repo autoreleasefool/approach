@@ -32,6 +32,7 @@ fun StatisticsSettings(
 
 		OverallSettingsSection(
 			isHidingZeroStatistics = state.isHidingZeroStatistics,
+			isHidingStatisticDescriptions = state.isHidingStatisticDescriptions,
 			onAction = onAction,
 		)
 
@@ -69,6 +70,7 @@ private fun FrameSettingsSection(
 @Composable
 private fun OverallSettingsSection(
 	isHidingZeroStatistics: Boolean,
+	isHidingStatisticDescriptions: Boolean,
 	onAction: (StatisticsSettingsUiAction) -> Unit,
 ) {
 	ListSectionHeader(titleResourceId = R.string.statistics_settings_overall)
@@ -77,6 +79,12 @@ private fun OverallSettingsSection(
 		checked = isHidingZeroStatistics,
 		onCheckedChange = { onAction(StatisticsSettingsUiAction.IsHidingZeroStatisticsToggled(it)) },
 		titleResourceId = R.string.statistics_settings_hide_zero,
+	)
+
+	LabeledSwitch(
+		checked = isHidingStatisticDescriptions,
+		onCheckedChange = { onAction(StatisticsSettingsUiAction.IsHidingStatisticDescriptionsToggled(it)) },
+		titleResourceId = R.string.statistics_settings_hide_descriptions,
 	)
 }
 

@@ -8,4 +8,8 @@
 	<string name="statistics_details_aggregation_title">Aggregate statistic over time?</string>
 	<string name="statistics_details_aggregation_accumulate_subtitle">Shows the total value as it changes over time</string>
 	<string name="statistics_details_aggregation_periodic_subtitle">Shows the periodic value week over week</string>
+
+	<string name="statistics_list_settings">Settings</string>
+	<string name="statistics_list_setting_hide_zero">Hide statistics with a value of zero?</string>
+	<string name="statistics_list_setting_hide_descriptions">Hide descriptions for each statistic?</string>
 </resources>

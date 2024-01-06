@@ -35,6 +35,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isCountingH2AsHDisabled = it.isCountingH2AsHDisabled,
 				isCountingSplitWithBonusAsSplitDisabled = it.isCountingSplitWithBonusAsSplitDisabled,
 				isShowingZeroStatistics = it.isShowingZeroStatistics,
+				isHidingStatisticDescriptions = it.isHidingStatisticDescriptions,
 				isHidingWidgetsInBowlersList = it.isHidingWidgetsInBowlersList,
 				isHidingWidgetsInLeaguesList = it.isHidingWidgetsInLeaguesList,
 				recentlyUsedBowlerIds = it.recentlyUsedAlleyIdsList,
@@ -99,6 +100,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setIsHidingZeroStatistics(isHiding: Boolean) {
 		userPreferences.updateData {
 			it.copy { this.isShowingZeroStatistics = !isHiding }
+		}
+	}
+
+	suspend fun setIsHidingStatisticDescriptions(isHiding: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isHidingStatisticDescriptions = isHiding }
 		}
 	}
 

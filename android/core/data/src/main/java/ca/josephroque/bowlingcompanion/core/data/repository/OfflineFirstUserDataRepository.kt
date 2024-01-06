@@ -44,6 +44,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setIsHidingZeroStatistics(isHiding = isHidingZeroStatistics)
 	}
 
+	override suspend fun setIsHidingStatisticDescriptions(isHidingStatisticDescriptions: Boolean) {
+		approachPreferencesDataSource.setIsHidingStatisticDescriptions(isHiding = isHidingStatisticDescriptions)
+	}
+
 	override suspend fun setIsHidingWidgetsInLeaguesList(isHidingWidgetsInLeaguesList: Boolean) {
 		approachPreferencesDataSource.setIsHidingWidgetsInLeaguesList(isHiding = isHidingWidgetsInLeaguesList)
 	}

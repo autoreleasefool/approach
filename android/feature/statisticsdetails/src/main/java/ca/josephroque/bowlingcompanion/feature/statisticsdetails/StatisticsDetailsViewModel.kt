@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -52,7 +51,24 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val _filter: MutableStateFlow<TrackableFilter> =
 		MutableStateFlow(TrackableFilter(source = _initialFilterSource))
 
-	private val _statisticsList = _filter.map { statisticsRepository.getStatisticsList(it) }
+	private data class StatisticsSettings(
+		val isHidingZeroStatistics: Boolean,
+		val isHidingStatisticDescriptions: Boolean,
+	)
+	private val _statisticsSettings: Flow<StatisticsSettings> =
+		userDataRepository.userData.map {
+			StatisticsSettings(
+				isHidingZeroStatistics = !it.isShowingZeroStatistics,
+				isHidingStatisticDescriptions = it.isHidingStatisticDescriptions,
+			)
+		}
+
+	private val _statisticsList = combine(
+		_filter,
+		_statisticsSettings,
+	) { filter, _ ->
+		statisticsRepository.getStatisticsList(filter)
+	}
 
 	private val _selectedStatistic: MutableStateFlow<StatisticID?> = MutableStateFlow(
 		allStatistics(source = _initialFilterSource).firstOrNull()?.id
@@ -104,12 +120,13 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val _statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
 		_statisticsList,
 		_selectedStatistic,
-		userDataRepository.userData,
-	) { statistics, selectedStatistic, userData ->
+		_statisticsSettings,
+	) { statistics, selectedStatistic, settings ->
 		StatisticsDetailsListUiState(
 			statistics = statistics,
 			highlightedEntry = selectedStatistic,
-			isHidingZeroStatistics = !userData.isShowingZeroStatistics,
+			isHidingZeroStatistics = settings.isHidingZeroStatistics,
+			isHidingStatisticDescriptions = settings.isHidingStatisticDescriptions,
 		)
 	}
 
@@ -152,6 +169,8 @@ class StatisticsDetailsViewModel @Inject constructor(
 				showStatisticChart(statistic = action.id)
 			is StatisticsDetailsListUiAction.HidingZeroStatisticsToggled ->
 				toggleHidingZeroStatistics(action.newValue)
+			is StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled ->
+				toggleHidingStatisticDescriptions(action.newValue)
 		}
 	}
 
@@ -173,10 +192,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 		_selectedStatistic.value = statistic
 	}
 
-	private fun toggleHidingZeroStatistics(newValue: Boolean?) {
+	private fun toggleHidingZeroStatistics(newValue: Boolean) {
 		viewModelScope.launch {
-			val currentValue = !userDataRepository.userData.first().isShowingZeroStatistics
-			userDataRepository.setIsHidingZeroStatistics(newValue ?: !currentValue)
+			userDataRepository.setIsHidingZeroStatistics(newValue)
+		}
+	}
+
+	private fun toggleHidingStatisticDescriptions(newValue: Boolean) {
+		viewModelScope.launch {
+			userDataRepository.setIsHidingStatisticDescriptions(newValue)
 		}
 	}
 

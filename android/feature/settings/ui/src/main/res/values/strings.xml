@@ -42,6 +42,7 @@
 	<string name="statistics_settings_count_s2_as_s">Count S2 as Split?</string>
 	<string name="statistics_settings_overall">Overall</string>
 	<string name="statistics_settings_hide_zero">Hide statistics with a value of zero?</string>
+	<string name="statistics_settings_hide_descriptions">Hide descriptions for each statistic?</string>
 	<string name="statistics_settings_widgets">Widgets</string>
 	<string name="statistics_settings_hide_widgets_in_bowlers">Hide widgets for bowlers</string>
 	<string name="statistics_settings_hide_widgets_in_leagues">Hide widgets for leagues</string>
