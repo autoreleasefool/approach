@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.Statistics
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_ID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_TYPE
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.skydoves.flexible.core.FlexibleSheetValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -73,6 +74,8 @@ class StatisticsDetailsViewModel @Inject constructor(
 		)
 	}
 
+	private val _nextSheetSize = MutableStateFlow(FlexibleSheetValue.IntermediatelyExpanded)
+
 	private val _statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
 		_filter,
 		_selectedStatistic,
@@ -113,11 +116,13 @@ class StatisticsDetailsViewModel @Inject constructor(
 	val uiState: StateFlow<StatisticsDetailsScreenUiState> = combine(
 		_statisticsListState,
 		_statisticsChartState,
-	) { statisticsList, statisticsChart ->
+		_nextSheetSize,
+	) { statisticsList, statisticsChart, nextSheetSize ->
 		StatisticsDetailsScreenUiState.Loaded(
 			details = StatisticsDetailsUiState(
 				list = statisticsList,
 				chart = statisticsChart,
+				nextSheetSize = nextSheetSize
 			),
 		)
 	}.stateIn(
@@ -137,6 +142,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 		when (action) {
 			is StatisticsDetailsUiAction.StatisticsDetailsList -> handleListAction(action.action)
 			is StatisticsDetailsUiAction.StatisticsDetailsChart -> handleChartAction(action.action)
+			is StatisticsDetailsUiAction.NextSheetSize -> _nextSheetSize.value = action.size
 		}
 	}
 
@@ -163,6 +169,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private fun showStatisticChart(statistic: StatisticID) {
+		_nextSheetSize.value = FlexibleSheetValue.SlightlyExpanded
 		_selectedStatistic.value = statistic
 	}
 

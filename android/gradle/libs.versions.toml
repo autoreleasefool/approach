@@ -47,7 +47,6 @@ androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "life
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 colorpicker-compose = { group = "com.github.skydoves", name = "colorpicker-compose", version.ref = "colorpickerCompose" }
 compose-reorderable = { group = "org.burnoutcrew.composereorderable", name = "reorderable", version.ref = "composeReorderable" }
-flexiblebottomsheet = { group = "com.github.skydoves", name = "flexible-bottomsheet-material", version.ref = "flexibleBottomSheet" }
 flexiblebottomsheet-m3 = { group = "com.github.skydoves", name = "flexible-bottomsheet-material3", version.ref = "flexibleBottomSheet" }
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
