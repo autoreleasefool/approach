@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
+import ca.josephroque.bowlingcompanion.core.designsystem.theme.ApproachTheme
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
@@ -150,20 +151,33 @@ private fun ListEntry(
 			.clickable(onClick = { onAction(StatisticsDetailsListUiAction.StatisticClicked(entry.id)) })
 			.padding(horizontal = 16.dp, vertical = 8.dp),
 	) {
-		Column {
-			Text(
-				text = stringResource(entry.id.titleResourceId),
-				style = MaterialTheme.typography.bodyMedium,
-				fontWeight = FontWeight.Bold,
-				color = MaterialTheme.colorScheme.onSurface,
-			)
-		}
-
 		Text(
-			text = entry.value,
+			text = stringResource(entry.id.titleResourceId),
 			style = MaterialTheme.typography.bodyMedium,
+			fontWeight = FontWeight.Bold,
 			color = MaterialTheme.colorScheme.onSurface,
 		)
+
+		Column(
+			horizontalAlignment = Alignment.End,
+			verticalArrangement = Arrangement.spacedBy(2.dp),
+		) {
+			Text(
+				text = entry.value,
+				style = MaterialTheme.typography.bodyMedium,
+				color = MaterialTheme.colorScheme.onSurface,
+			)
+
+			val valueDescription = entry.valueDescription
+			if (valueDescription != null) {
+				Text(
+					text = valueDescription,
+					style = MaterialTheme.typography.bodySmall,
+					color = MaterialTheme.colorScheme.onSurfaceVariant,
+					fontStyle = FontStyle.Italic,
+				)
+			}
+		}
 	}
 }
 
@@ -213,13 +227,15 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 						id = StatisticID.FIVES,
 						value = "0",
 						description = null,
+						valueDescription = null,
 						isHighlightedAsNew = false,
 					),
 					StatisticListEntry(
 						id = StatisticID.FIVES_SPARED,
 						value = "25",
 						description = null,
-						isHighlightedAsNew = false,
+						valueDescription = "(1/4)",
+						isHighlightedAsNew = true,
 					),
 				),
 			),
@@ -231,13 +247,15 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 					StatisticListEntry(
 						id = StatisticID.ACES,
 						value = "0",
+						valueDescription = null,
 						description = null,
-						isHighlightedAsNew = false,
+						isHighlightedAsNew = true,
 					),
 					StatisticListEntry(
 						id = StatisticID.ACES_SPARED,
 						value = "25",
 						description = null,
+						valueDescription = "(1/4)",
 						isHighlightedAsNew = false,
 					),
 				)
@@ -251,11 +269,13 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 						id = StatisticID.CHOPS,
 						value = "0",
 						description = null,
+						valueDescription = null,
 						isHighlightedAsNew = false,
 					),
 					StatisticListEntry(
 						id = StatisticID.CHOPS_SPARED,
-						value = "25",
+						value = "25%",
+						valueDescription = "(1/4)",
 						description = null,
 						isHighlightedAsNew = false,
 					),
@@ -270,12 +290,14 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 private fun StatisticsDetailsListPreview(
 	@PreviewParameter(StatisticsListEntryGroupProvider::class) statistics: List<StatisticListEntryGroup>,
 ) {
-	Surface {
-		StatisticsDetailsList(
-			state = StatisticsDetailsListUiState(
-				statistics = statistics,
-			),
-			onAction = {}
-		)
+	ApproachTheme {
+		Surface {
+			StatisticsDetailsList(
+				state = StatisticsDetailsListUiState(
+					statistics = statistics,
+				),
+				onAction = {},
+			)
+		}
 	}
 }

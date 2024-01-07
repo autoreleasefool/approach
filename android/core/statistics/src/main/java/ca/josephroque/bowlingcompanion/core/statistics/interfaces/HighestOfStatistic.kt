@@ -14,6 +14,9 @@ interface HighestOfStatistic: Statistic {
 	override val formattedValue: String
 		get() = highest.toString()
 
+	override val formattedValueDescription: String?
+		get() = null
+
 	override val isEmpty: Boolean
 		get() = highest == 0
 

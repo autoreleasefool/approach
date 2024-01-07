@@ -21,10 +21,13 @@ interface PercentageStatistic: Statistic {
 		get() = if (denominator > 0) numerator.toDouble() / denominator.toDouble() else 0.0
 
 	override val formattedValue: String
+		get() = percentage.formatAsPercentage
+
+	override val formattedValueDescription: String?
 		get() = if (includeNumeratorInFormattedValue && numerator > 0) {
-			String.format("%s (%d/%d)", percentage.formatAsPercentage, numerator, denominator)
+			String.format("%d/%d", numerator, denominator)
 		} else {
-			percentage.formatAsPercentage
+			null
 		}
 
 	override val isEmpty: Boolean

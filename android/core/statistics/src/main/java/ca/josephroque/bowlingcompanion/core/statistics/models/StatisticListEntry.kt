@@ -7,6 +7,7 @@ data class StatisticListEntry(
 	val id: StatisticID,
 	@StringRes val description: Int?,
 	val value: String,
+	val valueDescription: String?,
 	val isHighlightedAsNew: Boolean,
 )
 

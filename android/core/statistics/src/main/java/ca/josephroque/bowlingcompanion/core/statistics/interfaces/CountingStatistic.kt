@@ -14,6 +14,9 @@ interface CountingStatistic: Statistic {
 	override val formattedValue: String
 		get() = count.toString()
 
+	override val formattedValueDescription: String?
+		get() = null
+
 	override val isEmpty: Boolean
 		get() = count == 0
 

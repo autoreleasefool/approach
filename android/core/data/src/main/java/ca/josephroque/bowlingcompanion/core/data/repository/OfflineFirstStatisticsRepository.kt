@@ -97,6 +97,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 						id = it.id,
 						description = null,
 						value = it.formattedValue,
+						valueDescription = it.formattedValueDescription,
 						isHighlightedAsNew = it.isEligibleForNewLabel && !userData.hasSeenStatistic(it.id),
 					)
 				}

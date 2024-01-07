@@ -16,6 +16,7 @@ interface Statistic {
 	val preferredTrendDirection: PreferredTrendDirection?
 
 	val formattedValue: String
+	val formattedValueDescription: String?
 	val isEmpty: Boolean
 
 	fun supportsSource(source: TrackableFilter.Source): Boolean

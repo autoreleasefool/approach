@@ -19,6 +19,9 @@ interface AveragingStatistic: Statistic {
 	override val formattedValue: String
 		get() = average.formatAsAverage
 
+	override val formattedValueDescription: String?
+		get() = null
+
 	override val isEmpty: Boolean
 		get() = divisor == 0
 
