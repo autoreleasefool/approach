@@ -19,7 +19,7 @@ data class ThreesSparedStatistic(
 	override val id = StatisticID.THREES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_threes
 	override val category = StatisticCategory.THREES
-	override val isEligibleForNewLabel = false
+	override val isEligibleForNewLabel = true
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
 	override fun emptyClone() = ThreesSparedStatistic()
 

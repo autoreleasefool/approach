@@ -15,7 +15,7 @@ data class FivesStatistic(
 ): TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.FIVES
 	override val category = StatisticCategory.FIVES
-	override val isEligibleForNewLabel = false
+	override val isEligibleForNewLabel = true
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
 	override fun emptyClone() = FivesStatistic()
 

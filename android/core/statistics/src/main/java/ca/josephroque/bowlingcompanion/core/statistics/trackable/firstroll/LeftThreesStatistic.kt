@@ -15,7 +15,7 @@ data class LeftThreesStatistic(
 ): TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.LEFT_THREES
 	override val category = StatisticCategory.THREES
-	override val isEligibleForNewLabel = false
+	override val isEligibleForNewLabel = true
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
 	override fun emptyClone() = LeftThreesStatistic()
 

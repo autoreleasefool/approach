@@ -15,7 +15,7 @@ data class ThreesStatistic(
 ): TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.THREES
 	override val category = StatisticCategory.THREES
-	override val isEligibleForNewLabel = false
+	override val isEligibleForNewLabel = true
 	override val preferredTrendDirection = PreferredTrendDirection.DOWNWARDS
 	override fun emptyClone() = ThreesStatistic()
 

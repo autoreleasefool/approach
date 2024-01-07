@@ -19,7 +19,7 @@ data class FivesSparedStatistic(
 	override val id = StatisticID.FIVES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_fives
 	override val category = StatisticCategory.FIVES
-	override val isEligibleForNewLabel = false
+	override val isEligibleForNewLabel = true
 	override val preferredTrendDirection = PreferredTrendDirection.UPWARDS
 	override fun emptyClone() = FivesSparedStatistic()
 
