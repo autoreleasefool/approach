@@ -10,7 +10,6 @@ extension FeatureFlag {
 	public static let proSubscription = Self(name: "proSubscription", introduced: "2023-08-08", stage: .development)
 	public static let purchases = Self(name: "purchase", introduced: "2023-09-15", stage: .disabled)
 	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .development)
-	public static let seriesQuickCreate = Self(name: "seriesQuickCreate", introduced: "2023-11-19", stage: .release)
 
 	public static let allFlags: [Self] = [
 		.alleyAndGearAverages,
@@ -19,7 +18,6 @@ extension FeatureFlag {
 		.opponentDetails,
 		.proSubscription,
 		.purchases,
-		.seriesQuickCreate,
 		.sharingGame,
 		.sharingSeries,
 		.teams,

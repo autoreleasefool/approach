@@ -6,7 +6,6 @@ import BowlersRepositoryInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
 import GamesListFeature
 import LeaguesListFeature
 import ModelsLibrary
@@ -52,7 +51,6 @@ public struct BowlersList: Reducer {
 
 		public var isShowingQuickLaunchTip: Bool
 		public var isShowingWidgets: Bool
-		public let isQuickLaunchEnabled: Bool
 
 		public init() {
 			self.list = .init(
@@ -73,9 +71,6 @@ public struct BowlersList: Reducer {
 
 			@Dependency(\.preferences) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isQuickLaunchEnabled = featureFlags.isEnabled(.seriesQuickCreate)
 
 			@Dependency(\.tips) var tips
 			self.isShowingQuickLaunchTip = tips.shouldShow(tipFor: .quickLaunchTip)
@@ -198,8 +193,7 @@ public struct BowlersList: Reducer {
 								)))
 							}
 						},
-						.run { [isQuickLaunchEnabled = state.isQuickLaunchEnabled] send in
-							guard isQuickLaunchEnabled else { return }
+						.run { send in
 							for try await source in quickLaunch.defaultSource() {
 								await send(.internal(.didLoadQuickLaunch(.success(source))))
 							}

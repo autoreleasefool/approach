@@ -32,7 +32,7 @@ public struct BowlersListView: View {
 		init(state: BowlersList.State) {
 			self.ordering = state.ordering
 			self.isShowingWidgets = state.isShowingWidgets
-			self.quickLaunch = state.isQuickLaunchEnabled ? state.quickLaunch : nil
+			self.quickLaunch = state.quickLaunch
 			self.isShowingQuickLaunchTip = state.isShowingQuickLaunchTip
 		}
 	}
