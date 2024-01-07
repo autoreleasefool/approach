@@ -1,7 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
 import PreferenceServiceInterface
 import StatisticsLibrary
 import StatisticsRepositoryInterface
@@ -22,15 +21,11 @@ public struct StatisticsDetailsList: Reducer {
 		public var entryToHighlight: Statistics.ListEntry.ID?
 		public let hasTappableElements: Bool
 
-		public let isStatisticsDescriptionsEnabled: Bool
 		public var isShowingStatisticDescriptionTip: Bool
 
 		init(listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup>, hasTappableElements: Bool) {
 			self.listEntries = listEntries
 			self.hasTappableElements = hasTappableElements
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isStatisticsDescriptionsEnabled = featureFlags.isEnabled(.statisticsDescriptions)
 
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
@@ -141,7 +136,7 @@ public struct StatisticsDetailsListView<Header: View>: View {
 				List {
 					header
 
-					if viewStore.isStatisticsDescriptionsEnabled && viewStore.isShowingStatisticDescriptionTip {
+					if viewStore.isShowingStatisticDescriptionTip {
 						BasicTipView(tip: .statisticsDescriptionTip) {
 							viewStore.send(.didTapDismissDescriptionsTip, animation: .default)
 						}
@@ -149,7 +144,7 @@ public struct StatisticsDetailsListView<Header: View>: View {
 
 					ForEach(viewStore.listEntries) { group in
 						Section(group.title) {
-							if viewStore.isStatisticsDescriptionsEnabled && (group.description != nil || group.images != nil) {
+							if group.description != nil || group.images != nil {
 								VStack(alignment: .center) {
 									if let description = group.description {
 										Text(description)
@@ -171,33 +166,29 @@ public struct StatisticsDetailsListView<Header: View>: View {
 
 							ForEach(group.entries) { entry in
 								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
-									if !viewStore.isStatisticsDescriptionsEnabled {
-										LabeledContent(entry.title, value: entry.value)
-									} else {
-										HStack(alignment: .center, spacing: .smallSpacing) {
-											if entry.highlightAsNew {
-												Text(Strings.Statistics.List.new.uppercased())
-													.font(.caption)
-													.fontWeight(.thin)
-													.foregroundColor(Asset.Colors.Action.default)
+									HStack(alignment: .center, spacing: .smallSpacing) {
+										if entry.highlightAsNew {
+											Text(Strings.Statistics.List.new.uppercased())
+												.font(.caption)
+												.fontWeight(.thin)
+												.foregroundColor(Asset.Colors.Action.default)
+										}
+
+										VStack(alignment: .leading) {
+											Text(entry.title)
+											if !viewStore.isHidingStatisticsDescriptions, let description = entry.description {
+												Text(description)
+													.font(.caption2)
 											}
+										}
 
-											VStack(alignment: .leading) {
-												Text(entry.title)
-												if !viewStore.isHidingStatisticsDescriptions, let description = entry.description {
-													Text(description)
-														.font(.caption2)
-												}
-											}
+										Spacer()
 
-											Spacer()
-
-											VStack(alignment: .trailing) {
-												Text(entry.value)
-												if !viewStore.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
-													Text(valueDescription)
-														.font(.caption2)
-												}
+										VStack(alignment: .trailing) {
+											Text(entry.value)
+											if !viewStore.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
+												Text(valueDescription)
+													.font(.caption2)
 											}
 										}
 									}
@@ -229,15 +220,13 @@ public struct StatisticsDetailsListView<Header: View>: View {
 						}
 					}
 
-					if viewStore.isStatisticsDescriptionsEnabled {
-						Section {
-							Toggle(
-								Strings.Statistics.List.statisticsDescription,
-								isOn: viewStore.$isHidingStatisticsDescriptions
-							)
-						} footer: {
-							Text(Strings.Statistics.List.StatisticsDescription.help)
-						}
+					Section {
+						Toggle(
+							Strings.Statistics.List.statisticsDescription,
+							isOn: viewStore.$isHidingStatisticsDescriptions
+						)
+					} footer: {
+						Text(Strings.Statistics.List.StatisticsDescription.help)
 					}
 				}
 				.onChange(of: viewStore.entryToHighlight) {

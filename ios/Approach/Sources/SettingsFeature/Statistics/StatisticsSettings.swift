@@ -1,7 +1,6 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
 import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
@@ -17,8 +16,6 @@ public struct StatisticsSettings: Reducer {
 		@BindingState public var isHidingWidgetsInBowlerList: Bool
 		@BindingState public var isHidingWidgetsInLeagueList: Bool
 
-		public let isStatisticsDescriptionsEnabled: Bool
-
 		init() {
 			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
@@ -27,9 +24,6 @@ public struct StatisticsSettings: Reducer {
 			self.isCountingSplitWithBonusAsSplit = preferences.bool(forKey: .statisticsCountSplitWithBonusAsSplit) ?? true
 			self.isHidingWidgetsInBowlerList = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) ?? false
 			self.isHidingWidgetsInLeagueList = preferences.bool(forKey: .statisticsWidgetHideInLeagueList) ?? false
-
-			@Dependency(\.featureFlags) var featureFlags
-			self.isStatisticsDescriptionsEnabled = featureFlags.isEnabled(.statisticsDescriptions)
 		}
 	}
 
@@ -132,12 +126,10 @@ public struct StatisticsSettingsView: View {
 						isOn: viewStore.$isHidingZeroStatistics
 					)
 
-					if viewStore.isStatisticsDescriptionsEnabled {
-						Toggle(
-							Strings.Settings.Statistics.Overall.hideStatisticsDescriptions,
-							isOn: viewStore.$isHidingStatisticsDescriptions
-						)
-					}
+					Toggle(
+						Strings.Settings.Statistics.Overall.hideStatisticsDescriptions,
+						isOn: viewStore.$isHidingStatisticsDescriptions
+					)
 				}
 
 				Section(Strings.Settings.Statistics.Widgets.title) {

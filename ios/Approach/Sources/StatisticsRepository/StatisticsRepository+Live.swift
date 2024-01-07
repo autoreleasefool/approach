@@ -219,8 +219,7 @@ extension StatisticsRepository: DependencyKey {
 
 				let frameConfiguration = preferences.perFrameConfiguration()
 				let isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
-				let isShowingStatisticDescriptions = featureFlags.isEnabled(.statisticsDescriptions)
-					&& !(preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false)
+				let isShowingStatisticDescriptions = !(preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false)
 
 				return StatisticCategory.allCases.compactMap { category in
 					var categoryStatistics = statistics
