@@ -87,7 +87,9 @@ private fun ListGroup(
 			modifier = Modifier
 				.padding(horizontal = 16.dp, vertical = 8.dp),
 		) {
-			Column {
+			Column(
+				modifier = Modifier.weight(1f),
+			) {
 				Text(
 					text = stringResource(group.title),
 					style = MaterialTheme.typography.titleMedium,
@@ -101,6 +103,20 @@ private fun ListGroup(
 						style = MaterialTheme.typography.bodySmall,
 						color = MaterialTheme.colorScheme.onSurfaceVariant,
 						fontStyle = FontStyle.Italic,
+					)
+				}
+			}
+
+			if (group.entries.any { it.isHighlightedAsNew }) {
+				Surface(
+					color = MaterialTheme.colorScheme.primaryContainer,
+					shape = MaterialTheme.shapes.small,
+					modifier = Modifier.padding(top = 8.dp),
+				) {
+					Text(
+						text = stringResource(R.string.statistics_list_new).uppercase(),
+						style = MaterialTheme.typography.labelSmall,
+						modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
 					)
 				}
 			}

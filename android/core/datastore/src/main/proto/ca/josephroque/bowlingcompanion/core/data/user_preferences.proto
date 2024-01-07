@@ -22,6 +22,7 @@ message UserPreferences {
   bool is_hiding_statistic_descriptions = 28;
   TrackableFilterSourceProto trackable_filter_source = 26;
   string trackable_filter_source_id = 27;
+  repeated string seen_statistics_ids = 29;
 
   // Analytics
   AnalyticsOptInProto analytics_opt_in = 18;
@@ -38,5 +39,5 @@ message UserPreferences {
   // Tips
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
 
-  // Next ID: 29
+  // Next ID: 30
 }

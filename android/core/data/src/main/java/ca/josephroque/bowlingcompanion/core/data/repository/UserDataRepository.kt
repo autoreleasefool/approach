@@ -4,6 +4,7 @@ import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import kotlinx.coroutines.flow.Flow
 
 interface UserDataRepository {
@@ -15,6 +16,8 @@ interface UserDataRepository {
 	suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus)
 
 	suspend fun setSeriesItemSize(size: SeriesItemSize)
+
+	suspend fun setStatisticIDSeen(statistic: StatisticID)
 
 	suspend fun setIsCountingH2AsH(isCountingH2AsH: Boolean)
 	suspend fun setIsCountingSplitWithBonusAsSplit(isCountingSplitWithBonusAsSplit: Boolean)
@@ -31,3 +34,6 @@ interface UserDataRepository {
 
 	suspend fun didDismissLaneFormSwipeToEditTip()
 }
+
+fun UserData.hasSeenStatistic(id: StatisticID): Boolean =
+	seenStatisticIds.contains(id.name)

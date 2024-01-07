@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -78,5 +79,9 @@ class OfflineFirstUserDataRepository @Inject constructor(
 
 	override suspend fun didDismissLaneFormSwipeToEditTip() {
 		approachPreferencesDataSource.setIsLaneFormSwipeToEditTipDismissed(isDismissed = true)
+	}
+
+	override suspend fun setStatisticIDSeen(statistic: StatisticID) {
+		approachPreferencesDataSource.setStatisticsIdsSeen(statistic.name)
 	}
 }

@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.core.datastore
 
 import androidx.datastore.core.DataStore
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
-import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
@@ -43,7 +42,8 @@ class ApproachPreferencesDataSource @Inject constructor(
 				recentlyUsedAlleyIds = it.recentlyUsedAlleyIdsList,
 				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
 				isLaneFormSwipeToEditTipDismissed = it.isLaneFormSwipeToEditTipDismissed,
-				lastTrackableFilter = it.parseTrackableFilterSource()
+				lastTrackableFilter = it.parseTrackableFilterSource(),
+				seenStatisticIds = it.seenStatisticsIdsList.toSet(),
 			)
 		}
 
@@ -118,6 +118,19 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setIsHidingWidgetsInLeaguesList(isHiding: Boolean) {
 		userPreferences.updateData {
 			it.copy { this.isHidingWidgetsInLeaguesList = isHiding }
+		}
+	}
+
+	suspend fun setStatisticsIdsSeen(id: String) {
+		userPreferences.updateData {
+			val seenStatistics = it.seenStatisticsIdsList
+				.toMutableList()
+				.replaceOrInsert(id)
+
+			it.toBuilder()
+				.clearSeenStatisticsIds()
+				.addAllSeenStatisticsIds(seenStatistics)
+				.build()
 		}
 	}
 
@@ -215,9 +228,10 @@ private fun <T> MutableList<T>.insertAndTrim(id: T, limit: Int): List<T> {
 	return this.take(limit)
 }
 
-private fun <T> MutableList<T>.replaceOrInsert(id: T) {
+private fun <T> MutableList<T>.replaceOrInsert(id: T): List<T> {
 	this.remove(id)
 	this.add(0, id)
+	return this
 }
 
 private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source? =

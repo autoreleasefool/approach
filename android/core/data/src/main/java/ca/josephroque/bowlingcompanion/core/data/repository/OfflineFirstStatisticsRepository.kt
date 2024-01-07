@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
@@ -70,11 +71,13 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		TrackableFramesSequence(filter, statisticsDao)
 			.applySequence { frame -> statistics.forEach { it.adjustByFrame(frame, perFrameConfiguration) } }
 
-		statisticsAsListEntries(statistics)
+		statisticsAsListEntries(statistics, userData)
 	}
 
-	private suspend fun statisticsAsListEntries(statistics: List<Statistic>): List<StatisticListEntryGroup> {
-		val userData = userDataRepository.userData.first()
+	private fun statisticsAsListEntries(
+		statistics: List<Statistic>,
+		userData: UserData,
+	): List<StatisticListEntryGroup> {
 		val frameConfiguration = userData.perFrameConfiguration()
 		val isHidingZeroStatistics = !userData.isShowingZeroStatistics
 		val isShowingStatisticDescriptions = !userData.isHidingStatisticDescriptions
@@ -94,7 +97,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 						id = it.id,
 						description = null,
 						value = it.formattedValue,
-						isHighlightedAsNew = false, // TODO: use isEligibleForNewLabel && isSeenKey
+						isHighlightedAsNew = it.isEligibleForNewLabel && !userData.hasSeenStatistic(it.id),
 					)
 				}
 			)
