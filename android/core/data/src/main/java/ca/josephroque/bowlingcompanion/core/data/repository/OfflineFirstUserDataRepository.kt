@@ -84,4 +84,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 	override suspend fun setStatisticIDSeen(statistic: StatisticID) {
 		approachPreferencesDataSource.setStatisticsIdsSeen(statistic.name)
 	}
+
+	override suspend fun setAllStatisticIDsSeen() {
+		StatisticID.entries.forEach {
+			setStatisticIDSeen(it)
+		}
+	}
 }

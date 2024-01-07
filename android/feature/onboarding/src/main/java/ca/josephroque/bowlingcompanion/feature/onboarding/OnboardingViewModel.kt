@@ -90,6 +90,10 @@ class OnboardingViewModel @Inject constructor(
 					)
 				)
 
+				// FIXME: Move this launch-based activity somewhere better
+				// Only needed on first launch of the app
+				userDataRepository.setAllStatisticIDsSeen()
+
 				userDataRepository.didCompleteOnboarding()
 			}
 		}

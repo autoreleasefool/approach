@@ -187,6 +187,10 @@ class StatisticsDetailsViewModel @Inject constructor(
 		}
 	}
 
+	suspend fun hasSeenAllStatistics() {
+		userDataRepository.setAllStatisticIDsSeen()
+	}
+
 	private fun showStatisticChart(statistic: StatisticID) {
 		_nextSheetSize.value = FlexibleSheetValue.SlightlyExpanded
 		_selectedStatistic.value = statistic

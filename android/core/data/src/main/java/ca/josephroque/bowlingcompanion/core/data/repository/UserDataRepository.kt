@@ -18,6 +18,7 @@ interface UserDataRepository {
 	suspend fun setSeriesItemSize(size: SeriesItemSize)
 
 	suspend fun setStatisticIDSeen(statistic: StatisticID)
+	suspend fun setAllStatisticIDsSeen()
 
 	suspend fun setIsCountingH2AsH(isCountingH2AsH: Boolean)
 	suspend fun setIsCountingSplitWithBonusAsSplit(isCountingSplitWithBonusAsSplit: Boolean)

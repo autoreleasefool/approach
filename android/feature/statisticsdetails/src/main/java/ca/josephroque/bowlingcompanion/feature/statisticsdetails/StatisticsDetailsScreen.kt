@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -32,6 +33,14 @@ fun StatisticsDetailsRoute(
 						StatisticsDetailsScreenEvent.Dismissed -> onBackPressed()
 					}
 				}
+		}
+	}
+
+	DisposableEffect(Unit) {
+		onDispose {
+			lifecycleOwner.lifecycleScope.launch {
+				viewModel.hasSeenAllStatistics()
+			}
 		}
 	}
 
