@@ -13,6 +13,7 @@ public protocol Statistic {
 	static var preferredTrendDirection: StatisticTrendDirection? { get }
 
 	var formattedValue: String { get }
+	var formattedValueDescription: String? { get }
 	var isEmpty: Bool { get }
 
 	init()

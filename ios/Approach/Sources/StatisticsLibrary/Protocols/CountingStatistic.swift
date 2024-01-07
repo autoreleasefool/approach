@@ -23,6 +23,10 @@ extension CountingStatistic {
 		String(count)
 	}
 
+	public var formattedValueDescription: String? {
+		nil
+	}
+
 	public var isEmpty: Bool {
 		count == 0
 	}

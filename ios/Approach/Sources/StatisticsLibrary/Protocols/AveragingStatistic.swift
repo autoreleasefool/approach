@@ -30,6 +30,10 @@ extension AveragingStatistic {
 		format(average: average)
 	}
 
+	public var formattedValueDescription: String? {
+		nil
+	}
+
 	public var isEmpty: Bool {
 		divisor == 0
 	}

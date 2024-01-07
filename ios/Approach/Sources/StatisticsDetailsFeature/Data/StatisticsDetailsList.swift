@@ -171,10 +171,10 @@ public struct StatisticsDetailsListView<Header: View>: View {
 
 							ForEach(group.entries) { entry in
 								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
-									if !viewStore.isStatisticsDescriptionsEnabled || viewStore.isHidingStatisticsDescriptions {
+									if !viewStore.isStatisticsDescriptionsEnabled {
 										LabeledContent(entry.title, value: entry.value)
 									} else {
-										HStack(alignment: .center) {
+										HStack(alignment: .center, spacing: .smallSpacing) {
 											if entry.highlightAsNew {
 												Text(Strings.Statistics.List.new.uppercased())
 													.font(.caption)
@@ -184,7 +184,7 @@ public struct StatisticsDetailsListView<Header: View>: View {
 
 											VStack(alignment: .leading) {
 												Text(entry.title)
-												if let description = entry.description {
+												if !viewStore.isHidingStatisticsDescriptions, let description = entry.description {
 													Text(description)
 														.font(.caption2)
 												}
@@ -192,8 +192,13 @@ public struct StatisticsDetailsListView<Header: View>: View {
 
 											Spacer()
 
-											Text(entry.value)
-												.foregroundColor(Color(uiColor: UIColor.secondaryLabel))
+											VStack(alignment: .trailing) {
+												Text(entry.value)
+												if !viewStore.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
+													Text(valueDescription)
+														.font(.caption2)
+												}
+											}
 										}
 									}
 								}

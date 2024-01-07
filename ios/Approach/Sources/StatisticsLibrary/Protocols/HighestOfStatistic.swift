@@ -23,6 +23,10 @@ extension HighestOfStatistic {
 		String(highest)
 	}
 
+	public var formattedValueDescription: String? {
+		nil
+	}
+
 	public var isEmpty: Bool {
 		highest == 0
 	}

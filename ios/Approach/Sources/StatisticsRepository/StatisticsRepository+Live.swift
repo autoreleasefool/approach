@@ -245,6 +245,7 @@ extension StatisticsRepository: DependencyKey {
 								title: statistic.title,
 								description: describable?.pinDescription,
 								value: $0.formattedValue,
+								valueDescription: $0.formattedValueDescription,
 								highlightAsNew: statistic.isEligibleForNewLabel
 									&& preferences.getBool(isSeenKey(forStatistic: statistic)) != true
 							)
