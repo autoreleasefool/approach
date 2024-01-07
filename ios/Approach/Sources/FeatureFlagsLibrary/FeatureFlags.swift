@@ -9,14 +9,12 @@ extension FeatureFlag {
 	public static let alleyAndGearAverages = Self(name: "alleyAndGearAverages", introduced: "2023-09-12", stage: .development)
 	public static let proSubscription = Self(name: "proSubscription", introduced: "2023-08-08", stage: .development)
 	public static let purchases = Self(name: "purchase", introduced: "2023-09-15", stage: .disabled)
-	public static let dataExport = Self(name: "dataExport", introduced: "2023-09-17", stage: .release)
 	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .development)
 	public static let statisticsDescriptions = Self(name: "statisticsDescriptions", introduced: "2023-10-06", stage: .release)
 	public static let seriesQuickCreate = Self(name: "seriesQuickCreate", introduced: "2023-11-19", stage: .release)
 
 	public static let allFlags: [Self] = [
 		.alleyAndGearAverages,
-		.dataExport,
 		.dataImport,
 		.developerOptions,
 		.opponentDetails,

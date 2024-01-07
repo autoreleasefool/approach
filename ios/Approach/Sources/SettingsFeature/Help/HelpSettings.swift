@@ -18,13 +18,11 @@ public struct HelpSettings: Reducer {
 
 		@PresentationState public var destination: Destination.State?
 
-		public let isExportEnabled: Bool
 		public let isImportEnabled: Bool
 		public let isDeveloperOptionsEnabled: Bool
 
 		init() {
 			@Dependency(\.featureFlags) var featureFlags
-			self.isExportEnabled = featureFlags.isEnabled(.dataExport)
 			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
 			self.isDeveloperOptionsEnabled = featureFlags.isEnabled(.developerOptions)
 		}
@@ -211,18 +209,14 @@ public struct HelpSettingsView: View {
 					.buttonStyle(.navigation)
 			}
 
-			if viewStore.isImportEnabled || viewStore.isExportEnabled {
-				Section(Strings.Settings.Data.title) {
-					if viewStore.isImportEnabled {
-						Button(Strings.Settings.Data.import) { viewStore.send(.didTapImportButton) }
-							.buttonStyle(.navigation)
-					}
-
-					if viewStore.isExportEnabled {
-						Button(Strings.Settings.Data.export) { viewStore.send(.didTapExportButton) }
-							.buttonStyle(.navigation)
-					}
+			Section(Strings.Settings.Data.title) {
+				if viewStore.isImportEnabled {
+					Button(Strings.Settings.Data.import) { viewStore.send(.didTapImportButton) }
+						.buttonStyle(.navigation)
 				}
+
+				Button(Strings.Settings.Data.export) { viewStore.send(.didTapExportButton) }
+					.buttonStyle(.navigation)
 			}
 
 			Section {
