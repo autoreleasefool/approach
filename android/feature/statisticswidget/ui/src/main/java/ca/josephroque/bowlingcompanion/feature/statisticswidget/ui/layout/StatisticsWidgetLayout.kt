@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,9 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,30 +32,35 @@ fun StatisticsWidgetLayout(
 	modifier: Modifier = Modifier,
 ) {
 	Column(
-		modifier = modifier
-			.fillMaxWidth(),
+		modifier = modifier.fillMaxWidth(),
 	) {
 		if (state.widgets.isEmpty()) {
 			StatisticsWidgetPlaceholderCard(onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) })
 		} else {
-			state.widgets.chunked(2).forEachIndexed { index, row ->
+			val widgetsRows = state.widgets.chunked(2)
+			widgetsRows.forEach { row ->
 				StatisticsWidgetRow(
 					widgets = row,
 					onAction = onAction,
-					modifier = Modifier.padding(bottom = if (index == state.widgets.size / 2) 0.dp else 16.dp),
+					modifier = Modifier.padding(bottom = if (row == widgetsRows.last()) 0.dp else 16.dp),
 				)
 			}
 
 
 			Row {
 				Spacer(modifier = Modifier.weight(1f))
-				Text(
-					stringResource(R.string.statistics_widget_layout_change),
-					style = MaterialTheme.typography.labelSmall,
-					modifier = Modifier
-						.clickable { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) }
-						.padding(8.dp),
-				)
+
+				Surface(
+					color = Color.Transparent,
+					shape = MaterialTheme.shapes.small,
+					onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) },
+				) {
+					Text(
+						stringResource(R.string.statistics_widget_layout_change),
+						style = MaterialTheme.typography.labelSmall,
+						modifier = Modifier.padding(8.dp),
+					)
+				}
 			}
 		}
 	}
