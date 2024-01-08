@@ -3,12 +3,14 @@ package ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Surface
@@ -66,18 +68,6 @@ fun StatisticsOverview(
 
 		Divider(thickness = 8.dp)
 
-		Button(
-			onClick = { onAction(StatisticsOverviewUiAction.ViewMoreClicked) },
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 16.dp),
-		) {
-			Text(
-				text = stringResource(R.string.view_detailed_statistics),
-				style = MaterialTheme.typography.titleMedium,
-			)
-		}
-
 		Column(
 			verticalArrangement = Arrangement.spacedBy(8.dp),
 			modifier = Modifier.padding(horizontal = 16.dp),
@@ -93,6 +83,29 @@ fun StatisticsOverview(
 			)
 		}
 	}
+}
+
+@Composable
+fun ViewDetailedStatisticsFloatingActionButton(
+	onAction: (StatisticsOverviewUiAction) -> Unit,
+) {
+	ExtendedFloatingActionButton(
+		text = {
+			Text(
+				text = stringResource(R.string.view_detailed_statistics),
+				style = MaterialTheme.typography.bodyMedium,
+			)
+		},
+		icon = {
+			Icon(
+				Icons.Default.Search,
+				contentDescription = null,
+			)
+		},
+		onClick = {
+			onAction(StatisticsOverviewUiAction.ViewMoreClicked)
+		},
+	)
 }
 
 @Preview

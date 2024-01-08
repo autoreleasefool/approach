@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -24,7 +23,6 @@ fun StatisticsWidgetEditor(
 	modifier: Modifier = Modifier,
 ) {
 	Column(
-		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState()),
@@ -36,14 +34,12 @@ fun StatisticsWidgetEditor(
 			resourceName = stringResource(R.string.statistics_widget_editor_filter_bowler),
 			selectedName = state.bowler?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none),
 			onClick = { onAction(StatisticsWidgetEditorUiAction.BowlerClicked) },
-			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_widget_editor_filter_league),
 			selectedName = state.league?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none),
 			onClick = { onAction(StatisticsWidgetEditorUiAction.LeagueClicked) },
-			modifier = Modifier.padding(horizontal = 16.dp),
 			enabled = state.bowler != null,
 		)
 
@@ -53,7 +49,6 @@ fun StatisticsWidgetEditor(
 			resourceName = stringResource(R.string.statistics_widget_editor_statistic),
 			selectedName = stringResource(state.statistic.id.titleResourceId),
 			onClick = { onAction(StatisticsWidgetEditorUiAction.StatisticClicked) },
-			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		Divider()
@@ -74,6 +69,7 @@ fun StatisticsWidgetEditor(
 				}
 			},
 			onOptionSelected = { it?.let { onAction(StatisticsWidgetEditorUiAction.TimelineSelected(it)) } },
+			modifier = Modifier.padding(top = 16.dp),
 		)
 	}
 }

@@ -10,14 +10,17 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
+import ca.josephroque.bowlingcompanion.core.designsystem.theme.ApproachTheme
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.ui.icon
 
@@ -28,14 +31,12 @@ fun MatchPlayEditor(
 	modifier: Modifier = Modifier,
 ) {
 	Column(
-		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier.fillMaxSize(),
 	) {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.match_play_editor_opponent),
 			selectedName = state.opponent?.name ?: stringResource(R.string.match_play_editor_opponent_none),
 			onClick = { onAction(MatchPlayEditorUiAction.OpponentClicked) },
-			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
 		OutlinedTextField(
@@ -51,6 +52,7 @@ fun MatchPlayEditor(
 			},
 			modifier = Modifier
 				.fillMaxWidth()
+				.padding(bottom = 16.dp)
 				.padding(horizontal = 16.dp),
 		)
 
@@ -77,6 +79,25 @@ fun MatchPlayEditor(
 				}
 			},
 			onOptionSelected = { onAction(MatchPlayEditorUiAction.ResultChanged(it)) },
+			modifier = Modifier.padding(top = 16.dp),
 		)
+	}
+}
+
+@Preview
+@Composable
+private fun MatchPlayEditorPreview() {
+	ApproachTheme {
+		Surface {
+			MatchPlayEditor(
+				state = MatchPlayEditorUiState(
+					gameIndex = 0,
+					opponent = null,
+					opponentScore = null,
+					result = null,
+				),
+				onAction = {},
+			)
+		}
 	}
 }

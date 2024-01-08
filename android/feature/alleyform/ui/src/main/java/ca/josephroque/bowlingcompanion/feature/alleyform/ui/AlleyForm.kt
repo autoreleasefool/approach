@@ -76,9 +76,6 @@ fun AlleyForm(
 					state.lanes.size,
 				),
 				onClick = { onAction(AlleyFormUiAction.ManageLanesClicked) },
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 16.dp),
 			)
 		}
 

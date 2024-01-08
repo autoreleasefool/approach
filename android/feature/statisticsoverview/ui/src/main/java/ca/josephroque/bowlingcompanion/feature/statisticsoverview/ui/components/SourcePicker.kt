@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -38,12 +38,13 @@ fun SourcePicker(
 		dragHandle = {},
 	) {
 		Column(
-			verticalArrangement = Arrangement.spacedBy(16.dp),
-			modifier = Modifier.padding(horizontal = 16.dp)
+			modifier = Modifier.padding(bottom = 16.dp),
 		) {
 			Row(
 				verticalAlignment = Alignment.CenterVertically,
-				modifier = Modifier.padding(top = 16.dp),
+				modifier = Modifier
+					.padding(top = 16.dp)
+					.padding(horizontal = 16.dp),
 			) {
 				Text(
 					text = stringResource(R.string.statistics_filter),
@@ -58,6 +59,8 @@ fun SourcePicker(
 					Text(text = stringResource(R.string.statistics_filter_apply))
 				}
 			}
+
+			Divider()
 
 			PickableResourceCard(
 				resourceName = stringResource(R.string.statistics_filter_bowler),

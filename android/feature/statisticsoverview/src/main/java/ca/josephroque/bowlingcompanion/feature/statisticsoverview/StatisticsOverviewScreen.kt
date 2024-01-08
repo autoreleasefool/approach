@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsOverview
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsOverviewTopBar
+import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.ViewDetailedStatisticsFloatingActionButton
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -88,6 +89,9 @@ private fun StatisticsOverviewScreen(
 			StatisticsOverviewTopBar(
 				scrollBehavior = scrollBehavior,
 			)
+		},
+		floatingActionButton = {
+			ViewDetailedStatisticsFloatingActionButton(onAction = { onAction(StatisticsOverviewScreenUiAction.StatisticsOverviewAction(it)) })
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->

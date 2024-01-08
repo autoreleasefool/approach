@@ -90,7 +90,6 @@ fun SeriesForm(
 		AlleySection(
 			alley = state.alley,
 			onClick = { onAction(SeriesFormUiAction.AlleyClicked) },
-			modifier = Modifier.padding(16.dp),
 		)
 
 		Divider()
