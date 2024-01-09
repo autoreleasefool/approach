@@ -11,6 +11,7 @@ data class GearFormUiState(
 	@StringRes val nameErrorId: Int? = null,
 	val owner: BowlerDetails? = null,
 	val avatar: Avatar = Avatar.default(),
+	val isAvatarLabelOverridden: Boolean = false,
 	val isShowingDeleteDialog: Boolean = false,
 	val isDeleteButtonEnabled: Boolean = false,
 	val isShowingDiscardChangesDialog: Boolean = false,

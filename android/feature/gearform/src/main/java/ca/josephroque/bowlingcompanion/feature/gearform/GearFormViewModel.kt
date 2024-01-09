@@ -86,6 +86,7 @@ class GearFormViewModel @Inject constructor(
 						nameErrorId = null,
 						owner = owner,
 						avatar = gear.avatar,
+						isAvatarLabelOverridden = true,
 						isDeleteButtonEnabled = true,
 						isShowingDeleteDialog = false,
 						isShowingDiscardChangesDialog = false,
@@ -139,11 +140,26 @@ class GearFormViewModel @Inject constructor(
 	}
 
 	private fun updateAvatar(avatar: Avatar) {
-		_uiState.updateForm { it.copy(avatar = avatar) }
+		_uiState.updateForm {
+			it.copy(
+				avatar = avatar,
+				isAvatarLabelOverridden = true,
+			)
+		}
 	}
 
 	private fun updateName(name: String) {
-		_uiState.updateForm { it.copy(name = name, nameErrorId = null) }
+		_uiState.updateForm {
+			it.copy(
+				name = name,
+				nameErrorId = null,
+				avatar = when {
+					it.isAvatarLabelOverridden -> it.avatar
+					name.isBlank() -> it.avatar.copy(label = Avatar.default().label)
+					else -> it.avatar.copy(label = name)
+				},
+			)
+		}
 	}
 
 	private fun updateKind(kind: GearKind) {
