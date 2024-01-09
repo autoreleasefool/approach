@@ -48,7 +48,7 @@ fun FrameEditor(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
 				.fillMaxWidth()
-				.pointerInput(state.isEnabled, state.downedPins) {
+				.pointerInput(state) {
 					awaitEachGesture {
 						awaitFirstDown()
 
