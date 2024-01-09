@@ -570,7 +570,7 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		val gameId = _currentGameId.value
-		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
+		val gamesEditor = _gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.copy(
 				frameEditor = it.frameEditor.copy(
 					downedPins = downedPins,
@@ -585,7 +585,14 @@ class GamesEditorViewModel @Inject constructor(
 			)
 		}
 
-		saveFrame(gamesEditorState.selectedFrame())
+		_gameDetailsState.updateGameDetails(gameId) {
+			it.updateHeader(
+				frames = gamesEditor.frames,
+				selection = gamesEditor.scoreSheet.selection,
+			)
+		}
+
+		saveFrame(gamesEditor.selectedFrame())
 	}
 
 	private fun updateSelectedBall(id: UUID?) {
