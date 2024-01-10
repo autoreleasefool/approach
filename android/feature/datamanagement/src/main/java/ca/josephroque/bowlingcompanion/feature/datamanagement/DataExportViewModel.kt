@@ -9,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -23,14 +22,14 @@ import javax.inject.Inject
 class DataExportViewModel @Inject constructor(
 	private val dataTransferRepository: DataTransferRepository,
 ): ApproachViewModel<DataExportScreenEvent>() {
-	private val _dataExport: Flow<DataExportUiState> = flow {
-		val existingBackup = dataTransferRepository.getExistingDatabaseBackup()
-		val lastModified = existingBackup?.lastModified()
-			?.let { Instant.fromEpochMilliseconds(it) }
-			?.toLocalDate()
-
-		emit(DataExportUiState(lastModified))
-	}
+	private val _dataExport: Flow<DataExportUiState> =
+		dataTransferRepository.getExistingDatabaseBackup()
+			.map { backupFile ->
+				backupFile?.lastModified()
+					?.let { Instant.fromEpochMilliseconds(it) }
+					?.toLocalDate()
+			}
+			.map { DataExportUiState(it) }
 
 	val uiState: StateFlow<DataExportScreenUiState> = _dataExport
 		.map {

@@ -60,7 +60,10 @@ fun DataExport(
 		}
 
 		Text(
-			text = stringResource(R.string.data_export_last_export, state.lastExportDate.toString()),
+			text = if (state.lastExportDate != null)
+				stringResource(R.string.data_export_last_export, state.lastExportDate.toString())
+			else
+				stringResource(R.string.data_export_never_exported),
 			style = MaterialTheme.typography.bodySmall,
 			modifier = Modifier.padding(vertical = 16.dp),
 		)

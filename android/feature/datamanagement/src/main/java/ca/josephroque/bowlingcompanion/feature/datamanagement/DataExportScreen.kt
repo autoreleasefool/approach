@@ -47,8 +47,9 @@ fun DataExportRoute(
 							)
 
 							val intent = Intent(Intent.ACTION_SEND)
+							intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+							intent.setType("application/octet-stream")
 							intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-							intent.setDataAndType(fileUri, context.contentResolver.getType(fileUri))
 							context.startActivity(intent)
 						}
 					}

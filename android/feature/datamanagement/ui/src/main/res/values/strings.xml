@@ -4,6 +4,7 @@
 	<string name="data_export_description">At any time you can export your Approach data, to back up or transfer devices. Save the file somewhere you can always find it later.</string>
 	<string name="data_export_regular_backups">We recommend exporting your data regularly, in case of any unexpected circumstances causing you to lose your phone or data.</string>
 	<string name="data_export_last_export">You last exported your data on %1$s</string>
+	<string name="data_export_never_exported">You haven\'t exported your data before</string>
 	<string name="data_export_your_data">Your data is always yours.</string>
 	<string name="data_export_export">Export Data</string>
 </resources>

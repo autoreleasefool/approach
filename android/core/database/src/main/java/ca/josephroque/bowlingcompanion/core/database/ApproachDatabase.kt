@@ -43,6 +43,8 @@ import ca.josephroque.bowlingcompanion.core.database.util.LocalDateConverter
 import ca.josephroque.bowlingcompanion.core.database.util.RollConverter
 
 const val DATABASE_NAME = "approach-database"
+const val DATABASE_SHM_NAME = "$DATABASE_NAME-shm"
+const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 
 @Database(
 	entities = [
