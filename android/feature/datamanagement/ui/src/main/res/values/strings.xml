@@ -7,4 +7,19 @@
 	<string name="data_export_never_exported">You haven\'t exported your data before</string>
 	<string name="data_export_your_data">Your data is always yours.</string>
 	<string name="data_export_export">Export Data</string>
+
+	<string name="data_import_title">Importing</string>
+	<string name="data_import_import">Import Data</string>
+	<string name="data_import_description">Import your Approach data from a back up file. You can import a back up you created from Approach, or from the legacy app, the 5 Pin Bowling Companion.</string>
+	<string name="data_import_this_will_overwrite">This will overwrite any existing data on this device.</string>
+	<string name="data_import_not_recoverable">You may not be able to recover it later.</string>
+	<string name="data_import_progress_not_started">Import not started…</string>
+	<string name="data_import_progress_importing">Importing…</string>
+	<string name="data_import_progress_success">Data successfully imported!</string>
+	<string name="data_import_progress_error">There was an error importing your data.</string>
+	<string name="data_import_progress_error_report">If you\'re having trouble importing your data, try sending us an email at approach@josephroque.ca for help.</string>
+	<string name="data_import_error_unknown">An unknown error occurred.</string>
+
+	<string name="data_import_error_email_recipient">approach@josephroque.ca</string>
+	<string name="data_import_error_email_subject">Approach Data Import Failure (%1$s - %2$s)</string>
 </resources>
