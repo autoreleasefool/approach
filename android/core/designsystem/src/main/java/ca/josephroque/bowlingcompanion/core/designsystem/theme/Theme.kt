@@ -53,9 +53,9 @@ fun ApproachTheme(
 	}
 
 	MaterialTheme(
-		colorScheme = colorScheme,
-		typography = Typography,
-		shapes = Shapes,
+//		colorScheme = colorScheme,
+//		typography = Typography,
+//		shapes = Shapes,
 		content = content
 	)
 }
