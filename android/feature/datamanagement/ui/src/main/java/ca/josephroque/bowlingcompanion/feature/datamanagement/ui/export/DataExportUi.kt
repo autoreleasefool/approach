@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement.ui
+package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export
 
 import kotlinx.datetime.LocalDate
 

@@ -1,7 +1,7 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement
+package ca.josephroque.bowlingcompanion.feature.datamanagement.export
 
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.DataExportUiAction
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.DataExportUiState
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiAction
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiState
 import java.io.File
 
 sealed interface DataExportScreenUiState {

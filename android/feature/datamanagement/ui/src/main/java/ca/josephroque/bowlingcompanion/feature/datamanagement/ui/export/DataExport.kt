@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement.ui
+package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
 import kotlinx.datetime.LocalDate
 
 @Composable

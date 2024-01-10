@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement
+package ca.josephroque.bowlingcompanion.feature.datamanagement.export
 
 import android.content.Intent
 import androidx.compose.foundation.layout.padding
@@ -18,8 +18,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.DataExport
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.DataExportTopBar
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExport
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportTopBar
 import kotlinx.coroutines.launch
 
 @Composable

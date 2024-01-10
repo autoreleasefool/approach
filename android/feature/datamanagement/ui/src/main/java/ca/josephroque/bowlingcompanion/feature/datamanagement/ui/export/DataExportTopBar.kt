@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement.ui
+package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -8,6 +8,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

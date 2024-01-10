@@ -1,10 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement
+package ca.josephroque.bowlingcompanion.feature.datamanagement.export
 
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.DataTransferRepository
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.DataExportUiAction
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.DataExportUiState
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiAction
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
