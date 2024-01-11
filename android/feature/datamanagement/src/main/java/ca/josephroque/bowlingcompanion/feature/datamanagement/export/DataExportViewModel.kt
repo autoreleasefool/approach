@@ -23,9 +23,9 @@ class DataExportViewModel @Inject constructor(
 	private val dataTransferRepository: DataTransferRepository,
 ): ApproachViewModel<DataExportScreenEvent>() {
 	private val _dataExport: Flow<DataExportUiState> =
-		dataTransferRepository.getExistingDatabaseBackup()
-			.map { backupFile ->
-				backupFile?.lastModified()
+		dataTransferRepository.getLatestDatabaseExport()
+			.map { exportFile ->
+				exportFile?.lastModified()
 					?.let { Instant.fromEpochMilliseconds(it) }
 					?.toLocalDate()
 			}
@@ -49,14 +49,22 @@ class DataExportViewModel @Inject constructor(
 	private fun handleDataExportAction(action: DataExportUiAction) {
 		when (action) {
 			DataExportUiAction.BackClicked -> sendEvent(DataExportScreenEvent.Dismissed)
-			DataExportUiAction.ExportClicked -> exportData()
+			DataExportUiAction.SaveClicked -> saveData()
+			DataExportUiAction.ShareClicked -> shareData()
 		}
 	}
 
-	private fun exportData() {
+	private fun saveData() {
 		viewModelScope.launch {
-			val backupFile = dataTransferRepository.getOrCreateDatabaseBackup()
-			sendEvent(DataExportScreenEvent.LaunchShareIntent(backupFile))
+			val exportFile = dataTransferRepository.getOrCreateDatabaseExport()
+			sendEvent(DataExportScreenEvent.LaunchCreateDocumentIntent(exportFile))
+		}
+	}
+
+	private fun shareData() {
+		viewModelScope.launch {
+			val exportFile = dataTransferRepository.getOrCreateDatabaseExport()
+			sendEvent(DataExportScreenEvent.LaunchShareIntent(exportFile))
 		}
 	}
 }

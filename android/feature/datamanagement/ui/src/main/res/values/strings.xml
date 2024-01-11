@@ -6,7 +6,8 @@
 	<string name="data_export_last_export">You last exported your data on %1$s</string>
 	<string name="data_export_never_exported">You haven\'t exported your data before</string>
 	<string name="data_export_your_data">Your data is always yours.</string>
-	<string name="data_export_export">Export Data</string>
+	<string name="data_export_share">Share</string>
+	<string name="data_export_save">Save to Files</string>
 
 	<string name="data_import_title">Importing</string>
 	<string name="data_import_import">Import Data</string>

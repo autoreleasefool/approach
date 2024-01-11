@@ -35,31 +35,40 @@ class OfflineFirstDataTransferRepository @Inject constructor(
 	private val databaseWalFile: File
 		get() = fileManager.getDatabasePath(DATABASE_WAL_NAME)
 
-	private val backupDirectory: File
+	private val exportDirectory: File
 		get() = context.cacheDir
 			.resolve(EXPORT_DIRECTORY)
+
+	private val latestExportFile: MutableStateFlow<File?> = MutableStateFlow(
+		exportDirectory
+			.listFiles()?.maxOfOrNull { it }
+	)
 
 	private val latestBackupFile: MutableStateFlow<File?> = MutableStateFlow(
 		backupDirectory
 			.listFiles()?.maxOfOrNull { it }
 	)
 
-	override fun getExistingDatabaseBackup(): Flow<File?> = latestBackupFile
+	override fun getLatestDatabaseExport(): Flow<File?> = latestExportFile
 
-	override suspend fun getOrCreateDatabaseBackup(): File = withContext(ioDispatcher) {
+	override suspend fun getOrCreateDatabaseExport(): File = withContext(ioDispatcher) {
+		getOrCreateDatabaseExportWithSuffix()
+	}
+
+	private fun getOrCreateDatabaseExportWithSuffix(suffix: String = ""): File {
 		recordCheckpoint()
 		val currentDate = Clock.System.now().toLocalDate()
 
-		val destinationFile = backupDirectory
-			.resolve("approach_data_$currentDate.zip")
+		val destinationFile = exportDirectory
+			.resolve("approach_data_$currentDate$suffix.zip")
 
 		zipFiles(
 			listOf(databaseFile, databaseShmFile, databaseWalFile),
 			destinationFile
 		)
 
-		latestBackupFile.value = destinationFile
-		destinationFile
+		latestExportFile.value = destinationFile
+		return destinationFile
 	}
 
 	private fun recordCheckpoint() {

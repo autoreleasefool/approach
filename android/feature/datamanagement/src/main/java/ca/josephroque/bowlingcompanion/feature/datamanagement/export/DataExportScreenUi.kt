@@ -21,4 +21,5 @@ sealed interface DataExportScreenUiAction {
 sealed interface DataExportScreenEvent {
 	data object Dismissed: DataExportScreenEvent
 	data class LaunchShareIntent(val file: File): DataExportScreenEvent
+	data class LaunchCreateDocumentIntent(val file: File): DataExportScreenEvent
 }

@@ -52,6 +52,21 @@ fun DataExportRoute(
 							intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 							context.startActivity(intent)
 						}
+						is DataExportScreenEvent.LaunchCreateDocumentIntent -> {
+							val fileUri = FileProvider.getUriForFile(
+								context,
+								"ca.josephroque.bowlingcompanion.fileprovider",
+								it.file,
+							)
+
+							val intent = Intent(Intent.ACTION_CREATE_DOCUMENT)
+							intent.addCategory(Intent.CATEGORY_OPENABLE)
+							intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+							intent.putExtra(Intent.EXTRA_TITLE, it.file.name)
+							intent.setType("application/octet-stream")
+							intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+							context.startActivity(intent)
+						}
 					}
 				}
 		}

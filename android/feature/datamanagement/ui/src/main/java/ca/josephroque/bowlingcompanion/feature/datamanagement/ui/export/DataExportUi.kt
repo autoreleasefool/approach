@@ -8,5 +8,6 @@ data class DataExportUiState(
 
 sealed interface DataExportUiAction {
 	data object BackClicked: DataExportUiAction
-	data object ExportClicked: DataExportUiAction
+	data object ShareClicked: DataExportUiAction
+	data object SaveClicked: DataExportUiAction
 }
