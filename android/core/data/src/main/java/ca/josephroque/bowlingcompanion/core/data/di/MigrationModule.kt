@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.data.di
 
-import ca.josephroque.bowlingcompanion.core.data.migration.MigrationManager
-import ca.josephroque.bowlingcompanion.core.data.migration.SQLiteMigrationManager
+import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
+import ca.josephroque.bowlingcompanion.core.data.migration.SQLiteMigrationService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -11,5 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface MigrationModule {
 	@Binds
-	fun bindsMigrationManager(migrationManager: SQLiteMigrationManager): MigrationManager
+	fun bindsMigrationService(migrationService: SQLiteMigrationService): MigrationService
 }

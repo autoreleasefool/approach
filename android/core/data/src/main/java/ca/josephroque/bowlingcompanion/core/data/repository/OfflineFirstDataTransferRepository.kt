@@ -62,6 +62,8 @@ class OfflineFirstDataTransferRepository @Inject constructor(
 		val destinationFile = exportDirectory
 			.resolve("approach_data_$currentDate$suffix.zip")
 
+		destinationFile.parentFile?.mkdirs()
+
 		zipFiles(
 			listOf(databaseFile, databaseShmFile, databaseWalFile),
 			destinationFile

@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.onboarding
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
-import ca.josephroque.bowlingcompanion.core.data.migration.MigrationManager
+import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
@@ -16,7 +16,6 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnbo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -24,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
-	private val migrationManager: MigrationManager,
+	private val migrationService: MigrationService,
 	private val userDataRepository: UserDataRepository,
 	fileManager: FileManager,
 ): ApproachViewModel<OnboardingScreenEvent>() {
@@ -132,16 +131,7 @@ class OnboardingViewModel @Inject constructor(
 		_uiState.value = state.copy(legacyUser = LegacyUserOnboardingUiState.ImportingData)
 
 		viewModelScope.launch {
-			migrationManager.beginMigration()
-		}
-
-		viewModelScope.launch {
-			// TODO: Show these steps in UI?
-			// Currently, we wait for all steps to finish and when there are no more this will proceed
-			migrationManager.currentStep
-				.takeWhile { it != null }
-				.collect {}
-
+			migrationService.migrateDefaultLegacyDatabase()
 			userDataRepository.didCompleteOnboarding()
 		}
 	}

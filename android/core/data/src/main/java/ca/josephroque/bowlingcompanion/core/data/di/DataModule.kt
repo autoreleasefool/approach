@@ -9,7 +9,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.LegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAlleysRepository
@@ -20,7 +19,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGamesRep
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGearRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLeaguesRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstLegacyMigrationRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstMatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstRecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstScoresRepository
@@ -101,11 +99,6 @@ interface DataModule {
 	fun bindsScoresRepository(
 		scoresRepository: OfflineFirstScoresRepository,
 	): ScoresRepository
-
-	@Binds
-	fun bindsLegacyMigrationRepository(
-		legacyMigrationRepository: OfflineFirstLegacyMigrationRepository,
-	): LegacyMigrationRepository
 
 	@Binds
 	fun bindsAcknowledgementsRepository(

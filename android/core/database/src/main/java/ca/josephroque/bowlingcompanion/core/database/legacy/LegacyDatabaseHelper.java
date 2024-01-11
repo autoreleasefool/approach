@@ -44,9 +44,9 @@ public final class LegacyDatabaseHelper extends SQLiteOpenHelper {
      * @param context the current activity
      * @return static instance of DatabaseHelper
      */
-    public static LegacyDatabaseHelper getInstance(Context context) {
+    public static LegacyDatabaseHelper getInstance(Context context, String name) {
         if (sDatabaseHelperInstance == null) {
-            sDatabaseHelperInstance = new LegacyDatabaseHelper(context);
+            sDatabaseHelperInstance = new LegacyDatabaseHelper(context, name);
         }
         return sDatabaseHelperInstance;
     }
@@ -66,8 +66,8 @@ public final class LegacyDatabaseHelper extends SQLiteOpenHelper {
      *
      * @param context the current activity
      */
-    private LegacyDatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private LegacyDatabaseHelper(Context context, String name) {
+        super(context, name, null, DATABASE_VERSION);
     }
 
     @Override
