@@ -69,6 +69,32 @@ class SQLiteMigrationService @Inject constructor(
 	private val legacyIDMappingDao: LegacyIDMappingDao,
 ): MigrationService {
 
+	override suspend fun getDatabaseType(name: String): DatabaseType? {
+		val db = LegacyDatabaseHelper.getInstance(context, name).readableDatabase
+
+		db.rawQuery(
+			"PRAGMA table_info(${LegacyContract.BowlerEntry.TABLE_NAME})",
+			emptyArray()
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val columnNameIndex = it.getColumnIndex("name")
+					if (columnNameIndex != -1) {
+						val columnName = it.getString(columnNameIndex)
+						if (columnName == LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME) {
+							return DatabaseType.BOWLING_COMPANION
+						} else if (columnName == "name") {
+							return DatabaseType.APPROACH
+						}
+					}
+					it.moveToNext()
+				}
+			}
+		}
+
+		return null
+	}
+
 	override suspend fun migrateDefaultLegacyDatabase() {
 		migrateDatabase(LegacyDatabaseHelper.DATABASE_NAME)
 	}
@@ -96,31 +122,31 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyTeams(db: SQLiteDatabase): List<LegacyTeam> {
-		val cursor = db.rawQuery(
+		val teams = mutableListOf<LegacyTeam>()
+
+		db.rawQuery(
 			"""
 		SELECT ${LegacyContract.TeamEntry._ID}, ${LegacyContract.TeamEntry.COLUMN_TEAM_NAME}
 		FROM ${LegacyContract.TeamEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val teamIdIndex = it.getColumnIndex(LegacyContract.TeamEntry._ID)
+					val teamNameIndex = it.getColumnIndex(LegacyContract.TeamEntry.COLUMN_TEAM_NAME)
 
-		val teams = mutableListOf<LegacyTeam>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val teamIdIndex = cursor.getColumnIndex(LegacyContract.TeamEntry._ID)
-				val teamNameIndex = cursor.getColumnIndex(LegacyContract.TeamEntry.COLUMN_TEAM_NAME)
+					if (teamIdIndex != -1 && teamNameIndex != -1) {
+						val id = it.getLong(teamIdIndex)
+						val name = it.getString(teamNameIndex)
 
-				if (teamIdIndex != -1 && teamNameIndex != -1) {
-					val id = cursor.getLong(teamIdIndex)
-					val name = cursor.getString(teamNameIndex)
+						teams.add(LegacyTeam(id = id, name = name))
+					}
 
-					teams.add(LegacyTeam(id = id, name = name))
+					it.moveToNext()
 				}
-
-				cursor.moveToNext()
 			}
 		}
 
-		cursor.close()
 		return teams
 	}
 
@@ -154,31 +180,31 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyBowlers(db: SQLiteDatabase): List<LegacyBowler> {
-		val cursor = db.rawQuery(
+		val bowlers = mutableListOf<LegacyBowler>()
+
+		db.rawQuery(
 			"""
 		SELECT ${LegacyContract.BowlerEntry._ID}, ${LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME}
 		FROM ${LegacyContract.BowlerEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val bowlerIdIndex = it.getColumnIndex(LegacyContract.BowlerEntry._ID)
+					val bowlerNameIndex = it.getColumnIndex(LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME)
 
-		val bowlers = mutableListOf<LegacyBowler>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val bowlerIdIndex = cursor.getColumnIndex(LegacyContract.BowlerEntry._ID)
-				val bowlerNameIndex = cursor.getColumnIndex(LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME)
+					if (bowlerIdIndex != -1 && bowlerNameIndex != -1) {
+						val id = it.getLong(bowlerIdIndex)
+						val name = it.getString(bowlerNameIndex)
 
-				if (bowlerIdIndex != -1 && bowlerNameIndex != -1) {
-					val id = cursor.getLong(bowlerIdIndex)
-					val name = cursor.getString(bowlerNameIndex)
+						bowlers.add(LegacyBowler(id = id, name = name))
+					}
 
-					bowlers.add(LegacyBowler(id = id, name = name))
+					it.moveToNext()
 				}
-
-				cursor.moveToNext()
 			}
 		}
 
-		cursor.close()
 		return bowlers
 	}
 
@@ -215,31 +241,31 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyTeamBowlers(db: SQLiteDatabase): List<LegacyTeamBowler> {
-		val cursor = db.rawQuery(
+		val teamBowlers = mutableListOf<LegacyTeamBowler>()
+
+		db.rawQuery(
 			"""
 			SELECT ${LegacyContract.TeamBowlerEntry.COLUMN_BOWLER_ID}, ${LegacyContract.TeamBowlerEntry.COLUMN_TEAM_ID}
 			FROM ${LegacyContract.TeamBowlerEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val bowlerIdIndex = it.getColumnIndex(LegacyContract.TeamBowlerEntry.COLUMN_BOWLER_ID)
+					val teamIdIndex = it.getColumnIndex(LegacyContract.TeamBowlerEntry.COLUMN_TEAM_ID)
 
-		val teamBowlers = mutableListOf<LegacyTeamBowler>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val bowlerIdIndex = cursor.getColumnIndex(LegacyContract.TeamBowlerEntry.COLUMN_BOWLER_ID)
-				val teamIdIndex = cursor.getColumnIndex(LegacyContract.TeamBowlerEntry.COLUMN_TEAM_ID)
+					if (bowlerIdIndex != -1 && teamIdIndex != -1) {
+						val bowlerId = it.getLong(bowlerIdIndex)
+						val teamId = it.getLong(teamIdIndex)
 
-				if (bowlerIdIndex != -1 && teamIdIndex != -1) {
-					val bowlerId = cursor.getLong(bowlerIdIndex)
-					val teamId = cursor.getLong(teamIdIndex)
+						teamBowlers.add(LegacyTeamBowler(teamId = teamId, bowlerId = bowlerId))
+					}
 
-					teamBowlers.add(LegacyTeamBowler(teamId = teamId, bowlerId = bowlerId))
+					it.moveToNext()
 				}
-
-				cursor.moveToNext()
 			}
 		}
 
-		cursor.close()
 		return teamBowlers
 	}
 
@@ -276,7 +302,9 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyLeagues(db: SQLiteDatabase): List<LegacyLeague> {
-		val cursor = db.rawQuery(
+		val leagues = mutableListOf<LegacyLeague>()
+
+		db.rawQuery(
 			"""
 			SELECT
 				${LegacyContract.LeagueEntry._ID},
@@ -288,42 +316,46 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.LeagueEntry.COLUMN_BOWLER_ID}
 			FROM ${LegacyContract.LeagueEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val leagueIdIndex = it.getColumnIndex(LegacyContract.LeagueEntry._ID)
+					val leagueNameIndex = it.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_LEAGUE_NAME)
+					val leagueNumberOfGamesIndex =
+						it.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_NUMBER_OF_GAMES)
+					val leagueAdditionalGamesIndex =
+						it.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_ADDITIONAL_GAMES)
+					val leagueAdditionalPinFallIndex =
+						it.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_ADDITIONAL_PINFALL)
+					val leagueIsEventIndex = it.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_IS_EVENT)
+					val leagueBowlerIdIndex =
+						it.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_BOWLER_ID)
 
-		val leagues = mutableListOf<LegacyLeague>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val leagueIdIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry._ID)
-				val leagueNameIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_LEAGUE_NAME)
-				val leagueNumberOfGamesIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_NUMBER_OF_GAMES)
-				val leagueAdditionalGamesIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_ADDITIONAL_GAMES)
-				val leagueAdditionalPinFallIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_ADDITIONAL_PINFALL)
-				val leagueIsEventIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_IS_EVENT)
-				val leagueBowlerIdIndex = cursor.getColumnIndex(LegacyContract.LeagueEntry.COLUMN_BOWLER_ID)
+					val id = it.getLong(leagueIdIndex)
+					val name = it.getString(leagueNameIndex)
+					val numberOfGames = it.getInt(leagueNumberOfGamesIndex)
+					val additionalGames = it.getInt(leagueAdditionalGamesIndex)
+					val additionalPinFall = it.getInt(leagueAdditionalPinFallIndex)
+					val isEvent = it.getInt(leagueIsEventIndex) == 1
+					val bowlerId = it.getLong(leagueBowlerIdIndex)
 
-				val id = cursor.getLong(leagueIdIndex)
-				val name = cursor.getString(leagueNameIndex)
-				val numberOfGames = cursor.getInt(leagueNumberOfGamesIndex)
-				val additionalGames = cursor.getInt(leagueAdditionalGamesIndex)
-				val additionalPinFall = cursor.getInt(leagueAdditionalPinFallIndex)
-				val isEvent = cursor.getInt(leagueIsEventIndex) == 1
-				val bowlerId = cursor.getLong(leagueBowlerIdIndex)
+					leagues.add(
+						LegacyLeague(
+							id = id,
+							name = name,
+							isEvent = isEvent,
+							gamesPerSeries = numberOfGames,
+							additionalGames = additionalGames,
+							additionalPinFall = additionalPinFall,
+							bowlerId = bowlerId,
+						)
+					)
 
-				leagues.add(LegacyLeague(
-					id = id,
-					name = name,
-					isEvent = isEvent,
-					gamesPerSeries = numberOfGames,
-					additionalGames = additionalGames,
-					additionalPinFall = additionalPinFall,
-					bowlerId = bowlerId,
-				))
-
-				cursor.moveToNext()
+					it.moveToNext()
+				}
 			}
 		}
 
-		cursor.close()
 		return leagues
 	}
 
@@ -370,7 +402,9 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacySeries(db: SQLiteDatabase): List<LegacySeries> {
-		val cursor = db.rawQuery(
+		val series = mutableListOf<LegacySeries>()
+
+		db.rawQuery(
 			"""
 			SELECT
 				series.${LegacyContract.SeriesEntry._ID},
@@ -385,35 +419,36 @@ class SQLiteMigrationService @Inject constructor(
 			GROUP BY
 				series.${LegacyContract.SeriesEntry._ID}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
 
-		val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val seriesIdIndex = it.getColumnIndex(LegacyContract.SeriesEntry._ID)
+					val seriesDateIndex = it.getColumnIndex(LegacyContract.SeriesEntry.COLUMN_SERIES_DATE)
+					val seriesLeagueIdIndex =
+						it.getColumnIndex(LegacyContract.SeriesEntry.COLUMN_LEAGUE_ID)
+					val seriesNumberOfGamesIndex = it.getColumnIndex("numberOfGames")
 
-		val series = mutableListOf<LegacySeries>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val seriesIdIndex = cursor.getColumnIndex(LegacyContract.SeriesEntry._ID)
-				val seriesDateIndex = cursor.getColumnIndex(LegacyContract.SeriesEntry.COLUMN_SERIES_DATE)
-				val seriesLeagueIdIndex = cursor.getColumnIndex(LegacyContract.SeriesEntry.COLUMN_LEAGUE_ID)
-				val seriesNumberOfGamesIndex = cursor.getColumnIndex("numberOfGames")
+					val id = it.getLong(seriesIdIndex)
+					val leagueId = it.getLong(seriesLeagueIdIndex)
+					val numberOfGames = it.getInt(seriesNumberOfGamesIndex)
+					val date = dateFormatter.parse(it.getString(seriesDateIndex)) ?: Date()
 
-				val id = cursor.getLong(seriesIdIndex)
-				val leagueId = cursor.getLong(seriesLeagueIdIndex)
-				val numberOfGames = cursor.getInt(seriesNumberOfGamesIndex)
-				val date = dateFormatter.parse(cursor.getString(seriesDateIndex)) ?: Date()
+					series.add(
+						LegacySeries(
+							id = id,
+							date = date,
+							numberOfGames = numberOfGames,
+							leagueId = leagueId,
+						)
+					)
 
-				series.add(LegacySeries(
-					id = id,
-					date = date,
-					numberOfGames = numberOfGames,
-					leagueId = leagueId,
-				))
-
-				cursor.moveToNext()
+					it.moveToNext()
+				}
 			}
 		}
 
-		cursor.close()
 		return series
 	}
 
@@ -459,7 +494,9 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyGames(db: SQLiteDatabase): List<LegacyGame> {
-		val cursor = db.rawQuery(
+		val games = mutableListOf<LegacyGame>()
+
+		db.rawQuery(
 			"""
 			SELECT
 				${LegacyContract.GameEntry._ID},
@@ -472,42 +509,43 @@ class SQLiteMigrationService @Inject constructor(
 			FROM
 				${LegacyContract.GameEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val gameIdIndex = it.getColumnIndex(LegacyContract.GameEntry._ID)
+					val gameNumberIndex = it.getColumnIndex(LegacyContract.GameEntry.COLUMN_GAME_NUMBER)
+					val gameScoreIndex = it.getColumnIndex(LegacyContract.GameEntry.COLUMN_SCORE)
+					val gameIsLockedIndex = it.getColumnIndex(LegacyContract.GameEntry.COLUMN_IS_LOCKED)
+					val gameIsManualIndex = it.getColumnIndex(LegacyContract.GameEntry.COLUMN_IS_MANUAL)
+					val gameMatchPlayIndex = it.getColumnIndex(LegacyContract.GameEntry.COLUMN_MATCH_PLAY)
+					val gameSeriesId = it.getColumnIndex(LegacyContract.GameEntry.COLUMN_SERIES_ID)
 
-		val games = mutableListOf<LegacyGame>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val gameIdIndex = cursor.getColumnIndex(LegacyContract.GameEntry._ID)
-				val gameNumberIndex = cursor.getColumnIndex(LegacyContract.GameEntry.COLUMN_GAME_NUMBER)
-				val gameScoreIndex = cursor.getColumnIndex(LegacyContract.GameEntry.COLUMN_SCORE)
-				val gameIsLockedIndex = cursor.getColumnIndex(LegacyContract.GameEntry.COLUMN_IS_LOCKED)
-				val gameIsManualIndex = cursor.getColumnIndex(LegacyContract.GameEntry.COLUMN_IS_MANUAL)
-				val gameMatchPlayIndex = cursor.getColumnIndex(LegacyContract.GameEntry.COLUMN_MATCH_PLAY)
-				val gameSeriesId = cursor.getColumnIndex(LegacyContract.GameEntry.COLUMN_SERIES_ID)
+					val id = it.getLong(gameIdIndex)
+					val gameNumber = it.getInt(gameNumberIndex)
+					val score = it.getInt(gameScoreIndex)
+					val isLocked = it.getInt(gameIsLockedIndex) == 1
+					val isManual = it.getInt(gameIsManualIndex) == 1
+					val matchPlay = LegacyMatchPlayResult.fromInt(it.getInt(gameMatchPlayIndex))
+						?: LegacyMatchPlayResult.NONE
+					val seriesId = it.getLong(gameSeriesId)
 
-				val id = cursor.getLong(gameIdIndex)
-				val gameNumber = cursor.getInt(gameNumberIndex)
-				val score = cursor.getInt(gameScoreIndex)
-				val isLocked = cursor.getInt(gameIsLockedIndex) == 1
-				val isManual = cursor.getInt(gameIsManualIndex) == 1
-				val matchPlay = LegacyMatchPlayResult.fromInt(cursor.getInt(gameMatchPlayIndex)) ?: LegacyMatchPlayResult.NONE
-				val seriesId = cursor.getLong(gameSeriesId)
+					games.add(
+						LegacyGame(
+							id = id,
+							gameNumber = gameNumber,
+							score = score,
+							isLocked = isLocked,
+							isManual = isManual,
+							matchPlayResult = matchPlay,
+							seriesId = seriesId,
+						)
+					)
 
-				games.add(LegacyGame(
-					id = id,
-					gameNumber = gameNumber,
-					score = score,
-					isLocked = isLocked,
-					isManual = isManual,
-					matchPlayResult = matchPlay,
-					seriesId = seriesId,
-				))
-
-				cursor.moveToNext()
+					it.moveToNext()
+				}
 			}
 		}
 
-		cursor.close()
 		return games
 	}
 
@@ -569,7 +607,9 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyMatchPlsys(db: SQLiteDatabase): List<LegacyMatchPlay> {
-		val cursor = db.rawQuery(
+		val matchPlays = mutableListOf<LegacyMatchPlay>()
+
+		db.rawQuery(
 			"""
 			SELECT
 				${LegacyContract.MatchPlayEntry._ID},
@@ -578,35 +618,35 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.MatchPlayEntry.COLUMN_GAME_ID}
 			FROM ${LegacyContract.MatchPlayEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val matchPlayIdIndex = it.getColumnIndex(LegacyContract.MatchPlayEntry._ID)
+					val matchPlayOppNameIndex =
+						it.getColumnIndex(LegacyContract.MatchPlayEntry.COLUMN_OPPONENT_NAME)
+					val matchPlayOppScoreIndex =
+						it.getColumnIndex(LegacyContract.MatchPlayEntry.COLUMN_OPPONENT_SCORE)
+					val matchPlayGameId = it.getColumnIndex(LegacyContract.MatchPlayEntry.COLUMN_GAME_ID)
 
-		val matchPlays = mutableListOf<LegacyMatchPlay>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val matchPlayIdIndex = cursor.getColumnIndex(LegacyContract.MatchPlayEntry._ID)
-				val matchPlayOppNameIndex = cursor.getColumnIndex(LegacyContract.MatchPlayEntry.COLUMN_OPPONENT_NAME)
-				val matchPlayOppScoreIndex = cursor.getColumnIndex(LegacyContract.MatchPlayEntry.COLUMN_OPPONENT_SCORE)
-				val matchPlayGameId = cursor.getColumnIndex(LegacyContract.MatchPlayEntry.COLUMN_GAME_ID)
+					val id = it.getLong(matchPlayIdIndex)
+					val opponentName = it.getStringOrNull(matchPlayOppNameIndex)
+					val opponentScore = it.getInt(matchPlayOppScoreIndex)
+					val gameId = it.getLong(matchPlayGameId)
 
-				val id = cursor.getLong(matchPlayIdIndex)
-				val opponentName = cursor.getStringOrNull(matchPlayOppNameIndex)
-				val opponentScore = cursor.getInt(matchPlayOppScoreIndex)
-				val gameId = cursor.getLong(matchPlayGameId)
-
-				matchPlays.add(
-					LegacyMatchPlay(
-						id = id,
-						opponentName = opponentName,
-						opponentScore = opponentScore,
-						gameId = gameId,
+					matchPlays.add(
+						LegacyMatchPlay(
+							id = id,
+							opponentName = opponentName,
+							opponentScore = opponentScore,
+							gameId = gameId,
+						)
 					)
-				)
 
-				cursor.moveToNext()
+					it.moveToNext()
+				}
 			}
 		}
 
-		cursor.close()
 		return matchPlays
 	}
 
@@ -657,7 +697,9 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private fun getLegacyFrames(db: SQLiteDatabase): List<LegacyFrame> {
-		val cursor = db.rawQuery(
+		val frames = mutableListOf<LegacyFrame>()
+
+		db.rawQuery(
 			"""
 			SELECT
 				${LegacyContract.FrameEntry._ID},
@@ -670,45 +712,45 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.FrameEntry.COLUMN_GAME_ID}
 			FROM ${LegacyContract.FrameEntry.TABLE_NAME}
 		""".trimIndent(), emptyArray()
-		)
+		).use {
+			if (it.moveToFirst()) {
+				while (!it.isAfterLast) {
+					val frameIdIndex = it.getColumnIndex(LegacyContract.FrameEntry._ID)
+					val frameNumberIndex = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_FRAME_NUMBER)
+					val frameIsAccessedIndex = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_IS_ACCESSED)
+					val framePinState0Index = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_PIN_STATE[0])
+					val framePinState1Index = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_PIN_STATE[1])
+					val framePinState2Index = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_PIN_STATE[2])
+					val frameFoulsIndex = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_FOULS)
+					val frameGameIdIndex = it.getColumnIndex(LegacyContract.FrameEntry.COLUMN_GAME_ID)
 
-		val frames = mutableListOf<LegacyFrame>()
-		if (cursor.moveToFirst()) {
-			while (!cursor.isAfterLast) {
-				val frameIdIndex = cursor.getColumnIndex(LegacyContract.FrameEntry._ID)
-				val frameNumberIndex = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_FRAME_NUMBER)
-				val frameIsAccessedIndex = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_IS_ACCESSED)
-				val framePinState0Index = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_PIN_STATE[0])
-				val framePinState1Index = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_PIN_STATE[1])
-				val framePinState2Index = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_PIN_STATE[2])
-				val frameFoulsIndex = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_FOULS)
-				val frameGameIdIndex = cursor.getColumnIndex(LegacyContract.FrameEntry.COLUMN_GAME_ID)
+					val id = it.getLong(frameIdIndex)
+					val frameNumber = it.getInt(frameNumberIndex)
+					val isAccessed = it.getInt(frameIsAccessedIndex) == 1
+					val pinState0 = it.getInt(framePinState0Index)
+					val pinState1 = it.getInt(framePinState1Index)
+					val pinState2 = it.getInt(framePinState2Index)
+					val fouls = it.getInt(frameFoulsIndex)
+					val gameId = it.getLong(frameGameIdIndex)
 
-				val id = cursor.getLong(frameIdIndex)
-				val frameNumber = cursor.getInt(frameNumberIndex)
-				val isAccessed = cursor.getInt(frameIsAccessedIndex) == 1
-				val pinState0 = cursor.getInt(framePinState0Index)
-				val pinState1 = cursor.getInt(framePinState1Index)
-				val pinState2 = cursor.getInt(framePinState2Index)
-				val fouls = cursor.getInt(frameFoulsIndex)
-				val gameId = cursor.getLong(frameGameIdIndex)
+					frames.add(
+						LegacyFrame(
+							id = id,
+							ordinal = frameNumber,
+							isAccessed = isAccessed,
+							firstPinState = pinState0,
+							secondPinState = pinState1,
+							thirdPinState = pinState2,
+							fouls = fouls,
+							gameId = gameId,
+						)
+					)
 
-				frames.add(LegacyFrame(
-					id = id,
-					ordinal = frameNumber,
-					isAccessed = isAccessed,
-					firstPinState = pinState0,
-					secondPinState = pinState1,
-					thirdPinState = pinState2,
-					fouls = fouls,
-					gameId = gameId,
-				))
-
-				cursor.moveToNext()
+					it.moveToNext()
+				}
 			}
 		}
 
-		cursor.close()
 		return frames
 	}
 

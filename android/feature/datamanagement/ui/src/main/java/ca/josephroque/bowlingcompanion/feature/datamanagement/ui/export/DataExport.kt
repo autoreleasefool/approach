@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,12 +16,14 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.components.SendEmailButton
 import kotlinx.datetime.LocalDate
 
 @Composable
@@ -35,6 +40,11 @@ fun DataExport(
 	onAction: (DataExportUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	DataExportFilePicker(
+		state = state,
+		onAction = onAction,
+	)
+
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
@@ -69,6 +79,12 @@ fun DataExport(
 				lastExportDate = state.lastExportDate,
 			)
 
+			DataExportProgressCard(
+				progress = state.progress,
+				versionCode = state.versionCode,
+				versionName = state.versionName,
+			)
+
 			Spacer(modifier = Modifier.weight(1f))
 		}
 
@@ -77,11 +93,22 @@ fun DataExport(
 		) {
 			Spacer(modifier = Modifier.weight(1f))
 
-			TextButton(onClick = { onAction(DataExportUiAction.ShareClicked) }) {
+			val isExportEnabled = when (state.progress) {
+				DataExportProgress.NotStarted, DataExportProgress.Complete, is DataExportProgress.Failed -> true
+				is DataExportProgress.PickingDestination, DataExportProgress.Exporting -> false
+			}
+
+			TextButton(
+				onClick = { onAction(DataExportUiAction.ShareClicked) },
+				enabled = isExportEnabled,
+			) {
 				Text(text = stringResource(R.string.data_export_share))
 			}
 
-			Button(onClick = { onAction(DataExportUiAction.SaveClicked)}) {
+			Button(
+				onClick = { onAction(DataExportUiAction.SaveClicked) },
+				enabled = isExportEnabled,
+			) {
 				Icon(
 					painterResource(R.drawable.ic_download),
 					contentDescription = null,
@@ -89,6 +116,93 @@ fun DataExport(
 				)
 
 				Text(text = stringResource(R.string.data_export_save))
+			}
+		}
+	}
+}
+
+@Composable
+private fun DataExportFilePicker(
+	state: DataExportUiState,
+	onAction: (DataExportUiAction) -> Unit,
+) {
+	val launcher = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.CreateDocument("application/octet-stream"),
+	) { uri ->
+		uri?.let { onAction(DataExportUiAction.DestinationPicked(it)) }
+	}
+
+	LaunchedEffect(state.progress) {
+		if (state.progress is DataExportProgress.PickingDestination) {
+			launcher.launch(state.progress.fileName)
+		}
+	}
+}
+
+@Composable
+private fun DataExportProgressCard(
+	progress: DataExportProgress,
+	versionCode: String,
+	versionName: String,
+) {
+	when (progress) {
+		DataExportProgress.NotStarted, is DataExportProgress.PickingDestination, DataExportProgress.Exporting -> Unit
+		DataExportProgress.Complete -> {
+			Card(
+				modifier = Modifier.fillMaxWidth(),
+				colors = CardDefaults.cardColors(
+					containerColor = MaterialTheme.colorScheme.primaryContainer,
+				),
+			) {
+				Text(
+					text = stringResource(R.string.data_export_progress_success),
+					style = MaterialTheme.typography.bodyMedium,
+					color = MaterialTheme.colorScheme.onPrimaryContainer,
+					modifier = Modifier.padding(16.dp),
+				)
+			}
+		}
+		is DataExportProgress.Failed -> {
+			Card(
+				modifier = Modifier.fillMaxWidth(),
+				colors = CardDefaults.cardColors(
+					containerColor = MaterialTheme.colorScheme.errorContainer,
+				),
+			) {
+				Column(
+					verticalArrangement = Arrangement.spacedBy(8.dp),
+					modifier = Modifier.padding(vertical = 16.dp),
+				) {
+					Text(
+						text = stringResource(R.string.data_export_progress_error),
+						style = MaterialTheme.typography.titleMedium,
+						color = MaterialTheme.colorScheme.onErrorContainer,
+						modifier = Modifier.padding(horizontal = 16.dp),
+					)
+
+					Text(
+						text = progress.exception.localizedMessage ?: stringResource(R.string.data_error_unknown),
+						style = MaterialTheme.typography.bodyMedium,
+						color = MaterialTheme.colorScheme.onErrorContainer,
+						modifier = Modifier.padding(horizontal = 16.dp),
+					)
+
+					Divider()
+
+					Text(
+						text = stringResource(R.string.data_export_progress_error_report),
+						style = MaterialTheme.typography.bodyMedium,
+						color = MaterialTheme.colorScheme.onErrorContainer,
+						modifier = Modifier.padding(horizontal = 16.dp),
+					)
+
+					SendEmailButton(
+						errorMessage = progress.exception.localizedMessage,
+						versionName = versionName,
+						versionCode = versionCode,
+						modifier = Modifier.align(Alignment.End),
+					)
+				}
 			}
 		}
 	}

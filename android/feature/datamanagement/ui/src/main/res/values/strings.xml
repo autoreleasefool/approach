@@ -8,9 +8,13 @@
 	<string name="data_export_your_data">Your data is always yours.</string>
 	<string name="data_export_share">Share</string>
 	<string name="data_export_save">Save to Files</string>
+	<string name="data_export_progress_success">Data successfully exported!</string>
+	<string name="data_export_progress_error">There was an error exporting your data.</string>
+	<string name="data_export_progress_error_report">If you\'re having trouble exporting your data, try sending us an email at approach@josephroque.ca for help.</string>
 
 	<string name="data_import_title">Importing</string>
 	<string name="data_import_import">Import Data</string>
+	<string name="data_import_restore">Restore</string>
 	<string name="data_import_description">Import your Approach data from a back up file. You can import a back up you created from Approach, or from the legacy app, the 5 Pin Bowling Companion.</string>
 	<string name="data_import_this_will_overwrite">This will overwrite any existing data on this device.</string>
 	<string name="data_import_not_recoverable">You may not be able to recover it later.</string>
@@ -19,8 +23,13 @@
 	<string name="data_import_progress_success">Data successfully imported!</string>
 	<string name="data_import_progress_error">There was an error importing your data.</string>
 	<string name="data_import_progress_error_report">If you\'re having trouble importing your data, try sending us an email at approach@josephroque.ca for help.</string>
-	<string name="data_import_error_unknown">An unknown error occurred.</string>
 
-	<string name="data_import_error_email_recipient">approach@josephroque.ca</string>
-	<string name="data_import_error_email_subject">Approach Data Import Failure (%1$s - %2$s)</string>
+	<string name="data_error_unknown">An unknown error occurred.</string>
+	<string name="data_error_email_recipient">approach@josephroque.ca</string>
+	<string name="data_error_email_subject">Approach Data Import Failure (%1$s - %2$s)</string>
+
+	<string name="data_import_restore_title">Restore to before last import?</string>
+	<string name="data_import_restore_message">You last imported data on %1$s. If you choose to restore your data, you will lose any new data you\'ve recorded since this import, and your data will be restored to before the imported data was applied. Are you sure about this?</string>
+	<string name="data_import_restore_restore">Restore</string>
+	<string name="data_import_restore_cancel">Cancel</string>
 </resources>

@@ -13,13 +13,13 @@ sealed interface DataExportScreenUiState {
 }
 
 sealed interface DataExportScreenUiAction {
-	data class DataExportAction(
-		val dataExport: DataExportUiAction,
+	data object OnAppear: DataExportScreenUiAction
+	data class DataExport(
+		val action: DataExportUiAction,
 	): DataExportScreenUiAction
 }
 
 sealed interface DataExportScreenEvent {
 	data object Dismissed: DataExportScreenEvent
 	data class LaunchShareIntent(val file: File): DataExportScreenEvent
-	data class LaunchCreateDocumentIntent(val file: File): DataExportScreenEvent
 }
