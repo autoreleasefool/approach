@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.settings
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
@@ -12,19 +13,19 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
 	featureFlagsClient: FeatureFlagsClient,
+	systemInfoService: SystemInfoService,
 ): ApproachViewModel<SettingsScreenEvent>() {
 	private val _settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
 		SettingsUiState(
 			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
 			isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT),
-			versionName = "",
-			versionCode = "",
+			versionName = systemInfoService.versionName,
+			versionCode = systemInfoService.versionCode,
 		)
 	)
 
@@ -38,7 +39,6 @@ class SettingsViewModel @Inject constructor(
 
 	fun handleAction(action: SettingsScreenUiAction) {
 		when (action) {
-			is SettingsScreenUiAction.ReceivedVersionInfo -> updateVersionInfo(action.versionName, action.versionCode)
 			is SettingsScreenUiAction.SettingsAction -> handleSettingsAction(action.settingsUiAction)
 		}
 	}
@@ -54,9 +54,5 @@ class SettingsViewModel @Inject constructor(
 			SettingsUiAction.DeveloperSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDeveloperSettings)
 			SettingsUiAction.ArchivesClicked -> sendEvent(SettingsScreenEvent.NavigateToArchives)
 		}
-	}
-
-	private fun updateVersionInfo(versionName: String, versionCode: String) {
-		_settingsState.update { it.copy(versionName = versionName, versionCode = versionCode) }
 	}
 }

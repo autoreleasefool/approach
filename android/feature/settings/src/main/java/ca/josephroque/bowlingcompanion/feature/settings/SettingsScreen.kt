@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.settings
 
-import android.os.Build
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -10,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -70,29 +68,6 @@ private fun SettingsScreen(
 	onAction: (SettingsScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val context = LocalContext.current
-	LaunchedEffect(Unit) {
-		@Suppress("DEPRECATION")
-		try {
-			onAction(
-				SettingsScreenUiAction.ReceivedVersionInfo(
-					versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName,
-					versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-						context.packageManager.getPackageInfo(context.packageName, 0).longVersionCode.toString()
-					else
-						context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toString(),
-				)
-			)
-		} catch (ex: Exception) {
-			onAction(
-				SettingsScreenUiAction.ReceivedVersionInfo(
-					versionName = "N/A",
-					versionCode = "N/A",
-				)
-			)
-		}
-	}
-
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
 	Scaffold(

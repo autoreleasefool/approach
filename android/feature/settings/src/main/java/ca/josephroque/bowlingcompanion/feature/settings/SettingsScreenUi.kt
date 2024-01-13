@@ -12,10 +12,6 @@ sealed interface SettingsScreenUiState {
 }
 
 sealed interface SettingsScreenUiAction {
-	data class ReceivedVersionInfo(
-		val versionName: String,
-		val versionCode: String,
-	): SettingsScreenUiAction
 	data class SettingsAction(val settingsUiAction: SettingsUiAction): SettingsScreenUiAction
 }
 
