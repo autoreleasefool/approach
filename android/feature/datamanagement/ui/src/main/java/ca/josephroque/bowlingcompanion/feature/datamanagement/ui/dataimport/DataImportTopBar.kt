@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.import
+package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme

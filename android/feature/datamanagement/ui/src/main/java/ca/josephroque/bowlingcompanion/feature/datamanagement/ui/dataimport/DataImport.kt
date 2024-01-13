@@ -1,7 +1,10 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.import
+package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport
 
 import android.content.Intent
 import android.net.Uri
+import android.webkit.MimeTypeMap
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,15 +26,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.theme.ApproachTheme
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.R
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.components.SendEmailButton
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun DataImport(
@@ -38,6 +47,15 @@ fun DataImport(
 	onAction: (DataImportUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	DataImportFilePicker(state = state, onAction = onAction)
+
+	if (state.isShowingRestoreDialog && state.lastImportDate != null) {
+		RestoreDialog(
+			lastImportDate = state.lastImportDate,
+			onAction = onAction,
+		)
+	}
+
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
@@ -72,16 +90,54 @@ fun DataImport(
 			}
 		}
 
-		Button(
-			onClick = { onAction(DataImportUiAction.StartImportClicked) },
-			enabled = when (state.progress) {
-				DataImportProgress.Importing, DataImportProgress.PickingFile -> false
-				DataImportProgress.Complete, is DataImportProgress.Failed, DataImportProgress.NotStarted -> true
-			}
+		Row(
+			horizontalArrangement = Arrangement.spacedBy(16.dp),
 		) {
-			Text(text = stringResource(R.string.data_import_import))
+			if (state.isRestoreAvailable) {
+				Spacer(modifier = Modifier.weight(1f))
+
+				TextButton(onClick = { onAction(DataImportUiAction.RestoreClicked) }) {
+					Text(text = stringResource(R.string.data_import_restore))
+				}
+			}
+
+			Button(
+				onClick = { onAction(DataImportUiAction.StartImportClicked) },
+				enabled = when (state.progress) {
+					DataImportProgress.Importing, DataImportProgress.PickingFile -> false
+					DataImportProgress.Complete, is DataImportProgress.Failed, DataImportProgress.NotStarted -> true
+				},
+			) {
+				Text(
+					text = stringResource(R.string.data_import_import),
+					textAlign = TextAlign.Center,
+					modifier = if (state.isRestoreAvailable) Modifier else Modifier.fillMaxWidth(),
+				)
+			}
 		}
 	}
+}
+
+@Composable
+private fun RestoreDialog(
+	lastImportDate: LocalDate,
+	onAction: (DataImportUiAction) -> Unit,
+) {
+	AlertDialog(
+		onDismissRequest = { onAction(DataImportUiAction.CancelRestoreClicked) },
+		title = { Text(text = stringResource(R.string.data_import_restore_title)) },
+		text = { Text(text = stringResource(R.string.data_import_restore_message, lastImportDate.toString())) },
+		confirmButton = {
+			TextButton(onClick = { onAction(DataImportUiAction.ConfirmRestoreClicked) }) {
+				Text(text = stringResource(R.string.data_import_restore_restore))
+			}
+		},
+		dismissButton = {
+			TextButton(onClick = { onAction(DataImportUiAction.CancelRestoreClicked) }) {
+				Text(text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_cancel))
+			}
+		}
+	)
 }
 
 @Composable
@@ -118,6 +174,24 @@ private fun OverwriteWarningCard() {
 					color = MaterialTheme.colorScheme.onErrorContainer,
 				)
 			}
+		}
+	}
+}
+
+@Composable
+fun DataImportFilePicker(
+	state: DataImportUiState,
+	onAction: (DataImportUiAction) -> Unit,
+) {
+	val launcher = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.GetContent(),
+	) { uri ->
+		onAction(DataImportUiAction.FileSelected(uri))
+	}
+
+	LaunchedEffect(state.progress) {
+		if (state.progress == DataImportProgress.PickingFile) {
+			launcher.launch("application/octet-stream")
 		}
 	}
 }
@@ -178,7 +252,7 @@ fun DataImportProgressCard(
 					)
 
 					Text(
-						text = progress.error.localizedMessage ?: stringResource(R.string.data_import_error_unknown),
+						text = progress.exception.localizedMessage ?: stringResource(R.string.data_error_unknown),
 						style = MaterialTheme.typography.bodyMedium,
 						color = MaterialTheme.colorScheme.onErrorContainer,
 						modifier = Modifier.padding(horizontal = 16.dp),
@@ -193,39 +267,12 @@ fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 
-					val context = LocalContext.current
-					OutlinedButton(
-						onClick = {
-							val recipient = context.resources.getString(R.string.data_import_error_email_recipient)
-							val subject = context.resources.getString(
-								R.string.data_import_error_email_subject,
-								versionName,
-								versionCode,
-							)
-							val body = progress.error.localizedMessage ?: context.resources.getString(R.string.data_import_error_unknown)
-							val emailIntent = Intent(Intent.ACTION_SEND).apply {
-								setDataAndType(Uri.parse("mailto:"), "message/rfc822")
-								putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
-								putExtra(Intent.EXTRA_SUBJECT, subject)
-								putExtra(Intent.EXTRA_TEXT, body)
-							}
-
-							context.startActivity(
-								Intent.createChooser(
-									emailIntent,
-									context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
-								)
-							)
-						},
-						modifier = Modifier
-							.padding(horizontal = 16.dp)
-							.align(Alignment.End),
-					) {
-						Text(
-							text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email),
-							style = MaterialTheme.typography.bodyMedium,
-						)
-					}
+					SendEmailButton(
+						errorMessage = progress.exception.localizedMessage,
+						versionName = versionName,
+						versionCode = versionCode,
+						modifier = Modifier.align(Alignment.End),
+					)
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.datamanagement.import
+package ca.josephroque.bowlingcompanion.feature.datamanagement.dataimport
 
 import android.os.Build
 import androidx.compose.foundation.layout.padding
@@ -17,8 +17,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.import.DataImport
-import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.import.DataImportTopBar
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImport
+import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportTopBar
 import kotlinx.coroutines.launch
 
 @Composable
@@ -37,9 +37,6 @@ fun DataImportRoute(
 				.collect {
 					when (it) {
 						DataImportScreenEvent.Dismissed -> onBackPressed()
-						is DataImportScreenEvent.LaunchFilePicker -> {
-							TODO()
-						}
 					}
 				}
 		}
@@ -59,27 +56,8 @@ private fun DataImportScreen(
 	onAction: (DataImportScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val context = LocalContext.current
 	LaunchedEffect(Unit) {
-		@Suppress("DEPRECATION")
-		try {
-			onAction(
-				DataImportScreenUiAction.ReceivedVersionInfo(
-					versionName = context.packageManager.getPackageInfo(context.packageName, 0).versionName,
-					versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-						context.packageManager.getPackageInfo(context.packageName, 0).longVersionCode.toString()
-					else
-						context.packageManager.getPackageInfo(context.packageName, 0).versionCode.toString(),
-				)
-			)
-		} catch (ex: Exception) {
-			onAction(
-				DataImportScreenUiAction.ReceivedVersionInfo(
-					versionName = "N/A",
-					versionCode = "N/A",
-				)
-			)
-		}
+		onAction(DataImportScreenUiAction.OnAppear)
 	}
 
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -101,6 +79,5 @@ private fun DataImportScreen(
 				modifier = Modifier.padding(padding),
 			)
 		}
-
 	}
 }
