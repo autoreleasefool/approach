@@ -8,7 +8,8 @@ sealed interface DataImportProgress {
 	data object PickingFile: DataImportProgress
 	data object Importing: DataImportProgress
 	data class Failed(val exception: Exception): DataImportProgress
-	data object Complete: DataImportProgress
+	data object ImportComplete: DataImportProgress
+	data object RestoreComplete: DataImportProgress
 }
 
 data class DataImportUiState(

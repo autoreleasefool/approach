@@ -2,6 +2,10 @@
 <resources>
 	<color name="black">#FF000000</color>
 	<color name="white">#FFFFFFFF</color>
+	<color name="success_container">#BAFBA5</color>
+	<color name="text_on_success_container">#000000</color>
+	<color name="warning_container">#FFCC02</color>
+	<color name="text_on_warning_container">#000000</color>
 
 	<color name="purple_100">#cbc8f1</color>
 	<color name="purple_200">#a9a4e8</color>

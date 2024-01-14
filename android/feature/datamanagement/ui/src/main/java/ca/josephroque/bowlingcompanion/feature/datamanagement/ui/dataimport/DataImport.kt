@@ -1,8 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport
 
-import android.content.Intent
-import android.net.Uri
-import android.webkit.MimeTypeMap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +20,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,7 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,28 +81,40 @@ fun DataImport(
 			Spacer(modifier = Modifier.weight(1f))
 
 			when (state.progress) {
-				is DataImportProgress.Failed, DataImportProgress.PickingFile, DataImportProgress.Importing -> Unit
-				DataImportProgress.NotStarted, DataImportProgress.Complete -> OverwriteWarningCard()
+				is DataImportProgress.Failed,
+				DataImportProgress.PickingFile,
+				DataImportProgress.Importing,
+				DataImportProgress.RestoreComplete,
+				DataImportProgress.ImportComplete -> Unit
+				DataImportProgress.NotStarted -> OverwriteWarningCard()
 			}
 		}
 
 		Row(
 			horizontalArrangement = Arrangement.spacedBy(16.dp),
 		) {
+			val areActionsEnabled = when (state.progress) {
+				DataImportProgress.Importing,
+				DataImportProgress.PickingFile,
+				DataImportProgress.RestoreComplete,
+				DataImportProgress.ImportComplete -> false
+				DataImportProgress.NotStarted, is DataImportProgress.Failed -> true
+			}
+
 			if (state.isRestoreAvailable) {
 				Spacer(modifier = Modifier.weight(1f))
 
-				TextButton(onClick = { onAction(DataImportUiAction.RestoreClicked) }) {
+				TextButton(
+					onClick = { onAction(DataImportUiAction.RestoreClicked) },
+					enabled = areActionsEnabled,
+				) {
 					Text(text = stringResource(R.string.data_import_restore))
 				}
 			}
 
 			Button(
 				onClick = { onAction(DataImportUiAction.StartImportClicked) },
-				enabled = when (state.progress) {
-					DataImportProgress.Importing, DataImportProgress.PickingFile -> false
-					DataImportProgress.Complete, is DataImportProgress.Failed, DataImportProgress.NotStarted -> true
-				},
+				enabled = areActionsEnabled,
 			) {
 				Text(
 					text = stringResource(R.string.data_import_import),
@@ -144,7 +152,7 @@ private fun RestoreDialog(
 private fun OverwriteWarningCard() {
 	Card(
 		colors = CardDefaults.cardColors(
-			containerColor = MaterialTheme.colorScheme.errorContainer,
+			containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.warning_container),
 		),
 		modifier = Modifier.padding(bottom = 16.dp),
 	) {
@@ -156,7 +164,7 @@ private fun OverwriteWarningCard() {
 			Icon(
 				Icons.Default.Warning,
 				contentDescription = null,
-				tint = MaterialTheme.colorScheme.onErrorContainer,
+				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
 			)
 
 			Column(
@@ -165,13 +173,13 @@ private fun OverwriteWarningCard() {
 				Text(
 					text = stringResource(R.string.data_import_this_will_overwrite),
 					style = MaterialTheme.typography.titleMedium,
-					color = MaterialTheme.colorScheme.onErrorContainer,
+					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
 				)
 
 				Text(
 					text = stringResource(R.string.data_import_not_recoverable),
 					style = MaterialTheme.typography.bodyMedium,
-					color = MaterialTheme.colorScheme.onErrorContainer,
+					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
 				)
 			}
 		}
@@ -191,7 +199,7 @@ fun DataImportFilePicker(
 
 	LaunchedEffect(state.progress) {
 		if (state.progress == DataImportProgress.PickingFile) {
-			launcher.launch("application/octet-stream")
+			launcher.launch("*/*")
 		}
 	}
 }
@@ -209,7 +217,8 @@ fun DataImportProgressCard(
 				DataImportProgress.NotStarted -> MaterialTheme.colorScheme.secondaryContainer
 				DataImportProgress.PickingFile -> MaterialTheme.colorScheme.secondaryContainer
 				DataImportProgress.Importing -> MaterialTheme.colorScheme.secondaryContainer
-				DataImportProgress.Complete -> MaterialTheme.colorScheme.primaryContainer
+				DataImportProgress.RestoreComplete -> colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container)
+				DataImportProgress.ImportComplete -> colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container)
 				is DataImportProgress.Failed -> MaterialTheme.colorScheme.errorContainer
 			}
 		)
@@ -235,11 +244,19 @@ fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
-				DataImportProgress.Complete -> {
+				DataImportProgress.ImportComplete -> {
 					Text(
-						text = stringResource(R.string.data_import_progress_success),
+						text = stringResource(R.string.data_import_progress_import_success),
 						style = MaterialTheme.typography.bodyMedium,
-						color = MaterialTheme.colorScheme.onPrimaryContainer,
+						color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container),
+						modifier = Modifier.padding(horizontal = 16.dp),
+					)
+				}
+				DataImportProgress.RestoreComplete -> {
+					Text(
+						text = stringResource(R.string.data_import_progress_restore_success),
+						style = MaterialTheme.typography.bodyMedium,
+						color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container),
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
@@ -286,7 +303,8 @@ private fun DataImportPreview() {
 		Surface {
 			DataImport(
 				state = DataImportUiState(
-					progress = DataImportProgress.NotStarted,
+					lastImportDate = LocalDate(2021, 1, 1),
+					progress = DataImportProgress.Failed(Exception("Test")),
 					versionName = "",
 					versionCode = "",
 				),

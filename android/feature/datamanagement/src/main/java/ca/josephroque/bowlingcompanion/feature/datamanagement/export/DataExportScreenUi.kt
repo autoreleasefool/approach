@@ -13,7 +13,6 @@ sealed interface DataExportScreenUiState {
 }
 
 sealed interface DataExportScreenUiAction {
-	data object OnAppear: DataExportScreenUiAction
 	data class DataExport(
 		val action: DataExportUiAction,
 	): DataExportScreenUiAction

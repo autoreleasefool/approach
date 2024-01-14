@@ -71,10 +71,6 @@ private fun DataExportScreen(
 	onAction: (DataExportScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	LaunchedEffect(Unit) {
-		onAction(DataExportScreenUiAction.OnAppear)
-	}
-
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
 	Scaffold(

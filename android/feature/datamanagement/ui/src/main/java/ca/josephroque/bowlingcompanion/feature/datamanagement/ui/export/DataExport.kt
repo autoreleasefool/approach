@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -151,13 +152,13 @@ private fun DataExportProgressCard(
 			Card(
 				modifier = Modifier.fillMaxWidth(),
 				colors = CardDefaults.cardColors(
-					containerColor = MaterialTheme.colorScheme.primaryContainer,
+					containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container),
 				),
 			) {
 				Text(
 					text = stringResource(R.string.data_export_progress_success),
 					style = MaterialTheme.typography.bodyMedium,
-					color = MaterialTheme.colorScheme.onPrimaryContainer,
+					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container),
 					modifier = Modifier.padding(16.dp),
 				)
 			}
@@ -216,7 +217,7 @@ private fun LastExportDateCard(
 	Card(
 		colors = CardDefaults.cardColors(
 			containerColor = if (lastExportDate == null) {
-				MaterialTheme.colorScheme.errorContainer
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.warning_container)
 			} else {
 				MaterialTheme.colorScheme.primaryContainer
 			},
@@ -234,13 +235,13 @@ private fun LastExportDateCard(
 				Icon(
 					Icons.Default.Warning,
 					contentDescription = null,
-					tint = MaterialTheme.colorScheme.onErrorContainer,
+					tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
 				)
 
 				Text(
 					text = stringResource(R.string.data_export_never_exported),
-					style = MaterialTheme.typography.titleMedium,
-					color = MaterialTheme.colorScheme.onErrorContainer
+					style = MaterialTheme.typography.bodyMedium,
+					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
 				)
 			} else {
 				Text(
@@ -260,6 +261,7 @@ private fun DataExportPreview() {
 		DataExport(
 			state = DataExportUiState(
 				lastExportDate = LocalDate(2021, 1, 1),
+				progress = DataExportProgress.Complete,
 			),
 			onAction = {},
 		)
