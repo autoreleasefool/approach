@@ -5,6 +5,7 @@ import android.net.Uri
 import android.webkit.MimeTypeMap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
+import java.io.RandomAccessFile
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
@@ -24,10 +25,20 @@ class SystemFileManager @Inject constructor(
 	override fun fileExists(file: File): Boolean =
 		file.exists()
 
-	override fun getExtension(uri: Uri): String? {
-		val mimeTypeMap = MimeTypeMap.getSingleton()
-		val type = context.contentResolver.getType(uri) ?: return null
-		return mimeTypeMap.getExtensionFromMimeType(type)
+	override fun getFileType(file: File): FileType? {
+		try {
+			RandomAccessFile(file, "r").use { randomAccessFile ->
+				val bytes = ByteArray(4)
+				randomAccessFile.read(bytes)
+				val fileSignature = bytes.joinToString("") { "%02X".format(it) }
+				return FileType.entries
+					.firstOrNull {
+						fileSignature.uppercase().startsWith(it.signature.uppercase())
+					}
+			}
+		} catch (e: Exception) {
+			return null
+		}
 	}
 
 	override fun getDatabasePath(fileName: String): File =

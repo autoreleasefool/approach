@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
-import ca.josephroque.bowlingcompanion.core.data.repository.DataTransferRepository
+import ca.josephroque.bowlingcompanion.core.data.service.DataExportService
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportProgress
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiAction
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiState
@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -23,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DataExportViewModel @Inject constructor(
-	private val dataTransferRepository: DataTransferRepository,
+	private val dataExportService: DataExportService,
 	systemInfoService: SystemInfoService,
 ): ApproachViewModel<DataExportScreenEvent>() {
 
@@ -40,9 +39,20 @@ class DataExportViewModel @Inject constructor(
 			initialValue = DataExportScreenUiState.Loading,
 		)
 
+	init {
+		viewModelScope.launch {
+			dataExportService.getLatestExport().collect { file ->
+				_dataExportState.update {
+					it.copy(
+						lastExportDate = if (file == null) null else Instant.fromEpochMilliseconds(file.lastModified()).toLocalDate(),
+					)
+				}
+			}
+		}
+	}
+
 	fun handleAction(action: DataExportScreenUiAction) {
 		when (action) {
-			DataExportScreenUiAction.OnAppear -> getLatestExportDate()
 			is DataExportScreenUiAction.DataExport -> handleDataExportAction(action.action)
 		}
 	}
@@ -56,30 +66,22 @@ class DataExportViewModel @Inject constructor(
 		}
 	}
 
-	private fun getLatestExportDate() {
-		viewModelScope.launch {
-			dataTransferRepository.getLatestDatabaseExport()
-				.firstOrNull()
-				?.let { exportFile ->
-					_dataExportState.update {
-						it.copy(lastExportDate = Instant.fromEpochMilliseconds(exportFile.lastModified()).toLocalDate())
-					}
-				}
-		}
-	}
-
 	private fun saveData() {
 		_dataExportState.update {
 			it.copy(
-				progress = DataExportProgress.PickingDestination(dataTransferRepository.exportFileName),
+				progress = DataExportProgress.PickingDestination(dataExportService.exportDestination),
 			)
 		}
 	}
 
 	private fun shareData() {
 		viewModelScope.launch {
-			val exportFile = dataTransferRepository.getOrCreateDatabaseExport()
-			sendEvent(DataExportScreenEvent.LaunchShareIntent(exportFile))
+			try {
+				val exportFile = dataExportService.getOrCreateExport()
+				sendEvent(DataExportScreenEvent.LaunchShareIntent(exportFile))
+			} catch (e: Exception) {
+				_dataExportState.update { it.copy(progress = DataExportProgress.Failed(e)) }
+			}
 		}
 	}
 
@@ -92,8 +94,12 @@ class DataExportViewModel @Inject constructor(
 		}
 
 		viewModelScope.launch {
-			dataTransferRepository.exportData(uri)
-			_dataExportState.update { it.copy(progress = DataExportProgress.Complete) }
+			try {
+				dataExportService.exportDataToUri(uri = uri)
+				_dataExportState.update { it.copy(progress = DataExportProgress.Complete) }
+			} catch (e: Exception) {
+				_dataExportState.update { it.copy(progress = DataExportProgress.Failed(e)) }
+			}
 		}
 	}
 }

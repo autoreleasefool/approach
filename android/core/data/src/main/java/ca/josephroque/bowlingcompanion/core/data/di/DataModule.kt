@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.core.data.di
 import ca.josephroque.bowlingcompanion.core.data.repository.AcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.DataTransferRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -13,7 +12,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAcknowledgementsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstAlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstBowlersRepository
-import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstDataTransferRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstFramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.OfflineFirstGearRepository
@@ -32,6 +30,10 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.data.service.DataExportService
+import ca.josephroque.bowlingcompanion.core.data.service.ApproachDataExportService
+import ca.josephroque.bowlingcompanion.core.data.service.ApproachDataImportService
+import ca.josephroque.bowlingcompanion.core.data.service.DataImportService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -106,11 +108,6 @@ interface DataModule {
 	): AcknowledgementsRepository
 
 	@Binds
-	fun bindsDataTransferRepository(
-		dataTransferRepository: OfflineFirstDataTransferRepository,
-	): DataTransferRepository
-
-	@Binds
 	fun bindsStatisticsRepository(
 		statisticsRepository: OfflineFirstStatisticsRepository,
 	): StatisticsRepository
@@ -119,4 +116,14 @@ interface DataModule {
 	fun bindsStatisticsWidgetsRepository(
 		statisticsWidgetsRepository: OfflineFirstStatisticsWidgetsRepository,
 	): StatisticsWidgetsRepository
+
+	@Binds
+	fun bindsDataExportService(
+		dataExportService: ApproachDataExportService,
+	): DataExportService
+
+	@Binds
+	fun bindsDataImportService(
+		dataImportService: ApproachDataImportService,
+	): DataImportService
 }

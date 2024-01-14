@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.core.common.filesystem
 
-import android.net.Uri
 import java.io.File
 
 interface FileManager {
@@ -9,7 +8,7 @@ interface FileManager {
 
 	fun filePathExists(fileName: String): Boolean
 	fun fileExists(file: File): Boolean
-	fun getExtension(uri: Uri): String?
+	fun getFileType(file: File): FileType?
 
 	fun getDatabasePath(fileName: String): File
 
@@ -17,4 +16,9 @@ interface FileManager {
 	fun getAsset(fileName: String): String
 
 	fun zipFiles(zipFile: File, files: List<File>)
+}
+
+enum class FileType(val signature: String) {
+	Zip("504B0304"),
+	SQLite("53514C69"),
 }
