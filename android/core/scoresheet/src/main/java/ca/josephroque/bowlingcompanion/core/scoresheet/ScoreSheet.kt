@@ -79,6 +79,7 @@ fun ScoreSheet(
 					frame = frame,
 					style = state.configuration.style,
 					isSelected = isFrameSelected,
+					previousFrame = state.game?.frames?.getOrNull(frame.index - 1),
 					modifier = Modifier.fillMaxWidth(),
 				) {
 					onAction(ScoreSheetUiAction.FrameClicked(frame.index))
@@ -171,6 +172,7 @@ private fun RollCell(
 private fun FrameCell(
 	modifier: Modifier = Modifier,
 	frame: ScoringFrame,
+	previousFrame: ScoringFrame?,
 	style: ScoreSheetConfiguration.Style,
 	isSelected: Boolean,
 	onClick: () -> Unit,
@@ -194,7 +196,11 @@ private fun FrameCell(
 			),
 	) {
 		Text(
-			text = frame.display ?: " ",
+			text = if (isSelected && frame.display == null) {
+				previousFrame?.display ?: " "
+			} else {
+				frame.display ?: " "
+			},
 			style = MaterialTheme.typography.bodyMedium,
 			textAlign = TextAlign.Center,
 			color = colorResource(if (isSelected)

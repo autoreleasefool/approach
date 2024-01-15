@@ -23,7 +23,7 @@ class FivePinScoreKeeper @Inject constructor(
 			calculateScoreInternal(input)
 		}
 
-	private suspend fun calculateScoreInternal(input: ScoreKeeperInput): List<ScoringFrame> {
+	private fun calculateScoreInternal(input: ScoreKeeperInput): List<ScoringFrame> {
 		val steps: MutableList<ScoringFrame> = mutableListOf()
 		val state = generateStateFromInput(input)
 
@@ -206,7 +206,7 @@ class FivePinScoreKeeper @Inject constructor(
 			ScoringFrame(
 				index = frameIndex,
 				rolls = Frame.RollIndices.map { rollIndex ->
-					ScoringRoll(index = rollIndex, display = null, didFoul = false, isSecondaryValue = false,)
+					ScoringRoll(index = rollIndex, display = null, didFoul = false, isSecondaryValue = false)
 				},
 				score = null,
 			)
@@ -292,7 +292,7 @@ class FivePinScoreKeeper @Inject constructor(
 
 	private fun padRolls(rolls: MutableList<ScoringRoll>, display: String?) {
 		rolls.addAll(Frame.rollIndicesAfter(rolls.lastIndex).map {
-			ScoringRoll(index = it, display = display, didFoul = false, isSecondaryValue = false,)
+			ScoringRoll(index = it, display = display, didFoul = false, isSecondaryValue = false)
 		})
 	}
 
