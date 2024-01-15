@@ -98,9 +98,9 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 				bowlers.id AS id,
 				bowlers.name AS name,
 				bowlers.archived_on AS archivedOn,
-				COUNT(leagues.id) AS numberOfLeagues,
-				COUNT(series.id) AS numberOfSeries,
-				COUNT(games.id) AS numberOfGames
+				COUNT(DISTINCT leagues.id) AS numberOfLeagues,
+				COUNT(DISTINCT series.id) AS numberOfSeries,
+				COUNT(DISTINCT games.id) AS numberOfGames
 			FROM bowlers
 			LEFT JOIN leagues on leagues.bowler_id = bowlers.id
 			LEFT JOIN series on series.league_id = leagues.id
