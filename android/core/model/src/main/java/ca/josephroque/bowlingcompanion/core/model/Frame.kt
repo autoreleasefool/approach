@@ -71,6 +71,15 @@ data class FrameEdit(
 	val hasUntouchedRoll: Boolean =
 		firstUntouchedRoll != null
 
+	val paddedRolls: List<Roll>
+		get() {
+			val rolls = rolls.toMutableList()
+			if (rolls.size < Frame.NumberOfRolls) {
+				rolls.add(Roll(index = rolls.size, pinsDowned = emptySet(), didFoul = false, bowlingBall = null))
+			}
+			return rolls
+		}
+
 	val firstUntouchedRoll: Int?
 		get() {
 			if (rolls.size >= Frame.NumberOfRolls) return null
@@ -95,11 +104,13 @@ data class FrameEdit(
 			return Frame.RollIndices.last
 		}
 
-	fun deckForRoll(rollIndex: Int): Set<Pin> =
-		rolls.takeWhile { it.index <= rollIndex }.fold(emptySet()) { acc, roll ->
+	fun deckForRoll(rollIndex: Int): Set<Pin> {
+		val rolls = if (Frame.isLastFrame(properties.index)) paddedRolls else this.rolls
+		return rolls.takeWhile { it.index <= rollIndex }.fold(emptySet()) { acc, roll ->
 			val baseAcc = if (Frame.isLastFrame(properties.index) && acc.size == 5) emptySet() else acc
 			baseAcc + roll.pinsDowned
 		}
+	}
 }
 
 fun List<FrameEdit>.nextIndexToRecord(): Int {

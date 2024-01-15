@@ -92,11 +92,11 @@ fun GamesEditorUiState.selectedFrame() = frames[scoreSheet.selection.frameIndex]
 fun GamesEditorUiState.updateFrameEditor(): GamesEditorUiState {
 	val selection = scoreSheet.selection
 	val frame = frames[selection.frameIndex]
-	val pinsDownLastFrame = if (selection.rollIndex > 0) frame.deckForRoll(selection.rollIndex - 1) else emptySet()
+	val pinsDownLastRoll = if (selection.rollIndex > 0) frame.deckForRoll(selection.rollIndex - 1) else emptySet()
 	val lockedPins = if (Frame.isLastFrame(frame.properties.index)) {
-		if (pinsDownLastFrame.arePinsCleared()) emptySet() else pinsDownLastFrame
+		if (pinsDownLastRoll.arePinsCleared()) emptySet() else pinsDownLastRoll
 	} else {
-		pinsDownLastFrame
+		pinsDownLastRoll
 	}
 
 	return copy(
