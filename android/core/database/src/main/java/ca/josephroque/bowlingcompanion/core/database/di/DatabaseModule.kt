@@ -18,9 +18,5 @@ object DatabaseModule {
 	@Singleton
 	fun providesApproachDatabase(
 		@ApplicationContext context: Context,
-	): ApproachDatabase = Room.databaseBuilder(
-		context,
-		ApproachDatabase::class.java,
-		DATABASE_NAME,
-	).build()
+	): ApproachDatabase = ApproachDatabase.getInstance(context)
 }

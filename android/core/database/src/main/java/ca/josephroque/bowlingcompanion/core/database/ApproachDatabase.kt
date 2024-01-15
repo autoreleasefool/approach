@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.core.database
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
@@ -95,4 +97,34 @@ abstract class ApproachDatabase: RoomDatabase() {
 
 	abstract fun transactionRunnerDao(): TransactionRunnerDao
 	abstract fun checkpointDao(): CheckpointDao
+
+	companion object {
+		@Volatile
+		private var INSTANCE: ApproachDatabase? = null
+
+		fun getInstance(context: Context): ApproachDatabase {
+			synchronized(this) {
+				var instance = INSTANCE
+
+				if (instance == null) {
+					instance = Room.databaseBuilder(
+						context,
+						ApproachDatabase::class.java,
+						DATABASE_NAME,
+					).build()
+
+					INSTANCE = instance
+				}
+
+				return instance
+			}
+		}
+
+		fun close() {
+			synchronized(this) {
+				INSTANCE?.close()
+				INSTANCE = null
+			}
+		}
+	}
 }

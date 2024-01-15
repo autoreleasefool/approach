@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileType
+import ca.josephroque.bowlingcompanion.core.data.migration.DatabaseType
 import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
 import ca.josephroque.bowlingcompanion.core.database.DATABASE_NAME
 import ca.josephroque.bowlingcompanion.core.database.DATABASE_SHM_NAME
@@ -31,11 +32,33 @@ class ApproachDataImportService @Inject constructor(
 	@ApplicationContext private val context: Context,
 ): DataImportService {
 
-	private val databaseFiles = listOf(
-		fileManager.getDatabasePath(DATABASE_NAME),
-		fileManager.getDatabasePath(DATABASE_SHM_NAME),
-		fileManager.getDatabasePath(DATABASE_WAL_NAME),
-	)
+	private val databaseFile: File
+		get() = fileManager.getDatabasePath(DATABASE_NAME)
+	private val databaseShmFile: File
+		get() = fileManager.getDatabasePath(DATABASE_SHM_NAME)
+	private val databaseWalFile: File
+		get() = fileManager.getDatabasePath(DATABASE_WAL_NAME)
+
+	private val databaseFiles: List<File>
+		get() = listOf(
+			databaseFile,
+			databaseShmFile,
+			databaseWalFile,
+		)
+
+	private val tempDatabaseFile: File
+		get() = fileManager.getDatabasePath("temp-$DATABASE_NAME")
+	private val tempDatabaseShmFile: File
+		get() = fileManager.getDatabasePath("temp-$DATABASE_SHM_NAME")
+	private val tempDatabaseWalFile: File
+		get() = fileManager.getDatabasePath("temp-$DATABASE_WAL_NAME")
+
+	private val temporaryDatabaseFiles: List<File>
+		get() = listOf(
+			tempDatabaseFile,
+			tempDatabaseShmFile,
+			tempDatabaseWalFile,
+		)
 
 	private val backupDirectory: File
 		get() = fileManager.filesDir
@@ -82,21 +105,41 @@ class ApproachDataImportService @Inject constructor(
 			FileType.SQLite -> importSQLiteFile(temporaryFile)
 		}
 
-		// TODO: migrationService
+		when (migrationService.getDatabaseType(tempDatabaseFile.name)) {
+			null -> throw IllegalStateException("Unsupported database: ${tempDatabaseFile.name}")
+			DatabaseType.BOWLING_COMPANION -> {
+				databaseFiles.forEach(File::delete)
+				migrationService.migrateDatabase(tempDatabaseFile.name)
+			}
+			DatabaseType.APPROACH -> {
+				databaseFiles.forEach(File::delete)
+				temporaryDatabaseFiles
+					.filter { it.exists() }
+					.forEach {
+						when (it.name) {
+							tempDatabaseFile.name -> it.renameTo(databaseFile)
+							tempDatabaseShmFile.name -> it.renameTo(databaseShmFile)
+							tempDatabaseWalFile.name -> it.renameTo(databaseWalFile)
+							else -> Unit
+						}
+					}
+			}
+		}
+
+		cleanUpTemporaryFiles()
 	}
 
 	private fun importZipFile(zipFile: File) {
-		databaseFiles.forEach(File::delete)
+		temporaryDatabaseFiles.forEach(File::delete)
 
-		// TODO: this probably needs to import to somewhere the migration service can handle
 		ZipFile(zipFile).use { zip ->
 			zip.entries().asSequence()
 				.filter { databaseFiles.map(File::getName).contains(it.name) }
 				.forEach { entry ->
 					val destinationFile = when (entry.name) {
-						DATABASE_NAME -> fileManager.getDatabasePath(DATABASE_NAME)
-						DATABASE_SHM_NAME -> fileManager.getDatabasePath(DATABASE_SHM_NAME)
-						DATABASE_WAL_NAME -> fileManager.getDatabasePath(DATABASE_WAL_NAME)
+						DATABASE_NAME -> tempDatabaseFile
+						DATABASE_SHM_NAME -> tempDatabaseShmFile
+						DATABASE_WAL_NAME -> tempDatabaseWalFile
 						else -> throw IllegalStateException("Unsupported file: ${entry.name}")
 					}
 
@@ -110,8 +153,12 @@ class ApproachDataImportService @Inject constructor(
 	}
 
 	private fun importSQLiteFile(sqliteFile: File) {
-		databaseFiles.forEach(File::delete)
-		// TODO: this probably needs to import to somewhere the migration service can handle
-		sqliteFile.copyTo(fileManager.getDatabasePath(DATABASE_NAME), overwrite = true)
+		temporaryDatabaseFiles.forEach(File::delete)
+		sqliteFile.copyTo(tempDatabaseFile, overwrite = true)
+	}
+
+	private fun cleanUpTemporaryFiles() {
+		temporaryDatabaseFiles.forEach(File::delete)
+		temporaryImportFile.delete()
 	}
 }

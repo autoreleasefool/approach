@@ -6,6 +6,7 @@ import androidx.core.database.getStringOrNull
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
+import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
@@ -70,24 +71,24 @@ class SQLiteMigrationService @Inject constructor(
 ): MigrationService {
 
 	override suspend fun getDatabaseType(name: String): DatabaseType? {
-		val db = LegacyDatabaseHelper.getInstance(context, name).readableDatabase
-
-		db.rawQuery(
-			"PRAGMA table_info(${LegacyContract.BowlerEntry.TABLE_NAME})",
-			emptyArray()
-		).use {
-			if (it.moveToFirst()) {
-				while (!it.isAfterLast) {
-					val columnNameIndex = it.getColumnIndex("name")
-					if (columnNameIndex != -1) {
-						val columnName = it.getString(columnNameIndex)
-						if (columnName == LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME) {
-							return DatabaseType.BOWLING_COMPANION
-						} else if (columnName == "name") {
-							return DatabaseType.APPROACH
+		context.openOrCreateDatabase(name, Context.MODE_PRIVATE, null).use { db ->
+			db.rawQuery(
+				"PRAGMA table_info(${LegacyContract.BowlerEntry.TABLE_NAME})",
+				emptyArray()
+			).use {
+				if (it.moveToFirst()) {
+					while (!it.isAfterLast) {
+						val columnNameIndex = it.getColumnIndex("name")
+						if (columnNameIndex != -1) {
+							val columnName = it.getString(columnNameIndex)
+							if (columnName == LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME) {
+								return DatabaseType.BOWLING_COMPANION
+							} else if (columnName == "name") {
+								return DatabaseType.APPROACH
+							}
 						}
+						it.moveToNext()
 					}
-					it.moveToNext()
 				}
 			}
 		}
@@ -100,17 +101,22 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	override suspend fun migrateDatabase(name: String) = withContext(ioDispatcher) {
-		val legacyDb = LegacyDatabaseHelper.getInstance(context, name).readableDatabase
+		// Forces the database to be re-opened and re-rerun migrations
+		ApproachDatabase.close()
 
-		transactionRunner {
-			migrateTeams(db = legacyDb)
-			migrateBowlers(db = legacyDb)
-			migrateTeamBowlers(db = legacyDb)
-			migrateLeagues(db = legacyDb)
-			migrateSeries(db = legacyDb)
-			migrateGames(db = legacyDb)
-			migrateMatchPlays(db = legacyDb)
-			migrateFrames(db = legacyDb)
+		LegacyDatabaseHelper.getInstance(context, name).use { dbHelper ->
+			dbHelper.readableDatabase.use { db ->
+				transactionRunner {
+					migrateTeams(db = db)
+					migrateBowlers(db = db)
+					migrateTeamBowlers(db = db)
+					migrateLeagues(db = db)
+					migrateSeries(db = db)
+					migrateGames(db = db)
+					migrateMatchPlays(db = db)
+					migrateFrames(db = db)
+				}
+			}
 		}
 
 		LegacyDatabaseHelper.closeInstance()
