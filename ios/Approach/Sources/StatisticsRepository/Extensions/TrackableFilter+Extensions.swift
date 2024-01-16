@@ -27,7 +27,15 @@ extension TrackableFilter {
 			return (league.request(for: series), league.request(for: games), league.request(for: frames))
 		case let .series(id):
 			let series = try Series.Database.fetchOneGuaranteed(db, id: id)
-			let games = Series.Database.trackableGames(filter: gameFilter)
+			let games: HasManyAssociation<Series.Database, Game.Database>
+			switch series.preBowl {
+			case .preBowl:
+				var gameFilterWithExcluded = gameFilter
+				gameFilterWithExcluded.includingExcluded = true
+				games = Series.Database.trackableGames(filter: gameFilterWithExcluded)
+			case .regular:
+				games = Series.Database.trackableGames(filter: gameFilter)
+			}
 			let frames = Series.Database.trackableFrames(through: games, filter: frameFilter)
 			return (nil, series.request(for: games), series.request(for: frames))
 		case let .game(id):

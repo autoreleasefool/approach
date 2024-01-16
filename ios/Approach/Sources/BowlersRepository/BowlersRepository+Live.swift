@@ -109,7 +109,7 @@ extension BowlersRepository: DependencyKey {
 					// FIXME: filter out games that have leagues/series/games with excludeFromStatistics
 					let allMatches = Bowler.Database.matchesAsOpponent
 					let allGames = Bowler.Database.gamesAsOpponent
-						.trackable()
+						.trackable(includingExcluded: false)
 						.joining(
 							required: Game.Database.series
 								.filter(Series.Database.Columns.excludeFromStatistics == Series.ExcludeFromStatistics.include)
