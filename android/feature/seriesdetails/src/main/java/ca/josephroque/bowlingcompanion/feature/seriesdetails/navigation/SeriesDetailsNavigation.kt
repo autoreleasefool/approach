@@ -3,26 +3,21 @@ package ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation
 import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.EditGameArgs
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.SeriesDetailsRoute
 import java.util.UUID
 
-const val SERIES_ID = "seriesid"
-const val EVENT_ID = "eventid"
-const val seriesDetailsNavigationRoute = "series/{$SERIES_ID}"
-const val eventDetailsNavigationRoute = "event/{$EVENT_ID}"
-
-fun NavController.navigateToEvent(leagueId: UUID) {
-	val encoded = Uri.encode(leagueId.toString())
-	this.navigate("event/$encoded")
+fun NavController.navigateToEvent(leagueId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.EventDetails.createRoute(leagueId), navOptions)
 }
 
-fun NavController.navigateToSeriesDetails(seriesId: UUID) {
-	val encoded = Uri.encode(seriesId.toString())
-	this.navigate("series/$encoded")
+fun NavController.navigateToSeriesDetails(seriesId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.SeriesDetails.createRoute(seriesId), navOptions)
 }
 
 fun NavGraphBuilder.seriesDetailsScreen(
@@ -30,9 +25,9 @@ fun NavGraphBuilder.seriesDetailsScreen(
 	onEditGame: (EditGameArgs) -> Unit,
 ) {
 	composable(
-		route = seriesDetailsNavigationRoute,
+		route = Route.SeriesDetails.route,
 		arguments = listOf(
-			navArgument(SERIES_ID) { type = NavType.StringType },
+			navArgument(Route.SeriesDetails.ARG_SERIES) { type = NavType.StringType },
 		),
 	) {
 		SeriesDetailsRoute(
@@ -41,9 +36,9 @@ fun NavGraphBuilder.seriesDetailsScreen(
 		)
 	}
 	composable(
-		route = eventDetailsNavigationRoute,
+		route = Route.EventDetails.route,
 		arguments = listOf(
-			navArgument(EVENT_ID) { type = NavType.StringType },
+			navArgument(Route.EventDetails.ARG_EVENT) { type = NavType.StringType },
 		),
 	) {
 		SeriesDetailsRoute(

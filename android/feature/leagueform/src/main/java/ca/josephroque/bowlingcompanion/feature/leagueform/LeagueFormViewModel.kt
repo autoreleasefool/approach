@@ -10,8 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
-import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.BOWLER_ID
-import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.LEAGUE_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.GamesPerSeries
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.IncludeAdditionalPinFall
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiState
@@ -40,13 +39,8 @@ class LeagueFormViewModel @Inject constructor(
 	private val hasLoadedInitialState: Boolean
 		get() = _uiState.value !is LeagueFormScreenUiState.Loading
 
-	private val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
-		UUID.fromString(it)
-	}
-
-	private val leagueId = savedStateHandle.get<String>(LEAGUE_ID)?.let {
-		UUID.fromString(it)
-	}
+	private val bowlerId = Route.AddLeague.getBowler(savedStateHandle)
+	private val leagueId = Route.EditLeague.getLeague(savedStateHandle)
 
 	fun handleAction(action: LeagueFormScreenUiAction) {
 		when (action) {
@@ -79,9 +73,7 @@ class LeagueFormViewModel @Inject constructor(
 		if (hasLoadedInitialState) return
 
 		viewModelScope.launch {
-			val leagueId = savedStateHandle.get<String>(LEAGUE_ID)?.let {
-				UUID.fromString(it)
-			}
+			val leagueId = Route.EditLeague.getLeague(savedStateHandle)
 			if (leagueId == null) {
 				_uiState.value = LeagueFormScreenUiState.Create(
 					topBar = LeagueFormTopBarUiState(

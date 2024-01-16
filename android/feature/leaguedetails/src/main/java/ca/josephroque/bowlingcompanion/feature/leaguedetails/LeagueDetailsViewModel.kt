@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
-import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.LEAGUE_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiState
@@ -39,7 +39,7 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<LeagueDetailsScreenEvent>() {
-	private val leagueId = UUID.fromString(savedStateHandle[LEAGUE_ID])
+	private val leagueId = Route.LeagueDetails.getLeague(savedStateHandle)!!
 
 	private val _seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
 	private val _seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)

@@ -15,7 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState

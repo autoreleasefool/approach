@@ -6,7 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.ui.randomPastel
 import ca.josephroque.bowlingcompanion.core.model.ui.toComposeColor
-import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.AVATAR_VALUE
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiAction
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiState
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiAction
@@ -27,7 +27,7 @@ class AvatarFormViewModel @Inject constructor(
 	private val hasLoadedInitialState: Boolean
 		get() = _uiState.value !is AvatarFormScreenUiState.Loading
 
-	private val existingAvatar = savedStateHandle.get<String>(AVATAR_VALUE)?.let {
+	private val existingAvatar = Route.EditAvatar.getAvatar(savedStateHandle)?.let {
 		Avatar.fromString(it)
 	} ?: Avatar.default()
 

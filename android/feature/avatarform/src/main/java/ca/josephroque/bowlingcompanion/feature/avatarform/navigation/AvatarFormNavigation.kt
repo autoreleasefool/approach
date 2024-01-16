@@ -1,34 +1,36 @@
 package ca.josephroque.bowlingcompanion.feature.avatarform.navigation
 
-import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.avatarform.AvatarFormRoute
-
-const val AVATAR_VALUE = "avatardef"
-const val avatarFormNavigationRoute = "edit_avatar/{$AVATAR_VALUE}"
 
 fun NavController.navigateToAvatarFormForResult(
 	avatar: Avatar,
 	navResultCallback: NavResultCallback<Avatar>,
+	navOptions: NavOptions? = null,
 ) {
-	val encoded = Uri.encode(avatar.toString())
-	this.navigateForResult("edit_avatar/$encoded", navResultCallback)
+	this.navigateForResult(
+		route = Route.EditAvatar.createRoute(avatar.toString()),
+		navResultCallback = navResultCallback,
+		navOptions = navOptions,
+		)
 }
 
 fun NavGraphBuilder.avatarFormScreen(
 	onDismissWithResult: (Avatar?) -> Unit,
 ) {
 	composable(
-		route = avatarFormNavigationRoute,
+		route = Route.EditAvatar.route,
 		arguments = listOf(
-			navArgument(AVATAR_VALUE) { type = NavType.StringType },
+			navArgument(Route.EditAvatar.ARG_AVATAR) { type = NavType.StringType },
 		),
 	) {
 		AvatarFormRoute(

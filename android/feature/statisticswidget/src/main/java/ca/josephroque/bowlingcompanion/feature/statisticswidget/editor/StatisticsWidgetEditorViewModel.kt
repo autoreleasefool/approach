@@ -8,15 +8,13 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.GameAverageStatistic
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.CONTEXT
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.INITIAL_SOURCE
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.PRIORITY
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,21 +39,20 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val statisticsWidgetsRepository: StatisticsWidgetsRepository,
 ): ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
-	private val _context = savedStateHandle.get<String>(CONTEXT) ?: ""
-	private val _initialSource: StatisticsWidgetInitialSource? = savedStateHandle.get<String>(INITIAL_SOURCE)?.let {
-		if (it == "nan") return@let null
+	private val context = Route.StatisticsWidgetEditor.getContext(savedStateHandle)!!
+	private val initialSource: StatisticsWidgetInitialSource? = Route.StatisticsWidgetEditor.getInitialSource(savedStateHandle)?.let {
 		val split = it.split("_")
 		when (split[0]) {
 			"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
 			else -> null
 		}
 	}
-	private val _priority = savedStateHandle.get<Int>(PRIORITY) ?: 0
+	private val priority = Route.StatisticsWidgetEditor.getPriority(savedStateHandle)!!
 
 	private val _source: MutableStateFlow<StatisticsWidgetSource?> = MutableStateFlow(
-		_initialSource?.let { initialSource ->
-			when (initialSource) {
-				is StatisticsWidgetInitialSource.Bowler -> StatisticsWidgetSource.Bowler(initialSource.bowlerId)
+		initialSource?.let {
+			when (it) {
+				is StatisticsWidgetInitialSource.Bowler -> StatisticsWidgetSource.Bowler(it.bowlerId)
 			}
 		}
 	)
@@ -138,8 +135,8 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 					bowlerId = source.bowlerId,
 					leagueId = null,
 					id = UUID.randomUUID(),
-					context = _context,
-					priority = _priority,
+					context = context,
+					priority = priority,
 					timeline = _timeline.value,
 					statistic = _statistic.value.id,
 				)
@@ -147,8 +144,8 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 					bowlerId = source.bowlerId,
 					leagueId = source.leagueId,
 					id = UUID.randomUUID(),
-					context = _context,
-					priority = _priority,
+					context = context,
+					priority = priority,
 					timeline = _timeline.value,
 					statistic = _statistic.value.id,
 				)

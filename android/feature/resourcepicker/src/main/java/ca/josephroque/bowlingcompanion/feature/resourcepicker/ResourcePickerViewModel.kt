@@ -11,6 +11,8 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.GearKind
+import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.AlleyPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.BowlerPickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.GamePickerDataProvider
@@ -19,15 +21,9 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LanePickerDat
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.LeaguePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.ResourcePickerDataProvider
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.data.SeriesPickerDataProvider
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_FILTER
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.RESOURCE_TYPE
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTED_IDS
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.SELECTION_LIMIT
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.TITLE_OVERRIDE
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.R
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerFilter
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerType
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,19 +48,14 @@ class ResourcePickerViewModel @Inject constructor(
 		MutableStateFlow(ResourcePickerScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
-	private val resourceType = savedStateHandle.get<String>(RESOURCE_TYPE)
-		?.let { ResourcePickerType.valueOf(it) } ?: ResourcePickerType.BOWLER
+	private val resourceType = Route.ResourcePicker.getResourceType(savedStateHandle)!!
+	private val initiallySelectedIds = Route.ResourcePicker.getSelectedIds(savedStateHandle)
+	private val limit = Route.ResourcePicker.getLimit(savedStateHandle) ?: 0
+	private val titleOverride = Route.ResourcePicker.getTitleOverride(savedStateHandle)
 
-	private val initiallySelectedIds = (savedStateHandle.get<String>(SELECTED_IDS) ?: "nan")
-		.let { if (it == "nan") emptySet() else it.split(",").toSet() }
-		.map(UUID::fromString)
-		.toSet()
-
-	private val limit = savedStateHandle.get<Int>(SELECTION_LIMIT) ?: 0
-
-	private val filter: ResourcePickerFilter? = savedStateHandle.get<String>(RESOURCE_FILTER)
+	private val filter: ResourcePickerFilter? = Route.ResourcePicker.getResourceFilter(savedStateHandle)
 		?.let {
-			if (it == "nan") null else when (resourceType) {
+			when (resourceType) {
 				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Bowler(UUID.fromString(it))
 				ResourcePickerType.GEAR -> ResourcePickerFilter.Gear(GearKind.valueOf(it))
 				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(UUID.fromString(it))
@@ -73,9 +64,6 @@ class ResourcePickerViewModel @Inject constructor(
 				ResourcePickerType.BOWLER, ResourcePickerType.ALLEY -> null
 			}
 		}
-
-	private val titleOverride = savedStateHandle.get<String>(TITLE_OVERRIDE)
-		?.let { if (it == "nan") null else it }
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)

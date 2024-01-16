@@ -2,32 +2,35 @@ package ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker.StatisticPickerRoute
-
-const val SELECTED_STATISTIC = "selected_statistic"
-
-const val statisticPickerNavigationRoute = "statistic_picker/{$SELECTED_STATISTIC}"
 
 fun NavController.navigateToStatisticPickerForResult(
 	selectedStatistic: StatisticID,
 	navResultCallback: NavResultCallback<StatisticID>,
+	navOptions: NavOptions? = null,
 ) {
-	this.navigateForResult("statistic_picker/$selectedStatistic", navResultCallback,)
+	this.navigateForResult(
+		route = Route.StatisticsPicker.createRoute(selectedStatistic.name),
+		navResultCallback = navResultCallback,
+		navOptions = navOptions,
+	)
 }
 
 fun NavGraphBuilder.statisticPickerScreen(
 	onDismissWithResult: (StatisticID) -> Unit,
 ) {
 	composable(
-		route = statisticPickerNavigationRoute,
+		route = Route.StatisticsPicker.route,
 		arguments = listOf(
-			navArgument(SELECTED_STATISTIC) { type = NavType.EnumType(StatisticID::class.java) },
+			navArgument(Route.StatisticsPicker.ARG_STATISTIC) { type = NavType.EnumType(StatisticID::class.java) },
 		),
 	) {
 		StatisticPickerRoute(

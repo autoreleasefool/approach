@@ -12,8 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
-import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.LEAGUE_ID
-import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.SERIES_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
@@ -43,13 +42,8 @@ class SeriesFormViewModel @Inject constructor(
 	private val hasLoadedInitialState: Boolean
 		get() = _uiState.value !is SeriesFormScreenUiState.Loading
 
-	private val leagueId = savedStateHandle.get<String>(LEAGUE_ID)?.let {
-		UUID.fromString(it)
-	}
-
-	private val seriesId = savedStateHandle.get<String>(SERIES_ID)?.let {
-		UUID.fromString(it)
-	}
+	private val leagueId = Route.AddSeries.getLeague(savedStateHandle)
+	private val seriesId = Route.EditSeries.getSeries(savedStateHandle)
 
 	fun handleAction(action: SeriesFormScreenUiAction) {
 		when (action) {

@@ -1,21 +1,18 @@
 package ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation
 
-import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.LeagueDetailsRoute
 import java.util.UUID
 
-const val LEAGUE_ID = "leagueid"
-const val leagueDetailsNavigationRoute = "league/{$LEAGUE_ID}"
-
-fun NavController.navigateToLeagueDetails(leagueId: UUID) {
-	val encoded = Uri.encode(leagueId.toString())
-	this.navigate("league/$encoded")
+fun NavController.navigateToLeagueDetails(leagueId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.LeagueDetails.createRoute(leagueId), navOptions)
 }
 
 fun NavGraphBuilder.leagueDetailsScreen(
@@ -25,9 +22,9 @@ fun NavGraphBuilder.leagueDetailsScreen(
 	onShowSeriesDetails: (UUID) -> Unit,
 ) {
 	composable(
-		route = leagueDetailsNavigationRoute,
+		route = Route.LeagueDetails.route,
 		arguments = listOf(
-			navArgument(LEAGUE_ID) { type = NavType.StringType },
+			navArgument(Route.LeagueDetails.ARG_LEAGUE) { type = NavType.StringType },
 		),
 	) {
 		LeagueDetailsRoute(

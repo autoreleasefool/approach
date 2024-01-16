@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.core.common.navigation
+package ca.josephroque.bowlingcompanion.core.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions

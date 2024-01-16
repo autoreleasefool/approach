@@ -16,9 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ApproachNavigationBarItem
-import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorNavigationRoute
-import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingNavigationRoute
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsNavigationRoute
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
@@ -52,10 +50,10 @@ fun ApproachApp(
 }
 
 val bottomBarHiddenRoutes = listOf(
-	onboardingNavigationRoute,
-	gamesEditorNavigationRoute,
-	statisticsDetailsNavigationRoute,
-)
+	Route.Onboarding,
+	Route.EditGame,
+	Route.StatisticsDetails,
+).map(Route::route).toSet()
 
 @Composable
 private fun ApproachBottomBar(

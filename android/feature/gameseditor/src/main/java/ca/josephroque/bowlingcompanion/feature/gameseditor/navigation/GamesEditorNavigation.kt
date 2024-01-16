@@ -1,24 +1,19 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.navigation
 
-import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 import java.util.UUID
 
-const val EDITOR_SERIES_ID = "seriesid"
-const val INITIAL_GAME_ID = "gameid"
-const val gamesEditorNavigationRoute = "edit_games/{$EDITOR_SERIES_ID}/{$INITIAL_GAME_ID}"
-
-fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID) {
-	val seriesIdEncoded = Uri.encode(seriesId.toString())
-	val gameIdEncoded = Uri.encode(initialGameId.toString())
-	this.navigate("edit_games/$seriesIdEncoded/$gameIdEncoded")
+fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.EditGame.createRoute(seriesId, initialGameId), navOptions)
 }
 
 fun NavGraphBuilder.gamesEditorScreen(
@@ -32,10 +27,10 @@ fun NavGraphBuilder.gamesEditorScreen(
 	onShowStatistics: (TrackableFilter) -> Unit,
 ) {
 	composable(
-		route = gamesEditorNavigationRoute,
+		route = Route.EditGame.route,
 		arguments = listOf(
-			navArgument(EDITOR_SERIES_ID) { type = NavType.StringType },
-			navArgument(INITIAL_GAME_ID) { type = NavType.StringType },
+			navArgument(Route.EditGame.ARG_SERIES) { type = NavType.StringType },
+			navArgument(Route.EditGame.ARG_GAME) { type = NavType.StringType },
 		),
 	) {
 		GamesEditorRoute(

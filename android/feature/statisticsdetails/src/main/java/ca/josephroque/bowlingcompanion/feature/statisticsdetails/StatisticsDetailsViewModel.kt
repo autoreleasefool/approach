@@ -5,16 +5,16 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_ID
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.SOURCE_TYPE
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.skydoves.flexible.core.FlexibleSheetValue
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,14 +36,13 @@ class StatisticsDetailsViewModel @Inject constructor(
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
 ): ApproachViewModel<StatisticsDetailsScreenEvent>() {
-	private val _sourceType = savedStateHandle.get<SourceType>(SOURCE_TYPE) ?: SourceType.BOWLER
-	private val _sourceId = savedStateHandle.get<String>(SOURCE_ID)
-		?.let { UUID.fromString(it) } ?: UUID.randomUUID()
+	private val _sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
+	private val _sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
 	private val _initialFilterSource = when (_sourceType) {
-		SourceType.BOWLER -> TrackableFilter.Source.Bowler(_sourceId)
-		SourceType.LEAGUE -> TrackableFilter.Source.League(_sourceId)
-		SourceType.SERIES -> TrackableFilter.Source.Series(_sourceId)
-		SourceType.GAME -> TrackableFilter.Source.Game(_sourceId)
+		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(_sourceId)
+		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(_sourceId)
+		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(_sourceId)
+		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(_sourceId)
 	}
 
 	private val _chartEntryModelProducer = ChartEntryModelProducer()
@@ -218,16 +217,9 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 }
 
-enum class SourceType {
-	BOWLER,
-	LEAGUE,
-	SERIES,
-	GAME,
-}
-
-fun TrackableFilter.Source.sourceType(): SourceType = when (this) {
-	is TrackableFilter.Source.Bowler -> SourceType.BOWLER
-	is TrackableFilter.Source.League -> SourceType.LEAGUE
-	is TrackableFilter.Source.Series -> SourceType.SERIES
-	is TrackableFilter.Source.Game -> SourceType.GAME
+fun TrackableFilter.Source.sourceType(): StatisticsDetailsSourceType = when (this) {
+	is TrackableFilter.Source.Bowler -> StatisticsDetailsSourceType.BOWLER
+	is TrackableFilter.Source.League -> StatisticsDetailsSourceType.LEAGUE
+	is TrackableFilter.Source.Series -> StatisticsDetailsSourceType.SERIES
+	is TrackableFilter.Source.Game -> StatisticsDetailsSourceType.GAME
 }
