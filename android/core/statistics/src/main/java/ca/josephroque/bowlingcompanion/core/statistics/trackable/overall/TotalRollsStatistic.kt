@@ -22,7 +22,7 @@ data class TotalRollsStatistic(
 		set(value) { totalRolls = value }
 
 	override fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration) {
-		totalRolls += frame.rolls.size
+		totalRolls += frame.totalRolls
 	}
 
 	override fun supportsSource(source: TrackableFilter.Source): Boolean = when (source) {

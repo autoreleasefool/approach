@@ -38,6 +38,20 @@ data class TrackableFrame(
 		val pinsDowned: Set<Pin>,
 		val didFoul: Boolean,
 	)
+
+	val totalRolls: Int
+		get() {
+			return if (Frame.isLastFrame(index)) {
+				rolls.size
+			} else {
+				val deck = mutableSetOf<Pin>()
+				rolls.takeWhile {
+					if (deck.arePinsCleared()) return@takeWhile false
+					deck += it.pinsDowned
+					true
+				}.size
+			}
+		}
 }
 
 data class FrameCreate(
