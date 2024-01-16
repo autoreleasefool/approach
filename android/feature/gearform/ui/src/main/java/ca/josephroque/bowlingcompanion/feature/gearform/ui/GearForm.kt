@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -61,7 +62,7 @@ fun GearForm(
 	Column(
 		modifier = modifier
 			.verticalScroll(rememberScrollState())
-			.fillMaxSize(),
+			.imePadding(),
 	) {
 		FormSection(titleResourceId = R.string.gear_form_section_details) {
 			NameTextField(
