@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.alleyform.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -59,7 +60,8 @@ fun AlleyForm(
 	Column(
 		modifier = modifier
 			.verticalScroll(rememberScrollState())
-			.fillMaxSize(),
+			.fillMaxSize()
+			.imePadding(),
 	) {
 		FormSection(titleResourceId = R.string.alley_form_details_title) {
 			AlleyNameField(

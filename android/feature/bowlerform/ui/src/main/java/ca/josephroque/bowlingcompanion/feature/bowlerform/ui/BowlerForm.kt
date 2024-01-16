@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.bowlerform.ui
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -53,7 +54,7 @@ fun BowlerForm(
 	Column(
 		modifier = modifier
 			.verticalScroll(rememberScrollState())
-			.fillMaxSize(),
+			.imePadding(),
 	) {
 		FormSection(titleResourceId = R.string.bowler_form_section_details) {
 			NameTextField(
