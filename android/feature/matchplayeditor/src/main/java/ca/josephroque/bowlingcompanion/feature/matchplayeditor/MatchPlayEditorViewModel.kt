@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayUpdate
-import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.GAME_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,7 +32,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 	private val matchPlaysRepository: MatchPlaysRepository,
 	private val gamesRepository: GamesRepository,
 ): ApproachViewModel<MatchPlayEditorScreenEvent>() {
-	private val gameId = savedStateHandle.get<String>(GAME_ID)!!.let { UUID.fromString(it) }
+	private val gameId = Route.EditMatchPlay.getGame(savedStateHandle)!!
 
 	private var _existingMatchPlay: MatchPlayUpdate? = null
 	private var didLoadInitialValue = false

@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AcknowledgementsRepository
-import ca.josephroque.bowlingcompanion.feature.settings.navigation.ACKNOWLEDGEMENT
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiState
@@ -19,7 +19,8 @@ class AcknowledgementDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	acknowledgementsRepository: AcknowledgementsRepository,
 ): ApproachViewModel<AcknowledgementDetailsScreenEvent>() {
-	private val _acknowledgementName = savedStateHandle.get<String>(ACKNOWLEDGEMENT) ?: ""
+	private val _acknowledgementName = Route.AcknowledgementDetails.getAcknowledgement(savedStateHandle)
+		?: throw IllegalArgumentException("Acknowledgement name must be provided to AcknowledgementDetailsViewModel")
 
 	private val _acknowledgementDetails = acknowledgementsRepository.getAcknowledgement(_acknowledgementName)
 		.map { AcknowledgementDetailsUiState(it) }

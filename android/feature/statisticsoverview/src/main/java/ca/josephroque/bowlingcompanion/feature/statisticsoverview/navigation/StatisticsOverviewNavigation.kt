@@ -4,15 +4,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.StatisticsOverviewRoute
 import java.util.UUID
 
-const val statisticsOverviewNavigationRoute = "statistics_overview"
-
 fun NavController.navigateToStatisticsOverview(navOptions: NavOptions? = null) {
-	this.navigate(statisticsOverviewNavigationRoute, navOptions)
+	this.navigate(Route.StatisticsOverview.route, navOptions)
 }
 
 fun NavGraphBuilder.statisticsOverviewScreen(
@@ -23,7 +22,7 @@ fun NavGraphBuilder.statisticsOverviewScreen(
 	onShowStatistics: (TrackableFilter) -> Unit,
 ) {
 	composable(
-		route = statisticsOverviewNavigationRoute,
+		route = Route.StatisticsOverview.route,
 	) {
 		StatisticsOverviewRoute(
 			onPickBowler = onPickBowler,

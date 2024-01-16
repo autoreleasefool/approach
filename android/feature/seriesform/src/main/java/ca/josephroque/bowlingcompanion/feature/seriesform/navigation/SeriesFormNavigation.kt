@@ -2,28 +2,22 @@ package ca.josephroque.bowlingcompanion.feature.seriesform.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.common.navigation.navigateForResult
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.seriesform.SeriesFormRoute
 import java.util.UUID
 
-const val LEAGUE_ID = "leagueid"
-const val SERIES_ID = "seriesid"
-
-const val editSeriesNavigationRoute = "edit_series/{$SERIES_ID}"
-const val addSeriesNavigationRoute = "add_series/{$LEAGUE_ID}"
-
-fun NavController.navigateToSeriesForm(seriesId: UUID) {
-	val encoded = UUID.fromString(seriesId.toString())
-	this.navigate("edit_series/$encoded")
+fun NavController.navigateToSeriesForm(seriesId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.EditSeries.createRoute(seriesId), navOptions)
 }
 
-fun NavController.navigateToNewSeriesForm(leagueId: UUID, result: NavResultCallback<UUID?>) {
-	val encoded = UUID.fromString(leagueId.toString())
-	this.navigateForResult("add_series/$encoded", result)
+fun NavController.navigateToNewSeriesForm(leagueId: UUID, result: NavResultCallback<UUID?>, navOptions: NavOptions? = null) {
+	this.navigateForResult(Route.AddSeries.createRoute(leagueId), result, navOptions)
 }
 
 fun NavGraphBuilder.seriesFormScreen(
@@ -31,9 +25,9 @@ fun NavGraphBuilder.seriesFormScreen(
 	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
-		route = editSeriesNavigationRoute,
+		route = Route.EditSeries.route,
 		arguments = listOf(
-			navArgument(SERIES_ID) { type = NavType.StringType }
+			navArgument(Route.EditSeries.ARG_SERIES) { type = NavType.StringType }
 		),
 	) {
 		SeriesFormRoute(
@@ -42,9 +36,9 @@ fun NavGraphBuilder.seriesFormScreen(
 		)
 	}
 	composable(
-		route = addSeriesNavigationRoute,
+		route = Route.AddSeries.route,
 		arguments = listOf(
-			navArgument(LEAGUE_ID) { type = NavType.StringType }
+			navArgument(Route.AddSeries.ARG_LEAGUE) { type = NavType.StringType }
 		),
 	) {
 		SeriesFormRoute(

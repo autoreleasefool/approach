@@ -8,8 +8,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
-import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_ID
-import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.BOWLER_KIND
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.R
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiAction
@@ -36,14 +35,9 @@ class BowlerFormViewModel @Inject constructor(
 	private val hasLoadedInitialState: Boolean
 		get() = _uiState.value !is BowlerFormScreenUiState.Loading
 
-	private val bowlerId = savedStateHandle.get<String>(BOWLER_ID)?.let {
-		UUID.fromString(it)
-	}
+	private val bowlerId = Route.EditBowler.getBowler(savedStateHandle)
 
-	private val kind = savedStateHandle.get<String>(BOWLER_KIND).let { string ->
-		BowlerKind.entries
-			.firstOrNull { it.name == string }
-	} ?: BowlerKind.PLAYABLE
+	private val kind = Route.AddBowler.getKind(savedStateHandle) ?: BowlerKind.PLAYABLE
 
 	fun handleAction(action: BowlerFormScreenUiAction) {
 		when (action) {

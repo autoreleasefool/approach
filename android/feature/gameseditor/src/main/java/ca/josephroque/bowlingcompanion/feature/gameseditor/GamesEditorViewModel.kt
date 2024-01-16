@@ -24,8 +24,7 @@ import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
-import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.EDITOR_SERIES_ID
-import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.INITIAL_GAME_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiAction
@@ -74,8 +73,8 @@ class GamesEditorViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
-	private val seriesId = UUID.fromString(savedStateHandle[EDITOR_SERIES_ID])
-	private val initialGameId = UUID.fromString(savedStateHandle[INITIAL_GAME_ID])
+	private val seriesId = Route.EditGame.getSeries(savedStateHandle)!!
+	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
 
 	private var initialGameLoaded = false
 	private val _currentGameId = MutableStateFlow(initialGameId)

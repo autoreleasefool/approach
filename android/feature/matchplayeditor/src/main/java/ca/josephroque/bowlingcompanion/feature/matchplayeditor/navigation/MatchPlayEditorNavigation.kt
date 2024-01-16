@@ -2,20 +2,17 @@ package ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.MatchPlayEditorRoute
 import java.util.UUID
 
-const val GAME_ID = "gameid"
-
-const val editMatchPlayNavigationRoute = "edit_match_play/{$GAME_ID}"
-
-fun NavController.navigateToMatchPlayEditor(gameId: UUID) {
-	val encoded = UUID.fromString(gameId.toString())
-	this.navigate("edit_match_play/$encoded")
+fun NavController.navigateToMatchPlayEditor(gameId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.EditMatchPlay.createRoute(gameId), navOptions)
 }
 
 fun NavGraphBuilder.matchPlayEditorScreen(
@@ -23,9 +20,9 @@ fun NavGraphBuilder.matchPlayEditorScreen(
 	onEditOpponent: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
-		route = editMatchPlayNavigationRoute,
+		route = Route.EditMatchPlay.route,
 		arguments = listOf(
-			navArgument(GAME_ID) { type = NavType.StringType }
+			navArgument(Route.EditMatchPlay.ARG_GAME) { type = NavType.StringType }
 		),
 	) {
 		MatchPlayEditorRoute(

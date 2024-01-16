@@ -4,8 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
-import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.CURRENT_GAME_ID
-import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.SETTINGS_SERIES_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,9 +21,8 @@ class GamesSettingsViewModel @Inject constructor(
 	gamesRepository: GamesRepository,
 	savedStateHandle: SavedStateHandle,
 ): ApproachViewModel<GamesSettingsScreenEvent>() {
-	private val seriesId = UUID.fromString(savedStateHandle[SETTINGS_SERIES_ID])
-
-	private val _currentGameId = MutableStateFlow(UUID.fromString(savedStateHandle[CURRENT_GAME_ID]))
+	private val seriesId = Route.GameSettings.getSeries(savedStateHandle)!!
+	private val _currentGameId = MutableStateFlow(Route.GameSettings.getCurrentGame(savedStateHandle)!!)
 
 	val uiState: StateFlow<GamesSettingsScreenUiState> = combine(
 		_currentGameId,

@@ -53,6 +53,7 @@ dependencies {
 	implementation(project(":core:data"))
 	implementation(project(":core:designsystem"))
 	implementation(project(":core:model"))
+	implementation(project(":core:navigation"))
 	implementation(project(":core:statistics"))
 	implementation(project(":feature:accessoriesoverview"))
 	implementation(project(":feature:alleyform"))

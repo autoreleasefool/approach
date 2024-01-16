@@ -7,10 +7,9 @@ import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameslist.ui.GamesListUiState
-import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.EVENT_ID
-import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.SERIES_ID
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,8 +32,8 @@ class SeriesDetailsViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
 ): ApproachViewModel<SeriesDetailsScreenEvent>() {
-	private val _seriesId = MutableStateFlow(savedStateHandle.get<String>(SERIES_ID)?.let { UUID.fromString(it) })
-	private val _eventId = savedStateHandle.get<String>(EVENT_ID)?.let { UUID.fromString(it)}
+	private val _seriesId = MutableStateFlow(Route.SeriesDetails.getSeries(savedStateHandle))
+	private val _eventId = Route.EventDetails.getEvent(savedStateHandle)
 
 	private val _gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
 

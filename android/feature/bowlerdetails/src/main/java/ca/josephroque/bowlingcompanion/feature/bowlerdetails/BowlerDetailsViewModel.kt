@@ -11,7 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRep
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
-import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.BOWLER_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiState
@@ -46,7 +46,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<BowlerDetailsScreenEvent>() {
-	private val bowlerId = UUID.fromString(savedStateHandle[BOWLER_ID])
+	private val bowlerId = Route.BowlerDetails.getBowler(savedStateHandle)!!
 
 	private val _leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
 

@@ -7,7 +7,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
-import ca.josephroque.bowlingcompanion.feature.laneform.navigation.LANE_IDS
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.AddLanesDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.AddLanesDialogUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
@@ -33,9 +33,8 @@ class LaneFormViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val userDataRepository: UserDataRepository,
 ): ApproachViewModel<LaneFormScreenEvent>() {
-	private val existingLaneIds = savedStateHandle.get<String>(LANE_IDS)
-		?.let { if (it == "nan") emptyList() else it.split(",").map { uuid -> UUID.fromString(uuid) }
-	} ?: emptyList()
+
+	private val existingLaneIds = Route.EditLanes.getLanes(savedStateHandle)
 
 	private val _isSwipeToEditTipDismissed = userDataRepository.userData.map { it.isLaneFormSwipeToEditTipDismissed }
 

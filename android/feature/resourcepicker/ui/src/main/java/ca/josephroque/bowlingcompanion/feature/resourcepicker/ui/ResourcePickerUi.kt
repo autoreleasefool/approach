@@ -5,18 +5,9 @@ import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
+import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import kotlinx.datetime.LocalDate
 import java.util.UUID
-
-enum class ResourcePickerType {
-	BOWLER,
-	LEAGUE,
-	SERIES,
-	GAME,
-	GEAR,
-	ALLEY,
-	LANE,
-}
 
 sealed interface ResourcePickerFilter {
 	data class Bowler(val id: UUID): ResourcePickerFilter

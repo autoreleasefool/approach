@@ -4,10 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.CONTEXT
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.INITIAL_SOURCE
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
@@ -25,9 +24,8 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val statisticsWidgetRepository: StatisticsWidgetsRepository,
 ): ApproachViewModel<StatisticsWidgetLayoutEditorScreenEvent>() {
-	private val context = savedStateHandle.get<String>(CONTEXT) ?: ""
-	private val initialSource: StatisticsWidgetInitialSource? = savedStateHandle.get<String>(INITIAL_SOURCE)?.let {
-		if (it == "nan") return@let null
+	private val context = Route.StatisticsWidgetLayoutEditor.getContext(savedStateHandle)!!
+	private val initialSource: StatisticsWidgetInitialSource? = Route.StatisticsWidgetLayoutEditor.getInitialSource(savedStateHandle)?.let {
 		val split = it.split("_")
 		when (split[0]) {
 			"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))

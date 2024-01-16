@@ -2,26 +2,22 @@ package ca.josephroque.bowlingcompanion.feature.gearform.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.common.navigation.NavResultCallback
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearform.GearFormRoute
 import java.util.UUID
 
-const val GEAR_ID = "gearid"
-
-const val editGearNavigationRoute = "edit_gear/{$GEAR_ID}"
-const val addGearNavigationRoute = "add_gear"
-
-fun NavController.navigateToGearForm(gearId: UUID) {
-	val encoded = UUID.fromString(gearId.toString())
-	this.navigate("edit_gear/$encoded")
+fun NavController.navigateToGearForm(gearId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.EditGear.createRoute(gearId), navOptions)
 }
 
-fun NavController.navigateToNewGearForm() {
-	this.navigate("add_gear")
+fun NavController.navigateToNewGearForm(navOptions: NavOptions? = null) {
+	this.navigate(Route.AddGear.route, navOptions)
 }
 
 fun NavGraphBuilder.gearFormScreen(
@@ -30,9 +26,9 @@ fun NavGraphBuilder.gearFormScreen(
 	onEditOwner: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 ) {
 	composable(
-		route = editGearNavigationRoute,
+		route = Route.EditGear.route,
 		arguments = listOf(
-			navArgument(GEAR_ID) { type = NavType.StringType }
+			navArgument(Route.EditGear.ARG_GEAR) { type = NavType.StringType }
 		),
 	) {
 		GearFormRoute(
@@ -42,7 +38,7 @@ fun NavGraphBuilder.gearFormScreen(
 		)
 	}
 	composable(
-		route = addGearNavigationRoute,
+		route = Route.AddGear.route,
 	) {
 		GearFormRoute(
 			onDismiss = onBackPressed,

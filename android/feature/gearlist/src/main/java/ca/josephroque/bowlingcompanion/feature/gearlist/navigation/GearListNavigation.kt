@@ -4,13 +4,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearlist.GearListRoute
 import java.util.UUID
 
-const val gearListNavigationRoute = "gear"
-
 fun NavController.navigateToGearList(navOptions: NavOptions? = null) {
-		this.navigate(gearListNavigationRoute, navOptions)
+		this.navigate(Route.GearList.route, navOptions)
 }
 
 fun NavGraphBuilder.gearListScreen(
@@ -20,7 +19,7 @@ fun NavGraphBuilder.gearListScreen(
 	onShowGearDetails: (UUID) -> Unit,
 ) {
 	composable(
-		route = gearListNavigationRoute,
+		route = Route.GearList.route,
 	) {
 		GearListRoute(
 			onBackPressed = onBackPressed,

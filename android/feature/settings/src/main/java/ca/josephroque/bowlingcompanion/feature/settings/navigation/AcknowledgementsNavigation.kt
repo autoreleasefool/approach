@@ -6,20 +6,17 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.settings.acknowledgements.AcknowledgementsSettingsRoute
 import ca.josephroque.bowlingcompanion.feature.settings.acknowledgements.details.AcknowledgementDetailsRoute
-
-const val ACKNOWLEDGEMENT = "acknowledgement"
-const val acknowledgementsSettingsNavigationRoute = "settings/acknowledgements"
-const val acknowledgementDetailsNavigationRoute = "settings/acknowledgements/{$ACKNOWLEDGEMENT}"
 
 fun NavController.navigateToAcknowledgementDetails(
 	acknowledgement: String,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigate(
-		acknowledgementDetailsNavigationRoute.replace("{$ACKNOWLEDGEMENT}", acknowledgement),
-		navOptions
+		route = Route.AcknowledgementDetails.createRoute(acknowledgement),
+		navOptions = navOptions,
 	)
 }
 
@@ -27,9 +24,9 @@ fun NavGraphBuilder.acknowledgementDetailsScreen(
 	onBackPressed: () -> Unit,
 ) {
 	composable(
-		route = acknowledgementDetailsNavigationRoute,
+		route = Route.AcknowledgementDetails.route,
 		arguments = listOf(
-			navArgument(ACKNOWLEDGEMENT) { type = NavType.StringType }
+			navArgument(Route.AcknowledgementDetails.ARG_ACKNOWLEDGEMENT) { type = NavType.StringType }
 		),
 	) {
 		AcknowledgementDetailsRoute(
@@ -39,7 +36,7 @@ fun NavGraphBuilder.acknowledgementDetailsScreen(
 }
 
 fun NavController.navigateToAcknowledgementsSettings(navOptions: NavOptions? = null) {
-	this.navigate(acknowledgementsSettingsNavigationRoute, navOptions)
+	this.navigate(Route.Acknowledgements.route, navOptions)
 }
 
 fun NavGraphBuilder.acknowledgementsSettingsScreen(
@@ -47,7 +44,7 @@ fun NavGraphBuilder.acknowledgementsSettingsScreen(
 	onShowAcknowledgementDetails: (String) -> Unit,
 ) {
 	composable(
-		route = acknowledgementsSettingsNavigationRoute,
+		route = Route.Acknowledgements.route,
 	) {
 		AcknowledgementsSettingsRoute(
 			onBackPressed = onBackPressed,

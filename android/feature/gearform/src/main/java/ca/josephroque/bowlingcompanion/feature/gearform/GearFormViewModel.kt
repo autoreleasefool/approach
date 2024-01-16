@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedReposito
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearKind
-import ca.josephroque.bowlingcompanion.feature.gearform.navigation.GEAR_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.R
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
@@ -36,9 +36,7 @@ class GearFormViewModel @Inject constructor(
 	private val hasLoadedInitialState: Boolean
 		get() = _uiState.value !is GearFormScreenUiState.Loading
 
-	private val gearId = savedStateHandle.get<String>(GEAR_ID)?.let {
-		UUID.fromString(it)
-	}
+	private val gearId = Route.EditGear.getGear(savedStateHandle)
 
 	fun handleAction(action: GearFormScreenUiAction) {
 		when (action) {

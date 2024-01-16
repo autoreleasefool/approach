@@ -6,13 +6,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.overview.OverviewRoute
 import java.util.UUID
 
-const val overviewNavigationRoute = "app_overview"
-
 fun NavController.navigateToOverview(navOptions: NavOptions? = null) {
-	this.navigate(overviewNavigationRoute, navOptions)
+	this.navigate(Route.Overview.route, navOptions)
 }
 
 fun NavGraphBuilder.overviewScreen(
@@ -25,7 +24,7 @@ fun NavGraphBuilder.overviewScreen(
 	onShowStatistics: (UUID) -> Unit,
 ) {
 	composable(
-		route = overviewNavigationRoute,
+		route = Route.Overview.route,
 	) {
 		LaunchedEffect(shouldShowOnboarding) {
 			if (shouldShowOnboarding.value) {

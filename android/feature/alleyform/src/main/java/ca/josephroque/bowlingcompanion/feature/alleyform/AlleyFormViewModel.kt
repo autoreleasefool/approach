@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
-import ca.josephroque.bowlingcompanion.feature.alleyform.navigation.ALLEY_ID
+import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.R
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
@@ -32,10 +32,9 @@ class AlleyFormViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<AlleyFormScreenEvent>() {
-	private val isEditing = savedStateHandle.get<String>(ALLEY_ID) != null
-	private val alleyId = savedStateHandle.get<String>(ALLEY_ID).let {
-		if (it == null) UUID.randomUUID().also { savedStateHandle[ALLEY_ID] = it.toString() }
-		else UUID.fromString(it)
+	private val isEditing = Route.EditAlley.getAlley(savedStateHandle) != null
+	private val alleyId = Route.EditAlley.getAlley(savedStateHandle) ?: UUID.randomUUID().also {
+		savedStateHandle[Route.EditAlley.ARG_ALLEY] = it.toString()
 	}
 
 	private val _uiState: MutableStateFlow<AlleyFormScreenUiState> =
