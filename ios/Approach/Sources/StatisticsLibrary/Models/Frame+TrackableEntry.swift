@@ -61,3 +61,18 @@ extension Frame {
 		}
 	}
 }
+
+extension Frame.TrackableEntry {
+	public var totalRolls: Int {
+		if Frame.isLast(index) {
+			return rolls.count
+		} else {
+			var pinsDowned: Set<Pin> = []
+			return rolls.prefix(while: {
+				guard pinsDowned.count < 5 else { return false }
+				pinsDowned.formUnion($0.roll.pinsDowned)
+				return true
+			}).count
+		}
+	}
+}

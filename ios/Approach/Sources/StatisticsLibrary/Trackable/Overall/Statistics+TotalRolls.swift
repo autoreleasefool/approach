@@ -18,7 +18,7 @@ extension Statistics {
 		init(totalRolls: Int) { self.totalRolls = totalRolls }
 
 		public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {
-			totalRolls += byFrame.rolls.count
+			totalRolls += byFrame.totalRolls
 		}
 
 		public static func supports(trackableSource: TrackableFilter.Source) -> Bool {
