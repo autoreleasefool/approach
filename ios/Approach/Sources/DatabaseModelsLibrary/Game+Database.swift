@@ -70,11 +70,13 @@ extension DerivableRequest<Game.Database> {
 		return filter(seriesId == bySeries)
 	}
 
-	public func trackable() -> Self {
-		self
-			.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
+	public func trackable(includingExcluded: Bool) -> Self {
+		let request = self
 			.filter(Game.Database.Columns.score > 0)
 			.isNotArchived()
+		return includingExcluded
+			? request
+			: request.filter(Game.Database.Columns.excludeFromStatistics == Game.ExcludeFromStatistics.include)
 	}
 }
 

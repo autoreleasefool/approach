@@ -126,15 +126,18 @@ extension TrackableFilter {
 		public var lanes: LaneFilter?
 		public var gearUsed: IdentifiedArrayOf<Gear.Summary>
 		public var opponent: Bowler.Summary?
+		public var includingExcluded: Bool
 
 		public init(
 			lanes: LaneFilter? = nil,
 			gearUsed: IdentifiedArrayOf<Gear.Summary> = [],
-			opponent: Bowler.Summary? = nil
+			opponent: Bowler.Summary? = nil,
+			includingExcluded: Bool = false
 		) {
 			self.lanes = lanes
 			self.gearUsed = gearUsed
 			self.opponent = opponent
+			self.includingExcluded = includingExcluded
 		}
 	}
 }
