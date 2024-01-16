@@ -1,5 +1,9 @@
 package ca.josephroque.bowlingcompanion.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -10,6 +14,8 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,21 +55,22 @@ fun ApproachApp(
 	}
 }
 
-val bottomBarHiddenRoutes = listOf(
-	Route.Onboarding,
-	Route.EditGame,
-	Route.StatisticsDetails,
-).map(Route::route).toSet()
-
 @Composable
 private fun ApproachBottomBar(
 	destinations: List<TopLevelDestination>,
 	onNavigateToDestination: (TopLevelDestination) -> Unit,
 	currentDestination: NavDestination?
 ) {
-	// FIXME: Find a better way to determine if NavigationBar should be hidden
-	// FIXME: Animate NavigationBar disappearing https://stackoverflow.com/questions/66837991/
-	if (!bottomBarHiddenRoutes.contains(currentDestination?.route)) {
+	val isBottomBarVisible = remember { MutableTransitionState(false) }
+	LaunchedEffect(currentDestination?.route) {
+		isBottomBarVisible.targetState = !bottomBarHiddenRoutes.contains(currentDestination?.route)
+	}
+
+	AnimatedVisibility(
+		visibleState = isBottomBarVisible,
+		enter = slideInVertically(initialOffsetY = { it }),
+		exit = slideOutVertically(targetOffsetY = { it }),
+	) {
 		NavigationBar {
 			destinations.forEach { destination ->
 				val isSelected = currentDestination.isTopLevelDestinationInHierarchy(destination)
@@ -77,14 +84,14 @@ private fun ApproachBottomBar(
 							contentDescription = null,
 							modifier = Modifier.size(24.dp),
 						)
-				  },
+					},
 					selectedIcon = {
 						Icon(
 							painterResource(destination.selectedIcon),
 							contentDescription = null,
 							modifier = Modifier.size(24.dp),
 						)
-				  },
+					},
 					label = {
 						Text(
 							stringResource(destination.iconTextId),
@@ -96,3 +103,10 @@ private fun ApproachBottomBar(
 		}
 	}
 }
+
+val bottomBarHiddenRoutes = Route::class
+	.sealedSubclasses
+	.mapNotNull { it.objectInstance }
+	.filter { !it.isBottomBarVisible }
+	.map(Route::route)
+	.toSet()
