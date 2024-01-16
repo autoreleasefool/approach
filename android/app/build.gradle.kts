@@ -97,6 +97,8 @@ dependencies {
 	implementation(libs.sentry)
 
 	debugImplementation(libs.androidx.compose.ui.tooling.preview)
+
+	implementation(kotlin("reflect"))
 }
 
 secrets {
