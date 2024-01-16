@@ -67,7 +67,7 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing", "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
-services = [ "Avatar", "RecentlyUsed", "StoreReview" ]
+services = [ "Avatar", "FeatureFlags", "RecentlyUsed", "StoreReview" ]
 
 [features.GamesList]
 features = [ "GamesEditor", "SeriesEditor" ]
@@ -141,7 +141,7 @@ features = [ "StatisticsDetails" ]
 [features.StatisticsDetails]
 features = [ "Errors" ]
 repositories = [ "Bowlers", "Leagues", "Games", "Series", "Statistics" ]
-services = [ "FeatureFlags", "Notifications", "Preference", "Tips" ]
+services = [ "Notifications", "Preference", "Tips" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 
 [features.StatisticsWidgetsLayout]
@@ -440,7 +440,7 @@ from = "6.23.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-from = "1.5.5"
+from = "1.6.0"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
