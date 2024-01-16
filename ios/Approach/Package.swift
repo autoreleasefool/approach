@@ -162,7 +162,7 @@ let package = Package(
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.17.1"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.23.0"),
 		.package(url: "https://github.com/markiv/SwiftUI-Shimmer.git", from: "1.4.0"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.5.5"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.6.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.1.4"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.15.1"),
@@ -398,6 +398,7 @@ let package = Package(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"AvatarServiceInterface",
+				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
@@ -670,7 +671,6 @@ let package = Package(
 			dependencies: [
 				"BowlersRepositoryInterface",
 				"ErrorsFeature",
-				"FeatureFlagsServiceInterface",
 				"GamesRepositoryInterface",
 				"LeaguesRepositoryInterface",
 				"ModelsViewsLibrary",
