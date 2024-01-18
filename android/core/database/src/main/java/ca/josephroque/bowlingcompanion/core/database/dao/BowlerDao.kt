@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import java.util.UUID
@@ -84,13 +85,14 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 		"""
 			SELECT
 				bowlers.id AS id,
-				bowlers.name AS name
+				bowlers.name AS name,
+				bowlers.kind AS kind
 			FROM bowlers
 			WHERE bowlers.archived_on IS NULL
 			ORDER BY bowlers.name
 		"""
 	)
-	abstract fun getOpponentsList(): Flow<List<BowlerListItem>>
+	abstract fun getOpponentsList(): Flow<List<OpponentListItem>>
 
 	@Query(
 		"""

@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialo
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.bowlersList
+import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.opponentsList
 
 @Composable
 fun OpponentsList(
@@ -36,11 +37,11 @@ fun OpponentsList(
 		} else {
 			footer(R.string.opponent_list_description)
 
-			bowlersList(
+			opponentsList(
 				list = state.list,
-				onBowlerClick = { onAction(OpponentsListUiAction.OpponentClicked(it.id)) },
-				onEditBowler = { onAction(OpponentsListUiAction.OpponentEdited(it.id)) },
-				onArchiveBowler = { onAction(OpponentsListUiAction.OpponentArchived(it)) },
+				onOpponentClick = { onAction(OpponentsListUiAction.OpponentClicked(it)) },
+				onEditOpponent = { onAction(OpponentsListUiAction.OpponentEdited(it)) },
+				onArchiveOpponent = { onAction(OpponentsListUiAction.OpponentArchived(it)) },
 			)
 		}
 	}

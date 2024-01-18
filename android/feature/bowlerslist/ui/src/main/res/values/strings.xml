@@ -4,4 +4,9 @@
 
 	<string name="bowler_list_empty_title">No bowlers found</string>
 	<string name="bowler_list_empty_message">You haven\'t added any bowlers yet. Try adding yourself to get started.</string>
+
+	<string name="opponent_list_add">Add Opponent</string>
+
+	<string name="opponent_list_empty_title">No opponents found</string>
+	<string name="opponent_list_empty_message">You haven\'t added any opponents yet. Try adding yourself to get started.</string>
 </resources>

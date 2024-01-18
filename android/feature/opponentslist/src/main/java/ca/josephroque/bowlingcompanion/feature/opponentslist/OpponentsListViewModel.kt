@@ -3,7 +3,8 @@ package ca.josephroque.bowlingcompanion.feature.opponentslist
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
-import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentsListUiAction
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentsListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class OpponentsListViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 ): ApproachViewModel<OpponentsListScreenEvent>() {
-	private val _opponentToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
+	private val _opponentToArchive: MutableStateFlow<OpponentListItem?> = MutableStateFlow(null)
 
 	val uiState = combine(
 		bowlersRepository.getOpponentsList(),
@@ -46,20 +47,30 @@ class OpponentsListViewModel @Inject constructor(
 		when (action) {
 			is OpponentsListUiAction.BackClicked -> sendEvent(OpponentsListScreenEvent.Dismissed)
 			is OpponentsListUiAction.AddOpponentClicked -> sendEvent(OpponentsListScreenEvent.AddOpponent)
-			is OpponentsListUiAction.OpponentClicked -> sendEvent(OpponentsListScreenEvent.ShowOpponentDetails(action.id))
-			is OpponentsListUiAction.OpponentEdited -> sendEvent(OpponentsListScreenEvent.EditOpponent(action.id))
+			is OpponentsListUiAction.OpponentClicked -> showOpponentDetails(action.opponent)
+			is OpponentsListUiAction.OpponentEdited -> sendEvent(OpponentsListScreenEvent.EditOpponent(action.opponent.id))
 			is OpponentsListUiAction.OpponentArchived -> setOpponentToArchive(action.opponent)
 			is OpponentsListUiAction.DismissArchiveClicked -> setOpponentToArchive(null)
 			is OpponentsListUiAction.ConfirmArchiveClicked -> archiveOpponent()
 		}
 	}
 
-	private fun setOpponentToArchive(opponent: BowlerListItem?) {
+	private fun showOpponentDetails(opponent: OpponentListItem) {
+		sendEvent(OpponentsListScreenEvent.ShowOpponentDetails(opponent.id))
+	}
+
+	private fun setOpponentToArchive(opponent: OpponentListItem?) {
+		if (opponent?.kind == BowlerKind.PLAYABLE) return
 		_opponentToArchive.value = opponent
 	}
 
 	private fun archiveOpponent() {
 		val opponent = _opponentToArchive.value ?: return
+		if (opponent.kind == BowlerKind.PLAYABLE) {
+			setOpponentToArchive(null)
+			return
+		}
+
 		viewModelScope.launch {
 			bowlersRepository.archiveBowler(opponent.id)
 			setOpponentToArchive(null)

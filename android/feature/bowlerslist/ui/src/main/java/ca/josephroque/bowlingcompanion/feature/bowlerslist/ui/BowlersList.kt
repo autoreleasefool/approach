@@ -57,9 +57,9 @@ fun BowlersList(
 
 			bowlersList(
 				list = state.list,
-				onBowlerClick = { onAction(BowlersListUiAction.BowlerClicked(it.id)) },
+				onBowlerClick = { onAction(BowlersListUiAction.BowlerClicked(it)) },
 				onArchiveBowler = { onAction(BowlersListUiAction.BowlerArchived(it)) },
-				onEditBowler = { onAction(BowlersListUiAction.BowlerEdited(it.id)) },
+				onEditBowler = { onAction(BowlersListUiAction.BowlerEdited(it)) },
 			)
 		}
 	}

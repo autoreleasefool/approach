@@ -6,12 +6,13 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 interface BowlersRepository {
 	fun getBowlersList(): Flow<List<BowlerListItem>>
-	fun getOpponentsList(): Flow<List<BowlerListItem>>
+	fun getOpponentsList(): Flow<List<OpponentListItem>>
 	fun getArchivedBowlers(): Flow<List<ArchivedBowler>>
 
 	fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary>
