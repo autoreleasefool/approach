@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.service
 
 import android.content.Context
 import android.net.Uri
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
@@ -24,7 +24,7 @@ private const val EXPORT_DIRECTORY = "exports"
 class ApproachDataExportService @Inject constructor(
 	private val fileManager: FileManager,
 	private val checkpointDao: CheckpointDao,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 	@ApplicationContext private val context: Context,
 ): DataExportService {
 

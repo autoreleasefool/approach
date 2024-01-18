@@ -8,7 +8,7 @@ import androidx.datastore.dataStoreFile
 import androidx.datastore.migrations.SharedPreferencesMigration
 import androidx.datastore.migrations.SharedPreferencesView
 import ca.josephroque.bowlingcompanion.core.datastore.UserPreferencesSerializer
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.datastore.UserPreferences
@@ -28,7 +28,7 @@ object DataStoreModule {
 	@Singleton
 	fun providesUserPreferencesDataStore(
 		@ApplicationContext context: Context,
-		@Dispatcher(ApproachDispatchers.IO) ioDispatcher: CoroutineDispatcher,
+		@Dispatcher(IO) ioDispatcher: CoroutineDispatcher,
 		@ApplicationScope scope: CoroutineScope,
 		userPreferencesSerializer: UserPreferencesSerializer,
 	): DataStore<UserPreferences> =

@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.dao.LeagueDao
@@ -22,8 +22,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import java.util.UUID
 import javax.inject.Inject
 
@@ -31,7 +29,7 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
 	private val transactionRunner: TransactionRunner,
 	private val seriesRepository: SeriesRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): LeaguesRepository {
 	override fun getLeagueBowler(id: UUID): Flow<BowlerSummary> =
 		leagueDao.getLeagueBowler(id)

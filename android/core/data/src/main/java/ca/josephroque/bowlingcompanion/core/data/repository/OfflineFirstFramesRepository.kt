@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class OfflineFirstFramesRepository @Inject constructor(
 	private val frameDao: FrameDao,
 	private val transactionRunner: TransactionRunner,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): FramesRepository {
 	override fun getFrames(gameId: UUID): Flow<List<FrameEdit>> =
 		frameDao.getFrames(gameId).map { it.map(FrameEditEntity::asModel) }

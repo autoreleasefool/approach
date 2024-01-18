@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsWidgetDao
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetPriorityUpdateEntity
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 	private val statisticsWidgetDao: StatisticsWidgetDao,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): StatisticsWidgetsRepository {
 	override fun getStatisticsWidgets(context: String) =
 		statisticsWidgetDao.getStatisticsWidgets(context).map { it.map { widget -> widget.asModel() } }

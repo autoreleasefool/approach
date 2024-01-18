@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
@@ -10,7 +10,6 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
-import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -20,7 +19,7 @@ import javax.inject.Inject
 
 class OfflineFirstBowlersRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): BowlersRepository {
 	override fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary> =
 		bowlerDao.getBowlerSummary(bowlerId)

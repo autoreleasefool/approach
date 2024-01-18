@@ -1,12 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
-import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
@@ -33,7 +32,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 	private val gearDao: GearDao,
 	private val framesRepository: FramesRepository,
 	private val transactionRunner: TransactionRunner,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): GamesRepository {
 	override fun getGameDetails(gameId: UUID): Flow<GameEdit> =
 		gameDao.getGameDetails(gameId).map { it.asModel() }

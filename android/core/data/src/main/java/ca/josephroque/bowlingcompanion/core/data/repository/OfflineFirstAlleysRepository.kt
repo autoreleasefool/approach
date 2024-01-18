@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.AlleyDao
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class OfflineFirstAlleysRepository @Inject constructor(
 	private val alleyDao: AlleyDao,
 	private val userDataRepository: UserDataRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): AlleysRepository {
 	override fun getAlleyDetails(id: UUID): Flow<AlleyDetails> =
 		alleyDao.getAlleyDetails(id).map { it.asModel() }

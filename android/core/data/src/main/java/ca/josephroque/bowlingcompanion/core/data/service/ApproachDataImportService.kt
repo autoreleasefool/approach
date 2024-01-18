@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.service
 import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileType
@@ -28,7 +28,7 @@ class ApproachDataImportService @Inject constructor(
 	private val exportService: DataExportService,
 	private val fileManager: FileManager,
 	private val migrationService: MigrationService,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 	@ApplicationContext private val context: Context,
 ): DataImportService {
 

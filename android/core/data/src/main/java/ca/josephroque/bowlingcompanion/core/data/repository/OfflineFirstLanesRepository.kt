@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class OfflineFirstLanesRepository @Inject constructor(
 	private val laneDao: LaneDao,
 	private val transactionRunner: TransactionRunner,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): LanesRepository {
 	override fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>> =
 		laneDao.getAlleyLanes(alleyId)

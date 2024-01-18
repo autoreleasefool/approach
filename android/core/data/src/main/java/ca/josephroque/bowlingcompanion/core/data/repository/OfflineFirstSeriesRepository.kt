@@ -1,22 +1,16 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
-import ca.josephroque.bowlingcompanion.core.database.dao.FrameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
-import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
-import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesDetailsEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
-import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
-import ca.josephroque.bowlingcompanion.core.model.GameLockState
-import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
@@ -38,7 +32,7 @@ class OfflineFirstSeriesRepository @Inject constructor(
 	private val gameDao: GameDao,
 	private val gamesRepository: GamesRepository,
 	private val transactionRunner: TransactionRunner,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): SeriesRepository {
 	override fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails> =
 		seriesDao.getSeriesDetails(seriesId).map(SeriesDetailsEntity::asModel)

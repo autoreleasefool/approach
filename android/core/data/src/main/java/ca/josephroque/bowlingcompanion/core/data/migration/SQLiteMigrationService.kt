@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.data.migration
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import androidx.core.database.getStringOrNull
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
@@ -58,7 +58,7 @@ import javax.inject.Inject
 class SQLiteMigrationService @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val transactionRunner: TransactionRunner,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 	private val bowlerDao: BowlerDao,
 	private val teamDao: TeamDao,
 	private var teamBowlerDao: TeamBowlerDao,

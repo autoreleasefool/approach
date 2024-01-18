@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.scoring
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.Default
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.Game
@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FivePinScoreKeeper @Inject constructor(
-	@Dispatcher(ApproachDispatchers.Default) private val defaultDispatcher: CoroutineDispatcher,
+	@Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
 ): ScoreKeeper {
 	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> =
 		withContext(defaultDispatcher) {

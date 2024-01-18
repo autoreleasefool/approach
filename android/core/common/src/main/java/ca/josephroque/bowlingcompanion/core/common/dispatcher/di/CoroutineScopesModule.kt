@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.common.dispatcher.di
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.Default
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import dagger.Module
 import dagger.Provides
@@ -23,6 +23,6 @@ object CoroutineScopesModule {
 	@Singleton
 	@ApplicationScope
 	fun providesCoroutineScope(
-		@Dispatcher(ApproachDispatchers.Default) dispatcher: CoroutineDispatcher,
+		@Dispatcher(Default) dispatcher: CoroutineDispatcher,
 	): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 }

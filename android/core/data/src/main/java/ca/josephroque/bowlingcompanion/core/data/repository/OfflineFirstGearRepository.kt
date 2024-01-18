@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class OfflineFirstGearRepository @Inject constructor(
 	private val gearDao: GearDao,
 	private val userDataRepository: UserDataRepository,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): GearRepository {
 	override fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>> =
 		gearDao.getBowlerPreferredGear(bowlerId)

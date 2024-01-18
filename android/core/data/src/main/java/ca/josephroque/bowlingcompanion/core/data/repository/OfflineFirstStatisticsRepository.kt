@@ -1,6 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
-import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableFramesSequence
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableGamesSequence
@@ -31,7 +31,7 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val userDataRepository: UserDataRepository,
 	private val statisticsDao: StatisticsDao,
-	@Dispatcher(ApproachDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
+	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ): StatisticsRepository {
 	override suspend fun getSourceDetails(source: TrackableFilter.Source): TrackableFilter.SourceSummaries =
 		withContext(ioDispatcher) {
