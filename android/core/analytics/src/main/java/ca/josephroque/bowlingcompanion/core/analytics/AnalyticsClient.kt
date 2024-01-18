@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface AnalyticsClient {
 	suspend fun initialize()
 
-	suspend fun trackEvent(event: TrackableEvent)
+	fun trackEvent(event: TrackableEvent)
 	suspend fun setGlobalProperty(key: String, value: String?)
 
 	val optInStatus: Flow<AnalyticsOptInStatus>

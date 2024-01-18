@@ -3,20 +3,23 @@ package ca.josephroque.bowlingcompanion.core.analytics
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import com.telemetrydeck.sdk.TelemetryManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TelemetryDeckAnalyticsClient @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val userDataRepository: UserDataRepository,
+	@ApplicationScope private val scope: CoroutineScope,
 ): AnalyticsClient {
 	companion object {
 		private const val TAG = "ca.josephroque.bowlingcompanion.core.analytics.TelemetryDeckAnalyticsClient"
@@ -51,7 +54,7 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 
 		val builder = TelemetryManager.Builder()
 			.appID(appId)
-			.showDebugLogs(true)
+			.showDebugLogs(BuildConfig.DEBUG)
 
 		TelemetryManager.start(application, builder)
 	}
@@ -68,12 +71,14 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 		}
 	}
 
-	override suspend fun trackEvent(event: TrackableEvent) {
-		val eventPayload = event.payload ?: mapOf()
-		val globalProperties = globalProperties.value
-		val additionalPayload = globalProperties + eventPayload
+	override fun trackEvent(event: TrackableEvent) {
+		scope.launch {
+			val eventPayload = event.payload ?: mapOf()
+			val globalProperties = globalProperties.value
+			val additionalPayload = globalProperties + eventPayload
 
-		TelemetryManager.queue(signalType = event.name, additionalPayload = additionalPayload)
+			TelemetryManager.queue(signalType = event.name, additionalPayload = additionalPayload)
+		}
 	}
 
 	override suspend fun setOptInStatus(status: AnalyticsOptInStatus) {
