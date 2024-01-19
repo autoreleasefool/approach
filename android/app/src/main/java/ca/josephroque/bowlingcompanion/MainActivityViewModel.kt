@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppLaunched
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppTabSwitched
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -44,6 +46,10 @@ class MainActivityViewModel @Inject constructor(
 		}
 
 		isLaunchComplete.value = true
+	}
+
+	fun didChangeTab(destination: TopLevelDestination) {
+		analyticsClient.trackEvent(AppTabSwitched(destination.name))
 	}
 }
 

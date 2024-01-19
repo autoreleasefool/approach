@@ -56,6 +56,7 @@ class MainActivity: ComponentActivity() {
 							is MainActivityUiState.Success -> state.isOnboardingComplete
 						},
 						finishActivity = { finish() },
+						onTabChanged = viewModel::didChangeTab,
 					)
 				}
 			}

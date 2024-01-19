@@ -30,13 +30,17 @@ import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 fun ApproachApp(
 	isOnboardingComplete: Boolean?,
 	finishActivity: () -> Unit,
+	onTabChanged: (TopLevelDestination) -> Unit,
 	appState: ApproachAppState = rememberApproachAppState(),
 ) {
 	Scaffold(
 		bottomBar = {
 			ApproachBottomBar(
 				destinations = appState.topLevelDestinations,
-				onNavigateToDestination = appState::navigateToTopLevelDestination,
+				onNavigateToDestination = {
+					appState.navigateToTopLevelDestination(it)
+					onTabChanged(it)
+				},
 				currentDestination = appState.currentDestination
 			)
 		}

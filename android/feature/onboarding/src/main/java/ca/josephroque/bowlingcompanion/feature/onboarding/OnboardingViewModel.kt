@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppOnboardingCompleted
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
@@ -25,6 +27,7 @@ class OnboardingViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val migrationService: MigrationService,
 	private val userDataRepository: UserDataRepository,
+	private val analyticsClient: AnalyticsClient,
 	fileManager: FileManager,
 ): ApproachViewModel<OnboardingScreenEvent>() {
 	private val _uiState: MutableStateFlow<OnboardingScreenUiState> = MutableStateFlow(
@@ -94,6 +97,7 @@ class OnboardingViewModel @Inject constructor(
 				userDataRepository.setAllStatisticIDsSeen()
 
 				userDataRepository.didCompleteOnboarding()
+				analyticsClient.trackEvent(AppOnboardingCompleted)
 			}
 		}
 	}
@@ -133,6 +137,7 @@ class OnboardingViewModel @Inject constructor(
 		viewModelScope.launch {
 			migrationService.migrateDefaultLegacyDatabase()
 			userDataRepository.didCompleteOnboarding()
+			analyticsClient.trackEvent(AppOnboardingCompleted)
 		}
 	}
 }
