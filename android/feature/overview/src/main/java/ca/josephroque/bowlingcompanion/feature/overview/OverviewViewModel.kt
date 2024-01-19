@@ -1,10 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.overview
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
@@ -32,6 +35,7 @@ class OverviewViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	userDataRepository: UserDataRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<OverviewScreenEvent>() {
 	private val _bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
 
@@ -86,9 +90,9 @@ class OverviewViewModel @Inject constructor(
 
 	private fun handleBowlersListAction(action: BowlersListUiAction) {
 		when (action) {
-			is BowlersListUiAction.BowlerClicked -> sendEvent(OverviewScreenEvent.ShowBowlerDetails(action.id))
+			is BowlersListUiAction.BowlerClicked -> showBowlerDetails(action.bowler)
 			is BowlersListUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
-			is BowlersListUiAction.BowlerEdited -> sendEvent(OverviewScreenEvent.EditBowler(action.id))
+			is BowlersListUiAction.BowlerEdited -> sendEvent(OverviewScreenEvent.EditBowler(action.bowler.id))
 			is BowlersListUiAction.BowlerArchived -> setBowlerArchivePrompt(action.bowler)
 			is BowlersListUiAction.ConfirmArchiveClicked -> archiveBowler()
 			is BowlersListUiAction.DismissArchiveClicked -> setBowlerArchivePrompt(null)
@@ -100,6 +104,11 @@ class OverviewViewModel @Inject constructor(
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(OverviewScreenEvent.ShowStatistics(action.widget.id))
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
 		}
+	}
+
+	private fun showBowlerDetails(bowler: BowlerListItem) {
+		sendEvent(OverviewScreenEvent.ShowBowlerDetails(bowler.id))
+		analyticsClient.trackEvent(BowlerViewed(BowlerKind.PLAYABLE))
 	}
 
 	private fun setBowlerArchivePrompt(bowler: BowlerListItem?) {

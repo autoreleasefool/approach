@@ -2,6 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.bowlerform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerArchived
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
@@ -26,6 +30,7 @@ class BowlerFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val bowlersRepository: BowlersRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<BowlerFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<BowlerFormScreenUiState> =
@@ -128,6 +133,7 @@ class BowlerFormViewModel @Inject constructor(
 			is BowlerFormScreenUiState.Edit -> viewModelScope.launch {
 				bowlersRepository.archiveBowler(state.initialValue.id)
 				sendEvent(BowlerFormScreenEvent.Dismissed)
+				analyticsClient.trackEvent(BowlerArchived(kind))
 			}
 		}
 	}
@@ -147,6 +153,7 @@ class BowlerFormViewModel @Inject constructor(
 						bowlersRepository.insertBowler(bowler)
 						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)
+						analyticsClient.trackEvent(BowlerCreated(kind))
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
@@ -160,6 +167,7 @@ class BowlerFormViewModel @Inject constructor(
 						bowlersRepository.updateBowler(bowler)
 						recentlyUsedRepository.didRecentlyUseBowler(bowler.id)
 						sendEvent(BowlerFormScreenEvent.Dismissed)
+						analyticsClient.trackEvent(BowlerUpdated(kind))
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(

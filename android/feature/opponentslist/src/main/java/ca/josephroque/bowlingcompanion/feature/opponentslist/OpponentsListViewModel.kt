@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.opponentslist
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OpponentsListViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<OpponentsListScreenEvent>() {
 	private val _opponentToArchive: MutableStateFlow<OpponentListItem?> = MutableStateFlow(null)
 
@@ -57,6 +60,7 @@ class OpponentsListViewModel @Inject constructor(
 
 	private fun showOpponentDetails(opponent: OpponentListItem) {
 		sendEvent(OpponentsListScreenEvent.ShowOpponentDetails(opponent.id))
+		analyticsClient.trackEvent(BowlerViewed(opponent.kind))
 	}
 
 	private fun setOpponentToArchive(opponent: OpponentListItem?) {
