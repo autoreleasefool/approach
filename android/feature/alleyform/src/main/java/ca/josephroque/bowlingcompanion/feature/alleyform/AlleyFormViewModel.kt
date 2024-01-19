@@ -2,6 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.alleyform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.alley.AlleyCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.alley.AlleyDeleted
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.alley.AlleyUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LanesRepository
@@ -31,6 +35,7 @@ class AlleyFormViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
 	private val lanesRepository: LanesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<AlleyFormScreenEvent>() {
 	private val isEditing = Route.EditAlley.getAlley(savedStateHandle) != null
 	private val alleyId = Route.EditAlley.getAlley(savedStateHandle) ?: UUID.randomUUID().also {
@@ -128,6 +133,7 @@ class AlleyFormViewModel @Inject constructor(
 
 			alleysRepository.deleteAlley(alley.id)
 			sendEvent(AlleyFormScreenEvent.Dismissed)
+			analyticsClient.trackEvent(AlleyDeleted)
 		}
 	}
 
@@ -150,6 +156,10 @@ class AlleyFormViewModel @Inject constructor(
 					lanesRepository.setAlleyLanes(alley.id, alley.lanes)
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
+					analyticsClient.trackEvent(AlleyCreated(
+						withLocation = false, // FIXME: add location
+						numberOfLanes = alley.lanes.size,
+					))
 				} else {
 					_uiState.updateForm {
 						it.copy(
@@ -163,6 +173,11 @@ class AlleyFormViewModel @Inject constructor(
 					lanesRepository.setAlleyLanes(alleyId, alley.lanes)
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
+
+					analyticsClient.trackEvent(AlleyUpdated(
+						withLocation = false, // FIXME: add location
+						numberOfLanes = alley.lanes.size,
+					))
 				} else {
 					_uiState.updateForm {
 						it.copy(
