@@ -74,7 +74,7 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 		}
 	}
 
-	override fun startNewSession() {
+	override fun startNewGameSession() {
 		_recordedEvents.update { mapOf() }
 	}
 

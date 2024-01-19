@@ -2,6 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.leagueform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.league.LeagueArchived
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.league.LeagueCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.league.LeagueUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
@@ -31,6 +35,7 @@ class LeagueFormViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<LeagueFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<LeagueFormScreenUiState> = MutableStateFlow(LeagueFormScreenUiState.Loading)
@@ -155,6 +160,7 @@ class LeagueFormViewModel @Inject constructor(
 						leaguesRepository.insertLeague(league)
 						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
+						analyticsClient.trackEvent(LeagueCreated)
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
@@ -168,6 +174,7 @@ class LeagueFormViewModel @Inject constructor(
 						leaguesRepository.updateLeague(league)
 						recentlyUsedRepository.didRecentlyUseLeague(league.id)
 						sendEvent(LeagueFormScreenEvent.Dismissed)
+						analyticsClient.trackEvent(LeagueUpdated)
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
@@ -197,14 +204,15 @@ class LeagueFormViewModel @Inject constructor(
 		viewModelScope.launch {
 			when (val state = _uiState.value) {
 				LeagueFormScreenUiState.Loading, is LeagueFormScreenUiState.Create -> Unit
-				is LeagueFormScreenUiState.Edit ->
+				is LeagueFormScreenUiState.Edit -> {
 					leaguesRepository.archiveLeague(state.initialValue.id)
+					analyticsClient.trackEvent(LeagueArchived)
+				}
 			}
 
 			setArchiveLeaguePrompt(isVisible = false)
 			sendEvent(LeagueFormScreenEvent.Dismissed)
 		}
-
 	}
 
 	private fun setArchiveLeaguePrompt(isVisible: Boolean) {
