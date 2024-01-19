@@ -176,6 +176,8 @@ public struct HelpSettings: Reducer {
 				return Analytics.Settings.ViewedSource()
 			case .view(.didTapAnalyticsButton):
 				return Analytics.Settings.ViewedAnalytics()
+			case .view(.didTapExportButton):
+				return Analytics.Settings.ViewedDataExport()
 			default:
 				return nil
 			}

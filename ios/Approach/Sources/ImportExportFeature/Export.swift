@@ -94,6 +94,15 @@ public struct Export: Reducer {
 			default: return nil
 			}
 		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .internal(.didReceiveEvent(.success)):
+				return Analytics.Data.Exported()
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func fetchExportData(_ state: inout State) -> Effect<Action> {

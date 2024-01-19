@@ -23,6 +23,7 @@ extension Analytics {
 	public enum Announcement {}
 	public enum App {}
 	public enum Bowler {}
+	public enum Data {}
 	public enum Feature {}
 	public enum Game {}
 	public enum Gear {}
