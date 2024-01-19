@@ -2,6 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameManualScoreSet
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameUpdated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
@@ -72,6 +76,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
 	private val seriesId = Route.EditGame.getSeries(savedStateHandle)!!
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
@@ -199,6 +204,8 @@ class GamesEditorViewModel @Inject constructor(
 		val gameToLoad = _currentGameId.updateAndGet { gameId }
 		_gameDetailsState.update { it.copy(gameId = gameToLoad) }
 		_gamesEditorState.update { it.copy(gameId = gameToLoad) }
+
+		analyticsClient.trackEvent(GameViewed(eventId = gameId))
 
 		_gameDetailsJob?.cancel()
 		_gameDetailsJob = viewModelScope.launch {
@@ -696,6 +703,11 @@ class GamesEditorViewModel @Inject constructor(
 
 		val scoreEditor = gamesEditorState.scoreEditor ?: return
 		if (didSave && !isGameLocked) {
+			when (scoreEditor.scoringMethod) {
+				GameScoringMethod.MANUAL -> analyticsClient.trackEvent(GameManualScoreSet(eventId = _currentGameId.value))
+				GameScoringMethod.BY_FRAME -> Unit
+			}
+
 			viewModelScope.launch {
 				val score = when (scoreEditor.scoringMethod) {
 					GameScoringMethod.MANUAL -> scoreEditor.score
@@ -742,6 +754,8 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun saveFrame(frame: FrameEdit) {
 		if (isGameLocked) return
+
+		analyticsClient.trackEvent(GameUpdated(eventId = _currentGameId.value))
 
 		viewModelScope.launch {
 			framesRepository.updateFrame(frame)
