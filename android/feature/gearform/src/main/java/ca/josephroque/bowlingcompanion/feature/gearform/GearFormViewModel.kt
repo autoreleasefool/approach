@@ -2,6 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.gearform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.gear.GearCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.gear.GearDeleted
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.gear.GearUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -28,6 +32,7 @@ class GearFormViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val gearRepository: GearRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<GearFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<GearFormScreenUiState> =
 		MutableStateFlow(GearFormScreenUiState.Loading)
@@ -178,6 +183,7 @@ class GearFormViewModel @Inject constructor(
 
 			gearRepository.deleteGear(gear.id)
 			sendEvent(GearFormScreenEvent.Dismissed)
+			analyticsClient.trackEvent(GearDeleted(gear.kind))
 		}
 	}
 
@@ -197,6 +203,7 @@ class GearFormViewModel @Inject constructor(
 					gearRepository.insertGear(gear)
 					recentlyUsedRepository.didRecentlyUseGear(gear.id)
 					sendEvent(GearFormScreenEvent.Dismissed)
+					analyticsClient.trackEvent(GearCreated(gear.kind))
 				} else {
 					_uiState.updateForm {
 						it.copy(
@@ -209,6 +216,7 @@ class GearFormViewModel @Inject constructor(
 					gearRepository.updateGear(gear)
 					recentlyUsedRepository.didRecentlyUseGear(gear.id)
 					sendEvent(GearFormScreenEvent.Dismissed)
+					analyticsClient.trackEvent(GearUpdated(gear.kind))
 				} else {
 					_uiState.updateForm {
 						it.copy(
