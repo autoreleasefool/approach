@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.seriesdetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +33,7 @@ class SeriesDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<SeriesDetailsScreenEvent>() {
 	private val _seriesId = MutableStateFlow(Route.SeriesDetails.getSeries(savedStateHandle))
 	private val _eventId = Route.EventDetails.getEvent(savedStateHandle)
@@ -119,8 +122,13 @@ class SeriesDetailsViewModel @Inject constructor(
 			is GamesListUiAction.GameArchived -> _gameToArchive.value = action.game
 			is GamesListUiAction.ConfirmArchiveClicked -> archiveGame()
 			is GamesListUiAction.DismissArchiveClicked -> _gameToArchive.value = null
-			is GamesListUiAction.GameClicked -> sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(_seriesId.value!!, action.id)))
+			is GamesListUiAction.GameClicked -> editGame(action.id)
 		}
+	}
+
+	private fun editGame(id: UUID) {
+		sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(_seriesId.value!!, id)))
+		analyticsClient.startNewGameSession()
 	}
 
 	private fun addGameToSeries() {
