@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.bowlerdetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.league.LeagueViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -45,6 +47,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	private val gearRepository: GearRepository,
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<BowlerDetailsScreenEvent>() {
 	private val bowlerId = Route.BowlerDetails.getBowler(savedStateHandle)!!
 
@@ -161,5 +164,6 @@ class BowlerDetailsViewModel @Inject constructor(
 			LeagueRecurrence.REPEATING -> sendEvent(BowlerDetailsScreenEvent.ShowLeagueDetails(league.id))
 			LeagueRecurrence.ONCE -> sendEvent(BowlerDetailsScreenEvent.ShowEventDetails(league.id))
 		}
+		analyticsClient.trackEvent(LeagueViewed)
 	}
 }

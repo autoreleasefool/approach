@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.leaguedetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
@@ -38,6 +40,7 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val userDataRepository: UserDataRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<LeagueDetailsScreenEvent>() {
 	private val leagueId = Route.LeagueDetails.getLeague(savedStateHandle)!!
 
@@ -148,6 +151,7 @@ class LeagueDetailsViewModel @Inject constructor(
 
 	private fun showSeriesDetails(seriesId: UUID) {
 		sendEvent(LeagueDetailsScreenEvent.ShowSeriesDetails(seriesId))
+		analyticsClient.trackEvent(SeriesViewed)
 	}
 
 	private fun archiveSeries() {

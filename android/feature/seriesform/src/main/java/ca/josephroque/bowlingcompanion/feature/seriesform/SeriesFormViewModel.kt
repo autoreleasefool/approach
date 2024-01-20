@@ -2,6 +2,10 @@ package ca.josephroque.bowlingcompanion.feature.seriesform
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesArchived
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.series.SeriesUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
@@ -34,6 +38,7 @@ class SeriesFormViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
 	private val seriesRepository: SeriesRepository,
 	private val leaguesRepository: LeaguesRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<SeriesFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<SeriesFormScreenUiState> =
 		MutableStateFlow(SeriesFormScreenUiState.Loading)
@@ -174,6 +179,8 @@ class SeriesFormViewModel @Inject constructor(
 
 			seriesRepository.archiveSeries(series.id)
 			dismiss()
+
+			analyticsClient.trackEvent(SeriesArchived)
 		}
 	}
 
@@ -216,11 +223,13 @@ class SeriesFormViewModel @Inject constructor(
 
 					seriesRepository.insertSeries(series)
 					dismiss(seriesId = series.id)
+					analyticsClient.trackEvent(SeriesCreated)
 				}
 				is SeriesFormScreenUiState.Edit -> {
 					val series = state.form.updatedModel(state.initialValue)
 					seriesRepository.updateSeries(series)
 					dismiss()
+					analyticsClient.trackEvent(SeriesUpdated)
 				}
 			}
 		}
