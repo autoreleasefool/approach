@@ -2,6 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.matchplayeditor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.matchplay.MatchPlayCreated
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.matchplay.MatchPlayUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
@@ -31,6 +34,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val matchPlaysRepository: MatchPlaysRepository,
 	private val gamesRepository: GamesRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<MatchPlayEditorScreenEvent>() {
 	private val gameId = Route.EditMatchPlay.getGame(savedStateHandle)!!
 
@@ -106,20 +110,35 @@ class MatchPlayEditorViewModel @Inject constructor(
 		viewModelScope.launch {
 			val state = _matchPlayEditor.value ?: return@launch
 			when (val existingMatchPlay = _existingMatchPlay) {
-				null -> matchPlaysRepository.insertMatchPlay(MatchPlayCreate(
-					id = UUID.randomUUID(),
-					gameId = gameId,
-					opponentId = state.opponent?.id,
-					opponentScore = state.opponentScore,
-					result = state.result,
-				))
-			 else ->
-				matchPlaysRepository.updateMatchPlay(MatchPlayUpdate(
-					id = existingMatchPlay.id,
-					opponent = state.opponent,
-					opponentScore = state.opponentScore,
-					result = state.result,
-				))
+					null -> {
+						matchPlaysRepository.insertMatchPlay(
+							MatchPlayCreate(
+								id = UUID.randomUUID(),
+								gameId = gameId,
+								opponentId = state.opponent?.id,
+								opponentScore = state.opponentScore,
+								result = state.result,
+							),
+						)
+
+						analyticsClient.trackEvent(MatchPlayCreated)
+					}
+			 else -> {
+				 matchPlaysRepository.updateMatchPlay(
+					 MatchPlayUpdate(
+						 id = existingMatchPlay.id,
+						 opponent = state.opponent,
+						 opponentScore = state.opponentScore,
+						 result = state.result,
+					 ),
+				 )
+
+				 analyticsClient.trackEvent(MatchPlayUpdated(
+					 withOpponent = state.opponent != null,
+					 withScore = state.opponentScore != null,
+					 withResult = state.result != null,
+				 ))
+			 }
 			}
 
 			sendEvent(MatchPlayEditorScreenEvent.Dismissed)
