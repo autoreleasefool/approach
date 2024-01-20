@@ -1,6 +1,18 @@
 package ca.josephroque.bowlingcompanion.feature.settings
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ReportedBug
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.SentFeedback
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedAcknowledgements
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedAnalytics
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedArchived
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedDataExport
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedDataImport
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedDeveloper
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedOpponents
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedSource
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.settings.ViewedStatistics
 import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
@@ -19,6 +31,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
 	featureFlagsClient: FeatureFlagsClient,
 	systemInfoService: SystemInfoService,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<SettingsScreenEvent>() {
 	private val _settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
 		SettingsUiState(
@@ -45,14 +58,69 @@ class SettingsViewModel @Inject constructor(
 
 	private fun handleSettingsAction(action: SettingsUiAction) {
 		when (action) {
-			SettingsUiAction.OpponentsClicked -> sendEvent(SettingsScreenEvent.NavigateToOpponents)
-			SettingsUiAction.StatisticsSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToStatisticsSettings)
-			SettingsUiAction.AcknowledgementsClicked -> sendEvent(SettingsScreenEvent.NavigateToAcknowledgements)
-			SettingsUiAction.AnalyticsSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToAnalyticsSettings)
-			SettingsUiAction.DataImportSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDataImportSettings)
-			SettingsUiAction.DataExportSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDataExportSettings)
-			SettingsUiAction.DeveloperSettingsClicked -> sendEvent(SettingsScreenEvent.NavigateToDeveloperSettings)
-			SettingsUiAction.ArchivesClicked -> sendEvent(SettingsScreenEvent.NavigateToArchives)
+			SettingsUiAction.OpponentsClicked -> showOpponents()
+			SettingsUiAction.StatisticsSettingsClicked -> showStatisticsSettings()
+			SettingsUiAction.AcknowledgementsClicked -> showAcknowledgements()
+			SettingsUiAction.AnalyticsSettingsClicked -> showAnalytics()
+			SettingsUiAction.DataImportSettingsClicked -> showDataImport()
+			SettingsUiAction.DataExportSettingsClicked -> showDataExport()
+			SettingsUiAction.DeveloperSettingsClicked -> showDeveloperSettings()
+			SettingsUiAction.ArchivesClicked -> showArchives()
+			SettingsUiAction.ViewSourceClicked -> showSource()
+			SettingsUiAction.SendFeedbackClicked -> showFeedback()
+			SettingsUiAction.ReportBugClicked -> showBugReport()
 		}
+	}
+
+	private fun showFeedback() {
+		analyticsClient.trackEvent(SentFeedback)
+	}
+
+	private fun showSource() {
+		analyticsClient.trackEvent(ViewedSource)
+	}
+
+	private fun showBugReport() {
+		analyticsClient.trackEvent(ReportedBug)
+	}
+
+	private fun showArchives() {
+		sendEvent(SettingsScreenEvent.NavigateToArchives)
+		analyticsClient.trackEvent(ViewedArchived)
+	}
+
+	private fun showDeveloperSettings() {
+		sendEvent(SettingsScreenEvent.NavigateToDeveloperSettings)
+		analyticsClient.trackEvent(ViewedDeveloper)
+	}
+
+	private fun showDataExport() {
+		sendEvent(SettingsScreenEvent.NavigateToDataExportSettings)
+		analyticsClient.trackEvent(ViewedDataExport)
+	}
+
+	private fun showDataImport() {
+		sendEvent(SettingsScreenEvent.NavigateToDataImportSettings)
+		analyticsClient.trackEvent(ViewedDataImport)
+	}
+
+	private fun showAnalytics() {
+		sendEvent(SettingsScreenEvent.NavigateToAnalyticsSettings)
+		analyticsClient.trackEvent(ViewedAnalytics)
+	}
+
+	private fun showAcknowledgements() {
+		sendEvent(SettingsScreenEvent.NavigateToAcknowledgements)
+		analyticsClient.trackEvent(ViewedAcknowledgements)
+	}
+
+	private fun showStatisticsSettings() {
+		sendEvent(SettingsScreenEvent.NavigateToStatisticsSettings)
+		analyticsClient.trackEvent(ViewedStatistics)
+	}
+
+	private fun showOpponents() {
+		sendEvent(SettingsScreenEvent.NavigateToOpponents)
+		analyticsClient.trackEvent(ViewedOpponents)
 	}
 }

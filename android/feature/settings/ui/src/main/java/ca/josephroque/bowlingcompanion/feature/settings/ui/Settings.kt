@@ -118,6 +118,7 @@ private fun HelpSection(
 		titleResourceId = R.string.settings_item_report_bug,
 		iconResourceId = RCoreDesign.drawable.ic_send,
 		onClick = {
+			onAction(SettingsUiAction.ReportBugClicked)
 			val recipient = context.resources.getString(R.string.bug_report_email_recipient)
 			val subject = context.resources.getString(
 				R.string.bug_report_email_subject,
@@ -143,6 +144,7 @@ private fun HelpSection(
 		titleResourceId = R.string.settings_item_send_feedback,
 		iconResourceId = RCoreDesign.drawable.ic_send,
 		onClick = {
+			onAction(SettingsUiAction.SendFeedbackClicked)
 			val recipient = context.resources.getString(R.string.feedback_email_recipient)
 			val emailIntent = Intent(Intent.ACTION_SEND).apply {
 				setDataAndType(Uri.parse("mailto:"), "message/rfc822")
@@ -210,6 +212,7 @@ private fun DevelopmentSection(
 		titleResourceId = R.string.settings_item_view_source,
 		iconResourceId = RCoreDesign.drawable.ic_open_in_new,
 		onClick = {
+			onAction(SettingsUiAction.ViewSourceClicked)
 			val viewSourceUri = context.resources.getString(R.string.app_source_repository_url)
 			uriHandler.openUri(viewSourceUri)
 		},
