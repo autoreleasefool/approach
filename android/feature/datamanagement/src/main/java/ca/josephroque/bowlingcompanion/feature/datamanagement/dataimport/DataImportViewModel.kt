@@ -2,6 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.datamanagement.dataimport
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.data.ImportedData
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.data.RestoredData
 import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
@@ -25,6 +28,7 @@ import javax.inject.Inject
 class DataImportViewModel @Inject constructor(
 	private val dataImportService: DataImportService,
 	systemInfoService: SystemInfoService,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<DataImportScreenEvent>() {
 
 	private val _dataImportState = MutableStateFlow(DataImportUiState(
@@ -83,6 +87,8 @@ class DataImportViewModel @Inject constructor(
 				_dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
 			}
 		}
+
+		analyticsClient.trackEvent(RestoredData)
 	}
 
 	private fun importData() {
@@ -105,6 +111,7 @@ class DataImportViewModel @Inject constructor(
 		try {
 			dataImportService.importData(source = uri)
 			_dataImportState.update { it.copy(progress = DataImportProgress.ImportComplete) }
+			analyticsClient.trackEvent(ImportedData)
 		} catch (e: Exception) {
 			_dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
 		}

@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.datamanagement.export
 
 import android.net.Uri
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.data.ExportedData
 import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
@@ -24,6 +26,7 @@ import javax.inject.Inject
 class DataExportViewModel @Inject constructor(
 	private val dataExportService: DataExportService,
 	systemInfoService: SystemInfoService,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<DataExportScreenEvent>() {
 
 	private val _dataExportState = MutableStateFlow(DataExportUiState(
@@ -72,6 +75,8 @@ class DataExportViewModel @Inject constructor(
 				progress = DataExportProgress.PickingDestination(dataExportService.exportDestination),
 			)
 		}
+
+		analyticsClient.trackEvent(ExportedData)
 	}
 
 	private fun shareData() {
@@ -83,6 +88,8 @@ class DataExportViewModel @Inject constructor(
 				_dataExportState.update { it.copy(progress = DataExportProgress.Failed(e)) }
 			}
 		}
+
+		analyticsClient.trackEvent(ExportedData)
 	}
 
 	private fun handleExportedUri(uri: Uri?) {
