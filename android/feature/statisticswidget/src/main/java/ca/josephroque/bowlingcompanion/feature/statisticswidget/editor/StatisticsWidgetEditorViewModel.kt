@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.statisticswidget.editor
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.widget.WidgetCreated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
@@ -38,6 +40,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	leaguesRepository: LeaguesRepository,
 	savedStateHandle: SavedStateHandle,
 	private val statisticsWidgetsRepository: StatisticsWidgetsRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
 	private val context = Route.StatisticsWidgetEditor.getContext(savedStateHandle)!!
 	private val initialSource: StatisticsWidgetInitialSource? = Route.StatisticsWidgetEditor.getInitialSource(savedStateHandle)?.let {
@@ -130,6 +133,8 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 		val source = _source.value ?: return
 
 		viewModelScope.launch {
+			val timeline = _timeline.value
+			val statistic = _statistic.value
 			val widget = when (source) {
 				is StatisticsWidgetSource.Bowler -> StatisticsWidgetCreate(
 					bowlerId = source.bowlerId,
@@ -137,8 +142,8 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 					id = UUID.randomUUID(),
 					context = context,
 					priority = priority,
-					timeline = _timeline.value,
-					statistic = _statistic.value.id,
+					timeline = timeline,
+					statistic = statistic.id,
 				)
 				is StatisticsWidgetSource.League -> StatisticsWidgetCreate(
 					bowlerId = source.bowlerId,
@@ -146,13 +151,20 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 					id = UUID.randomUUID(),
 					context = context,
 					priority = priority,
-					timeline = _timeline.value,
-					statistic = _statistic.value.id,
+					timeline = timeline,
+					statistic = statistic.id,
 				)
 			}
 
 			statisticsWidgetsRepository.insertStatisticWidget(widget)
 			sendEvent(StatisticsWidgetEditorScreenEvent.Dismissed)
+
+			analyticsClient.trackEvent(WidgetCreated(
+				context = context,
+				source = source.toString(),
+				statistic = statistic.id.toString(),
+				timeline = timeline.toString(),
+			))
 		}
 	}
 

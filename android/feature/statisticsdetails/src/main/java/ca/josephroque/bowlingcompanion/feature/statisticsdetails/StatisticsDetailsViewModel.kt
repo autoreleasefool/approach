@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.statistics.StatisticViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,6 +38,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<StatisticsDetailsScreenEvent>() {
 	private val _sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
 	private val _sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
@@ -193,6 +197,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private fun showStatisticChart(statistic: StatisticID) {
 		_nextSheetSize.value = FlexibleSheetValue.SlightlyExpanded
 		_selectedStatistic.value = statistic
+
+		viewModelScope.launch {
+			val userData = userDataRepository.userData.first()
+			analyticsClient.trackEvent(StatisticViewed(
+				statisticName = statistic.name,
+				countsH2AsH = !userData.isCountingH2AsHDisabled,
+				countsS2AsS = !userData.isCountingSplitWithBonusAsSplitDisabled,
+			))
+		}
 	}
 
 	private fun toggleHidingZeroStatistics(newValue: Boolean) {

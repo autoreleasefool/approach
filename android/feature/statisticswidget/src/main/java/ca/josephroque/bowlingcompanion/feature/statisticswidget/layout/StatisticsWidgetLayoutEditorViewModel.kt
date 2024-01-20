@@ -2,6 +2,9 @@ package ca.josephroque.bowlingcompanion.feature.statisticswidget.layout
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.widget.WidgetDeleted
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.widget.WidgetLayoutUpdated
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.navigation.Route
@@ -23,6 +26,7 @@ import javax.inject.Inject
 class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val statisticsWidgetRepository: StatisticsWidgetsRepository,
+	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<StatisticsWidgetLayoutEditorScreenEvent>() {
 	private val context = Route.StatisticsWidgetLayoutEditor.getContext(savedStateHandle)!!
 	private val initialSource: StatisticsWidgetInitialSource? = Route.StatisticsWidgetLayoutEditor.getInitialSource(savedStateHandle)?.let {
@@ -113,6 +117,11 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 				)
 			}
 		}
+
+		analyticsClient.trackEvent(WidgetLayoutUpdated(
+			context = context,
+			numberOfWidgets = state?.layoutEditor?.widgets?.size ?: 0,
+		))
 	}
 
 	private fun handleWidgetClicked(widget: StatisticsWidget) {
@@ -133,6 +142,8 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 			viewModelScope.launch {
 				statisticsWidgetRepository.deleteStatisticWidget(widget.id)
 			}
+
+			analyticsClient.trackEvent(WidgetDeleted(context = context))
 		}
 	}
 
