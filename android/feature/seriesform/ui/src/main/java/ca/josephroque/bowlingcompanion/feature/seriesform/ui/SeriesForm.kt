@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.feature.seriesform.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -169,7 +168,6 @@ private fun SeriesDatePicker(
 	onDateChanged: (LocalDate) -> Unit,
 	onDateClicked: () -> Unit,
 	onDatePickerDismissed: () -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	val initialSelection = remember(currentDate) {
 		currentDate
@@ -206,7 +204,6 @@ private fun SeriesDatePicker(
 					Text(stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_cancel))
 				}
 			},
-			modifier = modifier,
 		) {
 			DatePicker(state = datePickerState)
 		}
@@ -248,11 +245,8 @@ private fun SeriesDatePicker(
 private fun AlleySection(
 	alley: AlleyDetails?,
 	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
 ) {
-	FormSection(
-		modifier = modifier,
-	) {
+	FormSection {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.series_form_bowling_alley),
 			selectedName = alley?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none),

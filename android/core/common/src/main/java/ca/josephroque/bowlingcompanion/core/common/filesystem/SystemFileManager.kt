@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.common.filesystem
 
 import android.content.Context
-import android.net.Uri
-import android.webkit.MimeTypeMap
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.io.RandomAccessFile

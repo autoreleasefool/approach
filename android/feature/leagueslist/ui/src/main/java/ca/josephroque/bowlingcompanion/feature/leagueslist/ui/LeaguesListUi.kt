@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.leagueslist.ui
 
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
-import java.util.UUID
 
 data class LeaguesListUiState(
 	val list: List<LeagueListItem>,

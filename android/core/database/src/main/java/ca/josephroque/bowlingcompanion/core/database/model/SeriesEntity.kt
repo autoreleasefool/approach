@@ -7,7 +7,6 @@ import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails

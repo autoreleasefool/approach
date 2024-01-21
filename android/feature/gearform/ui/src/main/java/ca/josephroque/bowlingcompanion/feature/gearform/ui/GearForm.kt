@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -29,7 +28,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
@@ -37,6 +35,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSec
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun GearForm(

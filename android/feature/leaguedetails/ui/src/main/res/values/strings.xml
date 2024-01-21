@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="series_list_add">Add Series</string>
-	<string name="series_list_title">Series</string>
-
-	<string name="series_list_sort">Sort</string>
 
 	<string name="series_list_sort_order">Sort Order</string>
 	<string name="series_list_sort_order_newest_to_oldest">Newest to Oldest</string>

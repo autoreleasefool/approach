@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection", "SpellCheckingInspection")
+
 import ca.josephroque.bowlingcompanion.ApproachBuildType
 
 plugins {
@@ -24,6 +26,9 @@ android {
 		vectorDrawables {
 			useSupportLibrary = true
 		}
+
+		manifestPlaceholders["sentryAppDsn"] = ""
+		manifestPlaceholders["telemetryDeckAppId"] = ""
 	}
 
 	buildTypes {

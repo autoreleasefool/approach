@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.queries.sequence
 
 import androidx.paging.PagingSource
-import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 
 abstract class TrackableSequence<Entity: Any, Model: Any> {
 	companion object {

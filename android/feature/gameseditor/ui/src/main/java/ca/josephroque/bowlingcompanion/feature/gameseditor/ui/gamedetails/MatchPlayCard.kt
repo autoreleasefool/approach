@@ -13,23 +13,21 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.ui.contentDescription
 import ca.josephroque.bowlingcompanion.core.model.ui.icon
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.SectionHeader
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 internal fun MatchPlayCard(

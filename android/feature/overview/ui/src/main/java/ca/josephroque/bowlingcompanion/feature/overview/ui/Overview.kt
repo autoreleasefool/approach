@@ -9,7 +9,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayout
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
 
 @Composable
 fun Overview(

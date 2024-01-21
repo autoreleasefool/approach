@@ -114,7 +114,6 @@ fun AvatarForm(
 private fun LabelTextField(
 	label: String,
 	onLabelChanged: (String) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	OutlinedTextField(
 		value = label,
@@ -134,7 +133,7 @@ private fun LabelTextField(
 			)
 		},
 		singleLine = true,
-		modifier = modifier.fillMaxWidth(),
+		modifier = Modifier.fillMaxWidth(),
 	)
 }
 

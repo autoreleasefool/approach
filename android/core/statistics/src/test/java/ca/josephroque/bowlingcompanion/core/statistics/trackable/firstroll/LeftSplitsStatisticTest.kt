@@ -1,10 +1,8 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
-import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertCounting
-import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertPercentage
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.assertStatisticAdjusts
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.frame
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockGames

@@ -141,12 +141,11 @@ private fun ListGroup(
 private fun ListEntry(
 	entry: StatisticListEntry,
 	onAction: (StatisticsDetailsListUiAction) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	Row(
 		horizontalArrangement = Arrangement.SpaceBetween,
 		verticalAlignment = Alignment.CenterVertically,
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(StatisticsDetailsListUiAction.StatisticClicked(entry.id)) })
 			.padding(horizontal = 16.dp, vertical = 8.dp),

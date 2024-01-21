@@ -212,7 +212,6 @@ private fun DataExportProgressCard(
 @Composable
 private fun LastExportDateCard(
 	lastExportDate: LocalDate?,
-	modifier: Modifier = Modifier,
 ) {
 	Card(
 		colors = CardDefaults.cardColors(
@@ -222,7 +221,6 @@ private fun LastExportDateCard(
 				MaterialTheme.colorScheme.primaryContainer
 			},
 		),
-		modifier = modifier,
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,

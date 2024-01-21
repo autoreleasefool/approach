@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.opponentslist.ui
 
-import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
-import java.util.UUID
 
 data class OpponentsListUiState(
 	val list: List<OpponentListItem>,

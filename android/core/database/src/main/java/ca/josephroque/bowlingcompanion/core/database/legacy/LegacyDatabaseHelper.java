@@ -652,7 +652,6 @@ public final class LegacyDatabaseHelper extends SQLiteOpenHelper {
             // Replace `Open` league with `Practice` league
             values = new ContentValues();
             values.put(LeagueEntry.COLUMN_LEAGUE_NAME, LegacyLeague.PRACTICE_LEAGUE_NAME);
-            // noinspection deprecation
             db.update(LeagueEntry.TABLE_NAME,
                     values,
                     LeagueEntry.COLUMN_LEAGUE_NAME + "=?",

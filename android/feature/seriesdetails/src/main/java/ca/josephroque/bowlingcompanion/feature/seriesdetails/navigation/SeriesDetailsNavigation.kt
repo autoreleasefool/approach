@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation
 
-import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions

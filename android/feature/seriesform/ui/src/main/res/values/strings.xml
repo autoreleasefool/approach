@@ -7,11 +7,8 @@
 	<string name="series_form_number_of_games">Number of Games</string>
 	<string name="series_form_date">Date</string>
 
-	<string name="series_form_section_alley">Alley</string>
-	<string name="series_form_section_alley_description">This is where you plan on bowling this series.</string>
 	<string name="series_form_bowling_alley">Bowling Alley</string>
 
-	<string name="series_form_section_pre_bowl">Pre-Bowl</string>
 	<string name="series_form_section_pre_bowl_description">Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and change their date for when you plan to use them.</string>
 	<string name="series_form_pre_bowl">Pre-Bowling?</string>
 	<string name="series_form_pre_bowl_no">No</string>

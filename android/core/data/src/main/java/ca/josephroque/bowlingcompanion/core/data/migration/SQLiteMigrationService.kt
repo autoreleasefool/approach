@@ -608,11 +608,11 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	private suspend fun migrateMatchPlays(db: SQLiteDatabase) {
-		val legacyMatchPlays = getLegacyMatchPlsys(db)
+		val legacyMatchPlays = getLegacyMatchPlays(db)
 		migrateMatchPlaysToRoom(legacyMatchPlays)
 	}
 
-	private fun getLegacyMatchPlsys(db: SQLiteDatabase): List<LegacyMatchPlay> {
+	private fun getLegacyMatchPlays(db: SQLiteDatabase): List<LegacyMatchPlay> {
 		val matchPlays = mutableListOf<LegacyMatchPlay>()
 
 		db.rawQuery(

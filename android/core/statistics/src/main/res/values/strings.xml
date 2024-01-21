@@ -68,7 +68,6 @@
 	<string name="statistic_title_pins_left_on_deck">Pins Left on Deck</string>
 	<string name="statistic_title_average_pins_left_on_deck">Average Pins Left on Deck</string>
 
-	<string name="statistic_title_match_play_results">Match Play Results</string>
 	<string name="statistic_title_match_plays">Matches Played</string>
 	<string name="statistic_title_match_play_wins">Match Play Wins</string>
 	<string name="statistic_title_match_play_losses">Match Play Losses</string>

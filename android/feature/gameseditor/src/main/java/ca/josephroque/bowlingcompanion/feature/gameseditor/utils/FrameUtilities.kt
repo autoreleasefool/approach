@@ -1,9 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.utils
 
-import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Pin
-import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 
 fun MutableList<FrameEdit>.setPinsDowned(
 	frameIndex: Int,

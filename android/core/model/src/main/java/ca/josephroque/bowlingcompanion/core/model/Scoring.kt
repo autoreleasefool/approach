@@ -24,9 +24,6 @@ data class ScoringFrame(
 		get() = score?.toString()
 }
 
-fun ScoringFrame.isLastFrame(): Boolean =
-	Frame.isLastFrame(index)
-
 fun ScoringFrame.isFirstFrame(): Boolean =
 	index == 0
 

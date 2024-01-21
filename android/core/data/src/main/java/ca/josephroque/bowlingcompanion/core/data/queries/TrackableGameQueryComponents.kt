@@ -22,13 +22,11 @@ data class TrackableGameQueryComponents(
 		whereConditions.add("$tableAlias.archived_on IS NULL")
 		whereConditions.add("$tableAlias.score > 0")
 
-		if (filter.opponent != null) {
-			// FIXME: Filter by opponent in MatchPlay
-		}
+		// FIXME: Filter by opponent in MatchPlay
+//		if (filter.opponent != null) {}
 
-		if (filter.gearUsed.isNotEmpty()) {
-			// FIXME: Filter by gearUsed
-		}
+		// FIXME: Filter by gearUsed
+//		if (filter.gearUsed.isNotEmpty()) { }
 
 		when (filter.lanes) {
 			is TrackableFilter.LaneFilter.Lanes -> {

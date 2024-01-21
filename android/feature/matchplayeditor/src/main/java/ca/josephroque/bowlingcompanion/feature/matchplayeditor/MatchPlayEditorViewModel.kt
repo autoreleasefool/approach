@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayCreate
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
@@ -35,6 +36,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 	private val matchPlaysRepository: MatchPlaysRepository,
 	private val gamesRepository: GamesRepository,
 	private val analyticsClient: AnalyticsClient,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
 ): ApproachViewModel<MatchPlayEditorScreenEvent>() {
 	private val gameId = Route.EditMatchPlay.getGame(savedStateHandle)!!
 
@@ -95,13 +97,16 @@ class MatchPlayEditorViewModel @Inject constructor(
 		viewModelScope.launch {
 			val opponent = opponentId?.let { bowlersRepository.getBowlerSummary(it).first() }
 			_matchPlayEditor.update { it?.copy(opponent = opponent) }
+
+			if (opponentId != null) {
+				recentlyUsedRepository.didRecentlyUseOpponent(opponentId)
+			}
 		}
 	}
 
 	private fun updateOpponentScore(score: String) {
 		_matchPlayEditor.update { it?.copy(opponentScore = score.toIntOrNull()?.coerceIn(0, Game.MaxScore)) }
 	}
-
 	private fun updateResult(result: MatchPlayResult?) {
 		_matchPlayEditor.update { it?.copy(result = result) }
 	}

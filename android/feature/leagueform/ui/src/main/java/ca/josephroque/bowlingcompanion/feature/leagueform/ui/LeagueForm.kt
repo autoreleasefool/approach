@@ -4,7 +4,6 @@ package ca.josephroque.bowlingcompanion.feature.leagueform.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -118,6 +117,9 @@ fun LeagueForm(
 		}
 
 		Divider()
+
+		// TODO: add explanation with R.string-league_form_property_pinfall_footr
+
 		IncludeAdditionalPinFallSwitch(
 			includeAdditionalPinFall = state.includeAdditionalPinFall,
 			onIncludeAdditionalPinFallChanged = { onAction(LeagueFormUiAction.IncludeAdditionalPinFallChanged(it)) },

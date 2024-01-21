@@ -32,5 +32,4 @@
 	<string name="data_import_restore_title">Restore to before last import?</string>
 	<string name="data_import_restore_message">You last imported data on %1$s. If you choose to restore your data, you will lose any new data you\'ve recorded since this import, and your data will be restored to before the imported data was applied. Are you sure about this?</string>
 	<string name="data_import_restore_restore">Restore</string>
-	<string name="data_import_restore_cancel">Cancel</string>
 </resources>

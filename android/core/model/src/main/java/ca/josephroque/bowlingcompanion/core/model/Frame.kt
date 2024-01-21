@@ -85,7 +85,7 @@ data class FrameEdit(
 	val hasUntouchedRoll: Boolean =
 		firstUntouchedRoll != null
 
-	val paddedRolls: List<Roll>
+	private val paddedRolls: List<Roll>
 		get() {
 			val rolls = rolls.toMutableList()
 			if (rolls.size < Frame.NumberOfRolls) {

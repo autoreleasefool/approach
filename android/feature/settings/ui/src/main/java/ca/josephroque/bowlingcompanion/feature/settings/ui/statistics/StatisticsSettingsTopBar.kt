@@ -22,7 +22,7 @@ fun StatisticsSettingsTopBar(
 		colors = TopAppBarDefaults.topAppBarColors(),
 		title = {
 			Text(
-				text = stringResource(R.string.settings_item_statistics_title),
+				text = stringResource(R.string.statistics_settings_title),
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},

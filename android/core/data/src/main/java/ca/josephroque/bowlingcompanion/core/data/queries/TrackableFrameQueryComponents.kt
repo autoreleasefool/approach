@@ -11,13 +11,13 @@ data class TrackableFrameQueryComponents(
 		"JOIN frames AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn"
 
 	fun buildWhereClause(): List<String> {
-		val whereConditions = mutableListOf<String>()
+		return emptyList()
+//		val whereConditions = mutableListOf<String>()
 
-		if (filter.bowlingBallsUsed.isNotEmpty()) {
-			// FIXME: Filter by bowlingBallsUsed
-		}
+		// FIXME: Filter by bowlingBallsUsed
+//		if (filter.bowlingBallsUsed.isNotEmpty()) {}
 
-		return whereConditions
+//		return whereConditions
 	}
 
 	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()

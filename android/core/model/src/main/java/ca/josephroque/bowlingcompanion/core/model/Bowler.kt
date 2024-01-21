@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.model
 
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 data class BowlerListItem(

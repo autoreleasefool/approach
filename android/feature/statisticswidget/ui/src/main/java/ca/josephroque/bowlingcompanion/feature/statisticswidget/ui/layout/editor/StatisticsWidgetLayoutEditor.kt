@@ -42,7 +42,6 @@ import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
 import org.burnoutcrew.reorderable.reorderable
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsWidgetLayoutEditor(
 	state: StatisticsWidgetLayoutEditorUiState,

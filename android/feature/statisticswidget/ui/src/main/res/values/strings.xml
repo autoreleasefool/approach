@@ -19,8 +19,6 @@
 
 	<string name="statistics_widget_editor_statistic">Statistic</string>
 
-	<string name="statistics_widget_editor_preview">Preview</string>
-
 	<string name="statistics_widget_timeline">Timeline</string>
 	<string name="statistics_widget_timeline_one_month">Past Month</string>
 	<string name="statistics_widget_timeline_three_months">Past 3 Months</string>

@@ -12,7 +12,7 @@ class AvatarConverter {
 		value?.let(Avatar.Companion::fromString)
 
 	@TypeConverter
-	fun avatarRToString(avatar: Avatar?): String? =
+	fun avatarToString(avatar: Avatar?): String? =
 		avatar?.toString()
 }
 

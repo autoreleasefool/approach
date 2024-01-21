@@ -4,8 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
-import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import kotlinx.coroutines.flow.Flow

@@ -40,10 +40,9 @@ fun Acknowledgements(
 private fun AcknowledgementItem(
 	acknowledgement: Acknowledgement,
 	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	Row(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxWidth()
 			.clickable(onClick = onClick)
 			.padding(16.dp),

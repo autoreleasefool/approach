@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.core.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import ca.josephroque.bowlingcompanion.core.model.Location
 import java.util.UUID
 
 @Entity(

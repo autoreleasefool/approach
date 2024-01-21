@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerform.ui
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
@@ -25,10 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun BowlerForm(

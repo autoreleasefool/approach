@@ -8,7 +8,7 @@ enum class Pin(val pinCount: Int) {
 	RIGHT_TWO_PIN(2);
 
 	companion object {
-		fun fullDeck(): Set<Pin> = values().toSet()
+		fun fullDeck(): Set<Pin> = entries.toSet()
 	}
 }
 

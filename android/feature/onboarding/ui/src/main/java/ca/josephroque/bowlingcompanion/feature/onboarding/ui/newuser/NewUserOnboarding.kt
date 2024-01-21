@@ -69,10 +69,9 @@ fun NewUserOnboarding(
 @Composable
 private fun AppDescription(
 	onAction: (NewUserOnboardingUiAction) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	Box(
-		modifier = modifier
+		modifier = Modifier
 			.background(
 				Brush.verticalGradient(
 					0f to Color.Transparent,

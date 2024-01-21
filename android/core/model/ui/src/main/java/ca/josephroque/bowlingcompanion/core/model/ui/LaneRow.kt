@@ -14,9 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
-import ca.josephroque.bowlingcompanion.core.model.ui.R.*
+import ca.josephroque.bowlingcompanion.core.model.ui.R.drawable
 
 @Composable
 fun LaneRow(

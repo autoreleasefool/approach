@@ -1,9 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.database.di
 
 import android.content.Context
-import androidx.room.Room
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
-import ca.josephroque.bowlingcompanion.core.database.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

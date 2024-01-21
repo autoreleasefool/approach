@@ -4,7 +4,5 @@
 
 	<string name="avatar_form_label">Label</string>
 	<string name="avatar_form_background_color">Colour</string>
-	<string name="avatar_form_primary_color">Primary Colour</string>
-	<string name="avatar_form_secondary_color">Secondary Colour</string>
 	<string name="avatar_form_randomize_color">Randomize Colour</string>
 </resources>

@@ -8,7 +8,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
@@ -20,7 +19,7 @@ import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiActio
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.leaguesList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayout
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.placeholder.StatisticsWidgetPlaceholderCard
+import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun BowlerDetails(

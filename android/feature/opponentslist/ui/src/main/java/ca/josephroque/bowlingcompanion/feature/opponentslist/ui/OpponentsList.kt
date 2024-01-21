@@ -6,7 +6,6 @@ import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
-import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.bowlersList
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.opponentsList
 
 @Composable
