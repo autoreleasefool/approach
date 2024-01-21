@@ -73,7 +73,10 @@ private fun LazyListScope.bowlerLeaguesList(
 	state: LeaguesListUiState,
 	onAction: (LeaguesListUiAction) -> Unit,
 ) {
-	header(R.string.bowler_details_league_list_title)
+	if (state.isShowingHeader) {
+		header(R.string.bowler_details_league_list_title)
+	}
+
 	if (state.list.isEmpty()) {
 		item {
 			MutedEmptyState(

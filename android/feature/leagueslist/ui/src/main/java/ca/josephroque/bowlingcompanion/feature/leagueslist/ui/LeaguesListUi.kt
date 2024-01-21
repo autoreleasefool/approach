@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 data class LeaguesListUiState(
 	val list: List<LeagueListItem>,
 	val leagueToArchive: LeagueListItem?,
+	val isShowingHeader: Boolean,
 )
 
 sealed interface LeaguesListUiAction {

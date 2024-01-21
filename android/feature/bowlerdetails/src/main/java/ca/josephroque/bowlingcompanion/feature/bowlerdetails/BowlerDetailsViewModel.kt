@@ -53,18 +53,22 @@ class BowlerDetailsViewModel @Inject constructor(
 
 	private val _leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
 
+	private val _isHidingWidgets = userDataRepository.userData
+		.map { it.isHidingWidgetsInLeaguesList }
+
 	private val _leaguesListState: Flow<LeaguesListUiState> = combine(
 		leaguesRepository.getLeaguesList(bowlerId),
 		_leagueToArchive,
-	) { leaguesList, leagueToArchive ->
+		_isHidingWidgets,
+	) { leaguesList, leagueToArchive, isHidingWidgets ->
 		LeaguesListUiState(
 			list = leaguesList,
 			leagueToArchive = leagueToArchive,
+			isShowingHeader = !isHidingWidgets && leaguesList.isNotEmpty(),
 		)
 	}
 
-	private val _widgets = userDataRepository.userData
-		.map { it.isHidingWidgetsInLeaguesList }
+	private val _widgets = _isHidingWidgets
 		.flatMapLatest {
 			if (it) flowOf(null)
 			else statisticsWidgetsRepository.getStatisticsWidgets(STATISTICS_WIDGET_CONTEXT)
