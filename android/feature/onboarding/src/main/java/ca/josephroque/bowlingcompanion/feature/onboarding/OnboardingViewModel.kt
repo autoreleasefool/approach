@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingAppNameChangeUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiAction
@@ -18,6 +19,7 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnbo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -111,33 +113,51 @@ class OnboardingViewModel @Inject constructor(
 	}
 
 	private fun showApproachHeader() {
-		val state = _uiState.value as? OnboardingScreenUiState.LegacyUser ?: return
-		if (state.legacyUser !is LegacyUserOnboardingUiState.Started) return
-
-		_uiState.value = OnboardingScreenUiState.LegacyUser(
-			legacyUser = LegacyUserOnboardingUiState.ShowingApproachHeader(isDetailsVisible = false),
-		)
+		_uiState.update {
+			if (it !is OnboardingScreenUiState.LegacyUser) return@update it
+			it.copy(
+				legacyUser = LegacyUserOnboardingUiState.AppNameChange(
+					state = LegacyUserOnboardingAppNameChangeUiState.ShowingApproachHeader
+				),
+			)
+		}
 	}
 
 	private fun showApproachDetails() {
-		val state = _uiState.value as? OnboardingScreenUiState.LegacyUser ?: return
-		val legacyUserState = state.legacyUser as? LegacyUserOnboardingUiState.ShowingApproachHeader ?: return
-
-		_uiState.value = OnboardingScreenUiState.LegacyUser(
-			legacyUser = legacyUserState.copy(isDetailsVisible = true),
-		)
+		_uiState.update {
+			if (it !is OnboardingScreenUiState.LegacyUser) return@update it
+			it.copy(
+				legacyUser = LegacyUserOnboardingUiState.AppNameChange(
+					state = LegacyUserOnboardingAppNameChangeUiState.ShowingDetails
+				),
+			)
+		}
 	}
 
 	private fun startDataImport() {
-		val state = _uiState.value as? OnboardingScreenUiState.LegacyUser ?: return
-		if (state.legacyUser is LegacyUserOnboardingUiState.ImportingData) return
-
-		_uiState.value = state.copy(legacyUser = LegacyUserOnboardingUiState.ImportingData)
+		_uiState.update {
+			if (it !is OnboardingScreenUiState.LegacyUser) return@update it
+			it.copy(
+				legacyUser = LegacyUserOnboardingUiState.DataImport
+			)
+		}
 
 		viewModelScope.launch {
-			migrationService.migrateDefaultLegacyDatabase()
-			userDataRepository.didCompleteOnboarding()
-			analyticsClient.trackEvent(AppOnboardingCompleted)
+			try {
+				migrationService.migrateDefaultLegacyDatabase()
+				userDataRepository.didCompleteOnboarding()
+				analyticsClient.trackEvent(AppOnboardingCompleted)
+			} catch (e: Exception) {
+				_uiState.update {
+					if (it !is OnboardingScreenUiState.LegacyUser) return@update it
+					it.copy(
+						legacyUser = LegacyUserOnboardingUiState.ImportError(
+							message = e.localizedMessage ?: "An unknown error occurred.",
+							exception = e,
+						)
+					)
+				}
+			}
 		}
 	}
 }

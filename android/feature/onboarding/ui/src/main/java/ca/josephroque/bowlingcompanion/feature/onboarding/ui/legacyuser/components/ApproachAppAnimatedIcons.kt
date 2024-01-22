@@ -8,21 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.OnboardingBackground
 
 @Composable
 fun ApproachAppAnimatedIcons(
-	state: LegacyUserOnboardingUiState,
+	isVisible: Boolean,
 	modifier: Modifier = Modifier,
 ) {
 	val visibleState = remember { MutableTransitionState(false) }
 
-	LaunchedEffect(state) {
-		when (state) {
-			LegacyUserOnboardingUiState.Started, LegacyUserOnboardingUiState.ImportingData -> Unit
-			is LegacyUserOnboardingUiState.ShowingApproachHeader -> visibleState.targetState = state.isDetailsVisible
-		}
+	LaunchedEffect(isVisible) {
+		visibleState.targetState = isVisible
 	}
 
 	AnimatedIcons(

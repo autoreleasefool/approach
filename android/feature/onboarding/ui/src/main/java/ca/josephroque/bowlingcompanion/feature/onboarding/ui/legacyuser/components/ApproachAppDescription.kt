@@ -27,21 +27,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 
 @Composable
 fun ApproachAppDescription(
-	state: LegacyUserOnboardingUiState,
+	isVisible: Boolean,
 	onAction: (LegacyUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val visibleState = remember { MutableTransitionState(false) }
 
-	LaunchedEffect(state) {
-		when (state) {
-			LegacyUserOnboardingUiState.Started, LegacyUserOnboardingUiState.ImportingData -> Unit
-			is LegacyUserOnboardingUiState.ShowingApproachHeader -> visibleState.targetState = state.isDetailsVisible
-		}
+	LaunchedEffect(isVisible) {
+		visibleState.targetState = isVisible
 	}
 
 	Description(

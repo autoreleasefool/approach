@@ -33,11 +33,10 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 
 @Composable
 fun NewApproachHeader(
-	state: LegacyUserOnboardingUiState,
+	isHeaderAtTop: Boolean,
 	onAction: (LegacyUserOnboardingUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -63,10 +62,9 @@ fun NewApproachHeader(
 			}
 		}
 
-		LaunchedEffect(state) {
-			when (state) {
-				LegacyUserOnboardingUiState.Started, LegacyUserOnboardingUiState.ImportingData -> Unit
-				is LegacyUserOnboardingUiState.ShowingApproachHeader -> headerState = HeaderState.AtTop
+		LaunchedEffect(isHeaderAtTop) {
+			if (isHeaderAtTop) {
+				headerState = HeaderState.AtTop
 			}
 		}
 
