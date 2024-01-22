@@ -198,7 +198,7 @@ private fun DataExportProgressCard(
 					)
 
 					SendEmailButton(
-						errorMessage = progress.exception.localizedMessage ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message),
+						body = progress.exception.localizedMessage ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message),
 						versionName = versionName,
 						versionCode = versionCode,
 						modifier = Modifier.align(Alignment.End),
