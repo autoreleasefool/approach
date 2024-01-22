@@ -3,7 +3,10 @@ package ca.josephroque.bowlingcompanion.feature.onboarding
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppOnboardingCompleted
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.onboarding.OnboardingErrorReported
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
+import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
+import ca.josephroque.bowlingcompanion.core.common.utils.runWithMinimumDuration
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
@@ -11,7 +14,9 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingAppNameChangeUiState
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.AppNameChangeUiAction
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.DataImportUiAction
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.ImportErrorUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiAction
@@ -29,11 +34,15 @@ class OnboardingViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val migrationService: MigrationService,
 	private val userDataRepository: UserDataRepository,
+	private val systemInfoService: SystemInfoService,
 	private val analyticsClient: AnalyticsClient,
 	fileManager: FileManager,
 ): ApproachViewModel<OnboardingScreenEvent>() {
+	private val _legacyDatabasePath =
+		migrationService.getLegacyDatabasePath(LegacyDatabaseHelper.DATABASE_NAME)
+
 	private val _uiState: MutableStateFlow<OnboardingScreenUiState> = MutableStateFlow(
-		if (fileManager.fileExists(fileManager.getDatabasePath(LegacyDatabaseHelper.DATABASE_NAME))) {
+		if (fileManager.fileExists(_legacyDatabasePath)) {
 			OnboardingScreenUiState.LegacyUser()
 		} else {
 			OnboardingScreenUiState.NewUser()
@@ -108,7 +117,28 @@ class OnboardingViewModel @Inject constructor(
 		when (action) {
 			LegacyUserOnboardingUiAction.NewApproachHeaderClicked -> showApproachHeader()
 			LegacyUserOnboardingUiAction.NewApproachHeaderAnimationFinished -> showApproachDetails()
-			LegacyUserOnboardingUiAction.GetStartedClicked -> startDataImport()
+			is LegacyUserOnboardingUiAction.DataImport -> handleDataImportAction(action.action)
+			is LegacyUserOnboardingUiAction.AppNameChange -> handleAppNameChangeAction(action.action)
+			is LegacyUserOnboardingUiAction.ImportError -> handleImportErrorAction(action.action)
+		}
+	}
+
+	private fun handleDataImportAction(action: DataImportUiAction) {
+		when (action) {
+			DataImportUiAction.SendEmailClicked -> analyticsClient.trackEvent(OnboardingErrorReported)
+		}
+	}
+
+	private fun handleAppNameChangeAction(action: AppNameChangeUiAction) {
+		when (action) {
+			AppNameChangeUiAction.GetStartedClicked -> startDataImport()
+		}
+	}
+
+	private fun handleImportErrorAction(action: ImportErrorUiAction) {
+		when (action) {
+			ImportErrorUiAction.RetryClicked -> startDataImport()
+			ImportErrorUiAction.SendEmailClicked -> analyticsClient.trackEvent(OnboardingErrorReported)
 		}
 	}
 
@@ -117,7 +147,9 @@ class OnboardingViewModel @Inject constructor(
 			if (it !is OnboardingScreenUiState.LegacyUser) return@update it
 			it.copy(
 				legacyUser = LegacyUserOnboardingUiState.AppNameChange(
-					state = LegacyUserOnboardingAppNameChangeUiState.ShowingApproachHeader
+					isShowingLegacyHeader = false,
+					isShowingApproachHeader = true,
+					isShowingDetails = false,
 				),
 			)
 		}
@@ -128,7 +160,9 @@ class OnboardingViewModel @Inject constructor(
 			if (it !is OnboardingScreenUiState.LegacyUser) return@update it
 			it.copy(
 				legacyUser = LegacyUserOnboardingUiState.AppNameChange(
-					state = LegacyUserOnboardingAppNameChangeUiState.ShowingDetails
+					isShowingLegacyHeader = false,
+					isShowingApproachHeader = true,
+					isShowingDetails = true,
 				),
 			)
 		}
@@ -138,13 +172,19 @@ class OnboardingViewModel @Inject constructor(
 		_uiState.update {
 			if (it !is OnboardingScreenUiState.LegacyUser) return@update it
 			it.copy(
-				legacyUser = LegacyUserOnboardingUiState.DataImport
+				legacyUser = LegacyUserOnboardingUiState.DataImport(
+					versionName = systemInfoService.versionName,
+					versionCode = systemInfoService.versionCode,
+				)
 			)
 		}
 
 		viewModelScope.launch {
 			try {
-				migrationService.migrateDefaultLegacyDatabase()
+				runWithMinimumDuration(1_000) {
+					migrationService.migrateDefaultLegacyDatabase()
+				}
+
 				userDataRepository.didCompleteOnboarding()
 				analyticsClient.trackEvent(AppOnboardingCompleted)
 			} catch (e: Exception) {
@@ -152,8 +192,11 @@ class OnboardingViewModel @Inject constructor(
 					if (it !is OnboardingScreenUiState.LegacyUser) return@update it
 					it.copy(
 						legacyUser = LegacyUserOnboardingUiState.ImportError(
+							versionName = systemInfoService.versionName,
+							versionCode = systemInfoService.versionCode,
 							message = e.localizedMessage ?: "An unknown error occurred.",
 							exception = e,
+							legacyDbUri = migrationService.getLegacyDatabaseUri(LegacyDatabaseHelper.DATABASE_NAME),
 						)
 					)
 				}

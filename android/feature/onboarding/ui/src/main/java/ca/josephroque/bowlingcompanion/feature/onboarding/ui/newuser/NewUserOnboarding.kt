@@ -5,7 +5,6 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,8 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.OnboardingBackground
+import ca.josephroque.bowlingcompanion.feature.onboarding.ui.components.ReadableContent
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.components.Logbook
 
 @Composable
@@ -70,24 +68,13 @@ fun NewUserOnboarding(
 private fun AppDescription(
 	onAction: (NewUserOnboardingUiAction) -> Unit,
 ) {
-	Box(
-		modifier = Modifier
-			.background(
-				Brush.verticalGradient(
-					0f to Color.Transparent,
-					0.1f to Color.White,
-					0.9f to Color.White,
-					1f to Color.Transparent,
-				)
-			),
-	) {
+	ReadableContent(modifier = Modifier.padding(top = 32.dp)) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 			modifier = Modifier
 				.fillMaxWidth()
 				.verticalScroll(rememberScrollState())
 				.padding(horizontal = 16.dp)
-				.padding(top = 64.dp, bottom = 32.dp),
 		) {
 			Image(
 				painter = painterResource(R.drawable.ic_approach_squircle),

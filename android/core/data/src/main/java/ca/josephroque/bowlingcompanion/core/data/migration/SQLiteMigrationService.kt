@@ -2,9 +2,12 @@ package ca.josephroque.bowlingcompanion.core.data.migration
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.core.database.getStringOrNull
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.ApproachDatabase
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
@@ -47,8 +50,10 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -59,6 +64,7 @@ class SQLiteMigrationService @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
+	private val fileManager: FileManager,
 	private val bowlerDao: BowlerDao,
 	private val teamDao: TeamDao,
 	private var teamBowlerDao: TeamBowlerDao,
@@ -69,6 +75,18 @@ class SQLiteMigrationService @Inject constructor(
 	private val matchPlayDao: MatchPlayDao,
 	private val legacyIDMappingDao: LegacyIDMappingDao,
 ): MigrationService {
+	override fun getLegacyDatabasePath(name: String): File = fileManager.getDatabasePath(name)
+	override fun getLegacyDatabaseUri(name: String): Uri {
+		val exportDestination = fileManager.exportsDir
+			.resolve("error_$name.db")
+		getLegacyDatabasePath(name).copyTo(exportDestination, overwrite = true)
+
+		return FileProvider.getUriForFile(
+			context,
+			"ca.josephroque.bowlingcompanion.fileprovider",
+			exportDestination
+		)
+	}
 
 	override suspend fun getDatabaseType(name: String): DatabaseType? {
 		context.openOrCreateDatabase(name, Context.MODE_PRIVATE, null).use { db ->
@@ -97,7 +115,10 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	override suspend fun migrateDefaultLegacyDatabase() {
-		migrateDatabase(LegacyDatabaseHelper.DATABASE_NAME)
+		delay(1000)
+		throw Exception("Cannot migrate default database")
+
+//		migrateDatabase(LegacyDatabaseHelper.DATABASE_NAME)
 	}
 
 	override suspend fun migrateDatabase(name: String) = withContext(ioDispatcher) {

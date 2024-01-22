@@ -5,6 +5,7 @@ import java.io.File
 interface FileManager {
 	val cacheDir: File
 	val filesDir: File
+	val exportsDir: File
 
 	fun filePathExists(fileName: String): Boolean
 	fun fileExists(file: File): Boolean

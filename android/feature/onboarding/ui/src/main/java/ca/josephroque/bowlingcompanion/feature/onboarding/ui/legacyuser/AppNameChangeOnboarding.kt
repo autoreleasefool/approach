@@ -1,28 +1,22 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components.ApproachAppDescription
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.components.LegacyCompanionHeader
 
 @Composable
 fun AppNameChangeDetails(
-	state: LegacyUserOnboardingAppNameChangeUiState,
-	onAction: (LegacyUserOnboardingUiAction) -> Unit,
+	state: LegacyUserOnboardingUiState.AppNameChange,
+	onAction: (AppNameChangeUiAction) -> Unit,
+	modifier: Modifier = Modifier,
 ) {
-	LegacyCompanionHeader(state = state)
+	LegacyCompanionHeader(isVisible = state.isShowingLegacyHeader)
 
 	ApproachAppDescription(
-		isVisible = when (state) {
-			LegacyUserOnboardingAppNameChangeUiState.Started,
-			LegacyUserOnboardingAppNameChangeUiState.ShowingApproachHeader
-			-> false
-			LegacyUserOnboardingAppNameChangeUiState.ShowingDetails -> true
-		},
+		isVisible = state.isShowingDetails,
 		onAction = onAction,
-		modifier = Modifier.padding(top = 128.dp),
+		modifier = modifier,
 	)
 }
 

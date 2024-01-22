@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding
 
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingAppNameChangeUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiState
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiAction
@@ -11,9 +10,7 @@ sealed interface OnboardingScreenUiState {
 
 	data class LegacyUser(
 		val legacyUser: LegacyUserOnboardingUiState =
-			LegacyUserOnboardingUiState.AppNameChange(
-				state = LegacyUserOnboardingAppNameChangeUiState.Started,
-			),
+			LegacyUserOnboardingUiState.AppNameChange(),
 	): OnboardingScreenUiState
 
 	data class NewUser(

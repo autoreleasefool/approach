@@ -16,4 +16,15 @@
 	<string name="onboarding_legacy_user_description_wish">Approach is the 5 pin bowling app I always wish existed, and I hope you feel the same.</string>
 	<string name="onboarding_legacy_user_description_vancouver">Lovingly crafted in Vancouver</string>
 	<string name="onboarding_legacy_user_get_started">Get started</string>
+
+	<string name="onboarding_legacy_data_importing">Importing Data…</string>
+	<string name="onboarding_legacy_data_importing_description">Importing your data from the old app. This may take a few minutes.</string>
+	<string name="onboarding_legacy_data_importing_in_case_of_error">If you\'re having issues, send us an email at approach@josephroque.ca.</string>
+
+	<string name="onboarding_legacy_data_error_title">Error Importing Data!</string>
+	<string name="onboarding_legacy_data_error_there_was_an_error">There was an error importing your data from the 5 Pin Bowling Companion. The error has been logged.</string>
+	<string name="onboarding_legacy_data_error_report_error">Please send us an email at approach@josephroque.ca and we\'ll response as soon as we can.</string>
+	<string name="onboarding_legacy_data_error_attach_data">Use the button below to send us your bowling data in an email so we can examine the error and help you sooner.</string>
+	<string name="onboarding_legacy_data_error_email_subject">Approach Onboarding Error (%1$s - %2$s)</string>
+
 </resources>

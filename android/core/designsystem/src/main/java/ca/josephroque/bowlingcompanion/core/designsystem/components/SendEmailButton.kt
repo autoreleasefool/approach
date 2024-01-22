@@ -68,7 +68,8 @@ fun SendEmailButton(
 			Icon(
 				painterResource(R.drawable.ic_attach_file),
 				contentDescription = null,
-				tint = MaterialTheme.colorScheme.onPrimary,
+//				tint = MaterialTheme.colorScheme.onPrimary,
+				modifier = Modifier.padding(end = 8.dp),
 			)
 		}
 

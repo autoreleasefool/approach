@@ -19,8 +19,6 @@ import kotlinx.datetime.Clock
 import java.io.File
 import javax.inject.Inject
 
-private const val EXPORT_DIRECTORY = "exports"
-
 class ApproachDataExportService @Inject constructor(
 	private val fileManager: FileManager,
 	private val checkpointDao: CheckpointDao,
@@ -34,12 +32,8 @@ class ApproachDataExportService @Inject constructor(
 		fileManager.getDatabasePath(DATABASE_WAL_NAME),
 	)
 
-	private val exportDirectory: File
-		get() = fileManager.cacheDir
-			.resolve(EXPORT_DIRECTORY)
-
 	private val latestExportFile: MutableStateFlow<File?> = MutableStateFlow(
-		exportDirectory
+		fileManager.exportsDir
 			.listFiles()?.maxOfOrNull { it }
 	)
 
@@ -54,7 +48,7 @@ class ApproachDataExportService @Inject constructor(
 	override suspend fun getOrCreateExport(): File = withContext(ioDispatcher) {
 		checkpointDao.recordCheckpoint()
 
-		val destinationFile = exportDirectory
+		val destinationFile = fileManager.exportsDir
 			.resolve(exportDestination)
 
 		destinationFile.parentFile?.mkdirs()

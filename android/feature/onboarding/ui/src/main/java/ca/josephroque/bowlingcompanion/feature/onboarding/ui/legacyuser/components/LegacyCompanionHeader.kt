@@ -26,27 +26,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
-import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingAppNameChangeUiState
 
 @Composable
 fun LegacyCompanionHeader(
-	state: LegacyUserOnboardingAppNameChangeUiState,
+	isVisible: Boolean,
 	modifier: Modifier = Modifier,
 ) {
 	val visibleState = remember { MutableTransitionState(false) }
 
-	LaunchedEffect(Unit) {
-		visibleState.targetState = true
-	}
-
-	LaunchedEffect(state) {
-		when (state) {
-			LegacyUserOnboardingAppNameChangeUiState.Started,
-			LegacyUserOnboardingAppNameChangeUiState.ShowingDetails ->
-				Unit
-			LegacyUserOnboardingAppNameChangeUiState.ShowingApproachHeader ->
-				visibleState.targetState = false
-		}
+	LaunchedEffect(isVisible) {
+		visibleState.targetState = isVisible
 	}
 
 	Header(
