@@ -33,6 +33,10 @@
 	<string name="cd_resource_selected">Selected</string>
 	<string name="cd_resource_deselected">Not Selected</string>
 
+	<string name="default_email_recipient">approach@josephroque.ca</string>
+	<string name="default_email_subject">Approach Error Report (%1$s - %2$s)</string>
+	<string name="default_error_unknown_message">An unknown error occurred.</string>
+
 	<string name="none">None</string>
 	<string name="all">All</string>
 </resources>
