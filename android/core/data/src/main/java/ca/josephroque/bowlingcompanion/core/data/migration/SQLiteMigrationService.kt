@@ -115,10 +115,7 @@ class SQLiteMigrationService @Inject constructor(
 	}
 
 	override suspend fun migrateDefaultLegacyDatabase() {
-		delay(1000)
-		throw Exception("Cannot migrate default database")
-
-//		migrateDatabase(LegacyDatabaseHelper.DATABASE_NAME)
+		migrateDatabase(LegacyDatabaseHelper.DATABASE_NAME)
 	}
 
 	override suspend fun migrateDatabase(name: String) = withContext(ioDispatcher) {
