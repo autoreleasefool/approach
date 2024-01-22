@@ -111,6 +111,7 @@ fun LeaguesListPreview() {
 		LeaguesList(
 			state = LeaguesListUiState(
 				leagueToArchive = null,
+				isShowingHeader = true,
 				list = listOf(
 					LeagueListItem(
 						id = UUID.randomUUID(),
