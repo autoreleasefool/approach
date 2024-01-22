@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.data.migration.MigrationService
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.database.legacy.LegacyDatabaseHelper
+import ca.josephroque.bowlingcompanion.core.error.ErrorReporting
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.AppNameChangeUiAction
@@ -36,6 +37,7 @@ class OnboardingViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	private val systemInfoService: SystemInfoService,
 	private val analyticsClient: AnalyticsClient,
+	private val errorReporting: ErrorReporting,
 	fileManager: FileManager,
 ): ApproachViewModel<OnboardingScreenEvent>() {
 	private val _legacyDatabasePath =
@@ -188,6 +190,8 @@ class OnboardingViewModel @Inject constructor(
 				userDataRepository.didCompleteOnboarding()
 				analyticsClient.trackEvent(AppOnboardingCompleted)
 			} catch (e: Exception) {
+				errorReporting.captureException(e)
+
 				_uiState.update {
 					if (it !is OnboardingScreenUiState.LegacyUser) return@update it
 					it.copy(
