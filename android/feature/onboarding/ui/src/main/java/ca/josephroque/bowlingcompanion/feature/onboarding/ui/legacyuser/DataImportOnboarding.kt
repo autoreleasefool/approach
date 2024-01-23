@@ -44,7 +44,11 @@ private fun DataImportCard(
 	versionCode: String,
 	onAction: (DataImportUiAction) -> Unit,
 ) {
-	Card(modifier = Modifier.fillMaxWidth()) {
+	Card(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 32.dp),
+	) {
 		Column(
 			modifier = Modifier.padding(16.dp),
 		) {

@@ -60,7 +60,9 @@ private fun ImportErrorCard(
 	onAction: (ImportErrorUiAction) -> Unit,
 ) {
 	Card(
-		modifier = Modifier.fillMaxWidth(),
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(bottom = 32.dp),
 		colors = CardDefaults.cardColors(
 			containerColor = MaterialTheme.colorScheme.errorContainer,
 		),
