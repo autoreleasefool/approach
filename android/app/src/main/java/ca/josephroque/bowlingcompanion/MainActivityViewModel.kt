@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppLaunched
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppTabSwitched
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
+import ca.josephroque.bowlingcompanion.ui.ApproachAppUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,7 +28,15 @@ class MainActivityViewModel @Inject constructor(
 		isLaunchComplete,
 	) { userData, isLaunchComplete ->
 		MainActivityUiState.Success(
-			isOnboardingComplete = userData.isOnboardingComplete,
+			appState = ApproachAppUiState(
+				isOnboardingComplete = userData.isOnboardingComplete,
+				destinations = TopLevelDestination.entries,
+				badgeCount = if (!userData.hasOpenedAccessoriesTab) {
+					mapOf(TopLevelDestination.ACCESSORIES_OVERVIEW to 1)
+				} else {
+					emptyMap()
+				},
+			),
 			isLaunchComplete = isLaunchComplete,
 		)
 	}
@@ -56,7 +65,7 @@ class MainActivityViewModel @Inject constructor(
 sealed interface MainActivityUiState {
 	data object Loading: MainActivityUiState
 	data class Success(
-		val isOnboardingComplete: Boolean,
+		val appState: ApproachAppUiState,
 		val isLaunchComplete: Boolean,
 	): MainActivityUiState
 }

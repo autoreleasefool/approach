@@ -50,14 +50,14 @@ class MainActivity: ComponentActivity() {
 						viewModel.didFirstLaunch()
 					}
 
-					ApproachApp(
-						isOnboardingComplete = when (val state = uiState) {
-							MainActivityUiState.Loading -> null
-							is MainActivityUiState.Success -> state.isOnboardingComplete
-						},
-						finishActivity = { finish() },
-						onTabChanged = viewModel::didChangeTab,
-					)
+					when (val state = uiState) {
+						MainActivityUiState.Loading -> Unit
+						is MainActivityUiState.Success -> ApproachApp(
+							state = state.appState,
+							finishActivity = { finish() },
+							onTabChanged = viewModel::didChangeTab,
+						)
+					}
 				}
 			}
 		}

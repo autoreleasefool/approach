@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -28,7 +31,7 @@ import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 
 @Composable
 fun ApproachApp(
-	isOnboardingComplete: Boolean?,
+	state: ApproachAppUiState,
 	finishActivity: () -> Unit,
 	onTabChanged: (TopLevelDestination) -> Unit,
 	appState: ApproachAppState = rememberApproachAppState(),
@@ -37,6 +40,7 @@ fun ApproachApp(
 		bottomBar = {
 			ApproachBottomBar(
 				destinations = appState.topLevelDestinations,
+				badgeCount = state.badgeCount,
 				onNavigateToDestination = {
 					appState.navigateToTopLevelDestination(it)
 					onTabChanged(it)
@@ -52,16 +56,18 @@ fun ApproachApp(
 		) {
 			ApproachNavHost(
 				appState = appState,
-				isOnboardingComplete = isOnboardingComplete,
+				isOnboardingComplete = state.isOnboardingComplete,
 				finishActivity = finishActivity,
 			)
 		}
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ApproachBottomBar(
 	destinations: List<TopLevelDestination>,
+	badgeCount: Map<TopLevelDestination, Int>,
 	onNavigateToDestination: (TopLevelDestination) -> Unit,
 	currentDestination: NavDestination?
 ) {
@@ -83,18 +89,52 @@ private fun ApproachBottomBar(
 					isSelected = isSelected,
 					onClick = { onNavigateToDestination(destination) },
 					icon = {
-						Icon(
-							painterResource(destination.unselectedIcon),
-							contentDescription = null,
-							modifier = Modifier.size(24.dp),
-						)
+						val badgeNumber = badgeCount[destination]
+						if (badgeNumber == null) {
+							Icon(
+								painterResource(destination.unselectedIcon),
+								contentDescription = null,
+								modifier = Modifier.size(24.dp),
+							)
+						} else {
+							BadgedBox(
+								badge = {
+									Badge {
+										Text(badgeNumber.toString())
+									}
+								}
+							) {
+								Icon(
+									painterResource(destination.unselectedIcon),
+									contentDescription = null,
+									modifier = Modifier.size(24.dp),
+								)
+							}
+						}
 					},
 					selectedIcon = {
-						Icon(
-							painterResource(destination.selectedIcon),
-							contentDescription = null,
-							modifier = Modifier.size(24.dp),
-						)
+						val badgeNumber = badgeCount[destination]
+						if (badgeNumber == null) {
+							Icon(
+								painterResource(destination.selectedIcon),
+								contentDescription = null,
+								modifier = Modifier.size(24.dp),
+							)
+						} else {
+							BadgedBox(
+								badge = {
+									Badge {
+										Text(badgeNumber.toString())
+									}
+								}
+							) {
+								Icon(
+									painterResource(destination.selectedIcon),
+									contentDescription = null,
+									modifier = Modifier.size(24.dp),
+								)
+							}
+						}
 					},
 					label = {
 						Text(

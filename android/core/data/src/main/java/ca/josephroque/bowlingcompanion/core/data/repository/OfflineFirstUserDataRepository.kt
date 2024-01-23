@@ -25,6 +25,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setLegacyMigrationComplete(true)
 	}
 
+	override suspend fun didOpenAccessoriesTab() {
+		approachPreferencesDataSource.setHasOpenedAccessoriesTab(true)
+	}
+
 	override suspend fun setAnalyticsOptInStatus(status: AnalyticsOptInStatus) {
 		approachPreferencesDataSource.setAnalyticsOptInStatus(status)
 	}

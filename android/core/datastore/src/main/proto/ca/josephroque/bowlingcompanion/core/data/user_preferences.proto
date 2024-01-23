@@ -12,6 +12,7 @@ message UserPreferences {
   // Onboarding
   bool is_onboarding_complete = 16;
   bool is_legacy_migration_complete = 17;
+  bool has_opened_accessories_tab = 30;
 
   // Statistics
   bool is_counting_h2_as_h_disabled = 19;
@@ -39,5 +40,5 @@ message UserPreferences {
   // Tips
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
 
-  // Next ID: 30
+  // Next ID: 31
 }

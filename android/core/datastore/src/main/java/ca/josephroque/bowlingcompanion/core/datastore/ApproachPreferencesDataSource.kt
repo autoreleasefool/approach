@@ -19,6 +19,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 			UserData(
 				isOnboardingComplete = it.isOnboardingComplete,
 				isLegacyMigrationComplete = it.isLegacyMigrationComplete,
+				hasOpenedAccessoriesTab = it.hasOpenedAccessoriesTab,
 				analyticsOptIn = when (it.analyticsOptIn) {
 					AnalyticsOptInProto.ANALYTICS_OPT_IN_OPTED_IN,
 					AnalyticsOptInProto.UNRECOGNIZED,
@@ -51,6 +52,14 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			it.copy {
 				this.isOnboardingComplete = isOnboardingComplete
+			}
+		}
+	}
+
+	suspend fun setHasOpenedAccessoriesTab(hasOpenedAccessoriesTab: Boolean) {
+		userPreferences.updateData {
+			it.copy {
+				this.hasOpenedAccessoriesTab = hasOpenedAccessoriesTab
 			}
 		}
 	}

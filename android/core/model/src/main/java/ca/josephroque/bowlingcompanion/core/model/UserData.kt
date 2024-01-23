@@ -4,6 +4,7 @@ data class UserData(
 	// Onboarding
 	val isOnboardingComplete: Boolean,
 	val isLegacyMigrationComplete: Boolean,
+	val hasOpenedAccessoriesTab: Boolean,
 
 	// Analytics
 	val analyticsOptIn: AnalyticsOptInStatus,
