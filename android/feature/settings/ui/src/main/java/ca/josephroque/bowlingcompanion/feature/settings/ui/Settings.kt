@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.settings.ui
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,6 +21,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.common.utils.sendEmail
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Footer
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Header
@@ -125,17 +124,12 @@ private fun HelpSection(
 				versionName,
 				versionCode,
 			)
-			val emailIntent = Intent(Intent.ACTION_SEND).apply {
-				setDataAndType(Uri.parse("mailto:"), "message/rfc822")
-				putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
-				putExtra(Intent.EXTRA_SUBJECT, subject)
-			}
-
-			context.startActivity(
-				Intent.createChooser(
-					emailIntent,
-					context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
-				)
+			val intentTitle = context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+			sendEmail(
+				recipient = recipient,
+				subject = subject,
+				intentTitle = intentTitle,
+				context = context,
 			)
 		},
 	)
@@ -146,17 +140,8 @@ private fun HelpSection(
 		onClick = {
 			onAction(SettingsUiAction.SendFeedbackClicked)
 			val recipient = context.resources.getString(R.string.feedback_email_recipient)
-			val emailIntent = Intent(Intent.ACTION_SEND).apply {
-				setDataAndType(Uri.parse("mailto:"), "message/rfc822")
-				putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
-			}
-
-			context.startActivity(
-				Intent.createChooser(
-					emailIntent,
-					context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
-				)
-			)
+			val intentTitle = context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+			sendEmail(recipient = recipient, intentTitle = intentTitle, context = context)
 		},
 	)
 

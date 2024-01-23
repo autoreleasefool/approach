@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.settings.ui.developer
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +18,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.common.utils.sendEmail
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Link
@@ -67,17 +66,8 @@ private fun ContactCard() {
 			iconResourceId = RCoreDesign.drawable.ic_send,
 			onClick = {
 				val recipient = context.resources.getString(R.string.developer_settings_contact_email)
-				val emailIntent = Intent(Intent.ACTION_SEND).apply {
-					setDataAndType(Uri.parse("mailto:"), "message/rfc822")
-					putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
-				}
-
-				context.startActivity(
-					Intent.createChooser(
-						emailIntent,
-						context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
-					)
-				)
+				val intentTitle = context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+				sendEmail(recipient = recipient, intentTitle = intentTitle, context = context)
 			},
 		)
 

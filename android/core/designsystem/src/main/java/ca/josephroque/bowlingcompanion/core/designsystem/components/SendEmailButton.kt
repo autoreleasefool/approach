@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.core.designsystem.components
 
-import android.content.Intent
 import android.net.Uri
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.RowScope
@@ -16,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.common.utils.sendEmail
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 enum class SendEmailButtonStyle {
@@ -45,21 +45,15 @@ fun SendEmailButton(
 			versionName,
 			versionCode,
 		)
-		val emailIntent = Intent(Intent.ACTION_SEND).apply {
-			setDataAndType(Uri.parse("mailto:"), "message/rfc822")
-			putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
-			putExtra(Intent.EXTRA_SUBJECT, subject)
-			if (attachment != null)
-				putExtra(Intent.EXTRA_STREAM, attachment)
-			if (body != null)
-				putExtra(Intent.EXTRA_TEXT, body)
-		}
+		val intentTitle = context.resources.getString(R.string.action_send_email)
 
-		context.startActivity(
-			Intent.createChooser(
-				emailIntent,
-				context.resources.getString(R.string.action_send_email)
-			)
+		sendEmail(
+			recipient = recipient,
+			intentTitle = intentTitle,
+			subject = subject,
+			attachment = attachment,
+			body = body,
+			context = context,
 		)
 	}
 
