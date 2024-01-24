@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
@@ -11,10 +12,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 const val alleysListItemLimit = 5
@@ -24,10 +25,30 @@ const val gearListItemLimit = 10
 class AccessoriesViewModel @Inject constructor(
 	alleysRepository: AlleysRepository,
 	gearRepository: GearRepository,
+	private val userDataRepository: UserDataRepository,
 ): ViewModel() {
-	private val _uiState = MutableStateFlow(AccessoriesUiState(alleysItemLimit = alleysListItemLimit, gearItemLimit = gearListItemLimit))
-	val uiState: StateFlow<AccessoriesUiState> =
-		_uiState.asStateFlow()
+	private val _isAccessoryMenuExpanded = MutableStateFlow(false)
+
+	val uiState: StateFlow<AccessoriesUiState> = combine(
+		_isAccessoryMenuExpanded,
+		userDataRepository.userData.map { it.hasOpenedAccessoriesTab },
+	) { isAccessoryMenuExpanded, hasOpenedAccessoriesTab ->
+		AccessoriesUiState(
+			isAccessoryMenuExpanded = isAccessoryMenuExpanded,
+			isAccessoryOnboardingVisible = !hasOpenedAccessoriesTab,
+			alleysItemLimit = alleysListItemLimit,
+			gearItemLimit = gearListItemLimit,
+		)
+	}.stateIn(
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5_000),
+		initialValue = AccessoriesUiState(
+			isAccessoryMenuExpanded = false,
+			isAccessoryOnboardingVisible = false,
+			alleysItemLimit = alleysListItemLimit,
+			gearItemLimit = gearListItemLimit,
+		)
+	)
 
 	// FIXME: Refactor to AccessoriesScreenUiState, remove optional
 	val alleysListState: StateFlow<AlleysListUiState?> =
@@ -50,10 +71,16 @@ class AccessoriesViewModel @Inject constructor(
 			)
 
 	fun expandAccessoryMenu() {
-		_uiState.update { it.copy(isAccessoryMenuExpanded = true)  }
+		_isAccessoryMenuExpanded.value = true
 	}
 
 	fun minimizeAccessoryMenu() {
-		_uiState.update { it.copy(isAccessoryMenuExpanded = false)  }
+		_isAccessoryMenuExpanded.value = false
+	}
+
+	fun didDismissAccessoriesSummary() {
+		viewModelScope.launch {
+			userDataRepository.didOpenAccessoriesTab()
+		}
 	}
 }

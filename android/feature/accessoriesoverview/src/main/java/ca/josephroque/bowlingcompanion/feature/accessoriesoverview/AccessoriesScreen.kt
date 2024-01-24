@@ -50,6 +50,7 @@ internal fun AccessoriesRoute(
 		onViewAllGear = onViewAllGear,
 		onShowAlleyDetails = onShowAlleyDetails,
 		onShowGearDetails = onShowGearDetails,
+		onDismissAccessoriesSummary = viewModel::didDismissAccessoriesSummary,
 		modifier = modifier,
 	)
 }
@@ -68,6 +69,7 @@ internal fun AccessoriesScreen(
 	onViewAllGear: () -> Unit,
 	onShowAlleyDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
+	onDismissAccessoriesSummary: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -92,6 +94,7 @@ internal fun AccessoriesScreen(
 			onViewAllGear = onViewAllGear,
 			onShowAlleyDetails = onShowAlleyDetails,
 			onShowGearDetails = onShowGearDetails,
+			onDismissAccessoriesSummary = onDismissAccessoriesSummary,
 			modifier = Modifier.padding(padding),
 		)
 	}

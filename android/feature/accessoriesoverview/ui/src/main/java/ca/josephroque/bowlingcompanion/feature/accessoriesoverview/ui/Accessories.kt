@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderA
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
+import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.component.AccessoriesTabOnboarding
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
@@ -28,7 +29,12 @@ fun Accessories(
 	onViewAllGear: () -> Unit,
 	onShowAlleyDetails: (UUID) -> Unit,
 	onShowGearDetails: (UUID) -> Unit,
+	onDismissAccessoriesSummary: () -> Unit,
 ) {
+	if (accessoriesState.isAccessoryOnboardingVisible) {
+		AccessoriesTabOnboarding(onDismiss = onDismissAccessoriesSummary)
+	}
+
 	LazyColumn(modifier = modifier.fillMaxSize()) {
 		header(
 			titleResourceId = R.string.accessory_list_alleys_title,
@@ -108,6 +114,7 @@ fun Accessories(
 }
 
 data class AccessoriesUiState(
+	val isAccessoryOnboardingVisible: Boolean = false,
 	val isAccessoryMenuExpanded: Boolean = false,
 	val alleysItemLimit: Int,
 	val gearItemLimit: Int,

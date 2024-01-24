@@ -14,4 +14,10 @@
 	<string name="accessory_list_gear_empty_title">No alleys found</string>
 	<string name="accessory_list_gear_empty_message">Track usage stats for your shoes, balls, and more.</string>
 
+	<string name="accessory_onboarding_title">New to Approach: Accessories</string>
+	<string name="accessory_onboarding_message">Start using accessories to track your performance at a deeper level.</string>
+	<string name="accessory_onboarding_gear_message">Get stats on everything that helps you bowl</string>
+	<string name="accessory_onboarding_alley_message">Compare your average across alleys</string>
+	<string name="accessory_onboarding_lane_message">Find out which lanes you bowl best on</string>
+	<string name="accessory_onboarding_get_started">Get Started</string>
 </resources>
