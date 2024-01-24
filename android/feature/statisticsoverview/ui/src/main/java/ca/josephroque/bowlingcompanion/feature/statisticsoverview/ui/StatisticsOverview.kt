@@ -72,7 +72,7 @@ fun StatisticsOverview(
 			verticalArrangement = Arrangement.spacedBy(8.dp),
 			modifier = Modifier
 				.padding(horizontal = 16.dp)
-				.padding(bottom = 64.dp),
+				.padding(bottom = 128.dp),
 		) {
 			Text(
 				text = stringResource(R.string.statistics_view_more_title),

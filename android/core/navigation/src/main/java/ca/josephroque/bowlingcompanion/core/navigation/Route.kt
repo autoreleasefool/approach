@@ -150,7 +150,7 @@ sealed class Route(
 		fun getResourceType(savedStateHandle: SavedStateHandle): ResourcePickerType? = savedStateHandle.get<ResourcePickerType>("type")
 		fun getResourceFilter(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("filter")
 		fun getSelectedIds(savedStateHandle: SavedStateHandle): Set<UUID> = savedStateHandle.get<String>("selected")?.decodeList()?.mapNotNull { UUID.fromString(it) }?.toSet() ?: emptySet()
-		fun getLimit(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<String>("limit")?.toIntOrNull()
+		fun getLimit(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("limit")
 		fun getTitleOverride(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("title")
 	}
 

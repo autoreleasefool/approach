@@ -43,10 +43,16 @@ fun NavGraphBuilder.resourcePickerScreen(
 		route = Route.ResourcePicker.route,
 		arguments = listOf(
 			navArgument(Route.ResourcePicker.RESOURCE_TYPE) { type = NavType.EnumType(ResourcePickerType::class.java) },
-			navArgument(Route.ResourcePicker.RESOURCE_FILTER) { type = NavType.StringType },
+			navArgument(Route.ResourcePicker.RESOURCE_FILTER) {
+				type = NavType.StringType
+				nullable = true
+			},
 			navArgument(Route.ResourcePicker.SELECTED_IDS) { type = NavType.StringType },
 			navArgument(Route.ResourcePicker.SELECTION_LIMIT) { type = NavType.IntType },
-			navArgument(Route.ResourcePicker.TITLE_OVERRIDE) { type = NavType.StringType },
+			navArgument(Route.ResourcePicker.TITLE_OVERRIDE) {
+				type = NavType.StringType
+				nullable = true
+		  },
 		),
 	) {
 		ResourcePickerRoute(
