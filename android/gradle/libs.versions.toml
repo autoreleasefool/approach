@@ -3,7 +3,7 @@ minSdk = "26"
 compileSdk = "34"
 targetSdk = "34"
 
-androidGradlePlugin = "8.2.1"
+androidGradlePlugin = "8.2.2"
 androidxActivity = "1.8.2"
 androidxComposeBom = "2023.10.01"
 androidxComposeCompiler = "1.5.3"
