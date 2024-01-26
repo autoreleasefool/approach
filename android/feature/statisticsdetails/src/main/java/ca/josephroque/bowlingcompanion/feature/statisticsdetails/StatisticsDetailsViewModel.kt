@@ -93,7 +93,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 		)
 	}
 
-	private val _nextSheetSize = MutableStateFlow(FlexibleSheetValue.IntermediatelyExpanded)
+	private val _nextSheetSize = MutableStateFlow(FlexibleSheetValue.SlightlyExpanded)
 
 	private val _statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
 		_filter,

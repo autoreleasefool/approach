@@ -12,12 +12,13 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatisticsDetailsTopBar(
+	state: StatisticsDetailsUiState?,
 	onAction: (StatisticsDetailsTopBarUiAction) -> Unit,
 ) {
 	TopAppBar(
 		title = {
 			Text(
-				text = stringResource(R.string.statistics_details_title),
+				text = stringResource(state?.chart?.chartContent?.chart?.titleResourceId ?: R.string.statistics_details_title),
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},

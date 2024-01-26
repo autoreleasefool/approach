@@ -30,16 +30,6 @@ fun StatisticsDetailsChart(
 			LoadingState()
 		}
 
-		state.chartContent?.chart?.titleResourceId?.let {
-			Text(
-				text = stringResource(it),
-				style = MaterialTheme.typography.titleSmall,
-				modifier = Modifier
-					.padding(horizontal = 16.dp)
-					.padding(bottom = 16.dp),
-			)
-		}
-
 		Box(
 			modifier = Modifier
 				.weight(1f)

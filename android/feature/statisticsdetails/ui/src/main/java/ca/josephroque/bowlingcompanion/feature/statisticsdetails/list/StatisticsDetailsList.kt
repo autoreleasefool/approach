@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -36,8 +38,12 @@ fun StatisticsDetailsList(
 	state: StatisticsDetailsListUiState,
 	onAction: (StatisticsDetailsListUiAction) -> Unit,
 	modifier: Modifier = Modifier,
+	listState: LazyListState = rememberLazyListState(),
 ) {
-	LazyColumn(modifier = modifier) {
+	LazyColumn(
+		state = listState,
+		modifier = modifier,
+	) {
 		if (state.statistics.isEmpty()) {
 			item {
 				MutedEmptyState(

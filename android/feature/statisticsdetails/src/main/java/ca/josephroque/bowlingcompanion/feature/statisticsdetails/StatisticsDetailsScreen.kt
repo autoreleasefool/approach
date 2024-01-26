@@ -60,6 +60,10 @@ private fun StatisticsDetailsScreen(
 	Scaffold(
 		topBar = {
 			StatisticsDetailsTopBar(
+				state = when (state) {
+					StatisticsDetailsScreenUiState.Loading -> null
+					is StatisticsDetailsScreenUiState.Loaded -> state.details
+				},
 				onAction = { onAction(StatisticsDetailsScreenUiAction.TopBar(it)) },
 			)
 		},
