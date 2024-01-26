@@ -184,7 +184,7 @@ sealed class Route(
 	// Statistics
 	data object StatisticsOverview: Route("statistics_overview")
 	data object StatisticsSettings: Route("statistics_settings")
-	data object StatisticsDetails: Route("statistics_details/{source_type}/{source_id}") {
+	data object StatisticsDetails: Route("statistics_details/{source_type}/{source_id}", isBottomBarVisible = false) {
 		const val ARG_SOURCE_TYPE = "source_type"
 		const val ARG_SOURCE_ID = "source_id"
 		fun createRoute(sourceType: String, sourceId: UUID): String = "statistics_details/${Uri.encode(sourceType)}/${Uri.encode(sourceId.toString())}"
