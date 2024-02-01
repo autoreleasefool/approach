@@ -3,6 +3,7 @@ minSdk = "26"
 compileSdk = "34"
 targetSdk = "34"
 
+accompanist = "0.34.0"
 androidGradlePlugin = "8.2.2"
 androidxActivity = "1.8.2"
 androidxComposeBom = "2023.10.01"
@@ -32,6 +33,7 @@ telemetryDeck = "1.1.0"
 vico = "1.12.0"
 
 [libraries]
+accompanist-navigation = { group = "com.google.accompanist", name = "accompanist-navigation-material", version.ref = "accompanist" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }

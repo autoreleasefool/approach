@@ -29,7 +29,6 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToO
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
-import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerScreen
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToSeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
@@ -167,9 +166,6 @@ fun NavGraphBuilder.overviewGraph(
 		onShowStatistics = navController::navigateToStatisticsDetails,
 	)
 	gamesSettingsScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
-	)
-	resourcePickerScreen(
 		onDismissWithResult = navController::popBackStackWithResult,
 	)
 	statisticsWidgetLayoutEditorScreen(

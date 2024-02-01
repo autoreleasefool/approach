@@ -5,13 +5,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ResourcePickerRoute
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
 
 fun NavController.navigateToResourcePickerForResult(
@@ -36,10 +37,11 @@ fun NavController.navigateToResourcePickerForResult(
 	)
 }
 
-fun NavGraphBuilder.resourcePickerScreen(
+@OptIn(ExperimentalMaterialNavigationApi::class)
+fun NavGraphBuilder.resourcePickerSheet(
 	onDismissWithResult: (Set<UUID>) -> Unit,
 ) {
-	composable(
+	bottomSheet(
 		route = Route.ResourcePicker.route,
 		arguments = listOf(
 			navArgument(Route.ResourcePicker.RESOURCE_TYPE) { type = NavType.EnumType(ResourcePickerType::class.java) },

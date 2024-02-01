@@ -15,18 +15,24 @@ import ca.josephroque.bowlingcompanion.navigation.navigateToAccessoriesGraph
 import ca.josephroque.bowlingcompanion.navigation.navigateToOverviewGraph
 import ca.josephroque.bowlingcompanion.navigation.navigateToSettingsGraph
 import ca.josephroque.bowlingcompanion.navigation.navigateToStatisticsGraph
+import com.google.accompanist.navigation.material.BottomSheetNavigator
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun rememberApproachAppState(
-	navController: NavHostController = rememberNavController()
+	bottomSheetNavigator: BottomSheetNavigator,
+	navController: NavHostController
 ): ApproachAppState {
-	return remember(navController) {
-		ApproachAppState(navController)
+	return remember(bottomSheetNavigator, navController) {
+		ApproachAppState(bottomSheetNavigator, navController)
 	}
 }
 
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Stable
 class ApproachAppState(
+	val bottomSheetNavigator: BottomSheetNavigator,
 	val navController: NavHostController,
 ) {
 	val currentDestination: NavDestination?

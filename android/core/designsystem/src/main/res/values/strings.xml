@@ -28,6 +28,7 @@
 	<string name="filter_reset">Reset filter</string>
 
 	<string name="cd_back">Back</string>
+	<string name="cd_close">Close</string>
 	<string name="cd_decrement">Decrement</string>
 	<string name="cd_increment">Increment</string>
 	<string name="cd_selected">Selected</string>

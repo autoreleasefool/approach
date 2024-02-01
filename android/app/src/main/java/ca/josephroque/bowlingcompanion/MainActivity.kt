@@ -15,13 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.compose.rememberNavController
 import ca.josephroque.bowlingcompanion.ui.ApproachApp
 import ca.josephroque.bowlingcompanion.core.designsystem.theme.ApproachTheme
+import ca.josephroque.bowlingcompanion.ui.rememberApproachAppState
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @AndroidEntryPoint
 class MainActivity: ComponentActivity() {
 
@@ -50,12 +55,21 @@ class MainActivity: ComponentActivity() {
 						viewModel.didFirstLaunch()
 					}
 
+					val bottomSheetNavigator = rememberBottomSheetNavigator()
+					val navController = rememberNavController(bottomSheetNavigator)
+
+					val appState = rememberApproachAppState(
+						bottomSheetNavigator = bottomSheetNavigator,
+						navController = navController,
+					)
+
 					when (val state = uiState) {
 						MainActivityUiState.Loading -> Unit
 						is MainActivityUiState.Success -> ApproachApp(
 							state = state.appState,
 							finishActivity = { finish() },
 							onTabChanged = viewModel::didChangeTab,
+							appState = appState,
 						)
 					}
 				}

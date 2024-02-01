@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.navigation.graph.accessoriesGraph
+import ca.josephroque.bowlingcompanion.navigation.graph.bottomSheetGraph
 import ca.josephroque.bowlingcompanion.navigation.graph.overviewGraph
 import ca.josephroque.bowlingcompanion.navigation.graph.settingsGraph
 import ca.josephroque.bowlingcompanion.navigation.graph.statisticsGraph
@@ -29,41 +30,44 @@ fun ApproachNavHost(
 		mutableStateOf(!isOnboardingComplete)
 	}
 
-	NavHost(
-		navController = navController,
-		startDestination = startDestination,
-		modifier = modifier,
-	) {
-		navigation(
-			route = TopLevelDestination.APP_OVERVIEW.graphName,
-			startDestination = Route.Overview.route,
-		) {
-			overviewGraph(
-				navController = navController,
-				shouldShowOnboarding = shouldShowOnboarding,
-				finishActivity = finishActivity,
-			)
-		}
 
-		navigation(
-			route = TopLevelDestination.STATISTICS_OVERVIEW.graphName,
-			startDestination = Route.StatisticsOverview.route,
+		NavHost(
+			navController = navController,
+			startDestination = startDestination,
+			modifier = modifier,
 		) {
-			statisticsGraph(navController = navController)
-		}
+			navigation(
+				route = TopLevelDestination.APP_OVERVIEW.graphName,
+				startDestination = Route.Overview.route,
+			) {
+				overviewGraph(
+					navController = navController,
+					shouldShowOnboarding = shouldShowOnboarding,
+					finishActivity = finishActivity,
+				)
+			}
 
-		navigation(
-			route = TopLevelDestination.ACCESSORIES_OVERVIEW.graphName,
-			startDestination = Route.AccessoriesOverview.route,
-		) {
-		  accessoriesGraph(navController = navController)
-		}
+			navigation(
+				route = TopLevelDestination.STATISTICS_OVERVIEW.graphName,
+				startDestination = Route.StatisticsOverview.route,
+			) {
+				statisticsGraph(navController = navController)
+			}
 
-		navigation(
-			route = TopLevelDestination.SETTINGS_OVERVIEW.graphName,
-			startDestination = Route.Settings.route,
-		) {
-			settingsGraph(navController = navController)
-		}
+			navigation(
+				route = TopLevelDestination.ACCESSORIES_OVERVIEW.graphName,
+				startDestination = Route.AccessoriesOverview.route,
+			) {
+				accessoriesGraph(navController = navController)
+			}
+
+			navigation(
+				route = TopLevelDestination.SETTINGS_OVERVIEW.graphName,
+				startDestination = Route.Settings.route,
+			) {
+				settingsGraph(navController = navController)
+			}
+
+			bottomSheetGraph(navController = navController)
 	}
 }

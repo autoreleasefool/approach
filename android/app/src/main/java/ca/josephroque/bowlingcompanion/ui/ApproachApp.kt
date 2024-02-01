@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,37 +29,45 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ApproachNavi
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.navigation.ApproachNavHost
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 
+@OptIn(ExperimentalMaterialNavigationApi::class)
 @Composable
 fun ApproachApp(
 	state: ApproachAppUiState,
 	finishActivity: () -> Unit,
 	onTabChanged: (TopLevelDestination) -> Unit,
-	appState: ApproachAppState = rememberApproachAppState(),
+	appState: ApproachAppState,
 ) {
-	Scaffold(
-		bottomBar = {
-			ApproachBottomBar(
-				destinations = appState.topLevelDestinations,
-				badgeCount = state.badgeCount,
-				onNavigateToDestination = {
-					appState.navigateToTopLevelDestination(it)
-					onTabChanged(it)
-				},
-				currentDestination = appState.currentDestination
-			)
-		}
-	) { padding ->
-		Row(
-			modifier = Modifier
-				.fillMaxSize()
-				.padding(padding)
-		) {
-			ApproachNavHost(
-				appState = appState,
-				isOnboardingComplete = state.isOnboardingComplete,
-				finishActivity = finishActivity,
-			)
+	ModalBottomSheetLayout(
+		sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+		bottomSheetNavigator = appState.bottomSheetNavigator,
+	) {
+		Scaffold(
+			bottomBar = {
+				ApproachBottomBar(
+					destinations = appState.topLevelDestinations,
+					badgeCount = state.badgeCount,
+					onNavigateToDestination = {
+						appState.navigateToTopLevelDestination(it)
+						onTabChanged(it)
+					},
+					currentDestination = appState.currentDestination
+				)
+			}
+		) { padding ->
+			Row(
+				modifier = Modifier
+					.fillMaxSize()
+					.padding(padding)
+			) {
+				ApproachNavHost(
+					appState = appState,
+					isOnboardingComplete = state.isOnboardingComplete,
+					finishActivity = finishActivity,
+				)
+			}
 		}
 	}
 }

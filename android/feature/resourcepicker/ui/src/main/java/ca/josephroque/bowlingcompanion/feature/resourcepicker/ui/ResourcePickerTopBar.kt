@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.R
-import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.CloseButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,10 +24,10 @@ fun ResourcePickerTopBar(
 		title = {
 			Text(
 				text = state.titleOverride ?: pluralStringResource(state.titleResourceId, count = state.limit),
-				style = MaterialTheme.typography.titleLarge,
+				style = MaterialTheme.typography.titleMedium,
 			)
 		},
-		navigationIcon = { BackButton(onClick = { onAction(ResourcePickerUiAction.BackClicked) }) },
+		navigationIcon = { CloseButton(onClick = { onAction(ResourcePickerUiAction.BackClicked) }) },
 		actions = {
 			TextButton(onClick = { onAction(ResourcePickerUiAction.DoneClicked) }) {
 				Text(
