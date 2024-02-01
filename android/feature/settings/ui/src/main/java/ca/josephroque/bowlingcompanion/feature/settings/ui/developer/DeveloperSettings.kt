@@ -32,7 +32,7 @@ fun DeveloperSettings(
 		modifier = modifier
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState())
-			.padding(top = 16.dp),
+			.padding(vertical = 16.dp),
 	) {
 		ContactCard()
 		LearnMoreCard()
