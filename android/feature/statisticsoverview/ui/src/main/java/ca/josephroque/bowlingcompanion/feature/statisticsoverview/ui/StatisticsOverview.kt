@@ -13,27 +13,18 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.components.SourcePicker
 
 @Composable
 fun StatisticsOverview(
 	state: StatisticsOverviewUiState,
-	onAction: (StatisticsOverviewUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	SourcePicker(
-		state = state.sourcePicker,
-		onAction = onAction,
-	)
-
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
@@ -108,15 +99,4 @@ fun ViewDetailedStatisticsFloatingActionButton(
 			onAction(StatisticsOverviewUiAction.ViewMoreClicked)
 		},
 	)
-}
-
-@Preview
-@Composable
-private fun StatisticsOverviewPreview() {
-	Surface {
-		StatisticsOverview(
-			state = StatisticsOverviewUiState(),
-			onAction = {},
-		)
-	}
 }

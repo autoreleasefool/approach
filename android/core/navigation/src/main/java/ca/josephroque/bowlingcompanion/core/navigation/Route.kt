@@ -184,6 +184,8 @@ sealed class Route(
 
 	// Statistics
 	data object StatisticsOverview: Route("statistics_overview")
+	data object StatisticsSourcePicker: Route("statistics_source_picker")
+
 	data object StatisticsSettings: Route("statistics_settings")
 	data object StatisticsDetails: Route("statistics_details/{source_type}/{source_id}", isBottomBarVisible = false) {
 		const val ARG_SOURCE_TYPE = "source_type"

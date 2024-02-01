@@ -15,21 +15,13 @@ fun NavController.navigateToStatisticsOverview(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.statisticsOverviewScreen(
-	onPickBowler: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickSeries: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onPickGame: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onShowStatistics: (TrackableFilter) -> Unit,
+	onShowSourcePicker: () -> Unit,
 ) {
 	composable(
 		route = Route.StatisticsOverview.route,
 	) {
 		StatisticsOverviewRoute(
-			onPickBowler = onPickBowler,
-			onPickLeague = onPickLeague,
-			onPickSeries = onPickSeries,
-			onPickGame = onPickGame,
-			onShowStatistics = onShowStatistics,
+			onShowSourcePicker = onShowSourcePicker,
 		)
 	}
 }

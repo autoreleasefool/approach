@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
@@ -150,6 +151,16 @@ class StatisticsDetailsViewModel @Inject constructor(
 		started = SharingStarted.WhileSubscribed(5_000),
 		initialValue = StatisticsDetailsScreenUiState.Loading,
 	)
+
+	init {
+		viewModelScope.launch {
+			_chartContent.collect {
+				if (it != null) {
+					_chartEntryModelProducer.setEntries(it.chart.getModelEntries())
+				}
+			}
+		}
+	}
 
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
