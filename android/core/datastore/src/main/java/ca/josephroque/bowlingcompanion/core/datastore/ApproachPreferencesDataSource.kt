@@ -38,7 +38,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isHidingStatisticDescriptions = it.isHidingStatisticDescriptions,
 				isHidingWidgetsInBowlersList = it.isHidingWidgetsInBowlersList,
 				isHidingWidgetsInLeaguesList = it.isHidingWidgetsInLeaguesList,
-				recentlyUsedBowlerIds = it.recentlyUsedAlleyIdsList,
+				recentlyUsedBowlerIds = it.recentlyUsedBowlerIdsList,
 				recentlyUsedLeagueIds = it.recentlyUsedLeagueIdsList,
 				recentlyUsedAlleyIds = it.recentlyUsedAlleyIdsList,
 				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
