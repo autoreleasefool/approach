@@ -10,6 +10,4 @@ android {
 dependencies {
 	implementation(project(":feature:alleyslist:ui"))
 	implementation(project(":feature:gearlist:ui"))
-
-	implementation(libs.flexiblebottomsheet.m3)
 }

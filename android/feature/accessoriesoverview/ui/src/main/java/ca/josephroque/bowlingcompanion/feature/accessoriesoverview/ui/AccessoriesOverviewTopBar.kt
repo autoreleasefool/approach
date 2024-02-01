@@ -21,10 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 @Composable
 fun AccessoriesTopBar(
 	isAccessoryMenuExpanded: Boolean,
-	onAddAccessory: () -> Unit,
-	onMinimizeAddAccessoryMenu: () -> Unit,
-	onAddAlley: () -> Unit,
-	onAddGear: () -> Unit,
+	onAction: (AccessoriesUiAction) -> Unit,
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
@@ -40,7 +37,7 @@ fun AccessoriesTopBar(
 		},
 		actions = {
 			Box {
-				IconButton(onClick = onAddAccessory) {
+				IconButton(onClick = { onAction(AccessoriesUiAction.AddAccessoryClicked) }) {
 					Icon(
 						imageVector = Icons.Filled.Add,
 						contentDescription = stringResource(R.string.accessory_list_add),
@@ -50,7 +47,7 @@ fun AccessoriesTopBar(
 
 				DropdownMenu(
 					expanded = isAccessoryMenuExpanded,
-					onDismissRequest = onMinimizeAddAccessoryMenu,
+					onDismissRequest = { onAction(AccessoriesUiAction.AccessoryMenuDismissed) },
 				) {
 					DropdownMenuItem(
 						text = {
@@ -59,7 +56,7 @@ fun AccessoriesTopBar(
 								style = MaterialTheme.typography.bodyMedium,
 							)
 						},
-						onClick = onAddAlley,
+						onClick = { onAction(AccessoriesUiAction.AddAlleyClicked) },
 					)
 
 					DropdownMenuItem(
@@ -69,7 +66,7 @@ fun AccessoriesTopBar(
 								style = MaterialTheme.typography.bodyMedium,
 							)
 						},
-						onClick = onAddGear,
+						onClick = { onAction(AccessoriesUiAction.AddGearClicked) },
 					)
 				}
 			}

@@ -12,40 +12,26 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderA
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.MutedEmptyState
-import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.component.AccessoriesTabOnboarding
-import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.alleysList
-import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.gearList
-import java.util.UUID
 
 @Composable
 fun Accessories(
+	state: AccessoriesUiState,
+	onAction: (AccessoriesUiAction) -> Unit,
 	modifier: Modifier = Modifier,
-	accessoriesState: AccessoriesUiState,
-	alleysListState: AlleysListUiState?,
-	gearListState: GearListUiState?,
-	onViewAllAlleys: () -> Unit,
-	onViewAllGear: () -> Unit,
-	onShowAlleyDetails: (UUID) -> Unit,
-	onShowGearDetails: (UUID) -> Unit,
-	onDismissAccessoriesSummary: () -> Unit,
 ) {
-	if (accessoriesState.isAccessoryOnboardingVisible) {
-		AccessoriesTabOnboarding(onDismiss = onDismissAccessoriesSummary)
-	}
-
 	LazyColumn(modifier = modifier.fillMaxSize()) {
 		header(
 			titleResourceId = R.string.accessory_list_alleys_title,
 			action = HeaderAction(
 				actionResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_view_all,
-				onClick = onViewAllAlleys,
+				onClick = { onAction(AccessoriesUiAction.ViewAllAlleysClicked) },
 			)
 		)
 
-		if (alleysListState != null) {
-			if (alleysListState.list.isEmpty()) {
+		if (state.alleysList != null) {
+			if (state.alleysList.list.isEmpty()) {
 				item {
 					MutedEmptyState(
 						title = R.string.accessory_list_alley_empty_title,
@@ -56,16 +42,16 @@ fun Accessories(
 				}
 			} else {
 				alleysList(
-					list = alleysListState.list,
-					onAlleyClick = {  onShowAlleyDetails(it.id) },
+					list = state.alleysList.list,
+					onAlleyClick = { onAction(AccessoriesUiAction.AlleyClicked(it)) },
 				)
 
 				item {
-					if (alleysListState.list.size > accessoriesState.alleysItemLimit) {
+					if (state.alleysList.list.size > state.alleysItemLimit) {
 						ListSectionFooter(
 							footer = stringResource(
 								R.string.accessory_list_x_most_recent,
-								accessoriesState.alleysItemLimit
+								state.alleysItemLimit
 							)
 						)
 					}
@@ -81,12 +67,12 @@ fun Accessories(
 			titleResourceId = R.string.accessory_list_gear_title,
 			action = HeaderAction(
 				actionResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_view_all,
-				onClick = onViewAllGear,
+				onClick = { onAction(AccessoriesUiAction.ViewAllGearClicked) },
 			)
 		)
 
-		if (gearListState != null) {
-			if (gearListState.list.isEmpty()) {
+		if (state.gearList != null) {
+			if (state.gearList.list.isEmpty()) {
 				item {
 					MutedEmptyState(
 						title = R.string.accessory_list_gear_empty_title,
@@ -97,14 +83,14 @@ fun Accessories(
 				}
 			} else {
 				gearList(
-					list = gearListState.list,
-					onGearClick = { onShowGearDetails(it.id) },
+					list = state.gearList.list,
+					onGearClick = { onAction(AccessoriesUiAction.GearClicked(it)) },
 				)
 
 				item {
-					if (gearListState.list.size > accessoriesState.gearItemLimit) {
+					if (state.gearList.list.size > state.gearItemLimit) {
 						ListSectionFooter(
-							footer = stringResource(R.string.accessory_list_x_most_recent, accessoriesState.gearItemLimit)
+							footer = stringResource(R.string.accessory_list_x_most_recent, state.gearItemLimit)
 						)
 					}
 				}
@@ -112,10 +98,3 @@ fun Accessories(
 		}
 	}
 }
-
-data class AccessoriesUiState(
-	val isAccessoryOnboardingVisible: Boolean = false,
-	val isAccessoryMenuExpanded: Boolean = false,
-	val alleysItemLimit: Int,
-	val gearItemLimit: Int,
-)
