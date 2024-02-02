@@ -4,26 +4,27 @@ import OnboardingFeature
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
+@ViewAction(for: App.self)
 public struct AppView: View {
-	let store: StoreOf<App>
+	public let store: StoreOf<App>
 
 	public init(store: StoreOf<App>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		SwitchStore(store) { state in
-			switch state {
+		WithPerceptionTracking {
+			switch store.state {
 			case .content:
-				CaseLet(/App.State.content, action: { App.Action.internal(.content($0)) }, then: { store in
+				if let store = store.scope(state: \.content, action: \.internal.content) {
 					TabbedContentView(store: store)
-				})
+				}
 			case .onboarding:
-				CaseLet(/App.State.onboarding, action: { App.Action.internal(.onboarding($0)) }, then: { store in
+				if let store = store.scope(state: \.onboarding, action: \.internal.onboarding) {
 					OnboardingView(store: store)
-				})
+				}
 			}
 		}
-		.onFirstAppear { store.send(.view(.didFirstAppear)) }
+		.onFirstAppear { send(.didFirstAppear) }
 	}
 }
