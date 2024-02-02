@@ -161,7 +161,6 @@ let package = Package(
 		.package(url: "https://github.com/exyte/PopupView.git", from: "2.8.3"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.20.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.23.0"),
-		.package(url: "https://github.com/markiv/SwiftUI-Shimmer.git", from: "1.4.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.6.0"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.1.4"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),

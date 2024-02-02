@@ -466,10 +466,6 @@ from = "4.1.1"
 url = "https://github.com/getsentry/sentry-cocoa.git"
 from = "8.20.0"
 
-[dependencies.Shimmer]
-url = "https://github.com/markiv/SwiftUI-Shimmer.git"
-from = "1.4.0"
-
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
