@@ -7,35 +7,36 @@ import ModelsLibrary
 
 @Reducer
 public struct Onboarding: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var step: Step = .empty
 		public var isAddingBowler = false
 
-		@BindingState public var isShowingSheet = false
-		@BindingState public var bowlerName = ""
+		public var isShowingSheet = false
+		public var bowlerName = ""
 
 		public init() {}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, BindableAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapGetStarted
 			case didTapAddBowler
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didFinishOnboarding
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case nextStep
 			case didCreateBowler(Result<Never, Error>)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public enum Step: Equatable, CaseIterable {
@@ -89,7 +90,7 @@ public struct Onboarding: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -125,9 +126,6 @@ public struct Onboarding: Reducer {
 							await send(.internal(.didCreateBowler(.failure(error))))
 						}
 					}
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -141,7 +139,7 @@ public struct Onboarding: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
