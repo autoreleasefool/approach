@@ -10,9 +10,11 @@ import StatisticsOverviewFeature
 
 @Reducer
 public struct TabbedContent: Reducer {
+
+	@ObservableState
 	public struct State: Equatable {
-		public var tabs: [Tab] = [.overview]
-		@BindingState public var selectedTab: Tab = .overview
+		public var selectedTab: Tab = .overview
+
 		public var accessories = AccessoriesOverview.State()
 		public var bowlersList = BowlersList.State()
 		public var statistics = StatisticsOverview.State()
@@ -21,40 +23,29 @@ public struct TabbedContent: Reducer {
 		public init() {}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didAppear
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
-			case didChangeTabs([Tab])
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case accessories(AccessoriesOverview.Action)
 			case bowlersList(BowlersList.Action)
 			case settings(Settings.Action)
 			case statistics(StatisticsOverview.Action)
 		}
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
-	public enum Tab: String, Identifiable, CaseIterable, CustomStringConvertible {
+	public enum Tab {
 		case overview
 		case statistics
 		case accessories
 		case settings
-
-		public var id: String { rawValue }
-		public var description: String { rawValue }
-		public var featureFlag: FeatureFlag? {
-			switch self {
-			case .overview: return nil
-			case .statistics: return nil
-			case .accessories: return nil
-			case .settings: return nil
-			}
-		}
 	}
 
 	public init() {}
@@ -62,7 +53,7 @@ public struct TabbedContent: Reducer {
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.bowlersList, action: \.internal.bowlersList) {
 			BowlersList()
@@ -85,17 +76,6 @@ public struct TabbedContent: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didAppear:
-					return .run { send in
-						let expectedFlags = TabbedContent.Tab.allCases.compactMap { $0.featureFlag }
-						for await flags in featureFlags.observeAll(expectedFlags) {
-							await send(.internal(.didChangeTabs(TabbedContent.Tab.allCases.filter {
-								guard let tabFlag = $0.featureFlag else { return true }
-								return flags[tabFlag] ?? true
-							})))
-						}
-					}
-
-				case .binding:
 					return .none
 				}
 
@@ -105,10 +85,6 @@ public struct TabbedContent: Reducer {
 					state.selectedTab = .settings
 					return state.settings.showAppIconList().map { .internal(.settings($0)) }
 
-				case let .didChangeTabs(tabs):
-					state.tabs = tabs
-					return .none
-
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
 						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)),
@@ -116,14 +92,14 @@ public struct TabbedContent: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
 
 		AnalyticsReducer<State, Action> { state, action in
 			switch action {
-			case .view(.binding(\.$selectedTab)):
+			case .binding(\.selectedTab):
 				return Analytics.App.TabSwitched(tab: String(describing: state.selectedTab))
 			default:
 				return nil
