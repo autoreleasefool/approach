@@ -27,6 +27,8 @@ public enum ArchiveItemID: Hashable {
 
 @Reducer
 public struct ArchiveList: Reducer {
+
+	@ObservableState
 	public struct State: Equatable {
 		public var archivedBowlers: [Bowler.Archived] = []
 		public var archivedLeagues: [League.Archived] = []
@@ -37,34 +39,33 @@ public struct ArchiveList: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var alert: AlertState<AlertAction>?
+		@Presents public var alert: AlertState<AlertAction>?
 
 		public init() {}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case observeData
 			case didSwipe(ArchiveItem)
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case bowlersResponse(Result<[Bowler.Archived], Error>)
 			case leaguesResponse(Result<[League.Archived], Error>)
 			case seriesResponse(Result<[Series.Archived], Error>)
 			case gamesResponse(Result<[Game.Archived], Error>)
 
 			case unarchived(Result<ArchiveItem, Error>)
-
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public enum AlertAction: Equatable {

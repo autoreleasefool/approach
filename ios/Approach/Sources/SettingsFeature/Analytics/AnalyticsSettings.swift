@@ -8,8 +8,9 @@ import ViewsLibrary
 
 @Reducer
 public struct AnalyticsSettings: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var analyticsOptIn: Bool
+		public var analyticsOptIn: Bool
 
 		public init() {
 			@Dependency(\.analytics) var analytics
@@ -22,19 +23,19 @@ public struct AnalyticsSettings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case updatedOptInStatus(Analytics.OptInStatus)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -42,22 +43,13 @@ public struct AnalyticsSettings: Reducer {
 	@Dependency(\.analytics) var analytics
 
 	public var body: some Reducer<State, Action> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
-
-				case .binding(\.$analyticsOptIn):
-					return .run { [optedIn = state.analyticsOptIn] send in
-						let status = optedIn ? Analytics.OptInStatus.optedIn : Analytics.OptInStatus.optedOut
-						await send(.internal(.updatedOptInStatus(analytics.setOptInStatus(status))))
-					}
-
-				case .binding:
 					return .none
 				}
 
@@ -73,7 +65,13 @@ public struct AnalyticsSettings: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.analyticsOptIn):
+				return .run { [optedIn = state.analyticsOptIn] send in
+					let status = optedIn ? Analytics.OptInStatus.optedIn : Analytics.OptInStatus.optedOut
+					await send(.internal(.updatedOptInStatus(analytics.setOptInStatus(status))))
+				}
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -87,15 +85,16 @@ public struct AnalyticsSettings: Reducer {
 	}
 }
 
+@ViewAction(for: AnalyticsSettings.self)
 public struct AnalyticsSettingsView: View {
-	let store: StoreOf<AnalyticsSettings>
+	@Perception.Bindable public var store: StoreOf<AnalyticsSettings>
 
 	init(store: StoreOf<AnalyticsSettings>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
 					Text(Strings.Settings.Analytics.Info.paragraphOne)
@@ -108,7 +107,7 @@ public struct AnalyticsSettingsView: View {
 				Section {
 					Toggle(
 						Strings.Settings.Analytics.shareAnonymousAnalytics,
-						isOn: viewStore.$analyticsOptIn
+						isOn: $store.analyticsOptIn
 					)
 				} footer: {
 					Text(Strings.Settings.Analytics.ShareAnonymousAnalytics.footer)
@@ -122,8 +121,8 @@ public struct AnalyticsSettingsView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.Analytics.title)
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onAppear { send(.onAppear) }
+		}
 	}
 }
 

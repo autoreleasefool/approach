@@ -11,10 +11,11 @@ import SwiftUIExtensionsLibrary
 
 @Reducer
 public struct AppIconList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var isLoadingAppIcon = true
 		public var currentAppIcon: AppIcon?
-		@PresentationState var alert: AlertState<Action.Alert>?
+		@Presents var alert: AlertState<Action.Alert>?
 
 		public let isPurchasesEnabled: Bool
 		public var isProEnabled: Bool
@@ -28,24 +29,24 @@ public struct AppIconList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapIcon(AppIcon)
 			case didTapReset
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didUpdateIcon(Result<Never, Error>)
 			case didFetchIcon(Result<AppIcon?, Error>)
 			case alert(PresentationAction<Alert>)
 		}
 		public enum Alert: Equatable {}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Dependency(\.appIcon) var appIcon
@@ -135,15 +136,16 @@ public struct AppIconList: Reducer {
 	}
 }
 
+@ViewAction(for: AppIconList.self)
 public struct AppIconListView: View {
-	let store: StoreOf<AppIconList>
+	@Perception.Bindable public var store: StoreOf<AppIconList>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0}, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
-					Button { viewStore.send(.didTapReset) } label: {
-						AppIconView(Strings.App.Icon.current, icon: .image(viewStore.appIconImage))
+					Button { send(.didTapReset) } label: {
+						AppIconView(Strings.App.Icon.current, icon: .image(store.appIconImage))
 					}
 					.buttonStyle(.plain)
 				}
@@ -151,10 +153,10 @@ public struct AppIconListView: View {
 				ForEach(AppIcon.Category.allCases) { category in
 					Section(String(describing: category)) {
 						ForEach(category.matchingIcons) { icon in
-							if icon.isProRequired && !viewStore.isPurchasesEnabled {
+							if icon.isProRequired && !store.isPurchasesEnabled {
 								EmptyView()
 							} else {
-								Button { viewStore.send(.didTapIcon(icon)) } label: {
+								Button { send(.didTapIcon(icon)) } label: {
 									AppIconView(String(describing: icon), icon: .appIcon(icon))
 								}
 							}
@@ -163,10 +165,10 @@ public struct AppIconListView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.AppIcon.title)
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-			.onAppear { viewStore.send(.onAppear) }
-			.alert(store: self.store.scope(state: \.$alert, action: \.internal.alert))
-		})
+			.onFirstAppear { send(.didFirstAppear) }
+			.onAppear { send(.onAppear) }
+			.alert($store.scope(state: \.alert, action: \.internal.alert))
+		}
 	}
 }
 

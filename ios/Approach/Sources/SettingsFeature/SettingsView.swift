@@ -2,6 +2,7 @@ import ArchiveListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
+import ImportExportFeature
 import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsListFeature
@@ -11,52 +12,32 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@ViewAction(for: Settings.self)
 public struct SettingsView: View {
-	let store: StoreOf<Settings>
-
-	struct ViewState: Equatable {
-		let isShowingDeveloperOptions: Bool
-
-		let isShowingAppIcon: Bool
-		let currentAppIcon: AppIcon?
-
-		var appIconImage: UIImage {
-			if let currentAppIcon {
-				return UIImage(named: currentAppIcon.rawValue) ?? UIImage()
-			} else {
-				return UIImage(named: "AppIcon") ?? UIImage()
-			}
-		}
-
-		init(state: Settings.State) {
-			self.isShowingDeveloperOptions = state.isShowingDeveloperOptions
-			self.isShowingAppIcon = !state.isLoadingAppIcon
-			self.currentAppIcon = state.currentAppIcon
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<Settings>
 
 	public init(store: StoreOf<Settings>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
-				if viewStore.isShowingDeveloperOptions {
+				if store.isShowingDeveloperOptions {
 					Section {
-						Button { viewStore.send(.didTapFeatureFlags) } label: {
+						Button { send(.didTapFeatureFlags) } label: {
 							Text(Strings.Settings.FeatureFlags.title)
 						}
 						.buttonStyle(.navigation)
 
-						Button { viewStore.send(.didTapPopulateDatabase) } label: {
+						Button { send(.didTapPopulateDatabase) } label: {
 							Text(Strings.Settings.DeveloperOptions.populateDatabase)
 						}
 					}
 				}
 
 				Section {
-					Button { viewStore.send(.didTapOpponents) } label: {
+					Button { send(.didTapOpponents) } label: {
 						Text(Strings.Opponent.List.title)
 					}
 					.buttonStyle(.navigation)
@@ -65,7 +46,7 @@ public struct SettingsView: View {
 				}
 
 				Section {
-					Button { viewStore.send(.didTapStatistics) } label: {
+					Button { send(.didTapStatistics) } label: {
 						Text(Strings.Settings.Statistics.title)
 					}
 					.buttonStyle(.navigation)
@@ -73,12 +54,12 @@ public struct SettingsView: View {
 					Text(Strings.Settings.Statistics.footer)
 				}
 
-				if viewStore.isShowingAppIcon {
+				if !store.isLoadingAppIcon {
 					Section {
-						Button { viewStore.send(.didTapAppIcon) } label: {
+						Button { send(.didTapAppIcon) } label: {
 							AppIconView(
 								Strings.Settings.AppIcon.title,
-								icon: .image(viewStore.appIconImage),
+								icon: .image(store.appIconImage),
 								isCompact: true
 							)
 						}
@@ -87,7 +68,7 @@ public struct SettingsView: View {
 				}
 
 				Section {
-					Button { viewStore.send(.didTapArchive) } label: {
+					Button { send(.didTapArchive) } label: {
 						Text(Strings.Settings.Archive.title)
 					}
 					.buttonStyle(.navigation)
@@ -95,11 +76,64 @@ public struct SettingsView: View {
 					Text(Strings.Settings.Archive.footer)
 				}
 
-				HelpSettingsView(store: store.scope(state: \.helpSettings, action: \.internal.helpSettings))
+				Section(Strings.Settings.Help.title) {
+					Button(Strings.Settings.Help.reportBug) { send(.didTapReportBugButton) }
+					Button(Strings.Settings.Help.sendFeedback) { send(.didTapSendFeedbackButton) }
+					if store.isDeveloperOptionsEnabled {
+						Button(Strings.Settings.Help.forceCrash) { send(.didTapForceCrashButton) }
+					}
+					NavigationLink(
+						Strings.Settings.Help.acknowledgements,
+						destination: AcknowledgementsView()
+							.onFirstAppear { send(.didShowAcknowledgements) }
+					)
+					Button(Strings.Settings.Analytics.title) { send(.didTapAnalyticsButton) }
+						.buttonStyle(.navigation)
+				}
+
+				Section(Strings.Settings.Data.title) {
+					if store.isImportEnabled {
+						Button(Strings.Settings.Data.import) { send(.didTapImportButton) }
+							.buttonStyle(.navigation)
+					}
+
+					Button(Strings.Settings.Data.export) { send(.didTapExportButton) }
+						.buttonStyle(.navigation)
+				}
+
+				Section {
+					NavigationLink(
+						Strings.Settings.Help.developer,
+						destination: DeveloperDetailsView()
+							.onFirstAppear { send(.didShowDeveloperDetails) }
+					)
+					Button(Strings.Settings.Help.viewSource) { send(.didTapViewSource) }
+					// FIXME: enable tip jar
+	//				NavigationLink("Tip Jar", destination: TipJarView())
+				} header: {
+					Text(Strings.Settings.Help.Development.title)
+				} footer: {
+					Text(Strings.Settings.Help.Development.help(AppConstants.appName))
+				}
+				.sheet(isPresented: $store.isShowingBugReportEmail) {
+					EmailView(
+						content: .init(
+							recipients: [Strings.Settings.Help.ReportBug.email],
+							subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable)
+						)
+					)
+				}
+				.sheet(isPresented: $store.isShowingSendFeedbackEmail) {
+					EmailView(
+						content: .init(
+							recipients: [Strings.Settings.Help.SendFeedback.email]
+						)
+					)
+				}
 
 				Section {
 					Button {
-						viewStore.send(.didTapVersionNumber)
+						send(.didTapVersionNumber)
 					} label: {
 						LabeledContent(Strings.Settings.AppInfo.version, value: AppConstants.appVersionReadable)
 							.contentShape(Rectangle())
@@ -113,46 +147,70 @@ public struct SettingsView: View {
 				}
 			}
 			.navigationTitle(Strings.Settings.title)
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.toast(store: store.scope(state: \.toast, action: \.internal.toast))
-		.archive(store.scope(state: \.$destination.archive, action: \.internal.destination.archive))
-		.appIconList(store.scope(state: \.$destination.appIcon, action: \.internal.destination.appIcon))
-		.opponentsList(store.scope(state: \.$destination.opponentsList, action: \.internal.destination.opponentsList))
-		.featureFlagsList(store.scope(state: \.$destination.featureFlags, action: \.internal.destination.featureFlags))
-		.statisticsSettings(store.scope(state: \.$destination.statistics, action: \.internal.destination.statistics))
+			.onFirstAppear { send(.didFirstAppear) }
+			.onAppear { send(.onAppear) }
+			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
+			.archive($store.scope(state: \.destination?.archive, action: \.internal.destination.archive))
+			.appIconList($store.scope(state: \.destination?.appIcon, action: \.internal.destination.appIcon))
+			.opponentsList($store.scope(state: \.destination?.opponentsList, action: \.internal.destination.opponentsList))
+			.featureFlagsList($store.scope(state: \.destination?.featureFlags, action: \.internal.destination.featureFlags))
+			.statisticsSettings($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
+			.analytics($store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
+			.export($store.scope(state: \.destination?.export, action: \.internal.destination.export))
+		}
 	}
 }
 
 @MainActor extension View {
-	fileprivate func archive(_ store: PresentationStoreOf<ArchiveList>) -> some View {
-		navigationDestination(store: store) {
+	fileprivate func analytics(_ store: Binding<StoreOf<AnalyticsSettings>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
+			AnalyticsSettingsView(store: $0)
+		}
+	}
+
+	fileprivate func export(_ store: Binding<StoreOf<Export>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
+			ExportView(store: $0)
+		}
+	}
+
+	fileprivate func archive(_ store: Binding<StoreOf<ArchiveList>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
 			ArchiveListView(store: $0)
 		}
 	}
 
-	fileprivate func appIconList(_ store: PresentationStoreOf<AppIconList>) -> some View {
-		navigationDestination(store: store) {
+	fileprivate func appIconList(_ store: Binding<StoreOf<AppIconList>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
 			AppIconListView(store: $0)
 		}
 	}
 
-	fileprivate func opponentsList(_ store: PresentationStoreOf<OpponentsList>) -> some View {
-		navigationDestination(store: store) {
+	fileprivate func opponentsList(_ store: Binding<StoreOf<OpponentsList>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
 			OpponentsListView(store: $0)
 		}
 	}
 
-	fileprivate func featureFlagsList(_ store: PresentationStoreOf<FeatureFlagsList>) -> some View {
-		navigationDestination(store: store) {
+	fileprivate func featureFlagsList(_ store: Binding<StoreOf<FeatureFlagsList>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
 			FeatureFlagsListView(store: $0)
 		}
 	}
 
-	fileprivate func statisticsSettings(_ store: PresentationStoreOf<StatisticsSettings>) -> some View {
-		navigationDestination(store: store) {
+	fileprivate func statisticsSettings(_ store: Binding<StoreOf<StatisticsSettings>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
 			StatisticsSettingsView(store: $0)
+		}
+	}
+}
+
+extension Settings.State {
+	var appIconImage: UIImage {
+		if let currentAppIcon {
+			return UIImage(named: currentAppIcon.rawValue) ?? UIImage()
+		} else {
+			return UIImage(named: "AppIcon") ?? UIImage()
 		}
 	}
 }
