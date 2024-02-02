@@ -1,18 +1,15 @@
-import AccessoriesOverviewFeature
 import AnalyticsServiceInterface
-import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import LaunchServiceInterface
 import OnboardingFeature
 import PreferenceServiceInterface
-import SettingsFeature
 import StatisticsRepositoryInterface
 
 @Reducer
 public struct App: Reducer {
+
+	@ObservableState
 	public enum State: Equatable {
 		case onboarding(Onboarding.State)
 		case content(TabbedContent.State)
@@ -27,18 +24,18 @@ public struct App: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didFirstAppear
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case onboarding(Onboarding.Action)
 			case content(TabbedContent.Action)
 		}
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	@Dependency(\.preferences) var preferences
@@ -72,10 +69,10 @@ public struct App: Reducer {
 						return .run { _ in preferences.setKey(.appDidCompleteOnboarding, toBool: true) }
 					}
 
-				case .content(.internal), .content(.view):
+				case .content(.internal), .content(.view), .content(.binding):
 					return .none
 
-				case .onboarding(.internal), .onboarding(.view):
+				case .onboarding(.internal), .onboarding(.view), .onboarding(.binding):
 					return .none
 				}
 
