@@ -3,10 +3,6 @@ import FileManagerServiceInterface
 import Foundation
 import ZIPFoundation
 
-public enum FileManagerServiceError: Error {
-	case failedToCreateArchive
-}
-
 extension FileManagerService: DependencyKey {
 	public static var liveValue: Self = {
 		@Sendable func getTemporaryDirectory() -> URL {
@@ -36,9 +32,7 @@ extension FileManagerService: DependencyKey {
 			},
 			getZip: { urls, fileName in
 				let archivePath = getTemporaryDirectory().appending(path: fileName)
-				guard let archive = Archive(url: archivePath, accessMode: .create) else {
-					throw FileManagerServiceError.failedToCreateArchive
-				}
+				let archive = try Archive(url: archivePath, accessMode: .create, pathEncoding: nil)
 
 				for url in urls {
 					try archive.addEntry(with: url.lastPathComponent, relativeTo: url.deletingLastPathComponent())
