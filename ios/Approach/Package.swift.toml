@@ -464,7 +464,7 @@ from = "4.1.1"
 
 [dependencies.Sentry]
 url = "https://github.com/getsentry/sentry-cocoa.git"
-from = "8.17.1"
+from = "8.20.0"
 
 [dependencies.Shimmer]
 url = "https://github.com/markiv/SwiftUI-Shimmer.git"
