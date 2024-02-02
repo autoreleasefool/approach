@@ -441,11 +441,11 @@ from = "6.23.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-from = "1.6.0"
+from = "1.7.2"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "1.1.4"
+from = "1.2.0"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
@@ -470,7 +470,7 @@ from = "8.20.0"
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
-from = "1.15.1"
+from = "1.15.2"
 
 [dependencies.TelemetryClient]
 url = "https://github.com/TelemetryDeck/SwiftClient.git"
@@ -478,7 +478,7 @@ from = "1.5.1"
 
 [dependencies.XCTestDynamicOverlay]
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
-from = "1.0.2"
+from = "1.1.0"
 
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"
