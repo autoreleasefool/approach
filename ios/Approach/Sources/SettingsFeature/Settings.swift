@@ -5,29 +5,40 @@ import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
 import DatabaseMockingServiceInterface
+import Foundation
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsListFeature
 import FeatureFlagsServiceInterface
+import ImportExportFeature
 import OpponentsListFeature
 import StringsLibrary
 import ToastLibrary
 
 @Reducer
 public struct Settings: Reducer {
+
+	@ObservableState
 	public struct State: Equatable {
 		public var isShowingDeveloperOptions: Bool
-		public var helpSettings = HelpSettings.State()
 
 		public var isLoadingAppIcon: Bool = true
 		public var currentAppIcon: AppIcon?
 
+		public var isShowingBugReportEmail: Bool = false
+		public var isShowingSendFeedbackEmail: Bool = false
+
 		public var toast: ToastState<ToastAction>?
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
+
+		public let isImportEnabled: Bool
+		public let isDeveloperOptionsEnabled: Bool
 
 		public init() {
 			@Dependency(\.featureFlags) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
+			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
+			self.isDeveloperOptionsEnabled = featureFlags.isEnabled(.developerOptions)
 		}
 
 		public mutating func showAppIconList() -> Effect<Settings.Action> {
@@ -36,8 +47,8 @@ public struct Settings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapPopulateDatabase
@@ -47,30 +58,43 @@ public struct Settings: Reducer {
 			case didTapArchive
 			case didTapAppIcon
 			case didTapVersionNumber
+			case didTapReportBugButton
+			case didTapSendFeedbackButton
+			case didShowAcknowledgements
+			case didTapAnalyticsButton
+			case didShowDeveloperDetails
+			case didTapViewSource
+			case didTapImportButton
+			case didTapExportButton
+			case didTapForceCrashButton
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didFetchIcon(Result<AppIcon?, Error>)
 			case didCopyToClipboard
 
 			case toast(ToastAction)
-			case helpSettings(HelpSettings.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	@Reducer
 	public struct Destination: Reducer {
+
+		@ObservableState
 		public enum State: Equatable {
 			case archive(ArchiveList.State)
 			case appIcon(AppIconList.State)
 			case featureFlags(FeatureFlagsList.State)
 			case opponentsList(OpponentsList.State)
 			case statistics(StatisticsSettings.State)
+			case analytics(AnalyticsSettings.State)
+			case export(Export.State)
 		}
 
 		public enum Action {
@@ -79,6 +103,8 @@ public struct Settings: Reducer {
 			case featureFlags(FeatureFlagsList.Action)
 			case opponentsList(OpponentsList.Action)
 			case statistics(StatisticsSettings.Action)
+			case analytics(AnalyticsSettings.Action)
+			case export(Export.Action)
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -97,6 +123,12 @@ public struct Settings: Reducer {
 			Scope(state: \.statistics, action: \.statistics) {
 				StatisticsSettings()
 			}
+			Scope(state: \.analytics, action: \.analytics) {
+				AnalyticsSettings()
+			}
+			Scope(state: \.export, action: \.export) {
+				Export()
+			}
 		}
 	}
 
@@ -105,16 +137,18 @@ public struct Settings: Reducer {
 		case didFinishDismissing
 	}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.appIcon) var appIcon
 	@Dependency(\.databaseMocking) var databaseMocking
+	@Dependency(\.email) var email
+	@Dependency(\.export) var export
+	@Dependency(\.openURL) var openURL
 	@Dependency(\.pasteboard) var pasteboard
 
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		Scope(state: \.helpSettings, action: \.internal.helpSettings) {
-			HelpSettings()
-		}
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -158,6 +192,50 @@ public struct Settings: Reducer {
 						pasteboard.copyToClipboard(AppConstants.appVersionReadable)
 						await send(.internal(.didCopyToClipboard))
 					}
+
+				case .didTapReportBugButton:
+					return .run { send in
+						if await email.canSendEmail() {
+							await send(.binding(.set(\.isShowingBugReportEmail, true)))
+						} else {
+							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.ReportBug.email)") else { return }
+							await openURL(mailto)
+						}
+					}
+
+				case .didTapSendFeedbackButton:
+					return .run { send in
+						if await email.canSendEmail() {
+							await send(.binding(.set(\.isShowingSendFeedbackEmail, true)))
+						} else {
+							guard let mailto = URL(string: "mailto://\(Strings.Settings.Help.SendFeedback.email)") else { return }
+							await openURL(mailto)
+						}
+					}
+
+				case .didShowAcknowledgements:
+					return .none
+
+				case .didShowDeveloperDetails:
+					return .none
+
+				case .didTapViewSource:
+					return .run { _ in await openURL(AppConstants.openSourceRepositoryUrl) }
+
+				case .didTapForceCrashButton:
+					return .run { _ in analytics.forceCrash() }
+
+				case .didTapAnalyticsButton:
+					state.destination = .analytics(.init())
+					return .none
+
+				case .didTapImportButton:
+					// FIXME: Navigate to data import feature
+					return .none
+
+				case .didTapExportButton:
+					state.destination = .export(.init())
+					return .none
 				}
 
 			case let .internal(internalAction):
@@ -179,9 +257,6 @@ public struct Settings: Reducer {
 
 				case .didFetchIcon(.failure):
 					state.isLoadingAppIcon = false
-					return .none
-
-				case .helpSettings(.delegate(.doNothing)):
 					return .none
 
 				case let .toast(toastAction):
@@ -209,17 +284,33 @@ public struct Settings: Reducer {
 				case .destination(.presented(.appIcon(.delegate(.doNothing)))):
 					return .none
 
-				case .destination(.dismiss),
-						.destination(.presented(.featureFlags(.internal))), .destination(.presented(.featureFlags(.view))),
+				case .destination(.presented(.analytics(.delegate(.doNothing)))):
+					return .none
+
+				case .destination(.presented(.export(.delegate(.doNothing)))):
+					return .none
+
+				case .destination(.dismiss):
+					switch state.destination {
+					case .export:
+						return .run { _ in export.cleanUp() }
+					case .analytics, .appIcon, .archive, .featureFlags, .opponentsList, .statistics, .none:
+						return .none
+					}
+
+				case .destination(.presented(.featureFlags(.internal))), .destination(.presented(.featureFlags(.view))),
 						.destination(.presented(.statistics(.internal))), .destination(.presented(.statistics(.view))),
+						.destination(.presented(.statistics(.binding))),
 						.destination(.presented(.appIcon(.view))), .destination(.presented(.appIcon(.internal))),
 						.destination(.presented(.opponentsList(.internal))), .destination(.presented(.opponentsList(.view))),
 						.destination(.presented(.archive(.internal))), .destination(.presented(.archive(.view))),
-						.helpSettings(.internal), .helpSettings(.view):
+						.destination(.presented(.analytics(.internal))), .destination(.presented(.analytics(.view))),
+						.destination(.presented(.analytics(.binding))),
+						.destination(.presented(.export(.internal))), .destination(.presented(.export(.view))):
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -235,6 +326,20 @@ public struct Settings: Reducer {
 				return Analytics.Settings.ViewedStatistics()
 			case .view(.didTapAppIcon):
 				return Analytics.Settings.ViewedAppIcons()
+			case .view(.didTapReportBugButton):
+				return Analytics.Settings.ReportedBug()
+			case .view(.didTapSendFeedbackButton):
+				return Analytics.Settings.SentFeedback()
+			case .view(.didShowAcknowledgements):
+				return Analytics.Settings.ViewedAcknowledgements()
+			case .view(.didShowDeveloperDetails):
+				return Analytics.Settings.ViewedDeveloper()
+			case .view(.didTapViewSource):
+				return Analytics.Settings.ViewedSource()
+			case .view(.didTapAnalyticsButton):
+				return Analytics.Settings.ViewedAnalytics()
+			case .view(.didTapExportButton):
+				return Analytics.Settings.ViewedDataExport()
 			default:
 				return nil
 			}

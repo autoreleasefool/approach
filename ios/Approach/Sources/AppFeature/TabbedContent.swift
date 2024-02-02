@@ -87,7 +87,7 @@ public struct TabbedContent: Reducer {
 
 				case .accessories(.view), .accessories(.internal), .accessories(.delegate(.doNothing)),
 						.bowlersList(.view), .bowlersList(.internal), .bowlersList(.delegate(.doNothing)),
-						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)),
+						.settings(.view), .settings(.internal), .settings(.delegate(.doNothing)), .settings(.binding),
 						.statistics(.view), .statistics(.internal), .statistics(.delegate(.doNothing)):
 					return .none
 				}
