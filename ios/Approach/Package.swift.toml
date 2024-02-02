@@ -477,7 +477,7 @@ from = "1.15.1"
 
 [dependencies.TelemetryClient]
 url = "https://github.com/TelemetryDeck/SwiftClient.git"
-from = "1.5.0"
+from = "1.5.1"
 
 [dependencies.XCTestDynamicOverlay]
 url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
