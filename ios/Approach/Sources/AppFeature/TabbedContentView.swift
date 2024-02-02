@@ -8,61 +8,53 @@ import StatisticsOverviewFeature
 import StringsLibrary
 import SwiftUI
 
+@ViewAction(for: TabbedContent.self)
 public struct TabbedContentView: View {
-	let store: StoreOf<TabbedContent>
-
-	@Environment(\.horizontalSizeClass) var horizontalSizeClass
-
-	struct ViewState: Equatable {
-		let tabs: [TabbedContent.Tab]
-		@BindingViewState var selectedTab: TabbedContent.Tab
-	}
+	@Perception.Bindable public var store: StoreOf<TabbedContent>
 
 	public init(store: StoreOf<TabbedContent>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			// FIXME: create sidebar for ipad size devices
-			TabView(selection: viewStore.$selectedTab) {
-				ForEach(viewStore.tabs) { tab in
-					NavigationStack {
-						switch tab {
-						case .overview:
-							BowlersListView(
-								store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
-							)
-						case .statistics:
-							StatisticsOverviewView(
-								store: store.scope(state: \.statistics, action: \.internal.statistics)
-							)
-						case .accessories:
-							AccessoriesOverviewView(
-								store: store.scope(state: \.accessories, action: \.internal.accessories)
-							)
-						case .settings:
-							SettingsView(
-								store: store.scope(state: \.settings, action: \.internal.settings)
-							)
-						}
-					}
-					.tag(tab)
-					.tabItem {
-						Label(title: { Text(tab.name) }, icon: { Image(uiImage: tab.icon) })
-					}
+			TabView(selection: $store.selectedTab) {
+				NavigationStack {
+					BowlersListView(
+						store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
+					)
 				}
+				.tag(TabbedContent.Tab.overview)
+				.tabItem { TabbedContent.Tab.overview.label }
+
+				NavigationStack {
+					StatisticsOverviewView(
+						store: store.scope(state: \.statistics, action: \.internal.statistics)
+					)
+				}
+				.tag(TabbedContent.Tab.statistics)
+				.tabItem { TabbedContent.Tab.statistics.label }
+
+				NavigationStack {
+					AccessoriesOverviewView(
+						store: store.scope(state: \.accessories, action: \.internal.accessories)
+					)
+				}
+				.tag(TabbedContent.Tab.accessories)
+				.tabItem { TabbedContent.Tab.accessories.label }
+
+				NavigationStack {
+					SettingsView(
+						store: store.scope(state: \.settings, action: \.internal.settings)
+					)
+				}
+				.tag(TabbedContent.Tab.settings)
+				.tabItem { TabbedContent.Tab.settings.label }
 			}
 			.tint(Asset.Colors.Action.default)
-			.task { await viewStore.send(.didAppear).finish() }
-		})
-	}
-}
-
-extension TabbedContentView.ViewState {
-	init(store: BindingViewStore<TabbedContent.State>) {
-		self._selectedTab = store.$selectedTab
-		self.tabs = store.tabs
+			.task { await send(.didAppear).finish() }
+		}
 	}
 }
 
@@ -91,5 +83,9 @@ extension TabbedContent.Tab {
 		case .statistics:
 			return UIImage(systemSymbol: .chartBar)
 		}
+	}
+
+	var label: some View {
+		Label(title: { Text(name) }, icon: { Image(uiImage: icon) })
 	}
 }
