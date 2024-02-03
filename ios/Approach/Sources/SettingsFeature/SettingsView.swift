@@ -2,10 +2,10 @@ import ArchiveListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
-import ImportExportFeature
 import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsListFeature
+import ImportExportFeature
 import OpponentsListFeature
 import StringsLibrary
 import SwiftUI
@@ -149,7 +149,6 @@ public struct SettingsView: View {
 			.navigationTitle(Strings.Settings.title)
 			.onFirstAppear { send(.didFirstAppear) }
 			.onAppear { send(.onAppear) }
-			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 			.archive($store.scope(state: \.destination?.archive, action: \.internal.destination.archive))
 			.appIconList($store.scope(state: \.destination?.appIcon, action: \.internal.destination.appIcon))
 			.opponentsList($store.scope(state: \.destination?.opponentsList, action: \.internal.destination.opponentsList))
@@ -157,6 +156,9 @@ public struct SettingsView: View {
 			.statisticsSettings($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
 			.analytics($store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
 			.export($store.scope(state: \.destination?.export, action: \.internal.destination.export))
+			// TODO: Toast is causing issues with navigation - possible creates an AnyView and therefore breaks navigation
+			// See https://github.com/pointfreeco/swift-composable-architecture/issues/2761
+//			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 		}
 	}
 }
