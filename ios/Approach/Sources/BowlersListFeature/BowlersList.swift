@@ -194,11 +194,9 @@ public struct BowlersList: Reducer {
 							}
 						},
 						.run { send in
-							for try await source in quickLaunch.defaultSource() {
-								await send(.internal(.didLoadQuickLaunch(.success(source))))
-							}
-						} catch: { error, send in
-							await send(.internal(.didLoadQuickLaunch(.failure(error))))
+							await send(.internal(.didLoadQuickLaunch(Result {
+								try await quickLaunch.defaultSource()
+							})))
 						}
 					)
 

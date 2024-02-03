@@ -963,6 +963,7 @@ let package = Package(
 			dependencies: [
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
+				"LeaguesRepositoryInterface",
 				"QuickLaunchRepositoryInterface",
 				"RecentlyUsedServiceInterface",
 				"RepositoryLibrary",

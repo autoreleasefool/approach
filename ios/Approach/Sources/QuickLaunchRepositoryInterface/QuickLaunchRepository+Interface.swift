@@ -2,10 +2,10 @@ import Dependencies
 import ModelsLibrary
 
 public struct QuickLaunchRepository: Sendable {
-	public var defaultSource: @Sendable () -> AsyncThrowingStream<QuickLaunchSource?, Error>
+	public var defaultSource: @Sendable () async throws -> QuickLaunchSource?
 
 	public init(
-		defaultSource: @escaping @Sendable () -> AsyncThrowingStream<QuickLaunchSource?, Error>
+		defaultSource: @escaping @Sendable () async throws -> QuickLaunchSource?
 	) {
 		self.defaultSource = defaultSource
 	}

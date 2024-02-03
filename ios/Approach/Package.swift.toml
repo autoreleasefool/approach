@@ -185,6 +185,7 @@ libraries = [ "StatisticsModels" ]
 
 [repositories.QuickLaunch]
 services = [ "RecentlyUsed"]
+repositories = [ "Leagues" ]
 
 [repositories.Scores]
 repositories = [ "Frames", "Games" ]
