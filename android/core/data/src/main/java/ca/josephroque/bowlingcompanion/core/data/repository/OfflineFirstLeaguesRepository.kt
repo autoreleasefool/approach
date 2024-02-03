@@ -40,8 +40,8 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> =
 		leagueDao.getLeagueDetails(id)
 
-	override fun getLeaguesList(bowlerId: UUID): Flow<List<LeagueListItem>> =
-		leagueDao.getLeagueAverages(bowlerId = bowlerId)
+	override fun getLeaguesList(bowlerId: UUID, recurrence: LeagueRecurrence?): Flow<List<LeagueListItem>> =
+		leagueDao.getLeagueAverages(bowlerId = bowlerId, recurrence = recurrence)
 
 	override fun getArchivedLeagues(): Flow<List<ArchivedLeague>> =
 		leagueDao.getArchivedLeagues()

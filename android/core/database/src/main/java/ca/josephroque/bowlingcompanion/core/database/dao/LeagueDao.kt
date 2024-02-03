@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.model.ArchivedLeague
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
+import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
@@ -74,12 +75,15 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 				AND (games.exclude_from_statistics = "INCLUDE" OR games.exclude_from_statistics IS NULL)
 				AND (games.score > 0 OR games.score IS NULL)
 				AND games.archived_on IS NULL
-			WHERE leagues.bowler_id = :bowlerId AND leagues.archived_on IS NULL
+			WHERE 
+				leagues.bowler_id = :bowlerId 
+				AND leagues.archived_on IS NULL
+				AND (leagues.recurrence = :recurrence OR :recurrence IS NULL)
 			GROUP BY leagues.id
 			ORDER BY leagues.name
 		"""
 	)
-	abstract fun getLeagueAverages(bowlerId: UUID): Flow<List<LeagueListItem>>
+	abstract fun getLeagueAverages(bowlerId: UUID, recurrence: LeagueRecurrence?): Flow<List<LeagueListItem>>
 
 	@Query(
 		"""
