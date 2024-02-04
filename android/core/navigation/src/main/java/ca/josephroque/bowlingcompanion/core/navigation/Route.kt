@@ -130,27 +130,31 @@ sealed class Route(
 	data object Overview: Route("overview")
 
 	// Resource Picker
-	data object ResourcePicker: Route("resource_picker/{type}/{filter}/{selected}/{limit}/{title}", isBottomBarVisible = false) {
+	data object ResourcePicker: Route("resource_picker/{type}/{filter}/{selected}/{hidden}/{limit}/{title}", isBottomBarVisible = false) {
 		const val RESOURCE_TYPE = "type"
 		const val RESOURCE_FILTER = "filter"
 		const val SELECTED_IDS = "selected"
+		const val HIDDEN_IDS = "hidden"
 		const val SELECTION_LIMIT = "limit"
 		const val TITLE_OVERRIDE = "title"
 		fun createRoute(
 			resourceType: String,
 			resourceFilter: String?,
 			selectedIds: Set<UUID>,
+			hiddenIds: Set<UUID>,
 			limit: Int,
 			titleOverride: String?,
 		): String = "resource_picker/" +
 				"${Uri.encode(resourceType)}/" +
 				"${Uri.encode(resourceFilter)}/" +
 				"${selectedIds.toList().encode()}/" +
+				"${hiddenIds.toList().encode()}/" +
 				"${Uri.encode(limit.toString())}/" +
 				Uri.encode(titleOverride)
 		fun getResourceType(savedStateHandle: SavedStateHandle): ResourcePickerType? = savedStateHandle.get<ResourcePickerType>("type")
 		fun getResourceFilter(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("filter")
 		fun getSelectedIds(savedStateHandle: SavedStateHandle): Set<UUID> = savedStateHandle.get<String>("selected")?.decodeList()?.mapNotNull { UUID.fromString(it) }?.toSet() ?: emptySet()
+		fun getHiddenIds(savedStateHandle: SavedStateHandle): Set<UUID> = savedStateHandle.get<String>("hidden")?.decodeList()?.mapNotNull { UUID.fromString(it) }?.toSet() ?: emptySet()
 		fun getLimit(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("limit")
 		fun getTitleOverride(savedStateHandle: SavedStateHandle): String? = savedStateHandle.get<String>("title")
 	}

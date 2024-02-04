@@ -50,6 +50,7 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private val resourceType = Route.ResourcePicker.getResourceType(savedStateHandle)!!
 	private val initiallySelectedIds = Route.ResourcePicker.getSelectedIds(savedStateHandle)
+	private val hiddenIds = Route.ResourcePicker.getHiddenIds(savedStateHandle)
 	private val limit = Route.ResourcePicker.getLimit(savedStateHandle) ?: 0
 	private val titleOverride = Route.ResourcePicker.getTitleOverride(savedStateHandle)
 
@@ -106,7 +107,9 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private fun loadResources() {
 		viewModelScope.launch {
-			val resources = dataProvider.loadResources()
+			val resources = dataProvider
+				.loadResources()
+				.filter { !hiddenIds.contains(it.id) }
 
 			_uiState.value = ResourcePickerScreenUiState.Loaded(
 				topBar = ResourcePickerTopBarUiState(

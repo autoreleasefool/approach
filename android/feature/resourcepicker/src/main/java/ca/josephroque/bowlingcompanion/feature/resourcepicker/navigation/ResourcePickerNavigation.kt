@@ -17,6 +17,7 @@ import java.util.UUID
 
 fun NavController.navigateToResourcePickerForResult(
 	selectedIds: Set<UUID>,
+	hiddenIds: Set<UUID> = emptySet(),
 	resourceType: ResourcePickerType,
 	filter: String? = null,
 	titleOverride: String? = null,
@@ -29,6 +30,7 @@ fun NavController.navigateToResourcePickerForResult(
 			resourceType.toString(),
 			filter,
 			selectedIds,
+			hiddenIds,
 			limit,
 			Uri.encode(titleOverride),
 		),
@@ -50,6 +52,7 @@ fun NavGraphBuilder.resourcePickerSheet(
 				nullable = true
 			},
 			navArgument(Route.ResourcePicker.SELECTED_IDS) { type = NavType.StringType },
+			navArgument(Route.ResourcePicker.HIDDEN_IDS) { type = NavType.StringType },
 			navArgument(Route.ResourcePicker.SELECTION_LIMIT) { type = NavType.IntType },
 			navArgument(Route.ResourcePicker.TITLE_OVERRIDE) {
 				type = NavType.StringType
