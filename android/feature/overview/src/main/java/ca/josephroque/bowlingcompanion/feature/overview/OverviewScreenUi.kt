@@ -13,11 +13,13 @@ sealed interface OverviewScreenUiState {
 }
 
 sealed interface OverviewScreenUiAction {
+	data object DidAppear: OverviewScreenUiAction
 	data class OverviewAction(val action: OverviewUiAction): OverviewScreenUiAction
 }
 
 sealed interface OverviewScreenEvent {
 	data object AddBowler: OverviewScreenEvent
+	data object ShowQuickPlay: OverviewScreenEvent
 
 	data class EditStatisticsWidget(val context: String): OverviewScreenEvent
 	data class EditBowler(val id: UUID): OverviewScreenEvent

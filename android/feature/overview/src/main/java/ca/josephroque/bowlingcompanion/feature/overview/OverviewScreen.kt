@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
+import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBar
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -27,6 +28,7 @@ internal fun OverviewRoute(
 	onShowBowlerDetails: (UUID) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowStatistics: (UUID) -> Unit,
+	onShowQuickPlay: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OverviewViewModel = hiltViewModel(),
 ) {
@@ -43,6 +45,7 @@ internal fun OverviewRoute(
 						is OverviewScreenEvent.EditBowler -> onEditBowler(it.id)
 						is OverviewScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
 						is OverviewScreenEvent.ShowStatistics -> onShowStatistics(it.widget)
+						OverviewScreenEvent.ShowQuickPlay -> onShowQuickPlay()
 						OverviewScreenEvent.AddBowler -> onAddBowler()
 					}
 				}
@@ -63,6 +66,10 @@ private fun OverviewScreen(
 	onAction: (OverviewScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	LaunchedEffect(Unit) {
+		onAction(OverviewScreenUiAction.DidAppear)
+	}
+
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
 	Scaffold(
@@ -71,6 +78,15 @@ private fun OverviewScreen(
 				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)
+		},
+		floatingActionButton = {
+			if (state is OverviewScreenUiState.Loaded && state.overview.isQuickPlayEnabled) {
+				OverviewFloatingActionButton(
+					onAction = {
+						onAction(OverviewScreenUiAction.OverviewAction(it))
+					},
+				)
+			}
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->

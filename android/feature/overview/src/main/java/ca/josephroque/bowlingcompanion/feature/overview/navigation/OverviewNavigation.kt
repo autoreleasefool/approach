@@ -22,6 +22,7 @@ fun NavGraphBuilder.overviewScreen(
 	onShowBowlerDetails: (UUID) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowStatistics: (UUID) -> Unit,
+	onShowQuickPlay: () -> Unit,
 ) {
 	composable(
 		route = Route.Overview.route,
@@ -39,6 +40,7 @@ fun NavGraphBuilder.overviewScreen(
 				onShowBowlerDetails = onShowBowlerDetails,
 				onEditStatisticsWidgets = onEditStatisticsWidgets,
 				onShowStatistics = onShowStatistics,
+				onShowQuickPlay = onShowQuickPlay,
 			)
 		}
 	}

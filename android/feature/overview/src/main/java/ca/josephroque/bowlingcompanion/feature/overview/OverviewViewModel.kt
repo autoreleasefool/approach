@@ -38,6 +38,7 @@ class OverviewViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<OverviewScreenEvent>() {
 	private val _bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
+	private val _quickPlayEnabled = MutableStateFlow(false)
 
 	private val _bowlersListState: Flow<BowlersListUiState> =
 		combine(
@@ -60,11 +61,13 @@ class OverviewViewModel @Inject constructor(
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		_bowlersListState,
 		_widgets,
-	) { bowlersList, widgets ->
+		_quickPlayEnabled,
+	) { bowlersList, widgets, quickPlayEnabled ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
 				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
+				isQuickPlayEnabled = quickPlayEnabled,
 			)
 		)
 	}.stateIn(
@@ -75,14 +78,16 @@ class OverviewViewModel @Inject constructor(
 
 	fun handleAction(action: OverviewScreenUiAction) {
 		when (action) {
+			OverviewScreenUiAction.DidAppear -> loadQuickPlay()
 			is OverviewScreenUiAction.OverviewAction -> handleOverviewAction(action.action)
 		}
 	}
 
 	private fun handleOverviewAction(action: OverviewUiAction) {
 		when (action) {
-			is OverviewUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
-			is OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+			OverviewUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
+			OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+			OverviewUiAction.QuickPlayClicked -> sendEvent(OverviewScreenEvent.ShowQuickPlay)
 			is OverviewUiAction.BowlersListAction -> handleBowlersListAction(action.action)
 			is OverviewUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(action.action)
 		}
@@ -103,6 +108,14 @@ class OverviewViewModel @Inject constructor(
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(OverviewScreenEvent.ShowStatistics(action.widget.id))
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+		}
+	}
+
+	private fun loadQuickPlay() {
+		viewModelScope.launch {
+			bowlersRepository.getDefaultQuickPlay()?.let {
+				_quickPlayEnabled.value = true
+			}
 		}
 	}
 
