@@ -56,7 +56,7 @@ fun QuickPlay(
 		modifier = modifier
 			.reorderable(reorderableState)
 			.detectReorderAfterLongPress(reorderableState)
-			.padding(vertical = 8.dp),
+			.padding(bottom = 8.dp),
 	) {
 		items(
 			state.bowlers,

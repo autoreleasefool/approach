@@ -59,6 +59,7 @@ class QuickPlayViewModel @Inject constructor(
 	}
 
 	private fun loadDefaultQuickPlay() {
+		if (_uiState.value.bowlers.isNotEmpty()) return
 		viewModelScope.launch {
 			val defaultBowler = bowlersRepository.getDefaultQuickPlay() ?: return@launch
 			_uiState.update { it.copy(bowlers = listOf(defaultBowler)) }
@@ -79,11 +80,15 @@ class QuickPlayViewModel @Inject constructor(
 			val bowler = bowlersRepository.getBowlerSummary(bowlerId).first()
 			val league = leaguesRepository.getLeagueSummary(leagueId).first()
 			_uiState.update {
-				it.copy(
-					bowlers = it.bowlers.map { bowlerPair ->
-						if (bowlerPair.first.id == bowlerId) bowler to league else bowlerPair
-					},
-				)
+				if (it.bowlers.any { bowlerPair -> bowlerPair.first.id == bowlerId }) {
+					it.copy(
+						bowlers = it.bowlers.map { bowlerPair ->
+							if (bowlerPair.first.id == bowlerId) bowler to league else bowlerPair
+						},
+					)
+				} else {
+					it.copy(bowlers = it.bowlers + (bowler to league))
+				}
 			}
 		}
 	}
@@ -106,6 +111,7 @@ class QuickPlayViewModel @Inject constructor(
 
 	private fun moveBowler(from: Int, to: Int) {
 		_uiState.update {
+			if (from == to || from >= it.bowlers.size || to >= it.bowlers.size) return@update it
 			it.copy(bowlers = it.bowlers.toMutableList().apply { add(to, removeAt(from)) })
 		}
 	}
