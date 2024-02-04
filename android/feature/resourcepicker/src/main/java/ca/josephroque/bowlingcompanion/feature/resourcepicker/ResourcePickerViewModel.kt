@@ -57,7 +57,7 @@ class ResourcePickerViewModel @Inject constructor(
 	private val filter: ResourcePickerFilter? = Route.ResourcePicker.getResourceFilter(savedStateHandle)
 		?.let {
 			when (resourceType) {
-				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Bowler(UUID.fromString(it))
+				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Str(it)
 				ResourcePickerType.GEAR -> ResourcePickerFilter.Gear(GearKind.valueOf(it))
 				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(UUID.fromString(it))
 				ResourcePickerType.SERIES -> ResourcePickerFilter.League(UUID.fromString(it))
@@ -68,7 +68,7 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
-		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, (filter as? ResourcePickerFilter.Bowler)?.id)
+		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, (filter as? ResourcePickerFilter.Str)?.value ?: "")
 		ResourcePickerType.SERIES -> SeriesPickerDataProvider(seriesRepository, (filter as? ResourcePickerFilter.League)?.id)
 		ResourcePickerType.GAME -> GamePickerDataProvider(gamesRepository, (filter as? ResourcePickerFilter.Series)?.id)
 		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository, (filter as? ResourcePickerFilter.Gear)?.kind)

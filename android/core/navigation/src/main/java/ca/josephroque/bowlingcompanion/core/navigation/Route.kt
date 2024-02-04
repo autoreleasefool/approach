@@ -12,6 +12,9 @@ sealed class Route(
 	val route: String,
 	val isBottomBarVisible: Boolean = true,
 ) {
+	// Sheets
+	data object QuickPlay: Route("quick_play", isBottomBarVisible = true)
+
 	// Accessories
 	data object AccessoriesOverview: Route("accessories_overview")
 	data object AccessoriesOnboarding: Route("accessories_onboarding", isBottomBarVisible = false)

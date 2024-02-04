@@ -10,7 +10,7 @@ import kotlinx.datetime.LocalDate
 import java.util.UUID
 
 sealed interface ResourcePickerFilter {
-	data class Bowler(val id: UUID): ResourcePickerFilter
+	data class Str(val value: String): ResourcePickerFilter
 	data class League(val id: UUID): ResourcePickerFilter
 	data class Series(val id: UUID): ResourcePickerFilter
 	data class Gear(val kind: GearKind): ResourcePickerFilter

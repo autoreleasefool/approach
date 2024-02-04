@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.matchP
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.navigateToMatchPlayEditor
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOnboarding
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
+import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigateToEvent
@@ -60,6 +61,7 @@ fun NavGraphBuilder.overviewGraph(
 			navController.navigateToStatisticsWidgetLayoutEditor(it, null)
 		},
 		onShowStatistics = { /* TODO: onShowStatistics */ },
+		onShowQuickPlay = navController::navigateToQuickPlay,
 	)
 	onboardingScreen(
 		finishActivity = finishActivity,

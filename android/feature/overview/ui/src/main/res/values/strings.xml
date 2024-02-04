@@ -4,4 +4,9 @@
 
 	<string name="bowler_list_add">Add Bowler</string>
 	<string name="bowler_list_title">Bowlers</string>
+
+	<string name="overview_quick_play">Quick Play</string>
+	<string name="overview_quick_play_get_started">Start Bowling</string>
+	<string name="overview_quick_play_number_of_games">Number of Games</string>
+	<string name="cd_add_bowler">Add Bowler</string>
 </resources>
