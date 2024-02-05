@@ -30,4 +30,5 @@ data class UserData(
 
 	// Tips
 	val isLaneFormSwipeToEditTipDismissed: Boolean,
+	val isQuickPlayTipDismissed: Boolean,
 )

@@ -4,13 +4,18 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.League
+import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
+import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -23,14 +28,26 @@ import javax.inject.Inject
 class QuickPlayViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val leaguesRepository: LeaguesRepository,
+	userDataRepository: UserDataRepository,
 ): ApproachViewModel<QuickPlayScreenEvent>() {
 
-	private val _uiState = MutableStateFlow(QuickPlayUiState())
+	private val _didDismissQuickPlayTip = userDataRepository.userData.map { it.isQuickPlayTipDismissed }
+	private val _bowlers = MutableStateFlow(emptyList<Pair<BowlerSummary, LeagueSummary>>())
+	private val _numberOfGames = MutableStateFlow(Series.DefaultNumberOfGames)
 
-	val uiState: StateFlow<QuickPlayScreenUiState> = _uiState
-		.map {
-			QuickPlayScreenUiState.Loaded(quickPlay = it)
+	val uiState: StateFlow<QuickPlayScreenUiState> =
+		combine(
+			_bowlers,
+			_numberOfGames,
+			_didDismissQuickPlayTip,
+		) { bowlers, numberOfGames, didDismissQuickPlayTip ->
+			QuickPlayUiState(
+				bowlers = bowlers,
+				numberOfGames = numberOfGames,
+				isShowingQuickPlayTip = !didDismissQuickPlayTip,
+			)
 		}
+		.map { QuickPlayScreenUiState.Loaded(quickPlay = it) }
 		.stateIn(
 			scope = viewModelScope,
 			started = SharingStarted.WhileSubscribed(5_000),
@@ -51,6 +68,7 @@ class QuickPlayViewModel @Inject constructor(
 			QuickPlayUiAction.StartClicked -> startRecording()
 			QuickPlayUiAction.AddBowlerClicked -> showBowlerPicker()
 			QuickPlayUiAction.BackClicked -> sendEvent(QuickPlayScreenEvent.Dismissed)
+			QuickPlayUiAction.TipClicked -> sendEvent(QuickPlayScreenEvent.ShowHowToUseQuickPlay)
 			is QuickPlayUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
 			is QuickPlayUiAction.BowlerClicked -> selectBowlerLeague(action.bowler.id)
 			is QuickPlayUiAction.BowlerDeleted -> removeBowler(action.bowler.id)
@@ -59,15 +77,15 @@ class QuickPlayViewModel @Inject constructor(
 	}
 
 	private fun loadDefaultQuickPlay() {
-		if (_uiState.value.bowlers.isNotEmpty()) return
+		if (_bowlers.value.isNotEmpty()) return
 		viewModelScope.launch {
 			val defaultBowler = bowlersRepository.getDefaultQuickPlay() ?: return@launch
-			_uiState.update { it.copy(bowlers = listOf(defaultBowler)) }
+			_bowlers.update { listOf(defaultBowler) }
 		}
 	}
 
 	private fun showBowlerPicker() {
-		sendEvent(QuickPlayScreenEvent.AddBowler(_uiState.value.bowlers.map { it.first.id }.toSet()))
+		sendEvent(QuickPlayScreenEvent.AddBowler(_bowlers.value.map { it.first.id }.toSet()))
 	}
 
 	private fun updateBowlerLeague(bowlerId: UUID, leagueId: UUID?) {
@@ -79,44 +97,42 @@ class QuickPlayViewModel @Inject constructor(
 		viewModelScope.launch {
 			val bowler = bowlersRepository.getBowlerSummary(bowlerId).first()
 			val league = leaguesRepository.getLeagueSummary(leagueId).first()
-			_uiState.update {
-				if (it.bowlers.any { bowlerPair -> bowlerPair.first.id == bowlerId }) {
-					it.copy(
-						bowlers = it.bowlers.map { bowlerPair ->
-							if (bowlerPair.first.id == bowlerId) bowler to league else bowlerPair
-						},
-					)
+			_bowlers.update {
+				if (it.any { bowlerPair -> bowlerPair.first.id == bowlerId }) {
+					it.map { bowlerPair ->
+						if (bowlerPair.first.id == bowlerId) bowler to league else bowlerPair
+					}
 				} else {
-					it.copy(bowlers = it.bowlers + (bowler to league))
+					it + (bowler to league)
 				}
 			}
 		}
 	}
 
 	private fun startRecording() {
-		val bowlers = _uiState.value.bowlers.map { it.first.id to it.second.id }
+		val bowlers = _bowlers.value.map { it.first.id to it.second.id }
 		if (bowlers.isEmpty()) return
 		sendEvent(QuickPlayScreenEvent.BeganRecording(bowlers))
 	}
 
 	private fun selectBowlerLeague(bowlerId: UUID?) {
 		bowlerId ?: return
-		val leagueId = _uiState.value.bowlers.find { it.first.id == bowlerId }?.second?.id
+		val leagueId = _bowlers.value.find { it.first.id == bowlerId }?.second?.id
 		sendEvent(QuickPlayScreenEvent.EditLeague(bowlerId = bowlerId, leagueId = leagueId))
 	}
 
 	private fun removeBowler(bowlerId: UUID) {
-		_uiState.update { it.copy(bowlers = it.bowlers.filter { bowler -> bowler.first.id != bowlerId }) }
+		_bowlers.update { it.filter { bowler -> bowler.first.id != bowlerId } }
 	}
 
 	private fun moveBowler(from: Int, to: Int) {
-		_uiState.update {
-			if (from == to || from >= it.bowlers.size || to >= it.bowlers.size) return@update it
-			it.copy(bowlers = it.bowlers.toMutableList().apply { add(to, removeAt(from)) })
+		_bowlers.update {
+			if (from == to || from >= it.size || to >= it.size) return@update it
+			it.toMutableList().apply { add(to, removeAt(from)) }
 		}
 	}
 
 	private fun updateNumberOfGames(numberOfGames: Int) {
-		_uiState.update { it.copy(numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange)) }
+		_numberOfGames.update { numberOfGames.coerceIn(League.NumberOfGamesRange) }
 	}
 }

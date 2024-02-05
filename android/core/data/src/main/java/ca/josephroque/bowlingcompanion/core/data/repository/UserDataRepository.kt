@@ -35,6 +35,7 @@ interface UserDataRepository {
 	suspend fun didRecentlyUseGear(id: String)
 
 	suspend fun didDismissLaneFormSwipeToEditTip()
+	suspend fun didDismissQuickPlayTip()
 }
 
 fun UserData.hasSeenStatistic(id: StatisticID): Boolean =

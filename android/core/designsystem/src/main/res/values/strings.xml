@@ -23,6 +23,7 @@
 	<string name="action_send_email">Send Email</string>
 	<string name="action_view_all">View All</string>
 	<string name="action_retry">Retry</string>
+	<string name="action_done">Done</string>
 
 	<string name="filter_none">No filter applied</string>
 	<string name="filter_reset">Reset filter</string>

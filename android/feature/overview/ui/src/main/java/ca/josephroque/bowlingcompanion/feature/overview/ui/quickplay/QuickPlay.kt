@@ -11,9 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -58,6 +61,17 @@ fun QuickPlay(
 			.detectReorderAfterLongPress(reorderableState)
 			.padding(bottom = 8.dp),
 	) {
+		if (state.isShowingQuickPlayTip) {
+			item {
+				QuickPlayTip(
+					onClick = { onAction(QuickPlayUiAction.TipClicked) },
+					modifier = Modifier
+						.padding(horizontal = 16.dp)
+						.padding(bottom = 8.dp),
+				)
+			}
+		}
+
 		items(
 			state.bowlers,
 			key = { it.first.id },
@@ -156,6 +170,36 @@ private fun QuickPlayBowler(
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun QuickPlayTip(
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	Card(
+		onClick = onClick,
+		modifier = modifier
+	) {
+		Row(
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.spacedBy(16.dp),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(16.dp),
+		) {
+			Icon(
+				Icons.Default.Info,
+				contentDescription = null,
+			)
+
+			Text(
+				text = stringResource(R.string.quick_play_learn_how_to_use),
+				style = MaterialTheme.typography.bodyMedium,
+			)
+		}
+	}
+}
+
 @Preview
 @Composable
 private fun QuickPlayPreview() {
@@ -163,6 +207,7 @@ private fun QuickPlayPreview() {
 		QuickPlay(
 			state = QuickPlayUiState(
 				bowlers = BowlerSummaryStub.list().zip(LeagueSummaryStub.list()),
+				isShowingQuickPlayTip = true,
 			),
 			onAction = {},
 		)

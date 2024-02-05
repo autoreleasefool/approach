@@ -6,7 +6,9 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
+import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
+import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
@@ -42,6 +44,10 @@ fun NavGraphBuilder.bottomSheetGraph(
 				filter = "${bowler}:${LeagueRecurrence.REPEATING}",
 			)
 		},
+		onShowQuickPlayOnboarding = navController::navigateToQuickPlayOnboarding,
+	)
+	quickPlayOnboarding(
+		onBackPressed = navController::popBackStack,
 	)
 	statisticsSourcePickerSheet(
 		onBackPressed = navController::popBackStack,

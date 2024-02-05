@@ -39,6 +39,7 @@ message UserPreferences {
 
   // Tips
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
+  bool is_quick_play_tip_dismissed = 31;
 
-  // Next ID: 31
+  // Next ID: 32
 }

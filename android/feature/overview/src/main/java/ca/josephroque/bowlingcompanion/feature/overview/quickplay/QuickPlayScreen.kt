@@ -27,6 +27,7 @@ internal fun QuickPlayRoute(
 	onBeginRecording: (List<Pair<UUID, UUID>>) -> Unit,
 	onPickBowler: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
+	onShowQuickPlayOnboarding: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: QuickPlayViewModel = hiltViewModel(),
 ) {
@@ -40,6 +41,7 @@ internal fun QuickPlayRoute(
 				.collect {
 					when (it) {
 						QuickPlayScreenEvent.Dismissed -> onDismiss()
+						QuickPlayScreenEvent.ShowHowToUseQuickPlay -> onShowQuickPlayOnboarding()
 						is QuickPlayScreenEvent.BeganRecording -> onBeginRecording(it.bowlers)
 						is QuickPlayScreenEvent.AddBowler -> onPickBowler(it.existingBowlers) { bowler ->
 							viewModel.handleAction(QuickPlayScreenUiAction.AddedBowler(bowler.firstOrNull()))

@@ -14,6 +14,7 @@ sealed class Route(
 ) {
 	// Sheets
 	data object QuickPlay: Route("quick_play", isBottomBarVisible = true)
+	data object QuickPlayOnboarding: Route("quick_play_onboarding", isBottomBarVisible = false)
 
 	// Accessories
 	data object AccessoriesOverview: Route("accessories_overview")

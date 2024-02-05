@@ -7,12 +7,14 @@ import ca.josephroque.bowlingcompanion.core.model.Series
 data class QuickPlayUiState(
 	val bowlers: List<Pair<BowlerSummary, LeagueSummary>> = emptyList(),
 	val numberOfGames: Int = Series.DefaultNumberOfGames,
+	val isShowingQuickPlayTip: Boolean = false,
 )
 
 sealed interface QuickPlayUiAction {
 	data object BackClicked: QuickPlayUiAction
 	data object StartClicked: QuickPlayUiAction
 	data object AddBowlerClicked: QuickPlayUiAction
+	data object TipClicked: QuickPlayUiAction
 
 	data class NumberOfGamesChanged(val numberOfGames: Int): QuickPlayUiAction
 	data class BowlerClicked(val bowler: BowlerSummary): QuickPlayUiAction

@@ -85,6 +85,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setIsLaneFormSwipeToEditTipDismissed(isDismissed = true)
 	}
 
+	override suspend fun didDismissQuickPlayTip() {
+		approachPreferencesDataSource.setIsQuickPlayTipDismissed(isDismissed = true)
+	}
+
 	override suspend fun setStatisticIDSeen(statistic: StatisticID) {
 		approachPreferencesDataSource.setStatisticsIdsSeen(statistic.name)
 	}
