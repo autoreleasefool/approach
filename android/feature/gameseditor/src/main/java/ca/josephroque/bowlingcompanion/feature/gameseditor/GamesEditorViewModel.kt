@@ -78,7 +78,7 @@ class GamesEditorViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<GamesEditorScreenEvent>() {
-	private val seriesId = Route.EditGame.getSeries(savedStateHandle)!!
+	private val seriesIds = Route.EditGame.getSeries(savedStateHandle)
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
 
 	private var initialGameLoaded = false
@@ -245,7 +245,8 @@ class GamesEditorViewModel @Inject constructor(
 
 		_seriesDetailsJob?.cancel()
 		_seriesDetailsJob = viewModelScope.launch {
-			gamesRepository.getGameIds(seriesId).collect { ids ->
+			// TODO: Use current series, not series.first()
+			gamesRepository.getGameIds(seriesIds.first()).collect { ids ->
 				_gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(seriesGameIds = ids)
 				}
@@ -374,7 +375,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGameSettings() {
-		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesId, _currentGameId.value))
+		// TODO: Use current series, not series.first()
+		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesIds.first(), _currentGameId.value))
 	}
 
 	private fun openGearPicker() {
@@ -425,7 +427,8 @@ class GamesEditorViewModel @Inject constructor(
 	private fun openSeriesStats() {
 		sendEvent(GamesEditorScreenEvent.ShowStatistics(
 			filter = TrackableFilter(
-				source = TrackableFilter.Source.Series(seriesId),
+				// TODO: Use current series, not series.first()
+				source = TrackableFilter.Source.Series(seriesIds.first()),
 			),
 		))
 	}
@@ -727,7 +730,8 @@ class GamesEditorViewModel @Inject constructor(
 		if (isGameLocked) return
 
 		viewModelScope.launch {
-			seriesRepository.setSeriesAlley(seriesId, alleyId)
+			// TODO: Use current series, not series.first()
+			seriesRepository.setSeriesAlley(seriesIds.first(), alleyId)
 		}
 	}
 

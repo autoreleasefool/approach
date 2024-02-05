@@ -6,25 +6,24 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorArguments
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 import java.util.UUID
 
-fun NavController.navigateToGamesEditor(seriesId: UUID, initialGameId: UUID, navOptions: NavOptions? = null) {
-	this.navigate(Route.EditGame.createRoute(seriesId, initialGameId), navOptions)
+fun NavController.navigateToGamesEditor(seriesIds: List<UUID>, initialGameId: UUID, navOptions: NavOptions? = null) {
+	this.navigate(Route.EditGame.createRoute(seriesIds, initialGameId), navOptions)
 }
 
 fun NavGraphBuilder.gamesEditorScreen(
 	onBackPressed: () -> Unit,
-	onEditMatchPlay: (UUID) -> Unit,
-	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
-	onEditRolledBall: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onShowStatistics: (TrackableFilter) -> Unit,
+	onEditMatchPlay: (GamesEditorArguments.EditMatchPlay) -> Unit,
+	onEditGear: (GamesEditorArguments.EditGear) -> Unit,
+	onEditRolledBall: (GamesEditorArguments.EditRolledBall) -> Unit,
+	onEditAlley: (GamesEditorArguments.EditAlley) -> Unit,
+	onEditLanes: (GamesEditorArguments.EditLanes) -> Unit,
+	onShowGamesSettings: (GamesEditorArguments.ShowGamesSettings) -> Unit,
+	onShowStatistics: (GamesEditorArguments.ShowStatistics) -> Unit,
 ) {
 	composable(
 		route = Route.EditGame.route,

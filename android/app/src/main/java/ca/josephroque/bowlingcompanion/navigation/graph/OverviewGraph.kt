@@ -120,7 +120,7 @@ fun NavGraphBuilder.overviewGraph(
 	seriesDetailsScreen(
 		onBackPressed = navController::popBackStack,
 		onEditGame = {
-			navController.navigateToGamesEditor(seriesId = it.seriesId, initialGameId = it.gameId)
+			navController.navigateToGamesEditor(seriesIds = listOf(it.seriesId), initialGameId = it.gameId)
 		},
 	)
 	avatarFormScreen(
@@ -131,41 +131,47 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	gamesEditorScreen(
 		onBackPressed = navController::popBackStack,
-		onEditMatchPlay = navController::navigateToMatchPlayEditor,
-		onEditGear = { gear, result ->
+		onEditMatchPlay = { args -> navController.navigateToMatchPlayEditor(args.gameId) },
+		onEditGear = { args ->
 			navController.navigateToResourcePickerForResult(
-				selectedIds = gear,
-				navResultCallback = result,
+				selectedIds = args.gearIds,
+				navResultCallback = args.onGearUpdated,
 				resourceType = ResourcePickerType.GEAR,
 			)
 		},
-		onEditAlley = { alley, result ->
+		onEditAlley = { args ->
 			navController.navigateToResourcePickerForResult(
-				selectedIds = alley?.let { setOf(it) } ?: emptySet(),
+				selectedIds = args.alleyId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				navResultCallback = args.onAlleyUpdated,
 				resourceType = ResourcePickerType.ALLEY,
 			)
 		},
-		onEditLanes = { alleyId, lanes, result ->
+		onEditLanes = { args ->
 			navController.navigateToResourcePickerForResult(
-				selectedIds = lanes,
-				navResultCallback = result,
+				selectedIds = args.laneIds,
+				navResultCallback = args.onLanesUpdated,
 				resourceType = ResourcePickerType.LANE,
-				filter = alleyId.toString(),
+				filter = args.alleyId.toString(),
 			)
 		},
-		onShowGamesSettings = navController::navigateToGamesSettingsForResult,
-		onEditRolledBall = { ball, result ->
+		onShowGamesSettings = { args ->
+			navController.navigateToGamesSettingsForResult(
+				seriesId =args.seriesId,
+				currentGameId = args.currentGameId,
+				navResultCallback = args.onGameUpdated
+			)
+		},
+		onEditRolledBall = { args ->
 			navController.navigateToResourcePickerForResult(
-				selectedIds = ball?.let { setOf(it) } ?: emptySet(),
+				selectedIds = args.ballId?.let { setOf(it) } ?: emptySet(),
 				limit = 1,
-				navResultCallback = result,
+				navResultCallback = args.onBallUpdated,
 				resourceType = ResourcePickerType.GEAR,
 				filter = GearKind.BOWLING_BALL.name,
 			)
 		},
-		onShowStatistics = navController::navigateToStatisticsDetails,
+		onShowStatistics = { args -> navController.navigateToStatisticsDetails(args.filter) },
 	)
 	gamesSettingsScreen(
 		onDismissWithResult = navController::popBackStackWithResult,

@@ -30,25 +30,22 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetails
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @Composable
 internal fun GamesEditorRoute(
 	onBackPressed: () -> Unit,
-	onEditMatchPlay: (UUID) -> Unit,
-	onEditGear: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditRolledBall: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditAlley: (UUID?, NavResultCallback<Set<UUID>>) -> Unit,
-	onEditLanes: (UUID, Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
-	onShowGamesSettings: (UUID, UUID, NavResultCallback<UUID>) -> Unit,
-	onShowStatistics: (TrackableFilter) -> Unit,
+	onEditMatchPlay: (GamesEditorArguments.EditMatchPlay) -> Unit,
+	onEditGear: (GamesEditorArguments.EditGear) -> Unit,
+	onEditRolledBall: (GamesEditorArguments.EditRolledBall) -> Unit,
+	onEditAlley: (GamesEditorArguments.EditAlley) -> Unit,
+	onEditLanes: (GamesEditorArguments.EditLanes) -> Unit,
+	onShowGamesSettings: (GamesEditorArguments.ShowGamesSettings) -> Unit,
+	onShowStatistics: (GamesEditorArguments.ShowStatistics) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -62,23 +59,30 @@ internal fun GamesEditorRoute(
 				.collect {
 					when (it) {
 						GamesEditorScreenEvent.Dismissed -> onBackPressed()
-						is GamesEditorScreenEvent.EditMatchPlay -> onEditMatchPlay(it.gameId)
-						is GamesEditorScreenEvent.EditGear -> onEditGear(it.gearIds) { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
-						}
-						is GamesEditorScreenEvent.EditAlley -> onEditAlley(it.alleyId) { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
-						}
-						is GamesEditorScreenEvent.EditLanes -> onEditLanes(it.alleyId, it.laneIds) { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
-						}
-						is GamesEditorScreenEvent.ShowGamesSettings -> onShowGamesSettings(it.seriesId, it.currentGameId) { gameId ->
-							viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(gameId))
-						}
-						is GamesEditorScreenEvent.EditRolledBall -> onEditRolledBall(it.ballId) { ids ->
-							viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
-						}
-						is GamesEditorScreenEvent.ShowStatistics -> onShowStatistics(it.filter)
+						is GamesEditorScreenEvent.EditMatchPlay ->
+							onEditMatchPlay(GamesEditorArguments.EditMatchPlay(it.gameId))
+						is GamesEditorScreenEvent.EditGear ->
+							onEditGear(GamesEditorArguments.EditGear(it.gearIds) { ids ->
+								viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
+							})
+						is GamesEditorScreenEvent.EditAlley ->
+							onEditAlley(GamesEditorArguments.EditAlley(it.alleyId) { ids ->
+								viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
+							})
+						is GamesEditorScreenEvent.EditLanes ->
+							onEditLanes(GamesEditorArguments.EditLanes(it.alleyId, it.laneIds) { ids ->
+								viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
+							})
+						is GamesEditorScreenEvent.ShowGamesSettings ->
+							onShowGamesSettings(GamesEditorArguments.ShowGamesSettings(it.seriesId, it.currentGameId) { gameId ->
+								viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(gameId))
+							})
+						is GamesEditorScreenEvent.EditRolledBall ->
+							onEditRolledBall(GamesEditorArguments.EditRolledBall(it.ballId) { ids ->
+								viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
+							})
+						is GamesEditorScreenEvent.ShowStatistics ->
+							onShowStatistics(GamesEditorArguments.ShowStatistics(it.filter))
 					}
 				}
 		}
