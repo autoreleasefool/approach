@@ -50,7 +50,10 @@ fun SeriesDetailsHeader(
 		) {
 			Column(
 				verticalArrangement = Arrangement.spacedBy(16.dp),
-				modifier = Modifier.alignBy(FirstBaseline),
+				modifier = Modifier
+					.alignBy(FirstBaseline)
+					.padding(end = 16.dp)
+					.weight(1f, fill = false),
 			) {
 				Text(
 					text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
@@ -146,7 +149,7 @@ private fun SeriesDetailsHeaderPreview() {
 			seriesTotal = 880,
 			seriesLow = 200,
 			seriesHigh = 280,
-			isShowingPlaceholder = false,
+			isShowingPlaceholder = true,
 			scores = ChartEntryModelProducer(listOf(
 				entryOf(0, 200),
 				entryOf(1, 240),
