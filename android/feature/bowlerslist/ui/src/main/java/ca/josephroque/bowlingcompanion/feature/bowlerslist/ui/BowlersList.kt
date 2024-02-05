@@ -102,7 +102,7 @@ fun LazyListScope.bowlersList(
 
 @Preview
 @Composable
-fun BowlersListPreview() {
+private fun BowlersListPreview() {
 	Surface {
 		BowlersList(
 			state = BowlersListUiState(

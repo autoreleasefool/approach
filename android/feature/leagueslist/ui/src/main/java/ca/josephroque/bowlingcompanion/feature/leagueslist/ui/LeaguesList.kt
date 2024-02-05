@@ -106,7 +106,7 @@ fun LazyListScope.leaguesList(
 
 @Preview
 @Composable
-fun LeaguesListPreview() {
+private fun LeaguesListPreview() {
 	Surface {
 		LeaguesList(
 			state = LeaguesListUiState(

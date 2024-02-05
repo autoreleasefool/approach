@@ -102,7 +102,7 @@ fun LazyListScope.opponentsList(
 
 @Preview
 @Composable
-fun OpponentsListPreview() {
+private fun OpponentsListPreview() {
 	Surface {
 		OpponentsList(
 			state = OpponentsListUiState(

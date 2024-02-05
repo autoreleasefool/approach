@@ -118,7 +118,7 @@ private fun ArchiveItemRow(
 }
 
 @Composable
-fun ArchiveListItem.icon(): Painter = when (this) {
+private fun ArchiveListItem.icon(): Painter = when (this) {
 	is ArchiveListItem.Bowler -> painterResource(RCoreDesign.drawable.ic_person)
 	is ArchiveListItem.League -> painterResource(RCoreDesign.drawable.ic_repeat)
 	is ArchiveListItem.Series -> painterResource(RCoreDesign.drawable.ic_event)
@@ -126,7 +126,7 @@ fun ArchiveListItem.icon(): Painter = when (this) {
 }
 
 @Composable
-fun ArchiveListItem.title(): String = when (this) {
+private fun ArchiveListItem.title(): String = when (this) {
 	is ArchiveListItem.Bowler -> name
 	is ArchiveListItem.League -> name
 	is ArchiveListItem.Series -> date.toString()
@@ -134,7 +134,7 @@ fun ArchiveListItem.title(): String = when (this) {
 }
 
 @Composable
-fun ArchiveListItem.subtitle(): String = when (this) {
+private fun ArchiveListItem.subtitle(): String = when (this) {
 	is ArchiveListItem.Bowler -> stringResource(
 		R.string.archive_list_bowler_description,
 		numberOfLeagues,

@@ -187,7 +187,7 @@ private fun OverwriteWarningCard() {
 }
 
 @Composable
-fun DataImportFilePicker(
+private fun DataImportFilePicker(
 	state: DataImportUiState,
 	onAction: (DataImportUiAction) -> Unit,
 ) {
@@ -205,7 +205,7 @@ fun DataImportFilePicker(
 }
 
 @Composable
-fun DataImportProgressCard(
+private fun DataImportProgressCard(
 	progress: DataImportProgress,
 	versionName: String,
 	versionCode: String,
