@@ -1,14 +1,20 @@
 package ca.josephroque.bowlingcompanion.feature.overview.quickplay
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.Series
+import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import java.util.UUID
 import javax.inject.Inject
 
@@ -28,6 +35,8 @@ import javax.inject.Inject
 class QuickPlayViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val leaguesRepository: LeaguesRepository,
+	private val seriesRepository: SeriesRepository,
+	private val gamesRepository: GamesRepository,
 	userDataRepository: UserDataRepository,
 ): ApproachViewModel<QuickPlayScreenEvent>() {
 
@@ -111,8 +120,38 @@ class QuickPlayViewModel @Inject constructor(
 
 	private fun startRecording() {
 		val bowlers = _bowlers.value.map { it.first.id to it.second.id }
+		val numberOfGames = _numberOfGames.value
 		if (bowlers.isEmpty()) return
-		sendEvent(QuickPlayScreenEvent.BeganRecording(bowlers))
+
+		val leagueIds = bowlers.map { it.second }
+		viewModelScope.launch {
+			var firstGameId: UUID? = null
+			val seriesIds = leagueIds.map {
+				val id = UUID.randomUUID()
+				seriesRepository.insertSeries(
+					SeriesCreate(
+						leagueId = it,
+						id = id,
+						date = Clock.System.now().toLocalDate(),
+						numberOfGames = numberOfGames,
+						preBowl = SeriesPreBowl.REGULAR,
+						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+						alleyId = null,
+					),
+				)
+
+				if (firstGameId == null) {
+					val games = gamesRepository.getGameIds(seriesId = id).first()
+					firstGameId = games.first()
+				}
+
+				return@map id
+			}
+
+			val initialGameId = firstGameId ?: return@launch
+			sendEvent(QuickPlayScreenEvent.BeganRecording(seriesIds, initialGameId))
+
+		}
 	}
 
 	private fun selectBowlerLeague(bowlerId: UUID?) {

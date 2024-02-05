@@ -24,7 +24,7 @@ import java.util.UUID
 @Composable
 internal fun QuickPlayRoute(
 	onDismiss: () -> Unit,
-	onBeginRecording: (List<Pair<UUID, UUID>>) -> Unit,
+	onBeginRecording: (List<UUID>, UUID) -> Unit,
 	onPickBowler: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
@@ -42,7 +42,7 @@ internal fun QuickPlayRoute(
 					when (it) {
 						QuickPlayScreenEvent.Dismissed -> onDismiss()
 						QuickPlayScreenEvent.ShowHowToUseQuickPlay -> onShowQuickPlayOnboarding()
-						is QuickPlayScreenEvent.BeganRecording -> onBeginRecording(it.bowlers)
+						is QuickPlayScreenEvent.BeganRecording -> onBeginRecording(it.seriesIds, it.initialGameId)
 						is QuickPlayScreenEvent.AddBowler -> onPickBowler(it.existingBowlers) { bowler ->
 							viewModel.handleAction(QuickPlayScreenUiAction.AddedBowler(bowler.firstOrNull()))
 						}

@@ -25,7 +25,7 @@ fun NavGraphBuilder.bottomSheetGraph(
 	)
 	quickPlay(
 		onBackPressed = navController::popBackStack,
-		onBeginRecording = { /* TODO: Start Recording */ },
+		onBeginRecording = { _, _ -> /* TODO: Start Recording */ },
 		onPickBowler = { excluded, result ->
 			navController.navigateToResourcePickerForResult(
 				selectedIds = emptySet(),

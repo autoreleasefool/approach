@@ -22,7 +22,7 @@ fun NavController.navigateToQuickPlayOnboarding(navOptions: NavOptions? = null) 
 @OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.quickPlay(
 	onBackPressed: () -> Unit,
-	onBeginRecording: (List<Pair<UUID, UUID>>) -> Unit,
+	onBeginRecording: (List<UUID>, UUID) -> Unit,
 	onPickBowler: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onPickLeague: (UUID, UUID?, NavResultCallback<Set<UUID>>) -> Unit,
 	onShowQuickPlayOnboarding: () -> Unit,
