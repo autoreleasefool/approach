@@ -35,6 +35,9 @@ class OfflineFirstBowlersRepository @Inject constructor(
 	override fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails> =
 		bowlerDao.getBowlerDetails(bowlerId)
 
+	override fun getSeriesBowlers(series: List<UUID>): Flow<List<BowlerSummary>> =
+		bowlerDao.getSeriesBowlers(series = series)
+
 	override fun getBowlersList(): Flow<List<BowlerListItem>> =
 		bowlerDao.getBowlersList()
 

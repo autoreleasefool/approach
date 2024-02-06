@@ -26,11 +26,14 @@ abstract class GameDao: LegacyMigratingDao<GameEntity> {
 				games.scoring_method AS scoringMethod,
 				games.exclude_from_statistics AS excludeFromStatistics,
 				games.duration AS duration,
+				series.id AS series_id,
 				series.`date` AS series_date,
 				series.pre_bowl AS series_preBowl,
 				series.exclude_from_statistics AS series_excludeFromStatistics,
+				leagues.id AS league_id,
 				leagues.name AS league_name,
 				leagues.exclude_from_statistics AS league_excludeFromStatistics,
+				bowlers.id AS bowler_id,
 				bowlers.name AS bowler_name
 			FROM games
 			JOIN series ON series.id = games.series_id

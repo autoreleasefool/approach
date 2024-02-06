@@ -61,17 +61,20 @@ data class GameEdit(
 	)
 
 	data class Series(
+		val id: UUID,
 		val date: LocalDate,
 		val preBowl: SeriesPreBowl,
 		val excludeFromStatistics: ExcludeFromStatistics,
 	)
 
 	data class League(
+		val id: UUID,
 		val name: String,
 		val excludeFromStatistics: ExcludeFromStatistics,
 	)
 
 	data class Bowler(
+		val id: UUID,
 		val name: String,
 	)
 }
