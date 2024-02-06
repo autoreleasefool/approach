@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.dp
 fun StatisticsOverview(
 	state: StatisticsOverviewUiState,
 	modifier: Modifier = Modifier,
+	contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -75,14 +78,18 @@ fun StatisticsOverview(
 				style = MaterialTheme.typography.bodyMedium,
 			)
 		}
+
+		Spacer(modifier = Modifier.padding(contentPadding))
 	}
 }
 
 @Composable
 fun ViewDetailedStatisticsFloatingActionButton(
 	onAction: (StatisticsOverviewUiAction) -> Unit,
+	modifier: Modifier = Modifier,
 ) {
 	ExtendedFloatingActionButton(
+		modifier = modifier,
 		text = {
 			Text(
 				text = stringResource(R.string.view_detailed_statistics),

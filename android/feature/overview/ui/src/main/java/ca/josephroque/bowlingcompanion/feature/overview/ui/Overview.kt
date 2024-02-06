@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.overview.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,10 +16,12 @@ fun Overview(
 	state: OverviewUiState,
 	onAction: (OverviewUiAction) -> Unit,
 	modifier: Modifier = Modifier,
+	contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
 	BowlersList(
 		state = state.bowlersList,
 		onAction = { onAction(OverviewUiAction.BowlersListAction(it)) },
+		contentPadding = contentPadding,
 		modifier = modifier,
 		header = {
 			state.widgets?.let { layout ->

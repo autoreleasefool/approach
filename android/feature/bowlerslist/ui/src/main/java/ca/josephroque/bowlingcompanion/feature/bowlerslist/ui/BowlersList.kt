@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerslist.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
@@ -27,6 +29,7 @@ fun BowlersList(
 	state: BowlersListUiState,
 	onAction: (BowlersListUiAction) -> Unit,
 	modifier: Modifier = Modifier,
+	contentPadding: PaddingValues = PaddingValues(0.dp),
 	header: (@Composable LazyItemScope.() -> Unit)? = null,
 ) {
 	state.bowlerToArchive?.let {
@@ -37,7 +40,10 @@ fun BowlersList(
 		)
 	}
 
-	LazyColumn(modifier = modifier) {
+	LazyColumn(
+		modifier = modifier,
+		contentPadding = contentPadding,
+	) {
 		if (state.list.isEmpty()) {
 			item {
 				DefaultEmptyState(

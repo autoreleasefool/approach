@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.laneform.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,6 +37,8 @@ import ca.josephroque.bowlingcompanion.feature.laneslist.ui.lanesList
 fun LaneForm(
 	state: LaneFormUiState,
 	onAction: (LaneFormUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+	contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
 	if (state.isShowingDiscardChangesDialog) {
 		DiscardChangesDialog(
@@ -59,7 +62,8 @@ fun LaneForm(
 	}
 
 	LazyColumn(
-		modifier = Modifier.imePadding(),
+		modifier = modifier.imePadding(),
+		contentPadding = contentPadding,
 	) {
 		footer(R.string.lane_form_description)
 
