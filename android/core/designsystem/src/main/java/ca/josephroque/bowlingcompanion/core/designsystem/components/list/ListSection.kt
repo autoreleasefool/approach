@@ -17,9 +17,16 @@ import androidx.compose.ui.unit.dp
 
 fun LazyListScope.header(
 	@StringRes titleResourceId: Int,
+	modifier: Modifier = Modifier,
 	action: HeaderAction? = null,
 ) {
-	item { ListSectionHeader(titleResourceId = titleResourceId, action = action) }
+	item {
+		ListSectionHeader(
+			titleResourceId = titleResourceId,
+			action = action,
+			modifier = modifier,
+		)
+	}
 }
 
 data class HeaderAction(
