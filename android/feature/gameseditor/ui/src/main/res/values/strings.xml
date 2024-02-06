@@ -22,6 +22,7 @@
 	<string name="game_editor_lanes">Lanes</string>
 	<string name="game_editor_lanes_description">Choose the lanes you\'re bowling on for more detailed statistics</string>
 
+	<string name="game_editor_score_set_manually">Score set manually</string>
 
 	<string name="game_editor_gear_title">Gear</string>
 	<string name="game_editor_gear_description">Choose any additional gear you\'re using this game</string>

@@ -17,12 +17,14 @@ data class GamesEditorUiState(
 	val frameEditor: FrameEditorUiState = FrameEditorUiState(),
 	val rollEditor: RollEditorUiState = RollEditorUiState(),
 	val scoreSheet: ScoreSheetUiState = ScoreSheetUiState(),
+	val manualScore: Int? = null,
 	val scoreEditor: ScoreEditorUiState? = null,
 )
 
 sealed interface GamesEditorUiAction {
 	data object BackClicked: GamesEditorUiAction
 	data object SettingsClicked: GamesEditorUiAction
+	data object ManualScoreClicked: GamesEditorUiAction
 
 	data class FrameEditor(val action: FrameEditorUiAction): GamesEditorUiAction
 	data class RollEditor(val action: RollEditorUiAction): GamesEditorUiAction

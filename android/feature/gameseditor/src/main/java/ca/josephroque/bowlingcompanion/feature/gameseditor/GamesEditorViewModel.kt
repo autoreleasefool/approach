@@ -151,6 +151,7 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			GamesEditorUiAction.BackClicked -> sendEvent(GamesEditorScreenEvent.Dismissed)
 			GamesEditorUiAction.SettingsClicked -> openGameSettings()
+			GamesEditorUiAction.ManualScoreClicked -> openScoreSettings()
 			is GamesEditorUiAction.FrameEditor -> handleFrameEditorAction(action.action)
 			is GamesEditorUiAction.RollEditor -> handleRollEditorAction(action.action)
 			is GamesEditorUiAction.ScoreSheet -> handleScoreSheetAction(action.action)
@@ -234,6 +235,10 @@ class GamesEditorViewModel @Inject constructor(
 
 				_gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
+						manualScore = when (gameDetails.properties.scoringMethod) {
+							GameScoringMethod.MANUAL -> gameDetails.properties.score
+							GameScoringMethod.BY_FRAME -> null
+						},
 						frameEditor = it.frameEditor.copy(
 							gameIndex = gameDetails.properties.index,
 							isEnabled = gameDetails.properties.locked != GameLockState.LOCKED,
@@ -700,15 +705,25 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismissScoreEditor(didSave: Boolean) {
-		val gamesEditorState = _gamesEditorState.getAndUpdateGamesEditor(_currentGameId.value) {
+		val gameId = _currentGameId.value
+		val gamesEditorState = _gamesEditorState.getAndUpdateGamesEditor(gameId) {
 			it.copy(scoreEditor = null)
 		}
 
 		val scoreEditor = gamesEditorState.scoreEditor ?: return
 		if (didSave && !isGameLocked) {
 			when (scoreEditor.scoringMethod) {
-				GameScoringMethod.MANUAL -> analyticsClient.trackEvent(GameManualScoreSet(eventId = _currentGameId.value))
+				GameScoringMethod.MANUAL -> analyticsClient.trackEvent(GameManualScoreSet(eventId = gameId))
 				GameScoringMethod.BY_FRAME -> Unit
+			}
+
+			_gamesEditorState.updateGamesEditor(gameId) {
+				it.copy(
+					manualScore = when (scoreEditor.scoringMethod) {
+						GameScoringMethod.MANUAL -> scoreEditor.score
+						GameScoringMethod.BY_FRAME -> null
+					},
+				)
 			}
 
 			viewModelScope.launch {

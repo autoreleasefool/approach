@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
@@ -25,7 +26,7 @@ fun NavGraphBuilder.bottomSheetGraph(
 	)
 	quickPlay(
 		onBackPressed = navController::popBackStack,
-		onBeginRecording = { _, _ -> /* TODO: Start Recording */ },
+		onBeginRecording = navController::navigateToGamesEditor,
 		onPickBowler = { excluded, result ->
 			navController.navigateToResourcePickerForResult(
 				selectedIds = emptySet(),
