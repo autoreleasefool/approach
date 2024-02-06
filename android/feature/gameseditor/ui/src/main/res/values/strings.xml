@@ -54,7 +54,9 @@
 	<string name="game_editor_exclude_from_statistics_league_excluded">All of this league\'s games have been excluded from statistics. You must toggle this setting for the league before this game can be counted towards any statistics</string>
 
 	<string name="game_settings_title">Game Settings</string>
-	<string name="game_settings_current_game">Current Game</string>
+	<string name="game_settings_games">Games</string>
+	<string name="game_settings_bowlers">Bowlers</string>
+	<string name="cd_game_settings_selected">Selected</string>
 
 	<string name="cd_settings">Settings</string>
 

@@ -1,9 +1,12 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import java.util.UUID
 
 data class GamesSettingsUiState(
+	val currentBowlerId: UUID,
+	val bowlers: List<BowlerSummary> = emptyList(),
 	val currentGameId: UUID,
 	val games: List<GameListItem> = emptyList(),
 )
@@ -11,5 +14,7 @@ data class GamesSettingsUiState(
 sealed interface GamesSettingsUiAction {
 	data object	BackClicked: GamesSettingsUiAction
 
-	data class GameClicked(val gameId: UUID): GamesSettingsUiAction
+	data class BowlerClicked(val bowler: BowlerSummary): GamesSettingsUiAction
+	data class BowlerMoved(val from: Int, val to: Int): GamesSettingsUiAction
+	data class GameClicked(val game: GameListItem): GamesSettingsUiAction
 }

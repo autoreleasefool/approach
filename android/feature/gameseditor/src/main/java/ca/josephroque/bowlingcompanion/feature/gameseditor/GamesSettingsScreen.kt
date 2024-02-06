@@ -22,7 +22,7 @@ import java.util.UUID
 
 @Composable
 internal fun GamesSettingsRoute(
-	onDismissWithResult: (UUID) -> Unit,
+	onDismissWithResult: (Pair<List<UUID>, UUID>) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesSettingsViewModel = hiltViewModel(),
 ) {
@@ -35,7 +35,7 @@ internal fun GamesSettingsRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is GamesSettingsScreenEvent.DismissedWithResult -> onDismissWithResult(it.gameId)
+						is GamesSettingsScreenEvent.DismissedWithResult -> onDismissWithResult(it.series to it.currentGame)
 					}
 				}
 		}

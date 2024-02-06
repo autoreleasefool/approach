@@ -164,10 +164,17 @@ class QuickPlayViewModel @Inject constructor(
 		_bowlers.update { it.filter { bowler -> bowler.first.id != bowlerId } }
 	}
 
-	private fun moveBowler(from: Int, to: Int) {
-		_bowlers.update {
-			if (from == to || from >= it.size || to >= it.size) return@update it
-			it.toMutableList().apply { add(to, removeAt(from)) }
+	private fun moveBowler(fromListIndex: Int, toListIndex: Int) {
+		viewModelScope.launch {
+			// Depends on number of `item` before bowlers in `QuickPlay#LazyColumn`
+			val listOffset: Int = if (_didDismissQuickPlayTip.first()) 0 else -1
+
+			val from = fromListIndex + listOffset
+			val to = toListIndex + listOffset
+			_bowlers.update {
+				if (from == to || from >= it.size || to >= it.size) return@update it
+				it.toMutableList().apply { add(to, removeAt(from)) }
+			}
 		}
 	}
 

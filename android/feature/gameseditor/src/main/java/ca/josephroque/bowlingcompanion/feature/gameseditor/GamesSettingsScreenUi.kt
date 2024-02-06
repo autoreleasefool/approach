@@ -18,6 +18,7 @@ sealed interface GamesSettingsScreenUiAction {
 
 sealed interface GamesSettingsScreenEvent {
 	data class DismissedWithResult(
-		val gameId: UUID,
+		val series: List<UUID>,
+		val currentGame: UUID,
 	): GamesSettingsScreenEvent
 }

@@ -13,20 +13,20 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesSettingsRoute
 import java.util.UUID
 
 fun NavController.navigateToGamesSettingsForResult(
-	seriesId: UUID,
+	series: List<UUID>,
 	currentGameId: UUID,
-	navResultCallback: NavResultCallback<UUID>,
+	navResultCallback: NavResultCallback<Pair<List<UUID>, UUID>>,
 	navOptions: NavOptions? = null,
 ) {
 	this.navigateForResult(
-		route = Route.GameSettings.createRoute(seriesId, currentGameId),
+		route = Route.GameSettings.createRoute(series, currentGameId),
 		navResultCallback = navResultCallback,
 		navOptions = navOptions,
 	)
 }
 
 fun NavGraphBuilder.gamesSettingsScreen(
-	onDismissWithResult: (UUID) -> Unit,
+	onDismissWithResult: (Pair<List<UUID>, UUID>) -> Unit,
 ) {
 	composable(
 		route = Route.GameSettings.route,

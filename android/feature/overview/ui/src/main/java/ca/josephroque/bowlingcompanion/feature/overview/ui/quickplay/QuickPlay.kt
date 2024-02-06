@@ -72,6 +72,8 @@ fun QuickPlay(
 			}
 		}
 
+		// If number of items before reorderable list changes,
+		// QuickPlayViewModel#moveBowler must be updated
 		items(
 			state.bowlers,
 			key = { it.first.id },
@@ -88,12 +90,10 @@ fun QuickPlay(
 			) { _ ->
 				SwipeableActionsBox(
 					startActions = listOfNotNull(deleteAction),
-					modifier = Modifier,
 				) {
 					QuickPlayBowler(
 						bowler = bowler,
 						onAction = onAction,
-						modifier = Modifier
 					)
 				}
 			}

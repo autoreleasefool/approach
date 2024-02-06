@@ -126,6 +126,7 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorScreenUiAction.GearUpdated -> updateGear(action.gearIds)
 			is GamesEditorScreenUiAction.AlleyUpdated -> updateAlley(action.alleyId)
 			is GamesEditorScreenUiAction.LanesUpdated -> updateLanes(action.laneIds)
+			is GamesEditorScreenUiAction.SeriesUpdated -> updateSeries(action.series)
 			is GamesEditorScreenUiAction.CurrentGameUpdated -> loadGameIfChanged(action.gameId)
 			is GamesEditorScreenUiAction.SelectedBallUpdated -> updateSelectedBall(id = action.ballId)
 		}
@@ -188,6 +189,10 @@ class GamesEditorViewModel @Inject constructor(
 			is ScoreEditorUiAction.ScoreChanged -> updateScoreEditorScore(score = action.score)
 			is ScoreEditorUiAction.ScoringMethodChanged -> updateScoreEditorScoringMethod(score = action.scoringMethod)
 		}
+	}
+
+	private fun updateSeries(series: List<UUID>) {
+		TODO("Update series")
 	}
 
 	private fun loadGameIfChanged(gameId: UUID) {
@@ -381,7 +386,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun openGameSettings() {
 		// TODO: Use current series, not series.first()
-		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesIds.first(), _currentGameId.value))
+		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesIds, _currentGameId.value))
 	}
 
 	private fun openGearPicker() {

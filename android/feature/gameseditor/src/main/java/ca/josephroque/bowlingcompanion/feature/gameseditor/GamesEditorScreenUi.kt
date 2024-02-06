@@ -33,9 +33,9 @@ object GamesEditorArguments {
 	)
 
 	data class ShowGamesSettings(
-		val seriesId: UUID,
+		val series: List<UUID>,
 		val currentGameId: UUID,
-		val onGameUpdated: NavResultCallback<UUID>,
+		val onSeriesUpdated: NavResultCallback<Pair<List<UUID>, UUID>>,
 	)
 
 	data class ShowStatistics(val filter: TrackableFilter)
@@ -61,6 +61,7 @@ sealed interface GamesEditorScreenUiAction {
 	data class LanesUpdated(val laneIds: Set<UUID>): GamesEditorScreenUiAction
 	data class GamesEditor(val action: GamesEditorUiAction): GamesEditorScreenUiAction
 	data class GameDetails(val action: GameDetailsUiAction): GamesEditorScreenUiAction
+	data class SeriesUpdated(val series: List<UUID>): GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: UUID): GamesEditorScreenUiAction
 	data class SelectedBallUpdated(val ballId: UUID?): GamesEditorScreenUiAction
 }
@@ -73,6 +74,6 @@ sealed interface GamesEditorScreenEvent {
 	data class EditAlley(val alleyId: UUID?): GamesEditorScreenEvent
 	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>): GamesEditorScreenEvent
 	data class EditRolledBall(val ballId: UUID?): GamesEditorScreenEvent
-	data class ShowGamesSettings(val seriesId: UUID, val currentGameId: UUID): GamesEditorScreenEvent
+	data class ShowGamesSettings(val series: List<UUID>, val currentGameId: UUID): GamesEditorScreenEvent
 	data class ShowStatistics(val filter: TrackableFilter): GamesEditorScreenEvent
 }

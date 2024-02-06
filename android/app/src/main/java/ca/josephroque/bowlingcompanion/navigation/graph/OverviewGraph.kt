@@ -157,9 +157,9 @@ fun NavGraphBuilder.overviewGraph(
 		},
 		onShowGamesSettings = { args ->
 			navController.navigateToGamesSettingsForResult(
-				seriesId =args.seriesId,
+				series = args.series,
 				currentGameId = args.currentGameId,
-				navResultCallback = args.onGameUpdated
+				navResultCallback = args.onSeriesUpdated,
 			)
 		},
 		onEditRolledBall = { args ->

@@ -74,8 +74,9 @@ internal fun GamesEditorRoute(
 								viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
 							})
 						is GamesEditorScreenEvent.ShowGamesSettings ->
-							onShowGamesSettings(GamesEditorArguments.ShowGamesSettings(it.seriesId, it.currentGameId) { gameId ->
-								viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(gameId))
+							onShowGamesSettings(GamesEditorArguments.ShowGamesSettings(it.series, it.currentGameId) { seriesAndGame ->
+								viewModel.handleAction(GamesEditorScreenUiAction.SeriesUpdated(seriesAndGame.first))
+								viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(seriesAndGame.second))
 							})
 						is GamesEditorScreenEvent.EditRolledBall ->
 							onEditRolledBall(GamesEditorArguments.EditRolledBall(it.ballId) { ids ->
