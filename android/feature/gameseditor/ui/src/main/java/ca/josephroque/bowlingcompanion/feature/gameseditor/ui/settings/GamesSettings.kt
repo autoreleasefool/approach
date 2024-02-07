@@ -126,7 +126,7 @@ private fun Bowler(
 			.background(MaterialTheme.colorScheme.surface)
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(GamesSettingsUiAction.BowlerClicked(bowler)) })
-			.padding(horizontal = 16.dp, vertical = 8.dp),
+			.padding(16.dp),
 	) {
 		if (isSelected) {
 			Icon(
@@ -173,7 +173,7 @@ private fun Game(
 			verticalAlignment = Alignment.CenterVertically,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(horizontal = 16.dp, vertical = 8.dp),
+				.padding(16.dp),
 		) {
 			RadioButton(
 				selected = isSelected,
