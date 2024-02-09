@@ -30,44 +30,43 @@ fun ApproachNavHost(
 		mutableStateOf(!isOnboardingComplete)
 	}
 
-
-		NavHost(
-			navController = navController,
-			startDestination = startDestination,
-			modifier = modifier,
+	NavHost(
+		navController = navController,
+		startDestination = startDestination,
+		modifier = modifier,
+	) {
+		navigation(
+			route = TopLevelDestination.APP_OVERVIEW.graphName,
+			startDestination = Route.Overview.route,
 		) {
-			navigation(
-				route = TopLevelDestination.APP_OVERVIEW.graphName,
-				startDestination = Route.Overview.route,
-			) {
-				overviewGraph(
-					navController = navController,
-					shouldShowOnboarding = shouldShowOnboarding,
-					finishActivity = finishActivity,
-				)
-			}
+			overviewGraph(
+				navController = navController,
+				shouldShowOnboarding = shouldShowOnboarding,
+				finishActivity = finishActivity,
+			)
+		}
 
-			navigation(
-				route = TopLevelDestination.STATISTICS_OVERVIEW.graphName,
-				startDestination = Route.StatisticsOverview.route,
-			) {
-				statisticsGraph(navController = navController)
-			}
+		navigation(
+			route = TopLevelDestination.STATISTICS_OVERVIEW.graphName,
+			startDestination = Route.StatisticsOverview.route,
+		) {
+			statisticsGraph(navController = navController)
+		}
 
-			navigation(
-				route = TopLevelDestination.ACCESSORIES_OVERVIEW.graphName,
-				startDestination = Route.AccessoriesOverview.route,
-			) {
-				accessoriesGraph(navController = navController)
-			}
+		navigation(
+			route = TopLevelDestination.ACCESSORIES_OVERVIEW.graphName,
+			startDestination = Route.AccessoriesOverview.route,
+		) {
+			accessoriesGraph(navController = navController)
+		}
 
-			navigation(
-				route = TopLevelDestination.SETTINGS_OVERVIEW.graphName,
-				startDestination = Route.Settings.route,
-			) {
-				settingsGraph(navController = navController)
-			}
+		navigation(
+			route = TopLevelDestination.SETTINGS_OVERVIEW.graphName,
+			startDestination = Route.Settings.route,
+		) {
+			settingsGraph(navController = navController)
+		}
 
-			bottomSheetGraph(navController = navController)
+		bottomSheetGraph(navController = navController)
 	}
 }
