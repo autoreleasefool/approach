@@ -11,12 +11,16 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -52,6 +56,15 @@ internal fun GamesEditorRoute(
 	val gamesEditorScreenState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	val lifecycleOwner = LocalLifecycleOwner.current
+	val lifecycle = lifecycleOwner.lifecycle
+
+	DisposableEffect(lifecycle) {
+		lifecycle.addObserver(viewModel)
+		onDispose {
+			lifecycle.removeObserver(viewModel)
+		}
+	}
+
 	LaunchedEffect(Unit) {
 		lifecycleOwner.lifecycleScope.launch {
 			viewModel.events
@@ -103,11 +116,28 @@ internal fun GamesEditorScreen(
 	onAction: (GamesEditorScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val scaffoldState = rememberBottomSheetScaffoldState()
+	val bottomSheetState = rememberStandardBottomSheetState(skipHiddenState = false)
+	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 	val handleHeight = remember { mutableFloatStateOf(56f) }
 
 	LaunchedEffect(Unit) {
-		onAction(GamesEditorScreenUiAction.LoadInitialGame)
+		onAction(GamesEditorScreenUiAction.DidAppear)
+	}
+
+	var hasExpandedSheet by remember { mutableStateOf(true) }
+	LaunchedEffect(state) {
+		when (state) {
+			GamesEditorScreenUiState.Loading -> Unit
+			is GamesEditorScreenUiState.Loaded -> {
+				if (state.isGameDetailsSheetVisible == hasExpandedSheet) return@LaunchedEffect
+				hasExpandedSheet = state.isGameDetailsSheetVisible
+				if (state.isGameDetailsSheetVisible) {
+					scaffoldState.bottomSheetState.partialExpand()
+				} else {
+					scaffoldState.bottomSheetState.hide()
+				}
+			}
+		}
 	}
 
 	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)

@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
@@ -88,5 +89,8 @@ fun NavGraphBuilder.bottomSheetGraph(
 			)
 		},
 		onShowStatistics = navController::navigateToStatisticsDetails,
+	)
+	gamesSettingsScreen(
+		onDismissWithResult = navController::popBackStackWithResult,
 	)
 }

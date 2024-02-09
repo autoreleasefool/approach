@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
@@ -77,13 +79,15 @@ class GamesEditorViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<GamesEditorScreenEvent>() {
+): ApproachViewModel<GamesEditorScreenEvent>(), DefaultLifecycleObserver {
 	private val seriesIds = Route.EditGame.getSeries(savedStateHandle)
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
 
 	private var initialGameLoaded = false
 	private val _currentGameId = MutableStateFlow(initialGameId)
 	private val _headerPeekHeight = MutableStateFlow(0f)
+
+	private val _isGameDetailsSheetVisible = MutableStateFlow(true)
 	private val _isGameLockSnackBarVisible = MutableStateFlow(false)
 
 	private var _ballsJob: Job? = null
@@ -104,12 +108,14 @@ class GamesEditorViewModel @Inject constructor(
 		_gameDetailsState,
 		_headerPeekHeight,
 		_isGameLockSnackBarVisible,
-	) { gamesEditor, gameDetails, headerPeekHeight, isGameLockSnackBarVisible ->
+		_isGameDetailsSheetVisible,
+	) { gamesEditor, gameDetails, headerPeekHeight, isGameLockSnackBarVisible, isGameDetailsSheetVisible ->
 		GamesEditorScreenUiState.Loaded(
 			gamesEditor = gamesEditor,
 			gameDetails = gameDetails,
 			headerPeekHeight = headerPeekHeight,
-			isGameLockSnackBarVisible = isGameLockSnackBarVisible
+			isGameLockSnackBarVisible = isGameLockSnackBarVisible,
+			isGameDetailsSheetVisible = isGameDetailsSheetVisible,
 		)
 	}.stateIn(
 		viewModelScope,
@@ -117,9 +123,13 @@ class GamesEditorViewModel @Inject constructor(
 		GamesEditorScreenUiState.Loading,
 	)
 
+	override fun onResume(owner: LifecycleOwner) {
+		_isGameDetailsSheetVisible.value = true
+	}
+
 	fun handleAction(action: GamesEditorScreenUiAction) {
 		when (action) {
-			GamesEditorScreenUiAction.LoadInitialGame -> loadInitialGame()
+			GamesEditorScreenUiAction.DidAppear -> loadInitialGame()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
@@ -141,6 +151,7 @@ class GamesEditorViewModel @Inject constructor(
 			GameDetailsUiAction.ViewSeriesStatsClicked -> openSeriesStats()
 			GameDetailsUiAction.ManageLanesClicked -> openLanesPicker()
 			GameDetailsUiAction.ManageAlleyClicked -> openAlleyPicker()
+			GameDetailsUiAction.ViewAllBowlersClicked -> openAllBowlersScores()
 			is GameDetailsUiAction.LockToggled -> toggleGameLocked(action.locked)
 			is GameDetailsUiAction.ExcludeFromStatisticsToggled -> toggleGameExcludedFromStatistics(action.excludeFromStatistics)
 			is GameDetailsUiAction.NextGameElementClicked -> goToNext(action.nextGameElement)
@@ -192,7 +203,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun updateSeries(series: List<UUID>) {
-		TODO("Update series")
+//		TODO("Update series")
 	}
 
 	private fun loadGameIfChanged(gameId: UUID) {
@@ -223,6 +234,7 @@ class GamesEditorViewModel @Inject constructor(
 						header = it.header.copy(
 							bowlerName = gameDetails.bowler.name,
 							leagueName = gameDetails.league.name,
+							hasMultipleBowlers = seriesIds.size > 1,
 						),
 						scoringMethod = it.scoringMethod.copy(
 							score = gameDetails.properties.score,
@@ -385,7 +397,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGameSettings() {
-		// TODO: Use current series, not series.first()
+		_isGameDetailsSheetVisible.value = false
 		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesIds, _currentGameId.value))
 	}
 
@@ -449,6 +461,10 @@ class GamesEditorViewModel @Inject constructor(
 				source = TrackableFilter.Source.Game(_currentGameId.value),
 			),
 		))
+	}
+
+	private fun openAllBowlersScores() {
+		TODO("Open all bowlers scores")
 	}
 
 	private fun openBallRolledPicker() {

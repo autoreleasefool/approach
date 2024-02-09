@@ -39,6 +39,7 @@ data class GameDetailsUiState(
 		val bowlerName: String = "",
 		val leagueName: String = "",
 		val nextElement: NextGameEditableElement? = null,
+		val hasMultipleBowlers: Boolean = false,
 	)
 
 	data class AlleyCardUiState(
@@ -70,6 +71,7 @@ sealed interface GameDetailsUiAction {
 	data object ManageScoreClicked: GameDetailsUiAction
 	data object ViewGameStatsClicked: GameDetailsUiAction
 	data object ViewSeriesStatsClicked: GameDetailsUiAction
+	data object ViewAllBowlersClicked: GameDetailsUiAction
 
 	data class LockToggled(val locked: Boolean): GameDetailsUiAction
 	data class ExcludeFromStatisticsToggled(val excludeFromStatistics: Boolean): GameDetailsUiAction

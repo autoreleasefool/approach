@@ -10,6 +10,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesSettingsRoute
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
 
 fun NavController.navigateToGamesSettingsForResult(
@@ -25,10 +27,11 @@ fun NavController.navigateToGamesSettingsForResult(
 	)
 }
 
+@OptIn(ExperimentalMaterialNavigationApi::class)
 fun NavGraphBuilder.gamesSettingsScreen(
 	onDismissWithResult: (Pair<List<UUID>, UUID>) -> Unit,
 ) {
-	composable(
+	bottomSheet(
 		route = Route.GameSettings.route,
 		arguments = listOf(
 			navArgument(Route.GameSettings.ARG_SERIES) { type = NavType.StringType },

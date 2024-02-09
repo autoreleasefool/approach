@@ -11,6 +11,8 @@
 	<string name="game_editor_game_ordinal">Game %1$d</string>
 	<string name="game_editor_next_game">Next Game</string>
 
+	<string name="game_editor_view_all_bowlers">View scores for all bowlers</string>
+
 	<string name="game_editor_view_stats">View stats</string>
 	<string name="game_editor_view_stats_series">Series</string>
 	<string name="game_editor_view_stats_game">Game %1$d</string>
