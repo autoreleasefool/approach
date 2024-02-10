@@ -8,7 +8,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.Statis
 data class OverviewUiState(
 	val widgets: StatisticsWidgetLayoutUiState?,
 	val bowlersList: BowlersListUiState,
-	val isQuickPlayEnabled: Boolean = false,
 )
 
 sealed interface OverviewUiAction {

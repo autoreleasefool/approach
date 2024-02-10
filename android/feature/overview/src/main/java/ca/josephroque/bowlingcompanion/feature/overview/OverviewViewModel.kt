@@ -38,7 +38,6 @@ class OverviewViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<OverviewScreenEvent>() {
 	private val _bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
-	private val _quickPlayEnabled = MutableStateFlow(false)
 
 	private val _bowlersListState: Flow<BowlersListUiState> =
 		combine(
@@ -61,13 +60,11 @@ class OverviewViewModel @Inject constructor(
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		_bowlersListState,
 		_widgets,
-		_quickPlayEnabled,
-	) { bowlersList, widgets, quickPlayEnabled ->
+	) { bowlersList, widgets ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
 				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
-				isQuickPlayEnabled = quickPlayEnabled,
 			)
 		)
 	}.stateIn(
@@ -78,7 +75,7 @@ class OverviewViewModel @Inject constructor(
 
 	fun handleAction(action: OverviewScreenUiAction) {
 		when (action) {
-			OverviewScreenUiAction.DidAppear -> loadQuickPlay()
+			OverviewScreenUiAction.DidAppear -> Unit
 			is OverviewScreenUiAction.OverviewAction -> handleOverviewAction(action.action)
 		}
 	}
@@ -108,14 +105,6 @@ class OverviewViewModel @Inject constructor(
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(OverviewScreenEvent.ShowStatistics(action.widget.id))
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
-		}
-	}
-
-	private fun loadQuickPlay() {
-		viewModelScope.launch {
-			bowlersRepository.getDefaultQuickPlay()?.let {
-				_quickPlayEnabled.value = true
-			}
 		}
 	}
 

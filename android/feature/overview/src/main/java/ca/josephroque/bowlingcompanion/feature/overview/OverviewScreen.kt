@@ -89,12 +89,10 @@ private fun OverviewScreen(
 			)
 		},
 		floatingActionButton = {
-			if (state is OverviewScreenUiState.Loaded && state.overview.isQuickPlayEnabled) {
-				OverviewFloatingActionButton(
-					modifier = Modifier.onGloballyPositioned { fabHeight = it.size.height },
-					onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
-				)
-			}
+			OverviewFloatingActionButton(
+				modifier = Modifier.onGloballyPositioned { fabHeight = it.size.height },
+				onAction = { onAction(OverviewScreenUiAction.OverviewAction(it)) },
+			)
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
