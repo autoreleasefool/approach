@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameUpdated
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.FramesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -58,7 +59,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -69,6 +73,7 @@ import javax.inject.Inject
 @HiltViewModel
 class GamesEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
+	private val bowlersRepository: BowlersRepository,
 	private val framesRepository: FramesRepository,
 	private val gamesRepository: GamesRepository,
 	private val gearRepository: GearRepository,
@@ -80,8 +85,11 @@ class GamesEditorViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val analyticsClient: AnalyticsClient,
 ): ApproachViewModel<GamesEditorScreenEvent>(), DefaultLifecycleObserver {
-	private val seriesIds = Route.EditGame.getSeries(savedStateHandle)
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
+
+	private val _series = MutableStateFlow(Route.EditGame.getSeries(savedStateHandle))
+	private val _bowlers = _series.flatMapLatest { bowlersRepository.getSeriesBowlers(it) }
+	private val _currentBowlerId = MutableStateFlow<UUID?>(null)
 
 	private var initialGameLoaded = false
 	private val _currentGameId = MutableStateFlow(initialGameId)
@@ -100,6 +108,7 @@ class GamesEditorViewModel @Inject constructor(
 	private var _gearJob: Job? = null
 	private var _matchPlayJob: Job? = null
 	private var _seriesDetailsJob: Job? = null
+	private var _bowlerDetailsJob: Job? = null
 	private var _gameDetailsJob: Job? = null
 	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState(gameId = initialGameId))
 
@@ -203,7 +212,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun updateSeries(series: List<UUID>) {
-//		TODO("Update series")
+		_series.update { series }
 	}
 
 	private fun loadGameIfChanged(gameId: UUID) {
@@ -217,6 +226,18 @@ class GamesEditorViewModel @Inject constructor(
 		loadGame(initialGameId)
 	}
 
+	private fun loadBowlerGame(bowlerId: UUID, gameIndex: Int? = null) {
+		viewModelScope.launch {
+			val gameIndexToLoad = gameIndex ?: _gameDetailsState.value.currentGameIndex
+			val bowlerSeriesId = getBowlerSeriesId(bowlerId)
+			val seriesGames = gamesRepository.getGamesList(bowlerSeriesId).first()
+			val gameToLoad = seriesGames[gameIndexToLoad].id
+
+			_currentBowlerId.update { bowlerId }
+			loadGame(gameToLoad)
+		}
+	}
+
 	private fun loadGame(gameId: UUID) {
 		val gameToLoad = _currentGameId.updateAndGet { gameId }
 		_gameDetailsState.update { it.copy(gameId = gameToLoad) }
@@ -227,6 +248,8 @@ class GamesEditorViewModel @Inject constructor(
 		_gameDetailsJob?.cancel()
 		_gameDetailsJob = viewModelScope.launch {
 			gamesRepository.getGameDetails(gameToLoad).collect { gameDetails ->
+				_currentBowlerId.update { gameDetails.bowler.id }
+
 				_gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						gameId = gameDetails.properties.id,
@@ -234,7 +257,7 @@ class GamesEditorViewModel @Inject constructor(
 						header = it.header.copy(
 							bowlerName = gameDetails.bowler.name,
 							leagueName = gameDetails.league.name,
-							hasMultipleBowlers = seriesIds.size > 1,
+							hasMultipleBowlers = _series.value.size > 1,
 						),
 						scoringMethod = it.scoringMethod.copy(
 							score = gameDetails.properties.score,
@@ -267,10 +290,25 @@ class GamesEditorViewModel @Inject constructor(
 
 		_seriesDetailsJob?.cancel()
 		_seriesDetailsJob = viewModelScope.launch {
-			// TODO: Use current series, not series.first()
-			gamesRepository.getGameIds(seriesIds.first()).collect { ids ->
+			val seriesId = currentSeriesId()
+			gamesRepository.getGameIds(seriesId).collect { ids ->
 				_gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(seriesGameIds = ids)
+				}
+			}
+		}
+
+		_bowlerDetailsJob?.cancel()
+		_bowlerDetailsJob = viewModelScope.launch {
+			combine(_currentBowlerId.filterNotNull(), _bowlers) { currentBowlerId, bowlers ->
+				Pair(currentBowlerId, bowlers)
+			}.collect { currentBowlers ->
+				val (currentBowlerId, bowlers) = currentBowlers
+				_gameDetailsState.updateGameDetails(gameToLoad) {
+					it.copy(
+						currentBowlerIndex = bowlers.indexOfFirst { bowler -> bowler.id == currentBowlerId },
+						bowlers = bowlers,
+					)
 				}
 			}
 		}
@@ -398,7 +436,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun openGameSettings() {
 		_isGameDetailsSheetVisible.value = false
-		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(seriesIds, _currentGameId.value))
+		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(_series.value, _currentGameId.value))
 	}
 
 	private fun openGearPicker() {
@@ -447,12 +485,13 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openSeriesStats() {
-		sendEvent(GamesEditorScreenEvent.ShowStatistics(
-			filter = TrackableFilter(
-				// TODO: Use current series, not series.first()
-				source = TrackableFilter.Source.Series(seriesIds.first()),
-			),
-		))
+		viewModelScope.launch {
+			sendEvent(GamesEditorScreenEvent.ShowStatistics(
+				filter = TrackableFilter(
+					source = TrackableFilter.Source.Series(currentSeriesId()),
+				),
+			))
+		}
 	}
 
 	private fun openGameStats() {
@@ -466,7 +505,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun openAllBowlersScores() {
 		_isGameDetailsSheetVisible.value = false
 		val gameIndex = _gameDetailsState.value.currentGameIndex
-		sendEvent(GamesEditorScreenEvent.ShowBowlerScores(seriesIds, gameIndex))
+		sendEvent(GamesEditorScreenEvent.ShowBowlerScores(_series.value, gameIndex))
 	}
 
 	private fun openBallRolledPicker() {
@@ -564,6 +603,11 @@ class GamesEditorViewModel @Inject constructor(
 				toggleGameLocked(isLocked = true)
 				loadGame(next.game)
 			}
+			is NextGameEditableElement.BowlerGame -> {
+				toggleGameLocked(isLocked = true)
+				loadBowlerGame(next.bowler, next.gameIndex)
+			}
+			is NextGameEditableElement.Bowler -> loadBowlerGame(next.bowler)
 		}
 	}
 
@@ -768,8 +812,7 @@ class GamesEditorViewModel @Inject constructor(
 		if (isGameLocked) return
 
 		viewModelScope.launch {
-			// TODO: Use current series, not series.first()
-			seriesRepository.setSeriesAlley(seriesIds.first(), alleyId)
+			seriesRepository.setSeriesAlley(currentSeriesId(), alleyId)
 		}
 	}
 
@@ -810,4 +853,19 @@ class GamesEditorViewModel @Inject constructor(
 	private fun notifyGameLocked() {
 		_isGameLockSnackBarVisible.value = true
 	}
+
+	private suspend fun currentSeriesId(): UUID =
+		_currentBowlerId
+			.filterNotNull()
+			.map { getBowlerSeriesId(it) }
+			.first()
+
+	private suspend fun getBowlerSeriesId(bowlerId: UUID): UUID =
+		_bowlers.map { bowlers ->
+			val bowlerIndex = bowlers.indexOfFirst { it.id == bowlerId }
+			if (bowlerIndex == -1) return@map null
+			_series.value[bowlerIndex]
+		}
+			.filterNotNull()
+			.first()
 }

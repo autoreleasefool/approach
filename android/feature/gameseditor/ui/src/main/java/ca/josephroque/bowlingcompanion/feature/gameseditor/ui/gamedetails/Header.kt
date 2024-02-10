@@ -104,6 +104,8 @@ private fun NextButton(
 							is NextGameEditableElement.Roll -> stringResource(R.string.game_editor_next_roll)
 							is NextGameEditableElement.Frame -> stringResource(R.string.game_editor_next_frame)
 							is NextGameEditableElement.Game -> stringResource(R.string.game_editor_next_game)
+							is NextGameEditableElement.BowlerGame -> stringResource(R.string.game_editor_next_game)
+							is NextGameEditableElement.Bowler -> stringResource(R.string.game_editor_next_bowler)
 							null -> ""
 						},
 						style = MaterialTheme.typography.bodySmall,
@@ -114,18 +116,25 @@ private fun NextButton(
 						text = when (next) {
 							is NextGameEditableElement.Roll -> stringResource(
 								R.string.game_editor_ball_ordinal,
-								next.rollIndex + 1
+								next.rollIndex + 1,
 							)
 
 							is NextGameEditableElement.Frame -> stringResource(
 								R.string.game_editor_frame_ordinal,
-								next.frameIndex + 1
+								next.frameIndex + 1,
 							)
 
 							is NextGameEditableElement.Game -> stringResource(
 								R.string.game_editor_game_ordinal,
-								next.gameIndex + 1
+								next.gameIndex + 1,
 							)
+
+							is NextGameEditableElement.BowlerGame -> stringResource(
+								R.string.game_editor_game_ordinal,
+								next.gameIndex + 1,
+							)
+
+							is NextGameEditableElement.Bowler -> next.name
 
 							null -> ""
 						},

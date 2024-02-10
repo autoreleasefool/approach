@@ -111,7 +111,7 @@ extension GamesEditor.State {
 					}
 				} else {
 					// If it's not the last frame, we should show the next bowler
-					// When the next bowler's game is loaded, we'll automatically set the correct frame
+					// When the next bowler's game is loaded, we'll load the correct frame at that time
 					_nextHeaderElement = .bowler(name: bowlers![id: nextBowlerId]!.name, id: nextBowlerId)
 				}
 			}

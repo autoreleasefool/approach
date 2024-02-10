@@ -10,6 +10,7 @@
 	<string name="game_editor_next_frame">Next Frame</string>
 	<string name="game_editor_game_ordinal">Game %1$d</string>
 	<string name="game_editor_next_game">Next Game</string>
+	<string name="game_editor_next_bowler">Next Bowler</string>
 
 	<string name="game_editor_view_all_bowlers">View scores for all bowlers</string>
 

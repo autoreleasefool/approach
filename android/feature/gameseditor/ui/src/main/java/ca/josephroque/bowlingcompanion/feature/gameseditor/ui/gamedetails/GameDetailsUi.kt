@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails
 
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
@@ -14,11 +15,15 @@ sealed interface NextGameEditableElement {
 	data class Roll(val rollIndex: Int): NextGameEditableElement
 	data class Frame(val frameIndex: Int): NextGameEditableElement
 	data class Game(val gameIndex: Int, val game: UUID): NextGameEditableElement
+	data class BowlerGame(val gameIndex: Int, val bowler: UUID): NextGameEditableElement
+	data class Bowler(val name: String, val bowler: UUID): NextGameEditableElement
 }
 
 data class GameDetailsUiState(
 	val gameId: UUID,
 	val currentGameIndex: Int = 0,
+	val bowlers: List<BowlerSummary> = emptyList(),
+	val currentBowlerIndex: Int = 0,
 	val seriesGameIds: List<UUID> = emptyList(),
 	val header: HeaderUiState = HeaderUiState(),
 	val gear: GearCardUiState = GearCardUiState(),

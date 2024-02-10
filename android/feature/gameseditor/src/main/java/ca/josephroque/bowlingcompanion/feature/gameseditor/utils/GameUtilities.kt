@@ -150,10 +150,28 @@ fun GameDetailsUiState.updateHeader(
 	val nextGameIndex = currentGameIndex + 1
 
 	val nextElement: NextGameEditableElement? = if (isManualGame || isGameFinished || isGameLocked) {
-		if (nextGameIndex < seriesGameIds.size) {
-			NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
+		val numberOfBowlers = bowlers.size
+		val numberOfGames = seriesGameIds.size
+
+		if (numberOfBowlers == 1) {
+			if (nextGameIndex < numberOfGames) {
+				NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
+			} else {
+				null
+			}
 		} else {
-			null
+			val nextBowlerIndex = (currentBowlerIndex + 1) % numberOfBowlers
+			val nextBowler = bowlers[nextBowlerIndex]
+
+			if (nextBowlerIndex == 0) {
+				if (nextGameIndex < numberOfGames) {
+					NextGameEditableElement.BowlerGame(nextGameIndex, nextBowler.id)
+				} else {
+					null
+				}
+			} else {
+				NextGameEditableElement.Bowler(nextBowler.name, nextBowler.id)
+			}
 		}
 	} else {
 		// If the current roll isn't the last, and there are still pins standing or it's the last frame,
@@ -165,18 +183,46 @@ fun GameDetailsUiState.updateHeader(
 			NextGameEditableElement.Roll(selection.rollIndex + 1)
 		} else {
 			// In this case, the frame is finished
-			// FIXME: Check if we should show the next bowler here
+			val numberOfBowlers = bowlers.size
+			val numberOfGames = seriesGameIds.size
 
-			if (Frame.isLastFrame(selection.frameIndex)) {
-				// If the frame is the last, show the next game if there is one
-				if (nextGameIndex < seriesGameIds.size) {
-					NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
+			// If there's only one bowler, we only need to show either the next frame or next game
+			if (numberOfBowlers == 1) {
+				if (Frame.isLastFrame(selection.frameIndex)) {
+					// If the frame is the last, show the next game if there is one
+					if (nextGameIndex < numberOfGames) {
+						NextGameEditableElement.Game(nextGameIndex, seriesGameIds[nextGameIndex])
+					} else {
+						null
+					}
 				} else {
-					null
+					// Otherwise, show the next frame
+					NextGameEditableElement.Frame(selection.frameIndex + 1)
 				}
 			} else {
-				// Otherwise, show the next frame
-				NextGameEditableElement.Frame(selection.frameIndex + 1)
+				val nextBowlerIndex = (currentBowlerIndex + 1) % numberOfBowlers
+				val nextBowler = bowlers[nextBowlerIndex]
+
+				// If it's the last frame, we should show either the next bowler or, if there are
+				// no more bowlers, the next game, or nothing
+				if (Frame.isLastFrame(selection.frameIndex)) {
+					// When `nextBowlerIndex` is 0, there are no bowlers following the current one.
+					// Go to the next game, or show nothing
+					if (nextBowlerIndex == 0) {
+						if (nextGameIndex < numberOfGames) {
+							NextGameEditableElement.BowlerGame(nextGameIndex, nextBowler.id)
+						} else {
+							null
+						}
+					} else {
+						// Otherwise, there's another bowler to show
+						NextGameEditableElement.Bowler(nextBowler.name, nextBowler.id)
+					}
+				} else {
+					// If it's not the last frame, we should show the next bowler
+					// When the next bowler's game is loaded, we'll load the correct frame at that time
+					NextGameEditableElement.Bowler(nextBowler.name, nextBowler.id)
+				}
 			}
 		}
 	}
