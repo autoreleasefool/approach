@@ -18,8 +18,8 @@ enum class FeatureFlag(
 	override val introduced: String,
 	override val rolloutStage: RolloutStage,
 ): Feature {
-	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.DEVELOPMENT),
-	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.DEVELOPMENT),
+	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.RELEASE),
+	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
 }
 
 fun FeatureFlag.isEnabled(): Boolean = if (BuildConfig.DEBUG) {
