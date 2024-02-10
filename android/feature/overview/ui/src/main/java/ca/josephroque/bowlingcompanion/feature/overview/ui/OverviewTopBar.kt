@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.overview.ui
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -11,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 
@@ -34,7 +33,7 @@ fun OverviewTopBar(
 		actions = {
 			IconButton(onClick = { onAction(OverviewUiAction.AddBowlerClicked) }) {
 				Icon(
-					imageVector = Icons.Filled.Add,
+					painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_person),
 					contentDescription = stringResource(R.string.bowler_list_add),
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
