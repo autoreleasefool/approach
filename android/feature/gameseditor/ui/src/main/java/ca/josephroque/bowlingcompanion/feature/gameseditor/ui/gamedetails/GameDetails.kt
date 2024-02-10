@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.Avatar
@@ -22,6 +25,8 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import java.util.UUID
 
 @Composable
@@ -48,6 +53,13 @@ fun GameDetails(
 				.padding(horizontal = 16.dp)
 				.padding(top = 8.dp),
 		)
+
+		if (state.header.hasMultipleBowlers) {
+			ViewAllBowlersButton(
+				onClick = { onAction(GameDetailsUiAction.ViewAllBowlersClicked) },
+				modifier = Modifier.padding(horizontal = 16.dp),
+			)
+		}
 
 		Divider(thickness = 8.dp)
 
@@ -98,6 +110,24 @@ fun GameDetails(
 	}
 }
 
+@Composable
+private fun ViewAllBowlersButton(
+	onClick: () -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	NavigationButton(
+		title = stringResource(R.string.game_editor_view_all_bowlers),
+		onClick = onClick,
+		icon = {
+			Icon(
+				painterResource(R.drawable.ic_number_list),
+				contentDescription = null,
+			)
+		},
+		modifier = modifier,
+	)
+}
+
 @Preview
 @Composable
 private fun GameDetailsPreview() {
@@ -109,7 +139,8 @@ private fun GameDetailsPreview() {
 				header = GameDetailsUiState.HeaderUiState(
 					bowlerName = "Jordan",
 					leagueName = "1 Sunday Nights 2019",
-					nextElement = NextGameEditableElement.Roll(rollIndex = 1)
+					nextElement = NextGameEditableElement.Roll(rollIndex = 1),
+					hasMultipleBowlers = true,
 				),
 				gear = GameDetailsUiState.GearCardUiState(
 					selectedGear = listOf(

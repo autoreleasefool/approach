@@ -50,6 +50,7 @@ internal fun GamesEditorRoute(
 	onEditLanes: (GamesEditorArguments.EditLanes) -> Unit,
 	onShowGamesSettings: (GamesEditorArguments.ShowGamesSettings) -> Unit,
 	onShowStatistics: (GamesEditorArguments.ShowStatistics) -> Unit,
+	onShowBowlerScores: (GamesEditorArguments.ShowBowlerScores) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -97,6 +98,8 @@ internal fun GamesEditorRoute(
 							})
 						is GamesEditorScreenEvent.ShowStatistics ->
 							onShowStatistics(GamesEditorArguments.ShowStatistics(it.filter))
+						is GamesEditorScreenEvent.ShowBowlerScores ->
+							onShowBowlerScores(GamesEditorArguments.ShowBowlerScores(it.series, it.gameIndex))
 					}
 				}
 		}

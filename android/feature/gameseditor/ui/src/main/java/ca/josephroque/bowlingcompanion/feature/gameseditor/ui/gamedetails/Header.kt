@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 
 @Composable
 internal fun Header(
@@ -51,13 +50,6 @@ internal fun Header(
 				}
 			)
 		}
-
-		if (state.hasMultipleBowlers) {
-			ViewAllBowlersButton(
-				onClick = { onAction(GameDetailsUiAction.ViewAllBowlersClicked) },
-				modifier = Modifier.padding(top = 16.dp),
-			)
-		}
 	}
 }
 
@@ -81,24 +73,6 @@ private fun RowScope.BowlerDetails(
 			style = MaterialTheme.typography.bodyMedium
 		)
 	}
-}
-
-@Composable
-private fun ViewAllBowlersButton(
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
-	NavigationButton(
-		title = stringResource(R.string.game_editor_view_all_bowlers),
-		onClick = onClick,
-		icon = {
-			Icon(
-				painterResource(R.drawable.ic_number_list),
-				contentDescription = null,
-			)
-		},
-		modifier = modifier,
-	)
 }
 
 @Composable

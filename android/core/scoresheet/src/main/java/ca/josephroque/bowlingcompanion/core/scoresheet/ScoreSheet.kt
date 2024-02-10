@@ -2,39 +2,42 @@ package ca.josephroque.bowlingcompanion.core.scoresheet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.bottomBorder
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.endBorder
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.startBorder
 import ca.josephroque.bowlingcompanion.core.model.ScoringFrame
-import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import ca.josephroque.bowlingcompanion.core.model.isFirstFrame
 import ca.josephroque.bowlingcompanion.core.model.isFirstRoll
 import ca.josephroque.bowlingcompanion.core.model.isLastRoll
-import kotlinx.coroutines.launch
-import java.util.UUID
+import ca.josephroque.bowlingcompanion.core.model.stub.ScoringGameStub
 
 @Composable
 fun ScoreSheet(
@@ -42,29 +45,51 @@ fun ScoreSheet(
 	onAction: (ScoreSheetUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val listState = rememberLazyListState()
-	val coroutineScope = rememberCoroutineScope()
-
-	LaunchedEffect(state.selection, state.game?.frames?.size) {
-		coroutineScope.launch {
-			listState.animateScrollToItem(index = state.selection.frameIndex)
-		}
-	}
-
-	LazyRow (
-		state = listState,
-		modifier = modifier
-			.clip(RoundedCornerShape(16.dp)),
+	BoxWithConstraints(
+		modifier = modifier.fillMaxWidth(),
 	) {
-		items(
-			items = state.game?.frames ?: emptyList(),
-			key = { it.index },
-		) { frame ->
+		ScoreSheetRow(
+			state = state,
+			onAction = onAction,
+			cellWidth = maxWidth / 3f,
+			modifier = Modifier.horizontalScroll(rememberScrollState()),
+		)
+	}
+}
+
+@Composable
+fun ScoreSheetRow(
+	state: ScoreSheetUiState,
+	cellWidth: Dp,
+	onAction: (ScoreSheetUiAction) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	Row(modifier = modifier) {
+		if (state.configuration.scorePosition.contains(ScorePosition.START)) {
+			ScoreCell(
+				score = state.game?.score ?: 0,
+				position = ScorePosition.START,
+				style = state.configuration.style,
+				modifier = Modifier.width(cellWidth),
+			)
+		}
+
+		state.game?.frames?.forEach { frame ->
 			val isFrameSelected = state.selection.frameIndex == frame.index
 
 			Column(
-				modifier = Modifier.fillParentMaxWidth(0.33f),
+				modifier = Modifier.width(cellWidth),
 			) {
+				if (state.configuration.framePosition.contains(FramePosition.TOP)) {
+					RailCell(
+						frameIndex = frame.index,
+						style = state.configuration.style,
+						isSelected = isFrameSelected,
+						includingBottomBorder = true,
+						modifier = Modifier.fillMaxWidth(),
+					)
+				}
+
 				RollCells(
 					modifier = Modifier.fillMaxWidth(),
 					frame = frame,
@@ -77,14 +102,23 @@ fun ScoreSheet(
 
 				FrameCell(
 					frame = frame,
-					style = state.configuration.style,
+					config = state.configuration,
 					isSelected = isFrameSelected,
-					previousFrame = state.game?.frames?.getOrNull(frame.index - 1),
+					previousFrame = state.game.frames.getOrNull(frame.index - 1),
 					modifier = Modifier.fillMaxWidth(),
 				) {
 					onAction(ScoreSheetUiAction.FrameClicked(frame.index))
 				}
 			}
+		}
+
+		if (state.configuration.scorePosition.contains(ScorePosition.END)) {
+			ScoreCell(
+				score = state.game?.score ?: 0,
+				position = ScorePosition.END,
+				style = state.configuration.style,
+				modifier = Modifier.width(cellWidth),
+			)
 		}
 	}
 }
@@ -173,7 +207,7 @@ private fun FrameCell(
 	modifier: Modifier = Modifier,
 	frame: ScoringFrame,
 	previousFrame: ScoringFrame?,
-	style: ScoreSheetConfiguration.Style,
+	config: ScoreSheetConfiguration,
 	isSelected: Boolean,
 	onClick: () -> Unit,
 ) {
@@ -183,15 +217,15 @@ private fun FrameCell(
 			.background(
 				colorResource(
 					if (isSelected)
-						style.backgroundHighlightColor
+						config.style.backgroundHighlightColor
 					else
-						style.backgroundColor
+						config.style.backgroundColor
 				)
 			)
 			.then(
 				if (frame.isFirstFrame()) Modifier else Modifier.startBorder(
 					2.dp,
-					colorResource(style.borderColor)
+					colorResource(config.style.borderColor)
 				)
 			),
 	) {
@@ -204,21 +238,25 @@ private fun FrameCell(
 			style = MaterialTheme.typography.bodyMedium,
 			textAlign = TextAlign.Center,
 			color = colorResource(if (isSelected)
-				style.textHighlightColorOnBackground
+				config.style.textHighlightColorOnBackground
 			else
-				style.textColorOnBackground
+				config.style.textColorOnBackground
 			),
 			modifier = Modifier
-				.padding(vertical = 8.dp)
-				.align(Alignment.CenterHorizontally),
+				.align(Alignment.CenterHorizontally)
+				.wrapContentHeight(align = Alignment.CenterVertically)
+				.weight(1f),
 		)
 
-		RailCell(
-			frameIndex = frame.index,
-			style = style,
-			isSelected = isSelected,
-			modifier = Modifier.fillMaxWidth(),
-		)
+		if (config.framePosition.contains(FramePosition.BOTTOM)) {
+			RailCell(
+				frameIndex = frame.index,
+				style = config.style,
+				isSelected = isSelected,
+				includingBottomBorder = false,
+				modifier = Modifier.fillMaxWidth(),
+			)
+		}
 	}
 }
 
@@ -227,6 +265,7 @@ private fun RailCell(
 	modifier: Modifier = Modifier,
 	frameIndex: Int,
 	isSelected: Boolean,
+	includingBottomBorder: Boolean,
 	style: ScoreSheetConfiguration.Style,
 ) {
 	Box(
@@ -238,6 +277,10 @@ private fun RailCell(
 					else
 						style.railBackgroundColor
 				)
+			)
+			.then(
+				if (!includingBottomBorder) Modifier else
+					Modifier.bottomBorder(2.dp, colorResource(style.borderColor))
 			)
 			.then(
 				if (frameIndex == 0) Modifier else Modifier.startBorder(
@@ -260,112 +303,77 @@ private fun RailCell(
 	}
 }
 
+@Composable
+private fun ScoreCell(
+	score: Int,
+	position: ScorePosition,
+	style: ScoreSheetConfiguration.Style,
+	modifier: Modifier = Modifier,
+) {
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		modifier = modifier
+			.background(colorResource(style.backgroundColor))
+			.then(when (position) {
+				ScorePosition.START -> Modifier.endBorder(4.dp, colorResource(style.borderColor))
+				ScorePosition.END -> Modifier.startBorder(4.dp, colorResource(style.borderColor))
+			})
+			.padding(horizontal = 16.dp, vertical = 8.dp),
+	) {
+		Spacer(modifier = Modifier.weight(1f))
+
+		Text(
+			text = stringResource(R.string.scoresheet_total),
+			style = MaterialTheme.typography.labelMedium,
+			color = colorResource(style.textColorOnBackground),
+		)
+
+		Text(
+			text = score.toString(),
+			style = MaterialTheme.typography.displaySmall,
+			fontWeight = FontWeight.Bold,
+			color = colorResource(style.textColorOnBackground),
+		)
+
+		Spacer(modifier = Modifier.weight(1f))
+	}
+}
+
+private class FramePositionPreviewParameterProvider: PreviewParameterProvider<FramePosition> {
+	override val values = sequenceOf(FramePosition.TOP, FramePosition.BOTTOM)
+}
+
 @Preview
 @Composable
-private fun ScoreSheetPreview() {
+private fun ScoreSheetPreview(
+	@PreviewParameter(FramePositionPreviewParameterProvider::class) framePosition: FramePosition,
+) {
 	Surface {
 		ScoreSheet(
 			state = ScoreSheetUiState(
-				configuration = ScoreSheetConfiguration(ScoreSheetConfiguration.Style.PLAIN),
-				selection = ScoreSheetUiState.Selection(frameIndex = 0, rollIndex = 0),
-				game = ScoringGame(
-					id = UUID.randomUUID(),
-					index = 0,
-					frames = listOf(
-						ScoringFrame(
-							index = 0,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "A", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "2", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "2", isSecondaryValue = false),
-							),
-							score = 0,
-						),
-						ScoringFrame(
-							index = 1,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "HS", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "5", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "2", isSecondaryValue = false),
-							),
-							score = 0,
-						),
-						ScoringFrame(
-							index = 2,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "12", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "12", isSecondaryValue = true),
-							),
-							score = 12,
-						),
-						ScoringFrame(
-							index = 3,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = true, display = "12", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "10", isSecondaryValue = true),
-							),
-							score = 22,
-						),
-						ScoringFrame(
-							index = 4,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "C/O", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "-", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "5", isSecondaryValue = false),
-							),
-							score = 37,
-						),
-						ScoringFrame(
-							index = 5,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "C/O", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "10", isSecondaryValue = true),
-							),
-							score = 62,
-						),
-						ScoringFrame(
-							index = 6,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "C/O", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "-", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "5", isSecondaryValue = false),
-							),
-							score = 77,
-						),
-						ScoringFrame(
-							index = 7,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "HS", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "11", isSecondaryValue = true),
-							),
-							score = 103,
-						),
-						ScoringFrame(
-							index = 8,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "A", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "/", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "15", isSecondaryValue = true),
-							),
-							score = 133,
-						),
-						ScoringFrame(
-							index = 9,
-							rolls = listOf(
-								ScoringRoll(index = 0, didFoul = false, display = "X", isSecondaryValue = false),
-								ScoringRoll(index = 1, didFoul = false, display = "HS", isSecondaryValue = false),
-								ScoringRoll(index = 2, didFoul = false, display = "/", isSecondaryValue = false),
-							),
-							score = 163,
-						),
-					),
-				)
+				configuration = ScoreSheetConfiguration(
+					framePosition = setOf(framePosition),
+					scorePosition = setOf(ScorePosition.START, ScorePosition.END),
+					style = ScoreSheetConfiguration.Style.PLAIN,
+				),
+				selection = ScoreSheetUiState.Selection(frameIndex = -1, rollIndex = -1),
+				game = ScoringGameStub.stub(),
 			),
 			onAction = {},
+			modifier = Modifier.height(100.dp),
+		)
+	}
+}
+
+@Preview
+@Composable
+private fun ScoreCellPreview() {
+	Surface {
+		ScoreCell(
+			score = 300,
+			position = ScorePosition.END,
+			style = ScoreSheetConfiguration.Style.PLAIN,
+			modifier = Modifier.height(100.dp).width(160.dp),
 		)
 	}
 }

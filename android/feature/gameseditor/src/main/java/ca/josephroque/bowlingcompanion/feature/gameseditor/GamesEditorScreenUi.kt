@@ -39,6 +39,8 @@ object GamesEditorArguments {
 	)
 
 	data class ShowStatistics(val filter: TrackableFilter)
+
+	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int)
 }
 
 sealed interface GamesEditorScreenUiState {
@@ -77,4 +79,5 @@ sealed interface GamesEditorScreenEvent {
 	data class EditRolledBall(val ballId: UUID?): GamesEditorScreenEvent
 	data class ShowGamesSettings(val series: List<UUID>, val currentGameId: UUID): GamesEditorScreenEvent
 	data class ShowStatistics(val filter: TrackableFilter): GamesEditorScreenEvent
+	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int): GamesEditorScreenEvent
 }

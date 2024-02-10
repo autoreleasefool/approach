@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.scoresheet
 
+import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
+import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 
 data class ScoreSheetUiState(
@@ -12,6 +14,10 @@ data class ScoreSheetUiState(
 		val rollIndex: Int = 0,
 	)
 }
+
+data class ScoreSheetListUiState(
+	val bowlerScores: List<Triple<BowlerSummary, LeagueSummary, ScoreSheetUiState>> = emptyList(),
+)
 
 sealed interface ScoreSheetUiAction {
 	data class RollClicked(val frameIndex: Int, val rollIndex: Int): ScoreSheetUiAction

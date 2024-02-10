@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="scoresheet_style_plain_title">Plain</string>
+
+	<string name="scoresheet_total">Total</string>
 </resources>

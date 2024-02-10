@@ -118,9 +118,9 @@ class GamesEditorViewModel @Inject constructor(
 			isGameDetailsSheetVisible = isGameDetailsSheetVisible,
 		)
 	}.stateIn(
-		viewModelScope,
-		SharingStarted.WhileSubscribed(5_000),
-		GamesEditorScreenUiState.Loading,
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5_000),
+		initialValue = GamesEditorScreenUiState.Loading,
 	)
 
 	override fun onResume(owner: LifecycleOwner) {
@@ -464,7 +464,9 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openAllBowlersScores() {
-		TODO("Open all bowlers scores")
+		_isGameDetailsSheetVisible.value = false
+		val gameIndex = _gameDetailsState.value.currentGameIndex
+		sendEvent(GamesEditorScreenEvent.ShowBowlerScores(seriesIds, gameIndex))
 	}
 
 	private fun openBallRolledPicker() {

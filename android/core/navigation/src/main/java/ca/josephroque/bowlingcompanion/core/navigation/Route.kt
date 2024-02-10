@@ -83,6 +83,13 @@ sealed class Route(
 		fun getGame(savedStateHandle: SavedStateHandle): UUID? = savedStateHandle.get<String>("game")?.let { UUID.fromString(it) }
 		fun getSeries(savedStateHandle: SavedStateHandle): List<UUID> = savedStateHandle.get<String>("series")?.decodeList()?.mapNotNull { UUID.fromString(it) } ?: emptyList()
 	}
+	data object ScoresList: Route("scores_list/{series}/{gameIndex}", isBottomBarVisible = false) {
+		const val ARG_SERIES = "series"
+		const val ARG_GAME_INDEX = "gameIndex"
+		fun createRoute(series: List<UUID>, gameIndex: Int): String = "scores_list/${Uri.encode(series.encode())}/$gameIndex"
+		fun getSeries(savedStateHandle: SavedStateHandle): List<UUID> = savedStateHandle.get<String>("series")?.decodeList()?.mapNotNull { UUID.fromString(it) } ?: emptyList()
+		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? = savedStateHandle.get<Int>("gameIndex")
+	}
 
 	// Gear
 	data object GearList: Route("gear")

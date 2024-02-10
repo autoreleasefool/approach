@@ -3,8 +3,20 @@ package ca.josephroque.bowlingcompanion.core.scoresheet
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 
+enum class FramePosition {
+	TOP,
+	BOTTOM,
+}
+
+enum class ScorePosition {
+	START,
+	END,
+}
+
 data class ScoreSheetConfiguration(
 	val style: Style = Style.PLAIN,
+	val framePosition: Set<FramePosition> = setOf(FramePosition.BOTTOM),
+	val scorePosition: Set<ScorePosition> = setOf(ScorePosition.END),
 ) {
 
 	enum class Style(
