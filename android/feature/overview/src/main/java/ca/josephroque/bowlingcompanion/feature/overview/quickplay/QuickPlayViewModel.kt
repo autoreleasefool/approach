@@ -183,7 +183,7 @@ class QuickPlayViewModel @Inject constructor(
 			val from = fromListIndex + listOffset
 			val to = toListIndex + listOffset
 			_bowlers.update {
-				if (from == to || from >= it.size || to >= it.size) return@update it
+				if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
 				it.toMutableList().apply { add(to, removeAt(from)) }
 			}
 		}

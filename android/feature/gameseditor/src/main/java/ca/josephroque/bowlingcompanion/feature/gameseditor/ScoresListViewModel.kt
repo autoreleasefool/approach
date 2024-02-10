@@ -66,7 +66,6 @@ class ScoresListViewModel @Inject constructor(
 				)
 
 				_uiState.update {
-					println("${_gameIdOrder.value}")
 					it.copy(
 						scoreSheetList = it.scoreSheetList.copy(
 							it.scoreSheetList.bowlerScores.toMutableList().apply {
@@ -76,7 +75,7 @@ class ScoresListViewModel @Inject constructor(
 									scoreSheetState,
 								))
 
-								sortBy { _gameIdOrder.value[currentGameId] ?: Int.MAX_VALUE }
+								sortBy { bowlerScore -> _gameIdOrder.value[bowlerScore.third.game?.id] }
 							}
 						),
 					)
