@@ -13,7 +13,7 @@ object LeagueSummaryStub {
 		),
 		LeagueSummary(
 			id = UUID.randomUUID(),
-			name = "Minors, 2023-2024",
+			name = "Minors, 2024",
 		),
 	)
 
@@ -31,7 +31,7 @@ object LeagueListItemStub {
 		),
 		LeagueListItem(
 			id = UUID.randomUUID(),
-			name = "Minors, 2023-2024",
+			name = "Minors, 2024",
 			average = 245.4,
 			lastSeriesDate = null,
 			recurrence = LeagueRecurrence.REPEATING,

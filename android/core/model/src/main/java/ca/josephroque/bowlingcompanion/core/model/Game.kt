@@ -71,12 +71,16 @@ data class GameEdit(
 		val id: UUID,
 		val name: String,
 		val excludeFromStatistics: ExcludeFromStatistics,
-	)
+	) {
+		fun toSummary(): LeagueSummary = LeagueSummary(id = id, name = name)
+	}
 
 	data class Bowler(
 		val id: UUID,
 		val name: String,
-	)
+	) {
+		fun toSummary(): BowlerSummary = BowlerSummary(id = id, name = name)
+	}
 }
 
 data class GameListItem(
