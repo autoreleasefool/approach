@@ -1,11 +1,13 @@
 package ca.josephroque.bowlingcompanion.feature.overview.quickplay
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
@@ -18,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,6 +40,8 @@ class QuickPlayViewModel @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
+	private val recentlyUsedRepository: RecentlyUsedRepository,
+	@ApplicationScope private val globalScope: CoroutineScope,
 	userDataRepository: UserDataRepository,
 ): ApproachViewModel<QuickPlayScreenEvent>() {
 
@@ -148,9 +153,15 @@ class QuickPlayViewModel @Inject constructor(
 				return@map id
 			}
 
+			globalScope.launch {
+				bowlers.forEach {
+					recentlyUsedRepository.didRecentlyUseBowler(it.first)
+					recentlyUsedRepository.didRecentlyUseLeague(it.second)
+				}
+			}
+
 			val initialGameId = firstGameId ?: return@launch
 			sendEvent(QuickPlayScreenEvent.BeganRecording(seriesIds, initialGameId))
-
 		}
 	}
 
