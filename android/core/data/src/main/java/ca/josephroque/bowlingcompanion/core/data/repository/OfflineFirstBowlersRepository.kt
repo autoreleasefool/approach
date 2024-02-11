@@ -14,9 +14,11 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
+import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
 import java.util.UUID
@@ -36,6 +38,12 @@ class OfflineFirstBowlersRepository @Inject constructor(
 
 	override fun getSeriesBowlers(series: List<UUID>): Flow<List<BowlerSummary>> =
 		bowlerDao.getSeriesBowlers(series = series)
+			.map {
+				it
+					.sortedBy { seriesBowler -> series.indexOf(seriesBowler.seriesId) }
+					.map(SeriesBowlerSummary::asSummary)
+			}
+
 
 	override fun getBowlersList(): Flow<List<BowlerListItem>> =
 		bowlerDao.getBowlersList()

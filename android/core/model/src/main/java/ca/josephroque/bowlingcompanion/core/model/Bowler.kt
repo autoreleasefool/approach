@@ -16,6 +16,15 @@ data class BowlerSummary(
 	val name: String,
 )
 
+data class SeriesBowlerSummary(
+	val seriesId: UUID,
+	val id: UUID,
+	val name: String,
+) {
+	fun asSummary(): BowlerSummary = BowlerSummary(id, name)
+}
+
+
 data class OpponentListItem(
 	val id: UUID,
 	val name: String,
