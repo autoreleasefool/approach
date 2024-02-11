@@ -18,8 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,11 +50,18 @@ fun ScoreSheet(
 	BoxWithConstraints(
 		modifier = modifier.fillMaxWidth(),
 	) {
+		val scrollState = rememberScrollState()
+		val targetPositionDp = (state.selection.frameIndex - 1) * (maxWidth.value / 3f)
+		val targetPositionPx = with(LocalDensity.current) { targetPositionDp.dp.toPx() }
+		LaunchedEffect(state.selection) {
+			scrollState.animateScrollTo(targetPositionPx.toInt())
+		}
+
 		ScoreSheetRow(
 			state = state,
 			onAction = onAction,
 			cellWidth = maxWidth / 3f,
-			modifier = Modifier.horizontalScroll(rememberScrollState()),
+			modifier = Modifier.horizontalScroll(scrollState),
 		)
 	}
 }
@@ -314,10 +323,12 @@ private fun ScoreCell(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
 			.background(colorResource(style.backgroundColor))
-			.then(when (position) {
-				ScorePosition.START -> Modifier.endBorder(4.dp, colorResource(style.borderColor))
-				ScorePosition.END -> Modifier.startBorder(4.dp, colorResource(style.borderColor))
-			})
+			.then(
+				when (position) {
+					ScorePosition.START -> Modifier.endBorder(4.dp, colorResource(style.borderColor))
+					ScorePosition.END -> Modifier.startBorder(4.dp, colorResource(style.borderColor))
+				}
+			)
 			.padding(horizontal = 16.dp, vertical = 8.dp),
 	) {
 		Spacer(modifier = Modifier.weight(1f))
@@ -373,7 +384,9 @@ private fun ScoreCellPreview() {
 			score = 300,
 			position = ScorePosition.END,
 			style = ScoreSheetConfiguration.Style.PLAIN,
-			modifier = Modifier.height(100.dp).width(160.dp),
+			modifier = Modifier
+				.height(100.dp)
+				.width(160.dp),
 		)
 	}
 }

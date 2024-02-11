@@ -34,6 +34,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.AnimationDirection
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
@@ -183,6 +184,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun handleFrameEditorAction(action: FrameEditorUiAction) {
 		when (action) {
 			FrameEditorUiAction.FrameEditorInteractionStarted -> handleInteractionWithPins()
+			FrameEditorUiAction.AnimationFinished -> setFrameEditorAnimation(null)
 			is FrameEditorUiAction.DownedPinsChanged -> updateDownedPins(action.downedPins)
 		}
 	}
@@ -280,7 +282,6 @@ class GamesEditorViewModel @Inject constructor(
 							GameScoringMethod.BY_FRAME -> null
 						},
 						frameEditor = it.frameEditor.copy(
-							gameIndex = gameDetails.properties.index,
 							isEnabled = gameDetails.properties.locked != GameLockState.LOCKED,
 						),
 					)
@@ -600,14 +601,19 @@ class GamesEditorViewModel @Inject constructor(
 			is NextGameEditableElement.Roll -> setCurrentSelection(rollIndex = next.rollIndex)
 			is NextGameEditableElement.Frame -> setCurrentSelection(frameIndex = next.frameIndex, rollIndex = 0)
 			is NextGameEditableElement.Game -> {
+				setFrameEditorAnimation(AnimationDirection.RIGHT_TO_LEFT)
 				toggleGameLocked(isLocked = true)
 				loadGame(next.game)
 			}
 			is NextGameEditableElement.BowlerGame -> {
 				toggleGameLocked(isLocked = true)
+				setFrameEditorAnimation(AnimationDirection.RIGHT_TO_LEFT)
 				loadBowlerGame(next.bowler, next.gameIndex)
 			}
-			is NextGameEditableElement.Bowler -> loadBowlerGame(next.bowler)
+			is NextGameEditableElement.Bowler -> {
+				setFrameEditorAnimation(AnimationDirection.RIGHT_TO_LEFT)
+				loadBowlerGame(next.bowler)
+			}
 		}
 	}
 
@@ -633,6 +639,14 @@ class GamesEditorViewModel @Inject constructor(
 			it.updateHeader(
 				frames = gamesEditor.frames,
 				selection = gamesEditor.scoreSheet.selection,
+			)
+		}
+	}
+
+	private fun setFrameEditorAnimation(animation: AnimationDirection?) {
+		_gamesEditorState.updateGamesEditor(_currentGameId.value) {
+			it.copy(
+				frameEditor = it.frameEditor.copy(nextAnimationDirection = animation)
 			)
 		}
 	}

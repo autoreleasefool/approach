@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -19,23 +18,24 @@ fun AnimatedFrameEditor(
 	onAction: (FrameEditorUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	val currentGameIndex = remember { mutableIntStateOf(-1) }
 	val frameEditorWidth = remember { mutableFloatStateOf(0f) }
 	val offsetX = remember { Animatable(0f) }
 
-	LaunchedEffect(state.gameIndex) {
-		if (currentGameIndex.intValue == -1) {
-			currentGameIndex.intValue = state.gameIndex
-			return@LaunchedEffect
-		}
+	LaunchedEffect(state.nextAnimationDirection) {
+		if (state.nextAnimationDirection == null) return@LaunchedEffect
 
-		val isGameIncrementing = currentGameIndex.intValue < state.gameIndex
 		offsetX.animateTo(
-			targetValue = frameEditorWidth.floatValue * if (isGameIncrementing) -1 else 1,
+			targetValue = frameEditorWidth.floatValue * when (state.nextAnimationDirection) {
+				AnimationDirection.LEFT_TO_RIGHT -> 1
+				AnimationDirection.RIGHT_TO_LEFT -> -1
+			},
 		)
 
 		offsetX.animateTo(
-			targetValue = frameEditorWidth.floatValue * if (isGameIncrementing) 1 else -1,
+			targetValue = frameEditorWidth.floatValue * when (state.nextAnimationDirection) {
+				AnimationDirection.LEFT_TO_RIGHT -> -1
+				AnimationDirection.RIGHT_TO_LEFT -> 1
+			},
 			animationSpec = tween(durationMillis = 0),
 		)
 
@@ -43,7 +43,7 @@ fun AnimatedFrameEditor(
 			targetValue = 0f,
 		)
 
-		currentGameIndex.intValue = state.gameIndex
+		onAction(FrameEditorUiAction.AnimationFinished)
 	}
 
 	FrameEditor(

@@ -129,7 +129,7 @@ private fun FrameEditorPreview() {
 			state = state,
 			onAction = {
 				when (it) {
-					FrameEditorUiAction.FrameEditorInteractionStarted -> Unit
+					FrameEditorUiAction.FrameEditorInteractionStarted, FrameEditorUiAction.AnimationFinished -> Unit
 					is FrameEditorUiAction.DownedPinsChanged -> state = state.copy(downedPins = it.downedPins)
 				}
 			},
