@@ -42,6 +42,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGa
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiState
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.ensureRollExists
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.getAndUpdateGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.selectedFrame
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setBallRolled
@@ -597,6 +598,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {
+		saveCurrentFrameIfEmpty()
+
 		when (next) {
 			is NextGameEditableElement.Roll -> setCurrentSelection(rollIndex = next.rollIndex)
 			is NextGameEditableElement.Frame -> setCurrentSelection(frameIndex = next.frameIndex, rollIndex = 0)
@@ -849,6 +852,23 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun setHeaderPeekHeight(height: Float) {
 		_headerPeekHeight.value = height
+	}
+
+	private fun saveCurrentFrameIfEmpty() {
+		if (isGameLocked) return
+
+		val gamesEditor = _gamesEditorState.updateGamesEditorAndGet(_currentGameId.value) {
+			it.copy(
+				frames = it.frames.toMutableList().also { frames ->
+					frames.ensureRollExists(
+						frameIndex = it.scoreSheet.selection.frameIndex,
+						rollIndex = it.scoreSheet.selection.rollIndex,
+					)
+				},
+			)
+		}
+
+		saveFrame(gamesEditor.selectedFrame())
 	}
 
 	private fun saveFrame(frame: FrameEdit) {

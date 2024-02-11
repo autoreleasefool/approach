@@ -3,6 +3,11 @@ package ca.josephroque.bowlingcompanion.feature.gameseditor.utils
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Pin
 
+fun MutableList<FrameEdit>.ensureRollExists(frameIndex: Int, rollIndex: Int) {
+	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
+	this[frameIndex] = frame
+}
+
 fun MutableList<FrameEdit>.setPinsDowned(
 	frameIndex: Int,
 	rollIndex: Int,
