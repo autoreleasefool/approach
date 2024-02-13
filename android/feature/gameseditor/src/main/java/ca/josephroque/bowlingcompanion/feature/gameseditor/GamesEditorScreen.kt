@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -144,20 +143,17 @@ internal fun GamesEditorScreen(
 	}
 
 	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)
-	val coroutineScope = rememberCoroutineScope()
 	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded && state.isGameLockSnackBarVisible
 	LaunchedEffect(isGameLockSnackBarVisible) {
 		if (isGameLockSnackBarVisible) {
-			coroutineScope.launch {
-				val result = scaffoldState.snackbarHostState.showSnackbar(
-					message = snackBarLockedMessage,
-					duration = SnackbarDuration.Short,
-				)
+			val result = scaffoldState.snackbarHostState.showSnackbar(
+				message = snackBarLockedMessage,
+				duration = SnackbarDuration.Short,
+			)
 
-				when (result) {
-					SnackbarResult.Dismissed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
-					SnackbarResult.ActionPerformed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
-				}
+			when (result) {
+				SnackbarResult.Dismissed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
+				SnackbarResult.ActionPerformed -> onAction(GamesEditorScreenUiAction.GameLockSnackBarDismissed)
 			}
 		}
 	}
@@ -175,7 +171,7 @@ internal fun GamesEditorScreen(
 		},
 		sheetSwipeEnabled = false,
 		sheetDragHandle = {
-			val dragHandleDescription = stringResource(R.string.bottom_sheet_drag_handle_description)
+			val dragHandleDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.bottom_sheet_drag_handle_description)
 			Surface(
 				modifier = modifier
 					.padding(vertical = 8.dp)

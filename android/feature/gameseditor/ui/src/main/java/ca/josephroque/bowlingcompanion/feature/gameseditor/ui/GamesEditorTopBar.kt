@@ -34,7 +34,7 @@ fun GamesEditorTopBar(
 			IconButton(onClick = { onAction(GamesEditorUiAction.SettingsClicked) }) {
 				Icon(
 					painter = painterResource(RCoreDesign.drawable.ic_settings),
-					contentDescription = stringResource(R.string.cd_settings),
+					contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_settings),
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
