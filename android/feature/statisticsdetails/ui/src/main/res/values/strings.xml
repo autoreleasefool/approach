@@ -14,4 +14,20 @@
 	<string name="statistics_list_setting_hide_descriptions">Hide descriptions for each statistic?</string>
 
 	<string name="statistics_list_new">New</string>
+
+	<string name="statistics_filter_title">Detailed Statistics</string>
+	<string name="statistics_filter_label_bowler">Bowler</string>
+	<string name="statistics_filter_label_league">League</string>
+	<string name="statistics_filter_label_league_recurrence">Repeats?</string>
+	<string name="statistics_filter_label_league_recurrence_repeats">Repeats</string>
+	<string name="statistics_filter_label_league_recurrence_never">One-Time Event</string>
+	<string name="statistics_filter_label_series">Series</string>
+	<string name="statistics_filter_label_series_starts">Beginning from</string>
+	<string name="statistics_filter_label_series_ends">Ending on</string>
+	<string name="statistics_filter_label_series_alley">Alley</string>
+	<string name="statistics_filter_label_series_alley_material">Material</string>
+	<string name="statistics_filter_label_series_alley_mechanism">Mechanism</string>
+	<string name="statistics_filter_label_series_alley_pin_fall">Pin Fall</string>
+	<string name="statistics_filter_label_series_alley_pin_base">Pin Base</string>
+	<string name="statistics_filter_label_game">Game</string>
 </resources>

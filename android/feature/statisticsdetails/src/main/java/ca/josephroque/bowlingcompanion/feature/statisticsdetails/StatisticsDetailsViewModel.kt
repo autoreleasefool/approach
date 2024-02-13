@@ -1,5 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
@@ -19,7 +23,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.Statistic
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import com.skydoves.flexible.core.FlexibleSheetValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +43,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<StatisticsDetailsScreenEvent>() {
+): ApproachViewModel<StatisticsDetailsScreenEvent>(), DefaultLifecycleObserver {
 	private val _sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
 	private val _sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
 	private val _initialFilterSource = when (_sourceType) {
@@ -54,6 +57,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	private val _filter: MutableStateFlow<TrackableFilter> =
 		MutableStateFlow(TrackableFilter(source = _initialFilterSource))
+
+	private val _sourceSummaries = _filter.map {
+		statisticsRepository.getSourceDetails(it.source)
+	}
+
+	private val _headerPeekHeight = MutableStateFlow(0f)
+
+	@OptIn(ExperimentalMaterial3Api::class)
+	private val _bottomSheetValue = MutableStateFlow(SheetValue.PartiallyExpanded)
 
 	private data class StatisticsSettings(
 		val isHidingZeroStatistics: Boolean,
@@ -94,8 +106,6 @@ class StatisticsDetailsViewModel @Inject constructor(
 		)
 	}
 
-	private val _nextSheetSize = MutableStateFlow(FlexibleSheetValue.SlightlyExpanded)
-
 	private val _statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
 		_filter,
 		_selectedStatistic,
@@ -103,8 +113,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	) { filter, selectedStatistic, chartContent ->
 		if (chartContent == null || selectedStatistic == null)
 			StatisticsDetailsChartUiState(
-				aggregation = filter.aggregation,
-				filterSource = filter.source,
+				filter = filter,
 				isLoadingNextChart = true,
 				isFilterTooNarrow = false,
 				chartContent = null,
@@ -112,8 +121,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 			)
 		else
 			StatisticsDetailsChartUiState(
-				aggregation = filter.aggregation,
-				filterSource = filter.source,
+				filter = filter,
 				isLoadingNextChart = false,
 				isFilterTooNarrow = false,
 				chartContent = chartContent,
@@ -122,11 +130,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private val _statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
+		_filter,
+		_sourceSummaries,
 		_statisticsList,
 		_selectedStatistic,
 		_statisticsSettings,
-	) { statistics, selectedStatistic, settings ->
+	) { filter, sourceSummaries, statistics, selectedStatistic, settings ->
 		StatisticsDetailsListUiState(
+			filter = filter,
+			filterSources = sourceSummaries,
 			statistics = statistics,
 			highlightedEntry = selectedStatistic,
 			isHidingZeroStatistics = settings.isHidingZeroStatistics,
@@ -134,17 +146,18 @@ class StatisticsDetailsViewModel @Inject constructor(
 		)
 	}
 
+	@OptIn(ExperimentalMaterial3Api::class)
 	val uiState: StateFlow<StatisticsDetailsScreenUiState> = combine(
 		_statisticsListState,
 		_statisticsChartState,
-		_nextSheetSize,
-	) { statisticsList, statisticsChart, nextSheetSize ->
+		_headerPeekHeight,
+		_bottomSheetValue,
+	) { statisticsList, statisticsChart, headerPeekHeight, bottomSheetValue ->
 		StatisticsDetailsScreenUiState.Loaded(
-			details = StatisticsDetailsUiState(
-				list = statisticsList,
-				chart = statisticsChart,
-				nextSheetSize = nextSheetSize
-			),
+			list = statisticsList,
+			chart = statisticsChart,
+			headerPeekHeight = headerPeekHeight,
+			bottomSheetValue = bottomSheetValue,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -162,18 +175,17 @@ class StatisticsDetailsViewModel @Inject constructor(
 		}
 	}
 
-	fun handleAction(action: StatisticsDetailsScreenUiAction) {
-		when (action) {
-			is StatisticsDetailsScreenUiAction.Details -> handleDetailsAction(action.action)
-			is StatisticsDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
-		}
+	@OptIn(ExperimentalMaterial3Api::class)
+	override fun onResume(owner: LifecycleOwner) {
+		_bottomSheetValue.value = SheetValue.PartiallyExpanded
 	}
 
-	private fun handleDetailsAction(action: StatisticsDetailsUiAction) {
+	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
-			is StatisticsDetailsUiAction.StatisticsDetailsList -> handleListAction(action.action)
-			is StatisticsDetailsUiAction.StatisticsDetailsChart -> handleChartAction(action.action)
-			is StatisticsDetailsUiAction.NextSheetSize -> _nextSheetSize.value = action.size
+			is StatisticsDetailsScreenUiAction.Chart -> handleChartAction(action.action)
+			is StatisticsDetailsScreenUiAction.List -> handleListAction(action.action)
+			is StatisticsDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
+			is StatisticsDetailsScreenUiAction.BottomSheet -> handleBottomSheetAction(action.action)
 		}
 	}
 
@@ -185,6 +197,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 				toggleHidingZeroStatistics(action.newValue)
 			is StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled ->
 				toggleHidingStatisticDescriptions(action.newValue)
+			is StatisticsDetailsListUiAction.HeaderHeightMeasured -> setHeaderPeekHeight(action.height)
 		}
 	}
 
@@ -201,12 +214,25 @@ class StatisticsDetailsViewModel @Inject constructor(
 		}
 	}
 
+	@OptIn(ExperimentalMaterial3Api::class)
+	private fun handleBottomSheetAction(action: StatisticsDetailsBottomSheetUiAction) {
+		when (action) {
+			is StatisticsDetailsBottomSheetUiAction.SheetValueChanged ->
+				_bottomSheetValue.value = action.value
+		}
+	}
+
+	private fun setHeaderPeekHeight(height: Float) {
+		_headerPeekHeight.value = height
+	}
+
 	suspend fun hasSeenAllStatistics() {
 		userDataRepository.setAllStatisticIDsSeen()
 	}
 
+	@OptIn(ExperimentalMaterial3Api::class)
 	private fun showStatisticChart(statistic: StatisticID) {
-		_nextSheetSize.value = FlexibleSheetValue.SlightlyExpanded
+		_bottomSheetValue.value = SheetValue.PartiallyExpanded
 		_selectedStatistic.value = statistic
 
 		viewModelScope.launch {

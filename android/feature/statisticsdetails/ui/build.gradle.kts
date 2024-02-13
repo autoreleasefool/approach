@@ -8,9 +8,10 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:common"))
 	implementation(project(":core:statistics"))
 	implementation(project(":core:statistics:charts"))
 
-	implementation(libs.flexiblebottomsheet.m3)
+	implementation(libs.kotlinx.datetime)
 	implementation(libs.vico.compose)
 }
