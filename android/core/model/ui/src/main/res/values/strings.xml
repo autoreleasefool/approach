@@ -8,6 +8,16 @@
 	<string name="league_latest_series">%1$s</string>
 	<string name="league_bowled_once">%1$s</string>
 
+	<string name="alley_property_material_wood">Wood</string>
+	<string name="alley_property_material_synthetic">Synthetic</string>
+	<string name="alley_property_mechanism_dedicated">Dedicated</string>
+	<string name="alley_property_mechanism_interchangeable">Interchangeable</string>
+	<string name="alley_property_pin_fall_freefall">Freefall</string>
+	<string name="alley_property_pin_fall_strings">Strings</string>
+	<string name="alley_property_pin_base_black">Black</string>
+	<string name="alley_property_pin_base_white">White</string>
+	<string name="alley_property_pin_base_other">Other</string>
+
 	<string name="gear_owned_by">Owned by %1$s</string>
 
 	<string name="cd_series_item_size_compact">Compact Rows</string>

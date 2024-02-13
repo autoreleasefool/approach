@@ -12,7 +12,7 @@
 
 	<string name="league_form_property_repeat">Repeat?</string>
 	<string name="league_form_property_repeat_repeats">Repeats</string>
-	<string name="league_form_property_repeat_never">Never</string>
+	<string name="league_form_property_repeat_never">One-Time Event</string>
 	<string name="league_form_property_repeat_footer">Choose \'%1$s\' for leagues that happen semi-frequently, such as once a week, or choose \'%2$s\' for tournaments and one-off events.</string>
 
 	<string name="league_form_property_exclude">Exclude from statistics?</string>

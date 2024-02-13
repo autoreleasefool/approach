@@ -35,6 +35,7 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.designsystem.text.quantityStringResource
+import ca.josephroque.bowlingcompanion.core.model.ui.title
 
 @Composable
 fun AlleyForm(
@@ -176,13 +177,7 @@ private fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMa
 		options = AlleyMaterial.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = material,
-		titleForOption = {
-			when (it) {
-				AlleyMaterial.WOOD -> stringResource(R.string.alley_property_material_wood)
-				AlleyMaterial.SYNTHETIC -> stringResource(R.string.alley_property_material_synthetic)
-				null -> stringResource(RCoreDesign.string.none)
-			}
-		},
+		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
 		onOptionSelected = onMaterialChanged,
 	)
 }
@@ -195,13 +190,7 @@ private fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (All
 		options = AlleyMechanism.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = mechanism,
-		titleForOption = {
-			when (it) {
-				AlleyMechanism.DEDICATED -> stringResource(R.string.alley_property_mechanism_dedicated)
-				AlleyMechanism.INTERCHANGEABLE -> stringResource(R.string.alley_property_mechanism_interchangeable)
-				null -> stringResource(RCoreDesign.string.none)
-			}
-		},
+		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
 		onOptionSelected = onMechanismChanged,
 	)
 }
@@ -214,13 +203,7 @@ private fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFal
 		options = AlleyPinFall.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = pinFall,
-		titleForOption = {
-			when (it) {
-				AlleyPinFall.FREE_FALL -> stringResource(R.string.alley_property_pin_fall_freefall)
-				AlleyPinFall.STRINGS -> stringResource(R.string.alley_property_pin_fall_strings)
-				null -> stringResource(RCoreDesign.string.none)
-			}
-		},
+		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
 		onOptionSelected = onPinFallChanged,
 	)
 }
@@ -233,14 +216,7 @@ private fun PinBasePicker(pinBase: AlleyPinBase?, onPinBaseChanged: (AlleyPinBas
 		options = AlleyPinBase.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = pinBase,
-		titleForOption = {
-			when (it) {
-				AlleyPinBase.OTHER -> stringResource(R.string.alley_property_pin_base_other)
-				AlleyPinBase.BLACK -> stringResource(R.string.alley_property_pin_base_black)
-				AlleyPinBase.WHITE -> stringResource(R.string.alley_property_pin_base_white)
-				null -> stringResource(RCoreDesign.string.none)
-			}
-		},
+		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
 		onOptionSelected = onPinBaseChanged,
 	)
 }

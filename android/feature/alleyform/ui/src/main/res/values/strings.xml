@@ -22,15 +22,5 @@
 		<item quantity="other">%1$d lanes</item>
 	</plurals>
 
-	<string name="alley_property_material_wood">Wood</string>
-	<string name="alley_property_material_synthetic">Synthetic</string>
-	<string name="alley_property_mechanism_dedicated">Dedicated</string>
-	<string name="alley_property_mechanism_interchangeable">Interchangeable</string>
-	<string name="alley_property_pin_fall_freefall">Freefall</string>
-	<string name="alley_property_pin_fall_strings">Strings</string>
-	<string name="alley_property_pin_base_black">Black</string>
-	<string name="alley_property_pin_base_white">White</string>
-	<string name="alley_property_pin_base_other">Other</string>
-
 	<string name="alley_form_delete">Delete Alley</string>
 </resources>
