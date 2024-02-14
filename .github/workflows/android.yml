@@ -25,3 +25,5 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - run: ./gradlew ktlintCheck
+        env:
+          WORKING_DIRECTORY: android
