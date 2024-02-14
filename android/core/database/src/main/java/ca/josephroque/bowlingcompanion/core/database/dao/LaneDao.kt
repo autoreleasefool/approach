@@ -32,7 +32,7 @@ abstract class LaneDao {
 				lanes.position AS position
 			FROM lanes
 			WHERE lanes.alley_id = :alleyId
-			ORDER BY lanes.label
+			ORDER BY lanes.label * 1
 		""",
 	)
 	abstract fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>>
@@ -46,7 +46,7 @@ abstract class LaneDao {
 			FROM lanes
 			JOIN game_lanes ON game_lanes.lane_id = lanes.id
 			WHERE game_lanes.game_id = :gameId
-			ORDER BY lanes.label
+			ORDER BY lanes.label * 1
 		""",
 	)
 	abstract fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>>
