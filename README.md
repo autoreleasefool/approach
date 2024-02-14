@@ -4,6 +4,7 @@
 
 <p align="center">
 <a href="https://github.com/autoreleasefool/approach/actions/workflows/ios.yml"><img src="https://github.com/autoreleasefool/approach/actions/workflows/ios.yml/badge.svg"></a>
+<a href="https://github.com/autoreleasefool/approach/actions/workflows/android.yml"><img src="https://github.com/autoreleasefool/approach/actions/workflows/android.yml/badge.svg"></a>
 <a href="https://github.com/autoreleasefool/approach/releases"><img src="https://img.shields.io/github/v/release/autoreleasefool/approach"></a>
 <a rel="me" href="https://indieapps.space/@approach"><img src="https://img.shields.io/badge/mastodon-%40approach%40indieapps.space-8881D7?logo=mastodon"></a>
 </p>
