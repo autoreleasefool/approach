@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 
 @Composable
@@ -20,5 +19,5 @@ fun MatchPlayResult?.contentDescription(): String = when (this) {
 	MatchPlayResult.WON -> stringResource(R.string.match_play_result_won)
 	MatchPlayResult.LOST -> stringResource(R.string.match_play_result_lost)
 	MatchPlayResult.TIED -> stringResource(R.string.match_play_result_tied)
-	null -> stringResource(RCoreDesign.string.none)
+	null -> stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
 }

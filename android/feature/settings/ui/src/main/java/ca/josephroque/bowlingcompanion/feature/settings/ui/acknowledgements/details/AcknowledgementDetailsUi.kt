@@ -7,7 +7,7 @@ data class AcknowledgementDetailsUiState(
 )
 
 sealed interface AcknowledgementDetailsUiAction {
-	data object BackClicked: AcknowledgementDetailsUiAction
+	data object BackClicked : AcknowledgementDetailsUiAction
 }
 
 data class AcknowledgementDetailsTopBarUiState(

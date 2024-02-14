@@ -25,7 +25,7 @@ import java.util.UUID
 			childColumns = ["location_id"],
 			onUpdate = ForeignKey.CASCADE,
 			onDelete = ForeignKey.CASCADE,
-		)
+		),
 	],
 )
 data class AlleyEntity(

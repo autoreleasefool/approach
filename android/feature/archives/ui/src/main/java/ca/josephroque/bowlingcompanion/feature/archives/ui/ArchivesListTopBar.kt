@@ -25,6 +25,6 @@ fun ArchivesListTopBar(
 		},
 		navigationIcon = {
 			BackButton(onClick = { onAction(ArchivesListUiAction.BackClicked) })
-		}
+		},
 	)
 }

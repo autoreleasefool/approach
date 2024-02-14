@@ -87,7 +87,7 @@ fun QuickPlayOnboarding(
 				Icon(
 					Icons.Default.Menu,
 					contentDescription = null,
-					tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_100)
+					tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_100),
 				)
 			},
 		)
@@ -96,7 +96,9 @@ fun QuickPlayOnboarding(
 			onClick = { onAction(QuickPlayOnboardingUiAction.DoneClicked) },
 			modifier = Modifier.fillMaxWidth(),
 		) {
-			Text(text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_done))
+			Text(
+				text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_done),
+			)
 		}
 	}
 }

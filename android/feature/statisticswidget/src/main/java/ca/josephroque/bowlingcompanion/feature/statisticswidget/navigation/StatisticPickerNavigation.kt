@@ -24,13 +24,13 @@ fun NavController.navigateToStatisticPickerForResult(
 	)
 }
 
-fun NavGraphBuilder.statisticPickerScreen(
-	onDismissWithResult: (StatisticID) -> Unit,
-) {
+fun NavGraphBuilder.statisticPickerScreen(onDismissWithResult: (StatisticID) -> Unit) {
 	composable(
 		route = Route.StatisticsPicker.route,
 		arguments = listOf(
-			navArgument(Route.StatisticsPicker.ARG_STATISTIC) { type = NavType.EnumType(StatisticID::class.java) },
+			navArgument(Route.StatisticsPicker.ARG_STATISTIC) {
+				type = NavType.EnumType(StatisticID::class.java)
+			},
 		),
 	) {
 		StatisticPickerRoute(
@@ -38,4 +38,3 @@ fun NavGraphBuilder.statisticPickerScreen(
 		)
 	}
 }
-

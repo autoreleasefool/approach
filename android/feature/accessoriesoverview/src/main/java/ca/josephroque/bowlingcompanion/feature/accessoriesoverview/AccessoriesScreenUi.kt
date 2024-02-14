@@ -5,25 +5,25 @@ import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.Accessorie
 import java.util.UUID
 
 sealed interface AccessoriesScreenUiState {
-	data object Loading: AccessoriesScreenUiState
+	data object Loading : AccessoriesScreenUiState
 
 	data class Loaded(
 		val accessories: AccessoriesUiState,
-	): AccessoriesScreenUiState
+	) : AccessoriesScreenUiState
 }
 
 sealed interface AccessoriesScreenUiAction {
-	data object DidAppear: AccessoriesScreenUiAction
-	data class Accessories(val action: AccessoriesUiAction): AccessoriesScreenUiAction
+	data object DidAppear : AccessoriesScreenUiAction
+	data class Accessories(val action: AccessoriesUiAction) : AccessoriesScreenUiAction
 }
 
 sealed interface AccessoriesScreenUiEvent {
-	data object AddAlley: AccessoriesScreenUiEvent
-	data object AddGear: AccessoriesScreenUiEvent
-	data object ViewAllAlleys: AccessoriesScreenUiEvent
-	data object ViewAllGear: AccessoriesScreenUiEvent
-	data object ShowAccessoriesOnboarding: AccessoriesScreenUiEvent
+	data object AddAlley : AccessoriesScreenUiEvent
+	data object AddGear : AccessoriesScreenUiEvent
+	data object ViewAllAlleys : AccessoriesScreenUiEvent
+	data object ViewAllGear : AccessoriesScreenUiEvent
+	data object ShowAccessoriesOnboarding : AccessoriesScreenUiEvent
 
-	data class ShowAlleyDetails(val alleyId: UUID): AccessoriesScreenUiEvent
-	data class ShowGearDetails(val gearId: UUID): AccessoriesScreenUiEvent
+	data class ShowAlleyDetails(val alleyId: UUID) : AccessoriesScreenUiEvent
+	data class ShowGearDetails(val gearId: UUID) : AccessoriesScreenUiEvent
 }

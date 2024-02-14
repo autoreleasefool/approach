@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.RoundIconButton
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
@@ -41,7 +40,9 @@ internal fun ScoringMethodCard(
 				RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageScoreClicked) }) {
 					Icon(
 						Icons.Default.Edit,
-						contentDescription = stringResource(RCoreDesign.string.action_manage),
+						contentDescription = stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage,
+						),
 						tint = MaterialTheme.colorScheme.onSurface,
 					)
 				}
@@ -54,16 +55,22 @@ internal fun ScoringMethodCard(
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
 		) {
 			NavigationButton(
-				title = stringResource(when (state.scoringMethod) {
-					GameScoringMethod.MANUAL -> R.string.scoring_method_manual
-					GameScoringMethod.BY_FRAME -> R.string.scoring_method_frame_by_frame
-				}),
+				title = stringResource(
+					when (state.scoringMethod) {
+						GameScoringMethod.MANUAL -> R.string.scoring_method_manual
+						GameScoringMethod.BY_FRAME -> R.string.scoring_method_frame_by_frame
+					},
+				),
 				icon = {
 					Icon(
-						painter = painterResource(when (state.scoringMethod) {
-							GameScoringMethod.MANUAL -> R.drawable.ic_manual_scoring
-							GameScoringMethod.BY_FRAME -> RCoreDesign.drawable.ic_bowling_ball
-						}),
+						painter = painterResource(
+							when (state.scoringMethod) {
+								GameScoringMethod.MANUAL ->
+									R.drawable.ic_manual_scoring
+								GameScoringMethod.BY_FRAME ->
+									ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball
+							},
+						),
 						contentDescription = null,
 						tint = MaterialTheme.colorScheme.onSurface,
 						modifier = Modifier.size(24.dp),
@@ -77,7 +84,7 @@ internal fun ScoringMethodCard(
 						fontWeight = FontWeight.ExtraBold,
 						fontSize = 24.sp,
 					)
-				}
+				},
 			)
 		}
 	}

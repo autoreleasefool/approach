@@ -16,15 +16,21 @@ class LeftTapsSparedStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = LeftTapsSparedStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, emptySet()),
-					roll(2, setOf(Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, emptySet()),
+						roll(2, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
 			),
 		)
 
@@ -36,15 +42,21 @@ class LeftTapsSparedStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = LeftTapsSparedStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, emptySet()),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, emptySet()),
-					roll(2, setOf(Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, emptySet()),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, emptySet()),
+						roll(2, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
 			),
 		)
 
@@ -57,47 +69,140 @@ class LeftTapsSparedStatisticTest {
 			statistic = LeftTapsSparedStatistic(),
 			byFrames = listOf(
 				// Open attempt
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, emptySet()),
-					roll(2, setOf(Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, emptySet()),
+						roll(2, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
 				// Spared attempt, followed by strike
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN)),
+						roll(
+							2,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+					),
+				),
 				// Spared attempt, followed by open
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN)),
-					roll(2, emptySet()),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN)),
+						roll(2, emptySet()),
+					),
+				),
 				// Strike, followed by spared attempt
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(2, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
 				// Strike followed by open attempt
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, emptySet()),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(2, emptySet()),
+					),
+				),
 				// Two strikes, followed by spareable shot
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(
+							1,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(2, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
 				// Three strikes
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(
+							1,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(
+							2,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+					),
+				),
 			),
 		)
 

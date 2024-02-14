@@ -30,9 +30,9 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
-import ca.josephroque.bowlingcompanion.core.data.service.DataExportService
 import ca.josephroque.bowlingcompanion.core.data.service.ApproachDataExportService
 import ca.josephroque.bowlingcompanion.core.data.service.ApproachDataImportService
+import ca.josephroque.bowlingcompanion.core.data.service.DataExportService
 import ca.josephroque.bowlingcompanion.core.data.service.DataImportService
 import dagger.Binds
 import dagger.Module
@@ -43,24 +43,16 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface DataModule {
 	@Binds
-	fun bindsBowlersRepository(
-		bowlersRepository: OfflineFirstBowlersRepository,
-	): BowlersRepository
+	fun bindsBowlersRepository(bowlersRepository: OfflineFirstBowlersRepository): BowlersRepository
 
 	@Binds
-	fun bindsLeaguesRepository(
-		leaguesRepository: OfflineFirstLeaguesRepository,
-	): LeaguesRepository
+	fun bindsLeaguesRepository(leaguesRepository: OfflineFirstLeaguesRepository): LeaguesRepository
 
 	@Binds
-	fun bindsSeriesRepository(
-		seriesRepository: OfflineFirstSeriesRepository,
-	): SeriesRepository
+	fun bindsSeriesRepository(seriesRepository: OfflineFirstSeriesRepository): SeriesRepository
 
 	@Binds
-	fun bindsGamesRepository(
-		gamesRepository: OfflineFirstGamesRepository,
-	): GamesRepository
+	fun bindsGamesRepository(gamesRepository: OfflineFirstGamesRepository): GamesRepository
 
 	@Binds
 	fun bindsMatchPlaysRepository(
@@ -68,29 +60,19 @@ interface DataModule {
 	): MatchPlaysRepository
 
 	@Binds
-	fun bindsFramesRepository(
-		framesRepository: OfflineFirstFramesRepository,
-	): FramesRepository
+	fun bindsFramesRepository(framesRepository: OfflineFirstFramesRepository): FramesRepository
 
 	@Binds
-	fun bindsGearRepository(
-		gearRepository: OfflineFirstGearRepository,
-	): GearRepository
+	fun bindsGearRepository(gearRepository: OfflineFirstGearRepository): GearRepository
 
 	@Binds
-	fun bindsAlleysRepository(
-		alleysRepository: OfflineFirstAlleysRepository,
-	): AlleysRepository
+	fun bindsAlleysRepository(alleysRepository: OfflineFirstAlleysRepository): AlleysRepository
 
 	@Binds
-	fun bindsLanesRepository(
-		lanesRepository: OfflineFirstLanesRepository,
-	): LanesRepository
+	fun bindsLanesRepository(lanesRepository: OfflineFirstLanesRepository): LanesRepository
 
 	@Binds
-	fun bindsUserDataRepository(
-		userDataRepository: OfflineFirstUserDataRepository,
-	): UserDataRepository
+	fun bindsUserDataRepository(userDataRepository: OfflineFirstUserDataRepository): UserDataRepository
 
 	@Binds
 	fun bindsRecentlyUsedRepository(
@@ -98,9 +80,7 @@ interface DataModule {
 	): RecentlyUsedRepository
 
 	@Binds
-	fun bindsScoresRepository(
-		scoresRepository: OfflineFirstScoresRepository,
-	): ScoresRepository
+	fun bindsScoresRepository(scoresRepository: OfflineFirstScoresRepository): ScoresRepository
 
 	@Binds
 	fun bindsAcknowledgementsRepository(
@@ -118,12 +98,8 @@ interface DataModule {
 	): StatisticsWidgetsRepository
 
 	@Binds
-	fun bindsDataExportService(
-		dataExportService: ApproachDataExportService,
-	): DataExportService
+	fun bindsDataExportService(dataExportService: ApproachDataExportService): DataExportService
 
 	@Binds
-	fun bindsDataImportService(
-		dataImportService: ApproachDataImportService,
-	): DataImportService
+	fun bindsDataImportService(dataImportService: ApproachDataImportService): DataImportService
 }

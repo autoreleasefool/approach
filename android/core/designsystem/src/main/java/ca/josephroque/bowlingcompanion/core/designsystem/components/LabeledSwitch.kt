@@ -32,28 +32,35 @@ fun LabeledSwitch(
 		modifier = modifier
 			.fillMaxWidth()
 			.clickable(onClick = { onCheckedChange(!checked) }, enabled = enabled)
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	) {
 		Column(
 			horizontalAlignment = Alignment.Start,
 			verticalArrangement = Arrangement.spacedBy(4.dp),
 			modifier = modifier
-				.weight(1f)
+				.weight(1f),
 		) {
 			Text(
 				text = stringResource(titleResourceId),
-				style = if (compact) MaterialTheme.typography.titleSmall else MaterialTheme.typography.titleMedium,
+				style = if (compact) {
+					MaterialTheme.typography.titleSmall
+				} else {
+					MaterialTheme.typography.titleMedium
+				},
 			)
 
 			subtitleResourceId?.let {
 				Text(
 					text = stringResource(subtitleResourceId),
-					style = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyMedium,
+					style = if (compact) {
+						MaterialTheme.typography.bodySmall
+					} else {
+						MaterialTheme.typography.bodyMedium
+					},
 					color = MaterialTheme.colorScheme.onSurfaceVariant,
 				)
 			}
 		}
-
 
 		Switch(
 			checked = checked,

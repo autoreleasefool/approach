@@ -41,12 +41,12 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Stepper
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.toLocalDateTime
-import java.util.UUID
 
 @Composable
 fun SeriesForm(
@@ -106,7 +106,11 @@ fun SeriesForm(
 			excludeFromStatistics = state.excludeFromStatistics,
 			leagueExcludeFromStatistics = state.leagueExcludeFromStatistics,
 			seriesPreBowl = state.preBowl,
-			onExcludeFromStatisticsChanged = { onAction(SeriesFormUiAction.ExcludeFromStatisticsChanged(it)) },
+			onExcludeFromStatisticsChanged = {
+				onAction(
+					SeriesFormUiAction.ExcludeFromStatisticsChanged(it),
+				)
+			},
 			modifier = Modifier.padding(top = 16.dp),
 		)
 
@@ -115,7 +119,11 @@ fun SeriesForm(
 		if (state.isArchiveButtonEnabled) {
 			Button(
 				onClick = { onAction(SeriesFormUiAction.ArchiveClicked) },
-				colors = ButtonDefaults.buttonColors(containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive)),
+				colors = ButtonDefaults.buttonColors(
+					containerColor = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+					),
+				),
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -192,7 +200,7 @@ private fun SeriesDatePicker(
 						onDateChanged(
 							Instant.fromEpochMilliseconds(currentSelectedDate)
 								.toLocalDateTime(TimeZone.UTC)
-								.date
+								.date,
 						)
 					},
 				) {
@@ -216,12 +224,14 @@ private fun SeriesDatePicker(
 		enabled = false,
 		leadingIcon = {
 			Icon(
-				painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event),
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event,
+				),
 				contentDescription = null,
 			)
 		},
 		trailingIcon = {
-		  Icon(
+			Icon(
 				Icons.Default.Edit,
 				contentDescription = null,
 			)
@@ -242,14 +252,13 @@ private fun SeriesDatePicker(
 }
 
 @Composable
-private fun AlleySection(
-	alley: AlleyDetails?,
-	onClick: () -> Unit,
-) {
+private fun AlleySection(alley: AlleyDetails?, onClick: () -> Unit) {
 	FormSection {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.series_form_bowling_alley),
-			selectedName = alley?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none),
+			selectedName = alley?.name ?: stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.none,
+			),
 			onClick = onClick,
 		)
 	}
@@ -296,10 +305,12 @@ private fun ExcludeFromStatisticsSection(
 			titleResourceId = R.string.series_form_section_statistics,
 			subtitleResourceId = R.string.series_form_section_statistics_description,
 			errorResourceId = when {
-				leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> R.string.series_form_section_statistics_description_excluded_when_league_excluded
-				seriesPreBowl == SeriesPreBowl.PRE_BOWL -> R.string.series_form_section_statistics_description_excluded_when_pre_bowl
+				leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE ->
+					R.string.series_form_section_statistics_description_excluded_when_league_excluded
+				seriesPreBowl == SeriesPreBowl.PRE_BOWL ->
+					R.string.series_form_section_statistics_description_excluded_when_pre_bowl
 				else -> null
-      },
+			},
 			options = ExcludeFromStatistics.entries.toTypedArray(),
 			selected = when {
 				leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> ExcludeFromStatistics.EXCLUDE

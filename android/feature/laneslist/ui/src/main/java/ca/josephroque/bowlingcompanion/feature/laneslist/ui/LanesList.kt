@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
-import ca.josephroque.bowlingcompanion.core.designsystem.R
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.LaneRow
 import me.saket.swipe.SwipeAction
@@ -26,7 +25,9 @@ fun LazyListScope.lanesList(
 		val deleteAction = onLaneDelete?.let {
 			SwipeAction(
 				icon = rememberVectorPainter(Icons.Filled.Delete),
-				background = colorResource(R.color.destructive),
+				background = colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+				),
 				onSwipe = { it(lane) },
 			)
 		}
@@ -34,7 +35,7 @@ fun LazyListScope.lanesList(
 		val editAction = onLaneEdit?.let {
 			SwipeAction(
 				icon = rememberVectorPainter(Icons.Filled.Edit),
-				background = colorResource(R.color.blue_300),
+				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
 				onSwipe = { it(lane) },
 			)
 		}

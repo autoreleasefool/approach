@@ -29,11 +29,15 @@ fun LaneRow(
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null)
-				Modifier
-					.clickable(onClick = onClick)
-					.padding(16.dp)
-			else Modifier),
+			.then(
+				if (onClick != null) {
+					Modifier
+						.clickable(onClick = onClick)
+						.padding(16.dp)
+				} else {
+					Modifier
+				},
+			),
 	) {
 		Text(
 			text = label,

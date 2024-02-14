@@ -5,8 +5,8 @@ import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.GearUpdate
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 interface GearRepository {
 	fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>

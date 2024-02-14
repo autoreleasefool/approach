@@ -25,16 +25,15 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DeleteDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
+import ca.josephroque.bowlingcompanion.core.designsystem.text.quantityStringResource
 import ca.josephroque.bowlingcompanion.core.model.AlleyMaterial
 import ca.josephroque.bowlingcompanion.core.model.AlleyMechanism
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
-import ca.josephroque.bowlingcompanion.core.designsystem.text.quantityStringResource
 import ca.josephroque.bowlingcompanion.core.model.ui.title
 
 @Composable
@@ -123,7 +122,11 @@ fun AlleyForm(
 		if (state.isDeleteButtonEnabled) {
 			Button(
 				onClick = { onAction(AlleyFormUiAction.DeleteClicked) },
-				colors = ButtonDefaults.buttonColors(containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive)),
+				colors = ButtonDefaults.buttonColors(
+					containerColor = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+					),
+				),
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -159,13 +162,13 @@ private fun AlleyNameField(name: String, onNameChanged: ((String) -> Unit)?, err
 				Icon(
 					Icons.Default.Warning,
 					tint = MaterialTheme.colorScheme.error,
-					contentDescription = null
+					contentDescription = null,
 				)
 			}
 		},
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	)
 }
 
@@ -177,20 +180,27 @@ private fun MaterialPicker(material: AlleyMaterial?, onMaterialChanged: (AlleyMa
 		options = AlleyMaterial.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = material,
-		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
+		titleForOption = {
+			it?.title() ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
+		},
 		onOptionSelected = onMaterialChanged,
 	)
 }
 
 @Composable
-private fun MechanismPicker(mechanism: AlleyMechanism?, onMechanismChanged: (AlleyMechanism?) -> Unit) {
+private fun MechanismPicker(
+	mechanism: AlleyMechanism?,
+	onMechanismChanged: (AlleyMechanism?) -> Unit,
+) {
 	FormRadioGroup(
 		title = stringResource(R.string.alley_form_property_mechanism),
 		subtitle = stringResource(R.string.alley_form_property_mechanism_footer),
 		options = AlleyMechanism.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = mechanism,
-		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
+		titleForOption = {
+			it?.title() ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
+		},
 		onOptionSelected = onMechanismChanged,
 	)
 }
@@ -203,7 +213,9 @@ private fun PinFallPicker(pinFall: AlleyPinFall?, onPinFallChanged: (AlleyPinFal
 		options = AlleyPinFall.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = pinFall,
-		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
+		titleForOption = {
+			it?.title() ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
+		},
 		onOptionSelected = onPinFallChanged,
 	)
 }
@@ -216,7 +228,9 @@ private fun PinBasePicker(pinBase: AlleyPinBase?, onPinBaseChanged: (AlleyPinBas
 		options = AlleyPinBase.entries.toTypedArray(),
 		allowNullableSelection = true,
 		selected = pinBase,
-		titleForOption = { it?.title() ?: stringResource(RCoreDesign.string.none) },
+		titleForOption = {
+			it?.title() ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
+		},
 		onOptionSelected = onPinBaseChanged,
 	)
 }

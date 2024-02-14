@@ -18,6 +18,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,8 +28,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class MatchPlayEditorViewModel @Inject constructor(
@@ -37,14 +37,14 @@ class MatchPlayEditorViewModel @Inject constructor(
 	private val gamesRepository: GamesRepository,
 	private val analyticsClient: AnalyticsClient,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
-): ApproachViewModel<MatchPlayEditorScreenEvent>() {
+) : ApproachViewModel<MatchPlayEditorScreenEvent>() {
 	private val gameId = Route.EditMatchPlay.getGame(savedStateHandle)!!
 
-	private var _existingMatchPlay: MatchPlayUpdate? = null
+	private var existingMatchPlay: MatchPlayUpdate? = null
 	private var didLoadInitialValue = false
-	private val _matchPlayEditor: MutableStateFlow<MatchPlayEditorUiState?> = MutableStateFlow(null)
+	private val matchPlayEditor: MutableStateFlow<MatchPlayEditorUiState?> = MutableStateFlow(null)
 
-	val uiState: StateFlow<MatchPlayEditorScreenUiState> = _matchPlayEditor
+	val uiState: StateFlow<MatchPlayEditorScreenUiState> = matchPlayEditor
 		.map { matchPlayEditor ->
 			if (matchPlayEditor == null) {
 				MatchPlayEditorScreenUiState.Loading
@@ -55,7 +55,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 		.stateIn(
 			scope = viewModelScope,
 			started = SharingStarted.WhileSubscribed(5_000),
-			initialValue = MatchPlayEditorScreenUiState.Loading
+			initialValue = MatchPlayEditorScreenUiState.Loading,
 		)
 
 	fun handleAction(action: MatchPlayEditorScreenUiAction) {
@@ -71,7 +71,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 			MatchPlayEditorUiAction.BackClicked -> sendEvent(MatchPlayEditorScreenEvent.Dismissed)
 			MatchPlayEditorUiAction.DoneClicked -> saveMatchPlay()
 			MatchPlayEditorUiAction.OpponentClicked -> sendEvent(
-				MatchPlayEditorScreenEvent.EditOpponent(opponent = _matchPlayEditor.value?.opponent?.id)
+				MatchPlayEditorScreenEvent.EditOpponent(opponent = matchPlayEditor.value?.opponent?.id),
 			)
 			is MatchPlayEditorUiAction.OpponentScoreChanged -> updateOpponentScore(score = action.score)
 			is MatchPlayEditorUiAction.ResultChanged -> updateResult(result = action.result)
@@ -82,13 +82,13 @@ class MatchPlayEditorViewModel @Inject constructor(
 		if (didLoadInitialValue) return
 		viewModelScope.launch {
 			didLoadInitialValue = true
-			_existingMatchPlay = matchPlaysRepository.getMatchPlay(gameId).first()
+			existingMatchPlay = matchPlaysRepository.getMatchPlay(gameId).first()
 			val gameIndex = gamesRepository.getGameIndex(gameId).first()
-			_matchPlayEditor.value = MatchPlayEditorUiState(
+			matchPlayEditor.value = MatchPlayEditorUiState(
 				gameIndex = gameIndex,
-				opponent = _existingMatchPlay?.opponent,
-				opponentScore = _existingMatchPlay?.opponentScore,
-				result = _existingMatchPlay?.result,
+				opponent = existingMatchPlay?.opponent,
+				opponentScore = existingMatchPlay?.opponentScore,
+				result = existingMatchPlay?.result,
 			)
 		}
 	}
@@ -96,7 +96,7 @@ class MatchPlayEditorViewModel @Inject constructor(
 	private fun updateOpponent(opponentId: UUID?) {
 		viewModelScope.launch {
 			val opponent = opponentId?.let { bowlersRepository.getBowlerSummary(it).first() }
-			_matchPlayEditor.update { it?.copy(opponent = opponent) }
+			matchPlayEditor.update { it?.copy(opponent = opponent) }
 
 			if (opponentId != null) {
 				recentlyUsedRepository.didRecentlyUseOpponent(opponentId)
@@ -105,45 +105,49 @@ class MatchPlayEditorViewModel @Inject constructor(
 	}
 
 	private fun updateOpponentScore(score: String) {
-		_matchPlayEditor.update { it?.copy(opponentScore = score.toIntOrNull()?.coerceIn(0, Game.MaxScore)) }
+		matchPlayEditor.update {
+			it?.copy(opponentScore = score.toIntOrNull()?.coerceIn(0, Game.MAX_SCORE))
+		}
 	}
 	private fun updateResult(result: MatchPlayResult?) {
-		_matchPlayEditor.update { it?.copy(result = result) }
+		matchPlayEditor.update { it?.copy(result = result) }
 	}
 
 	private fun saveMatchPlay() {
 		viewModelScope.launch {
-			val state = _matchPlayEditor.value ?: return@launch
-			when (val existingMatchPlay = _existingMatchPlay) {
-					null -> {
-						matchPlaysRepository.insertMatchPlay(
-							MatchPlayCreate(
-								id = UUID.randomUUID(),
-								gameId = gameId,
-								opponentId = state.opponent?.id,
-								opponentScore = state.opponentScore,
-								result = state.result,
-							),
-						)
+			val state = matchPlayEditor.value ?: return@launch
+			when (val existingMatchPlay = existingMatchPlay) {
+				null -> {
+					matchPlaysRepository.insertMatchPlay(
+						MatchPlayCreate(
+							id = UUID.randomUUID(),
+							gameId = gameId,
+							opponentId = state.opponent?.id,
+							opponentScore = state.opponentScore,
+							result = state.result,
+						),
+					)
 
-						analyticsClient.trackEvent(MatchPlayCreated)
-					}
-			 else -> {
-				 matchPlaysRepository.updateMatchPlay(
-					 MatchPlayUpdate(
-						 id = existingMatchPlay.id,
-						 opponent = state.opponent,
-						 opponentScore = state.opponentScore,
-						 result = state.result,
-					 ),
-				 )
+					analyticsClient.trackEvent(MatchPlayCreated)
+				}
+				else -> {
+					matchPlaysRepository.updateMatchPlay(
+						MatchPlayUpdate(
+							id = existingMatchPlay.id,
+							opponent = state.opponent,
+							opponentScore = state.opponentScore,
+							result = state.result,
+						),
+					)
 
-				 analyticsClient.trackEvent(MatchPlayUpdated(
-					 withOpponent = state.opponent != null,
-					 withScore = state.opponentScore != null,
-					 withResult = state.result != null,
-				 ))
-			 }
+					analyticsClient.trackEvent(
+						MatchPlayUpdated(
+							withOpponent = state.opponent != null,
+							withScore = state.opponentScore != null,
+							withResult = state.result != null,
+						),
+					)
+				}
 			}
 
 			sendEvent(MatchPlayEditorScreenEvent.Dismissed)

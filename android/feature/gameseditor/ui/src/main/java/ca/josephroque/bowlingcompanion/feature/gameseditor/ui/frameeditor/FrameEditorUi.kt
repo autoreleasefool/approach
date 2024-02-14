@@ -15,8 +15,8 @@ data class FrameEditorUiState(
 )
 
 sealed interface FrameEditorUiAction {
-	data object AnimationFinished: FrameEditorUiAction
-	data object FrameEditorInteractionStarted: FrameEditorUiAction
+	data object AnimationFinished : FrameEditorUiAction
+	data object FrameEditorInteractionStarted : FrameEditorUiAction
 
-	data class DownedPinsChanged(val downedPins: Set<Pin>): FrameEditorUiAction
+	data class DownedPinsChanged(val downedPins: Set<Pin>) : FrameEditorUiAction
 }

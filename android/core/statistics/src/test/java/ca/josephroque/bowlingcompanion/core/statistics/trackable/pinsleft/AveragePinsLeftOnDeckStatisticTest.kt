@@ -21,7 +21,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 					listOf(
 						roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
 						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-						roll(2, emptySet())
+						roll(2, emptySet()),
 					),
 					gameId = id(0),
 				),
@@ -29,7 +29,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 					1,
 					listOf(
 						roll(0, setOf(Pin.HEAD_PIN)),
-						roll(0, emptySet())
+						roll(0, emptySet()),
 					),
 					gameId = id(0),
 				),
@@ -38,16 +38,34 @@ class AveragePinsLeftOnDeckStatisticTest {
 					listOf(
 						roll(
 							0,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
 						roll(
 							1,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
 						roll(
 							2,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
-						)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
+						),
 					),
 					gameId = id(0),
 				),
@@ -56,16 +74,28 @@ class AveragePinsLeftOnDeckStatisticTest {
 					listOf(
 						roll(
 							0,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
 						roll(
 							1,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
 						roll(
 							2,
-							setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
-						)
+							setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN),
+						),
 					),
 					gameId = id(1),
 				),
@@ -74,13 +104,25 @@ class AveragePinsLeftOnDeckStatisticTest {
 					listOf(
 						roll(
 							0,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
 						roll(
 							0,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
-						roll(0, emptySet())
+						roll(0, emptySet()),
 					),
 					gameId = id(2),
 				),
@@ -90,13 +132,19 @@ class AveragePinsLeftOnDeckStatisticTest {
 						roll(0, emptySet()),
 						roll(
 							0,
-							setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)
+							setOf(
+								Pin.HEAD_PIN,
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
 						),
-						roll(0, setOf(Pin.LEFT_TWO_PIN))
+						roll(0, setOf(Pin.LEFT_TWO_PIN)),
 					),
 					gameId = id(3),
-				)
-			)
+				),
+			),
 		)
 
 		assertAveraging(statistic, 48, 4, "12")
@@ -106,7 +154,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 	fun testAdjustBySeries_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = AveragePinsLeftOnDeckStatistic(),
-			bySeries = mockSeries()
+			bySeries = mockSeries(),
 		)
 		assertAveraging(statistic, 0, 0, "-")
 	}
@@ -115,7 +163,7 @@ class AveragePinsLeftOnDeckStatisticTest {
 	fun testAdjustByGame_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = AveragePinsLeftOnDeckStatistic(),
-			byGames = mockGames()
+			byGames = mockGames(),
 		)
 		assertAveraging(statistic, 0, 0, "-")
 	}

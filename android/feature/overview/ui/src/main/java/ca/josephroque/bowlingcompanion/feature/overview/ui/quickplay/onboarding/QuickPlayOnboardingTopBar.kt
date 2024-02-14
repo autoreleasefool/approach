@@ -11,18 +11,16 @@ import ca.josephroque.bowlingcompanion.feature.overview.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuickPlayOnboardingTopBar(
-	onAction: (QuickPlayOnboardingUiAction) -> Unit
-) {
+fun QuickPlayOnboardingTopBar(onAction: (QuickPlayOnboardingUiAction) -> Unit) {
 	TopAppBar(
 		title = {
 			Text(
 				text = stringResource(R.string.quick_play_how_to_use),
-				style = MaterialTheme.typography.titleMedium
+				style = MaterialTheme.typography.titleMedium,
 			)
 		},
 		navigationIcon = {
 			CloseButton(onClick = { onAction(QuickPlayOnboardingUiAction.BackClicked) })
-		}
+		},
 	)
 }

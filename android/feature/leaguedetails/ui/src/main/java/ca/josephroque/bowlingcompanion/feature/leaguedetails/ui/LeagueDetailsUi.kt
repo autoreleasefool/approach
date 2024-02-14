@@ -20,13 +20,13 @@ data class LeagueDetailsUiState(
 )
 
 sealed interface LeagueDetailsUiAction {
-	data object BackClicked: LeagueDetailsUiAction
-	data object AddSeriesClicked: LeagueDetailsUiAction
+	data object BackClicked : LeagueDetailsUiAction
+	data object AddSeriesClicked : LeagueDetailsUiAction
 
-	data class SeriesItemSizeToggled(val itemSize: SeriesItemSize): LeagueDetailsUiAction
-	data object SortClicked: LeagueDetailsUiAction
-	data object SortDismissed: LeagueDetailsUiAction
-	data class SortOrderClicked(val sortOrder: SeriesSortOrder): LeagueDetailsUiAction
+	data class SeriesItemSizeToggled(val itemSize: SeriesItemSize) : LeagueDetailsUiAction
+	data object SortClicked : LeagueDetailsUiAction
+	data object SortDismissed : LeagueDetailsUiAction
+	data class SortOrderClicked(val sortOrder: SeriesSortOrder) : LeagueDetailsUiAction
 
-	data class SeriesList(val action: SeriesListUiAction): LeagueDetailsUiAction
+	data class SeriesList(val action: SeriesListUiAction) : LeagueDetailsUiAction
 }

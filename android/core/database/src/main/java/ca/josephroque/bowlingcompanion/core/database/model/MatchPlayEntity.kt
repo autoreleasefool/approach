@@ -28,7 +28,7 @@ import java.util.UUID
 			childColumns = ["opponent_id"],
 			onDelete = ForeignKey.SET_NULL,
 			onUpdate = ForeignKey.CASCADE,
-		)
+		),
 	],
 )
 data class MatchPlayEntity(

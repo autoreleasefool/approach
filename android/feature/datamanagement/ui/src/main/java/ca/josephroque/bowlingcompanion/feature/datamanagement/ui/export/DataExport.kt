@@ -50,7 +50,7 @@ fun DataExport(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		modifier = modifier
 			.fillMaxSize()
-			.padding(16.dp)
+			.padding(16.dp),
 	) {
 		Column(
 			verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -123,10 +123,7 @@ fun DataExport(
 }
 
 @Composable
-private fun DataExportFilePicker(
-	state: DataExportUiState,
-	onAction: (DataExportUiAction) -> Unit,
-) {
+private fun DataExportFilePicker(state: DataExportUiState, onAction: (DataExportUiAction) -> Unit) {
 	val launcher = rememberLauncherForActivityResult(
 		contract = ActivityResultContracts.CreateDocument("application/octet-stream"),
 	) { uri ->
@@ -147,18 +144,25 @@ private fun DataExportProgressCard(
 	versionName: String,
 ) {
 	when (progress) {
-		DataExportProgress.NotStarted, is DataExportProgress.PickingDestination, DataExportProgress.Exporting -> Unit
+		DataExportProgress.NotStarted,
+		is DataExportProgress.PickingDestination,
+		DataExportProgress.Exporting,
+		-> Unit
 		DataExportProgress.Complete -> {
 			Card(
 				modifier = Modifier.fillMaxWidth(),
 				colors = CardDefaults.cardColors(
-					containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container),
+					containerColor = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container,
+					),
 				),
 			) {
 				Text(
 					text = stringResource(R.string.data_export_progress_success),
 					style = MaterialTheme.typography.bodyMedium,
-					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container),
+					color = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container,
+					),
 					modifier = Modifier.padding(16.dp),
 				)
 			}
@@ -182,7 +186,9 @@ private fun DataExportProgressCard(
 					)
 
 					Text(
-						text = progress.exception.localizedMessage ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message),
+						text = progress.exception.localizedMessage ?: stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message,
+						),
 						style = MaterialTheme.typography.bodyMedium,
 						color = MaterialTheme.colorScheme.onErrorContainer,
 						modifier = Modifier.padding(horizontal = 16.dp),
@@ -198,7 +204,9 @@ private fun DataExportProgressCard(
 					)
 
 					SendEmailButton(
-						body = progress.exception.localizedMessage ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message),
+						body = progress.exception.localizedMessage ?: stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message,
+						),
 						versionName = versionName,
 						versionCode = versionCode,
 						modifier = Modifier.align(Alignment.End),
@@ -211,9 +219,7 @@ private fun DataExportProgressCard(
 }
 
 @Composable
-private fun LastExportDateCard(
-	lastExportDate: LocalDate?,
-) {
+private fun LastExportDateCard(lastExportDate: LocalDate?) {
 	Card(
 		colors = CardDefaults.cardColors(
 			containerColor = if (lastExportDate == null) {
@@ -234,13 +240,17 @@ private fun LastExportDateCard(
 				Icon(
 					Icons.Default.Warning,
 					contentDescription = null,
-					tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
+					tint = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container,
+					),
 				)
 
 				Text(
 					text = stringResource(R.string.data_export_never_exported),
 					style = MaterialTheme.typography.bodyMedium,
-					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
+					color = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container,
+					),
 				)
 			} else {
 				Text(

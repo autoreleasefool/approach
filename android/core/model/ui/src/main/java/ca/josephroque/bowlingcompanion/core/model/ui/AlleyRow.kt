@@ -36,11 +36,15 @@ fun AlleyRow(
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null)
-				Modifier
-					.clickable(onClick = onClick)
-					.padding(16.dp)
-			else Modifier)
+			.then(
+				if (onClick != null) {
+					Modifier
+						.clickable(onClick = onClick)
+						.padding(16.dp)
+				} else {
+					Modifier
+				},
+			),
 	) {
 		// FIXME: Add location name
 
@@ -67,7 +71,7 @@ fun AlleyRow(
 							contentDescription = null,
 							modifier = Modifier
 								.padding(2.dp)
-								.size(16.dp)
+								.size(16.dp),
 						)
 					}
 				}
@@ -86,7 +90,7 @@ private fun AlleyRowPreview() {
 			pinFall = AlleyPinFall.STRINGS,
 			mechanism = AlleyMechanism.INTERCHANGEABLE,
 			pinBase = AlleyPinBase.BLACK,
-			onClick = {}
+			onClick = {},
 		)
 	}
 }

@@ -12,10 +12,7 @@ fun NavController.navigateToOnboarding(navOptions: NavOptions? = null) {
 	this.navigate(Route.Onboarding.route, navOptions)
 }
 
-fun NavGraphBuilder.onboardingScreen(
-	finishActivity: () -> Unit,
-	onCompleteOnboarding: () -> Unit,
-) {
+fun NavGraphBuilder.onboardingScreen(finishActivity: () -> Unit, onCompleteOnboarding: () -> Unit) {
 	composable(
 		route = Route.Onboarding.route,
 	) {

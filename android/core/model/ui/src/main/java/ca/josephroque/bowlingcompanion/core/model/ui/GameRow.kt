@@ -14,28 +14,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun GameRow(
-	index: Int,
-	score: Int,
-	modifier: Modifier = Modifier,
-	onClick: (() -> Unit)? = null,
-) {
+fun GameRow(index: Int, score: Int, modifier: Modifier = Modifier, onClick: (() -> Unit)? = null) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null)
-				Modifier
-					.clickable(onClick = onClick)
-					.padding(16.dp)
-			else Modifier),
+			.then(
+				if (onClick != null) {
+					Modifier
+						.clickable(onClick = onClick)
+						.padding(16.dp)
+				} else {
+					Modifier
+				},
+			),
 	) {
 		Text(
-			text = stringResource(R.string.game_with_ordinal, index + 1),
+			text = stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
+				index + 1,
+			),
 			style = MaterialTheme.typography.titleMedium,
 			modifier = Modifier.weight(1f),
 		)

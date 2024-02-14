@@ -17,8 +17,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetails
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 data class EditGameArgs(
 	val seriesId: UUID,

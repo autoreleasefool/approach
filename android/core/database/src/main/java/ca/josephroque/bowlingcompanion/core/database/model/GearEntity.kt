@@ -19,7 +19,7 @@ import java.util.UUID
 			childColumns = ["owner_id"],
 			onUpdate = ForeignKey.CASCADE,
 			onDelete = ForeignKey.SET_NULL,
-		)
+		),
 	],
 )
 data class GearEntity(
@@ -51,7 +51,7 @@ data class GearUpdateEntity(
 	val name: String,
 	@ColumnInfo(name = "owner_id") val ownerId: UUID?,
 	val kind: GearKind,
-	val avatar: Avatar
+	val avatar: Avatar,
 ) {
 	fun asModel(): GearUpdate = GearUpdate(
 		id = id,

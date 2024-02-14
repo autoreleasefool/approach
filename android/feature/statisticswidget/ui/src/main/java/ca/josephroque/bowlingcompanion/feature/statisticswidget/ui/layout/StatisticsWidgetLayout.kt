@@ -35,7 +35,9 @@ fun StatisticsWidgetLayout(
 		modifier = modifier.fillMaxWidth(),
 	) {
 		if (state.widgets.isEmpty()) {
-			StatisticsWidgetPlaceholderCard(onClick = { onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked) })
+			StatisticsWidgetPlaceholderCard(onClick = {
+				onAction(StatisticsWidgetLayoutUiAction.ChangeLayoutClicked)
+			})
 		} else {
 			val widgetsRows = state.widgets.chunked(2)
 			widgetsRows.forEach { row ->
@@ -45,7 +47,6 @@ fun StatisticsWidgetLayout(
 					modifier = Modifier.padding(bottom = if (row == widgetsRows.last()) 0.dp else 16.dp),
 				)
 			}
-
 
 			Row {
 				Spacer(modifier = Modifier.weight(1f))
@@ -103,7 +104,7 @@ private fun StatisticsWidgetLayoutPreview() {
 						context = "",
 						priority = 0,
 					),
-				)
+				),
 			),
 			onAction = {},
 		)

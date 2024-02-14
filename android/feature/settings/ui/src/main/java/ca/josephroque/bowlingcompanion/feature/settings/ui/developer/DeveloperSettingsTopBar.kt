@@ -26,6 +26,6 @@ fun DeveloperSettingsTopBar(
 		},
 		navigationIcon = {
 			BackButton(onClick = { onAction(DeveloperSettingsUiAction.BackClicked) })
-		}
+		},
 	)
 }

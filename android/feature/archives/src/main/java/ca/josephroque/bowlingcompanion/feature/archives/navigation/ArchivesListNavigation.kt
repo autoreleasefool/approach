@@ -11,9 +11,7 @@ fun NavController.navigateToArchivesList(navOptions: NavOptions? = null) {
 	this.navigate(Route.ArchivesList.route, navOptions)
 }
 
-fun NavGraphBuilder.archivesList(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.archivesList(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.ArchivesList.route,
 	) {
@@ -22,4 +20,3 @@ fun NavGraphBuilder.archivesList(
 		)
 	}
 }
-

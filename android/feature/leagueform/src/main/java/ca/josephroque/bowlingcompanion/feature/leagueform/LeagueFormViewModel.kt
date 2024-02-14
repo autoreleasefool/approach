@@ -21,14 +21,14 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiS
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import java.lang.Integer.max
 import java.lang.Integer.min
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LeagueFormViewModel @Inject constructor(
@@ -36,9 +36,10 @@ class LeagueFormViewModel @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<LeagueFormScreenEvent>() {
+) : ApproachViewModel<LeagueFormScreenEvent>() {
 
-	private val _uiState: MutableStateFlow<LeagueFormScreenUiState> = MutableStateFlow(LeagueFormScreenUiState.Loading)
+	private val _uiState: MutableStateFlow<LeagueFormScreenUiState> =
+		MutableStateFlow(LeagueFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
 
 	private val hasLoadedInitialState: Boolean
@@ -62,11 +63,17 @@ class LeagueFormViewModel @Inject constructor(
 			LeagueFormUiAction.CancelDiscardChangesClicked -> setDiscardChangesDialog(isVisible = false)
 			is LeagueFormUiAction.NameChanged -> updateName(action.name)
 			is LeagueFormUiAction.RecurrenceChanged -> updateRecurrence(action.recurrence)
-			is LeagueFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(action.excludeFromStatistics)
+			is LeagueFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(
+				action.excludeFromStatistics,
+			)
 			is LeagueFormUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
 			is LeagueFormUiAction.GamesPerSeriesChanged -> updateGamesPerSeries(action.gamesPerSeries)
-			is LeagueFormUiAction.IncludeAdditionalPinFallChanged -> updateIncludeAdditionalPinFall(action.includeAdditionalPinFall)
-			is LeagueFormUiAction.AdditionalPinFallChanged -> updateAdditionalPinFall(action.additionalPinFall)
+			is LeagueFormUiAction.IncludeAdditionalPinFallChanged -> updateIncludeAdditionalPinFall(
+				action.includeAdditionalPinFall,
+			)
+			is LeagueFormUiAction.AdditionalPinFallChanged -> updateAdditionalPinFall(
+				action.additionalPinFall,
+			)
 			is LeagueFormUiAction.AdditionalGamesChanged -> updateAdditionalGames(action.additionalGames)
 			is LeagueFormUiAction.ArchiveClicked -> setArchiveLeaguePrompt(isVisible = true)
 			is LeagueFormUiAction.ConfirmArchiveClicked -> archiveLeague()
@@ -108,7 +115,11 @@ class LeagueFormViewModel @Inject constructor(
 						name = league.name,
 						nameErrorId = null,
 						excludeFromStatistics = league.excludeFromStatistics,
-						includeAdditionalPinFall = if ((additionalGames ?: 0) > 0) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE,
+						includeAdditionalPinFall = if ((additionalGames ?: 0) > 0) {
+							IncludeAdditionalPinFall.INCLUDE
+						} else {
+							IncludeAdditionalPinFall.NONE
+						},
 						additionalPinFall = league.additionalPinFall ?: 0,
 						additionalGames = additionalGames ?: 0,
 						recurrence = null,
@@ -164,7 +175,12 @@ class LeagueFormViewModel @Inject constructor(
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
-								nameErrorId = if (state.form.name.isBlank()) ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing else null
+								nameErrorId = if (state.form.name.isBlank()) {
+									@Suppress("ktlint:standard:max-line-length")
+									ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing
+								} else {
+									null
+								},
 							)
 						}
 					}
@@ -178,7 +194,12 @@ class LeagueFormViewModel @Inject constructor(
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
-								nameErrorId = if (state.form.name.isBlank()) ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing else null
+								nameErrorId = if (state.form.name.isBlank()) {
+									@Suppress("ktlint:standard:max-line-length")
+									ca.josephroque.bowlingcompanion.feature.leagueform.ui.R.string.league_form_property_name_missing
+								} else {
+									null
+								},
 							)
 						}
 					}
@@ -234,7 +255,7 @@ class LeagueFormViewModel @Inject constructor(
 				gamesPerSeries = when (recurrence) {
 					LeagueRecurrence.REPEATING -> it.gamesPerSeries
 					LeagueRecurrence.ONCE -> GamesPerSeries.STATIC
-				}
+				},
 			)
 		}
 	}
@@ -242,7 +263,10 @@ class LeagueFormViewModel @Inject constructor(
 	private fun updateNumberOfGames(numberOfGames: Int) {
 		_uiState.updateForm {
 			it.copy(
-				numberOfGames = max(min(numberOfGames, League.NumberOfGamesRange.last), League.NumberOfGamesRange.first),
+				numberOfGames = max(
+					min(numberOfGames, League.NumberOfGamesRange.last),
+					League.NumberOfGamesRange.first,
+				),
 			)
 		}
 	}

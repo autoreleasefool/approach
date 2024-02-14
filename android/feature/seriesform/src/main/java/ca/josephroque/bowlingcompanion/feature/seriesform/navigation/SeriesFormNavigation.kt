@@ -16,7 +16,11 @@ fun NavController.navigateToSeriesForm(seriesId: UUID, navOptions: NavOptions? =
 	this.navigate(Route.EditSeries.createRoute(seriesId), navOptions)
 }
 
-fun NavController.navigateToNewSeriesForm(leagueId: UUID, result: NavResultCallback<UUID?>, navOptions: NavOptions? = null) {
+fun NavController.navigateToNewSeriesForm(
+	leagueId: UUID,
+	result: NavResultCallback<UUID?>,
+	navOptions: NavOptions? = null,
+) {
 	this.navigateForResult(Route.AddSeries.createRoute(leagueId), result, navOptions)
 }
 
@@ -27,7 +31,7 @@ fun NavGraphBuilder.seriesFormScreen(
 	composable(
 		route = Route.EditSeries.route,
 		arguments = listOf(
-			navArgument(Route.EditSeries.ARG_SERIES) { type = NavType.StringType }
+			navArgument(Route.EditSeries.ARG_SERIES) { type = NavType.StringType },
 		),
 	) {
 		SeriesFormRoute(
@@ -38,7 +42,7 @@ fun NavGraphBuilder.seriesFormScreen(
 	composable(
 		route = Route.AddSeries.route,
 		arguments = listOf(
-			navArgument(Route.AddSeries.ARG_LEAGUE) { type = NavType.StringType }
+			navArgument(Route.AddSeries.ARG_LEAGUE) { type = NavType.StringType },
 		),
 	) {
 		SeriesFormRoute(

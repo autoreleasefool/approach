@@ -17,8 +17,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentsList
 import ca.josephroque.bowlingcompanion.feature.opponentslist.ui.OpponentsListTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun OpponentsListRoute(
@@ -84,4 +84,3 @@ private fun OpponentsListScreen(
 		}
 	}
 }
-

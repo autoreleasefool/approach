@@ -28,10 +28,10 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.Pin
-import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
-import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.nextIndexToRecord
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.AnimationDirection
@@ -56,6 +56,8 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateGamesEdit
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateHeader
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -69,8 +71,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class GamesEditorViewModel @Inject constructor(
@@ -86,41 +86,47 @@ class GamesEditorViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<GamesEditorScreenEvent>(), DefaultLifecycleObserver {
+) : ApproachViewModel<GamesEditorScreenEvent>(), DefaultLifecycleObserver {
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
 
-	private val _series = MutableStateFlow(Route.EditGame.getSeries(savedStateHandle))
-	private val _bowlers = _series.flatMapLatest { bowlersRepository.getSeriesBowlers(it) }
-	private val _currentBowlerId = MutableStateFlow<UUID?>(null)
+	private val series = MutableStateFlow(Route.EditGame.getSeries(savedStateHandle))
+	private val bowlers = series.flatMapLatest { bowlersRepository.getSeriesBowlers(it) }
+	private val currentBowlerId = MutableStateFlow<UUID?>(null)
 
 	private var initialGameLoaded = false
-	private val _currentGameId = MutableStateFlow(initialGameId)
-	private val _headerPeekHeight = MutableStateFlow(0f)
+	private val currentGameId = MutableStateFlow(initialGameId)
+	private val headerPeekHeight = MutableStateFlow(0f)
 
-	private val _isGameDetailsSheetVisible = MutableStateFlow(true)
-	private val _isGameLockSnackBarVisible = MutableStateFlow(false)
+	private val isGameDetailsSheetVisible = MutableStateFlow(true)
+	private val isGameLockSnackBarVisible = MutableStateFlow(false)
 
-	private var _ballsJob: Job? = null
-	private var _framesJob: Job? = null
-	private var _scoresJob: Job? = null
-	private val _gamesEditorState = MutableStateFlow(GamesEditorUiState(gameId = initialGameId))
+	private var ballsJob: Job? = null
+	private var framesJob: Job? = null
+	private var scoresJob: Job? = null
+	private val gamesEditorState = MutableStateFlow(GamesEditorUiState(gameId = initialGameId))
 
-	private var _alleyJob: Job? = null
-	private var _lanesJob: Job? = null
-	private var _gearJob: Job? = null
-	private var _matchPlayJob: Job? = null
-	private var _seriesDetailsJob: Job? = null
-	private var _bowlerDetailsJob: Job? = null
-	private var _gameDetailsJob: Job? = null
-	private val _gameDetailsState = MutableStateFlow(GameDetailsUiState(gameId = initialGameId))
+	private var alleyJob: Job? = null
+	private var lanesJob: Job? = null
+	private var gearJob: Job? = null
+	private var matchPlayJob: Job? = null
+	private var seriesDetailsJob: Job? = null
+	private var bowlerDetailsJob: Job? = null
+	private var gameDetailsJob: Job? = null
+	private val gameDetailsState = MutableStateFlow(GameDetailsUiState(gameId = initialGameId))
 
 	val uiState: StateFlow<GamesEditorScreenUiState> = combine(
-		_gamesEditorState,
-		_gameDetailsState,
-		_headerPeekHeight,
-		_isGameLockSnackBarVisible,
-		_isGameDetailsSheetVisible,
-	) { gamesEditor, gameDetails, headerPeekHeight, isGameLockSnackBarVisible, isGameDetailsSheetVisible ->
+		gamesEditorState,
+		gameDetailsState,
+		headerPeekHeight,
+		isGameLockSnackBarVisible,
+		isGameDetailsSheetVisible,
+	) {
+			gamesEditor,
+			gameDetails,
+			headerPeekHeight,
+			isGameLockSnackBarVisible,
+			isGameDetailsSheetVisible,
+		->
 		GamesEditorScreenUiState.Loaded(
 			gamesEditor = gamesEditor,
 			gameDetails = gameDetails,
@@ -135,7 +141,7 @@ class GamesEditorViewModel @Inject constructor(
 	)
 
 	override fun onResume(owner: LifecycleOwner) {
-		_isGameDetailsSheetVisible.value = true
+		isGameDetailsSheetVisible.value = true
 	}
 
 	fun handleAction(action: GamesEditorScreenUiAction) {
@@ -164,7 +170,9 @@ class GamesEditorViewModel @Inject constructor(
 			GameDetailsUiAction.ManageAlleyClicked -> openAlleyPicker()
 			GameDetailsUiAction.ViewAllBowlersClicked -> openAllBowlersScores()
 			is GameDetailsUiAction.LockToggled -> toggleGameLocked(action.locked)
-			is GameDetailsUiAction.ExcludeFromStatisticsToggled -> toggleGameExcludedFromStatistics(action.excludeFromStatistics)
+			is GameDetailsUiAction.ExcludeFromStatisticsToggled -> toggleGameExcludedFromStatistics(
+				action.excludeFromStatistics,
+			)
 			is GameDetailsUiAction.NextGameElementClicked -> goToNext(action.nextGameElement)
 			is GameDetailsUiAction.HeaderHeightMeasured -> setHeaderPeekHeight(action.height)
 		}
@@ -210,16 +218,18 @@ class GamesEditorViewModel @Inject constructor(
 			ScoreEditorUiAction.CancelClicked -> dismissScoreEditor(didSave = false)
 			ScoreEditorUiAction.SaveClicked -> dismissScoreEditor(didSave = true)
 			is ScoreEditorUiAction.ScoreChanged -> updateScoreEditorScore(score = action.score)
-			is ScoreEditorUiAction.ScoringMethodChanged -> updateScoreEditorScoringMethod(score = action.scoringMethod)
+			is ScoreEditorUiAction.ScoringMethodChanged -> updateScoreEditorScoringMethod(
+				score = action.scoringMethod,
+			)
 		}
 	}
 
 	private fun updateSeries(series: List<UUID>) {
-		_series.update { series }
+		this.series.update { series }
 	}
 
 	private fun loadGameIfChanged(gameId: UUID) {
-		if (_currentGameId.value == gameId) return
+		if (currentGameId.value == gameId) return
 		loadGame(gameId)
 	}
 
@@ -231,36 +241,36 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun loadBowlerGame(bowlerId: UUID, gameIndex: Int? = null) {
 		viewModelScope.launch {
-			val gameIndexToLoad = gameIndex ?: _gameDetailsState.value.currentGameIndex
+			val gameIndexToLoad = gameIndex ?: gameDetailsState.value.currentGameIndex
 			val bowlerSeriesId = getBowlerSeriesId(bowlerId)
 			val seriesGames = gamesRepository.getGamesList(bowlerSeriesId).first()
 			val gameToLoad = seriesGames[gameIndexToLoad].id
 
-			_currentBowlerId.update { bowlerId }
+			currentBowlerId.update { bowlerId }
 			loadGame(gameToLoad)
 		}
 	}
 
 	private fun loadGame(gameId: UUID) {
-		val gameToLoad = _currentGameId.updateAndGet { gameId }
-		_gameDetailsState.update { it.copy(gameId = gameToLoad) }
-		_gamesEditorState.update { it.copy(gameId = gameToLoad) }
+		val gameToLoad = currentGameId.updateAndGet { gameId }
+		gameDetailsState.update { it.copy(gameId = gameToLoad) }
+		gamesEditorState.update { it.copy(gameId = gameToLoad) }
 
 		analyticsClient.trackEvent(GameViewed(eventId = gameId))
 
-		_gameDetailsJob?.cancel()
-		_gameDetailsJob = viewModelScope.launch {
+		gameDetailsJob?.cancel()
+		gameDetailsJob = viewModelScope.launch {
 			gamesRepository.getGameDetails(gameToLoad).collect { gameDetails ->
-				_currentBowlerId.update { gameDetails.bowler.id }
+				currentBowlerId.update { gameDetails.bowler.id }
 
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						gameId = gameDetails.properties.id,
 						currentGameIndex = gameDetails.properties.index,
 						header = it.header.copy(
 							bowlerName = gameDetails.bowler.name,
 							leagueName = gameDetails.league.name,
-							hasMultipleBowlers = _series.value.size > 1,
+							hasMultipleBowlers = series.value.size > 1,
 						),
 						scoringMethod = it.scoringMethod.copy(
 							score = gameDetails.properties.score,
@@ -276,7 +286,7 @@ class GamesEditorViewModel @Inject constructor(
 					)
 				}
 
-				_gamesEditorState.updateGamesEditor(gameToLoad) {
+				gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
 						manualScore = when (gameDetails.properties.scoringMethod) {
 							GameScoringMethod.MANUAL -> gameDetails.properties.score
@@ -290,23 +300,23 @@ class GamesEditorViewModel @Inject constructor(
 			}
 		}
 
-		_seriesDetailsJob?.cancel()
-		_seriesDetailsJob = viewModelScope.launch {
+		seriesDetailsJob?.cancel()
+		seriesDetailsJob = viewModelScope.launch {
 			val seriesId = currentSeriesId()
 			gamesRepository.getGameIds(seriesId).collect { ids ->
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(seriesGameIds = ids)
 				}
 			}
 		}
 
-		_bowlerDetailsJob?.cancel()
-		_bowlerDetailsJob = viewModelScope.launch {
-			combine(_currentBowlerId.filterNotNull(), _bowlers) { currentBowlerId, bowlers ->
+		bowlerDetailsJob?.cancel()
+		bowlerDetailsJob = viewModelScope.launch {
+			combine(currentBowlerId.filterNotNull(), bowlers) { currentBowlerId, bowlers ->
 				Pair(currentBowlerId, bowlers)
 			}.collect { currentBowlers ->
 				val (currentBowlerId, bowlers) = currentBowlers
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						currentBowlerIndex = bowlers.indexOfFirst { bowler -> bowler.id == currentBowlerId },
 						bowlers = bowlers,
@@ -315,79 +325,86 @@ class GamesEditorViewModel @Inject constructor(
 			}
 		}
 
-		_ballsJob?.cancel()
-		_ballsJob = viewModelScope.launch {
+		ballsJob?.cancel()
+		ballsJob = viewModelScope.launch {
 			gearRepository.getRecentlyUsedGear(GearKind.BOWLING_BALL, limit = 4).collect { gear ->
-				_gamesEditorState.updateGamesEditor(gameToLoad) {
+				gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
 						rollEditor = it.rollEditor.copy(
 							recentBalls = gear
 								.sortedBy { item -> item.name }
-								.map { item -> FrameEdit.Gear(id = item.id, name = item.name, kind = item.kind, avatar = item.avatar) },
+								.map { item ->
+									FrameEdit.Gear(
+										id = item.id,
+										name = item.name,
+										kind = item.kind,
+										avatar = item.avatar,
+									)
+								},
 						),
 					)
 				}
 			}
 		}
 
-		_gearJob?.cancel()
-		_gearJob = viewModelScope.launch {
+		gearJob?.cancel()
+		gearJob = viewModelScope.launch {
 			gearRepository.getGameGear(gameToLoad).collect { gear ->
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						gear = it.gear.copy(
 							selectedGear = gear,
-						)
+						),
 					)
 				}
 			}
 		}
 
-		_matchPlayJob?.cancel()
-		_matchPlayJob = viewModelScope.launch {
+		matchPlayJob?.cancel()
+		matchPlayJob = viewModelScope.launch {
 			matchPlaysRepository.getMatchPlay(gameToLoad).collect { matchPlay ->
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						matchPlay = it.matchPlay.copy(
 							opponentName = matchPlay?.opponent?.name,
 							opponentScore = matchPlay?.opponentScore,
 							result = matchPlay?.result,
-						)
+						),
 					)
 				}
 			}
 		}
 
-		_alleyJob?.cancel()
-		_alleyJob = viewModelScope.launch {
+		alleyJob?.cancel()
+		alleyJob = viewModelScope.launch {
 			alleysRepository.getGameAlleyDetails(gameToLoad).collect { alley ->
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						alley = it.alley.copy(
 							selectedAlley = alley,
-						)
+						),
 					)
 				}
 			}
 		}
 
-		_lanesJob?.cancel()
-		_lanesJob = viewModelScope.launch {
+		lanesJob?.cancel()
+		lanesJob = viewModelScope.launch {
 			lanesRepository.getGameLanes(gameToLoad).collect { lanes ->
-				_gameDetailsState.updateGameDetails(gameToLoad) {
+				gameDetailsState.updateGameDetails(gameToLoad) {
 					it.copy(
 						alley = it.alley.copy(
 							selectedLanes = lanes,
-						)
+						),
 					)
 				}
 			}
 		}
 
-		_scoresJob?.cancel()
-		_scoresJob = viewModelScope.launch {
+		scoresJob?.cancel()
+		scoresJob = viewModelScope.launch {
 			scoresRepository.getScore(gameToLoad).collect { score ->
-				_gamesEditorState.updateGamesEditor(gameToLoad) {
+				gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
 						scoreSheet = it.scoreSheet.copy(
 							game = score,
@@ -395,7 +412,7 @@ class GamesEditorViewModel @Inject constructor(
 					)
 				}
 
-				val gameDetails = _gameDetailsState.updateGameDetailsAndGet(gameToLoad) {
+				val gameDetails = gameDetailsState.updateGameDetailsAndGet(gameToLoad) {
 					when (it.scoringMethod.scoringMethod) {
 						GameScoringMethod.MANUAL -> it
 						GameScoringMethod.BY_FRAME -> it.copy(
@@ -417,10 +434,10 @@ class GamesEditorViewModel @Inject constructor(
 		}
 
 		var isInitialFrameLoad = true
-		_framesJob?.cancel()
-		_framesJob = viewModelScope.launch {
+		framesJob?.cancel()
+		framesJob = viewModelScope.launch {
 			framesRepository.getFrames(gameToLoad).collect { frames ->
-				_gamesEditorState.updateGamesEditor(gameToLoad) {
+				gamesEditorState.updateGamesEditor(gameToLoad) {
 					it.copy(
 						frames = frames,
 					).updateFrameEditor()
@@ -437,8 +454,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGameSettings() {
-		_isGameDetailsSheetVisible.value = false
-		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(_series.value, _currentGameId.value))
+		isGameDetailsSheetVisible.value = false
+		sendEvent(GamesEditorScreenEvent.ShowGamesSettings(series.value, currentGameId.value))
 	}
 
 	private fun openGearPicker() {
@@ -447,9 +464,11 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		sendEvent(GamesEditorScreenEvent.EditGear(
-			_gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet()
-		))
+		sendEvent(
+			GamesEditorScreenEvent.EditGear(
+				gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet(),
+			),
+		)
 	}
 
 	private fun openLanesPicker() {
@@ -458,11 +477,13 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameDetails = _gameDetailsState.value
-		sendEvent(GamesEditorScreenEvent.EditLanes(
-			alleyId = gameDetails.alley.selectedAlley?.id ?: return,
-			laneIds = gameDetails.alley.selectedLanes.map(LaneListItem::id).toSet()
-		))
+		val gameDetails = gameDetailsState.value
+		sendEvent(
+			GamesEditorScreenEvent.EditLanes(
+				alleyId = gameDetails.alley.selectedAlley?.id ?: return,
+				laneIds = gameDetails.alley.selectedLanes.map(LaneListItem::id).toSet(),
+			),
+		)
 	}
 
 	private fun openAlleyPicker() {
@@ -471,10 +492,12 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameDetails = _gameDetailsState.value
-		sendEvent(GamesEditorScreenEvent.EditAlley(
-			alleyId = gameDetails.alley.selectedAlley?.id
-		))
+		val gameDetails = gameDetailsState.value
+		sendEvent(
+			GamesEditorScreenEvent.EditAlley(
+				alleyId = gameDetails.alley.selectedAlley?.id,
+			),
+		)
 	}
 
 	private fun openMatchPlayManager() {
@@ -483,31 +506,35 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		sendEvent(GamesEditorScreenEvent.EditMatchPlay(_currentGameId.value))
+		sendEvent(GamesEditorScreenEvent.EditMatchPlay(currentGameId.value))
 	}
 
 	private fun openSeriesStats() {
 		viewModelScope.launch {
-			sendEvent(GamesEditorScreenEvent.ShowStatistics(
-				filter = TrackableFilter(
-					source = TrackableFilter.Source.Series(currentSeriesId()),
+			sendEvent(
+				GamesEditorScreenEvent.ShowStatistics(
+					filter = TrackableFilter(
+						source = TrackableFilter.Source.Series(currentSeriesId()),
+					),
 				),
-			))
+			)
 		}
 	}
 
 	private fun openGameStats() {
-		sendEvent(GamesEditorScreenEvent.ShowStatistics(
-			filter = TrackableFilter(
-				source = TrackableFilter.Source.Game(_currentGameId.value),
+		sendEvent(
+			GamesEditorScreenEvent.ShowStatistics(
+				filter = TrackableFilter(
+					source = TrackableFilter.Source.Game(currentGameId.value),
+				),
 			),
-		))
+		)
 	}
 
 	private fun openAllBowlersScores() {
-		_isGameDetailsSheetVisible.value = false
-		val gameIndex = _gameDetailsState.value.currentGameIndex
-		sendEvent(GamesEditorScreenEvent.ShowBowlerScores(_series.value, gameIndex))
+		isGameDetailsSheetVisible.value = false
+		val gameIndex = gameDetailsState.value.currentGameIndex
+		sendEvent(GamesEditorScreenEvent.ShowBowlerScores(series.value, gameIndex))
 	}
 
 	private fun openBallRolledPicker() {
@@ -516,7 +543,9 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		sendEvent(GamesEditorScreenEvent.EditRolledBall(_gamesEditorState.value.rollEditor.selectedBall?.id))
+		sendEvent(
+			GamesEditorScreenEvent.EditRolledBall(gamesEditorState.value.rollEditor.selectedBall?.id),
+		)
 	}
 
 	private fun openScoreSettings() {
@@ -525,13 +554,13 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameDetails = _gameDetailsState.value
-		_gamesEditorState.updateGamesEditor(gameDetails.gameId) {
+		val gameDetails = gameDetailsState.value
+		gamesEditorState.updateGamesEditor(gameDetails.gameId) {
 			it.copy(
 				scoreEditor = ScoreEditorUiState(
 					score = gameDetails.scoringMethod.score,
 					scoringMethod = gameDetails.scoringMethod.scoringMethod,
-				)
+				),
 			)
 		}
 	}
@@ -542,15 +571,15 @@ class GamesEditorViewModel @Inject constructor(
 			false -> GameLockState.UNLOCKED
 		}
 
-		val currentGameId = _currentGameId.value
+		val currentGameId = currentGameId.value
 
-		_gamesEditorState.updateGamesEditor(currentGameId) {
+		gamesEditorState.updateGamesEditor(currentGameId) {
 			it.copy(
-				frameEditor = it.frameEditor.copy(isEnabled = !isLocked)
+				frameEditor = it.frameEditor.copy(isEnabled = !isLocked),
 			)
 		}
 
-		val gameDetailsState = _gameDetailsState.updateGameDetailsAndGet(currentGameId) {
+		val gameDetailsState = gameDetailsState.updateGameDetailsAndGet(currentGameId) {
 			it.copy(
 				gameProperties = it.gameProperties.copy(
 					locked = gameLockState,
@@ -577,10 +606,10 @@ class GamesEditorViewModel @Inject constructor(
 			false -> ExcludeFromStatistics.INCLUDE
 		}
 
-		val gameDetailState = _gameDetailsState.updateAndGet {
+		val gameDetailState = gameDetailsState.updateAndGet {
 			it.copy(
 				gameProperties = it.gameProperties.copy(
-					gameExcludeFromStatistics = excludeFromStatistics
+					gameExcludeFromStatistics = excludeFromStatistics,
 				),
 			)
 		}
@@ -594,7 +623,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismissGameLockSnackBar() {
-		_isGameLockSnackBarVisible.value = false
+		isGameLockSnackBarVisible.value = false
 	}
 
 	private fun goToNext(next: NextGameEditableElement) {
@@ -602,7 +631,10 @@ class GamesEditorViewModel @Inject constructor(
 
 		when (next) {
 			is NextGameEditableElement.Roll -> setCurrentSelection(rollIndex = next.rollIndex)
-			is NextGameEditableElement.Frame -> setCurrentSelection(frameIndex = next.frameIndex, rollIndex = 0)
+			is NextGameEditableElement.Frame -> setCurrentSelection(
+				frameIndex = next.frameIndex,
+				rollIndex = 0,
+			)
 			is NextGameEditableElement.Game -> {
 				setFrameEditorAnimation(AnimationDirection.RIGHT_TO_LEFT)
 				toggleGameLocked(isLocked = true)
@@ -628,17 +660,14 @@ class GamesEditorViewModel @Inject constructor(
 		setCurrentSelection(frameIndex, rollIndex)
 	}
 
-	private fun setCurrentSelection(
-		frameIndex: Int? = null,
-		rollIndex: Int? = null,
-	) {
-		val gameId = _currentGameId.value
-		val gamesEditor = _gamesEditorState.updateGamesEditorAndGet(gameId) {
+	private fun setCurrentSelection(frameIndex: Int? = null, rollIndex: Int? = null) {
+		val gameId = currentGameId.value
+		val gamesEditor = gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.updateSelection(frameIndex, rollIndex)
 				.updateFrameEditor()
 		}
 
-		_gameDetailsState.updateGameDetails(gameId) {
+		gameDetailsState.updateGameDetails(gameId) {
 			it.updateHeader(
 				frames = gamesEditor.frames,
 				selection = gamesEditor.scoreSheet.selection,
@@ -647,9 +676,9 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun setFrameEditorAnimation(animation: AnimationDirection?) {
-		_gamesEditorState.updateGamesEditor(_currentGameId.value) {
+		gamesEditorState.updateGamesEditor(currentGameId.value) {
 			it.copy(
-				frameEditor = it.frameEditor.copy(nextAnimationDirection = animation)
+				frameEditor = it.frameEditor.copy(nextAnimationDirection = animation),
 			)
 		}
 	}
@@ -667,8 +696,8 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameId = _currentGameId.value
-		val gamesEditor = _gamesEditorState.updateGamesEditorAndGet(gameId) {
+		val gameId = currentGameId.value
+		val gamesEditor = gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.copy(
 				frameEditor = it.frameEditor.copy(
 					downedPins = downedPins,
@@ -683,7 +712,7 @@ class GamesEditorViewModel @Inject constructor(
 			)
 		}
 
-		_gameDetailsState.updateGameDetails(gameId) {
+		gameDetailsState.updateGameDetails(gameId) {
 			it.updateHeader(
 				frames = gamesEditor.frames,
 				selection = gamesEditor.scoreSheet.selection,
@@ -699,12 +728,14 @@ class GamesEditorViewModel @Inject constructor(
 		} else {
 			viewModelScope.launch {
 				val gear = gearRepository.getGearDetails(id).first()
-				updateSelectedBall(FrameEdit.Gear(
-					id = gear.id,
-					name = gear.name,
-					kind = gear.kind,
-					avatar = gear.avatar,
-				))
+				updateSelectedBall(
+					FrameEdit.Gear(
+						id = gear.id,
+						name = gear.name,
+						kind = gear.kind,
+						avatar = gear.avatar,
+					),
+				)
 			}
 		}
 	}
@@ -715,8 +746,8 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameId = _currentGameId.value
-		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
+		val gameId = currentGameId.value
+		val gamesEditorState = gamesEditorState.updateGamesEditorAndGet(gameId) {
 			val updatedFrames = it.frames.toMutableList().also { frames ->
 				frames.setBallRolled(
 					frameIndex = it.scoreSheet.selection.frameIndex,
@@ -727,7 +758,9 @@ class GamesEditorViewModel @Inject constructor(
 
 			it.copy(
 				rollEditor = it.rollEditor.copy(
-					selectedBall = updatedFrames[it.scoreSheet.selection.frameIndex].rolls[it.scoreSheet.selection.rollIndex].bowlingBall
+					selectedBall = updatedFrames[it.scoreSheet.selection.frameIndex]
+						.rolls[it.scoreSheet.selection.rollIndex]
+						.bowlingBall,
 				),
 				frames = updatedFrames,
 			)
@@ -749,8 +782,8 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameId = _currentGameId.value
-		val gamesEditorState = _gamesEditorState.updateGamesEditorAndGet(gameId) {
+		val gameId = currentGameId.value
+		val gamesEditorState = gamesEditorState.updateGamesEditorAndGet(gameId) {
 			it.copy(
 				rollEditor = it.rollEditor.copy(
 					didFoulRoll = didFoul,
@@ -769,17 +802,17 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun updateScoreEditorScore(score: String) {
-		_gamesEditorState.update {
+		gamesEditorState.update {
 			it.copy(
 				scoreEditor = it.scoreEditor?.copy(
-					score = score.toIntOrNull()?.coerceIn(0, Game.MaxScore) ?: 0,
+					score = score.toIntOrNull()?.coerceIn(0, Game.MAX_SCORE) ?: 0,
 				),
 			)
 		}
 	}
 
 	private fun updateScoreEditorScoringMethod(score: GameScoringMethod) {
-		_gamesEditorState.update {
+		gamesEditorState.update {
 			it.copy(
 				scoreEditor = it.scoreEditor?.copy(
 					scoringMethod = score,
@@ -789,8 +822,8 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun dismissScoreEditor(didSave: Boolean) {
-		val gameId = _currentGameId.value
-		val gamesEditorState = _gamesEditorState.getAndUpdateGamesEditor(gameId) {
+		val gameId = currentGameId.value
+		val gamesEditorState = gamesEditorState.getAndUpdateGamesEditor(gameId) {
 			it.copy(scoreEditor = null)
 		}
 
@@ -801,7 +834,7 @@ class GamesEditorViewModel @Inject constructor(
 				GameScoringMethod.BY_FRAME -> Unit
 			}
 
-			_gamesEditorState.updateGamesEditor(gameId) {
+			this.gamesEditorState.updateGamesEditor(gameId) {
 				it.copy(
 					manualScore = when (scoreEditor.scoringMethod) {
 						GameScoringMethod.MANUAL -> scoreEditor.score
@@ -813,7 +846,9 @@ class GamesEditorViewModel @Inject constructor(
 			viewModelScope.launch {
 				val score = when (scoreEditor.scoringMethod) {
 					GameScoringMethod.MANUAL -> scoreEditor.score
-					GameScoringMethod.BY_FRAME -> scoresRepository.getScore(gamesEditorState.gameId).first().score ?: 0
+					GameScoringMethod.BY_FRAME -> scoresRepository.getScore(
+						gamesEditorState.gameId,
+					).first().score ?: 0
 				}
 
 				gamesRepository.setGameScoringMethod(
@@ -837,27 +872,27 @@ class GamesEditorViewModel @Inject constructor(
 		if (isGameLocked) return
 
 		viewModelScope.launch {
-			gamesRepository.setGameLanes(_currentGameId.value, laneIds)
+			gamesRepository.setGameLanes(currentGameId.value, laneIds)
 		}
 	}
 
 	private fun updateGear(gearIds: Set<UUID>) {
 		if (isGameLocked) return
 
-		val gameId = _currentGameId.value
+		val gameId = currentGameId.value
 		viewModelScope.launch {
 			gearRepository.setGameGear(gameId, gearIds)
 		}
 	}
 
 	private fun setHeaderPeekHeight(height: Float) {
-		_headerPeekHeight.value = height
+		headerPeekHeight.value = height
 	}
 
 	private fun saveCurrentFrameIfEmpty() {
 		if (isGameLocked) return
 
-		val gamesEditor = _gamesEditorState.updateGamesEditorAndGet(_currentGameId.value) {
+		val gamesEditor = gamesEditorState.updateGamesEditorAndGet(currentGameId.value) {
 			it.copy(
 				frames = it.frames.toMutableList().also { frames ->
 					frames.ensureRollExists(
@@ -874,7 +909,7 @@ class GamesEditorViewModel @Inject constructor(
 	private fun saveFrame(frame: FrameEdit) {
 		if (isGameLocked) return
 
-		analyticsClient.trackEvent(GameUpdated(eventId = _currentGameId.value))
+		analyticsClient.trackEvent(GameUpdated(eventId = currentGameId.value))
 
 		viewModelScope.launch {
 			framesRepository.updateFrame(frame)
@@ -882,24 +917,22 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private val isGameLocked: Boolean
-		get() = _gameDetailsState.value.gameProperties.locked == GameLockState.LOCKED
+		get() = gameDetailsState.value.gameProperties.locked == GameLockState.LOCKED
 
 	private fun notifyGameLocked() {
-		_isGameLockSnackBarVisible.value = true
+		isGameLockSnackBarVisible.value = true
 	}
 
-	private suspend fun currentSeriesId(): UUID =
-		_currentBowlerId
-			.filterNotNull()
-			.map { getBowlerSeriesId(it) }
-			.first()
+	private suspend fun currentSeriesId(): UUID = currentBowlerId
+		.filterNotNull()
+		.map { getBowlerSeriesId(it) }
+		.first()
 
-	private suspend fun getBowlerSeriesId(bowlerId: UUID): UUID =
-		_bowlers.map { bowlers ->
-			val bowlerIndex = bowlers.indexOfFirst { it.id == bowlerId }
-			if (bowlerIndex == -1) return@map null
-			_series.value[bowlerIndex]
-		}
-			.filterNotNull()
-			.first()
+	private suspend fun getBowlerSeriesId(bowlerId: UUID): UUID = bowlers.map { bowlers ->
+		val bowlerIndex = bowlers.indexOfFirst { it.id == bowlerId }
+		if (bowlerIndex == -1) return@map null
+		series.value[bowlerIndex]
+	}
+		.filterNotNull()
+		.first()
 }

@@ -4,12 +4,12 @@ import android.net.Uri
 import kotlinx.datetime.LocalDate
 
 sealed interface DataImportProgress {
-	data object NotStarted: DataImportProgress
-	data object PickingFile: DataImportProgress
-	data object Importing: DataImportProgress
-	data class Failed(val exception: Exception): DataImportProgress
-	data object ImportComplete: DataImportProgress
-	data object RestoreComplete: DataImportProgress
+	data object NotStarted : DataImportProgress
+	data object PickingFile : DataImportProgress
+	data object Importing : DataImportProgress
+	data class Failed(val exception: Exception) : DataImportProgress
+	data object ImportComplete : DataImportProgress
+	data object RestoreComplete : DataImportProgress
 }
 
 data class DataImportUiState(
@@ -24,11 +24,11 @@ data class DataImportUiState(
 }
 
 sealed interface DataImportUiAction {
-	data object BackClicked: DataImportUiAction
-	data object StartImportClicked: DataImportUiAction
-	data object RestoreClicked: DataImportUiAction
-	data object CancelRestoreClicked: DataImportUiAction
-	data object ConfirmRestoreClicked: DataImportUiAction
+	data object BackClicked : DataImportUiAction
+	data object StartImportClicked : DataImportUiAction
+	data object RestoreClicked : DataImportUiAction
+	data object CancelRestoreClicked : DataImportUiAction
+	data object ConfirmRestoreClicked : DataImportUiAction
 
-	data class FileSelected(val uri: Uri?): DataImportUiAction
+	data class FileSelected(val uri: Uri?) : DataImportUiAction
 }

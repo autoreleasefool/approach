@@ -9,7 +9,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import ca.josephroque.bowlingcompanion.core.designsystem.R
 import ca.josephroque.bowlingcompanion.core.designsystem.components.CloseButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,10 +30,10 @@ fun ResourcePickerTopBar(
 		actions = {
 			TextButton(onClick = { onAction(ResourcePickerUiAction.DoneClicked) }) {
 				Text(
-					text = stringResource(R.string.action_save),
+					text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 					style = MaterialTheme.typography.bodyMedium,
 				)
 			}
-		}
+		},
 	)
 }

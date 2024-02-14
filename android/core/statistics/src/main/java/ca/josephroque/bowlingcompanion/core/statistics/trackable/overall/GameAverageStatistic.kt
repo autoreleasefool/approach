@@ -1,10 +1,10 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.overall
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.AveragingStatistic
@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.AveragingStati
 data class GameAverageStatistic(
 	var totalPinFall: Int = 0,
 	var totalGames: Int = 0,
-): TrackablePerGame, AveragingStatistic {
+) : TrackablePerGame, AveragingStatistic {
 	override val id = StatisticID.GAME_AVERAGE
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
@@ -21,11 +21,15 @@ data class GameAverageStatistic(
 
 	override var total: Int
 		get() = totalPinFall
-		set(value) { totalPinFall = value }
+		set(value) {
+			totalPinFall = value
+		}
 
 	override var divisor: Int
 		get() = totalGames
-		set(value) { totalGames = value }
+		set(value) {
+			totalGames = value
+		}
 
 	override fun adjustByGame(game: TrackableGame, configuration: TrackablePerGameConfiguration) {
 		if (game.score > 0) {

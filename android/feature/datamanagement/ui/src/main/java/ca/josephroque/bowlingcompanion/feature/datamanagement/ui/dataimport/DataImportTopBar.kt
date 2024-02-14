@@ -26,6 +26,6 @@ fun DataImportTopBar(
 		},
 		navigationIcon = {
 			BackButton(onClick = { onAction(DataImportUiAction.BackClicked) })
-		}
+		},
 	)
 }

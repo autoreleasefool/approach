@@ -5,19 +5,19 @@ import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import java.util.UUID
 
 sealed interface AlleysListScreenUiState {
-	data object Loading: AlleysListScreenUiState
+	data object Loading : AlleysListScreenUiState
 
 	data class Loaded(
 		val alleysList: AlleysListUiState,
-	): AlleysListScreenUiState
+	) : AlleysListScreenUiState
 }
 
 sealed interface AlleysListScreenUiAction {
-	data class AlleysList(val action: AlleysListUiAction): AlleysListScreenUiAction
+	data class AlleysList(val action: AlleysListUiAction) : AlleysListScreenUiAction
 }
 
 sealed interface AlleysListScreenEvent {
-	data object Dismissed: AlleysListScreenEvent
-	data object NavigateToAddAlley: AlleysListScreenEvent
-	data class NavigateToEditAlley(val id: UUID): AlleysListScreenEvent
+	data object Dismissed : AlleysListScreenEvent
+	data object NavigateToAddAlley : AlleysListScreenEvent
+	data class NavigateToEditAlley(val id: UUID) : AlleysListScreenEvent
 }

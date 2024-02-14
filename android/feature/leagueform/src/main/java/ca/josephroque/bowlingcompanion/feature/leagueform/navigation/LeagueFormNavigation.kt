@@ -18,9 +18,7 @@ fun NavController.navigateToNewLeagueForm(bowlerId: UUID, navOptions: NavOptions
 	this.navigate(Route.AddLeague.createRoute(bowlerId), navOptions)
 }
 
-fun NavGraphBuilder.leagueFormScreen(
-	onBackPressed: () -> Unit
-) {
+fun NavGraphBuilder.leagueFormScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.EditLeague.route,
 		arguments = listOf(

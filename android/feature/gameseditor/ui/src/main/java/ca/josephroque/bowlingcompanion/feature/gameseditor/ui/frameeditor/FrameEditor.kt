@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.Pin
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun FrameEditor(
@@ -87,14 +86,20 @@ fun FrameEditor(
 							onAction(FrameEditorUiAction.DownedPinsChanged(downedPins.toSet()))
 						}
 					}
-				}
+				},
 		) {
 			Pin.entries.forEach {
 				val isPinLocked = state.lockedPins.contains(it)
 				val isPinDown = isPinLocked || downedPins.contains(it)
 
 				Image(
-					painter = painterResource(if (isPinDown) RCoreDesign.drawable.pin_down else RCoreDesign.drawable.pin),
+					painter = painterResource(
+						if (isPinDown) {
+							ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.pin_down
+						} else {
+							ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.pin
+						},
+					),
 					contentDescription = it.contentDescription(),
 					modifier = Modifier
 						.padding(horizontal = 4.dp)
@@ -120,7 +125,7 @@ private fun FrameEditorPreview() {
 			FrameEditorUiState(
 				lockedPins = setOf(Pin.LEFT_TWO_PIN),
 				downedPins = setOf(Pin.LEFT_THREE_PIN),
-			)
+			),
 		)
 	}
 
@@ -129,7 +134,9 @@ private fun FrameEditorPreview() {
 			state = state,
 			onAction = {
 				when (it) {
-					FrameEditorUiAction.FrameEditorInteractionStarted, FrameEditorUiAction.AnimationFinished -> Unit
+					FrameEditorUiAction.FrameEditorInteractionStarted,
+					FrameEditorUiAction.AnimationFinished,
+					-> Unit
 					is FrameEditorUiAction.DownedPinsChanged -> state = state.copy(downedPins = it.downedPins)
 				}
 			},

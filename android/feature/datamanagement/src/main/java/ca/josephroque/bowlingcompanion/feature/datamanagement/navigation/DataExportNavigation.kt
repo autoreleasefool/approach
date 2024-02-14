@@ -11,9 +11,7 @@ fun NavController.navigateToDataExport(navOptions: NavOptions? = null) {
 	this.navigate(Route.DataExport.route, navOptions)
 }
 
-fun NavGraphBuilder.dataExportScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.dataExportScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.DataExport.route,
 	) {

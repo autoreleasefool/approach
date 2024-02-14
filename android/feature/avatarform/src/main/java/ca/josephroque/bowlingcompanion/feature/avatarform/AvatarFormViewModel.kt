@@ -12,14 +12,14 @@ import ca.josephroque.bowlingcompanion.feature.avatarform.ui.AvatarFormUiState
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiAction
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 
 @HiltViewModel
 class AvatarFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-): ApproachViewModel<AvatarFormScreenEvent>() {
+) : ApproachViewModel<AvatarFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<AvatarFormScreenUiState> =
 		MutableStateFlow(AvatarFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
@@ -89,7 +89,9 @@ class AvatarFormViewModel @Inject constructor(
 	private fun saveAvatar() {
 		when (val state = _uiState.value) {
 			AvatarFormScreenUiState.Loading -> sendEvent(AvatarFormScreenEvent.Dismissed(existingAvatar))
-			is AvatarFormScreenUiState.Loaded -> sendEvent(AvatarFormScreenEvent.Dismissed(state.form.avatar))
+			is AvatarFormScreenUiState.Loaded -> sendEvent(
+				AvatarFormScreenEvent.Dismissed(state.form.avatar),
+			)
 		}
 	}
 

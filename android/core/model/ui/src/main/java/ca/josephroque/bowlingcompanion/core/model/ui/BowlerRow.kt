@@ -34,11 +34,15 @@ fun BowlerRow(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null)
-				Modifier
-					.clickable(onClick = onClick)
-					.padding(16.dp)
-			else Modifier),
+			.then(
+				if (onClick != null) {
+					Modifier
+						.clickable(onClick = onClick)
+						.padding(16.dp)
+				} else {
+					Modifier
+				},
+			),
 	) {
 		when (kind) {
 			BowlerKind.PLAYABLE -> Icon(
@@ -53,14 +57,14 @@ fun BowlerRow(
 		Text(
 			text = name,
 			style = MaterialTheme.typography.titleMedium,
-			modifier = Modifier.weight(1f)
+			modifier = Modifier.weight(1f),
 		)
 
 		average?.let {
 			Text(
 				text = it.formatAsAverage(),
 				style = MaterialTheme.typography.bodyLarge,
-				maxLines = 1
+				maxLines = 1,
 			)
 		}
 	}

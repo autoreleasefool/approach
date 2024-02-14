@@ -7,8 +7,8 @@ import androidx.room.Update
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetEntity
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetPriorityUpdateEntity
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class StatisticsWidgetDao {
@@ -25,7 +25,7 @@ abstract class StatisticsWidgetDao {
 			FROM statistics_widget
 			WHERE statistics_widget.context = :context
 			ORDER BY statistics_widget.priority ASC
-		"""
+		""",
 	)
 	abstract fun getStatisticsWidgets(context: String): Flow<List<StatisticsWidgetEntity>>
 

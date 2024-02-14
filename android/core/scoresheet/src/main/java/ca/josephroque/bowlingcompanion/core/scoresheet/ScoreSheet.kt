@@ -39,7 +39,7 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import ca.josephroque.bowlingcompanion.core.model.isFirstFrame
 import ca.josephroque.bowlingcompanion.core.model.isFirstRoll
 import ca.josephroque.bowlingcompanion.core.model.isLastRoll
-import ca.josephroque.bowlingcompanion.core.model.stub.ScoringGameStub
+import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
 
 @Composable
 fun ScoreSheet(
@@ -142,7 +142,7 @@ private fun RollCells(
 	onClick: (rollIndex: Int) -> Unit,
 ) {
 	Row(
-		modifier = modifier
+		modifier = modifier,
 	) {
 		frame.rolls.forEach { roll ->
 			RollCell(
@@ -171,24 +171,33 @@ private fun RollCell(
 			.clickable(onClick = onClick)
 			.background(
 				colorResource(
-					if (isSelected)
+					if (isSelected) {
 						style.backgroundHighlightColor
-					else
+					} else {
 						style.backgroundColor
-				)
+					},
+				),
 			)
 			.bottomBorder(2.dp, colorResource(style.borderColor))
 			.then(
-				if (roll.isLastRoll()) Modifier else Modifier.endBorder(
-					2.dp,
-					colorResource(style.borderColor)
-				)
+				if (roll.isLastRoll()) {
+					Modifier
+				} else {
+					Modifier.endBorder(
+						2.dp,
+						colorResource(style.borderColor),
+					)
+				},
 			)
 			.then(
-				if (!isFirstFrame && roll.isFirstRoll()) Modifier.startBorder(
-					2.dp,
-					colorResource(style.borderColor)
-				) else Modifier
+				if (!isFirstFrame && roll.isFirstRoll()) {
+					Modifier.startBorder(
+						2.dp,
+						colorResource(style.borderColor),
+					)
+				} else {
+					Modifier
+				},
 			)
 			.padding(vertical = 8.dp),
 	) {
@@ -204,7 +213,7 @@ private fun RollCell(
 					!isSelected && roll.didFoul -> style.textFoulColorOnBackground
 					!isSelected && roll.isSecondaryValue -> style.textSecondaryColorOnBackground
 					else -> style.textColorOnBackground
-				}
+				},
 			),
 			modifier = Modifier.align(Alignment.Center),
 		)
@@ -225,17 +234,22 @@ private fun FrameCell(
 			.clickable(onClick = onClick)
 			.background(
 				colorResource(
-					if (isSelected)
+					if (isSelected) {
 						config.style.backgroundHighlightColor
-					else
+					} else {
 						config.style.backgroundColor
-				)
+					},
+				),
 			)
 			.then(
-				if (frame.isFirstFrame()) Modifier else Modifier.startBorder(
-					2.dp,
-					colorResource(config.style.borderColor)
-				)
+				if (frame.isFirstFrame()) {
+					Modifier
+				} else {
+					Modifier.startBorder(
+						2.dp,
+						colorResource(config.style.borderColor),
+					)
+				},
 			),
 	) {
 		Text(
@@ -246,10 +260,12 @@ private fun FrameCell(
 			},
 			style = MaterialTheme.typography.bodyMedium,
 			textAlign = TextAlign.Center,
-			color = colorResource(if (isSelected)
-				config.style.textHighlightColorOnBackground
-			else
-				config.style.textColorOnBackground
+			color = colorResource(
+				if (isSelected) {
+					config.style.textHighlightColorOnBackground
+				} else {
+					config.style.textColorOnBackground
+				},
 			),
 			modifier = Modifier
 				.align(Alignment.CenterHorizontally)
@@ -281,31 +297,41 @@ private fun RailCell(
 		modifier = modifier
 			.background(
 				colorResource(
-					if (isSelected)
+					if (isSelected) {
 						style.railBackgroundHighlightColor
-					else
+					} else {
 						style.railBackgroundColor
-				)
+					},
+				),
 			)
 			.then(
-				if (!includingBottomBorder) Modifier else
+				if (!includingBottomBorder) {
+					Modifier
+				} else {
 					Modifier.bottomBorder(2.dp, colorResource(style.borderColor))
+				},
 			)
 			.then(
-				if (frameIndex == 0) Modifier else Modifier.startBorder(
-					2.dp,
-					colorResource(style.borderColor)
-				)
+				if (frameIndex == 0) {
+					Modifier
+				} else {
+					Modifier.startBorder(
+						2.dp,
+						colorResource(style.borderColor),
+					)
+				},
 			)
 			.padding(vertical = 4.dp),
 	) {
 		Text(
 			text = (frameIndex + 1).toString(),
 			style = MaterialTheme.typography.bodySmall,
-			color = colorResource(if (isSelected)
-				style.textHighlightColorOnRail
-			else
-				style.textColorOnRail
+			color = colorResource(
+				if (isSelected) {
+					style.textHighlightColorOnRail
+				} else {
+					style.textColorOnRail
+				},
 			),
 			modifier = Modifier.align(Alignment.Center),
 		)
@@ -327,7 +353,7 @@ private fun ScoreCell(
 				when (position) {
 					ScorePosition.START -> Modifier.endBorder(4.dp, colorResource(style.borderColor))
 					ScorePosition.END -> Modifier.startBorder(4.dp, colorResource(style.borderColor))
-				}
+				},
 			)
 			.padding(horizontal = 16.dp, vertical = 8.dp),
 	) {
@@ -350,7 +376,7 @@ private fun ScoreCell(
 	}
 }
 
-private class FramePositionPreviewParameterProvider: PreviewParameterProvider<FramePosition> {
+private class FramePositionPreviewParameterProvider : PreviewParameterProvider<FramePosition> {
 	override val values = sequenceOf(FramePosition.TOP, FramePosition.BOTTOM)
 }
 
@@ -368,7 +394,7 @@ private fun ScoreSheetPreview(
 					style = ScoreSheetConfiguration.Style.PLAIN,
 				),
 				selection = ScoreSheetUiState.Selection(frameIndex = -1, rollIndex = -1),
-				game = ScoringGameStub.stub(),
+				game = ScoringStub.stub(),
 			),
 			onAction = {},
 			modifier = Modifier.height(100.dp),

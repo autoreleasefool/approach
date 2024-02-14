@@ -18,5 +18,5 @@ data class StatisticsDetailsChartUiState(
 }
 
 sealed interface StatisticsDetailsChartUiAction {
-	data class AggregationChanged(val newValue: Boolean): StatisticsDetailsChartUiAction
+	data class AggregationChanged(val newValue: Boolean) : StatisticsDetailsChartUiAction
 }

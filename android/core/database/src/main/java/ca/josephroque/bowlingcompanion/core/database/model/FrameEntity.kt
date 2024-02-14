@@ -10,8 +10,8 @@ import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
-import kotlinx.datetime.LocalDate
 import java.util.UUID
+import kotlinx.datetime.LocalDate
 
 @Entity(
 	tableName = "frames",
@@ -48,7 +48,7 @@ import java.util.UUID
 	],
 	indices = [
 		Index("game_id", "index"),
-	]
+	],
 )
 data class FrameEntity(
 	@ColumnInfo(name = "game_id", index = true) val gameId: UUID,
@@ -132,7 +132,6 @@ data class TrackableFrameEntity(
 		),
 		date = this.date,
 	)
-
 }
 
 data class FrameEditEntity(
@@ -160,7 +159,7 @@ data class FrameEditEntity(
 			this.properties.roll0?.let { FrameEdit.Roll(0, it.pinsDowned, it.didFoul, this.ball0) },
 			this.properties.roll1?.let { FrameEdit.Roll(1, it.pinsDowned, it.didFoul, this.ball1) },
 			this.properties.roll2?.let { FrameEdit.Roll(2, it.pinsDowned, it.didFoul, this.ball2) },
-		)
+		),
 	)
 }
 
@@ -176,6 +175,6 @@ data class ScoreableFrameEntity(
 			this.roll0?.let { ScoreableFrame.Roll(0, it.pinsDowned, it.didFoul) },
 			this.roll1?.let { ScoreableFrame.Roll(1, it.pinsDowned, it.didFoul) },
 			this.roll2?.let { ScoreableFrame.Roll(2, it.pinsDowned, it.didFoul) },
-		)
+		),
 	)
 }

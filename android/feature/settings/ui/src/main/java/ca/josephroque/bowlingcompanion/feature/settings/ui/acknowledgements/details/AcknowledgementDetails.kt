@@ -13,10 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AcknowledgementDetails(
-	state: AcknowledgementDetailsUiState,
-	modifier: Modifier = Modifier,
-) {
+fun AcknowledgementDetails(state: AcknowledgementDetailsUiState, modifier: Modifier = Modifier) {
 	Column(
 		modifier = modifier
 			.fillMaxSize()

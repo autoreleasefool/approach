@@ -23,12 +23,12 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUs
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiAction
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
@@ -39,16 +39,16 @@ class OnboardingViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	private val errorReporting: ErrorReporting,
 	fileManager: FileManager,
-): ApproachViewModel<OnboardingScreenEvent>() {
-	private val _legacyDatabasePath =
+) : ApproachViewModel<OnboardingScreenEvent>() {
+	private val legacyDatabasePath =
 		migrationService.getLegacyDatabasePath(LegacyDatabaseHelper.DATABASE_NAME)
 
 	private val _uiState: MutableStateFlow<OnboardingScreenUiState> = MutableStateFlow(
-		if (fileManager.fileExists(_legacyDatabasePath)) {
+		if (fileManager.fileExists(legacyDatabasePath)) {
 			OnboardingScreenUiState.LegacyUser()
 		} else {
 			OnboardingScreenUiState.NewUser()
-		}
+		},
 	)
 	val uiState = _uiState.asStateFlow()
 
@@ -102,7 +102,7 @@ class OnboardingViewModel @Inject constructor(
 						id = UUID.randomUUID(),
 						name = newUserState.name,
 						kind = BowlerKind.PLAYABLE,
-					)
+					),
 				)
 
 				// FIXME: Move this launch-based activity somewhere better
@@ -177,7 +177,7 @@ class OnboardingViewModel @Inject constructor(
 				legacyUser = LegacyUserOnboardingUiState.DataImport(
 					versionName = systemInfoService.versionName,
 					versionCode = systemInfoService.versionCode,
-				)
+				),
 			)
 		}
 
@@ -201,7 +201,7 @@ class OnboardingViewModel @Inject constructor(
 							message = e.localizedMessage ?: "An unknown error occurred.",
 							exception = e,
 							legacyDbUri = migrationService.getLegacyDatabaseUri(LegacyDatabaseHelper.DATABASE_NAME),
-						)
+						),
 					)
 				}
 			}

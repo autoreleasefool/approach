@@ -30,7 +30,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.LegacyUserOnboardingUiAction
 
@@ -48,7 +47,8 @@ fun NewApproachHeader(
 		var headerState by remember { mutableStateOf(HeaderState.Bouncing) }
 
 		val bounceOffset = rememberBounceAnimation(isAnimating = headerState == HeaderState.Bouncing)
-		val sharedTransition = updateTransition(targetState = headerState, label = "NewApproachHeader.sharedTransition")
+		val sharedTransition =
+			updateTransition(targetState = headerState, label = "NewApproachHeader.sharedTransition")
 		val positionOffset = rememberPositionAnimation(
 			sharedTransition,
 			maxHeight = scope.maxHeight.value,
@@ -79,7 +79,9 @@ fun NewApproachHeader(
 				),
 		) {
 			Image(
-				painter = painterResource(RCoreDesign.drawable.ic_double_arrow_up),
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_double_arrow_up,
+				),
 				contentDescription = stringResource(R.string.onboarding_legacy_user_content_description_next),
 				modifier = Modifier
 					.padding(bottom = 8.dp)
@@ -94,16 +96,14 @@ fun NewApproachHeader(
 				modifier = Modifier
 					.padding(horizontal = 16.dp)
 					.align(Alignment.CenterHorizontally)
-					.width(iconSize.dp)
+					.width(iconSize.dp),
 			)
 		}
 	}
 }
 
 @Composable
-private fun rememberBounceAnimation(
-	isAnimating: Boolean,
-): Float {
+private fun rememberBounceAnimation(isAnimating: Boolean): Float {
 	var lastBouncePosition by remember { mutableFloatStateOf(0f) }
 	val bounceAnimation = remember(isAnimating) { Animatable(lastBouncePosition) }
 
@@ -117,7 +117,7 @@ private fun rememberBounceAnimation(
 						delayMillis = 800,
 					),
 					repeatMode = RepeatMode.Reverse,
-				)
+				),
 			) {
 				lastBouncePosition = value
 			}
@@ -142,7 +142,7 @@ private fun rememberPositionAnimation(
 		label = "position",
 		transitionSpec = {
 			tween(durationMillis = 1000)
-		}
+		},
 	) { state ->
 		when (state) {
 			HeaderState.Bouncing -> 0f
@@ -153,9 +153,7 @@ private fun rememberPositionAnimation(
 }
 
 @Composable
-private fun rememberButtonSizeAnimation(
-	transition: Transition<HeaderState>,
-): Float {
+private fun rememberButtonSizeAnimation(transition: Transition<HeaderState>): Float {
 	val size by transition.animateFloat(
 		label = "buttonSize",
 		transitionSpec = {
@@ -171,10 +169,7 @@ private fun rememberButtonSizeAnimation(
 }
 
 @Composable
-private fun rememberIconSizeAnimation(
-	transition: Transition<HeaderState>,
-	maxWidth: Float,
-): Float {
+private fun rememberIconSizeAnimation(transition: Transition<HeaderState>, maxWidth: Float): Float {
 	val size by transition.animateFloat(
 		label = "iconSize",
 		transitionSpec = {
@@ -182,8 +177,8 @@ private fun rememberIconSizeAnimation(
 		},
 	) { state ->
 		when (state) {
-		HeaderState.Bouncing -> maxWidth
-		HeaderState.AtTop -> 96.dp.value
+			HeaderState.Bouncing -> maxWidth
+			HeaderState.AtTop -> 96.dp.value
 		}
 	}
 	return size

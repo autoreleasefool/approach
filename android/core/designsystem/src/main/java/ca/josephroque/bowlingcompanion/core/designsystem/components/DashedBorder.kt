@@ -18,7 +18,7 @@ fun Modifier.dashedBorder(
 	strokeWidth: Dp = 1.dp,
 	dashWidth: Dp = 4.dp,
 	gapWidth: Dp = 4.dp,
-	cap: StrokeCap = StrokeCap.Round
+	cap: StrokeCap = StrokeCap.Round,
 ) = this.drawWithContent {
 	val outline = shape.createOutline(size, layoutDirection, this)
 
@@ -30,8 +30,8 @@ fun Modifier.dashedBorder(
 		width = strokeWidth.toPx(),
 		pathEffect = PathEffect.dashPathEffect(
 			intervals = floatArrayOf(dashWidth.toPx(), gapWidth.toPx()),
-			phase = 0f
-		)
+			phase = 0f,
+		),
 	)
 
 	this.drawContent()
@@ -39,6 +39,6 @@ fun Modifier.dashedBorder(
 	drawPath(
 		path = path,
 		style = stroke,
-		color = color
+		color = color,
 	)
 }

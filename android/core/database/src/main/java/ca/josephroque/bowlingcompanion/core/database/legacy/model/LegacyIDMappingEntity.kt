@@ -11,7 +11,7 @@ import java.util.UUID
 data class LegacyIDMappingEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,
 	@ColumnInfo(name = "legacy_id", index = true) val legacyId: Long,
-	@ColumnInfo(name = "mapping_key")  val key: LegacyIDMappingKey,
+	@ColumnInfo(name = "mapping_key") val key: LegacyIDMappingKey,
 )
 
 enum class LegacyIDMappingKey {

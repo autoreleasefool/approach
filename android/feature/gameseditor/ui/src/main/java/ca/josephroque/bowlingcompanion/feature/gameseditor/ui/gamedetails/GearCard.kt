@@ -44,7 +44,9 @@ internal fun GearCard(
 				RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageGearClicked) }) {
 					Icon(
 						Icons.Default.Edit,
-						contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage),
+						contentDescription = stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage,
+						),
 						tint = MaterialTheme.colorScheme.onSurface,
 					)
 				}
@@ -65,14 +67,11 @@ internal fun GearCard(
 }
 
 @Composable
-private fun GearItemRow(
-	gear: GearListItem,
-	modifier: Modifier = Modifier,
-) {
+private fun GearItemRow(gear: GearListItem, modifier: Modifier = Modifier) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
-		modifier = modifier.fillMaxWidth()
+		modifier = modifier.fillMaxWidth(),
 	) {
 		AvatarImage(avatar = gear.avatar, modifier = Modifier.size(24.dp))
 
@@ -105,14 +104,14 @@ private fun GearCardPreview() {
 						name = "Yellow Ball",
 						kind = GearKind.BOWLING_BALL,
 						ownerName = "Joseph",
-						avatar = Avatar.default()
+						avatar = Avatar.default(),
 					),
 					GearListItem(
 						id = UUID.randomUUID(),
 						name = "Green Towel",
 						kind = GearKind.TOWEL,
 						ownerName = "Sarah",
-						avatar = Avatar.default()
+						avatar = Avatar.default(),
 					),
 				),
 			),

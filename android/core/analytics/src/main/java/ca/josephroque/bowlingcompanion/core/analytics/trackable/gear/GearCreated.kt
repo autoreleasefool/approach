@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 
 data class GearCreated(
 	val kind: GearKind,
-): TrackableEvent {
+) : TrackableEvent {
 	override val name = "Gear.Created"
 	override val payload = mapOf(
 		"Kind" to kind.name,

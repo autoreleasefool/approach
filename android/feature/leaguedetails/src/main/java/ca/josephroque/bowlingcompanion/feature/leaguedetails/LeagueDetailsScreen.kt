@@ -19,8 +19,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetails
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun LeagueDetailsRoute(
@@ -91,4 +91,3 @@ private fun LeagueDetailsScreen(
 		}
 	}
 }
-

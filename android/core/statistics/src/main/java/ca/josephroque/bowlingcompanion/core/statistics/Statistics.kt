@@ -160,10 +160,9 @@ fun allStatistics(
 	supportingWidgets == null || !supportingWidgets || it.supportsWidgets
 }
 
-fun widgetStatistics(): List<StatisticGroup> =
-	allStatistics(supportingWidgets = true)
-		.groupBy { it.category }
-		.toSortedMap { o1, o2 -> o1.ordinal.compareTo(o2.ordinal) }
-		.map { StatisticGroup(it.key.titleResourceId, it.value) }
+fun widgetStatistics(): List<StatisticGroup> = allStatistics(supportingWidgets = true)
+	.groupBy { it.category }
+	.toSortedMap { o1, o2 -> o1.ordinal.compareTo(o2.ordinal) }
+	.map { StatisticGroup(it.key.titleResourceId, it.value) }
 
 fun statisticInstanceFromID(id: StatisticID): Statistic = allStatistics().first { it.id == id }

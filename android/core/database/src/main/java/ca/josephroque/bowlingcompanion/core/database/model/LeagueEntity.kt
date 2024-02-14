@@ -8,8 +8,8 @@ import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.LeagueCreate
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
-import kotlinx.datetime.Instant
 import java.util.UUID
+import kotlinx.datetime.Instant
 
 @Entity(
 	tableName = "leagues",

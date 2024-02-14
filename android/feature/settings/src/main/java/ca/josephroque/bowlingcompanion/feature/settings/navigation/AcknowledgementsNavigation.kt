@@ -20,13 +20,11 @@ fun NavController.navigateToAcknowledgementDetails(
 	)
 }
 
-fun NavGraphBuilder.acknowledgementDetailsScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.acknowledgementDetailsScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.AcknowledgementDetails.route,
 		arguments = listOf(
-			navArgument(Route.AcknowledgementDetails.ARG_ACKNOWLEDGEMENT) { type = NavType.StringType }
+			navArgument(Route.AcknowledgementDetails.ARG_ACKNOWLEDGEMENT) { type = NavType.StringType },
 		),
 	) {
 		AcknowledgementDetailsRoute(

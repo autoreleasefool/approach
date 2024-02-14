@@ -87,9 +87,13 @@ private fun StatisticsDetailsScreen(
 	val bottomSheetState = rememberStandardBottomSheetState(
 		skipHiddenState = false,
 		confirmValueChange = { targetValue ->
-			onAction(StatisticsDetailsScreenUiAction.BottomSheet(StatisticsDetailsBottomSheetUiAction.SheetValueChanged(targetValue)))
+			onAction(
+				StatisticsDetailsScreenUiAction.BottomSheet(
+					StatisticsDetailsBottomSheetUiAction.SheetValueChanged(targetValue),
+				),
+			)
 			true
-		}
+		},
 	)
 	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 	val handleHeight = remember { mutableFloatStateOf(56f) }
@@ -121,7 +125,11 @@ private fun StatisticsDetailsScreen(
 		},
 		sheetSwipeEnabled = false,
 		sheetDragHandle = {
-			val dragHandleDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.bottom_sheet_drag_handle_description)
+			val dragHandleDescription =
+				@Suppress("ktlint:standard:max-line-length")
+				stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.bottom_sheet_drag_handle_description,
+				)
 			Surface(
 				modifier = modifier
 					.padding(vertical = 8.dp)
@@ -134,10 +142,14 @@ private fun StatisticsDetailsScreen(
 			}
 		},
 		sheetPeekHeight =
-			maxOf(
-				((state as? StatisticsDetailsScreenUiState.Loaded)?.headerPeekHeight?.plus(handleHeight.floatValue) ?: 0f).dp,
-				120.dp,
-			),
+		maxOf(
+			(
+				(state as? StatisticsDetailsScreenUiState.Loaded)?.headerPeekHeight?.plus(
+					handleHeight.floatValue,
+				) ?: 0f
+				).dp,
+			120.dp,
+		),
 		sheetContent = {
 			when (state) {
 				StatisticsDetailsScreenUiState.Loading -> Unit

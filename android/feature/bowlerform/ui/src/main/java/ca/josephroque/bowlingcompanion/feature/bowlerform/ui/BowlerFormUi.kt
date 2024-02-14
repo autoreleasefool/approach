@@ -12,17 +12,17 @@ data class BowlerFormUiState(
 )
 
 sealed interface BowlerFormUiAction {
-	data object BackClicked: BowlerFormUiAction
-	data object DoneClicked: BowlerFormUiAction
+	data object BackClicked : BowlerFormUiAction
+	data object DoneClicked : BowlerFormUiAction
 
-	data object DiscardChangesClicked: BowlerFormUiAction
-	data object CancelDiscardChangesClicked: BowlerFormUiAction
+	data object DiscardChangesClicked : BowlerFormUiAction
+	data object CancelDiscardChangesClicked : BowlerFormUiAction
 
-	data object ArchiveClicked: BowlerFormUiAction
-	data object ConfirmArchiveClicked: BowlerFormUiAction
-	data object DismissArchiveClicked: BowlerFormUiAction
+	data object ArchiveClicked : BowlerFormUiAction
+	data object ConfirmArchiveClicked : BowlerFormUiAction
+	data object DismissArchiveClicked : BowlerFormUiAction
 
-	data class NameChanged(val name: String): BowlerFormUiAction
+	data class NameChanged(val name: String) : BowlerFormUiAction
 }
 
 data class BowlerFormTopBarUiState(

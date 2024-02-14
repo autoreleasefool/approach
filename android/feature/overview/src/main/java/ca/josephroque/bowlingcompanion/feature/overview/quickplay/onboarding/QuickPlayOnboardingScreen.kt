@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.feature.overview.quickplay.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,7 +53,9 @@ private fun QuickPlayOnboardingScreen(
 	modifier: Modifier,
 ) {
 	BackHandler {
-		onAction(QuickPlayOnboardingScreenUiAction.QuickPlayOnboarding(QuickPlayOnboardingUiAction.BackClicked))
+		onAction(
+			QuickPlayOnboardingScreenUiAction.QuickPlayOnboarding(QuickPlayOnboardingUiAction.BackClicked),
+		)
 	}
 
 	Scaffold(

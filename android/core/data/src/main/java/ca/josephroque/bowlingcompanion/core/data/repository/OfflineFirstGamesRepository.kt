@@ -18,13 +18,13 @@ import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
@@ -33,38 +33,37 @@ class OfflineFirstGamesRepository @Inject constructor(
 	private val framesRepository: FramesRepository,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): GamesRepository {
+) : GamesRepository {
 	override fun getGameDetails(gameId: UUID): Flow<GameEdit> =
 		gameDao.getGameDetails(gameId).map { it.asModel() }
 
 	override fun getGamesList(seriesId: UUID): Flow<List<GameListItem>> =
 		gameDao.getGamesList(seriesId)
 
-	override fun getGameIds(seriesId: UUID): Flow<List<UUID>> =
-		gameDao.getGameIds(seriesId)
+	override fun getGameIds(seriesId: UUID): Flow<List<UUID>> = gameDao.getGameIds(seriesId)
 
-	override fun getArchivedGames(): Flow<List<ArchivedGame>> =
-		gameDao.getArchivedGames()
+	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 
-	override fun getGameIndex(gameId: UUID): Flow<Int> =
-		gameDao.getGameIndex(gameId)
+	override fun getGameIndex(gameId: UUID): Flow<Int> = gameDao.getGameIndex(gameId)
 
 	override suspend fun setGameScoringMethod(
 		gameId: UUID,
 		scoringMethod: GameScoringMethod,
-		score: Int
+		score: Int,
 	) = withContext(ioDispatcher) {
 		gameDao.setGameScoringMethod(gameId, scoringMethod, score)
 	}
 
 	override suspend fun setGameExcludedFromStatistics(
 		gameId: UUID,
-		excludeFromStatistics: ExcludeFromStatistics
+		excludeFromStatistics: ExcludeFromStatistics,
 	) = withContext(ioDispatcher) {
 		gameDao.setGameExcludedFromStatistics(gameId, excludeFromStatistics)
 	}
 
-	override suspend fun setGameLockState(gameId: UUID, locked: GameLockState) = withContext(ioDispatcher) {
+	override suspend fun setGameLockState(gameId: UUID, locked: GameLockState) = withContext(
+		ioDispatcher,
+	) {
 		gameDao.setGameLockState(gameId, locked)
 	}
 

@@ -27,18 +27,21 @@ fun StatisticsWidgetEditor(
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState()),
 	) {
-
 		ListSectionFooter(footer = stringResource(R.string.statistics_widget_editor_filter_description))
 
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_widget_editor_filter_bowler),
-			selectedName = state.bowler?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none),
+			selectedName = state.bowler?.name ?: stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.none,
+			),
 			onClick = { onAction(StatisticsWidgetEditorUiAction.BowlerClicked) },
 		)
 
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_widget_editor_filter_league),
-			selectedName = state.league?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none),
+			selectedName = state.league?.name ?: stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.none,
+			),
 			onClick = { onAction(StatisticsWidgetEditorUiAction.LeagueClicked) },
 			enabled = state.bowler != null,
 		)
@@ -60,11 +63,21 @@ fun StatisticsWidgetEditor(
 			selected = state.timeline,
 			titleForOption = {
 				when (it) {
-					StatisticsWidgetTimeline.ONE_MONTH -> stringResource(R.string.statistics_widget_timeline_one_month)
-					StatisticsWidgetTimeline.THREE_MONTHS -> stringResource(R.string.statistics_widget_timeline_three_months)
-					StatisticsWidgetTimeline.SIX_MONTHS -> stringResource(R.string.statistics_widget_timeline_six_months)
-					StatisticsWidgetTimeline.ONE_YEAR -> stringResource(R.string.statistics_widget_timeline_one_year)
-					StatisticsWidgetTimeline.ALL_TIME -> stringResource(R.string.statistics_widget_timeline_all_time)
+					StatisticsWidgetTimeline.ONE_MONTH -> stringResource(
+						R.string.statistics_widget_timeline_one_month,
+					)
+					StatisticsWidgetTimeline.THREE_MONTHS -> stringResource(
+						R.string.statistics_widget_timeline_three_months,
+					)
+					StatisticsWidgetTimeline.SIX_MONTHS -> stringResource(
+						R.string.statistics_widget_timeline_six_months,
+					)
+					StatisticsWidgetTimeline.ONE_YEAR -> stringResource(
+						R.string.statistics_widget_timeline_one_year,
+					)
+					StatisticsWidgetTimeline.ALL_TIME -> stringResource(
+						R.string.statistics_widget_timeline_all_time,
+					)
 					null -> ""
 				}
 			},
@@ -73,4 +86,3 @@ fun StatisticsWidgetEditor(
 		)
 	}
 }
-

@@ -9,6 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,18 +18,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class SourcePickerViewModel @Inject constructor(
 	private val statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
 	@ApplicationScope private val externalScope: CoroutineScope,
-): ApproachViewModel<SourcePickerScreenEvent>() {
-	private var _didLoadDefaultSource = false
-	private val _source: MutableStateFlow<TrackableFilter.Source?> = MutableStateFlow(null)
-	private val _sourceSummaries = _source.map {
+) : ApproachViewModel<SourcePickerScreenEvent>() {
+	private var didLoadDefaultSource = false
+	private val source: MutableStateFlow<TrackableFilter.Source?> = MutableStateFlow(null)
+	private val sourceSummaries = source.map {
 		if (it == null) {
 			statisticsRepository.getDefaultSource()
 		} else {
@@ -35,7 +35,7 @@ class SourcePickerViewModel @Inject constructor(
 		}
 	}
 
-	val uiState = _sourceSummaries
+	val uiState = sourceSummaries
 		.map { source ->
 			SourcePickerScreenUiState.Loaded(
 				sourcePicker = SourcePickerUiState(
@@ -72,30 +72,30 @@ class SourcePickerViewModel @Inject constructor(
 
 	private fun setFilterBowler(bowlerId: UUID?) {
 		bowlerId?.let {
-			_source.value = TrackableFilter.Source.Bowler(it)
+			source.value = TrackableFilter.Source.Bowler(it)
 		}
 	}
 
 	private fun setFilterLeague(leagueId: UUID?) {
 		leagueId?.let {
-			_source.value = TrackableFilter.Source.League(it)
+			source.value = TrackableFilter.Source.League(it)
 		}
 	}
 
 	private fun setFilterSeries(seriesId: UUID?) {
 		seriesId?.let {
-			_source.value = TrackableFilter.Source.Series(it)
+			source.value = TrackableFilter.Source.Series(it)
 		}
 	}
 
 	private fun setFilterGame(gameId: UUID?) {
 		gameId?.let {
-			_source.value = TrackableFilter.Source.Game(it)
+			source.value = TrackableFilter.Source.Game(it)
 		}
 	}
 
 	private fun showDetailedStatistics() {
-		val source = _source.value ?: return
+		val source = source.value ?: return
 		sendEvent(SourcePickerScreenEvent.ShowStatistics(TrackableFilter(source = source)))
 
 		externalScope.launch {
@@ -104,26 +104,26 @@ class SourcePickerViewModel @Inject constructor(
 	}
 
 	private fun loadDefaultSource() {
-		if (_didLoadDefaultSource) return
-		_didLoadDefaultSource = true
+		if (didLoadDefaultSource) return
+		didLoadDefaultSource = true
 		viewModelScope.launch {
 			val defaultSource = userDataRepository.userData.first().lastTrackableFilter
-			if (_source.value == null) {
-				_source.value = defaultSource
+			if (source.value == null) {
+				source.value = defaultSource
 			}
 		}
 	}
 
 	private fun showBowlerPicker() {
 		viewModelScope.launch {
-			val source = _sourceSummaries.first()
+			val source = sourceSummaries.first()
 			sendEvent(SourcePickerScreenEvent.EditBowler(source?.bowler?.id))
 		}
 	}
 
 	private fun showLeaguePicker() {
 		viewModelScope.launch {
-			val source = _sourceSummaries.first()
+			val source = sourceSummaries.first()
 
 			// Only show league picker if bowler is selected
 			val bowler = source?.bowler ?: return@launch
@@ -134,7 +134,7 @@ class SourcePickerViewModel @Inject constructor(
 
 	private fun showSeriesPicker() {
 		viewModelScope.launch {
-			val source = _sourceSummaries.first()
+			val source = sourceSummaries.first()
 
 			// Only show series picker if league is selected
 			val league = source?.league ?: return@launch
@@ -145,7 +145,7 @@ class SourcePickerViewModel @Inject constructor(
 
 	private fun showGamePicker() {
 		viewModelScope.launch {
-			val source = _sourceSummaries.first()
+			val source = sourceSummaries.first()
 
 			// Only show game picker if series is selected
 			val series = source?.series ?: return@launch

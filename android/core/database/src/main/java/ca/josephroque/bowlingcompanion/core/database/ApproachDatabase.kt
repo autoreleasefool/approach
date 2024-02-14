@@ -18,11 +18,13 @@ import ca.josephroque.bowlingcompanion.core.database.dao.SeriesDao
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsWidgetDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamBowlerDao
-import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TeamDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunnerDao
+import ca.josephroque.bowlingcompanion.core.database.legacy.dao.LegacyIDMappingDao
+import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.FrameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameEntity
 import ca.josephroque.bowlingcompanion.core.database.model.GameGearCrossRef
@@ -30,8 +32,6 @@ import ca.josephroque.bowlingcompanion.core.database.model.GameLaneCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.GearEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.database.model.LeagueEntity
-import ca.josephroque.bowlingcompanion.core.database.legacy.model.LegacyIDMappingEntity
-import ca.josephroque.bowlingcompanion.core.database.model.BowlerPreferredGearCrossRef
 import ca.josephroque.bowlingcompanion.core.database.model.LocationEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
@@ -77,7 +77,7 @@ const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 	RollConverter::class,
 	InstantConverter::class,
 )
-abstract class ApproachDatabase: RoomDatabase() {
+abstract class ApproachDatabase : RoomDatabase() {
 	abstract fun bowlerDao(): BowlerDao
 	abstract fun teamDao(): TeamDao
 	abstract fun leagueDao(): LeagueDao
@@ -99,6 +99,7 @@ abstract class ApproachDatabase: RoomDatabase() {
 	abstract fun checkpointDao(): CheckpointDao
 
 	companion object {
+		@Suppress("ktlint:standard:property-naming")
 		@Volatile
 		private var INSTANCE: ApproachDatabase? = null
 

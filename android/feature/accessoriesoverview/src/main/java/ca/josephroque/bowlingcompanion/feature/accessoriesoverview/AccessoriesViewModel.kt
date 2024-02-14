@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.Accessorie
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,48 +21,47 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-const val alleysListItemLimit = 5
-const val gearListItemLimit = 10
+const val ALLEYS_LIST_ITEM_LIMIT = 5
+const val GEAR_LIST_ITEM_LIMIT = 10
 
 @HiltViewModel
 class AccessoriesViewModel @Inject constructor(
 	alleysRepository: AlleysRepository,
 	gearRepository: GearRepository,
 	private val userDataRepository: UserDataRepository,
-): ApproachViewModel<AccessoriesScreenUiEvent>() {
-	private val _isAccessoryMenuExpanded = MutableStateFlow(false)
-	private val _alleyToDelete: MutableStateFlow<AlleyListItem?> = MutableStateFlow(null)
-	private val _gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
+) : ApproachViewModel<AccessoriesScreenUiEvent>() {
+	private val isAccessoryMenuExpanded = MutableStateFlow(false)
+	private val alleyToDelete: MutableStateFlow<AlleyListItem?> = MutableStateFlow(null)
+	private val gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
 
-	private val _alleysListState: Flow<AlleysListUiState> = combine(
-		alleysRepository.getRecentAlleysList(limit = alleysListItemLimit),
-		_alleyToDelete,
+	private val alleysListState: Flow<AlleysListUiState> = combine(
+		alleysRepository.getRecentAlleysList(limit = ALLEYS_LIST_ITEM_LIMIT),
+		alleyToDelete,
 	) { alleysList, alleyToDelete ->
 		AlleysListUiState(alleysList, alleyToDelete = alleyToDelete)
 	}
 
-	private val _gearListState: Flow<GearListUiState> = combine(
-		gearRepository.getRecentlyUsedGear(limit = gearListItemLimit),
-		_gearToDelete,
+	private val gearListState: Flow<GearListUiState> = combine(
+		gearRepository.getRecentlyUsedGear(limit = GEAR_LIST_ITEM_LIMIT),
+		gearToDelete,
 	) { gearList, gearToDelete ->
 		GearListUiState(gearList, gearToDelete = gearToDelete)
 	}
 
 	val uiState: StateFlow<AccessoriesScreenUiState> = combine(
-		_isAccessoryMenuExpanded,
-		_alleysListState,
-		_gearListState,
+		isAccessoryMenuExpanded,
+		alleysListState,
+		gearListState,
 	) { isAccessoryMenuExpanded, alleysList, gearList ->
 		AccessoriesScreenUiState.Loaded(
 			accessories = AccessoriesUiState(
 				isAccessoryMenuExpanded = isAccessoryMenuExpanded,
 				alleysList = alleysList,
 				gearList = gearList,
-				alleysItemLimit = alleysListItemLimit,
-				gearItemLimit = gearListItemLimit,
-			)
+				alleysItemLimit = ALLEYS_LIST_ITEM_LIMIT,
+				gearItemLimit = GEAR_LIST_ITEM_LIMIT,
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -84,13 +84,17 @@ class AccessoriesViewModel @Inject constructor(
 			AccessoriesUiAction.ViewAllGearClicked -> sendEvent(AccessoriesScreenUiEvent.ViewAllGear)
 			AccessoriesUiAction.AddAlleyClicked -> sendEvent(AccessoriesScreenUiEvent.AddAlley)
 			AccessoriesUiAction.AddGearClicked -> sendEvent(AccessoriesScreenUiEvent.AddGear)
-			is AccessoriesUiAction.AlleyClicked -> sendEvent(AccessoriesScreenUiEvent.ShowAlleyDetails(action.alley.id))
-			is AccessoriesUiAction.GearClicked -> sendEvent(AccessoriesScreenUiEvent.ShowGearDetails(action.gear.id))
+			is AccessoriesUiAction.AlleyClicked -> sendEvent(
+				AccessoriesScreenUiEvent.ShowAlleyDetails(action.alley.id),
+			)
+			is AccessoriesUiAction.GearClicked -> sendEvent(
+				AccessoriesScreenUiEvent.ShowGearDetails(action.gear.id),
+			)
 		}
 	}
 
 	private fun setAccessoryMenu(isExpanded: Boolean) {
-		_isAccessoryMenuExpanded.value = isExpanded
+		isAccessoryMenuExpanded.value = isExpanded
 	}
 
 	private fun showAccessoriesOnboardingIfRequired() {

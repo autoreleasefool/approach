@@ -24,7 +24,7 @@ interface StatisticsDao {
 				bowlers.name AS bowler_name
 			FROM bowlers
 			WHERE bowlers.id = :bowlerId
-		"""
+		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getBowlerSourceDetails(bowlerId: UUID): TrackableFilterSourceSummariesEntity
@@ -39,7 +39,7 @@ interface StatisticsDao {
 			FROM leagues
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
 			WHERE leagues.id = :leagueId
-		"""
+		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getLeagueSourceDetails(leagueId: UUID): TrackableFilterSourceSummariesEntity
@@ -57,7 +57,7 @@ interface StatisticsDao {
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
 			WHERE series.id = :seriesId 
-		"""
+		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getSeriesSourceDetails(seriesId: UUID): TrackableFilterSourceSummariesEntity
@@ -79,7 +79,7 @@ interface StatisticsDao {
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
 			WHERE games.id = :gameId 
-		"""
+		""",
 	)
 	@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 	fun getGameSourceDetails(gameId: UUID): TrackableFilterSourceSummariesEntity
@@ -94,11 +94,8 @@ interface StatisticsDao {
 	fun getTrackableGames(query: String, args: List<Any>): PagingSource<Int, TrackableGameEntity> =
 		getTrackableGames(SimpleSQLiteQuery(query, args.toTypedArray()))
 
-
 	@RawQuery(observedEntities = [FrameEntity::class])
 	fun getTrackableFrames(query: SimpleSQLiteQuery): PagingSource<Int, TrackableFrameEntity>
 	fun getTrackableFrames(query: String, args: List<Any>): PagingSource<Int, TrackableFrameEntity> =
 		getTrackableFrames(SimpleSQLiteQuery(query, args.toTypedArray()))
-
-
 }

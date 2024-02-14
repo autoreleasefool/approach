@@ -38,11 +38,15 @@ fun LeagueRow(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
 			.fillMaxWidth()
-			.then(if (onClick != null)
-				Modifier
-					.clickable(onClick = onClick)
-					.padding(16.dp)
-			else Modifier),
+			.then(
+				if (onClick != null) {
+					Modifier
+						.clickable(onClick = onClick)
+						.padding(16.dp)
+				} else {
+					Modifier
+				},
+			),
 	) {
 		recurrence?.let {
 			Icon(

@@ -20,6 +20,8 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.GameAve
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,8 +33,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsWidgetEditorViewModel @Inject constructor(
@@ -41,58 +41,64 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
+) : ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
 	private val context = Route.StatisticsWidgetEditor.getContext(savedStateHandle)!!
-	private val initialSource: StatisticsWidgetInitialSource? = Route.StatisticsWidgetEditor.getInitialSource(savedStateHandle)?.let {
-		val split = it.split("_")
-		when (split[0]) {
-			"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
-			else -> null
+	private val initialSource: StatisticsWidgetInitialSource? =
+		Route.StatisticsWidgetEditor.getInitialSource(
+			savedStateHandle,
+		)?.let {
+			val split = it.split("_")
+			when (split[0]) {
+				"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
+				else -> null
+			}
 		}
-	}
 	private val priority = Route.StatisticsWidgetEditor.getPriority(savedStateHandle)!!
 
-	private val _source: MutableStateFlow<StatisticsWidgetSource?> = MutableStateFlow(
+	private val source: MutableStateFlow<StatisticsWidgetSource?> = MutableStateFlow(
 		initialSource?.let {
 			when (it) {
 				is StatisticsWidgetInitialSource.Bowler -> StatisticsWidgetSource.Bowler(it.bowlerId)
 			}
-		}
+		},
 	)
 
-	private val _timeline: MutableStateFlow<StatisticsWidgetTimeline> = MutableStateFlow(
-		StatisticsWidgetTimeline.THREE_MONTHS
+	private val timeline: MutableStateFlow<StatisticsWidgetTimeline> = MutableStateFlow(
+		StatisticsWidgetTimeline.THREE_MONTHS,
 	)
 
-	private val _statistic: MutableStateFlow<Statistic> = MutableStateFlow(
-		GameAverageStatistic()
+	private val statistic: MutableStateFlow<Statistic> = MutableStateFlow(
+		GameAverageStatistic(),
 	)
 
-	private val _league: Flow<LeagueSummary?> = _source.flatMapLatest { source ->
+	private val league: Flow<LeagueSummary?> = source.flatMapLatest { source ->
 		when (source) {
-			is StatisticsWidgetSource.League -> leaguesRepository
-				.getLeagueSummary(source.leagueId)
+			is StatisticsWidgetSource.League ->
+				leaguesRepository
+					.getLeagueSummary(source.leagueId)
 			is StatisticsWidgetSource.Bowler -> flowOf(null)
 			null -> flowOf(null)
 		}
 	}
 
-	private val _bowler: Flow<BowlerSummary?> = _source.flatMapLatest { source ->
+	private val bowler: Flow<BowlerSummary?> = source.flatMapLatest { source ->
 		when (source) {
-			is StatisticsWidgetSource.Bowler -> bowlersRepository
-				.getBowlerSummary(source.bowlerId)
-			is StatisticsWidgetSource.League -> leaguesRepository
-				.getLeagueBowler(source.leagueId)
+			is StatisticsWidgetSource.Bowler ->
+				bowlersRepository
+					.getBowlerSummary(source.bowlerId)
+			is StatisticsWidgetSource.League ->
+				leaguesRepository
+					.getLeagueBowler(source.leagueId)
 			null -> flowOf(null)
 		}
 	}
 
 	val uiState: StateFlow<StatisticsWidgetEditorScreenUiState> = combine(
-		_source,
-		_timeline,
-		_statistic,
-		_bowler,
-		_league,
+		source,
+		timeline,
+		statistic,
+		bowler,
+		league,
 	) { source, timeline, statistic, bowler, league ->
 		StatisticsWidgetEditorScreenUiState.Loaded(
 			StatisticsWidgetEditorUiState(
@@ -101,7 +107,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 				statistic = statistic,
 				bowler = bowler,
 				league = league,
-			)
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -111,30 +117,38 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 
 	fun handleAction(action: StatisticsWidgetEditorScreenUiAction) {
 		when (action) {
-			is StatisticsWidgetEditorScreenUiAction.StatisticsWidgetEditor -> handleStatisticsWidgetEditorAction(action.action)
-			is StatisticsWidgetEditorScreenUiAction.UpdatedBowler -> updateSourceBowler(bowlerId = action.bowler)
-			is StatisticsWidgetEditorScreenUiAction.UpdatedLeague -> updateSourceLeague(leagueId = action.league)
-			is StatisticsWidgetEditorScreenUiAction.UpdatedStatistic -> _statistic.value = allStatistics().first { it.id == action.statistic }
+			is StatisticsWidgetEditorScreenUiAction.StatisticsWidgetEditor ->
+				handleStatisticsWidgetEditorAction(action.action)
+			is StatisticsWidgetEditorScreenUiAction.UpdatedBowler ->
+				updateSourceBowler(bowlerId = action.bowler)
+			is StatisticsWidgetEditorScreenUiAction.UpdatedLeague ->
+				updateSourceLeague(leagueId = action.league)
+			is StatisticsWidgetEditorScreenUiAction.UpdatedStatistic ->
+				statistic.value = allStatistics().first { it.id == action.statistic }
 		}
 	}
 
 	private fun handleStatisticsWidgetEditorAction(action: StatisticsWidgetEditorUiAction) {
 		when (action) {
-			StatisticsWidgetEditorUiAction.BackClicked -> sendEvent(StatisticsWidgetEditorScreenEvent.Dismissed)
+			StatisticsWidgetEditorUiAction.BackClicked -> sendEvent(
+				StatisticsWidgetEditorScreenEvent.Dismissed,
+			)
 			StatisticsWidgetEditorUiAction.SaveClicked -> saveWidget()
 			is StatisticsWidgetEditorUiAction.TimelineSelected -> updateTimeline(action.timeline)
-			StatisticsWidgetEditorUiAction.StatisticClicked -> sendEvent(StatisticsWidgetEditorScreenEvent.EditStatistic(_statistic.value))
+			StatisticsWidgetEditorUiAction.StatisticClicked -> sendEvent(
+				StatisticsWidgetEditorScreenEvent.EditStatistic(statistic.value),
+			)
 			StatisticsWidgetEditorUiAction.BowlerClicked -> showBowlerPicker()
 			StatisticsWidgetEditorUiAction.LeagueClicked -> showLeaguePicker()
 		}
 	}
 
 	private fun saveWidget() {
-		val source = _source.value ?: return
+		val source = source.value ?: return
 
 		viewModelScope.launch {
-			val timeline = _timeline.value
-			val statistic = _statistic.value
+			val timeline = timeline.value
+			val statistic = statistic.value
 			val widget = when (source) {
 				is StatisticsWidgetSource.Bowler -> StatisticsWidgetCreate(
 					bowlerId = source.bowlerId,
@@ -159,21 +173,23 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 			statisticsWidgetsRepository.insertStatisticWidget(widget)
 			sendEvent(StatisticsWidgetEditorScreenEvent.Dismissed)
 
-			analyticsClient.trackEvent(WidgetCreated(
-				context = context,
-				source = source.toString(),
-				statistic = statistic.id.toString(),
-				timeline = timeline.toString(),
-			))
+			analyticsClient.trackEvent(
+				WidgetCreated(
+					context = context,
+					source = source.toString(),
+					statistic = statistic.id.toString(),
+					timeline = timeline.toString(),
+				),
+			)
 		}
 	}
 
 	private fun updateSourceBowler(bowlerId: UUID?) {
-		_source.value = bowlerId?.let { StatisticsWidgetSource.Bowler(it) }
+		source.value = bowlerId?.let { StatisticsWidgetSource.Bowler(it) }
 	}
 
 	private fun updateSourceLeague(leagueId: UUID?) {
-		_source.value = when (val existingValue = _source.value) {
+		source.value = when (val existingValue = source.value) {
 			is StatisticsWidgetSource.Bowler -> if (leagueId == null) {
 				StatisticsWidgetSource.Bowler(existingValue.bowlerId)
 			} else {
@@ -189,20 +205,20 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	}
 
 	private fun updateTimeline(timeline: StatisticsWidgetTimeline) {
-		_timeline.value = timeline
+		this.timeline.value = timeline
 	}
 
 	private fun showBowlerPicker() {
 		viewModelScope.launch {
-			val bowlerId = _bowler.firstOrNull()?.id
+			val bowlerId = bowler.firstOrNull()?.id
 			sendEvent(StatisticsWidgetEditorScreenEvent.EditBowler(bowlerId))
 		}
 	}
 
 	private fun showLeaguePicker() {
 		viewModelScope.launch {
-			val bowlerId = _bowler.first()?.id ?: return@launch
-			val leagueId = _league.firstOrNull()?.id
+			val bowlerId = bowler.first()?.id ?: return@launch
+			val leagueId = league.firstOrNull()?.id
 			sendEvent(StatisticsWidgetEditorScreenEvent.EditLeague(bowlerId, leagueId))
 		}
 	}

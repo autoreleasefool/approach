@@ -5,17 +5,19 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.deta
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiState
 
 sealed interface AcknowledgementDetailsScreenUiState {
-	data object Loading: AcknowledgementDetailsScreenUiState
-		data class Loaded(
-			val acknowledgementDetails: AcknowledgementDetailsUiState,
-			val topBar: AcknowledgementDetailsTopBarUiState,
-		): AcknowledgementDetailsScreenUiState
+	data object Loading : AcknowledgementDetailsScreenUiState
+	data class Loaded(
+		val acknowledgementDetails: AcknowledgementDetailsUiState,
+		val topBar: AcknowledgementDetailsTopBarUiState,
+	) : AcknowledgementDetailsScreenUiState
 }
 
 sealed interface AcknowledgementDetailsScreenUiAction {
-	data class AcknowledgementDetailsAction(val action: AcknowledgementDetailsUiAction): AcknowledgementDetailsScreenUiAction
+	data class AcknowledgementDetailsAction(
+		val action: AcknowledgementDetailsUiAction,
+	) : AcknowledgementDetailsScreenUiAction
 }
 
 sealed interface AcknowledgementDetailsScreenEvent {
-	data object Dismissed: AcknowledgementDetailsScreenEvent
+	data object Dismissed : AcknowledgementDetailsScreenEvent
 }

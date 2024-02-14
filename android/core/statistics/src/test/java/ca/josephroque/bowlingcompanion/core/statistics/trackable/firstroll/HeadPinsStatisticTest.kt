@@ -16,13 +16,19 @@ class HeadPinsStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = HeadPinsStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.HEAD_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
+						roll(1, setOf(Pin.HEAD_PIN)),
+					),
+				),
 			),
 		)
 
@@ -34,20 +40,35 @@ class HeadPinsStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = HeadPinsStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN)),
-				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
-				frame(3, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN)),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
+					),
+				),
+				frame(
+					3,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.LEFT_TWO_PIN)),
+					),
+				),
 			),
-			perFrameConfiguration = TrackablePerFrameConfiguration(countHeadPin2AsHeadPin = true, countSplitWithBonusAsSplit = false),
+			perFrameConfiguration = TrackablePerFrameConfiguration(
+				countHeadPin2AsHeadPin = true,
+				countSplitWithBonusAsSplit = false,
+			),
 		)
 
 		assertCounting(statistic, 3)
@@ -58,20 +79,35 @@ class HeadPinsStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = HeadPinsStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN)),
-				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
-				frame(3, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.LEFT_TWO_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN)),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
+					),
+				),
+				frame(
+					3,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.LEFT_TWO_PIN)),
+					),
+				),
 			),
-			perFrameConfiguration = TrackablePerFrameConfiguration(countHeadPin2AsHeadPin = false, countSplitWithBonusAsSplit = false),
+			perFrameConfiguration = TrackablePerFrameConfiguration(
+				countHeadPin2AsHeadPin = false,
+				countSplitWithBonusAsSplit = false,
+			),
 		)
 
 		assertCounting(statistic, 1)

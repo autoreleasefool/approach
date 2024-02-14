@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.GearListRoute
 import java.util.UUID
 
 fun NavController.navigateToGearList(navOptions: NavOptions? = null) {
-		this.navigate(Route.GearList.route, navOptions)
+	this.navigate(Route.GearList.route, navOptions)
 }
 
 fun NavGraphBuilder.gearListScreen(

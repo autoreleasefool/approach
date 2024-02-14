@@ -27,7 +27,6 @@ import ca.josephroque.bowlingcompanion.core.model.ui.icon
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.SectionHeader
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 internal fun MatchPlayCard(
@@ -43,7 +42,9 @@ internal fun MatchPlayCard(
 				RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) }) {
 					Icon(
 						Icons.Default.Edit,
-						contentDescription = stringResource(RCoreDesign.string.action_manage),
+						contentDescription = stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage,
+						),
 						tint = MaterialTheme.colorScheme.onSurface,
 					)
 				}
@@ -57,11 +58,13 @@ internal fun MatchPlayCard(
 			onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) },
 			icon = {
 				Icon(
-					painter = painterResource(if (state.opponentName == null) R.drawable.ic_person_none else R.drawable.ic_person),
+					painter = painterResource(
+						if (state.opponentName == null) R.drawable.ic_person_none else R.drawable.ic_person,
+					),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
-			}
+			},
 		)
 
 		Row(
@@ -74,7 +77,9 @@ internal fun MatchPlayCard(
 		) {
 			NavigationButton(
 				title = stringResource(R.string.game_editor_match_play_result),
-				subtitle = state.result?.contentDescription() ?: stringResource(R.string.game_editor_match_play_result_not_recorded),
+				subtitle = state.result?.contentDescription() ?: stringResource(
+					R.string.game_editor_match_play_result_not_recorded,
+				),
 				onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) },
 				icon = {
 					Icon(
@@ -88,7 +93,9 @@ internal fun MatchPlayCard(
 
 			NavigationButton(
 				title = stringResource(R.string.game_editor_match_play_score),
-				subtitle = state.opponentScore?.toString() ?: stringResource(R.string.game_editor_match_play_score_not_recorded),
+				subtitle = state.opponentScore?.toString() ?: stringResource(
+					R.string.game_editor_match_play_score_not_recorded,
+				),
 				onClick = { onAction(GameDetailsUiAction.ManageMatchPlayClicked) },
 				modifier = Modifier.weight(1f).fillMaxHeight(),
 			)

@@ -8,13 +8,13 @@ import ca.josephroque.bowlingcompanion.core.data.queries.utils.buildWhereClause
 import ca.josephroque.bowlingcompanion.core.data.queries.utils.whereClauseArgs
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableSeriesEntity
-import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 
 data class TrackableSeriesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
-): TrackableSequence<TrackableSeriesEntity, TrackableSeries>() {
+) : TrackableSequence<TrackableSeriesEntity, TrackableSeries>() {
 	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
 
@@ -23,7 +23,7 @@ data class TrackableSeriesSequence(
 
 	override fun getPagingSource(
 		query: String,
-		whereArgs: List<Any>
+		whereArgs: List<Any>,
 	): PagingSource<Int, TrackableSeriesEntity> = statisticsDao.getTrackableSeries(query, whereArgs)
 
 	override fun mapEntityToModel(entity: TrackableSeriesEntity) = entity.asModel()
@@ -61,8 +61,7 @@ data class TrackableSeriesSequence(
 		putAll(filter.source.whereClauseArgs())
 	}
 
-	override fun buildGroupByStatement(): String =
-		"GROUP BY ${seriesQuery.tableAlias}.id"
+	override fun buildGroupByStatement(): String = "GROUP BY ${seriesQuery.tableAlias}.id"
 
 	override fun buildOrderByStatement() = listOf(
 		leaguesQuery.buildOrderClause(),

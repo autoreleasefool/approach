@@ -65,16 +65,14 @@ fun NewUserOnboarding(
 }
 
 @Composable
-private fun AppDescription(
-	onAction: (NewUserOnboardingUiAction) -> Unit,
-) {
+private fun AppDescription(onAction: (NewUserOnboardingUiAction) -> Unit) {
 	ReadableContent(modifier = Modifier.padding(top = 32.dp)) {
 		Column(
 			horizontalAlignment = Alignment.CenterHorizontally,
 			modifier = Modifier
 				.fillMaxWidth()
 				.verticalScroll(rememberScrollState())
-				.padding(horizontal = 16.dp)
+				.padding(horizontal = 16.dp),
 		) {
 			Image(
 				painter = painterResource(R.drawable.ic_approach_squircle),

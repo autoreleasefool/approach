@@ -19,7 +19,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.footer
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
@@ -66,7 +65,7 @@ fun LazyListScope.archivesList(
 	) { item ->
 		val unarchiveAction = SwipeAction(
 			icon = painterResource(R.drawable.ic_unarchive),
-			background = colorResource(RCoreDesign.color.blue_600),
+			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_600),
 			onSwipe = { onItemUnarchived(item) },
 		)
 
@@ -79,9 +78,7 @@ fun LazyListScope.archivesList(
 }
 
 @Composable
-private fun ArchiveItemRow(
-	item: ArchiveListItem,
-) {
+private fun ArchiveItemRow(item: ArchiveListItem) {
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -119,10 +116,18 @@ private fun ArchiveItemRow(
 
 @Composable
 private fun ArchiveListItem.icon(): Painter = when (this) {
-	is ArchiveListItem.Bowler -> painterResource(RCoreDesign.drawable.ic_person)
-	is ArchiveListItem.League -> painterResource(RCoreDesign.drawable.ic_repeat)
-	is ArchiveListItem.Series -> painterResource(RCoreDesign.drawable.ic_event)
-	is ArchiveListItem.Game -> painterResource(RCoreDesign.drawable.ic_bowling_ball)
+	is ArchiveListItem.Bowler -> painterResource(
+		ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_person,
+	)
+	is ArchiveListItem.League -> painterResource(
+		ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_repeat,
+	)
+	is ArchiveListItem.Series -> painterResource(
+		ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event,
+	)
+	is ArchiveListItem.Game -> painterResource(
+		ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball,
+	)
 }
 
 @Composable

@@ -78,11 +78,17 @@ fun QuickPlay(
 			state.bowlers,
 			key = { it.first.id },
 		) { bowler ->
-			val deleteAction = if (state.bowlers.size > 1) SwipeAction(
-				icon = rememberVectorPainter(Icons.Filled.Delete),
-				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
-				onSwipe = { onAction(QuickPlayUiAction.BowlerDeleted(bowler.first)) },
-			) else null
+			val deleteAction = if (state.bowlers.size > 1) {
+				SwipeAction(
+					icon = rememberVectorPainter(Icons.Filled.Delete),
+					background = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+					),
+					onSwipe = { onAction(QuickPlayUiAction.BowlerDeleted(bowler.first)) },
+				)
+			} else {
+				null
+			}
 
 			ReorderableItem(
 				reorderableState = reorderableState,
@@ -172,13 +178,10 @@ private fun QuickPlayBowler(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun QuickPlayTip(
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun QuickPlayTip(onClick: () -> Unit, modifier: Modifier = Modifier) {
 	Card(
 		onClick = onClick,
-		modifier = modifier
+		modifier = modifier,
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,

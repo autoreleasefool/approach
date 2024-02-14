@@ -30,7 +30,11 @@ fun OnboardingBackground(modifier: Modifier = Modifier) {
 	Box(modifier = modifier.fillMaxSize()) {
 		val resources = LocalContext.current.resources
 		val image = remember {
-			ResourcesCompat.getDrawable(resources, R.drawable.onboarding_pattern, null)?.toBitmap()?.asImageBitmap()
+			ResourcesCompat.getDrawable(
+				resources,
+				R.drawable.onboarding_pattern,
+				null,
+			)?.toBitmap()?.asImageBitmap()
 		} ?: return@Box
 
 		val brush = remember(image) {
@@ -41,16 +45,13 @@ fun OnboardingBackground(modifier: Modifier = Modifier) {
 			modifier = Modifier
 				.fillMaxSize()
 				.alpha(0.4f)
-				.background(brush)
+				.background(brush),
 		)
 	}
 }
 
 @Composable
-fun ReadableContent(
-	modifier: Modifier = Modifier,
-	content: @Composable () -> Unit,
-) {
+fun ReadableContent(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
 	val density = LocalDensity.current
 	var height by remember { mutableStateOf(0.dp) }
 
@@ -69,12 +70,12 @@ fun ReadableContent(
 						1f - (16.dp / height.value).value to Color.White,
 						1f to Color.Transparent,
 					)
-				}
+				},
 			)
 			.padding(vertical = 32.dp)
 			.onSizeChanged { size ->
 				height = with(density) { size.height.toDp() }
-			}
+			},
 	) {
 		content()
 	}

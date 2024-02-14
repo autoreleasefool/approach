@@ -15,10 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OverviewTopBar(
-	onAction: (OverviewUiAction) -> Unit,
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun OverviewTopBar(onAction: (OverviewUiAction) -> Unit, scrollBehavior: TopAppBarScrollBehavior) {
 	CenterAlignedTopAppBar(
 		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),
@@ -38,6 +35,6 @@ fun OverviewTopBar(
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
-		}
+		},
 	)
 }

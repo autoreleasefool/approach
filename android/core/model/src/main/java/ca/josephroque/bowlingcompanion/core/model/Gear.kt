@@ -9,7 +9,7 @@ data class GearListItem(
 	val kind: GearKind,
 	val ownerName: String?,
 	val avatar: Avatar,
-): SortableByUUID
+) : SortableByUUID
 
 data class GearDetails(
 	val id: UUID,

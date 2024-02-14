@@ -11,5 +11,5 @@ data class ScoresListUiState(
 sealed interface ScoresListUiAction {
 	data object BackClicked : ScoresListUiAction
 
-	data class ScoreSheet(val action: ScoreSheetUiAction): ScoresListUiAction
+	data class ScoreSheet(val action: ScoreSheetUiAction) : ScoresListUiAction
 }

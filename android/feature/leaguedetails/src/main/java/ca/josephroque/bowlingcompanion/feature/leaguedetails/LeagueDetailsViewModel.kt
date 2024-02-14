@@ -22,6 +22,8 @@ import ca.josephroque.bowlingcompanion.feature.serieslist.ui.SeriesListUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,8 +32,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class LeagueDetailsViewModel @Inject constructor(
@@ -41,21 +41,22 @@ class LeagueDetailsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<LeagueDetailsScreenEvent>() {
+) : ApproachViewModel<LeagueDetailsScreenEvent>() {
 	private val leagueId = Route.LeagueDetails.getLeague(savedStateHandle)!!
 
-	private val _seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
-	private val _seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)
-	private val _isSeriesSortOrderShowing: MutableStateFlow<Boolean> = MutableStateFlow(false)
-	private val _seriesSortOrder: MutableStateFlow<SeriesSortOrder> = MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
+	private val seriesItemSize = userDataRepository.userData.map { it.seriesItemSize }
+	private val seriesToArchive: MutableStateFlow<SeriesListChartItem?> = MutableStateFlow(null)
+	private val isSeriesSortOrderShowing: MutableStateFlow<Boolean> = MutableStateFlow(false)
+	private val seriesSortOrder: MutableStateFlow<SeriesSortOrder> =
+		MutableStateFlow(SeriesSortOrder.NEWEST_TO_OLDEST)
 
-	private val _seriesChartModelProducers: MutableMap<UUID, ChartEntryModelProducer> = mutableMapOf()
+	private val seriesChartModelProducers: MutableMap<UUID, ChartEntryModelProducer> = mutableMapOf()
 
-	private val _config = combine(
-		_seriesItemSize,
-		_seriesToArchive,
-		_isSeriesSortOrderShowing,
-		_seriesSortOrder,
+	private val config = combine(
+		seriesItemSize,
+		seriesToArchive,
+		isSeriesSortOrderShowing,
+		seriesSortOrder,
 	) { seriesItemSize, seriesToArchive, isSeriesSortOrderShowing, seriesSortOrder ->
 		Config(
 			seriesItemSize = seriesItemSize,
@@ -65,14 +66,14 @@ class LeagueDetailsViewModel @Inject constructor(
 		)
 	}
 
-	private val _seriesList = _seriesSortOrder.flatMapLatest { sortOrder ->
+	private val seriesList = seriesSortOrder.flatMapLatest { sortOrder ->
 		seriesRepository.getSeriesList(leagueId, sortOrder)
 	}
 
 	val uiState: StateFlow<LeagueDetailsScreenUiState> = combine(
-		_config,
+		config,
 		leaguesRepository.getLeagueDetails(leagueId),
-		_seriesList,
+		seriesList,
 	) { config, league, series ->
 		LeagueDetailsScreenUiState.Loaded(
 			leagueDetails = LeagueDetailsUiState(
@@ -86,9 +87,11 @@ class LeagueDetailsViewModel @Inject constructor(
 				),
 				seriesList = SeriesListUiState(
 					list = series.map { item ->
-						val chartModelProducer = _seriesChartModelProducers.getOrPut(item.properties.id) { ChartEntryModelProducer() }
+						val chartModelProducer = seriesChartModelProducers.getOrPut(item.properties.id) {
+							ChartEntryModelProducer()
+						}
 						chartModelProducer.setEntries(
-							item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) }
+							item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
 						)
 
 						if (item.scores.all { it == 0 } || item.scores.size == 1) {
@@ -99,7 +102,7 @@ class LeagueDetailsViewModel @Inject constructor(
 					},
 					seriesToArchive = config.seriesToArchive,
 					itemSize = config.seriesItemSize,
-				)
+				),
 			),
 		)
 	}.stateIn(
@@ -126,11 +129,11 @@ class LeagueDetailsViewModel @Inject constructor(
 			LeagueDetailsUiAction.BackClicked -> sendEvent(LeagueDetailsScreenEvent.Dismissed)
 			LeagueDetailsUiAction.AddSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.AddSeries(leagueId))
 			is LeagueDetailsUiAction.SeriesList -> handleSeriesListAction(action.action)
-			LeagueDetailsUiAction.SortClicked -> _isSeriesSortOrderShowing.value = true
-			LeagueDetailsUiAction.SortDismissed -> _isSeriesSortOrderShowing.value = false
+			LeagueDetailsUiAction.SortClicked -> isSeriesSortOrderShowing.value = true
+			LeagueDetailsUiAction.SortDismissed -> isSeriesSortOrderShowing.value = false
 			is LeagueDetailsUiAction.SortOrderClicked -> {
-				_seriesSortOrder.value = action.sortOrder
-				_isSeriesSortOrderShowing.value = false
+				seriesSortOrder.value = action.sortOrder
+				isSeriesSortOrderShowing.value = false
 			}
 			is LeagueDetailsUiAction.SeriesItemSizeToggled -> viewModelScope.launch {
 				userDataRepository.setSeriesItemSize(action.itemSize)
@@ -141,11 +144,13 @@ class LeagueDetailsViewModel @Inject constructor(
 	private fun handleSeriesListAction(action: SeriesListUiAction) {
 		when (action) {
 			is SeriesListUiAction.SeriesClicked -> showSeriesDetails(action.id)
-			is SeriesListUiAction.EditSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.EditSeries(action.id))
+			is SeriesListUiAction.EditSeriesClicked -> sendEvent(
+				LeagueDetailsScreenEvent.EditSeries(action.id),
+			)
 			SeriesListUiAction.AddSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.AddSeries(leagueId))
-			is SeriesListUiAction.ArchiveSeriesClicked -> _seriesToArchive.value = action.series
+			is SeriesListUiAction.ArchiveSeriesClicked -> seriesToArchive.value = action.series
 			SeriesListUiAction.ConfirmArchiveClicked -> archiveSeries()
-			SeriesListUiAction.DismissArchiveClicked -> _seriesToArchive.value = null
+			SeriesListUiAction.DismissArchiveClicked -> seriesToArchive.value = null
 		}
 	}
 
@@ -155,10 +160,10 @@ class LeagueDetailsViewModel @Inject constructor(
 	}
 
 	private fun archiveSeries() {
-		val seriesToArchive = _seriesToArchive.value ?: return
+		val seriesToArchive = seriesToArchive.value ?: return
 		viewModelScope.launch {
 			seriesRepository.archiveSeries(seriesToArchive.id)
-			_seriesToArchive.value = null
+			this@LeagueDetailsViewModel.seriesToArchive.value = null
 		}
 	}
 }
@@ -174,7 +179,9 @@ private fun SeriesListItem.withoutChart(): SeriesListChartItem = SeriesListChart
 	scores = null,
 )
 
-private fun SeriesListItem.withChart(chartModelProducer: ChartEntryModelProducer): SeriesListChartItem = SeriesListChartItem(
+private fun SeriesListItem.withChart(
+	chartModelProducer: ChartEntryModelProducer,
+): SeriesListChartItem = SeriesListChartItem(
 	id = properties.id,
 	date = properties.date,
 	preBowl = properties.preBowl,

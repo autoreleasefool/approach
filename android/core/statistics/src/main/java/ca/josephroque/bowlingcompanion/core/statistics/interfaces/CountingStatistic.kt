@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.interfaces
 
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 
-interface CountingStatistic: Statistic {
+interface CountingStatistic : Statistic {
 	var count: Int
 
 	override val supportsAggregation: Boolean

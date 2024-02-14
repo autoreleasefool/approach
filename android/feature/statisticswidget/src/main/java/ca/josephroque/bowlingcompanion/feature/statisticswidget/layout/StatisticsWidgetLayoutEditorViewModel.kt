@@ -1,3 +1,4 @@
+
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.layout
 
 import androidx.lifecycle.SavedStateHandle
@@ -14,28 +15,30 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val statisticsWidgetRepository: StatisticsWidgetsRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<StatisticsWidgetLayoutEditorScreenEvent>() {
+) : ApproachViewModel<StatisticsWidgetLayoutEditorScreenEvent>() {
 	private val context = Route.StatisticsWidgetLayoutEditor.getContext(savedStateHandle)!!
-	private val initialSource: StatisticsWidgetInitialSource? = Route.StatisticsWidgetLayoutEditor.getInitialSource(savedStateHandle)?.let {
-		val split = it.split("_")
-		when (split[0]) {
-			"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
-			else -> null
-		}
-	}
+	private val initialSource: StatisticsWidgetInitialSource? =
+		Route.StatisticsWidgetLayoutEditor.getInitialSource(savedStateHandle)
+			?.let {
+				val split = it.split("_")
+				when (split[0]) {
+					"bowler" -> StatisticsWidgetInitialSource.Bowler(UUID.fromString(split[1]))
+					else -> null
+				}
+			}
 
 	private val _uiState: MutableStateFlow<StatisticsWidgetLayoutEditorScreenUiState> =
 		MutableStateFlow(StatisticsWidgetLayoutEditorScreenUiState.Loading)
@@ -45,7 +48,9 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 	fun handleAction(action: StatisticsWidgetLayoutEditorScreenUiAction) {
 		when (action) {
 			StatisticsWidgetLayoutEditorScreenUiAction.LoadWidgets -> loadWidgets()
-			is StatisticsWidgetLayoutEditorScreenUiAction.LayoutEditor -> handleLayoutEditorAction(action.action)
+			is StatisticsWidgetLayoutEditorScreenUiAction.LayoutEditor -> handleLayoutEditorAction(
+				action.action,
+			)
 		}
 	}
 
@@ -82,11 +87,13 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 		when (val state = _uiState.value) {
 			StatisticsWidgetLayoutEditorScreenUiState.Loading -> Unit
 			is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
-				sendEvent(StatisticsWidgetLayoutEditorScreenEvent.AddWidget(
-					context = context,
-					initialSource = initialSource,
-					priority = state.layoutEditor.widgets.size,
-				))
+				sendEvent(
+					StatisticsWidgetLayoutEditorScreenEvent.AddWidget(
+						context = context,
+						initialSource = initialSource,
+						priority = state.layoutEditor.widgets.size,
+					),
+				)
 		}
 	}
 
@@ -105,8 +112,8 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 			it.copy(
 				layoutEditor = it.layoutEditor.copy(
 					widgets = it.layoutEditor.widgets.toMutableList()
-						.apply { add(to.coerceAtMost(it.layoutEditor.widgets.size - 1), removeAt(from)) }
-				)
+						.apply { add(to.coerceAtMost(it.layoutEditor.widgets.size - 1), removeAt(from)) },
+				),
 			)
 		}
 
@@ -118,10 +125,12 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 			}
 		}
 
-		analyticsClient.trackEvent(WidgetLayoutUpdated(
-			context = context,
-			numberOfWidgets = state?.layoutEditor?.widgets?.size ?: 0,
-		))
+		analyticsClient.trackEvent(
+			WidgetLayoutUpdated(
+				context = context,
+				numberOfWidgets = state?.layoutEditor?.widgets?.size ?: 0,
+			),
+		)
 	}
 
 	private fun handleWidgetClicked(widget: StatisticsWidget) {

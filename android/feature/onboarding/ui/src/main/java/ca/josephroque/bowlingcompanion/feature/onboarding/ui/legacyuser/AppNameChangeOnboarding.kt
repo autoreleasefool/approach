@@ -19,4 +19,3 @@ fun AppNameChangeDetails(
 		modifier = modifier,
 	)
 }
-

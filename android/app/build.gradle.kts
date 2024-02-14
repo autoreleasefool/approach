@@ -8,6 +8,7 @@ plugins {
 	id("approach.android.room")
 	id("approach.android.hilt")
 	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+	alias(libs.plugins.ktlint)
 }
 
 android {
@@ -80,7 +81,8 @@ dependencies {
 	implementation(project(":feature:opponentslist"))
 	implementation(project(":feature:overview"))
 	implementation(project(":feature:resourcepicker"))
-	implementation(project(":feature:resourcepicker:ui")) // Require UI module to get `ResourcePickerType`
+	// Require UI module to get `ResourcePickerType`
+	implementation(project(":feature:resourcepicker:ui"))
 	implementation(project(":feature:seriesdetails"))
 	implementation(project(":feature:seriesform"))
 	implementation(project(":feature:settings"))
@@ -107,4 +109,9 @@ secrets {
 // FIXME: Move to Gradle Convention Plugin
 kapt {
 	correctErrorTypes = true
+}
+
+ktlint {
+	android.set(true)
+	outputColorName.set("RED")
 }

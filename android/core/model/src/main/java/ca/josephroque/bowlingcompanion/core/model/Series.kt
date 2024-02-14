@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 object Series {
-	const val DefaultNumberOfGames = 4
+	const val DEFAULT_NUMBER_OF_GAMES = 4
 }
 
 enum class SeriesSortOrder {

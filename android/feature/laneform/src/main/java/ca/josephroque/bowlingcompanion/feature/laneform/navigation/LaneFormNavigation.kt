@@ -24,9 +24,7 @@ fun NavController.navigateToLaneFormForResult(
 	)
 }
 
-fun NavGraphBuilder.laneFormScreen(
-	onDismissWithResult: (List<UUID>) -> Unit,
-) {
+fun NavGraphBuilder.laneFormScreen(onDismissWithResult: (List<UUID>) -> Unit) {
 	composable(
 		route = Route.EditLanes.route,
 		arguments = listOf(
@@ -34,7 +32,7 @@ fun NavGraphBuilder.laneFormScreen(
 		),
 	) {
 		LaneFormRoute(
-			onDismissWithResult = onDismissWithResult
+			onDismissWithResult = onDismissWithResult,
 		)
 	}
 }

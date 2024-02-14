@@ -6,25 +6,19 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.HighestOfStati
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
 import kotlin.test.assertEquals
 
-fun <S: CountingStatistic> assertCounting(
-	statistic: S,
-	count: Int,
-) {
+fun <S : CountingStatistic> assertCounting(statistic: S, count: Int) {
 	assertEquals(count, statistic.count)
 	assertEquals(count.toString(), statistic.formattedValue)
 	assertEquals(count == 0, statistic.isEmpty)
 }
 
-fun <S: HighestOfStatistic> assertHighestOf(
-	statistic: S,
-	highest: Int,
-) {
+fun <S : HighestOfStatistic> assertHighestOf(statistic: S, highest: Int) {
 	assertEquals(highest, statistic.highest)
 	assertEquals(highest.toString(), statistic.formattedValue)
 	assertEquals(highest == 0, statistic.isEmpty)
 }
 
-fun <S: AveragingStatistic> assertAveraging(
+fun <S : AveragingStatistic> assertAveraging(
 	statistic: S,
 	total: Int,
 	divisor: Int,
@@ -38,8 +32,8 @@ fun <S: AveragingStatistic> assertAveraging(
 	assertEquals(formattedAs, statistic.formattedValue)
 }
 
-fun <S: PercentageStatistic> assertPercentage(
-statistic: S,
+fun <S : PercentageStatistic> assertPercentage(
+	statistic: S,
 	numerator: Int,
 	denominator: Int,
 	formattedAs: String,

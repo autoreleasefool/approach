@@ -5,7 +5,7 @@ import androidx.room.Ignore
 import androidx.room.Transaction
 
 @Dao
-abstract class TransactionRunnerDao: TransactionRunner {
+abstract class TransactionRunnerDao : TransactionRunner {
 	@Transaction
 	protected open suspend fun runInTransaction(tx: suspend () -> Unit) = tx()
 

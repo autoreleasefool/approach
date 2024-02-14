@@ -15,7 +15,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
-import ca.josephroque.bowlingcompanion.core.designsystem.R
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import kotlinx.datetime.LocalDate
 
@@ -40,7 +39,7 @@ fun SeriesRow(
 			modifier = Modifier.weight(1f),
 		) {
 			Icon(
-				painterResource(R.drawable.ic_event),
+				painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_event),
 				contentDescription = null,
 				tint = MaterialTheme.colorScheme.onSurface,
 				modifier = Modifier.size(16.dp),

@@ -40,13 +40,13 @@ fun NavController.navigateToResourcePickerForResult(
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.resourcePickerSheet(
-	onDismissWithResult: (Set<UUID>) -> Unit,
-) {
+fun NavGraphBuilder.resourcePickerSheet(onDismissWithResult: (Set<UUID>) -> Unit) {
 	bottomSheet(
 		route = Route.ResourcePicker.route,
 		arguments = listOf(
-			navArgument(Route.ResourcePicker.RESOURCE_TYPE) { type = NavType.EnumType(ResourcePickerType::class.java) },
+			navArgument(Route.ResourcePicker.RESOURCE_TYPE) {
+				type = NavType.EnumType(ResourcePickerType::class.java)
+			},
 			navArgument(Route.ResourcePicker.RESOURCE_FILTER) {
 				type = NavType.StringType
 				nullable = true
@@ -57,7 +57,7 @@ fun NavGraphBuilder.resourcePickerSheet(
 			navArgument(Route.ResourcePicker.TITLE_OVERRIDE) {
 				type = NavType.StringType
 				nullable = true
-		  },
+			},
 		),
 	) {
 		ResourcePickerRoute(

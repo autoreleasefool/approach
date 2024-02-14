@@ -6,16 +6,15 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class OfflineFirstUserDataRepository @Inject constructor(
 	private val approachPreferencesDataSource: ApproachPreferencesDataSource,
-): UserDataRepository {
+) : UserDataRepository {
 
 	override val userData: Flow<UserData> =
 		approachPreferencesDataSource.userData
-
 
 	override suspend fun didCompleteOnboarding() {
 		approachPreferencesDataSource.setOnboardingComplete(true)
@@ -42,7 +41,9 @@ class OfflineFirstUserDataRepository @Inject constructor(
 	}
 
 	override suspend fun setIsCountingSplitWithBonusAsSplit(isCountingSplitWithBonusAsSplit: Boolean) {
-		approachPreferencesDataSource.setIsCountingSplitWithBonusAsSplit(enabled = isCountingSplitWithBonusAsSplit)
+		approachPreferencesDataSource.setIsCountingSplitWithBonusAsSplit(
+			enabled = isCountingSplitWithBonusAsSplit,
+		)
 	}
 
 	override suspend fun setIsHidingZeroStatistics(isHidingZeroStatistics: Boolean) {
@@ -50,15 +51,21 @@ class OfflineFirstUserDataRepository @Inject constructor(
 	}
 
 	override suspend fun setIsHidingStatisticDescriptions(isHidingStatisticDescriptions: Boolean) {
-		approachPreferencesDataSource.setIsHidingStatisticDescriptions(isHiding = isHidingStatisticDescriptions)
+		approachPreferencesDataSource.setIsHidingStatisticDescriptions(
+			isHiding = isHidingStatisticDescriptions,
+		)
 	}
 
 	override suspend fun setIsHidingWidgetsInLeaguesList(isHidingWidgetsInLeaguesList: Boolean) {
-		approachPreferencesDataSource.setIsHidingWidgetsInLeaguesList(isHiding = isHidingWidgetsInLeaguesList)
+		approachPreferencesDataSource.setIsHidingWidgetsInLeaguesList(
+			isHiding = isHidingWidgetsInLeaguesList,
+		)
 	}
 
 	override suspend fun setIsHidingWidgetsInBowlersList(isHidingWidgetsInBowlersList: Boolean) {
-		approachPreferencesDataSource.setIsHidingWidgetsInBowlersList(isHiding = isHidingWidgetsInBowlersList)
+		approachPreferencesDataSource.setIsHidingWidgetsInBowlersList(
+			isHiding = isHidingWidgetsInBowlersList,
+		)
 	}
 
 	override suspend fun setLastTrackableFilterSource(source: TrackableFilter.Source?) {

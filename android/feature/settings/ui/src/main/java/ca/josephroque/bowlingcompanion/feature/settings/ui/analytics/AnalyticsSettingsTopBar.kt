@@ -28,6 +28,6 @@ fun AnalyticsSettingsTopBar(
 		},
 		navigationIcon = {
 			BackButton(onClick = { onAction(AnalyticsSettingsUiAction.BackClicked) })
-		}
+		},
 	)
 }

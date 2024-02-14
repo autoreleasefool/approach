@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class LiveSystemInfoService @Inject constructor(
 	@ApplicationContext private val context: Context,
-): SystemInfoService {
+) : SystemInfoService {
 	override val versionName: String
 		get() = context.packageManager.getPackageInfo(context.packageName, 0).versionName
 

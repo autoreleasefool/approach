@@ -5,20 +5,20 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExpo
 import java.io.File
 
 sealed interface DataExportScreenUiState {
-	data object Loading: DataExportScreenUiState
+	data object Loading : DataExportScreenUiState
 
 	data class Loaded(
 		val dataExport: DataExportUiState,
-	): DataExportScreenUiState
+	) : DataExportScreenUiState
 }
 
 sealed interface DataExportScreenUiAction {
 	data class DataExport(
 		val action: DataExportUiAction,
-	): DataExportScreenUiAction
+	) : DataExportScreenUiAction
 }
 
 sealed interface DataExportScreenEvent {
-	data object Dismissed: DataExportScreenEvent
-	data class LaunchShareIntent(val file: File): DataExportScreenEvent
+	data object Dismissed : DataExportScreenEvent
+	data class LaunchShareIntent(val file: File) : DataExportScreenEvent
 }

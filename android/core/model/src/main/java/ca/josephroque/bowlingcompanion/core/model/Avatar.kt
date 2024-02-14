@@ -10,8 +10,7 @@ data class Avatar(
 		val green: Int,
 		val blue: Int,
 	) {
-		override fun toString(): String =
-			"$red,$green,$blue"
+		override fun toString(): String = "$red,$green,$blue"
 
 		companion object
 	}
@@ -35,6 +34,5 @@ data class Avatar(
 		}
 	}
 
-	override fun toString(): String =
-		"$label;$primaryColor;$secondaryColor"
+	override fun toString(): String = "$label;$primaryColor;$secondaryColor"
 }

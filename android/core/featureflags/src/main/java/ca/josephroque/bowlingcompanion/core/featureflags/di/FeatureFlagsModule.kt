@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface FeatureFlagsModule {
 	@Binds
-	fun bindsFeatureFlagsClient(
-		featureFlagsClient: OverridableFeatureFlagsClient,
-	): FeatureFlagsClient
+	fun bindsFeatureFlagsClient(featureFlagsClient: OverridableFeatureFlagsClient): FeatureFlagsClient
 }

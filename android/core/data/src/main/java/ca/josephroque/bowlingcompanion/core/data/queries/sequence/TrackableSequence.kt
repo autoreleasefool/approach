@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.queries.sequence
 
 import androidx.paging.PagingSource
 
-abstract class TrackableSequence<Entity: Any, Model: Any> {
+abstract class TrackableSequence<Entity : Any, Model : Any> {
 	companion object {
 		private const val PAGE_SIZE = 50
 	}
@@ -33,11 +33,13 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 			.map { whereArgs[it]!! }
 
 		val pagingSource = getPagingSource(query, orderedWhereArgs)
-		var result = pagingSource.load(PagingSource.LoadParams.Refresh(
-			key = 0,
-			loadSize = PAGE_SIZE,
-			placeholdersEnabled = false
-		))
+		var result = pagingSource.load(
+			PagingSource.LoadParams.Refresh(
+				key = 0,
+				loadSize = PAGE_SIZE,
+				placeholdersEnabled = false,
+			),
+		)
 
 		while (result is PagingSource.LoadResult.Page) {
 			result.data
@@ -46,11 +48,13 @@ abstract class TrackableSequence<Entity: Any, Model: Any> {
 
 			result = result.nextKey
 				?.let {
-					pagingSource.load(PagingSource.LoadParams.Append(
-						key = it,
-						loadSize = PAGE_SIZE,
-						placeholdersEnabled = false
-					))
+					pagingSource.load(
+						PagingSource.LoadParams.Append(
+							key = it,
+							loadSize = PAGE_SIZE,
+							placeholdersEnabled = false,
+						),
+					)
 				} ?: break
 		}
 	}

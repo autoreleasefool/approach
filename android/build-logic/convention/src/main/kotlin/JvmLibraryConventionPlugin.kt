@@ -5,7 +5,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.kotlin
 
-class JvmLibraryConventionPlugin: Plugin<Project> {
+class JvmLibraryConventionPlugin : Plugin<Project> {
 	override fun apply(target: Project) {
 		with(target) {
 			with(pluginManager) {

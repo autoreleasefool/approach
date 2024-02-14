@@ -28,7 +28,7 @@ import java.util.UUID
 			onUpdate = ForeignKey.CASCADE,
 			onDelete = ForeignKey.CASCADE,
 		),
-	]
+	],
 )
 data class StatisticsWidgetEntity(
 	@PrimaryKey @ColumnInfo(name = "id", index = true) val id: UUID,

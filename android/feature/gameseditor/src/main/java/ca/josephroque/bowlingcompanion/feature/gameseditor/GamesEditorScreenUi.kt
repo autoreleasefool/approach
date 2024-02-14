@@ -44,7 +44,7 @@ object GamesEditorArguments {
 }
 
 sealed interface GamesEditorScreenUiState {
-	data object Loading: GamesEditorScreenUiState
+	data object Loading : GamesEditorScreenUiState
 
 	data class Loaded(
 		val headerPeekHeight: Float = 0f,
@@ -52,32 +52,35 @@ sealed interface GamesEditorScreenUiState {
 		val isGameLockSnackBarVisible: Boolean = false,
 		val gameDetails: GameDetailsUiState,
 		val gamesEditor: GamesEditorUiState,
-	): GamesEditorScreenUiState
+	) : GamesEditorScreenUiState
 }
 
 sealed interface GamesEditorScreenUiAction {
-	data object DidAppear: GamesEditorScreenUiAction
-	data object GameLockSnackBarDismissed: GamesEditorScreenUiAction
+	data object DidAppear : GamesEditorScreenUiAction
+	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
 
-	data class GearUpdated(val gearIds: Set<UUID>): GamesEditorScreenUiAction
-	data class AlleyUpdated(val alleyId: UUID?): GamesEditorScreenUiAction
-	data class LanesUpdated(val laneIds: Set<UUID>): GamesEditorScreenUiAction
-	data class GamesEditor(val action: GamesEditorUiAction): GamesEditorScreenUiAction
-	data class GameDetails(val action: GameDetailsUiAction): GamesEditorScreenUiAction
-	data class SeriesUpdated(val series: List<UUID>): GamesEditorScreenUiAction
-	data class CurrentGameUpdated(val gameId: UUID): GamesEditorScreenUiAction
-	data class SelectedBallUpdated(val ballId: UUID?): GamesEditorScreenUiAction
+	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction
+	data class AlleyUpdated(val alleyId: UUID?) : GamesEditorScreenUiAction
+	data class LanesUpdated(val laneIds: Set<UUID>) : GamesEditorScreenUiAction
+	data class GamesEditor(val action: GamesEditorUiAction) : GamesEditorScreenUiAction
+	data class GameDetails(val action: GameDetailsUiAction) : GamesEditorScreenUiAction
+	data class SeriesUpdated(val series: List<UUID>) : GamesEditorScreenUiAction
+	data class CurrentGameUpdated(val gameId: UUID) : GamesEditorScreenUiAction
+	data class SelectedBallUpdated(val ballId: UUID?) : GamesEditorScreenUiAction
 }
 
 sealed interface GamesEditorScreenEvent {
-	data object Dismissed: GamesEditorScreenEvent
+	data object Dismissed : GamesEditorScreenEvent
 
-	data class EditMatchPlay(val gameId: UUID): GamesEditorScreenEvent
-	data class EditGear(val gearIds: Set<UUID>): GamesEditorScreenEvent
-	data class EditAlley(val alleyId: UUID?): GamesEditorScreenEvent
-	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>): GamesEditorScreenEvent
-	data class EditRolledBall(val ballId: UUID?): GamesEditorScreenEvent
-	data class ShowGamesSettings(val series: List<UUID>, val currentGameId: UUID): GamesEditorScreenEvent
-	data class ShowStatistics(val filter: TrackableFilter): GamesEditorScreenEvent
-	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int): GamesEditorScreenEvent
+	data class EditMatchPlay(val gameId: UUID) : GamesEditorScreenEvent
+	data class EditGear(val gearIds: Set<UUID>) : GamesEditorScreenEvent
+	data class EditAlley(val alleyId: UUID?) : GamesEditorScreenEvent
+	data class EditLanes(val alleyId: UUID, val laneIds: Set<UUID>) : GamesEditorScreenEvent
+	data class EditRolledBall(val ballId: UUID?) : GamesEditorScreenEvent
+	data class ShowGamesSettings(
+		val series: List<UUID>,
+		val currentGameId: UUID,
+	) : GamesEditorScreenEvent
+	data class ShowStatistics(val filter: TrackableFilter) : GamesEditorScreenEvent
+	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int) : GamesEditorScreenEvent
 }

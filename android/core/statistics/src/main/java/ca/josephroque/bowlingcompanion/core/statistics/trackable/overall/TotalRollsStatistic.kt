@@ -1,16 +1,16 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.overall
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
 data class TotalRollsStatistic(
 	var totalRolls: Int = 0,
-): TrackablePerFrame, CountingStatistic {
+) : TrackablePerFrame, CountingStatistic {
 	override val id = StatisticID.TOTAL_ROLLS
 	override val category = StatisticCategory.OVERALL
 	override val isEligibleForNewLabel = false
@@ -19,7 +19,9 @@ data class TotalRollsStatistic(
 
 	override var count: Int
 		get() = totalRolls
-		set(value) { totalRolls = value }
+		set(value) {
+			totalRolls = value
+		}
 
 	override fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration) {
 		totalRolls += frame.totalRolls

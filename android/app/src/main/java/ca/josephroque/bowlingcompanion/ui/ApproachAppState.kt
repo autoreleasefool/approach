@@ -8,7 +8,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import ca.josephroque.bowlingcompanion.navigation.navigateToAccessoriesGraph
@@ -22,7 +21,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 @Composable
 fun rememberApproachAppState(
 	bottomSheetNavigator: BottomSheetNavigator,
-	navController: NavHostController
+	navController: NavHostController,
 ): ApproachAppState {
 	return remember(bottomSheetNavigator, navController) {
 		ApproachAppState(bottomSheetNavigator, navController)
@@ -42,7 +41,10 @@ class ApproachAppState(
 	val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
 	fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-		if (navController.currentDestination?.isTopLevelDestinationInHierarchy(topLevelDestination) == true) {
+		if (navController.currentDestination?.isTopLevelDestinationInHierarchy(
+				topLevelDestination,
+			) == true
+		) {
 			return
 		}
 
@@ -57,9 +59,15 @@ class ApproachAppState(
 
 		when (topLevelDestination) {
 			TopLevelDestination.APP_OVERVIEW -> navController.navigateToOverviewGraph(topLevelNavOptions)
-			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatisticsGraph(topLevelNavOptions)
-			TopLevelDestination.ACCESSORIES_OVERVIEW -> navController.navigateToAccessoriesGraph(topLevelNavOptions)
-			TopLevelDestination.SETTINGS_OVERVIEW -> navController.navigateToSettingsGraph(topLevelNavOptions)
+			TopLevelDestination.STATISTICS_OVERVIEW -> navController.navigateToStatisticsGraph(
+				topLevelNavOptions,
+			)
+			TopLevelDestination.ACCESSORIES_OVERVIEW -> navController.navigateToAccessoriesGraph(
+				topLevelNavOptions,
+			)
+			TopLevelDestination.SETTINGS_OVERVIEW -> navController.navigateToSettingsGraph(
+				topLevelNavOptions,
+			)
 		}
 	}
 }

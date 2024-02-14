@@ -21,7 +21,11 @@ data class AveragingChartData(
 
 		val firstValue = entries.firstOrNull()?.value ?: 0.0
 		val lastValue = entries.lastOrNull()?.value ?: 0.0
-		percentDifferenceOverFullTimeSpan = if (firstValue != 0.0) (lastValue - firstValue) / firstValue else 0.0
+		percentDifferenceOverFullTimeSpan = if (firstValue != 0.0) {
+			(lastValue - firstValue) / firstValue
+		} else {
+			0.0
+		}
 	}
 
 	val isEmpty: Boolean

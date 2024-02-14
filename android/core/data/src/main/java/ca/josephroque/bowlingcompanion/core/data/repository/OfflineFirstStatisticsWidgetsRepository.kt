@@ -7,26 +7,32 @@ import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetPrior
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asModel
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 	private val statisticsWidgetDao: StatisticsWidgetDao,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): StatisticsWidgetsRepository {
+) : StatisticsWidgetsRepository {
 	override fun getStatisticsWidgets(context: String) =
 		statisticsWidgetDao.getStatisticsWidgets(context).map { it.map { widget -> widget.asModel() } }
 
-	override suspend fun insertStatisticWidget(widget: StatisticsWidgetCreate) = withContext(ioDispatcher) {
+	override suspend fun insertStatisticWidget(widget: StatisticsWidgetCreate) = withContext(
+		ioDispatcher,
+	) {
 		statisticsWidgetDao.insertStatisticWidget(widget.asEntity())
 	}
 
-	override suspend fun updateStatisticsWidgetsOrder(widgets: List<UUID>) = withContext(ioDispatcher) {
+	override suspend fun updateStatisticsWidgetsOrder(widgets: List<UUID>) = withContext(
+		ioDispatcher,
+	) {
 		widgets.forEachIndexed { index, uuid ->
-			statisticsWidgetDao.updateStatisticWidgetPriority(StatisticsWidgetPriorityUpdateEntity(uuid, index))
+			statisticsWidgetDao.updateStatisticWidgetPriority(
+				StatisticsWidgetPriorityUpdateEntity(uuid, index),
+			)
 		}
 	}
 

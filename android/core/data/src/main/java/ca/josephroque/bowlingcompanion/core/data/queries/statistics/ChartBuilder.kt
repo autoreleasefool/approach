@@ -4,12 +4,12 @@ import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableGamesSequence
 import ca.josephroque.bowlingcompanion.core.data.queries.sequence.TrackableSeriesSequence
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeries
@@ -30,7 +30,7 @@ import kotlinx.datetime.plus
 
 private const val MAX_TIME_PERIODS = 20
 
-suspend fun <Key: ChartEntryKey> buildEntries(
+suspend fun <Key : ChartEntryKey> buildEntries(
 	statistic: Statistic,
 	filter: TrackableFilter,
 	statisticsDao: StatisticsDao,
@@ -168,7 +168,7 @@ private fun aggregateEntriesByGame(
 	return aggregatedEntries.toSortedMap(compareBy { it.index })
 }
 
-fun <Key: ChartEntryKey>buildChartWithEntries(
+fun <Key : ChartEntryKey> buildChartWithEntries(
 	entries: Map<Key, Statistic>,
 	statistic: Statistic,
 	aggregation: TrackableFilter.AggregationFilter,
@@ -177,9 +177,16 @@ fun <Key: ChartEntryKey>buildChartWithEntries(
 		return StatisticChartContent.DataMissing(statistic.id)
 	}
 
-	@Suppress("UNCHECKED_CAST") val aggregatedEntries = when (entries.keys.first()) {
-		is ChartEntryKey.Date -> aggregateEntriesByDate(entries as Map<ChartEntryKey.Date, Statistic>, aggregation)
-		is ChartEntryKey.Game -> aggregateEntriesByGame(entries as Map<ChartEntryKey.Game, Statistic>, aggregation)
+	@Suppress("UNCHECKED_CAST")
+	val aggregatedEntries = when (entries.keys.first()) {
+		is ChartEntryKey.Date -> aggregateEntriesByDate(
+			entries as Map<ChartEntryKey.Date, Statistic>,
+			aggregation,
+		)
+		is ChartEntryKey.Game -> aggregateEntriesByGame(
+			entries as Map<ChartEntryKey.Game, Statistic>,
+			aggregation,
+		)
 		else -> throw IllegalStateException("Unsupported chart entry key type: ${entries.keys.first()}")
 	}
 
@@ -236,13 +243,14 @@ fun <Key: ChartEntryKey>buildChartWithEntries(
 					isAccumulating = aggregation == TrackableFilter.AggregationFilter.ACCUMULATE,
 					preferredTrendDirection = statistic.preferredTrendDirection,
 					entries = aggregatedEntries
-						.map { (key, entryStatistic) -> PercentageChartEntry(
-							key = key,
-							numerator = (entryStatistic as? PercentageStatistic)?.numerator ?: 0,
-							denominator = (entryStatistic as? PercentageStatistic)?.denominator ?: 0,
-							percentage = (entryStatistic as? PercentageStatistic)?.percentage ?: 0.0,
-						)
-					},
+						.map { (key, entryStatistic) ->
+							PercentageChartEntry(
+								key = key,
+								numerator = (entryStatistic as? PercentageStatistic)?.numerator ?: 0,
+								denominator = (entryStatistic as? PercentageStatistic)?.denominator ?: 0,
+								percentage = (entryStatistic as? PercentageStatistic)?.percentage ?: 0.0,
+							)
+						},
 				),
 			)
 		}

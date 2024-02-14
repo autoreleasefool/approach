@@ -46,7 +46,9 @@ fun LeagueDetailsTopBar(
 		},
 		actions = {
 			if (state.isSeriesItemSizeVisible) {
-				IconButton(onClick = { onAction(LeagueDetailsUiAction.SeriesItemSizeToggled(state.seriesItemSize.next)) }) {
+				IconButton(onClick = {
+					onAction(LeagueDetailsUiAction.SeriesItemSizeToggled(state.seriesItemSize.next))
+				}) {
 					Icon(
 						painter = state.seriesItemSize.icon(),
 						contentDescription = state.seriesItemSize.contentDescription(),
@@ -74,10 +76,18 @@ fun LeagueDetailsTopBar(
 								text = {
 									Text(
 										text = when (order) {
-											SeriesSortOrder.NEWEST_TO_OLDEST -> stringResource(R.string.series_list_sort_order_newest_to_oldest)
-											SeriesSortOrder.OLDEST_TO_NEWEST -> stringResource(R.string.series_list_sort_order_oldest_to_newest)
-											SeriesSortOrder.HIGHEST_TO_LOWEST -> stringResource(R.string.series_list_sort_order_highest_to_lowest)
-											SeriesSortOrder.LOWEST_TO_HIGHEST -> stringResource(R.string.series_list_sort_order_lowest_to_highest)
+											SeriesSortOrder.NEWEST_TO_OLDEST -> stringResource(
+												R.string.series_list_sort_order_newest_to_oldest,
+											)
+											SeriesSortOrder.OLDEST_TO_NEWEST -> stringResource(
+												R.string.series_list_sort_order_oldest_to_newest,
+											)
+											SeriesSortOrder.HIGHEST_TO_LOWEST -> stringResource(
+												R.string.series_list_sort_order_highest_to_lowest,
+											)
+											SeriesSortOrder.LOWEST_TO_HIGHEST -> stringResource(
+												R.string.series_list_sort_order_lowest_to_highest,
+											)
 										},
 										style = MaterialTheme.typography.bodyMedium,
 									)

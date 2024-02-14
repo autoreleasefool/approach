@@ -10,32 +10,47 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockSerie
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.roll
 import org.junit.Test
 
-class RightThreesSparedTest {
+class RightThreesSparedStatisticTest {
 	@Test
 	fun testAdjust_ByFramesWithRightThreesSpared_Adjusts() {
 		val statistic = assertStatisticAdjusts(
 			statistic = RightThreesSparedStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(1, setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)),
-				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.LEFT_TWO_PIN)),
-					roll(1, setOf()),
-				)),
-				frame(3, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-					roll(1, setOf()),
-				)),
-				frame(4, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf()),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(1, setOf(Pin.HEAD_PIN, Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN)),
+						roll(1, setOf(Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.LEFT_TWO_PIN)),
+						roll(1, setOf()),
+					),
+				),
+				frame(
+					3,
+					listOf(
+						roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
+						roll(1, setOf()),
+					),
+				),
+				frame(
+					4,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, setOf()),
+					),
+				),
 			),
 		)
 
@@ -47,26 +62,41 @@ class RightThreesSparedTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = RightThreesSparedStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf()),
-					roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf()),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)),
-				)),
-				frame(3, listOf(
-					roll(0, setOf(Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(4, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf()),
+						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf()),
+						roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(1, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)),
+					),
+				),
+				frame(
+					3,
+					listOf(
+						roll(0, setOf(Pin.LEFT_THREE_PIN)),
+						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
+					),
+				),
+				frame(
+					4,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
+					),
+				),
 			),
 		)
 
@@ -78,42 +108,135 @@ class RightThreesSparedTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = RightThreesSparedStatistic(),
 			byFrames = listOf(
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN)),
-				)),
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf()),
-				)),
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.RIGHT_THREE_PIN)),
-					roll(2, setOf()),
-				)),
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(Game.NumberOfFrames - 1, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-					roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)),
-				)),
-			)
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(1, setOf(Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(2, setOf(Pin.LEFT_TWO_PIN)),
+					),
+				),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(
+							2,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+					),
+				),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
+						roll(2, setOf()),
+					),
+				),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(1, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(2, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN)),
+					),
+				),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(1, setOf(Pin.RIGHT_THREE_PIN)),
+						roll(2, setOf()),
+					),
+				),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(
+							1,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(2, setOf(Pin.RIGHT_THREE_PIN)),
+					),
+				),
+				frame(
+					Game.NUMBER_OF_FRAMES - 1,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(
+							1,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+						roll(
+							2,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_THREE_PIN,
+								Pin.RIGHT_TWO_PIN,
+							),
+						),
+					),
+				),
+			),
 		)
 
 		assertPercentage(statistic, 3, 5, "60% (3)")

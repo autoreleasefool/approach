@@ -6,18 +6,18 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.onboarding.QuickPlayOnboardingUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class QuickPlayOnboardingViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	@ApplicationScope private val coroutineScope: CoroutineScope,
-): ApproachViewModel<QuickPlayOnboardingScreenEvent>() {
+) : ApproachViewModel<QuickPlayOnboardingScreenEvent>() {
 
 	val uiState = MutableStateFlow(QuickPlayOnboardingScreenUiState.Loaded)
 		.stateIn(
@@ -28,7 +28,9 @@ class QuickPlayOnboardingViewModel @Inject constructor(
 
 	fun handleAction(action: QuickPlayOnboardingScreenUiAction) {
 		when (action) {
-			is QuickPlayOnboardingScreenUiAction.QuickPlayOnboarding -> handleQuickPlayOnboardingAction(action.action)
+			is QuickPlayOnboardingScreenUiAction.QuickPlayOnboarding -> handleQuickPlayOnboardingAction(
+				action.action,
+			)
 		}
 	}
 

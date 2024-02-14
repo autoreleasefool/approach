@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiAction
 import ca.josephroque.bowlingcompanion.feature.avatarform.ui.ColorPickerUiState
 import com.github.skydoves.colorpicker.compose.BrightnessSlider
@@ -53,7 +52,7 @@ fun ColorPicker(
 				is ColorPickerUiState.Primary -> state.initialColor
 				is ColorPickerUiState.Secondary -> state.initialColor
 				else -> Color.Red
-			}
+			},
 		)
 	}
 
@@ -61,7 +60,7 @@ fun ColorPicker(
 		ColorPickerUiState.Hidden -> Unit
 		is ColorPickerUiState.Primary, is ColorPickerUiState.Secondary -> {
 			AlertDialog(
-				onDismissRequest = { onAction(ColorPickerUiAction.ColorChanged(initialColor)) }
+				onDismissRequest = { onAction(ColorPickerUiAction.ColorChanged(initialColor)) },
 			) {
 				Surface(
 					shape = RoundedCornerShape(corner = CornerSize(8.dp)),
@@ -78,7 +77,7 @@ fun ColorPicker(
 								.aspectRatio(1f),
 							controller = controller,
 							initialColor = initialColor,
-							onColorChanged = { currentColor.value = it.color }
+							onColorChanged = { currentColor.value = it.color },
 						)
 
 						BrightnessSlider(
@@ -94,11 +93,19 @@ fun ColorPicker(
 							modifier = Modifier.fillMaxWidth(),
 						) {
 							TextButton(onClick = { onAction(ColorPickerUiAction.ColorChanged(initialColor)) }) {
-								Text(text = stringResource(R.string.action_cancel))
+								Text(
+									text = stringResource(
+										ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_cancel,
+									),
+								)
 							}
 
 							TextButton(onClick = { onAction(ColorPickerUiAction.ColorChanged(currentColor.value)) }) {
-								Text(text = stringResource(R.string.action_save))
+								Text(
+									text = stringResource(
+										ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save,
+									),
+								)
 							}
 						}
 					}

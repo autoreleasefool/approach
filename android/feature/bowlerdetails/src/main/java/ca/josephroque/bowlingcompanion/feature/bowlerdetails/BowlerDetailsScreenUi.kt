@@ -5,27 +5,27 @@ import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiS
 import java.util.UUID
 
 sealed interface BowlerDetailsScreenUiState {
-	data object Loading: BowlerDetailsScreenUiState
+	data object Loading : BowlerDetailsScreenUiState
 
 	data class Loaded(
 		val bowler: BowlerDetailsUiState,
-	): BowlerDetailsScreenUiState
+	) : BowlerDetailsScreenUiState
 }
 
 sealed interface BowlerDetailsScreenUiAction {
-	data class PreferredGearSelected(val gear: Set<UUID>): BowlerDetailsScreenUiAction
-	data class BowlerDetailsAction(val action: BowlerDetailsUiAction): BowlerDetailsScreenUiAction
+	data class PreferredGearSelected(val gear: Set<UUID>) : BowlerDetailsScreenUiAction
+	data class BowlerDetailsAction(val action: BowlerDetailsUiAction) : BowlerDetailsScreenUiAction
 }
 
 sealed interface BowlerDetailsScreenEvent {
-	data object Dismissed: BowlerDetailsScreenEvent
+	data object Dismissed : BowlerDetailsScreenEvent
 
-	data class EditStatisticsWidget(val context: String, val bowlerId: UUID): BowlerDetailsScreenEvent
-	data class ShowPreferredGearPicker(val selectedGear: Set<UUID>): BowlerDetailsScreenEvent
-	data class EditLeague(val leagueId: UUID): BowlerDetailsScreenEvent
-	data class AddLeague(val bowlerId: UUID): BowlerDetailsScreenEvent
-	data class ShowGearDetails(val gearId: UUID): BowlerDetailsScreenEvent
-	data class ShowLeagueDetails(val leagueId: UUID): BowlerDetailsScreenEvent
-	data class ShowEventDetails(val leagueId: UUID): BowlerDetailsScreenEvent
-	data class ShowStatistics(val widget: UUID): BowlerDetailsScreenEvent
+	data class EditStatisticsWidget(val context: String, val bowlerId: UUID) : BowlerDetailsScreenEvent
+	data class ShowPreferredGearPicker(val selectedGear: Set<UUID>) : BowlerDetailsScreenEvent
+	data class EditLeague(val leagueId: UUID) : BowlerDetailsScreenEvent
+	data class AddLeague(val bowlerId: UUID) : BowlerDetailsScreenEvent
+	data class ShowGearDetails(val gearId: UUID) : BowlerDetailsScreenEvent
+	data class ShowLeagueDetails(val leagueId: UUID) : BowlerDetailsScreenEvent
+	data class ShowEventDetails(val leagueId: UUID) : BowlerDetailsScreenEvent
+	data class ShowStatistics(val widget: UUID) : BowlerDetailsScreenEvent
 }

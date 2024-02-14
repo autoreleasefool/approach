@@ -23,7 +23,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.sendEmail
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Footer
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Header
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Link
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.NavigationItem
@@ -59,7 +58,7 @@ fun Settings(
 			DataSection(
 				isDataImportsEnabled = state.isDataImportsEnabled,
 				isDataExportsEnabled = state.isDataExportsEnabled,
-				onAction = onAction
+				onAction = onAction,
 			)
 
 			Divider()
@@ -77,9 +76,7 @@ fun Settings(
 }
 
 @Composable
-private fun MainSection(
-	onAction: (SettingsUiAction) -> Unit,
-) {
+private fun MainSection(onAction: (SettingsUiAction) -> Unit) {
 	NavigationItem(
 		titleResourceId = R.string.settings_item_opponents_title,
 		descriptionResourceId = R.string.settings_item_opponents_description,
@@ -94,9 +91,7 @@ private fun MainSection(
 }
 
 @Composable
-private fun ArchivesSection(
-	onAction: (SettingsUiAction) -> Unit,
-) {
+private fun ArchivesSection(onAction: (SettingsUiAction) -> Unit) {
 	NavigationItem(
 		titleResourceId = R.string.settings_item_archives_title,
 		descriptionResourceId = R.string.settings_item_archives_description,
@@ -115,7 +110,7 @@ private fun HelpSection(
 	val context = LocalContext.current
 	Link(
 		titleResourceId = R.string.settings_item_report_bug,
-		iconResourceId = RCoreDesign.drawable.ic_send,
+		iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_send,
 		onClick = {
 			onAction(SettingsUiAction.ReportBugClicked)
 			val recipient = context.resources.getString(R.string.bug_report_email_recipient)
@@ -124,7 +119,9 @@ private fun HelpSection(
 				versionName,
 				versionCode,
 			)
-			val intentTitle = context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+			val intentTitle = context.resources.getString(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email,
+			)
 			sendEmail(
 				recipient = recipient,
 				subject = subject,
@@ -136,11 +133,13 @@ private fun HelpSection(
 
 	Link(
 		titleResourceId = R.string.settings_item_send_feedback,
-		iconResourceId = RCoreDesign.drawable.ic_send,
+		iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_send,
 		onClick = {
 			onAction(SettingsUiAction.SendFeedbackClicked)
 			val recipient = context.resources.getString(R.string.feedback_email_recipient)
-			val intentTitle = context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+			val intentTitle = context.resources.getString(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email,
+			)
 			sendEmail(recipient = recipient, intentTitle = intentTitle, context = context)
 		},
 	)
@@ -180,22 +179,20 @@ private fun DataSection(
 }
 
 @Composable
-private fun DevelopmentSection(
-	onAction: (SettingsUiAction) -> Unit,
-) {
+private fun DevelopmentSection(onAction: (SettingsUiAction) -> Unit) {
 	val context = LocalContext.current
 
 	Header(titleResourceId = R.string.settings_item_development)
 
 	NavigationItem(
 		titleResourceId = R.string.settings_item_developer,
-		onClick = { onAction(SettingsUiAction.DeveloperSettingsClicked) }
+		onClick = { onAction(SettingsUiAction.DeveloperSettingsClicked) },
 	)
 
 	val uriHandler = LocalUriHandler.current
 	Link(
 		titleResourceId = R.string.settings_item_view_source,
-		iconResourceId = RCoreDesign.drawable.ic_open_in_new,
+		iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_open_in_new,
 		onClick = {
 			onAction(SettingsUiAction.ViewSourceClicked)
 			val viewSourceUri = context.resources.getString(R.string.app_source_repository_url)
@@ -207,10 +204,7 @@ private fun DevelopmentSection(
 }
 
 @Composable
-private fun AppInfoSection(
-	versionName: String,
-	versionCode: String,
-) {
+private fun AppInfoSection(versionName: String, versionCode: String) {
 	Header(titleResourceId = R.string.settings_item_app_info)
 
 	val clipboardManager = LocalClipboardManager.current

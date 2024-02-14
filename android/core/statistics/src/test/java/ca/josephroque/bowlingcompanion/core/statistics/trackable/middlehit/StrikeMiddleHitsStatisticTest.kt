@@ -18,29 +18,47 @@ class StrikeMiddleHitsStatisticTest {
 				frame(
 					index = 0,
 					rolls = listOf(
-						roll(0, setOf(Pin.HEAD_PIN))
-					)
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
 				),
 				frame(
 					index = 1,
 					rolls = listOf(
-						roll(0, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN))
-					)
+						roll(0, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
+					),
 				),
 				frame(
 					index = 2,
 					rolls = listOf(
-						roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN))
-					)
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
+						),
+					),
 				),
 				frame(
 					index = 2,
 					rolls = listOf(
 						roll(0, emptySet()),
-						roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN))
-					)
-				)
-			)
+						roll(
+							1,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
+						),
+					),
+				),
+			),
 		)
 
 		assertPercentage(statistic, 1, 2, "50% (1)")
@@ -55,16 +73,16 @@ class StrikeMiddleHitsStatisticTest {
 					index = 0,
 					rolls = listOf(
 						roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.HEAD_PIN))
-					)
+						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.HEAD_PIN)),
+					),
 				),
 				frame(
 					index = 1,
 					rolls = listOf(
-						roll(0, setOf(Pin.HEAD_PIN))
-					)
-				)
-			)
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
+				),
+			),
 		)
 
 		assertPercentage(statistic, 0, 1, "0%")
@@ -74,7 +92,7 @@ class StrikeMiddleHitsStatisticTest {
 	fun testAdjustBySeries_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = StrikeMiddleHitsStatistic(),
-			bySeries = mockSeries()
+			bySeries = mockSeries(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}
@@ -83,7 +101,7 @@ class StrikeMiddleHitsStatisticTest {
 	fun testAdjustByGame_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = StrikeMiddleHitsStatistic(),
-			byGames = mockGames()
+			byGames = mockGames(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}

@@ -16,6 +16,8 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.ui.SeriesDetailsUiS
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,8 +27,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class SeriesDetailsViewModel @Inject constructor(
@@ -34,29 +34,29 @@ class SeriesDetailsViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<SeriesDetailsScreenEvent>() {
-	private val _seriesId = MutableStateFlow(Route.SeriesDetails.getSeries(savedStateHandle))
-	private val _eventId = Route.EventDetails.getEvent(savedStateHandle)
+) : ApproachViewModel<SeriesDetailsScreenEvent>() {
+	private val seriesId = MutableStateFlow(Route.SeriesDetails.getSeries(savedStateHandle))
+	private val eventId = Route.EventDetails.getEvent(savedStateHandle)
 
-	private val _gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
+	private val gameToArchive: MutableStateFlow<GameListItem?> = MutableStateFlow(null)
 
-	private val _chartModelProducer = ChartEntryModelProducer()
+	private val chartModelProducer = ChartEntryModelProducer()
 
-	private val _seriesDetails = _seriesId
+	private val seriesDetails = seriesId
 		.filterNotNull()
 		.flatMapLatest { seriesRepository.getSeriesDetails(it) }
 
-	private val _gamesList = _seriesId
+	private val gamesList = seriesId
 		.filterNotNull()
 		.flatMapLatest { gamesRepository.getGamesList(it) }
 
 	val uiState: StateFlow<SeriesDetailsScreenUiState> = combine(
-		_gameToArchive,
-		_seriesDetails,
-		_gamesList,
+		gameToArchive,
+		seriesDetails,
+		gamesList,
 	) { gameToArchive, seriesDetails, games ->
 		val isShowingPlaceholder = seriesDetails.scores.all { it == 0 }
-		_chartModelProducer.setEntries(
+		chartModelProducer.setEntries(
 			if (isShowingPlaceholder) {
 				listOf(
 					entryOf(0f, 75f),
@@ -68,16 +68,16 @@ class SeriesDetailsViewModel @Inject constructor(
 				seriesDetails.scores.mapIndexed { index, value ->
 					entryOf(
 						index.toFloat(),
-						value.toFloat()
+						value.toFloat(),
 					)
 				}
-			}
+			},
 		)
 
 		return@combine SeriesDetailsScreenUiState.Loaded(
 			seriesDetails = SeriesDetailsUiState(
 				details = seriesDetails.properties,
-				scores = _chartModelProducer,
+				scores = chartModelProducer,
 				seriesLow = seriesDetails.scores.minOrNull(),
 				seriesHigh = seriesDetails.scores.maxOrNull(),
 				isShowingPlaceholder = isShowingPlaceholder,
@@ -94,10 +94,10 @@ class SeriesDetailsViewModel @Inject constructor(
 	)
 
 	init {
-		if (_eventId != null) {
+		if (eventId != null) {
 			viewModelScope.launch {
-				val series = seriesRepository.getSeriesList(_eventId, SeriesSortOrder.NEWEST_TO_OLDEST)
-				_seriesId.value = series.first().firstOrNull()?.properties?.id
+				val series = seriesRepository.getSeriesList(eventId, SeriesSortOrder.NEWEST_TO_OLDEST)
+				seriesId.value = series.first().firstOrNull()?.properties?.id
 			}
 		}
 	}
@@ -119,30 +119,30 @@ class SeriesDetailsViewModel @Inject constructor(
 	private fun handleGamesListAction(action: GamesListUiAction) {
 		when (action) {
 			GamesListUiAction.AddGameClicked -> addGameToSeries()
-			is GamesListUiAction.GameArchived -> _gameToArchive.value = action.game
+			is GamesListUiAction.GameArchived -> gameToArchive.value = action.game
 			is GamesListUiAction.ConfirmArchiveClicked -> archiveGame()
-			is GamesListUiAction.DismissArchiveClicked -> _gameToArchive.value = null
+			is GamesListUiAction.DismissArchiveClicked -> gameToArchive.value = null
 			is GamesListUiAction.GameClicked -> editGame(action.id)
 		}
 	}
 
 	private fun editGame(id: UUID) {
-		sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(_seriesId.value!!, id)))
+		sendEvent(SeriesDetailsScreenEvent.EditGame(EditGameArgs(seriesId.value!!, id)))
 		analyticsClient.startNewGameSession()
 	}
 
 	private fun addGameToSeries() {
-		val seriesId = _seriesId.value ?: return
+		val seriesId = seriesId.value ?: return
 		viewModelScope.launch {
 			seriesRepository.addGameToSeries(seriesId)
 		}
 	}
 
 	private fun archiveGame() {
-		val gameToArchive = _gameToArchive.value ?: return
+		val gameToArchive = gameToArchive.value ?: return
 		viewModelScope.launch {
 			gamesRepository.archiveGame(gameToArchive.id)
-			_gameToArchive.value = null
+			this@SeriesDetailsViewModel.gameToArchive.value = null
 		}
 	}
 }

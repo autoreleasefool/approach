@@ -23,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.R
 
 @Composable
-fun AccessoriesOnboarding(
-	onAction: (AccessoriesOnboardingUiAction) -> Unit,
-) {
+fun AccessoriesOnboarding(onAction: (AccessoriesOnboardingUiAction) -> Unit) {
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = Modifier

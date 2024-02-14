@@ -22,7 +22,7 @@ fun FormSwitch(
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
-		modifier = modifier
+		modifier = modifier,
 	) {
 		Text(
 			text = stringResource(titleResourceId),

@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.designsystem.components.Link
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 
@@ -29,7 +28,7 @@ fun AnalyticsSettings(
 	Column(
 		modifier = modifier
 			.fillMaxSize()
-			.verticalScroll(rememberScrollState())
+			.verticalScroll(rememberScrollState()),
 	) {
 		Text(
 			text = stringResource(R.string.analytics_settings_info_first),
@@ -52,7 +51,7 @@ fun AnalyticsSettings(
 		LabeledSwitch(
 			checked = state.analyticsOptInStatus == AnalyticsOptInStatus.OPTED_IN,
 			onCheckedChange = { onAction(AnalyticsSettingsUiAction.OptInStatusToggled(it)) },
-			titleResourceId = R.string.analytics_settings_share_anonymous_analytics
+			titleResourceId = R.string.analytics_settings_share_anonymous_analytics,
 		)
 
 		Divider()
@@ -69,8 +68,10 @@ fun AnalyticsSettings(
 		val context = LocalContext.current
 		Link(
 			titleResourceId = R.string.analytics_settings_privacy_policy,
-			iconResourceId = RCoreDesign.drawable.ic_open_in_new,
-			onClick = { uriHandler.openUri(context.resources.getString(R.string.analytics_settings_privacy_policy_url)) },
+			iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_open_in_new,
+			onClick = {
+				uriHandler.openUri(context.resources.getString(R.string.analytics_settings_privacy_policy_url))
+			},
 			modifier = Modifier.padding(top = 16.dp),
 		)
 	}

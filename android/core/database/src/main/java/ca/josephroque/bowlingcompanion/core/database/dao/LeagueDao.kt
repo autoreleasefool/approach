@@ -13,12 +13,12 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueDetails
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
-import java.util.UUID
 
 @Dao
-abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
+abstract class LeagueDao : LegacyMigratingDao<LeagueEntity> {
 	@Query(
 		"""
 			SELECT
@@ -27,7 +27,7 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 			FROM leagues
 			JOIN bowlers ON leagues.bowler_id = bowlers.id
 			WHERE leagues.id = :leagueId
-		"""
+		""",
 	)
 	abstract fun getLeagueBowler(leagueId: UUID): Flow<BowlerSummary>
 
@@ -39,11 +39,12 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 			FROM leagues
 			WHERE leagues.id = :leagueId
 
-		"""
+		""",
 	)
 	abstract fun getLeagueSummary(leagueId: UUID): Flow<LeagueSummary>
 
-	@Query("""
+	@Query(
+		"""
 		SELECT 
 		 id,
 		 name,
@@ -54,7 +55,8 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 		 exclude_from_statistics AS excludeFromStatistics
 		FROM leagues 
 		WHERE id = :leagueId
-	""")
+	""",
+	)
 	abstract fun getLeagueDetails(leagueId: UUID): Flow<LeagueDetails>
 
 	@Query(
@@ -81,9 +83,12 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 				AND (leagues.recurrence = :recurrence OR :recurrence IS NULL)
 			GROUP BY leagues.id
 			ORDER BY leagues.name
-		"""
+		""",
 	)
-	abstract fun getLeagueAverages(bowlerId: UUID, recurrence: LeagueRecurrence?): Flow<List<LeagueListItem>>
+	abstract fun getLeagueAverages(
+		bowlerId: UUID,
+		recurrence: LeagueRecurrence?,
+	): Flow<List<LeagueListItem>>
 
 	@Query(
 		"""
@@ -101,7 +106,7 @@ abstract class LeagueDao: LegacyMigratingDao<LeagueEntity> {
 			WHERE leagues.archived_on IS NOT NULL
 			GROUP BY leagues.id
 			ORDER BY leagues.archived_on DESC
-		"""
+		""",
 	)
 	abstract fun getArchivedLeagues(): Flow<List<ArchivedLeague>>
 

@@ -2,14 +2,18 @@ package ca.josephroque.bowlingcompanion.core.scoring
 
 import ca.josephroque.bowlingcompanion.core.model.Pin
 import ca.josephroque.bowlingcompanion.core.model.ScoreableFrame
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class ScoreKeeperInputTest {
 	@Test
 	fun testFromBitString_whenBitStringWithFoul_ReturnsRollWithFoul() {
 		val bitString = "100000"
-		val roll = ScoreKeeperInput.Roll.fromBitString(frameIndex = 0, rollIndex = 1, bitString = bitString)
+		val roll = ScoreKeeperInput.Roll.fromBitString(
+			frameIndex = 0,
+			rollIndex = 1,
+			bitString = bitString,
+		)
 		assertEquals(
 			ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 1, pinsDowned = setOf(), didFoul = true),
 			roll,
@@ -19,9 +23,18 @@ class ScoreKeeperInputTest {
 	@Test
 	fun testFromBitString_whenBitStringWithPinsDowned_ReturnsRollWithPinsDowned() {
 		val bitString = "010011"
-		val roll = ScoreKeeperInput.Roll.fromBitString(frameIndex = 0, rollIndex = 1, bitString = bitString)
+		val roll = ScoreKeeperInput.Roll.fromBitString(
+			frameIndex = 0,
+			rollIndex = 1,
+			bitString = bitString,
+		)
 		assertEquals(
-			ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 1, pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN), didFoul = false),
+			ScoreKeeperInput.Roll(
+				frameIndex = 0,
+				rollIndex = 1,
+				pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN),
+				didFoul = false,
+			),
 			roll,
 		)
 	}
@@ -49,17 +62,37 @@ class ScoreKeeperInputTest {
 			ScoreKeeperInput(
 				rolls = listOf(
 					listOf(
-						ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 0, pinsDowned = Pin.fullDeck(), didFoul = false),
+						ScoreKeeperInput.Roll(
+							frameIndex = 0,
+							rollIndex = 0,
+							pinsDowned = Pin.fullDeck(),
+							didFoul = false,
+						),
 						ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 1, pinsDowned = setOf(), didFoul = false),
 						ScoreKeeperInput.Roll(frameIndex = 0, rollIndex = 2, pinsDowned = setOf(), didFoul = false),
 					),
 					listOf(
-						ScoreKeeperInput.Roll(frameIndex = 1, rollIndex = 0, pinsDowned = setOf(Pin.HEAD_PIN), didFoul = true),
-						ScoreKeeperInput.Roll(frameIndex = 1, rollIndex = 1, pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN), didFoul = false),
-						ScoreKeeperInput.Roll(frameIndex = 1, rollIndex = 2, pinsDowned = setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN), didFoul = false),
+						ScoreKeeperInput.Roll(
+							frameIndex = 1,
+							rollIndex = 0,
+							pinsDowned = setOf(Pin.HEAD_PIN),
+							didFoul = true,
+						),
+						ScoreKeeperInput.Roll(
+							frameIndex = 1,
+							rollIndex = 1,
+							pinsDowned = setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN),
+							didFoul = false,
+						),
+						ScoreKeeperInput.Roll(
+							frameIndex = 1,
+							rollIndex = 2,
+							pinsDowned = setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN),
+							didFoul = false,
+						),
 					),
-				)
-			)
+				),
+			),
 		)
 	}
 }

@@ -20,15 +20,21 @@ fun LegacyUserOnboarding(
 	Box(modifier = modifier.fillMaxSize()) {
 		ApproachAppAnimatedIcons(
 			isVisible = when (state) {
-				is LegacyUserOnboardingUiState.AppNameChange -> state.isShowingApproachHeader || state.isShowingDetails
-				is LegacyUserOnboardingUiState.DataImport, is LegacyUserOnboardingUiState.ImportError -> true
-			}
+				is LegacyUserOnboardingUiState.AppNameChange ->
+					state.isShowingApproachHeader || state.isShowingDetails
+				is LegacyUserOnboardingUiState.DataImport,
+				is LegacyUserOnboardingUiState.ImportError,
+				-> true
+			},
 		)
 
 		NewApproachHeader(
 			isHeaderAtTop = when (state) {
-				is LegacyUserOnboardingUiState.AppNameChange -> state.isShowingApproachHeader
-				is LegacyUserOnboardingUiState.DataImport, is LegacyUserOnboardingUiState.ImportError -> true
+				is LegacyUserOnboardingUiState.AppNameChange ->
+					state.isShowingApproachHeader
+				is LegacyUserOnboardingUiState.DataImport,
+				is LegacyUserOnboardingUiState.ImportError,
+				-> true
 			},
 			onAction = onAction,
 		)

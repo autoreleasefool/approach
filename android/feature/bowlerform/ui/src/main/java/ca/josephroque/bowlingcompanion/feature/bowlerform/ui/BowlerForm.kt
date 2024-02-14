@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun BowlerForm(
@@ -68,7 +67,11 @@ fun BowlerForm(
 		if (state.isArchiveButtonEnabled) {
 			Button(
 				onClick = { onAction(BowlerFormUiAction.ArchiveClicked) },
-				colors = ButtonDefaults.buttonColors(containerColor = colorResource(RCoreDesign.color.destructive)),
+				colors = ButtonDefaults.buttonColors(
+					containerColor = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+					),
+				),
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -100,7 +103,7 @@ private fun NameTextField(
 		label = {
 			Text(
 				text = stringResource(R.string.bowler_form_name),
-				style = MaterialTheme.typography.bodyLarge
+				style = MaterialTheme.typography.bodyLarge,
 			)
 		},
 		singleLine = true,
@@ -120,7 +123,7 @@ private fun NameTextField(
 				Icon(
 					Icons.Default.Warning,
 					tint = MaterialTheme.colorScheme.error,
-					contentDescription = null
+					contentDescription = null,
 				)
 			}
 		},

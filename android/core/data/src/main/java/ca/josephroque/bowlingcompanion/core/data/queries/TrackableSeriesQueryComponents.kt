@@ -53,10 +53,14 @@ data class TrackableSeriesQueryComponents(
 		"$tableAlias.startDate" to filter.startDate,
 		"$tableAlias.endDate" to filter.endDate,
 		"$tableAlias.alleyId" to (filter.alleys as? TrackableFilter.AlleyFilter.Alley)?.id,
-		"$tableAlias.alleyMaterial" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.material,
-		"$tableAlias.alleyMechanism" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.mechanism,
-		"$tableAlias.alleyPinFall" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinFall,
-		"$tableAlias.alleyPinBase" to (filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinBase,
+		"$tableAlias.alleyMaterial" to
+			(filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.material,
+		"$tableAlias.alleyMechanism" to
+			(filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.mechanism,
+		"$tableAlias.alleyPinFall" to
+			(filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinFall,
+		"$tableAlias.alleyPinBase" to
+			(filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.pinBase,
 	)
 
 	fun buildOrderClause(): List<String> = listOf("$tableAlias.date ASC")

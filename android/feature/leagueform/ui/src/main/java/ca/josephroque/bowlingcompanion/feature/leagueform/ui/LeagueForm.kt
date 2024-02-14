@@ -31,7 +31,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.DiscardChangesDialog
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormRadioGroup
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSection
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSwitch
@@ -77,7 +76,7 @@ fun LeagueForm(
 			FormSection(Modifier.padding(top = 16.dp)) {
 				RecurrencePicker(
 					recurrence = it,
-					onRecurrenceChanged = { onAction(LeagueFormUiAction.RecurrenceChanged(it)) }
+					onRecurrenceChanged = { onAction(LeagueFormUiAction.RecurrenceChanged(it)) },
 				)
 			}
 		}
@@ -105,7 +104,7 @@ fun LeagueForm(
 							LeagueRecurrence.ONCE -> R.string.league_form_property_number_of_games
 							LeagueRecurrence.REPEATING, null -> null
 						},
-						modifier = Modifier.padding(vertical = 16.dp)
+						modifier = Modifier.padding(vertical = 16.dp),
 					) {
 						NumberOfGamesSlider(
 							numberOfGames = it,
@@ -122,7 +121,9 @@ fun LeagueForm(
 
 		IncludeAdditionalPinFallSwitch(
 			includeAdditionalPinFall = state.includeAdditionalPinFall,
-			onIncludeAdditionalPinFallChanged = { onAction(LeagueFormUiAction.IncludeAdditionalPinFallChanged(it)) },
+			onIncludeAdditionalPinFallChanged = {
+				onAction(LeagueFormUiAction.IncludeAdditionalPinFallChanged(it))
+			},
 		)
 
 		when (state.includeAdditionalPinFall) {
@@ -151,14 +152,22 @@ fun LeagueForm(
 		FormSection(Modifier.padding(top = 16.dp)) {
 			ExcludeFromStatisticsPicker(
 				excludeFromStatistics = state.excludeFromStatistics,
-				onExcludeFromStatisticsChanged = { onAction(LeagueFormUiAction.ExcludeFromStatisticsChanged(it)) },
+				onExcludeFromStatisticsChanged = {
+					onAction(
+						LeagueFormUiAction.ExcludeFromStatisticsChanged(it),
+					)
+				},
 			)
 		}
 
 		if (state.isArchiveButtonEnabled) {
 			Button(
 				onClick = { onAction(LeagueFormUiAction.ArchiveClicked) },
-				colors = ButtonDefaults.buttonColors(containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive)),
+				colors = ButtonDefaults.buttonColors(
+					containerColor = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+					),
+				),
 				modifier = Modifier
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -170,11 +179,7 @@ fun LeagueForm(
 }
 
 @Composable
-private fun LeagueNameField(
-	name: String,
-	onNameChanged: (String) -> Unit,
-	errorId: Int?
-) {
+private fun LeagueNameField(name: String, onNameChanged: (String) -> Unit, errorId: Int?) {
 	OutlinedTextField(
 		value = name,
 		onValueChange = onNameChanged,
@@ -196,13 +201,13 @@ private fun LeagueNameField(
 				Icon(
 					Icons.Default.Warning,
 					tint = MaterialTheme.colorScheme.error,
-					contentDescription = null
+					contentDescription = null,
 				)
 			}
 		},
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	)
 }
 
@@ -230,7 +235,7 @@ private fun RecurrencePicker(
 		onOptionSelected = {
 			it ?: return@FormRadioGroup
 			onRecurrenceChanged(it)
-		}
+		},
 	)
 }
 
@@ -254,7 +259,7 @@ private fun ExcludeFromStatisticsPicker(
 		onOptionSelected = {
 			it ?: return@FormRadioGroup
 			onExcludeFromStatisticsChanged(it)
-		}
+		},
 	)
 }
 
@@ -275,22 +280,21 @@ private fun GamesPerSeriesPicker(
 		titleForOption = {
 			when (it) {
 				GamesPerSeries.STATIC -> stringResource(R.string.league_form_property_number_of_games_constant)
-				GamesPerSeries.DYNAMIC -> stringResource(R.string.league_form_property_number_of_games_always_ask)
+				GamesPerSeries.DYNAMIC -> stringResource(
+					R.string.league_form_property_number_of_games_always_ask,
+				)
 				null -> ""
 			}
 		},
 		onOptionSelected = {
 			it ?: return@FormRadioGroup
 			onGamesPerSeriesChanged(it)
-		}
+		},
 	)
 }
 
 @Composable
-private fun NumberOfGamesSlider(
-	numberOfGames: Int,
-	onNumberOfGamesChanged: (Int) -> Unit,
-) {
+private fun NumberOfGamesSlider(numberOfGames: Int, onNumberOfGamesChanged: (Int) -> Unit) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -315,16 +319,24 @@ private fun NumberOfGamesSlider(
 		) {
 			IconButton(onClick = { onNumberOfGamesChanged(numberOfGames - 1) }) {
 				Icon(
-					painter = painterResource(RCoreDesign.drawable.ic_minus_circle),
-					contentDescription = stringResource(RCoreDesign.string.cd_decrement),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_minus_circle,
+					),
+					contentDescription = stringResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_decrement,
+					),
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
 
 			IconButton(onClick = { onNumberOfGamesChanged(numberOfGames + 1) }) {
 				Icon(
-					painter = painterResource(RCoreDesign.drawable.ic_add_circle),
-					contentDescription = stringResource(RCoreDesign.string.cd_increment),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_circle,
+					),
+					contentDescription = stringResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_increment,
+					),
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
@@ -341,11 +353,13 @@ private fun IncludeAdditionalPinFallSwitch(
 		titleResourceId = R.string.league_form_property_pinfall,
 		isChecked = includeAdditionalPinFall == IncludeAdditionalPinFall.INCLUDE,
 		onCheckChanged = {
-			onIncludeAdditionalPinFallChanged(if (it) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE)
+			onIncludeAdditionalPinFallChanged(
+				if (it) IncludeAdditionalPinFall.INCLUDE else IncludeAdditionalPinFall.NONE,
+			)
 		},
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	)
 }
 
@@ -365,15 +379,12 @@ private fun AdditionalPinFallField(
 		singleLine = true,
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	)
 }
 
 @Composable
-private fun AdditionalGamesField(
-	additionalGames: Int,
-	onAdditionalGamesChanged: (Int) -> Unit,
-) {
+private fun AdditionalGamesField(additionalGames: Int, onAdditionalGamesChanged: (Int) -> Unit) {
 	OutlinedTextField(
 		value = additionalGames.toString(),
 		onValueChange = {
@@ -385,6 +396,6 @@ private fun AdditionalGamesField(
 		singleLine = true,
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 16.dp)
+			.padding(horizontal = 16.dp),
 	)
 }

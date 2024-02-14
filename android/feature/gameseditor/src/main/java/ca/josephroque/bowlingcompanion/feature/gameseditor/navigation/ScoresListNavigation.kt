@@ -23,9 +23,7 @@ fun NavController.navigateToScoresList(
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.scoresListScreen(
-	onDismiss: () -> Unit,
-) {
+fun NavGraphBuilder.scoresListScreen(onDismiss: () -> Unit) {
 	bottomSheet(
 		route = Route.ScoresList.route,
 		arguments = listOf(

@@ -12,8 +12,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.GearUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.GearDetails
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class GearDao {
@@ -32,7 +32,7 @@ abstract class GearDao {
 			LEFT JOIN bowlers AS owner 
 				ON gear.owner_id = owner.id
 			ORDER BY gear.name
-		"""
+		""",
 	)
 	abstract fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>>
 
@@ -51,7 +51,7 @@ abstract class GearDao {
 			LEFT JOIN bowlers AS owner
 				ON gear.owner_id = owner.id
 			ORDER BY gear.name
-		"""
+		""",
 	)
 	abstract fun getGameGear(gameId: UUID): Flow<List<GearListItem>>
 
@@ -68,7 +68,7 @@ abstract class GearDao {
 				ON gear.owner_id = owner.id
 			WHERE (:kind IS NULL OR gear.kind = :kind)
 			ORDER BY gear.name
-		"""
+		""",
 	)
 	abstract fun getGearList(kind: GearKind? = null): Flow<List<GearListItem>>
 
@@ -81,7 +81,7 @@ abstract class GearDao {
 				gear.avatar AS avatar,
 				gear.owner_id AS owner_id
 			FROM gear WHERE gear.id = :id
-		"""
+		""",
 	)
 	abstract fun getGearUpdate(id: UUID): Flow<GearUpdateEntity>
 
@@ -93,7 +93,7 @@ abstract class GearDao {
 				gear.kind AS kind,
 				gear.avatar AS avatar
 			FROM gear WHERE gear.id = :id
-		"""
+		""",
 	)
 	abstract fun getGearDetails(id: UUID): Flow<GearDetails>
 
@@ -101,7 +101,7 @@ abstract class GearDao {
 		"""
 			DELETE FROM bowler_preferred_gear
 			WHERE bowler_id = :bowlerId
-		"""
+		""",
 	)
 	abstract fun removeBowlerPreferredGear(bowlerId: UUID)
 
@@ -112,7 +112,7 @@ abstract class GearDao {
 		"""
 			DELETE FROM game_gear
 			WHERE game_id = :gameId
-		"""
+		""",
 	)
 	abstract fun removeGameGear(gameId: UUID)
 

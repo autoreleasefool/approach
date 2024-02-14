@@ -7,23 +7,23 @@ import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.feature.settings.ui.analytics.AnalyticsSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.analytics.AnalyticsSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class AnalyticsSettingsViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<AnalyticsSettingsScreenEvent>() {
+) : ApproachViewModel<AnalyticsSettingsScreenEvent>() {
 
-	private val _analyticsSettings = analyticsClient.optInStatus.map {
+	private val analyticsSettings = analyticsClient.optInStatus.map {
 		AnalyticsSettingsUiState(analyticsOptInStatus = it)
 	}
 
-	val uiState: StateFlow<AnalyticsSettingsScreenUiState> = _analyticsSettings.map {
+	val uiState: StateFlow<AnalyticsSettingsScreenUiState> = analyticsSettings.map {
 		AnalyticsSettingsScreenUiState.Loaded(it)
 	}.stateIn(
 		scope = viewModelScope,
@@ -33,7 +33,9 @@ class AnalyticsSettingsViewModel @Inject constructor(
 
 	fun handleAction(action: AnalyticsSettingsScreenUiAction) {
 		when (action) {
-			is AnalyticsSettingsScreenUiAction.AnalyticsSettingsAction -> handleAnalyticsSettingsAction(action.value)
+			is AnalyticsSettingsScreenUiAction.AnalyticsSettingsAction -> handleAnalyticsSettingsAction(
+				action.value,
+			)
 		}
 	}
 
@@ -46,10 +48,12 @@ class AnalyticsSettingsViewModel @Inject constructor(
 
 	private fun toggleAnalyticsOptInStatus(value: Boolean) {
 		viewModelScope.launch {
-			analyticsClient.setOptInStatus(when (value) {
-				true -> AnalyticsOptInStatus.OPTED_IN
-				false -> AnalyticsOptInStatus.OPTED_OUT
-			})
+			analyticsClient.setOptInStatus(
+				when (value) {
+					true -> AnalyticsOptInStatus.OPTED_IN
+					false -> AnalyticsOptInStatus.OPTED_OUT
+				},
+			)
 		}
 	}
 }

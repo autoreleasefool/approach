@@ -29,7 +29,6 @@ import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun SeriesDetailsHeader(
@@ -46,7 +45,7 @@ fun SeriesDetailsHeader(
 			horizontalArrangement = Arrangement.SpaceBetween,
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(horizontal = 16.dp)
+				.padding(horizontal = 16.dp),
 		) {
 			Column(
 				verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -117,7 +116,11 @@ fun SeriesDetailsHeader(
 @Composable
 private fun ScoreChart(scores: ChartEntryModelProducer) {
 	ProvideChartStyle(
-		chartStyle = rememberChartStyle(chartColors = listOf(colorResource(RCoreDesign.color.purple_300))),
+		chartStyle = rememberChartStyle(
+			chartColors = listOf(
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
+		),
 	) {
 		Chart(
 			chart = lineChart(
@@ -150,12 +153,14 @@ private fun SeriesDetailsHeaderPreview() {
 			seriesLow = 200,
 			seriesHigh = 280,
 			isShowingPlaceholder = true,
-			scores = ChartEntryModelProducer(listOf(
-				entryOf(0, 200),
-				entryOf(1, 240),
-				entryOf(2, 215),
-				entryOf(3, 225),
-			)),
+			scores = ChartEntryModelProducer(
+				listOf(
+					entryOf(0, 200),
+					entryOf(1, 240),
+					entryOf(2, 215),
+					entryOf(3, 225),
+				),
+			),
 		)
 	}
 }

@@ -18,8 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearList
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBar
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBarUiState
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun GearListRoute(
@@ -69,7 +69,7 @@ private fun GearListScreen(
 				state = when (state) {
 					GearListScreenUiState.Loading -> GearListTopBarUiState()
 					is GearListScreenUiState.Loaded -> state.topBar
-			  },
+				},
 				onAction = { onAction(GearListScreenUiAction.GearListAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)

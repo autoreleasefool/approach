@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class PinTest {
 	@Test
@@ -74,9 +74,11 @@ class PinTest {
 
 	@Test
 	fun testIsTap() {
-		val deck1: Set<Pin> = setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)
+		val deck1: Set<Pin> =
+			setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)
 		assertTrue(deck1.isTap())
-		val deck2: Set<Pin> = setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)
+		val deck2: Set<Pin> =
+			setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)
 		assertTrue(deck2.isTap())
 
 		val deck3: Set<Pin> = setOf(Pin.HEAD_PIN)
@@ -580,7 +582,8 @@ class PinTest {
 
 	@Test
 	fun testArePinsCleared() {
-		val deck1 = setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)
+		val deck1 =
+			setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.LEFT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.RIGHT_TWO_PIN)
 		assertTrue(deck1.arePinsCleared())
 
 		val deck2 = Pin.fullDeck()
@@ -648,12 +651,14 @@ class PinTest {
 		assertEquals(ace.displayAt(rollIndex = 1), "11")
 		assertEquals(ace.displayAt(rollIndex = 2), "11")
 
-		val left: Set<Pin> = setOf(Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)
+		val left: Set<Pin> =
+			setOf(Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_TWO_PIN)
 		assertEquals(left.displayAt(rollIndex = 0), "L")
 		assertEquals(left.displayAt(rollIndex = 1), "13")
 		assertEquals(left.displayAt(rollIndex = 2), "13")
 
-		val right: Set<Pin> = setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)
+		val right: Set<Pin> =
+			setOf(Pin.HEAD_PIN, Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_TWO_PIN)
 		assertEquals(right.displayAt(rollIndex = 0), "R")
 		assertEquals(right.displayAt(rollIndex = 1), "13")
 		assertEquals(right.displayAt(rollIndex = 2), "13")

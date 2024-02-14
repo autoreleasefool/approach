@@ -21,7 +21,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T>FormRadioGroup(
+fun <T> FormRadioGroup(
 	@StringRes titleResourceId: Int,
 	options: Array<T>,
 	selected: T?,
@@ -46,7 +46,7 @@ fun <T>FormRadioGroup(
 }
 
 @Composable
-fun <T>FormRadioGroup(
+fun <T> FormRadioGroup(
 	title: String,
 	options: Array<T>,
 	selected: T?,
@@ -116,14 +116,18 @@ private fun FormRadioButton(
 	onClick: () -> Unit,
 ) {
 	Surface(
-		color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+		color = if (isSelected) {
+			MaterialTheme.colorScheme.primaryContainer
+		} else {
+			MaterialTheme.colorScheme.surface
+		},
 		modifier = Modifier
 			.selectable(
 				selected = isSelected,
 				onClick = onClick,
 				enabled = enabled,
 				role = Role.RadioButton,
-			)
+			),
 	) {
 		Row(
 			verticalAlignment = Alignment.CenterVertically,

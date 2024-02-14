@@ -11,9 +11,7 @@ import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsTopBar(
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun SettingsTopBar(scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		colors = TopAppBarDefaults.topAppBarColors(),
@@ -22,6 +20,6 @@ fun SettingsTopBar(
 				text = stringResource(R.string.settings_title),
 				style = MaterialTheme.typography.titleLarge,
 			)
-		}
+		},
 	)
 }

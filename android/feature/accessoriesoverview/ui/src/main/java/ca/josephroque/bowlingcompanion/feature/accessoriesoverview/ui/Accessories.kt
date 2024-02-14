@@ -27,7 +27,7 @@ fun Accessories(
 			action = HeaderAction(
 				actionResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_view_all,
 				onClick = { onAction(AccessoriesUiAction.ViewAllAlleysClicked) },
-			)
+			),
 		)
 
 		if (state.alleysList != null) {
@@ -36,7 +36,8 @@ fun Accessories(
 					MutedEmptyState(
 						title = R.string.accessory_list_alley_empty_title,
 						message = R.string.accessory_list_alley_empty_message,
-						icon = ca.josephroque.bowlingcompanion.feature.alleyslist.ui.R.drawable.alleys_list_empty_state,
+						icon = @Suppress("ktlint:standard:max-line-length")
+						ca.josephroque.bowlingcompanion.feature.alleyslist.ui.R.drawable.alleys_list_empty_state,
 						modifier = Modifier.padding(bottom = 16.dp),
 					)
 				}
@@ -51,8 +52,8 @@ fun Accessories(
 						ListSectionFooter(
 							footer = stringResource(
 								R.string.accessory_list_x_most_recent,
-								state.alleysItemLimit
-							)
+								state.alleysItemLimit,
+							),
 						)
 					}
 				}
@@ -68,7 +69,7 @@ fun Accessories(
 			action = HeaderAction(
 				actionResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_view_all,
 				onClick = { onAction(AccessoriesUiAction.ViewAllGearClicked) },
-			)
+			),
 		)
 
 		if (state.gearList != null) {
@@ -90,7 +91,7 @@ fun Accessories(
 				item {
 					if (state.gearList.list.size > state.gearItemLimit) {
 						ListSectionFooter(
-							footer = stringResource(R.string.accessory_list_x_most_recent, state.gearItemLimit)
+							footer = stringResource(R.string.accessory_list_x_most_recent, state.gearItemLimit),
 						)
 					}
 				}

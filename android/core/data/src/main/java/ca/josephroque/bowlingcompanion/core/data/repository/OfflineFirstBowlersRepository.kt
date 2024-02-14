@@ -15,21 +15,21 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstBowlersRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): BowlersRepository {
+) : BowlersRepository {
 	override fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary> =
 		bowlerDao.getBowlerSummary(bowlerId)
 
@@ -44,15 +44,11 @@ class OfflineFirstBowlersRepository @Inject constructor(
 					.map(SeriesBowlerSummary::asSummary)
 			}
 
+	override fun getBowlersList(): Flow<List<BowlerListItem>> = bowlerDao.getBowlersList()
 
-	override fun getBowlersList(): Flow<List<BowlerListItem>> =
-		bowlerDao.getBowlersList()
+	override fun getOpponentsList(): Flow<List<OpponentListItem>> = bowlerDao.getOpponentsList()
 
-	override fun getOpponentsList(): Flow<List<OpponentListItem>> =
-		bowlerDao.getOpponentsList()
-
-	override fun getArchivedBowlers(): Flow<List<ArchivedBowler>> =
-		bowlerDao.getArchivedBowlers()
+	override fun getArchivedBowlers(): Flow<List<ArchivedBowler>> = bowlerDao.getArchivedBowlers()
 
 	override suspend fun getDefaultQuickPlay(): Pair<BowlerSummary, LeagueSummary>? {
 		val recentBowlerIdStr = recentlyUsedRepository

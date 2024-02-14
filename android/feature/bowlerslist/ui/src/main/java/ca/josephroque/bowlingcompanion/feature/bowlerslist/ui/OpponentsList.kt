@@ -18,9 +18,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.state.Defaul
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
+import java.util.UUID
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import java.util.UUID
 
 @Composable
 fun OpponentsList(
@@ -77,7 +77,9 @@ fun LazyListScope.opponentsList(
 	) {
 		val archiveAction = SwipeAction(
 			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
-			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+			background = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+			),
 			onSwipe = { onArchiveOpponent(it) },
 		)
 

@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.TrackableEvent
 data class WidgetLayoutUpdated(
 	val context: String,
 	val numberOfWidgets: Int,
-): TrackableEvent {
+) : TrackableEvent {
 	override val name = "Widget.LayoutUpdated"
 	override val payload = mapOf(
 		"Context" to context,

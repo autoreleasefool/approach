@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiAction
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,34 +19,34 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class GearListViewModel @Inject constructor(
 	private val gearRepository: GearRepository,
-): ApproachViewModel<GearListScreenEvent>() {
-	private val _gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
+) : ApproachViewModel<GearListScreenEvent>() {
+	private val gearToDelete: MutableStateFlow<GearListItem?> = MutableStateFlow(null)
 
-	private val _gearKind: MutableStateFlow<GearKind?> = MutableStateFlow(null)
-	private val _gearList = _gearKind.flatMapLatest { gearRepository.getGearList(it) }
+	private val gearKind: MutableStateFlow<GearKind?> = MutableStateFlow(null)
+	private val gearList = gearKind.flatMapLatest { gearRepository.getGearList(it) }
 
-	private val _gearListState: Flow<GearListUiState> =
+	private val gearListState: Flow<GearListUiState> =
 		combine(
-			_gearToDelete,
-			_gearList,
+			gearToDelete,
+			gearList,
 		) { gearToDelete, gearList ->
 			GearListUiState(
 				list = gearList,
-				gearToDelete = gearToDelete,)
+				gearToDelete = gearToDelete,
+			)
 		}
 
-	private val _gearListTopBarState: MutableStateFlow<GearListTopBarUiState> =
+	private val gearListTopBarState: MutableStateFlow<GearListTopBarUiState> =
 		MutableStateFlow(GearListTopBarUiState())
 
 	val uiState: StateFlow<GearListScreenUiState> =
 		combine(
-			_gearListState,
-			_gearListTopBarState,
+			gearListState,
+			gearListTopBarState,
 		) { gearList, gearListTopBar ->
 			GearListScreenUiState.Loaded(
 				gearList = gearList,
@@ -79,11 +80,11 @@ class GearListViewModel @Inject constructor(
 	}
 
 	private fun setDeleteGearPrompt(gear: GearListItem?) {
-		_gearToDelete.value = gear
+		gearToDelete.value = gear
 	}
 
 	private fun deleteGear() {
-		val gearToDelete = _gearToDelete.value ?: return
+		val gearToDelete = gearToDelete.value ?: return
 		viewModelScope.launch {
 			gearRepository.deleteGear(gearToDelete.id)
 			setDeleteGearPrompt(gear = null)
@@ -91,20 +92,18 @@ class GearListViewModel @Inject constructor(
 	}
 
 	private fun setGearFilterMenu(isVisible: Boolean) {
-		_gearListTopBarState.update {
+		gearListTopBarState.update {
 			it.copy(isFilterMenuVisible = isVisible)
 		}
 	}
 
 	private fun setGearFilter(gearKind: GearKind?) {
-		_gearListTopBarState.update {
+		gearListTopBarState.update {
 			it.copy(
 				isFilterMenuVisible = false,
 				kindFilter = gearKind,
 			)
 		}
-		_gearKind.value = gearKind
+		this.gearKind.value = gearKind
 	}
 }
-
-

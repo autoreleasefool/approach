@@ -12,45 +12,42 @@ import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.GearUpdate
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstGearRepository @Inject constructor(
 	private val gearDao: GearDao,
 	private val userDataRepository: UserDataRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): GearRepository {
+) : GearRepository {
 	override fun getBowlerPreferredGear(bowlerId: UUID): Flow<List<GearListItem>> =
 		gearDao.getBowlerPreferredGear(bowlerId)
 
-	override fun getGameGear(gameId: UUID): Flow<List<GearListItem>> =
-		gearDao.getGameGear(gameId)
+	override fun getGameGear(gameId: UUID): Flow<List<GearListItem>> = gearDao.getGameGear(gameId)
 
+	override fun getRecentlyUsedGear(kind: GearKind?, limit: Int): Flow<List<GearListItem>> = combine(
+		gearDao.getGearList(kind),
+		userDataRepository.userData.map { it.recentlyUsedGearIds },
+	) { gear, recentlyUsed ->
+		gear.sortByUUIDs(recentlyUsed)
+			.take(limit)
+	}
 
-	override fun getRecentlyUsedGear(kind: GearKind?, limit: Int): Flow<List<GearListItem>> =
-		combine(
-			gearDao.getGearList(kind),
-			userDataRepository.userData.map { it.recentlyUsedGearIds }
-		) { gear, recentlyUsed ->
-			gear.sortByUUIDs(recentlyUsed)
-				.take(limit)
-		}
-
-	override fun getGearList(kind: GearKind?): Flow<List<GearListItem>> =
-		gearDao.getGearList(kind)
+	override fun getGearList(kind: GearKind?): Flow<List<GearListItem>> = gearDao.getGearList(kind)
 
 	override fun getGearUpdate(id: UUID): Flow<GearUpdate> =
 		gearDao.getGearUpdate(id).map { it.asModel() }
 
-	override fun getGearDetails(id: UUID): Flow<GearDetails> =
-		gearDao.getGearDetails(id)
+	override fun getGearDetails(id: UUID): Flow<GearDetails> = gearDao.getGearDetails(id)
 
-	override suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>) = withContext(ioDispatcher) {
+	override suspend fun setBowlerPreferredGear(bowlerId: UUID, gear: Set<UUID>) = withContext(
+		ioDispatcher,
+	) {
 		gearDao.removeBowlerPreferredGear(bowlerId)
 		gearDao.setBowlerPreferredGear(gear.map { BowlerPreferredGearCrossRef(bowlerId, it) })
 	}

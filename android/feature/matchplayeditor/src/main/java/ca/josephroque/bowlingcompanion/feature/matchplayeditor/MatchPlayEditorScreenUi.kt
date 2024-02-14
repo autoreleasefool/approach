@@ -5,20 +5,20 @@ import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEdito
 import java.util.UUID
 
 sealed interface MatchPlayEditorScreenUiState {
-	data object Loading: MatchPlayEditorScreenUiState
+	data object Loading : MatchPlayEditorScreenUiState
 
 	data class Loaded(
 		val matchPlayEditor: MatchPlayEditorUiState,
-	): MatchPlayEditorScreenUiState
+	) : MatchPlayEditorScreenUiState
 }
 
 sealed interface MatchPlayEditorScreenUiAction {
-	data object LoadMatchPlay: MatchPlayEditorScreenUiAction
-	data class UpdatedOpponent(val opponent: UUID?): MatchPlayEditorScreenUiAction
-	data class MatchPlayEditor(val action: MatchPlayEditorUiAction): MatchPlayEditorScreenUiAction
+	data object LoadMatchPlay : MatchPlayEditorScreenUiAction
+	data class UpdatedOpponent(val opponent: UUID?) : MatchPlayEditorScreenUiAction
+	data class MatchPlayEditor(val action: MatchPlayEditorUiAction) : MatchPlayEditorScreenUiAction
 }
 
 sealed interface MatchPlayEditorScreenEvent {
-	data object Dismissed: MatchPlayEditorScreenEvent
-	data class EditOpponent(val opponent: UUID?): MatchPlayEditorScreenEvent
+	data object Dismissed : MatchPlayEditorScreenEvent
+	data class EditOpponent(val opponent: UUID?) : MatchPlayEditorScreenEvent
 }

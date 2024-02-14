@@ -27,25 +27,43 @@ fun PickableResourceCard(
 		verticalAlignment = Alignment.CenterVertically,
 		modifier = modifier
 			.clickable(onClick = onClick)
-			.padding(16.dp)
+			.padding(16.dp),
 	) {
 		Text(
 			text = resourceName,
 			style = MaterialTheme.typography.titleMedium,
-			color = if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+			color = if (enabled) {
+				MaterialTheme.colorScheme.onSurface
+			} else {
+				MaterialTheme.colorScheme.onSurface.copy(
+					alpha = 0.5f,
+				)
+			},
 			modifier = Modifier.weight(1f),
 		)
 
 		Text(
 			text = selectedName,
 			style = MaterialTheme.typography.bodyMedium,
-			color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+			color = if (enabled) {
+				MaterialTheme.colorScheme.onSurfaceVariant
+			} else {
+				MaterialTheme.colorScheme.onSurfaceVariant.copy(
+					alpha = 0.5f,
+				)
+			},
 		)
 
 		Icon(
 			painter = painterResource(R.drawable.ic_chevron_right),
 			contentDescription = null,
-			tint = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+			tint = if (enabled) {
+				MaterialTheme.colorScheme.onSurfaceVariant
+			} else {
+				MaterialTheme.colorScheme.onSurfaceVariant.copy(
+					alpha = 0.5f,
+				)
+			},
 		)
 	}
 }

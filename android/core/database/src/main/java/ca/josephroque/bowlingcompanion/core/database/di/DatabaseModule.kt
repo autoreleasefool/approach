@@ -14,7 +14,6 @@ import javax.inject.Singleton
 object DatabaseModule {
 	@Provides
 	@Singleton
-	fun providesApproachDatabase(
-		@ApplicationContext context: Context,
-	): ApproachDatabase = ApproachDatabase.getInstance(context)
+	fun providesApproachDatabase(@ApplicationContext context: Context): ApproachDatabase =
+		ApproachDatabase.getInstance(context)
 }

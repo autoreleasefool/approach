@@ -11,9 +11,7 @@ fun NavController.navigateToDataImport(navOptions: NavOptions? = null) {
 	this.navigate(Route.DataImport.route, navOptions)
 }
 
-fun NavGraphBuilder.dataImportScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.dataImportScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.DataImport.route,
 	) {

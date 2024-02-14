@@ -45,6 +45,6 @@ fun SeriesDetailsTopBar(
 					contentDescription = stringResource(R.string.cd_add_game),
 				)
 			}
-		}
+		},
 	)
 }

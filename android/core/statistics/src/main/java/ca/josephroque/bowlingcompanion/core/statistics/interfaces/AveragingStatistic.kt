@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.interfaces
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.utils.formatAsAverage
 
-interface AveragingStatistic: Statistic {
+interface AveragingStatistic : Statistic {
 	var total: Int
 	var divisor: Int
 

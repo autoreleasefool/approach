@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,7 +27,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 private const val STATISTICS_WIDGET_CONTEXT = "overview"
 
@@ -36,13 +36,13 @@ class OverviewViewModel @Inject constructor(
 	statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<OverviewScreenEvent>() {
-	private val _bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
+) : ApproachViewModel<OverviewScreenEvent>() {
+	private val bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
 
-	private val _bowlersListState: Flow<BowlersListUiState> =
+	private val bowlersListState: Flow<BowlersListUiState> =
 		combine(
 			bowlersRepository.getBowlersList(),
-			_bowlerToArchive,
+			bowlerToArchive,
 		) { bowlersList, bowlerToArchive ->
 			BowlersListUiState(
 				list = bowlersList,
@@ -50,27 +50,30 @@ class OverviewViewModel @Inject constructor(
 			)
 		}
 
-	private val _widgets = userDataRepository.userData
+	private val widgets = userDataRepository.userData
 		.map { it.isHidingWidgetsInBowlersList }
 		.flatMapLatest {
-			if (it) flowOf(null)
-			else statisticsWidgetsRepository.getStatisticsWidgets(STATISTICS_WIDGET_CONTEXT)
+			if (it) {
+				flowOf(null)
+			} else {
+				statisticsWidgetsRepository.getStatisticsWidgets(STATISTICS_WIDGET_CONTEXT)
+			}
 		}
 
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
-		_bowlersListState,
-		_widgets,
+		bowlersListState,
+		widgets,
 	) { bowlersList, widgets ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
 				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
-			)
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5_000),
-		initialValue = OverviewScreenUiState.Loading
+		initialValue = OverviewScreenUiState.Loading,
 	)
 
 	fun handleAction(action: OverviewScreenUiAction) {
@@ -83,7 +86,9 @@ class OverviewViewModel @Inject constructor(
 	private fun handleOverviewAction(action: OverviewUiAction) {
 		when (action) {
 			OverviewUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
-			OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+			OverviewUiAction.EditStatisticsWidgetClicked -> sendEvent(
+				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
+			)
 			OverviewUiAction.QuickPlayClicked -> sendEvent(OverviewScreenEvent.ShowQuickPlay)
 			is OverviewUiAction.BowlersListAction -> handleBowlersListAction(action.action)
 			is OverviewUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(action.action)
@@ -94,7 +99,9 @@ class OverviewViewModel @Inject constructor(
 		when (action) {
 			is BowlersListUiAction.BowlerClicked -> showBowlerDetails(action.bowler)
 			is BowlersListUiAction.AddBowlerClicked -> sendEvent(OverviewScreenEvent.AddBowler)
-			is BowlersListUiAction.BowlerEdited -> sendEvent(OverviewScreenEvent.EditBowler(action.bowler.id))
+			is BowlersListUiAction.BowlerEdited -> sendEvent(
+				OverviewScreenEvent.EditBowler(action.bowler.id),
+			)
 			is BowlersListUiAction.BowlerArchived -> setBowlerArchivePrompt(action.bowler)
 			is BowlersListUiAction.ConfirmArchiveClicked -> archiveBowler()
 			is BowlersListUiAction.DismissArchiveClicked -> setBowlerArchivePrompt(null)
@@ -103,8 +110,12 @@ class OverviewViewModel @Inject constructor(
 
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
-			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(OverviewScreenEvent.ShowStatistics(action.widget.id))
-			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT))
+			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
+				OverviewScreenEvent.ShowStatistics(action.widget.id),
+			)
+			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
+				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
+			)
 		}
 	}
 
@@ -114,11 +125,11 @@ class OverviewViewModel @Inject constructor(
 	}
 
 	private fun setBowlerArchivePrompt(bowler: BowlerListItem?) {
-		_bowlerToArchive.value = bowler
+		bowlerToArchive.value = bowler
 	}
 
 	private fun archiveBowler() {
-		val bowlerToArchive = _bowlerToArchive.value ?: return
+		val bowlerToArchive = bowlerToArchive.value ?: return
 		viewModelScope.launch {
 			bowlersRepository.archiveBowler(bowlerToArchive.id)
 			setBowlerArchivePrompt(null)

@@ -14,8 +14,10 @@ data class StatisticsDetailsListUiState(
 )
 
 sealed interface StatisticsDetailsListUiAction {
-	data class StatisticClicked(val id: StatisticID): StatisticsDetailsListUiAction
-	data class HidingZeroStatisticsToggled(val newValue: Boolean): StatisticsDetailsListUiAction
-	data class HidingStatisticDescriptionsToggled(val newValue: Boolean): StatisticsDetailsListUiAction
-	data class HeaderHeightMeasured(val height: Float): StatisticsDetailsListUiAction
+	data class StatisticClicked(val id: StatisticID) : StatisticsDetailsListUiAction
+	data class HidingZeroStatisticsToggled(val newValue: Boolean) : StatisticsDetailsListUiAction
+	data class HidingStatisticDescriptionsToggled(
+		val newValue: Boolean,
+	) : StatisticsDetailsListUiAction
+	data class HeaderHeightMeasured(val height: Float) : StatisticsDetailsListUiAction
 }

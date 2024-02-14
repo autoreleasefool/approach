@@ -7,6 +7,6 @@ data class StatisticsWidgetLayoutUiState(
 )
 
 sealed interface StatisticsWidgetLayoutUiAction {
-	data object ChangeLayoutClicked: StatisticsWidgetLayoutUiAction
-	data class WidgetClicked(val widget: StatisticsWidget): StatisticsWidgetLayoutUiAction
+	data object ChangeLayoutClicked : StatisticsWidgetLayoutUiAction
+	data class WidgetClicked(val widget: StatisticsWidget) : StatisticsWidgetLayoutUiAction
 }

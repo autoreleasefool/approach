@@ -19,9 +19,7 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.navigation.navigateToGea
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.navigateToLaneFormForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 
-fun NavGraphBuilder.accessoriesGraph(
-	navController: NavController,
-) {
+fun NavGraphBuilder.accessoriesGraph(navController: NavController) {
 	accessoriesScreen(
 		onAddAlley = navController::navigateToNewAlleyForm,
 		onAddGear = navController::navigateToNewGearForm,
@@ -62,6 +60,6 @@ fun NavGraphBuilder.accessoriesGraph(
 				navResultCallback = result,
 				resourceType = ResourcePickerType.BOWLER,
 			)
-		}
+		},
 	)
 }

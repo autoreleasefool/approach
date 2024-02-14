@@ -15,9 +15,9 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialo
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
+import java.util.UUID
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import java.util.UUID
 
 @Composable
 fun GamesList(
@@ -28,7 +28,10 @@ fun GamesList(
 ) {
 	state.gameToArchive?.let {
 		ArchiveDialog(
-			itemName = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal, it.index + 1),
+			itemName = stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
+				it.index + 1,
+			),
 			onArchive = { onAction(GamesListUiAction.ConfirmArchiveClicked) },
 			onDismiss = { onAction(GamesListUiAction.DismissArchiveClicked) },
 		)
@@ -72,7 +75,9 @@ fun LazyListScope.gamesList(
 	) {
 		val archiveAction = SwipeAction(
 			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
-			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+			background = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+			),
 			onSwipe = { onArchiveGame(it) },
 		)
 

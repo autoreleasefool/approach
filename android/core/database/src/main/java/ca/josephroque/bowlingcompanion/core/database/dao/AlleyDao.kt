@@ -11,8 +11,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.AlleyDetailsUpdateEnt
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyEntity
 import ca.josephroque.bowlingcompanion.core.database.model.AlleyUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class AlleyDao {
@@ -27,7 +27,7 @@ abstract class AlleyDao {
 				alleys.pin_base AS pinBase
 			FROM alleys
 			ORDER BY alleys.name
-		"""
+		""",
 	)
 	abstract fun getAlleysList(): Flow<List<AlleyListItem>>
 
@@ -47,7 +47,7 @@ abstract class AlleyDao {
 			JOIN series ON series.id = games.series_id
 			JOIN alleys ON series.alley_id = alleys.id
 			WHERE games.id = :gameId
-		"""
+		""",
 	)
 	abstract fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetailsEntity?>
 
@@ -64,7 +64,7 @@ abstract class AlleyDao {
 			FROM alleys
 			LEFT JOIN lanes ON lanes.alley_id = alleys.id
 			WHERE alleys.id = :alleyId
-		"""
+		""",
 	)
 	abstract fun getAlleyUpdate(alleyId: UUID): Flow<AlleyUpdateEntity>
 

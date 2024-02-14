@@ -5,15 +5,15 @@ import ca.josephroque.bowlingcompanion.core.model.GearUpdate
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.UUID
 
 sealed interface GearFormScreenUiState {
 	fun hasAnyChanges(): Boolean
 	fun isSavable(): Boolean
 
-	data object Loading: GearFormScreenUiState {
+	data object Loading : GearFormScreenUiState {
 		override fun hasAnyChanges(): Boolean = false
 		override fun isSavable(): Boolean = false
 	}
@@ -21,24 +21,21 @@ sealed interface GearFormScreenUiState {
 	data class Create(
 		val form: GearFormUiState,
 		val topBar: GearFormTopBarUiState,
-	): GearFormScreenUiState {
-		override fun isSavable(): Boolean =
-			form.name.isNotBlank()
+	) : GearFormScreenUiState {
+		override fun isSavable(): Boolean = form.name.isNotBlank()
 
-		override fun hasAnyChanges(): Boolean =
-			form != GearFormUiState()
+		override fun hasAnyChanges(): Boolean = form != GearFormUiState()
 	}
 
 	data class Edit(
 		val initialValue: GearUpdate,
 		val form: GearFormUiState,
 		val topBar: GearFormTopBarUiState,
-	): GearFormScreenUiState {
+	) : GearFormScreenUiState {
 		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
 
-		override fun hasAnyChanges(): Boolean =
-			form.updatedModel(existing = initialValue) != initialValue
+		override fun hasAnyChanges(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 	}
 }
 
@@ -49,20 +46,20 @@ fun GearFormUiState.updatedModel(existing: GearUpdate): GearUpdate = existing.co
 )
 
 sealed interface GearFormScreenUiAction {
-	data object LoadGear: GearFormScreenUiAction
-	data class UpdatedAvatar(val avatar: Avatar): GearFormScreenUiAction
-	data class UpdatedOwner(val owner: UUID?): GearFormScreenUiAction
+	data object LoadGear : GearFormScreenUiAction
+	data class UpdatedAvatar(val avatar: Avatar) : GearFormScreenUiAction
+	data class UpdatedOwner(val owner: UUID?) : GearFormScreenUiAction
 
 	data class GearFormAction(
 		val action: GearFormUiAction,
-	): GearFormScreenUiAction
+	) : GearFormScreenUiAction
 }
 
 sealed interface GearFormScreenEvent {
-	data object Dismissed: GearFormScreenEvent
+	data object Dismissed : GearFormScreenEvent
 
-	data class EditAvatar(val avatar: Avatar): GearFormScreenEvent
-	data class EditOwner(val owner: UUID?): GearFormScreenEvent
+	data class EditAvatar(val avatar: Avatar) : GearFormScreenEvent
+	data class EditOwner(val owner: UUID?) : GearFormScreenEvent
 }
 
 fun MutableStateFlow<GearFormScreenUiState>.updateForm(

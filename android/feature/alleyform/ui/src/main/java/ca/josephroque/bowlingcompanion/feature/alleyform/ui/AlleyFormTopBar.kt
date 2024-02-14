@@ -26,9 +26,7 @@ fun AlleyFormTopBar(
 }
 
 @Composable
-private fun Title(
-	state: AlleyFormTopBarUiState,
-) {
+private fun Title(state: AlleyFormTopBarUiState) {
 	Text(
 		text = if (state.existingName == null) {
 			stringResource(R.string.alley_form_title_new)
@@ -40,9 +38,7 @@ private fun Title(
 }
 
 @Composable
-private fun Actions(
-	onAction: (AlleyFormUiAction) -> Unit,
-) {
+private fun Actions(onAction: (AlleyFormUiAction) -> Unit) {
 	TextButton(onClick = { onAction(AlleyFormUiAction.DoneClicked) }) {
 		Text(
 			stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

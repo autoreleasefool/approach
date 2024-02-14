@@ -19,8 +19,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 fun StatisticsWidgetEditorRoute(
@@ -43,11 +43,15 @@ fun StatisticsWidgetEditorRoute(
 						StatisticsWidgetEditorScreenEvent.Dismissed -> onBackPressed()
 						is StatisticsWidgetEditorScreenEvent.EditBowler ->
 							onPickBowler(it.bowlerId) { ids ->
-								viewModel.handleAction(StatisticsWidgetEditorScreenUiAction.UpdatedBowler(ids.firstOrNull()))
+								viewModel.handleAction(
+									StatisticsWidgetEditorScreenUiAction.UpdatedBowler(ids.firstOrNull()),
+								)
 							}
 						is StatisticsWidgetEditorScreenEvent.EditLeague ->
 							onPickLeague(it.bowlerId, it.leagueId) { ids ->
-								viewModel.handleAction(StatisticsWidgetEditorScreenUiAction.UpdatedLeague(ids.firstOrNull()))
+								viewModel.handleAction(
+									StatisticsWidgetEditorScreenUiAction.UpdatedLeague(ids.firstOrNull()),
+								)
 							}
 						is StatisticsWidgetEditorScreenEvent.EditStatistic ->
 							onPickStatistic(it.statistic.id) { id ->
@@ -77,7 +81,9 @@ private fun StatisticsWidgetEditorScreen(
 	Scaffold(
 		topBar = {
 			StatisticsWidgetEditorTopBar(
-				isSaveEnabled = (state as? StatisticsWidgetEditorScreenUiState.Loaded)?.statisticsWidgetEditor?.source != null,
+				isSaveEnabled = (state as? StatisticsWidgetEditorScreenUiState.Loaded)
+					?.statisticsWidgetEditor
+					?.source != null,
 				scrollBehavior = scrollBehavior,
 				onAction = { onAction(StatisticsWidgetEditorScreenUiAction.StatisticsWidgetEditor(it)) },
 			)

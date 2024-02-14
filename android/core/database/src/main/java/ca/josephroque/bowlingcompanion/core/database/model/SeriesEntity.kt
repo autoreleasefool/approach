@@ -16,9 +16,9 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListProperties
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.core.model.TrackableSeries
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 @Entity(
 	tableName = "series",
@@ -61,7 +61,6 @@ data class TrackableSeriesEntity(
 		total = this.total,
 		date = this.date,
 	)
-
 }
 
 data class SeriesCreateEntity(

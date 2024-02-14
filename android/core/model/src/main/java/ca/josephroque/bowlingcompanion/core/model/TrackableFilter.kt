@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-import kotlinx.datetime.LocalDate
 import java.util.UUID
+import kotlinx.datetime.LocalDate
 
 data class TrackableFilter(
 	val source: Source,
@@ -14,10 +14,10 @@ data class TrackableFilter(
 	sealed interface Source {
 		val id: UUID
 
-		data class Bowler(override val id: UUID): Source
-		data class League(override val id: UUID): Source
-		data class Series(override val id: UUID): Source
-		data class Game(override val id: UUID): Source
+		data class Bowler(override val id: UUID) : Source
+		data class League(override val id: UUID) : Source
+		data class Series(override val id: UUID) : Source
+		data class Game(override val id: UUID) : Source
 	}
 
 	data class LeagueFilter(
@@ -31,13 +31,13 @@ data class TrackableFilter(
 	)
 
 	sealed interface AlleyFilter {
-		data class Alley(val id: UUID): AlleyFilter
+		data class Alley(val id: UUID) : AlleyFilter
 		data class Properties(
 			val material: AlleyMaterial? = null,
 			val mechanism: AlleyMechanism? = null,
 			val pinFall: AlleyPinFall? = null,
 			val pinBase: AlleyPinBase? = null,
-		): AlleyFilter
+		) : AlleyFilter
 	}
 
 	data class GameFilter(
@@ -47,8 +47,8 @@ data class TrackableFilter(
 	)
 
 	sealed interface LaneFilter {
-		data class Lanes(val lanes: Set<UUID>): LaneFilter
-		data class Positions(val positions: Set<LanePosition>): LaneFilter
+		data class Lanes(val lanes: Set<UUID>) : LaneFilter
+		data class Positions(val positions: Set<LanePosition>) : LaneFilter
 	}
 
 	data class FrameFilter(

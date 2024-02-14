@@ -85,7 +85,8 @@ fun DataImport(
 				DataImportProgress.PickingFile,
 				DataImportProgress.Importing,
 				DataImportProgress.RestoreComplete,
-				DataImportProgress.ImportComplete -> Unit
+				DataImportProgress.ImportComplete,
+				-> Unit
 				DataImportProgress.NotStarted -> OverwriteWarningCard()
 			}
 		}
@@ -97,7 +98,8 @@ fun DataImport(
 				DataImportProgress.Importing,
 				DataImportProgress.PickingFile,
 				DataImportProgress.RestoreComplete,
-				DataImportProgress.ImportComplete -> false
+				DataImportProgress.ImportComplete,
+				-> false
 				DataImportProgress.NotStarted, is DataImportProgress.Failed -> true
 			}
 
@@ -127,14 +129,13 @@ fun DataImport(
 }
 
 @Composable
-private fun RestoreDialog(
-	lastImportDate: LocalDate,
-	onAction: (DataImportUiAction) -> Unit,
-) {
+private fun RestoreDialog(lastImportDate: LocalDate, onAction: (DataImportUiAction) -> Unit) {
 	AlertDialog(
 		onDismissRequest = { onAction(DataImportUiAction.CancelRestoreClicked) },
 		title = { Text(text = stringResource(R.string.data_import_restore_title)) },
-		text = { Text(text = stringResource(R.string.data_import_restore_message, lastImportDate.toString())) },
+		text = {
+			Text(text = stringResource(R.string.data_import_restore_message, lastImportDate.toString()))
+		},
 		confirmButton = {
 			TextButton(onClick = { onAction(DataImportUiAction.ConfirmRestoreClicked) }) {
 				Text(text = stringResource(R.string.data_import_restore_restore))
@@ -142,9 +143,13 @@ private fun RestoreDialog(
 		},
 		dismissButton = {
 			TextButton(onClick = { onAction(DataImportUiAction.CancelRestoreClicked) }) {
-				Text(text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_cancel))
+				Text(
+					text = stringResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_cancel,
+					),
+				)
 			}
-		}
+		},
 	)
 }
 
@@ -152,7 +157,9 @@ private fun RestoreDialog(
 private fun OverwriteWarningCard() {
 	Card(
 		colors = CardDefaults.cardColors(
-			containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.warning_container),
+			containerColor = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.warning_container,
+			),
 		),
 		modifier = Modifier.padding(bottom = 16.dp),
 	) {
@@ -164,7 +171,9 @@ private fun OverwriteWarningCard() {
 			Icon(
 				Icons.Default.Warning,
 				contentDescription = null,
-				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
+				tint = colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container,
+				),
 			)
 
 			Column(
@@ -173,13 +182,17 @@ private fun OverwriteWarningCard() {
 				Text(
 					text = stringResource(R.string.data_import_this_will_overwrite),
 					style = MaterialTheme.typography.titleMedium,
-					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
+					color = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container,
+					),
 				)
 
 				Text(
 					text = stringResource(R.string.data_import_not_recoverable),
 					style = MaterialTheme.typography.bodyMedium,
-					color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container),
+					color = colorResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_warning_container,
+					),
 				)
 			}
 		}
@@ -187,10 +200,7 @@ private fun OverwriteWarningCard() {
 }
 
 @Composable
-private fun DataImportFilePicker(
-	state: DataImportUiState,
-	onAction: (DataImportUiAction) -> Unit,
-) {
+private fun DataImportFilePicker(state: DataImportUiState, onAction: (DataImportUiAction) -> Unit) {
 	val launcher = rememberLauncherForActivityResult(
 		contract = ActivityResultContracts.GetContent(),
 	) { uri ->
@@ -217,11 +227,15 @@ private fun DataImportProgressCard(
 				DataImportProgress.NotStarted -> MaterialTheme.colorScheme.secondaryContainer
 				DataImportProgress.PickingFile -> MaterialTheme.colorScheme.secondaryContainer
 				DataImportProgress.Importing -> MaterialTheme.colorScheme.secondaryContainer
-				DataImportProgress.RestoreComplete -> colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container)
-				DataImportProgress.ImportComplete -> colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container)
+				DataImportProgress.RestoreComplete -> colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container,
+				)
+				DataImportProgress.ImportComplete -> colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.success_container,
+				)
 				is DataImportProgress.Failed -> MaterialTheme.colorScheme.errorContainer
-			}
-		)
+			},
+		),
 	) {
 		Column(
 			verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -248,7 +262,9 @@ private fun DataImportProgressCard(
 					Text(
 						text = stringResource(R.string.data_import_progress_import_success),
 						style = MaterialTheme.typography.bodyMedium,
-						color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container),
+						color = colorResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container,
+						),
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
@@ -256,7 +272,9 @@ private fun DataImportProgressCard(
 					Text(
 						text = stringResource(R.string.data_import_progress_restore_success),
 						style = MaterialTheme.typography.bodyMedium,
-						color = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container),
+						color = colorResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.color.text_on_success_container,
+						),
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
@@ -269,7 +287,9 @@ private fun DataImportProgressCard(
 					)
 
 					Text(
-						text = progress.exception.localizedMessage ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message),
+						text = progress.exception.localizedMessage ?: stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message,
+						),
 						style = MaterialTheme.typography.bodyMedium,
 						color = MaterialTheme.colorScheme.onErrorContainer,
 						modifier = Modifier.padding(horizontal = 16.dp),
@@ -285,7 +305,9 @@ private fun DataImportProgressCard(
 					)
 
 					SendEmailButton(
-						body = progress.exception.localizedMessage ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message),
+						body = progress.exception.localizedMessage ?: stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.default_error_unknown_message,
+						),
 						versionName = versionName,
 						versionCode = versionCode,
 						modifier = Modifier.align(Alignment.End),

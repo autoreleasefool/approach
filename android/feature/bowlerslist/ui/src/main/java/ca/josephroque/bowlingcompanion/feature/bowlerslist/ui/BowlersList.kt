@@ -16,13 +16,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.ui.BowlerRow
+import java.util.UUID
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import java.util.UUID
 
 @Composable
 fun BowlersList(
@@ -82,14 +81,16 @@ fun LazyListScope.bowlersList(
 		key = { it.id },
 	) {
 		val archiveAction = SwipeAction(
-			icon = painterResource(RCoreDesign.drawable.ic_archive),
-			background = colorResource(RCoreDesign.color.destructive),
+			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
+			background = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+			),
 			onSwipe = { onArchiveBowler(it) },
 		)
 
 		val editAction = SwipeAction(
 			icon = rememberVectorPainter(Icons.Default.Edit),
-			background = colorResource(RCoreDesign.color.blue_300),
+			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
 			onSwipe = { onEditBowler(it) },
 		)
 

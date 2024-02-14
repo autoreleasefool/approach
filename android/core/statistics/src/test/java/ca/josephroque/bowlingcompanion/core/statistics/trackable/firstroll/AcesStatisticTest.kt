@@ -15,13 +15,19 @@ class AcesStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = AcesStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.HEAD_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN, Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
+						roll(1, setOf(Pin.HEAD_PIN)),
+					),
+				),
 			),
 		)
 
@@ -33,14 +39,20 @@ class AcesStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = AcesStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-					roll(1, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.HEAD_PIN)),
-				)),
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+						roll(1, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_THREE_PIN, Pin.LEFT_THREE_PIN)),
+						roll(1, setOf(Pin.HEAD_PIN)),
+					),
+				),
 			),
 		)
 

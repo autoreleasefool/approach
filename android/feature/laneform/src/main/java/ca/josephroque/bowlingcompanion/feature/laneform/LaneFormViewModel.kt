@@ -15,6 +15,8 @@ import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiState
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneLabelDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneLabelDialogUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,30 +26,30 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class LaneFormViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val lanesRepository: LanesRepository,
 	private val userDataRepository: UserDataRepository,
-): ApproachViewModel<LaneFormScreenEvent>() {
+) : ApproachViewModel<LaneFormScreenEvent>() {
 
 	private val existingLaneIds = Route.EditLanes.getLanes(savedStateHandle)
 
-	private val _isSwipeToEditTipDismissed = userDataRepository.userData.map { it.isLaneFormSwipeToEditTipDismissed }
+	private val isSwipeToEditTipDismissed = userDataRepository.userData.map {
+		it.isLaneFormSwipeToEditTipDismissed
+	}
 
-	private val _form: MutableStateFlow<LaneFormUiState> = MutableStateFlow(LaneFormUiState())
+	private val form: MutableStateFlow<LaneFormUiState> = MutableStateFlow(LaneFormUiState())
 
 	val uiState: StateFlow<LaneFormScreenUiState> = combine(
-		_isSwipeToEditTipDismissed,
-		_form,
+		isSwipeToEditTipDismissed,
+		form,
 	) { isSwipeToEditTipDismissed, form ->
 		LaneFormScreenUiState.Loaded(
 			laneForm = form.copy(
 				isShowingSwipeToEditTip = !isSwipeToEditTipDismissed,
-			)
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -90,7 +92,9 @@ class LaneFormViewModel @Inject constructor(
 		when (action) {
 			is LaneLabelDialogUiAction.LabelChanged -> updateLaneLabelDialogLabel(action.label)
 			is LaneLabelDialogUiAction.PositionChanged -> updateLaneLabelDialogPosition(action.position)
-			is LaneLabelDialogUiAction.PositionDropDownToggled -> toggleLaneLabelDialogPositionDropDown(action.newValue)
+			is LaneLabelDialogUiAction.PositionDropDownToggled -> toggleLaneLabelDialogPositionDropDown(
+				action.newValue,
+			)
 			LaneLabelDialogUiAction.PositionClicked -> toggleLaneLabelDialogPositionDropDown(true)
 			LaneLabelDialogUiAction.CancelClicked -> dismissLaneLabelDialog(false)
 			LaneLabelDialogUiAction.SaveClicked -> dismissLaneLabelDialog(true)
@@ -105,7 +109,7 @@ class LaneFormViewModel @Inject constructor(
 		viewModelScope.launch {
 			val existingLanes = lanesRepository.getLanes(existingLaneIds).first()
 
-			_form.value = LaneFormUiState(
+			form.value = LaneFormUiState(
 				existingLanes = existingLanes,
 				lanes = existingLanes,
 				addLanes = null,
@@ -116,7 +120,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun handleBackClicked() {
-		if (_form.value.hasAnyChanges()) {
+		if (form.value.hasAnyChanges()) {
 			setDiscardChangesDialog(isVisible = true)
 		} else {
 			dismissForm()
@@ -124,7 +128,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun setDiscardChangesDialog(isVisible: Boolean) {
-		_form.update {
+		form.update {
 			it.copy(
 				isShowingDiscardChangesDialog = isVisible,
 			)
@@ -132,12 +136,12 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun deleteLane(id: UUID) {
-		_form.update { form ->
+		form.update { form ->
 			val laneToDelete = form.lanes.indexOfFirst { it.id == id }
 			if (laneToDelete >= 0) {
 				form.copy(
 					lanes = form.lanes.toMutableList()
-						.apply { removeAt(laneToDelete) }
+						.apply { removeAt(laneToDelete) },
 				)
 			} else {
 				form
@@ -146,7 +150,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun saveLanes() {
-		val lanes = _form.value.lanes
+		val lanes = form.value.lanes
 		viewModelScope.launch {
 			lanesRepository.insertLanes(lanes)
 
@@ -161,7 +165,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun showLaneLabelDialog(id: UUID) {
-		_form.update { form ->
+		form.update { form ->
 			val laneToEdit = form.lanes.firstOrNull { it.id == id } ?: return@update form
 
 			form.copy(
@@ -170,47 +174,47 @@ class LaneFormViewModel @Inject constructor(
 					label = laneToEdit.label,
 					position = laneToEdit.position,
 					isPositionDropDownExpanded = false,
-				)
+				),
 			)
 		}
 	}
 
 	private fun toggleLaneLabelDialogPositionDropDown(expanded: Boolean) {
-		_form.update {
+		form.update {
 			it.copy(
 				laneLabel = it.laneLabel?.copy(
 					isPositionDropDownExpanded = expanded,
-				)
+				),
 			)
 		}
 	}
 
 	private fun updateLaneLabelDialogLabel(label: String) {
-		_form.update {
+		form.update {
 			it.copy(
 				laneLabel = it.laneLabel?.copy(
 					label = label,
 					isPositionDropDownExpanded = false,
-				)
+				),
 			)
 		}
 	}
 
 	private fun updateLaneLabelDialogPosition(position: LanePosition) {
-		_form.update {
+		form.update {
 			it.copy(
 				laneLabel = it.laneLabel?.copy(
 					position = position,
 					isPositionDropDownExpanded = false,
-				)
+				),
 			)
 		}
 	}
 
 	private fun dismissLaneLabelDialog(confirmChanges: Boolean) {
-		val laneEdited = _form.value.laneLabel ?: return
+		val laneEdited = form.value.laneLabel ?: return
 
-		_form.update { form ->
+		form.update { form ->
 			form.copy(
 				lanes = if (confirmChanges) {
 					form.lanes.toMutableList().map {
@@ -233,7 +237,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun showAddLanesDialog() {
-		_form.update {
+		form.update {
 			it.copy(
 				addLanes = AddLanesDialogUiState(1),
 			)
@@ -241,7 +245,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun dismissAddLanesDialog() {
-		_form.update {
+		form.update {
 			it.copy(
 				addLanes = null,
 			)
@@ -249,7 +253,7 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun updateLanesToAdd(numberOfLanes: Int) {
-		_form.update {
+		form.update {
 			it.copy(
 				addLanes = it.addLanes?.copy(lanesToAdd = numberOfLanes.coerceAtLeast(1)),
 			)
@@ -257,22 +261,22 @@ class LaneFormViewModel @Inject constructor(
 	}
 
 	private fun addMultipleLanes(numberOfLanes: Int) {
-		_form.update {
+		form.update {
 			it.copy(
 				addLanes = null,
 				laneLabel = null,
 				lanes = it.lanes.toMutableList().apply {
-					val labels = getNextLabels(numberOfLanes, _form.value.lanes)
+					val labels = getNextLabels(numberOfLanes, form.value.lanes)
 					labels.forEach { label ->
 						add(
 							LaneListItem(
 								id = UUID.randomUUID(),
 								label = label,
 								position = LanePosition.NO_WALL,
-							)
+							),
 						)
 					}
-				}
+				},
 			)
 		}
 	}

@@ -104,7 +104,7 @@ private fun LaneLabelDialog(
 				verticalArrangement = Arrangement.spacedBy(16.dp),
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(16.dp)
+					.padding(16.dp),
 			) {
 				LaneLabelTextField(
 					label = state.label,
@@ -131,10 +131,7 @@ private fun LanePosition.text(): String = when (this) {
 }
 
 @Composable
-private fun LaneLabelTextField(
-	label: String,
-	onLabelChanged: (String) -> Unit,
-) {
+private fun LaneLabelTextField(label: String, onLabelChanged: (String) -> Unit) {
 	OutlinedTextField(
 		value = label,
 		onValueChange = onLabelChanged,
@@ -178,7 +175,7 @@ private fun LaneLabelDialogMenu(
 			LanePosition.entries.forEach {
 				DropdownMenuItem(
 					text = { Text(it.text()) },
-					onClick = { onAction(LaneLabelDialogUiAction.PositionChanged(it)) }
+					onClick = { onAction(LaneLabelDialogUiAction.PositionChanged(it)) },
 				)
 			}
 		}
@@ -186,9 +183,7 @@ private fun LaneLabelDialogMenu(
 }
 
 @Composable
-private fun LaneLabelDialogActions(
-	onAction: (LaneLabelDialogUiAction) -> Unit,
-) {
+private fun LaneLabelDialogActions(onAction: (LaneLabelDialogUiAction) -> Unit) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = Modifier.fillMaxWidth(),
@@ -220,7 +215,7 @@ private fun AddLanesDialog(
 				verticalArrangement = Arrangement.spacedBy(16.dp),
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(16.dp)
+					.padding(16.dp),
 			) {
 				Stepper(
 					title = stringResource(R.string.lane_form_add_multiple_lanes),
@@ -238,10 +233,7 @@ private fun AddLanesDialog(
 }
 
 @Composable
-private fun AddLanesDialogActions(
-	numberOfLanes: Int,
-	onAction: (AddLanesDialogUiAction) -> Unit,
-) {
+private fun AddLanesDialogActions(numberOfLanes: Int, onAction: (AddLanesDialogUiAction) -> Unit) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = Modifier.fillMaxWidth(),

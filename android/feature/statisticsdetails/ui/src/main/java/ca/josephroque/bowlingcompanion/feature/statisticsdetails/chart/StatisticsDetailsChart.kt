@@ -30,11 +30,14 @@ fun StatisticsDetailsChart(
 				.padding(horizontal = 16.dp),
 		) {
 			when (val chart = state.chartContent?.chart) {
-				is StatisticChartContent.CountableChart -> CountingChart(chart.data, state.chartContent.modelProducer)
-//			is StatisticChartContent.AveragingChart -> AveragingChart(state.chart.data)
-//			is StatisticChartContent.PercentageChart -> PercentageChart(state.chart.data)
-//			is StatisticChartContent.DataMissing -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
-//			is StatisticChartContent.ChartUnavailable -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
+				is StatisticChartContent.CountableChart -> CountingChart(
+					chart.data,
+					state.chartContent.modelProducer,
+				)
+// 			is StatisticChartContent.AveragingChart -> AveragingChart(state.chart.data)
+// 			is StatisticChartContent.PercentageChart -> PercentageChart(state.chart.data)
+// 			is StatisticChartContent.DataMissing -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
+// 			is StatisticChartContent.ChartUnavailable -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
 				else -> Unit
 			}
 		}
@@ -45,13 +48,14 @@ fun StatisticsDetailsChart(
 				onCheckedChange = { onAction(StatisticsDetailsChartUiAction.AggregationChanged(it)) },
 				titleResourceId = R.string.statistics_details_aggregation_title,
 				subtitleResourceId = when (state.filter.aggregation) {
-					TrackableFilter.AggregationFilter.ACCUMULATE -> R.string.statistics_details_aggregation_accumulate_subtitle
-					TrackableFilter.AggregationFilter.PERIODIC -> R.string.statistics_details_aggregation_periodic_subtitle
+					TrackableFilter.AggregationFilter.ACCUMULATE ->
+						R.string.statistics_details_aggregation_accumulate_subtitle
+					TrackableFilter.AggregationFilter.PERIODIC ->
+						R.string.statistics_details_aggregation_periodic_subtitle
 				},
 				compact = true,
-				modifier = Modifier.padding(vertical = 8.dp)
+				modifier = Modifier.padding(vertical = 8.dp),
 			)
 		}
 	}
 }
-

@@ -1,19 +1,19 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.isSplit
 import ca.josephroque.bowlingcompanion.core.model.isSplitWithBonus
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
 data class SplitsStatistic(
 	var splits: Int = 0,
-): TrackablePerFirstRoll, CountingStatistic {
+) : TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.SPLITS
 	override val category = StatisticCategory.SPLITS
 	override val isEligibleForNewLabel = false
@@ -22,13 +22,17 @@ data class SplitsStatistic(
 
 	override var count: Int
 		get() = splits
-		set(value) { splits = value }
+		set(value) {
+			splits = value
+		}
 
 	override fun adjustByFirstRoll(
 		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
-		if (firstRoll.pinsDowned.isSplit() || (configuration.countSplitWithBonusAsSplit && firstRoll.pinsDowned.isSplitWithBonus())) {
+		if (firstRoll.pinsDowned.isSplit() ||
+			(configuration.countSplitWithBonusAsSplit && firstRoll.pinsDowned.isSplitWithBonus())
+		) {
 			splits++
 		}
 	}

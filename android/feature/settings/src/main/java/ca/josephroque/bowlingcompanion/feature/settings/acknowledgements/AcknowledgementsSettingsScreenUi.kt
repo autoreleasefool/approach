@@ -4,18 +4,20 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.Ackn
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.AcknowledgementsUiState
 
 sealed interface AcknowledgementsSettingsScreenUiState {
-	data object Loading: AcknowledgementsSettingsScreenUiState
+	data object Loading : AcknowledgementsSettingsScreenUiState
 
 	data class Loaded(
 		val acknowledgements: AcknowledgementsUiState,
-	): AcknowledgementsSettingsScreenUiState
+	) : AcknowledgementsSettingsScreenUiState
 }
 
 sealed interface AcknowledgementsSettingsScreenUiAction {
-	data class AcknowledgementsAction(val action: AcknowledgementsUiAction): AcknowledgementsSettingsScreenUiAction
+	data class AcknowledgementsAction(
+		val action: AcknowledgementsUiAction,
+	) : AcknowledgementsSettingsScreenUiAction
 }
 
 sealed interface AcknowledgementsSettingsScreenEvent {
-	data object Dismissed: AcknowledgementsSettingsScreenEvent
-	data class NavigatedToAcknowledgement(val name: String): AcknowledgementsSettingsScreenEvent
+	data object Dismissed : AcknowledgementsSettingsScreenEvent
+	data class NavigatedToAcknowledgement(val name: String) : AcknowledgementsSettingsScreenEvent
 }

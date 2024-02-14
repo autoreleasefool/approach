@@ -24,7 +24,7 @@ fun Modifier.topBorder(width: Dp, color: Color) = composed(
 				strokeWidth = strokeWidthPx,
 			)
 		}
-	}
+	},
 )
 
 fun Modifier.bottomBorder(width: Dp, color: Color) = composed(
@@ -43,7 +43,7 @@ fun Modifier.bottomBorder(width: Dp, color: Color) = composed(
 				strokeWidth = strokeWidthPx,
 			)
 		}
-	}
+	},
 )
 
 fun Modifier.startBorder(width: Dp, color: Color) = composed(
@@ -62,7 +62,7 @@ fun Modifier.startBorder(width: Dp, color: Color) = composed(
 				strokeWidth = strokeWidthPx,
 			)
 		}
-	}
+	},
 )
 
 fun Modifier.endBorder(width: Dp, color: Color) = composed(
@@ -81,5 +81,5 @@ fun Modifier.endBorder(width: Dp, color: Color) = composed(
 				strokeWidth = strokeWidthPx,
 			)
 		}
-	}
+	},
 )

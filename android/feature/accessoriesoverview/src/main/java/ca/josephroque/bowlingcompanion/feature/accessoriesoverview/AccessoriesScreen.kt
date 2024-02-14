@@ -17,8 +17,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.Accessories
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.AccessoriesTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun AccessoriesRoute(

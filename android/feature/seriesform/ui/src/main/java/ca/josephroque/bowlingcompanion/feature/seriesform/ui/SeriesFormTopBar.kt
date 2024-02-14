@@ -27,9 +27,7 @@ fun SeriesFormTopBar(
 }
 
 @Composable
-private fun Title(
-	state: SeriesFormTopBarUiState,
-) {
+private fun Title(state: SeriesFormTopBarUiState) {
 	Text(
 		text = if (state.existingDate == null) {
 			stringResource(R.string.series_form_new_series_title)
@@ -41,9 +39,7 @@ private fun Title(
 }
 
 @Composable
-private fun Actions(
-	onAction: (SeriesFormUiAction) -> Unit,
-) {
+private fun Actions(onAction: (SeriesFormUiAction) -> Unit) {
 	TextButton(onClick = { onAction(SeriesFormUiAction.DoneClicked) }) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

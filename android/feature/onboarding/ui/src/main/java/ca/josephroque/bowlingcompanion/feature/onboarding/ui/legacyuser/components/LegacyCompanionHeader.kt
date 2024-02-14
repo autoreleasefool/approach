@@ -28,10 +28,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.R
 
 @Composable
-fun LegacyCompanionHeader(
-	isVisible: Boolean,
-	modifier: Modifier = Modifier,
-) {
+fun LegacyCompanionHeader(isVisible: Boolean, modifier: Modifier = Modifier) {
 	val visibleState = remember { MutableTransitionState(false) }
 
 	LaunchedEffect(isVisible) {
@@ -45,10 +42,7 @@ fun LegacyCompanionHeader(
 }
 
 @Composable
-private fun Header(
-	visibleState: MutableTransitionState<Boolean>,
-	modifier: Modifier = Modifier,
-) {
+private fun Header(visibleState: MutableTransitionState<Boolean>, modifier: Modifier = Modifier) {
 	Column(
 		verticalArrangement = Arrangement.Center,
 		modifier = modifier.fillMaxSize(),

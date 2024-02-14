@@ -9,13 +9,13 @@ data class AlleysListUiState(
 )
 
 sealed interface AlleysListUiAction {
-	data object BackClicked: AlleysListUiAction
-	data object AddAlleyClicked: AlleysListUiAction
+	data object BackClicked : AlleysListUiAction
+	data object AddAlleyClicked : AlleysListUiAction
 
-	data class AlleyClicked(val id: UUID): AlleysListUiAction
-	data class AlleyEdited(val id: UUID): AlleysListUiAction
-	data class AlleyDeleted(val alley: AlleyListItem): AlleysListUiAction
+	data class AlleyClicked(val id: UUID) : AlleysListUiAction
+	data class AlleyEdited(val id: UUID) : AlleysListUiAction
+	data class AlleyDeleted(val alley: AlleyListItem) : AlleysListUiAction
 
-	data object ConfirmDeleteClicked: AlleysListUiAction
-	data object DismissDeleteClicked: AlleysListUiAction
+	data object ConfirmDeleteClicked : AlleysListUiAction
+	data object DismissDeleteClicked : AlleysListUiAction
 }

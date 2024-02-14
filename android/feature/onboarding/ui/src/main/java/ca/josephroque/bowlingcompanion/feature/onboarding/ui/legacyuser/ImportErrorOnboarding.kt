@@ -92,13 +92,13 @@ private fun ImportErrorCard(
 				Icon(
 					Icons.Default.Warning,
 					tint = MaterialTheme.colorScheme.onErrorContainer,
-					contentDescription = null
+					contentDescription = null,
 				)
 
 				Text(
 					text = message,
 					style = MaterialTheme.typography.bodyMedium,
-					modifier = Modifier
+					modifier = Modifier,
 				)
 			}
 		}
@@ -129,7 +129,9 @@ private fun ImportErrorCard(
 					modifier = Modifier.padding(end = 8.dp),
 				) {
 					Text(
-						text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_retry),
+						text = stringResource(
+							ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_retry,
+						),
 						style = MaterialTheme.typography.bodyMedium,
 					)
 				}

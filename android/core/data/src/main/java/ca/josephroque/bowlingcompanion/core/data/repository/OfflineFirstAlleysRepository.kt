@@ -9,33 +9,31 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
 import ca.josephroque.bowlingcompanion.core.model.utils.sortByUUIDs
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstAlleysRepository @Inject constructor(
 	private val alleyDao: AlleyDao,
 	private val userDataRepository: UserDataRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): AlleysRepository {
+) : AlleysRepository {
 	override fun getAlleyDetails(id: UUID): Flow<AlleyDetails> =
 		alleyDao.getAlleyDetails(id).map { it.asModel() }
 
-	override fun getRecentAlleysList(limit: Int): Flow<List<AlleyListItem>> =
-		combine(
-			alleyDao.getAlleysList(),
-			userDataRepository.userData.map { it.recentlyUsedAlleyIds }
-		) { alleys, recentlyUsed ->
-			alleys.sortByUUIDs(recentlyUsed)
-				.take(limit)
-		}
+	override fun getRecentAlleysList(limit: Int): Flow<List<AlleyListItem>> = combine(
+		alleyDao.getAlleysList(),
+		userDataRepository.userData.map { it.recentlyUsedAlleyIds },
+	) { alleys, recentlyUsed ->
+		alleys.sortByUUIDs(recentlyUsed)
+			.take(limit)
+	}
 
-	override fun getAlleysList(): Flow<List<AlleyListItem>> =
-		alleyDao.getAlleysList()
+	override fun getAlleysList(): Flow<List<AlleyListItem>> = alleyDao.getAlleysList()
 
 	override fun getGameAlleyDetails(gameId: UUID): Flow<AlleyDetails?> =
 		alleyDao.getGameAlleyDetails(gameId).map { it?.asModel() }

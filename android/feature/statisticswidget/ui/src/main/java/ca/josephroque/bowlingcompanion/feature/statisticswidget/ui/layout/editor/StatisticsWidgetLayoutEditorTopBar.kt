@@ -29,14 +29,16 @@ fun StatisticsWidgetLayoutEditorTopBar(
 			BackButton(onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.BackClicked) })
 		},
 		actions = {
-			IconButton(onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.ToggleDeleteMode(!state.isDeleteModeEnabled)) }) {
+			IconButton(onClick = {
+				onAction(StatisticsWidgetLayoutEditorUiAction.ToggleDeleteMode(!state.isDeleteModeEnabled))
+			}) {
 				Icon(
 					Icons.Default.Delete,
 					contentDescription = stringResource(R.string.cd_delete_widgets),
 				)
 			}
 
-			IconButton(onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.AddWidgetClicked)} ) {
+			IconButton(onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.AddWidgetClicked) }) {
 				Icon(
 					Icons.Default.Add,
 					contentDescription = stringResource(R.string.cd_add_widget),

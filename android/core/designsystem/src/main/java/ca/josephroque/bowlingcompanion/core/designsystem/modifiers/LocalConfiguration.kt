@@ -20,6 +20,6 @@ val Configuration.screenHeightWithTopInsets: Float
 	@Composable
 	get() = with(LocalDensity.current) {
 		screenHeight +
-				WindowInsets.statusBars.getTop(this) +
-				WindowInsets.navigationBars.getTop(this)
+			WindowInsets.statusBars.getTop(this) +
+			WindowInsets.navigationBars.getTop(this)
 	}

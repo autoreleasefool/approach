@@ -49,16 +49,15 @@ import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
-import kotlinx.datetime.Instant
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import kotlinx.datetime.Instant
 
 class SQLiteMigrationService @Inject constructor(
 	@ApplicationContext private val context: Context,
@@ -74,7 +73,7 @@ class SQLiteMigrationService @Inject constructor(
 	private val frameDao: FrameDao,
 	private val matchPlayDao: MatchPlayDao,
 	private val legacyIDMappingDao: LegacyIDMappingDao,
-): MigrationService {
+) : MigrationService {
 	override fun getLegacyDatabasePath(name: String): File = fileManager.getDatabasePath(name)
 	override fun getLegacyDatabaseUri(name: String): Uri {
 		val exportDestination = fileManager.exportsDir
@@ -84,7 +83,7 @@ class SQLiteMigrationService @Inject constructor(
 		return FileProvider.getUriForFile(
 			context,
 			"ca.josephroque.bowlingcompanion.fileprovider",
-			exportDestination
+			exportDestination,
 		)
 	}
 
@@ -92,7 +91,7 @@ class SQLiteMigrationService @Inject constructor(
 		context.openOrCreateDatabase(name, Context.MODE_PRIVATE, null).use { db ->
 			db.rawQuery(
 				"PRAGMA table_info(${LegacyContract.BowlerEntry.TABLE_NAME})",
-				emptyArray()
+				emptyArray(),
 			).use {
 				if (it.moveToFirst()) {
 					while (!it.isAfterLast) {
@@ -152,7 +151,8 @@ class SQLiteMigrationService @Inject constructor(
 			"""
 		SELECT ${LegacyContract.TeamEntry._ID}, ${LegacyContract.TeamEntry.COLUMN_TEAM_NAME}
 		FROM ${LegacyContract.TeamEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -180,17 +180,19 @@ class SQLiteMigrationService @Inject constructor(
 
 		for (legacyTeam in teams) {
 			val id = UUID.randomUUID()
-			idMappings.add(LegacyIDMappingEntity(
-				id = id,
-				legacyId = legacyTeam.id,
-				key = LegacyIDMappingKey.TEAM
-			))
+			idMappings.add(
+				LegacyIDMappingEntity(
+					id = id,
+					legacyId = legacyTeam.id,
+					key = LegacyIDMappingKey.TEAM,
+				),
+			)
 
 			migratedTeams.add(
 				TeamEntity(
-				id = id,
-				name = legacyTeam.name,
-			)
+					id = id,
+					name = legacyTeam.name,
+				),
 			)
 		}
 
@@ -210,7 +212,8 @@ class SQLiteMigrationService @Inject constructor(
 			"""
 		SELECT ${LegacyContract.BowlerEntry._ID}, ${LegacyContract.BowlerEntry.COLUMN_BOWLER_NAME}
 		FROM ${LegacyContract.BowlerEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -240,18 +243,18 @@ class SQLiteMigrationService @Inject constructor(
 			val id = UUID.randomUUID()
 			idMappings.add(
 				LegacyIDMappingEntity(
-				id = id,
-				legacyId = legacyBowler.id,
-				key = LegacyIDMappingKey.BOWLER,
-			)
+					id = id,
+					legacyId = legacyBowler.id,
+					key = LegacyIDMappingKey.BOWLER,
+				),
 			)
 
 			migratedBowlers.add(
 				BowlerEntity(
-				id = id,
-				name = legacyBowler.name,
-				kind = BowlerKind.PLAYABLE,
-			)
+					id = id,
+					name = legacyBowler.name,
+					kind = BowlerKind.PLAYABLE,
+				),
 			)
 		}
 
@@ -271,7 +274,8 @@ class SQLiteMigrationService @Inject constructor(
 			"""
 			SELECT ${LegacyContract.TeamBowlerEntry.COLUMN_BOWLER_ID}, ${LegacyContract.TeamBowlerEntry.COLUMN_TEAM_ID}
 			FROM ${LegacyContract.TeamBowlerEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -313,7 +317,7 @@ class SQLiteMigrationService @Inject constructor(
 				TeamBowlerCrossRef(
 					teamId = teamIdMappings[legacyTeamBowler.teamId]!!,
 					bowlerId = bowlerIdMappings[legacyTeamBowler.bowlerId]!!,
-				)
+				),
 			)
 		}
 
@@ -339,7 +343,8 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.LeagueEntry.COLUMN_IS_EVENT},
 				${LegacyContract.LeagueEntry.COLUMN_BOWLER_ID}
 			FROM ${LegacyContract.LeagueEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -372,7 +377,7 @@ class SQLiteMigrationService @Inject constructor(
 							additionalGames = additionalGames,
 							additionalPinFall = additionalPinFall,
 							bowlerId = bowlerId,
-						)
+						),
 					)
 
 					it.moveToNext()
@@ -395,24 +400,52 @@ class SQLiteMigrationService @Inject constructor(
 
 		for (legacyLeague in leagues) {
 			val id = UUID.randomUUID()
-			idMappings.add(LegacyIDMappingEntity(
-				id = id,
-				legacyId = legacyLeague.id,
-				key = LegacyIDMappingKey.LEAGUE,
-			))
+			idMappings.add(
+				LegacyIDMappingEntity(
+					id = id,
+					legacyId = legacyLeague.id,
+					key = LegacyIDMappingKey.LEAGUE,
+				),
+			)
 
 			@Suppress("DEPRECATION")
 			migratedLeagues.add(
 				LeagueEntity(
-				id = id,
-				name = legacyLeague.name,
-				recurrence = if (legacyLeague.isEvent) LeagueRecurrence.ONCE else LeagueRecurrence.REPEATING,
-				additionalGames = if (legacyLeague.additionalGames == 0) null else legacyLeague.additionalGames,
-				additionalPinFall = if (legacyLeague.additionalGames == 0 || legacyLeague.additionalPinFall == 0) null else legacyLeague.additionalPinFall,
-				excludeFromStatistics = if (legacyLeague.name == LegacyLeague.PRACTICE_LEAGUE_NAME || legacyLeague.name == LegacyLeague.OPEN_LEAGUE_NAME) ExcludeFromStatistics.EXCLUDE else ExcludeFromStatistics.INCLUDE,
-				numberOfGames = if (legacyLeague.gamesPerSeries == 0) null else legacyLeague.gamesPerSeries,
-				bowlerId = bowlerIdMappings[legacyLeague.bowlerId]!!,
-			)
+					id = id,
+					name = legacyLeague.name,
+					recurrence = if (legacyLeague.isEvent) {
+						LeagueRecurrence.ONCE
+					} else {
+						LeagueRecurrence.REPEATING
+					},
+					additionalGames = if (legacyLeague.additionalGames == 0) {
+						null
+					} else {
+						legacyLeague.additionalGames
+					},
+					additionalPinFall = if (
+						legacyLeague.additionalGames == 0 ||
+						legacyLeague.additionalPinFall == 0
+					) {
+						null
+					} else {
+						legacyLeague.additionalPinFall
+					},
+					excludeFromStatistics = if (
+						legacyLeague.name == LegacyLeague.PRACTICE_LEAGUE_NAME ||
+						legacyLeague.name == LegacyLeague.OPEN_LEAGUE_NAME
+					) {
+						ExcludeFromStatistics.EXCLUDE
+					} else {
+						ExcludeFromStatistics.INCLUDE
+					},
+					numberOfGames = if (legacyLeague.gamesPerSeries == 0) {
+						null
+					} else {
+						legacyLeague.gamesPerSeries
+					},
+					bowlerId = bowlerIdMappings[legacyLeague.bowlerId]!!,
+				),
 			)
 		}
 
@@ -442,7 +475,8 @@ class SQLiteMigrationService @Inject constructor(
 				series.${LegacyContract.SeriesEntry._ID} = game.${LegacyContract.GameEntry.COLUMN_SERIES_ID}
 			GROUP BY
 				series.${LegacyContract.SeriesEntry._ID}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			val dateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
 
@@ -465,7 +499,7 @@ class SQLiteMigrationService @Inject constructor(
 							date = date,
 							numberOfGames = numberOfGames,
 							leagueId = leagueId,
-						)
+						),
 					)
 
 					it.moveToNext()
@@ -488,23 +522,25 @@ class SQLiteMigrationService @Inject constructor(
 
 		for (legacySeries in series) {
 			val id = UUID.randomUUID()
-			idMappings.add(LegacyIDMappingEntity(
-				id = id,
-				legacyId = legacySeries.id,
-				key = LegacyIDMappingKey.SERIES,
-			))
+			idMappings.add(
+				LegacyIDMappingEntity(
+					id = id,
+					legacyId = legacySeries.id,
+					key = LegacyIDMappingKey.SERIES,
+				),
+			)
 
 			migratedSeries.add(
 				SeriesEntity(
-				id = id,
-				date = Instant
-					.fromEpochMilliseconds(legacySeries.date.time)
-					.toLocalDate(),
-				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				preBowl = SeriesPreBowl.REGULAR,
-				leagueId = leagueIdMappings[legacySeries.leagueId]!!,
-				alleyId = null,
-			)
+					id = id,
+					date = Instant
+						.fromEpochMilliseconds(legacySeries.date.time)
+						.toLocalDate(),
+					excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					preBowl = SeriesPreBowl.REGULAR,
+					leagueId = leagueIdMappings[legacySeries.leagueId]!!,
+					alleyId = null,
+				),
 			)
 		}
 
@@ -532,7 +568,8 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.GameEntry.COLUMN_SERIES_ID}
 			FROM
 				${LegacyContract.GameEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -562,7 +599,7 @@ class SQLiteMigrationService @Inject constructor(
 							isManual = isManual,
 							matchPlayResult = matchPlay,
 							seriesId = seriesId,
-						)
+						),
 					)
 
 					it.moveToNext()
@@ -587,22 +624,28 @@ class SQLiteMigrationService @Inject constructor(
 
 		for (legacyGame in games) {
 			val gameId = UUID.randomUUID()
-			gameIdMappings.add(LegacyIDMappingEntity(
-				id = gameId,
-				legacyId = legacyGame.id,
-				key = LegacyIDMappingKey.GAME,
-			))
+			gameIdMappings.add(
+				LegacyIDMappingEntity(
+					id = gameId,
+					legacyId = legacyGame.id,
+					key = LegacyIDMappingKey.GAME,
+				),
+			)
 
 			migratedGames.add(
 				GameEntity(
-				id = gameId,
-				index = legacyGame.gameNumber - 1,
-				score = legacyGame.score,
-				locked = if (legacyGame.isLocked) GameLockState.LOCKED else GameLockState.UNLOCKED,
-				scoringMethod = if (legacyGame.isManual) GameScoringMethod.MANUAL else GameScoringMethod.BY_FRAME,
-				excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
-				seriesId = seriesIdMappings[legacyGame.seriesId]!!,
-			)
+					id = gameId,
+					index = legacyGame.gameNumber - 1,
+					score = legacyGame.score,
+					locked = if (legacyGame.isLocked) GameLockState.LOCKED else GameLockState.UNLOCKED,
+					scoringMethod = if (legacyGame.isManual) {
+						GameScoringMethod.MANUAL
+					} else {
+						GameScoringMethod.BY_FRAME
+					},
+					excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					seriesId = seriesIdMappings[legacyGame.seriesId]!!,
+				),
 			)
 
 			if (legacyGame.matchPlayResult != LegacyMatchPlayResult.NONE) {
@@ -610,12 +653,12 @@ class SQLiteMigrationService @Inject constructor(
 
 				migratedMatchPlays.add(
 					MatchPlayEntity(
-					id = matchPlayId,
-					gameId = gameId,
-					opponentId = null,
-					opponentScore = null,
-					result = legacyGame.matchPlayResult.asMatchPlay(),
-				)
+						id = matchPlayId,
+						gameId = gameId,
+						opponentId = null,
+						opponentScore = null,
+						result = legacyGame.matchPlayResult.asMatchPlay(),
+					),
 				)
 			}
 		}
@@ -641,7 +684,8 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.MatchPlayEntry.COLUMN_OPPONENT_SCORE},
 				${LegacyContract.MatchPlayEntry.COLUMN_GAME_ID}
 			FROM ${LegacyContract.MatchPlayEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -663,7 +707,7 @@ class SQLiteMigrationService @Inject constructor(
 							opponentName = opponentName,
 							opponentScore = opponentScore,
 							gameId = gameId,
-						)
+						),
 					)
 
 					it.moveToNext()
@@ -696,19 +740,23 @@ class SQLiteMigrationService @Inject constructor(
 			val existingMatchPlay = existingMatchPlays[gameId]
 			val matchPlayId = existingMatchPlay?.id ?: UUID.randomUUID()
 
-			matchPlayIdMappings.add(LegacyIDMappingEntity(
-				id = matchPlayId,
-				legacyId = legacyMatchPlay.id,
-				key = LegacyIDMappingKey.MATCH_PLAY,
-			))
+			matchPlayIdMappings.add(
+				LegacyIDMappingEntity(
+					id = matchPlayId,
+					legacyId = legacyMatchPlay.id,
+					key = LegacyIDMappingKey.MATCH_PLAY,
+				),
+			)
 
-			migratedMatchPlays.add(MatchPlayEntity(
-				id =  matchPlayId,
-				opponentId = existingMatchPlay?.opponentId,
-				opponentScore = existingMatchPlay?.opponentScore ?: legacyMatchPlay.opponentScore,
-				result = existingMatchPlay?.result,
-				gameId = gameId,
-			))
+			migratedMatchPlays.add(
+				MatchPlayEntity(
+					id = matchPlayId,
+					opponentId = existingMatchPlay?.opponentId,
+					opponentScore = existingMatchPlay?.opponentScore ?: legacyMatchPlay.opponentScore,
+					result = existingMatchPlay?.result,
+					gameId = gameId,
+				),
+			)
 		}
 
 		legacyIDMappingDao.insertAll(matchPlayIdMappings)
@@ -735,7 +783,8 @@ class SQLiteMigrationService @Inject constructor(
 				${LegacyContract.FrameEntry.COLUMN_FOULS},
 				${LegacyContract.FrameEntry.COLUMN_GAME_ID}
 			FROM ${LegacyContract.FrameEntry.TABLE_NAME}
-		""".trimIndent(), emptyArray()
+			""".trimIndent(),
+			emptyArray(),
 		).use {
 			if (it.moveToFirst()) {
 				while (!it.isAfterLast) {
@@ -767,7 +816,7 @@ class SQLiteMigrationService @Inject constructor(
 							thirdPinState = pinState2,
 							fouls = fouls,
 							gameId = gameId,
-						)
+						),
 					)
 
 					it.moveToNext()
@@ -802,16 +851,18 @@ class SQLiteMigrationService @Inject constructor(
 			val rolls = (fouls zip rollPins)
 				.map { "${if (it.first) 1 else 0}${Integer.toBinaryString(it.second).padStart(5, '0')}" }
 
-			migratedFrames.add(FrameEntity(
-				gameId = gameIdMappings[legacyFrame.gameId]!!,
-				index = legacyFrame.ordinal - 1,
-				roll0 = FrameEntity.Roll.fromBitString(rolls[0]),
-				roll1 = FrameEntity.Roll.fromBitString(rolls[1]),
-				roll2 = FrameEntity.Roll.fromBitString(rolls[2]),
-				ball0 = null,
-				ball1 = null,
-				ball2 = null,
-			))
+			migratedFrames.add(
+				FrameEntity(
+					gameId = gameIdMappings[legacyFrame.gameId]!!,
+					index = legacyFrame.ordinal - 1,
+					roll0 = FrameEntity.Roll.fromBitString(rolls[0]),
+					roll1 = FrameEntity.Roll.fromBitString(rolls[1]),
+					roll2 = FrameEntity.Roll.fromBitString(rolls[2]),
+					ball0 = null,
+					ball1 = null,
+					ball2 = null,
+				),
+			)
 		}
 
 		frameDao.migrateAll(migratedFrames)

@@ -6,15 +6,15 @@ import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.LanePosition
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
-import kotlinx.datetime.LocalDate
 import java.util.UUID
+import kotlinx.datetime.LocalDate
 
 sealed interface ResourcePickerFilter {
-	data class Str(val value: String): ResourcePickerFilter
-	data class League(val id: UUID): ResourcePickerFilter
-	data class Series(val id: UUID): ResourcePickerFilter
-	data class Gear(val kind: GearKind): ResourcePickerFilter
-	data class Alley(val id: UUID): ResourcePickerFilter
+	data class Str(val value: String) : ResourcePickerFilter
+	data class League(val id: UUID) : ResourcePickerFilter
+	data class Series(val id: UUID) : ResourcePickerFilter
+	data class Gear(val kind: GearKind) : ResourcePickerFilter
+	data class Alley(val id: UUID) : ResourcePickerFilter
 }
 
 sealed interface ResourceItem {
@@ -24,18 +24,18 @@ sealed interface ResourceItem {
 	data class Bowler(
 		override val id: UUID,
 		override val name: String,
-	): ResourceItem
+	) : ResourceItem
 
 	data class League(
 		override val id: UUID,
 		override val name: String,
-	): ResourceItem
+	) : ResourceItem
 
 	data class Series(
 		override val id: UUID,
 		val date: LocalDate,
 		val total: Int,
-	): ResourceItem {
+	) : ResourceItem {
 		override val name: String = date.simpleFormat()
 	}
 
@@ -43,7 +43,7 @@ sealed interface ResourceItem {
 		override val id: UUID,
 		val index: Int,
 		val score: Int,
-	): ResourceItem {
+	) : ResourceItem {
 		override val name: String = "Game ${index + 1}"
 	}
 
@@ -53,18 +53,18 @@ sealed interface ResourceItem {
 		val kind: GearKind,
 		val ownerName: String?,
 		val avatar: Avatar,
-	): ResourceItem
+	) : ResourceItem
 
 	data class Alley(
 		override val id: UUID,
 		override val name: String,
-	): ResourceItem
+	) : ResourceItem
 
 	data class Lane(
 		override val id: UUID,
 		override val name: String,
 		val position: LanePosition,
-	): ResourceItem
+	) : ResourceItem
 }
 
 data class ResourcePickerUiState(
@@ -74,10 +74,10 @@ data class ResourcePickerUiState(
 )
 
 sealed interface ResourcePickerUiAction {
-	data object BackClicked: ResourcePickerUiAction
-	data object DoneClicked: ResourcePickerUiAction
+	data object BackClicked : ResourcePickerUiAction
+	data object DoneClicked : ResourcePickerUiAction
 
-	data class ItemClicked(val itemId: UUID): ResourcePickerUiAction
+	data class ItemClicked(val itemId: UUID) : ResourcePickerUiAction
 }
 
 data class ResourcePickerTopBarUiState(

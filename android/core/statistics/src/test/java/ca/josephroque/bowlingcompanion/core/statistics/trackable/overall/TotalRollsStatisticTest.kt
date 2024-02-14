@@ -16,15 +16,21 @@ class TotalRollsStatisticTest {
 			statistic = TotalRollsStatistic(),
 			byFrames = listOf(
 				frame(0, listOf()),
-				frame(1, listOf(
-					roll(0, setOf()),
-					roll(1, setOf(Pin.HEAD_PIN), didFoul = true),
-				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-					roll(1, setOf(Pin.LEFT_TWO_PIN)),
-					roll(2, setOf(Pin.RIGHT_THREE_PIN)),
-				)),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf()),
+						roll(1, setOf(Pin.HEAD_PIN), didFoul = true),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+						roll(1, setOf(Pin.LEFT_TWO_PIN)),
+						roll(2, setOf(Pin.RIGHT_THREE_PIN)),
+					),
+				),
 			),
 		)
 		assertCounting(statistic, 5)

@@ -22,7 +22,7 @@ fun NavGraphBuilder.matchPlayEditorScreen(
 	composable(
 		route = Route.EditMatchPlay.route,
 		arguments = listOf(
-			navArgument(Route.EditMatchPlay.ARG_GAME) { type = NavType.StringType }
+			navArgument(Route.EditMatchPlay.ARG_GAME) { type = NavType.StringType },
 		),
 	) {
 		MatchPlayEditorRoute(

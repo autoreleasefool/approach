@@ -9,6 +9,6 @@ data class StatisticPickerUiState(
 )
 
 sealed interface StatisticPickerUiAction {
-	data object BackClicked: StatisticPickerUiAction
-	data class StatisticClicked(val statistic: Statistic): StatisticPickerUiAction
+	data object BackClicked : StatisticPickerUiAction
+	data class StatisticClicked(val statistic: Statistic) : StatisticPickerUiAction
 }

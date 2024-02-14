@@ -11,9 +11,9 @@ import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 @Entity(
 	tableName = "games",
@@ -78,6 +78,6 @@ data class GameEditEntity(
 		properties = this.properties,
 		series = this.series,
 		league = this.league,
-		bowler = this.bowler
+		bowler = this.bowler,
 	)
 }

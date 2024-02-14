@@ -14,14 +14,14 @@ data class AccessoriesUiState(
 )
 
 sealed interface AccessoriesUiAction {
-	data object ViewAllAlleysClicked: AccessoriesUiAction
-	data object ViewAllGearClicked: AccessoriesUiAction
+	data object ViewAllAlleysClicked : AccessoriesUiAction
+	data object ViewAllGearClicked : AccessoriesUiAction
 
-	data object AddAccessoryClicked: AccessoriesUiAction
-	data object AccessoryMenuDismissed: AccessoriesUiAction
-	data object AddAlleyClicked: AccessoriesUiAction
-	data object AddGearClicked: AccessoriesUiAction
+	data object AddAccessoryClicked : AccessoriesUiAction
+	data object AccessoryMenuDismissed : AccessoriesUiAction
+	data object AddAlleyClicked : AccessoriesUiAction
+	data object AddGearClicked : AccessoriesUiAction
 
-	data class AlleyClicked(val alley: AlleyListItem): AccessoriesUiAction
-	data class GearClicked(val gear: GearListItem): AccessoriesUiAction
+	data class AlleyClicked(val alley: AlleyListItem) : AccessoriesUiAction
+	data class GearClicked(val gear: GearListItem) : AccessoriesUiAction
 }

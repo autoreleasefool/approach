@@ -11,6 +11,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,43 +21,42 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class GamesSettingsViewModel @Inject constructor(
 	bowlersRepository: BowlersRepository,
 	private val gamesRepository: GamesRepository,
 	savedStateHandle: SavedStateHandle,
-): ApproachViewModel<GamesSettingsScreenEvent>() {
+) : ApproachViewModel<GamesSettingsScreenEvent>() {
 	private val initialSeries = Route.GameSettings.getSeries(savedStateHandle)
 	private val initialGameId = Route.GameSettings.getCurrentGame(savedStateHandle)!!
 
-	private val _currentGameId = MutableStateFlow(initialGameId)
-	private val _games: MutableStateFlow<List<GameListItem>> = MutableStateFlow(emptyList())
+	private val currentGameId = MutableStateFlow(initialGameId)
+	private val games: MutableStateFlow<List<GameListItem>> = MutableStateFlow(emptyList())
 
-	private val _currentBowlerId = MutableStateFlow(UUID.randomUUID())
-	private val _bowlers: MutableStateFlow<List<Pair<UUID, BowlerSummary>>> = MutableStateFlow(emptyList())
+	private val currentBowlerId = MutableStateFlow(UUID.randomUUID())
+	private val bowlers: MutableStateFlow<List<Pair<UUID, BowlerSummary>>> =
+		MutableStateFlow(emptyList())
 
 	init {
 		viewModelScope.launch {
 			val bowlers = initialSeries
 				.zip(bowlersRepository.getSeriesBowlers(initialSeries).first())
-			_bowlers.update { bowlers }
+			this@GamesSettingsViewModel.bowlers.update { bowlers }
 
 			val currentGameDetails = gamesRepository.getGameDetails(initialGameId).first()
 			val currentSeriesId = currentGameDetails.series.id
 			val seriesGames = gamesRepository.getGamesList(currentSeriesId).first()
-			_games.update { seriesGames }
-			_currentBowlerId.update { currentGameDetails.bowler.id }
+			games.update { seriesGames }
+			currentBowlerId.update { currentGameDetails.bowler.id }
 		}
 	}
 
 	val uiState: StateFlow<GamesSettingsScreenUiState> = combine(
-		_currentGameId,
-		_games,
-		_currentBowlerId,
-		_bowlers,
+		currentGameId,
+		games,
+		currentBowlerId,
+		bowlers,
 	) { currentGame, games, currentBowler, bowlers ->
 		GamesSettingsScreenUiState.Loaded(
 			GamesSettingsUiState(
@@ -63,7 +64,7 @@ class GamesSettingsViewModel @Inject constructor(
 				bowlers = bowlers.map { it.second },
 				currentGameId = currentGame,
 				games = games,
-			)
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -87,24 +88,26 @@ class GamesSettingsViewModel @Inject constructor(
 	}
 
 	private fun dismiss() {
-		sendEvent(GamesSettingsScreenEvent.DismissedWithResult(
-			_bowlers.value.map { it.first },
-			_currentGameId.value,
-		))
+		sendEvent(
+			GamesSettingsScreenEvent.DismissedWithResult(
+				bowlers.value.map { it.first },
+				currentGameId.value,
+			),
+		)
 	}
 
 	private fun setCurrentGame(gameId: UUID) {
-		_currentGameId.value = gameId
+		currentGameId.value = gameId
 	}
 
 	private fun setCurrentBowler(bowlerId: UUID) {
 		viewModelScope.launch {
-			val currentGameIndex = _games.value.indexOfFirst { it.id == _currentGameId.value }
-			val currentSeriesId = _bowlers.value.first { it.second.id == bowlerId }.first
+			val currentGameIndex = games.value.indexOfFirst { it.id == currentGameId.value }
+			val currentSeriesId = bowlers.value.first { it.second.id == bowlerId }.first
 			val seriesGames = gamesRepository.getGamesList(currentSeriesId).first()
-			_games.update { seriesGames }
-			_currentGameId.update { seriesGames[currentGameIndex].id }
-			_currentBowlerId.update { bowlerId }
+			games.update { seriesGames }
+			currentGameId.update { seriesGames[currentGameIndex].id }
+			currentBowlerId.update { bowlerId }
 		}
 	}
 
@@ -112,7 +115,7 @@ class GamesSettingsViewModel @Inject constructor(
 		// Depends on number of `item` before bowlers in `GamesSettings#LazyColumn`
 		val from = fromListIndex - 1
 		val to = toListIndex - 1
-		_bowlers.update {
+		bowlers.update {
 			if (from == to || !it.indices.contains(from) || !it.indices.contains(to)) return@update it
 			it.toMutableList().apply { add(to, removeAt(from)) }
 		}

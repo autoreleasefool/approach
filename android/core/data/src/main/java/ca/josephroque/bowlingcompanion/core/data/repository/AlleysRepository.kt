@@ -4,8 +4,8 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyCreate
 import ca.josephroque.bowlingcompanion.core.model.AlleyDetails
 import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 interface AlleysRepository {
 	fun getAlleyDetails(id: UUID): Flow<AlleyDetails>

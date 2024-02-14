@@ -14,11 +14,11 @@ fun LocalDate?.seriesDate(recurrence: LeagueRecurrence): String = if (this == nu
 	when (recurrence) {
 		LeagueRecurrence.ONCE -> stringResource(
 			R.string.league_bowled_once,
-			this.simpleFormat()
+			this.simpleFormat(),
 		)
 		LeagueRecurrence.REPEATING -> stringResource(
 			R.string.league_latest_series,
-			this.simpleFormat()
+			this.simpleFormat(),
 		)
 	}
 }

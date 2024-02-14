@@ -78,7 +78,7 @@ fun GamesEditor(
 					ManualScoreCard(
 						score = state.manualScore,
 						onAction = onAction,
-						modifier = Modifier.padding(horizontal = 16.dp)
+						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
 
@@ -126,7 +126,7 @@ private fun BlackCover() {
 	Box(
 		modifier = Modifier
 			.fillMaxSize()
-			.background(Brush.verticalGradient(colorStops = colorStops))
+			.background(Brush.verticalGradient(colorStops = colorStops)),
 	)
 }
 
@@ -135,7 +135,6 @@ private fun BackgroundImage() {
 	Column(
 		modifier = Modifier.fillMaxSize(),
 	) {
-
 		Image(
 			painter = painterResource(R.drawable.galaxy_pin),
 			contentDescription = null,

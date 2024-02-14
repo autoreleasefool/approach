@@ -64,7 +64,7 @@ fun AvatarForm(
 			avatar = state.avatar,
 			modifier = Modifier
 				.size(80.dp)
-				.align(Alignment.CenterHorizontally)
+				.align(Alignment.CenterHorizontally),
 		)
 
 		LabelTextField(
@@ -80,7 +80,7 @@ fun AvatarForm(
 		Row(
 			horizontalArrangement = Arrangement.spacedBy(8.dp),
 			verticalAlignment = Alignment.CenterVertically,
-			modifier = Modifier.align(Alignment.CenterHorizontally)
+			modifier = Modifier.align(Alignment.CenterHorizontally),
 		) {
 			Canvas(
 				modifier = Modifier
@@ -88,7 +88,7 @@ fun AvatarForm(
 					.size(48.dp),
 				onDraw = {
 					drawCircle(state.avatar.primaryColor.toComposeColor())
-				}
+				},
 			)
 
 			Canvas(
@@ -97,7 +97,7 @@ fun AvatarForm(
 					.size(48.dp),
 				onDraw = {
 					drawCircle(state.avatar.secondaryColor.toComposeColor())
-				}
+				},
 			)
 		}
 
@@ -111,10 +111,7 @@ fun AvatarForm(
 }
 
 @Composable
-private fun LabelTextField(
-	label: String,
-	onLabelChanged: (String) -> Unit,
-) {
+private fun LabelTextField(label: String, onLabelChanged: (String) -> Unit) {
 	OutlinedTextField(
 		value = label,
 		onValueChange = onLabelChanged,
@@ -129,7 +126,7 @@ private fun LabelTextField(
 		label = {
 			Text(
 				text = stringResource(R.string.avatar_form_label),
-				style = MaterialTheme.typography.bodyLarge
+				style = MaterialTheme.typography.bodyLarge,
 			)
 		},
 		singleLine = true,

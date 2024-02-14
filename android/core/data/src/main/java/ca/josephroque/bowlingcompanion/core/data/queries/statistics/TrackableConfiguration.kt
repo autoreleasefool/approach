@@ -5,13 +5,15 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfiguration
 
-fun UserData.perFrameConfiguration(): TrackablePerFrameConfiguration = TrackablePerFrameConfiguration(
-	countHeadPin2AsHeadPin = !isCountingH2AsHDisabled,
-	countSplitWithBonusAsSplit = !isCountingSplitWithBonusAsSplitDisabled
-)
+fun UserData.perFrameConfiguration(): TrackablePerFrameConfiguration =
+	TrackablePerFrameConfiguration(
+		countHeadPin2AsHeadPin = !isCountingH2AsHDisabled,
+		countSplitWithBonusAsSplit = !isCountingSplitWithBonusAsSplitDisabled,
+	)
 
 @Suppress("UnusedReceiverParameter")
 fun UserData.perGameConfiguration(): TrackablePerGameConfiguration = TrackablePerGameConfiguration
 
 @Suppress("UnusedReceiverParameter")
-fun UserData.perSeriesConfiguration(): TrackablePerSeriesConfiguration = TrackablePerSeriesConfiguration
+fun UserData.perSeriesConfiguration(): TrackablePerSeriesConfiguration =
+	TrackablePerSeriesConfiguration

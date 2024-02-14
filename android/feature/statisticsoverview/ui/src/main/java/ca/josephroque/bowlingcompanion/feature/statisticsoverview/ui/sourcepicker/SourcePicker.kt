@@ -1,14 +1,8 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,13 +21,17 @@ fun SourcePicker(
 	) {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_filter_bowler),
-			selectedName = state.source?.bowler?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.all),
+			selectedName = state.source?.bowler?.name ?: stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.all,
+			),
 			onClick = { onAction(SourcePickerUiAction.BowlerClicked) },
 		)
 
 		PickableResourceCard(
 			resourceName = stringResource(R.string.statistics_filter_league),
-			selectedName = state.source?.league?.name ?: stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.all),
+			selectedName = state.source?.league?.name ?: stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.all,
+			),
 			onClick = { onAction(SourcePickerUiAction.LeagueClicked) },
 			enabled = state.source?.bowler != null,
 		)
@@ -52,7 +50,10 @@ fun SourcePicker(
 			selectedName = if (gameOrdinal == null) {
 				stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.all)
 			} else {
-				stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal, gameOrdinal)
+				stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
+					gameOrdinal,
+				)
 			},
 			onClick = { onAction(SourcePickerUiAction.GameClicked) },
 			enabled = state.source?.series != null,

@@ -15,8 +15,8 @@ data class SeriesDetailsUiState(
 )
 
 sealed interface SeriesDetailsUiAction {
-	data object BackClicked: SeriesDetailsUiAction
-	data object AddGameClicked: SeriesDetailsUiAction
+	data object BackClicked : SeriesDetailsUiAction
+	data object AddGameClicked : SeriesDetailsUiAction
 
-	data class GamesList(val action: GamesListUiAction): SeriesDetailsUiAction
+	data class GamesList(val action: GamesListUiAction) : SeriesDetailsUiAction
 }

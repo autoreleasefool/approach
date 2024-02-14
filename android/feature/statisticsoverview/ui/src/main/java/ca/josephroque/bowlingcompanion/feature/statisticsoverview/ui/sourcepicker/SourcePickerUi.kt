@@ -7,11 +7,11 @@ data class SourcePickerUiState(
 )
 
 sealed interface SourcePickerUiAction {
-	data object ApplyFilterClicked: SourcePickerUiAction
+	data object ApplyFilterClicked : SourcePickerUiAction
 
-	data object Dismissed: SourcePickerUiAction
-	data object BowlerClicked: SourcePickerUiAction
-	data object LeagueClicked: SourcePickerUiAction
-	data object SeriesClicked: SourcePickerUiAction
-	data object GameClicked: SourcePickerUiAction
+	data object Dismissed : SourcePickerUiAction
+	data object BowlerClicked : SourcePickerUiAction
+	data object LeagueClicked : SourcePickerUiAction
+	data object SeriesClicked : SourcePickerUiAction
+	data object GameClicked : SourcePickerUiAction
 }

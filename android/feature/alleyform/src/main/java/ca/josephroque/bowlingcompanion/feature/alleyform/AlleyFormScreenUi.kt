@@ -4,15 +4,15 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyUpdate
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiState
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.UUID
 
 sealed interface AlleyFormScreenUiState {
 	fun hasAnyChanges(): Boolean
 	fun isSavable(): Boolean
 
-	data object Loading: AlleyFormScreenUiState {
+	data object Loading : AlleyFormScreenUiState {
 		override fun hasAnyChanges(): Boolean = false
 		override fun isSavable(): Boolean = false
 	}
@@ -20,24 +20,21 @@ sealed interface AlleyFormScreenUiState {
 	data class Create(
 		val form: AlleyFormUiState,
 		val topBar: AlleyFormTopBarUiState,
-	): AlleyFormScreenUiState {
-		override fun isSavable(): Boolean =
-			form.name.isNotBlank()
+	) : AlleyFormScreenUiState {
+		override fun isSavable(): Boolean = form.name.isNotBlank()
 
-		override fun hasAnyChanges(): Boolean =
-			form != AlleyFormUiState()
+		override fun hasAnyChanges(): Boolean = form != AlleyFormUiState()
 	}
 
 	data class Edit(
 		val initialValue: AlleyUpdate,
 		val form: AlleyFormUiState,
 		val topBar: AlleyFormTopBarUiState,
-	): AlleyFormScreenUiState {
+	) : AlleyFormScreenUiState {
 		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(existing = initialValue) != initialValue
 
-		override fun hasAnyChanges(): Boolean =
-			form.updatedModel(existing = initialValue) != initialValue
+		override fun hasAnyChanges(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 	}
 }
 
@@ -52,16 +49,16 @@ fun AlleyFormUiState.updatedModel(existing: AlleyUpdate): AlleyUpdate = AlleyUpd
 )
 
 sealed interface AlleyFormScreenUiAction {
-	data object LoadAlley: AlleyFormScreenUiAction
+	data object LoadAlley : AlleyFormScreenUiAction
 
-	data class LanesUpdated(val lanes: List<UUID>): AlleyFormScreenUiAction
-	data class AlleyForm(val action: AlleyFormUiAction): AlleyFormScreenUiAction
+	data class LanesUpdated(val lanes: List<UUID>) : AlleyFormScreenUiAction
+	data class AlleyForm(val action: AlleyFormUiAction) : AlleyFormScreenUiAction
 }
 
 sealed interface AlleyFormScreenEvent {
-	data object Dismissed: AlleyFormScreenEvent
+	data object Dismissed : AlleyFormScreenEvent
 
-	data class ManageLanes(val existingLanes: List<UUID>): AlleyFormScreenEvent
+	data class ManageLanes(val existingLanes: List<UUID>) : AlleyFormScreenEvent
 }
 
 fun MutableStateFlow<AlleyFormScreenUiState>.updateForm(

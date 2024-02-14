@@ -21,12 +21,14 @@ data class BowlerDetailsTopBarUiState(
 )
 
 sealed interface BowlerDetailsUiAction {
-	data object BackClicked: BowlerDetailsUiAction
-	data object AddLeagueClicked: BowlerDetailsUiAction
-	data object EditStatisticsWidgetClicked: BowlerDetailsUiAction
-	data object ManageGearClicked: BowlerDetailsUiAction
+	data object BackClicked : BowlerDetailsUiAction
+	data object AddLeagueClicked : BowlerDetailsUiAction
+	data object EditStatisticsWidgetClicked : BowlerDetailsUiAction
+	data object ManageGearClicked : BowlerDetailsUiAction
 
-	data class LeaguesListAction(val action: LeaguesListUiAction): BowlerDetailsUiAction
-	data class StatisticsWidgetLayout(val action: StatisticsWidgetLayoutUiAction): BowlerDetailsUiAction
-	data class GearClicked(val id: UUID): BowlerDetailsUiAction
+	data class LeaguesListAction(val action: LeaguesListUiAction) : BowlerDetailsUiAction
+	data class StatisticsWidgetLayout(
+		val action: StatisticsWidgetLayoutUiAction,
+	) : BowlerDetailsUiAction
+	data class GearClicked(val id: UUID) : BowlerDetailsUiAction
 }

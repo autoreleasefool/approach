@@ -6,7 +6,7 @@ interface SortableByUUID {
 	val id: UUID
 }
 
-fun <T: SortableByUUID> List<T>.sortByUUIDs(ids: List<String>): List<T> {
+fun <T : SortableByUUID> List<T>.sortByUUIDs(ids: List<String>): List<T> {
 	if (ids.isEmpty()) {
 		return this
 	}

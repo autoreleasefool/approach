@@ -17,8 +17,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysList
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun AlleysListRoute(

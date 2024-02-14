@@ -19,7 +19,9 @@ fun StatisticsDetailsTopBar(
 	TopAppBar(
 		title = {
 			Text(
-				text = stringResource(state?.chartContent?.chart?.titleResourceId ?: R.string.statistics_details_title),
+				text = stringResource(
+					state?.chartContent?.chart?.titleResourceId ?: R.string.statistics_details_title,
+				),
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},

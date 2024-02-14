@@ -4,7 +4,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.TrackableEvent
 
 data class AppTabSwitched(
 	val tabName: String,
-): TrackableEvent {
+) : TrackableEvent {
 	override val name = "App.TabSwitched"
 	override val payload = mapOf(
 		"Tab" to tabName,

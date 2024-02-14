@@ -11,13 +11,13 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.displayAt
 import ca.josephroque.bowlingcompanion.core.model.pinCount
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class FivePinScoreKeeper @Inject constructor(
 	@Dispatcher(Default) private val defaultDispatcher: CoroutineDispatcher,
-): ScoreKeeper {
+) : ScoreKeeper {
 	override suspend fun calculateScore(input: ScoreKeeperInput): List<ScoringFrame> =
 		withContext(defaultDispatcher) {
 			calculateScoreInternal(input)
@@ -36,8 +36,10 @@ class FivePinScoreKeeper @Inject constructor(
 		for ((frameIndex, frameRolls) in state.input.rolls.withIndex()) {
 			if (Frame.isLastFrame(frameIndex)) continue
 
-			val nextFrameRolls = getRollsForFrame(state.input.rolls, frameIndex = frameIndex + 1, atListIndex = frameIndex + 1)
-			val nextNextFrameRolls = getRollsForFrame(state.input.rolls, frameIndex = frameIndex + 2, atListIndex = frameIndex + 2)
+			val nextFrameRolls =
+				getRollsForFrame(state.input.rolls, frameIndex = frameIndex + 1, atListIndex = frameIndex + 1)
+			val nextNextFrameRolls =
+				getRollsForFrame(state.input.rolls, frameIndex = frameIndex + 2, atListIndex = frameIndex + 2)
 			steps.add(
 				scoreFrame(
 					frameIndex = frameIndex,
@@ -45,13 +47,15 @@ class FivePinScoreKeeper @Inject constructor(
 					nextFrameRolls = nextFrameRolls,
 					nextNextFrameRolls = nextNextFrameRolls,
 					state = state,
-				)
+				),
 			)
 		}
 
 		// Calculate the final frame separately
 		scoreLastFrame(
-			lastFrameRolls = state.input.rolls.lastOrNull { Frame.isLastFrame(it.firstOrNull()?.frameIndex ?: 0) } ?: emptyList(),
+			lastFrameRolls = state.input.rolls.lastOrNull {
+				Frame.isLastFrame(it.firstOrNull()?.frameIndex ?: 0)
+			} ?: emptyList(),
 			state = state,
 		)?.let {
 			steps.add(it)
@@ -90,13 +94,13 @@ class FivePinScoreKeeper @Inject constructor(
 						display = pinsDown.displayAt(rollIndex),
 						didFoul = roll.didFoul,
 						isSecondaryValue = false,
-					)
+					),
 				)
 
 				state.accruingScore += pinsDown.pinCount()
 
 				val (nextRoll, nextNextRoll) = getSubsequentRolls(nextFrameRolls, nextNextFrameRolls)
-				val nextRolls = listOf(nextRoll, nextNextRoll).take(Frame.NumberOfRolls - rollIndex - 1)
+				val nextRolls = listOf(nextRoll, nextNextRoll).take(Frame.NUMBER_OF_ROLLS - rollIndex - 1)
 				for (countedRoll in nextRolls) {
 					countedRoll?.let {
 						state.accruingScore += it.pinsDowned.pinCount()
@@ -106,7 +110,7 @@ class FivePinScoreKeeper @Inject constructor(
 								display = it.pinsDowned.displayAt(-1),
 								didFoul = false,
 								isSecondaryValue = true,
-							)
+							),
 						)
 					}
 				}
@@ -118,7 +122,7 @@ class FivePinScoreKeeper @Inject constructor(
 						display = roll.pinsDowned.displayAt(rollIndex),
 						didFoul = roll.didFoul,
 						isSecondaryValue = false,
-					)
+					),
 				)
 
 				// For the last frame of a roll, add the total value of pins downed this frame to the score
@@ -158,7 +162,12 @@ class FivePinScoreKeeper @Inject constructor(
 			pinsDown += roll.pinsDowned
 
 			// When all the pins have been cleared
-			if (pinsDown.size == 5 && !(!pinsDownedOnce && ballsRolledInFinalFrame == 3 && Roll.isLastRoll(roll.rollIndex))) {
+			if (pinsDown.size == 5 && !(
+					!pinsDownedOnce && ballsRolledInFinalFrame == 3 && Roll.isLastRoll(
+						roll.rollIndex,
+					)
+					)
+			) {
 				// Append a roll with the full deck cleared
 				pinsDownedOnce = true
 				rollSteps.add(
@@ -167,7 +176,7 @@ class FivePinScoreKeeper @Inject constructor(
 						display = pinsDown.displayAt(roll.rollIndex - initialRollIndex),
 						didFoul = roll.didFoul,
 						isSecondaryValue = false,
-					)
+					),
 				)
 
 				stepScore += pinsDown.pinCount()
@@ -183,7 +192,7 @@ class FivePinScoreKeeper @Inject constructor(
 						display = roll.pinsDowned.displayAt(rollIndex = roll.rollIndex - initialRollIndex),
 						didFoul = roll.didFoul,
 						isSecondaryValue = false,
-					)
+					),
 				)
 
 				if (Roll.isLastRoll(roll.rollIndex)) {
@@ -197,20 +206,19 @@ class FivePinScoreKeeper @Inject constructor(
 		return ScoringFrame(
 			index = Game.FrameIndices.last,
 			rolls = rollSteps,
-			score = state.displayScoreForFrame(Game.FrameIndices.last)
+			score = state.displayScoreForFrame(Game.FrameIndices.last),
 		)
 	}
 
-	private fun emptyGame(): List<ScoringFrame> =
-		Game.FrameIndices.map { frameIndex ->
-			ScoringFrame(
-				index = frameIndex,
-				rolls = Frame.RollIndices.map { rollIndex ->
-					ScoringRoll(index = rollIndex, display = null, didFoul = false, isSecondaryValue = false)
-				},
-				score = null,
-			)
-		}
+	private fun emptyGame(): List<ScoringFrame> = Game.FrameIndices.map { frameIndex ->
+		ScoringFrame(
+			index = frameIndex,
+			rolls = Frame.RollIndices.map { rollIndex ->
+				ScoringRoll(index = rollIndex, display = null, didFoul = false, isSecondaryValue = false)
+			},
+			score = null,
+		)
+	}
 
 	private fun generateStateFromInput(input: ScoreKeeperInput): ScoreKeeperState {
 		val lastValidFrameIndex = input.rolls.indexOfLast { it.isNotEmpty() }
@@ -223,14 +231,16 @@ class FivePinScoreKeeper @Inject constructor(
 			if (frameRolls.isEmpty()) {
 				if (frameIndex < lastValidFrameIndex) {
 					// Insert empty rolls for missing frames
-					cleanRolls.add(Frame.RollIndices.map {
-						ScoreKeeperInput.Roll(
-							frameIndex = frameIndex,
-							rollIndex = it,
-							pinsDowned = setOf(),
-							didFoul = false,
-						)
-					})
+					cleanRolls.add(
+						Frame.RollIndices.map {
+							ScoreKeeperInput.Roll(
+								frameIndex = frameIndex,
+								rollIndex = it,
+								pinsDowned = setOf(),
+								didFoul = false,
+							)
+						},
+					)
 				}
 				continue
 			}
@@ -240,7 +250,14 @@ class FivePinScoreKeeper @Inject constructor(
 			for (rollIndex in frameRolls.indices) {
 				val roll = frameRolls[rollIndex]
 				pinsDowned += roll.pinsDowned
-				cleanFrameRolls.add(ScoreKeeperInput.Roll(frameIndex, rollIndex, pinsDowned = roll.pinsDowned, didFoul = roll.didFoul))
+				cleanFrameRolls.add(
+					ScoreKeeperInput.Roll(
+						frameIndex,
+						rollIndex,
+						pinsDowned = roll.pinsDowned,
+						didFoul = roll.didFoul,
+					),
+				)
 
 				// Ignore any other rolls once all 5 pins are down
 				if (pinsDowned.size == 5 && !Frame.isLastFrame(frameIndex)) {
@@ -248,17 +265,27 @@ class FivePinScoreKeeper @Inject constructor(
 				}
 			}
 
-			if (frameIndex < lastValidFrameIndex && frameRolls.size < Frame.NumberOfRolls && !pinsDowned.arePinsCleared()) {
+			if (
+				frameIndex < lastValidFrameIndex &&
+				frameRolls.size < Frame.NUMBER_OF_ROLLS &&
+				!pinsDowned.arePinsCleared()
+			) {
 				// Insert empty rolls for any unrecorded
-				cleanFrameRolls.addAll(Frame.rollIndicesAfter(frameRolls.lastIndex).map {
-					ScoreKeeperInput.Roll(frameIndex, rollIndex = it, pinsDowned = setOf(), didFoul = false)
-				})
+				cleanFrameRolls.addAll(
+					Frame.rollIndicesAfter(frameRolls.lastIndex).map {
+						ScoreKeeperInput.Roll(frameIndex, rollIndex = it, pinsDowned = setOf(), didFoul = false)
+					},
+				)
 			}
 
 			cleanRolls.add(cleanFrameRolls)
 		}
 
-		return ScoreKeeperState(input = ScoreKeeperInput(cleanRolls), lastValidFrameIndex = lastValidFrameIndex, accruingScore = 0)
+		return ScoreKeeperState(
+			input = ScoreKeeperInput(cleanRolls),
+			lastValidFrameIndex = lastValidFrameIndex,
+			accruingScore = 0,
+		)
 	}
 
 	private fun getRollsForFrame(
@@ -291,22 +318,26 @@ class FivePinScoreKeeper @Inject constructor(
 	}
 
 	private fun padRolls(rolls: MutableList<ScoringRoll>, display: String?) {
-		rolls.addAll(Frame.rollIndicesAfter(rolls.lastIndex).map {
-			ScoringRoll(index = it, display = display, didFoul = false, isSecondaryValue = false)
-		})
+		rolls.addAll(
+			Frame.rollIndicesAfter(rolls.lastIndex).map {
+				ScoringRoll(index = it, display = display, didFoul = false, isSecondaryValue = false)
+			},
+		)
 	}
 
 	private fun padFrames(frames: MutableList<ScoringFrame>) {
-		frames.addAll(Game.frameIndicesAfter(frames.lastIndex).map {
-			val rolls = mutableListOf<ScoringRoll>()
-			padRolls(rolls, display = null)
-			ScoringFrame(index = it, rolls = rolls, score = null)
-		})
+		frames.addAll(
+			Game.frameIndicesAfter(frames.lastIndex).map {
+				val rolls = mutableListOf<ScoringRoll>()
+				padRolls(rolls, display = null)
+				ScoringFrame(index = it, rolls = rolls, score = null)
+			},
+		)
 	}
 }
 
 internal fun ScoreKeeperState.applyPenalty(applied: Boolean) {
-	accruingScore -= (if (applied) Game.FoulPenalty else 0)
+	accruingScore -= (if (applied) Game.FOUL_PENALTY else 0)
 }
 
 internal fun ScoreKeeperState.displayScoreForFrame(frameIndex: Int): Int? =

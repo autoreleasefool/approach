@@ -18,33 +18,32 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueUpdate
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstLeaguesRepository @Inject constructor(
 	private val leagueDao: LeagueDao,
 	private val transactionRunner: TransactionRunner,
 	private val seriesRepository: SeriesRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): LeaguesRepository {
-	override fun getLeagueBowler(id: UUID): Flow<BowlerSummary> =
-		leagueDao.getLeagueBowler(id)
+) : LeaguesRepository {
+	override fun getLeagueBowler(id: UUID): Flow<BowlerSummary> = leagueDao.getLeagueBowler(id)
 
-	override fun getLeagueSummary(id: UUID): Flow<LeagueSummary> =
-		leagueDao.getLeagueSummary(id)
+	override fun getLeagueSummary(id: UUID): Flow<LeagueSummary> = leagueDao.getLeagueSummary(id)
 
-	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> =
-		leagueDao.getLeagueDetails(id)
+	override fun getLeagueDetails(id: UUID): Flow<LeagueDetails> = leagueDao.getLeagueDetails(id)
 
-	override fun getLeaguesList(bowlerId: UUID, recurrence: LeagueRecurrence?): Flow<List<LeagueListItem>> =
+	override fun getLeaguesList(
+		bowlerId: UUID,
+		recurrence: LeagueRecurrence?,
+	): Flow<List<LeagueListItem>> =
 		leagueDao.getLeagueAverages(bowlerId = bowlerId, recurrence = recurrence)
 
-	override fun getArchivedLeagues(): Flow<List<ArchivedLeague>> =
-		leagueDao.getArchivedLeagues()
+	override fun getArchivedLeagues(): Flow<List<ArchivedLeague>> = leagueDao.getArchivedLeagues()
 
 	override suspend fun insertLeague(league: LeagueCreate) = withContext(ioDispatcher) {
 		transactionRunner {
@@ -55,12 +54,12 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 					SeriesCreate(
 						leagueId = league.id,
 						id = UUID.randomUUID(),
-						numberOfGames = league.numberOfGames ?: Series.DefaultNumberOfGames,
+						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						date = Clock.System.now().toLocalDate(),
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 						alleyId = null,
-					)
+					),
 				)
 			}
 		}

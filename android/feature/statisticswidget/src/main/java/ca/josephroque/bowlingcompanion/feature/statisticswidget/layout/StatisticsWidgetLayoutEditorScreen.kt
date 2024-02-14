@@ -72,9 +72,11 @@ private fun StatisticsWidgetLayoutEditorScreen(
 				onAction = { onAction(StatisticsWidgetLayoutEditorScreenUiAction.LayoutEditor(it)) },
 				scrollBehavior = scrollBehavior,
 				state = when (state) {
-					StatisticsWidgetLayoutEditorScreenUiState.Loading -> StatisticsWidgetLayoutEditorTopBarUiState()
-					is StatisticsWidgetLayoutEditorScreenUiState.Loaded -> state.topBar
-				}
+					StatisticsWidgetLayoutEditorScreenUiState.Loading ->
+						StatisticsWidgetLayoutEditorTopBarUiState()
+					is StatisticsWidgetLayoutEditorScreenUiState.Loaded ->
+						state.topBar
+				},
 			)
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),

@@ -9,13 +9,11 @@ import androidx.compose.ui.res.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsOverviewTopBar(
-	scrollBehavior: TopAppBarScrollBehavior,
-) {
+fun StatisticsOverviewTopBar(scrollBehavior: TopAppBarScrollBehavior) {
 	TopAppBar(
 		scrollBehavior = scrollBehavior,
 		title = {
 			Text(text = stringResource(R.string.statistics_overview_title))
-		}
+		},
 	)
 }

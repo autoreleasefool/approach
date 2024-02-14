@@ -6,25 +6,23 @@ import ca.josephroque.bowlingcompanion.core.database.dao.LaneDao
 import ca.josephroque.bowlingcompanion.core.database.dao.TransactionRunner
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstLanesRepository @Inject constructor(
 	private val laneDao: LaneDao,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): LanesRepository {
+) : LanesRepository {
 	override fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>> =
 		laneDao.getAlleyLanes(alleyId)
 
-	override fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>> =
-		laneDao.getLanes(ids)
+	override fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>> = laneDao.getLanes(ids)
 
-	override fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>> =
-		laneDao.getGameLanes(gameId)
+	override fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>> = laneDao.getGameLanes(gameId)
 
 	override suspend fun insertLanes(lanes: List<LaneListItem>) = withContext(ioDispatcher) {
 		laneDao.insertAll(lanes.map(LaneListItem::asEntity))

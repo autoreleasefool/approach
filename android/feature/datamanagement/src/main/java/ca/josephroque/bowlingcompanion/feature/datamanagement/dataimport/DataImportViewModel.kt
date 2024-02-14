@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.Data
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportUiAction
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,22 +23,23 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import javax.inject.Inject
 
 @HiltViewModel
 class DataImportViewModel @Inject constructor(
 	private val dataImportService: DataImportService,
 	systemInfoService: SystemInfoService,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<DataImportScreenEvent>() {
+) : ApproachViewModel<DataImportScreenEvent>() {
 
-	private val _dataImportState = MutableStateFlow(DataImportUiState(
-		versionCode = systemInfoService.versionCode,
-		versionName = systemInfoService.versionName,
-	))
+	private val dataImportState = MutableStateFlow(
+		DataImportUiState(
+			versionCode = systemInfoService.versionCode,
+			versionName = systemInfoService.versionName,
+		),
+	)
 
 	val uiState: StateFlow<DataImportScreenUiState> =
-		_dataImportState
+		dataImportState
 			.map { DataImportScreenUiState.Loaded(it) }
 			.stateIn(
 				scope = viewModelScope,
@@ -64,15 +66,15 @@ class DataImportViewModel @Inject constructor(
 	}
 
 	private fun restoreData() {
-		_dataImportState.update { it.copy(isShowingRestoreDialog = true) }
+		dataImportState.update { it.copy(isShowingRestoreDialog = true) }
 	}
 
 	private fun cancelRestore() {
-		_dataImportState.update { it.copy(isShowingRestoreDialog = false) }
+		dataImportState.update { it.copy(isShowingRestoreDialog = false) }
 	}
 
 	private fun confirmRestore() {
-		_dataImportState.update {
+		dataImportState.update {
 			it.copy(
 				isShowingRestoreDialog = false,
 				progress = DataImportProgress.Importing,
@@ -82,9 +84,9 @@ class DataImportViewModel @Inject constructor(
 		viewModelScope.launch {
 			try {
 				dataImportService.restoreData()
-				_dataImportState.update { it.copy(progress = DataImportProgress.RestoreComplete) }
+				dataImportState.update { it.copy(progress = DataImportProgress.RestoreComplete) }
 			} catch (e: Exception) {
-				_dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
+				dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
 			}
 		}
 
@@ -92,16 +94,16 @@ class DataImportViewModel @Inject constructor(
 	}
 
 	private fun importData() {
-		_dataImportState.update { it.copy(progress = DataImportProgress.PickingFile) }
+		dataImportState.update { it.copy(progress = DataImportProgress.PickingFile) }
 	}
 
 	private fun handleImportedUri(uri: Uri?) {
 		if (uri == null) {
-			_dataImportState.update { it.copy(progress = DataImportProgress.NotStarted) }
+			dataImportState.update { it.copy(progress = DataImportProgress.NotStarted) }
 			return
 		}
 
-		_dataImportState.update { it.copy(progress = DataImportProgress.Importing) }
+		dataImportState.update { it.copy(progress = DataImportProgress.Importing) }
 		viewModelScope.launch {
 			startImport(uri)
 		}
@@ -110,10 +112,10 @@ class DataImportViewModel @Inject constructor(
 	private suspend fun startImport(uri: Uri) {
 		try {
 			dataImportService.importData(source = uri)
-			_dataImportState.update { it.copy(progress = DataImportProgress.ImportComplete) }
+			dataImportState.update { it.copy(progress = DataImportProgress.ImportComplete) }
 			analyticsClient.trackEvent(ImportedData)
 		} catch (e: Exception) {
-			_dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
+			dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
 		}
 	}
 
@@ -122,8 +124,10 @@ class DataImportViewModel @Inject constructor(
 			dataImportService.getLatestBackup()
 				.firstOrNull()
 				?.let { backupFile ->
-					_dataImportState.update {
-						it.copy(lastImportDate = Instant.fromEpochMilliseconds(backupFile.lastModified()).toLocalDate())
+					dataImportState.update {
+						it.copy(
+							lastImportDate = Instant.fromEpochMilliseconds(backupFile.lastModified()).toLocalDate(),
+						)
 					}
 				}
 		}

@@ -19,7 +19,6 @@ import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiActio
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.leaguesList
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayout
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun BowlerDetails(
@@ -30,14 +29,18 @@ fun BowlerDetails(
 	state.leaguesList.leagueToArchive?.let {
 		ArchiveDialog(
 			itemName = it.name,
-			onArchive = { onAction(BowlerDetailsUiAction.LeaguesListAction(LeaguesListUiAction.ConfirmArchiveClicked)) },
-			onDismiss = { onAction(BowlerDetailsUiAction.LeaguesListAction(LeaguesListUiAction.DismissArchiveClicked)) },
+			onArchive = {
+				onAction(BowlerDetailsUiAction.LeaguesListAction(LeaguesListUiAction.ConfirmArchiveClicked))
+			},
+			onDismiss = {
+				onAction(BowlerDetailsUiAction.LeaguesListAction(LeaguesListUiAction.DismissArchiveClicked))
+			},
 		)
 	}
 
 	LazyColumn(
 		modifier = modifier
-			.fillMaxSize()
+			.fillMaxSize(),
 	) {
 		if (state.leaguesList.list.isNotEmpty()) {
 			state.widgets?.let { layout ->
@@ -81,9 +84,12 @@ private fun LazyListScope.bowlerLeaguesList(
 		item {
 			MutedEmptyState(
 				title = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_title,
-				message = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_message,
-				icon = ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.drawable.league_list_empty_state,
-				modifier = Modifier.padding(bottom = 16.dp),
+				message = @Suppress("ktlint:standard:max-line-length")
+				ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.string.league_list_empty_message,
+				icon = @Suppress("ktlint:standard:max-line-length")
+				ca.josephroque.bowlingcompanion.feature.leagueslist.ui.R.drawable.league_list_empty_state,
+				modifier =
+				Modifier.padding(bottom = 16.dp),
 			)
 		}
 	} else {
@@ -98,12 +104,12 @@ private fun LazyListScope.bowlerLeaguesList(
 
 private fun LazyListScope.bowlerGearList(
 	state: GearListUiState,
-	onAction: (BowlerDetailsUiAction) -> Unit
+	onAction: (BowlerDetailsUiAction) -> Unit,
 ) {
 	header(
 		titleResourceId = R.string.bowler_details_preferred_gear_title,
 		action = HeaderAction(
-			actionResourceId = RCoreDesign.string.action_manage,
+			actionResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage,
 			onClick = { onAction(BowlerDetailsUiAction.ManageGearClicked) },
 		),
 	)

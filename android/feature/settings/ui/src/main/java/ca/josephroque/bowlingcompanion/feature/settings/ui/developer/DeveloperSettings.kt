@@ -19,14 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.sendEmail
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.settings.ui.R
 import ca.josephroque.bowlingcompanion.feature.settings.ui.components.Link
 
 @Composable
-fun DeveloperSettings(
-	modifier: Modifier = Modifier,
-) {
+fun DeveloperSettings(modifier: Modifier = Modifier) {
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
@@ -63,10 +60,12 @@ private fun ContactCard() {
 
 		Link(
 			titleResourceId = R.string.developer_settings_contact_email,
-			iconResourceId = RCoreDesign.drawable.ic_send,
+			iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_send,
 			onClick = {
 				val recipient = context.resources.getString(R.string.developer_settings_contact_email)
-				val intentTitle = context.resources.getString(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email)
+				val intentTitle = context.resources.getString(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_send_email,
+				)
 				sendEmail(recipient = recipient, intentTitle = intentTitle, context = context)
 			},
 		)
@@ -74,9 +73,11 @@ private fun ContactCard() {
 		Link(
 			titleResourceId = R.string.developer_settings_contact_mastodon,
 			subtitleResourceId = R.string.developer_settings_contact_mastodon_url,
-			iconResourceId = RCoreDesign.drawable.ic_open_in_new,
+			iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_open_in_new,
 			onClick = {
-				val viewSourceUri = context.resources.getString(R.string.developer_settings_contact_mastodon_url)
+				val viewSourceUri = context.resources.getString(
+					R.string.developer_settings_contact_mastodon_url,
+				)
 				uriHandler.openUri(viewSourceUri)
 			},
 		)
@@ -102,7 +103,7 @@ private fun LearnMoreCard() {
 		Link(
 			titleResourceId = R.string.developer_settings_website,
 			subtitleResourceId = R.string.developer_settings_website_url,
-			iconResourceId = RCoreDesign.drawable.ic_open_in_new,
+			iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_open_in_new,
 			onClick = {
 				val viewSourceUri = context.resources.getString(R.string.developer_settings_website_url)
 				uriHandler.openUri(viewSourceUri)
@@ -112,7 +113,7 @@ private fun LearnMoreCard() {
 		Link(
 			titleResourceId = R.string.developer_settings_blog,
 			subtitleResourceId = R.string.developer_settings_blog_url,
-			iconResourceId = RCoreDesign.drawable.ic_open_in_new,
+			iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_open_in_new,
 			onClick = {
 				val viewSourceUri = context.resources.getString(R.string.developer_settings_blog_url)
 				uriHandler.openUri(viewSourceUri)

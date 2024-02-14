@@ -4,16 +4,16 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListU
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiState
 
 sealed interface ScoresListScreenUiState {
-	data object Loading: ScoresListScreenUiState
+	data object Loading : ScoresListScreenUiState
 	data class Loaded(
 		val scoresList: ScoresListUiState,
-	): ScoresListScreenUiState
+	) : ScoresListScreenUiState
 }
 
 sealed interface ScoresListScreenUiAction {
-	data class ScoresList(val action: ScoresListUiAction): ScoresListScreenUiAction
+	data class ScoresList(val action: ScoresListUiAction) : ScoresListScreenUiAction
 }
 
 sealed interface ScoresListScreenEvent {
-	data object Dismissed: ScoresListScreenEvent
+	data object Dismissed : ScoresListScreenEvent
 }

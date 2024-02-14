@@ -64,7 +64,7 @@ private fun ScoresListScreen(
 				scrollBehavior = scrollBehavior,
 			)
 		},
-		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {
 			ScoresListScreenUiState.Loading -> Unit

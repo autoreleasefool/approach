@@ -22,20 +22,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsWidgetPlaceholderCard(
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
+fun StatisticsWidgetPlaceholderCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
 	Card(
 		onClick = onClick,
 		colors = CardDefaults.cardColors(
-			containerColor = colorResource(RCoreDesign.color.purple_300),
-			contentColor = colorResource(RCoreDesign.color.white),
+			containerColor = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300,
+			),
+			contentColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.white),
 		),
 		modifier = modifier.fillMaxWidth(),
 	) {
@@ -50,7 +48,7 @@ fun StatisticsWidgetPlaceholderCard(
 				modifier = Modifier
 					.size(80.dp)
 					.align(Alignment.BottomEnd)
-					.alpha(0.3F)
+					.alpha(0.3F),
 			)
 			Column(
 				verticalArrangement = Arrangement.spacedBy(4.dp),

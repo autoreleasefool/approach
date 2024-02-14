@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.modifiers.endBorder
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.model.stub.LeagueSummaryStub
-import ca.josephroque.bowlingcompanion.core.model.stub.ScoringGameStub
+import ca.josephroque.bowlingcompanion.core.model.stub.ScoringStub
 
 @Composable
 fun ScoreSheetList(
@@ -59,7 +59,7 @@ fun ScoreSheetList(
 							.endBorder(4.dp, colorResource(scoreSheet.configuration.style.borderColor))
 							.width(cellWidth)
 							.fillMaxHeight()
-							.padding(horizontal = 16.dp, vertical = 8.dp)
+							.padding(horizontal = 16.dp, vertical = 8.dp),
 					) {
 						Spacer(modifier = Modifier.weight(1f))
 
@@ -113,14 +113,14 @@ private fun ScoreSheetListPreview() {
 						BowlerSummaryStub.list()[0],
 						LeagueSummaryStub.list()[0],
 						ScoreSheetUiState(
-							game = ScoringGameStub.stub(),
+							game = ScoringStub.stub(),
 						),
 					),
 					Triple(
 						BowlerSummaryStub.list()[1],
 						LeagueSummaryStub.list()[1],
 						ScoreSheetUiState(
-							game = ScoringGameStub.stub(),
+							game = ScoringStub.stub(),
 						),
 					),
 				),

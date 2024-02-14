@@ -19,9 +19,7 @@ fun NavController.navigateToNewBowlerForm(kind: BowlerKind, navOptions: NavOptio
 	this.navigate(Route.AddBowler.createRoute(kind.name), navOptions)
 }
 
-fun NavGraphBuilder.bowlerFormScreen(
-	onBackPressed: () -> Unit
-) {
+fun NavGraphBuilder.bowlerFormScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.EditBowler.route,
 		arguments = listOf(

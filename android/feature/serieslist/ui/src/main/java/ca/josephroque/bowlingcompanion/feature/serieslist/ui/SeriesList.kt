@@ -76,7 +76,9 @@ fun LazyListScope.seriesList(
 	) { index, series ->
 		val archiveAction = SwipeAction(
 			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
-			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+			background = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+			),
 			onSwipe = { onArchiveSeries(series) },
 		)
 

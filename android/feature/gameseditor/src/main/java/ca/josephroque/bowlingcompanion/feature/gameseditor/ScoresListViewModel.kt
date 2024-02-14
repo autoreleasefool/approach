@@ -13,6 +13,8 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,18 +23,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class ScoresListViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	private val scoresRepository: ScoresRepository,
 	private val gamesRepository: GamesRepository,
-): ApproachViewModel<ScoresListScreenEvent>() {
+) : ApproachViewModel<ScoresListScreenEvent>() {
 	private val series = Route.ScoresList.getSeries(savedStateHandle)
 	private val gameIndex = Route.ScoresList.getGameIndex(savedStateHandle) ?: 0
-	private val _gameIdOrder: MutableStateFlow<Map<UUID, Int>> = MutableStateFlow(emptyMap())
+	private val gameIdOrder: MutableStateFlow<Map<UUID, Int>> = MutableStateFlow(emptyMap())
 
 	private val _uiState = MutableStateFlow(ScoresListUiState(gameIndex = gameIndex))
 	val uiState: StateFlow<ScoresListScreenUiState> = _uiState
@@ -50,7 +50,7 @@ class ScoresListViewModel @Inject constructor(
 				val currentGameId = games[gameIndex].id
 				val currentGame = gamesRepository.getGameDetails(currentGameId).first()
 
-				_gameIdOrder.update {
+				gameIdOrder.update {
 					it.toMutableMap().apply {
 						put(currentGameId, seriesIndex)
 					}
@@ -62,21 +62,23 @@ class ScoresListViewModel @Inject constructor(
 					selection = ScoreSheetUiState.Selection(frameIndex = -1, rollIndex = -1),
 					configuration = ScoreSheetConfiguration(
 						scorePosition = setOf(ScorePosition.START, ScorePosition.END),
-					)
+					),
 				)
 
 				_uiState.update {
 					it.copy(
 						scoreSheetList = it.scoreSheetList.copy(
 							it.scoreSheetList.bowlerScores.toMutableList().apply {
-								add(Triple(
-									currentGame.bowler.toSummary(),
-									currentGame.league.toSummary(),
-									scoreSheetState,
-								))
+								add(
+									Triple(
+										currentGame.bowler.toSummary(),
+										currentGame.league.toSummary(),
+										scoreSheetState,
+									),
+								)
 
-								sortBy { bowlerScore -> _gameIdOrder.value[bowlerScore.third.game?.id] }
-							}
+								sortBy { bowlerScore -> gameIdOrder.value[bowlerScore.third.game?.id] }
+							},
 						),
 					)
 				}

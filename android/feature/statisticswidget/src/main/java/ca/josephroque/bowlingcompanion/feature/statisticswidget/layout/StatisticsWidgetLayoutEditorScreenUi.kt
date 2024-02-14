@@ -8,30 +8,34 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.updateAndGet
 
 sealed interface StatisticsWidgetLayoutEditorScreenUiState {
-	data object Loading: StatisticsWidgetLayoutEditorScreenUiState
+	data object Loading : StatisticsWidgetLayoutEditorScreenUiState
 
 	data class Loaded(
 		val layoutEditor: StatisticsWidgetLayoutEditorUiState,
 		val topBar: StatisticsWidgetLayoutEditorTopBarUiState,
-	): StatisticsWidgetLayoutEditorScreenUiState
+	) : StatisticsWidgetLayoutEditorScreenUiState
 }
 
 sealed interface StatisticsWidgetLayoutEditorScreenUiAction {
-	data object LoadWidgets: StatisticsWidgetLayoutEditorScreenUiAction
-	data class LayoutEditor(val action: StatisticsWidgetLayoutEditorUiAction): StatisticsWidgetLayoutEditorScreenUiAction
+	data object LoadWidgets : StatisticsWidgetLayoutEditorScreenUiAction
+	data class LayoutEditor(
+		val action: StatisticsWidgetLayoutEditorUiAction,
+	) : StatisticsWidgetLayoutEditorScreenUiAction
 }
 
 sealed interface StatisticsWidgetLayoutEditorScreenEvent {
-	data object Dismissed: StatisticsWidgetLayoutEditorScreenEvent
+	data object Dismissed : StatisticsWidgetLayoutEditorScreenEvent
 	data class AddWidget(
 		val context: String,
 		val initialSource: StatisticsWidgetInitialSource?,
 		val priority: Int,
-	): StatisticsWidgetLayoutEditorScreenEvent
+	) : StatisticsWidgetLayoutEditorScreenEvent
 }
 
 inline fun MutableStateFlow<StatisticsWidgetLayoutEditorScreenUiState>.updateWidgets(
-	function: (StatisticsWidgetLayoutEditorScreenUiState.Loaded) -> StatisticsWidgetLayoutEditorScreenUiState.Loaded,
+	function: (
+		StatisticsWidgetLayoutEditorScreenUiState.Loaded,
+	) -> StatisticsWidgetLayoutEditorScreenUiState.Loaded,
 ): StatisticsWidgetLayoutEditorScreenUiState.Loaded? {
 	return this.updateAndGet { state ->
 		when (state) {

@@ -1,18 +1,18 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.isTwelve
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
 data class TwelvesStatistic(
 	var twelves: Int = 0,
-): TrackablePerFirstRoll, CountingStatistic {
+) : TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.TWELVES
 	override val category = StatisticCategory.TWELVES
 	override val isEligibleForNewLabel = false
@@ -21,11 +21,13 @@ data class TwelvesStatistic(
 
 	override var count: Int
 		get() = twelves
-		set(value) { twelves = value }
+		set(value) {
+			twelves = value
+		}
 
 	override fun adjustByFirstRoll(
 		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
 		if (firstRoll.pinsDowned.isTwelve()) {
 			twelves++

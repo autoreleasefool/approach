@@ -12,10 +12,15 @@ interface LegacyIDMappingDao {
 	@Insert(onConflict = OnConflictStrategy.ABORT)
 	suspend fun insertAll(entities: List<LegacyIDMappingEntity>)
 
-	@Query("""
+	@Query(
+		"""
 		SELECT * FROM legacy_ids
 		WHERE mapping_key = :key
 		AND legacy_id IN (:legacyIds)
-	""")
-	suspend fun getLegacyIDMappings(legacyIds: List<Long>, key: LegacyIDMappingKey): List<LegacyIDMappingEntity>
+	""",
+	)
+	suspend fun getLegacyIDMappings(
+		legacyIds: List<Long>,
+		key: LegacyIDMappingKey,
+	): List<LegacyIDMappingEntity>
 }

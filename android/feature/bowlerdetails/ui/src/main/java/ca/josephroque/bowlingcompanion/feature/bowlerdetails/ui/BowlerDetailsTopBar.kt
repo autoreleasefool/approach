@@ -29,7 +29,7 @@ fun BowlerDetailsTopBar(
 				text = state.bowlerName,
 				maxLines = 1,
 				overflow = TextOverflow.Ellipsis,
-				style = MaterialTheme.typography.titleLarge
+				style = MaterialTheme.typography.titleLarge,
 			)
 		},
 		navigationIcon = {

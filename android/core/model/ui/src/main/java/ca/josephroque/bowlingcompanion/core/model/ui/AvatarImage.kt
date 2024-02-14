@@ -19,10 +19,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.Avatar
 
 @Composable
-fun AvatarImage(
-	avatar: Avatar,
-	modifier: Modifier = Modifier,
-) {
+fun AvatarImage(avatar: Avatar, modifier: Modifier = Modifier) {
 	val initials = remember(avatar.label) { avatar.label.initials() }
 	val textColor = remember(avatar.primaryColor, avatar.secondaryColor) {
 		avatar.primaryColor.toComposeColor().averagedWith(avatar.secondaryColor.toComposeColor())
@@ -33,7 +30,7 @@ fun AvatarImage(
 		listOf(
 			avatar.primaryColor.toComposeColor(),
 			avatar.secondaryColor.toComposeColor(),
-		)
+		),
 	)
 
 	val textMeasurer = rememberTextMeasurer()
@@ -62,12 +59,11 @@ fun AvatarImage(
 					(size.height - textSize.height) / 2f,
 				),
 			)
-		}
+		},
 	)
 }
 
-fun Avatar.RGB.toComposeColor(): Color =
-	Color(red, green, blue)
+fun Avatar.RGB.toComposeColor(): Color = Color(red, green, blue)
 
 fun Avatar.RGB.Companion.randomPastel(): Avatar.RGB = Avatar.RGB(
 	red = (127..255).random(),
@@ -75,23 +71,20 @@ fun Avatar.RGB.Companion.randomPastel(): Avatar.RGB = Avatar.RGB(
 	blue = (127..255).random(),
 )
 
-fun Color.averagedWith(other: Color): Color =
-	Color(
-		(red + other.red) / 2f,
-		(green + other.green) / 2f,
-		(blue + other.blue) / 2f,
-	)
+fun Color.averagedWith(other: Color): Color = Color(
+	(red + other.red) / 2f,
+	(green + other.green) / 2f,
+	(blue + other.blue) / 2f,
+)
 
 // For determining the best color to use for foreground text when this color is the background
 // Source: https://stackoverflow.com/a/3943023
 fun Color.intensity(): Int =
 	(red * 0.299f * 255f + green * 0.587f * 255f + blue * 0.114f * 255f).toInt()
 
-fun Color.preferredForegroundColor(): Color =
-	if (intensity() > 186) Color.Black else Color.White
+fun Color.preferredForegroundColor(): Color = if (intensity() > 186) Color.Black else Color.White
 
-fun String.words(): List<String> =
-	split("[^a-zA-Z\\d]".toRegex()).filter { it.isNotBlank() }
+fun String.words(): List<String> = split("[^a-zA-Z\\d]".toRegex()).filter { it.isNotBlank() }
 
 fun String.initials(): String {
 	val words = words()
@@ -110,7 +103,7 @@ private fun AvatarImagePreview() {
 	Surface {
 		AvatarImage(
 			avatar = Avatar.default(),
-			modifier = Modifier.size(80.dp)
+			modifier = Modifier.size(80.dp),
 		)
 	}
 }

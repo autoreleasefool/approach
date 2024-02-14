@@ -11,20 +11,20 @@ import ca.josephroque.bowlingcompanion.core.database.DATABASE_SHM_NAME
 import ca.josephroque.bowlingcompanion.core.database.DATABASE_WAL_NAME
 import ca.josephroque.bowlingcompanion.core.database.dao.CheckpointDao
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import java.io.File
-import javax.inject.Inject
 
 class ApproachDataExportService @Inject constructor(
 	private val fileManager: FileManager,
 	private val checkpointDao: CheckpointDao,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 	@ApplicationContext private val context: Context,
-): DataExportService {
+) : DataExportService {
 
 	private val databaseFiles = listOf(
 		fileManager.getDatabasePath(DATABASE_NAME),
@@ -34,7 +34,7 @@ class ApproachDataExportService @Inject constructor(
 
 	private val latestExportFile: MutableStateFlow<File?> = MutableStateFlow(
 		fileManager.exportsDir
-			.listFiles()?.maxOfOrNull { it }
+			.listFiles()?.maxOfOrNull { it },
 	)
 
 	override val exportDestination: String

@@ -6,29 +6,29 @@ import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnbo
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.newuser.NewUserOnboardingUiState
 
 sealed interface OnboardingScreenUiState {
-	data object Loading: OnboardingScreenUiState
+	data object Loading : OnboardingScreenUiState
 
 	data class LegacyUser(
 		val legacyUser: LegacyUserOnboardingUiState =
 			LegacyUserOnboardingUiState.AppNameChange(),
-	): OnboardingScreenUiState
+	) : OnboardingScreenUiState
 
 	data class NewUser(
 		val newUser: NewUserOnboardingUiState =
 			NewUserOnboardingUiState.ShowingWelcomeMessage,
-	): OnboardingScreenUiState
+	) : OnboardingScreenUiState
 }
 
 sealed interface OnboardingScreenUiAction {
 	data class LegacyUserOnboardingAction(
 		val action: LegacyUserOnboardingUiAction,
-	): OnboardingScreenUiAction
+	) : OnboardingScreenUiAction
 
 	data class NewUserOnboardingAction(
 		val action: NewUserOnboardingUiAction,
-	): OnboardingScreenUiAction
+	) : OnboardingScreenUiAction
 }
 
 sealed interface OnboardingScreenEvent {
-	data object FinishedOnboarding: OnboardingScreenEvent
+	data object FinishedOnboarding : OnboardingScreenEvent
 }

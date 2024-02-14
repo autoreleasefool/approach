@@ -60,29 +60,33 @@ private fun StatisticCategoryHeader(title: Int) {
 }
 
 @Composable
-private fun StatisticRow(
-	title: Int,
-	isSelected: Boolean,
-	onClick: () -> Unit,
-) {
+private fun StatisticRow(title: Int, isSelected: Boolean, onClick: () -> Unit) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = Modifier
 			.fillMaxWidth()
 			.clickable(onClick = onClick)
-			.padding(16.dp)
+			.padding(16.dp),
 	) {
 		if (isSelected) {
 			Icon(
-				painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box),
-				contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_selected),
-				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_500)
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box,
+				),
+				contentDescription = stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_selected,
+				),
+				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_500),
 			)
 		} else {
 			Icon(
-				painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box_outline),
-				contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_deselected),
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box_outline,
+				),
+				contentDescription = stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_deselected,
+				),
 				tint = MaterialTheme.colorScheme.onSurface,
 			)
 		}

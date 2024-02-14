@@ -31,7 +31,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
-import ca.josephroque.bowlingcompanion.core.model.stub.GameListItemStub
+import ca.josephroque.bowlingcompanion.core.model.stub.GameStub
 import ca.josephroque.bowlingcompanion.core.model.ui.GameRow
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import org.burnoutcrew.reorderable.ReorderableItem
@@ -81,7 +81,7 @@ fun GamesSettings(
 			item {
 				Row(
 					modifier = Modifier
-						.padding(top = 8.dp, bottom = 8.dp, end = 16.dp)
+						.padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
 				) {
 					Spacer(modifier = Modifier.weight(1f))
 					Text(
@@ -160,13 +160,17 @@ private fun Game(
 	modifier: Modifier = Modifier,
 ) {
 	Surface(
-		color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+		color = if (isSelected) {
+			MaterialTheme.colorScheme.primaryContainer
+		} else {
+			MaterialTheme.colorScheme.surface
+		},
 		modifier = modifier
 			.selectable(
 				selected = isSelected,
 				onClick = { onAction(GamesSettingsUiAction.GameClicked(game)) },
 				role = Role.RadioButton,
-			)
+			),
 	) {
 		Row(
 			horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -195,7 +199,7 @@ private fun Game(
 private fun GamesSettingsPreview() {
 	Surface {
 		val bowlers = BowlerSummaryStub.list()
-		val games = GameListItemStub.list()
+		val games = GameStub.list()
 
 		GamesSettings(
 			state = GamesSettingsUiState(

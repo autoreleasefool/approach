@@ -16,12 +16,13 @@ data class StatisticsWidgetEditorUiState(
 )
 
 sealed interface StatisticsWidgetEditorUiAction {
-	data object BackClicked: StatisticsWidgetEditorUiAction
-	data object SaveClicked: StatisticsWidgetEditorUiAction
+	data object BackClicked : StatisticsWidgetEditorUiAction
+	data object SaveClicked : StatisticsWidgetEditorUiAction
 
-	data class TimelineSelected(val timeline: StatisticsWidgetTimeline): StatisticsWidgetEditorUiAction
+	data class TimelineSelected(val timeline: StatisticsWidgetTimeline) :
+		StatisticsWidgetEditorUiAction
 
-	data object StatisticClicked: StatisticsWidgetEditorUiAction
-	data object BowlerClicked: StatisticsWidgetEditorUiAction
-	data object LeagueClicked: StatisticsWidgetEditorUiAction
+	data object StatisticClicked : StatisticsWidgetEditorUiAction
+	data object BowlerClicked : StatisticsWidgetEditorUiAction
+	data object LeagueClicked : StatisticsWidgetEditorUiAction
 }

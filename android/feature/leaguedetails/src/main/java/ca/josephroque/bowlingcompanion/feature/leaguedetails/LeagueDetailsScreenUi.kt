@@ -5,22 +5,22 @@ import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsUiS
 import java.util.UUID
 
 sealed interface LeagueDetailsScreenUiState {
-	data object Loading: LeagueDetailsScreenUiState
+	data object Loading : LeagueDetailsScreenUiState
 
 	data class Loaded(
 		val leagueDetails: LeagueDetailsUiState,
-	): LeagueDetailsScreenUiState
+	) : LeagueDetailsScreenUiState
 }
 
 sealed interface LeagueDetailsScreenUiAction {
-	data class SeriesAdded(val seriesId: UUID): LeagueDetailsScreenUiAction
-	data class LeagueDetails(val action: LeagueDetailsUiAction): LeagueDetailsScreenUiAction
+	data class SeriesAdded(val seriesId: UUID) : LeagueDetailsScreenUiAction
+	data class LeagueDetails(val action: LeagueDetailsUiAction) : LeagueDetailsScreenUiAction
 }
 
 sealed interface LeagueDetailsScreenEvent {
-	data object Dismissed: LeagueDetailsScreenEvent
+	data object Dismissed : LeagueDetailsScreenEvent
 
-	data class AddSeries(val leagueId: UUID): LeagueDetailsScreenEvent
-	data class EditSeries(val seriesId: UUID): LeagueDetailsScreenEvent
-	data class ShowSeriesDetails(val seriesId: UUID): LeagueDetailsScreenEvent
+	data class AddSeries(val leagueId: UUID) : LeagueDetailsScreenEvent
+	data class EditSeries(val seriesId: UUID) : LeagueDetailsScreenEvent
+	data class ShowSeriesDetails(val seriesId: UUID) : LeagueDetailsScreenEvent
 }

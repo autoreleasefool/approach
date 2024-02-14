@@ -9,13 +9,13 @@ import ca.josephroque.bowlingcompanion.core.data.queries.utils.buildWhereClause
 import ca.josephroque.bowlingcompanion.core.data.queries.utils.whereClauseArgs
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableFrameEntity
-import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 
 data class TrackableFramesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
-): TrackableSequence<TrackableFrameEntity, TrackableFrame>() {
+) : TrackableSequence<TrackableFrameEntity, TrackableFrame>() {
 	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
 	private val gamesQuery = TrackableGameQueryComponents(filter = filter.games)
@@ -23,7 +23,7 @@ data class TrackableFramesSequence(
 
 	override fun getPagingSource(
 		query: String,
-		whereArgs: List<Any>
+		whereArgs: List<Any>,
 	): PagingSource<Int, TrackableFrameEntity> = statisticsDao.getTrackableFrames(query, whereArgs)
 
 	override fun mapEntityToModel(entity: TrackableFrameEntity) = entity.asModel()

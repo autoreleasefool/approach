@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.feature.archives.ui
 
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 sealed interface ArchiveListItem {
 	val id: UUID
@@ -16,7 +16,7 @@ sealed interface ArchiveListItem {
 		val numberOfSeries: Int,
 		val numberOfGames: Int,
 		override val archivedOn: Instant,
-	): ArchiveListItem
+	) : ArchiveListItem
 
 	data class League(
 		override val id: UUID,
@@ -25,7 +25,7 @@ sealed interface ArchiveListItem {
 		val numberOfSeries: Int,
 		val numberOfGames: Int,
 		override val archivedOn: Instant,
-	): ArchiveListItem
+	) : ArchiveListItem
 
 	data class Series(
 		override val id: UUID,
@@ -34,7 +34,7 @@ sealed interface ArchiveListItem {
 		val leagueName: String,
 		val numberOfGames: Int,
 		override val archivedOn: Instant,
-	): ArchiveListItem
+	) : ArchiveListItem
 
 	data class Game(
 		override val id: UUID,
@@ -44,7 +44,7 @@ sealed interface ArchiveListItem {
 		val leagueName: String,
 		val seriesDate: LocalDate,
 		override val archivedOn: Instant,
-	): ArchiveListItem
+	) : ArchiveListItem
 }
 
 data class ArchivesListUiState(
@@ -53,8 +53,8 @@ data class ArchivesListUiState(
 )
 
 sealed interface ArchivesListUiAction {
-	data object BackClicked: ArchivesListUiAction
+	data object BackClicked : ArchivesListUiAction
 
-	data class UnarchiveClicked(val item: ArchiveListItem): ArchivesListUiAction
-	data object ConfirmUnarchiveClicked: ArchivesListUiAction
+	data class UnarchiveClicked(val item: ArchiveListItem) : ArchivesListUiAction
+	data object ConfirmUnarchiveClicked : ArchivesListUiAction
 }

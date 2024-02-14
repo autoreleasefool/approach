@@ -8,20 +8,20 @@ import ca.josephroque.bowlingcompanion.core.data.queries.utils.buildWhereClause
 import ca.josephroque.bowlingcompanion.core.data.queries.utils.whereClauseArgs
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
 import ca.josephroque.bowlingcompanion.core.database.model.TrackableGameEntity
-import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 
 data class TrackableGamesSequence(
 	val filter: TrackableFilter,
 	val statisticsDao: StatisticsDao,
-): TrackableSequence<TrackableGameEntity, TrackableGame>() {
+) : TrackableSequence<TrackableGameEntity, TrackableGame>() {
 	private val leaguesQuery = TrackableLeagueQueryComponents(filter = filter.leagues)
 	private val seriesQuery = TrackableSeriesQueryComponents(filter = filter.series)
 	private val gamesQuery = TrackableGameQueryComponents(filter = filter.games)
 
 	override fun getPagingSource(
 		query: String,
-		whereArgs: List<Any>
+		whereArgs: List<Any>,
 	): PagingSource<Int, TrackableGameEntity> = statisticsDao.getTrackableGames(query, whereArgs)
 
 	override fun mapEntityToModel(entity: TrackableGameEntity) = entity.asModel()
@@ -62,8 +62,7 @@ data class TrackableGamesSequence(
 		putAll(filter.source.whereClauseArgs())
 	}
 
-	override fun buildGroupByStatement() =
-		"GROUP BY ${gamesQuery.tableAlias}.id"
+	override fun buildGroupByStatement() = "GROUP BY ${gamesQuery.tableAlias}.id"
 
 	override fun buildOrderByStatement() = listOf(
 		leaguesQuery.buildOrderClause(),

@@ -7,3 +7,6 @@ data class ApproachAppUiState(
 	val destinations: List<TopLevelDestination>,
 	val badgeCount: Map<TopLevelDestination, Int>,
 )
+
+@Suppress("unused")
+sealed interface ApproachAppUiAction

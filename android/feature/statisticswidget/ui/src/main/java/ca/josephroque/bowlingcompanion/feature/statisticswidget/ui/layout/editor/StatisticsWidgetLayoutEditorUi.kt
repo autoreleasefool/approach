@@ -12,10 +12,10 @@ data class StatisticsWidgetLayoutEditorTopBarUiState(
 )
 
 sealed interface StatisticsWidgetLayoutEditorUiAction {
-	data object BackClicked: StatisticsWidgetLayoutEditorUiAction
-	data object AddWidgetClicked: StatisticsWidgetLayoutEditorUiAction
+	data object BackClicked : StatisticsWidgetLayoutEditorUiAction
+	data object AddWidgetClicked : StatisticsWidgetLayoutEditorUiAction
 
-	data class WidgetClicked(val widget: StatisticsWidget): StatisticsWidgetLayoutEditorUiAction
-	data class WidgetMoved(val from: Int, val to: Int): StatisticsWidgetLayoutEditorUiAction
-	data class ToggleDeleteMode(val deleteMode: Boolean): StatisticsWidgetLayoutEditorUiAction
+	data class WidgetClicked(val widget: StatisticsWidget) : StatisticsWidgetLayoutEditorUiAction
+	data class WidgetMoved(val from: Int, val to: Int) : StatisticsWidgetLayoutEditorUiAction
+	data class ToggleDeleteMode(val deleteMode: Boolean) : StatisticsWidgetLayoutEditorUiAction
 }

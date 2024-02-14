@@ -23,7 +23,7 @@ fun SourcePickerTopBar(
 			Text(text = stringResource(R.string.statistics_filter))
 		},
 		navigationIcon = {
-		  CloseButton(onClick = { onAction(SourcePickerUiAction.Dismissed) })
+			CloseButton(onClick = { onAction(SourcePickerUiAction.Dismissed) })
 		},
 		actions = {
 			TextButton(onClick = { onAction(SourcePickerUiAction.ApplyFilterClicked) }) {
@@ -32,6 +32,6 @@ fun SourcePickerTopBar(
 					style = MaterialTheme.typography.bodyMedium,
 				)
 			}
-		}
+		},
 	)
 }

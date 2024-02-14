@@ -9,8 +9,8 @@ data class RollEditorUiState(
 )
 
 sealed interface RollEditorUiAction {
-	data object PickBallClicked: RollEditorUiAction
+	data object PickBallClicked : RollEditorUiAction
 
-	data class BallClicked(val ball: FrameEdit.Gear): RollEditorUiAction
-	data class FoulToggled(val foul: Boolean): RollEditorUiAction
+	data class BallClicked(val ball: FrameEdit.Gear) : RollEditorUiAction
+	data class FoulToggled(val foul: Boolean) : RollEditorUiAction
 }

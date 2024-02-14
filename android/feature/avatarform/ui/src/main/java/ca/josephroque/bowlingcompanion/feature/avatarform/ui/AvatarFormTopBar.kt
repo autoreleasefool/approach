@@ -8,7 +8,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +28,7 @@ fun AvatarFormTopBar(
 		actions = {
 			TextButton(onClick = { onAction(AvatarFormUiAction.DoneClicked) }) {
 				Text(
-					text = stringResource(RCoreDesign.string.action_save),
+					text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),
 					style = MaterialTheme.typography.bodyMedium,
 				)
 			}

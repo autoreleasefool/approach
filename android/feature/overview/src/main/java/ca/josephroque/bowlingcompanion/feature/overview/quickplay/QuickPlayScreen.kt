@@ -18,8 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.ui.quickplay.QuickPlayTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun QuickPlayRoute(
@@ -47,7 +47,9 @@ internal fun QuickPlayRoute(
 							viewModel.handleAction(QuickPlayScreenUiAction.AddedBowler(bowler.firstOrNull()))
 						}
 						is QuickPlayScreenEvent.EditLeague -> onPickLeague(it.bowlerId, it.leagueId) { leagues ->
-							viewModel.handleAction(QuickPlayScreenUiAction.EditedLeague(it.bowlerId, leagues.firstOrNull()))
+							viewModel.handleAction(
+								QuickPlayScreenUiAction.EditedLeague(it.bowlerId, leagues.firstOrNull()),
+							)
 						}
 					}
 				}

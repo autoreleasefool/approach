@@ -45,20 +45,17 @@ internal fun Header(
 			NextButton(
 				next = state.nextElement,
 				onClick = {
-					if (state.nextElement != null)
+					if (state.nextElement != null) {
 						onAction(GameDetailsUiAction.NextGameElementClicked(state.nextElement))
-				}
+					}
+				},
 			)
 		}
 	}
 }
 
 @Composable
-private fun RowScope.BowlerDetails(
-	name: String,
-	league: String,
-	modifier: Modifier = Modifier,
-) {
+private fun RowScope.BowlerDetails(name: String, league: String, modifier: Modifier = Modifier) {
 	Column(
 		horizontalAlignment = Alignment.Start,
 		modifier = modifier.weight(1f),
@@ -70,7 +67,7 @@ private fun RowScope.BowlerDetails(
 		)
 		Text(
 			text = league,
-			style = MaterialTheme.typography.bodyMedium
+			style = MaterialTheme.typography.bodyMedium,
 		)
 	}
 }
@@ -82,7 +79,7 @@ private fun NextButton(
 	modifier: Modifier = Modifier,
 ) {
 	Box(
-		modifier = modifier.alpha(if (next == null) 0f else 1f)
+		modifier = modifier.alpha(if (next == null) 0f else 1f),
 	) {
 		Surface(
 			modifier = Modifier
@@ -144,7 +141,9 @@ private fun NextButton(
 				}
 
 				Icon(
-					painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_chevron_right),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_chevron_right,
+					),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
 				)

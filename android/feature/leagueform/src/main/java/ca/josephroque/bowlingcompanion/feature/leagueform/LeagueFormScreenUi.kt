@@ -5,15 +5,15 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.ui.IncludeAdditionalPi
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiAction
 import ca.josephroque.bowlingcompanion.feature.leagueform.ui.LeagueFormUiState
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.UUID
 
 sealed interface LeagueFormScreenUiState {
 	fun hasAnyChanges(): Boolean
 	fun isSavable(): Boolean
 
-	data object Loading: LeagueFormScreenUiState {
+	data object Loading : LeagueFormScreenUiState {
 		override fun hasAnyChanges(): Boolean = false
 		override fun isSavable(): Boolean = false
 	}
@@ -21,24 +21,21 @@ sealed interface LeagueFormScreenUiState {
 	data class Create(
 		val form: LeagueFormUiState,
 		val topBar: LeagueFormTopBarUiState,
-	): LeagueFormScreenUiState {
-		override fun isSavable(): Boolean =
-			form.name.isNotBlank()
+	) : LeagueFormScreenUiState {
+		override fun isSavable(): Boolean = form.name.isNotBlank()
 
-		override fun hasAnyChanges(): Boolean =
-			form != LeagueFormUiState()
+		override fun hasAnyChanges(): Boolean = form != LeagueFormUiState()
 	}
 
 	data class Edit(
 		val initialValue: LeagueUpdate,
 		val form: LeagueFormUiState,
 		val topBar: LeagueFormTopBarUiState,
-	): LeagueFormScreenUiState {
+	) : LeagueFormScreenUiState {
 		override fun isSavable(): Boolean =
 			form.name.isNotBlank() && form.updatedModel(id = initialValue.id) != initialValue
 
-		override fun hasAnyChanges(): Boolean =
-			form.updatedModel(id = initialValue.id) != initialValue
+		override fun hasAnyChanges(): Boolean = form.updatedModel(id = initialValue.id) != initialValue
 	}
 }
 
@@ -57,14 +54,14 @@ fun LeagueFormUiState.updatedModel(id: UUID): LeagueUpdate = LeagueUpdate(
 )
 
 sealed interface LeagueFormScreenUiAction {
-	data object LoadLeague: LeagueFormScreenUiAction
+	data object LoadLeague : LeagueFormScreenUiAction
 	data class LeagueForm(
 		val action: LeagueFormUiAction,
-	): LeagueFormScreenUiAction
+	) : LeagueFormScreenUiAction
 }
 
 sealed interface LeagueFormScreenEvent {
-	data object Dismissed: LeagueFormScreenEvent
+	data object Dismissed : LeagueFormScreenEvent
 }
 
 fun MutableStateFlow<LeagueFormScreenUiState>.updateForm(

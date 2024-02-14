@@ -11,9 +11,7 @@ import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun BackButton(
-	onClick: () -> Unit,
-) {
+fun BackButton(onClick: () -> Unit) {
 	IconButton(onClick = onClick) {
 		Icon(
 			Icons.Default.ArrowBack,
@@ -24,9 +22,7 @@ fun BackButton(
 }
 
 @Composable
-fun CloseButton(
-	onClick: () -> Unit,
-) {
+fun CloseButton(onClick: () -> Unit) {
 	IconButton(onClick = onClick) {
 		Icon(
 			Icons.Default.Close,

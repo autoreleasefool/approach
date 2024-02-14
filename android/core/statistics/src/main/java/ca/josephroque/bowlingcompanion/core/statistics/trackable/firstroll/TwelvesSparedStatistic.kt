@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.isTwelve
@@ -7,7 +8,6 @@ import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
@@ -15,7 +15,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStat
 data class TwelvesSparedStatistic(
 	var twelves: Int = 0,
 	var twelvesSpared: Int = 0,
-): TrackablePerSecondRoll, SecondRollStatistic {
+) : TrackablePerSecondRoll, SecondRollStatistic {
 	override val id = StatisticID.TWELVES_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_twelves
 	override val category = StatisticCategory.TWELVES
@@ -25,16 +25,20 @@ data class TwelvesSparedStatistic(
 
 	override var denominator: Int
 		get() = twelves
-		set(value) { twelves = value }
+		set(value) {
+			twelves = value
+		}
 
 	override var numerator: Int
 		get() = twelvesSpared
-		set(value) { twelvesSpared = value }
+		set(value) {
+			twelvesSpared = value
+		}
 
 	override fun adjustByFirstRollFollowedBySecondRoll(
 		firstRoll: TrackableFrame.Roll,
 		secondRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
 		if (firstRoll.pinsDowned.isTwelve()) {
 			twelves++
@@ -45,7 +49,7 @@ data class TwelvesSparedStatistic(
 		}
 	}
 
-	override fun supportsSource(source: TrackableFilter.Source): Boolean  = when (source) {
+	override fun supportsSource(source: TrackableFilter.Source): Boolean = when (source) {
 		is TrackableFilter.Source.Bowler -> true
 		is TrackableFilter.Source.League -> true
 		is TrackableFilter.Source.Series -> true

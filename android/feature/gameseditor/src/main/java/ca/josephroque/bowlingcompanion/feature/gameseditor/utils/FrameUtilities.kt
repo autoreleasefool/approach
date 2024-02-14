@@ -8,11 +8,7 @@ fun MutableList<FrameEdit>.ensureRollExists(frameIndex: Int, rollIndex: Int) {
 	this[frameIndex] = frame
 }
 
-fun MutableList<FrameEdit>.setPinsDowned(
-	frameIndex: Int,
-	rollIndex: Int,
-	pinsDowned: Set<Pin>,
-) {
+fun MutableList<FrameEdit>.setPinsDowned(frameIndex: Int, rollIndex: Int, pinsDowned: Set<Pin>) {
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
 	val rolls = frame.rolls.toMutableList()
 	rolls[rollIndex] = rolls[rollIndex].copy(pinsDowned = pinsDowned)
@@ -22,11 +18,7 @@ fun MutableList<FrameEdit>.setPinsDowned(
 	this[frameIndex] = frame.copy(rolls = rolls)
 }
 
-fun MutableList<FrameEdit>.setDidFoul(
-	frameIndex: Int,
-	rollIndex: Int,
-	didFoul: Boolean,
-) {
+fun MutableList<FrameEdit>.setDidFoul(frameIndex: Int, rollIndex: Int, didFoul: Boolean) {
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
 	val rolls = frame.rolls.toMutableList()
 	rolls[rollIndex] = rolls[rollIndex].copy(didFoul = didFoul)
@@ -36,7 +28,7 @@ fun MutableList<FrameEdit>.setDidFoul(
 fun MutableList<FrameEdit>.setBallRolled(
 	frameIndex: Int,
 	rollIndex: Int,
-	ballRolled: FrameEdit.Gear?
+	ballRolled: FrameEdit.Gear?,
 ) {
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
 	val rolls = frame.rolls.toMutableList()
@@ -63,7 +55,9 @@ fun FrameEdit.ensureRollExists(upTo: Int): FrameEdit {
 
 	val rolls = this.rolls.toMutableList()
 	for (rollIndex in this.rolls.size..upTo) {
-		rolls.add(FrameEdit.Roll(index = rollIndex, pinsDowned = emptySet(), didFoul = false, bowlingBall = null))
+		rolls.add(
+			FrameEdit.Roll(index = rollIndex, pinsDowned = emptySet(), didFoul = false, bowlingBall = null),
+		)
 	}
 	return this.copy(rolls = rolls)
 }

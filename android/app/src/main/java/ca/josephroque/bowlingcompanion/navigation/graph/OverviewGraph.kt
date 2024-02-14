@@ -3,10 +3,10 @@ package ca.josephroque.bowlingcompanion.navigation.graph
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
+import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.navigateToBowlerDetails
@@ -172,7 +172,7 @@ fun NavGraphBuilder.overviewGraph(
 			)
 		},
 		onShowStatistics = { args -> navController.navigateToStatisticsDetails(args.filter) },
-		onShowBowlerScores = { args -> navController.navigateToScoresList(args.gameIndex, args.series) }
+		onShowBowlerScores = { args -> navController.navigateToScoresList(args.gameIndex, args.series) },
 	)
 	statisticsWidgetLayoutEditorScreen(
 		onBackPressed = navController::popBackStack,

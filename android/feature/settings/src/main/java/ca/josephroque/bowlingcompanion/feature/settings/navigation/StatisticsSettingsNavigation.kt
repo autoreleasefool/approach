@@ -11,9 +11,7 @@ fun NavController.navigateToStatisticsSettings(navOptions: NavOptions? = null) {
 	this.navigate(Route.StatisticsSettings.route, navOptions)
 }
 
-fun NavGraphBuilder.statisticsSettingsScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.statisticsSettingsScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.StatisticsSettings.route,
 	) {

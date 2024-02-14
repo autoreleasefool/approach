@@ -55,8 +55,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
 import java.util.UUID
 
 private val FILTER_ITEM_WIDTH = 180.dp
-private fun Modifier.filterItem() =
-	fillMaxHeight()
+private fun Modifier.filterItem() = fillMaxHeight()
 	.widthIn(max = FILTER_ITEM_WIDTH)
 
 @Composable
@@ -104,7 +103,7 @@ fun StatisticsDetailsList(
 					Text(
 						text = stringResource(R.string.statistics_filter_title),
 						style = MaterialTheme.typography.titleLarge,
-						modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+						modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
 					)
 
 					if (state.filterSources != null) {
@@ -119,7 +118,7 @@ fun StatisticsDetailsList(
 
 			items(
 				items = state.statistics,
-				key = { it.title }
+				key = { it.title },
 			) {
 				ListGroup(
 					group = it,
@@ -154,7 +153,7 @@ private fun FilterDetails(
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		modifier = modifier
 			.horizontalScroll(rememberScrollState())
-			.height(intrinsicSize = IntrinsicSize.Max)
+			.height(intrinsicSize = IntrinsicSize.Max),
 	) {
 		Spacer(modifier = Modifier.width(8.dp))
 
@@ -186,9 +185,7 @@ private fun FilterDetails(
 }
 
 @Composable
-private fun BowlerFilters(
-	bowler: BowlerSummary,
-) {
+private fun BowlerFilters(bowler: BowlerSummary) {
 	FilterItem(
 		label = stringResource(R.string.statistics_filter_label_bowler),
 		text = bowler.name,
@@ -197,10 +194,7 @@ private fun BowlerFilters(
 }
 
 @Composable
-private fun LeagueFilters(
-	league: LeagueSummary?,
-	filter: TrackableFilter,
-) {
+private fun LeagueFilters(league: LeagueSummary?, filter: TrackableFilter) {
 	if (league != null) {
 		FilterItem(
 			label = stringResource(R.string.statistics_filter_label_league),
@@ -211,8 +205,12 @@ private fun LeagueFilters(
 		FilterItem(
 			label = stringResource(R.string.statistics_filter_label_league_recurrence),
 			text = when (filter.leagues.recurrence!!) {
-				LeagueRecurrence.REPEATING -> stringResource(R.string.statistics_filter_label_league_recurrence_repeats)
-				LeagueRecurrence.ONCE -> stringResource(R.string.statistics_filter_label_league_recurrence_never)
+				LeagueRecurrence.REPEATING -> stringResource(
+					R.string.statistics_filter_label_league_recurrence_repeats,
+				)
+				LeagueRecurrence.ONCE -> stringResource(
+					R.string.statistics_filter_label_league_recurrence_never,
+				)
 			},
 			modifier = Modifier.filterItem(),
 		)
@@ -220,10 +218,7 @@ private fun LeagueFilters(
 }
 
 @Composable
-private fun SeriesFilters(
-	series: SeriesSummary?,
-	filter: TrackableFilter,
-) {
+private fun SeriesFilters(series: SeriesSummary?, filter: TrackableFilter) {
 	if (series != null) {
 		FilterItem(
 			label = stringResource(R.string.statistics_filter_label_series),
@@ -288,46 +283,40 @@ private fun SeriesFilters(
 }
 
 @Composable
-private fun GameFilters(
-	game: GameSummary?,
-	filter: TrackableFilter,
-) {
+private fun GameFilters(game: GameSummary?, filter: TrackableFilter) {
 	if (game != null) {
 		FilterItem(
 			label = stringResource(R.string.statistics_filter_label_game),
-			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal, game.index + 1),
+			text = stringResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.string.game_with_ordinal,
+				game.index + 1,
+			),
 			modifier = Modifier.filterItem(),
 		)
 	} else {
 		// FIXME: show lanes
-//		if (filter.games.lanes != null) {
-//		}
+// 		if (filter.games.lanes != null) {
+// 		}
 
 		// FIXME: show gear used
-//		if (filter.games.gearUsed.isNotEmpty()) {
-//		}
+// 		if (filter.games.gearUsed.isNotEmpty()) {
+// 		}
 
 		// FIXME: show opponent name
-//		if (filter.games.opponent != null) {
-//		}
+// 		if (filter.games.opponent != null) {
+// 		}
 	}
 }
 
 @Composable
-private fun FrameFilters(
-	filter: TrackableFilter,
-) {
-//	if (filter.frames.bowlingBallsUsed.isNotEmpty()) {
-		// FIXME: Show gear used
-//	}
+private fun FrameFilters(filter: TrackableFilter) {
+// 	if (filter.frames.bowlingBallsUsed.isNotEmpty()) {
+	// FIXME: Show gear used
+// 	}
 }
 
 @Composable
-private fun FilterItem(
-	label: String,
-	modifier: Modifier = Modifier,
-	text: String? = null,
-) {
+private fun FilterItem(label: String, modifier: Modifier = Modifier, text: String? = null) {
 	Card(
 		modifier = modifier,
 		colors = CardDefaults.cardColors(
@@ -486,14 +475,18 @@ private fun Settings(
 
 		LabeledSwitch(
 			checked = isHidingStatisticDescriptions,
-			onCheckedChange = { onAction(StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled(it)) },
+			onCheckedChange = {
+				onAction(StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled(it))
+			},
 			titleResourceId = R.string.statistics_list_setting_hide_descriptions,
 			compact = true,
 		)
 	}
 }
 
-private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<StatisticListEntryGroup>> {
+private class StatisticsListEntryGroupProvider :
+	PreviewParameterProvider<List<StatisticListEntryGroup>> {
+
 	override val values: Sequence<List<StatisticListEntryGroup>> = sequenceOf(
 		emptyList(),
 		listOf(
@@ -520,7 +513,8 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 			),
 			StatisticListEntryGroup(
 				title = ca.josephroque.bowlingcompanion.core.statistics.R.string.statistic_category_aces,
-				description = ca.josephroque.bowlingcompanion.core.statistics.R.string.statistic_category_aces_description,
+				description = ca.josephroque.bowlingcompanion.core.statistics.R.string
+					.statistic_category_aces_description,
 				images = listOf(R.drawable.ic_aces),
 				entries = listOf(
 					StatisticListEntry(
@@ -537,11 +531,12 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 						valueDescription = "(1/4)",
 						isHighlightedAsNew = false,
 					),
-				)
+				),
 			),
 			StatisticListEntryGroup(
 				title = ca.josephroque.bowlingcompanion.core.statistics.R.string.statistic_category_chops,
-				description = ca.josephroque.bowlingcompanion.core.statistics.R.string.statistic_category_chops_descriptions,
+				description = ca.josephroque.bowlingcompanion.core.statistics.R.string
+					.statistic_category_chops_descriptions,
 				images = null,
 				entries = listOf(
 					StatisticListEntry(
@@ -558,7 +553,7 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 						description = null,
 						isHighlightedAsNew = false,
 					),
-				)
+				),
 			),
 		),
 	)
@@ -567,7 +562,9 @@ private class StatisticsListEntryGroupProvider: PreviewParameterProvider<List<St
 @Preview
 @Composable
 private fun StatisticsDetailsListPreview(
-	@PreviewParameter(StatisticsListEntryGroupProvider::class) statistics: List<StatisticListEntryGroup>,
+	@Suppress("ktlint:standard:max-line-length")
+	@PreviewParameter(StatisticsListEntryGroupProvider::class)
+	statistics: List<StatisticListEntryGroup>,
 ) {
 	ApproachTheme {
 		Surface {

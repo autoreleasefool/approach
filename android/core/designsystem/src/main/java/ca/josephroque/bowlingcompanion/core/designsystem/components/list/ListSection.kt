@@ -51,7 +51,7 @@ fun ListSectionHeader(
 			style = MaterialTheme.typography.titleLarge,
 			modifier = modifier
 				.weight(1f)
-				.alignBy(LastBaseline)
+				.alignBy(LastBaseline),
 		)
 
 		action?.let {
@@ -76,10 +76,7 @@ fun LazyListScope.footer(footer: String) {
 }
 
 @Composable
-fun ListSectionFooter(
-	footer: String,
-	modifier: Modifier = Modifier,
-) {
+fun ListSectionFooter(footer: String, modifier: Modifier = Modifier) {
 	Text(
 		text = footer,
 		style = MaterialTheme.typography.bodySmall,

@@ -17,6 +17,8 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -24,8 +26,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import java.util.UUID
-import javax.inject.Inject
 
 class OfflineFirstSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
@@ -33,15 +33,17 @@ class OfflineFirstSeriesRepository @Inject constructor(
 	private val gamesRepository: GamesRepository,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): SeriesRepository {
+) : SeriesRepository {
 	override fun getSeriesDetails(seriesId: UUID): Flow<SeriesDetails> =
 		seriesDao.getSeriesDetails(seriesId).map(SeriesDetailsEntity::asModel)
 
-	override fun getSeriesList(leagueId: UUID, sortOrder: SeriesSortOrder): Flow<List<SeriesListItem>> =
+	override fun getSeriesList(
+		leagueId: UUID,
+		sortOrder: SeriesSortOrder,
+	): Flow<List<SeriesListItem>> =
 		seriesDao.getSeriesList(leagueId, sortOrder).map { it.map(SeriesListEntity::asModel) }
 
-	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> =
-		seriesDao.getArchivedSeries()
+	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> = seriesDao.getArchivedSeries()
 
 	override suspend fun insertSeries(series: SeriesCreate) = withContext(ioDispatcher) {
 		transactionRunner {

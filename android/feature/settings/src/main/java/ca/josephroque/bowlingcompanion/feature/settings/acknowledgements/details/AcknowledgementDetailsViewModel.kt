@@ -9,23 +9,29 @@ import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.deta
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.acknowledgements.details.AcknowledgementDetailsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 @HiltViewModel
 class AcknowledgementDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
 	acknowledgementsRepository: AcknowledgementsRepository,
-): ApproachViewModel<AcknowledgementDetailsScreenEvent>() {
-	private val _acknowledgementName = Route.AcknowledgementDetails.getAcknowledgement(savedStateHandle)
-		?: throw IllegalArgumentException("Acknowledgement name must be provided to AcknowledgementDetailsViewModel")
+) : ApproachViewModel<AcknowledgementDetailsScreenEvent>() {
+	private val acknowledgementName = Route.AcknowledgementDetails.getAcknowledgement(
+		savedStateHandle,
+	)
+		?: throw IllegalArgumentException(
+			"Acknowledgement name must be provided to AcknowledgementDetailsViewModel",
+		)
 
-	private val _acknowledgementDetails = acknowledgementsRepository.getAcknowledgement(_acknowledgementName)
+	private val acknowledgementDetails = acknowledgementsRepository.getAcknowledgement(
+		acknowledgementName,
+	)
 		.map { AcknowledgementDetailsUiState(it) }
 
-	val uiState = _acknowledgementDetails
+	val uiState = acknowledgementDetails
 		.map {
 			AcknowledgementDetailsScreenUiState.Loaded(
 				acknowledgementDetails = it,
@@ -40,13 +46,16 @@ class AcknowledgementDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: AcknowledgementDetailsScreenUiAction) {
 		when (action) {
-			is AcknowledgementDetailsScreenUiAction.AcknowledgementDetailsAction -> handleAcknowledgementDetailsAction(action.action)
+			is AcknowledgementDetailsScreenUiAction.AcknowledgementDetailsAction ->
+				handleAcknowledgementDetailsAction(action.action)
 		}
 	}
 
 	private fun handleAcknowledgementDetailsAction(action: AcknowledgementDetailsUiAction) {
 		when (action) {
-			AcknowledgementDetailsUiAction.BackClicked -> sendEvent(AcknowledgementDetailsScreenEvent.Dismissed)
+			AcknowledgementDetailsUiAction.BackClicked -> sendEvent(
+				AcknowledgementDetailsScreenEvent.Dismissed,
+			)
 		}
 	}
 }

@@ -44,11 +44,13 @@ internal fun AlleyCard(
 			onClick = { onAction(GameDetailsUiAction.ManageAlleyClicked) },
 			icon = {
 				Icon(
-					painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_alley),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_alley,
+					),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
-			}
+			},
 		)
 
 		if (state.selectedAlley != null) {
@@ -60,11 +62,13 @@ internal fun AlleyCard(
 					RoundIconButton(onClick = { onAction(GameDetailsUiAction.ManageLanesClicked) }) {
 						Icon(
 							Icons.Default.Edit,
-							contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage),
+							contentDescription = stringResource(
+								ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_manage,
+							),
 							tint = MaterialTheme.colorScheme.onSurface,
 						)
 					}
-				}
+				},
 			)
 
 			if (state.selectedLanes.isNotEmpty()) {
@@ -88,7 +92,7 @@ private fun AlleyCardPreview() {
 	Surface {
 		AlleyCard(
 			state = GameDetailsUiState.AlleyCardUiState(
-//				selectedAlley = null,
+// 				selectedAlley = null,
 				selectedAlley = AlleyDetails(
 					id = UUID.randomUUID(),
 					name = "Grandview Lanes",
@@ -97,7 +101,7 @@ private fun AlleyCardPreview() {
 					mechanism = null,
 					pinBase = null,
 				),
-//				selectedLanes = emptyList(),
+// 				selectedLanes = emptyList(),
 				selectedLanes = listOf(
 					LaneListItem(
 						id = UUID.randomUUID(),

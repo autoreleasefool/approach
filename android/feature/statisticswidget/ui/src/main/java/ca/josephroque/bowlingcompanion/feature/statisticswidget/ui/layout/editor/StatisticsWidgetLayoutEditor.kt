@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -36,11 +35,11 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSo
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
+import java.util.UUID
 import org.burnoutcrew.reorderable.ReorderableItem
 import org.burnoutcrew.reorderable.detectReorderAfterLongPress
 import org.burnoutcrew.reorderable.rememberReorderableLazyGridState
 import org.burnoutcrew.reorderable.reorderable
-import java.util.UUID
 
 @Composable
 fun StatisticsWidgetLayoutEditor(
@@ -90,8 +89,12 @@ fun StatisticsWidgetLayoutEditor(
 							IconButton(
 								onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.WidgetClicked(widget)) },
 								colors = IconButtonDefaults.filledIconButtonColors(
-									contentColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.white),
-									containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+									contentColor = colorResource(
+										ca.josephroque.bowlingcompanion.core.designsystem.R.color.white,
+									),
+									containerColor = colorResource(
+										ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+									),
 								),
 							) {
 								Icon(
@@ -108,10 +111,11 @@ fun StatisticsWidgetLayoutEditor(
 		item(span = { GridItemSpan(2) }) {
 			Text(
 				text = stringResource(
-					if (state.isDeleteModeEnabled)
+					if (state.isDeleteModeEnabled) {
 						R.string.statistics_widget_layout_editor_tap_to_delete_widget
-					else
+					} else {
 						R.string.statistics_widget_layout_editor_tap_and_hold_to_reorder
+					},
 				),
 				style = MaterialTheme.typography.bodySmall,
 				textAlign = TextAlign.Center,
@@ -127,26 +131,28 @@ fun StatisticsWidgetLayoutEditor(
 @Composable
 private fun StatisticsWidgetLayoutEditorPreview() {
 	val state = remember {
-		mutableStateOf(StatisticsWidgetLayoutEditorUiState(
-			widgets = listOf(
-				StatisticsWidget(
-					source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
-					id = UUID.randomUUID(),
-					timeline = StatisticsWidgetTimeline.THREE_MONTHS,
-					statistic = StatisticID.ACES,
-					context = "",
-					priority = 0,
+		mutableStateOf(
+			StatisticsWidgetLayoutEditorUiState(
+				widgets = listOf(
+					StatisticsWidget(
+						source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
+						id = UUID.randomUUID(),
+						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
+						statistic = StatisticID.ACES,
+						context = "",
+						priority = 0,
+					),
+					StatisticsWidget(
+						source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
+						id = UUID.randomUUID(),
+						timeline = StatisticsWidgetTimeline.THREE_MONTHS,
+						statistic = StatisticID.ACES,
+						context = "",
+						priority = 1,
+					),
 				),
-				StatisticsWidget(
-					source = StatisticsWidgetSource.Bowler(UUID.randomUUID()),
-					id = UUID.randomUUID(),
-					timeline = StatisticsWidgetTimeline.THREE_MONTHS,
-					statistic = StatisticID.ACES,
-					context = "",
-					priority = 1,
-				),
-			)
-		))
+			),
+		)
 	}
 
 	Surface {

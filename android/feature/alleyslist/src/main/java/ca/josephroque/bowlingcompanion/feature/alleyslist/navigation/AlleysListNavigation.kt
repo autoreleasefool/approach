@@ -25,7 +25,7 @@ fun NavGraphBuilder.alleysListScreen(
 			onBackPressed = onBackPressed,
 			onEditAlley = onEditAlley,
 			onAddAlley = onAddAlley,
-			onShowAlleyDetails = onShowAlleyDetails
+			onShowAlleyDetails = onShowAlleyDetails,
 		)
 	}
 }

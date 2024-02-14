@@ -62,7 +62,9 @@ private fun FrameSettingsSection(
 
 	LabeledSwitch(
 		checked = isCountingSplitWithBonusAsSplit,
-		onCheckedChange = { onAction(StatisticsSettingsUiAction.IsCountingSplitWithBonusAsSplitToggled(it)) },
+		onCheckedChange = {
+			onAction(StatisticsSettingsUiAction.IsCountingSplitWithBonusAsSplitToggled(it))
+		},
 		titleResourceId = R.string.statistics_settings_count_s2_as_s,
 	)
 }
@@ -83,7 +85,11 @@ private fun OverallSettingsSection(
 
 	LabeledSwitch(
 		checked = isHidingStatisticDescriptions,
-		onCheckedChange = { onAction(StatisticsSettingsUiAction.IsHidingStatisticDescriptionsToggled(it)) },
+		onCheckedChange = {
+			onAction(
+				StatisticsSettingsUiAction.IsHidingStatisticDescriptionsToggled(it),
+			)
+		},
 		titleResourceId = R.string.statistics_settings_hide_descriptions,
 	)
 }
@@ -98,13 +104,21 @@ private fun WidgetsSettingsSection(
 
 	LabeledSwitch(
 		checked = isHidingWidgetsInBowlersList,
-		onCheckedChange = { onAction(StatisticsSettingsUiAction.IsHidingWidgetsInBowlersListToggled(it)) },
+		onCheckedChange = {
+			onAction(
+				StatisticsSettingsUiAction.IsHidingWidgetsInBowlersListToggled(it),
+			)
+		},
 		titleResourceId = R.string.statistics_settings_hide_widgets_in_bowlers,
 	)
 
 	LabeledSwitch(
 		checked = isHidingWidgetsInLeaguesList,
-		onCheckedChange = { onAction(StatisticsSettingsUiAction.IsHidingWidgetsInLeaguesListToggled(it)) },
+		onCheckedChange = {
+			onAction(
+				StatisticsSettingsUiAction.IsHidingWidgetsInLeaguesListToggled(it),
+			)
+		},
 		titleResourceId = R.string.statistics_settings_hide_widgets_in_leagues,
 	)
 }

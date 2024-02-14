@@ -8,13 +8,13 @@ data class OpponentsListUiState(
 )
 
 sealed interface OpponentsListUiAction {
-	data object BackClicked: OpponentsListUiAction
-	data object AddOpponentClicked: OpponentsListUiAction
+	data object BackClicked : OpponentsListUiAction
+	data object AddOpponentClicked : OpponentsListUiAction
 
-	data class OpponentClicked(val opponent: OpponentListItem): OpponentsListUiAction
-	data class OpponentEdited(val opponent: OpponentListItem): OpponentsListUiAction
-	data class OpponentArchived(val opponent: OpponentListItem): OpponentsListUiAction
+	data class OpponentClicked(val opponent: OpponentListItem) : OpponentsListUiAction
+	data class OpponentEdited(val opponent: OpponentListItem) : OpponentsListUiAction
+	data class OpponentArchived(val opponent: OpponentListItem) : OpponentsListUiAction
 
-	data object ConfirmArchiveClicked: OpponentsListUiAction
-	data object DismissArchiveClicked: OpponentsListUiAction
+	data object ConfirmArchiveClicked : OpponentsListUiAction
+	data object DismissArchiveClicked : OpponentsListUiAction
 }

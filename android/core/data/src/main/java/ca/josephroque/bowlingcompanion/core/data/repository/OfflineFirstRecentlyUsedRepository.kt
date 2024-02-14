@@ -2,17 +2,17 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class OfflineFirstRecentlyUsedRepository @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): RecentlyUsedRepository {
+) : RecentlyUsedRepository {
 	override suspend fun didRecentlyUse(resource: RecentResource, id: String) {
 		withContext(ioDispatcher) {
 			when (resource) {

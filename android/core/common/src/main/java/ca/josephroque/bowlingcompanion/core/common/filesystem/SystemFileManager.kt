@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class SystemFileManager @Inject constructor(
 	@ApplicationContext private val context: Context,
-): FileManager {
+) : FileManager {
 	override val cacheDir: File
 		get() = context.cacheDir
 
@@ -20,11 +20,9 @@ class SystemFileManager @Inject constructor(
 	override val exportsDir: File
 		get() = context.cacheDir.resolve("exports")
 
-	override fun filePathExists(fileName: String): Boolean =
-		fileExists(File(fileName))
+	override fun filePathExists(fileName: String): Boolean = fileExists(File(fileName))
 
-	override fun fileExists(file: File): Boolean =
-		file.exists()
+	override fun fileExists(file: File): Boolean = file.exists()
 
 	override fun getFileType(file: File): FileType? {
 		try {
@@ -42,8 +40,7 @@ class SystemFileManager @Inject constructor(
 		}
 	}
 
-	override fun getDatabasePath(fileName: String): File =
-		context.getDatabasePath(fileName)
+	override fun getDatabasePath(fileName: String): File = context.getDatabasePath(fileName)
 
 	override fun getAssets(directory: String): List<String> =
 		context.assets.list(directory)?.toList() ?: emptyList()

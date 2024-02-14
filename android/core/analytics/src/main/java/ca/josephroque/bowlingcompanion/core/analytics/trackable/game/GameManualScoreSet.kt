@@ -5,7 +5,7 @@ import java.util.UUID
 
 data class GameManualScoreSet(
 	override val eventId: UUID,
-): GameSessionTrackableEvent {
+) : GameSessionTrackableEvent {
 	override val name = "Game.ManualScoreSet"
 	override val payload = emptyMap<String, String>()
 }

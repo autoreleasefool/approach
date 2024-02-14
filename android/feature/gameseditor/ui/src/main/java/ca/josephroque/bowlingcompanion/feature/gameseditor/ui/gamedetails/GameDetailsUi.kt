@@ -12,11 +12,11 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import java.util.UUID
 
 sealed interface NextGameEditableElement {
-	data class Roll(val rollIndex: Int): NextGameEditableElement
-	data class Frame(val frameIndex: Int): NextGameEditableElement
-	data class Game(val gameIndex: Int, val game: UUID): NextGameEditableElement
-	data class BowlerGame(val gameIndex: Int, val bowler: UUID): NextGameEditableElement
-	data class Bowler(val name: String, val bowler: UUID): NextGameEditableElement
+	data class Roll(val rollIndex: Int) : NextGameEditableElement
+	data class Frame(val frameIndex: Int) : NextGameEditableElement
+	data class Game(val gameIndex: Int, val game: UUID) : NextGameEditableElement
+	data class BowlerGame(val gameIndex: Int, val bowler: UUID) : NextGameEditableElement
+	data class Bowler(val name: String, val bowler: UUID) : NextGameEditableElement
 }
 
 data class GameDetailsUiState(
@@ -69,18 +69,19 @@ data class GameDetailsUiState(
 }
 
 sealed interface GameDetailsUiAction {
-	data object ManageGearClicked: GameDetailsUiAction
-	data object ManageAlleyClicked: GameDetailsUiAction
-	data object ManageLanesClicked: GameDetailsUiAction
-	data object ManageMatchPlayClicked: GameDetailsUiAction
-	data object ManageScoreClicked: GameDetailsUiAction
-	data object ViewGameStatsClicked: GameDetailsUiAction
-	data object ViewSeriesStatsClicked: GameDetailsUiAction
-	data object ViewAllBowlersClicked: GameDetailsUiAction
+	data object ManageGearClicked : GameDetailsUiAction
+	data object ManageAlleyClicked : GameDetailsUiAction
+	data object ManageLanesClicked : GameDetailsUiAction
+	data object ManageMatchPlayClicked : GameDetailsUiAction
+	data object ManageScoreClicked : GameDetailsUiAction
+	data object ViewGameStatsClicked : GameDetailsUiAction
+	data object ViewSeriesStatsClicked : GameDetailsUiAction
+	data object ViewAllBowlersClicked : GameDetailsUiAction
 
-	data class LockToggled(val locked: Boolean): GameDetailsUiAction
-	data class ExcludeFromStatisticsToggled(val excludeFromStatistics: Boolean): GameDetailsUiAction
-	data class NextGameElementClicked(val nextGameElement: NextGameEditableElement): GameDetailsUiAction
-	data class HeaderHeightMeasured(val height: Float): GameDetailsUiAction
+	data class LockToggled(val locked: Boolean) : GameDetailsUiAction
+	data class ExcludeFromStatisticsToggled(val excludeFromStatistics: Boolean) : GameDetailsUiAction
+	data class NextGameElementClicked(
+		val nextGameElement: NextGameEditableElement,
+	) : GameDetailsUiAction
+	data class HeaderHeightMeasured(val height: Float) : GameDetailsUiAction
 }
-

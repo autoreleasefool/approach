@@ -18,8 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditor
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.ui.MatchPlayEditorTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun MatchPlayEditorRoute(
@@ -73,7 +73,7 @@ private fun MatchPlayEditorScreen(
 				gameIndex = when (state) {
 					MatchPlayEditorScreenUiState.Loading -> 0
 					is MatchPlayEditorScreenUiState.Loaded -> state.matchPlayEditor.gameIndex
-			  },
+				},
 				onAction = { onAction(MatchPlayEditorScreenUiAction.MatchPlayEditor(it)) },
 				scrollBehavior = scrollBehavior,
 			)

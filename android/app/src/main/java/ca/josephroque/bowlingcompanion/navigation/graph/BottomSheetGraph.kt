@@ -17,9 +17,7 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourc
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsSourcePickerSheet
 
-fun NavGraphBuilder.bottomSheetGraph(
-	navController: NavController,
-) {
+fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	resourcePickerSheet(
 		onDismissWithResult = navController::popBackStackWithResult,
 	)
@@ -44,7 +42,7 @@ fun NavGraphBuilder.bottomSheetGraph(
 				limit = 1,
 				navResultCallback = result,
 				resourceType = ResourcePickerType.LEAGUE,
-				filter = "${bowler}:${LeagueRecurrence.REPEATING}",
+				filter = "$bowler:${LeagueRecurrence.REPEATING}",
 			)
 		},
 		onShowQuickPlayOnboarding = navController::navigateToQuickPlayOnboarding,

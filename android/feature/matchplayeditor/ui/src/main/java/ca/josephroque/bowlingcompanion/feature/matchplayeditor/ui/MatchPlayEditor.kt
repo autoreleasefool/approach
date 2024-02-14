@@ -66,14 +66,20 @@ fun MatchPlayEditor(
 			iconForOption = {
 				Icon(
 					painter = it.icon(),
-					contentDescription = null
+					contentDescription = null,
 				)
 			},
 			titleForOption = {
 				when (it) {
-					MatchPlayResult.WON -> stringResource(ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_won)
-					MatchPlayResult.LOST -> stringResource(ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_lost)
-					MatchPlayResult.TIED -> stringResource(ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_tied)
+					MatchPlayResult.WON -> stringResource(
+						ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_won,
+					)
+					MatchPlayResult.LOST -> stringResource(
+						ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_lost,
+					)
+					MatchPlayResult.TIED -> stringResource(
+						ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_tied,
+					)
 					null -> stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
 				}
 			},

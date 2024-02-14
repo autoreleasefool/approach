@@ -12,9 +12,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
 
 @Composable
 internal fun StatisticsButtons(
@@ -34,7 +33,9 @@ internal fun StatisticsButtons(
 			modifier = Modifier.weight(1f),
 			icon = {
 				Icon(
-					painter = painterResource(RCoreDesign.drawable.ic_monitoring),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_monitoring,
+					),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
@@ -49,7 +50,9 @@ internal fun StatisticsButtons(
 			modifier = Modifier.weight(1f),
 			icon = {
 				Icon(
-					painter = painterResource(RCoreDesign.drawable.ic_monitoring),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_monitoring,
+					),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurface,
 				)

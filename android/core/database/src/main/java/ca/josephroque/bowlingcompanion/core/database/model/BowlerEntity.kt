@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
-import kotlinx.datetime.Instant
 import java.util.UUID
+import kotlinx.datetime.Instant
 
 @Entity(tableName = "bowlers")
 data class BowlerEntity(

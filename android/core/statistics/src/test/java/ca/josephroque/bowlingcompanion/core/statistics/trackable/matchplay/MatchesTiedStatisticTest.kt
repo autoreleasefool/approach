@@ -7,12 +7,12 @@ import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockGames
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.utils.mockSeries
 import org.junit.Test
 
-class MatchesTiedStatisticTests {
+class MatchesTiedStatisticTest {
 	@Test
 	fun testAdjustByGame() {
 		val statistic = assertStatisticAdjusts(
 			statistic = MatchesTiedStatistic(),
-			byGames = mockGames()
+			byGames = mockGames(),
 		)
 		assertPercentage(statistic, 3, 9, "33.3% (3)")
 	}
@@ -21,7 +21,7 @@ class MatchesTiedStatisticTests {
 	fun testAdjustBySeries_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = MatchesTiedStatistic(),
-			bySeries = mockSeries()
+			bySeries = mockSeries(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}
@@ -30,7 +30,7 @@ class MatchesTiedStatisticTests {
 	fun testAdjustByFrame_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = MatchesTiedStatistic(),
-			byFrames = mockFrames()
+			byFrames = mockFrames(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}

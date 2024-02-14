@@ -7,23 +7,23 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyListItem
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiAction
 import ca.josephroque.bowlingcompanion.feature.alleyslist.ui.AlleysListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class AlleysListViewModel @Inject constructor(
 	private val alleysRepository: AlleysRepository,
-): ApproachViewModel<AlleysListScreenEvent>() {
-	private val _alleyToDelete: MutableStateFlow<AlleyListItem?> = MutableStateFlow(null)
+) : ApproachViewModel<AlleysListScreenEvent>() {
+	private val alleyToDelete: MutableStateFlow<AlleyListItem?> = MutableStateFlow(null)
 
 	val uiState: StateFlow<AlleysListScreenUiState> =
 		combine(
-			_alleyToDelete,
+			alleyToDelete,
 			alleysRepository.getAlleysList(),
 		) { alleyToDelete, alleysList ->
 			AlleysListScreenUiState.Loaded(
@@ -48,8 +48,12 @@ class AlleysListViewModel @Inject constructor(
 		when (action) {
 			AlleysListUiAction.BackClicked -> sendEvent(AlleysListScreenEvent.Dismissed)
 			AlleysListUiAction.AddAlleyClicked -> sendEvent(AlleysListScreenEvent.NavigateToAddAlley)
-			is AlleysListUiAction.AlleyClicked -> sendEvent(AlleysListScreenEvent.NavigateToEditAlley(action.id))
-			is AlleysListUiAction.AlleyEdited -> sendEvent(AlleysListScreenEvent.NavigateToEditAlley(action.id))
+			is AlleysListUiAction.AlleyClicked -> sendEvent(
+				AlleysListScreenEvent.NavigateToEditAlley(action.id),
+			)
+			is AlleysListUiAction.AlleyEdited -> sendEvent(
+				AlleysListScreenEvent.NavigateToEditAlley(action.id),
+			)
 			is AlleysListUiAction.AlleyDeleted -> setDeleteAlleyPrompt(action.alley)
 			AlleysListUiAction.ConfirmDeleteClicked -> deleteAlley()
 			AlleysListUiAction.DismissDeleteClicked -> setDeleteAlleyPrompt(null)
@@ -57,11 +61,11 @@ class AlleysListViewModel @Inject constructor(
 	}
 
 	private fun setDeleteAlleyPrompt(alley: AlleyListItem?) {
-		_alleyToDelete.value = alley
+		alleyToDelete.value = alley
 	}
 
 	private fun deleteAlley() {
-		val alley = _alleyToDelete.value ?: return
+		val alley = alleyToDelete.value ?: return
 		viewModelScope.launch {
 			alleysRepository.deleteAlley(alley.id)
 			setDeleteAlleyPrompt(null)

@@ -26,9 +26,7 @@ fun GearFormTopBar(
 }
 
 @Composable
-private fun Title(
-	state: GearFormTopBarUiState,
-) {
+private fun Title(state: GearFormTopBarUiState) {
 	Text(
 		text = if (state.existingName == null) {
 			stringResource(R.string.gear_form_new_title)
@@ -40,9 +38,7 @@ private fun Title(
 }
 
 @Composable
-private fun Actions(
-	onAction: (GearFormUiAction) -> Unit,
-) {
+private fun Actions(onAction: (GearFormUiAction) -> Unit) {
 	TextButton(onClick = { onAction(GearFormUiAction.DoneClicked) }) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

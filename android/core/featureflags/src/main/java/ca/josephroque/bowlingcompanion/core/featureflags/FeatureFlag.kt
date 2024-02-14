@@ -17,7 +17,7 @@ enum class FeatureFlag(
 	override val key: String,
 	override val introduced: String,
 	override val rolloutStage: RolloutStage,
-): Feature {
+) : Feature {
 	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.RELEASE),
 	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
 }
@@ -25,5 +25,5 @@ enum class FeatureFlag(
 fun FeatureFlag.isEnabled(): Boolean = if (BuildConfig.DEBUG) {
 	this.rolloutStage >= RolloutStage.DEVELOPMENT
 } else {
-		this.rolloutStage == RolloutStage.RELEASE
+	this.rolloutStage == RolloutStage.RELEASE
 }

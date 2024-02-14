@@ -27,9 +27,7 @@ fun BowlerFormTopBar(
 }
 
 @Composable
-private fun Title(
-	state: BowlerFormTopBarUiState,
-) {
+private fun Title(state: BowlerFormTopBarUiState) {
 	Text(
 		text = if (state.existingName == null) {
 			when (state.kind) {
@@ -44,9 +42,7 @@ private fun Title(
 }
 
 @Composable
-private fun Actions(
-	onAction: (BowlerFormUiAction) -> Unit,
-) {
+private fun Actions(onAction: (BowlerFormUiAction) -> Unit) {
 	TextButton(onClick = { onAction(BowlerFormUiAction.DoneClicked) }) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

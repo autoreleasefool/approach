@@ -16,7 +16,8 @@ enum class LegacyMatchPlayResult {
 	NONE,
 	WON,
 	LOST,
-	TIED;
+	TIED,
+	;
 
 	companion object {
 		private val map = entries.associateBy(LegacyMatchPlayResult::ordinal)

@@ -27,8 +27,8 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePicker
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBar
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun ResourcePickerRoute(
@@ -81,7 +81,7 @@ private fun ResourcePickerScreen(
 				state = when (state) {
 					ResourcePickerScreenUiState.Loading -> ResourcePickerTopBarUiState()
 					is ResourcePickerScreenUiState.Loaded -> state.topBar
-			  },
+				},
 				onAction = { onAction(ResourcePickerScreenUiAction.ResourcePickerAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)

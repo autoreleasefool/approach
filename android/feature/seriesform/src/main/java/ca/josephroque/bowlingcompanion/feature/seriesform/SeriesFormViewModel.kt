@@ -21,6 +21,8 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiS
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -29,8 +31,6 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class SeriesFormViewModel @Inject constructor(
@@ -39,7 +39,7 @@ class SeriesFormViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val leaguesRepository: LeaguesRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<SeriesFormScreenEvent>() {
+) : ApproachViewModel<SeriesFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<SeriesFormScreenUiState> =
 		MutableStateFlow(SeriesFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
@@ -73,7 +73,9 @@ class SeriesFormViewModel @Inject constructor(
 			is SeriesFormUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
 			is SeriesFormUiAction.DateChanged -> updateDate(action.date)
 			is SeriesFormUiAction.PreBowlChanged -> updatePreBowl(action.preBowl)
-			is SeriesFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(action.excludeFromStatistics)
+			is SeriesFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(
+				action.excludeFromStatistics,
+			)
 		}
 	}
 
@@ -82,12 +84,14 @@ class SeriesFormViewModel @Inject constructor(
 
 		viewModelScope.launch {
 			val series = seriesId?.let { seriesRepository.getSeriesDetails(it).first() }
-			val league = (leagueId ?: series?.properties?.leagueId)?.let { leaguesRepository.getLeagueDetails(it).first() } ?: return@launch
+			val league = (leagueId ?: series?.properties?.leagueId)?.let {
+				leaguesRepository.getLeagueDetails(it).first()
+			} ?: return@launch
 
 			val uiState = if (series == null) {
 				SeriesFormScreenUiState.Create(
 					form = SeriesFormUiState(
-						numberOfGames = league.numberOfGames ?: Series.DefaultNumberOfGames,
+						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
@@ -134,11 +138,15 @@ class SeriesFormViewModel @Inject constructor(
 	}
 
 	private fun editAlley() {
-		sendEvent(SeriesFormScreenEvent.EditAlley(alleyId = when (val state = _uiState.value) {
-			SeriesFormScreenUiState.Loading -> return
-			is SeriesFormScreenUiState.Create -> state.form.alley?.id
-			is SeriesFormScreenUiState.Edit -> state.form.alley?.id
-		}))
+		sendEvent(
+			SeriesFormScreenEvent.EditAlley(
+				alleyId = when (val state = _uiState.value) {
+					SeriesFormScreenUiState.Loading -> return
+					is SeriesFormScreenUiState.Create -> state.form.alley?.id
+					is SeriesFormScreenUiState.Edit -> state.form.alley?.id
+				},
+			),
+		)
 	}
 
 	private fun updateAlley(alleyId: UUID?) {
@@ -218,7 +226,7 @@ class SeriesFormViewModel @Inject constructor(
 						date = state.form.date,
 						preBowl = state.form.preBowl,
 						excludeFromStatistics = state.form.excludeFromStatistics,
-						numberOfGames = state.form.numberOfGames ?: Series.DefaultNumberOfGames,
+						numberOfGames = state.form.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 					)
 
 					seriesRepository.insertSeries(series)

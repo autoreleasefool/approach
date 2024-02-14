@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.gearform.GearFormRoute
 import java.util.UUID
@@ -28,7 +28,7 @@ fun NavGraphBuilder.gearFormScreen(
 	composable(
 		route = Route.EditGear.route,
 		arguments = listOf(
-			navArgument(Route.EditGear.ARG_GEAR) { type = NavType.StringType }
+			navArgument(Route.EditGear.ARG_GEAR) { type = NavType.StringType },
 		),
 	) {
 		GearFormRoute(

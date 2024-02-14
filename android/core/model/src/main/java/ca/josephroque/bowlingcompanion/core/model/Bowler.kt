@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-import kotlinx.datetime.Instant
 import java.util.UUID
+import kotlinx.datetime.Instant
 
 data class BowlerListItem(
 	val id: UUID,
@@ -23,7 +23,6 @@ data class SeriesBowlerSummary(
 ) {
 	fun asSummary(): BowlerSummary = BowlerSummary(id, name)
 }
-
 
 data class OpponentListItem(
 	val id: UUID,

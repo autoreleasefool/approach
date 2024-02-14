@@ -19,8 +19,8 @@ import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun BowlerDetailsRoute(
@@ -51,9 +51,14 @@ internal fun BowlerDetailsRoute(
 						is BowlerDetailsScreenEvent.ShowLeagueDetails -> onShowLeagueDetails(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowEventDetails -> onShowEventDetails(it.leagueId)
 						is BowlerDetailsScreenEvent.ShowGearDetails -> onShowGearDetails(it.gearId)
-						is BowlerDetailsScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context, it.bowlerId)
+						is BowlerDetailsScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(
+							it.context,
+							it.bowlerId,
+						)
 						is BowlerDetailsScreenEvent.ShowStatistics -> onShowStatistics(it.widget)
-						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(it.selectedGear) { selectedGear ->
+						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(
+							it.selectedGear,
+						) { selectedGear ->
 							viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(selectedGear))
 						}
 					}
@@ -100,4 +105,3 @@ internal fun BowlerDetailsScreen(
 		}
 	}
 }
-

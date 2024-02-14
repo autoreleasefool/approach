@@ -13,12 +13,12 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.model.BowlerSummary
 import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import ca.josephroque.bowlingcompanion.core.model.SeriesBowlerSummary
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
-import java.util.UUID
 
 @Dao
-abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
+abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Query(
 		"""
 			SELECT
@@ -26,7 +26,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 				bowlers.name AS name
 			FROM bowlers
 			WHERE bowlers.id = :bowlerId
-		"""
+		""",
 	)
 	abstract fun getBowlerSummary(bowlerId: UUID): Flow<BowlerSummary>
 
@@ -40,7 +40,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 			JOIN leagues ON leagues.id = series.league_id
 			JOIN bowlers ON bowlers.id = leagues.bowler_id
 			WHERE series.id IN (:series)
-		"""
+		""",
 	)
 	abstract fun getSeriesBowlers(series: List<UUID>): Flow<List<SeriesBowlerSummary>>
 
@@ -52,7 +52,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 				bowlers.kind as kind
 			FROM bowlers 
 			WHERE id = :bowlerId
-		"""
+		""",
 	)
 	abstract fun getBowlerDetails(bowlerId: UUID): Flow<BowlerDetails>
 
@@ -79,7 +79,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 			WHERE bowlers.kind = "PLAYABLE" AND bowlers.archived_on IS NULL
 			GROUP BY bowlers.id
 			ORDER BY bowlers.name
-		"""
+		""",
 	)
 	abstract fun getBowlersList(): Flow<List<BowlerListItem>>
 
@@ -92,7 +92,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 			FROM bowlers
 			WHERE bowlers.archived_on IS NULL
 			ORDER BY bowlers.name
-		"""
+		""",
 	)
 	abstract fun getOpponentsList(): Flow<List<OpponentListItem>>
 
@@ -112,7 +112,7 @@ abstract class BowlerDao: LegacyMigratingDao<BowlerEntity> {
 			WHERE bowlers.archived_on IS NOT NULL
 			GROUP BY bowlers.id
 			ORDER BY bowlers.archived_on DESC
-		"""
+		""",
 	)
 	abstract fun getArchivedBowlers(): Flow<List<ArchivedBowler>>
 

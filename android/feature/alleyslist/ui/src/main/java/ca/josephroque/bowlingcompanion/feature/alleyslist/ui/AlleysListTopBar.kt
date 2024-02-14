@@ -43,6 +43,6 @@ fun AlleysListTopBar(
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
-		}
+		},
 	)
 }

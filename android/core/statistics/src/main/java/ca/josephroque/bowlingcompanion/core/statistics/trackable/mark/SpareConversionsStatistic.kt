@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.mark
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.isAce
@@ -10,7 +11,6 @@ import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStat
 data class SpareConversionsStatistic(
 	var spareChances: Int = 0,
 	var spares: Int = 0,
-): TrackablePerSecondRoll, SecondRollStatistic {
+) : TrackablePerSecondRoll, SecondRollStatistic {
 	override val id = StatisticID.SPARE_CONVERSIONS
 	override val category = StatisticCategory.STRIKES_AND_SPARES
 	override val isEligibleForNewLabel = false
@@ -29,21 +29,31 @@ data class SpareConversionsStatistic(
 
 	override var numerator: Int
 		get() = spares
-		set(value) { spares = value }
+		set(value) {
+			spares = value
+		}
 
 	override var denominator: Int
 		get() = spareChances
-		set(value) { spareChances = value }
+		set(value) {
+			spareChances = value
+		}
 
 	override fun adjustByFirstRollFollowedBySecondRoll(
 		firstRoll: TrackableFrame.Roll,
 		secondRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
 		val didSpare = secondRoll.pinsDowned.union(firstRoll.pinsDowned).arePinsCleared()
 
 		// Don't add a spare change if the first ball was a split / head pin / aces, unless the second shot was a spare
-		if (!didSpare && (firstRoll.pinsDowned.isAce() || firstRoll.pinsDowned.isSplit() || firstRoll.pinsDowned.isHeadPin() || firstRoll.pinsDowned.isHeadPin2()) ){
+		if (!didSpare && (
+				firstRoll.pinsDowned.isAce() ||
+					firstRoll.pinsDowned.isSplit() ||
+					firstRoll.pinsDowned.isHeadPin() ||
+					firstRoll.pinsDowned.isHeadPin2()
+				)
+		) {
 			return
 		}
 

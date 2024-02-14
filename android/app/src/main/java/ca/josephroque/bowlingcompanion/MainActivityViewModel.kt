@@ -9,18 +9,18 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import ca.josephroque.bowlingcompanion.ui.ApproachAppUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 	userDataRepository: UserDataRepository,
-): ViewModel() {
+) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	val mainActivityUiState = combine(
@@ -63,11 +63,11 @@ class MainActivityViewModel @Inject constructor(
 }
 
 sealed interface MainActivityUiState {
-	data object Loading: MainActivityUiState
+	data object Loading : MainActivityUiState
 	data class Success(
 		val appState: ApproachAppUiState,
 		val isLaunchComplete: Boolean,
-	): MainActivityUiState
+	) : MainActivityUiState
 }
 
 internal fun MainActivityUiState.isLaunchComplete(): Boolean = when (this) {

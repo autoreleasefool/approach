@@ -1,18 +1,18 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.isThree
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
 data class ThreesStatistic(
 	var threes: Int = 0,
-): TrackablePerFirstRoll, CountingStatistic {
+) : TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.THREES
 	override val category = StatisticCategory.THREES
 	override val isEligibleForNewLabel = true
@@ -21,11 +21,13 @@ data class ThreesStatistic(
 
 	override var count: Int
 		get() = threes
-		set(value) { threes = value }
+		set(value) {
+			threes = value
+		}
 
 	override fun adjustByFirstRoll(
 		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
 		if (firstRoll.pinsDowned.isThree()) {
 			threes++

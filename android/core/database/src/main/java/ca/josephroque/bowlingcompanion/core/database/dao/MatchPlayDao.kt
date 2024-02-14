@@ -9,11 +9,11 @@ import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayCreateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayDetailsUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayEntity
 import ca.josephroque.bowlingcompanion.core.database.model.MatchPlayUpdateEntity
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class MatchPlayDao: LegacyMigratingDao<MatchPlayEntity> {
+abstract class MatchPlayDao : LegacyMigratingDao<MatchPlayEntity> {
 	@Transaction
 	@Query(
 		"""
@@ -24,7 +24,7 @@ abstract class MatchPlayDao: LegacyMigratingDao<MatchPlayEntity> {
 			match_plays.result AS result
 		FROM match_plays 
 		WHERE game_id = :gameId
-		"""
+		""",
 	)
 	abstract fun getMatchPlayForGame(gameId: UUID): Flow<MatchPlayUpdateEntity?>
 

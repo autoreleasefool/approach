@@ -12,9 +12,9 @@ data class GamesSettingsUiState(
 )
 
 sealed interface GamesSettingsUiAction {
-	data object	BackClicked: GamesSettingsUiAction
+	data object	BackClicked : GamesSettingsUiAction
 
-	data class BowlerClicked(val bowler: BowlerSummary): GamesSettingsUiAction
-	data class BowlerMoved(val from: Int, val to: Int): GamesSettingsUiAction
-	data class GameClicked(val game: GameListItem): GamesSettingsUiAction
+	data class BowlerClicked(val bowler: BowlerSummary) : GamesSettingsUiAction
+	data class BowlerMoved(val from: Int, val to: Int) : GamesSettingsUiAction
+	data class GameClicked(val game: GameListItem) : GamesSettingsUiAction
 }

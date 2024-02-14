@@ -111,10 +111,7 @@ fun GameDetails(
 }
 
 @Composable
-private fun ViewAllBowlersButton(
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun ViewAllBowlersButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 	NavigationButton(
 		title = stringResource(R.string.game_editor_view_all_bowlers),
 		onClick = onClick,
@@ -149,14 +146,14 @@ private fun GameDetailsPreview() {
 							name = "Yellow Ball",
 							kind = GearKind.BOWLING_BALL,
 							ownerName = "Joseph",
-							avatar = Avatar.default()
+							avatar = Avatar.default(),
 						),
 						GearListItem(
 							id = UUID.randomUUID(),
 							name = "Green Towel",
 							kind = GearKind.TOWEL,
 							ownerName = "Sarah",
-							avatar = Avatar.default()
+							avatar = Avatar.default(),
 						),
 					),
 				),

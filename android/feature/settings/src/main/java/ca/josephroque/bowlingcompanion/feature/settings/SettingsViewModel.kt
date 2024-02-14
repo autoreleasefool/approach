@@ -20,29 +20,29 @@ import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.feature.settings.ui.SettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.SettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
 	featureFlagsClient: FeatureFlagsClient,
 	systemInfoService: SystemInfoService,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<SettingsScreenEvent>() {
-	private val _settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
+) : ApproachViewModel<SettingsScreenEvent>() {
+	private val settingsState: MutableStateFlow<SettingsUiState> = MutableStateFlow(
 		SettingsUiState(
 			isDataImportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_IMPORT),
 			isDataExportsEnabled = featureFlagsClient.isEnabled(FeatureFlag.DATA_EXPORT),
 			versionName = systemInfoService.versionName,
 			versionCode = systemInfoService.versionCode,
-		)
+		),
 	)
 
-	val uiState: StateFlow<SettingsScreenUiState> = _settingsState
+	val uiState: StateFlow<SettingsScreenUiState> = settingsState
 		.map { SettingsScreenUiState.Loaded(it) }
 		.stateIn(
 			scope = viewModelScope,

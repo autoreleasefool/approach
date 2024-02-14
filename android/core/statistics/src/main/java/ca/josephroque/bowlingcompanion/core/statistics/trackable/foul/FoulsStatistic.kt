@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.foul
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStat
 data class FoulsStatistic(
 	var fouls: Int = 0,
 	var totalRolls: Int = 0,
-): PercentageStatistic, TrackablePerFrame {
+) : PercentageStatistic, TrackablePerFrame {
 	override val id = StatisticID.FOULS
 	override val category = StatisticCategory.FOULS
 	override val isEligibleForNewLabel = false
@@ -26,11 +26,15 @@ data class FoulsStatistic(
 
 	override var numerator: Int
 		get() = fouls
-		set(value) { fouls = value }
+		set(value) {
+			fouls = value
+		}
 
 	override var denominator: Int
 		get() = totalRolls
-		set(value) { totalRolls = value }
+		set(value) {
+			totalRolls = value
+		}
 
 	override fun adjustByFrame(frame: TrackableFrame, configuration: TrackablePerFrameConfiguration) {
 		totalRolls += frame.rolls.size

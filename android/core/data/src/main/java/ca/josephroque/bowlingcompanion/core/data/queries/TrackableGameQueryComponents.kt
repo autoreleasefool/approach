@@ -9,10 +9,11 @@ data class TrackableGameQueryComponents(
 ) {
 	val matchPlayTableAlias = "${tableAlias}MatchPlays"
 
-	fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String = listOf(
-		"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
-		"LEFT JOIN match_plays AS $matchPlayTableAlias ON $matchPlayTableAlias.game_id = $tableAlias.id",
-	).joinToString("\n")
+	fun buildJoinClause(parentTable: String, parentColumn: String, childColumn: String): String =
+		listOf(
+			"JOIN games AS $tableAlias ON $tableAlias.$childColumn = $parentTable.$parentColumn",
+			"LEFT JOIN match_plays AS $matchPlayTableAlias ON $matchPlayTableAlias.game_id = $tableAlias.id",
+		).joinToString("\n")
 
 	fun buildWhereClause(): List<String> {
 		val whereConditions = mutableListOf<String>()
@@ -23,10 +24,10 @@ data class TrackableGameQueryComponents(
 		whereConditions.add("$tableAlias.score > 0")
 
 		// FIXME: Filter by opponent in MatchPlay
-//		if (filter.opponent != null) {}
+// 		if (filter.opponent != null) {}
 
 		// FIXME: Filter by gearUsed
-//		if (filter.gearUsed.isNotEmpty()) { }
+// 		if (filter.gearUsed.isNotEmpty()) { }
 
 		when (filter.lanes) {
 			is TrackableFilter.LaneFilter.Lanes -> {

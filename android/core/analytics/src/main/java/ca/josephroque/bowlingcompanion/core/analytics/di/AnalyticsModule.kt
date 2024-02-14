@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface AnalyticsModule {
 	@Binds
-	fun bindsAnalyticsClient(
-		analyticsClient: TelemetryDeckAnalyticsClient,
-	): AnalyticsClient
+	fun bindsAnalyticsClient(analyticsClient: TelemetryDeckAnalyticsClient): AnalyticsClient
 }

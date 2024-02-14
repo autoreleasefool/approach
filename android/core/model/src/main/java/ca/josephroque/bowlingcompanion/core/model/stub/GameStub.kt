@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.model.stub
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import java.util.UUID
 
-object GameListItemStub {
+object GameStub {
 	fun list() = listOf(
 		GameListItem(
 			id = UUID.randomUUID(),

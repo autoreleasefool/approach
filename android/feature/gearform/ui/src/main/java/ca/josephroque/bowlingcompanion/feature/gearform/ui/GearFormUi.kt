@@ -18,21 +18,21 @@ data class GearFormUiState(
 )
 
 sealed interface GearFormUiAction {
-	data object BackClicked: GearFormUiAction
-	data object DoneClicked: GearFormUiAction
+	data object BackClicked : GearFormUiAction
+	data object DoneClicked : GearFormUiAction
 
-	data object DeleteClicked: GearFormUiAction
-	data object ConfirmDeleteClicked: GearFormUiAction
-	data object DismissDeleteClicked: GearFormUiAction
+	data object DeleteClicked : GearFormUiAction
+	data object ConfirmDeleteClicked : GearFormUiAction
+	data object DismissDeleteClicked : GearFormUiAction
 
-	data object DiscardChangesClicked: GearFormUiAction
-	data object CancelDiscardChangesClicked: GearFormUiAction
+	data object DiscardChangesClicked : GearFormUiAction
+	data object CancelDiscardChangesClicked : GearFormUiAction
 
-	data object AvatarClicked: GearFormUiAction
-	data object OwnerClicked: GearFormUiAction
+	data object AvatarClicked : GearFormUiAction
+	data object OwnerClicked : GearFormUiAction
 
-	data class NameChanged(val name: String): GearFormUiAction
-	data class KindChanged(val kind: GearKind): GearFormUiAction
+	data class NameChanged(val name: String) : GearFormUiAction
+	data class KindChanged(val kind: GearKind) : GearFormUiAction
 }
 
 data class GearFormTopBarUiState(

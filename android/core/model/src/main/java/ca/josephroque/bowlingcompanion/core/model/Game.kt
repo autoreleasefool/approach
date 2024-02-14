@@ -1,17 +1,16 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 object Game {
-	const val NumberOfFrames = 10
-	val FrameIndices = 0..<NumberOfFrames
-	const val FoulPenalty = 15
-	const val MaxScore = 450
+	const val NUMBER_OF_FRAMES = 10
+	val FrameIndices = 0..<NUMBER_OF_FRAMES
+	const val FOUL_PENALTY = 15
+	const val MAX_SCORE = 450
 
-	fun frameIndicesAfter(after: Int, upTo: Int = NumberOfFrames): IntRange =
-		(after + 1)..<upTo
+	fun frameIndicesAfter(after: Int, upTo: Int = NUMBER_OF_FRAMES): IntRange = (after + 1)..<upTo
 }
 
 data class GameSummary(
@@ -109,7 +108,6 @@ enum class GameLockState {
 			LOCKED -> UNLOCKED
 			UNLOCKED -> LOCKED
 		}
-
 }
 
 enum class GameScoringMethod {

@@ -16,8 +16,15 @@ data class ScoreKeeperInput(
 	companion object {
 		fun fromFrames(frames: List<ScoreableFrame>): ScoreKeeperInput = ScoreKeeperInput(
 			rolls = frames.map { frame ->
-				frame.rolls.mapIndexed { index, roll -> Roll(frame.index, index, roll.pinsDowned, roll.didFoul) }
-			}
+				frame.rolls.mapIndexed { index, roll ->
+					Roll(
+						frame.index,
+						index,
+						roll.pinsDowned,
+						roll.didFoul,
+					)
+				}
+			},
 		)
 	}
 }

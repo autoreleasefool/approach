@@ -72,7 +72,7 @@ private fun BowlerFormScreen(
 					BowlerFormScreenUiState.Loading -> BowlerFormTopBarUiState()
 					is BowlerFormScreenUiState.Create -> state.topBar
 					is BowlerFormScreenUiState.Edit -> state.topBar
-			  },
+				},
 				onAction = { onAction(BowlerFormScreenUiAction.BowlerFormAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)

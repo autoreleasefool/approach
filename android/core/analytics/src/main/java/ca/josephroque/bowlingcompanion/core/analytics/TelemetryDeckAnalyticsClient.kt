@@ -8,22 +8,22 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import com.telemetrydeck.sdk.TelemetryManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 class TelemetryDeckAnalyticsClient @Inject constructor(
 	@ApplicationContext private val context: Context,
 	private val userDataRepository: UserDataRepository,
 	@ApplicationScope private val scope: CoroutineScope,
-): AnalyticsClient {
+) : AnalyticsClient {
 	companion object {
-		private const val TAG = "ca.josephroque.bowlingcompanion.core.analytics.TelemetryDeckAnalyticsClient"
+		private const val TAG = "ca.josephroque.bowlingcompanion.TelemetryDeckAnalyticsClient"
 	}
 
 	override val optInStatus = userDataRepository.userData
@@ -32,7 +32,7 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 	private val globalProperties: MutableStateFlow<Map<String, String>> =
 		MutableStateFlow(mapOf())
 
-	private val _recordedEvents: MutableStateFlow<Map<String, Set<UUID>>> = MutableStateFlow(mapOf())
+	private val recordedEvents: MutableStateFlow<Map<String, Set<UUID>>> = MutableStateFlow(mapOf())
 
 	override suspend fun initialize() {
 		val optInStatus = this.optInStatus.first()
@@ -75,17 +75,20 @@ class TelemetryDeckAnalyticsClient @Inject constructor(
 	}
 
 	override fun startNewGameSession() {
-		_recordedEvents.update { mapOf() }
+		recordedEvents.update { mapOf() }
 	}
 
 	override fun trackEvent(event: TrackableEvent) {
 		scope.launch {
-			val recordedEvents = _recordedEvents.value
+			val recordedEvents = recordedEvents.value
 			if (event is GameSessionTrackableEvent) {
-				if (recordedEvents.contains(event.name) && recordedEvents[event.name]!!.contains(event.eventId)) {
+				if (recordedEvents.contains(
+						event.name,
+					) && recordedEvents[event.name]!!.contains(event.eventId)
+				) {
 					return@launch
 				} else {
-					_recordedEvents.update {
+					this@TelemetryDeckAnalyticsClient.recordedEvents.update {
 						it.toMutableMap().apply {
 							val existingEvents = this[event.name] ?: setOf()
 							this[event.name] = existingEvents + event.eventId

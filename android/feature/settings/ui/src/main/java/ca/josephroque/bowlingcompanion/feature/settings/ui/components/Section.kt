@@ -11,10 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Header(
-	@StringRes titleResourceId: Int,
-	modifier: Modifier = Modifier,
-) {
+fun Header(@StringRes titleResourceId: Int, modifier: Modifier = Modifier) {
 	Text(
 		text = stringResource(titleResourceId).uppercase(),
 		style = MaterialTheme.typography.labelMedium,
@@ -25,10 +22,7 @@ fun Header(
 }
 
 @Composable
-internal fun Footer(
-	@StringRes titleResourceId: Int,
-	modifier: Modifier = Modifier,
-) {
+internal fun Footer(@StringRes titleResourceId: Int, modifier: Modifier = Modifier) {
 	Text(
 		text = stringResource(titleResourceId),
 		style = MaterialTheme.typography.bodySmall,

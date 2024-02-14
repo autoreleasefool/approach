@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import ca.josephroque.bowlingcompanion.core.database.model.LaneEntity
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class LaneDao {
@@ -20,7 +20,7 @@ abstract class LaneDao {
 			FROM lanes
 			WHERE lanes.id IN (:ids)
 			ORDER BY lanes.label
-		"""
+		""",
 	)
 	abstract fun getLanes(ids: List<UUID>): Flow<List<LaneListItem>>
 
@@ -33,7 +33,7 @@ abstract class LaneDao {
 			FROM lanes
 			WHERE lanes.alley_id = :alleyId
 			ORDER BY lanes.label
-		"""
+		""",
 	)
 	abstract fun getAlleyLanes(alleyId: UUID): Flow<List<LaneListItem>>
 
@@ -47,7 +47,7 @@ abstract class LaneDao {
 			JOIN game_lanes ON game_lanes.lane_id = lanes.id
 			WHERE game_lanes.game_id = :gameId
 			ORDER BY lanes.label
-		"""
+		""",
 	)
 	abstract fun getGameLanes(gameId: UUID): Flow<List<LaneListItem>>
 

@@ -40,6 +40,6 @@ fun OpponentsListTopBar(
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
-		}
+		},
 	)
 }

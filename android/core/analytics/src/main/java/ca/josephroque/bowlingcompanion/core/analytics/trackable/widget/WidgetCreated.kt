@@ -7,7 +7,7 @@ data class WidgetCreated(
 	val source: String?,
 	val statistic: String,
 	val timeline: String,
-): TrackableEvent {
+) : TrackableEvent {
 	override val name = "Widget.Created"
 	override val payload = mapOf(
 		"Context" to context,

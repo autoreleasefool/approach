@@ -27,11 +27,11 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerT
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class ResourcePickerViewModel @Inject constructor(
@@ -43,7 +43,7 @@ class ResourcePickerViewModel @Inject constructor(
 	alleysRepository: AlleysRepository,
 	lanesRepository: LanesRepository,
 	savedStateHandle: SavedStateHandle,
-): ApproachViewModel<ResourcePickerScreenEvent>() {
+) : ApproachViewModel<ResourcePickerScreenEvent>() {
 	private val _uiState: MutableStateFlow<ResourcePickerScreenUiState> =
 		MutableStateFlow(ResourcePickerScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
@@ -54,7 +54,9 @@ class ResourcePickerViewModel @Inject constructor(
 	private val limit = Route.ResourcePicker.getLimit(savedStateHandle) ?: 0
 	private val titleOverride = Route.ResourcePicker.getTitleOverride(savedStateHandle)
 
-	private val filter: ResourcePickerFilter? = Route.ResourcePicker.getResourceFilter(savedStateHandle)
+	private val filter: ResourcePickerFilter? = Route.ResourcePicker.getResourceFilter(
+		savedStateHandle,
+	)
 		?.let {
 			when (resourceType) {
 				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Str(it)
@@ -68,12 +70,27 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private val dataProvider: ResourcePickerDataProvider = when (resourceType) {
 		ResourcePickerType.BOWLER -> BowlerPickerDataProvider(bowlersRepository)
-		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(leaguesRepository, (filter as? ResourcePickerFilter.Str)?.value ?: "")
-		ResourcePickerType.SERIES -> SeriesPickerDataProvider(seriesRepository, (filter as? ResourcePickerFilter.League)?.id)
-		ResourcePickerType.GAME -> GamePickerDataProvider(gamesRepository, (filter as? ResourcePickerFilter.Series)?.id)
-		ResourcePickerType.GEAR -> GearPickerDataProvider(gearRepository, (filter as? ResourcePickerFilter.Gear)?.kind)
+		ResourcePickerType.LEAGUE -> LeaguePickerDataProvider(
+			leaguesRepository,
+			(filter as? ResourcePickerFilter.Str)?.value ?: "",
+		)
+		ResourcePickerType.SERIES -> SeriesPickerDataProvider(
+			seriesRepository,
+			(filter as? ResourcePickerFilter.League)?.id,
+		)
+		ResourcePickerType.GAME -> GamePickerDataProvider(
+			gamesRepository,
+			(filter as? ResourcePickerFilter.Series)?.id,
+		)
+		ResourcePickerType.GEAR -> GearPickerDataProvider(
+			gearRepository,
+			(filter as? ResourcePickerFilter.Gear)?.kind,
+		)
 		ResourcePickerType.ALLEY -> AlleyPickerDataProvider(alleysRepository)
-		ResourcePickerType.LANE -> LanePickerDataProvider(lanesRepository, (filter as? ResourcePickerFilter.Alley)?.id)
+		ResourcePickerType.LANE -> LanePickerDataProvider(
+			lanesRepository,
+			(filter as? ResourcePickerFilter.Alley)?.id,
+		)
 	}
 
 	private fun getPickerUiState(): ResourcePickerUiState? {
@@ -99,8 +116,12 @@ class ResourcePickerViewModel @Inject constructor(
 
 	private fun handleResourcePickerAction(action: ResourcePickerUiAction) {
 		when (action) {
-			ResourcePickerUiAction.BackClicked -> sendEvent(ResourcePickerScreenEvent.Dismissed(initiallySelectedIds))
-			ResourcePickerUiAction.DoneClicked -> sendEvent(ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: initiallySelectedIds))
+			ResourcePickerUiAction.BackClicked -> sendEvent(
+				ResourcePickerScreenEvent.Dismissed(initiallySelectedIds),
+			)
+			ResourcePickerUiAction.DoneClicked -> sendEvent(
+				ResourcePickerScreenEvent.Dismissed(getPickerUiState()?.selectedItems ?: initiallySelectedIds),
+			)
 			is ResourcePickerUiAction.ItemClicked -> onResourceClicked(action.itemId)
 		}
 	}

@@ -1,18 +1,18 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.isRightTap
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFirstRoll
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.CountingStatistic
 
 data class RightTapsStatistic(
 	var rightTaps: Int = 0,
-): TrackablePerFirstRoll, CountingStatistic {
+) : TrackablePerFirstRoll, CountingStatistic {
 	override val id = StatisticID.RIGHT_TAPS
 	override val category = StatisticCategory.TAPS
 	override val isEligibleForNewLabel = false
@@ -21,11 +21,13 @@ data class RightTapsStatistic(
 
 	override var count: Int
 		get() = rightTaps
-		set(value) { rightTaps = value }
+		set(value) {
+			rightTaps = value
+		}
 
 	override fun adjustByFirstRoll(
 		firstRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
 		if (firstRoll.pinsDowned.isRightTap()) {
 			rightTaps++

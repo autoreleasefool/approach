@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.firstroll
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableFrame
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 import ca.josephroque.bowlingcompanion.core.model.isLeftSplit
@@ -8,7 +9,6 @@ import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSecondRoll
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStatistic
@@ -16,7 +16,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.SecondRollStat
 data class LeftSplitsSparedStatistic(
 	var leftSplits: Int = 0,
 	var leftSplitsSpared: Int = 0,
-): TrackablePerSecondRoll, SecondRollStatistic {
+) : TrackablePerSecondRoll, SecondRollStatistic {
 	override val id = StatisticID.LEFT_SPLITS_SPARED
 	override val denominatorTitleResourceId: Int = R.string.statistic_title_left_splits
 	override val category = StatisticCategory.SPLITS
@@ -26,18 +26,24 @@ data class LeftSplitsSparedStatistic(
 
 	override var denominator: Int
 		get() = leftSplits
-		set(value) { leftSplits = value }
+		set(value) {
+			leftSplits = value
+		}
 
 	override var numerator: Int
 		get() = leftSplitsSpared
-		set(value) { leftSplitsSpared = value }
+		set(value) {
+			leftSplitsSpared = value
+		}
 
 	override fun adjustByFirstRollFollowedBySecondRoll(
 		firstRoll: TrackableFrame.Roll,
 		secondRoll: TrackableFrame.Roll,
-		configuration: TrackablePerFrameConfiguration
+		configuration: TrackablePerFrameConfiguration,
 	) {
-		if (firstRoll.pinsDowned.isLeftSplit() || (configuration.countSplitWithBonusAsSplit && firstRoll.pinsDowned.isLeftSplitWithBonus())) {
+		if (firstRoll.pinsDowned.isLeftSplit() ||
+			(configuration.countSplitWithBonusAsSplit && firstRoll.pinsDowned.isLeftSplitWithBonus())
+		) {
 			leftSplits++
 
 			if (secondRoll.pinsDowned.plus(firstRoll.pinsDowned).arePinsCleared()) {
@@ -46,7 +52,7 @@ data class LeftSplitsSparedStatistic(
 		}
 	}
 
-	override fun supportsSource(source: TrackableFilter.Source): Boolean  = when (source) {
+	override fun supportsSource(source: TrackableFilter.Source): Boolean = when (source) {
 		is TrackableFilter.Source.Bowler -> true
 		is TrackableFilter.Source.League -> true
 		is TrackableFilter.Source.Series -> true

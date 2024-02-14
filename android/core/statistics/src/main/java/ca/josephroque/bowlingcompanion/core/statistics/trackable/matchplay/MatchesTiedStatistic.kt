@@ -1,12 +1,12 @@
 package ca.josephroque.bowlingcompanion.core.statistics.trackable.matchplay
 
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.TrackableGame
 import ca.josephroque.bowlingcompanion.core.statistics.PreferredTrendDirection
 import ca.josephroque.bowlingcompanion.core.statistics.R
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGame
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStatistic
@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.interfaces.PercentageStat
 data class MatchesTiedStatistic(
 	var matchesPlayed: Int = 0,
 	var matchesTied: Int = 0,
-): PercentageStatistic, TrackablePerGame {
+) : PercentageStatistic, TrackablePerGame {
 	override val id = StatisticID.MATCHES_TIED
 	override val category = StatisticCategory.MATCH_PLAY_RESULTS
 	override val isEligibleForNewLabel = false
@@ -27,11 +27,15 @@ data class MatchesTiedStatistic(
 
 	override var numerator: Int
 		get() = matchesTied
-		set(value) { matchesTied = value }
+		set(value) {
+			matchesTied = value
+		}
 
 	override var denominator: Int
 		get() = matchesPlayed
-		set(value) { matchesPlayed = value }
+		set(value) {
+			matchesPlayed = value
+		}
 
 	override fun adjustByGame(game: TrackableGame, configuration: TrackablePerGameConfiguration) {
 		val matchPlay = game.matchPlay ?: return

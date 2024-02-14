@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.core.model
 
+import java.util.UUID
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import java.util.UUID
 
 object League {
 	val NumberOfGamesRange = 1..40

@@ -11,9 +11,7 @@ fun NavController.navigateToDeveloperSettings(navOptions: NavOptions? = null) {
 	this.navigate(Route.DeveloperSettings.route, navOptions)
 }
 
-fun NavGraphBuilder.developerSettingsScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.developerSettingsScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.DeveloperSettings.route,
 	) {

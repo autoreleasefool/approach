@@ -20,6 +20,7 @@ kotlinxCoroutines = "1.7.3"
 kotlinxDatetime = "0.4.1"
 kotlin = "1.9.10"
 ksp = "1.9.10-1.0.13"
+ktlint = "12.1.0"
 navigationCompose = "2.7.6"
 paging = "3.2.1"
 protobuf = "3.24.0"
@@ -78,5 +79,6 @@ android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }

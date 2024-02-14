@@ -14,17 +14,17 @@ import ca.josephroque.bowlingcompanion.core.model.Avatar
 import ca.josephroque.bowlingcompanion.core.model.GearCreate
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.gearform.ui.R
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiState
+import ca.josephroque.bowlingcompanion.feature.gearform.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class GearFormViewModel @Inject constructor(
@@ -33,7 +33,7 @@ class GearFormViewModel @Inject constructor(
 	private val gearRepository: GearRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<GearFormScreenEvent>() {
+) : ApproachViewModel<GearFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<GearFormScreenUiState> =
 		MutableStateFlow(GearFormScreenUiState.Loading)
 	val uiState = _uiState.asStateFlow()
@@ -116,13 +116,15 @@ class GearFormViewModel @Inject constructor(
 	}
 
 	private fun editOwner() {
-		sendEvent(GearFormScreenEvent.EditOwner(
-			owner = when (val state = _uiState.value) {
-				GearFormScreenUiState.Loading -> return
-				is GearFormScreenUiState.Create -> state.form.owner?.id
-				is GearFormScreenUiState.Edit -> state.form.owner?.id
-			},
-		))
+		sendEvent(
+			GearFormScreenEvent.EditOwner(
+				owner = when (val state = _uiState.value) {
+					GearFormScreenUiState.Loading -> return
+					is GearFormScreenUiState.Create -> state.form.owner?.id
+					is GearFormScreenUiState.Edit -> state.form.owner?.id
+				},
+			),
+		)
 	}
 
 	private fun updateOwner(owner: UUID?) {
@@ -133,13 +135,15 @@ class GearFormViewModel @Inject constructor(
 	}
 
 	private fun editAvatar() {
-		sendEvent(GearFormScreenEvent.EditAvatar(
-			avatar = when (val state = _uiState.value) {
-				GearFormScreenUiState.Loading -> return
-				is GearFormScreenUiState.Create -> state.form.avatar
-				is GearFormScreenUiState.Edit -> state.form.avatar
-			},
-		))
+		sendEvent(
+			GearFormScreenEvent.EditAvatar(
+				avatar = when (val state = _uiState.value) {
+					GearFormScreenUiState.Loading -> return
+					is GearFormScreenUiState.Create -> state.form.avatar
+					is GearFormScreenUiState.Edit -> state.form.avatar
+				},
+			),
+		)
 	}
 
 	private fun updateAvatar(avatar: Avatar) {

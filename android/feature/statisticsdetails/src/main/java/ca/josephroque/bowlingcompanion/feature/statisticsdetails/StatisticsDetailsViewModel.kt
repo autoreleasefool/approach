@@ -12,9 +12,9 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
-import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
@@ -24,6 +24,8 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.Statistics
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,8 +36,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsDetailsViewModel @Inject constructor(
@@ -43,35 +43,35 @@ class StatisticsDetailsViewModel @Inject constructor(
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<StatisticsDetailsScreenEvent>(), DefaultLifecycleObserver {
-	private val _sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
-	private val _sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
-	private val _initialFilterSource = when (_sourceType) {
-		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(_sourceId)
-		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(_sourceId)
-		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(_sourceId)
-		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(_sourceId)
+) : ApproachViewModel<StatisticsDetailsScreenEvent>(), DefaultLifecycleObserver {
+	private val sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
+	private val sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
+	private val initialFilterSource = when (sourceType) {
+		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(sourceId)
+		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(sourceId)
+		StatisticsDetailsSourceType.SERIES -> TrackableFilter.Source.Series(sourceId)
+		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(sourceId)
 	}
 
-	private val _chartEntryModelProducer = ChartEntryModelProducer()
+	private val chartEntryModelProducer = ChartEntryModelProducer()
 
-	private val _filter: MutableStateFlow<TrackableFilter> =
-		MutableStateFlow(TrackableFilter(source = _initialFilterSource))
+	private val filter: MutableStateFlow<TrackableFilter> =
+		MutableStateFlow(TrackableFilter(source = initialFilterSource))
 
-	private val _sourceSummaries = _filter.map {
+	private val sourceSummaries = filter.map {
 		statisticsRepository.getSourceDetails(it.source)
 	}
 
-	private val _headerPeekHeight = MutableStateFlow(0f)
+	private val headerPeekHeight = MutableStateFlow(0f)
 
 	@OptIn(ExperimentalMaterial3Api::class)
-	private val _bottomSheetValue = MutableStateFlow(SheetValue.PartiallyExpanded)
+	private val bottomSheetValue = MutableStateFlow(SheetValue.PartiallyExpanded)
 
 	private data class StatisticsSettings(
 		val isHidingZeroStatistics: Boolean,
 		val isHidingStatisticDescriptions: Boolean,
 	)
-	private val _statisticsSettings: Flow<StatisticsSettings> =
+	private val statisticsSettings: Flow<StatisticsSettings> =
 		userDataRepository.userData.map {
 			StatisticsSettings(
 				isHidingZeroStatistics = !it.isShowingZeroStatistics,
@@ -79,20 +79,20 @@ class StatisticsDetailsViewModel @Inject constructor(
 			)
 		}
 
-	private val _statisticsList = combine(
-		_filter,
-		_statisticsSettings,
+	private val statisticsList = combine(
+		filter,
+		statisticsSettings,
 	) { filter, _ ->
 		statisticsRepository.getStatisticsList(filter)
 	}
 
-	private val _selectedStatistic: MutableStateFlow<StatisticID?> = MutableStateFlow(
-		allStatistics(source = _initialFilterSource).firstOrNull()?.id
+	private val selectedStatistic: MutableStateFlow<StatisticID?> = MutableStateFlow(
+		allStatistics(source = initialFilterSource).firstOrNull()?.id,
 	)
 
-	private val _chartContent: Flow<StatisticsDetailsChartUiState.ChartContent?> = combine(
-		_filter,
-		_selectedStatistic,
+	private val chartContent: Flow<StatisticsDetailsChartUiState.ChartContent?> = combine(
+		filter,
+		selectedStatistic,
 	) { filter, selectedStatistic ->
 		if (selectedStatistic == null) return@combine null
 		val chart = statisticsRepository.getStatisticsChart(
@@ -102,16 +102,16 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 		StatisticsDetailsChartUiState.ChartContent(
 			chart = chart,
-			modelProducer = _chartEntryModelProducer,
+			modelProducer = chartEntryModelProducer,
 		)
 	}
 
-	private val _statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
-		_filter,
-		_selectedStatistic,
-		_chartContent
+	private val statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
+		filter,
+		selectedStatistic,
+		chartContent,
 	) { filter, selectedStatistic, chartContent ->
-		if (chartContent == null || selectedStatistic == null)
+		if (chartContent == null || selectedStatistic == null) {
 			StatisticsDetailsChartUiState(
 				filter = filter,
 				isLoadingNextChart = true,
@@ -119,7 +119,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 				chartContent = null,
 				supportsAggregation = false,
 			)
-		else
+		} else {
 			StatisticsDetailsChartUiState(
 				filter = filter,
 				isLoadingNextChart = false,
@@ -127,14 +127,15 @@ class StatisticsDetailsViewModel @Inject constructor(
 				chartContent = chartContent,
 				supportsAggregation = statisticInstanceFromID(selectedStatistic).supportsAggregation,
 			)
+		}
 	}
 
-	private val _statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
-		_filter,
-		_sourceSummaries,
-		_statisticsList,
-		_selectedStatistic,
-		_statisticsSettings,
+	private val statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
+		filter,
+		sourceSummaries,
+		statisticsList,
+		selectedStatistic,
+		statisticsSettings,
 	) { filter, sourceSummaries, statistics, selectedStatistic, settings ->
 		StatisticsDetailsListUiState(
 			filter = filter,
@@ -148,10 +149,10 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	@OptIn(ExperimentalMaterial3Api::class)
 	val uiState: StateFlow<StatisticsDetailsScreenUiState> = combine(
-		_statisticsListState,
-		_statisticsChartState,
-		_headerPeekHeight,
-		_bottomSheetValue,
+		statisticsListState,
+		statisticsChartState,
+		headerPeekHeight,
+		bottomSheetValue,
 	) { statisticsList, statisticsChart, headerPeekHeight, bottomSheetValue ->
 		StatisticsDetailsScreenUiState.Loaded(
 			list = statisticsList,
@@ -167,9 +168,9 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	init {
 		viewModelScope.launch {
-			_chartContent.collect {
+			chartContent.collect {
 				if (it != null) {
-					_chartEntryModelProducer.setEntries(it.chart.getModelEntries())
+					chartEntryModelProducer.setEntries(it.chart.getModelEntries())
 				}
 			}
 		}
@@ -177,7 +178,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	@OptIn(ExperimentalMaterial3Api::class)
 	override fun onResume(owner: LifecycleOwner) {
-		_bottomSheetValue.value = SheetValue.PartiallyExpanded
+		bottomSheetValue.value = SheetValue.PartiallyExpanded
 	}
 
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
@@ -218,12 +219,12 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private fun handleBottomSheetAction(action: StatisticsDetailsBottomSheetUiAction) {
 		when (action) {
 			is StatisticsDetailsBottomSheetUiAction.SheetValueChanged ->
-				_bottomSheetValue.value = action.value
+				bottomSheetValue.value = action.value
 		}
 	}
 
 	private fun setHeaderPeekHeight(height: Float) {
-		_headerPeekHeight.value = height
+		headerPeekHeight.value = height
 	}
 
 	suspend fun hasSeenAllStatistics() {
@@ -232,16 +233,18 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	@OptIn(ExperimentalMaterial3Api::class)
 	private fun showStatisticChart(statistic: StatisticID) {
-		_bottomSheetValue.value = SheetValue.PartiallyExpanded
-		_selectedStatistic.value = statistic
+		bottomSheetValue.value = SheetValue.PartiallyExpanded
+		selectedStatistic.value = statistic
 
 		viewModelScope.launch {
 			val userData = userDataRepository.userData.first()
-			analyticsClient.trackEvent(StatisticViewed(
-				statisticName = statistic.name,
-				countsH2AsH = !userData.isCountingH2AsHDisabled,
-				countsS2AsS = !userData.isCountingSplitWithBonusAsSplitDisabled,
-			))
+			analyticsClient.trackEvent(
+				StatisticViewed(
+					statisticName = statistic.name,
+					countsH2AsH = !userData.isCountingH2AsHDisabled,
+					countsS2AsS = !userData.isCountingSplitWithBonusAsSplitDisabled,
+				),
+			)
 		}
 	}
 
@@ -258,11 +261,13 @@ class StatisticsDetailsViewModel @Inject constructor(
 	}
 
 	private fun toggleAggregation(newValue: Boolean) {
-		_filter.update {
-			it.copy(aggregation = when (newValue) {
-				true -> TrackableFilter.AggregationFilter.ACCUMULATE
-				false -> TrackableFilter.AggregationFilter.PERIODIC
-			})
+		filter.update {
+			it.copy(
+				aggregation = when (newValue) {
+					true -> TrackableFilter.AggregationFilter.ACCUMULATE
+					false -> TrackableFilter.AggregationFilter.PERIODIC
+				},
+			)
 		}
 	}
 }

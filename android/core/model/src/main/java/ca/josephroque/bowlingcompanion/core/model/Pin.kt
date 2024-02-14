@@ -5,7 +5,8 @@ enum class Pin(val pinCount: Int) {
 	LEFT_THREE_PIN(3),
 	HEAD_PIN(5),
 	RIGHT_THREE_PIN(3),
-	RIGHT_TWO_PIN(2);
+	RIGHT_TWO_PIN(2),
+	;
 
 	companion object {
 		fun fullDeck(): Set<Pin> = entries.toSet()
@@ -23,27 +24,47 @@ fun Set<Pin>.isLeftTap(): Boolean = size == 4 && !contains(Pin.LEFT_TWO_PIN)
 fun Set<Pin>.isRightTap(): Boolean = size == 4 && !contains(Pin.RIGHT_TWO_PIN)
 fun Set<Pin>.isTap(): Boolean = isLeftTap() || isRightTap()
 
-fun Set<Pin>.isLeftChop(): Boolean = size == 3 && contains(Pin.HEAD_PIN) && contains(Pin.LEFT_TWO_PIN) && contains(Pin.LEFT_THREE_PIN)
-fun Set<Pin>.isRightChop(): Boolean = size == 3 && contains(Pin.HEAD_PIN) && contains(Pin.RIGHT_TWO_PIN) && contains(Pin.RIGHT_THREE_PIN)
+fun Set<Pin>.isLeftChop(): Boolean = size == 3 && contains(
+	Pin.HEAD_PIN,
+) && contains(Pin.LEFT_TWO_PIN) && contains(Pin.LEFT_THREE_PIN)
+fun Set<Pin>.isRightChop(): Boolean = size == 3 && contains(
+	Pin.HEAD_PIN,
+) && contains(Pin.RIGHT_TWO_PIN) && contains(Pin.RIGHT_THREE_PIN)
 fun Set<Pin>.isChop(): Boolean = isLeftChop() || isRightChop()
 
-fun Set<Pin>.isLeftSplit(): Boolean = size == 2 && contains(Pin.HEAD_PIN) && contains(Pin.LEFT_THREE_PIN)
-fun Set<Pin>.isLeftSplitWithBonus(): Boolean = size == 3 && contains(Pin.HEAD_PIN) && contains(Pin.LEFT_THREE_PIN) && contains(Pin.RIGHT_TWO_PIN)
-fun Set<Pin>.isRightSplit(): Boolean = size == 2 && contains(Pin.HEAD_PIN) && contains(Pin.RIGHT_THREE_PIN)
-fun Set<Pin>.isRightSplitWithBonus(): Boolean = size == 3 && contains(Pin.HEAD_PIN) && contains(Pin.RIGHT_THREE_PIN) && contains(Pin.LEFT_TWO_PIN)
+fun Set<Pin>.isLeftSplit(): Boolean = size == 2 && contains(
+	Pin.HEAD_PIN,
+) && contains(Pin.LEFT_THREE_PIN)
+fun Set<Pin>.isLeftSplitWithBonus(): Boolean = size == 3 && contains(
+	Pin.HEAD_PIN,
+) && contains(Pin.LEFT_THREE_PIN) && contains(Pin.RIGHT_TWO_PIN)
+fun Set<Pin>.isRightSplit(): Boolean = size == 2 && contains(
+	Pin.HEAD_PIN,
+) && contains(Pin.RIGHT_THREE_PIN)
+fun Set<Pin>.isRightSplitWithBonus(): Boolean = size == 3 && contains(
+	Pin.HEAD_PIN,
+) && contains(Pin.RIGHT_THREE_PIN) && contains(Pin.LEFT_TWO_PIN)
 fun Set<Pin>.isSplit(): Boolean = isLeftSplit() || isRightSplit()
 fun Set<Pin>.isSplitWithBonus(): Boolean = isLeftSplitWithBonus() || isRightSplitWithBonus()
 
-fun Set<Pin>.isHitLeftOfMiddle(): Boolean = !contains(Pin.HEAD_PIN) && !contains(Pin.RIGHT_THREE_PIN) && (contains(Pin.LEFT_TWO_PIN) || contains(Pin.LEFT_THREE_PIN))
-fun Set<Pin>.isHitRightOfMiddle(): Boolean = !contains(Pin.HEAD_PIN) && !contains(Pin.LEFT_THREE_PIN) && (contains(Pin.RIGHT_TWO_PIN) || contains(Pin.RIGHT_THREE_PIN))
+fun Set<Pin>.isHitLeftOfMiddle(): Boolean = !contains(
+	Pin.HEAD_PIN,
+) && !contains(Pin.RIGHT_THREE_PIN) && (contains(Pin.LEFT_TWO_PIN) || contains(Pin.LEFT_THREE_PIN))
+fun Set<Pin>.isHitRightOfMiddle(): Boolean = !contains(
+	Pin.HEAD_PIN,
+) && !contains(Pin.LEFT_THREE_PIN) && (contains(Pin.RIGHT_TWO_PIN) || contains(Pin.RIGHT_THREE_PIN))
 fun Set<Pin>.isMiddleHit(): Boolean = contains(Pin.HEAD_PIN)
 
 fun Set<Pin>.isLeftTwelve(): Boolean = size == 4 && !contains(Pin.RIGHT_THREE_PIN)
 fun Set<Pin>.isRightTwelve(): Boolean = size == 4 && !contains(Pin.LEFT_THREE_PIN)
 fun Set<Pin>.isTwelve(): Boolean = isLeftTwelve() || isRightTwelve()
 
-fun Set<Pin>.isLeftFive(): Boolean = size == 2 && contains(Pin.LEFT_TWO_PIN) && contains(Pin.LEFT_THREE_PIN)
-fun Set<Pin>.isRightFive(): Boolean = size == 2 && contains(Pin.RIGHT_TWO_PIN) && contains(Pin.RIGHT_THREE_PIN)
+fun Set<Pin>.isLeftFive(): Boolean = size == 2 && contains(
+	Pin.LEFT_TWO_PIN,
+) && contains(Pin.LEFT_THREE_PIN)
+fun Set<Pin>.isRightFive(): Boolean = size == 2 && contains(
+	Pin.RIGHT_TWO_PIN,
+) && contains(Pin.RIGHT_THREE_PIN)
 fun Set<Pin>.isFive(): Boolean = isLeftFive() || isRightFive()
 
 fun Set<Pin>.isLeftThree(): Boolean = size == 1 && contains(Pin.LEFT_THREE_PIN)

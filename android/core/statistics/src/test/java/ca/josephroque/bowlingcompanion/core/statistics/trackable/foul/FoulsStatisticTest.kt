@@ -18,15 +18,15 @@ class FoulsStatisticTest {
 				frame(
 					0,
 					listOf(
-						roll(0, emptySet(), didFoul = true)
-					)
+						roll(0, emptySet(), didFoul = true),
+					),
 				),
 				frame(
 					1,
 					listOf(
 						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN), didFoul = true),
 						roll(1, setOf(Pin.HEAD_PIN), didFoul = true),
-					)
+					),
 				),
 			),
 		)
@@ -43,14 +43,14 @@ class FoulsStatisticTest {
 					0,
 					listOf(
 						roll(0, emptySet(), didFoul = false),
-					)
+					),
 				),
 				frame(
 					1,
 					listOf(
 						roll(0, setOf(Pin.LEFT_THREE_PIN, Pin.RIGHT_THREE_PIN), didFoul = false),
 						roll(1, setOf(Pin.HEAD_PIN), didFoul = false),
-					)
+					),
 				),
 			),
 		)

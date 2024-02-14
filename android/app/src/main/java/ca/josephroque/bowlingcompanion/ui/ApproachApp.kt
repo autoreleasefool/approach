@@ -53,14 +53,14 @@ fun ApproachApp(
 						appState.navigateToTopLevelDestination(it)
 						onTabChanged(it)
 					},
-					currentDestination = appState.currentDestination
+					currentDestination = appState.currentDestination,
 				)
-			}
+			},
 		) { padding ->
 			Row(
 				modifier = Modifier
 					.fillMaxSize()
-					.padding(padding)
+					.padding(padding),
 			) {
 				ApproachNavHost(
 					appState = appState,
@@ -78,7 +78,7 @@ private fun ApproachBottomBar(
 	destinations: List<TopLevelDestination>,
 	badgeCount: Map<TopLevelDestination, Int>,
 	onNavigateToDestination: (TopLevelDestination) -> Unit,
-	currentDestination: NavDestination?
+	currentDestination: NavDestination?,
 ) {
 	val isBottomBarVisible = remember { MutableTransitionState(false) }
 	LaunchedEffect(currentDestination?.route) {
@@ -111,7 +111,7 @@ private fun ApproachBottomBar(
 									Badge {
 										Text(badgeNumber.toString())
 									}
-								}
+								},
 							) {
 								Icon(
 									painterResource(destination.unselectedIcon),
@@ -135,7 +135,7 @@ private fun ApproachBottomBar(
 									Badge {
 										Text(badgeNumber.toString())
 									}
-								}
+								},
 							) {
 								Icon(
 									painterResource(destination.selectedIcon),
@@ -150,7 +150,7 @@ private fun ApproachBottomBar(
 							stringResource(destination.iconTextId),
 							style = MaterialTheme.typography.bodyMedium,
 						)
-					}
+					},
 				)
 			}
 		}

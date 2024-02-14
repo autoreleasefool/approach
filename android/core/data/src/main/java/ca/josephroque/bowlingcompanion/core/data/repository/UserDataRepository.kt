@@ -38,5 +38,4 @@ interface UserDataRepository {
 	suspend fun didDismissQuickPlayTip()
 }
 
-fun UserData.hasSeenStatistic(id: StatisticID): Boolean =
-	seenStatisticIds.contains(id.name)
+fun UserData.hasSeenStatistic(id: StatisticID): Boolean = seenStatisticIds.contains(id.name)

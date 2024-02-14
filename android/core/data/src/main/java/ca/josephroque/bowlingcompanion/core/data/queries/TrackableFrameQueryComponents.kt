@@ -12,12 +12,12 @@ data class TrackableFrameQueryComponents(
 
 	fun buildWhereClause(): List<String> {
 		return emptyList()
-//		val whereConditions = mutableListOf<String>()
+// 		val whereConditions = mutableListOf<String>()
 
 		// FIXME: Filter by bowlingBallsUsed
-//		if (filter.bowlingBallsUsed.isNotEmpty()) {}
+// 		if (filter.bowlingBallsUsed.isNotEmpty()) {}
 
-//		return whereConditions
+// 		return whereConditions
 	}
 
 	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues()

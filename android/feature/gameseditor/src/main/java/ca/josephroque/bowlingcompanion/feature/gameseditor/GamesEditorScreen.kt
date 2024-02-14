@@ -33,9 +33,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorTopBar
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetails
 import kotlinx.coroutines.launch
 
@@ -75,26 +75,36 @@ internal fun GamesEditorRoute(
 						is GamesEditorScreenEvent.EditMatchPlay ->
 							onEditMatchPlay(GamesEditorArguments.EditMatchPlay(it.gameId))
 						is GamesEditorScreenEvent.EditGear ->
-							onEditGear(GamesEditorArguments.EditGear(it.gearIds) { ids ->
-								viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
-							})
+							onEditGear(
+								GamesEditorArguments.EditGear(it.gearIds) { ids ->
+									viewModel.handleAction(GamesEditorScreenUiAction.GearUpdated(ids))
+								},
+							)
 						is GamesEditorScreenEvent.EditAlley ->
-							onEditAlley(GamesEditorArguments.EditAlley(it.alleyId) { ids ->
-								viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
-							})
+							onEditAlley(
+								GamesEditorArguments.EditAlley(it.alleyId) { ids ->
+									viewModel.handleAction(GamesEditorScreenUiAction.AlleyUpdated(ids.firstOrNull()))
+								},
+							)
 						is GamesEditorScreenEvent.EditLanes ->
-							onEditLanes(GamesEditorArguments.EditLanes(it.alleyId, it.laneIds) { ids ->
-								viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
-							})
+							onEditLanes(
+								GamesEditorArguments.EditLanes(it.alleyId, it.laneIds) { ids ->
+									viewModel.handleAction(GamesEditorScreenUiAction.LanesUpdated(ids))
+								},
+							)
 						is GamesEditorScreenEvent.ShowGamesSettings ->
-							onShowGamesSettings(GamesEditorArguments.ShowGamesSettings(it.series, it.currentGameId) { seriesAndGame ->
-								viewModel.handleAction(GamesEditorScreenUiAction.SeriesUpdated(seriesAndGame.first))
-								viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(seriesAndGame.second))
-							})
+							onShowGamesSettings(
+								GamesEditorArguments.ShowGamesSettings(it.series, it.currentGameId) { seriesAndGame ->
+									viewModel.handleAction(GamesEditorScreenUiAction.SeriesUpdated(seriesAndGame.first))
+									viewModel.handleAction(GamesEditorScreenUiAction.CurrentGameUpdated(seriesAndGame.second))
+								},
+							)
 						is GamesEditorScreenEvent.EditRolledBall ->
-							onEditRolledBall(GamesEditorArguments.EditRolledBall(it.ballId) { ids ->
-								viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
-							})
+							onEditRolledBall(
+								GamesEditorArguments.EditRolledBall(it.ballId) { ids ->
+									viewModel.handleAction(GamesEditorScreenUiAction.SelectedBallUpdated(ids.firstOrNull()))
+								},
+							)
 						is GamesEditorScreenEvent.ShowStatistics ->
 							onShowStatistics(GamesEditorArguments.ShowStatistics(it.filter))
 						is GamesEditorScreenEvent.ShowBowlerScores ->
@@ -143,7 +153,8 @@ internal fun GamesEditorScreen(
 	}
 
 	val snackBarLockedMessage = stringResource(R.string.game_editor_locked)
-	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded && state.isGameLockSnackBarVisible
+	val isGameLockSnackBarVisible = state is GamesEditorScreenUiState.Loaded &&
+		state.isGameLockSnackBarVisible
 	LaunchedEffect(isGameLockSnackBarVisible) {
 		if (isGameLockSnackBarVisible) {
 			val result = scaffoldState.snackbarHostState.showSnackbar(
@@ -171,7 +182,11 @@ internal fun GamesEditorScreen(
 		},
 		sheetSwipeEnabled = false,
 		sheetDragHandle = {
-			val dragHandleDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.bottom_sheet_drag_handle_description)
+			val dragHandleDescription =
+				stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string
+						.bottom_sheet_drag_handle_description,
+				)
 			Surface(
 				modifier = modifier
 					.padding(vertical = 8.dp)
@@ -183,7 +198,11 @@ internal fun GamesEditorScreen(
 				Box(modifier = Modifier.size(width = 32.dp, height = 4.dp))
 			}
 		},
-		sheetPeekHeight = ((state as? GamesEditorScreenUiState.Loaded)?.headerPeekHeight?.plus(handleHeight.floatValue) ?: 0f).dp,
+		sheetPeekHeight = (
+			(state as? GamesEditorScreenUiState.Loaded)?.headerPeekHeight?.plus(
+				handleHeight.floatValue,
+			) ?: 0f
+			).dp,
 		sheetContent = {
 			when (state) {
 				GamesEditorScreenUiState.Loading -> Unit

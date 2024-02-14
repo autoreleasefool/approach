@@ -30,6 +30,6 @@ fun sendEmail(
 		Intent.createChooser(
 			emailIntent,
 			intentTitle,
-		)
+		),
 	)
 }

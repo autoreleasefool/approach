@@ -25,9 +25,7 @@ import ca.josephroque.bowlingcompanion.feature.settings.navigation.navigateToSta
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.settingsScreen
 import ca.josephroque.bowlingcompanion.feature.settings.navigation.statisticsSettingsScreen
 
-fun NavGraphBuilder.settingsGraph(
-	navController: NavController,
-) {
+fun NavGraphBuilder.settingsGraph(navController: NavController) {
 	settingsScreen(
 		openOpponents = navController::navigateToOpponentsList,
 		openStatisticsSettings = navController::navigateToStatisticsSettings,

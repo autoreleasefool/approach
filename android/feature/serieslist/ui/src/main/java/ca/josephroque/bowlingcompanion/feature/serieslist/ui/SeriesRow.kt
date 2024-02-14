@@ -31,7 +31,6 @@ import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
 import kotlinx.datetime.LocalDate
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 data class ScoreData(
 	val numberOfGames: Int,
@@ -132,14 +131,15 @@ private fun ScoreSummary(
 				} else {
 					Modifier
 						.background(
-							colorResource(RCoreDesign.color.yellow_300).copy(alpha = 0.5F),
+							colorResource(
+								ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_300,
+							).copy(alpha = 0.5F),
 							MaterialTheme.shapes.medium,
 						)
-				}
+				},
 			)
-			.padding(vertical = 2.dp, horizontal = 4.dp)
+			.padding(vertical = 2.dp, horizontal = 4.dp),
 	) {
-
 		Text(
 			text = pluralStringResource(R.plurals.games_count, numberOfGames, numberOfGames),
 			style = MaterialTheme.typography.bodyMedium,
@@ -158,14 +158,12 @@ private fun ScoreSummary(
 }
 
 @Composable
-private fun ScoreChart(
-	seriesLow: Int,
-	seriesHigh: Int,
-	scores: ChartEntryModelProducer,
-) {
+private fun ScoreChart(seriesLow: Int, seriesHigh: Int, scores: ChartEntryModelProducer) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
-			chartColors = listOf(colorResource(RCoreDesign.color.purple_300))
+			chartColors = listOf(
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
 		),
 	) {
 		Chart(
@@ -201,12 +199,14 @@ private fun SeriesItemPreview() {
 					numberOfGames = 4,
 					seriesLow = 215,
 					seriesHigh = 230,
-					model = ChartEntryModelProducer(listOf(
-						entryOf(0, 220),
-						entryOf(1, 230),
-						entryOf(2, 215),
-						entryOf(3, 225),
-					)),
+					model = ChartEntryModelProducer(
+						listOf(
+							entryOf(0, 220),
+							entryOf(1, 230),
+							entryOf(2, 215),
+							entryOf(3, 225),
+						),
+					),
 				),
 				itemSize = SeriesItemSize.DEFAULT,
 				onClick = {},

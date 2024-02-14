@@ -4,21 +4,21 @@ import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.Data
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportUiState
 
 sealed interface DataImportScreenUiState {
-	data object Loading: DataImportScreenUiState
+	data object Loading : DataImportScreenUiState
 
 	data class Loaded(
 		val dataImport: DataImportUiState,
-	): DataImportScreenUiState
+	) : DataImportScreenUiState
 }
 
 sealed interface DataImportScreenUiAction {
-	data object OnAppear: DataImportScreenUiAction
+	data object OnAppear : DataImportScreenUiAction
 
 	data class DataImport(
 		val action: DataImportUiAction,
-	): DataImportScreenUiAction
+	) : DataImportScreenUiAction
 }
 
 sealed interface DataImportScreenEvent {
-	data object Dismissed: DataImportScreenEvent
+	data object Dismissed : DataImportScreenEvent
 }

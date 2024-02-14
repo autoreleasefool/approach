@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.interfaces
 
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 
-interface HighestOfStatistic: Statistic {
+interface HighestOfStatistic : Statistic {
 	var highest: Int
 
 	override val supportsAggregation: Boolean

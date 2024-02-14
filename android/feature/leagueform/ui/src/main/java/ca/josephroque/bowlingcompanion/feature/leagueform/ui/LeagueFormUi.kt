@@ -34,22 +34,26 @@ data class LeagueFormUiState(
 )
 
 sealed interface LeagueFormUiAction {
-	data object BackClicked: LeagueFormUiAction
-	data object DoneClicked: LeagueFormUiAction
+	data object BackClicked : LeagueFormUiAction
+	data object DoneClicked : LeagueFormUiAction
 
-	data object ArchiveClicked: LeagueFormUiAction
-	data object ConfirmArchiveClicked: LeagueFormUiAction
-	data object DismissArchiveClicked: LeagueFormUiAction
+	data object ArchiveClicked : LeagueFormUiAction
+	data object ConfirmArchiveClicked : LeagueFormUiAction
+	data object DismissArchiveClicked : LeagueFormUiAction
 
-	data object DiscardChangesClicked: LeagueFormUiAction
-	data object CancelDiscardChangesClicked: LeagueFormUiAction
+	data object DiscardChangesClicked : LeagueFormUiAction
+	data object CancelDiscardChangesClicked : LeagueFormUiAction
 
-	data class NameChanged(val name: String): LeagueFormUiAction
-	data class RecurrenceChanged(val recurrence: LeagueRecurrence): LeagueFormUiAction
-	data class ExcludeFromStatisticsChanged(val excludeFromStatistics: ExcludeFromStatistics): LeagueFormUiAction
-	data class IncludeAdditionalPinFallChanged(val includeAdditionalPinFall: IncludeAdditionalPinFall): LeagueFormUiAction
-	data class NumberOfGamesChanged(val numberOfGames: Int): LeagueFormUiAction
-	data class GamesPerSeriesChanged(val gamesPerSeries: GamesPerSeries): LeagueFormUiAction
-	data class AdditionalPinFallChanged(val additionalPinFall: Int): LeagueFormUiAction
-	data class AdditionalGamesChanged(val additionalGames: Int): LeagueFormUiAction
+	data class NameChanged(val name: String) : LeagueFormUiAction
+	data class RecurrenceChanged(val recurrence: LeagueRecurrence) : LeagueFormUiAction
+	data class ExcludeFromStatisticsChanged(
+		val excludeFromStatistics: ExcludeFromStatistics,
+	) : LeagueFormUiAction
+	data class IncludeAdditionalPinFallChanged(
+		val includeAdditionalPinFall: IncludeAdditionalPinFall,
+	) : LeagueFormUiAction
+	data class NumberOfGamesChanged(val numberOfGames: Int) : LeagueFormUiAction
+	data class GamesPerSeriesChanged(val gamesPerSeries: GamesPerSeries) : LeagueFormUiAction
+	data class AdditionalPinFallChanged(val additionalPinFall: Int) : LeagueFormUiAction
+	data class AdditionalGamesChanged(val additionalGames: Int) : LeagueFormUiAction
 }

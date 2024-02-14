@@ -14,12 +14,12 @@ import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchiveListItem
 import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchivesListUiAction
 import ca.josephroque.bowlingcompanion.feature.archives.ui.ArchivesListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ArchivesListViewModel @Inject constructor(
@@ -27,11 +27,11 @@ class ArchivesListViewModel @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val gamesRepository: GamesRepository,
-): ApproachViewModel<ArchivesListScreenEvent>() {
-	private val _itemToUnarchive: MutableStateFlow<ArchiveListItem?> = MutableStateFlow(null)
+) : ApproachViewModel<ArchivesListScreenEvent>() {
+	private val itemToUnarchive: MutableStateFlow<ArchiveListItem?> = MutableStateFlow(null)
 
 	val uiState = combine(
-		_itemToUnarchive,
+		itemToUnarchive,
 		bowlersRepository.getArchivedBowlers(),
 		leaguesRepository.getArchivedLeagues(),
 		seriesRepository.getArchivedSeries(),
@@ -39,17 +39,19 @@ class ArchivesListViewModel @Inject constructor(
 	) { itemToUnarchive, bowlers, leagues, series, games ->
 		ArchivesListScreenUiState.Loaded(
 			archivesList = ArchivesListUiState(
-				list = (bowlers.map(ArchivedBowler::toArchiveListItem) +
+				list = (
+					bowlers.map(ArchivedBowler::toArchiveListItem) +
 						leagues.map(ArchivedLeague::toArchiveListItem) +
 						series.map(ArchivedSeries::toArchiveListItem) +
-						games.map(ArchivedGame::toArchiveListItem)).sortedBy { it.archivedOn },
+						games.map(ArchivedGame::toArchiveListItem)
+					).sortedBy { it.archivedOn },
 				itemToUnarchive = itemToUnarchive,
-			)
+			),
 		)
 	}.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5_000),
-		initialValue = ArchivesListScreenUiState.Loading
+		initialValue = ArchivesListScreenUiState.Loading,
 	)
 
 	fun handleAction(action: ArchivesListScreenUiAction) {
@@ -61,9 +63,9 @@ class ArchivesListViewModel @Inject constructor(
 	private fun handleListAction(action: ArchivesListUiAction) {
 		when (action) {
 			is ArchivesListUiAction.BackClicked -> sendEvent(ArchivesListScreenEvent.Dismissed)
-			is ArchivesListUiAction.UnarchiveClicked -> _itemToUnarchive.value = action.item
+			is ArchivesListUiAction.UnarchiveClicked -> itemToUnarchive.value = action.item
 			is ArchivesListUiAction.ConfirmUnarchiveClicked -> {
-				_itemToUnarchive.value?.let { item ->
+				itemToUnarchive.value?.let { item ->
 					viewModelScope.launch {
 						when (item) {
 							is ArchiveListItem.Bowler -> bowlersRepository.unarchiveBowler(item.id)
@@ -72,7 +74,7 @@ class ArchivesListViewModel @Inject constructor(
 							is ArchiveListItem.Game -> gamesRepository.unarchiveGame(item.id)
 						}
 
-						_itemToUnarchive.value = null
+						itemToUnarchive.value = null
 					}
 				}
 			}
@@ -80,43 +82,39 @@ class ArchivesListViewModel @Inject constructor(
 	}
 }
 
-fun ArchivedBowler.toArchiveListItem(): ArchiveListItem.Bowler =
-	ArchiveListItem.Bowler(
-		id = id,
-		name = name,
-		numberOfLeagues = numberOfLeagues,
-		numberOfSeries = numberOfSeries,
-		numberOfGames = numberOfGames,
-		archivedOn = archivedOn,
-	)
+fun ArchivedBowler.toArchiveListItem(): ArchiveListItem.Bowler = ArchiveListItem.Bowler(
+	id = id,
+	name = name,
+	numberOfLeagues = numberOfLeagues,
+	numberOfSeries = numberOfSeries,
+	numberOfGames = numberOfGames,
+	archivedOn = archivedOn,
+)
 
-fun ArchivedLeague.toArchiveListItem(): ArchiveListItem.League =
-	ArchiveListItem.League(
-		id = id,
-		name = name,
-		bowlerName = bowlerName,
-		numberOfSeries = numberOfSeries,
-		numberOfGames = numberOfGames,
-		archivedOn = archivedOn,
-	)
+fun ArchivedLeague.toArchiveListItem(): ArchiveListItem.League = ArchiveListItem.League(
+	id = id,
+	name = name,
+	bowlerName = bowlerName,
+	numberOfSeries = numberOfSeries,
+	numberOfGames = numberOfGames,
+	archivedOn = archivedOn,
+)
 
-fun ArchivedSeries.toArchiveListItem(): ArchiveListItem.Series =
-	ArchiveListItem.Series(
-		id = id,
-		date = date,
-		bowlerName = bowlerName,
-		leagueName = leagueName,
-		numberOfGames = numberOfGames,
-		archivedOn = archivedOn,
-	)
+fun ArchivedSeries.toArchiveListItem(): ArchiveListItem.Series = ArchiveListItem.Series(
+	id = id,
+	date = date,
+	bowlerName = bowlerName,
+	leagueName = leagueName,
+	numberOfGames = numberOfGames,
+	archivedOn = archivedOn,
+)
 
-fun ArchivedGame.toArchiveListItem(): ArchiveListItem.Game =
-	ArchiveListItem.Game(
-		id = id,
-		scoringMethod = scoringMethod,
-		score = score,
-		bowlerName = bowlerName,
-		leagueName = leagueName,
-		seriesDate = seriesDate,
-		archivedOn = archivedOn,
-	)
+fun ArchivedGame.toArchiveListItem(): ArchiveListItem.Game = ArchiveListItem.Game(
+	id = id,
+	scoringMethod = scoringMethod,
+	score = score,
+	bowlerName = bowlerName,
+	leagueName = leagueName,
+	seriesDate = seriesDate,
+	archivedOn = archivedOn,
+)

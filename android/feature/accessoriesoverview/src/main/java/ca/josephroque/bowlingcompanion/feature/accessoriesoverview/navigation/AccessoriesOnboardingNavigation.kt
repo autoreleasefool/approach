@@ -13,9 +13,7 @@ fun NavController.navigateToAccessoriesOnboarding(navOptions: NavOptions? = null
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.accessoriesOnboardingSheet(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.accessoriesOnboardingSheet(onBackPressed: () -> Unit) {
 	bottomSheet(
 		route = Route.AccessoriesOnboarding.route,
 	) {

@@ -6,7 +6,7 @@ data class StatisticViewed(
 	val statisticName: String,
 	val countsH2AsH: Boolean,
 	val countsS2AsS: Boolean,
-): TrackableEvent {
+) : TrackableEvent {
 	override val name = "Statistics.Viewed"
 	override val payload = mapOf(
 		"StatisticName" to statisticName,

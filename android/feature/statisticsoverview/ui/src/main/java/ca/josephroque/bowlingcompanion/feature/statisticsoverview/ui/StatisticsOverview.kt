@@ -56,7 +56,7 @@ fun StatisticsOverview(
 						style = MaterialTheme.typography.labelSmall,
 					)
 				},
-				modifier = Modifier.align(Alignment.End)
+				modifier = Modifier.align(Alignment.End),
 			)
 		}
 

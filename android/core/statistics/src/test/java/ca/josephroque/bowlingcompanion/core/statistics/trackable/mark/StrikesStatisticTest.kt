@@ -15,20 +15,50 @@ class StrikesStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = StrikesStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(2, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-				frame(2, listOf(
-					roll(0, emptySet()),
-					roll(1, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN, Pin.HEAD_PIN, Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
-				)),
-			)
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN)),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(
+							0,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
+						),
+					),
+				),
+				frame(
+					2,
+					listOf(
+						roll(0, emptySet()),
+						roll(
+							1,
+							setOf(
+								Pin.LEFT_TWO_PIN,
+								Pin.LEFT_THREE_PIN,
+								Pin.HEAD_PIN,
+								Pin.RIGHT_TWO_PIN,
+								Pin.RIGHT_THREE_PIN,
+							),
+						),
+					),
+				),
+			),
 		)
 
 		assertPercentage(statistic, 1, 4, "25% (1)")
@@ -39,14 +69,20 @@ class StrikesStatisticTest {
 		val statistic = assertStatisticAdjusts(
 			statistic = StrikesStatistic(),
 			byFrames = listOf(
-				frame(0, listOf(
-					roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
-					roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.HEAD_PIN)),
-				)),
-				frame(1, listOf(
-					roll(0, setOf(Pin.HEAD_PIN)),
-				)),
-			)
+				frame(
+					0,
+					listOf(
+						roll(0, setOf(Pin.LEFT_TWO_PIN, Pin.LEFT_THREE_PIN)),
+						roll(1, setOf(Pin.RIGHT_TWO_PIN, Pin.RIGHT_THREE_PIN, Pin.HEAD_PIN)),
+					),
+				),
+				frame(
+					1,
+					listOf(
+						roll(0, setOf(Pin.HEAD_PIN)),
+					),
+				),
+			),
 		)
 
 		assertPercentage(statistic, 0, 2, "0%")
@@ -56,7 +92,7 @@ class StrikesStatisticTest {
 	fun testAdjustBySeries_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = StrikesStatistic(),
-			bySeries = mockSeries()
+			bySeries = mockSeries(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}
@@ -65,7 +101,7 @@ class StrikesStatisticTest {
 	fun testAdjustByGame_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = StrikesStatistic(),
-			byGames = mockGames()
+			byGames = mockGames(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}

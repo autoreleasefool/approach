@@ -17,8 +17,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettings
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsTopBar
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun GamesSettingsRoute(
@@ -35,7 +35,9 @@ internal fun GamesSettingsRoute(
 				.flowWithLifecycle(lifecycleOwner.lifecycle, Lifecycle.State.STARTED)
 				.collect {
 					when (it) {
-						is GamesSettingsScreenEvent.DismissedWithResult -> onDismissWithResult(it.series to it.currentGame)
+						is GamesSettingsScreenEvent.DismissedWithResult -> onDismissWithResult(
+							it.series to it.currentGame,
+						)
 					}
 				}
 		}

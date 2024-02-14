@@ -35,7 +35,6 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.FormSec
 import ca.josephroque.bowlingcompanion.core.designsystem.components.form.PickableResourceCard
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ui.AvatarImage
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 
 @Composable
 fun GearForm(
@@ -73,7 +72,13 @@ fun GearForm(
 
 			PickableResourceCard(
 				resourceName = stringResource(R.string.gear_form_section_owner),
-				selectedName = if (state.owner == null) stringResource(R.string.gear_form_owner_none) else state.owner.name,
+				selectedName = if (state.owner == null) {
+					stringResource(
+						R.string.gear_form_owner_none,
+					)
+				} else {
+					state.owner.name
+				},
 				onClick = { onAction(GearFormUiAction.OwnerClicked) },
 			)
 		}
@@ -102,7 +107,7 @@ fun GearForm(
 			) {
 				AvatarImage(
 					avatar = state.avatar,
-					modifier = Modifier.size(48.dp)
+					modifier = Modifier.size(48.dp),
 				)
 
 				Text(
@@ -113,7 +118,9 @@ fun GearForm(
 				)
 
 				Icon(
-					painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_chevron_right),
+					painter = painterResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_chevron_right,
+					),
 					contentDescription = null,
 					tint = MaterialTheme.colorScheme.onSurfaceVariant,
 				)
@@ -127,7 +134,11 @@ fun GearForm(
 					.padding(top = 16.dp)
 					.fillMaxWidth()
 					.padding(horizontal = 16.dp),
-				colors = ButtonDefaults.buttonColors(containerColor = colorResource(id = RCoreDesign.color.destructive)),
+				colors = ButtonDefaults.buttonColors(
+					containerColor = colorResource(
+						id = ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+					),
+				),
 			) {
 				Text(text = stringResource(id = R.string.gear_form_delete))
 			}
@@ -147,7 +158,9 @@ private fun NameTextField(
 		onValueChange = onNameChanged,
 		leadingIcon = {
 			Icon(
-				painter = painterResource(RCoreDesign.drawable.ic_label),
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_label,
+				),
 				contentDescription = null,
 				tint = MaterialTheme.colorScheme.onSurfaceVariant,
 			)
@@ -155,7 +168,7 @@ private fun NameTextField(
 		label = {
 			Text(
 				text = stringResource(R.string.gear_form_name),
-				style = MaterialTheme.typography.bodyLarge
+				style = MaterialTheme.typography.bodyLarge,
 			)
 		},
 		singleLine = true,
@@ -176,7 +189,7 @@ private fun NameTextField(
 				Icon(
 					Icons.Default.Warning,
 					tint = MaterialTheme.colorScheme.error,
-					contentDescription = null
+					contentDescription = null,
 				)
 			}
 		},
@@ -192,7 +205,7 @@ private fun GearKindPicker(kind: GearKind, onKindChanged: (GearKind) -> Unit) {
 		options = GearKind.entries.toTypedArray(),
 		selected = kind,
 		titleForOption = {
-		  when (it) {
+			when (it) {
 				GearKind.BOWLING_BALL -> stringResource(R.string.gear_property_kind_ball)
 				GearKind.SHOES -> stringResource(R.string.gear_property_kind_shoes)
 				GearKind.TOWEL -> stringResource(R.string.gear_property_kind_towel)

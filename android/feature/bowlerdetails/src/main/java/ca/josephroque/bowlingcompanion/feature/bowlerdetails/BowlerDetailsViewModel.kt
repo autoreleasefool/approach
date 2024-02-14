@@ -23,6 +23,8 @@ import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,8 +35,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 private const val STATISTICS_WIDGET_CONTEXT = "bowler_details"
 
@@ -48,18 +48,18 @@ class BowlerDetailsViewModel @Inject constructor(
 	private val leaguesRepository: LeaguesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<BowlerDetailsScreenEvent>() {
+) : ApproachViewModel<BowlerDetailsScreenEvent>() {
 	private val bowlerId = Route.BowlerDetails.getBowler(savedStateHandle)!!
 
-	private val _leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
+	private val leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
 
-	private val _isHidingWidgets = userDataRepository.userData
+	private val isHidingWidgets = userDataRepository.userData
 		.map { it.isHidingWidgetsInLeaguesList }
 
-	private val _leaguesListState: Flow<LeaguesListUiState> = combine(
+	private val leaguesListState: Flow<LeaguesListUiState> = combine(
 		leaguesRepository.getLeaguesList(bowlerId),
-		_leagueToArchive,
-		_isHidingWidgets,
+		leagueToArchive,
+		isHidingWidgets,
 	) { leaguesList, leagueToArchive, isHidingWidgets ->
 		LeaguesListUiState(
 			list = leaguesList,
@@ -68,15 +68,18 @@ class BowlerDetailsViewModel @Inject constructor(
 		)
 	}
 
-	private val _widgets = _isHidingWidgets
+	private val widgets = isHidingWidgets
 		.flatMapLatest {
-			if (it) flowOf(null)
-			else statisticsWidgetsRepository.getStatisticsWidgets(STATISTICS_WIDGET_CONTEXT)
+			if (it) {
+				flowOf(null)
+			} else {
+				statisticsWidgetsRepository.getStatisticsWidgets(STATISTICS_WIDGET_CONTEXT)
+			}
 		}
 
 	val uiState: StateFlow<BowlerDetailsScreenUiState> = combine(
-		_leaguesListState,
-		_widgets,
+		leaguesListState,
+		widgets,
 		bowlersRepository.getBowlerDetails(bowlerId),
 		gearRepository.getBowlerPreferredGear(bowlerId),
 	) { leaguesList, widgets, bowlerDetails, gearList ->
@@ -112,11 +115,17 @@ class BowlerDetailsViewModel @Inject constructor(
 		when (action) {
 			BowlerDetailsUiAction.BackClicked -> sendEvent(BowlerDetailsScreenEvent.Dismissed)
 			BowlerDetailsUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
-			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId))
+			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(
+				BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId),
+			)
 			BowlerDetailsUiAction.ManageGearClicked -> showPreferredGearPicker()
-			is BowlerDetailsUiAction.GearClicked -> sendEvent(BowlerDetailsScreenEvent.ShowGearDetails(action.id))
+			is BowlerDetailsUiAction.GearClicked -> sendEvent(
+				BowlerDetailsScreenEvent.ShowGearDetails(action.id),
+			)
 			is BowlerDetailsUiAction.LeaguesListAction -> handleLeaguesListAction(action.action)
-			is BowlerDetailsUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(action.action)
+			is BowlerDetailsUiAction.StatisticsWidgetLayout -> handleStatisticsWidgetLayoutAction(
+				action.action,
+			)
 		}
 	}
 
@@ -124,7 +133,9 @@ class BowlerDetailsViewModel @Inject constructor(
 		when (action) {
 			LeaguesListUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
 			is LeaguesListUiAction.LeagueClicked -> showLeagueDetails(action.league)
-			is LeaguesListUiAction.LeagueEdited -> sendEvent(BowlerDetailsScreenEvent.EditLeague(action.league.id))
+			is LeaguesListUiAction.LeagueEdited -> sendEvent(
+				BowlerDetailsScreenEvent.EditLeague(action.league.id),
+			)
 			is LeaguesListUiAction.LeagueArchived -> setLeagueArchivePrompt(action.league)
 			is LeaguesListUiAction.ConfirmArchiveClicked -> archiveLeague()
 			is LeaguesListUiAction.DismissArchiveClicked -> setLeagueArchivePrompt(null)
@@ -133,8 +144,12 @@ class BowlerDetailsViewModel @Inject constructor(
 
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
-			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(BowlerDetailsScreenEvent.ShowStatistics(action.widget.id))
-			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId))
+			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
+				BowlerDetailsScreenEvent.ShowStatistics(action.widget.id),
+			)
+			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
+				BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId),
+			)
 		}
 	}
 
@@ -145,11 +160,11 @@ class BowlerDetailsViewModel @Inject constructor(
 	}
 
 	private fun setLeagueArchivePrompt(league: LeagueListItem?) {
-		_leagueToArchive.value = league
+		leagueToArchive.value = league
 	}
 
 	private fun archiveLeague() {
-		val leagueToArchive = _leagueToArchive.value ?: return
+		val leagueToArchive = leagueToArchive.value ?: return
 		viewModelScope.launch {
 			leaguesRepository.archiveLeague(leagueToArchive.id)
 			setLeagueArchivePrompt(null)
@@ -158,7 +173,9 @@ class BowlerDetailsViewModel @Inject constructor(
 
 	private fun showPreferredGearPicker() {
 		val selectedGear =
-			(uiState.value as? BowlerDetailsScreenUiState.Loaded)?.bowler?.gearList?.list?.map { it.id }?.toSet()
+			(uiState.value as? BowlerDetailsScreenUiState.Loaded)?.bowler?.gearList?.list?.map {
+				it.id
+			}?.toSet()
 				?: return
 		sendEvent(BowlerDetailsScreenEvent.ShowPreferredGearPicker(selectedGear))
 	}

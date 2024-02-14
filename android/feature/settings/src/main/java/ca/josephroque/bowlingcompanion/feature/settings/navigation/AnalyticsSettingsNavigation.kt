@@ -11,9 +11,7 @@ fun NavController.navigateToAnalyticsSettings(navOptions: NavOptions? = null) {
 	this.navigate(Route.AnalyticsSettings.route, navOptions)
 }
 
-fun NavGraphBuilder.analyticsSettingsScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.analyticsSettingsScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.AnalyticsSettings.route,
 	) {

@@ -28,7 +28,7 @@ fun StatisticsWidgetEditorTopBar(
 		actions = {
 			TextButton(
 				onClick = { onAction(StatisticsWidgetEditorUiAction.SaveClicked) },
-				enabled = isSaveEnabled
+				enabled = isSaveEnabled,
 			) {
 				Text(
 					text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

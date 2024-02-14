@@ -37,7 +37,7 @@ private fun RoundIconButtonPreview() {
 			Icon(
 				painter = painterResource(R.drawable.ic_settings),
 				contentDescription = null,
-				)
+			)
 		},
 		onClick = {},
 	)

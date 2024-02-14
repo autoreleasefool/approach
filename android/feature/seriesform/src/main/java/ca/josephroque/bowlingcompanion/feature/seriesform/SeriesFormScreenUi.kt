@@ -4,15 +4,15 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiState
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import java.util.UUID
 
 sealed interface SeriesFormScreenUiState {
 	fun hasAnyChanges(): Boolean
 	fun isSavable(): Boolean
 
-	data object Loading: SeriesFormScreenUiState {
+	data object Loading : SeriesFormScreenUiState {
 		override fun hasAnyChanges(): Boolean = false
 		override fun isSavable(): Boolean = false
 	}
@@ -20,7 +20,7 @@ sealed interface SeriesFormScreenUiState {
 	data class Create(
 		val form: SeriesFormUiState,
 		val topBar: SeriesFormTopBarUiState,
-	): SeriesFormScreenUiState {
+	) : SeriesFormScreenUiState {
 		override fun isSavable(): Boolean = true
 		override fun hasAnyChanges(): Boolean = true
 	}
@@ -29,12 +29,10 @@ sealed interface SeriesFormScreenUiState {
 		val initialValue: SeriesUpdate,
 		val form: SeriesFormUiState,
 		val topBar: SeriesFormTopBarUiState,
-	): SeriesFormScreenUiState {
-		override fun isSavable(): Boolean =
-			form.updatedModel(existing = initialValue) != initialValue
+	) : SeriesFormScreenUiState {
+		override fun isSavable(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 
-		override fun hasAnyChanges(): Boolean =
-			form.updatedModel(existing = initialValue) != initialValue
+		override fun hasAnyChanges(): Boolean = form.updatedModel(existing = initialValue) != initialValue
 	}
 }
 
@@ -46,17 +44,17 @@ fun SeriesFormUiState.updatedModel(existing: SeriesUpdate): SeriesUpdate = exist
 )
 
 sealed interface SeriesFormScreenUiAction {
-	data object LoadSeries: SeriesFormScreenUiAction
-	data class AlleyUpdated(val alleyId: UUID?): SeriesFormScreenUiAction
+	data object LoadSeries : SeriesFormScreenUiAction
+	data class AlleyUpdated(val alleyId: UUID?) : SeriesFormScreenUiAction
 
 	data class SeriesForm(
 		val action: SeriesFormUiAction,
-	): SeriesFormScreenUiAction
+	) : SeriesFormScreenUiAction
 }
 
 sealed interface SeriesFormScreenEvent {
-	data class Dismissed(val id: UUID?): SeriesFormScreenEvent
-	data class EditAlley(val alleyId: UUID?): SeriesFormScreenEvent
+	data class Dismissed(val id: UUID?) : SeriesFormScreenEvent
+	data class EditAlley(val alleyId: UUID?) : SeriesFormScreenEvent
 }
 
 fun MutableStateFlow<SeriesFormScreenUiState>.updateForm(

@@ -7,7 +7,7 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 data class ScoreSheetUiState(
 	val game: ScoringGame? = null,
 	val configuration: ScoreSheetConfiguration = ScoreSheetConfiguration(),
-	val selection: Selection = Selection()
+	val selection: Selection = Selection(),
 ) {
 	data class Selection(
 		val frameIndex: Int = 0,
@@ -20,6 +20,6 @@ data class ScoreSheetListUiState(
 )
 
 sealed interface ScoreSheetUiAction {
-	data class RollClicked(val frameIndex: Int, val rollIndex: Int): ScoreSheetUiAction
-	data class FrameClicked(val frameIndex: Int): ScoreSheetUiAction
+	data class RollClicked(val frameIndex: Int, val rollIndex: Int) : ScoreSheetUiAction
+	data class FrameClicked(val frameIndex: Int) : ScoreSheetUiAction
 }

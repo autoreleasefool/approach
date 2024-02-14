@@ -6,22 +6,22 @@ import ca.josephroque.bowlingcompanion.feature.gearlist.ui.GearListUiState
 import java.util.UUID
 
 sealed interface GearListScreenUiState {
-	data object Loading: GearListScreenUiState
+	data object Loading : GearListScreenUiState
 
 	data class Loaded(
 		val gearList: GearListUiState,
 		val topBar: GearListTopBarUiState,
-	): GearListScreenUiState
+	) : GearListScreenUiState
 }
 
 sealed interface GearListScreenUiAction {
 	data class GearListAction(
 		val action: GearListUiAction,
-	): GearListScreenUiAction
+	) : GearListScreenUiAction
 }
 
 sealed interface GearListScreenEvent {
-	data object Dismissed: GearListScreenEvent
-	data object NavigateToAddGear: GearListScreenEvent
-	data class NavigateToEditGear(val id: UUID): GearListScreenEvent
+	data object Dismissed : GearListScreenEvent
+	data object NavigateToAddGear : GearListScreenEvent
+	data class NavigateToEditGear(val id: UUID) : GearListScreenEvent
 }

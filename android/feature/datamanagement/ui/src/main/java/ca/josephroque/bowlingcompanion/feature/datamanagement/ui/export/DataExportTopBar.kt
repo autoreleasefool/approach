@@ -26,6 +26,6 @@ fun DataExportTopBar(
 		},
 		navigationIcon = {
 			BackButton(onClick = { onAction(DataExportUiAction.BackClicked) })
-		}
+		},
 	)
 }

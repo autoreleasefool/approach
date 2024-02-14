@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.navigation
 
 import androidx.annotation.DrawableRes
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.R
 
 enum class TopLevelDestination(
@@ -10,26 +9,26 @@ enum class TopLevelDestination(
 	val iconTextId: Int,
 ) {
 	APP_OVERVIEW(
-		selectedIcon = RCoreDesign.drawable.ic_bowling_ball,
-		unselectedIcon = RCoreDesign.drawable.ic_bowling_ball,
+		selectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball,
+		unselectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_bowling_ball,
 		iconTextId = R.string.destination_overview,
 	),
 
 	STATISTICS_OVERVIEW(
-		selectedIcon = RCoreDesign.drawable.ic_monitoring,
-		unselectedIcon = RCoreDesign.drawable.ic_monitoring,
+		selectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_monitoring,
+		unselectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_monitoring,
 		iconTextId = R.string.destination_statistics,
 	),
 
 	ACCESSORIES_OVERVIEW(
-		selectedIcon = RCoreDesign.drawable.ic_alley,
-		unselectedIcon = RCoreDesign.drawable.ic_alley,
+		selectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_alley,
+		unselectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_alley,
 		iconTextId = R.string.destination_accessories,
 	),
 
 	SETTINGS_OVERVIEW(
-		selectedIcon = RCoreDesign.drawable.ic_settings,
-		unselectedIcon = RCoreDesign.drawable.ic_settings,
+		selectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_settings,
+		unselectedIcon = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_settings,
 		iconTextId = R.string.destination_settings,
 	),
 	;

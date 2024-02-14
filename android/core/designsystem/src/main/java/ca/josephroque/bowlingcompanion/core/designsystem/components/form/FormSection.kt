@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 data class HeaderAction(
 	@StringRes val actionResourceId: Int,
-	val onClick: () -> Unit
+	val onClick: () -> Unit,
 )
 
 @Composable
@@ -43,7 +43,7 @@ fun FormSection(
 					style = MaterialTheme.typography.titleMedium,
 					modifier = Modifier
 						.weight(1f)
-						.alignBy(LastBaseline)
+						.alignBy(LastBaseline),
 				)
 
 				headerAction?.let {

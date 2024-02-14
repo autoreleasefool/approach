@@ -38,7 +38,7 @@ fun MutedEmptyState(
 		modifier = modifier
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp),
-	){
+	) {
 		Image(
 			painter = painterResource(icon),
 			contentDescription = null,

@@ -11,7 +11,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
-import ca.josephroque.bowlingcompanion.core.designsystem.R
 import ca.josephroque.bowlingcompanion.core.statistics.charts.stub.CountableChartDataStub
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
@@ -28,17 +27,16 @@ import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import kotlinx.datetime.LocalDate
 import kotlin.math.roundToInt
+import kotlinx.datetime.LocalDate
 
 @Composable
-fun CountingChart(
-	chartData: CountableChartData,
-	chartModel: ChartEntryModelProducer,
-) {
+fun CountingChart(chartData: CountableChartData, chartModel: ChartEntryModelProducer) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
-			chartColors = listOf(colorResource(R.color.purple_300))
+			chartColors = listOf(
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
 		),
 	) {
 		Chart(
@@ -51,15 +49,16 @@ fun CountingChart(
 					AxisItemPlacer.Horizontal.default(
 						spacing = 2,
 						offset = 2,
-						shiftExtremeTicks = true
+						shiftExtremeTicks = true,
 					)
 				},
 				valueFormatter = remember {
 					AxisValueFormatter { value, _ ->
-						if (chartData.firstKey is ChartEntryKey.Date)
+						if (chartData.firstKey is ChartEntryKey.Date) {
 							LocalDate.fromEpochDays(value.roundToInt()).toString()
-						else
+						} else {
 							"Game ${value.roundToInt()}"
+						}
 					}
 				},
 			),
@@ -69,16 +68,16 @@ fun CountingChart(
 				},
 				valueFormatter = remember {
 					DecimalFormatAxisValueFormatter(pattern = "#;-#")
-//					AxisValueFormatter { value, x ->
-//						value.roundToInt().toString()
-////						if (value.isFinite() && value.roundToInt().toFloat() == value) value.roundToInt().toString() else ""
-//					}
+// 					AxisValueFormatter { value, x ->
+// 						value.roundToInt().toString()
+// //						if (value.isFinite() && value.roundToInt().toFloat() == value) value.roundToInt().toString() else ""
+// 					}
 				},
 			),
 			modifier = Modifier
 				.fillMaxWidth()
 				.fillMaxHeight()
-				.padding(top = 16.dp)
+				.padding(top = 16.dp),
 		)
 	}
 }
@@ -91,7 +90,7 @@ private fun CountingChartPreview() {
 	Surface {
 		CountingChart(
 			chartData = data,
-			chartModel = ChartEntryModelProducer(data.getModelEntries())
+			chartModel = ChartEntryModelProducer(data.getModelEntries()),
 		)
 	}
 }

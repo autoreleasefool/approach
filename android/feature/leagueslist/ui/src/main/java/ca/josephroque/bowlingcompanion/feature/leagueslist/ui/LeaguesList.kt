@@ -13,16 +13,15 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.model.ui.LeagueRow
+import java.util.UUID
 import kotlinx.datetime.LocalDate
 import me.saket.swipe.SwipeAction
 import me.saket.swipe.SwipeableActionsBox
-import java.util.UUID
 
 @Composable
 fun LeaguesList(
@@ -78,14 +77,16 @@ fun LazyListScope.leaguesList(
 		key = { it.id },
 	) {
 		val archiveAction = SwipeAction(
-			icon = painterResource(RCoreDesign.drawable.ic_archive),
-			background = colorResource(RCoreDesign.color.destructive),
+			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
+			background = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+			),
 			onSwipe = { onArchiveLeague(it) },
 		)
 
 		val editAction = SwipeAction(
 			icon = rememberVectorPainter(Icons.Default.Edit),
-			background = colorResource(RCoreDesign.color.blue_300),
+			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
 			onSwipe = { onEditLeague(it) },
 		)
 

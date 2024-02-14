@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 interface ErrorModule {
 	@Binds
-	fun bindsErrorReporting(
-		errorReporting: SentryErrorReporting,
-	): ErrorReporting
+	fun bindsErrorReporting(errorReporting: SentryErrorReporting): ErrorReporting
 }

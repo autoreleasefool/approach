@@ -72,7 +72,7 @@ private fun AvatarFormScreen(
 				onAction = { onAction(AvatarFormScreenUiAction.AvatarFormAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)
-	  },
+		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
 	) { padding ->
 		when (state) {

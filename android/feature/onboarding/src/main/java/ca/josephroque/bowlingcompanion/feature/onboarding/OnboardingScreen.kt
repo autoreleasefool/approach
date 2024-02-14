@@ -50,8 +50,8 @@ private fun OnboardingScreen(
 	onAction: (OnboardingScreenUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	Row (
-		modifier = modifier.fillMaxSize()
+	Row(
+		modifier = modifier.fillMaxSize(),
 	) {
 		when (state) {
 			OnboardingScreenUiState.Loading -> Unit

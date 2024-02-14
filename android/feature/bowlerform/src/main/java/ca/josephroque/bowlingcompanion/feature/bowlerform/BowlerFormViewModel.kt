@@ -14,16 +14,16 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormTopBarUiState
-import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.R
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.BowlerFormUiState
+import ca.josephroque.bowlingcompanion.feature.bowlerform.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class BowlerFormViewModel @Inject constructor(
@@ -31,7 +31,7 @@ class BowlerFormViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<BowlerFormScreenEvent>() {
+) : ApproachViewModel<BowlerFormScreenEvent>() {
 
 	private val _uiState: MutableStateFlow<BowlerFormScreenUiState> =
 		MutableStateFlow(BowlerFormScreenUiState.Loading)
@@ -157,7 +157,7 @@ class BowlerFormViewModel @Inject constructor(
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
-								nameErrorId = if (form.name.isBlank()) R.string.bowler_form_name_missing else null
+								nameErrorId = if (form.name.isBlank()) R.string.bowler_form_name_missing else null,
 							)
 						}
 					}
@@ -171,7 +171,7 @@ class BowlerFormViewModel @Inject constructor(
 					} else {
 						_uiState.updateForm { form ->
 							form.copy(
-								nameErrorId = if (form.name.isBlank()) R.string.bowler_form_name_missing else null
+								nameErrorId = if (form.name.isBlank()) R.string.bowler_form_name_missing else null,
 							)
 						}
 					}

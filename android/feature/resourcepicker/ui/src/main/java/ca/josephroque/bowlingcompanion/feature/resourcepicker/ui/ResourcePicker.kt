@@ -22,7 +22,7 @@ fun ResourcePicker(
 					icon = R.drawable.resource_picker_empty_state,
 					message = R.string.resource_picker_empty_message,
 					action = R.string.resource_picker_empty_action,
-					onActionClick = { onAction(ResourcePickerUiAction.BackClicked) }
+					onActionClick = { onAction(ResourcePickerUiAction.BackClicked) },
 				)
 			}
 		} else {
@@ -35,7 +35,7 @@ fun ResourcePicker(
 					onClick = { onAction(ResourcePickerUiAction.ItemClicked(item.id)) },
 					content = {
 						itemContent(item)
-					}
+					},
 				)
 			}
 		}

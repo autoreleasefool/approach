@@ -1,17 +1,15 @@
 package ca.josephroque.bowlingcompanion.core.model
 
-import kotlinx.datetime.LocalDate
 import java.util.UUID
+import kotlinx.datetime.LocalDate
 
 object Frame {
-	const val NumberOfRolls = 3
-	val RollIndices = 0..<NumberOfRolls
+	const val NUMBER_OF_ROLLS = 3
+	val RollIndices = 0..<NUMBER_OF_ROLLS
 
-	fun isLastFrame(index: Int): Boolean =
-		index == Game.NumberOfFrames - 1
+	fun isLastFrame(index: Int): Boolean = index == Game.NUMBER_OF_FRAMES - 1
 
-	fun rollIndicesAfter(after: Int): IntRange =
-		(after + 1)..<NumberOfRolls
+	fun rollIndicesAfter(after: Int): IntRange = (after + 1)..<NUMBER_OF_ROLLS
 }
 
 data class ScoreableFrame(
@@ -88,19 +86,22 @@ data class FrameEdit(
 	private val paddedRolls: List<Roll>
 		get() {
 			val rolls = rolls.toMutableList()
-			if (rolls.size < Frame.NumberOfRolls) {
-				rolls.add(Roll(index = rolls.size, pinsDowned = emptySet(), didFoul = false, bowlingBall = null))
+			if (rolls.size < Frame.NUMBER_OF_ROLLS) {
+				rolls.add(
+					Roll(index = rolls.size, pinsDowned = emptySet(), didFoul = false, bowlingBall = null),
+				)
 			}
 			return rolls
 		}
 
 	val firstUntouchedRoll: Int?
 		get() {
-			if (rolls.size >= Frame.NumberOfRolls) return null
-			return if (Frame.isLastFrame(properties.index))
+			if (rolls.size >= Frame.NUMBER_OF_ROLLS) return null
+			return if (Frame.isLastFrame(properties.index)) {
 				rolls.lastIndex + 1
-			else
+			} else {
 				if (deckForRoll(rolls.lastIndex).arePinsCleared()) null else rolls.lastIndex + 1
+			}
 		}
 
 	val lastAccessibleRollIndex: Int
@@ -129,10 +130,11 @@ data class FrameEdit(
 
 fun List<FrameEdit>.nextIndexToRecord(): Int {
 	val lastFrameWithRolls = withIndex().lastOrNull { it.value.rolls.isNotEmpty() } ?: return 0
-	return if (lastFrameWithRolls.value.hasUntouchedRoll)
+	return if (lastFrameWithRolls.value.hasUntouchedRoll) {
 		lastFrameWithRolls.index
-	else
+	} else {
 		minOf(lastFrameWithRolls.index + 1, size - 1)
+	}
 }
 
 fun List<FrameEdit>.nextFrameToRecord(): FrameEdit = this[nextIndexToRecord()]

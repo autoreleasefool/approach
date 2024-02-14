@@ -11,11 +11,11 @@ import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
-import java.util.UUID
 
 inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetails(
 	gameId: UUID,
@@ -92,7 +92,13 @@ fun GamesEditorUiState.selectedFrame() = frames[scoreSheet.selection.frameIndex]
 fun GamesEditorUiState.updateFrameEditor(): GamesEditorUiState {
 	val selection = scoreSheet.selection
 	val frame = frames[selection.frameIndex]
-	val pinsDownLastRoll = if (selection.rollIndex > 0) frame.deckForRoll(selection.rollIndex - 1) else emptySet()
+	val pinsDownLastRoll = if (selection.rollIndex > 0) {
+		frame.deckForRoll(
+			selection.rollIndex - 1,
+		)
+	} else {
+		emptySet()
+	}
 	val lockedPins = if (Frame.isLastFrame(frame.properties.index)) {
 		if (pinsDownLastRoll.arePinsCleared()) emptySet() else pinsDownLastRoll
 	} else {
@@ -108,7 +114,7 @@ fun GamesEditorUiState.updateFrameEditor(): GamesEditorUiState {
 }
 
 fun GamesEditorUiState.updateSelection(frameIndex: Int?, rollIndex: Int?): GamesEditorUiState {
-	var selection = scoreSheet.selection.copy (
+	var selection = scoreSheet.selection.copy(
 		frameIndex = frameIndex ?: scoreSheet.selection.frameIndex,
 		rollIndex = rollIndex ?: scoreSheet.selection.rollIndex,
 	)
@@ -118,10 +124,10 @@ fun GamesEditorUiState.updateSelection(frameIndex: Int?, rollIndex: Int?): Games
 		selection = selection.copy(rollIndex = lastAccessibleRollInFrame)
 	}
 
-
 	val frames = if (frames.doesRollExistInFrame(selection.frameIndex, selection.rollIndex)) {
 		this.frames
-	} else {frames.toMutableList().also {
+	} else {
+		frames.toMutableList().also {
 			it.guaranteeRollExists(
 				frameIndex = selection.frameIndex,
 				rollIndex = selection.rollIndex,
@@ -178,7 +184,11 @@ fun GameDetailsUiState.updateHeader(
 		// show the next roll
 		if (
 			!Roll.isLastRoll(selection.rollIndex) &&
-			(Frame.isLastFrame(selection.frameIndex) || !frames[selection.frameIndex].deckForRoll(selection.rollIndex).arePinsCleared())
+			(
+				Frame.isLastFrame(
+					selection.frameIndex,
+				) || !frames[selection.frameIndex].deckForRoll(selection.rollIndex).arePinsCleared()
+				)
 		) {
 			NextGameEditableElement.Roll(selection.rollIndex + 1)
 		} else {

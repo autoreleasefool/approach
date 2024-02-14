@@ -27,8 +27,8 @@ import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneForm
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormTopBar
 import ca.josephroque.bowlingcompanion.feature.laneform.ui.LaneFormUiAction
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun LaneFormRoute(
@@ -87,7 +87,7 @@ private fun LaneFormScreen(
 		floatingActionButton = {
 			LaneFormFloatingActionButton(
 				onAction = { onAction(LaneFormScreenUiAction.LaneForm(it)) },
-				modifier = Modifier.onGloballyPositioned { fabHeight = it.size.height }
+				modifier = Modifier.onGloballyPositioned { fabHeight = it.size.height },
 			)
 		},
 		modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -103,4 +103,3 @@ private fun LaneFormScreen(
 		}
 	}
 }
-

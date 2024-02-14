@@ -38,9 +38,7 @@ private fun Title(leagueName: String?) {
 }
 
 @Composable
-private fun Actions(
-	onAction: (LeagueFormUiAction) -> Unit,
-) {
+private fun Actions(onAction: (LeagueFormUiAction) -> Unit) {
 	TextButton(onClick = { onAction(LeagueFormUiAction.DoneClicked) }) {
 		Text(
 			text = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.action_save),

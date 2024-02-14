@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.core.data.service
 
 import android.net.Uri
-import kotlinx.coroutines.flow.Flow
 import java.io.File
+import kotlinx.coroutines.flow.Flow
 
 interface DataExportService {
 	val exportDestination: String

@@ -6,22 +6,22 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.ui.ResourcePickerU
 import java.util.UUID
 
 sealed interface ResourcePickerScreenUiState {
-	data object Loading: ResourcePickerScreenUiState
+	data object Loading : ResourcePickerScreenUiState
 
 	data class Loaded(
 		val picker: ResourcePickerUiState,
 		val topBar: ResourcePickerTopBarUiState,
-	): ResourcePickerScreenUiState
+	) : ResourcePickerScreenUiState
 }
 
 sealed interface ResourcePickerScreenUiAction {
-	data object LoadResources: ResourcePickerScreenUiAction
+	data object LoadResources : ResourcePickerScreenUiAction
 
 	data class ResourcePickerAction(
 		val action: ResourcePickerUiAction,
-	): ResourcePickerScreenUiAction
+	) : ResourcePickerScreenUiAction
 }
 
 sealed interface ResourcePickerScreenEvent {
-	data class Dismissed(val result: Set<UUID>): ResourcePickerScreenEvent
+	data class Dismissed(val result: Set<UUID>) : ResourcePickerScreenEvent
 }

@@ -17,17 +17,17 @@ import ca.josephroque.bowlingcompanion.core.model.AlleyPinBase
 import ca.josephroque.bowlingcompanion.core.model.AlleyPinFall
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.alleyform.ui.R
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiAction
 import ca.josephroque.bowlingcompanion.feature.alleyform.ui.AlleyFormUiState
+import ca.josephroque.bowlingcompanion.feature.alleyform.ui.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
-import javax.inject.Inject
 
 @HiltViewModel
 class AlleyFormViewModel @Inject constructor(
@@ -36,7 +36,7 @@ class AlleyFormViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val recentlyUsedRepository: RecentlyUsedRepository,
 	private val analyticsClient: AnalyticsClient,
-): ApproachViewModel<AlleyFormScreenEvent>() {
+) : ApproachViewModel<AlleyFormScreenEvent>() {
 	private val isEditing = Route.EditAlley.getAlley(savedStateHandle) != null
 	private val alleyId = Route.EditAlley.getAlley(savedStateHandle) ?: UUID.randomUUID().also {
 		savedStateHandle[Route.EditAlley.ARG_ALLEY] = it.toString()
@@ -156,10 +156,14 @@ class AlleyFormViewModel @Inject constructor(
 					lanesRepository.setAlleyLanes(alley.id, alley.lanes)
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
-					analyticsClient.trackEvent(AlleyCreated(
-						withLocation = false, // FIXME: add location
-						numberOfLanes = alley.lanes.size,
-					))
+
+					// FIXME: add location
+					analyticsClient.trackEvent(
+						AlleyCreated(
+							withLocation = false,
+							numberOfLanes = alley.lanes.size,
+						),
+					)
 				} else {
 					_uiState.updateForm {
 						it.copy(
@@ -174,10 +178,13 @@ class AlleyFormViewModel @Inject constructor(
 					recentlyUsedRepository.didRecentlyUseAlley(alley.id)
 					sendEvent(AlleyFormScreenEvent.Dismissed)
 
-					analyticsClient.trackEvent(AlleyUpdated(
-						withLocation = false, // FIXME: add location
-						numberOfLanes = alley.lanes.size,
-					))
+					// FIXME: add location
+					analyticsClient.trackEvent(
+						AlleyUpdated(
+							withLocation = false,
+							numberOfLanes = alley.lanes.size,
+						),
+					)
 				} else {
 					_uiState.updateForm {
 						it.copy(
@@ -197,11 +204,15 @@ class AlleyFormViewModel @Inject constructor(
 	}
 
 	private fun manageLanes() {
-		sendEvent(AlleyFormScreenEvent.ManageLanes(existingLanes = when (val state = _uiState.value) {
-			AlleyFormScreenUiState.Loading -> return
-			is AlleyFormScreenUiState.Create -> state.form.lanes.map(LaneListItem::id)
-			is AlleyFormScreenUiState.Edit -> state.form.lanes.map(LaneListItem::id)
-		}))
+		sendEvent(
+			AlleyFormScreenEvent.ManageLanes(
+				existingLanes = when (val state = _uiState.value) {
+					AlleyFormScreenUiState.Loading -> return
+					is AlleyFormScreenUiState.Create -> state.form.lanes.map(LaneListItem::id)
+					is AlleyFormScreenUiState.Edit -> state.form.lanes.map(LaneListItem::id)
+				},
+			),
+		)
 	}
 
 	private fun updateName(name: String) {

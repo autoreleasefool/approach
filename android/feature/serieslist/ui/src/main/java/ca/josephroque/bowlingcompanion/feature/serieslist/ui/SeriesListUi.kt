@@ -3,8 +3,8 @@ package ca.josephroque.bowlingcompanion.feature.serieslist.ui
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
-import kotlinx.datetime.LocalDate
 import java.util.UUID
+import kotlinx.datetime.LocalDate
 
 data class SeriesListChartItem(
 	val id: UUID,
@@ -24,12 +24,12 @@ data class SeriesListUiState(
 )
 
 sealed interface SeriesListUiAction {
-	data object AddSeriesClicked: SeriesListUiAction
+	data object AddSeriesClicked : SeriesListUiAction
 
-	data class SeriesClicked(val id: UUID): SeriesListUiAction
-	data class EditSeriesClicked(val id: UUID): SeriesListUiAction
-	data class ArchiveSeriesClicked(val series: SeriesListChartItem): SeriesListUiAction
+	data class SeriesClicked(val id: UUID) : SeriesListUiAction
+	data class EditSeriesClicked(val id: UUID) : SeriesListUiAction
+	data class ArchiveSeriesClicked(val series: SeriesListChartItem) : SeriesListUiAction
 
-	data object ConfirmArchiveClicked: SeriesListUiAction
-	data object DismissArchiveClicked: SeriesListUiAction
+	data object ConfirmArchiveClicked : SeriesListUiAction
+	data object DismissArchiveClicked : SeriesListUiAction
 }

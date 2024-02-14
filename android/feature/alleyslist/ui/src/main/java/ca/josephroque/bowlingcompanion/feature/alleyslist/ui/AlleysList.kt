@@ -66,7 +66,9 @@ fun LazyListScope.alleysList(
 		val deleteAction = onAlleyDelete?.let {
 			SwipeAction(
 				icon = rememberVectorPainter(Icons.Filled.Delete),
-				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+				background = colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+				),
 				onSwipe = { it(alley) },
 			)
 		}

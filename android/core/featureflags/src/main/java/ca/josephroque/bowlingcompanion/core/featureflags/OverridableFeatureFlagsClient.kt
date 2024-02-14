@@ -2,7 +2,7 @@ package ca.josephroque.bowlingcompanion.core.featureflags
 
 import javax.inject.Inject
 
-class OverridableFeatureFlagsClient @Inject constructor(): FeatureFlagsClient {
+class OverridableFeatureFlagsClient @Inject constructor() : FeatureFlagsClient {
 	private val flagOverrides: MutableMap<String, Boolean> = mutableMapOf()
 
 	override fun isEnabled(flag: FeatureFlag): Boolean = if (BuildConfig.DEBUG) {

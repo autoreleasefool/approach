@@ -7,7 +7,7 @@ data class AcknowledgementsUiState(
 )
 
 sealed interface AcknowledgementsUiAction {
-	data object BackClicked: AcknowledgementsUiAction
+	data object BackClicked : AcknowledgementsUiAction
 
-	data class AcknowledgementClicked(val name: String): AcknowledgementsUiAction
+	data class AcknowledgementClicked(val name: String) : AcknowledgementsUiAction
 }

@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.ScoringGame
 import ca.josephroque.bowlingcompanion.core.model.ScoringRoll
 import java.util.UUID
 
-object ScoringGameStub {
+object ScoringStub {
 	fun stub(): ScoringGame = ScoringGame(
 		id = UUID.randomUUID(),
 		index = 0,

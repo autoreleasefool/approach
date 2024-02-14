@@ -6,19 +6,21 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui.onboarding.AccessoriesOnboardingUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class AccessoriesOnboardingViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	@ApplicationScope private val externalScope: CoroutineScope,
-): ApproachViewModel<AccessoriesOnboardingScreenEvent>() {
+) : ApproachViewModel<AccessoriesOnboardingScreenEvent>() {
 	fun handleAction(action: AccessoriesOnboardingScreenUiAction) {
 		when (action) {
 			AccessoriesOnboardingScreenUiAction.Dismissed -> finishAccessoriesOnboarding()
-			is AccessoriesOnboardingScreenUiAction.AccessoriesOnboarding -> handleOnboardingAction(action.action)
+			is AccessoriesOnboardingScreenUiAction.AccessoriesOnboarding -> handleOnboardingAction(
+				action.action,
+			)
 		}
 	}
 

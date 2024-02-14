@@ -11,7 +11,7 @@ import androidx.navigation.Navigator
 typealias NavResultCallback<T> = (T) -> Unit
 
 // A SavedStateHandle key is used to set/get NavResultCallback<T>
-private const val NavResultCallbackKey = "NavResultCallbackKey"
+private const val NAV_RESULT_CALLBACK_KEY = "NavResultCallbackKey"
 
 /**
  * Set the navigation result callback on calling screen.
@@ -19,7 +19,7 @@ private const val NavResultCallbackKey = "NavResultCallbackKey"
  * @param callback The navigation result callback.
  */
 fun <T> NavController.setNavResultCallback(callback: NavResultCallback<T>) {
-	currentBackStackEntry?.savedStateHandle?.set(NavResultCallbackKey, callback)
+	currentBackStackEntry?.savedStateHandle?.set(NAV_RESULT_CALLBACK_KEY, callback)
 }
 
 /**
@@ -28,7 +28,7 @@ fun <T> NavController.setNavResultCallback(callback: NavResultCallback<T>) {
  * @return The navigation result callback if the previous backstack entry exists
  */
 fun <T> NavController.getNavResultCallback(): NavResultCallback<T>? {
-	return previousBackStackEntry?.savedStateHandle?.remove(NavResultCallbackKey)
+	return previousBackStackEntry?.savedStateHandle?.remove(NAV_RESULT_CALLBACK_KEY)
 }
 
 /**
@@ -56,7 +56,7 @@ fun <T> NavController.navigateForResult(
 	route: String,
 	navResultCallback: NavResultCallback<T>,
 	navOptions: NavOptions? = null,
-	navigatorExtras: Navigator.Extras? = null
+	navigatorExtras: Navigator.Extras? = null,
 ) {
 	setNavResultCallback(navResultCallback)
 	navigate(route, navOptions, navigatorExtras)
@@ -75,7 +75,7 @@ fun <T> NavController.navigateForResult(
 fun <T> NavController.navigateForResult(
 	route: String,
 	navResultCallback: NavResultCallback<T>,
-	builder: NavOptionsBuilder.() -> Unit
+	builder: NavOptionsBuilder.() -> Unit,
 ) {
 	setNavResultCallback(navResultCallback)
 	navigate(route, builder)

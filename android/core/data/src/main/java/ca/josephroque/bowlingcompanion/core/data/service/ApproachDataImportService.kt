@@ -13,14 +13,14 @@ import ca.josephroque.bowlingcompanion.core.database.DATABASE_NAME
 import ca.josephroque.bowlingcompanion.core.database.DATABASE_SHM_NAME
 import ca.josephroque.bowlingcompanion.core.database.DATABASE_WAL_NAME
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.util.zip.ZipFile
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 private const val BACKUP_DIRECTORY = "backup"
 
@@ -30,7 +30,7 @@ class ApproachDataImportService @Inject constructor(
 	private val migrationService: MigrationService,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 	@ApplicationContext private val context: Context,
-): DataImportService {
+) : DataImportService {
 
 	private val databaseFile: File
 		get() = fileManager.getDatabasePath(DATABASE_NAME)
@@ -66,7 +66,7 @@ class ApproachDataImportService @Inject constructor(
 
 	private val latestBackupFile: MutableStateFlow<File?> = MutableStateFlow(
 		backupDirectory
-			.listFiles()?.maxOfOrNull { it }
+			.listFiles()?.maxOfOrNull { it },
 	)
 
 	private val temporaryImportFile: File

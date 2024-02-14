@@ -13,24 +13,31 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.StatisticsDetai
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.sourceType
 import java.util.UUID
 
-fun NavController.navigateToStatisticsDetails(filter: TrackableFilter, navOptions: NavOptions? = null) {
+fun NavController.navigateToStatisticsDetails(
+	filter: TrackableFilter,
+	navOptions: NavOptions? = null,
+) {
 	val type = filter.source.sourceType()
 	val id = filter.source.id
 	// FIXME: Parse and pass the rest of the filter as arguments
 	navigateToStatisticsDetails(type, id, navOptions)
 }
 
-fun NavController.navigateToStatisticsDetails(sourceType: StatisticsDetailsSourceType, sourceId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToStatisticsDetails(
+	sourceType: StatisticsDetailsSourceType,
+	sourceId: UUID,
+	navOptions: NavOptions? = null,
+) {
 	this.navigate(Route.StatisticsDetails.createRoute(sourceType.name, sourceId), navOptions)
 }
 
-fun NavGraphBuilder.statisticsDetailsScreen(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.statisticsDetailsScreen(onBackPressed: () -> Unit) {
 	composable(
 		route = Route.StatisticsDetails.route,
 		arguments = listOf(
-			navArgument(Route.StatisticsDetails.ARG_SOURCE_TYPE) { type = NavType.EnumType(StatisticsDetailsSourceType::class.java) },
+			navArgument(Route.StatisticsDetails.ARG_SOURCE_TYPE) {
+				type = NavType.EnumType(StatisticsDetailsSourceType::class.java)
+			},
 			navArgument(Route.StatisticsDetails.ARG_SOURCE_ID) { type = NavType.StringType },
 		),
 	) {

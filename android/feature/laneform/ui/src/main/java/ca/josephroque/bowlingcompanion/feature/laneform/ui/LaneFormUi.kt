@@ -12,24 +12,23 @@ data class LaneFormUiState(
 	val laneLabel: LaneLabelDialogUiState? = null,
 	val isShowingDiscardChangesDialog: Boolean = false,
 ) {
-	fun hasAnyChanges(): Boolean =
-		existingLanes != lanes
+	fun hasAnyChanges(): Boolean = existingLanes != lanes
 }
 
 sealed interface LaneFormUiAction {
-	data object BackClicked: LaneFormUiAction
-	data object DoneClicked: LaneFormUiAction
-	data object SwipeToEditTipDismissed: LaneFormUiAction
-	data object AddLanesClicked: LaneFormUiAction
+	data object BackClicked : LaneFormUiAction
+	data object DoneClicked : LaneFormUiAction
+	data object SwipeToEditTipDismissed : LaneFormUiAction
+	data object AddLanesClicked : LaneFormUiAction
 
-	data object DiscardChangesClicked: LaneFormUiAction
-	data object CancelDiscardChangesClicked: LaneFormUiAction
+	data object DiscardChangesClicked : LaneFormUiAction
+	data object CancelDiscardChangesClicked : LaneFormUiAction
 
-	data class AddLanesDialog(val action: AddLanesDialogUiAction): LaneFormUiAction
-	data class LaneLabelDialog(val action: LaneLabelDialogUiAction): LaneFormUiAction
-	data class LaneClicked(val lane: LaneListItem): LaneFormUiAction
-	data class LaneDeleted(val lane: LaneListItem): LaneFormUiAction
-	data class LaneEdited(val lane: LaneListItem): LaneFormUiAction
+	data class AddLanesDialog(val action: AddLanesDialogUiAction) : LaneFormUiAction
+	data class LaneLabelDialog(val action: LaneLabelDialogUiAction) : LaneFormUiAction
+	data class LaneClicked(val lane: LaneListItem) : LaneFormUiAction
+	data class LaneDeleted(val lane: LaneListItem) : LaneFormUiAction
+	data class LaneEdited(val lane: LaneListItem) : LaneFormUiAction
 }
 
 data class AddLanesDialogUiState(
@@ -37,9 +36,9 @@ data class AddLanesDialogUiState(
 )
 
 sealed interface AddLanesDialogUiAction {
-	data object Dismissed: AddLanesDialogUiAction
-	data class AddLanesClicked(val numberOfLanes: Int): AddLanesDialogUiAction
-	data class NumberOfLanesChanged(val numberOfLanes: Int): AddLanesDialogUiAction
+	data object Dismissed : AddLanesDialogUiAction
+	data class AddLanesClicked(val numberOfLanes: Int) : AddLanesDialogUiAction
+	data class NumberOfLanesChanged(val numberOfLanes: Int) : AddLanesDialogUiAction
 }
 
 data class LaneLabelDialogUiState(
@@ -50,11 +49,11 @@ data class LaneLabelDialogUiState(
 )
 
 sealed interface LaneLabelDialogUiAction {
-	data object PositionClicked: LaneLabelDialogUiAction
-	data object SaveClicked: LaneLabelDialogUiAction
-	data object CancelClicked: LaneLabelDialogUiAction
+	data object PositionClicked : LaneLabelDialogUiAction
+	data object SaveClicked : LaneLabelDialogUiAction
+	data object CancelClicked : LaneLabelDialogUiAction
 
-	data class PositionDropDownToggled(val newValue: Boolean): LaneLabelDialogUiAction
-	data class LabelChanged(val label: String): LaneLabelDialogUiAction
-	data class PositionChanged(val position: LanePosition): LaneLabelDialogUiAction
+	data class PositionDropDownToggled(val newValue: Boolean) : LaneLabelDialogUiAction
+	data class LabelChanged(val label: String) : LaneLabelDialogUiAction
+	data class PositionChanged(val position: LanePosition) : LaneLabelDialogUiAction
 }

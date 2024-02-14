@@ -23,6 +23,6 @@ fun SeriesDetails(
 				seriesHigh = state.seriesHigh,
 				isShowingPlaceholder = state.isShowingPlaceholder,
 			)
-		}
+		},
 	)
 }

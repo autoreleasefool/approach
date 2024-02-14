@@ -18,13 +18,13 @@ fun GamesSettingsTopBar(
 ) {
 	TopAppBar(
 		title = {
-		  Text(
+			Text(
 				text = stringResource(R.string.game_settings_title),
 				style = MaterialTheme.typography.titleMedium,
 			)
 		},
 		navigationIcon = {
-		  BackButton(onClick = { onAction(GamesSettingsUiAction.BackClicked) })
+			BackButton(onClick = { onAction(GamesSettingsUiAction.BackClicked) })
 		},
 		scrollBehavior = scrollBehavior,
 	)

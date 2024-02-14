@@ -34,15 +34,22 @@ fun PickableRow(
 	) {
 		if (isSelected) {
 			Icon(
-				painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box),
-				contentDescription = stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_selected),
-				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_500)
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box,
+				),
+				contentDescription = stringResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_selected,
+				),
+				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_500),
 			)
 		} else {
 			Icon(
-				painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box_outline),
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box_outline,
+				),
 				contentDescription = stringResource(
-					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_deselected),
+					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_deselected,
+				),
 				tint = MaterialTheme.colorScheme.onSurface,
 			)
 		}

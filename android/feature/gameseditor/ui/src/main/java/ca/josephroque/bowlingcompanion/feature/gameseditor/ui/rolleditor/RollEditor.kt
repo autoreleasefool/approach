@@ -99,7 +99,9 @@ private fun BallPicker(
 		
 		IconButton(onClick = onEmptySlotSelected) {
 			Icon(
-				painter = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_circle),
+				painter = painterResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_circle,
+				),
 				contentDescription = stringResource(R.string.cd_select_ball),
 				modifier = Modifier.size(32.dp),
 				tint = Color.White.copy(alpha = 0.7f),
@@ -109,16 +111,15 @@ private fun BallPicker(
 }
 
 @Composable
-private fun FoulChip(
-	isEnabled: Boolean,
-	onClick: () -> Unit,
-) {
+private fun FoulChip(isEnabled: Boolean, onClick: () -> Unit) {
 	AssistChip(
 		onClick = onClick,
 		colors = if (isEnabled) {
 			AssistChipDefaults.assistChipColors(
 				labelColor = Color.White,
-				containerColor = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive).copy(alpha = 0.7f),
+				containerColor = colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+				).copy(alpha = 0.7f),
 			)
 		} else {
 			AssistChipDefaults.assistChipColors(
@@ -127,7 +128,7 @@ private fun FoulChip(
 		},
 		border = if (isEnabled) {
 			AssistChipDefaults.assistChipBorder(
-				borderColor = Color.Transparent,//colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+				borderColor = Color.Transparent,
 			)
 		} else {
 			AssistChipDefaults.assistChipBorder(
@@ -148,7 +149,7 @@ private fun FoulChip(
 					tint = Color.White,
 				)
 			}
-		}
+		},
 	)
 }
 
@@ -161,13 +162,13 @@ private fun RollEditorPreview() {
 				id = UUID.randomUUID(),
 				name = "Red",
 				kind = GearKind.BOWLING_BALL,
-				avatar = Avatar.default()
+				avatar = Avatar.default(),
 			),
 			FrameEdit.Gear(
 				id = UUID.randomUUID(),
 				name = "Red",
 				kind = GearKind.BOWLING_BALL,
-				avatar = Avatar.default()
+				avatar = Avatar.default(),
 			),
 		)
 

@@ -5,7 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 
 data class BowlerUpdated(
 	val kind: BowlerKind,
-): TrackableEvent {
+) : TrackableEvent {
 	override val name = "Bowler.Updated"
 	override val payload = mapOf(
 		"Kind" to kind.name,

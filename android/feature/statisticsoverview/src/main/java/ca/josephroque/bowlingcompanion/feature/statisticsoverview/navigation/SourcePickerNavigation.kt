@@ -3,11 +3,9 @@ package ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.compose.composable
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.statisticsoverview.StatisticsOverviewRoute
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.sourcepicker.SourcePickerRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
@@ -35,7 +33,7 @@ fun NavGraphBuilder.statisticsSourcePickerSheet(
 			onPickLeague = onPickLeague,
 			onPickSeries = onPickSeries,
 			onPickGame = onPickGame,
-			onShowStatistics = onShowStatistics
+			onShowStatistics = onShowStatistics,
 		)
 	}
 }

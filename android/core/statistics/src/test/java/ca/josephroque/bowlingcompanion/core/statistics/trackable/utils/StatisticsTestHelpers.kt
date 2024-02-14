@@ -8,7 +8,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfigur
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerGameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerSeriesConfiguration
 
-fun <S: Statistic> assertStatisticAdjusts(
+fun <S : Statistic> assertStatisticAdjusts(
 	statistic: S,
 	bySeries: List<TrackableSeries> = emptyList(),
 	byGames: List<TrackableGame> = emptyList(),

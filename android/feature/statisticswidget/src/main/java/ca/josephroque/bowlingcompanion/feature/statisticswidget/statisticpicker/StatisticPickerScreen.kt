@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 internal fun StatisticPickerRoute(
 	onDismissWithResult: (StatisticID) -> Unit,
 	modifier: Modifier = Modifier,
-	viewModel: StatisticPickerViewModel = hiltViewModel()
+	viewModel: StatisticPickerViewModel = hiltViewModel(),
 ) {
 	val statisticPickerState by viewModel.uiState.collectAsStateWithLifecycle()
 

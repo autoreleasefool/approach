@@ -32,9 +32,9 @@ fun QuickPlayTopBar(
 			IconButton(onClick = { onAction(QuickPlayUiAction.AddBowlerClicked) }) {
 				Icon(
 					painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_add_person),
-					contentDescription = stringResource(R.string.cd_add_bowler)
+					contentDescription = stringResource(R.string.cd_add_bowler),
 				)
 			}
-		}
+		},
 	)
 }

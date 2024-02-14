@@ -12,7 +12,7 @@ class MatchesWonStatisticTest {
 	fun testAdjustByGame() {
 		val statistic = assertStatisticAdjusts(
 			statistic = MatchesWonStatistic(),
-			byGames = mockGames()
+			byGames = mockGames(),
 		)
 		assertPercentage(statistic, 3, 9, "33.3% (3)")
 	}
@@ -21,7 +21,7 @@ class MatchesWonStatisticTest {
 	fun testAdjustBySeries_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = MatchesWonStatistic(),
-			bySeries = mockSeries()
+			bySeries = mockSeries(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}
@@ -30,7 +30,7 @@ class MatchesWonStatisticTest {
 	fun testAdjustByFrame_DoesNothing() {
 		val statistic = assertStatisticAdjusts(
 			statistic = MatchesWonStatistic(),
-			byFrames = mockFrames()
+			byFrames = mockFrames(),
 		)
 		assertPercentage(statistic, 0, 0, "0%")
 	}

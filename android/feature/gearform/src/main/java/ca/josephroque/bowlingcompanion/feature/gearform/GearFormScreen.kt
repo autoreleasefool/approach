@@ -15,14 +15,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.model.Avatar
+import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearForm
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBar
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.gearform.ui.GearFormUiAction
-import kotlinx.coroutines.launch
 import java.util.UUID
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun GearFormRoute(
@@ -86,7 +86,7 @@ private fun GearFormScreen(
 					GearFormScreenUiState.Loading -> GearFormTopBarUiState()
 					is GearFormScreenUiState.Create -> state.topBar
 					is GearFormScreenUiState.Edit -> state.topBar
-			  },
+				},
 				onAction = { onAction(GearFormScreenUiAction.GearFormAction(it)) },
 				scrollBehavior = scrollBehavior,
 			)

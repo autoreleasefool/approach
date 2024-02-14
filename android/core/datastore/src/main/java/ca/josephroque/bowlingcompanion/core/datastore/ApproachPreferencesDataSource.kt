@@ -5,9 +5,9 @@ import ca.josephroque.bowlingcompanion.core.model.AnalyticsOptInStatus
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
-import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.flow.map
 
 const val RECENTLY_USED_LIMIT = 10
 
@@ -23,14 +23,16 @@ class ApproachPreferencesDataSource @Inject constructor(
 				analyticsOptIn = when (it.analyticsOptIn) {
 					AnalyticsOptInProto.ANALYTICS_OPT_IN_OPTED_IN,
 					AnalyticsOptInProto.UNRECOGNIZED,
-					null -> AnalyticsOptInStatus.OPTED_IN
+					null,
+					-> AnalyticsOptInStatus.OPTED_IN
 					AnalyticsOptInProto.ANALYTICS_OPT_IN_OPTED_OUT -> AnalyticsOptInStatus.OPTED_OUT
 				},
 				seriesItemSize = when (it.seriesItemSize) {
 					SeriesItemSizeProto.SERIES_ITEM_SIZE_COMPACT -> SeriesItemSize.COMPACT
 					SeriesItemSizeProto.SERIES_ITEM_SIZE_DEFAULT,
 					SeriesItemSizeProto.UNRECOGNIZED,
-					null -> SeriesItemSize.DEFAULT
+					null,
+					-> SeriesItemSize.DEFAULT
 				},
 				isCountingH2AsHDisabled = it.isCountingH2AsHDisabled,
 				isCountingSplitWithBonusAsSplitDisabled = it.isCountingSplitWithBonusAsSplitDisabled,
@@ -255,7 +257,6 @@ private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source
 		try {
 			UUID.fromString(this.trackableFilterSourceId).let {
 				when (this.trackableFilterSource) {
-
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_BOWLER ->
 						TrackableFilter.Source.Bowler(it)
 					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_LEAGUE ->
@@ -266,7 +267,8 @@ private fun UserPreferences.parseTrackableFilterSource(): TrackableFilter.Source
 						TrackableFilter.Source.Game(it)
 					null,
 					TrackableFilterSourceProto.UNRECOGNIZED,
-					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_NONE -> null
+					TrackableFilterSourceProto.TRACKABLE_FILTER_SOURCE_NONE,
+					-> null
 				}
 			}
 		} catch (ex: Exception) {

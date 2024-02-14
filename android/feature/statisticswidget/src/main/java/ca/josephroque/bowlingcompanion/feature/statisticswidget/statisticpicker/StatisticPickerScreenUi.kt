@@ -9,9 +9,9 @@ data class StatisticPickerScreenUiState(
 )
 
 sealed interface StatisticPickerScreenUiAction {
-	data class StatisticPicker(val action: StatisticPickerUiAction): StatisticPickerScreenUiAction
+	data class StatisticPicker(val action: StatisticPickerUiAction) : StatisticPickerScreenUiAction
 }
 
 sealed interface StatisticPickerScreenEvent {
-	data class Dismissed(val result: StatisticID): StatisticPickerScreenEvent
+	data class Dismissed(val result: StatisticID) : StatisticPickerScreenEvent
 }

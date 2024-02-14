@@ -8,26 +8,25 @@ sealed interface LaneFormScreenUiState {
 	fun hasAnyChanges(): Boolean
 	fun isSavable(): Boolean
 
-	data object Loading: LaneFormScreenUiState {
+	data object Loading : LaneFormScreenUiState {
 		override fun hasAnyChanges(): Boolean = false
 		override fun isSavable(): Boolean = false
 	}
 
 	data class Loaded(
 		val laneForm: LaneFormUiState,
-	): LaneFormScreenUiState {
+	) : LaneFormScreenUiState {
 		override fun isSavable(): Boolean = true
 
-		override fun hasAnyChanges(): Boolean =
-			laneForm.hasAnyChanges()
+		override fun hasAnyChanges(): Boolean = laneForm.hasAnyChanges()
 	}
 }
 
 sealed interface LaneFormScreenUiAction {
-	data object LoadLanes: LaneFormScreenUiAction
-	data class LaneForm(val action: LaneFormUiAction): LaneFormScreenUiAction
+	data object LoadLanes : LaneFormScreenUiAction
+	data class LaneForm(val action: LaneFormUiAction) : LaneFormScreenUiAction
 }
 
 sealed interface LaneFormScreenEvent {
-	data class DismissedWithResult(val lanes: List<UUID>): LaneFormScreenEvent
+	data class DismissedWithResult(val lanes: List<UUID>) : LaneFormScreenEvent
 }

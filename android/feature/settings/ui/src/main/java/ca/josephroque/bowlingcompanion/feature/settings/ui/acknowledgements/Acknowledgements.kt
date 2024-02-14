@@ -37,10 +37,7 @@ fun Acknowledgements(
 }
 
 @Composable
-private fun AcknowledgementItem(
-	acknowledgement: Acknowledgement,
-	onClick: () -> Unit,
-) {
+private fun AcknowledgementItem(acknowledgement: Acknowledgement, onClick: () -> Unit) {
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()

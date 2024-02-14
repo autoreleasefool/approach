@@ -41,9 +41,7 @@ fun NavGraphBuilder.quickPlay(
 }
 
 @OptIn(ExperimentalMaterialNavigationApi::class)
-fun NavGraphBuilder.quickPlayOnboarding(
-	onBackPressed: () -> Unit,
-) {
+fun NavGraphBuilder.quickPlayOnboarding(onBackPressed: () -> Unit) {
 	bottomSheet(
 		route = Route.QuickPlayOnboarding.route,
 	) {

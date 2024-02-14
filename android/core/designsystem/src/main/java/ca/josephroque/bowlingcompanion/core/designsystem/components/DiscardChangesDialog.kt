@@ -8,10 +8,7 @@ import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun DiscardChangesDialog(
-	onDiscardChanges: () -> Unit,
-	onDismiss: () -> Unit,
-) {
+fun DiscardChangesDialog(onDiscardChanges: () -> Unit, onDismiss: () -> Unit) {
 	AlertDialog(
 		onDismissRequest = onDismiss,
 		title = { Text(text = stringResource(R.string.discard_changes_dialog_title)) },
@@ -25,6 +22,6 @@ fun DiscardChangesDialog(
 			TextButton(onClick = onDismiss) {
 				Text(text = stringResource(R.string.action_keep_editing))
 			}
-		}
+		},
 	)
 }

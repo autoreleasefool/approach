@@ -8,32 +8,26 @@ import kotlinx.datetime.LocalDate
 
 class AvatarConverter {
 	@TypeConverter
-	fun stringToAvatar(value: String?): Avatar? =
-		value?.let(Avatar.Companion::fromString)
+	fun stringToAvatar(value: String?): Avatar? = value?.let(Avatar.Companion::fromString)
 
 	@TypeConverter
-	fun avatarToString(avatar: Avatar?): String? =
-		avatar?.toString()
+	fun avatarToString(avatar: Avatar?): String? = avatar?.toString()
 }
 
 class InstantConverter {
 	@TypeConverter
-	fun longToInstant(value: Long?): Instant? =
-		value?.let(Instant::fromEpochMilliseconds)
+	fun longToInstant(value: Long?): Instant? = value?.let(Instant::fromEpochMilliseconds)
 
 	@TypeConverter
-	fun instantToLong(instant: Instant?): Long? =
-		instant?.toEpochMilliseconds()
+	fun instantToLong(instant: Instant?): Long? = instant?.toEpochMilliseconds()
 }
 
 class LocalDateConverter {
 	@TypeConverter
-	fun stringToLocalDate(value: String?): LocalDate? =
-		value?.let { LocalDate.parse(it) }
+	fun stringToLocalDate(value: String?): LocalDate? = value?.let { LocalDate.parse(it) }
 
 	@TypeConverter
-	fun localDateToString(localDate: LocalDate?): String? =
-		localDate?.toString()
+	fun localDateToString(localDate: LocalDate?): String? = localDate?.toString()
 }
 
 class RollConverter {
@@ -42,6 +36,5 @@ class RollConverter {
 		value?.let { FrameEntity.Roll.fromBitString(it) }
 
 	@TypeConverter
-	fun rollToString(roll: FrameEntity.Roll?): String? =
-		roll?.toBitString()
+	fun rollToString(roll: FrameEntity.Roll?): String? = roll?.toBitString()
 }

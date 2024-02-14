@@ -23,10 +23,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 
 @Composable
-fun ScoreEditor(
-	state: ScoreEditorUiState,
-	onAction: (ScoreEditorUiAction) -> Unit,
-) {
+fun ScoreEditor(state: ScoreEditorUiState, onAction: (ScoreEditorUiAction) -> Unit) {
 	Dialog(
 		onDismissRequest = { onAction(ScoreEditorUiAction.CancelClicked) },
 	) {
@@ -37,7 +34,7 @@ fun ScoreEditor(
 				verticalArrangement = Arrangement.spacedBy(16.dp),
 				modifier = Modifier
 					.fillMaxWidth()
-					.padding(16.dp)
+					.padding(16.dp),
 			) {
 				FormRadioGroup(
 					title = stringResource(R.string.game_editor_scoring_method_title),
@@ -54,7 +51,7 @@ fun ScoreEditor(
 					onOptionSelected = {
 						it ?: return@FormRadioGroup
 						onAction(ScoreEditorUiAction.ScoringMethodChanged(it))
-				  },
+					},
 				)
 
 				when (state.scoringMethod) {
@@ -87,10 +84,7 @@ fun ScoreEditor(
 }
 
 @Composable
-private fun ScoreTextField(
-	score: Int,
-	onScoreChanged: (String) -> Unit,
-) {
+private fun ScoreTextField(score: Int, onScoreChanged: (String) -> Unit) {
 	OutlinedTextField(
 		value = score.toString(),
 		onValueChange = onScoreChanged,

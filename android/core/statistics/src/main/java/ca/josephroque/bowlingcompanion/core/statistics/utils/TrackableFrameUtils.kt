@@ -78,7 +78,7 @@ val TrackableFrame.pinsLeftOnDeck: Set<Pin>
 		val pinsStanding = Pin.fullDeck().toMutableSet()
 		rolls.forEachIndexed { index, roll ->
 			pinsStanding -= roll.pinsDowned
-			if (pinsStanding.isEmpty() && index < Frame.NumberOfRolls - 1) {
+			if (pinsStanding.isEmpty() && index < Frame.NUMBER_OF_ROLLS - 1) {
 				pinsStanding.addAll(Pin.fullDeck())
 			}
 		}

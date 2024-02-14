@@ -24,12 +24,12 @@ object BowlerListItemStub {
 		BowlerListItem(
 			id = UUID.randomUUID(),
 			name = "Joseph",
-			average = 200.0
+			average = 200.0,
 		),
 		BowlerListItem(
 			id = UUID.randomUUID(),
 			name = "Sarah",
-			average = 213.5
+			average = 213.5,
 		),
 	)
 

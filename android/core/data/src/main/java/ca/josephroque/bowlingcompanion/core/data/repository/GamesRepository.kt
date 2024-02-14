@@ -7,8 +7,8 @@ import ca.josephroque.bowlingcompanion.core.model.GameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
-import kotlinx.coroutines.flow.Flow
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
 
 interface GamesRepository {
 	fun getArchivedGames(): Flow<List<ArchivedGame>>
@@ -20,7 +20,10 @@ interface GamesRepository {
 
 	suspend fun setGameScoringMethod(gameId: UUID, scoringMethod: GameScoringMethod, score: Int)
 	suspend fun setGameLockState(gameId: UUID, locked: GameLockState)
-	suspend fun setGameExcludedFromStatistics(gameId: UUID, excludeFromStatistics: ExcludeFromStatistics)
+	suspend fun setGameExcludedFromStatistics(
+		gameId: UUID,
+		excludeFromStatistics: ExcludeFromStatistics,
+	)
 	suspend fun setGameScore(gameId: UUID, score: Int)
 	suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>)
 

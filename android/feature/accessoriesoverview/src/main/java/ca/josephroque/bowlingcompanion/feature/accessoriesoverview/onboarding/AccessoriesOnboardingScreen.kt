@@ -35,9 +35,7 @@ internal fun AccessoriesOnboardingRoute(
 }
 
 @Composable
-private fun AccessoriesOnboardingScreen(
-	onAction: (AccessoriesOnboardingScreenUiAction) -> Unit,
-) {
+private fun AccessoriesOnboardingScreen(onAction: (AccessoriesOnboardingScreenUiAction) -> Unit) {
 	DisposableEffect(Unit) {
 		onDispose {
 			onAction(AccessoriesOnboardingScreenUiAction.Dismissed)

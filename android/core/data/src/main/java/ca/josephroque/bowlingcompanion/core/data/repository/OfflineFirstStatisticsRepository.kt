@@ -11,39 +11,42 @@ import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perFrameConf
 import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perGameConfiguration
 import ca.josephroque.bowlingcompanion.core.data.queries.statistics.perSeriesConfiguration
 import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsDao
-import ca.josephroque.bowlingcompanion.core.statistics.Statistic
-import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.R
+import ca.josephroque.bowlingcompanion.core.statistics.Statistic
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticCategory
 import ca.josephroque.bowlingcompanion.core.statistics.TrackablePerFrameConfiguration
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntry
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticListEntryGroup
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class OfflineFirstStatisticsRepository @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val userDataRepository: UserDataRepository,
 	private val statisticsDao: StatisticsDao,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
-): StatisticsRepository {
-	override suspend fun getSourceDetails(source: TrackableFilter.Source): TrackableFilter.SourceSummaries =
-		withContext(ioDispatcher) {
-			when (source) {
-				is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.id)
-				is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.id)
-				is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.id)
-				is TrackableFilter.Source.Game -> statisticsDao.getGameSourceDetails(source.id)
-			}.asModel()
-		}
+) : StatisticsRepository {
+	override suspend fun getSourceDetails(
+		source: TrackableFilter.Source,
+	): TrackableFilter.SourceSummaries = withContext(ioDispatcher) {
+		when (source) {
+			is TrackableFilter.Source.Bowler -> statisticsDao.getBowlerSourceDetails(source.id)
+			is TrackableFilter.Source.League -> statisticsDao.getLeagueSourceDetails(source.id)
+			is TrackableFilter.Source.Series -> statisticsDao.getSeriesSourceDetails(source.id)
+			is TrackableFilter.Source.Game -> statisticsDao.getGameSourceDetails(source.id)
+		}.asModel()
+	}
 
-	override suspend fun getDefaultSource(): TrackableFilter.SourceSummaries? = withContext(ioDispatcher) {
+	override suspend fun getDefaultSource(): TrackableFilter.SourceSummaries? = withContext(
+		ioDispatcher,
+	) {
 		val bowlers = bowlersRepository.getBowlersList().first()
 		if (bowlers.size != 1) return@withContext null
 
@@ -55,24 +58,38 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		)
 	}
 
-	override suspend fun getStatisticsList(filter: TrackableFilter): List<StatisticListEntryGroup> = withContext(ioDispatcher) {
-		val statistics = allStatistics(filter.source)
-		val userData = userDataRepository.userData.first()
+	override suspend fun getStatisticsList(filter: TrackableFilter): List<StatisticListEntryGroup> =
+		withContext(
+			ioDispatcher,
+		) {
+			val statistics = allStatistics(filter.source)
+			val userData = userDataRepository.userData.first()
 
-		val perSeriesConfiguration = userData.perSeriesConfiguration()
-		TrackableSeriesSequence(filter, statisticsDao)
-			.applySequence { series -> statistics.forEach { it.adjustBySeries(series, perSeriesConfiguration) } }
+			val perSeriesConfiguration = userData.perSeriesConfiguration()
+			TrackableSeriesSequence(filter, statisticsDao)
+				.applySequence { series ->
+					statistics.forEach {
+						it.adjustBySeries(series, perSeriesConfiguration)
+					}
+				}
 
-		val perGameConfiguration = userData.perGameConfiguration()
-		TrackableGamesSequence(filter, statisticsDao)
-			.applySequence { game -> statistics.forEach { it.adjustByGame(game, perGameConfiguration) } }
+			val perGameConfiguration = userData.perGameConfiguration()
+			TrackableGamesSequence(filter, statisticsDao)
+				.applySequence { game -> statistics.forEach { it.adjustByGame(game, perGameConfiguration) } }
 
-		val perFrameConfiguration = userData.perFrameConfiguration()
-		TrackableFramesSequence(filter, statisticsDao)
-			.applySequence { frame -> statistics.forEach { it.adjustByFrame(frame, perFrameConfiguration) } }
+			val perFrameConfiguration = userData.perFrameConfiguration()
+			TrackableFramesSequence(filter, statisticsDao)
+				.applySequence { frame ->
+					statistics.forEach {
+						it.adjustByFrame(
+							frame,
+							perFrameConfiguration,
+						)
+					}
+				}
 
-		statisticsAsListEntries(statistics, userData)
-	}
+			statisticsAsListEntries(statistics, userData)
+		}
 
 	private fun statisticsAsListEntries(
 		statistics: List<Statistic>,
@@ -90,7 +107,13 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 			if (categoryStatistics.isEmpty()) return@mapNotNull null
 			StatisticListEntryGroup(
 				title = category.titleResourceId,
-				description = if (isShowingStatisticDescriptions) category.description(frameConfiguration) else null,
+				description = if (isShowingStatisticDescriptions) {
+					category.description(
+						frameConfiguration,
+					)
+				} else {
+					null
+				},
 				images = emptyList(),
 				entries = categoryStatistics.map {
 					StatisticListEntry(
@@ -100,14 +123,14 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 						valueDescription = it.formattedValueDescription,
 						isHighlightedAsNew = it.isEligibleForNewLabel && !userData.hasSeenStatistic(it.id),
 					)
-				}
+				},
 			)
 		}
 	}
 
 	override suspend fun getStatisticsChart(
 		statistic: Statistic,
-		filter: TrackableFilter
+		filter: TrackableFilter,
 	): StatisticChartContent {
 		if (!statistic.supportsSource(filter.source)) {
 			return StatisticChartContent.ChartUnavailable(statistic.id)
@@ -116,7 +139,10 @@ class OfflineFirstStatisticsRepository @Inject constructor(
 		val userData = userDataRepository.userData.first()
 
 		val chartContent = when (filter.source) {
-			is TrackableFilter.Source.Bowler, is TrackableFilter.Source.League, is TrackableFilter.Source.Game -> {
+			is TrackableFilter.Source.Bowler,
+			is TrackableFilter.Source.League,
+			is TrackableFilter.Source.Game,
+			-> {
 				val entries = buildEntries(
 					statistic = statistic,
 					filter = filter,
@@ -193,4 +219,3 @@ private fun StatisticCategory.description(
 		StatisticCategory.SERIES -> null
 	}
 }
-

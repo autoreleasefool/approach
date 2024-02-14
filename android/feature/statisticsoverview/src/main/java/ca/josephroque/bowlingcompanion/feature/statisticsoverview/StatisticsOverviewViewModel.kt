@@ -3,13 +3,13 @@ package ca.josephroque.bowlingcompanion.feature.statisticsoverview
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.StatisticsOverviewUiAction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 
 @HiltViewModel
-class StatisticsOverviewViewModel @Inject constructor(
-): ApproachViewModel<StatisticsOverviewScreenEvent>() {
+class StatisticsOverviewViewModel @Inject constructor() :
+	ApproachViewModel<StatisticsOverviewScreenEvent>() {
 	private val _uiState: MutableStateFlow<StatisticsOverviewScreenUiState> =
 		MutableStateFlow(StatisticsOverviewScreenUiState.Loaded())
 	val uiState = _uiState.asStateFlow()

@@ -11,7 +11,11 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorArguments
 import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesEditorRoute
 import java.util.UUID
 
-fun NavController.navigateToGamesEditor(seriesIds: List<UUID>, initialGameId: UUID, navOptions: NavOptions? = null) {
+fun NavController.navigateToGamesEditor(
+	seriesIds: List<UUID>,
+	initialGameId: UUID,
+	navOptions: NavOptions? = null,
+) {
 	this.navigate(Route.EditGame.createRoute(seriesIds, initialGameId), navOptions)
 }
 

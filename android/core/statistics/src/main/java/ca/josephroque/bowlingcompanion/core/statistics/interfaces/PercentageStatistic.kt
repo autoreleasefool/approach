@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.interfaces
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.utils.formatAsPercentage
 
-interface PercentageStatistic: Statistic {
+interface PercentageStatistic : Statistic {
 	val numeratorTitleResourceId: Int
 	val denominatorTitleResourceId: Int
 	val includeNumeratorInFormattedValue: Boolean

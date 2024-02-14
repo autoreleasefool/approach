@@ -9,23 +9,24 @@ sealed interface QuickPlayScreenUiState {
 
 	data class Loaded(
 		val quickPlay: QuickPlayUiState = QuickPlayUiState(),
-	): QuickPlayScreenUiState
+	) : QuickPlayScreenUiState
 }
 
 sealed interface QuickPlayScreenUiAction {
-	data object DidAppear: QuickPlayScreenUiAction
+	data object DidAppear : QuickPlayScreenUiAction
 
-	data class AddedBowler(val bowlerId: UUID?): QuickPlayScreenUiAction
-	data class EditedLeague(val bowlerId: UUID, val leagueId: UUID?): QuickPlayScreenUiAction
+	data class AddedBowler(val bowlerId: UUID?) : QuickPlayScreenUiAction
+	data class EditedLeague(val bowlerId: UUID, val leagueId: UUID?) : QuickPlayScreenUiAction
 
-	data class QuickPlay(val action: QuickPlayUiAction): QuickPlayScreenUiAction
+	data class QuickPlay(val action: QuickPlayUiAction) : QuickPlayScreenUiAction
 }
 
 sealed interface QuickPlayScreenEvent {
-	data object Dismissed: QuickPlayScreenEvent
-	data object ShowHowToUseQuickPlay: QuickPlayScreenEvent
+	data object Dismissed : QuickPlayScreenEvent
+	data object ShowHowToUseQuickPlay : QuickPlayScreenEvent
 
-	data class BeganRecording(val seriesIds: List<UUID>, val initialGameId: UUID): QuickPlayScreenEvent
-	data class AddBowler(val existingBowlers: Set<UUID>): QuickPlayScreenEvent
-	data class EditLeague(val bowlerId: UUID, val leagueId: UUID?): QuickPlayScreenEvent
+	data class BeganRecording(val seriesIds: List<UUID>, val initialGameId: UUID) :
+		QuickPlayScreenEvent
+	data class AddBowler(val existingBowlers: Set<UUID>) : QuickPlayScreenEvent
+	data class EditLeague(val bowlerId: UUID, val leagueId: UUID?) : QuickPlayScreenEvent
 }

@@ -66,7 +66,9 @@ fun LazyListScope.gearList(
 		val deleteAction = onGearDelete?.let {
 			SwipeAction(
 				icon = rememberVectorPainter(Icons.Filled.Delete),
-				background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive),
+				background = colorResource(
+					ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+				),
 				onSwipe = { it(gear) },
 			)
 		}

@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import ca.josephroque.bowlingcompanion.core.designsystem.R as RCoreDesign
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.feature.gearlist.ui.components.filterDescription
@@ -57,7 +56,7 @@ fun GearListTopBar(
 					tint = MaterialTheme.colorScheme.onSurface,
 				)
 			}
-		}
+		},
 	)
 }
 
@@ -71,7 +70,13 @@ private fun FilterMenuItem(
 	Box {
 		IconButton(onClick = onShowGearFilter) {
 			Icon(
-				painter = painterResource(if (state.kindFilter == null) RCoreDesign.drawable.ic_filter_off else RCoreDesign.drawable.ic_filter),
+				painter = painterResource(
+					if (state.kindFilter == null) {
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_filter_off
+					} else {
+						ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_filter
+					},
+				),
 				contentDescription = stringResource(R.string.gear_list_filter),
 				tint = MaterialTheme.colorScheme.onSurface,
 			)
@@ -79,7 +84,7 @@ private fun FilterMenuItem(
 
 		DropdownMenu(
 			expanded = state.isFilterMenuVisible,
-			onDismissRequest = onMinimizeGearFilter
+			onDismissRequest = onMinimizeGearFilter,
 		) {
 			GearKind.entries.forEach {
 				DropdownMenuItem(
@@ -93,7 +98,9 @@ private fun FilterMenuItem(
 						if (state.kindFilter == it) {
 							Icon(
 								imageVector = Icons.Default.Check,
-								contentDescription = stringResource(RCoreDesign.string.cd_selected),
+								contentDescription = stringResource(
+									ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_selected,
+								),
 							)
 						}
 					},
@@ -104,7 +111,13 @@ private fun FilterMenuItem(
 			DropdownMenuItem(
 				text = {
 					Text(
-						text = stringResource(if (state.kindFilter == null) RCoreDesign.string.filter_none else RCoreDesign.string.filter_reset),
+						text = stringResource(
+							if (state.kindFilter == null) {
+								ca.josephroque.bowlingcompanion.core.designsystem.R.string.filter_none
+							} else {
+								ca.josephroque.bowlingcompanion.core.designsystem.R.string.filter_reset
+							},
+						),
 						style = MaterialTheme.typography.bodyMedium,
 						color = MaterialTheme.colorScheme.error,
 					)
@@ -113,7 +126,9 @@ private fun FilterMenuItem(
 					if (state.kindFilter == null) {
 						Icon(
 							imageVector = Icons.Default.Check,
-							contentDescription = stringResource(RCoreDesign.string.cd_selected),
+							contentDescription = stringResource(
+								ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_selected,
+							),
 						)
 					}
 				},

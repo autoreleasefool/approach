@@ -6,7 +6,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DeveloperSettingsViewModel @Inject constructor(): ApproachViewModel<DeveloperSettingsScreenEvent>() {
+class DeveloperSettingsViewModel @Inject constructor() :
+	ApproachViewModel<DeveloperSettingsScreenEvent>() {
 	fun handleAction(action: DeveloperSettingsScreenUiAction) {
 		when (action) {
 			is DeveloperSettingsScreenUiAction.DeveloperSettingsAction -> {

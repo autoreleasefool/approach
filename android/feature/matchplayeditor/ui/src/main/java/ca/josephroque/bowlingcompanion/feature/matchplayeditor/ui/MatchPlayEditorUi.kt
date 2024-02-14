@@ -11,10 +11,10 @@ data class MatchPlayEditorUiState(
 )
 
 sealed interface MatchPlayEditorUiAction {
-	data object BackClicked: MatchPlayEditorUiAction
-	data object DoneClicked: MatchPlayEditorUiAction
-	data object OpponentClicked: MatchPlayEditorUiAction
+	data object BackClicked : MatchPlayEditorUiAction
+	data object DoneClicked : MatchPlayEditorUiAction
+	data object OpponentClicked : MatchPlayEditorUiAction
 
-	data class OpponentScoreChanged(val score: String): MatchPlayEditorUiAction
-	data class ResultChanged(val result: MatchPlayResult?): MatchPlayEditorUiAction
+	data class OpponentScoreChanged(val score: String) : MatchPlayEditorUiAction
+	data class ResultChanged(val result: MatchPlayResult?) : MatchPlayEditorUiAction
 }

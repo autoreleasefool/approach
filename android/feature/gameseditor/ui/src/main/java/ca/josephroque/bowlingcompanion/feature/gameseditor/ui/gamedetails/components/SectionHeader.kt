@@ -25,7 +25,7 @@ fun SectionHeader(
 	) {
 		Column(
 			verticalArrangement = Arrangement.spacedBy(4.dp),
-			modifier = Modifier.weight(1f)
+			modifier = Modifier.weight(1f),
 		) {
 			Text(
 				text = title,

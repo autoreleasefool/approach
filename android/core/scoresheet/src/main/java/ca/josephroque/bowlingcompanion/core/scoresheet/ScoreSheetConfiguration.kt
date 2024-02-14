@@ -44,8 +44,10 @@ data class ScoreSheetConfiguration(
 			textSecondaryColorOnBackground = R.color.scoresheet_default_text_secondary_on_background,
 			textFoulColorOnBackground = R.color.scoresheet_default_text_foul_on_background,
 			textHighlightColorOnBackground = R.color.scoresheet_default_text_highlight_on_background,
-			textHighlightSecondaryColorOnBackground = R.color.scoresheet_default_text_highlight_secondary_on_background,
-			textHighlightFoulColorOnBackground = R.color.scoresheet_default_text_highlight_foul_on_background,
+			textHighlightSecondaryColorOnBackground =
+			R.color.scoresheet_default_text_highlight_secondary_on_background,
+			textHighlightFoulColorOnBackground =
+			R.color.scoresheet_default_text_highlight_foul_on_background,
 			textColorOnRail = R.color.scoresheet_default_text_on_rail,
 			textHighlightColorOnRail = R.color.scoresheet_default_text_highlight_on_rail,
 			textColorOnCard = R.color.scoresheet_default_text_on_card,
@@ -56,7 +58,6 @@ data class ScoreSheetConfiguration(
 			cardBackgroundColor = R.color.scoresheet_default_card_background,
 			borderColor = R.color.scoresheet_default_border,
 			strongBorderColor = R.color.scoresheet_default_border_strong,
-		)
+		),
 	}
 }
-

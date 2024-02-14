@@ -6,20 +6,20 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.StatisticsSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.settings.ui.statistics.StatisticsSettingsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class StatisticsSettingsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
-): ApproachViewModel<StatisticsSettingsScreenEvent>() {
+) : ApproachViewModel<StatisticsSettingsScreenEvent>() {
 
-	private val _settingsState: Flow<StatisticsSettingsUiState> = userDataRepository.userData.map {
+	private val settingsState: Flow<StatisticsSettingsUiState> = userDataRepository.userData.map {
 		StatisticsSettingsUiState(
 			isCountingH2AsH = !it.isCountingH2AsHDisabled,
 			isCountingSplitWithBonusAsSplit = !it.isCountingSplitWithBonusAsSplitDisabled,
@@ -30,7 +30,7 @@ class StatisticsSettingsViewModel @Inject constructor(
 		)
 	}
 
-	val uiState: StateFlow<StatisticsSettingsScreenUiState> = _settingsState.map {
+	val uiState: StateFlow<StatisticsSettingsScreenUiState> = settingsState.map {
 		StatisticsSettingsScreenUiState.Loaded(it)
 	}.stateIn(
 		scope = viewModelScope,
@@ -40,7 +40,9 @@ class StatisticsSettingsViewModel @Inject constructor(
 
 	fun handleAction(action: StatisticsSettingsScreenUiAction) {
 		when (action) {
-			is StatisticsSettingsScreenUiAction.StatisticsSettingsAction -> handleStatisticsSettingsAction(action.action)
+			is StatisticsSettingsScreenUiAction.StatisticsSettingsAction -> handleStatisticsSettingsAction(
+				action.action,
+			)
 		}
 	}
 
@@ -48,11 +50,16 @@ class StatisticsSettingsViewModel @Inject constructor(
 		when (action) {
 			StatisticsSettingsUiAction.BackClicked -> sendEvent(StatisticsSettingsScreenEvent.Dismissed)
 			is StatisticsSettingsUiAction.IsCountingH2AsHToggled -> toggleIsCountingH2AsH(action.newValue)
-			is StatisticsSettingsUiAction.IsCountingSplitWithBonusAsSplitToggled -> toggleIsCountingSplitWithBonusAsSplit(action.newValue)
-			is StatisticsSettingsUiAction.IsHidingZeroStatisticsToggled -> toggleIsHidingZeroStatistics(action.newValue)
-			is StatisticsSettingsUiAction.IsHidingWidgetsInBowlersListToggled -> toggleIsHidingWidgetsInBowlersList(action.newValue)
-			is StatisticsSettingsUiAction.IsHidingWidgetsInLeaguesListToggled -> toggleIsHidingWidgetsInLeaguesList(action.newValue)
-			is StatisticsSettingsUiAction.IsHidingStatisticDescriptionsToggled -> toggleIsHidingStatisticDescriptions(action.newValue)
+			is StatisticsSettingsUiAction.IsCountingSplitWithBonusAsSplitToggled ->
+				toggleIsCountingSplitWithBonusAsSplit(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingZeroStatisticsToggled ->
+				toggleIsHidingZeroStatistics(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingWidgetsInBowlersListToggled ->
+				toggleIsHidingWidgetsInBowlersList(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingWidgetsInLeaguesListToggled ->
+				toggleIsHidingWidgetsInLeaguesList(action.newValue)
+			is StatisticsSettingsUiAction.IsHidingStatisticDescriptionsToggled ->
+				toggleIsHidingStatisticDescriptions(action.newValue)
 		}
 	}
 
@@ -92,4 +99,3 @@ class StatisticsSettingsViewModel @Inject constructor(
 		}
 	}
 }
-
