@@ -58,6 +58,8 @@
 
 	<string name="scores_list_title">Scores for Game %1$d</string>
 
+	<string name="score_editor_title">Scoring</string>
+
 	<string name="game_settings_title">Game Settings</string>
 	<string name="game_settings_games">Games</string>
 	<string name="game_settings_bowlers">Bowlers</string>

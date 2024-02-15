@@ -9,7 +9,7 @@ data class ScoreEditorUiState(
 
 sealed interface ScoreEditorUiAction {
 	data object SaveClicked : ScoreEditorUiAction
-	data object CancelClicked : ScoreEditorUiAction
+	data object BackClicked : ScoreEditorUiAction
 
 	data class ScoreChanged(val score: String) : ScoreEditorUiAction
 	data class ScoringMethodChanged(val scoringMethod: GameScoringMethod) : ScoreEditorUiAction

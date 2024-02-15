@@ -29,6 +29,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 	onShowGamesSettings: (GamesEditorArguments.ShowGamesSettings) -> Unit,
 	onShowStatistics: (GamesEditorArguments.ShowStatistics) -> Unit,
 	onShowBowlerScores: (GamesEditorArguments.ShowBowlerScores) -> Unit,
+	onEditScore: (GamesEditorArguments.EditScore) -> Unit,
 ) {
 	composable(
 		route = Route.EditGame.route,
@@ -47,6 +48,7 @@ fun NavGraphBuilder.gamesEditorScreen(
 			onEditRolledBall = onEditRolledBall,
 			onShowStatistics = onShowStatistics,
 			onShowBowlerScores = onShowBowlerScores,
+			onEditScore = onEditScore,
 		)
 	}
 }

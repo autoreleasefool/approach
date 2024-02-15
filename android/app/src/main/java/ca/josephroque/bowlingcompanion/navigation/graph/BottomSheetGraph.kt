@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.accessoriesOnboardingSheet
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.scoreEditorScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.scoresListScreen
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.matchPlayEditorScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
@@ -110,5 +111,8 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 				resourceType = ResourcePickerType.BOWLER,
 			)
 		},
+	)
+	scoreEditorScreen(
+		onDismissWithResult = navController::popBackStackWithResult,
 	)
 }

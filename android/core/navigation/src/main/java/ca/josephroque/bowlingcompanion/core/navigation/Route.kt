@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.navigation
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
@@ -114,6 +115,15 @@ sealed class Route(
 			} ?: emptyList()
 		fun getGameIndex(savedStateHandle: SavedStateHandle): Int? =
 			savedStateHandle.get<Int>("gameIndex")
+	}
+	data object ScoreEditor : Route("edit_score/{scoringMethod}/{score}", isBottomBarVisible = false) {
+		const val ARG_SCORING_METHOD = "scoringMethod"
+		const val ARG_SCORE = "score"
+		fun createRoute(scoringMethod: GameScoringMethod, score: Int): String =
+			"edit_score/${Uri.encode(scoringMethod.name)}/$score"
+		fun getScoringMethod(savedStateHandle: SavedStateHandle) =
+			savedStateHandle.get<GameScoringMethod>("scoringMethod")
+		fun getScore(savedStateHandle: SavedStateHandle) = savedStateHandle.get<Int>("score")
 	}
 
 	// Gear

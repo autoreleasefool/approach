@@ -50,6 +50,7 @@ internal fun GamesEditorRoute(
 	onShowGamesSettings: (GamesEditorArguments.ShowGamesSettings) -> Unit,
 	onShowStatistics: (GamesEditorArguments.ShowStatistics) -> Unit,
 	onShowBowlerScores: (GamesEditorArguments.ShowBowlerScores) -> Unit,
+	onEditScore: (GamesEditorArguments.EditScore) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: GamesEditorViewModel = hiltViewModel(),
 ) {
@@ -109,6 +110,12 @@ internal fun GamesEditorRoute(
 							onShowStatistics(GamesEditorArguments.ShowStatistics(it.filter))
 						is GamesEditorScreenEvent.ShowBowlerScores ->
 							onShowBowlerScores(GamesEditorArguments.ShowBowlerScores(it.series, it.gameIndex))
+						is GamesEditorScreenEvent.EditScore ->
+							onEditScore(
+								GamesEditorArguments.EditScore(it.score, it.scoringMethod) { result ->
+									viewModel.handleAction(GamesEditorScreenUiAction.ScoreUpdated(result.second, result.first))
+								},
+							)
 					}
 				}
 		}

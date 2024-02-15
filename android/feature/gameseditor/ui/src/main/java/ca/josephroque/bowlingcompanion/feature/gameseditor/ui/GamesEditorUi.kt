@@ -7,8 +7,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameE
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiAction
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiState
 import java.util.UUID
 
 data class GamesEditorUiState(
@@ -18,7 +16,6 @@ data class GamesEditorUiState(
 	val rollEditor: RollEditorUiState = RollEditorUiState(),
 	val scoreSheet: ScoreSheetUiState = ScoreSheetUiState(),
 	val manualScore: Int? = null,
-	val scoreEditor: ScoreEditorUiState? = null,
 )
 
 sealed interface GamesEditorUiAction {
@@ -29,5 +26,4 @@ sealed interface GamesEditorUiAction {
 	data class FrameEditor(val action: FrameEditorUiAction) : GamesEditorUiAction
 	data class RollEditor(val action: RollEditorUiAction) : GamesEditorUiAction
 	data class ScoreSheet(val action: ScoreSheetUiAction) : GamesEditorUiAction
-	data class ScoreEditor(val action: ScoreEditorUiAction) : GamesEditorUiAction
 }

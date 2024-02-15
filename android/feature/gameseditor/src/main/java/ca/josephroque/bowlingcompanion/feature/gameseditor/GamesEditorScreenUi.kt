@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor
 
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiAction
@@ -38,6 +39,12 @@ object GamesEditorArguments {
 		val onSeriesUpdated: NavResultCallback<Pair<List<UUID>, UUID>>,
 	)
 
+	data class EditScore(
+		val score: Int,
+		val scoringMethod: GameScoringMethod,
+		val onScoreUpdated: NavResultCallback<Pair<GameScoringMethod, Int>>,
+	)
+
 	data class ShowStatistics(val filter: TrackableFilter)
 
 	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int)
@@ -67,6 +74,10 @@ sealed interface GamesEditorScreenUiAction {
 	data class SeriesUpdated(val series: List<UUID>) : GamesEditorScreenUiAction
 	data class CurrentGameUpdated(val gameId: UUID) : GamesEditorScreenUiAction
 	data class SelectedBallUpdated(val ballId: UUID?) : GamesEditorScreenUiAction
+	data class ScoreUpdated(
+		val score: Int,
+		val scoringMethod: GameScoringMethod,
+	) : GamesEditorScreenUiAction
 }
 
 sealed interface GamesEditorScreenEvent {
@@ -81,6 +92,7 @@ sealed interface GamesEditorScreenEvent {
 		val series: List<UUID>,
 		val currentGameId: UUID,
 	) : GamesEditorScreenEvent
+	data class EditScore(val score: Int, val scoringMethod: GameScoringMethod) : GamesEditorScreenEvent
 	data class ShowStatistics(val filter: TrackableFilter) : GamesEditorScreenEvent
 	data class ShowBowlerScores(val series: List<UUID>, val gameIndex: Int) : GamesEditorScreenEvent
 }

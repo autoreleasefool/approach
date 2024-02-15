@@ -41,7 +41,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.Animat
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiState
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditor
 import java.util.UUID
 
 @Composable
@@ -50,13 +49,6 @@ fun GamesEditor(
 	onAction: (GamesEditorUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	state.scoreEditor?.let { scoreEditor ->
-		ScoreEditor(
-			state = scoreEditor,
-			onAction = { onAction(GamesEditorUiAction.ScoreEditor(it)) },
-		)
-	}
-
 	Column(modifier = modifier.fillMaxSize()) {
 		Box(modifier = Modifier.weight(1f)) {
 			BackgroundImage()
@@ -320,7 +312,6 @@ private fun GamesEditorPreview() {
 					),
 				),
 			),
-			scoreEditor = null,
 			gameId = UUID.randomUUID(),
 		),
 		onAction = {},

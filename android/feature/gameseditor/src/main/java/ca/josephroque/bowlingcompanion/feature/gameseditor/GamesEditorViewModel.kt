@@ -21,7 +21,6 @@ import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
-import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.GearKind
@@ -40,10 +39,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDe
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiAction
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scoreeditor.ScoreEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.ensureRollExists
-import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.getAndUpdateGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.selectedFrame
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setBallRolled
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setDidFoul
@@ -156,6 +152,7 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorScreenUiAction.SeriesUpdated -> updateSeries(action.series)
 			is GamesEditorScreenUiAction.CurrentGameUpdated -> loadGameIfChanged(action.gameId)
 			is GamesEditorScreenUiAction.SelectedBallUpdated -> updateSelectedBall(id = action.ballId)
+			is GamesEditorScreenUiAction.ScoreUpdated -> updateScore(action.score, action.scoringMethod)
 		}
 	}
 
@@ -186,7 +183,6 @@ class GamesEditorViewModel @Inject constructor(
 			is GamesEditorUiAction.FrameEditor -> handleFrameEditorAction(action.action)
 			is GamesEditorUiAction.RollEditor -> handleRollEditorAction(action.action)
 			is GamesEditorUiAction.ScoreSheet -> handleScoreSheetAction(action.action)
-			is GamesEditorUiAction.ScoreEditor -> handleScoreEditorAction(action.action)
 		}
 	}
 
@@ -210,17 +206,6 @@ class GamesEditorViewModel @Inject constructor(
 		when (action) {
 			is ScoreSheetUiAction.RollClicked -> updateSelectedRoll(action.frameIndex, action.rollIndex)
 			is ScoreSheetUiAction.FrameClicked -> updateSelectedFrame(action.frameIndex)
-		}
-	}
-
-	private fun handleScoreEditorAction(action: ScoreEditorUiAction) {
-		when (action) {
-			ScoreEditorUiAction.CancelClicked -> dismissScoreEditor(didSave = false)
-			ScoreEditorUiAction.SaveClicked -> dismissScoreEditor(didSave = true)
-			is ScoreEditorUiAction.ScoreChanged -> updateScoreEditorScore(score = action.score)
-			is ScoreEditorUiAction.ScoringMethodChanged -> updateScoreEditorScoringMethod(
-				score = action.scoringMethod,
-			)
 		}
 	}
 
@@ -562,14 +547,12 @@ class GamesEditorViewModel @Inject constructor(
 
 		isGameDetailsSheetVisible.value = false
 		val gameDetails = gameDetailsState.value
-		gamesEditorState.updateGamesEditor(gameDetails.gameId) {
-			it.copy(
-				scoreEditor = ScoreEditorUiState(
-					score = gameDetails.scoringMethod.score,
-					scoringMethod = gameDetails.scoringMethod.scoringMethod,
-				),
-			)
-		}
+		sendEvent(
+			GamesEditorScreenEvent.EditScore(
+				score = gameDetails.scoringMethod.score,
+				scoringMethod = gameDetails.scoringMethod.scoringMethod,
+			),
+		)
 	}
 
 	private fun toggleGameLocked(isLocked: Boolean) {
@@ -808,62 +791,41 @@ class GamesEditorViewModel @Inject constructor(
 		saveFrame(gamesEditorState.selectedFrame())
 	}
 
-	private fun updateScoreEditorScore(score: String) {
-		gamesEditorState.update {
-			it.copy(
-				scoreEditor = it.scoreEditor?.copy(
-					score = score.toIntOrNull()?.coerceIn(0, Game.MAX_SCORE) ?: 0,
-				),
-			)
+	private fun updateScore(score: Int, scoringMethod: GameScoringMethod) {
+		if (isGameLocked) {
+			notifyGameLocked()
+			return
 		}
-	}
 
-	private fun updateScoreEditorScoringMethod(score: GameScoringMethod) {
-		gamesEditorState.update {
-			it.copy(
-				scoreEditor = it.scoreEditor?.copy(
-					scoringMethod = score,
-				),
-			)
-		}
-	}
-
-	private fun dismissScoreEditor(didSave: Boolean) {
 		val gameId = currentGameId.value
-		val gamesEditorState = gamesEditorState.getAndUpdateGamesEditor(gameId) {
-			it.copy(scoreEditor = null)
-		}
 
-		val scoreEditor = gamesEditorState.scoreEditor ?: return
-		if (didSave && !isGameLocked) {
-			when (scoreEditor.scoringMethod) {
+		if (scoringMethod != gameDetailsState.value.scoringMethod.scoringMethod) {
+			when (scoringMethod) {
 				GameScoringMethod.MANUAL -> analyticsClient.trackEvent(GameManualScoreSet(eventId = gameId))
 				GameScoringMethod.BY_FRAME -> Unit
 			}
+		}
 
-			this.gamesEditorState.updateGamesEditor(gameId) {
-				it.copy(
-					manualScore = when (scoreEditor.scoringMethod) {
-						GameScoringMethod.MANUAL -> scoreEditor.score
-						GameScoringMethod.BY_FRAME -> null
-					},
-				)
-			}
+		gameDetailsState.updateGameDetails(gameId) {
+			it.copy(
+				scoringMethod = it.scoringMethod.copy(
+					score = score,
+					scoringMethod = scoringMethod,
+				),
+			)
+		}
 
-			viewModelScope.launch {
-				val score = when (scoreEditor.scoringMethod) {
-					GameScoringMethod.MANUAL -> scoreEditor.score
-					GameScoringMethod.BY_FRAME -> scoresRepository.getScore(
-						gamesEditorState.gameId,
-					).first().score ?: 0
-				}
+		gamesEditorState.updateGamesEditor(gameId) {
+			it.copy(
+				manualScore = when (scoringMethod) {
+					GameScoringMethod.MANUAL -> score
+					GameScoringMethod.BY_FRAME -> null
+				},
+			)
+		}
 
-				gamesRepository.setGameScoringMethod(
-					gamesEditorState.gameId,
-					scoreEditor.scoringMethod,
-					score,
-				)
-			}
+		viewModelScope.launch {
+			gamesRepository.setGameScoringMethod(gameId, scoringMethod, score)
 		}
 	}
 

@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.feature.bowlerform.navigation.navigateToN
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesEditorScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesSettingsForResult
+import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToScoreEditorForResult
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToScoresList
 import ca.josephroque.bowlingcompanion.feature.laneform.navigation.laneFormScreen
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.navigation.leagueDetailsScreen
@@ -172,6 +173,13 @@ fun NavGraphBuilder.overviewGraph(
 		},
 		onShowStatistics = { args -> navController.navigateToMidGameStatisticsDetails(args.filter) },
 		onShowBowlerScores = { args -> navController.navigateToScoresList(args.gameIndex, args.series) },
+		onEditScore = { args ->
+			navController.navigateToScoreEditorForResult(
+				args.scoringMethod,
+				args.score,
+				args.onScoreUpdated,
+			)
+		},
 	)
 	statisticsWidgetLayoutEditorScreen(
 		onBackPressed = navController::popBackStack,
