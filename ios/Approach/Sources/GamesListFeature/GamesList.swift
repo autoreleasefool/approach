@@ -85,31 +85,11 @@ public struct GamesList: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case sharing(Sharing.State)
-			case gameEditor(GamesEditor.State)
-			case seriesEditor(SeriesEditor.State)
-		}
-
-		public enum Action {
-			case sharing(Sharing.Action)
-			case gameEditor(GamesEditor.Action)
-			case seriesEditor(SeriesEditor.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.sharing, action: \.sharing) {
-				Sharing()
-			}
-			Scope(state: \.gameEditor, action: \.gameEditor) {
-				GamesEditor()
-			}
-			Scope(state: \.seriesEditor, action: \.seriesEditor) {
-				SeriesEditor()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case sharing(Sharing)
+		case gameEditor(GamesEditor)
+		case seriesEditor(SeriesEditor)
 	}
 
 	public enum ErrorID: Hashable {
@@ -281,9 +261,7 @@ public struct GamesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {

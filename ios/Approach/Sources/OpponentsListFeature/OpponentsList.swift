@@ -80,31 +80,11 @@ public struct OpponentsList: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case details(OpponentDetails.State)
-			case editor(BowlerEditor.State)
-			case sortOrder(SortOrder<Bowler.Ordering>.State)
-		}
-
-		public enum Action {
-			case details(OpponentDetails.Action)
-			case editor(BowlerEditor.Action)
-			case sortOrder(SortOrder<Bowler.Ordering>.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.details, action: \.details) {
-				OpponentDetails()
-			}
-			Scope(state: \.editor, action: \.editor) {
-				BowlerEditor()
-			}
-			Scope(state: \.sortOrder, action: \.sortOrder) {
-				SortOrder()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case details(OpponentDetails)
+		case editor(BowlerEditor)
+		case sortOrder(SortOrder<Bowler.Ordering>)
 	}
 
 	public enum ErrorID: Hashable {
@@ -226,9 +206,7 @@ public struct OpponentsList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

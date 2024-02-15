@@ -82,31 +82,11 @@ public struct GearList: Reducer {
 		public var sortOrder: Gear.Ordering
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case editor(GearEditor.State)
-			case filters(GearFilter.State)
-			case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>.State)
-		}
-
-		public enum Action {
-			case editor(GearEditor.Action)
-			case filters(GearFilter.Action)
-			case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.editor, action: \.editor) {
-				GearEditor()
-			}
-			Scope(state: \.filters, action: \.filters) {
-				GearFilter()
-			}
-			Scope(state: \.sortOrder, action: \.sortOrder) {
-				SortOrder()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case editor(GearEditor)
+		case filters(GearFilter)
+		case sortOrder(SortOrderLibrary.SortOrder<Gear.Ordering>)
 	}
 
 	public enum ErrorID: Hashable {
@@ -234,9 +214,7 @@ public struct GearList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

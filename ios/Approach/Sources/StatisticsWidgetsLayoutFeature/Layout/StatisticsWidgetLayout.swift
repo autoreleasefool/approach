@@ -50,31 +50,11 @@ public struct StatisticsWidgetLayout: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case details(StatisticsDetails.State)
-			case layout(StatisticsWidgetLayoutBuilder.State)
-			case help(StatisticsWidgetHelp.State)
-		}
-
-		public enum Action {
-			case details(StatisticsDetails.Action)
-			case layout(StatisticsWidgetLayoutBuilder.Action)
-			case help(StatisticsWidgetHelp.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.details, action: \.details) {
-				StatisticsDetails()
-			}
-			Scope(state: \.layout, action: \.layout) {
-				StatisticsWidgetLayoutBuilder()
-			}
-			Scope(state: \.help, action: \.help) {
-				StatisticsWidgetHelp()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case details(StatisticsDetails)
+		case layout(StatisticsWidgetLayoutBuilder)
+		case help(StatisticsWidgetHelp)
 	}
 
 	public enum ErrorID: Hashable {
@@ -175,9 +155,7 @@ public struct StatisticsWidgetLayout: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 	}
 
 	private func presentDetails(for widget: StatisticsWidget.Configuration, in state: inout State) -> Effect<Action> {

@@ -106,41 +106,13 @@ public struct BowlersList: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case editor(BowlerEditor.State)
-			case leagues(LeaguesList.State)
-			case sortOrder(SortOrder<Bowler.Ordering>.State)
-			case seriesEditor(SeriesEditor.State)
-			case games(GamesList.State)
-		}
-
-		public enum Action {
-			case editor(BowlerEditor.Action)
-			case leagues(LeaguesList.Action)
-			case sortOrder(SortOrder<Bowler.Ordering>.Action)
-			case seriesEditor(SeriesEditor.Action)
-			case games(GamesList.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.editor, action: \.editor) {
-				BowlerEditor()
-			}
-			Scope(state: \.leagues, action: \.leagues) {
-				LeaguesList()
-			}
-			Scope(state: \.sortOrder, action: \.sortOrder) {
-				SortOrder()
-			}
-			Scope(state: \.seriesEditor, action: \.seriesEditor) {
-				SeriesEditor()
-			}
-			Scope(state: \.games, action: \.games) {
-				GamesList()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case editor(BowlerEditor)
+		case leagues(LeaguesList)
+		case sortOrder(SortOrder<Bowler.Ordering>)
+		case seriesEditor(SeriesEditor)
+		case games(GamesList)
 	}
 
 	public enum ErrorID {
@@ -322,9 +294,7 @@ public struct BowlersList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

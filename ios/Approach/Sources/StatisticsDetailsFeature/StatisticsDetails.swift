@@ -72,26 +72,10 @@ public struct StatisticsDetails: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case list(StatisticsDetailsList.State)
-			case sourcePicker(StatisticsSourcePicker.State)
-		}
-
-		public enum Action {
-			case list(StatisticsDetailsList.Action)
-			case sourcePicker(StatisticsSourcePicker.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.list, action: \.list) {
-				StatisticsDetailsList()
-			}
-			Scope(state: \.sourcePicker, action: \.sourcePicker) {
-				StatisticsSourcePicker()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case list(StatisticsDetailsList)
+		case sourcePicker(StatisticsSourcePicker)
 	}
 
 	public enum CancelID {
@@ -311,9 +295,7 @@ public struct StatisticsDetails: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {
