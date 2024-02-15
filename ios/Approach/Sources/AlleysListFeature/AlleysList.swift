@@ -70,26 +70,10 @@ public struct AlleysList: Reducer {
 		case delegate(DelegateAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case editor(AlleyEditor.State)
-			case filters(AlleysFilter.State)
-		}
-
-		public enum Action {
-			case editor(AlleyEditor.Action)
-			case filters(AlleysFilter.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.editor, action: \.editor) {
-				AlleyEditor()
-			}
-			Scope(state: \.filters, action: \.filters) {
-				AlleysFilter()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case editor(AlleyEditor)
+		case filters(AlleysFilter)
 	}
 
 	public enum ErrorID: Hashable {
@@ -208,9 +192,7 @@ public struct AlleysList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

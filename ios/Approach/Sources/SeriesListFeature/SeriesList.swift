@@ -107,36 +107,12 @@ public struct SeriesList: Reducer {
 		case preBowl
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case seriesEditor(SeriesEditor.State)
-			case leagueEditor(LeagueEditor.State)
-			case games(GamesList.State)
-			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.State)
-		}
-
-		public enum Action {
-			case seriesEditor(SeriesEditor.Action)
-			case leagueEditor(LeagueEditor.Action)
-			case games(GamesList.Action)
-			case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.leagueEditor, action: \.leagueEditor) {
-				LeagueEditor()
-			}
-			Scope(state: \.seriesEditor, action: \.seriesEditor) {
-				SeriesEditor()
-			}
-			Scope(state: \.games, action: \.games) {
-				GamesList()
-			}
-			Scope(state: \.sortOrder, action: \.sortOrder) {
-				SortOrder()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case seriesEditor(SeriesEditor)
+		case leagueEditor(LeagueEditor)
+		case games(GamesList)
+		case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>)
 	}
 
 	public init() {}
@@ -305,9 +281,7 @@ public struct SeriesList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

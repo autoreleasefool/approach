@@ -83,53 +83,15 @@ public struct Settings: Reducer {
 		case binding(BindingAction<State>)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-
-		@ObservableState
-		public enum State: Equatable {
-			case archive(ArchiveList.State)
-			case appIcon(AppIconList.State)
-			case featureFlags(FeatureFlagsList.State)
-			case opponentsList(OpponentsList.State)
-			case statistics(StatisticsSettings.State)
-			case analytics(AnalyticsSettings.State)
-			case export(Export.State)
-		}
-
-		public enum Action {
-			case archive(ArchiveList.Action)
-			case appIcon(AppIconList.Action)
-			case featureFlags(FeatureFlagsList.Action)
-			case opponentsList(OpponentsList.Action)
-			case statistics(StatisticsSettings.Action)
-			case analytics(AnalyticsSettings.Action)
-			case export(Export.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.archive, action: \.archive) {
-				ArchiveList()
-			}
-			Scope(state: \.appIcon, action: \.appIcon) {
-				AppIconList()
-			}
-			Scope(state: \.featureFlags, action: \.featureFlags) {
-				FeatureFlagsList()
-			}
-			Scope(state: \.opponentsList, action: \.opponentsList) {
-				OpponentsList()
-			}
-			Scope(state: \.statistics, action: \.statistics) {
-				StatisticsSettings()
-			}
-			Scope(state: \.analytics, action: \.analytics) {
-				AnalyticsSettings()
-			}
-			Scope(state: \.export, action: \.export) {
-				Export()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case archive(ArchiveList)
+		case appIcon(AppIconList)
+		case featureFlags(FeatureFlagsList)
+		case opponentsList(OpponentsList)
+		case statistics(StatisticsSettings)
+		case analytics(AnalyticsSettings)
+		case export(Export)
 	}
 
 	public enum ToastAction: ToastableAction, Equatable {
@@ -314,9 +276,7 @@ public struct Settings: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

@@ -43,26 +43,10 @@ public struct StatisticsOverview: Reducer {
 		case `internal`(InternalAction)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case sourcePicker(StatisticsSourcePicker.State)
-			case details(StatisticsDetails.State)
-		}
-
-		public enum Action {
-			case sourcePicker(StatisticsSourcePicker.Action)
-			case details(StatisticsDetails.Action)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.sourcePicker, action: \.sourcePicker) {
-				StatisticsSourcePicker()
-			}
-			Scope(state: \.details, action: \.details) {
-				StatisticsDetails()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case sourcePicker(StatisticsSourcePicker)
+		case details(StatisticsDetails)
 	}
 
 	public init() {}
@@ -129,9 +113,7 @@ public struct StatisticsOverview: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
