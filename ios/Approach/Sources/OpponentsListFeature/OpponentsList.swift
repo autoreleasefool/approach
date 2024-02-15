@@ -28,6 +28,7 @@ extension Bowler.Ordering: CustomStringConvertible {
 
 @Reducer
 public struct OpponentsList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.Opponent, Bowler.Ordering>.State
 		public var ordering: Bowler.Ordering = .byRecentlyUsed
@@ -35,7 +36,7 @@ public struct OpponentsList: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public init() {
 			self.list = .init(
@@ -44,7 +45,7 @@ public struct OpponentsList: Reducer {
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: ordering,
+				query: .byRecentlyUsed,
 				listTitle: Strings.Opponent.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.opponents,
@@ -59,14 +60,14 @@ public struct OpponentsList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapSortOrderButton
 			case didTapOpponent(Bowler.ID)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadEditableOpponent(Result<Bowler.Edit, Error>)
 			case didArchiveOpponent(Result<Bowler.Opponent, Error>)
 
@@ -75,9 +76,9 @@ public struct OpponentsList: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Reducer(state: .equatable)
