@@ -5,14 +5,15 @@ import FeatureFlagsServiceInterface
 
 @Reducer
 public struct FeatureFlagsList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var featureFlags: [FeatureFlagItem] = []
 
 		public init() {}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didStartObservingFlags
 			case didToggle(FeatureFlag)
 			case didTapResetOverridesButton
@@ -20,14 +21,14 @@ public struct FeatureFlagsList: Reducer {
 			case didTapMatchDevelopmentButton
 			case didTapMatchTestButton
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadFlags([FeatureFlagItem])
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public struct FeatureFlagItem: Equatable {

@@ -14,28 +14,21 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@ViewAction(for: OpponentsList.self)
 public struct OpponentsListView: View {
-	let store: StoreOf<OpponentsList>
-
-	struct ViewState: Equatable {
-		let isOpponentDetailsEnabled: Bool
-
-		init(state: OpponentsList.State) {
-			self.isOpponentDetailsEnabled = state.isOpponentDetailsEnabled
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<OpponentsList>
 
 	public init(store: StoreOf<OpponentsList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			ResourceListView(
 				store: store.scope(state: \.list, action: \.internal.list)
 			) { opponent in
-				if viewStore.isOpponentDetailsEnabled {
-					Button { store.send(.view(.didTapOpponent(opponent.id))) } label: {
+				if store.isOpponentDetailsEnabled {
+					Button { send(.didTapOpponent(opponent.id)) } label: {
 						Bowler.View(opponent)
 					}
 					.buttonStyle(.navigation)
@@ -47,38 +40,38 @@ public struct OpponentsListView: View {
 					Text(Strings.Opponent.List.description)
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onAppear { send(.onAppear) }
+		}
 		.navigationTitle(Strings.Opponent.List.title)
 		.toolbar {
 			ToolbarItem(placement: .navigationBarTrailing) {
-				SortButton(isActive: false) { store.send(.view(.didTapSortOrderButton)) }
+				SortButton(isActive: false) { send(.didTapSortOrderButton) }
 			}
 		}
+		.opponentDetails($store.scope(state: \.destination?.details, action: \.internal.destination.details))
+		.opponentEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.opponentDetails(store.scope(state: \.$destination.details, action: \.internal.destination.details))
-		.opponentEditor(store.scope(state: \.$destination.editor, action: \.internal.destination.editor))
-		.sortOrder(store.scope(state: \.$destination.sortOrder, action: \.internal.destination.sortOrder))
 	}
 }
 
 @MainActor extension View {
-	fileprivate func opponentDetails(_ store: PresentationStoreOf<OpponentDetails>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<OpponentDetails>) in
-			OpponentDetailsView(store: store)
+	fileprivate func opponentDetails(_ store: Binding<StoreOf<OpponentDetails>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
+			OpponentDetailsView(store: $0)
 		}
 	}
 
-	fileprivate func opponentEditor(_ store: PresentationStoreOf<BowlerEditor>) -> some View {
-		sheet(store: store) { (store: StoreOf<BowlerEditor>) in
+	fileprivate func opponentEditor(_ store: Binding<StoreOf<BowlerEditor>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				BowlerEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func sortOrder(_ store: PresentationStoreOf<SortOrderLibrary.SortOrder<Bowler.Ordering>>) -> some View {
-		sheet(store: store) { store in
+	fileprivate func sortOrder(_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Bowler.Ordering>>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				SortOrderView(store: store)
 			}
