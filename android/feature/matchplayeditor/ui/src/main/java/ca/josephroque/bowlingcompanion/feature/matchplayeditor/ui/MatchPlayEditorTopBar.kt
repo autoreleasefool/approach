@@ -8,23 +8,22 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.core.designsystem.components.CloseButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MatchPlayEditorTopBar(
-	gameIndex: Int,
 	onAction: (MatchPlayEditorUiAction) -> Unit,
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
 	TopAppBar(
 		title = {
 			Text(
-				text = stringResource(R.string.match_play_editor_title, gameIndex + 1),
+				text = stringResource(R.string.match_play_editor_title),
 			)
 		},
 		navigationIcon = {
-			BackButton(onClick = { onAction(MatchPlayEditorUiAction.BackClicked) })
+			CloseButton(onClick = { onAction(MatchPlayEditorUiAction.BackClicked) })
 		},
 		actions = {
 			TextButton(onClick = { onAction(MatchPlayEditorUiAction.DoneClicked) }) {

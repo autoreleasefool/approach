@@ -70,10 +70,6 @@ private fun MatchPlayEditorScreen(
 	Scaffold(
 		topBar = {
 			MatchPlayEditorTopBar(
-				gameIndex = when (state) {
-					MatchPlayEditorScreenUiState.Loading -> 0
-					is MatchPlayEditorScreenUiState.Loaded -> state.matchPlayEditor.gameIndex
-				},
 				onAction = { onAction(MatchPlayEditorScreenUiAction.MatchPlayEditor(it)) },
 				scrollBehavior = scrollBehavior,
 			)

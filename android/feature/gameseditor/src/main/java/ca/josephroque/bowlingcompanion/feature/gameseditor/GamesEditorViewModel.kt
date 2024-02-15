@@ -464,6 +464,7 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
+		isGameDetailsSheetVisible.value = false
 		sendEvent(
 			GamesEditorScreenEvent.EditGear(
 				gameDetailsState.value.gear.selectedGear.map(GearListItem::id).toSet(),
@@ -477,6 +478,7 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
+		isGameDetailsSheetVisible.value = false
 		val gameDetails = gameDetailsState.value
 		sendEvent(
 			GamesEditorScreenEvent.EditLanes(
@@ -492,10 +494,10 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
-		val gameDetails = gameDetailsState.value
+		isGameDetailsSheetVisible.value = false
 		sendEvent(
 			GamesEditorScreenEvent.EditAlley(
-				alleyId = gameDetails.alley.selectedAlley?.id,
+				alleyId = gameDetailsState.value.alley.selectedAlley?.id,
 			),
 		)
 	}
@@ -506,6 +508,7 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
+		isGameDetailsSheetVisible.value = false
 		sendEvent(GamesEditorScreenEvent.EditMatchPlay(currentGameId.value))
 	}
 
@@ -545,6 +548,7 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
+		isGameDetailsSheetVisible.value = false
 		sendEvent(
 			GamesEditorScreenEvent.EditRolledBall(gamesEditorState.value.rollEditor.selectedBall?.id),
 		)
@@ -556,6 +560,7 @@ class GamesEditorViewModel @Inject constructor(
 			return
 		}
 
+		isGameDetailsSheetVisible.value = false
 		val gameDetails = gameDetailsState.value
 		gamesEditorState.updateGamesEditor(gameDetails.gameId) {
 			it.copy(

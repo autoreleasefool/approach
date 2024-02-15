@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.feature.accessoriesoverview.navigation.ac
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.gamesSettingsScreen
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.navigateToGamesEditor
 import ca.josephroque.bowlingcompanion.feature.gameseditor.navigation.scoresListScreen
+import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.matchPlayEditorScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
@@ -98,5 +99,16 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	)
 	midGameStatisticsDetailsScreen(
 		onBackPressed = navController::popBackStack,
+	)
+	matchPlayEditorScreen(
+		onBackPressed = navController::popBackStack,
+		onEditOpponent = { opponent, result ->
+			navController.navigateToResourcePickerForResult(
+				selectedIds = opponent?.let { setOf(it) } ?: emptySet(),
+				limit = 1,
+				navResultCallback = result,
+				resourceType = ResourcePickerType.BOWLER,
+			)
+		},
 	)
 }
