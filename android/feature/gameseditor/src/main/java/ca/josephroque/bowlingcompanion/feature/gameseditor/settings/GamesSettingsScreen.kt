@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.gameseditor
+package ca.josephroque.bowlingcompanion.feature.gameseditor.settings
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api

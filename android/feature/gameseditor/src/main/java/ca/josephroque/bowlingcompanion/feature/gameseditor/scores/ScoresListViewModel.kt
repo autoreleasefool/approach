@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.gameseditor
+package ca.josephroque.bowlingcompanion.feature.gameseditor.scores
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope

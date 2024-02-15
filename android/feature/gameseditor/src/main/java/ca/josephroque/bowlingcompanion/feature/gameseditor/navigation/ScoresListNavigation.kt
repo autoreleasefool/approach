@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.feature.gameseditor.ScoresListRoute
+import ca.josephroque.bowlingcompanion.feature.gameseditor.scores.ScoresListRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID

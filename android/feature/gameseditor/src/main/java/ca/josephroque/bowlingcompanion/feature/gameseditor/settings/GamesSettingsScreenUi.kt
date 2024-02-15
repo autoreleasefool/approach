@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.gameseditor
+package ca.josephroque.bowlingcompanion.feature.gameseditor.settings
 
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.settings.GamesSettingsUiState

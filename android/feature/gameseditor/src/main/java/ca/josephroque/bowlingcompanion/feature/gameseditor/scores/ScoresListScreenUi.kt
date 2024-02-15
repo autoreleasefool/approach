@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.gameseditor
+package ca.josephroque.bowlingcompanion.feature.gameseditor.scores
 
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.scores.ScoresListUiState

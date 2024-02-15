@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
-import ca.josephroque.bowlingcompanion.feature.gameseditor.GamesSettingsRoute
+import ca.josephroque.bowlingcompanion.feature.gameseditor.settings.GamesSettingsRoute
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.bottomSheet
 import java.util.UUID
