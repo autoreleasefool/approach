@@ -70,6 +70,7 @@ data class SeriesCreateEntity(
 	@Ignore val numberOfGames: Int,
 	@ColumnInfo(name = "pre_bowl") val preBowl: SeriesPreBowl,
 	@ColumnInfo(name = "exclude_from_statistics") val excludeFromStatistics: ExcludeFromStatistics,
+	@ColumnInfo(name = "alley_id") val alleyId: UUID?,
 )
 
 fun SeriesCreate.asEntity(): SeriesCreateEntity = SeriesCreateEntity(
@@ -79,6 +80,7 @@ fun SeriesCreate.asEntity(): SeriesCreateEntity = SeriesCreateEntity(
 	numberOfGames = numberOfGames,
 	preBowl = preBowl,
 	excludeFromStatistics = excludeFromStatistics,
+	alleyId = alleyId,
 )
 
 data class SeriesUpdateEntity(
