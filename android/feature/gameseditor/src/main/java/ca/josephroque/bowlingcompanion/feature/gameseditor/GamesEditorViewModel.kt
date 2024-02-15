@@ -510,6 +510,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openSeriesStats() {
+		isGameDetailsSheetVisible.value = false
 		viewModelScope.launch {
 			sendEvent(
 				GamesEditorScreenEvent.ShowStatistics(
@@ -522,6 +523,7 @@ class GamesEditorViewModel @Inject constructor(
 	}
 
 	private fun openGameStats() {
+		isGameDetailsSheetVisible.value = false
 		sendEvent(
 			GamesEditorScreenEvent.ShowStatistics(
 				filter = TrackableFilter(

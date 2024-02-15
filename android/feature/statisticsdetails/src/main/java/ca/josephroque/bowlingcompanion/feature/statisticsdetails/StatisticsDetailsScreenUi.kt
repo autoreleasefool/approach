@@ -29,6 +29,7 @@ sealed interface StatisticsDetailsBottomSheetUiAction {
 }
 
 sealed interface StatisticsDetailsScreenUiAction {
+	data object OnDismissed : StatisticsDetailsScreenUiAction
 	data class Chart(val action: StatisticsDetailsChartUiAction) : StatisticsDetailsScreenUiAction
 	data class List(val action: StatisticsDetailsListUiAction) : StatisticsDetailsScreenUiAction
 	data class TopBar(val action: StatisticsDetailsTopBarUiAction) : StatisticsDetailsScreenUiAction

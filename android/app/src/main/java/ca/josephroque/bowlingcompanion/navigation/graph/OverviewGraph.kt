@@ -36,7 +36,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDe
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToNewSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToMidGameStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticPickerForResult
@@ -171,7 +171,7 @@ fun NavGraphBuilder.overviewGraph(
 				filter = GearKind.BOWLING_BALL.name,
 			)
 		},
-		onShowStatistics = { args -> navController.navigateToStatisticsDetails(args.filter) },
+		onShowStatistics = { args -> navController.navigateToMidGameStatisticsDetails(args.filter) },
 		onShowBowlerScores = { args -> navController.navigateToScoresList(args.gameIndex, args.series) },
 	)
 	statisticsWidgetLayoutEditorScreen(

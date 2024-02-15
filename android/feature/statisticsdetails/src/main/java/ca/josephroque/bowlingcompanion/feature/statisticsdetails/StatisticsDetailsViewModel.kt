@@ -8,6 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.statistics.StatisticViewed
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
@@ -26,6 +27,7 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,6 +45,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 	statisticsRepository: StatisticsRepository,
 	private val userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
+	@ApplicationScope private val scope: CoroutineScope,
 ) : ApproachViewModel<StatisticsDetailsScreenEvent>(), DefaultLifecycleObserver {
 	private val sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
 	private val sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
@@ -183,6 +186,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
+			StatisticsDetailsScreenUiAction.OnDismissed -> hasSeenAllStatistics()
 			is StatisticsDetailsScreenUiAction.Chart -> handleChartAction(action.action)
 			is StatisticsDetailsScreenUiAction.List -> handleListAction(action.action)
 			is StatisticsDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
@@ -227,8 +231,10 @@ class StatisticsDetailsViewModel @Inject constructor(
 		headerPeekHeight.value = height
 	}
 
-	suspend fun hasSeenAllStatistics() {
-		userDataRepository.setAllStatisticIDsSeen()
+	private fun hasSeenAllStatistics() {
+		scope.launch {
+			userDataRepository.setAllStatisticIDsSeen()
+		}
 	}
 
 	@OptIn(ExperimentalMaterial3Api::class)

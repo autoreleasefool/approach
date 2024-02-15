@@ -65,7 +65,7 @@ fun StatisticsDetailsRoute(
 	DisposableEffect(Unit) {
 		onDispose {
 			lifecycleOwner.lifecycleScope.launch {
-				viewModel.hasSeenAllStatistics()
+				viewModel.handleAction(StatisticsDetailsScreenUiAction.OnDismissed)
 			}
 		}
 	}

@@ -92,7 +92,7 @@ fun StatisticsDetailsList(
 					)
 				}
 			}
-		} else {
+		} else if (state.isShowingTitle || state.filterSources != null) {
 			item {
 				Column(
 					modifier = Modifier
@@ -100,11 +100,13 @@ fun StatisticsDetailsList(
 							onAction(StatisticsDetailsListUiAction.HeaderHeightMeasured(it.size.height.toFloat()))
 						},
 				) {
-					Text(
-						text = stringResource(R.string.statistics_filter_title),
-						style = MaterialTheme.typography.titleLarge,
-						modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-					)
+					if (state.isShowingTitle) {
+						Text(
+							text = stringResource(R.string.statistics_filter_title),
+							style = MaterialTheme.typography.titleLarge,
+							modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+						)
+					}
 
 					if (state.filterSources != null) {
 						FilterDetails(

@@ -11,6 +11,7 @@ data class StatisticsDetailsListUiState(
 	val highlightedEntry: StatisticID? = null,
 	val isHidingZeroStatistics: Boolean = true,
 	val isHidingStatisticDescriptions: Boolean = false,
+	val isShowingTitle: Boolean = true,
 )
 
 sealed interface StatisticsDetailsListUiAction {

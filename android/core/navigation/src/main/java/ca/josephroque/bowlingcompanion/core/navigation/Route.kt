@@ -251,6 +251,19 @@ sealed class Route(
 	data object StatisticsSourcePicker : Route("statistics_source_picker")
 
 	data object StatisticsSettings : Route("statistics_settings")
+	data object MidGameStatisticsDetails : Route(
+		"mid_game_statistics_details/{source_type}/{source_id}",
+		isBottomBarVisible = false,
+	) {
+		const val ARG_SOURCE_TYPE = "source_type"
+		const val ARG_SOURCE_ID = "source_id"
+		fun createRoute(sourceType: String, sourceId: UUID): String =
+			"mid_game_statistics_details/${Uri.encode(sourceType)}/${Uri.encode(sourceId.toString())}"
+		fun getSourceType(savedStateHandle: SavedStateHandle): StatisticsDetailsSourceType? =
+			savedStateHandle.get<StatisticsDetailsSourceType>("source_type")
+		fun getSourceId(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("source_id")?.let { UUID.fromString(it) }
+	}
 	data object StatisticsDetails : Route(
 		"statistics_details/{source_type}/{source_id}",
 		isBottomBarVisible = false,

@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.quickPlayOnboarding
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsSourcePickerSheet
 
@@ -94,5 +95,8 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	)
 	scoresListScreen(
 		onDismiss = navController::popBackStack,
+	)
+	midGameStatisticsDetailsScreen(
+		onBackPressed = navController::popBackStack,
 	)
 }
