@@ -63,7 +63,12 @@ class ScoreEditorViewModel @Inject constructor(
 	}
 
 	private fun updateScore(score: String) {
-		this.score.value = score.toIntOrNull()?.coerceIn(0..Game.MAX_SCORE) ?: 0
+		val intScore = score.toIntOrNull()?.coerceIn(0..Game.MAX_SCORE) ?: 0
+		this.score.value = if (this.score.value == 0 && intScore % 10 == 0) {
+			intScore / 10
+		} else {
+			intScore
+		}
 	}
 
 	private fun updateScoringMethod(scoringMethod: GameScoringMethod) {

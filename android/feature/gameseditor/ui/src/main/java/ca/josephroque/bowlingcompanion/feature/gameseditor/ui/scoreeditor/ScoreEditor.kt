@@ -12,7 +12,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -26,6 +30,15 @@ fun ScoreEditor(
 	onAction: (ScoreEditorUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	val focusRequester = remember { FocusRequester() }
+
+	LaunchedEffect(state.scoringMethod) {
+		when (state.scoringMethod) {
+			GameScoringMethod.MANUAL -> focusRequester.requestFocus()
+			GameScoringMethod.BY_FRAME -> Unit
+		}
+	}
+
 	Column(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		modifier = modifier
@@ -56,6 +69,7 @@ fun ScoreEditor(
 				ScoreTextField(
 					score = state.score,
 					onScoreChanged = { onAction(ScoreEditorUiAction.ScoreChanged(it)) },
+					modifier = Modifier.focusRequester(focusRequester),
 				)
 			}
 		}
@@ -63,7 +77,11 @@ fun ScoreEditor(
 }
 
 @Composable
-private fun ScoreTextField(score: Int, onScoreChanged: (String) -> Unit) {
+private fun ScoreTextField(
+	score: Int,
+	onScoreChanged: (String) -> Unit,
+	modifier: Modifier = Modifier,
+) {
 	OutlinedTextField(
 		value = score.toString(),
 		onValueChange = onScoreChanged,
@@ -75,7 +93,7 @@ private fun ScoreTextField(score: Int, onScoreChanged: (String) -> Unit) {
 				style = MaterialTheme.typography.bodyMedium,
 			)
 		},
-		modifier = Modifier
+		modifier = modifier
 			.fillMaxWidth()
 			.padding(horizontal = 16.dp),
 	)
