@@ -38,6 +38,8 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.frameeditor.FrameE
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.ensureRollExists
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.selectedFrame
@@ -172,6 +174,14 @@ class GamesEditorViewModel @Inject constructor(
 			)
 			is GameDetailsUiAction.NextGameElementClicked -> goToNext(action.nextGameElement)
 			is GameDetailsUiAction.HeaderHeightMeasured -> setHeaderPeekHeight(action.height)
+			is GameDetailsUiAction.CopyLanesDialog -> handleCopyLanesAction(action.action)
+		}
+	}
+
+	private fun handleCopyLanesAction(action: CopyLanesDialogUiAction) {
+		when (action) {
+			CopyLanesDialogUiAction.Dismissed -> setCopyLanesDialog(isVisible = false)
+			CopyLanesDialogUiAction.CopyToAllClicked -> copyLanesToAllGames()
 		}
 	}
 
@@ -840,8 +850,32 @@ class GamesEditorViewModel @Inject constructor(
 	private fun updateLanes(laneIds: Set<UUID>) {
 		if (isGameLocked) return
 
+		val currentLaneIds = gameDetailsState.value.alley.selectedLanes.map(LaneListItem::id).toSet()
+		if (currentLaneIds.isEmpty() && laneIds.isNotEmpty()) {
+			setCopyLanesDialog(isVisible = true)
+		}
+
 		viewModelScope.launch {
 			gamesRepository.setGameLanes(currentGameId.value, laneIds)
+		}
+	}
+
+	private fun setCopyLanesDialog(isVisible: Boolean) {
+		gameDetailsState.updateGameDetails(currentGameId.value) {
+			it.copy(copyLanesDialog = if (isVisible) CopyLanesDialogUiState else null)
+		}
+
+		isGameDetailsSheetVisible.value = false
+		viewModelScope.launch {
+			isGameDetailsSheetVisible.value = true
+		}
+	}
+
+	private fun copyLanesToAllGames() {
+		val laneIds = gameDetailsState.value.alley.selectedLanes.map(LaneListItem::id).toSet()
+		setCopyLanesDialog(isVisible = false)
+		viewModelScope.launch {
+			gamesRepository.setAllGameLanes(currentSeriesId(), laneIds)
 		}
 	}
 

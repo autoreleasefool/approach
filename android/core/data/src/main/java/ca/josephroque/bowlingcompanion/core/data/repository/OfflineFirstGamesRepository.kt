@@ -78,6 +78,18 @@ class OfflineFirstGamesRepository @Inject constructor(
 		}
 	}
 
+	override suspend fun setAllGameLanes(seriesId: UUID, lanes: Set<UUID>) = withContext(
+		ioDispatcher,
+	) {
+		transactionRunner {
+			val gameIds = gameDao.getGameIds(seriesId).first()
+			gameIds.forEach { gameId ->
+				gameDao.deleteGameLanes(gameId)
+				gameDao.insertGameLanes(lanes.map { GameLaneCrossRef(gameId, it) })
+			}
+		}
+	}
+
 	override suspend fun insertGames(games: List<GameCreate>) = withContext(ioDispatcher) {
 		if (games.isEmpty()) return@withContext
 

@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.R
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.components.NavigationButton
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialog
 import java.util.UUID
 
 @Composable
@@ -35,6 +36,13 @@ fun GameDetails(
 	onAction: (GameDetailsUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
+	if (state.copyLanesDialog != null) {
+		CopyLanesDialog(
+			state = state.copyLanesDialog,
+			onAction = { onAction(GameDetailsUiAction.CopyLanesDialog(it)) },
+		)
+	}
+
 	Column(
 		horizontalAlignment = Alignment.Start,
 		verticalArrangement = Arrangement.spacedBy(16.dp),

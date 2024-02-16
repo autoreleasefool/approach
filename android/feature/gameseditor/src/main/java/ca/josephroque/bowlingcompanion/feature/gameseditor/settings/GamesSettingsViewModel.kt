@@ -98,6 +98,7 @@ class GamesSettingsViewModel @Inject constructor(
 
 	private fun setCurrentGame(gameId: UUID) {
 		currentGameId.value = gameId
+		dismiss()
 	}
 
 	private fun setCurrentBowler(bowlerId: UUID) {
@@ -108,6 +109,7 @@ class GamesSettingsViewModel @Inject constructor(
 			games.update { seriesGames }
 			currentGameId.update { seriesGames[currentGameIndex].id }
 			currentBowlerId.update { bowlerId }
+			dismiss()
 		}
 	}
 

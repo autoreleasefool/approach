@@ -9,6 +9,8 @@ import ca.josephroque.bowlingcompanion.core.model.GearListItem
 import ca.josephroque.bowlingcompanion.core.model.LaneListItem
 import ca.josephroque.bowlingcompanion.core.model.MatchPlayResult
 import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiState
 import java.util.UUID
 
 sealed interface NextGameEditableElement {
@@ -31,6 +33,7 @@ data class GameDetailsUiState(
 	val matchPlay: MatchPlayCardUiState = MatchPlayCardUiState(),
 	val scoringMethod: ScoringMethodCardUiState = ScoringMethodCardUiState(),
 	val gameProperties: GamePropertiesCardUiState = GamePropertiesCardUiState(),
+	val copyLanesDialog: CopyLanesDialogUiState? = null,
 ) {
 	data class GamePropertiesCardUiState(
 		val locked: GameLockState = GameLockState.LOCKED,
@@ -84,4 +87,5 @@ sealed interface GameDetailsUiAction {
 		val nextGameElement: NextGameEditableElement,
 	) : GameDetailsUiAction
 	data class HeaderHeightMeasured(val height: Float) : GameDetailsUiAction
+	data class CopyLanesDialog(val action: CopyLanesDialogUiAction) : GameDetailsUiAction
 }

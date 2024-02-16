@@ -59,6 +59,11 @@
 	<string name="scores_list_title">Scores for Game %1$d</string>
 
 	<string name="score_editor_title">Scoring</string>
+	
+	<string name="game_editor_lanes_duplicate_title">Copy lanes to all games?</string>
+	<string name="game_editor_lanes_duplicate_description">If you\'re bowling all your games on the same lanes tonight, easily copy the lanes you just set to the rest of the games. You can change these later.</string>
+	<string name="game_editor_lanes_duplicate_copy_to_all">Yes, copy to all</string>
+	<string name="game_editor_lanes_duplicate_dismiss">No, I might change lanes</string>
 
 	<string name="game_settings_title">Game Settings</string>
 	<string name="game_settings_games">Games</string>

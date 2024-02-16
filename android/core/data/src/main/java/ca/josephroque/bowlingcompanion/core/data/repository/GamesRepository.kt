@@ -26,6 +26,7 @@ interface GamesRepository {
 	)
 	suspend fun setGameScore(gameId: UUID, score: Int)
 	suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>)
+	suspend fun setAllGameLanes(seriesId: UUID, lanes: Set<UUID>)
 
 	suspend fun insertGames(games: List<GameCreate>)
 	suspend fun archiveGame(gameId: UUID)

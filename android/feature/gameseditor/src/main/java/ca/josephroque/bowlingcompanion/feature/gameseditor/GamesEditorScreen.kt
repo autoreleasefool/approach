@@ -149,12 +149,12 @@ internal fun GamesEditorScreen(
 			GamesEditorScreenUiState.Loading -> Unit
 			is GamesEditorScreenUiState.Loaded -> {
 				if (state.isGameDetailsSheetVisible == hasExpandedSheet) return@LaunchedEffect
-				hasExpandedSheet = state.isGameDetailsSheetVisible
 				if (state.isGameDetailsSheetVisible) {
 					scaffoldState.bottomSheetState.partialExpand()
 				} else {
 					scaffoldState.bottomSheetState.hide()
 				}
+				hasExpandedSheet = state.isGameDetailsSheetVisible
 			}
 		}
 	}
