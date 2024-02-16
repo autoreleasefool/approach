@@ -14,24 +14,24 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 
 @Reducer
-// swiftlint:disable:next type_body_length
 public struct AccessoriesOverview: Reducer {
 	static let recentAlleysLimit = 5
 	static let recentGearLimit = 10
 
+	@ObservableState
 	public struct State: Equatable {
 		public var recentAlleys: IdentifiedArrayOf<Alley.Summary> = []
 		public var recentGear: IdentifiedArrayOf<Gear.Summary> = []
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public init() {}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case task
 			case onAppear
 			case didTapViewAllAlleys
@@ -41,8 +41,8 @@ public struct AccessoriesOverview: Reducer {
 			case didTapAddGear
 			case didSwipe(SwipeAction, Item)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case itemsResponse(Result<[Item], Error>)
 			case didFinishDeletingItem(Result<Item, Error>)
 			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
@@ -52,43 +52,18 @@ public struct AccessoriesOverview: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
-	@Reducer
-	public struct Destination: Reducer {
-		public enum State: Equatable {
-			case alleyEditor(AlleyEditor.State)
-			case alleysList(AlleysList.State)
-			case gearEditor(GearEditor.State)
-			case gearList(GearList.State)
-			case alert(AlertState<AlertAction>)
-		}
-
-		public enum Action {
-			case alleyEditor(AlleyEditor.Action)
-			case alleysList(AlleysList.Action)
-			case gearEditor(GearEditor.Action)
-			case gearList(GearList.Action)
-			case alert(PresentationAction<AlertAction>)
-		}
-
-		public var body: some ReducerOf<Self> {
-			Scope(state: \.alleyEditor, action: \.alleyEditor) {
-				AlleyEditor()
-			}
-			Scope(state: \.alleysList, action: \.alleysList) {
-				AlleysList()
-			}
-			Scope(state: \.gearEditor, action: \.gearEditor) {
-				GearEditor()
-			}
-			Scope(state: \.gearList, action: \.gearList) {
-				GearList()
-			}
-		}
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case alleyEditor(AlleyEditor)
+		case alleysList(AlleysList)
+		case gearEditor(GearEditor)
+		case gearList(GearList)
+		case alert(AlertState<AlertAction>)
 	}
 
 	public enum Item: Equatable {
@@ -232,7 +207,7 @@ public struct AccessoriesOverview: Reducer {
 						.enqueue(.failedToDeleteItem, thrownError: error, toastMessage: Strings.Error.Toast.failedToDelete)
 						.map { .internal(.errors($0)) }
 
-				case let .destination(.presented(.alert(.presented(.didTapDeleteItemButton(item))))):
+				case let .destination(.presented(.alert(.didTapDeleteItemButton(item)))):
 					state.destination = nil
 					switch item {
 					case let .alley(alley):
@@ -264,8 +239,7 @@ public struct AccessoriesOverview: Reducer {
 						.destination(.presented(.gearList(.internal))),
 						.destination(.presented(.gearList(.view))),
 						.destination(.presented(.gearList(.delegate(.doNothing)))),
-						.destination(.presented(.alert(.dismiss))),
-						.destination(.presented(.alert(.presented(.didTapDismissButton)))),
+						.destination(.presented(.alert(.didTapDismissButton))),
 						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
@@ -274,9 +248,7 @@ public struct AccessoriesOverview: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Destination()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { _, action in
 			switch action {

@@ -18,37 +18,29 @@ import ViewsLibrary
 struct GearKindGroup: Identifiable {
 	let id = UUID()
 	let group: [Gear.Kind]
+
+	static let groups = Gear.Kind.allCases.chunks(ofCount: 2).map { GearKindGroup(group: Array($0)) }
 }
 
+@ViewAction(for: AccessoriesOverview.self)
 public struct AccessoriesOverviewView: View {
-	let store: StoreOf<AccessoriesOverview>
-
-	struct ViewState: Equatable {
-		let alleys: IdentifiedArrayOf<Alley.Summary>
-		let gear: IdentifiedArrayOf<Gear.Summary>
-		static let gearKinds = Gear.Kind.allCases.chunks(ofCount: 2).map { GearKindGroup(group: Array($0)) }
-
-		init(state: AccessoriesOverview.State) {
-			self.alleys = state.recentAlleys
-			self.gear = state.recentGear
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<AccessoriesOverview>
 
 	public init(store: StoreOf<AccessoriesOverview>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
-					if viewStore.alleys.isEmpty {
+					if store.recentAlleys.isEmpty {
 						Text(Strings.Alley.Error.Empty.message)
 					} else {
-						ForEach(viewStore.alleys) { alley in
+						ForEach(store.recentAlleys) { alley in
 							Alley.View(alley)
 								.swipeActions(allowsFullSwipe: true) {
-									EditButton { viewStore.send(.didSwipe(.edit, .alley(alley))) }
+									EditButton { send(.didSwipe(.edit, .alley(alley))) }
 								}
 						}
 					}
@@ -56,23 +48,23 @@ public struct AccessoriesOverviewView: View {
 					HStack(alignment: .firstTextBaseline) {
 						Text(Strings.Alley.List.title)
 						Spacer()
-						Button { viewStore.send(.didTapViewAllAlleys) } label: {
+						Button { send(.didTapViewAllAlleys) } label: {
 							Text(Strings.Action.viewAll)
 								.font(.caption)
 						}
 					}
 				} footer: {
-					if viewStore.alleys.count >= AccessoriesOverview.recentAlleysLimit {
+					if store.recentAlleys.count >= AccessoriesOverview.recentAlleysLimit {
 						Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentAlleysLimit))
 					}
 				}
 
 				Section {
 					Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-						ForEach(ViewState.gearKinds) { row in
+						ForEach(GearKindGroup.groups) { row in
 							GridRow {
 								ForEach(row.group) { kind in
-									Button { viewStore.send(.didTapGearKind(kind)) } label: {
+									Button { send(.didTapGearKind(kind)) } label: {
 										HStack {
 											Image(systemSymbol: kind.systemSymbol)
 												.scaledToFit()
@@ -93,7 +85,7 @@ public struct AccessoriesOverviewView: View {
 					HStack(alignment: .firstTextBaseline) {
 						Text(Strings.Gear.List.title)
 						Spacer()
-						Button { viewStore.send(.didTapViewAllGear) } label: {
+						Button { send(.didTapViewAllGear) } label: {
 							Text(Strings.Action.viewAll)
 								.font(.caption)
 						}
@@ -101,18 +93,18 @@ public struct AccessoriesOverviewView: View {
 				}
 
 				Section {
-					if viewStore.gear.isEmpty {
+					if store.recentGear.isEmpty {
 						Text(Strings.Gear.Error.Empty.message)
 					} else {
-						ForEach(viewStore.gear) { gear in
+						ForEach(store.recentGear) { gear in
 							Gear.ViewWithAvatar(gear)
 								.swipeActions(allowsFullSwipe: true) {
-									EditButton { viewStore.send(.didSwipe(.edit, .gear(gear))) }
+									EditButton { send(.didSwipe(.edit, .gear(gear))) }
 								}
 						}
 					}
 				} footer: {
-					if viewStore.gear.count >= AccessoriesOverview.recentGearLimit {
+					if store.recentGear.count >= AccessoriesOverview.recentGearLimit {
 						Text(Strings.Accessory.Overview.showingLimit(AccessoriesOverview.recentGearLimit))
 					}
 				}
@@ -121,47 +113,47 @@ public struct AccessoriesOverviewView: View {
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Menu {
-						Button(Strings.Alley.List.add) { viewStore.send(.didTapAddAlley) }
-						Button(Strings.Gear.List.add) { viewStore.send(.didTapAddGear) }
+						Button(Strings.Alley.List.add) { send(.didTapAddAlley) }
+						Button(Strings.Gear.List.add) { send(.didTapAddGear) }
 					} label: {
 						Image(systemSymbol: .plus)
 					}
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-			.task { await viewStore.send(.task).finish() }
-		})
+			.onAppear { send(.onAppear) }
+			.task { await send(.task).finish() }
+		}
+		.gearList($store.scope(state: \.destination?.gearList, action: \.internal.destination.gearList))
+		.alleysList($store.scope(state: \.destination?.alleysList, action: \.internal.destination.alleysList))
+		.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
+		.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.gearList(store.scope(state: \.$destination.gearList, action: \.internal.destination.gearList))
-		.alleysList(store.scope(state: \.$destination.alleysList, action: \.internal.destination.alleysList))
-		.alleyEditor(store.scope(state: \.$destination.alleyEditor, action: \.internal.destination.alleyEditor))
-		.gearEditor(store.scope(state: \.$destination.gearEditor, action: \.internal.destination.gearEditor))
 	}
 }
 
 @MainActor extension View {
-	fileprivate func gearList(_ store: PresentationStoreOf<GearList>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<GearList>) in
+	fileprivate func gearList(_ store: Binding<StoreOf<GearList>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<GearList>) in
 			GearListView(store: store)
 		}
 	}
 
-	fileprivate func alleysList(_ store: PresentationStoreOf<AlleysList>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<AlleysList>) in
+	fileprivate func alleysList(_ store: Binding<StoreOf<AlleysList>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<AlleysList>) in
 			AlleysListView(store: store)
 		}
 	}
 
-	fileprivate func alleyEditor(_ store: PresentationStoreOf<AlleyEditor>) -> some View {
-		sheet(store: store) { (store: StoreOf<AlleyEditor>) in
+	fileprivate func alleyEditor(_ store: Binding<StoreOf<AlleyEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<AlleyEditor>) in
 			NavigationStack {
 				AlleyEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func gearEditor(_ store: PresentationStoreOf<GearEditor>) -> some View {
-		sheet(store: store) { (store: StoreOf<GearEditor>) in
+	fileprivate func gearEditor(_ store: Binding<StoreOf<GearEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<GearEditor>) in
 			NavigationStack {
 				GearEditorView(store: store)
 			}

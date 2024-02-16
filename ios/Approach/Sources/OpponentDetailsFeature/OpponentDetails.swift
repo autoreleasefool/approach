@@ -13,6 +13,7 @@ import ViewsLibrary
 
 @Reducer
 public struct OpponentDetails: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let opponent: Bowler.Summary
 		public var opponentDetails: Bowler.OpponentDetails?
@@ -24,20 +25,20 @@ public struct OpponentDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadDetails(Result<Bowler.OpponentDetails, Error>)
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public enum CancelID { case details }
