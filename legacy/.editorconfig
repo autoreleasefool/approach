@@ -1,3 +1,0 @@
-[*.{kt,kts}]
-insert_final_newline=true
-max_line_length=off
