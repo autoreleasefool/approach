@@ -14,27 +14,7 @@ public struct SectionResourceListView<
 	Footer: View
 >: View {
 	public typealias SectionList = SectionResourceList<R, Q>
-	let store: StoreOf<SectionList>
-
-	struct ViewState: Equatable {
-		@BindingViewState var editMode: EditMode
-		let listContent: ListContent
-		let listTitle: String?
-		let features: [SectionList.Feature]
-
-		init(store: BindingViewStore<SectionList.State>) {
-			self._editMode = store.$editMode
-			self.features = store.features
-			self.listTitle = store.listTitle
-			if store.errorState != nil {
-				self.listContent = .error
-			} else if let sections = store.sections {
-				self.listContent = .loaded(sections)
-			} else {
-				self.listContent = .notLoaded
-			}
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<SectionList>
 
 	let row: (SectionList.Section.ID, R) -> Row
 	let header: () -> Header
@@ -76,9 +56,9 @@ public struct SectionResourceListView<
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			Group {
-				switch viewStore.listContent {
+				switch store.listContent {
 				case .notLoaded:
 					List {
 						Color.clear
@@ -101,49 +81,55 @@ public struct SectionResourceListView<
 							header()
 
 							ForEach(sections) { section in
-								Section {
-									ForEach(section.items) { element in
-										Group {
-											if viewStore.features.contains(.tappable) && viewStore.editMode != .active {
-												Button {
-													viewStore.send(.didTap(element))
-												} label: {
-													row(section.id, element)
+								WithPerceptionTracking {
+									Section {
+										ForEach(section.items) { element in
+											WithPerceptionTracking {
+												Group {
+													if store.features.contains(.tappable) && store.editMode != .active {
+														Button {
+															store.send(.view(.didTap(element)))
+														} label: {
+															row(section.id, element)
+														}
+													} else {
+														row(section.id, element)
+													}
 												}
+												.swipeActions(allowsFullSwipe: true) {
+													if store.editMode != .active {
+														if store.features.contains(.swipeToEdit) {
+															EditButton { store.send(.view(.didSwipe(.edit, element))) }
+														}
+
+														if store.features.contains(.swipeToDelete) {
+															DeleteButton { store.send(.view(.didSwipe(.delete, element))) }
+														}
+
+														if store.features.contains(.swipeToArchive) {
+															ArchiveButton { store.send(.view(.didSwipe(.archive, element))) }
+														}
+													}
+												}
+												.moveDisabled(store.editMode != .active || !store.features.contains(.moveable))
+											}
+										}
+										.onMove { store.send(.view(.didMove(section: section.id, source: $0, destination: $1))) }
+									} header: {
+										WithPerceptionTracking {
+											if section.items.isEmpty {
+												EmptyView()
 											} else {
-												row(section.id, element)
-											}
-										}
-										.swipeActions(allowsFullSwipe: true) {
-											if viewStore.editMode != .active {
-												if viewStore.features.contains(.swipeToEdit) {
-													EditButton { viewStore.send(.didSwipe(.edit, element)) }
-												}
-
-												if viewStore.features.contains(.swipeToDelete) {
-													DeleteButton { viewStore.send(.didSwipe(.delete, element)) }
-												}
-
-												if viewStore.features.contains(.swipeToArchive) {
-													ArchiveButton { viewStore.send(.didSwipe(.archive, element)) }
+												if store.features.contains(.moveable) && section.items.count > 1 {
+													reorderableHeader(title: store.listTitle, editMode: store.editMode) {
+														store.send(.view(.didTapReorderButton))
+													}
+												} else if let title = section.title {
+													Text(title)
+												} else if sections.first == section, let title = store.listTitle {
+													Text(title)
 												}
 											}
-										}
-										.moveDisabled(viewStore.editMode != .active || !viewStore.features.contains(.moveable))
-									}
-									.onMove { viewStore.send(.didMove(section: section.id, source: $0, destination: $1)) }
-								} header: {
-									if section.items.isEmpty {
-										EmptyView()
-									} else {
-										if viewStore.features.contains(.moveable) && section.items.count > 1 {
-											reorderableHeader(title: viewStore.listTitle, editMode: viewStore.editMode) {
-												viewStore.send(.didTapReorderButton)
-											}
-										} else if let title = section.title {
-											Text(title)
-										} else if sections.first == section, let title = viewStore.listTitle {
-											Text(title)
 										}
 									}
 								}
@@ -152,28 +138,26 @@ public struct SectionResourceListView<
 							footer()
 						}
 						.listStyle(.insetGrouped)
-						.environment(\.editMode, viewStore.$editMode)
+						.environment(\.editMode, $store.editMode)
 					}
 
 				case .error:
-					IfLetStore(
-						store.scope(state: \.errorState, action: \.internal.error)
-					) {
-						ResourceListEmptyView(store: $0)
+					if let childStore = store.scope(state: \.errorState, action: \.internal.error) {
+						ResourceListEmptyView(store: childStore)
 					}
 				}
 			}
 			.toolbar {
-				if viewStore.features.contains(.add) {
+				if store.features.contains(.add) {
 					ToolbarItem(placement: .navigationBarTrailing) {
-						AddButton { viewStore.send(.didTapAddButton) }
+						AddButton { store.send(.view(.didTapAddButton)) }
 					}
 				}
 			}
 			.alert(store: store.scope(state: \.$alert, action: \.view.alert))
-			.onAppear { viewStore.send(.onAppear) }
-			.task { await viewStore.send(.task).finish() }
-		})
+			.onAppear { store.send(.view(.onAppear)) }
+			.task { await store.send(.view(.task)).finish() }
+		}
 	}
 
 	private func reorderableHeader(title: String?, editMode: EditMode, perform: @escaping () -> Void) -> some View {
@@ -192,14 +176,5 @@ public struct SectionResourceListView<
 				}
 			}
 		}
-	}
-}
-
-extension SectionResourceListView {
-	enum ListContent: Equatable {
-		case notLoaded
-		case loading
-		case loaded(IdentifiedArrayOf<SectionList.Section>)
-		case error
 	}
 }

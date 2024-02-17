@@ -2,6 +2,7 @@ import ComposableArchitecture
 import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
+import ListContentLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -11,8 +12,9 @@ public struct SectionResourceList<
 	R: ResourceListItem,
 	Q: Equatable
 >: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var editMode: EditMode = .inactive
+		public var editMode: EditMode = .inactive
 
 		public var features: [Feature]
 		public var query: Q
@@ -38,7 +40,17 @@ public struct SectionResourceList<
 			return nil
 		}
 
-		@PresentationState public var alert: AlertState<AlertAction>?
+		@Presents public var alert: AlertState<AlertAction>?
+
+		var listContent: ListContent {
+			if errorState != nil {
+				.error
+			} else if let sections {
+				.loaded(sections)
+			} else {
+				.notLoaded
+			}
+		}
 
 		public init(
 			features: [Feature],
@@ -69,8 +81,8 @@ public struct SectionResourceList<
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, BindableAction {
+		@CasePathable public enum View {
 			case task
 			case onAppear
 			case didTapAddButton
@@ -79,10 +91,9 @@ public struct SectionResourceList<
 			case didMove(section: Section.ID, source: IndexSet, destination: Int)
 			case didTap(R)
 			case alert(PresentationAction<AlertAction>)
-			case binding(BindingAction<State>)
 		}
 
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didDelete(R)
 			case didArchive(R)
 			case didEdit(R)
@@ -92,16 +103,17 @@ public struct SectionResourceList<
 			case didTapEmptyStateButton
 		}
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case refreshObservation
 			case sectionsResponse(Result<[Section], Error>)
 			case empty(ResourceListEmpty.Action)
 			case error(ResourceListEmpty.Action)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public enum Feature: Equatable {
@@ -117,6 +129,13 @@ public struct SectionResourceList<
 		case edit
 		case delete
 		case archive
+	}
+
+	enum ListContent: Equatable {
+		case notLoaded
+		case loading
+		case loaded(IdentifiedArrayOf<Section>)
+		case error
 	}
 
 	enum CancelID { case observation }
@@ -215,9 +234,6 @@ public struct SectionResourceList<
 
 				case .alert(.dismiss):
 					return .none
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -254,7 +270,7 @@ public struct SectionResourceList<
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}.ifLet(\.errorState, action: \.internal.error) {

@@ -37,16 +37,17 @@ extension Bowler.Ordering: CustomStringConvertible {
 public struct BowlersList: Reducer {
 	public static let widgetContext = "bowlersList"
 
+	@ObservableState
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.List, Bowler.Ordering>.State
 		public var widgets: StatisticsWidgetLayout.State = .init(context: BowlersList.widgetContext, newWidgetSource: nil)
-		public var ordering: Bowler.Ordering = .byRecentlyUsed
+		public var ordering: Bowler.Ordering = .default
 		public var quickLaunch: QuickLaunchSource?
 
 		public var errors: Errors<ErrorID>.State = .init()
 		public var announcements: Announcements.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public var isShowingQuickLaunchTip: Bool
 		public var isShowingWidgets: Bool
@@ -58,7 +59,7 @@ public struct BowlersList: Reducer {
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: ordering,
+				query: .default,
 				listTitle: Strings.Bowler.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.bowlers,
@@ -76,8 +77,8 @@ public struct BowlersList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didStartTask
 			case didTapSortOrderButton
@@ -85,9 +86,9 @@ public struct BowlersList: Reducer {
 			case didTapQuickLaunchButton
 		}
 
-		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum Delegate { case doNothing }
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didLoadEditableBowler(Result<Bowler.Edit, Error>)
 			case didLoadQuickLaunch(Result<QuickLaunchSource?, Error>)
 			case didArchiveBowler(Result<Bowler.List, Error>)
@@ -100,9 +101,9 @@ public struct BowlersList: Reducer {
 			case announcements(Announcements.Action)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	@Reducer(state: .equatable)

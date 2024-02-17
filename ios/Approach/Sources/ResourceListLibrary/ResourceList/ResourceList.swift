@@ -14,6 +14,7 @@ public struct ResourceList<
 	R: ResourceListItem,
 	Q: Equatable
 >: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var sectionList: SectionResourceList<R, Q>.State
 
@@ -41,9 +42,9 @@ public struct ResourceList<
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction { case doNothing }
+		@CasePathable public enum View { case doNothing }
 
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didDelete(R)
 			case didArchive(R)
 			case didEdit(R)
@@ -53,13 +54,13 @@ public struct ResourceList<
 			case didTapEmptyStateButton
 		}
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case sectionList(SectionResourceList<R, Q>.Action)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	public init(fetchResources: @escaping (Q) -> AsyncThrowingStream<[R], Swift.Error>) {
@@ -104,7 +105,7 @@ public struct ResourceList<
 						return .send(.delegate(.didTapEmptyStateButton))
 					}
 
-				case .sectionList(.internal), .sectionList(.view):
+				case .sectionList(.internal), .sectionList(.view), .sectionList(.binding):
 					return .none
 				}
 

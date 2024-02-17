@@ -180,7 +180,8 @@ public struct GamesEditorView: View {
 			)
 			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 			.interactiveDismissDisabled(true)
-			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
+		// TODO: re-enable toasts
+//			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 	}
 

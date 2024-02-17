@@ -256,7 +256,8 @@ public struct ErrorReportView: View {
 			}
 			.onAppear { viewStore.send(.onAppear) }
 		})
-		.toast(store: store.scope(state: \.toast, action: \.internal.toast))
+		// TODO: re-enable toasts
+//		.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 	}
 }
 

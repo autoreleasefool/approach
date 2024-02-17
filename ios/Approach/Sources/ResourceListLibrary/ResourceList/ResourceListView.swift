@@ -12,7 +12,7 @@ public struct ResourceListView<
 	Header: View,
 	Footer: View
 >: View {
-	let store: StoreOf<ResourceList<R, Q>>
+	@Perception.Bindable var store: StoreOf<ResourceList<R, Q>>
 
 	let row: (R) -> Row
 	let header: () -> Header

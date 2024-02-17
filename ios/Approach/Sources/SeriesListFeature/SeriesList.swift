@@ -38,9 +38,10 @@ extension Series.List: ResourceListItem {
 @Reducer
 // swiftlint:disable:next type_body_length
 public struct SeriesList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var league: League.SeriesHost
-		public var ordering: Series.Ordering = .newestFirst
+		public var ordering: Series.Ordering = .default
 
 		public var list: SectionResourceList<Series.List, Series.List.FetchRequest>.State
 
@@ -48,7 +49,7 @@ public struct SeriesList: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public init(league: League.SeriesHost) {
 			self.league = league
@@ -58,7 +59,7 @@ public struct SeriesList: Reducer {
 					.swipeToEdit,
 					.swipeToArchive,
 				],
-				query: .init(league: league.id, ordering: ordering),
+				query: .init(league: league.id, ordering: .default),
 				listTitle: nil,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.series,
@@ -70,15 +71,15 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapEditButton
 			case didTapSortOrderButton
 			case didTapSeries(Series.ID)
 		}
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didArchiveSeries(Result<Series.List, Error>)
 			case didLoadEditableSeries(Result<Series.Edit, Error>)
 			case didLoadEditableLeague(Result<League.Edit, Error>)
@@ -89,11 +90,11 @@ public struct SeriesList: Reducer {
 				.FetchRequest>.Action)
 		}
 
-		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum Delegate { case doNothing }
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	public enum ErrorID: Hashable {
@@ -272,7 +273,7 @@ public struct SeriesList: Reducer {
 						.destination(.presented(.leagueEditor(.view))), .destination(.presented(.leagueEditor(.internal))),
 						.destination(.presented(.games(.view))), .destination(.presented(.games(.internal))),
 						.destination(.presented(.sortOrder(.internal))), .destination(.presented(.sortOrder(.view))),
-						.list(.view), .list(.internal),
+						.list(.view), .list(.internal), .list(.binding),
 						.errors(.view), .errors(.internal):
 					return .none
 				}

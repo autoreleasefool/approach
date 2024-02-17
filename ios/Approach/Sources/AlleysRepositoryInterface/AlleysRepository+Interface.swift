@@ -5,6 +5,8 @@ extension Alley {
 	public enum Ordering {
 		case byName
 		case byRecentlyUsed
+
+		public static var `default`: Self = .byRecentlyUsed
 	}
 }
 

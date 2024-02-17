@@ -34,6 +34,7 @@ public struct ResourceListEmptyContent: Equatable {
 
 @Reducer
 public struct ResourceListEmpty: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var content: ResourceListEmptyContent
 		public var style: Style
@@ -57,18 +58,18 @@ public struct ResourceListEmpty: Reducer {
 		)
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didTapActionButton
 		}
-		@CasePathable public enum InternalAction { case doNothing }
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Internal { case doNothing }
+		@CasePathable public enum Delegate {
 			case didTapActionButton
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	public enum Style {
@@ -97,20 +98,21 @@ public struct ResourceListEmpty: Reducer {
 	}
 }
 
+@ViewAction(for: ResourceListEmpty.self)
 public struct ResourceListEmptyView: View {
-	let store: StoreOf<ResourceListEmpty>
+	public var store: StoreOf<ResourceListEmpty>
 
 	public init(store: StoreOf<ResourceListEmpty>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack {
 				VStack {
 					Spacer()
 
-					viewStore.content.image.swiftUIImage
+					store.content.image.swiftUIImage
 						.resizable()
 						.scaledToFit()
 						.padding(.bottom, .smallSpacing)
@@ -118,31 +120,31 @@ public struct ResourceListEmptyView: View {
 					Spacer()
 
 					VStack(spacing: .smallSpacing) {
-						Text(viewStore.content.title)
+						Text(store.content.title)
 							.font(.headline)
 
-						if let message = viewStore.content.message {
+						if let message = store.content.message {
 							Text(message)
 								.multilineTextAlignment(.center)
 						}
 					}
 					.padding()
 					.frame(maxWidth: .infinity)
-					.background(viewStore.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
+					.background(store.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
 					.cornerRadius(.standardRadius)
 					.padding(.bottom, .smallSpacing)
 					.layoutPriority(1)
 				}
 
 				Button {
-					viewStore.send(.didTapActionButton)
+					send(.didTapActionButton)
 				} label: {
-					Text(viewStore.content.action)
+					Text(store.content.action)
 						.frame(maxWidth: .infinity)
 				}
 				.modifier(PrimaryButton())
 			}
 			.padding()
-		})
+		}
 	}
 }
