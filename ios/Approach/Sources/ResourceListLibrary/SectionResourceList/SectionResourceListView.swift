@@ -77,68 +77,70 @@ public struct SectionResourceListView<
 							store: store.scope(state: \.emptyState, action: \.internal.empty)
 						)
 					} else {
-						List {
-							header()
+						WithPerceptionTracking {
+							List {
+								header()
 
-							ForEach(sections) { section in
-								WithPerceptionTracking {
-									Section {
-										ForEach(section.items) { element in
-											WithPerceptionTracking {
-												Group {
-													if store.features.contains(.tappable) && store.editMode != .active {
-														Button {
-															store.send(.view(.didTap(element)))
-														} label: {
+								ForEach(sections) { section in
+									WithPerceptionTracking {
+										Section {
+											ForEach(section.items) { element in
+												WithPerceptionTracking {
+													Group {
+														if store.features.contains(.tappable) && store.editMode != .active {
+															Button {
+																store.send(.view(.didTap(element)))
+															} label: {
+																row(section.id, element)
+															}
+														} else {
 															row(section.id, element)
 														}
-													} else {
-														row(section.id, element)
 													}
-												}
-												.swipeActions(allowsFullSwipe: true) {
-													if store.editMode != .active {
-														if store.features.contains(.swipeToEdit) {
-															EditButton { store.send(.view(.didSwipe(.edit, element))) }
-														}
+													.swipeActions(allowsFullSwipe: true) {
+														if store.editMode != .active {
+															if store.features.contains(.swipeToEdit) {
+																EditButton { store.send(.view(.didSwipe(.edit, element))) }
+															}
 
-														if store.features.contains(.swipeToDelete) {
-															DeleteButton { store.send(.view(.didSwipe(.delete, element))) }
-														}
+															if store.features.contains(.swipeToDelete) {
+																DeleteButton { store.send(.view(.didSwipe(.delete, element))) }
+															}
 
-														if store.features.contains(.swipeToArchive) {
-															ArchiveButton { store.send(.view(.didSwipe(.archive, element))) }
+															if store.features.contains(.swipeToArchive) {
+																ArchiveButton { store.send(.view(.didSwipe(.archive, element))) }
+															}
 														}
 													}
+													.moveDisabled(store.editMode != .active || !store.features.contains(.moveable))
 												}
-												.moveDisabled(store.editMode != .active || !store.features.contains(.moveable))
 											}
-										}
-										.onMove { store.send(.view(.didMove(section: section.id, source: $0, destination: $1))) }
-									} header: {
-										WithPerceptionTracking {
-											if section.items.isEmpty {
-												EmptyView()
-											} else {
-												if store.features.contains(.moveable) && section.items.count > 1 {
-													reorderableHeader(title: store.listTitle, editMode: store.editMode) {
-														store.send(.view(.didTapReorderButton))
+											.onMove { store.send(.view(.didMove(section: section.id, source: $0, destination: $1))) }
+										} header: {
+											WithPerceptionTracking {
+												if section.items.isEmpty {
+													EmptyView()
+												} else {
+													if store.features.contains(.moveable) && section.items.count > 1 {
+														reorderableHeader(title: store.listTitle, editMode: store.editMode) {
+															store.send(.view(.didTapReorderButton))
+														}
+													} else if let title = section.title {
+														Text(title)
+													} else if sections.first == section, let title = store.listTitle {
+														Text(title)
 													}
-												} else if let title = section.title {
-													Text(title)
-												} else if sections.first == section, let title = store.listTitle {
-													Text(title)
 												}
 											}
 										}
 									}
 								}
-							}
 
-							footer()
+								footer()
+							}
+							.listStyle(.insetGrouped)
+							.environment(\.editMode, $store.editMode)
 						}
-						.listStyle(.insetGrouped)
-						.environment(\.editMode, $store.editMode)
 					}
 
 				case .error:
@@ -154,7 +156,7 @@ public struct SectionResourceListView<
 					}
 				}
 			}
-			.alert(store: store.scope(state: \.$alert, action: \.view.alert))
+			.alert($store.scope(state: \.alert, action: \.view.alert))
 			.onAppear { store.send(.view(.onAppear)) }
 			.task { await store.send(.view(.task)).finish() }
 		}

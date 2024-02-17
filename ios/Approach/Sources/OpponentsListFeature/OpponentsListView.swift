@@ -41,17 +41,18 @@ public struct OpponentsListView: View {
 				}
 			}
 			.onAppear { send(.onAppear) }
-		}
-		.navigationTitle(Strings.Opponent.List.title)
-		.toolbar {
-			ToolbarItem(placement: .navigationBarTrailing) {
-				SortButton(isActive: false) { send(.didTapSortOrderButton) }
+			.navigationTitle(Strings.Opponent.List.title)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					SortButton(isActive: false) { send(.didTapSortOrderButton) }
+				}
 			}
+			.opponentDetails($store.scope(state: \.destination?.details, action: \.internal.destination.details))
+			.opponentEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
-		.opponentDetails($store.scope(state: \.destination?.details, action: \.internal.destination.details))
-		.opponentEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 }
 

@@ -122,12 +122,13 @@ public struct AccessoriesOverviewView: View {
 			}
 			.onAppear { send(.onAppear) }
 			.task { await send(.task).finish() }
+			.gearList($store.scope(state: \.destination?.gearList, action: \.internal.destination.gearList))
+			.alleysList($store.scope(state: \.destination?.alleysList, action: \.internal.destination.alleysList))
+			.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
+			.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
+			// TODO: enable errors
+	//		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
-		.gearList($store.scope(state: \.destination?.gearList, action: \.internal.destination.gearList))
-		.alleysList($store.scope(state: \.destination?.alleysList, action: \.internal.destination.alleysList))
-		.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
-		.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 }
 

@@ -33,10 +33,12 @@ public struct BowlersListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: \.internal.list)
 			) { bowler in
-				Button { send(.didTapBowler(bowler.id)) } label: {
-					LabeledContent(bowler.name, value: format(average: bowler.average))
+				WithPerceptionTracking {
+					Button { send(.didTapBowler(bowler.id)) } label: {
+						LabeledContent(bowler.name, value: format(average: bowler.average))
+					}
+					.buttonStyle(.navigation)
 				}
-				.buttonStyle(.navigation)
 			} header: {
 				quickLaunch
 				widgets
@@ -49,66 +51,72 @@ public struct BowlersListView: View {
 			}
 			.task { await send(.didStartTask).finish() }
 			.onAppear { send(.onAppear) }
+			// TODO: enable errors
+			// .errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			// TODO: enable announcements
+			// .announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
+			.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+			.leaguesList($store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
+			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 		}
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
-		.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
-		.leaguesList($store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
-		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 	}
 
-	@ViewBuilder private var quickLaunch: some View {
-		if let quickLaunch = store.quickLaunch {
-			Section {
-				Button { send(.didTapQuickLaunchButton) } label: {
-					HStack(spacing: .standardSpacing) {
-						Asset.Media.Icons.rocket.swiftUIImage
-							.resizable()
-							.scaledToFit()
-							.frame(width: .smallIcon, height: .smallIcon)
-							.foregroundColor(Asset.Colors.Text.onAction)
-
-						VStack(alignment: .leading) {
-							Text(quickLaunch.bowler.name)
-								.font(.headline)
-								.frame(maxWidth: .infinity, alignment: .leading)
-							Text(quickLaunch.league.name)
-								.font(.subheadline)
-								.frame(maxWidth: .infinity, alignment: .leading)
-						}
-						.frame(maxWidth: .infinity)
-					}
-					.contentShape(Rectangle())
-				}
-				.modifier(PrimaryButton())
-			}
-			.listRowInsets(EdgeInsets())
-			.compactList()
-
-			if store.isShowingQuickLaunchTip {
+	@MainActor @ViewBuilder private var quickLaunch: some View {
+		WithPerceptionTracking {
+			if let quickLaunch = store.quickLaunch {
 				Section {
-					BasicTipView(
-						tip: .quickLaunchTip,
-						isDismissable: false,
-						onDismiss: {}
-					)
+					Button { send(.didTapQuickLaunchButton) } label: {
+						HStack(spacing: .standardSpacing) {
+							Asset.Media.Icons.rocket.swiftUIImage
+								.resizable()
+								.scaledToFit()
+								.frame(width: .smallIcon, height: .smallIcon)
+								.foregroundColor(Asset.Colors.Text.onAction)
+
+							VStack(alignment: .leading) {
+								Text(quickLaunch.bowler.name)
+									.font(.headline)
+									.frame(maxWidth: .infinity, alignment: .leading)
+								Text(quickLaunch.league.name)
+									.font(.subheadline)
+									.frame(maxWidth: .infinity, alignment: .leading)
+							}
+							.frame(maxWidth: .infinity)
+						}
+						.contentShape(Rectangle())
+					}
+					.modifier(PrimaryButton())
 				}
+				.listRowInsets(EdgeInsets())
+				.compactList()
+
+				if store.isShowingQuickLaunchTip {
+					Section {
+						BasicTipView(
+							tip: .quickLaunchTip,
+							isDismissable: false,
+							onDismiss: {}
+						)
+					}
+					.compactList()
+				}
+			}
+		}
+	}
+
+	@MainActor @ViewBuilder private var widgets: some View {
+		WithPerceptionTracking {
+			if store.isShowingWidgets {
+				Section {
+					StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
+				}
+				.listRowSeparator(.hidden)
+				.listRowInsets(EdgeInsets())
+				.listRowBackground(Color.clear)
 				.compactList()
 			}
-		}
-	}
-
-	@ViewBuilder private var widgets: some View {
-		if store.isShowingWidgets {
-			Section {
-				StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
-			}
-			.listRowSeparator(.hidden)
-			.listRowInsets(EdgeInsets())
-			.listRowBackground(Color.clear)
-			.compactList()
 		}
 	}
 }
