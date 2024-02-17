@@ -14,29 +14,20 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@ViewAction(for: SeriesList.self)
 public struct SeriesListView: View {
-	let store: StoreOf<SeriesList>
-
-	struct ViewState: Equatable {
-		let leagueName: String
-		let ordering: Series.Ordering
-
-		init(state: SeriesList.State) {
-			self.leagueName = state.league.name
-			self.ordering = state.ordering
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<SeriesList>
 
 	public init(store: StoreOf<SeriesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			SectionResourceListView(
 				store: store.scope(state: \.list, action: \.internal.list)
 			) { _, series in
-				Button { viewStore.send(.didTapSeries(series.id)) } label: {
+				Button { send(.didTapSeries(series.id)) } label: {
 					SeriesListItem(series: series)
 				}
 				.buttonStyle(.plain)
@@ -45,45 +36,45 @@ public struct SeriesListView: View {
 						d[.leading]
 				}
 			}
-			.navigationTitle(viewStore.leagueName)
+			.navigationTitle(store.league.name)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					EditButton { viewStore.send(.didTapEditButton) }
+					EditButton { send(.didTapEditButton) }
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
+					SortButton(isActive: false) { send(.didTapSortOrderButton) }
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onAppear { send(.onAppear) }
+		}
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.seriesEditor(store.scope(state: \.$destination.seriesEditor, action: \.internal.destination.seriesEditor))
-		.leagueEditor(store.scope(state: \.$destination.leagueEditor, action: \.internal.destination.leagueEditor))
-		.sortOrder(store.scope(state: \.$destination.sortOrder, action: \.internal.destination.sortOrder))
-		.gamesList(store.scope(state: \.$destination.games, action: \.internal.destination.games))
+		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+		.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 	}
 }
 
 @MainActor extension View {
-	fileprivate func seriesEditor(_ store: PresentationStoreOf<SeriesEditor>) -> some View {
-		sheet(store: store) { (store: StoreOf<SeriesEditor>) in
+	fileprivate func seriesEditor(_ store: Binding<StoreOf<SeriesEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<SeriesEditor>) in
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func leagueEditor(_ store: PresentationStoreOf<LeagueEditor>) -> some View {
-		sheet(store: store) { (store: StoreOf<LeagueEditor>) in
+	fileprivate func leagueEditor(_ store: Binding<StoreOf<LeagueEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<LeagueEditor>) in
 			NavigationStack {
 				LeagueEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func sortOrder(_ store: PresentationStoreOf<SortOrderLibrary.SortOrder<Series.Ordering>>) -> some View {
-		sheet(store: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Series.Ordering>>) in
+	fileprivate func sortOrder(_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Series.Ordering>>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<SortOrderLibrary.SortOrder<Series.Ordering>>) in
 			NavigationStack {
 				SortOrderView(store: store)
 			}
@@ -91,8 +82,8 @@ public struct SeriesListView: View {
 		}
 	}
 
-	fileprivate func gamesList(_ store: PresentationStoreOf<GamesList>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<GamesList>) in
+	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
 		}
 	}

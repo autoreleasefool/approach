@@ -7,6 +7,8 @@ extension Series {
 		case oldestFirst
 		case lowestToHighest
 		case highestToLowest
+
+		public static var `default`: Self = .newestFirst
 	}
 }
 

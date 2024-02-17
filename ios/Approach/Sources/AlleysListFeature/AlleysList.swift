@@ -15,6 +15,7 @@ extension Alley.List: ResourceListItem {}
 
 @Reducer
 public struct AlleysList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var list: ResourceList<Alley.List, Alley.List.FetchRequest>.State
 		public var filter: Alley.List.FetchRequest.Filter = .init()
@@ -24,7 +25,11 @@ public struct AlleysList: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
+
+		var bowlerName: String? { bowlerForAverages?.name }
+		var isAnyFilterActive: Bool { filter != .init() }
+		var isShowingAverages: Bool { isAlleyAndGearAveragesEnabled }
 
 		public init() {
 			self.list = .init(
@@ -33,7 +38,7 @@ public struct AlleysList: Reducer {
 					.swipeToEdit,
 					.swipeToDelete,
 				],
-				query: .init(filter: filter, ordering: .byRecentlyUsed),
+				query: .init(filter: .init(), ordering: .default),
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.alleys,
@@ -48,15 +53,15 @@ public struct AlleysList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didTapFiltersButton
 			case didTapBowler
 		}
 
-		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum Delegate { case doNothing }
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didLoadEditableAlley(Result<Alley.EditWithLanes, Error>)
 			case didDeleteAlley(Result<Alley.List, Error>)
 
@@ -65,9 +70,9 @@ public struct AlleysList: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	@Reducer(state: .equatable)
@@ -169,22 +174,14 @@ public struct AlleysList: Reducer {
 							.map { .internal(.list($0)) }
 					}
 
-				case .destination(.presented(.editor(.delegate(.doNothing)))):
-					return .none
-
-				case .errors(.delegate(.doNothing)):
-					return .none
-
-				case .list(.internal), .list(.view):
-					return .none
-
 				case .destination(.dismiss),
 						.destination(.presented(.filters(.internal))),
 						.destination(.presented(.filters(.view))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
-						.errors(.internal),
-						.errors(.view):
+						.destination(.presented(.editor(.delegate(.doNothing)))),
+						.list(.internal), .list(.view),
+						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 
