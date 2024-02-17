@@ -54,12 +54,14 @@ public struct ResourceListView<
 	}
 
 	public var body: some View {
-		SectionResourceListView(
-			store: store.scope(state: \.sectionList, action: \.internal.sectionList),
-			row: { _, element in row(element) },
-			header: header,
-			footer: footer
-		)
+		WithPerceptionTracking {
+			SectionResourceListView(
+				store: store.scope(state: \.sectionList, action: \.internal.sectionList),
+				row: { _, element in row(element) },
+				header: header,
+				footer: footer
+			)
+		}
 	}
 }
 

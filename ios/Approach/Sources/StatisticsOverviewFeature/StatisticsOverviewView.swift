@@ -7,62 +7,53 @@ import SwiftUIExtensionsLibrary
 import TipsLibrary
 import ViewsLibrary
 
+@ViewAction(for: StatisticsOverview.self)
 public struct StatisticsOverviewView: View {
-	let store: StoreOf<StatisticsOverview>
-
-	struct ViewState: Equatable {
-		let isShowingOverviewTip: Bool
-		let isShowingDetailsTip: Bool
-
-		init(state: StatisticsOverview.State) {
-			self.isShowingOverviewTip = state.isShowingOverviewTip
-			self.isShowingDetailsTip = state.isShowingDetailsTip
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<StatisticsOverview>
 
 	public init(store: StoreOf<StatisticsOverview>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
-				if viewStore.isShowingOverviewTip {
+				if store.isShowingOverviewTip {
 					Section {
 						// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
 						BasicTipView(
 							tip: .statisticsOverview,
 							isDismissable: false
 						) {
-							viewStore.send(.didTapDismissOverviewTip, animation: .default)
+							send(.didTapDismissOverviewTip, animation: .default)
 						}
 					}
 				}
 
-				if viewStore.isShowingDetailsTip {
+				if store.isShowingDetailsTip {
 					Section {
 						// TODO: URGENT Remove `isDismissable: false` to allow this tip to be dismissed
 						BasicTipView(
 							tip: .statisticsDetails,
 							isDismissable: false
 						) {
-							viewStore.send(.didTapDismissDetailsTip, animation: .default)
+							send(.didTapDismissDetailsTip, animation: .default)
 						}
 					}
 				}
 
 				Section {
-					Button { viewStore.send(.didTapViewDetailedStatistics) } label: {
+					Button { send(.didTapViewDetailedStatistics) } label: {
 						Text(Strings.Statistics.Overview.viewDetailedStatistics)
 					}
 					.buttonStyle(.navigation)
 				}
 			}
 			.navigationTitle(Strings.Statistics.title)
-			.onAppear { viewStore.send(.onAppear) }
+			.onAppear { send(.onAppear) }
 			.sheet(
-				store: store.scope(state: \.$destination.sourcePicker, action: \.internal.destination.sourcePicker),
-				onDismiss: { viewStore.send(.sourcePickerDidDismiss) },
+				item: $store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker),
+				onDismiss: { send(.sourcePickerDidDismiss) },
 				content: { store in
 					NavigationStack {
 						StatisticsSourcePickerView(store: store)
@@ -70,11 +61,11 @@ public struct StatisticsOverviewView: View {
 					.presentationDetents([.medium, .large])
 				}
 			)
-		})
-		.navigationDestination(
-			store: store.scope(state: \.$destination.details, action: \.internal.destination.details)
-		) { store in
-			StatisticsDetailsView(store: store)
+			.navigationDestinationWrapper(
+				item: $store.scope(state: \.destination?.details, action: \.internal.destination.details)
+			) { store in
+				StatisticsDetailsView(store: store)
+			}
 		}
 	}
 }

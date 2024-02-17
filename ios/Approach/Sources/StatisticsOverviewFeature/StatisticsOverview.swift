@@ -10,37 +10,37 @@ import TipsServiceInterface
 
 @Reducer
 public struct StatisticsOverview: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var isShowingOverviewTip: Bool
 		public var isShowingDetailsTip: Bool
 
 		public var filter: TrackableFilter?
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public init() {
 			@Dependency(\.tips) var tips
-
 			self.isShowingOverviewTip = tips.shouldShow(tipFor: .statisticsOverview)
 			self.isShowingDetailsTip = tips.shouldShow(tipFor: .statisticsDetails)
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapDismissOverviewTip
 			case didTapDismissDetailsTip
 			case didTapViewDetailedStatistics
 			case sourcePickerDidDismiss
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Reducer(state: .equatable)

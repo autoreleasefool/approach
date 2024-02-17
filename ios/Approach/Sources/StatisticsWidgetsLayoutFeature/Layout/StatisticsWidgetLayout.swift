@@ -13,6 +13,7 @@ import ViewsLibrary
 
 @Reducer
 public struct StatisticsWidgetLayout: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let context: String
 		public let newWidgetSource: StatisticsWidget.Source?
@@ -22,7 +23,17 @@ public struct StatisticsWidgetLayout: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		var widgetRows: IdentifiedArrayOf<StatisticsWidget.Configuration>? {
+			guard let widgets else { return nil }
+			return widgets.count % 2 == 0 ? widgets : .init(uniqueElements: widgets.dropLast())
+		}
+
+		var leftoverWidget: StatisticsWidget.Configuration? {
+			guard let widgets else { return nil }
+			return widgets.count % 2 == 0 ? nil : widgets.last
+		}
+
+		@Presents public var destination: Destination.State?
 
 		public init(context: String, newWidgetSource: StatisticsWidget.Source?) {
 			self.context = context
@@ -30,14 +41,14 @@ public struct StatisticsWidgetLayout: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case task
 			case didTapConfigureStatisticsButton
 			case didTapWidget(id: StatisticsWidget.ID)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case widgetsResponse(Result<[StatisticsWidget.Configuration], Error>)
 			case didLoadChartContent(id: StatisticsWidget.ID, Result<Statistics.ChartContent, Error>)
 
@@ -45,9 +56,9 @@ public struct StatisticsWidgetLayout: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Reducer(state: .equatable)
@@ -177,41 +188,20 @@ public struct StatisticsWidgetLayout: Reducer {
 	}
 }
 
+@ViewAction(for: StatisticsWidgetLayout.self)
 public struct StatisticsWidgetLayoutView: View {
-	let store: StoreOf<StatisticsWidgetLayout>
-
-	struct ViewState: Equatable {
-		let widgets: IdentifiedArrayOf<StatisticsWidget.Configuration>?
-		let leftoverWidget: StatisticsWidget.Configuration?
-		let widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
-
-		init(state: StatisticsWidgetLayout.State) {
-			if let widgets = state.widgets {
-				if widgets.count % 2 == 0 {
-					self.widgets = widgets
-					self.leftoverWidget = nil
-				} else {
-					self.widgets = .init(uniqueElements: widgets.dropLast())
-					self.leftoverWidget = widgets.last
-				}
-			} else {
-				self.widgets = nil
-				self.leftoverWidget = nil
-			}
-			self.widgetData = state.widgetData
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<StatisticsWidgetLayout>
 
 	public init(store: StoreOf<StatisticsWidgetLayout>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			Group {
-				if let widgets = viewStore.widgets {
-					if widgets.isEmpty && viewStore.leftoverWidget == nil {
-						Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
+				if let widgets = store.widgetRows {
+					if widgets.isEmpty && store.leftoverWidget == nil {
+						Button { send(.didTapConfigureStatisticsButton) } label: {
 							StatisticsWidget.PlaceholderWidget()
 						}
 						.buttonStyle(TappableElement())
@@ -222,27 +212,29 @@ public struct StatisticsWidgetLayoutView: View {
 								spacing: .standardSpacing
 							) {
 								ForEach(widgets) { widget in
-									SquareWidget(
-										configuration: widget,
-										chartContent: viewStore.widgetData[widget.id]
-									) {
-										viewStore.send(.didTapWidget(id: widget.id))
+									WithPerceptionTracking {
+										SquareWidget(
+											configuration: widget,
+											chartContent: store.widgetData[widget.id]
+										) {
+											send(.didTapWidget(id: widget.id))
+										}
 									}
 								}
 							}
 
-							if let leftoverWidget = viewStore.leftoverWidget {
+							if let leftoverWidget = store.leftoverWidget {
 								RectangleWidget(
 									configuration: leftoverWidget,
-									chartContent: viewStore.widgetData[leftoverWidget.id]
+									chartContent: store.widgetData[leftoverWidget.id]
 								) {
-									viewStore.send(.didTapWidget(id: leftoverWidget.id))
+									send(.didTapWidget(id: leftoverWidget.id))
 								}
 								.padding(.top, widgets.isEmpty ? .zero : .standardSpacing)
 							}
 
 							Button {
-								viewStore.send(.didTapConfigureStatisticsButton)
+								send(.didTapConfigureStatisticsButton)
 							} label: {
 								Text(Strings.Widget.LayoutBuilder.tapToChange)
 									.font(.caption)
@@ -257,25 +249,34 @@ public struct StatisticsWidgetLayoutView: View {
 					Text("")
 				}
 			}
-			.task { await viewStore.send(.task).finish() }
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.navigationDestination(
-			store: store.scope(state: \.$destination.details, action: \.internal.destination.details)
-		) { (store: StoreOf<StatisticsDetails>) in
+			.task { await send(.task).finish() }
+			.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
+			.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
+			.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
+			// TODO: enable errors
+			// .errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		}
+	}
+}
+
+@MainActor extension View {
+	fileprivate func details(_ store: Binding<StoreOf<StatisticsDetails>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<StatisticsDetails>) in
 			StatisticsDetailsView(store: store)
 		}
-		.sheet(
-			store: store.scope(state: \.$destination.layout, action: \.internal.destination.layout)
-		) { (store: StoreOf<StatisticsWidgetLayoutBuilder>) in
+	}
+
+	fileprivate func layoutBuilder(_ store: Binding<StoreOf<StatisticsWidgetLayoutBuilder>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<StatisticsWidgetLayoutBuilder>) in
 			NavigationStack {
 				StatisticsWidgetLayoutBuilderView(store: store)
 			}
 			.interactiveDismissDisabled()
 		}
-		.sheet(
-			store: store.scope(state: \.$destination.help, action: \.internal.destination.help)
-		) { (store: StoreOf<StatisticsWidgetHelp>) in
+	}
+
+	fileprivate func help(_ store: Binding<StoreOf<StatisticsWidgetHelp>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<StatisticsWidgetHelp>) in
 			NavigationStack {
 				StatisticsWidgetHelpView(store: store)
 			}
