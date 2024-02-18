@@ -10,104 +10,92 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
+@ViewAction(for: SeriesEditor.self)
 public struct SeriesEditorView: View {
-	let store: StoreOf<SeriesEditor>
-	typealias SeriesEditorViewStore = ViewStore<ViewState, SeriesEditor.Action.ViewAction>
-
-	struct ViewState: Equatable {
-		@BindingViewState var date: Date
-		@BindingViewState var numberOfGames: Int
-		@BindingViewState var preBowl: Series.PreBowl
-		@BindingViewState var excludeFromStatistics: Series.ExcludeFromStatistics
-		@BindingViewState var coordinate: CoordinateRegion
-		let location: Alley.Summary?
-
-		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
-
-		let isEditing: Bool
-		let isDismissDisabled: Bool
-	}
+	@Perception.Bindable public var store: StoreOf<SeriesEditor>
 
 	public init(store: StoreOf<SeriesEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-				Section(Strings.Editor.Fields.Details.title) {
-					Stepper(
-						Strings.Series.Editor.Fields.numberOfGames(viewStore.numberOfGames),
-						value: viewStore.$numberOfGames,
-						in: League.NUMBER_OF_GAMES_RANGE
-					)
-					.disabled(viewStore.isEditing)
+				WithPerceptionTracking {
+					Section(Strings.Editor.Fields.Details.title) {
+						Stepper(
+							Strings.Series.Editor.Fields.numberOfGames(store.numberOfGames),
+							value: $store.numberOfGames,
+							in: League.NUMBER_OF_GAMES_RANGE
+						)
+						.disabled(store.isEditing)
 
-					DatePicker(
-						Strings.Series.Properties.date,
-						selection: viewStore.$date,
-						displayedComponents: [.date]
-					)
-					.datePickerStyle(.graphical)
-				}
-
-				locationSection(viewStore)
-
-				Section {
-					Picker(
-						Strings.Series.Editor.Fields.PreBowl.label,
-						selection: viewStore.$preBowl
-					) {
-						ForEach(Series.PreBowl.allCases) {
-							Text(String(describing: $0)).tag($0)
-						}
+						DatePicker(
+							Strings.Series.Properties.date,
+							selection: $store.date,
+							displayedComponents: [.date]
+						)
+						.datePickerStyle(.graphical)
 					}
-				} header: {
-					Text(Strings.Series.Editor.Fields.PreBowl.title)
-				} footer: {
-					Text(Strings.Series.Editor.Fields.PreBowl.help)
-				}
 
-				Section {
-					Picker(
-						Strings.Series.Editor.Fields.ExcludeFromStatistics.label,
-						selection: viewStore.$excludeFromStatistics
-					) {
-						ForEach(Series.ExcludeFromStatistics.allCases) {
-							Text(String(describing: $0)).tag($0)
+					locationSection
+
+					Section {
+						Picker(
+							Strings.Series.Editor.Fields.PreBowl.label,
+							selection: $store.preBowl
+						) {
+							ForEach(Series.PreBowl.allCases) {
+								Text(String(describing: $0)).tag($0)
+							}
 						}
-					}.disabled(viewStore.preBowl == .preBowl || viewStore.excludeLeagueFromStatistics == .exclude)
-				} header: {
-					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
-				} footer: {
-					excludeFromStatisticsHelp(viewStore)
+					} header: {
+						Text(Strings.Series.Editor.Fields.PreBowl.title)
+					} footer: {
+						Text(Strings.Series.Editor.Fields.PreBowl.help)
+					}
+
+					Section {
+						Picker(
+							Strings.Series.Editor.Fields.ExcludeFromStatistics.label,
+							selection: $store.excludeFromStatistics
+						) {
+							ForEach(Series.ExcludeFromStatistics.allCases) {
+								Text(String(describing: $0)).tag($0)
+							}
+						}.disabled(store.preBowl == .preBowl || store.league.excludeFromStatistics == .exclude)
+					} header: {
+						Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
+					} footer: {
+						excludeFromStatisticsHelp
+					}
 				}
 			}
-			.interactiveDismissDisabled(viewStore.isDismissDisabled)
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.navigationDestination(
-			store: store.scope(state: \.$alleyPicker, action: \.internal.alleyPicker)
-		) { store in
-			ResourcePickerView(store: store) { alley in
-				Alley.View(alley)
+			.interactiveDismissDisabled(store.isDismissDisabled)
+			.onAppear { send(.onAppear) }
+			.navigationDestinationWrapper(
+				item: $store.scope(state: \.alleyPicker, action: \.internal.alleyPicker)
+			) { store in
+				ResourcePickerView(store: store) { alley in
+					Alley.View(alley)
+				}
 			}
 		}
 	}
 
-	@ViewBuilder private func locationSection(_ viewStore: SeriesEditorViewStore) -> some View {
+	private var locationSection: some View {
 		Section {
-			Button { viewStore.send(.didTapAlley) } label: {
+			Button { send(.didTapAlley) } label: {
 				LabeledContent(
 					Strings.Series.Properties.alley,
-					value: viewStore.location?.name ?? Strings.none
+					value: store.location?.name ?? Strings.none
 				)
 			}
 			.buttonStyle(.navigation)
 
-			if let location = viewStore.location?.location {
+			if let location = store.location?.location {
 				Map(
-					coordinateRegion: viewStore.$coordinate.mkCoordinateRegion,
+					coordinateRegion: $store.coordinate.mkCoordinateRegion,
 					interactionModes: [],
 					annotationItems: [location]
 				) { place in
@@ -126,39 +114,19 @@ public struct SeriesEditorView: View {
 		.listRowSeparator(.hidden)
 	}
 
-	@ViewBuilder private func excludeFromStatisticsHelp(_ viewStore: SeriesEditorViewStore) -> some View {
-		switch viewStore.excludeLeagueFromStatistics {
+	@ViewBuilder private var excludeFromStatisticsHelp: some View {
+		switch store.league.excludeFromStatistics {
 		case .exclude:
 			Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
 				.foregroundColor(Asset.Colors.Warning.default)
 		case .include:
-			switch viewStore.preBowl {
+			switch store.preBowl {
 			case .preBowl:
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenPreBowl)
 					.foregroundColor(Asset.Colors.Warning.default)
 			case .regular:
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
 			}
-		}
-	}
-}
-
-extension SeriesEditorView.ViewState {
-	init(store: BindingViewStore<SeriesEditor.State>) {
-		self._date = store.$date
-		self._numberOfGames = store.$numberOfGames
-		self._preBowl = store.$preBowl
-		self._excludeFromStatistics = store.$excludeFromStatistics
-		self._coordinate = store.$coordinate
-		self.location = store.location
-
-		self.excludeLeagueFromStatistics = store.league.excludeFromStatistics
-
-		self.isDismissDisabled = store.alleyPicker != nil
-
-		switch store._form.value {
-		case .create: self.isEditing = false
-		case .edit: self.isEditing = true
 		}
 	}
 }

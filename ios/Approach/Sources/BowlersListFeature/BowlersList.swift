@@ -281,6 +281,7 @@ public struct BowlersList: Reducer {
 						.destination(.presented(.sortOrder(.view))),
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
+						.destination(.presented(.seriesEditor(.binding))),
 						.destination(.presented(.games(.internal))),
 						.destination(.presented(.games(.view))),
 						.destination(.presented(.games(.delegate(.doNothing)))),

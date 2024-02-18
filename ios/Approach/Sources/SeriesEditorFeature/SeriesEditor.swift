@@ -17,20 +17,29 @@ public typealias SeriesForm = Form<Series.Create, Series.Edit>
 
 @Reducer
 public struct SeriesEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let league: League.SeriesHost
 
-		@BindingState public var numberOfGames: Int
-		@BindingState public var date: Date
-		@BindingState public var preBowl: Series.PreBowl
-		@BindingState public var excludeFromStatistics: Series.ExcludeFromStatistics
-		@BindingState public var coordinate: CoordinateRegion
+		public var numberOfGames: Int
+		public var date: Date
+		public var preBowl: Series.PreBowl
+		public var excludeFromStatistics: Series.ExcludeFromStatistics
+		public var coordinate: CoordinateRegion
 		public var location: Alley.Summary?
 
 		public let initialValue: SeriesForm.Value
 		public var _form: SeriesForm.State
 
-		@PresentationState public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
+		var isDismissDisabled: Bool { alleyPicker != nil }
+		var isEditing: Bool {
+			switch initialValue {
+			case .create: false
+			case .edit: true
+			}
+		}
+
+		@Presents public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: InitialValue, inLeague: League.SeriesHost) {
 			self.league = inLeague
@@ -56,25 +65,25 @@ public struct SeriesEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapAlley
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didFinishCreating(Series.Create)
 			case didFinishArchiving(Series.Edit)
 			case didFinishUpdating(Series.Edit)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case form(SeriesForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public enum InitialValue {
@@ -92,7 +101,7 @@ public struct SeriesEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.form, action: \.internal.form) {
 			SeriesForm()
@@ -118,35 +127,6 @@ public struct SeriesEditor: Reducer {
 						limit: 1,
 						showsCancelHeaderButton: false
 					)
-					return .none
-
-				case .binding(\.$excludeFromStatistics):
-					switch (state.league.excludeFromStatistics, state.preBowl) {
-					case (.exclude, _):
-						state.excludeFromStatistics = .exclude
-					case (_, .preBowl):
-						state.excludeFromStatistics = .exclude
-					case (.include, .regular):
-						break
-					}
-					return .none
-
-				case .binding(\.$preBowl):
-					switch (state.league.excludeFromStatistics, state.preBowl) {
-					case (.exclude, _):
-						state.excludeFromStatistics = .exclude
-					case (_, .preBowl):
-						state.excludeFromStatistics = .exclude
-					case (.include, .regular):
-						state.excludeFromStatistics = .include
-					}
-					return .none
-
-				case .binding(\.$date):
-					state.date = calendar.startOfDay(for: state.date)
-					return .none
-
-				case .binding:
 					return .none
 				}
 
@@ -203,7 +183,33 @@ public struct SeriesEditor: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.date):
+				state.date = calendar.startOfDay(for: state.date)
+				return .none
+
+			case .binding(\.excludeFromStatistics):
+				switch (state.league.excludeFromStatistics, state.preBowl) {
+				case (.exclude, _):
+					state.excludeFromStatistics = .exclude
+				case (_, .preBowl):
+					state.excludeFromStatistics = .exclude
+				case (.include, .regular):
+					break
+				}
+				return .none
+
+			case .binding(\.preBowl):
+				switch (state.league.excludeFromStatistics, state.preBowl) {
+				case (.exclude, _):
+					state.excludeFromStatistics = .exclude
+				case (_, .preBowl):
+					state.excludeFromStatistics = .exclude
+				case (.include, .regular):
+					state.excludeFromStatistics = .include
+				}
+				return .none
+
+			case .delegate, .binding:
 				return .none
 			}
 		}

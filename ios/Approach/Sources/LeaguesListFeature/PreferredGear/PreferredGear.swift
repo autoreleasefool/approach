@@ -10,32 +10,33 @@ import SwiftUI
 
 @Reducer
 public struct PreferredGear: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.ID
 
 		public var gear: IdentifiedArrayOf<Gear.Summary> = []
 
-		@PresentationState var gearPicker: ResourcePicker<Gear.Summary, Bowler.ID>.State?
+		@Presents var gearPicker: ResourcePicker<Gear.Summary, Bowler.ID>.State?
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didFirstAppear
 			case didTapManageButton
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case errorLoadingGear(Result<Never, Error>)
 			case errorUpdatingPreferredGear(Result<Never, Error>)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didLoadGear(Result<[Gear.Summary], Error>)
 			case didUpdatePreferredGear(Result<[Gear.Summary], Error>)
 			case gearPicker(PresentationAction<ResourcePicker<Gear.Summary, Bowler.ID>.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public init() {}
@@ -106,20 +107,21 @@ public struct PreferredGear: Reducer {
 	}
 }
 
+@ViewAction(for: PreferredGear.self)
 public struct PreferredGearView: View {
-	let store: StoreOf<PreferredGear>
+	@Perception.Bindable public var store: StoreOf<PreferredGear>
 
 	public init(store: StoreOf<PreferredGear>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			Section {
-				if viewStore.gear.isEmpty {
+				if store.gear.isEmpty {
 					Text(Strings.Bowler.List.PreferredGear.footer)
 				} else {
-					ForEach(viewStore.gear) { gear in
+					ForEach(store.gear) { gear in
 						Gear.ViewWithAvatar(gear)
 					}
 				}
@@ -127,26 +129,26 @@ public struct PreferredGearView: View {
 				HStack(alignment: .firstTextBaseline) {
 					Text(Strings.Bowler.List.preferredGear)
 					Spacer()
-					Button { viewStore.send(.didTapManageButton) } label: {
+					Button { send(.didTapManageButton) } label: {
 						Text(Strings.Action.manage)
 							.font(.caption)
 					}
 				}
 				Text(Strings.Bowler.List.preferredGear)
 			} footer: {
-				if viewStore.gear.isEmpty {
+				if store.gear.isEmpty {
 					EmptyView()
 				} else {
 					Text(Strings.Bowler.List.PreferredGear.footer)
 				}
 			}
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-		})
-		.navigationDestination(
-			store: store.scope(state: \.$gearPicker, action: \.internal.gearPicker)
-		) { store in
-			ResourcePickerView(store: store) {
-				Gear.ViewWithAvatar($0)
+			.onFirstAppear { send(.didFirstAppear) }
+			.navigationDestinationWrapper(
+				item: $store.scope(state: \.gearPicker, action: \.internal.gearPicker)
+			) { store in
+				ResourcePickerView(store: store) {
+					Gear.ViewWithAvatar($0)
+				}
 			}
 		}
 	}

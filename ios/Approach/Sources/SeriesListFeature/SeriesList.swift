@@ -269,8 +269,12 @@ public struct SeriesList: Reducer {
 					return .none
 
 				case .destination(.dismiss),
-						.destination(.presented(.seriesEditor(.view))), .destination(.presented(.seriesEditor(.internal))),
-						.destination(.presented(.leagueEditor(.view))), .destination(.presented(.leagueEditor(.internal))),
+						.destination(.presented(.seriesEditor(.view))), 
+						.destination(.presented(.seriesEditor(.internal))),
+						.destination(.presented(.seriesEditor(.binding))),
+						.destination(.presented(.leagueEditor(.binding))),
+						.destination(.presented(.leagueEditor(.view))),
+						.destination(.presented(.leagueEditor(.internal))),
 						.destination(.presented(.games(.view))), .destination(.presented(.games(.internal))),
 						.destination(.presented(.sortOrder(.internal))), .destination(.presented(.sortOrder(.view))),
 						.list(.view), .list(.internal), .list(.binding),
