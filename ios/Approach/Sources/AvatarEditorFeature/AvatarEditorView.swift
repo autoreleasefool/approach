@@ -6,19 +6,20 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@ViewAction(for: AvatarEditor.self)
 public struct AvatarEditorView: View {
-	let store: StoreOf<AvatarEditor>
+	@Perception.Bindable public var store: StoreOf<AvatarEditor>
 
 	public init(store: StoreOf<AvatarEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
 					VStack {
-						AvatarView(viewStore.avatar, size: .extraLargeIcon)
+						AvatarView(store.avatar, size: .extraLargeIcon)
 							.shadow(radius: .standardShadowRadius)
 					}
 					.frame(maxWidth: .infinity)
@@ -26,13 +27,13 @@ public struct AvatarEditorView: View {
 				.listRowBackground(Color.clear)
 
 				Section(Strings.Avatar.Editor.Properties.Label.title) {
-					TextField(Strings.Avatar.Editor.Properties.Label.title, text: viewStore.$label)
+					TextField(Strings.Avatar.Editor.Properties.Label.title, text: $store.label)
 				}
 
 				Section(Strings.Avatar.Editor.Properties.BackgroundColor.title) {
 					Picker(
 						Strings.Avatar.Editor.Properties.BackgroundColor.Style.title,
-						selection: viewStore.$backgroundStyle
+						selection: $store.backgroundStyle
 					) {
 						ForEach(AvatarEditor.AvatarBackgroundStyle.allCases, id: \.rawValue) {
 							Text(String(describing: $0)).tag($0)
@@ -40,9 +41,9 @@ public struct AvatarEditorView: View {
 					}
 					.pickerStyle(.segmented)
 
-					colorPicker(viewStore)
+					colorPicker
 
-					Button { viewStore.send(.didTapRandomColorButton) } label: {
+					Button { send(.didTapRandomColorButton) } label: {
 						Text(Strings.Avatar.Editor.Properties.BackgroundColor.randomColor)
 							.frame(maxWidth: .infinity, alignment: .center)
 					}
@@ -54,41 +55,39 @@ public struct AvatarEditorView: View {
 			.navigationBarBackButtonHidden(true)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
-					Button(Strings.Action.cancel) { viewStore.send(.didTapCancel) }
+					Button(Strings.Action.cancel) { send(.didTapCancel) }
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.done) { viewStore.send(.didTapDone) }
-						.disabled(!viewStore.hasChanges)
+					Button(Strings.Action.done) { send(.didTapDone) }
+						.disabled(!store.hasChanges)
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onAppear { send(.onAppear) }
+		}
 	}
 
-	@MainActor @ViewBuilder private func colorPicker(
-		_ viewStore: ViewStore<AvatarEditor.State, AvatarEditor.Action.ViewAction>
-	) -> some View {
+	@ViewBuilder private var colorPicker: some View {
 		HStack(spacing: .standardSpacing) {
 			ColorPicker(
 				Strings.Avatar.Editor.Properties.BackgroundColor.backgroundColor,
-				selection: viewStore.$backgroundColor
+				selection: $store.backgroundColor
 			)
 			.labelsHidden()
 
-			switch viewStore.backgroundStyle {
+			switch store.backgroundStyle {
 			case .solid:
 				Spacer()
 					.frame(height: .largeSpacing)
-					.background(viewStore.backgroundColor)
+					.background(store.backgroundColor)
 					.clipShape(RoundedRectangle(cornerRadius: .standardRadius))
 			case .gradient:
 				Spacer()
 					.frame(height: .largeSpacing)
 					.background(LinearGradient(
 						colors: [
-							viewStore.backgroundColor,
-							viewStore.secondaryBackgroundColor,
+							store.backgroundColor,
+							store.secondaryBackgroundColor,
 						],
 						startPoint: .leading,
 						endPoint: .trailing
@@ -97,7 +96,7 @@ public struct AvatarEditorView: View {
 
 				ColorPicker(
 					Strings.Avatar.Editor.Properties.BackgroundColor.secondaryColor,
-					selection: viewStore.$secondaryBackgroundColor
+					selection: $store.secondaryBackgroundColor
 				)
 				.labelsHidden()
 			}

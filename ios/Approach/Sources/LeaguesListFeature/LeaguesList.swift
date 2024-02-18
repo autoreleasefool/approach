@@ -32,6 +32,7 @@ extension League.Ordering: CustomStringConvertible {
 @Reducer
 // swiftlint:disable:next type_body_length
 public struct LeaguesList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let bowler: Bowler.Summary
 
@@ -39,23 +40,26 @@ public struct LeaguesList: Reducer {
 		public var preferredGear: PreferredGear.State
 		public var widgets: StatisticsWidgetLayout.State
 
-		public var ordering: League.Ordering = .byRecentlyUsed
+		public var ordering: League.Ordering = .default
 		public var filter: League.List.FetchRequest.Filter
 
 		public var isShowingWidgets: Bool
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		var filters: LeaguesFilter.State {
 			get { .init(recurrence: filter.recurrence) }
 			set { filter.recurrence = newValue.recurrence }
 		}
 
+		var isAnyFilterActive: Bool { filter != .init(bowler: bowler.id) }
+
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
-			self.filter = .init(bowler: bowler.id)
+			let filter: League.List.FetchRequest.Filter = .init(bowler: bowler.id)
+			self.filter = filter
 			self.widgets = .init(context: LeaguesList.widgetContext(forBowler: bowler.id), newWidgetSource: .bowler(bowler.id))
 			self.preferredGear = .init(bowler: bowler.id)
 			self.list = .init(
@@ -66,7 +70,7 @@ public struct LeaguesList: Reducer {
 				],
 				query: .init(
 					filter: filter,
-					ordering: ordering
+					ordering: .default
 				),
 				listTitle: Strings.League.List.title,
 				emptyContent: .init(
@@ -82,8 +86,8 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didStartTask
 			case didTapLeague(id: League.ID)
@@ -91,9 +95,9 @@ public struct LeaguesList: Reducer {
 			case didTapSortOrderButton
 		}
 
-		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum Delegate { case doNothing }
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didLoadEditableLeague(Result<League.Edit, Error>)
 			case didArchiveLeague(Result<League.List, Error>)
 			case didLoadSeriesLeague(Result<League.SeriesHost, Error>)
@@ -107,9 +111,9 @@ public struct LeaguesList: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	@Reducer(state: .equatable)

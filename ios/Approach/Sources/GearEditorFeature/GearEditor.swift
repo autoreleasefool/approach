@@ -23,16 +23,24 @@ public struct AvatarImage: Equatable {
 
 @Reducer
 public struct GearEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var name: String
-		@BindingState public var kind: Gear.Kind
+		public var name: String
+		public var kind: Gear.Kind
 		public var owner: Bowler.Summary?
 		public var avatar: Avatar.Summary
 
 		public var initialValue: GearForm.Value
 		public var _form: GearForm.State
 
-		@PresentationState var destination: Destination.State?
+		var isEditing: Bool {
+			switch initialValue {
+			case .create: false
+			case .edit: true
+			}
+		}
+
+		@Presents var destination: Destination.State?
 
 		public init(value: GearForm.Value) {
 			self.initialValue = value
@@ -53,22 +61,22 @@ public struct GearEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapOwner
 			case didTapAvatar
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case form(GearForm.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	@Reducer
@@ -103,7 +111,7 @@ public struct GearEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.form, action: \.internal.form) {
 			GearForm()
@@ -132,7 +140,7 @@ public struct GearEditor: Reducer {
 					))
 					return .none
 
-				case .binding, .onAppear:
+				case .onAppear:
 					return .none
 				}
 
@@ -175,11 +183,13 @@ public struct GearEditor: Reducer {
 
 				case .destination(.dismiss),
 						.destination(.presented(.bowlerPicker(.view))), .destination(.presented(.bowlerPicker(.internal))),
-						.destination(.presented(.avatar(.view))), .destination(.presented(.avatar(.internal))):
+						.destination(.presented(.avatar(.view))),
+						.destination(.presented(.avatar(.internal))),
+						.destination(.presented(.avatar(.binding))):
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}

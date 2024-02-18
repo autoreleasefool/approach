@@ -9,14 +9,15 @@ import SwiftUI
 
 @Reducer
 public struct AvatarEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let id: UUID
 		public let initialAvatar: Avatar.Summary?
 
-		@BindingState public var label: String
-		@BindingState public var backgroundColor: Color
-		@BindingState public var secondaryBackgroundColor: Color
-		@BindingState public var backgroundStyle: AvatarBackgroundStyle
+		public var label: String
+		public var backgroundColor: Color
+		public var secondaryBackgroundColor: Color
+		public var backgroundStyle: AvatarBackgroundStyle
 
 		public init(avatar: Avatar.Summary?) {
 			@Dependency(\.uuid) var uuid
@@ -59,23 +60,23 @@ public struct AvatarEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapCancel
 			case didTapDone
 			case didTapRandomColorButton
 			case didTapSwapColorsButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didFinishEditing(Avatar.Summary?)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum AvatarBackgroundStyle: Int, CaseIterable, CustomStringConvertible {
@@ -96,7 +97,7 @@ public struct AvatarEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -127,15 +128,12 @@ public struct AvatarEditor: Reducer {
 					state.backgroundColor = Color(uiColor: .random)
 					state.secondaryBackgroundColor = Color(uiColor: .random)
 					return .none
-
-				case .binding:
-					return .none
 				}
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}

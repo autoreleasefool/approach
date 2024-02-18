@@ -272,6 +272,7 @@ public struct BowlersList: Reducer {
 				case .destination(.dismiss),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
+						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.editor(.delegate(.doNothing)))),
 						.destination(.presented(.leagues(.internal))),
 						.destination(.presented(.leagues(.view))),
