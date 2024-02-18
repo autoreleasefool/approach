@@ -46,10 +46,11 @@ public struct Form<
 		}
 	}
 
+	@ObservableState
 	public struct State: Equatable {
 		public let modelName: String
 		public var isLoading = false
-		@PresentationState public var alert: AlertState<AlertAction>?
+		@Presents public var alert: AlertState<AlertAction>?
 
 		public let initialValue: Value
 		public var value: Value
@@ -58,6 +59,15 @@ public struct Form<
 
 		public var hasChanges: Bool {
 			initialValue != value
+		}
+
+		var title: String {
+			switch initialValue {
+			case .create:
+				Strings.Form.Prompt.add(New.modelName)
+			case let .edit(existing):
+				Strings.Form.Prompt.edit(existing.name)
+			}
 		}
 
 		public var isSaveableWithoutChanges: Bool {
@@ -149,7 +159,7 @@ public struct Form<
 	}
 
 	public enum Action {
-		@CasePathable public enum ViewAction {
+		@CasePathable public enum View {
 			case didTapSaveButton
 			case didTapDiscardButton
 			case didTapDeleteButton
@@ -157,11 +167,11 @@ public struct Form<
 			case alert(PresentationAction<AlertAction>)
 		}
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didCreate(Result<New, Error>)
 			case didUpdate(Result<Existing, Error>)
 			case didDelete(Result<Existing, Error>)
@@ -173,9 +183,9 @@ public struct Form<
 			case didDiscard
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public enum AlertAction: Equatable {

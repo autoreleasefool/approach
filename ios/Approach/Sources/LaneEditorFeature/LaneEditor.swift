@@ -15,10 +15,11 @@ extension Lane.Position: CustomStringConvertible {
 
 @Reducer
 public struct LaneEditor: Reducer {
+	@ObservableState
 	public struct State: Identifiable, Equatable {
 		public let id: Lane.ID
-		@BindingState public var label: String
-		@BindingState public var position: Lane.Position
+		public var label: String
+		public var position: Lane.Position
 
 		public init(id: Lane.ID, label: String, position: Lane.Position) {
 			self.id = id
@@ -27,19 +28,19 @@ public struct LaneEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didSwipe(SwipeAction)
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didDeleteLane
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum SwipeAction {
@@ -49,7 +50,7 @@ public struct LaneEditor: Reducer {
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { _, action in
 			switch action {
@@ -60,15 +61,12 @@ public struct LaneEditor: Reducer {
 					case .delete:
 						return .send(.delegate(.didDeleteLane))
 					}
-
-				case .binding:
-					return .none
 				}
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}

@@ -6,26 +6,27 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@ViewAction(for: LaneEditor.self)
 public struct LaneEditorView: View {
-	let store: StoreOf<LaneEditor>
+	@Perception.Bindable public var store: StoreOf<LaneEditor>
 
 	public init(store: StoreOf<LaneEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack {
 				HStack {
 					TextField(
 						Strings.Lane.Properties.label,
-						text: viewStore.$label
+						text: $store.label
 					)
 				}
 
 				Picker(
 					Strings.Lane.Properties.position,
-					selection: viewStore.$position
+					selection: $store.position
 				) {
 					ForEach(Lane.Position.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -33,8 +34,8 @@ public struct LaneEditorView: View {
 				}
 			}
 			.swipeActions(allowsFullSwipe: true) {
-				DeleteButton { viewStore.send(.didSwipe(.delete)) }
+				DeleteButton { send(.didSwipe(.delete)) }
 			}
-		})
+		}
 	}
 }

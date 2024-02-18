@@ -21,7 +21,7 @@ extension AlleyLanesEditor {
 			}
 		}
 
-		state.addLaneForm = nil
+		state.destination = nil
 		return .none
 	}
 }

@@ -9,8 +9,9 @@ import StringsLibrary
 
 @Reducer
 public struct AddressLookup: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var query: String
+		public var query: String
 		public var results: IdentifiedArrayOf<AddressLookupResult> = []
 
 		public var isLoadingAddress = false
@@ -23,23 +24,24 @@ public struct AddressLookup: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapCancelButton
 			case didTapResult(AddressLookupResult.ID)
-			case binding(BindingAction<State>)
+
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didReceiveResults(Result<[AddressLookupResult], Error>)
 			case didLoadAddress(Result<Location.Edit, Error>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	enum SearchID { case lookup }
@@ -59,7 +61,7 @@ public struct AddressLookup: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -103,16 +105,6 @@ public struct AddressLookup: Reducer {
 							)
 						})))
 					}
-
-				case .binding(\.$query):
-					state.loadingAddressError = nil
-					state.loadingResultsError = nil
-					return .run { [query = state.query] _ in
-						await addressLookup.updateSearchQuery(SearchID.lookup, query)
-					}
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -135,7 +127,14 @@ public struct AddressLookup: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.query):
+				state.loadingAddressError = nil
+				state.loadingResultsError = nil
+				return .run { [query = state.query] _ in
+					await addressLookup.updateSearchQuery(SearchID.lookup, query)
+				}
+
+			case .delegate, .binding:
 				return .none
 			}
 		}

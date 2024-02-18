@@ -7,17 +7,18 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@ViewAction(for: AddressLookup.self)
 public struct AddressLookupView: View {
-	let store: StoreOf<AddressLookup>
+	@Perception.Bindable public var store: StoreOf<AddressLookup>
 
 	public init(store: StoreOf<AddressLookup>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
-				if viewStore.isLoadingAddress {
+				if store.isLoadingAddress {
 					Section {
 						HStack(alignment: .center) {
 							ProgressView()
@@ -25,7 +26,7 @@ public struct AddressLookupView: View {
 						.frame(maxWidth: .infinity)
 					}
 				} else {
-					if let error = viewStore.loadingAddressError ?? viewStore.loadingResultsError {
+					if let error = store.loadingAddressError ?? store.loadingResultsError {
 						Section {
 							Banner(.titleAndMessage(Strings.Error.Generic.title, error), style: .error)
 						}
@@ -33,13 +34,13 @@ public struct AddressLookupView: View {
 					}
 
 					Section(Strings.List.results) {
-						if viewStore.results.isEmpty {
+						if store.results.isEmpty {
 							Text(Strings.Address.Error.Empty.title)
 								.font(.caption)
 								.multilineTextAlignment(.center)
 						} else {
-							ForEach(viewStore.results) { result in
-								Button { viewStore.send(.didTapResult(result.id)) } label: {
+							ForEach(store.results) { result in
+								Button { send(.didTapResult(result.id)) } label: {
 									VStack(alignment: .leading, spacing: .tinySpacing) {
 										Text(result.completion.wrapped.title)
 											.font(.body)
@@ -57,16 +58,16 @@ public struct AddressLookupView: View {
 				}
 			}
 			.searchable(
-				text: viewStore.$query,
+				text: $store.query,
 				prompt: Text(Strings.Action.search)
 			)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.cancel) { viewStore.send(.didTapCancelButton) }
+					Button(Strings.Action.cancel) { send(.didTapCancelButton) }
 				}
 			}
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onFirstAppear { send(.didFirstAppear) }
+			.onAppear { send(.onAppear) }
+		}
 	}
 }

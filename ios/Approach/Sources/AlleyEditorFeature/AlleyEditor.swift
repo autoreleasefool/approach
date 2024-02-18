@@ -16,13 +16,14 @@ public typealias AlleyForm = Form<Alley.Create, Alley.Edit>
 
 @Reducer
 public struct AlleyEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var name: String
-		@BindingState public var material: Alley.Material?
-		@BindingState public var pinFall: Alley.PinFall?
-		@BindingState public var mechanism: Alley.Mechanism?
-		@BindingState public var pinBase: Alley.PinBase?
-		@BindingState public var coordinate: CoordinateRegion
+		public var name: String
+		public var material: Alley.Material?
+		public var pinFall: Alley.PinFall?
+		public var mechanism: Alley.Mechanism?
+		public var pinBase: Alley.PinBase?
+		public var coordinate: CoordinateRegion
 		public var location: Location.Edit?
 
 		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
@@ -31,8 +32,7 @@ public struct AlleyEditor: Reducer {
 		public let initialValue: AlleyForm.Value
 		public var _form: AlleyForm.State
 
-		@PresentationState public var addressLookup: AddressLookup.State?
-		@PresentationState public var alleyLanesEditor: AlleyLanesEditor.State?
+		@Presents public var destination: Destination.State?
 
 		public init(value: InitialValue) {
 			switch value {
@@ -62,25 +62,30 @@ public struct AlleyEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapAddressField
 			case didTapManageLanes
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didCreateLanes(Result<Alley.Create, Error>)
 			case didUpdateLanes(Result<Alley.Edit, Error>)
 			case form(AlleyForm.Action)
-			case addressLookup(PresentationAction<AddressLookup.Action>)
-			case alleyLanesEditor(PresentationAction<AlleyLanesEditor.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
+	}
+
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case addressLookup(AddressLookup)
+		case alleyLanes(AlleyLanesEditor)
 	}
 
 	public enum InitialValue {
@@ -95,7 +100,7 @@ public struct AlleyEditor: Reducer {
 	@Dependency(\.lanes) var lanes
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.form, action: \.internal.form) {
 			AlleyForm()
@@ -116,7 +121,7 @@ public struct AlleyEditor: Reducer {
 
 				case .didTapAddressField:
 					if state.location == nil {
-						state.addressLookup = .init(initialQuery: state.location?.title ?? "")
+						state.destination = .addressLookup(.init(initialQuery: state.location?.title ?? ""))
 					} else {
 						state.location = nil
 						state.coordinate = .init(coordinate: .init())
@@ -124,14 +129,11 @@ public struct AlleyEditor: Reducer {
 					return .none
 
 				case .didTapManageLanes:
-					state.alleyLanesEditor = .init(
+					state.destination = .alleyLanes(.init(
 						alley: state.alleyId,
 						existingLanes: state.existingLanes,
 						newLanes: state.newLanes
-					)
-					return .none
-
-				case .binding:
+					))
 					return .none
 				}
 
@@ -186,53 +188,41 @@ public struct AlleyEditor: Reducer {
 						return .run { _ in await dismiss() }
 					}
 
-				case .alleyLanesEditor(.presented(.delegate(.doNothing))):
-					return .none
-
-				case .alleyLanesEditor(.dismiss):
-					guard let newLanes = state.alleyLanesEditor?.newLanes,
-								let existingLanes = state.alleyLanesEditor?.existingLanes else {
+				case .destination(.dismiss):
+					switch state.destination {
+					case let .alleyLanes(alleyLanes):
+						state.newLanes = alleyLanes.newLanes.filter { !$0.label.isEmpty }
+						state.existingLanes = alleyLanes.existingLanes
+						return .none
+					case let .addressLookup(addressLookup):
+						guard let result = addressLookup.lookUpResult else { return .none }
+						if state.location == nil {
+							state.location = result
+						} else {
+							state.location?.updateProperties(with: result)
+						}
+						state.coordinate = .init(coordinate: state.location?.coordinate.mapCoordinate ?? .init())
+						return .none
+					case .none:
 						return .none
 					}
-					state.newLanes = newLanes.filter { !$0.label.isEmpty }
-					state.existingLanes = existingLanes
-					return .none
 
-				case .addressLookup(.dismiss):
-					guard let result = state.addressLookup?.lookUpResult else { return .none }
-					if state.location == nil {
-						state.location = result
-					} else {
-						state.location?.updateProperties(with: result)
-					}
-					state.coordinate = .init(coordinate: state.location?.coordinate.mapCoordinate ?? .init())
-					return .none
-
-				case .addressLookup(.presented(.delegate(.doNothing))):
-					return .none
-
-				case .alleyLanesEditor(.presented(.internal)),
-						.alleyLanesEditor(.presented(.view)):
-					return .none
-
-				case .form(.view), .form(.internal):
-					return .none
-
-				case .addressLookup(.presented(.internal)),
-						.addressLookup(.presented(.view)):
+				case .destination(.presented(.alleyLanes(.delegate(.doNothing)))),
+						.destination(.presented(.addressLookup(.delegate(.doNothing)))),
+						.destination(.presented(.alleyLanes(.internal))),
+						.destination(.presented(.alleyLanes(.view))),
+						.destination(.presented(.addressLookup(.internal))),
+						.destination(.presented(.addressLookup(.view))),
+						.destination(.presented(.addressLookup(.binding))),
+						.form(.view), .form(.internal):
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
-		.ifLet(\.$addressLookup, action: \.internal.addressLookup) {
-			AddressLookup()
-		}
-		.ifLet(\.$alleyLanesEditor, action: \.internal.alleyLanesEditor) {
-			AlleyLanesEditor()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		AnalyticsReducer<State, Action> { state, action in
 			switch action {
