@@ -13,23 +13,16 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@ViewAction(for: GearList.self)
 public struct GearListView: View {
-	let store: StoreOf<GearList>
-
-	struct ViewState: Equatable {
-		let isAnyFilterActive: Bool
-
-		init(state: GearList.State) {
-			self.isAnyFilterActive = state.kindFilter != nil
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<GearList>
 
 	public init(store: StoreOf<GearList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			ResourceListView(
 				store: store.scope(state: \.list, action: \.internal.list)
 			) {
@@ -38,34 +31,35 @@ public struct GearListView: View {
 			.navigationTitle(Strings.Gear.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: viewStore.isAnyFilterActive) {
-						viewStore.send(.didTapFilterButton)
+					FilterButton(isActive: store.isAnyFilterActive) {
+						send(.didTapFilterButton)
 					}
 				}
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { viewStore.send(.didTapSortOrderButton) }
+					SortButton(isActive: false) { send(.didTapSortOrderButton) }
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.gearEditor(store.scope(state: \.$destination.editor, action: \.internal.destination.editor))
-		.gearFilters(store.scope(state: \.$destination.filters, action: \.internal.destination.filters))
-		.sortOrder(store.scope(state: \.$destination.sortOrder, action: \.internal.destination.sortOrder))
+			.onAppear { send(.onAppear) }
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.gearEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+			.gearFilters($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+		}
 	}
 }
 
 @MainActor extension View {
-	fileprivate func gearEditor(_ store: PresentationStoreOf<GearEditor>) -> some View {
-		sheet(store: store) { store in
+	fileprivate func gearEditor(_ store: Binding<StoreOf<GearEditor>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				GearEditorView(store: store)
 			}
 		}
 	}
 
-	fileprivate func gearFilters(_ store: PresentationStoreOf<GearFilter>) -> some View {
-		sheet(store: store) { store in
+	fileprivate func gearFilters(_ store: Binding<StoreOf<GearFilter>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				GearFilterView(store: store)
 			}
@@ -73,8 +67,8 @@ public struct GearListView: View {
 		}
 	}
 
-	fileprivate func sortOrder(_ store: PresentationStoreOf<SortOrderLibrary.SortOrder<Gear.Ordering>>) -> some View {
-		sheet(store: store) { store in
+	fileprivate func sortOrder(_ store: Binding<StoreOf<SortOrderLibrary.SortOrder<Gear.Ordering>>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				SortOrderView(store: store)
 			}

@@ -1,5 +1,6 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
+import FeatureActionLibrary
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -12,7 +13,7 @@ public struct ScoringEditor: Reducer {
 		@BindingState public var score: Int
 	}
 
-	public enum Action {
+	public enum Action: FeatureAction {
 		@CasePathable public enum ViewAction: BindableAction {
 			case onAppear
 			case toggleManualScoring(Bool)

@@ -5,6 +5,8 @@ extension League {
 	public enum Ordering: Hashable, CaseIterable {
 		case byName
 		case byRecentlyUsed
+
+		public static var `default`: Self { .byRecentlyUsed }
 	}
 }
 

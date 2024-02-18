@@ -27,14 +27,17 @@ extension Gear.Ordering: CustomStringConvertible {
 
 @Reducer
 public struct GearList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var list: ResourceList<Gear.Summary, Query>.State
-		public var ordering: Gear.Ordering = .byRecentlyUsed
+		public var ordering: Gear.Ordering = .default
 		public var kindFilter: Gear.Kind?
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
+
+		var isAnyFilterActive: Bool { kindFilter != nil }
 
 		public init(kind: Gear.Kind?) {
 			self.kindFilter = kind
@@ -44,7 +47,7 @@ public struct GearList: Reducer {
 					.swipeToEdit,
 					.swipeToDelete,
 				],
-				query: .init(kind: kindFilter, sortOrder: ordering),
+				query: .init(kind: nil, sortOrder: .default),
 				listTitle: Strings.Gear.List.title,
 				emptyContent: .init(
 					image: Asset.Media.EmptyState.gear,
@@ -56,14 +59,14 @@ public struct GearList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapFilterButton
 			case didTapSortOrderButton
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadEditableGear(Result<Gear.Edit, Error>)
 			case didDeleteGear(Result<Gear.Summary, Error>)
 
@@ -72,9 +75,9 @@ public struct GearList: Reducer {
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	public struct Query: Equatable {
@@ -201,8 +204,10 @@ public struct GearList: Reducer {
 				case .destination(.dismiss),
 						.destination(.presented(.filters(.internal))),
 						.destination(.presented(.filters(.view))),
+						.destination(.presented(.filters(.binding))),
 						.destination(.presented(.editor(.internal))),
 						.destination(.presented(.editor(.view))),
+						.destination(.presented(.editor(.binding))),
 						.destination(.presented(.sortOrder(.internal))),
 						.destination(.presented(.sortOrder(.view))),
 						.errors(.internal),

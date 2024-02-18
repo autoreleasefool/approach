@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import FramesRepositoryInterface
 import ModelsLibrary
 import SwiftUI
@@ -24,7 +25,7 @@ public struct FrameEditor: Reducer {
 		}
 	}
 
-	public enum Action {
+	public enum Action: FeatureAction {
 		@CasePathable public enum ViewAction {
 			case didStartDragging
 			case didDragOverPin(Pin)

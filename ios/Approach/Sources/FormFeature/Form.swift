@@ -158,7 +158,7 @@ public struct Form<
 		}
 	}
 
-	public enum Action {
+	public enum Action: FeatureAction {
 		@CasePathable public enum View {
 			case didTapSaveButton
 			case didTapDiscardButton

@@ -13,46 +13,39 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
+@ViewAction(for: GearEditor.self)
 public struct GearEditorView: View {
-	let store: StoreOf<GearEditor>
-
-	struct ViewState: Equatable {
-		@BindingViewState var name: String
-		@BindingViewState var kind: Gear.Kind
-		let owner: Bowler.Summary?
-		let avatar: Avatar.Summary
-		let isEditing: Bool
-	}
+	@Perception.Bindable public var store: StoreOf<GearEditor>
 
 	public init(store: StoreOf<GearEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.$name
+						text: $store.name
 					)
 					.textContentType(.name)
 
 					Picker(
 						Strings.Gear.Properties.kind,
-						selection: viewStore.$kind
+						selection: $store.kind
 					) {
 						ForEach(Gear.Kind.allCases) {
 							Text(String(describing: $0)).tag($0)
 						}
 					}
-					.disabled(viewStore.isEditing)
+					.disabled(store.isEditing)
 				}
 
 				Section {
-					Button { viewStore.send(.didTapAvatar) } label: {
+					Button { send(.didTapAvatar) } label: {
 						HStack {
-							AvatarView(viewStore.avatar, size: .standardIcon)
+							AvatarView(store.avatar, size: .standardIcon)
 							Text(Strings.Gear.Properties.Avatar.customize)
 						}
 					}
@@ -64,49 +57,36 @@ public struct GearEditorView: View {
 				}
 
 				Section(Strings.Gear.Properties.owner) {
-					Button { viewStore.send(.didTapOwner) } label: {
+					Button { send(.didTapOwner) } label: {
 						LabeledContent(
 							Strings.Bowler.title,
-							value: viewStore.owner?.name ?? Strings.none
+							value: store.owner?.name ?? Strings.none
 						)
 					}
 					.buttonStyle(.navigation)
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.bowlerPicker(store.scope(state: \.$destination.bowlerPicker, action: \.internal.destination.bowlerPicker))
-		.avatar(store.scope(state: \.$destination.avatar, action: \.internal.destination.avatar))
+			.onAppear { send(.onAppear) }
+			.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
+			.avatar($store.scope(state: \.destination?.avatar, action: \.internal.destination.avatar))
+		}
 	}
 }
 
 @MainActor extension View {
 	fileprivate func bowlerPicker(
-		_ store: PresentationStoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>
+		_ store: Binding<StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {
-		navigationDestination(store: store) {
+		navigationDestinationWrapper(item: store) {
 			ResourcePickerView(store: $0) { bowler in
 				Bowler.View(bowler)
 			}
 		}
 	}
 
-	fileprivate func avatar(_ store: PresentationStoreOf<AvatarEditor>) -> some View {
-		navigationDestination(store: store) {
+	fileprivate func avatar(_ store: Binding<StoreOf<AvatarEditor>?>) -> some View {
+		navigationDestinationWrapper(item: store) {
 			AvatarEditorView(store: $0)
-		}
-	}
-}
-
-extension GearEditorView.ViewState {
-	init(store: BindingViewStore<GearEditor.State>) {
-		self._name = store.$name
-		self._kind = store.$kind
-		self.owner = store.owner
-		self.avatar = store.avatar
-		switch store._form.value {
-		case .create: self.isEditing = false
-		case .edit: self.isEditing = true
 		}
 	}
 }

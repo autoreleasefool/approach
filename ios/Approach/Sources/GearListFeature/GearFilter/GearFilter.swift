@@ -8,24 +8,25 @@ import SwiftUI
 
 @Reducer
 public struct GearFilter: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var kind: Gear.Kind?
+		public var kind: Gear.Kind?
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didTapClearButton
 			case didTapApplyButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didChangeFilters(Gear.Kind?)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -33,7 +34,7 @@ public struct GearFilter: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -47,18 +48,15 @@ public struct GearFilter: Reducer {
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
-
-				case .binding(\.$kind):
-					return .send(.delegate(.didChangeFilters(state.kind)))
-
-				case .binding:
-					return .none
 				}
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .binding(\.kind):
+				return .send(.delegate(.didChangeFilters(state.kind)))
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -67,16 +65,17 @@ public struct GearFilter: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: GearFilter.self)
 public struct GearFilterView: View {
-	let store: StoreOf<GearFilter>
+	@Perception.Bindable public var store: StoreOf<GearFilter>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
 					Picker(
 						Strings.Gear.Properties.kind,
-						selection: viewStore.$kind
+						selection: $store.kind
 					) {
 						Text("").tag(nil as Gear.Kind?)
 						ForEach(Gear.Kind.allCases) {
@@ -86,7 +85,7 @@ public struct GearFilterView: View {
 				}
 
 				Section {
-					Button(Strings.Action.reset) { viewStore.send(.didTapClearButton) }
+					Button(Strings.Action.reset) { send(.didTapClearButton) }
 						.tint(Asset.Colors.Destructive.default)
 				}
 			}
@@ -94,9 +93,9 @@ public struct GearFilterView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { viewStore.send(.didTapApplyButton) }
+					Button(Strings.Action.apply) { send(.didTapApplyButton) }
 				}
 			}
-		})
+		}
 	}
 }

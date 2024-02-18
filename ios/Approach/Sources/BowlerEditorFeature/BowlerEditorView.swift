@@ -7,36 +7,27 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@ViewAction(for: BowlerEditor.self)
 public struct BowlerEditorView: View {
-	let store: StoreOf<BowlerEditor>
-
-	struct ViewState: Equatable {
-		@BindingViewState var name: String
-	}
+	@Perception.Bindable public var store: StoreOf<BowlerEditor>
 
 	public init(store: StoreOf<BowlerEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.$name
+						text: $store.name
 					)
 					.textContentType(.name)
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
-	}
-}
-
-extension BowlerEditorView.ViewState {
-	init(store: BindingViewStore<BowlerEditor.State>) {
-		self._name = store.$name
+			.onAppear { send(.onAppear) }
+		}
 	}
 }
 

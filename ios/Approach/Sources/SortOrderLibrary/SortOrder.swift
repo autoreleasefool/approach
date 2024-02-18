@@ -5,6 +5,7 @@ public typealias Orderable = Hashable & Equatable & CaseIterable & CustomStringC
 
 @Reducer
 public struct SortOrder<Ordering: Orderable>: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let options: [Ordering] = Array(Ordering.allCases)
 		public var ordering: Ordering
@@ -15,17 +16,17 @@ public struct SortOrder<Ordering: Orderable>: Reducer {
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+		@CasePathable public enum View {
 			case didTapOption(Ordering)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Internal { case doNothing }
+		@CasePathable public enum Delegate {
 			case didTapOption(Ordering)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	public init() {}

@@ -11,8 +11,9 @@ public typealias BowlerForm = Form<Bowler.Create, Bowler.Edit>
 
 @Reducer
 public struct BowlerEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var name: String
+		public var name: String
 		public let kind: Bowler.Kind
 
 		public let initialValue: BowlerForm.Value
@@ -37,19 +38,19 @@ public struct BowlerEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case form(BowlerForm.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -59,7 +60,7 @@ public struct BowlerEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.form, action: \.internal.form) {
 			BowlerForm()
@@ -76,9 +77,6 @@ public struct BowlerEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .onAppear:
-					return .none
-
-				case .binding:
 					return .none
 				}
 
@@ -106,7 +104,7 @@ public struct BowlerEditor: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
