@@ -64,59 +64,55 @@ public struct BowlersListView: View {
 	}
 
 	@MainActor @ViewBuilder private var quickLaunch: some View {
-		WithPerceptionTracking {
-			if let quickLaunch = store.quickLaunch {
-				Section {
-					Button { send(.didTapQuickLaunchButton) } label: {
-						HStack(spacing: .standardSpacing) {
-							Asset.Media.Icons.rocket.swiftUIImage
-								.resizable()
-								.scaledToFit()
-								.frame(width: .smallIcon, height: .smallIcon)
-								.foregroundColor(Asset.Colors.Text.onAction)
+		if let quickLaunch = store.quickLaunch {
+			Section {
+				Button { send(.didTapQuickLaunchButton) } label: {
+					HStack(spacing: .standardSpacing) {
+						Asset.Media.Icons.rocket.swiftUIImage
+							.resizable()
+							.scaledToFit()
+							.frame(width: .smallIcon, height: .smallIcon)
+							.foregroundColor(Asset.Colors.Text.onAction)
 
-							VStack(alignment: .leading) {
-								Text(quickLaunch.bowler.name)
-									.font(.headline)
-									.frame(maxWidth: .infinity, alignment: .leading)
-								Text(quickLaunch.league.name)
-									.font(.subheadline)
-									.frame(maxWidth: .infinity, alignment: .leading)
-							}
-							.frame(maxWidth: .infinity)
+						VStack(alignment: .leading) {
+							Text(quickLaunch.bowler.name)
+								.font(.headline)
+								.frame(maxWidth: .infinity, alignment: .leading)
+							Text(quickLaunch.league.name)
+								.font(.subheadline)
+								.frame(maxWidth: .infinity, alignment: .leading)
 						}
-						.contentShape(Rectangle())
+						.frame(maxWidth: .infinity)
 					}
-					.modifier(PrimaryButton())
+					.contentShape(Rectangle())
 				}
-				.listRowInsets(EdgeInsets())
-				.compactList()
+				.modifier(PrimaryButton())
+			}
+			.listRowInsets(EdgeInsets())
+			.compactList()
 
-				if store.isShowingQuickLaunchTip {
-					Section {
-						BasicTipView(
-							tip: .quickLaunchTip,
-							isDismissable: false,
-							onDismiss: {}
-						)
-					}
-					.compactList()
+			if store.isShowingQuickLaunchTip {
+				Section {
+					BasicTipView(
+						tip: .quickLaunchTip,
+						isDismissable: false,
+						onDismiss: {}
+					)
 				}
+				.compactList()
 			}
 		}
 	}
 
 	@MainActor @ViewBuilder private var widgets: some View {
-		WithPerceptionTracking {
-			if store.isShowingWidgets {
-				Section {
-					StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
-				}
-				.listRowSeparator(.hidden)
-				.listRowInsets(EdgeInsets())
-				.listRowBackground(Color.clear)
-				.compactList()
+		if store.isShowingWidgets {
+			Section {
+				StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
 			}
+			.listRowSeparator(.hidden)
+			.listRowInsets(EdgeInsets())
+			.listRowBackground(Color.clear)
+			.compactList()
 		}
 	}
 }

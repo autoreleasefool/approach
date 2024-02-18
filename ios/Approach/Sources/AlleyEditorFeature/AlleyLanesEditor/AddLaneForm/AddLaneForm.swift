@@ -7,31 +7,33 @@ import SwiftUI
 
 @Reducer
 public struct AddLaneForm: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState var lanesToAdd = 1
+		public var lanesToAdd = 1
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didTapSaveButton
 			case didTapCancelButton
-			case binding(BindingAction<State>)
+
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didFinishAddingLanes(Int?)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 
 	}
 
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -42,15 +44,12 @@ public struct AddLaneForm: Reducer {
 
 				case .didTapCancelButton:
 					return .send(.delegate(.didFinishAddingLanes(nil)))
-
-				case .binding:
-					return .none
 				}
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -59,28 +58,29 @@ public struct AddLaneForm: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: AddLaneForm.self)
 public struct AddLaneFormView: View {
-	let store: StoreOf<AddLaneForm>
+	@Perception.Bindable public var store: StoreOf<AddLaneForm>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack(spacing: .standardSpacing) {
 				HStack {
 					Button(Strings.Action.cancel) {
-						viewStore.send(.didTapCancelButton)
+						send(.didTapCancelButton)
 					}
 					Spacer()
 					Button(Strings.Action.add) {
-						viewStore.send(.didTapSaveButton)
+						send(.didTapSaveButton)
 					}
 				}
 
 				Stepper(
-					Strings.Lane.Editor.Fields.addLanes(viewStore.lanesToAdd),
-					value: viewStore.$lanesToAdd,
+					Strings.Lane.Editor.Fields.addLanes(store.lanesToAdd),
+					value: $store.lanesToAdd,
 					in: Alley.NUMBER_OF_LANES_RANGE
 				)
 			}
-		})
+		}
 	}
 }

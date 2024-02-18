@@ -8,35 +8,26 @@ import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
+@ViewAction(for: AlleyLanesEditor.self)
 public struct AlleyLanesEditorView: View {
-	let store: StoreOf<AlleyLanesEditor>
+	@Perception.Bindable public var store: StoreOf<AlleyLanesEditor>
 
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 
 	@State private var addLaneSheetHeight: CGFloat = .zero
-
-	struct ViewState: Equatable {
-		let existingLanes: IdentifiedArrayOf<Lane.Edit>
-		let newLanes: IdentifiedArrayOf<Lane.Create>
-
-		init(state: AlleyLanesEditor.State) {
-			self.existingLanes = state.existingLanes
-			self.newLanes = state.newLanes
-		}
-	}
 
 	public init(store: StoreOf<AlleyLanesEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
-					ForEachStore(store.scope(state: \.existingLaneEditors, action: \.internal.laneEditor)) {
+					ForEach(store.scope(state: \.existingLaneEditors, action: \.internal.laneEditor), id: \.state.id) {
 						LaneEditorView(store: $0)
 					}
-					ForEachStore(store.scope(state: \.newLaneEditors, action: \.internal.laneEditor)) {
+					ForEach(store.scope(state: \.newLaneEditors, action: \.internal.laneEditor), id: \.state.id) {
 						LaneEditorView(store: $0)
 					}
 				} footer: {
@@ -44,36 +35,37 @@ public struct AlleyLanesEditorView: View {
 				}
 
 				Section {
-					Button { viewStore.send(.didTapAddLaneButton) } label: {
+					Button { send(.didTapAddLaneButton) } label: {
 						Label(Strings.Lane.List.add, systemSymbol: .plusSquare)
 					}
 
-					Button { viewStore.send(.didTapAddMultipleLanesButton) } label: {
+					Button { send(.didTapAddMultipleLanesButton) } label: {
 						Label(Strings.Lane.List.addMultiple, systemSymbol: .plusSquareOnSquare)
 					}
 				}
 			}
 			.navigationTitle(Strings.Lane.List.title)
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.alert(store: store.scope(state: \.$alert, action: \.view.alert))
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.sheet(store: store.scope(state: \.$addLaneForm, action: \.internal.addLaneForm)) {
-			AddLaneFormView(store: $0)
-				.padding()
-				.overlay {
-					GeometryReader { proxy in
-						Color.clear
-							.preference(
-								key: HeightPreferenceKey.self,
-								value: proxy.size.height + safeAreaInsets.bottom
-							)
+			.onAppear { send(.onAppear) }
+			.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.sheet(item: $store.scope(state: \.destination?.addLaneForm, action: \.internal.destination.addLaneForm)) {
+				AddLaneFormView(store: $0)
+					.padding()
+					.overlay {
+						GeometryReader { proxy in
+							Color.clear
+								.preference(
+									key: HeightPreferenceKey.self,
+									value: proxy.size.height + safeAreaInsets.bottom
+								)
+						}
 					}
-				}
-				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
-					addLaneSheetHeight = newHeight
-				}
-				.presentationDetents([.height(addLaneSheetHeight), .medium])
+					.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
+						addLaneSheetHeight = newHeight
+					}
+					.presentationDetents([.height(addLaneSheetHeight), .medium])
+			}
 		}
 	}
 }

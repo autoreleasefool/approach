@@ -232,6 +232,7 @@ public struct AccessoriesOverview: Reducer {
 						.destination(.presented(.gearEditor(.delegate(.doNothing)))),
 						.destination(.presented(.alleyEditor(.view))),
 						.destination(.presented(.alleyEditor(.internal))),
+						.destination(.presented(.alleyEditor(.binding))),
 						.destination(.presented(.alleyEditor(.delegate(.doNothing)))),
 						.destination(.presented(.alleysList(.internal))),
 						.destination(.presented(.alleysList(.view))),

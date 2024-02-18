@@ -10,38 +10,8 @@ public struct FormView<
 	Existing: EditableRecord,
 	Content: View
 >: View where New.ID == Existing.ID {
-	let store: StoreOf<Form<New, Existing>>
+	@Perception.Bindable public var store: StoreOf<Form<New, Existing>>
 	let content: () -> Content
-
-	struct ViewState: Equatable {
-		let title: String
-		let isLoading: Bool
-		let isSaveable: Bool
-		let isDeleteable: Bool
-		let isArchivable: Bool
-		let isDiscardable: Bool
-		let isDismissable: Bool
-		let saveButtonText: String
-		let alert: AlertState<Form<New, Existing>.AlertAction>?
-
-		init(state: Form<New, Existing>.State) {
-			self.isLoading = state.isLoading
-			self.isSaveable = state.isSaveable
-			self.isDiscardable = state.hasChanges
-			self.isDeleteable = state.isDeleteable
-			self.isArchivable = state.isArchivable
-			self.isDismissable = !state.hasChanges
-			self.alert = state.alert
-			self.saveButtonText = state.saveButtonText
-
-			switch state.initialValue {
-			case .create:
-				self.title = Strings.Form.Prompt.add(New.modelName)
-			case let .edit(existing):
-				self.title = Strings.Form.Prompt.edit(existing.name)
-			}
-		}
-	}
 
 	public init(
 		store: StoreOf<Form<New, Existing>>,
@@ -52,40 +22,41 @@ public struct FormView<
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			SwiftUI.Form {
 				content()
-					.disabled(viewStore.isLoading)
+					.disabled(store.isLoading)
 
-				if viewStore.isDeleteable {
+				if store.isDeleteable {
 					Section {
-						DeleteButton { viewStore.send(.didTapDeleteButton) }
+						DeleteButton { store.send(.view(.didTapDeleteButton)) }
 					}
-					.disabled(viewStore.isLoading)
+					.disabled(store.isLoading)
 				}
 
-				if viewStore.isArchivable {
+				if store.isArchivable {
 					Section {
-						ArchiveButton { viewStore.send(.didTapArchiveButton) }
+						ArchiveButton { store.send(.view(.didTapArchiveButton)) }
 					}
-					.disabled(viewStore.isLoading)
+					.disabled(store.isLoading)
 				}
 			}
-			.navigationTitle(viewStore.title)
+			.navigationTitle(store.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(viewStore.saveButtonText) { viewStore.send(.didTapSaveButton) }
-						.disabled(!viewStore.isSaveable)
+					Button(store.saveButtonText) { store.send(.view(.didTapSaveButton)) }
+						.disabled(!store.isSaveable)
 				}
 
-				if viewStore.isDiscardable {
+				if store.hasChanges {
 					ToolbarItem(placement: .navigationBarLeading) {
-						Button(Strings.Action.discard) { viewStore.send(.didTapDiscardButton) }
+						Button(Strings.Action.discard) { store.send(.view(.didTapDiscardButton)) }
 					}
 				}
 			}
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.alert(store: store.scope(state: \.$alert, action: \.view.alert))
+			// TODO: enable errors
+	//		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.alert($store.scope(state: \.alert, action: \.view.alert))
+		}
 	}
 }

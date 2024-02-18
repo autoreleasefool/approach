@@ -8,24 +8,25 @@ import SwiftUI
 
 @Reducer
 public struct AlleysFilter: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var filter: Alley.List.FetchRequest.Filter
+		public var filter: Alley.List.FetchRequest.Filter
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didTapClearButton
 			case didTapApplyButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didChangeFilters(Alley.List.FetchRequest.Filter)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -33,7 +34,7 @@ public struct AlleysFilter: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -47,13 +48,13 @@ public struct AlleysFilter: Reducer {
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
-
-				case .binding:
-					return .send(.delegate(.didChangeFilters(state.filter)))
 				}
 
 			case .internal(.doNothing):
 				return .none
+
+			case .binding:
+				return .send(.delegate(.didChangeFilters(state.filter)))
 
 			case .delegate:
 				return .none
@@ -64,16 +65,17 @@ public struct AlleysFilter: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: AlleysFilter.self)
 public struct AlleysFilterView: View {
-	let store: StoreOf<AlleysFilter>
+	@Perception.Bindable public var store: StoreOf<AlleysFilter>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section(Strings.Alley.Properties.title) {
 					Picker(
 						Strings.Alley.Properties.material,
-						selection: viewStore.$filter.material
+						selection: $store.filter.material
 					) {
 						Text("").tag(nil as Alley.Material?)
 						ForEach(Alley.Material.allCases) {
@@ -83,7 +85,7 @@ public struct AlleysFilterView: View {
 
 					Picker(
 						Strings.Alley.Properties.mechanism,
-						selection: viewStore.$filter.mechanism
+						selection: $store.filter.mechanism
 					) {
 						Text("").tag(nil as Alley.Mechanism?)
 						ForEach(Alley.Mechanism.allCases) {
@@ -93,7 +95,7 @@ public struct AlleysFilterView: View {
 
 					Picker(
 						Strings.Alley.Properties.pinFall,
-						selection: viewStore.$filter.pinFall
+						selection: $store.filter.pinFall
 					) {
 						Text("").tag(nil as Alley.PinFall?)
 						ForEach(Alley.PinFall.allCases) {
@@ -103,7 +105,7 @@ public struct AlleysFilterView: View {
 
 					Picker(
 						Strings.Alley.Properties.pinBase,
-						selection: viewStore.$filter.pinBase
+						selection: $store.filter.pinBase
 					) {
 						Text("").tag(nil as Alley.PinBase?)
 						ForEach(Alley.PinBase.allCases) {
@@ -113,7 +115,7 @@ public struct AlleysFilterView: View {
 				}
 
 				Section {
-					Button(Strings.Action.reset) { viewStore.send(.didTapClearButton) }
+					Button(Strings.Action.reset) { send(.didTapClearButton) }
 						.tint(Asset.Colors.Destructive.default)
 				}
 			}
@@ -121,10 +123,10 @@ public struct AlleysFilterView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { viewStore.send(.didTapApplyButton) }
+					Button(Strings.Action.apply) { send(.didTapApplyButton) }
 				}
 			}
-		})
+		}
 	}
 }
 

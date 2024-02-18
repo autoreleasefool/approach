@@ -10,6 +10,7 @@ import SwiftUI
 
 @Reducer
 public struct AlleyLanesEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var alley: Alley.ID
 		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
@@ -17,8 +18,7 @@ public struct AlleyLanesEditor: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var alert: AlertState<AlertAction>?
-		@PresentationState public var addLaneForm: AddLaneForm.State?
+		@Presents public var destination: Destination.State?
 
 		public init(
 			alley: Alley.ID,
@@ -31,27 +31,32 @@ public struct AlleyLanesEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapAddLaneButton
 			case didTapAddMultipleLanesButton
-			case alert(PresentationAction<AlertAction>)
 		}
 
-		@CasePathable public enum DelegateAction { case doNothing }
+		@CasePathable public enum Delegate { case doNothing }
 
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didDeleteLane(Result<Lane.ID, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case laneEditor(IdentifiedActionOf<LaneEditor>)
-			case addLaneForm(PresentationAction<AddLaneForm.Action>)
+			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+	}
+
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case addLaneForm(AddLaneForm)
+		case alert(AlertState<AlertAction>)
 	}
 
 	public enum AlertAction: Equatable {
@@ -89,25 +94,7 @@ public struct AlleyLanesEditor: Reducer {
 					return didFinishAddingLanes(&state, count: 1)
 
 				case .didTapAddMultipleLanesButton:
-					state.addLaneForm = .init()
-					return .none
-
-				case let .alert(.presented(alertAction)):
-					switch alertAction {
-					case let .didTapDeleteButton(lane):
-						return .run { send in
-							await send(.internal(.didDeleteLane(Result {
-								try await lanes.delete([lane])
-								return lane
-							})))
-						}
-
-					case .didTapDismissButton:
-						state.alert = nil
-						return .none
-					}
-
-				case .alert(.dismiss):
+					state.destination = .addLaneForm(.init())
 					return .none
 				}
 
@@ -127,12 +114,12 @@ public struct AlleyLanesEditor: Reducer {
 					switch delegateAction {
 					case .didDeleteLane:
 						if let deleted = state.existingLanes.first(where: { $0.id == id }) {
-							state.alert = AlertState {
+							state.destination = .alert(AlertState {
 								TextState(Strings.Form.Prompt.delete(deleted.label))
 							} actions: {
 								ButtonState(role: .destructive, action: .didTapDeleteButton(deleted.id)) { TextState(Strings.Action.delete) }
 								ButtonState(role: .cancel, action: .didTapDismissButton) { TextState(Strings.Action.cancel) }
-							}
+							})
 						} else {
 							state.existingLanes.removeAll { $0.id == id }
 							state.newLanes.removeAll { $0.id == id }
@@ -140,14 +127,26 @@ public struct AlleyLanesEditor: Reducer {
 						return .none
 					}
 
-				case let .addLaneForm(.presented(.delegate(delegateAction))):
+				case let .destination(.presented(.alert(.didTapDeleteButton(lane)))):
+					return .run { send in
+						await send(.internal(.didDeleteLane(Result {
+							try await lanes.delete([lane])
+							return lane
+						})))
+					}
+
+				case let .destination(.presented(.addLaneForm(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishAddingLanes(numberOfLanes):
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
-				case .addLaneForm(.presented(.internal)), .addLaneForm(.presented(.view)), .addLaneForm(.dismiss),
-						.laneEditor(.element(_, .view)), .laneEditor(.element(_, .internal)),
+				case .destination(.dismiss),
+						.destination(.presented(.addLaneForm(.internal))),
+						.destination(.presented(.addLaneForm(.view))),
+						.destination(.presented(.addLaneForm(.binding))),
+						.destination(.presented(.alert(.didTapDismissButton))),
+						.laneEditor(.element(_, .view)), .laneEditor(.element(_, .internal)), .laneEditor(.element(_, .binding)),
 						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
@@ -162,9 +161,7 @@ public struct AlleyLanesEditor: Reducer {
 		.forEach(\.newLaneEditors, action: \.internal.laneEditor) {
 			LaneEditor()
 		}
-		.ifLet(\.$addLaneForm, action: \.internal.addLaneForm) {
-			AddLaneForm()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
