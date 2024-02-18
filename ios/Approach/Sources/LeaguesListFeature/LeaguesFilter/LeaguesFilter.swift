@@ -8,24 +8,25 @@ import SwiftUI
 
 @Reducer
 public struct LeaguesFilter: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var recurrence: League.Recurrence?
+		public var recurrence: League.Recurrence?
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didTapClearButton
 			case didTapApplyButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didChangeFilters(League.Recurrence?)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -33,7 +34,7 @@ public struct LeaguesFilter: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -47,13 +48,13 @@ public struct LeaguesFilter: Reducer {
 
 				case .didTapApplyButton:
 					return .run { _ in await dismiss() }
-
-				case .binding:
-					return .send(.delegate(.didChangeFilters(state.recurrence)))
 				}
 
 			case .internal(.doNothing):
 				return .none
+
+			case .binding:
+				return .send(.delegate(.didChangeFilters(state.recurrence)))
 
 			case .delegate:
 				return .none
@@ -64,16 +65,17 @@ public struct LeaguesFilter: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: LeaguesFilter.self)
 public struct LeaguesFilterView: View {
-	let store: StoreOf<LeaguesFilter>
+	@Perception.Bindable public var store: StoreOf<LeaguesFilter>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
 					Picker(
 						Strings.League.Properties.recurrence,
-						selection: viewStore.$recurrence
+						selection: $store.recurrence
 					) {
 						Text("").tag(nil as League.Recurrence?)
 						ForEach(League.Recurrence.allCases) {
@@ -83,7 +85,7 @@ public struct LeaguesFilterView: View {
 				}
 
 				Section {
-					Button(Strings.Action.reset) { viewStore.send(.didTapClearButton) }
+					Button(Strings.Action.reset) { send(.didTapClearButton) }
 						.tint(Asset.Colors.Destructive.default)
 				}
 			}
@@ -91,9 +93,9 @@ public struct LeaguesFilterView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { viewStore.send(.didTapApplyButton) }
+					Button(Strings.Action.apply) { send(.didTapApplyButton) }
 				}
 			}
-		})
+		}
 	}
 }

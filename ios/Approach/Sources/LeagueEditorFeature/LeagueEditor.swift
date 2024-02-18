@@ -14,24 +14,33 @@ public typealias LeagueForm = Form<League.Create, League.Edit>
 
 @Reducer
 public struct LeagueEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var name: String
-		@BindingState public var recurrence: League.Recurrence
-		@BindingState public var defaultNumberOfGames: Int
-		@BindingState public var additionalPinfall: String
-		@BindingState public var additionalGames: String
-		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics
-		@BindingState public var coordinate: CoordinateRegion
+		public var name: String
+		public var recurrence: League.Recurrence
+		public var defaultNumberOfGames: Int
+		public var additionalPinfall: String
+		public var additionalGames: String
+		public var excludeFromStatistics: League.ExcludeFromStatistics
+		public var coordinate: CoordinateRegion
 		public var location: Alley.Summary?
 
-		@BindingState public var gamesPerSeries: GamesPerSeries
-		@BindingState public var hasAdditionalPinfall: Bool
+		public var gamesPerSeries: GamesPerSeries
+		public var hasAdditionalPinfall: Bool
 		public var shouldShowLocationSection: Bool
 
 		public let initialValue: LeagueForm.Value
 		public var _form: LeagueForm.State
 
-		@PresentationState public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
+		var isDismissDisabled: Bool { alleyPicker != nil }
+		var isEditing: Bool {
+			switch initialValue {
+			case .create: false
+			case .edit: true
+			}
+		}
+
+		@Presents public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: LeagueForm.Value) {
 			let defaultNumberOfGames: Int
@@ -85,26 +94,26 @@ public struct LeagueEditor: Reducer {
 		public var id: Int { rawValue }
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapAlley
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didFinishCreating(League.Create)
 			case didFinishUpdating(League.Edit)
 			case didFinishArchiving(League.Edit)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case setLocationSection(isShown: Bool)
 			case form(LeagueForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
@@ -115,7 +124,7 @@ public struct LeagueEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.form, action: \.internal.form) {
 			LeagueForm()
@@ -141,19 +150,6 @@ public struct LeagueEditor: Reducer {
 						limit: 1,
 						showsCancelHeaderButton: false
 					)
-					return .none
-
-				case .binding(\.$recurrence):
-					switch state.recurrence {
-					case .once:
-						state.gamesPerSeries = .static
-						return .run { send in await send(.internal(.setLocationSection(isShown: true)), animation: .easeInOut) }
-					case .repeating:
-						state.location = nil
-						return .run { send in await send(.internal(.setLocationSection(isShown: false)), animation: .easeInOut) }
-					}
-
-				case .binding:
 					return .none
 				}
 
@@ -214,7 +210,17 @@ public struct LeagueEditor: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.recurrence):
+				switch state.recurrence {
+				case .once:
+					state.gamesPerSeries = .static
+					return .run { send in await send(.internal(.setLocationSection(isShown: true)), animation: .easeInOut) }
+				case .repeating:
+					state.location = nil
+					return .run { send in await send(.internal(.setLocationSection(isShown: false)), animation: .easeInOut) }
+				}
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
