@@ -16,6 +16,7 @@ public struct StatisticsDetails: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 	static let defaultSheetDetent: PresentationDetent = .fraction(0.25)
 
+	@ObservableState
 	public struct State: Equatable {
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var isLoadingNextChart = false
@@ -27,13 +28,21 @@ public struct StatisticsDetails: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@BindingState public var sheetDetent: PresentationDetent = StatisticsDetails.defaultSheetDetent
+		public var sheetDetent: PresentationDetent = StatisticsDetails.defaultSheetDetent
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var filtersSize: StatisticsFilterView.Size = .regular
 		public var lastOrientation: UIDeviceOrientation?
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
+
+		var filterViewSize: StatisticsFilterView.Size {
+			sheetDetent == .medium ? .compact : .regular
+		}
+
+		var ignoreSheetSizeForBackdrop: Bool {
+			destination == nil || sheetDetent == .large
+		}
 
 		public init(filter: TrackableFilter, withInitialStatistic: Statistics.ListEntry.ID? = nil) {
 			self.filter = filter
@@ -44,16 +53,15 @@ public struct StatisticsDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapSourcePicker
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case destination(PresentationAction<Destination.Action>)
 			case charts(StatisticsDetailsCharts.Action)
 			case errors(Errors<ErrorID>.Action)
@@ -67,9 +75,10 @@ public struct StatisticsDetails: Reducer {
 			case orientationChange(UIDeviceOrientation)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	@Reducer(state: .equatable)
@@ -98,7 +107,7 @@ public struct StatisticsDetails: Reducer {
 	@Dependency(\.uiDeviceNotifications) var uiDevice
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
@@ -140,15 +149,6 @@ public struct StatisticsDetails: Reducer {
 				case let .didAdjustChartSize(backdropSize, filtersSize):
 					state.backdropSize = backdropSize
 					state.filtersSize = filtersSize
-					return .none
-
-				case .binding(\.$sheetDetent):
-					return .run { send in
-						try await clock.sleep(for: .milliseconds(25))
-						await send(.internal(.adjustBackdrop))
-					}
-
-				case .binding:
 					return .none
 				}
 
@@ -194,7 +194,7 @@ public struct StatisticsDetails: Reducer {
 					case .averaging, .counting, .percentage:
 						return .none
 					case .chartUnavailable, .dataMissing, .none:
-						return .send(.view(.binding(.set(\.$sheetDetent, .medium))))
+						return .send(.binding(.set(\.sheetDetent, .medium)))
 					}
 
 				case let .didLoadSources(.failure(error)):
@@ -248,7 +248,7 @@ public struct StatisticsDetails: Reducer {
 						state.selectedStatistic = id
 						return .merge(
 							loadChart(forStatistic: statistic, withFilter: state.filter),
-							.send(.view(.binding(.set(\.$sheetDetent, StatisticsDetails.defaultSheetDetent))))
+							.send(.binding(.set(\.sheetDetent, StatisticsDetails.defaultSheetDetent)))
 						)
 
 					case .listRequiresReload:
@@ -284,14 +284,21 @@ public struct StatisticsDetails: Reducer {
 
 				case .destination(.presented(.list(.internal))),
 						.destination(.presented(.list(.view))),
+						.destination(.presented(.list(.binding))),
 						.destination(.presented(.sourcePicker(.internal))),
 						.destination(.presented(.sourcePicker(.view))),
 						.errors(.internal), .errors(.view),
-						.charts(.internal), .charts(.view):
+						.charts(.internal), .charts(.view), .charts(.binding):
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.sheetDetent):
+				return .run { send in
+					try await clock.sleep(for: .milliseconds(25))
+					await send(.internal(.adjustBackdrop))
+				}
+
+			case .delegate, .binding:
 				return .none
 			}
 		}

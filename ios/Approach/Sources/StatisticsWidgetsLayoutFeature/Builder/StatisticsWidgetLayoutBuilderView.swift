@@ -11,21 +11,16 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@ViewAction(for: StatisticsWidgetLayoutBuilder.self)
 public struct StatisticsWidgetLayoutBuilderView: View {
-	let store: StoreOf<StatisticsWidgetLayoutBuilder>
-
-	struct ViewState: Equatable {
-		@BindingViewState var isDeleting: Bool
-		@BindingViewState var isAnimatingWidgets: Bool
-		let widgetData: [StatisticsWidget.ID: Statistics.ChartContent]
-	}
+	@Perception.Bindable public var store: StoreOf<StatisticsWidgetLayoutBuilder>
 
 	public init(store: StoreOf<StatisticsWidgetLayoutBuilder>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			ScrollView {
 				LazyVGrid(
 					columns: [.init(spacing: .largeSpacing), .init(spacing: .largeSpacing)],
@@ -36,16 +31,16 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 					) { widget in
 						MoveableWidget(
 							configuration: widget,
-							chartContent: viewStore.widgetData[widget.id],
-							isWiggling: viewStore.$isAnimatingWidgets,
-							isShowingDelete: viewStore.$isDeleting,
-							onDelete: { viewStore.send(.didTapDeleteWidget(id: widget.id), animation: .easeInOut) }
+							chartContent: store.widgetData[widget.id],
+							isWiggling: $store.isAnimatingWidgets,
+							isShowingDelete: $store.isDeleting,
+							onDelete: { send(.didTapDeleteWidget(id: widget.id), animation: .easeInOut) }
 						)
 					}
 				}
 				.padding(.horizontal, .largeSpacing)
 
-				if viewStore.widgetData.isEmpty {
+				if store.widgetData.isEmpty {
 					Text(Strings.Widget.LayoutBuilder.addNewInstructions)
 						.font(.body)
 						.multilineTextAlignment(.center)
@@ -58,47 +53,40 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 				}
 			}
 			.toolbar {
-				if viewStore.isDeleting {
+				if store.isDeleting {
 					ToolbarItem(placement: .navigationBarTrailing) {
-						Button(Strings.Action.done) { viewStore.send(.didTapCancelDeleteButton) }
+						Button(Strings.Action.done) { send(.didTapCancelDeleteButton) }
 					}
 				} else {
-					if !viewStore.widgetData.isEmpty {
+					if !store.widgetData.isEmpty {
 						ToolbarItem(placement: .navigationBarTrailing) {
-							DeleteButton { viewStore.send(.didTapDeleteButton) }
+							DeleteButton { send(.didTapDeleteButton) }
 						}
 					}
 
 					ToolbarItem(placement: .navigationBarTrailing) {
-						AddButton { viewStore.send(.didTapAddNew) }
+						AddButton { send(.didTapAddNew) }
 					}
 
 					ToolbarItem(placement: .navigationBarLeading) {
-						Button(Strings.Action.done) { viewStore.send(.didTapDoneButton) }
+						Button(Strings.Action.done) { send(.didTapDoneButton) }
 					}
 				}
 			}
 			.navigationTitle(Strings.Widget.LayoutBuilder.title)
-			.task { await viewStore.send(.task).finish() }
-			.onAppear { viewStore.send(.onAppear) }
+			.task { await send(.task).finish() }
+			.onAppear { send(.onAppear) }
 			.sheet(
-				store: store.scope(state: \.$editor, action: \.internal.editor),
-				onDismiss: { viewStore.send(.didFinishDismissingEditor) },
+				item: $store.scope(state: \.editor, action: \.internal.editor),
+				onDismiss: { send(.didFinishDismissingEditor) },
 				content: { store in
 					NavigationStack {
 						StatisticsWidgetEditorView(store: store)
 					}
 				}
 			)
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-	}
-}
-
-extension StatisticsWidgetLayoutBuilderView.ViewState {
-	init(store: BindingViewStore<StatisticsWidgetLayoutBuilder.State>) {
-		self._isDeleting = store.$isDeleting
-		self._isAnimatingWidgets = store.$isAnimatingWidgets
-		self.widgetData = store.widgetData
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		}
 	}
 }

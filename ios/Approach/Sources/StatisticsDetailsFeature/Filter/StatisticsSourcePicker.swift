@@ -21,6 +21,7 @@ import ViewsLibrary
 
 @Reducer
 public struct StatisticsSourcePicker: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var sourceToLoad: TrackableFilter.Source?
 
@@ -32,15 +33,27 @@ public struct StatisticsSourcePicker: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		var isFilterApplyable: Bool { source != nil }
+		var isShowingLeaguePicker: Bool { bowler?.name != nil }
+		var isShowingSeriesPicker: Bool { league?.name != nil }
+		var isShowingGamePicker: Bool { series?.date != nil }
+		var gameIndex: String? {
+			if let gameIndex = game?.index {
+				Strings.Game.titleWithOrdinal(gameIndex + 1)
+			} else {
+				nil
+			}
+		}
+
+		@Presents public var destination: Destination.State?
 
 		public init(source: TrackableFilter.Source?) {
 			self.sourceToLoad = source
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didFirstAppear
 			case didTapBowler
 			case didTapLeague
@@ -48,18 +61,18 @@ public struct StatisticsSourcePicker: Reducer {
 			case didTapGame
 			case didTapConfirmButton
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didChangeSource(TrackableFilter.Source)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didLoadSources(Result<TrackableFilter.Sources?, Error>)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Reducer
@@ -261,75 +274,43 @@ public struct StatisticsSourcePicker: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: StatisticsSourcePicker.self)
 public struct StatisticsSourcePickerView: View {
-	let store: StoreOf<StatisticsSourcePicker>
-
-	struct ViewState: Equatable {
-		let selectedBowlerName: String?
-		let selectedLeagueName: String?
-		let selectedSeriesDate: String?
-		let selectedGameIndex: String?
-
-		let isFilterApplyable: Bool
-
-		let isShowingLeaguePicker: Bool
-		let isShowingSeriesPicker: Bool
-		let isShowingGamePicker: Bool
-
-		let isLoadingSources: Bool
-
-		init(state: StatisticsSourcePicker.State) {
-			self.isFilterApplyable = state.source != nil
-			self.selectedBowlerName = state.bowler?.name
-			self.selectedLeagueName = state.league?.name
-			self.selectedSeriesDate = state.series?.date.longFormat
-			if let gameIndex = state.game?.index {
-				self.selectedGameIndex = Strings.Game.titleWithOrdinal(gameIndex + 1)
-			} else {
-				self.selectedGameIndex = nil
-			}
-
-			self.isShowingLeaguePicker = selectedBowlerName != nil
-			self.isShowingSeriesPicker = selectedLeagueName != nil
-			self.isShowingGamePicker = selectedSeriesDate != nil
-
-			self.isLoadingSources = state.isLoadingSources
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<StatisticsSourcePicker>
 
 	public init(store: StoreOf<StatisticsSourcePicker>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
-				if viewStore.isLoadingSources {
+				if store.isLoadingSources {
 					ListProgressView()
 				} else {
 					Section {
-						Button { viewStore.send(.didTapBowler) } label: {
-							LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
+						Button { send(.didTapBowler) } label: {
+							LabeledContent(Strings.Bowler.title, value: store.bowler?.name ?? Strings.none)
 						}
 						.buttonStyle(.navigation)
 
-						if viewStore.isShowingLeaguePicker {
-							Button { viewStore.send(.didTapLeague) } label: {
-								LabeledContent(Strings.League.title, value: viewStore.selectedLeagueName ?? Strings.none)
+						if store.isShowingLeaguePicker {
+							Button { send(.didTapLeague) } label: {
+								LabeledContent(Strings.League.title, value: store.league?.name ?? Strings.none)
 							}
 							.buttonStyle(.navigation)
 						}
 
-						if viewStore.isShowingSeriesPicker {
-							Button { viewStore.send(.didTapSeries) } label: {
-								LabeledContent(Strings.Series.title, value: viewStore.selectedSeriesDate ?? Strings.none)
+						if store.isShowingSeriesPicker {
+							Button { send(.didTapSeries) } label: {
+								LabeledContent(Strings.Series.title, value: store.series?.date.longFormat ?? Strings.none)
 							}
 							.buttonStyle(.navigation)
 						}
 
-						if viewStore.isShowingGamePicker {
-							Button { viewStore.send(.didTapGame) } label: {
-								LabeledContent(Strings.Game.title, value: viewStore.selectedGameIndex ?? Strings.none)
+						if store.isShowingGamePicker {
+							Button { send(.didTapGame) } label: {
+								LabeledContent(Strings.Game.title, value: store.gameIndex ?? Strings.none)
 							}
 							.buttonStyle(.navigation)
 						}
@@ -338,50 +319,51 @@ public struct StatisticsSourcePickerView: View {
 			}
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { viewStore.send(.didTapConfirmButton) }
-						.disabled(!viewStore.isFilterApplyable)
+					Button(Strings.Action.apply) { send(.didTapConfirmButton) }
+						.disabled(!store.isFilterApplyable)
 				}
 			}
 			.navigationTitle(Strings.Statistics.Filter.title)
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.bowlerPicker(store.scope(state: \.$destination.bowlerPicker, action: \.internal.destination.bowlerPicker))
-		.leaguePicker(store.scope(state: \.$destination.leaguePicker, action: \.internal.destination.leaguePicker))
-		.seriesPicker(store.scope(state: \.$destination.seriesPicker, action: \.internal.destination.seriesPicker))
-		.gamePicker(store.scope(state: \.$destination.gamePicker, action: \.internal.destination.gamePicker))
+			.onFirstAppear { send(.didFirstAppear) }
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
+			.leaguePicker($store.scope(state: \.destination?.leaguePicker, action: \.internal.destination.leaguePicker))
+			.seriesPicker($store.scope(state: \.destination?.seriesPicker, action: \.internal.destination.seriesPicker))
+			.gamePicker($store.scope(state: \.destination?.gamePicker, action: \.internal.destination.gamePicker))
+		}
 	}
 }
 
 @MainActor extension View {
 	fileprivate func bowlerPicker(
-		_ store: PresentationStoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>
+		_ store: Binding<StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+		navigationDestinationWrapper(item: store) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
 			ResourcePickerView(store: store) { bowler in
 				Bowler.View(bowler)
 			}
 		}
 	}
 
-	fileprivate func leaguePicker(_ store: PresentationStoreOf<ResourcePicker<League.Summary, Bowler.ID>>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
+	fileprivate func leaguePicker(_ store: Binding<StoreOf<ResourcePicker<League.Summary, Bowler.ID>>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
 		}
 	}
 
-	fileprivate func seriesPicker(_ store: PresentationStoreOf<ResourcePicker<Series.Summary, League.ID>>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Series.Summary, League.ID>>) in
+	fileprivate func seriesPicker(_ store: Binding<StoreOf<ResourcePicker<Series.Summary, League.ID>>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<ResourcePicker<Series.Summary, League.ID>>) in
 			ResourcePickerView(store: store) { series in
 				Text(series.date.longFormat)
 			}
 		}
 	}
 
-	fileprivate func gamePicker(_ store: PresentationStoreOf<ResourcePicker<Game.Summary, Series.ID>>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Game.Summary, Series.ID>>) in
+	fileprivate func gamePicker(_ store: Binding<StoreOf<ResourcePicker<Game.Summary, Series.ID>>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<ResourcePicker<Game.Summary, Series.ID>>) in
 			ResourcePickerView(store: store) { game in
 				Text(Strings.Game.titleWithOrdinal(game.index + 1))
 			}

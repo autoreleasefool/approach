@@ -8,48 +8,45 @@ import SwiftUI
 
 @Reducer
 public struct StatisticsDetailsCharts: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var aggregation: TrackableFilter.Aggregation
+		public var aggregation: TrackableFilter.Aggregation
 		public var chartContent: Statistics.ChartContent?
 		public var filterSource: TrackableFilter.Source
 		public var isFilterTooNarrow: Bool
 		public var isLoadingNextChart: Bool
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
-			case binding(BindingAction<State>)
-		}
-		@CasePathable public enum DelegateAction {
+	public enum Action: FeatureAction, BindableAction {
+		@CasePathable public enum View { case doNothing }
+		@CasePathable public enum Delegate {
 			case didChangeAggregation(TrackableFilter.Aggregation)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public init() {}
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
-			case let .view(viewAction):
-				switch viewAction {
-				case .binding(\.$aggregation):
-					return .send(.delegate(.didChangeAggregation(state.aggregation)))
-
-				case .binding:
-					return .none
-				}
+			case .view(.doNothing):
+				return .none
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .binding(\.aggregation):
+				return .send(.delegate(.didChangeAggregation(state.aggregation)))
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -59,17 +56,17 @@ public struct StatisticsDetailsCharts: Reducer {
 // MARK: - View
 
 public struct StatisticsDetailsChartsView: View {
-	let store: StoreOf<StatisticsDetailsCharts>
+	@Perception.Bindable public var store: StoreOf<StatisticsDetailsCharts>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack {
-				if viewStore.isLoadingNextChart {
+				if store.isLoadingNextChart {
 					ProgressView()
 						.padding(.bottom)
 				}
 
-				if let chartContent = viewStore.chartContent {
+				if let chartContent = store.chartContent {
 					switch chartContent {
 					case let .counting(data):
 						CountingChart.Default(data)
@@ -78,26 +75,26 @@ public struct StatisticsDetailsChartsView: View {
 					case let .percentage(data):
 						PercentageChart.Default(data)
 					case let .chartUnavailable(statistic), let .dataMissing(statistic):
-						emptyChart(statistic, warnTooNarrow: viewStore.isFilterTooNarrow)
+						emptyChart(statistic, warnTooNarrow: store.isFilterTooNarrow)
 					}
 				}
 
 				Spacer()
 
-				if viewStore.chartContent?.showsAggregationPicker ?? false {
+				if store.chartContent?.showsAggregationPicker ?? false {
 					Picker(
 						Strings.Statistics.Filter.aggregation,
-						selection: viewStore.$aggregation
+						selection: $store.aggregation
 					) {
 						ForEach(TrackableFilter.Aggregation.allCases) {
-							Text($0.description(forSource: viewStore.filterSource)).tag($0)
+							Text($0.description(forSource: store.filterSource)).tag($0)
 						}
 					}
 					.pickerStyle(.segmented)
 					.padding()
 				}
 			}
-		})
+		}
 	}
 
 	private func emptyChart(_ statistic: String, warnTooNarrow: Bool) -> some View {

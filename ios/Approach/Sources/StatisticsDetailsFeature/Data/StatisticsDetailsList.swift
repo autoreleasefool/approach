@@ -13,9 +13,10 @@ import ViewsLibrary
 
 @Reducer
 public struct StatisticsDetailsList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var isHidingZeroStatistics: Bool
-		@BindingState public var isHidingStatisticsDescriptions: Bool
+		public var isHidingZeroStatistics: Bool
+		public var isHidingStatisticsDescriptions: Bool
 
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 		public var entryToHighlight: Statistics.ListEntry.ID?
@@ -36,23 +37,23 @@ public struct StatisticsDetailsList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case didTapEntry(id: String)
 			case didTapDismissDescriptionsTip
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didRequestEntryDetails(id: String)
 			case listRequiresReload
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case scrollToEntry(id: Statistics.ListEntry.ID?)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	enum CancelID {
@@ -66,7 +67,7 @@ public struct StatisticsDetailsList: Reducer {
 	@Dependency(\.tips) var tips
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -78,27 +79,6 @@ public struct StatisticsDetailsList: Reducer {
 				case .didTapDismissDescriptionsTip:
 					state.isShowingStatisticDescriptionTip = false
 					return .run { _ in await tips.hide(tipFor: .statisticsDescriptionTip) }
-
-				case .binding(\.$isHidingZeroStatistics):
-					return .concatenate(
-						.run { [updatedValue = state.isHidingZeroStatistics] _ in
-							preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
-						},
-						.send(.delegate(.listRequiresReload))
-					)
-					.cancellable(id: CancelID.setHidingZeroStatistics, cancelInFlight: true)
-
-				case .binding(\.$isHidingStatisticsDescriptions):
-					return .concatenate(
-						.run { [updatedValue = state.isHidingStatisticsDescriptions] _ in
-							preferences.setKey(.statisticsHideStatisticsDescriptions, toBool: updatedValue)
-						},
-						.send(.delegate(.listRequiresReload))
-					)
-					.cancellable(id: CancelID.setHidingStatisticsDescriptions, cancelInFlight: true)
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -108,7 +88,25 @@ public struct StatisticsDetailsList: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.isHidingZeroStatistics):
+				return .concatenate(
+					.run { [updatedValue = state.isHidingZeroStatistics] _ in
+						preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
+					},
+					.send(.delegate(.listRequiresReload))
+				)
+				.cancellable(id: CancelID.setHidingZeroStatistics, cancelInFlight: true)
+
+			case .binding(\.isHidingStatisticsDescriptions):
+				return .concatenate(
+					.run { [updatedValue = state.isHidingStatisticsDescriptions] _ in
+						preferences.setKey(.statisticsHideStatisticsDescriptions, toBool: updatedValue)
+					},
+					.send(.delegate(.listRequiresReload))
+				)
+				.cancellable(id: CancelID.setHidingStatisticsDescriptions, cancelInFlight: true)
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -116,9 +114,9 @@ public struct StatisticsDetailsList: Reducer {
 }
 
 // MARK: - View
-
+@ViewAction(for: StatisticsDetails.self)
 public struct StatisticsDetailsListView<Header: View>: View {
-	let store: StoreOf<StatisticsDetailsList>
+	@Perception.Bindable public var store: StoreOf<StatisticsDetailsList>
 	let header: Header
 
 	init(store: StoreOf<StatisticsDetailsList>, @ViewBuilder header: () -> Header) {
@@ -131,18 +129,18 @@ public struct StatisticsDetailsListView<Header: View>: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			ScrollViewReader { scrollViewProxy in
 				List {
 					header
 
-					if viewStore.isShowingStatisticDescriptionTip {
+					if store.isShowingStatisticDescriptionTip {
 						BasicTipView(tip: .statisticsDescriptionTip) {
-							viewStore.send(.didTapDismissDescriptionsTip, animation: .default)
+							send(.didTapDismissDescriptionsTip, animation: .default)
 						}
 					}
 
-					ForEach(viewStore.listEntries) { group in
+					ForEach(store.listEntries) { group in
 						Section(group.title) {
 							if group.description != nil || group.images != nil {
 								VStack(alignment: .center) {
@@ -165,46 +163,48 @@ public struct StatisticsDetailsListView<Header: View>: View {
 							}
 
 							ForEach(group.entries) { entry in
-								Button { viewStore.send(.didTapEntry(id: entry.id)) } label: {
-									HStack(alignment: .center, spacing: .smallSpacing) {
-										if entry.highlightAsNew {
-											Text(Strings.Statistics.List.new.uppercased())
-												.font(.caption)
-												.fontWeight(.thin)
-												.foregroundColor(Asset.Colors.Action.default)
-										}
-
-										VStack(alignment: .leading) {
-											Text(entry.title)
-											if !viewStore.isHidingStatisticsDescriptions, let description = entry.description {
-												Text(description)
-													.font(.caption2)
+								WithPerceptionTracking {
+									Button { send(.didTapEntry(id: entry.id)) } label: {
+										HStack(alignment: .center, spacing: .smallSpacing) {
+											if entry.highlightAsNew {
+												Text(Strings.Statistics.List.new.uppercased())
+													.font(.caption)
+													.fontWeight(.thin)
+													.foregroundColor(Asset.Colors.Action.default)
 											}
-										}
 
-										Spacer()
+											VStack(alignment: .leading) {
+												Text(entry.title)
+												if !store.isHidingStatisticsDescriptions, let description = entry.description {
+													Text(description)
+														.font(.caption2)
+												}
+											}
 
-										VStack(alignment: .trailing) {
-											Text(entry.value)
-											if !viewStore.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
-												Text(valueDescription)
-													.font(.caption2)
+											Spacer()
+
+											VStack(alignment: .trailing) {
+												Text(entry.value)
+												if !store.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
+													Text(valueDescription)
+														.font(.caption2)
+												}
 											}
 										}
 									}
+									.if(!store.hasTappableElements) {
+										$0.buttonStyle(.plain)
+									}
+									.if(store.hasTappableElements) {
+										$0
+											.buttonStyle(.navigation)
+											.contentShape(Rectangle())
+									}
+									.listRowBackground(
+										entry.id == store.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
+									)
+									.id(entry.id)
 								}
-								.if(!viewStore.hasTappableElements) {
-									$0.buttonStyle(.plain)
-								}
-								.if(viewStore.hasTappableElements) {
-									$0
-										.buttonStyle(.navigation)
-										.contentShape(Rectangle())
-								}
-								.listRowBackground(
-									entry.id == viewStore.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
-								)
-								.id(entry.id)
 							}
 						}
 					}
@@ -212,10 +212,10 @@ public struct StatisticsDetailsListView<Header: View>: View {
 					Section {
 						Toggle(
 							Strings.Statistics.List.hideZeroStatistics,
-							isOn: viewStore.$isHidingZeroStatistics
+							isOn: $store.isHidingZeroStatistics
 						)
 					} footer: {
-						if viewStore.isHidingZeroStatistics {
+						if store.isHidingZeroStatistics {
 							Text(Strings.Statistics.List.HideZeroStatistics.help)
 						}
 					}
@@ -223,20 +223,20 @@ public struct StatisticsDetailsListView<Header: View>: View {
 					Section {
 						Toggle(
 							Strings.Statistics.List.statisticsDescription,
-							isOn: viewStore.$isHidingStatisticsDescriptions
+							isOn: $store.isHidingStatisticsDescriptions
 						)
 					} footer: {
 						Text(Strings.Statistics.List.StatisticsDescription.help)
 					}
 				}
-				.onChange(of: viewStore.entryToHighlight) {
+				.onChange(of: store.entryToHighlight) {
 					guard let id = $0 else { return }
 					withAnimation {
 						scrollViewProxy.scrollTo(id, anchor: .center)
 					}
 				}
 			}
-		})
+		}
 	}
 }
 

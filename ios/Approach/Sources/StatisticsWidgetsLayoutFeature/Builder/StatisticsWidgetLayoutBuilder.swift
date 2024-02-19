@@ -12,6 +12,7 @@ import SwiftUI
 
 @Reducer
 public struct StatisticsWidgetLayoutBuilder: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let context: String
 		public let newWidgetSource: StatisticsWidget.Source?
@@ -20,12 +21,12 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
 		public var _reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
 
-		@BindingState public var isDeleting = false
-		@BindingState public var isAnimatingWidgets = false
+		public var isDeleting = false
+		public var isAnimatingWidgets = false
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var editor: StatisticsWidgetEditor.State?
+		@Presents public var editor: StatisticsWidgetEditor.State?
 
 		public init(context: String, newWidgetSource: StatisticsWidget.Source?) {
 			self.context = context
@@ -33,8 +34,8 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case task
 			case didTapAddNew
@@ -43,11 +44,9 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case didTapDoneButton
 			case didTapDeleteWidget(id: StatisticsWidget.ID)
 			case didFinishDismissingEditor
-			case binding(BindingAction<State>)
-
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case widgetsResponse(Result<[StatisticsWidget.Configuration], Error>)
 			case didLoadChartContent(id: StatisticsWidget.ID, Result<Statistics.ChartContent, Error>)
 			case didUpdatePriorities(Result<Never, Error>)
@@ -61,9 +60,10 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			case reordering(Reorderable<MoveableWidget, StatisticsWidget.Configuration>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	enum CancelID { case updatePriorities }
@@ -82,7 +82,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 	@Dependency(\.statisticsWidgets) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
@@ -141,9 +141,6 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 				case .didFinishDismissingEditor:
 					return .send(.internal(.startAnimatingWidgets), animation: .easeInOut)
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -226,12 +223,13 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				case .editor(.dismiss),
 						.editor(.presented(.internal)),
 						.editor(.presented(.view)),
+						.editor(.presented(.binding)),
 						.reordering(.internal), .reordering(.view),
 						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
