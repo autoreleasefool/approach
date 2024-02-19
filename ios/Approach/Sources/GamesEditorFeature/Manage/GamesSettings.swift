@@ -11,6 +11,7 @@ import SwiftUI
 
 @Reducer
 public struct GamesSettings: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let bowlers: IdentifiedArrayOf<Bowler.Summary>
 		public let currentBowlerId: Bowler.ID
@@ -19,7 +20,7 @@ public struct GamesSettings: Reducer {
 
 		public let isTeamsEnabled: Bool
 
-		@BindingState public var isFlashEditorChangesEnabled: Bool
+		public var isFlashEditorChangesEnabled: Bool
 
 		init(bowlers: IdentifiedArrayOf<Bowler.Summary>, currentBowlerId: Bowler.ID, numberOfGames: Int, gameIndex: Int) {
 			self.bowlers = bowlers
@@ -35,32 +36,32 @@ public struct GamesSettings: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapDone
 			case didSwitchGame(to: Int)
 			case didSwitchBowler(to: Bowler.ID)
 			case didMoveBowlers(source: IndexSet, destination: Int)
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case movedBowlers(source: IndexSet, destination: Int)
 			case switchedGame(to: Int)
 			case switchedBowler(to: Bowler.ID)
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -86,21 +87,18 @@ public struct GamesSettings: Reducer {
 
 				case let .didMoveBowlers(source, destination):
 					return .send(.delegate(.movedBowlers(source: source, destination: destination)))
-
-				case .binding(\.$isFlashEditorChangesEnabled):
-					return .run { [updatedValue = state.isFlashEditorChangesEnabled] _ in
-						preferences.setKey(.gameShouldNotifyEditorChanges, toBool: updatedValue)
-					}
-					.cancellable(id: PreferenceKey.gameShouldNotifyEditorChanges, cancelInFlight: true)
-
-				case .binding:
-					return .none
 				}
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .binding(\.isFlashEditorChangesEnabled):
+				return .run { [updatedValue = state.isFlashEditorChangesEnabled] _ in
+					preferences.setKey(.gameShouldNotifyEditorChanges, toBool: updatedValue)
+				}
+				.cancellable(id: PreferenceKey.gameShouldNotifyEditorChanges, cancelInFlight: true)
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -116,42 +114,45 @@ public struct GamesSettings: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: GamesSettings.self)
 public struct GamesSettingsView: View {
-	let store: StoreOf<GamesSettings>
+	@Perception.Bindable public var store: StoreOf<GamesSettings>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section(Strings.Game.Settings.current) {
-					Picker(
-						Strings.Game.title,
-						selection: viewStore.binding(get: \.gameIndex, send: { .didSwitchGame(to: $0) })
-					) {
-						ForEach(Array(0..<viewStore.numberOfGames), id: \.self) { index in
-							Text(Strings.Game.titleWithOrdinal(index + 1))
-								.tag(index)
-						}
-					}
+					// TODO: can't use store.binding for gameIndex
+//					Picker(
+//						Strings.Game.title,
+//						selection: viewStore.binding(get: \.gameIndex, send: { .didSwitchGame(to: $0) })
+//					) {
+//						ForEach(Array(0..<store.numberOfGames), id: \.self) { index in
+//							Text(Strings.Game.titleWithOrdinal(index + 1))
+//								.tag(index)
+//						}
+//					}
 
-					if viewStore.isTeamsEnabled {
-						Picker(
-							Strings.Bowler.title,
-							selection: viewStore.binding(get: \.currentBowlerId, send: { .didSwitchBowler(to: $0) })
-						) {
-							ForEach(viewStore.bowlers) { bowler in
-								Text(bowler.name)
-									.tag(bowler.id)
-							}
-						}
-					}
+					// TODO: can't use store.binding for currentBowlerId
+//					if $store.isTeamsEnabled {
+//						Picker(
+//							Strings.Bowler.title,
+//							selection: viewStore.binding(get: \.currentBowlerId, send: { .didSwitchBowler(to: $0) })
+//						) {
+//							ForEach($store.bowlers) { bowler in
+//								Text(bowler.name)
+//									.tag(bowler.id)
+//							}
+//						}
+//					}
 				}
 
-				if viewStore.isTeamsEnabled {
+				if store.isTeamsEnabled {
 					Section {
-						ForEach(viewStore.bowlers) { bowler in
+						ForEach(store.bowlers) { bowler in
 							Text(bowler.name)
 						}
-						.onMove { viewStore.send(.didMoveBowlers(source: $0, destination: $1)) }
+						.onMove { send(.didMoveBowlers(source: $0, destination: $1)) }
 					} header: {
 						Text(Strings.Bowler.List.title)
 					} footer: {
@@ -162,7 +163,7 @@ public struct GamesSettingsView: View {
 				Section {
 					Toggle(
 						Strings.Game.Editor.Preferences.flashEditorChanges,
-						isOn: viewStore.$isFlashEditorChangesEnabled
+						isOn: $store.isFlashEditorChangesEnabled
 					)
 				} header: {
 					Text(Strings.Game.Editor.Preferences.title)
@@ -174,10 +175,10 @@ public struct GamesSettingsView: View {
 			.navigationTitle(Strings.Game.Settings.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
-					Button(Strings.Action.done) { viewStore.send(.didTapDone) }
+					Button(Strings.Action.done) { send(.didTapDone) }
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onAppear { send(.onAppear) }
+		}
 	}
 }

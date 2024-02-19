@@ -25,8 +25,9 @@ import ToastLibrary
 // swiftlint:disable file_length
 // swiftlint:disable:next type_body_length
 public struct GamesEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var sheetDetent: PresentationDetent = .height(.zero)
+		public var sheetDetent: PresentationDetent = .height(.zero)
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var gameDetailsHeaderSize: CGSize = .zero
@@ -48,7 +49,7 @@ public struct GamesEditor: Reducer {
 		// ID Details for the current entity being edited
 		public var _currentBowlerId: Bowler.ID
 		public var _currentGameId: Game.ID
-		@BindingState public var currentFrame: ScoreSheet.Selection = .init(frameIndex: 0, rollIndex: 0)
+		public var currentFrame: ScoreSheet.Selection = .init(frameIndex: 0, rollIndex: 0)
 
 		// Should only be modified in `GamesEditor.State.setCurrent`
 		public var _nextHeaderElement: GameDetailsHeader.State.NextElement?
@@ -69,6 +70,19 @@ public struct GamesEditor: Reducer {
 		public var frames: [Frame.Edit]?
 		public var score: ScoredGame?
 
+		var manualScore: Int? {
+			if let game {
+				switch game.scoringMethod {
+				case .byFrame:
+					nil
+				case .manual:
+					game.score
+				}
+			} else {
+				nil
+			}
+		}
+
 		var numberOfGames: Int { bowlerGameIds.first!.value.count }
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
 		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
@@ -76,7 +90,7 @@ public struct GamesEditor: Reducer {
 		public var _frameEditor: FrameEditor.State = .init()
 		public var _rollEditor: RollEditor.State = .init()
 		public var _gamesHeader: GamesHeader.State = .init()
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public var toast: ToastState<ToastAction>?
 		public var errors: Errors<ErrorID>.State = .init()
@@ -100,18 +114,17 @@ public struct GamesEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didAdjustBackdropSize(CGSize)
 			case didDismissGameDetails
 			case didDismissOpenSheet
 			case didRequestReview
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case bowlersResponse(Result<[Bowler.Summary], Error>)
 			case framesResponse(Result<[Frame.Edit], Error>)
 			case gameResponse(Result<Game.Edit?, Error>)
@@ -134,9 +147,10 @@ public struct GamesEditor: Reducer {
 			case rollEditor(RollEditor.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum RefreshableElements {
@@ -179,11 +193,11 @@ public struct GamesEditor: Reducer {
 	@Dependency(\.storeReview) var storeReview
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		// We explicitly handle this action before all others so that we can guarantee we are on a valid frame/roll
 		Reduce<State, Action> { state, action in
-			guard case .view(.binding(\.$currentFrame)) = action else { return .none }
+			guard case .binding(\.currentFrame) = action else { return .none }
 			state.setCurrent(rollIndex: state.currentFrame.rollIndex, frameIndex: state.currentFrame.frameIndex)
 			let currentFrameIndex = state.currentFrameIndex
 			let currentRollIndex = state.currentRollIndex
@@ -250,15 +264,6 @@ public struct GamesEditor: Reducer {
 					} else {
 						return .none
 					}
-
-				case .binding(\.$sheetDetent):
-					return .run { send in
-						try await clock.sleep(for: .milliseconds(25))
-						await send(.internal(.adjustBackdrop))
-					}
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -426,7 +431,13 @@ public struct GamesEditor: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.sheetDetent):
+				return .run { send in
+					try await clock.sleep(for: .milliseconds(25))
+					await send(.internal(.adjustBackdrop))
+				}
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
