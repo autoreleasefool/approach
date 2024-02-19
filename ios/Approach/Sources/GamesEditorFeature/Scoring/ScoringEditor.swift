@@ -8,26 +8,27 @@ import SwiftUIExtensionsLibrary
 
 @Reducer
 public struct ScoringEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var scoringMethod: Game.ScoringMethod
-		@BindingState public var score: Int
+		public var score: Int
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case toggleManualScoring(Bool)
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didSetManualScore(Int)
 			case didClearManualScore
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	enum CancelID { case manualScore }
@@ -35,7 +36,7 @@ public struct ScoringEditor: Reducer {
 	@Dependency(\.continuousClock) var clock
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -56,22 +57,19 @@ public struct ScoringEditor: Reducer {
 					case .manual:
 						return .send(.delegate(.didSetManualScore(state.score)))
 					}
-
-				case .binding(\.$score):
-					state.score = min(max(state.score, 0), Game.MAXIMUM_SCORE)
-					return .run { [score = state.score] send in
-						try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
-						await send(.delegate(.didSetManualScore(score)))
-					}.cancellable(id: CancelID.manualScore)
-
-				case .binding:
-					return .none
 				}
 
 			case .internal(.doNothing):
 				return .none
 
-			case .delegate:
+			case .binding(\.score):
+				state.score = min(max(state.score, 0), Game.MAXIMUM_SCORE)
+				return .run { [score = state.score] send in
+					try await clock.sleep(for: .nanoseconds(NSEC_PER_SEC / 3))
+					await send(.delegate(.didSetManualScore(score)))
+				}.cancellable(id: CancelID.manualScore)
+
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -85,27 +83,29 @@ public struct ScoringEditor: Reducer {
 	}
 }
 
+@ViewAction(for: ScoringEditor.self)
 public struct ScoringEditorView: View {
-	let store: StoreOf<ScoringEditor>
+	@Perception.Bindable public var store: StoreOf<ScoringEditor>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
-				Section {
-					Toggle(
-						Strings.Scoring.Editor.Fields.ManualScore.title,
-						isOn: viewStore.binding(get: { $0.scoringMethod == .manual }, send: { .toggleManualScoring($0) })
-					)
-					.toggleStyle(CheckboxToggleStyle())
-				} footer: {
-					Text(Strings.Scoring.Editor.Fields.ManualScore.help)
-				}
+				// TODO: cannot use store.binding for scoring method
+//				Section {
+//					Toggle(
+//						Strings.Scoring.Editor.Fields.ManualScore.title,
+//						isOn: viewStore.binding(get: { $0.scoringMethod == .manual }, send: { .toggleManualScoring($0) })
+//					)
+//					.toggleStyle(CheckboxToggleStyle())
+//				} footer: {
+//					Text(Strings.Scoring.Editor.Fields.ManualScore.help)
+//				}
 
-				if viewStore.scoringMethod == .manual {
+				if store.scoringMethod == .manual {
 					Section {
 						TextField(
 							Strings.Scoring.Editor.Fields.ManualScore.label,
-							value: viewStore.$score,
+							value: $store.score,
 							formatter: NumberFormatter()
 						)
 						.keyboardType(.numberPad)
@@ -113,8 +113,8 @@ public struct ScoringEditorView: View {
 				}
 			}
 			.navigationTitle(Strings.Scoring.title)
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onAppear { send(.onAppear) }
+		}
 	}
 }
 

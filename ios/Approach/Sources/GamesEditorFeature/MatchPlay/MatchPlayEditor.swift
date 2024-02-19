@@ -15,34 +15,35 @@ import ViewsLibrary
 
 @Reducer
 public struct MatchPlayEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var matchPlay: MatchPlay.Edit
 
-		@PresentationState public var opponentPicker: ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State?
+		@Presents public var opponentPicker: ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State?
 
 		init(matchPlay: MatchPlay.Edit) {
 			self.matchPlay = matchPlay
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapOpponent
 			case didSetScore(String)
 			case didSetResult(MatchPlay.Result?)
 			case didTapDeleteButton
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didEditMatchPlay(MatchPlay.Edit?)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case opponentPicker(PresentationAction<ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	enum CancelID { case savingScore }
@@ -123,70 +124,65 @@ public struct MatchPlayEditor: Reducer {
 	}
 }
 
+@ViewAction(for: MatchPlayEditor.self)
 public struct MatchPlayEditorView: View {
-	let store: StoreOf<MatchPlayEditor>
-
-	struct ViewState: Equatable {
-		let matchPlay: MatchPlay.Edit
-
-		init(state: MatchPlayEditor.State) {
-			self.matchPlay = state.matchPlay
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<MatchPlayEditor>
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			Form {
 				Section(Strings.MatchPlay.Editor.Fields.Opponent.title) {
-					NavigationButton { viewStore.send(.didTapOpponent) } content: {
+					NavigationButton { send(.didTapOpponent) } content: {
 						LabeledContent(
 							Strings.MatchPlay.Editor.Fields.Opponent.title,
-							value: viewStore.matchPlay.opponent?.name ?? Strings.none
+							value: store.matchPlay.opponent?.name ?? Strings.none
 						)
 					}
 
-					TextField(
-						Strings.MatchPlay.Editor.Fields.Opponent.score,
-						text: viewStore.binding(
-							get: {
-								if let score = $0.matchPlay.opponentScore, score > 0 {
-									return String(score)
-								} else {
-									return ""
-								}
-							},
-							send: { .didSetScore($0) }
-						)
-					)
-					.keyboardType(.numberPad)
+					// TODO: can't use store.binding for score
+//					TextField(
+//						Strings.MatchPlay.Editor.Fields.Opponent.score,
+//						text: viewStore.binding(
+//							get: {
+//								if let score = $0.matchPlay.opponentScore, score > 0 {
+//									return String(score)
+//								} else {
+//									return ""
+//								}
+//							},
+//							send: { .didSetScore($0) }
+//						)
+//					)
+//					.keyboardType(.numberPad)
 				}
 
 				Section {
-					Picker(
-						Strings.MatchPlay.Editor.Fields.Result.title,
-						selection: viewStore.binding(get: { $0.matchPlay.result }, send: { .didSetResult($0) })
-					) {
-						Text("").tag(nil as MatchPlay.Result?)
-						ForEach(MatchPlay.Result.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
-					}
+					// TODO: can't use store.binding for match play result
+//					Picker(
+//						Strings.MatchPlay.Editor.Fields.Result.title,
+//						selection: $store.matchPlay.result.sending(\.didSetResult)
+//					) {
+//						Text("").tag(nil as MatchPlay.Result?)
+//						ForEach(MatchPlay.Result.allCases) {
+//							Text(String(describing: $0)).tag(Optional($0))
+//						}
+//					}
 				} footer: {
 					Text(Strings.MatchPlay.Editor.Fields.Result.footer(String(describing: MatchPlay.Result.won)))
 				}
 
 				Section {
-					DeleteButton { viewStore.send(.didTapDeleteButton) }
+					DeleteButton { send(.didTapDeleteButton) }
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.navigationTitle(Strings.MatchPlay.title)
-		.navigationDestination(
-			store: store.scope(state: \.$opponentPicker, action: \.internal.opponentPicker)
-		) { store in
-			ResourcePickerView(store: store) {
-				Bowler.View($0)
+			.onAppear { send(.onAppear) }
+			.navigationTitle(Strings.MatchPlay.title)
+			.navigationDestinationWrapper(
+				item: $store.scope(state: \.opponentPicker, action: \.internal.opponentPicker)
+			) { store in
+				ResourcePickerView(store: store) {
+					Bowler.View($0)
+				}
 			}
 		}
 	}

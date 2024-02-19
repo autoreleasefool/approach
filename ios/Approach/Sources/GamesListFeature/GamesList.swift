@@ -25,6 +25,7 @@ extension Game.List: ResourceListItem {
 
 @Reducer
 public struct GamesList: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var series: Series.Summary
 		public let seriesHost: League.SeriesHost
@@ -33,7 +34,7 @@ public struct GamesList: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		public let isSeriesSharingEnabled: Bool
 		public var isShowingArchiveTip: Bool
@@ -60,8 +61,8 @@ public struct GamesList: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapGame(Game.ID)
 			case didTapShareButton
@@ -69,8 +70,8 @@ public struct GamesList: Reducer {
 			case didTapAddButton
 			case didTapArchiveTipDismissButton
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadEditableSeries(Result<Series.Edit, Error>)
 			case didReorderGames(Result<Never, Error>)
 			case didAddGameToSeries(Result<Never, Error>)
@@ -80,9 +81,9 @@ public struct GamesList: Reducer {
 			case list(ResourceList<Game.List, Series.ID>.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	@Reducer(state: .equatable)
@@ -250,8 +251,10 @@ public struct GamesList: Reducer {
 
 				case .list(.internal), .list(.view),
 						.destination(.dismiss),
-						.destination(.presented(.gameEditor(.internal))), .destination(.presented(.gameEditor(.view))),
-						.destination(.presented(.seriesEditor(.internal))), 
+						.destination(.presented(.gameEditor(.internal))), 
+						.destination(.presented(.gameEditor(.view))),
+						.destination(.presented(.gameEditor(.binding))),
+						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
 						.destination(.presented(.sharing(.internal))), .destination(.presented(.sharing(.view))),

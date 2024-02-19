@@ -14,9 +14,9 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 
+@ViewAction(for: GamesEditor.self)
 public struct GamesEditorView: View {
-	let store: StoreOf<GamesEditor>
-	typealias GamesEditorViewStore = ViewStore<ViewState, GamesEditor.Action.ViewAction>
+	@Perception.Bindable public var store: StoreOf<GamesEditor>
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -27,37 +27,18 @@ public struct GamesEditorView: View {
 	@State private var sheetContentSize: CGSize = .zero
 	@State private var windowContentSize: CGSize = .zero
 
-	struct ViewState: Equatable {
-		@BindingViewState var sheetDetent: PresentationDetent
-		let gameDetailsHeaderSize: CGSize
-		let gameDetailsMinimumContentSize: CGSize
-		let willAdjustLaneLayoutAt: Date
-		let backdropSize: CGSize
-
-		let shouldRequestAppStoreReview: Bool
-
-		let isScoreSheetVisible: Bool
-		let score: ScoredGame?
-		@BindingViewState var currentFrame: ScoreSheet.Selection
-
-		let manualScore: Int?
-
-		let bowlerName: String?
-		let leagueName: String?
-	}
-
 	public init(store: StoreOf<GamesEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack {
 				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
 					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
 
 				VStack {
-					if let manualScore = viewStore.manualScore {
+					if let manualScore = store.manualScore {
 						Spacer()
 
 						VStack {
@@ -85,15 +66,15 @@ public struct GamesEditorView: View {
 							.measure(key: RollEditorSizeKey.self, to: $rollEditorSize)
 							.padding(.horizontal)
 
-						if viewStore.isScoreSheetVisible {
-							scoreSheet(viewStore)
+						if store.isScoreSheetVisible {
+							scoreSheet
 								.padding(.top)
 								.padding(.horizontal)
 								.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
 						}
 					}
 				}
-				.frame(idealWidth: viewStore.backdropSize.width, maxHeight: viewStore.backdropSize.height)
+				.frame(idealWidth: store.backdropSize.width, maxHeight: store.backdropSize.height)
 
 				Spacer()
 			}
@@ -107,7 +88,7 @@ public struct GamesEditorView: View {
 						.resizable()
 						.scaledToFill()
 				}
-				.frame(width: viewStore.backdropSize.width, height: getBackdropImageHeight(viewStore))
+				.frame(width: store.backdropSize.width, height: backdropImageHeight)
 				.faded()
 				.clipped()
 				.padding(.top, headerContentSize.height)
@@ -115,68 +96,66 @@ public struct GamesEditorView: View {
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(
-				store: store.scope(state: \.$destination.gameDetails, action: \.internal.destination.gameDetails),
-				onDismiss: { viewStore.send(.didDismissGameDetails) },
+				item: $store.scope(state: \.destination?.gameDetails, action: \.internal.destination.gameDetails),
+				onDismiss: { send(.didDismissGameDetails) },
 				content: { (store: StoreOf<GameDetails>) in
-					gameDetails(viewStore: viewStore, gameDetailsStore: store)
+					gameDetails(gameDetailsStore: store)
 				}
 			)
-			.onChange(of: viewStore.willAdjustLaneLayoutAt) { _ in
-				viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)), animation: .easeInOut)
+			.onChange(of: store.willAdjustLaneLayoutAt) { _ in
+				send(.didAdjustBackdropSize(measuredBackdropSize), animation: .easeInOut)
 			}
-			.onChange(of: viewStore.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
+			.onChange(of: store.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
 				if shouldRequestAppStoreReview {
 					requestReview()
-					viewStore.send(.didRequestReview)
+					send(.didRequestReview)
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
+			.onAppear { send(.onAppear) }
 			.onFirstAppear {
-				viewStore.send(.didFirstAppear)
+				send(.didFirstAppear)
 				Task.detached {
 					try await clock.sleep(for: .milliseconds(150))
 					Task.detached { @MainActor in
-						viewStore.send(.didAdjustBackdropSize(getMeasuredBackdropSize(viewStore)))
+						send(.didAdjustBackdropSize(measuredBackdropSize))
 					}
 				}
 			}
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.alert(
-			store: store.scope(
-				state: \.$destination.duplicateLanesAlert,
-				action: \.internal.destination.duplicateLanesAlert
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.alert(
+				$store.scope(
+					state: \.destination?.duplicateLanesAlert,
+					action: \.internal.destination.duplicateLanesAlert
+				)
 			)
-		)
-		.ballPicker(
-			store.scope(state: \.$destination.sheets.ballPicker, action: \.internal.destination.sheets.ballPicker),
-			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
-		)
-		.settings(
-			store.scope(state: \.$destination.sheets.settings, action: \.internal.destination.sheets.settings),
-			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
-		)
-		.sharing(
-			store.scope(state: \.$destination.sheets.sharing, action: \.internal.destination.sheets.sharing),
-			onDismiss: { store.send(.view(.didDismissOpenSheet)) }
-		)
+			.ballPicker(
+				$store.scope(state: \.destination?.sheets?.ballPicker, action: \.internal.destination.sheets.ballPicker),
+				onDismiss: { send(.didDismissOpenSheet) }
+			)
+			.settings(
+				$store.scope(state: \.destination?.sheets?.settings, action: \.internal.destination.sheets.settings),
+				onDismiss: { send(.didDismissOpenSheet) }
+			)
+			.sharing(
+				$store.scope(state: \.destination?.sheets?.sharing, action: \.internal.destination.sheets.sharing),
+				onDismiss: { send(.didDismissOpenSheet) }
+			)
+		}
 	}
 
-	private func gameDetails(
-		viewStore: GamesEditorViewStore,
-		gameDetailsStore: StoreOf<GameDetails>
-	) -> some View {
+	private func gameDetails(gameDetailsStore: StoreOf<GameDetails>) -> some View {
 		GameDetailsView(store: gameDetailsStore)
-			.padding(.top, -viewStore.gameDetailsHeaderSize.height)
+			.padding(.top, -store.gameDetailsHeaderSize.height)
 			.frame(minHeight: 50)
 			.edgesIgnoringSafeArea(.bottom)
 			.presentationDetents(
 				[
-					.height(viewStore.gameDetailsMinimumContentSize.height + 40),
+					.height(store.gameDetailsMinimumContentSize.height + 40),
 					.medium,
 					.large,
 				],
-				selection: viewStore.$sheetDetent
+				selection: $store.sheetDetent
 			)
 			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 			.interactiveDismissDisabled(true)
@@ -185,28 +164,26 @@ public struct GamesEditorView: View {
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 	}
 
-	private var frameEditor: some View {
-		IfLetStore(store.scope(state: \.frameEditor, action: \.internal.frameEditor)) {
-			FrameEditorView(store: $0)
+	@ViewBuilder private var frameEditor: some View {
+		if let frameEditor = store.scope(state: \.frameEditor, action: \.internal.frameEditor) {
+			FrameEditorView(store: frameEditor)
 		}
 	}
 
-	private var rollEditor: some View {
-		IfLetStore(store.scope(state: \.rollEditor, action: \.internal.rollEditor)) {
-			RollEditorView(store: $0)
+	@ViewBuilder private var rollEditor: some View {
+		if let rollEditor = store.scope(state: \.rollEditor, action: \.internal.rollEditor) {
+			RollEditorView(store: rollEditor)
 		}
 	}
 
-	@MainActor @ViewBuilder private func scoreSheet(
-		_ viewStore: ViewStore<ViewState, GamesEditor.Action.ViewAction>
-	) -> some View {
-		if let game = viewStore.score {
-			ScoreSheet(game: game, selection: viewStore.$currentFrame)
+	@ViewBuilder private var scoreSheet: some View {
+		if let game = store.score {
+			ScoreSheet(game: game, selection: $store.currentFrame)
 		}
 	}
 
-	private func getMeasuredBackdropSize(_ viewStore: GamesEditorViewStore) -> CGSize {
-		let sheetContentSize = viewStore.sheetDetent == .large ? .zero : self.sheetContentSize
+	private var measuredBackdropSize: CGSize {
+		let sheetContentSize = store.sheetDetent == .large ? .zero : self.sheetContentSize
 		return .init(
 			width: windowContentSize.width,
 			height: windowContentSize.height
@@ -217,10 +194,10 @@ public struct GamesEditorView: View {
 		)
 	}
 
-	private func getBackdropImageHeight(_ viewStore: GamesEditorViewStore) -> CGFloat {
+	private var backdropImageHeight: CGFloat {
 		max(
-			viewStore.backdropSize.height
-				- (viewStore.isScoreSheetVisible ? frameContentSize.height : 0)
+			store.backdropSize.height
+				- (store.isScoreSheetVisible ? frameContentSize.height : 0)
 				- headerContentSize.height
 				+ rollEditorSize.height,
 			0
@@ -228,38 +205,12 @@ public struct GamesEditorView: View {
 	}
 }
 
-extension GamesEditorView.ViewState {
-	init(store: BindingViewStore<GamesEditor.State>) {
-		self._sheetDetent = store.$sheetDetent
-		self._currentFrame = store.$currentFrame
-		self.gameDetailsHeaderSize = store.gameDetailsHeaderSize
-		self.gameDetailsMinimumContentSize = store.gameDetailsMinimumContentSize
-		self.willAdjustLaneLayoutAt = store.willAdjustLaneLayoutAt
-		self.backdropSize = store.backdropSize
-		self.isScoreSheetVisible = store.isScoreSheetVisible
-		self.score = store.score
-		self.bowlerName = store.game?.bowler.name
-		self.leagueName = store.game?.league.name
-		self.shouldRequestAppStoreReview = store.shouldRequestAppStoreReview
-		if let game = store.game {
-			switch game.scoringMethod {
-			case .byFrame:
-				self.manualScore = nil
-			case .manual:
-				self.manualScore = game.score
-			}
-		} else {
-			self.manualScore = nil
-		}
-	}
-}
-
 @MainActor extension View {
 	fileprivate func ballPicker(
-		_ store: PresentationStoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>,
+		_ store: Binding<StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>?>,
 		onDismiss: @escaping () -> Void
 	) -> some View {
-		sheet(store: store, onDismiss: onDismiss) { store in
+		sheet(item: store, onDismiss: onDismiss) { store in
 			NavigationStack {
 				ResourcePickerView(store: store) {
 					Gear.ViewWithAvatar($0)
@@ -268,22 +219,16 @@ extension GamesEditorView.ViewState {
 		}
 	}
 
-	fileprivate func settings(
-		_ store: PresentationStoreOf<GamesSettings>,
-		onDismiss: @escaping () -> Void
-	) -> some View {
-		sheet(store: store, onDismiss: onDismiss) { store in
+	fileprivate func settings(_ store: Binding<StoreOf<GamesSettings>?>, onDismiss: @escaping () -> Void) -> some View {
+		sheet(item: store, onDismiss: onDismiss) { store in
 			NavigationStack {
 				GamesSettingsView(store: store)
 			}
 		}
 	}
 
-	fileprivate func sharing(
-		_ store: PresentationStoreOf<Sharing>,
-		onDismiss: @escaping () -> Void
-	) -> some View {
-		sheet(store: store, onDismiss: onDismiss) { store in
+	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>, onDismiss: @escaping () -> Void) -> some View {
+		sheet(item: store, onDismiss: onDismiss) { store in
 			NavigationStack {
 				SharingView(store: store)
 			}

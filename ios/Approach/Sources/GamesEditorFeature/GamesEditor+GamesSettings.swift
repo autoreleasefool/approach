@@ -21,7 +21,7 @@ extension GamesEditor {
 				return .none
 			}
 
-		case .internal, .view:
+		case .internal, .view, .binding:
 			return .none
 		}
 	}

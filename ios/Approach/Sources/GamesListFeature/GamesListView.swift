@@ -15,96 +15,82 @@ import SwiftUIExtensionsLibrary
 import TipsLibrary
 import ViewsLibrary
 
+@ViewAction(for: GamesList.self)
 public struct GamesListView: View {
-	let store: StoreOf<GamesList>
-
-	struct ViewState: Equatable {
-		let title: String
-		let editMode: EditMode
-		let scores: [GamesListHeaderView.Score]
-		let isSeriesSharingEnabled: Bool
-		let isShowingArchiveTip: Bool
-
-		init(state: GamesList.State) {
-			self.title = state.series.date.longFormat
-			self.editMode = state.list.editMode
-			self.scores = state.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? []
-			self.isSeriesSharingEnabled = state.isSeriesSharingEnabled
-			self.isShowingArchiveTip = state.isShowingArchiveTip
-		}
-	}
+	@Perception.Bindable public var store: StoreOf<GamesList>
 
 	public init(store: StoreOf<GamesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			ResourceListView(
 				store: store.scope(state: \.list, action: \.internal.list)
 			) { game in
-				Button { viewStore.send(.didTapGame(game.id)) } label: {
+				Button { send(.didTapGame(game.id)) } label: {
 					LabeledContent(Strings.Game.titleWithOrdinal(game.index + 1), value: "\(game.score)")
 				}
-				.if(viewStore.editMode == .active) {
+				.if(store.list.editMode == .active) {
 					$0.buttonStyle(.plain)
 				}
-				.if(viewStore.editMode == .inactive) {
+				.if(store.list.editMode == .inactive) {
 					$0.buttonStyle(.navigation)
 				}
 			} header: {
-				GamesListHeaderView(scores: viewStore.scores)
+				GamesListHeaderView(scores: store.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? [])
 			} footer: {
-				if viewStore.isShowingArchiveTip {
+				if store.isShowingArchiveTip {
 					BasicTipView(tip: .gameArchiveTip) {
-						viewStore.send(.didTapArchiveTipDismissButton, animation: .default)
+						send(.didTapArchiveTipDismissButton, animation: .default)
 					}
 				}
 			}
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					EditButton { viewStore.send(.didTapEditButton) }
+					EditButton { send(.didTapEditButton) }
 				}
 
-				if viewStore.isSeriesSharingEnabled {
+				if store.isSeriesSharingEnabled {
 					ToolbarItem(placement: .navigationBarTrailing) {
-						Button { viewStore.send(.didTapShareButton) } label: {
+						Button { send(.didTapShareButton) } label: {
 							Image(systemSymbol: .squareAndArrowUp)
 						}
 					}
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.didTapAddButton) }
+					AddButton { send(.didTapAddButton) }
 				}
 			}
-			.navigationTitle(viewStore.title)
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.sharing(store.scope(state: \.$destination.sharing, action: \.internal.destination.sharing))
-		.gameEditor(store.scope(state: \.$destination.gameEditor, action: \.internal.destination.gameEditor))
-		.seriesEditor(store.scope(state: \.$destination.seriesEditor, action: \.internal.destination.seriesEditor))
+			.navigationTitle(store.series.date.longFormat)
+			.onAppear { send(.onAppear) }
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
+			.gameEditor($store.scope(state: \.destination?.gameEditor, action: \.internal.destination.gameEditor))
+			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+		}
 	}
 }
 
 @MainActor extension View {
-	fileprivate func sharing(_ store: PresentationStoreOf<Sharing>) -> some View {
-		sheet(store: store) { store in
+	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				SharingView(store: store)
 			}
 		}
 	}
 
-	fileprivate func gameEditor(_ store: PresentationStoreOf<GamesEditor>) -> some View {
-		navigationDestination(store: store) { store in
+	fileprivate func gameEditor(_ store: Binding<StoreOf<GamesEditor>?>) -> some View {
+		navigationDestinationWrapper(item: store) { store in
 			GamesEditorView(store: store)
 		}
 	}
 
-	fileprivate func seriesEditor(_ store: PresentationStoreOf<SeriesEditor>) -> some View {
-		sheet(store: store) { store in
+	fileprivate func seriesEditor(_ store: Binding<StoreOf<SeriesEditor>?>) -> some View {
+		sheet(item: store) { store in
 			NavigationStack {
 				SeriesEditorView(store: store)
 			}

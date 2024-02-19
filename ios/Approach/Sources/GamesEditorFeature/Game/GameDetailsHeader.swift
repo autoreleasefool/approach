@@ -10,6 +10,7 @@ import ViewsLibrary
 
 @Reducer
 public struct GameDetailsHeader: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var currentBowlerName: String
 		public var currentLeagueName: String
@@ -28,23 +29,23 @@ public struct GameDetailsHeader: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didStartTask
 			case didTapNext(State.NextElement)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case startShimmering
 			case setShimmerColor(Color?)
 			case setFlashEditorChangesEnabled(Bool)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didProceed(to: State.NextElement)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	enum CancelID { case shimmering }
@@ -102,34 +103,35 @@ public struct GameDetailsHeader: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: GameDetailsHeader.self)
 public struct GameDetailsHeaderView: View {
-	let store: StoreOf<GameDetailsHeader>
+	public let store: StoreOf<GameDetailsHeader>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			HStack(alignment: .center) {
 				VStack(alignment: .leading, spacing: .tinySpacing) {
-					Text(viewStore.currentBowlerName)
+					Text(store.currentBowlerName)
 						.font(.headline)
 						.padding(.tinySpacing)
 						.background(
 							RoundedRectangle(cornerRadius: .smallRadius)
-								.fill(viewStore.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
+								.fill(store.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
 						)
 
-					Text(viewStore.currentLeagueName)
+					Text(store.currentLeagueName)
 						.font(.subheadline)
 						.padding(.tinySpacing)
 						.background(
 							RoundedRectangle(cornerRadius: .smallRadius)
-								.fill(viewStore.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
+								.fill(store.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
 						)
 				}
 
 				Spacer()
 
-				if let next = viewStore.next {
-					Button { viewStore.send(.didTapNext(next)) } label: {
+				if let next = store.next {
+					Button { send(.didTapNext(next)) } label: {
 						HStack {
 							Text(String(describing: next))
 								.font(.caption)
@@ -149,8 +151,8 @@ public struct GameDetailsHeaderView: View {
 					.buttonStyle(TappableElement())
 				}
 			}
-			.task { await viewStore.send(.didStartTask).finish() }
-		})
+			.task { await send(.didStartTask).finish() }
+		}
 	}
 }
 

@@ -27,8 +27,9 @@ extension GamesEditor {
 
 			case .didClearManualScore:
 				state.hideNextHeaderIfNecessary()
+				let gameScore = state.score?.frames.gameScore() ?? 0
 				state.game?.scoringMethod = .byFrame
-				state.game?.score = state.score?.frames.gameScore() ?? 0
+				state.game?.score = gameScore
 				return save(game: state.game, in: state)
 
 			case .didSelectLanes:

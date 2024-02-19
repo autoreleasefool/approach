@@ -13,6 +13,7 @@ import ViewsLibrary
 
 @Reducer
 public struct RollEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var ballRolled: Gear.Summary?
 		public var didFoul: Bool
@@ -26,26 +27,26 @@ public struct RollEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didStartTask
 			case didTapBall(Gear.ID)
 			case didTapOtherButton
 			case didToggleFoul
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case didLoadGear(Result<[Gear.Summary], Error>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didEditRoll
 			case didRequestBallPicker
 			case didChangeBall(Gear.Summary?)
 			case didProvokeLock
 		}
 
-		case view(ViewAction)
-		case `internal`(InternalAction)
-		case delegate(DelegateAction)
+		case view(View)
+		case `internal`(Internal)
+		case delegate(Delegate)
 	}
 
 	public init() {}
@@ -112,13 +113,14 @@ public struct RollEditor: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: RollEditor.self)
 public struct RollEditorView: View {
-	let store: StoreOf<RollEditor>
+	public let store: StoreOf<RollEditor>
 
 	private static let selectedStrokeStyle = StrokeStyle(lineWidth: 4, lineCap: .round, dash: [8])
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			HStack(alignment: .bottom) {
 				VStack(alignment: .leading, spacing: .unitSpacing) {
 					Text(Strings.Roll.Properties.Ball.title)
@@ -127,19 +129,21 @@ public struct RollEditorView: View {
 						.foregroundColor(.white)
 
 					HStack(spacing: .smallSpacing) {
-						ForEach(viewStore.recentGear) { gear in
-							Button { viewStore.send(.didTapBall(gear.id)) } label: {
-								AvatarView(gear.avatar, size: .smallerIcon)
-									.overlay(
-										Circle()
-											.stroke(gear.id == viewStore.ballRolled?.id ? .white : .clear, style: Self.selectedStrokeStyle)
-									)
-									.opacity(gear.id == viewStore.ballRolled?.id ? 1 : 0.8)
-									.padding(.tinySpacing)
+						ForEach(store.recentGear) { gear in
+							WithPerceptionTracking {
+								Button { send(.didTapBall(gear.id)) } label: {
+									AvatarView(gear.avatar, size: .smallerIcon)
+										.overlay(
+											Circle()
+												.stroke(gear.id == store.ballRolled?.id ? .white : .clear, style: Self.selectedStrokeStyle)
+										)
+										.opacity(gear.id == store.ballRolled?.id ? 1 : 0.8)
+										.padding(.tinySpacing)
+								}
 							}
 						}
 
-						Button { viewStore.send(.didTapOtherButton) } label: {
+						Button { send(.didTapOtherButton) } label: {
 							Image(systemSymbol: .chevronRightSquare)
 								.resizable()
 								.scaledToFit()
@@ -152,20 +156,20 @@ public struct RollEditorView: View {
 
 				Spacer()
 
-				Button { viewStore.send(.didToggleFoul) } label: {
+				Button { send(.didToggleFoul) } label: {
 					HStack(spacing: .smallSpacing) {
 						Text(Strings.Roll.Properties.Foul.title)
-							.foregroundColor(viewStore.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
-						Image(systemSymbol: viewStore.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
+							.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+						Image(systemSymbol: store.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
 							.resizable()
 							.frame(width: .smallIcon, height: .smallIcon)
-							.foregroundColor(viewStore.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+							.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
 					}
 				}
 				.buttonStyle(TappableElement())
 			}
-			.task { await viewStore.send(.didStartTask).finish() }
-		})
+			.task { await send(.didStartTask).finish() }
+		}
 	}
 }
 

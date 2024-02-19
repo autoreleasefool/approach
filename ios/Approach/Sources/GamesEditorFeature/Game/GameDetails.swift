@@ -22,6 +22,7 @@ import ViewsLibrary
 @Reducer
 // swiftlint:disable:next type_body_length
 public struct GameDetails: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var gameId: Game.ID
 		public var game: Game.Edit?
@@ -32,7 +33,10 @@ public struct GameDetails: Reducer {
 
 		public var _gameDetailsHeader: GameDetailsHeader.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		var isLocked: Bool { game?.locked == .locked }
+		var isExcludedFromStatistics: Bool { game?.excludeFromStatistics == .exclude }
+
+		@Presents public var destination: Destination.State?
 
 		var isEditable: Bool { game?.locked != .locked }
 
@@ -49,13 +53,13 @@ public struct GameDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case task
 			case onAppear
 			case didFirstAppear
-			case didToggleLock
-			case didToggleExclude
+			case didToggleLock(Bool)
+			case didToggleExclude(Bool)
 			case didTapMatchPlay
 			case didTapScoring
 			case didTapGear
@@ -65,7 +69,7 @@ public struct GameDetails: Reducer {
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didSelectLanes
 			case didProceed(to: GameDetailsHeader.State.NextElement)
 			case didEditMatchPlay(Result<MatchPlay.Edit?, Error>)
@@ -75,16 +79,16 @@ public struct GameDetails: Reducer {
 			case didMeasureMinimumSheetContentSize(CGSize)
 			case didMeasureSectionHeaderContentSize(CGSize)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case refreshObservation
 			case didLoadGame(Result<Game.Edit?, Error>)
 			case gameDetailsHeader(GameDetailsHeader.Action)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Reducer
@@ -301,15 +305,16 @@ public struct GameDetails: Reducer {
 					}
 
 				case .destination(.presented(.matchPlay(.internal))), .destination(.presented(.matchPlay(.view))),
-						.destination(.presented(.scoring(.internal))), .destination(.presented(.scoring(.view))),
+						.destination(.presented(.scoring(.internal))),
+						.destination(.presented(.scoring(.view))),
+						.destination(.presented(.scoring(.binding))),
 						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
 						.destination(.presented(.lanePicker(.internal))), .destination(.presented(.lanePicker(.view))),
-						.destination(.presented(.statistics(.internal))), 
+						.destination(.presented(.statistics(.internal))),
 						.destination(.presented(.statistics(.view))),
 						.destination(.presented(.statistics(.binding))),
 						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
-
 				}
 
 			case .delegate:

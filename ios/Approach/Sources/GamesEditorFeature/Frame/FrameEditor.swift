@@ -9,6 +9,7 @@ import ViewsLibrary
 
 @Reducer
 public struct FrameEditor: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var isDragging = false
 
@@ -25,22 +26,22 @@ public struct FrameEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didStartDragging
 			case didDragOverPin(Pin)
 			case didStopDragging
 			case didTapPin(Pin)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didProvokeLock
 			case didEditFrame
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public enum NextPinState {
@@ -112,8 +113,9 @@ public struct FrameEditor: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: FrameEditor.self)
 public struct FrameEditorView: View {
-	let store: StoreOf<FrameEditor>
+	public let store: StoreOf<FrameEditor>
 
 	struct PinContainer: Equatable {
 		let pin: Pin
@@ -134,28 +136,30 @@ public struct FrameEditorView: View {
 	@State private var touchablePins: [PinContainer] = []
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			HStack(alignment: .center, spacing: .smallSpacing) {
 				Spacer(minLength: .standardSpacing)
 				ForEach(Pin.allCases) { pin in
-					ZStack {
-						(viewStore.downedPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
-							.resizable()
-							.aspectRatio(contentMode: .fit)
-							.shadow(color: .black, radius: 2)
-					}
-					.frame(width: getWidth(for: pin), height: getHeight(for: pin))
-					.background(
-						GeometryReader { proxy in
-							Color.clear
-								.preference(
-									key: PinContainerPreferenceKey.self,
-									value: [PinContainer(pin: pin, bounds: proxy.frame(in: .named("FrameEditor")))]
-								)
+					WithPerceptionTracking {
+						ZStack {
+							(store.downedPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
+								.resizable()
+								.aspectRatio(contentMode: .fit)
+								.shadow(color: .black, radius: 2)
 						}
-					)
-					.opacity(viewStore.lockedPins.contains(pin) ? 0.25 : 1)
-					.onTapGesture { viewStore.send(.didTapPin(pin)) }
+						.frame(width: getWidth(for: pin), height: getHeight(for: pin))
+						.background(
+							GeometryReader { proxy in
+								Color.clear
+									.preference(
+										key: PinContainerPreferenceKey.self,
+										value: [PinContainer(pin: pin, bounds: proxy.frame(in: .named("FrameEditor")))]
+									)
+							}
+						)
+						.opacity(store.lockedPins.contains(pin) ? 0.25 : 1)
+						.onTapGesture { send(.didTapPin(pin)) }
+					}
 				}
 				Spacer(minLength: .standardSpacing)
 			}
@@ -165,20 +169,20 @@ public struct FrameEditorView: View {
 			.simultaneousGesture(
 				DragGesture()
 					.onChanged { drag in
-						if !viewStore.isDragging {
+						if !store.isDragging {
 							touchablePins = pinContainers
-							viewStore.send(.didStartDragging)
+							send(.didStartDragging)
 						}
 
 						if let index = touchablePins.firstIndex(where: { $0.bounds.contains(drag.location) }) {
-							viewStore.send(.didDragOverPin(touchablePins[index].pin))
+							send(.didDragOverPin(touchablePins[index].pin))
 							touchablePins.remove(at: index)
 						}
 					}
-					.onEnded { _ in viewStore.send(.didStopDragging) }
+					.onEnded { _ in send(.didStopDragging) }
 			)
 			.coordinateSpace(name: "FrameEditor")
-		})
+		}
 	}
 
 	private func getHeight(for pin: Pin) -> CGFloat? {
