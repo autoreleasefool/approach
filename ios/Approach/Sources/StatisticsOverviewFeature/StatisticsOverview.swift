@@ -105,7 +105,8 @@ public struct StatisticsOverview: Reducer {
 				case .destination(.presented(.sourcePicker(.internal))),
 						.destination(.presented(.sourcePicker(.view))),
 						.destination(.presented(.details(.internal))),
-						.destination(.presented(.details(.view))):
+						.destination(.presented(.details(.view))),
+						.destination(.presented(.details(.binding))):
 					return .none
 				}
 

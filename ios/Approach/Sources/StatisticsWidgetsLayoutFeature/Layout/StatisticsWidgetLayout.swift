@@ -155,8 +155,12 @@ public struct StatisticsWidgetLayout: Reducer {
 					return .none
 
 				case .destination(.dismiss),
-						.destination(.presented(.layout(.internal))), .destination(.presented(.layout(.view))),
-						.destination(.presented(.details(.internal))), .destination(.presented(.details(.view))),
+						.destination(.presented(.layout(.internal))),
+						.destination(.presented(.layout(.view))),
+						.destination(.presented(.layout(.binding))),
+						.destination(.presented(.details(.internal))),
+						.destination(.presented(.details(.view))),
+						.destination(.presented(.details(.binding))),
 						.destination(.presented(.help(.internal))), .destination(.presented(.help(.view))),
 						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none

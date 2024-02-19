@@ -10,11 +10,12 @@ import SwiftUI
 
 @Reducer
 public struct MidGameStatisticsDetails: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var filter: TrackableFilter
 		public let games: IdentifiedArrayOf<Game.Indexed>
 		public let seriesId: Series.ID
-		@BindingState public var selectedGame: Game.ID?
+		public var selectedGame: Game.ID?
 
 		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
 
@@ -36,24 +37,24 @@ public struct MidGameStatisticsDetails: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case task
 			case onAppear
 			case didFirstAppear
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadListEntries(Result<[Statistics.ListEntryGroup], Error>)
 
 			case list(StatisticsDetailsList.Action)
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum CancelID {
@@ -69,7 +70,7 @@ public struct MidGameStatisticsDetails: Reducer {
 	@Dependency(\.statistics) var statistics
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
@@ -91,17 +92,6 @@ public struct MidGameStatisticsDetails: Reducer {
 
 				case .didFirstAppear:
 					return refreshStatistics(state: state)
-
-				case .binding(\.$selectedGame):
-					if let game = state.selectedGame {
-						state.filter.source = .game(game)
-					} else {
-						state.filter.source = .series(state.seriesId)
-					}
-					return refreshStatistics(state: state)
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -128,11 +118,19 @@ public struct MidGameStatisticsDetails: Reducer {
 					return .none
 
 				case .errors(.internal), .errors(.view),
-						.list(.internal), .list(.view):
+						.list(.internal), .list(.view), .list(.binding):
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.selectedGame):
+				if let game = state.selectedGame {
+					state.filter.source = .game(game)
+				} else {
+					state.filter.source = .series(state.seriesId)
+				}
+				return refreshStatistics(state: state)
+
+			case .delegate, .binding:
 				return .none
 			}
 		}

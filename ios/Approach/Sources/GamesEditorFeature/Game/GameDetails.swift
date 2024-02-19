@@ -304,7 +304,9 @@ public struct GameDetails: Reducer {
 						.destination(.presented(.scoring(.internal))), .destination(.presented(.scoring(.view))),
 						.destination(.presented(.gearPicker(.internal))), .destination(.presented(.gearPicker(.view))),
 						.destination(.presented(.lanePicker(.internal))), .destination(.presented(.lanePicker(.view))),
-						.destination(.presented(.statistics(.internal))), .destination(.presented(.statistics(.view))),
+						.destination(.presented(.statistics(.internal))), 
+						.destination(.presented(.statistics(.view))),
+						.destination(.presented(.statistics(.binding))),
 						.gameDetailsHeader(.internal), .gameDetailsHeader(.view):
 					return .none
 

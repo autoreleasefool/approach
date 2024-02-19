@@ -24,6 +24,7 @@ import TipsServiceInterface
 public struct StatisticsWidgetEditor: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 
+	@ObservableState
 	public struct State: Equatable {
 		public let id: StatisticsWidget.ID
 		public let context: String
@@ -31,12 +32,14 @@ public struct StatisticsWidgetEditor: Reducer {
 		public let initialSource: StatisticsWidget.Source?
 
 		public var source: StatisticsWidget.Source?
-		@BindingState public var timeline: StatisticsWidget.Timeline = .past3Months
+		public var timeline: StatisticsWidget.Timeline = .past3Months
 		public var statistic: String = Statistics.GameAverage.title
+		var isSaveable: Bool { source != nil }
 
 		public var sources: StatisticsWidget.Sources?
 		public var bowler: Bowler.Summary?
 		public var league: League.Summary?
+		var isShowingLeaguePicker: Bool { bowler != nil }
 
 		public var isLoadingSources = false
 		public var isLoadingPreview = false
@@ -46,7 +49,7 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
-		@PresentationState public var destination: Destination.State?
+		@Presents public var destination: Destination.State?
 
 		var configuration: StatisticsWidget.Configuration? {
 			guard let source else { return nil }
@@ -73,8 +76,8 @@ public struct StatisticsWidgetEditor: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapBowler
@@ -83,12 +86,11 @@ public struct StatisticsWidgetEditor: Reducer {
 			case didTapWidget
 			case didTapStatistic
 			case didTapDismissTapThroughTip
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didCreateConfiguration(StatisticsWidget.Configuration)
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
 
@@ -100,9 +102,10 @@ public struct StatisticsWidgetEditor: Reducer {
 			case hideChart
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	@Reducer
@@ -160,7 +163,7 @@ public struct StatisticsWidgetEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
@@ -224,12 +227,6 @@ public struct StatisticsWidgetEditor: Reducer {
 				case .didTapDismissTapThroughTip:
 					state.isShowingTapThroughTip = false
 					return .run { _ in await tips.hide(tipFor: .tapThroughStatisticTip) }
-
-				case .binding(\.$timeline):
-					return refreshChart(withConfiguration: state.configuration, state: &state)
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -338,7 +335,10 @@ public struct StatisticsWidgetEditor: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .binding(\.timeline):
+				return refreshChart(withConfiguration: state.configuration, state: &state)
+
+			case .delegate, .binding:
 				return .none
 			}
 		}

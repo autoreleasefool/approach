@@ -7,6 +7,7 @@ import SwiftUI
 
 @Reducer
 public struct StatisticsWidgetHelp: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let missingStatistic: StatisticsWidget.Configuration
 
@@ -21,16 +22,16 @@ public struct StatisticsWidgetHelp: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case didTapDoneButton
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	@Dependency(\.dismiss) var dismiss
@@ -54,17 +55,18 @@ public struct StatisticsWidgetHelp: Reducer {
 	}
 }
 
+@ViewAction(for: StatisticsWidgetHelp.self)
 public struct StatisticsWidgetHelpView: View {
-	let store: StoreOf<StatisticsWidgetHelp>
+	public let store: StoreOf<StatisticsWidgetHelp>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			List {
 				Section {
 					VStack(alignment: .leading, spacing: .smallSpacing) {
 						SquareWidget(
-							configuration: viewStore.missingStatistic,
-							chartContent: .dataMissing(statistic: viewStore.missingStatistic.statistic),
+							configuration: store.missingStatistic,
+							chartContent: .dataMissing(statistic: store.missingStatistic.statistic),
 							onPress: {}
 						)
 						.frame(maxWidth: 150)
@@ -81,8 +83,8 @@ public struct StatisticsWidgetHelpView: View {
 				Section {
 					VStack(alignment: .leading, spacing: .smallSpacing) {
 						SquareWidget(
-							configuration: viewStore.missingStatistic,
-							chartContent: .chartUnavailable(statistic: viewStore.missingStatistic.statistic),
+							configuration: store.missingStatistic,
+							chartContent: .chartUnavailable(statistic: store.missingStatistic.statistic),
 							onPress: {}
 						)
 						.frame(maxWidth: 150)
@@ -99,10 +101,10 @@ public struct StatisticsWidgetHelpView: View {
 			.navigationTitle(Strings.Widget.Help.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.done) { viewStore.send(.didTapDoneButton) }
+					Button(Strings.Action.done) { send(.didTapDoneButton) }
 				}
 			}
-		})
+		}
 	}
 }
 

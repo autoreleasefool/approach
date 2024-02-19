@@ -13,44 +13,24 @@ import SwiftUIExtensionsLibrary
 import TipsLibrary
 import ViewsLibrary
 
+@ViewAction(for: StatisticsWidgetEditor.self)
 public struct StatisticsWidgetEditorView: View {
-	let store: StoreOf<StatisticsWidgetEditor>
-
-	struct ViewState: Equatable {
-		let source: StatisticsWidget.Source?
-		let sources: StatisticsWidget.Sources?
-		@BindingViewState var timeline: StatisticsWidget.Timeline
-		let statistic: String
-
-		let selectedBowlerName: String?
-		let selectedLeagueName: String?
-
-		let isShowingLeaguePicker: Bool
-		let isLoadingSources: Bool
-		let isLoadingPreview: Bool
-		let isSaveable: Bool
-		let isBowlerEditable: Bool
-
-		let widgetConfiguration: StatisticsWidget.Configuration?
-		let widgetPreviewData: Statistics.ChartContent?
-
-		let isShowingTapThroughTip: Bool
-	}
+	@Perception.Bindable public var store: StoreOf<StatisticsWidgetEditor>
 
 	public init(store: StoreOf<StatisticsWidgetEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			Form {
-				if viewStore.isLoadingSources {
+				if store.isLoadingSources {
 					ListProgressView()
 				} else {
 					Section {
 						Picker(
 							Strings.Widget.Builder.timeline,
-							selection: viewStore.$timeline
+							selection: $store.timeline
 						) {
 							ForEach(StatisticsWidget.Timeline.allCases) {
 								Text(String(describing: $0)).tag($0)
@@ -62,18 +42,18 @@ public struct StatisticsWidgetEditorView: View {
 					}
 
 					Section {
-						if viewStore.isBowlerEditable {
-							Button { viewStore.send(.didTapBowler) } label: {
-								LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
+						if store.isBowlerEditable {
+							Button { send(.didTapBowler) } label: {
+								LabeledContent(Strings.Bowler.title, value: store.bowler?.name ?? Strings.none)
 							}
 							.buttonStyle(.navigation)
 						} else {
-							LabeledContent(Strings.Bowler.title, value: viewStore.selectedBowlerName ?? Strings.none)
+							LabeledContent(Strings.Bowler.title, value: store.bowler?.name ?? Strings.none)
 						}
 
-						if viewStore.isShowingLeaguePicker {
-							Button { viewStore.send(.didTapLeague) } label: {
-								LabeledContent(Strings.League.title, value: viewStore.selectedLeagueName ?? Strings.none)
+						if store.isShowingLeaguePicker {
+							Button { send(.didTapLeague) } label: {
+								LabeledContent(Strings.League.title, value: store.league?.name ?? Strings.none)
 							}
 							.buttonStyle(.navigation)
 						}
@@ -82,29 +62,29 @@ public struct StatisticsWidgetEditorView: View {
 					}
 
 					Section {
-						Button { viewStore.send(.didTapStatistic) } label: {
-							Text(viewStore.statistic)
+						Button { send(.didTapStatistic) } label: {
+							Text(store.statistic)
 						}
 						.buttonStyle(.navigation)
 					}
 
-					if let configuration = viewStore.widgetConfiguration, let chartContent = viewStore.widgetPreviewData {
+					if let configuration = store.configuration, let chartContent = store.widgetPreviewData {
 						Section(Strings.Widget.Builder.preview) {
-							Button { viewStore.send(.didTapWidget) } label: {
+							Button { send(.didTapWidget) } label: {
 								StatisticsWidget.Widget(configuration: configuration, chartContent: chartContent)
 									.aspectRatio(2, contentMode: .fit)
 							}
 							.buttonStyle(TappableElement())
 						}
 						.listRowInsets(EdgeInsets())
-					} else if viewStore.isLoadingPreview {
+					} else if store.isLoadingPreview {
 						ProgressView()
 					}
 
-					if viewStore.isShowingTapThroughTip {
+					if store.isShowingTapThroughTip {
 						Section {
 							BasicTipView(tip: .tapThroughStatisticTip) {
-								viewStore.send(.didTapDismissTapThroughTip, animation: .default)
+								send(.didTapDismissTapThroughTip, animation: .default)
 							}
 						}
 					}
@@ -113,26 +93,27 @@ public struct StatisticsWidgetEditorView: View {
 			.navigationTitle(Strings.Widget.Builder.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.save) { viewStore.send(.didTapSaveButton) }
-						.disabled(!viewStore.isSaveable)
+					Button(Strings.Action.save) { send(.didTapSaveButton) }
+						.disabled(!store.isSaveable)
 				}
 			}
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.bowlerPicker(store.scope(state: \.$destination.bowlerPicker, action: \.internal.destination.bowlerPicker))
-		.leaguePicker(store.scope(state: \.$destination.leaguePicker, action: \.internal.destination.leaguePicker))
-		.statisticPicker(store.scope(state: \.$destination.statisticPicker, action: \.internal.destination.statisticPicker))
-		.help(store.scope(state: \.$destination.help, action: \.internal.destination.help))
+			.onFirstAppear { send(.didFirstAppear) }
+			.onAppear { send(.onAppear) }
+			// TODO: enable errors
+	//		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
+			.leaguePicker($store.scope(state: \.destination?.leaguePicker, action: \.internal.destination.leaguePicker))
+			.statisticPicker($store.scope(state: \.destination?.statisticPicker, action: \.internal.destination.statisticPicker))
+			.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
+		}
 	}
 }
 
 @MainActor extension View {
 	fileprivate func bowlerPicker(
-		_ store: PresentationStoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>
+		_ store: Binding<StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
+		navigationDestinationWrapper(item: store) { (store: StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>) in
 			ResourcePickerView(store: store) { bowler in
 				Bowler.View(bowler)
 			}
@@ -140,45 +121,26 @@ public struct StatisticsWidgetEditorView: View {
 	}
 
 	fileprivate func leaguePicker(
-		_ store: PresentationStoreOf<ResourcePicker<League.Summary, Bowler.ID>>
+		_ store: Binding<StoreOf<ResourcePicker<League.Summary, Bowler.ID>>?>
 	) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
+		navigationDestinationWrapper(item: store) { (store: StoreOf<ResourcePicker<League.Summary, Bowler.ID>>) in
 			ResourcePickerView(store: store) { league in
 				Text(league.name)
 			}
 		}
 	}
 
-	fileprivate func statisticPicker(_ store: PresentationStoreOf<StatisticPicker>) -> some View {
-		navigationDestination(store: store) { (store: StoreOf<StatisticPicker>) in
+	fileprivate func statisticPicker(_ store: Binding<StoreOf<StatisticPicker>?>) -> some View {
+		navigationDestinationWrapper(item: store) { (store: StoreOf<StatisticPicker>) in
 			StatisticPickerView(store: store)
 		}
 	}
 
-	fileprivate func help(_ store: PresentationStoreOf<StatisticsWidgetHelp>) -> some View {
-		sheet(store: store) { (store: StoreOf<StatisticsWidgetHelp>) in
+	fileprivate func help(_ store: Binding<StoreOf<StatisticsWidgetHelp>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<StatisticsWidgetHelp>) in
 			NavigationStack {
 				StatisticsWidgetHelpView(store: store)
 			}
 		}
-	}
-}
-
-extension StatisticsWidgetEditorView.ViewState {
-	init(store: BindingViewStore<StatisticsWidgetEditor.State>) {
-		self._timeline = store.$timeline
-		self.statistic = store.statistic
-		self.source = store.source
-		self.sources = store.sources
-		self.selectedBowlerName = store.bowler?.name
-		self.selectedLeagueName = store.league?.name
-		self.isShowingLeaguePicker = selectedBowlerName != nil
-		self.isLoadingSources = store.isLoadingSources
-		self.isLoadingPreview = store.isLoadingPreview
-		self.isSaveable = store.source != nil
-		self.isBowlerEditable = store.isBowlerEditable
-		self.widgetConfiguration = store.configuration
-		self.widgetPreviewData = store.widgetPreviewData
-		self.isShowingTapThroughTip = store.isShowingTapThroughTip
 	}
 }
