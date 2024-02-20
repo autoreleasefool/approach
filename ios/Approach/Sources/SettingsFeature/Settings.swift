@@ -13,7 +13,6 @@ import Foundation
 import ImportExportFeature
 import OpponentsListFeature
 import StringsLibrary
-import ToastLibrary
 
 @Reducer
 public struct Settings: Reducer {
@@ -28,7 +27,6 @@ public struct Settings: Reducer {
 		public var isShowingBugReportEmail: Bool = false
 		public var isShowingSendFeedbackEmail: Bool = false
 
-		public var toast: ToastState<ToastAction>?
 		@Presents public var destination: Destination.State?
 
 		public let isImportEnabled: Bool
@@ -73,7 +71,6 @@ public struct Settings: Reducer {
 			case didFetchIcon(Result<AppIcon?, Error>)
 			case didCopyToClipboard
 
-			case toast(ToastAction)
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -92,11 +89,11 @@ public struct Settings: Reducer {
 		case statistics(StatisticsSettings)
 		case analytics(AnalyticsSettings)
 		case export(Export)
+		case alert(AlertState<AlertAction>)
 	}
 
-	public enum ToastAction: ToastableAction, Equatable {
-		case didDismiss
-		case didFinishDismissing
+	public enum AlertAction: Equatable {
+		case didTapDismissButton
 	}
 
 	@Dependency(\.analytics) var analytics
@@ -203,13 +200,9 @@ public struct Settings: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case .didCopyToClipboard:
-					state.toast = .init(
-						content: .toast(.init(
-							message: .init(Strings.copiedToClipboard),
-							icon: .checkmarkCircleFill
-						)),
-						style: .success
-					)
+					state.destination = .alert(AlertState {
+						TextState(Strings.copiedToClipboard)
+					})
 					return .none
 
 				case let .didFetchIcon(.success(icon)):
@@ -220,16 +213,6 @@ public struct Settings: Reducer {
 				case .didFetchIcon(.failure):
 					state.isLoadingAppIcon = false
 					return .none
-
-				case let .toast(toastAction):
-					switch toastAction {
-					case .didDismiss:
-						state.toast = nil
-						return .none
-
-					case .didFinishDismissing:
-						return .none
-					}
 
 				case .destination(.presented(.archive(.delegate(.doNothing)))):
 					return .none
@@ -256,7 +239,7 @@ public struct Settings: Reducer {
 					switch state.destination {
 					case .export:
 						return .run { _ in export.cleanUp() }
-					case .analytics, .appIcon, .archive, .featureFlags, .opponentsList, .statistics, .none:
+					case .analytics, .appIcon, .archive, .featureFlags, .opponentsList, .statistics, .alert, .none:
 						return .none
 					}
 
@@ -268,7 +251,8 @@ public struct Settings: Reducer {
 						.destination(.presented(.archive(.internal))), .destination(.presented(.archive(.view))),
 						.destination(.presented(.analytics(.internal))), .destination(.presented(.analytics(.view))),
 						.destination(.presented(.analytics(.binding))),
-						.destination(.presented(.export(.internal))), .destination(.presented(.export(.view))):
+						.destination(.presented(.export(.internal))), .destination(.presented(.export(.view))),
+						.destination(.presented(.alert(.didTapDismissButton))):
 					return .none
 				}
 

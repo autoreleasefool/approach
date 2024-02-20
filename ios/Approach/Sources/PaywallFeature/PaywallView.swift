@@ -2,8 +2,9 @@ import ComposableArchitecture
 import ProductsLibrary
 import SwiftUI
 
+@ViewAction(for: Paywall.self)
 public struct PaywallView<Content: View>: View {
-	let store: StoreOf<Paywall>
+	@Perception.Bindable public var store: StoreOf<Paywall>
 	let content: Content
 
 	public init(store: StoreOf<Paywall>, @ViewBuilder content: () -> Content) {
@@ -12,15 +13,15 @@ public struct PaywallView<Content: View>: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			content
-				.task { await viewStore.send(.didStartTask).finish() }
-				.onAppear { viewStore.send(.onAppear) }
-				.sheet(isPresented: viewStore.$isPaywallPresented) {
-					if viewStore.product == .proSubscription {
-						ProPaywallView(viewStore: viewStore)
+				.task { await send(.didStartTask).finish() }
+				.onAppear { send(.onAppear) }
+				.sheet(isPresented: $store.isPaywallPresented) {
+					if store.product == .proSubscription {
+//						ProPaywallView(viewStore: viewStore)
 					}
 				}
-		})
+		}
 	}
 }

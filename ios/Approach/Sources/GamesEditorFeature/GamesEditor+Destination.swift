@@ -43,19 +43,25 @@ extension GamesEditor {
 	public struct Destination: Reducer {
 		public enum State: Equatable {
 			case gameDetails(GameDetails.State)
-			case duplicateLanesAlert(AlertState<AlertAction>)
+			case duplicateLanesAlert(AlertState<DuplicateLanesAlertAction>)
+			case lockedAlert(AlertState<LockedAlertAction>)
 			case sheets(SheetsDestination.State)
 		}
 
 		public enum Action {
 			case gameDetails(GameDetails.Action)
-			case duplicateLanesAlert(AlertAction)
+			case duplicateLanesAlert(DuplicateLanesAlertAction)
+			case lockedAlert(LockedAlertAction)
 			case sheets(SheetsDestination.Action)
 		}
 
-		public enum AlertAction: Equatable {
+		public enum DuplicateLanesAlertAction: Equatable {
 			case confirmDuplicateLanes
-			case didDismiss
+			case didTapDismissButton
+		}
+
+		public enum LockedAlertAction: Equatable {
+			case didTapDismissButton
 		}
 
 		public var body: some ReducerOf<Self> {
@@ -66,5 +72,13 @@ extension GamesEditor {
 				SheetsDestination()
 			}
 		}
+	}
+}
+
+extension GamesEditor.State {
+	mutating func presentLockedAlert() -> Effect<GamesEditor.Action> {
+		willShowLockAlert = true
+		destination = nil
+		return .none
 	}
 }

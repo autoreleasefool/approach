@@ -8,21 +8,21 @@ import FileManagerServiceInterface
 import PasteboardServiceInterface
 import StringsLibrary
 import SwiftUI
-import ToastLibrary
 import ViewsLibrary
 
 @Reducer
 public struct ErrorReport: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@BindingState public var isIncludingDeviceLogs = true
-		@BindingState public var isShowingEmailReport: Bool = false
-
-		public var toast: ToastState<ToastAction>?
+		public var isIncludingDeviceLogs = true
+		public var isShowingEmailReport: Bool = false
 
 		public let thrownError: AlwaysEqual<Error>
 		public let additionalErrors: AlwaysEqual<[Error]>
 		public let logDataUrl: URL?
 		public let canSendEmail: Bool
+
+		@Presents public var alert: AlertState<AlertAction>?
 
 		var logData: Data? {
 			guard let logDataUrl else { return nil }
@@ -47,28 +47,27 @@ public struct ErrorReport: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didTapCopyErrorButton
 			case didTapDismissButton
 			case didTapEmailButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didCopyToClipboard
-			case toast(ToastAction)
+			case alert(PresentationAction<AlertAction>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
-	public enum ToastAction: ToastableAction, Equatable {
-		case didDismiss
-		case didFinishDismissing
+	public enum AlertAction: Equatable {
+		case didTapDismissButton
 	}
 
 	@Dependency(\.dismiss) var dismiss
@@ -76,7 +75,7 @@ public struct ErrorReport: Reducer {
 	@Dependency(\.pasteboard) var pasteboard
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Reduce<State, Action> { state, action in
 			switch action {
@@ -104,32 +103,19 @@ public struct ErrorReport: Reducer {
 							await openURL(mailto)
 						}
 					}
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case .didCopyToClipboard:
-					state.toast = .init(
-						content: .toast(.init(
-							message: .init(Strings.copiedToClipboard),
-							icon: .checkmarkCircleFill
-						)),
-						style: .success
-					)
+					state.alert = AlertState { TextState(Strings.copiedToClipboard) }
 					return .none
 
-				case .toast(.didDismiss):
-					state.toast = nil
-					return .none
-
-				case .toast(.didFinishDismissing):
+				case .alert:
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
@@ -143,16 +129,17 @@ public struct ErrorReport: Reducer {
 	}
 }
 
+@ViewAction(for: ErrorReport.self)
 public struct ErrorReportView: View {
-	let store: StoreOf<ErrorReport>
+	@Perception.Bindable public var store: StoreOf<ErrorReport>
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack {
 				HStack {
 					Spacer()
 					Button {
-						viewStore.send(.didTapDismissButton)
+						send(.didTapDismissButton)
 					} label: {
 						Image(systemSymbol: .xmark)
 							.resizable()
@@ -176,10 +163,10 @@ public struct ErrorReportView: View {
 						Text(Strings.ErrorReport.youveEncountered)
 
 						Button {
-							viewStore.send(.didTapCopyErrorButton)
+							send(.didTapCopyErrorButton)
 						} label: {
 							VStack {
-								Text(viewStore.thrownError.wrapped.localizedDescription)
+								Text(store.thrownError.wrapped.localizedDescription)
 									.multilineTextAlignment(.leading)
 
 								HStack {
@@ -206,12 +193,12 @@ public struct ErrorReportView: View {
 
 				Spacer()
 
-				if viewStore.canSendEmail {
+				if store.canSendEmail {
 					GroupBox {
 						VStack(spacing: .smallSpacing) {
 							Toggle(
 								Strings.ErrorReport.includeDeviceLogs,
-								isOn: viewStore.$isIncludingDeviceLogs
+								isOn: $store.isIncludingDeviceLogs
 							)
 
 							Text(Strings.ErrorReport.IncludeDeviceLogs.disclaimer)
@@ -223,41 +210,42 @@ public struct ErrorReportView: View {
 
 				VStack(spacing: .standardSpacing) {
 					Button {
-						viewStore.send(.didTapEmailButton)
+						send(.didTapEmailButton)
 					} label: {
 						Text(Strings.ErrorReport.emailReport)
 							.frame(maxWidth: .infinity)
 					}
 					.modifier(PrimaryButton())
 
-					if let logDataUrl = viewStore.logDataUrl {
+					if let logDataUrl = store.logDataUrl {
 						ShareLink(item: logDataUrl) {
 							Text(Strings.ErrorReport.shareReport)
 						}
-						.disabled(!viewStore.isIncludingDeviceLogs)
+						.disabled(!store.isIncludingDeviceLogs)
 					}
 				}
 			}
 			.padding()
-			.sheet(isPresented: viewStore.$isShowingEmailReport) {
-				EmailView(
-					content: .init(
-						recipients: [Strings.Settings.Help.ReportBug.email],
-						subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable),
-						body: Strings.ErrorReport.emailBody(
-							viewStore
-								.allErrors
-								.map { $0.localizedDescription }
-								.joined(separator: "\n- ")
-						),
-						attachment: .init(data: viewStore.isIncludingDeviceLogs ? viewStore.logData : nil)
+			.onAppear { send(.onAppear) }
+			.alert($store.scope(state: \.alert, action: \.internal.alert))
+			.sheet(isPresented: $store.isShowingEmailReport) {
+				WithPerceptionTracking {
+					EmailView(
+						content: .init(
+							recipients: [Strings.Settings.Help.ReportBug.email],
+							subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable),
+							body: Strings.ErrorReport.emailBody(
+								store
+									.allErrors
+									.map { $0.localizedDescription }
+									.joined(separator: "\n- ")
+							),
+							attachment: .init(data: store.isIncludingDeviceLogs ? store.logData : nil)
+						)
 					)
-				)
+				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-		})
-		// TODO: re-enable toasts
-//		.toast(store: store.scope(state: \.toast, action: \.internal.toast))
+		}
 	}
 }
 

@@ -7,28 +7,8 @@ import SwiftUIExtensionsLibrary
 import ViewsLibrary
 
 public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, Row: View>: View {
-	let store: StoreOf<ResourcePicker<Resource, Query>>
+	@Perception.Bindable public var store: StoreOf<ResourcePicker<Resource, Query>>
 	let row: (Resource) -> Row
-
-	struct ViewState: Equatable {
-		let listState: ListContentState<Resource, ListErrorContent>
-		let selected: Set<Resource.ID>
-		let isCancellable: Bool
-		let limit: Int
-
-		init(state: ResourcePicker<Resource, Query>.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let resources = state.resources {
-				self.listState = .loaded(resources)
-			} else {
-				self.listState = .loading
-			}
-			self.selected = state.selected
-			self.isCancellable = state.showsCancelHeaderButton && state.selected != state.initialSelection
-			self.limit = state.limit
-		}
-	}
 
 	public init(store: StoreOf<ResourcePicker<Resource, Query>>, @ViewBuilder row: @escaping (Resource) -> Row) {
 		self.store = store
@@ -36,35 +16,39 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: { .view($0) }, content: { viewStore in
-			ListContent(viewStore.listState) { resources in
-				Section {
-					ForEach(resources) { resource in
-						Button {
-							viewStore.send(.didTapResource(resource))
-						} label: {
-							HStack(alignment: .center, spacing: .standardSpacing) {
-								Image(systemSymbol: viewStore.selected.contains(resource.id) ? .checkmarkCircleFill : .circle)
-									.resizable()
-									.frame(width: .smallIcon, height: .smallIcon)
-									.foregroundColor(Asset.Colors.Action.default)
-								row(resource)
-									.frame(maxWidth: .infinity, alignment: .leading)
+		WithPerceptionTracking {
+			ListContent(store.listState) { resources in
+				WithPerceptionTracking {
+					Section {
+						ForEach(resources) { resource in
+							WithPerceptionTracking {
+								Button {
+									store.send(.view(.didTapResource(resource)))
+								} label: {
+									HStack(alignment: .center, spacing: .standardSpacing) {
+										Image(systemSymbol: store.selected.contains(resource.id) ? .checkmarkCircleFill : .circle)
+											.resizable()
+											.frame(width: .smallIcon, height: .smallIcon)
+											.foregroundColor(Asset.Colors.Action.default)
+										row(resource)
+											.frame(maxWidth: .infinity, alignment: .leading)
+									}
+									.frame(maxWidth: .infinity)
+									.contentShape(Rectangle())
+								}
+								.buttonStyle(TappableElement())
 							}
-							.frame(maxWidth: .infinity)
-							.contentShape(Rectangle())
 						}
-						.buttonStyle(TappableElement())
 					}
-				}
 
-				Section {
-					Button(role: .destructive) {
-						viewStore.send(.didTapDeselectAllButton)
-					} label: {
-						Label(Strings.Action.deselectAll, systemSymbol: .trash)
+					Section {
+						Button(role: .destructive) {
+							store.send(.view(.didTapDeselectAllButton))
+						} label: {
+							Label(Strings.Action.deselectAll, systemSymbol: .trash)
+						}
+						.disabled(store.selected.isEmpty)
 					}
-					.disabled(viewStore.selected.isEmpty)
 				}
 			} empty: {
 				ListEmptyContent(
@@ -72,7 +56,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 					title: Strings.Picker.Empty.title
 				) {
 					EmptyContentAction(title: Strings.Action.cancel) {
-						viewStore.send(.didTapCancelButton)
+						store.send(.view(.didTapCancelButton))
 					}
 				}
 			} error: { error in
@@ -83,29 +67,29 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 					style: .error
 				) {
 					EmptyContentAction(title: error.action) {
-						viewStore.send(.didTapCancelButton)
+						store.send(.view(.didTapCancelButton))
 					}
 				}
 			}
-			.navigationTitle(Strings.Picker.title(Resource.pickableModelName(forCount: viewStore.limit)))
+			.navigationTitle(Strings.Picker.title(Resource.pickableModelName(forCount: store.limit)))
 			.toolbar {
-				if viewStore.isCancellable {
+				if store.isCancellable {
 					ToolbarItem(placement: .navigationBarLeading) {
 						Button(Strings.Action.cancel) {
-							viewStore.send(.didTapCancelButton)
+							store.send(.view(.didTapCancelButton))
 						}
 					}
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Button(Strings.Action.save) {
-						viewStore.send(.didTapSaveButton)
+						store.send(.view(.didTapSaveButton))
 					}
 				}
 			}
-			.navigationBarBackButtonHidden(viewStore.isCancellable)
-			.onAppear { viewStore.send(.onAppear) }
-			.task { await viewStore.send(.task).finish() }
-		})
+			.navigationBarBackButtonHidden(store.isCancellable)
+			.onAppear { store.send(.view(.onAppear)) }
+			.task { await store.send(.view(.task)).finish() }
+		}
 	}
 }

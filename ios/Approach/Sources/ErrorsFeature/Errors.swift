@@ -7,35 +7,43 @@ import Foundation
 import LoggingServiceInterface
 import StringsLibrary
 import SwiftUI
-import ToastLibrary
 
 private let ERROR_REPORT_THRESHOLD = 3
 
 @Reducer
 public struct Errors<ErrorID: Hashable>: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var errorCount: [ErrorID: Int] = [:]
-		public var currentToast: ToastState<ToastAction>?
-		public var toastQueue: [ToastState<ToastAction>] = []
+		public var alertQueue: [AlertState<AlertAction>] = []
 
-		@PresentationState public var report: ErrorReport.State?
+		@Presents public var destination: Destination.State?
 
 		public init() {}
 
-		public mutating func enqueue(_ error: Errors.ErrorToastState) -> Effect<Errors.Action> {
+		public mutating func enqueue(_ error: Errors.ErrorAlertState) -> Effect<Errors.Action> {
 			let timesSeen = errorCount[error.id] ?? 1
 			errorCount[error.id] = timesSeen + 1
 
-			let toast: ToastState<Errors.ToastAction> = .init(
-				from: error,
-				withReportButton: timesSeen >= ERROR_REPORT_THRESHOLD
-			)
+			let alert: AlertState<AlertAction> = AlertState {
+				error.message
+			} actions: {
+				if timesSeen >= ERROR_REPORT_THRESHOLD {
+					ButtonState(action: .didTapReportFeedbackButton(error.thrownError)) {
+						TextState(Strings.Action.report)
+					}
+				}
 
-			if self.currentToast == nil {
-				self.currentToast = toast
+				ButtonState(role: .cancel, action: .didTapDismissButton) {
+					TextState(Strings.Action.dismiss)
+				}
+			}
+
+			if self.destination == nil {
+				self.destination = .alert(alert)
 			} else {
 				// Insert at 0 because we popLast() for FIFO
-				self.toastQueue.insert(toast, at: 0)
+				self.alertQueue.insert(alert, at: 0)
 			}
 
 			return .none
@@ -47,30 +55,35 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+		@CasePathable public enum View {
 			case didFinishDismissingReport
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didReceiveReport(AlwaysEqual<Report>)
-
-			case toast(ToastAction)
-			case report(PresentationAction<ErrorReport.Action>)
+			case showNextAlert
+			case destination(PresentationAction<Destination.Action>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
-	public enum ToastAction: ToastableAction, Equatable {
-		case didReportFeedback(AlwaysEqual<Error>)
-		case didDismiss
-		case didFinishDismissing
+	@Reducer(state: .equatable)
+	public enum Destination {
+		case report(ErrorReport)
+		case alert(AlertState<AlertAction>)
+	}
+
+	public enum AlertAction: Equatable {
+		case didTapReportFeedbackButton(AlwaysEqual<Error>)
+		case didTapDismissButton
 	}
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
 	@Dependency(\.email) var email
 	@Dependency(\.logging) var logging
 
@@ -80,28 +93,37 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didFinishDismissingReport:
-					state.currentToast = state.toastQueue.popLast()
-					return .none
+					state.destination = nil
+					return .run { send in
+						try await clock.sleep(for: .seconds(1))
+						await send(.internal(.showNextAlert))
+					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .showNextAlert:
+					if let alert = state.alertQueue.popLast() {
+						state.destination = .alert(alert)
+					}
+					return .none
+
 				case let .didReceiveReport(report):
-					state.report = .init(
+					state.destination = .report(.init(
 						thrownError: report.wrapped.thrownError,
 						additionalErrors: report.wrapped.additionalErrors,
 						logDataUrl: report.wrapped.logDataUrl,
 						canSendEmail: report.wrapped.canSendEmail
-					)
+					))
 					return .none
 
-				case .report(.presented(.delegate(.doNothing))):
+				case .destination(.presented(.report(.delegate(.doNothing)))):
 					return .none
 
-				case let .toast(toastAction):
-					switch toastAction {
-					case let .didReportFeedback(thrownError):
-						state.currentToast = nil
+				case let .destination(.presented(.alert(alertAction))):
+					switch alertAction {
+					case let .didTapReportFeedbackButton(thrownError):
+						state.destination = nil
 						return .run { send in
 							let logDataUrl = try await logging.fetchLogData()
 							await send(.internal(.didReceiveReport(.init(.init(
@@ -119,17 +141,15 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 							)))))
 						}
 
-					case .didDismiss:
-						state.currentToast = nil
-						return .none
-
-					case .didFinishDismissing:
-						guard state.report == nil else { return .none }
-						state.currentToast = state.toastQueue.popLast()
-						return .none
+					case .didTapDismissButton:
+						state.destination = nil
+						return .send(.internal(.showNextAlert))
 					}
 
-				case .report(.presented(.internal)), .report(.presented(.view)), .report(.dismiss):
+				case .destination(.dismiss),
+						.destination(.presented(.report(.internal))),
+						.destination(.presented(.report(.view))),
+						.destination(.presented(.report(.binding))):
 					return .none
 				}
 
@@ -137,14 +157,12 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$report, action: \.internal.report) {
-			ErrorReport()
-		}
+		.ifLet(\.$destination, action: \.internal.destination)
 	}
 }
 
 extension Errors {
-	public struct ErrorToastState: Identifiable, Equatable {
+	public struct ErrorAlertState: Identifiable, Equatable {
 		public let id: ErrorID
 		public let message: TextState
 		public let icon: SFSymbol?
@@ -168,39 +186,20 @@ extension Errors {
 	}
 }
 
-extension ToastState {
-	init<ErrorID: Hashable>(
-		from error: Errors<ErrorID>.ErrorToastState,
-		withReportButton: Bool
-	) where Action == Errors<ErrorID>.ToastAction {
-		self.init(
-			content: .toast(.init(
-				message: error.message,
-				icon: error.icon,
-				button: withReportButton ? .init(
-					title: .init(Strings.Action.report),
-					action: .init(action: .didReportFeedback(error.thrownError))
-				) : nil
-			)),
-			style: .error
-		)
-	}
-}
-
 // MARK: - View
 
 extension View {
-	public func errors<ErrorID: Hashable>(
-		store: Store<Errors<ErrorID>.State, Errors<ErrorID>.Action>
-	) -> some View {
-		self
-			.toast(store: store.scope(state: \.currentToast, action: \.internal.toast))
-			.sheet(
-				store: store.scope(state: \.$report, action: \.internal.report),
-				onDismiss: { store.send(.view(.didFinishDismissingReport)) },
-				content: { store in
-					ErrorReportView(store: store)
-				}
-			)
-	}
+	// TODO: figure out how to enable errorsstate.destination = nil
+//	public func errors<ErrorID: Hashable>(
+//		store: Store<Errors<ErrorID>.State, Errors<ErrorID>.Action>
+//	) -> some View {
+//		self
+//			.sheet(
+//				item: $store.scope(state: \.destination?.report, action: \.internal.destination.report),
+//				onDismiss: { store.send(.view(.didFinishDismissingReport)) },
+//				content: { store in
+//					ErrorReportView(store: store)
+//				}
+//			)
+//	}
 }

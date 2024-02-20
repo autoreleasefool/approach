@@ -47,12 +47,13 @@ public struct SeriesListView: View {
 				}
 			}
 			.onAppear { send(.onAppear) }
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+			.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
+			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 		}
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
-		.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
-		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 	}
 }
 

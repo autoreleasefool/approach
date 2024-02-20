@@ -8,6 +8,7 @@ import StringsLibrary
 
 @Reducer
 public struct Paywall: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let product: Product
 
@@ -16,7 +17,7 @@ public struct Paywall: Reducer {
 
 		public var isProductAvailable: Bool
 
-		@BindingState public var isPaywallPresented: Bool = false
+		public var isPaywallPresented: Bool = false
 
 		public init(product: Product) {
 			self.product = product
@@ -31,24 +32,24 @@ public struct Paywall: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didStartTask
 			case didTapRestorePurchasesButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case setProductAvailability(Bool)
 			case didFinishRestoringPurchases(Result<Bool, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum ErrorID: Hashable {
@@ -61,7 +62,7 @@ public struct Paywall: Reducer {
 	@Dependency(\.products) var products
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
@@ -89,9 +90,6 @@ public struct Paywall: Reducer {
 					} catch: { error, send in
 						await send(.internal(.didFinishRestoringPurchases(.failure(error))))
 					}
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -114,7 +112,7 @@ public struct Paywall: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}

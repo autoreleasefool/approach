@@ -2,7 +2,10 @@ import ComposableArchitecture
 import StringsLibrary
 
 extension GamesEditor {
-	func reduce(into state: inout State, duplicateLanesAction: GamesEditor.Destination.AlertAction) -> Effect<Action> {
+	func reduce(
+		into state: inout State,
+		duplicateLanesAction: GamesEditor.Destination.DuplicateLanesAlertAction
+	) -> Effect<Action> {
 		switch duplicateLanesAction {
 		case .confirmDuplicateLanes:
 			let currentGame = state.currentGameId
@@ -13,7 +16,23 @@ extension GamesEditor {
 				await send(.internal(.didDuplicateLanes(.failure(error))))
 			}
 
-		case .didDismiss:
+		case .didTapDismissButton:
+			state.destination = .gameDetails(.init(
+				gameId: state.currentGameId,
+				seriesGames: state.currentBowlerGames,
+				nextHeaderElement: state.nextHeaderElement,
+				didChangeBowler: false
+			))
+			return .none
+		}
+	}
+
+	func reduce(
+		into state: inout State,
+		lockedAction: GamesEditor.Destination.LockedAlertAction
+	) -> Effect<Action> {
+		switch lockedAction {
+		case .didTapDismissButton:
 			state.destination = .gameDetails(.init(
 				gameId: state.currentGameId,
 				seriesGames: state.currentBowlerGames,
@@ -25,7 +44,7 @@ extension GamesEditor {
 	}
 }
 
-extension AlertState where Action == GamesEditor.Destination.AlertAction {
+extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlertAction {
 	static let duplicateLanes = Self {
 		TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.title)
 	} actions: {
@@ -33,10 +52,16 @@ extension AlertState where Action == GamesEditor.Destination.AlertAction {
 			TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.copyToAll)
 		}
 
-		ButtonState(role: .cancel, action: .didDismiss) {
+		ButtonState(role: .cancel, action: .didTapDismissButton) {
 			TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.dismiss)
 		}
 	} message: {
 		TextState(Strings.Game.Editor.Fields.Alley.Lanes.Duplicate.message)
+	}
+}
+
+extension AlertState where Action == GamesEditor.Destination.LockedAlertAction {
+	static let locked = Self {
+		TextState(Strings.Game.Editor.locked)
 	}
 }

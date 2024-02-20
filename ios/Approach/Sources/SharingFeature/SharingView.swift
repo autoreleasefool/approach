@@ -8,8 +8,9 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+@ViewAction(for: Sharing.self)
 public struct SharingView: View {
-	let store: StoreOf<Sharing>
+	@Perception.Bindable public var store: StoreOf<Sharing>
 
 	@Environment(\.displayScale) var displayScale
 
@@ -18,77 +19,72 @@ public struct SharingView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack(spacing: 0) {
-				preview(viewStore)
+				preview
 
 				List {
-					styleOptions(viewStore)
-					frameOptions(viewStore)
-					labelOptions(viewStore)
-					layoutOptions(viewStore)
+					styleOptions
+					frameOptions
+					labelOptions
+					layoutOptions
 				}
 
 				Divider()
 
-				shareButtons(viewStore)
+				shareButtons
 			}
-			.navigationTitle(viewStore.navigationTitle)
+			.navigationTitle(store.navigationTitle)
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
-					Button(Strings.Action.done) { viewStore.send(.didTapDoneButton) }
+					Button(Strings.Action.done) { send(.didTapDoneButton) }
 				}
 			}
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-			.onFirstAppear {
-				viewStore.send(.binding(.set(\.$displayScale, displayScale)))
-			}
-			.onAppear { viewStore.send(.onAppear) }
-			.onChange(of: displayScale) {
-				viewStore.send(.binding(.set(\.$displayScale, $0)))
-			}
-		})
-		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.onAppear { send(.onAppear) }
+			.onFirstAppear { send(.didFirstAppear) }
+			.onFirstAppear { send(.didUpdateDisplayScale(displayScale)) }
+			.onChange(of: displayScale) { send(.didUpdateDisplayScale($0)) }
+			// TODO: enable errors
+//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		}
 	}
 
-	@MainActor private func preview(
-		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
-	) -> some View {
+	private var preview: some View {
 		CompactScoreSheets(
-			games: Array(viewStore.shareableGames.prefix(1)),
-			configuration: viewStore.configuration
+			games: Array(store.shareableGames.prefix(1)),
+			configuration: store.configuration
 		)
 		.scrollDisabled(true)
 		.cornerRadius(.standardRadius)
 		.padding(.smallSpacing)
 		.background(
 			RoundedRectangle(cornerRadius: .standardRadius)
-				.fill(viewStore.style.cardBackground.swiftUIColor)
+				.fill(store.style.cardBackground.swiftUIColor)
 				.shadow(radius: .standardShadowRadius)
 		)
 		.padding(.standardSpacing)
 	}
 
-	@MainActor private func styleOptions(
-		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
-	) -> some View {
+	@MainActor private var styleOptions: some View {
 		Section(Strings.Sharing.Style.title) {
 			Grid(horizontalSpacing: .smallSpacing, verticalSpacing: .smallSpacing) {
 				ForEach(ScoreSheetStyleGroup.scoreSheetStyles) { group in
 					GridRow {
 						ForEach(group.styles) { style in
-							Button { viewStore.send(.didTapStyle(style)) } label: {
-								PreviewingScoreSheet(style: style)
-									.padding(.unitSpacing)
-									.background(
-										style.id == viewStore.style.id
+							WithPerceptionTracking {
+								Button { send(.didTapStyle(style)) } label: {
+									PreviewingScoreSheet(style: style)
+										.padding(.unitSpacing)
+										.background(
+											style.id == store.style.id
 											? RoundedRectangle(cornerRadius: .standardRadius)
 												.fill(Asset.Colors.List.selection.swiftUIColor)
 											: nil
-									)
+										)
+								}
+								.buttonStyle(TappableElement())
 							}
-							.buttonStyle(TappableElement())
 						}
 					}
 					.frame(maxWidth: .infinity)
@@ -98,20 +94,20 @@ public struct SharingView: View {
 		.listRowBackground(Color.clear)
 	}
 
-	@MainActor private func frameOptions(_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>) -> some View {
+	@MainActor private var frameOptions: some View {
 		Section(Strings.Sharing.Frames.title) {
-			Toggle(Strings.Sharing.Frames.includeDetails, isOn: viewStore.$isShowingFrameDetails)
-			Toggle(Strings.Sharing.Frames.includeLabels, isOn: viewStore.$isShowingFrameLabels)
+			Toggle(Strings.Sharing.Frames.includeDetails, isOn: $store.isShowingFrameDetails)
+			Toggle(Strings.Sharing.Frames.includeLabels, isOn: $store.isShowingFrameLabels)
 		}
 	}
 
-	@MainActor private func labelOptions(_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>) -> some View {
+	@MainActor private var labelOptions: some View {
 		Section {
-			Toggle(Strings.Sharing.Labels.includeBowler, isOn: viewStore.$isShowingBowlerName)
-			Toggle(Strings.Sharing.Labels.includeLeague, isOn: viewStore.$isShowingLeagueName)
-			Toggle(Strings.Sharing.Labels.includeSeries, isOn: viewStore.$isShowingSeriesDate)
-			Toggle(Strings.Sharing.Labels.includeAlley, isOn: viewStore.$isShowingAlleyName)
-				.disabled(!viewStore.hasAlley)
+			Toggle(Strings.Sharing.Labels.includeBowler, isOn: $store.isShowingBowlerName)
+			Toggle(Strings.Sharing.Labels.includeLeague, isOn: $store.isShowingLeagueName)
+			Toggle(Strings.Sharing.Labels.includeSeries, isOn: $store.isShowingSeriesDate)
+			Toggle(Strings.Sharing.Labels.includeAlley, isOn: $store.isShowingAlleyName)
+				.disabled(!store.hasAlley)
 		} header: {
 			Text(Strings.Sharing.Labels.title)
 		} footer: {
@@ -119,13 +115,11 @@ public struct SharingView: View {
 		}
 	}
 
-	@MainActor private func layoutOptions(
-		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
-	) -> some View {
+	@MainActor private var layoutOptions: some View {
 		Section(Strings.Sharing.Layout.title) {
 			Picker(
 				Strings.Sharing.Layout.labelPosition,
-				selection: viewStore.$labelPosition
+				selection: $store.labelPosition
 			) {
 				ForEach(ScoreSheetConfiguration.LabelPosition.allCases) {
 					Text(String(describing: $0)).tag($0)
@@ -134,9 +128,7 @@ public struct SharingView: View {
 		}
 	}
 
-	@MainActor private func shareButtons(
-		_ viewStore: ViewStore<Sharing.State, Sharing.Action.ViewAction>
-	) -> some View {
+	@MainActor private var shareButtons: some View {
 		HStack {
 //			Button {
 //				viewStore.send(.didTapShareToStoriesButton)
@@ -158,9 +150,9 @@ public struct SharingView: View {
 
 			ShareLink(
 				item: ShareableGameSet(
-					games: viewStore.shareableGames,
-					configuration: viewStore.configuration,
-					scale: viewStore.displayScale
+					games: store.shareableGames,
+					configuration: store.configuration,
+					scale: store.displayScale
 				),
 				preview: SharePreview("Image")
 			) {
