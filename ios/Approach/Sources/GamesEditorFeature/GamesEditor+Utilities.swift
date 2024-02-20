@@ -30,7 +30,7 @@ extension GamesEditor.State {
 			case var .gameDetails(details):
 				details.nextHeaderElement = _nextHeaderElement
 				destination = .gameDetails(details)
-			case .duplicateLanesAlert, .sheets, .none:
+			case .duplicateLanesAlert, .lockedAlert, .sheets, .none:
 				break
 			}
 		}

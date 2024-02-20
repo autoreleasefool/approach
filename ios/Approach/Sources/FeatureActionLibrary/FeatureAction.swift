@@ -1,11 +1,11 @@
 import ComposableArchitecture
 
 public protocol FeatureAction {
-	associatedtype ViewAction
-	associatedtype DelegateAction
-	associatedtype InternalAction
+	associatedtype View
+	associatedtype Delegate
+	associatedtype Internal
 
-	static func view(_: ViewAction) -> Self
-	static func delegate(_: DelegateAction) -> Self
-	static func `internal`(_: InternalAction) -> Self
+	static func view(_: View) -> Self
+	static func delegate(_: Delegate) -> Self
+	static func `internal`(_: Internal) -> Self
 }

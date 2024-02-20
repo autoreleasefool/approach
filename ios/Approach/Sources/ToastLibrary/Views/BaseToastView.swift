@@ -3,7 +3,7 @@ import SwiftUI
 
 public struct BaseToastView<Action: ToastableAction>: View {
 	let toast: ToastState<Action>
-	let viewStore: ViewStore<ToastState<Action>?, Action>
+	let store: Store<ToastState<Action>, Action>?
 
 	public var body: some View {
 		switch toast.content {
@@ -12,7 +12,7 @@ public struct BaseToastView<Action: ToastableAction>: View {
 		case let .toast(content):
 			ToastView(content: content, style: toast.style) {
 				if let button = content.button {
-					viewStore.send(button.action.action)
+					store?.send(button.action.action)
 				}
 			}
 		case let .stackedNotification(content):

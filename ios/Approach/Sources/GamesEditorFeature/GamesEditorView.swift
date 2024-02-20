@@ -34,8 +34,8 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithPerceptionTracking {
 			VStack {
-				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
-					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
+//				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
+//					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
 
 				VStack {
 					if let manualScore = store.manualScore {
@@ -99,7 +99,9 @@ public struct GamesEditorView: View {
 				item: $store.scope(state: \.destination?.gameDetails, action: \.internal.destination.gameDetails),
 				onDismiss: { send(.didDismissGameDetails) },
 				content: { (store: StoreOf<GameDetails>) in
-					gameDetails(gameDetailsStore: store)
+					WithPerceptionTracking {
+						gameDetails(gameDetailsStore: store)
+					}
 				}
 			)
 			.onChange(of: store.willAdjustLaneLayoutAt) { _ in
@@ -127,6 +129,12 @@ public struct GamesEditorView: View {
 				$store.scope(
 					state: \.destination?.duplicateLanesAlert,
 					action: \.internal.destination.duplicateLanesAlert
+				)
+			)
+			.alert(
+				$store.scope(
+					state: \.destination?.lockedAlert,
+					action: \.internal.destination.lockedAlert
 				)
 			)
 			.ballPicker(
@@ -159,8 +167,6 @@ public struct GamesEditorView: View {
 			)
 			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 			.interactiveDismissDisabled(true)
-		// TODO: re-enable toasts
-//			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 	}
 

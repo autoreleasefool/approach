@@ -37,7 +37,7 @@ extension GamesEditor {
 				return save(frame: state.frames?[state.currentFrameIndex])
 
 			case .didProvokeLock:
-				return state.presentLockedToast()
+				return state.presentLockedAlert()
 			}
 
 		case .view, .internal:

@@ -251,13 +251,15 @@ public struct GamesList: Reducer {
 
 				case .list(.internal), .list(.view),
 						.destination(.dismiss),
-						.destination(.presented(.gameEditor(.internal))), 
+						.destination(.presented(.gameEditor(.internal))),
 						.destination(.presented(.gameEditor(.view))),
 						.destination(.presented(.gameEditor(.binding))),
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.binding))),
-						.destination(.presented(.sharing(.internal))), .destination(.presented(.sharing(.view))),
+						.destination(.presented(.sharing(.internal))),
+						.destination(.presented(.sharing(.view))),
+						.destination(.presented(.sharing(.binding))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}

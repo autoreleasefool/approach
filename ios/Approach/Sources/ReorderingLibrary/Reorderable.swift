@@ -6,6 +6,7 @@ import UniformTypeIdentifiers
 
 @Reducer
 public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var items: IdentifiedArrayOf<Item>
 
@@ -15,19 +16,19 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+		@CasePathable public enum View {
 			case didMoveItem(from: IndexSet, to: Int)
 			case didFinishReordering
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case itemDidMove(from: IndexSet, to: Int)
 			case didFinishReordering
 		}
-		@CasePathable public enum InternalAction { case doNothing }
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public init() {}
@@ -55,7 +56,7 @@ public struct Reorderable<Content: View, Item: Identifiable & Equatable>: Reduce
 }
 
 public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: View {
-	let store: StoreOf<Reorderable<Content, Item>>
+	public let store: StoreOf<Reorderable<Content, Item>>
 	let content: (Item) -> Content
 
 	public init(store: StoreOf<Reorderable<Content, Item>>, @ViewBuilder content: @escaping (Item) -> Content) {
@@ -67,28 +68,30 @@ public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: Vi
 	@State private var draggedItemHasMoved = false
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
-			ForEach(viewStore.items) { item in
-				content(item)
-				.opacity(
-					itemBeingDragged == item && draggedItemHasMoved
-					? 0.7
-					: 1.0
-				)
-				.onDrag {
-					itemBeingDragged = item
-					return NSItemProvider(object: "\(item.id)" as NSString)
+		WithPerceptionTracking {
+			ForEach(store.items) { item in
+				WithPerceptionTracking {
+					content(item)
+						.opacity(
+							itemBeingDragged == item && draggedItemHasMoved
+							? 0.7
+							: 1.0
+						)
+						.onDrag {
+							itemBeingDragged = item
+							return NSItemProvider(object: "\(item.id)" as NSString)
+						}
+						.onDrop(of: [UTType.text], delegate: ReorderingDelegate(
+							item: item,
+							items: store.items,
+							itemBeingDragged: $itemBeingDragged,
+							draggedItemHasMoved: $draggedItemHasMoved,
+							onMove: { store.send(.view(.didMoveItem(from: $0, to: $1)), animation: .easeInOut) },
+							onDrop: { store.send(.view(.didFinishReordering)) }
+						))
 				}
-				.onDrop(of: [UTType.text], delegate: ReorderingDelegate(
-					item: item,
-					items: viewStore.items,
-					itemBeingDragged: $itemBeingDragged,
-					draggedItemHasMoved: $draggedItemHasMoved,
-					onMove: { viewStore.send(.didMoveItem(from: $0, to: $1), animation: .easeInOut) },
-					onDrop: { viewStore.send(.didFinishReordering) }
-				))
 			}
-		})
+		}
 	}
 }
 

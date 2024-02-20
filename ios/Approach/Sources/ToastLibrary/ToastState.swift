@@ -8,14 +8,17 @@ public protocol ToastableAction {
 	static var didFinishDismissing: Self { get }
 }
 
-public struct ToastState<Action: ToastableAction> {
+public struct ToastState<Action: ToastableAction>: Identifiable {
+	public let id: UUID
 	public let content: Content
 	public let style: ToastStyle
 
 	public init(
+		id: UUID = UUID(),
 		content: Content,
 		style: ToastStyle = .primary
 	) {
+		self.id = id
 		self.content = content
 		self.style = style
 	}
@@ -110,51 +113,52 @@ extension ToastState.Content: Equatable where Action: Equatable {}
 
 extension View {
 	public func toast<Action>(
-		store: Store<ToastState<Action>?, Action>
+		_ item: Binding<Store<ToastState<Action>, Action>?>
 	) -> some View where Action: Equatable {
-		WithViewStore(store, observe: { $0 }, content: { viewStore in
-			self.popup(
-				item: Binding(
-					get: {
-						viewStore.state
-					},
-					set: { state, transaction in
-						withAnimation(transaction.disablesAnimations ? nil : transaction.animation) {
-							if state == nil {
-								store.send(.didDismiss)
-							}
+		let store = item.wrappedValue
+		let toastState = store?.withState { $0 }
+
+		return self.popup(
+			item: Binding(
+				get: {
+					toastState
+				},
+				set: { state, transaction in
+					withAnimation(transaction.disablesAnimations ? nil : transaction.animation) {
+						if state == nil {
+							store?.send(.didDismiss)
 						}
 					}
-				),
-				itemView: { toast in
-					BaseToastView(toast: toast, viewStore: viewStore)
-				},
-				customize: {
-					let parameters = $0
-						.autohideIn(1)
-						.animation(.spring())
-						.dismissCallback({ viewStore.send(.didFinishDismissing) })
-
-					switch viewStore.state?.content {
-					case .stackedNotification:
-						return parameters
-							.type(.floater())
-							.closeOnTap(true)
-					case .toast:
-						return parameters
-							.position(.bottom)
-							.type(.floater())
-							.autohideIn(2)
-					case .hud:
-						return parameters
-							.isOpaque(true)
-							.closeOnTap(true)
-							.closeOnTapOutside(true)
-					case .none:
-						return parameters
-					}
 				}
-			)
-		})
+			),
+			itemView: { toast in
+				BaseToastView(toast: toast, store: store)
+			},
+			customize: {
+				let parameters = $0
+					.autohideIn(1)
+					.animation(.spring())
+					.dismissCallback({ store?.send(.didFinishDismissing) })
+
+				switch toastState?.content {
+				case .stackedNotification:
+					return parameters
+						.type(.floater())
+						.closeOnTap(true)
+				case .toast:
+					return parameters
+						.position(.bottom)
+						.type(.floater())
+						.autohideIn(2)
+				case .hud:
+					return parameters
+						.isOpaque(true)
+						.closeOnTap(true)
+						.closeOnTapOutside(true)
+				case .none:
+					return parameters
+				}
+			}
+		)
 	}
 }

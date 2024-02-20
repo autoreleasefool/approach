@@ -10,6 +10,7 @@ public protocol PickableResource: Equatable, Identifiable {
 
 @Reducer
 public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var resources: IdentifiedArrayOf<Resource>?
 		public var selected: Set<Resource.ID>
@@ -29,6 +30,18 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			return initialSelection.compactMap { resources[id: $0] }
 		}
 
+		var listState: ListContentState<Resource, ListErrorContent> {
+			if let error {
+				.error(error)
+			} else if let resources {
+				.loaded(resources)
+			} else {
+				.loading
+			}
+		}
+
+		var isCancellable: Bool { showsCancelHeaderButton && selected != initialSelection }
+
 		public init(selected: Set<Resource.ID>, query: Query, limit: Int = 0, showsCancelHeaderButton: Bool = true) {
 			self.selected = selected
 			self.initialSelection = selected
@@ -39,7 +52,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 	}
 
 	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+		@CasePathable public enum View {
 			case task
 			case onAppear
 			case didTapCancelButton
@@ -47,17 +60,17 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 			case didTapResource(Resource)
 			case didTapDeselectAllButton
 		}
-		@CasePathable public enum DelegateAction {
+		@CasePathable public enum Delegate {
 			case didChangeSelection([Resource])
 		}
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Internal {
 			case refreshObservation
 			case didLoadResources(Result<[Resource], Error>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	enum CancelID { case observation }

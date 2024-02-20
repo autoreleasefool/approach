@@ -11,21 +11,22 @@ import SwiftUI
 
 @Reducer
 public struct Sharing: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public let dataSource: DataSource
 
 		public var games: IdentifiedArrayOf<Game.Shareable> = []
 		public var scores: [Game.ID: ScoredGame] = [:]
 
-		@BindingState public var style: ScoreSheetConfiguration.Style = .default
-		@BindingState public var labelPosition: ScoreSheetConfiguration.LabelPosition = .bottom
-		@BindingState public var isShowingFrameLabels = true
-		@BindingState public var isShowingFrameDetails = true
-		@BindingState public var isShowingBowlerName = true
-		@BindingState public var isShowingLeagueName = true
-		@BindingState public var isShowingSeriesDate = true
-		@BindingState public var isShowingAlleyName = true
-		@BindingState public var displayScale: CGFloat = .zero
+		public var style: ScoreSheetConfiguration.Style = .default
+		public var labelPosition: ScoreSheetConfiguration.LabelPosition = .bottom
+		public var isShowingFrameLabels = true
+		public var isShowingFrameDetails = true
+		public var isShowingBowlerName = true
+		public var isShowingLeagueName = true
+		public var isShowingSeriesDate = true
+		public var isShowingAlleyName = true
+		public var displayScale: CGFloat = .zero
 
 		public var errors: Errors<ErrorID>.State = .init()
 
@@ -62,27 +63,28 @@ public struct Sharing: Reducer {
 		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction: BindableAction {
+	public enum Action: FeatureAction, ViewAction, BindableAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
+			case didUpdateDisplayScale(CGFloat)
 			case didTapShareToStoriesButton
 			case didTapShareToOtherButton
 			case didTapStyle(ScoreSheetConfiguration.Style)
 			case didTapDoneButton
-			case binding(BindingAction<State>)
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didLoadGames(Result<[Game.Shareable], Error>)
 			case didLoadScore(ScoredGame)
 
 			case errors(Errors<ErrorID>.Action)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
+		case binding(BindingAction<State>)
 	}
 
 	public enum DataSource: Equatable {
@@ -101,7 +103,7 @@ public struct Sharing: Reducer {
 	@Dependency(\.scores) var scores
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer(action: \.view)
+		BindingReducer()
 
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
@@ -126,6 +128,9 @@ public struct Sharing: Reducer {
 						})))
 					}
 
+				case let .didUpdateDisplayScale(displayScale):
+					return .send(.binding(.set(\.displayScale, displayScale)))
+
 				case let .didTapStyle(style):
 					state.style = style
 					return .none
@@ -138,9 +143,6 @@ public struct Sharing: Reducer {
 
 				case .didTapDoneButton:
 					return .run { _ in await dismiss() }
-
-				case .binding:
-					return .none
 				}
 
 			case let .internal(internalAction):
@@ -174,7 +176,7 @@ public struct Sharing: Reducer {
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}

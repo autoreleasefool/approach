@@ -7,7 +7,7 @@ extension GamesEditor {
 		case .delegate(.doNothing):
 			return .none
 
-		case .view, .internal:
+		case .view, .internal, .binding:
 			return .none
 		}
 	}

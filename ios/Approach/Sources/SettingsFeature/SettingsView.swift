@@ -156,9 +156,7 @@ public struct SettingsView: View {
 			.statisticsSettings($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
 			.analytics($store.scope(state: \.destination?.analytics, action: \.internal.destination.analytics))
 			.export($store.scope(state: \.destination?.export, action: \.internal.destination.export))
-			// TODO: Toast is causing issues with navigation - possible creates an AnyView and therefore breaks navigation
-			// See https://github.com/pointfreeco/swift-composable-architecture/issues/2761
-//			.toast(store: store.scope(state: \.toast, action: \.internal.toast))
+			.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
 		}
 	}
 }

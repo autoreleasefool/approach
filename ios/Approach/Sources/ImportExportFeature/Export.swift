@@ -13,6 +13,7 @@ import ViewsLibrary
 
 @Reducer
 public struct Export: Reducer {
+	@ObservableState
 	public struct State: Equatable {
 		public var exportUrl: URL?
 		public var lastExportAt: Date
@@ -26,20 +27,20 @@ public struct Export: Reducer {
 		public var shareUrl: URL { exportUrl ?? URL(string: "https://tryapproach.app")! }
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
 			case didTapRetryButton
 		}
-		@CasePathable public enum DelegateAction { case doNothing }
-		@CasePathable public enum InternalAction {
+		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Internal {
 			case didReceiveEvent(Result<ExportService.Event, Error>)
 		}
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public init() {}
@@ -119,15 +120,16 @@ public struct Export: Reducer {
 
 // MARK: - View
 
+@ViewAction(for: Export.self)
 public struct ExportView: View {
-	let store: StoreOf<Export>
+	public let store: StoreOf<Export>
 
 	public init(store: StoreOf<Export>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: { $0 }, send: { .view($0) }, content: { viewStore in
+		WithPerceptionTracking {
 			VStack(spacing: 0) {
 				List {
 					Section {
@@ -137,10 +139,10 @@ public struct ExportView: View {
 					Section {
 						Text(Strings.Export.weRecommend)
 					} footer: {
-						if viewStore.lastExportAt.timeIntervalSince1970 == .zero {
+						if store.lastExportAt.timeIntervalSince1970 == .zero {
 							Text(Strings.Export.neverExported)
 						} else {
-							Text(Strings.Export.lastExportedAt(viewStore.lastExportAt.longFormat))
+							Text(Strings.Export.lastExportedAt(store.lastExportAt.longFormat))
 						}
 					}
 
@@ -151,37 +153,33 @@ public struct ExportView: View {
 
 				Divider()
 
-				exportButton(viewStore)
-				errorView(viewStore)
+				exportButton
+				errorView
 			}
 			.navigationTitle(Strings.Export.title)
-			.onFirstAppear { viewStore.send(.didFirstAppear) }
-			.onAppear { viewStore.send(.onAppear) }
-		})
+			.onFirstAppear { send(.didFirstAppear) }
+			.onAppear { send(.onAppear) }
+		}
 	}
 
-	@ViewBuilder @MainActor private func exportButton(
-		_ viewStore: ViewStore<Export.State, Export.Action.ViewAction>
-	) -> some View {
-		ShareLink(item: viewStore.shareUrl) {
+	private var exportButton: some View {
+		ShareLink(item: store.shareUrl) {
 			Text(Strings.Export.exportData)
 				.frame(maxWidth: .infinity)
 		}
-		.disabled(viewStore.exportUrl == nil)
+		.disabled(store.exportUrl == nil)
 		.modifier(PrimaryButton())
 		.padding()
 	}
 
-	@ViewBuilder @MainActor private func errorView(
-		_ viewStore: ViewStore<Export.State, Export.Action.ViewAction>
-	) -> some View {
-		if let error = viewStore.errorMessage {
+	@ViewBuilder private var errorView: some View {
+		if let error = store.errorMessage {
 			VStack {
 				Text(Strings.Export.errorMessage(error))
 					.foregroundColor(Asset.Colors.Error.default)
 
 				Button(Strings.Action.tryAgain) {
-					viewStore.send(.didTapRetryButton)
+					send(.didTapRetryButton)
 				}
 				.buttonStyle(.borderless)
 			}

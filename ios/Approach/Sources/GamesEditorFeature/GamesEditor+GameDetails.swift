@@ -42,7 +42,7 @@ extension GamesEditor {
 				return .none
 
 			case .didProvokeLock:
-				return state.presentLockedToast()
+				return state.presentLockedAlert()
 
 			case let .didMeasureMinimumSheetContentSize(size):
 				state.gameDetailsMinimumContentSize = size
