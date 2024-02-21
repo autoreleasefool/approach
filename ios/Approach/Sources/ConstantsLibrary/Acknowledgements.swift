@@ -25,7 +25,6 @@ extension Acknowledgement {
 	public static let all: [Acknowledgement] = [
 		.init(name: "CocoaLumberjack", license: .init(fileName: "CocoaLumberjack", type: "txt")),
 		.init(name: "GRDB.swift", license: .init(fileName: "GRDB", type: "txt")),
-		.init(name: "PopupView", license: .init(fileName: "PopupView", type: "txt")),
 		.init(name: "RevenueCat", license: .init(fileName: "RevenueCat", type: "txt")),
 		.init(name: "SFSafeSymbols", license: .init(fileName: "SFSafeSymbols", type: "txt")),
 		.init(name: "SnapshotTesting", license: .init(fileName: "SnapshotTesting", type: "txt")),

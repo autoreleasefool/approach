@@ -418,10 +418,6 @@ skip_tests = true
 [libraries.Tips]
 libraries = [ "Views" ]
 
-[libraries.Toast]
-libraries = [ "SwiftUIExtensions", "Views" ]
-dependencies = [ "ComposableArchitecture", "PopupView" ]
-
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
 
@@ -458,10 +454,6 @@ from = "1.2.0"
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
 from = "1.0.0"
-
-[dependencies.PopupView]
-url = "https://github.com/exyte/PopupView.git"
-from = "2.8.3"
 
 [dependencies.RevenueCat]
 url = "https://github.com/RevenueCat/purchases-ios.git"
