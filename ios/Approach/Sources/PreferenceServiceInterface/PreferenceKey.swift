@@ -33,7 +33,4 @@ public enum PreferenceKey: String {
 
 	// MARK: - Data Management
 	case dataLastExportDate                         // default: 0
-
-	// MARK: - Announcements
-	case announcementChristmasBanner2023Hidden      // default: false
 }

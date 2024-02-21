@@ -1,97 +1,82 @@
-import AssetsLibrary
+import AnnouncementsLibrary
+import AnnouncementsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
-import PreferenceServiceInterface
 import SwiftUI
-import SwiftUIExtensionsLibrary
 
 @Reducer
 public struct Announcements: Reducer {
+	@ObservableState
 	public struct State: Equatable {
-		@PresentationState public var destination: Christmas2023Announcement.State?
+		public let announcement: Announcement
 
-		public init() {}
+		public init(announcement: Announcement) {
+			self.announcement = announcement
+		}
 	}
 
-	public enum Action: FeatureAction {
-		@CasePathable public enum ViewAction {
-			case onFirstAppear
-			case didFinishDismissingAnnouncement
+	public enum Action: FeatureAction, ViewAction {
+		@CasePathable public enum View {
+			case didDoAction(AnnouncementView.Action)
+			case didDismiss
 		}
-
-		@CasePathable public enum DelegateAction { case doNothing }
-
-		@CasePathable public enum InternalAction {
-			case showChristmasAnnouncement
-			case destination(PresentationAction<Christmas2023Announcement.Action>)
+		@CasePathable public enum Delegate {
+			case openAppIconSettings
 		}
+		@CasePathable public enum Internal { case doNothing }
 
-		case view(ViewAction)
-		case delegate(DelegateAction)
-		case `internal`(InternalAction)
+		case view(View)
+		case delegate(Delegate)
+		case `internal`(Internal)
 	}
 
 	public init() {}
 
-	@Dependency(\.preferences) var preferences
+	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .onFirstAppear:
-					return .run { send in
-						if Christmas2023Announcement.meetsExpectationsToShow() {
-							await send(.internal(.showChristmasAnnouncement))
-						}
-					}
-
-				case .didFinishDismissingAnnouncement:
-					return .run { _ in preferences.setKey(.announcementChristmasBanner2023Hidden, toBool: true) }
-				}
-
-			case let .internal(internalAction):
-				switch internalAction {
-				case .showChristmasAnnouncement:
-					state.destination = .init()
-					return .none
-
-				case let .destination(.presented(.delegate(delegateAction))):
-					switch delegateAction {
+				case let .didDoAction(action):
+					switch action {
 					case .openAppIconSettings:
-						return .none
+						return .concatenate(
+							.send(.delegate(.openAppIconSettings)),
+							.run { _ in await dismiss() }
+						)
 					}
 
-				case .destination(.presented(.view)), .destination(.presented(.internal)), .destination(.dismiss):
-					return .none
+				case .didDismiss:
+					return .run { _ in await dismiss() }
 				}
+
+			case .internal(.doNothing):
+				return .none
 
 			case .delegate:
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination) {
-			Christmas2023Announcement()
-		}
 	}
 }
 
-// MARK: - View
+@ViewAction(for: Announcements.self)
+public struct AnnouncementsView: View {
+	public let store: StoreOf<Announcements>
 
-extension View {
-	public func announcements(
-		store: Store<Announcements.State, Announcements.Action>
-	) -> some View {
-		self
-			.onFirstAppear { store.send(.view(.onFirstAppear)) }
-			.sheet(
-				store: store.scope(state: \.$destination, action: \.internal.destination),
-				onDismiss: { store.send(.view(.didFinishDismissingAnnouncement)) },
-				content: { store in
-					Christmas2023AnnouncementView(store: store)
-						.presentationDetents([.medium])
-				}
+	public init(store: StoreOf<Announcements>) {
+		self.store = store
+	}
+
+	public var body: some View {
+		WithPerceptionTracking {
+			AnnouncementsLibrary.AnnouncementView(
+				announcement: store.announcement,
+				onAction: { send(.didDoAction($0)) },
+				onDismiss: { send(.didDismiss) }
 			)
+		}
 	}
 }
