@@ -445,7 +445,7 @@ from = "6.23.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-from = "1.8.0"
+from = "1.8.2"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
