@@ -29,8 +29,7 @@ services = [ "FeatureFlags" ]
 libraries = [ "ResourceList" ]
 
 [features.Announcements]
-services = [ "Preference" ]
-libraries = [ "SwiftUIExtensions", "Views" ]
+services = [ "Announcements" ]
 
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
@@ -55,7 +54,7 @@ repositories = [ "QuickLaunch" ]
 
 [features.Errors]
 services = [ "Email", "FileManager", "Logging", "Pasteboard" ]
-libraries = [ "Constants", "Equatable", "Toast" ]
+libraries = [ "Constants", "Equatable", "Views" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -221,6 +220,11 @@ dependencies = [ "Sentry", "TelemetryClient" ]
 [services.Analytics.interface]
 dependencies = [ "ComposableArchitecture" ]
 
+[services.Announcements]
+services = [ "Preference" ]
+[services.Announcements.interface]
+libraries = [ "Announcements" ]
+
 [services.AppIcon]
 skip_tests = true
 [services.AppIcon.interface]
@@ -290,6 +294,10 @@ services = [ "Preference" ]
 libraries = [ "Tips" ]
 
 # Libraries
+
+[libraries.Announcements]
+libraries = [ "Views" ]
+dependencies = [ "Dependencies" ]
 
 [libraries.Assets]
 skip_tests = true

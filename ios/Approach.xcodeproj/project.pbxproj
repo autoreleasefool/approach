@@ -51,6 +51,7 @@
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BD2A8F29A800DF3E75 /* EmailService */; };
 		CAA668C02A8F2A2E00DF3E75 /* PasteboardService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA668BF2A8F2A2E00DF3E75 /* PasteboardService */; };
+		CABD35C22B85EC98001FB3C2 /* AnnouncementsService in Frameworks */ = {isa = PBXBuildFile; productRef = CABD35C12B85EC98001FB3C2 /* AnnouncementsService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC458A32AB838C500898C16 /* ImportExportService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC458A22AB838C500898C16 /* ImportExportService */; };
 		CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC51C192A4FDF9D00A99164 /* DatabaseMockingService */; };
@@ -127,6 +128,7 @@
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA2B78212AABC9EC0044487E /* ScoresRepository in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
+				CABD35C22B85EC98001FB3C2 /* AnnouncementsService in Frameworks */,
 				CAA668BE2A8F29A800DF3E75 /* EmailService in Frameworks */,
 				CA30F8E22B2670A100A80543 /* LaunchService in Frameworks */,
 				CAC51C1A2A4FDF9D00A99164 /* DatabaseMockingService in Frameworks */,
@@ -341,6 +343,7 @@
 				CA58FB382B0B209100151821 /* StoreReviewService */,
 				CA58FB3A2B0B234800151821 /* AppInfoService */,
 				CA30F8E12B2670A100A80543 /* LaunchService */,
+				CABD35C12B85EC98001FB3C2 /* AnnouncementsService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -682,6 +685,10 @@
 		CAA668BF2A8F2A2E00DF3E75 /* PasteboardService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PasteboardService;
+		};
+		CABD35C12B85EC98001FB3C2 /* AnnouncementsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AnnouncementsService;
 		};
 		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
 			isa = XCSwiftPackageProductDependency;

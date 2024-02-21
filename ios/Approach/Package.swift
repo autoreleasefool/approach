@@ -80,6 +80,8 @@ let package = Package(
 		.library(name: "AddressLookupServiceInterface", targets: ["AddressLookupServiceInterface"]),
 		.library(name: "AnalyticsService", targets: ["AnalyticsService"]),
 		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
+		.library(name: "AnnouncementsService", targets: ["AnnouncementsService"]),
+		.library(name: "AnnouncementsServiceInterface", targets: ["AnnouncementsServiceInterface"]),
 		.library(name: "AppIconService", targets: ["AppIconService"]),
 		.library(name: "AppIconServiceInterface", targets: ["AppIconServiceInterface"]),
 		.library(name: "AppInfoService", targets: ["AppInfoService"]),
@@ -118,6 +120,7 @@ let package = Package(
 		.library(name: "TipsServiceInterface", targets: ["TipsServiceInterface"]),
 
 		// MARK: - Libraries
+		.library(name: "AnnouncementsLibrary", targets: ["AnnouncementsLibrary"]),
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DatabaseLibrary", targets: ["DatabaseLibrary"]),
@@ -243,11 +246,9 @@ let package = Package(
 			name: "AnnouncementsFeature",
 			dependencies: [
 				"AnalyticsServiceInterface",
+				"AnnouncementsServiceInterface",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
-				"PreferenceServiceInterface",
-				"SwiftUIExtensionsLibrary",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -353,7 +354,7 @@ let package = Package(
 				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
 				"PasteboardServiceInterface",
-				"ToastLibrary",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -1146,6 +1147,26 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "AnnouncementsService",
+			dependencies: [
+				"AnnouncementsServiceInterface",
+				"PreferenceServiceInterface",
+			]
+		),
+		.target(
+			name: "AnnouncementsServiceInterface",
+			dependencies: [
+				"AnnouncementsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AnnouncementsServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AnnouncementsService",
+			]
+		),
+		.target(
 			name: "AppIconService",
 			dependencies: [
 				"AppIconServiceInterface",
@@ -1504,6 +1525,20 @@ let package = Package(
 		),
 
 		// MARK: - Libraries
+		.target(
+			name: "AnnouncementsLibrary",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AnnouncementsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AnnouncementsLibrary",
+			]
+		),
 		.target(
 			name: "AssetsLibrary",
 			dependencies: [
