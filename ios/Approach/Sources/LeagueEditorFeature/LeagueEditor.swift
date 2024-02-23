@@ -30,7 +30,7 @@ public struct LeagueEditor: Reducer {
 		public var shouldShowLocationSection: Bool
 
 		public let initialValue: LeagueForm.Value
-		public var _form: LeagueForm.State
+		public var form: LeagueForm.State
 
 		var isDismissDisabled: Bool { alleyPicker != nil }
 		var isEditing: Bool {
@@ -73,10 +73,32 @@ public struct LeagueEditor: Reducer {
 				self.gamesPerSeries = defaultNumberOfGames == 0 ? .dynamic : .static
 				self.initialValue = .edit(existing)
 			}
-			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
+			self.form = .init(initialValue: self.initialValue)
 			self.hasAdditionalPinfall = additionalGames > 0
 			self.defaultNumberOfGames = max(defaultNumberOfGames, 1)
 			self.additionalGames = additionalGames > 0 ? String(additionalGames) : ""
+		}
+
+		mutating func syncFormSharedState() {
+			switch initialValue {
+			case var .create(new):
+				new.name = name
+				new.recurrence = recurrence
+				new.defaultNumberOfGames = gamesPerSeries == .static ? max(1, Int(defaultNumberOfGames)) : nil
+				new.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
+				new.additionalPinfall = hasAdditionalPinfall && (new.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
+				new.excludeFromStatistics = excludeFromStatistics
+				new.location = location
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				existing.additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
+				existing.additionalPinfall =
+					hasAdditionalPinfall && (existing.additionalGames ?? 0) > 0 ? Int(additionalPinfall) : nil
+				existing.excludeFromStatistics = excludeFromStatistics
+				existing.location = location
+				form.value = .edit(existing)
+			}
 		}
 	}
 
@@ -164,21 +186,22 @@ public struct LeagueEditor: Reducer {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
 						state.coordinate = .init(coordinate: state.location?.location?.coordinate.mapCoordinate ?? .init())
+						state.syncFormSharedState()
 						return .none
 					}
 
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didCreate(result):
-						return state._form.didFinishCreating(result)
+						return state.form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didUpdate(result):
-						return state._form.didFinishUpdating(result)
+						return state.form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didArchive(result):
-						return state._form.didFinishDeleting(result)
+						return state.form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
 					case let  .didFinishArchiving(league):
@@ -214,13 +237,19 @@ public struct LeagueEditor: Reducer {
 				switch state.recurrence {
 				case .once:
 					state.gamesPerSeries = .static
+					state.syncFormSharedState()
 					return .run { send in await send(.internal(.setLocationSection(isShown: true)), animation: .easeInOut) }
 				case .repeating:
 					state.location = nil
+					state.syncFormSharedState()
 					return .run { send in await send(.internal(.setLocationSection(isShown: false)), animation: .easeInOut) }
 				}
 
-			case .delegate, .binding:
+			case .binding:
+				state.syncFormSharedState()
+				return .none
+
+			case .delegate:
 				return .none
 			}
 		}

@@ -11,20 +11,20 @@ public struct FormView<
 	Content: View
 >: View where New.ID == Existing.ID {
 	@Perception.Bindable public var store: StoreOf<Form<New, Existing>>
-	let content: () -> Content
+	let content: Content
 
 	public init(
 		store: StoreOf<Form<New, Existing>>,
-		@ViewBuilder content: @escaping () -> Content
+		@ViewBuilder content: () -> Content
 	) {
 		self.store = store
-		self.content = content
+		self.content = content()
 	}
 
 	public var body: some View {
 		WithPerceptionTracking {
 			SwiftUI.Form {
-				content()
+				content
 					.disabled(store.isLoading)
 
 				if store.isDeleteable {

@@ -99,14 +99,14 @@ public struct Form<
 			value.record?.saveButtonText ?? Strings.Action.save
 		}
 
-		public init(initialValue: Value, currentValue: Value, modelName: String = New.modelName) {
+		public init(initialValue: Value, modelName: String = New.modelName) {
 			self.initialValue = initialValue
-			self.value = currentValue
+			self.value = initialValue
 			self.modelName = modelName
 		}
 
 		mutating func discard() {
-			self = .init(initialValue: initialValue, currentValue: initialValue)
+			self = .init(initialValue: initialValue, modelName: modelName)
 		}
 
 		public mutating func didFinishCreating(_ record: Result<New, Error>) -> Effect<Form.Action> {

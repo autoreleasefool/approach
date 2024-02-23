@@ -17,15 +17,14 @@ public struct BowlerEditor: Reducer {
 		public let kind: Bowler.Kind
 
 		public let initialValue: BowlerForm.Value
-		public var _form: BowlerForm.State
+		public var form: BowlerForm.State
 
 		public init(value: BowlerForm.Value) {
 			let isCreatingOpponent = (value.record as? Bowler.Create)?.kind == .opponent
 			self.kind = isCreatingOpponent ? .opponent : .playable
 			self.initialValue = value
-			self._form = .init(
+			self.form = .init(
 				initialValue: value,
-				currentValue: value,
 				modelName: isCreatingOpponent ? Strings.Opponent.title : Bowler.Create.modelName
 			)
 
@@ -34,6 +33,17 @@ public struct BowlerEditor: Reducer {
 				self.name = new.name
 			case let .edit(existing):
 				self.name = existing.name
+			}
+		}
+
+		mutating func syncFormSharedState() {
+			switch form.initialValue {
+			case var .create(new):
+				new.name = name
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				form.value = .edit(existing)
 			}
 		}
 	}
@@ -85,15 +95,15 @@ public struct BowlerEditor: Reducer {
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didCreate(result):
-						return state._form.didFinishCreating(result)
+						return state.form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didUpdate(result):
-						return state._form.didFinishUpdating(result)
+						return state.form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didArchive(result):
-						return state._form.didFinishArchiving(result)
+						return state.form.didFinishArchiving(result)
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard, .didFinishArchiving, .didDelete:
@@ -104,7 +114,11 @@ public struct BowlerEditor: Reducer {
 					return .none
 				}
 
-			case .delegate, .binding:
+			case .binding:
+				state.syncFormSharedState()
+				return .none
+
+			case .delegate:
 				return .none
 			}
 		}

@@ -31,7 +31,7 @@ public struct GearEditor: Reducer {
 		public var avatar: Avatar.Summary
 
 		public var initialValue: GearForm.Value
-		public var _form: GearForm.State
+		public var form: GearForm.State
 
 		var isEditing: Bool {
 			switch initialValue {
@@ -44,7 +44,7 @@ public struct GearEditor: Reducer {
 
 		public init(value: GearForm.Value) {
 			self.initialValue = value
-			self._form = .init(initialValue: value, currentValue: value)
+			self.form = .init(initialValue: value)
 
 			switch value {
 			case let .create(new):
@@ -57,6 +57,22 @@ public struct GearEditor: Reducer {
 				self.kind = existing.kind
 				self.owner = existing.owner
 				self.avatar = existing.avatar
+			}
+		}
+
+		mutating func syncFormSharedState() {
+			switch form.initialValue {
+			case var .create(new):
+				new.name = name
+				new.kind = kind
+				new.owner = owner
+				new.avatar = avatar
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				existing.owner = owner
+				existing.avatar = avatar
+				form.value = .edit(existing)
 			}
 		}
 	}
@@ -149,15 +165,15 @@ public struct GearEditor: Reducer {
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didCreate(result):
-						return state._form.didFinishCreating(result)
+						return state.form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didUpdate(result):
-						return state._form.didFinishUpdating(result)
+						return state.form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didDelete(result):
-						return state._form.didFinishDeleting(result)
+						return state.form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard, .didArchive, .didFinishArchiving:
@@ -168,6 +184,7 @@ public struct GearEditor: Reducer {
 					switch delegateAction {
 					case let .didChangeSelection(bowler):
 						state.owner = bowler.first
+						state.syncFormSharedState()
 						return .none
 					}
 
@@ -175,6 +192,7 @@ public struct GearEditor: Reducer {
 					switch delegateAction {
 					case let .didFinishEditing(avatar):
 						state.avatar = avatar ?? state.avatar
+						state.syncFormSharedState()
 						return .none
 					}
 
@@ -189,7 +207,11 @@ public struct GearEditor: Reducer {
 					return .none
 				}
 
-			case .delegate, .binding:
+			case .binding:
+				state.syncFormSharedState()
+				return .none
+
+			case .delegate:
 				return .none
 			}
 		}

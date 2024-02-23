@@ -29,7 +29,7 @@ public struct SeriesEditor: Reducer {
 		public var location: Alley.Summary?
 
 		public let initialValue: SeriesForm.Value
-		public var _form: SeriesForm.State
+		public var form: SeriesForm.State
 
 		var isDismissDisabled: Bool { alleyPicker != nil }
 		var isEditing: Bool {
@@ -61,7 +61,25 @@ public struct SeriesEditor: Reducer {
 				self.coordinate = .init(coordinate: existing.location?.location?.coordinate.mapCoordinate ?? .init())
 				self.initialValue = .edit(existing)
 			}
-			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
+			self.form = .init(initialValue: self.initialValue)
+		}
+
+		mutating func syncFormSharedState() {
+			switch initialValue {
+			case var .create(new):
+				new.date = date
+				new.preBowl = preBowl
+				new.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
+				new.numberOfGames = numberOfGames
+				new.location = location
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.date = date
+				existing.preBowl = preBowl
+				existing.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
+				existing.location = location
+				form.value = .edit(existing)
+			}
 		}
 	}
 
@@ -137,21 +155,22 @@ public struct SeriesEditor: Reducer {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
 						state.coordinate = .init(coordinate: state.location?.location?.coordinate.mapCoordinate ?? .init())
+						state.syncFormSharedState()
 						return .none
 					}
 
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didCreate(result):
-						return state._form.didFinishCreating(result)
+						return state.form.didFinishCreating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didUpdate(result):
-						return state._form.didFinishUpdating(result)
+						return state.form.didFinishUpdating(result)
 							.map { .internal(.form($0)) }
 
 					case let .didArchive(result):
-						return state._form.didFinishArchiving(result)
+						return state.form.didFinishArchiving(result)
 							.map { .internal(.form($0)) }
 
 					case let .didFinishCreating(series):
@@ -185,6 +204,7 @@ public struct SeriesEditor: Reducer {
 
 			case .binding(\.date):
 				state.date = calendar.startOfDay(for: state.date)
+				state.syncFormSharedState()
 				return .none
 
 			case .binding(\.excludeFromStatistics):
@@ -196,6 +216,7 @@ public struct SeriesEditor: Reducer {
 				case (.include, .regular):
 					break
 				}
+				state.syncFormSharedState()
 				return .none
 
 			case .binding(\.preBowl):
@@ -207,9 +228,14 @@ public struct SeriesEditor: Reducer {
 				case (.include, .regular):
 					state.excludeFromStatistics = .include
 				}
+				state.syncFormSharedState()
 				return .none
 
-			case .delegate, .binding:
+			case .binding:
+				state.syncFormSharedState()
+				return .none
+
+			case .delegate:
 				return .none
 			}
 		}
