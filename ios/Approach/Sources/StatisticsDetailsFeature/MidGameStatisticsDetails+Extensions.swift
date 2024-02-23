@@ -10,16 +10,3 @@ extension MidGameStatisticsDetails {
 		.cancellable(id: CancelID.loadingStaticValues, cancelInFlight: true)
 	}
 }
-
-extension MidGameStatisticsDetails.State {
-	var list: StatisticsDetailsList.State {
-		get {
-			var list = _list
-			list.listEntries = listEntries
-			return list
-		}
-		set {
-			_list = newValue
-		}
-	}
-}

@@ -34,6 +34,8 @@ public struct StatisticsDetails: Reducer {
 		public var filtersSize: StatisticsFilterView.Size = .regular
 		public var lastOrientation: UIDeviceOrientation?
 
+		public var charts: StatisticsDetailsCharts.State
+
 		@Presents public var destination: Destination.State?
 
 		var filterViewSize: StatisticsFilterView.Size {
@@ -47,9 +49,24 @@ public struct StatisticsDetails: Reducer {
 		public init(filter: TrackableFilter, withInitialStatistic: Statistics.ListEntry.ID? = nil) {
 			self.filter = filter
 			self.selectedStatistic = withInitialStatistic
+			self.charts = .init(
+				aggregation: filter.aggregation,
+				chartContent: nil,
+				filterSource: filter.source,
+				isFilterTooNarrow: filter.isTooNarrowForCharts,
+				isLoadingNextChart: false
+			)
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
+		}
+
+		mutating func syncChartsSharedState() {
+			charts.aggregation = filter.aggregation
+			charts.chartContent = chartContent
+			charts.filterSource = filter.source
+			charts.isFilterTooNarrow = filter.isTooNarrowForCharts
+			charts.isLoadingNextChart = isLoadingNextChart
 		}
 	}
 
@@ -156,6 +173,7 @@ public struct StatisticsDetails: Reducer {
 				switch internalAction {
 				case .didStartLoadingChart:
 					state.isLoadingNextChart = true
+					state.syncChartsSharedState()
 					return .none
 
 				case let .didLoadSources(.success(sources)):
@@ -190,6 +208,7 @@ public struct StatisticsDetails: Reducer {
 				case let .didLoadChartContent(.success(chartContent)):
 					state.chartContent = chartContent
 					state.isLoadingNextChart = false
+					state.syncChartsSharedState()
 					switch state.chartContent {
 					case .averaging, .counting, .percentage:
 						return .none
@@ -259,6 +278,7 @@ public struct StatisticsDetails: Reducer {
 					switch delegateAction {
 					case let .didChangeSource(source):
 						state.filter.source = source
+						state.syncChartsSharedState()
 						return refreshStatistics(state: state)
 					}
 
@@ -271,6 +291,7 @@ public struct StatisticsDetails: Reducer {
 							return .none
 						}
 						state.filter.aggregation = aggregation
+						state.syncChartsSharedState()
 						return loadChart(forStatistic: statistic, withFilter: state.filter)
 					}
 

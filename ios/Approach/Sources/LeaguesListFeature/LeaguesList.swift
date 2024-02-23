@@ -41,7 +41,7 @@ public struct LeaguesList: Reducer {
 		public var widgets: StatisticsWidgetLayout.State
 
 		public var ordering: League.Ordering = .default
-		public var filter: League.List.FetchRequest.Filter
+		public var filter: LeaguesFilter.State
 
 		public var isShowingWidgets: Bool
 
@@ -49,16 +49,11 @@ public struct LeaguesList: Reducer {
 
 		@Presents public var destination: Destination.State?
 
-		var filters: LeaguesFilter.State {
-			get { .init(recurrence: filter.recurrence) }
-			set { filter.recurrence = newValue.recurrence }
-		}
-
-		var isAnyFilterActive: Bool { filter != .init(bowler: bowler.id) }
+		var isAnyFilterActive: Bool { filter.recurrence != nil }
 
 		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
-			let filter: League.List.FetchRequest.Filter = .init(bowler: bowler.id)
+			let filter: LeaguesFilter.State = .init()
 			self.filter = filter
 			self.widgets = .init(context: LeaguesList.widgetContext(forBowler: bowler.id), newWidgetSource: .bowler(bowler.id))
 			self.preferredGear = .init(bowler: bowler.id)
@@ -69,7 +64,7 @@ public struct LeaguesList: Reducer {
 					.swipeToArchive,
 				],
 				query: .init(
-					filter: filter,
+					filter: .init(bowler: bowler.id, recurrence: filter.recurrence),
 					ordering: .default
 				),
 				listTitle: Strings.League.List.title,
@@ -291,16 +286,26 @@ public struct LeaguesList: Reducer {
 					switch delegateAction {
 					case let .didTapOption(option):
 						state.ordering = option
-						return state.list.updateQuery(to: .init(filter: state.filter, ordering: state.ordering))
-							.map { .internal(.list($0)) }
+						return state.list.updateQuery(
+							to: .init(
+								filter: .init(bowler: state.bowler.id, recurrence: state.filter.recurrence),
+								ordering: state.ordering
+							)
+						)
+						.map { .internal(.list($0)) }
 					}
 
 				case let .destination(.presented(.filters(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didChangeFilters(recurrence):
 						state.filter.recurrence = recurrence
-						return state.list.updateQuery(to: .init(filter: state.filter, ordering: state.ordering))
-							.map { .internal(.list($0)) }
+						return state.list.updateQuery(
+							to: .init(
+								filter: .init(bowler: state.bowler.id, recurrence: state.filter.recurrence),
+								ordering: state.ordering
+							)
+						)
+						.map { .internal(.list($0)) }
 					}
 
 				case let .destination(.presented(.editor(.delegate(delegateAction)))):

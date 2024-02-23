@@ -72,20 +72,3 @@ extension StatisticsDetails {
 		}
 	}
 }
-
-extension StatisticsDetails.State {
-	var charts: StatisticsDetailsCharts.State {
-		get {
-			.init(
-				aggregation: filter.aggregation,
-				chartContent: chartContent,
-				filterSource: filter.source,
-				isFilterTooNarrow: filter.isTooNarrowForCharts,
-				isLoadingNextChart: isLoadingNextChart
-			)
-		}
-		// We aren't observing any values from this reducer, so we ignore the setter
-		// swiftlint:disable:next unused_setter_value
-		set {}
-	}
-}

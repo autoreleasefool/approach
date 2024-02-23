@@ -35,7 +35,7 @@ public struct Announcements: Reducer {
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
