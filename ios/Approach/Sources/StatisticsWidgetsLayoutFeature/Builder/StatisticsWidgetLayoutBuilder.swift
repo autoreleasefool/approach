@@ -19,7 +19,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 		public var widgets: IdentifiedArrayOf<StatisticsWidget.Configuration> = []
 		public var widgetData: [StatisticsWidget.ID: Statistics.ChartContent] = [:]
-		public var _reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
+		public var reordering: Reorderable<MoveableWidget, StatisticsWidget.Configuration>.State = .init(items: [])
 
 		public var isDeleting = false
 		public var isAnimatingWidgets = false
@@ -31,6 +31,10 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 		public init(context: String, newWidgetSource: StatisticsWidget.Source?) {
 			self.context = context
 			self.newWidgetSource = newWidgetSource
+		}
+
+		mutating func syncReorderingSharedState() {
+			reordering.items = widgets
 		}
 	}
 
@@ -155,6 +159,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 				case let .widgetsResponse(.success(widgets)):
 					state.widgets = .init(uniqueElements: widgets)
+					state.syncReorderingSharedState()
 					if state.widgets.isEmpty {
 						state.isDeleting = false
 					}
@@ -207,6 +212,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 					switch delegateAction {
 					case let .itemDidMove(from, to):
 						state.widgets.move(fromOffsets: from, toOffset: to)
+						state.syncReorderingSharedState()
 						return .none
 
 					case .didFinishReordering:

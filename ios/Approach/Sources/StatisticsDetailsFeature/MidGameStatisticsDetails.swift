@@ -17,11 +17,9 @@ public struct MidGameStatisticsDetails: Reducer {
 		public let seriesId: Series.ID
 		public var selectedGame: Game.ID?
 
-		public var listEntries: IdentifiedArrayOf<Statistics.ListEntryGroup> = []
-
 		public var errors: Errors<ErrorID>.State = .init()
 
-		public var _list: StatisticsDetailsList.State = .init(listEntries: [], hasTappableElements: false)
+		public var list: StatisticsDetailsList.State = .init(listEntries: [], hasTappableElements: false)
 
 		public init(filter: TrackableFilter, seriesId: Series.ID, games: IdentifiedArrayOf<Game.Indexed>) {
 			self.filter = filter
@@ -97,7 +95,7 @@ public struct MidGameStatisticsDetails: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadListEntries(.success(statistics)):
-					state.listEntries = .init(uniqueElements: statistics)
+					state.list.listEntries = .init(uniqueElements: statistics)
 					return .none
 
 				case let .didLoadListEntries(.failure(error)):

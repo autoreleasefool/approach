@@ -57,21 +57,23 @@ public struct StatisticsDetailsView: View {
 			.sheet(
 				item: $store.scope(state: \.destination?.list, action: \.internal.destination.list)
 			) { store in
-				NavigationStack {
-					StatisticsDetailsListView(store: store)
-						.toolbar(.hidden, for: .navigationBar)
+				WithPerceptionTracking {
+					NavigationStack {
+						StatisticsDetailsListView(store: store)
+							.toolbar(.hidden, for: .navigationBar)
+					}
+					.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+					.presentationDetents(
+						[
+							StatisticsDetails.defaultSheetDetent,
+							.medium,
+							.large,
+						],
+						selection: $store.sheetDetent
+					)
+					.interactiveDismissDisabled()
+					.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 				}
-				.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-				.presentationDetents(
-					[
-						StatisticsDetails.defaultSheetDetent,
-						.medium,
-						.large,
-					],
-					selection: $store.sheetDetent
-				)
-				.interactiveDismissDisabled()
-				.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 			}
 			.onChange(of: store.willAdjustLaneLayoutAt) { _ in
 				send(
