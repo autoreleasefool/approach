@@ -30,7 +30,7 @@ public struct AlleyEditor: Reducer {
 		public var newLanes: IdentifiedArrayOf<Lane.Create>
 
 		public let initialValue: AlleyForm.Value
-		public var _form: AlleyForm.State
+		public var form: AlleyForm.State
 
 		@Presents public var destination: Destination.State?
 
@@ -58,7 +58,35 @@ public struct AlleyEditor: Reducer {
 				self.newLanes = []
 				self.initialValue = .edit(existing.alley)
 			}
-			self._form = .init(initialValue: self.initialValue, currentValue: self.initialValue)
+			self.form = .init(initialValue: self.initialValue)
+		}
+
+		mutating func syncFormSharedState() {
+			switch form.initialValue {
+			case var .create(new):
+				new.name = name
+				new.material = material
+				new.pinFall = pinFall
+				new.mechanism = mechanism
+				new.pinBase = pinBase
+				new.location = location
+				form.value = .create(new)
+			case var .edit(existing):
+				existing.name = name
+				existing.material = material
+				existing.pinFall = pinFall
+				existing.mechanism = mechanism
+				existing.pinBase = pinBase
+				existing.location = location
+				form.value = .edit(existing)
+			}
+		}
+
+		var alleyId: Alley.ID {
+			switch initialValue {
+			case let .create(create): return create.id
+			case let .edit(edit): return edit.id
+			}
 		}
 	}
 
@@ -140,25 +168,25 @@ public struct AlleyEditor: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didCreateLanes(result):
-					return state._form.didFinishCreating(result)
+					return state.form.didFinishCreating(result)
 						.map { .internal(.form($0)) }
 
 				case let .didUpdateLanes(result):
-					return state._form.didFinishUpdating(result)
+					return state.form.didFinishUpdating(result)
 						.map { .internal(.form($0)) }
 
 				case let .form(.delegate(formAction)):
 					switch formAction {
 					case let .didCreate(.failure(error)):
-						return state._form.didFinishCreating(.failure(error))
+						return state.form.didFinishCreating(.failure(error))
 							.map { .internal(.form($0)) }
 
 					case let .didUpdate(.failure(error)):
-						return state._form.didFinishUpdating(.failure(error))
+						return state.form.didFinishUpdating(.failure(error))
 							.map { .internal(.form($0)) }
 
 					case let .didDelete(.failure(error)):
-						return state._form.didFinishDeleting(.failure(error))
+						return state.form.didFinishDeleting(.failure(error))
 							.map { .internal(.form($0)) }
 
 					case let .didCreate(.success(new)):
@@ -181,7 +209,7 @@ public struct AlleyEditor: Reducer {
 						}
 
 					case let .didDelete(result):
-						return state._form.didFinishDeleting(result)
+						return state.form.didFinishDeleting(result)
 							.map { .internal(.form($0)) }
 
 					case .didFinishCreating, .didFinishDeleting, .didFinishUpdating, .didDiscard, .didArchive, .didFinishArchiving:
@@ -202,6 +230,7 @@ public struct AlleyEditor: Reducer {
 							state.location?.updateProperties(with: result)
 						}
 						state.coordinate = .init(coordinate: state.location?.coordinate.mapCoordinate ?? .init())
+						state.syncFormSharedState()
 						return .none
 					case .none:
 						return .none
@@ -218,7 +247,11 @@ public struct AlleyEditor: Reducer {
 					return .none
 				}
 
-			case .delegate, .binding:
+			case .binding:
+				state.syncFormSharedState()
+				return .none
+
+			case .delegate:
 				return .none
 			}
 		}
