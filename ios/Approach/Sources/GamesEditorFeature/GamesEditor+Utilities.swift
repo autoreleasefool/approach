@@ -17,7 +17,9 @@ extension GamesEditor.State {
 		_currentGameId = newGameId ?? _currentGameId
 		_currentBowlerId = newBowlerId ?? _currentBowlerId
 
-		if !isGameChanging {
+		if isGameChanging {
+			syncGameHeader()
+		} else {
 			let lastAccessibleRollInFrame = frames[currentFrame.frameIndex].lastAccessibleRollIndex
 			if lastAccessibleRollInFrame < currentFrame.rollIndex {
 				currentFrame.rollIndex = lastAccessibleRollInFrame
@@ -29,6 +31,7 @@ extension GamesEditor.State {
 			switch destination {
 			case var .gameDetails(details):
 				details.nextHeaderElement = _nextHeaderElement
+				details.syncHeader()
 				destination = .gameDetails(details)
 			case .duplicateLanesAlert, .lockedAlert, .sheets, .none:
 				break

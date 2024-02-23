@@ -34,8 +34,8 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithPerceptionTracking {
 			VStack {
-//				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
-//					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
+				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
+					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
 
 				VStack {
 					if let manualScore = store.manualScore {

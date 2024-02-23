@@ -90,7 +90,7 @@ public struct GamesEditor: Reducer {
 
 		public var _frameEditor: FrameEditor.State = .init()
 		public var _rollEditor: RollEditor.State = .init()
-		public var _gamesHeader: GamesHeader.State = .init()
+		public var gamesHeader: GamesHeader.State = .init()
 
 		@Presents public var destination: Destination.State?
 
@@ -338,6 +338,7 @@ public struct GamesEditor: Reducer {
 						var details = gameDetails
 						if gameDetails.gameId != state.currentGameId {
 							let loadEffect = details.loadGameDetails(forGameId: state.currentGameId, didChangeBowler: state.didChangeBowler)
+							details.syncHeader()
 							state.destination = .gameDetails(details)
 							loadGameDetailsEffect = loadEffect.map { .internal(.destination(.presented(.gameDetails($0)))) }
 						} else {
