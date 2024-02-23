@@ -1,15 +1,8 @@
 import ComposableArchitecture
 
 extension GamesEditor.State {
-	var gamesHeader: GamesHeader.State {
-		get {
-			var gamesHeader = _gamesHeader
-			gamesHeader.currentGameIndex = currentGameIndex
-			return gamesHeader
-		}
-		set {
-			_gamesHeader = newValue
-		}
+	mutating func syncGameHeader() {
+		gamesHeader.currentGameIndex = currentGameIndex
 	}
 }
 

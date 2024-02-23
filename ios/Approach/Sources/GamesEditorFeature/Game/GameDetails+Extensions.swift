@@ -51,22 +51,15 @@ extension GameDetails.State {
 	mutating func startShimmer() -> Effect<GameDetails.Action> {
 		guard shouldHeaderShimmer else { return .none }
 		shouldHeaderShimmer = false
-		return _gameDetailsHeader.shouldStartShimmering()
+		return gameDetailsHeader.shouldStartShimmering()
 			.map { .internal(.gameDetailsHeader($0)) }
 	}
 }
 
 extension GameDetails.State {
-	var gameDetailsHeader: GameDetailsHeader.State {
-		get {
-			var gameDetailsHeader = _gameDetailsHeader
-			gameDetailsHeader.currentBowlerName = game?.bowler.name ?? ""
-			gameDetailsHeader.currentLeagueName = game?.league.name ?? ""
-			gameDetailsHeader.next = nextHeaderElement
-			return gameDetailsHeader
-		}
-		set {
-			_gameDetailsHeader = newValue
-		}
+	mutating func syncHeader() {
+		gameDetailsHeader.currentBowlerName = game?.bowler.name ?? ""
+		gameDetailsHeader.currentLeagueName = game?.league.name ?? ""
+		gameDetailsHeader.next = nextHeaderElement
 	}
 }

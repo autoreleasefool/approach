@@ -31,7 +31,7 @@ public struct GameDetails: Reducer {
 		public var nextHeaderElement: GameDetailsHeader.State.NextElement?
 		public var shouldHeaderShimmer: Bool
 
-		public var _gameDetailsHeader: GameDetailsHeader.State = .init()
+		public var gameDetailsHeader: GameDetailsHeader.State = .init()
 
 		var isLocked: Bool { game?.locked == .locked }
 		var isExcludedFromStatistics: Bool { game?.excludeFromStatistics == .exclude }
@@ -50,6 +50,7 @@ public struct GameDetails: Reducer {
 			self.seriesGames = seriesGames
 			self.nextHeaderElement = nextHeaderElement
 			self.shouldHeaderShimmer = didChangeBowler
+			syncHeader()
 		}
 	}
 
@@ -239,6 +240,7 @@ public struct GameDetails: Reducer {
 				case let .didLoadGame(.success(game)):
 					guard let game, game.id == state.gameId else { return .none }
 					state.game = game
+					state.syncHeader()
 					return .none
 
 				case .didLoadGame(.failure):
