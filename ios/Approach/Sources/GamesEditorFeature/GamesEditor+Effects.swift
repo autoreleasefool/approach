@@ -6,6 +6,8 @@ import ModelsLibrary
 extension GamesEditor {
 	func loadBowlers(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.bowlers)
+		state.syncFrameEditorSharedState()
+		state.syncRollEditorSharedState()
 		return .run { [bowlerIds = state.bowlerIds] send in
 			await send(.internal(.bowlersResponse(Result {
 				try await bowlers.summaries(forIds: bowlerIds)
@@ -16,6 +18,8 @@ extension GamesEditor {
 	func loadGameDetails(state: inout State) -> Effect<Action> {
 		state.elementsRefreshing.insert(.frames)
 		state.elementsRefreshing.insert(.game)
+		state.syncFrameEditorSharedState()
+		state.syncRollEditorSharedState()
 		return .concatenate(
 			.run { [gameId = state.currentGameId] send in
 				for try await game in self.games.observe(gameId) {

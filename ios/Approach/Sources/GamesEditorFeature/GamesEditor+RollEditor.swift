@@ -1,23 +1,12 @@
 import ComposableArchitecture
 
 extension GamesEditor.State {
-	var rollEditor: RollEditor.State? {
-		get {
-			guard let frames else { return nil }
-			var rollEditor = _rollEditor
-			let currentRoll = frames[currentFrameIndex].rolls[currentRollIndex]
-			rollEditor.ballRolled = currentRoll.bowlingBall
-			rollEditor.didFoul = currentRoll.roll.didFoul
-			rollEditor.isEditable = isEditable
-			return rollEditor
-		}
-		set {
-			guard let newValue else { return }
-			_rollEditor = newValue
-			let currentFrameIndex = self.currentFrameIndex
-			let currentRollIndex = self.currentRollIndex
-			frames?[currentFrameIndex].setDidFoul(newValue.didFoul, forRoll: currentRollIndex)
-		}
+	mutating func syncRollEditorSharedState() {
+		guard let frames else { return }
+		let currentRoll = frames[currentFrameIndex].rolls[currentRollIndex]
+		rollEditor.ballRolled = currentRoll.bowlingBall
+		rollEditor.didFoul = currentRoll.roll.didFoul
+		rollEditor.isEditable = isEditable
 	}
 }
 
@@ -42,6 +31,10 @@ extension GamesEditor {
 				return .none
 
 			case .didEditRoll:
+				let currentFrameIndex = state.currentFrameIndex
+				let currentRollIndex = state.currentRollIndex
+				let didFoul = state.rollEditor.didFoul
+				state.frames?[currentFrameIndex].setDidFoul(didFoul, forRoll: currentRollIndex)
 				return save(frame: state.frames?[state.currentFrameIndex])
 
 			case .didProvokeLock:

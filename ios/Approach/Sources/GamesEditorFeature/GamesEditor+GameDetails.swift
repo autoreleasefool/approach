@@ -23,6 +23,8 @@ extension GamesEditor {
 				guard let game, state.currentGameId == game.id else { return .none }
 				state.game = game
 				state.hideNextHeaderIfNecessary()
+				state.syncFrameEditorSharedState()
+				state.syncRollEditorSharedState()
 				return save(game: state.game, in: state)
 
 			case .didClearManualScore:
@@ -59,6 +61,8 @@ extension GamesEditor {
 					let gameIndex = state.currentGameIndex
 					state.setCurrent(gameId: state.bowlerGameIds[id]![gameIndex], bowlerId: id)
 					state.didChangeBowler = true
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return .merge(
 						saveGameEffect,
 						loadGameDetails(state: &state)
@@ -66,17 +70,23 @@ extension GamesEditor {
 				case let .frame(frameIndex):
 					state.setCurrent(rollIndex: 0, frameIndex: frameIndex)
 					state.frames?[frameIndex].guaranteeRollExists(upTo: 0)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return save(frame: state.frames?[frameIndex])
 				case let .roll(rollIndex):
 					state.setCurrent(rollIndex: rollIndex)
 					let currentFrameIndex = state.currentFrameIndex
 					state.frames?[currentFrameIndex].guaranteeRollExists(upTo: rollIndex)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return save(frame: state.frames?[state.currentFrameIndex])
 				case let .game(_, bowler, game):
 					state.shouldRequestAppStoreReview = storeReview.shouldRequestReview()
 
 					let saveGameEffect = lockGameIfFinished(in: &state)
 					state.setCurrent(gameId: game, bowlerId: bowler)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return .merge(
 						saveGameEffect,
 						loadGameDetails(state: &state)

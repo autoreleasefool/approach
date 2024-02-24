@@ -130,6 +130,7 @@ extension GamesEditor.State {
 		forceNextHeaderElementNilOrNextGame = game?.scoringMethod == .manual
 			|| frames?.nextFrameToRecord().hasUntouchedRoll != true
 		setCurrent(rollIndex: updatingRollIndexTo, frameIndex: frameIndex)
+		syncFrameEditorSharedState()
 	}
 
 	mutating func populateFrames(upTo: Int) {
