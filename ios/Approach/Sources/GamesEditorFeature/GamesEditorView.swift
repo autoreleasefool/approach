@@ -57,12 +57,12 @@ public struct GamesEditorView: View {
 
 						Spacer()
 
-						frameEditor
+						FrameEditorView(store: store.scope(state: \.frameEditor, action: \.internal.frameEditor))
 							.padding(.top)
 
 						Spacer()
 
-						rollEditor
+						RollEditorView(store: store.scope(state: \.rollEditor, action: \.internal.rollEditor))
 							.measure(key: RollEditorSizeKey.self, to: $rollEditorSize)
 							.padding(.horizontal)
 
@@ -168,18 +168,6 @@ public struct GamesEditorView: View {
 			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 			.interactiveDismissDisabled(true)
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
-	}
-
-	@ViewBuilder private var frameEditor: some View {
-		if let frameEditor = store.scope(state: \.frameEditor, action: \.internal.frameEditor) {
-			FrameEditorView(store: frameEditor)
-		}
-	}
-
-	@ViewBuilder private var rollEditor: some View {
-		if let rollEditor = store.scope(state: \.rollEditor, action: \.internal.rollEditor) {
-			RollEditorView(store: rollEditor)
-		}
 	}
 
 	@ViewBuilder private var scoreSheet: some View {

@@ -8,11 +8,15 @@ extension GamesEditor {
 			case let .switchedGame(to):
 				let newGameId = state.bowlerGameIds[state.currentBowlerId]![to]
 				state.setCurrent(gameId: newGameId)
+				state.syncFrameEditorSharedState()
+				state.syncRollEditorSharedState()
 				return loadGameDetails(state: &state)
 
 			case let .switchedBowler(to):
 				let newGameId = state.bowlerGameIds[to]![state.currentGameIndex]
 				state.setCurrent(gameId: newGameId, bowlerId: to)
+				state.syncFrameEditorSharedState()
+				state.syncRollEditorSharedState()
 				return loadGameDetails(state: &state)
 
 			case let .movedBowlers(source, destination):

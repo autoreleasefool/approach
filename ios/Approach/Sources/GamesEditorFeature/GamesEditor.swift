@@ -88,8 +88,8 @@ public struct GamesEditor: Reducer {
 		var currentGameIndex: Int { bowlerGameIds[currentBowlerId]!.firstIndex(of: currentGameId)! }
 		var currentBowlerIndex: Int { bowlerIds.firstIndex(of: currentBowlerId)! }
 
-		public var _frameEditor: FrameEditor.State = .init()
-		public var _rollEditor: RollEditor.State = .init()
+		public var frameEditor: FrameEditor.State = .init()
+		public var rollEditor: RollEditor.State = .init()
 		public var gamesHeader: GamesHeader.State = .init()
 
 		@Presents public var destination: Destination.State?
@@ -204,6 +204,8 @@ public struct GamesEditor: Reducer {
 			let currentRollIndex = state.currentRollIndex
 			state.populateFrames(upTo: currentFrameIndex)
 			state.frames?[currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
+			state.syncFrameEditorSharedState()
+			state.syncRollEditorSharedState()
 			return save(frame: state.frames?[currentFrameIndex])
 		}
 
@@ -213,6 +215,14 @@ public struct GamesEditor: Reducer {
 
 		Scope(state: \.gamesHeader, action: \.internal.gamesHeader) {
 			GamesHeader()
+		}
+
+		Scope(state: \.frameEditor, action: \.internal.frameEditor) {
+			FrameEditor()
+		}
+
+		Scope(state: \.rollEditor, action: \.internal.rollEditor) {
+			RollEditor()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -286,10 +296,14 @@ public struct GamesEditor: Reducer {
 				case let .bowlersResponse(.success(bowlers)):
 					state.elementsRefreshing.remove(.bowlers)
 					state.bowlers = .init(uniqueElements: bowlers)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return .none
 
 				case let .bowlersResponse(.failure(error)):
 					state.elementsRefreshing.remove(.bowlers)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return state.errors
 						.enqueue(.failedToLoadBowler, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
@@ -317,10 +331,14 @@ public struct GamesEditor: Reducer {
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 
 					state.elementsRefreshing.remove(.frames)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return .none
 
 				case let .framesResponse(.failure(error)):
 					state.elementsRefreshing.remove(.frames)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return state.errors
 						.enqueue(.failedToLoadFrames, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
@@ -365,6 +383,8 @@ public struct GamesEditor: Reducer {
 					}
 					state.elementsRefreshing.remove(.game)
 					state.hideNextHeaderIfNecessary()
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return loadGameDetailsEffect ?? .none
 
 				case let .didDuplicateLanes(.failure(error)):
@@ -374,6 +394,8 @@ public struct GamesEditor: Reducer {
 
 				case let .gameResponse(.failure(error)):
 					state.elementsRefreshing.remove(.game)
+					state.syncFrameEditorSharedState()
+					state.syncRollEditorSharedState()
 					return state.errors
 						.enqueue(.failedToLoadGame, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
 						.map { .internal(.errors($0)) }
@@ -452,12 +474,6 @@ public struct GamesEditor: Reducer {
 			case .delegate, .binding:
 				return .none
 			}
-		}
-		.ifLet(\.frameEditor, action: \.internal.frameEditor) {
-			FrameEditor()
-		}
-		.ifLet(\.rollEditor, action: \.internal.rollEditor) {
-			RollEditor()
 		}
 		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
