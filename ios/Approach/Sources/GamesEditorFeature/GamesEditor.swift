@@ -26,13 +26,46 @@ import SwiftUI
 public struct GamesEditor: Reducer {
 	@ObservableState
 	public struct State: Equatable {
-		public var sheetDetent: PresentationDetent = .height(.zero)
-		public var willAdjustLaneLayoutAt: Date
-		public var backdropSize: CGSize = .zero
+
+		// Sizing
+		public var sheetDetent: PresentationDetent = .height(40)
+//		public var backdropSize: CGSize = .zero
 		public var gameDetailsHeaderSize: CGSize = .zero
 		public var gameDetailsMinimumContentSize: CGSize = .zero
-		public var isScoreSheetVisible = true
 
+		public var safeAreaInsets = EdgeInsets()
+		public var headerContentSize: CGSize = .zero
+		public var rollEditorSize: CGSize = .zero
+		public var frameContentSize: CGSize = .zero
+		public var sheetContentSize: CGSize = .zero
+		public var windowContentSize: CGSize = .zero
+
+		var measuredBackdropSize: CGSize {
+			let sheetContentSize = sheetDetent == .large ? .zero : sheetContentSize
+			return .init(
+				width: windowContentSize.width,
+				height: max(
+					windowContentSize.height
+						- sheetContentSize.height
+						- headerContentSize.height
+						- safeAreaInsets.bottom
+						- CGFloat.largeSpacing,
+					0
+				)
+			)
+		}
+
+		var backdropImageHeight: CGFloat {
+			max(
+				measuredBackdropSize.height
+					- (isScoreSheetVisible ? frameContentSize.height : 0)
+					- headerContentSize.height
+					+ rollEditorSize.height,
+				0
+			)
+		}
+
+		public var isScoreSheetVisible = true
 		public var shouldRequestAppStoreReview: Bool = false
 
 		public var didPromptLaneDuplication = false
@@ -109,9 +142,6 @@ public struct GamesEditor: Reducer {
 			let currentBowlerId = initialBowlerId ?? bowlerIds.first!
 			self._currentBowlerId = currentBowlerId
 			self._currentGameId = initialGameId ?? bowlerGameIds[currentBowlerId]!.first!
-
-			@Dependency(\.date) var date
-			self.willAdjustLaneLayoutAt = date()
 		}
 	}
 
@@ -119,7 +149,7 @@ public struct GamesEditor: Reducer {
 		@CasePathable public enum View {
 			case onAppear
 			case didFirstAppear
-			case didAdjustBackdropSize(CGSize)
+			case didChangeSafeAreaInsets(EdgeInsets)
 			case didDismissGameDetails
 			case didDismissOpenSheet
 			case didRequestReview
@@ -242,15 +272,9 @@ public struct GamesEditor: Reducer {
 					state.shouldRequestAppStoreReview = false
 					return .run { _ in await storeReview.didRequestReview() }
 
-				case let .didAdjustBackdropSize(newSize):
-					state.backdropSize = newSize
-					switch state.sheetDetent {
-					case .large, .medium:
-						state.isScoreSheetVisible = false
-					default:
-						state.isScoreSheetVisible = true
-					}
-					return .none
+				case let .didChangeSafeAreaInsets(newInsets):
+					state.safeAreaInsets = newInsets
+					return .send(.internal(.adjustBackdrop), animation: .default)
 
 				case .didDismissOpenSheet:
 					if let game = state.game {
@@ -263,7 +287,7 @@ public struct GamesEditor: Reducer {
 						))
 						state.didChangeBowler = false
 					}
-					return .none
+					return .send(.internal(.adjustBackdrop), animation: .default)
 
 				case .didDismissGameDetails:
 					if state.willShowDuplicateLanesAlert {
@@ -285,6 +309,15 @@ public struct GamesEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .adjustBackdrop:
+					switch state.sheetDetent {
+					case .large, .medium:
+						state.isScoreSheetVisible = false
+					default:
+						state.isScoreSheetVisible = true
+					}
+					return .none
+
 				case .showDuplicateLanesAlert:
 					state.destination = .duplicateLanesAlert(.duplicateLanes)
 					return .none
@@ -427,10 +460,6 @@ public struct GamesEditor: Reducer {
 						return save(game: state.game, in: state)
 					}
 
-				case .adjustBackdrop:
-					state.willAdjustLaneLayoutAt = date()
-					return .none
-
 				case let .destination(.presented(.gameDetails(action))):
 					return reduce(into: &state, gameDetailsAction: action)
 
@@ -468,7 +497,7 @@ public struct GamesEditor: Reducer {
 			case .binding(\.sheetDetent):
 				return .run { send in
 					try await clock.sleep(for: .milliseconds(25))
-					await send(.internal(.adjustBackdrop))
+					await send(.internal(.adjustBackdrop), animation: .default)
 				}
 
 			case .delegate, .binding:

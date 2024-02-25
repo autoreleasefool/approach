@@ -48,6 +48,9 @@ extension GamesEditor {
 
 			case let .didMeasureMinimumSheetContentSize(size):
 				state.gameDetailsMinimumContentSize = size
+				if state.sheetDetent == .height(.zero) {
+					state.sheetDetent = .height(state.gameDetailsMinimumContentSize.height + 40)
+				}
 				return .none
 
 			case let .didMeasureSectionHeaderContentSize(size):
