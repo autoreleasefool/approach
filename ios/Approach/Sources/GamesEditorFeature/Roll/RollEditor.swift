@@ -72,8 +72,10 @@ public struct RollEditor: Reducer {
 					guard state.isEditable else { return .send(.delegate(.didProvokeLock)) }
 					guard let ball = state.recentGear[id: id] else { return .send(.delegate(.didRequestBallPicker)) }
 					if state.ballRolled?.id == id {
+						state.ballRolled = nil
 						return .send(.delegate(.didChangeBall(nil)))
 					} else {
+						state.ballRolled = ball
 						return .merge(
 							.send(.delegate(.didChangeBall(ball))),
 							.run { [id = id] _ in recentlyUsed.didRecentlyUseResource(.gear, id) }
