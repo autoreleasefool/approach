@@ -21,11 +21,6 @@ public struct GamesEditorView: View {
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 	@Environment(\.requestReview) private var requestReview
-	@State private var headerContentSize: CGSize = .zero
-	@State private var rollEditorSize: CGSize = .zero
-	@State private var frameContentSize: CGSize = .zero
-	@State private var sheetContentSize: CGSize = .zero
-	@State private var windowContentSize: CGSize = .zero
 
 	public init(store: StoreOf<GamesEditor>) {
 		self.store = store
@@ -35,7 +30,7 @@ public struct GamesEditorView: View {
 		WithPerceptionTracking {
 			VStack {
 				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
-					.measure(key: HeaderContentSizeKey.self, to: $headerContentSize)
+					.measure(key: HeaderContentSizeKey.self, to: $store.headerContentSize)
 
 				VStack {
 					if let manualScore = store.manualScore {
@@ -63,22 +58,23 @@ public struct GamesEditorView: View {
 						Spacer()
 
 						RollEditorView(store: store.scope(state: \.rollEditor, action: \.internal.rollEditor))
-							.measure(key: RollEditorSizeKey.self, to: $rollEditorSize)
+							.measure(key: RollEditorSizeKey.self, to: $store.rollEditorSize)
 							.padding(.horizontal)
 
 						if store.isScoreSheetVisible {
 							scoreSheet
 								.padding(.top)
 								.padding(.horizontal)
-								.measure(key: FrameContentSizeKey.self, to: $frameContentSize)
+								.measure(key: FrameContentSizeKey.self, to: $store.frameContentSize)
 						}
 					}
 				}
-				.frame(idealWidth: store.backdropSize.width, maxHeight: store.backdropSize.height)
+				.frame(idealWidth: store.measuredBackdropSize.width, maxHeight: store.measuredBackdropSize.height)
 
 				Spacer()
 			}
-			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
+			.measure(key: WindowContentSizeKey.self, to: $store.windowContentSize)
+			.onChange(of: safeAreaInsets) { send(.didChangeSafeAreaInsets($0)) }
 			.background(alignment: .top) {
 				VStack(spacing: 0) {
 					Asset.Media.Lane.galaxy.swiftUIImage
@@ -88,10 +84,10 @@ public struct GamesEditorView: View {
 						.resizable()
 						.scaledToFill()
 				}
-				.frame(width: store.backdropSize.width, height: backdropImageHeight)
+				.frame(width: store.measuredBackdropSize.width, height: store.backdropImageHeight)
 				.faded()
 				.clipped()
-				.padding(.top, headerContentSize.height)
+				.padding(.top, store.headerContentSize.height)
 			}
 			.background(Color.black)
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
@@ -104,9 +100,6 @@ public struct GamesEditorView: View {
 					}
 				}
 			)
-			.onChange(of: store.willAdjustLaneLayoutAt) { _ in
-				send(.didAdjustBackdropSize(measuredBackdropSize), animation: .easeInOut)
-			}
 			.onChange(of: store.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
 				if shouldRequestAppStoreReview {
 					requestReview()
@@ -114,15 +107,7 @@ public struct GamesEditorView: View {
 				}
 			}
 			.onAppear { send(.onAppear) }
-			.onFirstAppear {
-				send(.didFirstAppear)
-				Task.detached {
-					try await clock.sleep(for: .milliseconds(150))
-					Task.detached { @MainActor in
-						send(.didAdjustBackdropSize(measuredBackdropSize))
-					}
-				}
-			}
+			.onFirstAppear { send(.didFirstAppear) }
 			// TODO: enable errors
 //			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.alert(
@@ -167,35 +152,13 @@ public struct GamesEditorView: View {
 			)
 			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
 			.interactiveDismissDisabled(true)
-			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
+			.measure(key: SheetContentSizeKey.self, to: $store.sheetContentSize)
 	}
 
 	@ViewBuilder private var scoreSheet: some View {
 		if let game = store.score {
 			ScoreSheet(game: game, selection: $store.currentFrame)
 		}
-	}
-
-	private var measuredBackdropSize: CGSize {
-		let sheetContentSize = store.sheetDetent == .large ? .zero : self.sheetContentSize
-		return .init(
-			width: windowContentSize.width,
-			height: windowContentSize.height
-				- sheetContentSize.height
-				- headerContentSize.height
-				- safeAreaInsets.bottom
-				- CGFloat.largeSpacing
-		)
-	}
-
-	private var backdropImageHeight: CGFloat {
-		max(
-			store.backdropSize.height
-				- (store.isScoreSheetVisible ? frameContentSize.height : 0)
-				- headerContentSize.height
-				+ rollEditorSize.height,
-			0
-		)
 	}
 }
 
