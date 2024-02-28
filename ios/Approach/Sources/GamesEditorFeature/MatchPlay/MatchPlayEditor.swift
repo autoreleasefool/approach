@@ -19,6 +19,14 @@ public struct MatchPlayEditor: Reducer {
 	public struct State: Equatable {
 		public var matchPlay: MatchPlay.Edit
 
+		var score: String {
+			if let score = matchPlay.opponentScore, score > 0 {
+				String(score)
+			} else {
+				""
+			}
+		}
+
 		@Presents public var opponentPicker: ResourcePicker<Bowler.Opponent, AlwaysEqual<Void>>.State?
 
 		init(matchPlay: MatchPlay.Edit) {
@@ -139,34 +147,23 @@ public struct MatchPlayEditorView: View {
 						)
 					}
 
-					// TODO: can't use store.binding for score
-//					TextField(
-//						Strings.MatchPlay.Editor.Fields.Opponent.score,
-//						text: viewStore.binding(
-//							get: {
-//								if let score = $0.matchPlay.opponentScore, score > 0 {
-//									return String(score)
-//								} else {
-//									return ""
-//								}
-//							},
-//							send: { .didSetScore($0) }
-//						)
-//					)
-//					.keyboardType(.numberPad)
+					TextField(
+						Strings.MatchPlay.Editor.Fields.Opponent.score,
+						text: $store.score.sending(\.view.didSetScore)
+					)
+					.keyboardType(.numberPad)
 				}
 
 				Section {
-					// TODO: can't use store.binding for match play result
-//					Picker(
-//						Strings.MatchPlay.Editor.Fields.Result.title,
-//						selection: $store.matchPlay.result.sending(\.didSetResult)
-//					) {
-//						Text("").tag(nil as MatchPlay.Result?)
-//						ForEach(MatchPlay.Result.allCases) {
-//							Text(String(describing: $0)).tag(Optional($0))
-//						}
-//					}
+					Picker(
+						Strings.MatchPlay.Editor.Fields.Result.title,
+						selection: $store.matchPlay.result.sending(\.view.didSetResult)
+					) {
+						Text("").tag(nil as MatchPlay.Result?)
+						ForEach(MatchPlay.Result.allCases) {
+							Text(String(describing: $0)).tag(Optional($0))
+						}
+					}
 				} footer: {
 					Text(Strings.MatchPlay.Editor.Fields.Result.footer(String(describing: MatchPlay.Result.won)))
 				}
