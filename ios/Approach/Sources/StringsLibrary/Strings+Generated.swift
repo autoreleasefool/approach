@@ -593,6 +593,10 @@ public enum Strings {
           public static let viewStatistics = Strings.tr("Localizable", "game.editor.fields.statistics.viewStatistics", fallback: "View stats")
         }
       }
+      public enum Locked {
+        /// This game is locked and cannot be edited.
+        public static let message = Strings.tr("Localizable", "game.editor.locked.message", fallback: "This game is locked and cannot be edited.")
+      }
       public enum Picker {
         /// Switch game
         public static let `switch` = Strings.tr("Localizable", "game.editor.picker.switch", fallback: "Switch game")

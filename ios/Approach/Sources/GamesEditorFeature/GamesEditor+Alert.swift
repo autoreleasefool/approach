@@ -63,5 +63,11 @@ extension AlertState where Action == GamesEditor.Destination.DuplicateLanesAlert
 extension AlertState where Action == GamesEditor.Destination.LockedAlertAction {
 	static let locked = Self {
 		TextState(Strings.Game.Editor.locked)
+	} actions: {
+		ButtonState(role: .cancel, action: .didTapDismissButton) {
+			TextState(Strings.Action.dismiss)
+		}
+	} message: {
+		TextState(Strings.Game.Editor.Locked.message)
 	}
 }
