@@ -211,6 +211,7 @@
 "game.properties.excludeFromStatistics.include" = "Include in statistics";
 "game.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
 "game.editor.locked" = "Locked";
+"game.editor.locked.message" = "This game is locked and cannot be edited.";
 "game.editor.fields.excludeFromStatistics.title" = "Statistics";
 "game.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
 "game.editor.fields.excludeFromStatistics.help" = "This game will not count towards any statistics. It will still appear in the app, but won't affect your overall average or other statistics. This can be useful for practice or incomplete games.";
