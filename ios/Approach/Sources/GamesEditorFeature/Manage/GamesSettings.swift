@@ -122,29 +122,27 @@ public struct GamesSettingsView: View {
 		WithPerceptionTracking {
 			List {
 				Section(Strings.Game.Settings.current) {
-					// TODO: can't use store.binding for gameIndex
-//					Picker(
-//						Strings.Game.title,
-//						selection: viewStore.binding(get: \.gameIndex, send: { .didSwitchGame(to: $0) })
-//					) {
-//						ForEach(Array(0..<store.numberOfGames), id: \.self) { index in
-//							Text(Strings.Game.titleWithOrdinal(index + 1))
-//								.tag(index)
-//						}
-//					}
+					Picker(
+						Strings.Game.title,
+						selection: $store.gameIndex.sending(\.view.didSwitchGame)
+					) {
+						ForEach(Array(0..<store.numberOfGames), id: \.self) { index in
+							Text(Strings.Game.titleWithOrdinal(index + 1))
+								.tag(index)
+						}
+					}
 
-					// TODO: can't use store.binding for currentBowlerId
-//					if $store.isTeamsEnabled {
-//						Picker(
-//							Strings.Bowler.title,
-//							selection: viewStore.binding(get: \.currentBowlerId, send: { .didSwitchBowler(to: $0) })
-//						) {
-//							ForEach($store.bowlers) { bowler in
-//								Text(bowler.name)
-//									.tag(bowler.id)
-//							}
-//						}
-//					}
+					if store.isTeamsEnabled {
+						Picker(
+							Strings.Bowler.title,
+							selection: $store.currentBowlerId.sending(\.view.didSwitchBowler)
+						) {
+							ForEach(store.bowlers) { bowler in
+								Text(bowler.name)
+									.tag(bowler.id)
+							}
+						}
+					}
 				}
 
 				if store.isTeamsEnabled {

@@ -67,31 +67,29 @@ public struct GameDetailsView: View {
 							send(.didTapScoring)
 						}
 
-						// TODO: can't use store.binding here to bind isLocked
-//						Section {
-//							Toggle(
-//								Strings.Game.Editor.Fields.Lock.label,
-//								isOn: $store.isLocked.sending(\.didToggleLock)
-//							)
-//							.toggleStyle(CheckboxToggleStyle())
-//						} footer: {
-//							Text(Strings.Game.Editor.Fields.Lock.help)
-//						}
+						Section {
+							Toggle(
+								Strings.Game.Editor.Fields.Lock.label,
+								isOn: $store.isLocked.sending(\.view.didToggleLock)
+							)
+							.toggleStyle(CheckboxToggleStyle())
+						} footer: {
+							Text(Strings.Game.Editor.Fields.Lock.help)
+						}
 
-						// TODO: can't use store.binding here to bind isExcludedFromStatistics
-//						Section {
-//							Toggle(
-//								Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
-//								isOn: $store.isExcludedFromStatistics.sending(\.didToggleExclude)
-//							)
-//							.toggleStyle(CheckboxToggleStyle())
-//						} footer: {
-//							excludeFromStatisticsHelp(
-//								excludeLeagueFromStatistics: game.league.excludeFromStatistics,
-//								seriesPreBowl: game.series.preBowl,
-//								excludeSeriesFromStatistics: game.series.excludeFromStatistics
-//							)
-//						}
+						Section {
+							Toggle(
+								Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
+								isOn: $store.isExcludedFromStatistics.sending(\.view.didToggleExclude)
+							)
+							.toggleStyle(CheckboxToggleStyle())
+						} footer: {
+							excludeFromStatisticsHelp(
+								excludeLeagueFromStatistics: game.league.excludeFromStatistics,
+								seriesPreBowl: game.series.preBowl,
+								excludeSeriesFromStatistics: game.series.excludeFromStatistics
+							)
+						}
 					}
 				}
 				.task { await send(.task).finish() }

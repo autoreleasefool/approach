@@ -12,6 +12,10 @@ public struct ScoringEditor: Reducer {
 	public struct State: Equatable {
 		public var scoringMethod: Game.ScoringMethod
 		public var score: Int
+
+		var isManualScoring: Bool {
+			scoringMethod == .manual
+		}
 	}
 
 	public enum Action: FeatureAction, ViewAction, BindableAction {
@@ -90,16 +94,15 @@ public struct ScoringEditorView: View {
 	public var body: some View {
 		WithPerceptionTracking {
 			List {
-				// TODO: cannot use store.binding for scoring method
-//				Section {
-//					Toggle(
-//						Strings.Scoring.Editor.Fields.ManualScore.title,
-//						isOn: viewStore.binding(get: { $0.scoringMethod == .manual }, send: { .toggleManualScoring($0) })
-//					)
-//					.toggleStyle(CheckboxToggleStyle())
-//				} footer: {
-//					Text(Strings.Scoring.Editor.Fields.ManualScore.help)
-//				}
+				Section {
+					Toggle(
+						Strings.Scoring.Editor.Fields.ManualScore.title,
+						isOn: $store.isManualScoring.sending(\.view.toggleManualScoring)
+					)
+					.toggleStyle(CheckboxToggleStyle())
+				} footer: {
+					Text(Strings.Scoring.Editor.Fields.ManualScore.help)
+				}
 
 				if store.scoringMethod == .manual {
 					Section {
