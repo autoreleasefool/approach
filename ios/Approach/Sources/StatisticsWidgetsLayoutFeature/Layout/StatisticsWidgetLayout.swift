@@ -257,8 +257,7 @@ public struct StatisticsWidgetLayoutView: View {
 			.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
 			.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
 			.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
-			// TODO: enable errors
-			// .errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			 .errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
 	}
 }

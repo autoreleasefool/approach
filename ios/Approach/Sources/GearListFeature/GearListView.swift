@@ -40,8 +40,7 @@ public struct GearListView: View {
 				}
 			}
 			.onAppear { send(.onAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.gearEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
 			.gearFilters($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
 			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))

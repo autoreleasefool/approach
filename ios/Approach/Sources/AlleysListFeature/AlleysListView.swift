@@ -45,8 +45,7 @@ public struct AlleysListView: View {
 					}
 				}
 			}
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.alleyEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
 			.alleysFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
 		}

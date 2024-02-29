@@ -99,8 +99,7 @@ public struct StatisticsWidgetEditorView: View {
 			}
 			.onFirstAppear { send(.didFirstAppear) }
 			.onAppear { send(.onAppear) }
-			// TODO: enable errors
-	//		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
 			.leaguePicker($store.scope(state: \.destination?.leaguePicker, action: \.internal.destination.leaguePicker))
 			.statisticPicker($store.scope(state: \.destination?.statisticPicker, action: \.internal.destination.statisticPicker))

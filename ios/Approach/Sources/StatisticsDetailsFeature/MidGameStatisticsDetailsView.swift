@@ -40,8 +40,7 @@ public struct MidGameStatisticsDetailsView: View {
 			.onAppear { send(.onAppear) }
 			.onFirstAppear { send(.didFirstAppear) }
 			.task { await send(.task).finish() }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
 	}
 }

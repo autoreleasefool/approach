@@ -108,8 +108,7 @@ public struct GamesEditorView: View {
 			}
 			.onAppear { send(.onAppear) }
 			.onFirstAppear { send(.didFirstAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.alert(
 				$store.scope(
 					state: \.destination?.duplicateLanesAlert,

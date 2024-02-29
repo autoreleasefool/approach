@@ -45,8 +45,7 @@ public struct SharingView: View {
 			.onFirstAppear { send(.didFirstAppear) }
 			.onFirstAppear { send(.didUpdateDisplayScale(displayScale)) }
 			.onChange(of: displayScale) { send(.didUpdateDisplayScale($0)) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
 	}
 

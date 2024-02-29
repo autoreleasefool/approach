@@ -95,8 +95,7 @@ public struct StatisticsDetailsView: View {
 			}
 			.task { await send(.didFirstAppear).finish() }
 			.onAppear { send(.onAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.sheet(
 				item: $store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker)
 			) { store in
