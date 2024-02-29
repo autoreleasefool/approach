@@ -51,10 +51,7 @@ public struct BowlersListView: View {
 			.task { await send(.didStartTask).finish() }
 			.onAppear { send(.onAppear) }
 			.onFirstAppear { send(.didFirstAppear) }
-			// TODO: enable errors
-			// .errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			// TODO: enable announcements
-			// .announcements(store: store.scope(state: \.announcements, action: \.internal.announcements))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
 			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))

@@ -47,8 +47,7 @@ public struct AlleyLanesEditorView: View {
 			.navigationTitle(Strings.Lane.List.title)
 			.onAppear { send(.onAppear) }
 			.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.sheet(item: $store.scope(state: \.destination?.addLaneForm, action: \.internal.destination.addLaneForm)) {
 				AddLaneFormView(store: $0)
 					.padding()

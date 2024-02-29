@@ -126,8 +126,7 @@ public struct AccessoriesOverviewView: View {
 			.alleysList($store.scope(state: \.destination?.alleysList, action: \.internal.destination.alleysList))
 			.alleyEditor($store.scope(state: \.destination?.alleyEditor, action: \.internal.destination.alleyEditor))
 			.gearEditor($store.scope(state: \.destination?.gearEditor, action: \.internal.destination.gearEditor))
-			// TODO: enable errors
-	//		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
 	}
 }

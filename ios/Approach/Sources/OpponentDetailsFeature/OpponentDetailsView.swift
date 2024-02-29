@@ -43,8 +43,7 @@ public struct OpponentDetailsView: View {
 			.navigationTitle(store.opponent.name)
 			.onFirstAppear { send(.didFirstAppear) }
 			.onAppear { send(.onAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
 	}
 }

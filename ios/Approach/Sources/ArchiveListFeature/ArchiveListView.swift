@@ -37,8 +37,7 @@ public struct ArchiveListView: View {
 			.navigationTitle(Strings.Archive.title)
 			.task { await send(.observeData).finish() }
 			.onAppear { send(.onAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.alert($store.scope(state: \.alert, action: \.view.alert))
 		}
 	}

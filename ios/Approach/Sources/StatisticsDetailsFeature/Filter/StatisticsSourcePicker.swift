@@ -325,8 +325,7 @@ public struct StatisticsSourcePickerView: View {
 			}
 			.navigationTitle(Strings.Statistics.Filter.title)
 			.onFirstAppear { send(.didFirstAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
 			.leaguePicker($store.scope(state: \.destination?.leaguePicker, action: \.internal.destination.leaguePicker))
 			.seriesPicker($store.scope(state: \.destination?.seriesPicker, action: \.internal.destination.seriesPicker))

@@ -65,8 +65,7 @@ public struct GamesListView: View {
 			}
 			.navigationTitle(store.series.date.longFormat)
 			.onAppear { send(.onAppear) }
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
 			.gameEditor($store.scope(state: \.destination?.gameEditor, action: \.internal.destination.gameEditor))
 			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))

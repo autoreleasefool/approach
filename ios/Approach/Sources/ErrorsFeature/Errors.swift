@@ -188,18 +188,24 @@ extension Errors {
 
 // MARK: - View
 
+public struct ErrorsViewModifier<ErrorID: Hashable>: ViewModifier {
+	@SwiftUI.State var store: StoreOf<Errors<ErrorID>>
+
+	public func body(content: Content) -> some View {
+		content
+			.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+			.sheet(
+				item: $store.scope(state: \.destination?.report, action: \.internal.destination.report),
+				onDismiss: { store.send(.view(.didFinishDismissingReport)) },
+				content: { store in
+					ErrorReportView(store: store)
+				}
+			)
+	}
+}
+
 extension View {
-	// TODO: figure out how to enable errorsstate.destination = nil
-//	public func errors<ErrorID: Hashable>(
-//		store: Store<Errors<ErrorID>.State, Errors<ErrorID>.Action>
-//	) -> some View {
-//		self
-//			.sheet(
-//				item: $store.scope(state: \.destination?.report, action: \.internal.destination.report),
-//				onDismiss: { store.send(.view(.didFinishDismissingReport)) },
-//				content: { store in
-//					ErrorReportView(store: store)
-//				}
-//			)
-//	}
+	public func errors<ErrorID: Hashable>(store: StoreOf<Errors<ErrorID>>) -> some View {
+		self.modifier(ErrorsViewModifier(store: store))
+	}
 }

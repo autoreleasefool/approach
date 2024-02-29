@@ -54,8 +54,7 @@ public struct FormView<
 					}
 				}
 			}
-			// TODO: enable errors
-	//		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 			.alert($store.scope(state: \.alert, action: \.view.alert))
 		}
 	}

@@ -85,8 +85,7 @@ public struct StatisticsWidgetLayoutBuilderView: View {
 					}
 				}
 			)
-			// TODO: enable errors
-//			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
 	}
 }
