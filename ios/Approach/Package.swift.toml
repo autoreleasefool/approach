@@ -473,7 +473,7 @@ from = "5.2.0"
 
 [dependencies.Sentry]
 url = "https://github.com/getsentry/sentry-cocoa.git"
-from = "8.20.0"
+from = "8.21.0"
 
 [dependencies.SnapshotTesting]
 suitable_for_dependents_matching = "\\w+Tests$"
