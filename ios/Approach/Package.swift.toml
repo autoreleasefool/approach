@@ -441,11 +441,11 @@ from = "1.0.0"
 
 [dependencies.CocoaLumberjack]
 url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
-from = "3.8.2"
+from = "3.8.4"
 
 [dependencies.CocoaLumberjackSwift]
 url = "https://github.com/CocoaLumberjack/CocoaLumberjack.git"
-from = "3.8.2"
+from = "3.8.4"
 
 [dependencies.GRDB]
 url = "https://github.com/groue/GRDB.swift.git"
