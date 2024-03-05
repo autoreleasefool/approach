@@ -165,7 +165,7 @@ let package = Package(
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.20.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.25.0"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.8.2"),
-		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.2.0"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.2.2"),
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.15.2"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.0"),
