@@ -7,6 +7,7 @@ import Foundation
 import LoggingServiceInterface
 import StringsLibrary
 import SwiftUI
+import ToastLibrary
 
 private let ERROR_REPORT_THRESHOLD = 3
 
@@ -15,35 +16,40 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 	@ObservableState
 	public struct State: Equatable {
 		public var errorCount: [ErrorID: Int] = [:]
-		public var alertQueue: [AlertState<AlertAction>] = []
+		public var toastQueue: [ToastState<ToastAction>] = []
 
 		@Presents public var destination: Destination.State?
 
 		public init() {}
 
-		public mutating func enqueue(_ error: Errors.ErrorAlertState) -> Effect<Errors.Action> {
+		public mutating func enqueue(_ error: Errors.ErrorToastState) -> Effect<Errors.Action> {
 			let timesSeen = errorCount[error.id] ?? 1
 			errorCount[error.id] = timesSeen + 1
 
-			let alert: AlertState<AlertAction> = AlertState {
-				error.message
-			} actions: {
-				if timesSeen >= ERROR_REPORT_THRESHOLD {
-					ButtonState(action: .didTapReportFeedbackButton(error.thrownError)) {
-						TextState(Strings.Action.report)
-					}
-				}
-
-				ButtonState(role: .cancel, action: .didTapDismissButton) {
-					TextState(Strings.Action.dismiss)
-				}
+			let reportButton: ToastState<ToastAction>.Button?
+			if timesSeen >= ERROR_REPORT_THRESHOLD {
+				reportButton = .init(
+					title: Strings.Error.Toast.tapToReport,
+					action: .didTapReportFeedbackButton(error.thrownError)
+				)
+			} else {
+				reportButton = nil
 			}
 
+			let toast: ToastState<ToastAction> = .init(
+				content: .toast(.init(
+					message: error.message,
+					icon: error.icon,
+					button: reportButton
+				)),
+				style: .error
+			)
+
 			if self.destination == nil {
-				self.destination = .alert(alert)
+				self.destination = .toast(toast)
 			} else {
 				// Insert at 0 because we popLast() for FIFO
-				self.alertQueue.insert(alert, at: 0)
+				self.toastQueue.insert(toast, at: 0)
 			}
 
 			return .none
@@ -61,7 +67,7 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
 			case didReceiveReport(AlwaysEqual<Report>)
-			case showNextAlert
+			case showNextToast
 			case destination(PresentationAction<Destination.Action>)
 		}
 
@@ -70,15 +76,29 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 		case `internal`(Internal)
 	}
 
-	@Reducer(state: .equatable)
-	public enum Destination {
-		case report(ErrorReport)
-		case alert(AlertState<AlertAction>)
+	@Reducer
+	public struct Destination: Reducer {
+		public enum State: Equatable {
+			case report(ErrorReport.State)
+			case toast(ToastState<ToastAction>)
+		}
+
+		public enum Action {
+			case report(ErrorReport.Action)
+			case toast(ToastAction)
+		}
+
+		public var body: some ReducerOf<Self> {
+			Scope(state: \.report, action: \.report) {
+				ErrorReport()
+			}
+		}
 	}
 
-	public enum AlertAction: Equatable {
+	public enum ToastAction: Equatable, ToastableAction {
+		case didDismiss
+		case didFinishDismissing
 		case didTapReportFeedbackButton(AlwaysEqual<Error>)
-		case didTapDismissButton
 	}
 
 	public init() {}
@@ -96,15 +116,15 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 					state.destination = nil
 					return .run { send in
 						try await clock.sleep(for: .seconds(1))
-						await send(.internal(.showNextAlert))
+						await send(.internal(.showNextToast))
 					}
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .showNextAlert:
-					if let alert = state.alertQueue.popLast() {
-						state.destination = .alert(alert)
+				case .showNextToast:
+					if let toast = state.toastQueue.popLast() {
+						state.destination = .toast(toast)
 					}
 					return .none
 
@@ -120,8 +140,8 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 				case .destination(.presented(.report(.delegate(.doNothing)))):
 					return .none
 
-				case let .destination(.presented(.alert(alertAction))):
-					switch alertAction {
+				case let .destination(.presented(.toast(toastAction))):
+					switch toastAction {
 					case let .didTapReportFeedbackButton(thrownError):
 						state.destination = nil
 						return .run { send in
@@ -141,9 +161,23 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 							)))))
 						}
 
-					case .didTapDismissButton:
+					case .didDismiss:
 						state.destination = nil
-						return .send(.internal(.showNextAlert))
+						return .none
+
+					case .didFinishDismissing:
+						switch state.destination {
+						case .report:
+							return .none
+						case .toast, .none:
+							break
+						}
+
+						state.destination = nil
+						return .run { send in
+							try await clock.sleep(for: .seconds(1))
+							await send(.internal(.showNextToast))
+						}
 					}
 
 				case .destination(.dismiss),
@@ -157,18 +191,20 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.$destination, action: \.internal.destination)
+		.ifLet(\.$destination, action: \.internal.destination) {
+			Destination()
+		}
 	}
 }
 
 extension Errors {
-	public struct ErrorAlertState: Identifiable, Equatable {
+	public struct ErrorToastState: Identifiable, Equatable {
 		public let id: ErrorID
-		public let message: TextState
+		public let message: String
 		public let icon: SFSymbol?
 		public let thrownError: AlwaysEqual<Error>
 
-		public init(id: ErrorID, thrownError: Error, message: TextState, icon: SFSymbol?) {
+		public init(id: ErrorID, thrownError: Error, message: String, icon: SFSymbol?) {
 			self.id = id
 			self.message = message
 			self.icon = icon
@@ -193,7 +229,7 @@ public struct ErrorsViewModifier<ErrorID: Hashable>: ViewModifier {
 
 	public func body(content: Content) -> some View {
 		content
-			.alert($store.scope(state: \.destination?.alert, action: \.internal.destination.alert))
+			.toast($store.scope(state: \.destination?.toast, action: \.internal.destination.toast))
 			.sheet(
 				item: $store.scope(state: \.destination?.report, action: \.internal.destination.report),
 				onDismiss: { store.send(.view(.didFinishDismissingReport)) },

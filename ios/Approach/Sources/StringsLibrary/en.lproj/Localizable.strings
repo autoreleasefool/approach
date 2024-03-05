@@ -680,6 +680,7 @@
 "error.toast.failedToSave" = "Error saving data";
 "error.toast.itemNotCreated" = "%@ not created";
 "error.toast.itemNotUpdated" = "%@ not updated";
+"error.toast.tapToReport" = "Tap to Report";
 
 "errorReport.reportingAnError" = "Reporting an error?";
 "errorReport.youveEncountered" = "You've encountered the following error a couple times:";
