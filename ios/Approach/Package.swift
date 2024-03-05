@@ -154,6 +154,7 @@ let package = Package(
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
 		.library(name: "TestUtilitiesLibrary", targets: ["TestUtilitiesLibrary"]),
 		.library(name: "TipsLibrary", targets: ["TipsLibrary"]),
+		.library(name: "ToastLibrary", targets: ["ToastLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
 	dependencies: [
@@ -353,6 +354,7 @@ let package = Package(
 				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
 				"PasteboardServiceInterface",
+				"ToastLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -1931,6 +1933,21 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TipsLibrary",
+			]
+		),
+		.target(
+			name: "ToastLibrary",
+			dependencies: [
+				.product(name: "AlertToast", package: "AlertToast"),
+				"AssetsLibrary",
+				"ExtensionsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ToastLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ToastLibrary",
 			]
 		),
 		.target(

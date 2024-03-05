@@ -430,6 +430,8 @@ public enum Strings {
       public static func itemNotUpdated(_ p1: Any) -> String {
         return Strings.tr("Localizable", "error.toast.itemNotUpdated", String(describing: p1), fallback: "%@ not updated")
       }
+      /// Tap to Report
+      public static let tapToReport = Strings.tr("Localizable", "error.toast.tapToReport", fallback: "Tap to Report")
     }
   }
   public enum ErrorReport {

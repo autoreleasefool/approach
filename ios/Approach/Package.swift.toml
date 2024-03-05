@@ -54,7 +54,7 @@ repositories = [ "QuickLaunch" ]
 
 [features.Errors]
 services = [ "Email", "FileManager", "Logging", "Pasteboard" ]
-libraries = [ "Constants", "Equatable", "Views" ]
+libraries = [ "Constants", "Equatable", "Toast", "Views" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -417,6 +417,10 @@ skip_tests = true
 
 [libraries.Tips]
 libraries = [ "Views" ]
+
+[libraries.Toast]
+libraries = [ "Assets", "Extensions" ]
+dependencies = [ "AlertToast" ]
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
