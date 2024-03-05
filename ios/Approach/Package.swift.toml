@@ -457,7 +457,7 @@ from = "1.8.2"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "1.2.0"
+from = "1.2.2"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
