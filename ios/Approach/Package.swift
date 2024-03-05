@@ -169,7 +169,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-identified-collections.git", from: "1.0.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.15.2"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "1.1.0"),
-		.package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.31.3"),
+		.package(url: "https://github.com/RevenueCat/purchases-ios.git", from: "4.37.0"),
 		.package(url: "https://github.com/SFSafeSymbols/SFSafeSymbols.git", from: "4.1.1"),
 		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.5.1"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.18"),
