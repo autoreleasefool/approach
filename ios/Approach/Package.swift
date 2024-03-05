@@ -160,7 +160,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
-		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.2"),
+		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.4"),
 		.package(url: "https://github.com/elai950/AlertToast.git", from: "1.3.9"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.20.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.23.0"),
