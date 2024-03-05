@@ -1,4 +1,5 @@
 import AvatarServiceInterface
+import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import GearRepositoryInterface
@@ -41,8 +42,8 @@ public struct PreferredGear: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
-	@Dependency(\.gear) var gear
+	@Dependency(BowlersRepository.self) var bowlers
+	@Dependency(GearRepository.self) var gear
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in

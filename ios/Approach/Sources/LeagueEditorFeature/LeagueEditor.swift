@@ -140,9 +140,9 @@ public struct LeagueEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.alleys) var alleys
+	@Dependency(AlleysRepository.self) var alleys
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.leagues) var leagues
+	@Dependency(LeaguesRepository.self) var leagues
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -150,7 +150,7 @@ public struct LeagueEditor: Reducer {
 
 		Scope(state: \.form, action: \.internal.form) {
 			LeagueForm()
-				.dependency(\.records, .init(
+				.dependency(RecordPersistence(
 					create: leagues.create,
 					update: leagues.update,
 					delete: { _ in },

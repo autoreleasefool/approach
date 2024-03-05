@@ -71,10 +71,3 @@ extension SeriesRepository: TestDependencyKey {
 		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
 	)
 }
-
-extension DependencyValues {
-	public var series: SeriesRepository {
-		get { self[SeriesRepository.self] }
-		set { self[SeriesRepository.self] = newValue }
-	}
-}

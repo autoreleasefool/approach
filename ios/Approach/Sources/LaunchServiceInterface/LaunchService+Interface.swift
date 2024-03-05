@@ -19,10 +19,3 @@ extension LaunchService: TestDependencyKey {
 		didLaunch: { unimplemented("\(Self.self).didLaunch") }
 	)
 }
-
-extension DependencyValues {
-	public var launch: LaunchService {
-		get { self[LaunchService.self] }
-		set { self[LaunchService.self] = newValue }
-	}
-}

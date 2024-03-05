@@ -16,10 +16,3 @@ extension LocationsRepository: TestDependencyKey {
 		insertOrUpdate: { _ in unimplemented("\(Self.self).insertOrUpdate") }
 	)
 }
-
-extension DependencyValues {
-	public var locations: LocationsRepository {
-		get { self[LocationsRepository.self] }
-		set { self[LocationsRepository.self] = newValue }
-	}
-}

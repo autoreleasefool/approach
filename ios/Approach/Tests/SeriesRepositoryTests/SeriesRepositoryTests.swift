@@ -11,7 +11,7 @@ import XCTest
 
 @MainActor
 final class SeriesRepositoryTests: XCTestCase {
-	@Dependency(\.series) var series
+	@Dependency(SeriesRepository.self) var series
 
 	// MARK: List
 

@@ -56,7 +56,7 @@ public struct MatchPlayEditor: Reducer {
 
 	enum CancelID { case savingScore }
 
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.dismiss) var dismiss
 

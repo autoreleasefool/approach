@@ -34,7 +34,7 @@ public struct AvatarView: View {
 		}
 		.task(id: avatar) {
 			guard let avatar else { return }
-			@Dependency(\.avatars) var avatars
+			@Dependency(AvatarService.self) var avatars
 			image = await avatars.render(avatar)
 		}
 	}

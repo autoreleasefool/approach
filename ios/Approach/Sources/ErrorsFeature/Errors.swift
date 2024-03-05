@@ -104,8 +104,8 @@ public struct Errors<ErrorID: Hashable>: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.email) var email
-	@Dependency(\.logging) var logging
+	@Dependency(EmailService.self) var email
+	@Dependency(LoggingService.self) var logging
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in

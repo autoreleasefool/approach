@@ -18,8 +18,8 @@ public struct ContentView: View {
 			reducer: {
 				App()
 					._printChanges()
-					.dependency(\.databaseMocking, .init(mockDatabase: {
-						@Dependency(\.database) var database
+					.dependency(DatabaseMockingService(mockDatabase: {
+						@Dependency(DatabaseService.self) var database
 						let writer = database.writer()
 						_ = try generatePopulatedDatabase(db: writer)
 					}))

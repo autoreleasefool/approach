@@ -8,7 +8,7 @@ import RepositoryLibrary
 
 extension FramesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
+		@Dependency(DatabaseService.self) var database
 
 		return Self(
 			observe: { game in

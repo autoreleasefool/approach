@@ -21,10 +21,10 @@ public struct AppIconList: Reducer {
 		public var isProEnabled: Bool
 
 		init() {
-			@Dependency(\.featureFlags) var features
+			@Dependency(FeatureFlagsService.self) var features
 			self.isPurchasesEnabled = features.isEnabled(.purchases)
 
-			@Dependency(\.products) var products
+			@Dependency(ProductsService.self) var products
 			self.isProEnabled = products.peekIsAvailable(.proSubscription)
 		}
 	}
@@ -49,7 +49,7 @@ public struct AppIconList: Reducer {
 		case `internal`(Internal)
 	}
 
-	@Dependency(\.appIcon) var appIcon
+	@Dependency(AppIconService.self) var appIcon
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -214,7 +214,7 @@ struct AppIconListViewPreviews: PreviewProvider {
 					initialState: .init(),
 					reducer: { AppIconList() },
 					withDependencies: {
-						$0.appIcon.getAppIconName = { nil }
+						$0[AppIconService.self].getAppIconName = { @Sendable in nil }
 					}
 				)
 			)

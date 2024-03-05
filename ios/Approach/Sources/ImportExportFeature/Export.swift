@@ -20,7 +20,7 @@ public struct Export: Reducer {
 		public var errorMessage: String? = "Error"
 
 		public init() {
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			self.lastExportAt = Date(timeIntervalSince1970: preferences.double(forKey: .dataLastExportDate) ?? 0)
 		}
 
@@ -46,8 +46,8 @@ public struct Export: Reducer {
 	public init() {}
 
 	@Dependency(\.date) var  date
-	@Dependency(\.export) var export
-	@Dependency(\.preferences) var preferences
+	@Dependency(ExportService.self) var export
+	@Dependency(PreferenceService.self) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in

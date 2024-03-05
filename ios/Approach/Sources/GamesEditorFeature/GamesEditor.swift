@@ -211,17 +211,17 @@ public struct GamesEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.frames) var frames
-	@Dependency(\.games) var games
-	@Dependency(\.gear) var gear
-	@Dependency(\.matchPlays) var matchPlays
-	@Dependency(\.recentlyUsed) var recentlyUsed
-	@Dependency(\.scores) var scores
-	@Dependency(\.storeReview) var storeReview
+	@Dependency(FramesRepository.self) var frames
+	@Dependency(GamesRepository.self) var games
+	@Dependency(GearRepository.self) var gear
+	@Dependency(MatchPlaysRepository.self) var matchPlays
+	@Dependency(RecentlyUsedService.self) var recentlyUsed
+	@Dependency(ScoresRepository.self) var scores
+	@Dependency(StoreReviewService.self) var storeReview
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

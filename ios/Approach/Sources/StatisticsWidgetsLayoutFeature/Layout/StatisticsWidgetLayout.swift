@@ -7,6 +7,7 @@ import StatisticsChartsLibrary
 import StatisticsDetailsFeature
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
+import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -78,7 +79,7 @@ public struct StatisticsWidgetLayout: Reducer {
 
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
-	@Dependency(\.statisticsWidgets) var statisticsWidgets
+	@Dependency(StatisticsWidgetsRepository.self) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: \.internal.errors) {

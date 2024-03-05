@@ -3,6 +3,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
 import GamesListFeature
 import GearRepositoryInterface
 import LeagueEditorFeature
@@ -76,7 +77,7 @@ public struct LeaguesList: Reducer {
 				)
 			)
 
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInLeagueList) != true
 		}
 	}
@@ -130,12 +131,12 @@ public struct LeaguesList: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.featureFlags) var featureFlags
-	@Dependency(\.gear) var gear
-	@Dependency(\.leagues) var leagues
-	@Dependency(\.preferences) var preferences
-	@Dependency(\.recentlyUsed) var recentlyUsed
-	@Dependency(\.series) var series
+	@Dependency(FeatureFlagsService.self) var featureFlags
+	@Dependency(GearRepository.self) var gear
+	@Dependency(LeaguesRepository.self) var leagues
+	@Dependency(PreferenceService.self) var preferences
+	@Dependency(RecentlyUsedService.self) var recentlyUsed
+	@Dependency(SeriesRepository.self) var series
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

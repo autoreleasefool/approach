@@ -36,10 +36,3 @@ extension FeatureFlagsService: TestDependencyKey {
 		resetOverrides: { unimplemented("\(Self.self).resetOverrides") }
 	)
 }
-
-extension DependencyValues {
-	public var featureFlags: FeatureFlagsService {
-		get { self[FeatureFlagsService.self] }
-		set { self[FeatureFlagsService.self] = newValue }
-	}
-}

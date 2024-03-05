@@ -46,7 +46,7 @@ public struct OpponentDetails: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: \.internal.errors) {

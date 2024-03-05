@@ -9,7 +9,7 @@ import XCTest
 
 @MainActor
 final class StatisticsRepositorySourcesTests: XCTestCase {
-	@Dependency(\.statistics) var statistics
+	@Dependency(StatisticsRepository.self) var statistics
 
 	// MARK: Load Default Sources
 

@@ -204,7 +204,7 @@ public struct Form<
 
 	public init() {}
 
-	@Dependency(\.records) var records
+	@Dependency(RecordPersistence.self) var records
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: \.internal.errors) {

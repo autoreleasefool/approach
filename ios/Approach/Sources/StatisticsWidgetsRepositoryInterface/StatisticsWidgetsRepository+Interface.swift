@@ -52,10 +52,3 @@ extension StatisticsWidgetsRepository: TestDependencyKey {
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }
-
-extension DependencyValues {
-	public var statisticsWidgets: StatisticsWidgetsRepository {
-		get { self[StatisticsWidgetsRepository.self] }
-		set { self[StatisticsWidgetsRepository.self] = newValue }
-	}
-}

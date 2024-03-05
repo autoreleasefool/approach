@@ -4,7 +4,7 @@ import PreferenceServiceInterface
 import XCTest
 
 final class PreferenceServiceTests: XCTestCase {
-	@Dependency(\.preferences) var preferences
+	@Dependency(PreferenceService.self) var preferences
 
 	func testRemovesKey() {
 		withDependencies {

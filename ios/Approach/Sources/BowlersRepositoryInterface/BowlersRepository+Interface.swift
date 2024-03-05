@@ -86,10 +86,3 @@ extension BowlersRepository: TestDependencyKey {
 		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
 	)
 }
-
-extension DependencyValues {
-	public var bowlers: BowlersRepository {
-		get { self[BowlersRepository.self] }
-		set { self[BowlersRepository.self] = newValue }
-	}
-}

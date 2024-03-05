@@ -12,7 +12,7 @@ import XCTest
 
 @MainActor
 final class StatisticsRepositoryLoadChartsTests: XCTestCase {
-	@Dependency(\.statistics) var statistics
+	@Dependency(StatisticsRepository.self) var statistics
 
 	// MARK: - Empty
 

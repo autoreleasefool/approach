@@ -38,7 +38,7 @@ public struct FeatureFlagsList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.featureFlags) var featureFlagService
+	@Dependency(FeatureFlagsService.self) var featureFlagService
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in

@@ -40,10 +40,3 @@ extension ProductsService: TestDependencyKey {
 		restore: { unimplemented("\(Self.self).restore") }
 	)
 }
-
-extension DependencyValues {
-	public var products: ProductsService {
-		get { self[ProductsService.self] }
-		set { self[ProductsService.self] = newValue }
-	}
-}

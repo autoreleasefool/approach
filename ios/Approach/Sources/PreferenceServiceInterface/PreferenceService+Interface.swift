@@ -87,10 +87,3 @@ extension PreferenceService: TestDependencyKey {
 		observe: { _ in unimplemented("\(Self.self).observe") }
 	)}()
 }
-
-extension DependencyValues {
-	public var preferences: PreferenceService {
-		get { self[PreferenceService.self] }
-		set { self[PreferenceService.self] = newValue }
-	}
-}

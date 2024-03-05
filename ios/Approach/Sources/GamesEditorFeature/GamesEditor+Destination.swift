@@ -23,8 +23,8 @@ extension GamesEditor {
 			case sharing(Sharing.Action)
 		}
 
-		@Dependency(\.bowlers) var bowlers
-		@Dependency(\.gear) var gear
+		@Dependency(BowlersRepository.self) var bowlers
+		@Dependency(GearRepository.self) var gear
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: \.settings, action: \.settings) {

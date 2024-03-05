@@ -5,7 +5,7 @@ import RecentlyUsedServiceInterface
 import XCTest
 
 final class RecentlyUsedServiceTests: XCTestCase {
-	@Dependency(\.recentlyUsed) var recentlyUsed
+	@Dependency(RecentlyUsedService.self) var recentlyUsed
 
 	static let encoder: JSONEncoder = {
 		let encoder = JSONEncoder()

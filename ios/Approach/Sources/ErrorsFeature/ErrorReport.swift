@@ -26,7 +26,7 @@ public struct ErrorReport: Reducer {
 
 		var logData: Data? {
 			guard let logDataUrl else { return nil }
-			@Dependency(\.fileManager) var fileManager
+			@Dependency(FileManagerService.self) var fileManager
 			return try? fileManager.getFileContents(logDataUrl)
 		}
 
@@ -72,7 +72,7 @@ public struct ErrorReport: Reducer {
 
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.openURL) var openURL
-	@Dependency(\.pasteboard) var pasteboard
+	@Dependency(PasteboardService.self) var pasteboard
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

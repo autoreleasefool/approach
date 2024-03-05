@@ -17,10 +17,3 @@ extension UIDeviceNotifications: TestDependencyKey {
 		orientationDidChange: { unimplemented("\(Self.self).orientationDidChange") }
 	)
 }
-
-extension DependencyValues {
-	public var uiDeviceNotifications: UIDeviceNotifications {
-		get { self[UIDeviceNotifications.self] }
-		set { self[UIDeviceNotifications.self] = newValue }
-	}
-}

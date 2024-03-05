@@ -27,10 +27,3 @@ extension ExportService: TestDependencyKey {
 		cleanUp: { unimplemented("\(Self.self).cleanUp") }
 	)
 }
-
-extension DependencyValues {
-	public var export: ExportService {
-		get { self[ExportService.self] }
-		set { self[ExportService.self] = newValue }
-	}
-}

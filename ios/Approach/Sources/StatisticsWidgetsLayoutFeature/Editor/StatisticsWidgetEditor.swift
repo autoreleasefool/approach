@@ -71,7 +71,7 @@ public struct StatisticsWidgetEditor: Reducer {
 			self.initialSource = source
 			self.source = source
 
-			@Dependency(\.tips) var tips
+			@Dependency(TipsService.self) var tips
 			self.isShowingTapThroughTip = tips.shouldShow(tipFor: .tapThroughStatisticTip)
 		}
 	}
@@ -124,8 +124,8 @@ public struct StatisticsWidgetEditor: Reducer {
 			case statisticPicker(StatisticPicker.Action)
 		}
 
-		@Dependency(\.bowlers) var bowlers
-		@Dependency(\.leagues) var leagues
+		@Dependency(BowlersRepository.self) var bowlers
+		@Dependency(LeaguesRepository.self) var leagues
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
@@ -158,8 +158,8 @@ public struct StatisticsWidgetEditor: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.statisticsWidgets) var statisticsWidgets
-	@Dependency(\.tips) var tips
+	@Dependency(StatisticsWidgetsRepository.self) var statisticsWidgets
+	@Dependency(TipsService.self) var tips
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

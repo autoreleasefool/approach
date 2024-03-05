@@ -10,7 +10,7 @@ import XCTest
 
 @MainActor
 final class LanesRepositoryTests: XCTestCase {
-	@Dependency(\.lanes) var lanes
+	@Dependency(LanesRepository.self) var lanes
 
 	// MARK: List
 

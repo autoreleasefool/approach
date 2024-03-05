@@ -12,9 +12,9 @@ extension ExportService: DependencyKey {
 		return Self(
 			exportDatabase: {
 				.init { continuation in
-					@Dependency(\.database) var database
+					@Dependency(DatabaseService.self) var database
 					@Dependency(\.date) var date
-					@Dependency(\.fileManager) var fileManager
+					@Dependency(FileManagerService.self) var fileManager
 
 					do {
 						let backupFileName = "approach_data_\(date().machineDateFormat).sqlite"
@@ -35,7 +35,7 @@ extension ExportService: DependencyKey {
 				}
 			},
 			cleanUp: {
-				@Dependency(\.fileManager) var fileManager
+				@Dependency(FileManagerService.self) var fileManager
 
 				exportCache.withValue {
 					for fileName in $0 {

@@ -15,8 +15,8 @@ extension ScoresRepository: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
 			observeScore: { gameId in
-				@Dependency(\.frames) var framesRepository
-				@Dependency(\.games) var gamesRepository
+				@Dependency(FramesRepository.self) var framesRepository
+				@Dependency(GamesRepository.self) var gamesRepository
 				return .init { continuation in
 					let task = Task {
 						do {

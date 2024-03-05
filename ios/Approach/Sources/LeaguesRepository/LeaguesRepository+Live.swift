@@ -10,8 +10,8 @@ import StatisticsModelsLibrary
 
 extension LeaguesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
-		@Dependency(\.recentlyUsed) var recentlyUsed
+		@Dependency(DatabaseService.self) var database
+		@Dependency(RecentlyUsedService.self) var recentlyUsed
 		@Dependency(\.uuid) var uuid
 		@Dependency(\.date) var date
 

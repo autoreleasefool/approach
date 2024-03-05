@@ -5,13 +5,16 @@ import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
 import DatabaseMockingServiceInterface
+import EmailServiceInterface
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsListFeature
 import FeatureFlagsServiceInterface
 import Foundation
 import ImportExportFeature
+import ImportExportServiceInterface
 import OpponentsListFeature
+import PasteboardServiceInterface
 import StringsLibrary
 
 @Reducer
@@ -33,7 +36,7 @@ public struct Settings: Reducer {
 		public let isDeveloperOptionsEnabled: Bool
 
 		public init() {
-			@Dependency(\.featureFlags) var featureFlags
+			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
 			self.isDeveloperOptionsEnabled = featureFlags.isEnabled(.developerOptions)
@@ -96,13 +99,13 @@ public struct Settings: Reducer {
 		case didTapDismissButton
 	}
 
-	@Dependency(\.analytics) var analytics
-	@Dependency(\.appIcon) var appIcon
-	@Dependency(\.databaseMocking) var databaseMocking
-	@Dependency(\.email) var email
-	@Dependency(\.export) var export
+	@Dependency(AnalyticsService.self) var analytics
+	@Dependency(AppIconService.self) var appIcon
+	@Dependency(DatabaseMockingService.self) var databaseMocking
+	@Dependency(EmailService.self) var email
+	@Dependency(ExportService.self) var export
 	@Dependency(\.openURL) var openURL
-	@Dependency(\.pasteboard) var pasteboard
+	@Dependency(PasteboardService.self) var pasteboard
 
 	public init() {}
 

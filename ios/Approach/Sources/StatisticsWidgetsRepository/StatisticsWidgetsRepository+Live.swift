@@ -7,8 +7,8 @@ import StatisticsWidgetsRepositoryInterface
 
 extension StatisticsWidgetsRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
-		@Dependency(\.statistics) var statistics
+		@Dependency(DatabaseService.self) var database
+		@Dependency(StatisticsRepository.self) var statistics
 
 		return Self(
 			loadSources: { source in try await statistics.loadWidgetSources(source) },

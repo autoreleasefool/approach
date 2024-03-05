@@ -13,7 +13,7 @@ extension AnalyticsService: DependencyKey {
 		let gameSessionID: LockIsolated<UUID?> = .init(nil)
 
 		@Sendable func getOptInStatus() -> Analytics.OptInStatus {
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			return Analytics.OptInStatus(rawValue: preferences.string(forKey: .analyticsOptInStatus) ?? "") ?? .optedIn
 		}
 
@@ -62,7 +62,7 @@ extension AnalyticsService: DependencyKey {
 			},
 			getOptInStatus: getOptInStatus,
 			setOptInStatus: { newValue in
-				@Dependency(\.preferences) var preferences
+				@Dependency(PreferenceService.self) var preferences
 				preferences.setKey(.analyticsOptInStatus, toString: newValue.rawValue)
 
 				TelemetryManager.terminate()
