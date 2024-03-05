@@ -5,7 +5,7 @@ import Dependencies
 import XCTest
 
 final class StoreReviewServiceTests: XCTestCase {
-	@Dependency(\.storeReview) var storeReview
+	@Dependency(StoreReviewService.self) var storeReview
 
 	func testShouldRequestReview_WithoutSessions_IsFalse() {
 		withDependencies {

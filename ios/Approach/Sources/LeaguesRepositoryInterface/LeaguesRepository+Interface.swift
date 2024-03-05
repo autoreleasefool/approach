@@ -89,10 +89,3 @@ extension LeaguesRepository: TestDependencyKey {
 		unarchive: { _ in unimplemented("\(Self.self).unarchive") }
 	)
 }
-
-extension DependencyValues {
-	public var leagues: LeaguesRepository {
-		get { self[LeaguesRepository.self] }
-		set { self[LeaguesRepository.self] = newValue }
-	}
-}

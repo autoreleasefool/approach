@@ -50,7 +50,7 @@ public struct TabbedContent: Reducer {
 
 	public init() {}
 
-	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(FeatureFlagsService.self) var featureFlags
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

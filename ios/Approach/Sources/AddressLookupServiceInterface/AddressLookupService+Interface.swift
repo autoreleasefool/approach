@@ -25,10 +25,3 @@ extension AddressLookupService: TestDependencyKey {
 		lookUpAddress: { _ in unimplemented("\(Self.self).lookUpAddress") }
 	)
 }
-
-extension DependencyValues {
-	public var addressLookup: AddressLookupService {
-		get { self[AddressLookupService.self] }
-		set { self[AddressLookupService.self] = newValue }
-	}
-}

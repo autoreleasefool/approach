@@ -18,7 +18,7 @@ public struct StatisticsSettings: Reducer {
 		public var isHidingWidgetsInLeagueList: Bool
 
 		init() {
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
 			self.isHidingStatisticsDescriptions = preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false
 			self.isCountingH2AsH = preferences.bool(forKey: .statisticsCountH2AsH) ?? true
@@ -41,7 +41,7 @@ public struct StatisticsSettings: Reducer {
 		case binding(BindingAction<State>)
 	}
 
-	@Dependency(\.preferences) var preferences
+	@Dependency(PreferenceService.self) var preferences
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

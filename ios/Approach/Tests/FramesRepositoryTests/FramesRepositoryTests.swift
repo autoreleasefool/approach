@@ -10,7 +10,7 @@ import XCTest
 
 @MainActor
 final class FramesRepositoryTests: XCTestCase {
-	@Dependency(\.frames) var frames
+	@Dependency(FramesRepository.self) var frames
 
 	// MARK: - Observe
 

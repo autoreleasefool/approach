@@ -13,8 +13,8 @@ typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
 extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
-		@Dependency(\.recentlyUsed) var recentlyUsed
+		@Dependency(DatabaseService.self) var database
+		@Dependency(RecentlyUsedService.self) var recentlyUsed
 
 		return Self(
 			list: { ordering in

@@ -4,7 +4,7 @@ import Dependencies
 import XCTest
 
 final class AppInfoServiceTests: XCTestCase {
-	@Dependency(\.appInfo) var appInfo
+	@Dependency(AppInfoService.self) var appInfo
 
 	func testRecordNewSession_IncrementsSessionCount() async {
 		let sessionCount = LockIsolated(99)

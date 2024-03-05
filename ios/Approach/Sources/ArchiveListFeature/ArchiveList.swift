@@ -82,10 +82,10 @@ public struct ArchiveList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
-	@Dependency(\.leagues) var leagues
-	@Dependency(\.series) var series
-	@Dependency(\.games) var games
+	@Dependency(BowlersRepository.self) var bowlers
+	@Dependency(LeaguesRepository.self) var leagues
+	@Dependency(SeriesRepository.self) var series
+	@Dependency(GamesRepository.self) var games
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: \.internal.errors) {

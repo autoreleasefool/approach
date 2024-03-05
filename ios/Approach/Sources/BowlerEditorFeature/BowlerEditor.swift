@@ -65,7 +65,7 @@ public struct BowlerEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.dismiss) var dismiss
 	@Dependency(\.uuid) var uuid
 
@@ -74,7 +74,7 @@ public struct BowlerEditor: Reducer {
 
 		Scope(state: \.form, action: \.internal.form) {
 			BowlerForm()
-				.dependency(\.records, .init(
+				.dependency(RecordPersistence(
 					create: bowlers.create,
 					update: bowlers.update,
 					delete: { _ in },

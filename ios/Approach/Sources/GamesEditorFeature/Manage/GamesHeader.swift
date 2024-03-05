@@ -19,10 +19,10 @@ public struct GamesHeader: Reducer {
 		public var isFlashEditorChangesEnabled: Bool
 
 		init() {
-			@Dependency(\.featureFlags) var featureFlags
+			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
 
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
 	}
@@ -53,7 +53,7 @@ public struct GamesHeader: Reducer {
 	enum CancelID { case shimmering }
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.preferences) var preferences
+	@Dependency(PreferenceService.self) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -171,7 +171,11 @@ struct GamesHeaderPreview: PreviewProvider {
 			initialState: GamesHeader.State(),
 			reducer: {
 				GamesHeader()
-					.dependency(\.featureFlags.isEnabled, { _ in true })
+					.dependency({ () -> FeatureFlagsService in
+						var service = FeatureFlagsService.testValue
+						service.isEnabled = { @Sendable _ in true }
+						return service
+					}())
 			}
 		))
 		.background(.black)

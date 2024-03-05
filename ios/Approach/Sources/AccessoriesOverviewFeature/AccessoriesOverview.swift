@@ -100,8 +100,8 @@ public struct AccessoriesOverview: Reducer {
 
 	public init() {}
 
-	@Dependency(\.alleys) var alleys
-	@Dependency(\.gear) var gear
+	@Dependency(AlleysRepository.self) var alleys
+	@Dependency(GearRepository.self) var gear
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

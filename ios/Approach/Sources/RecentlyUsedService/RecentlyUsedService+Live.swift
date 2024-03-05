@@ -13,7 +13,7 @@ extension RecentlyUsedService: DependencyKey {
 	public static var maximumEntries: Int { 20 }
 
 	public static var liveValue: Self = {
-		@Dependency(\.preferences) var preferences
+		@Dependency(PreferenceService.self) var preferences
 		@Dependency(\.date) var date
 
 		// FIXME: Replace with a @Dependency
@@ -44,7 +44,7 @@ extension RecentlyUsedService: DependencyKey {
 				recentlyUsed = Array(recentlyUsed.prefix(maximumEntries - 1))
 				recentlyUsed.insert(entry, at: 0)
 
-				@Dependency(\.jsonEncoder) var encoder
+				@Dependency(JSONEncoderService.self) var encoder
 				guard let recentlyUsedData = try? encoder.encode(recentlyUsed),
 							let recentlyUsedString = String(data: recentlyUsedData, encoding: .utf8) else {
 					return

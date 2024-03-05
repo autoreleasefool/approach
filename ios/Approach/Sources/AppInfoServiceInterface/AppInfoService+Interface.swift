@@ -32,10 +32,3 @@ extension AppInfoService: TestDependencyKey {
 		appVersion: { unimplemented("\(Self.self).appVersion") }
 	)
 }
-
-extension DependencyValues {
-	public var appInfo: AppInfoService {
-		get { self[AppInfoService.self] }
-		set { self[AppInfoService.self] = newValue }
-	}
-}

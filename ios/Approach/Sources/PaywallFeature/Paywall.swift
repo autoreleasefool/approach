@@ -22,7 +22,7 @@ public struct Paywall: Reducer {
 		public init(product: Product) {
 			self.product = product
 
-			@Dependency(\.products) var products
+			@Dependency(ProductsService.self) var products
 			self.isProductAvailable = products.peekIsAvailable(product)
 		}
 
@@ -59,7 +59,7 @@ public struct Paywall: Reducer {
 	public init() {}
 
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.products) var products
+	@Dependency(ProductsService.self) var products
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

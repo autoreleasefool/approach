@@ -7,6 +7,7 @@ import ReorderingLibrary
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsWidgetsLibrary
+import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
 import SwiftUI
 
@@ -83,7 +84,7 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.statisticsWidgets) var statisticsWidgets
+	@Dependency(StatisticsWidgetsRepository.self) var statisticsWidgets
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

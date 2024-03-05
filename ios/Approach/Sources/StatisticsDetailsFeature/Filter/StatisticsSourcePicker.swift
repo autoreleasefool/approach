@@ -91,10 +91,10 @@ public struct StatisticsSourcePicker: Reducer {
 			case gamePicker(ResourcePicker<Game.Summary, Series.ID>.Action)
 		}
 
-		@Dependency(\.bowlers) var bowlers
-		@Dependency(\.games) var games
-		@Dependency(\.leagues) var leagues
-		@Dependency(\.series) var series
+		@Dependency(BowlersRepository.self) var bowlers
+		@Dependency(GamesRepository.self) var games
+		@Dependency(LeaguesRepository.self) var leagues
+		@Dependency(SeriesRepository.self) var series
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
@@ -119,7 +119,7 @@ public struct StatisticsSourcePicker: Reducer {
 	public init() {}
 
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.statistics) var statistics
+	@Dependency(StatisticsRepository.self) var statistics
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: \.internal.errors) {

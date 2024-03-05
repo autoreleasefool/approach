@@ -57,7 +57,7 @@ public struct AddressLookup: Reducer {
 
 	public init() {}
 
-	@Dependency(\.addressLookup) var addressLookup
+	@Dependency(AddressLookupService.self) var addressLookup
 	@Dependency(\.dismiss) var dismiss
 
 	public var body: some ReducerOf<Self> {

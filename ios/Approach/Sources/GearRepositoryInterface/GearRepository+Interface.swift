@@ -76,10 +76,3 @@ extension GearRepository: TestDependencyKey {
 		updatePreferredGear: { _, _ in unimplemented("\(Self.self).updatePreferredGear") }
 	)
 }
-
-extension DependencyValues {
-	public var gear: GearRepository {
-		get { self[GearRepository.self] }
-		set { self[GearRepository.self] = newValue }
-	}
-}

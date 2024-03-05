@@ -52,10 +52,3 @@ extension LoggingService: TestDependencyKey {
 		fetchLogData: { unimplemented("\(Self.self).initialize") }
 	)
 }
-
-extension DependencyValues {
-	public var logging: LoggingService {
-		get { self[LoggingService.self] }
-		set { self[LoggingService.self] = newValue }
-	}
-}

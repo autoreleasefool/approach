@@ -11,9 +11,9 @@ import StatisticsModelsLibrary
 
 extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
-		@Dependency(\.recentlyUsed) var recentlyUsed
-		@Dependency(\.locations) var locations
+		@Dependency(DatabaseService.self) var database
+		@Dependency(RecentlyUsedService.self) var recentlyUsed
+		@Dependency(LocationsRepository.self) var locations
 
 		return Self(
 			list: { material, pinFall, mechanism, pinBase, ordering in

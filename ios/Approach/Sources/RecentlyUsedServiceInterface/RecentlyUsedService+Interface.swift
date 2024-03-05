@@ -55,10 +55,3 @@ extension RecentlyUsedService: TestDependencyKey {
 		resetRecentlyUsed: { _ in unimplemented("\(Self.self).resetRecentlyUsed") }
 	)
 }
-
-extension DependencyValues {
-	public var recentlyUsed: RecentlyUsedService {
-		get { self[RecentlyUsedService.self] }
-		set { self[RecentlyUsedService.self] = newValue }
-	}
-}

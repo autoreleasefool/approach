@@ -20,10 +20,3 @@ extension ScoresRepository: TestDependencyKey {
 		observeScore: { _ in unimplemented("\(Self.self).observeScore") }
 	)
 }
-
-extension DependencyValues {
-	public var scores: ScoresRepository {
-		get { self[ScoresRepository.self] }
-		set { self[ScoresRepository.self] = newValue }
-	}
-}

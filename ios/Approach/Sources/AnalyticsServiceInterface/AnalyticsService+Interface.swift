@@ -48,10 +48,3 @@ extension AnalyticsService: TestDependencyKey {
 		forceCrash: { unimplemented("\(Self.self).forceCrash") }
 	)
 }
-
-extension DependencyValues {
-	public var analytics: AnalyticsService {
-		get { self[AnalyticsService.self] }
-		set { self[AnalyticsService.self] = newValue }
-	}
-}

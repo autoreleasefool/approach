@@ -16,10 +16,3 @@ extension QuickLaunchRepository: TestDependencyKey {
 		defaultSource: { unimplemented("\(Self.self).defaultSource") }
 	)
 }
-
-extension DependencyValues {
-	public var quickLaunch: QuickLaunchRepository {
-		get { self[QuickLaunchRepository.self] }
-		set { self[QuickLaunchRepository.self] = newValue }
-	}
-}

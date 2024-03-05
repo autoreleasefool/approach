@@ -99,8 +99,8 @@ public struct Sharing: Reducer {
 	public init() {}
 
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.games) var games
-	@Dependency(\.scores) var scores
+	@Dependency(GamesRepository.self) var games
+	@Dependency(ScoresRepository.self) var scores
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

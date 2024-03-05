@@ -109,8 +109,8 @@ public struct GameDetails: Reducer {
 			case statistics(MidGameStatisticsDetails.Action)
 		}
 
-		@Dependency(\.gear) var gear
-		@Dependency(\.lanes) var lanes
+		@Dependency(GearRepository.self) var gear
+		@Dependency(LanesRepository.self) var lanes
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: \.lanePicker, action: \.lanePicker) {
@@ -136,9 +136,9 @@ public struct GameDetails: Reducer {
 		case observation
 	}
 
-	@Dependency(\.games) var games
-	@Dependency(\.matchPlays) var matchPlays
-	@Dependency(\.statistics) var statistics
+	@Dependency(GamesRepository.self) var games
+	@Dependency(MatchPlaysRepository.self) var matchPlays
+	@Dependency(StatisticsRepository.self) var statistics
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

@@ -111,11 +111,11 @@ public struct SeriesEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.alleys) var alleys
+	@Dependency(AlleysRepository.self) var alleys
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.series) var series
+	@Dependency(SeriesRepository.self) var series
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -123,7 +123,7 @@ public struct SeriesEditor: Reducer {
 
 		Scope(state: \.form, action: \.internal.form) {
 			SeriesForm()
-				.dependency(\.records, .init(
+				.dependency(RecordPersistence(
 					create: series.create,
 					update: series.update,
 					delete: { _ in },

@@ -74,7 +74,7 @@ public struct AlleyLanesEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.lanes) var lanes
+	@Dependency(LanesRepository.self) var lanes
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

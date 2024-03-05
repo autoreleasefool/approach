@@ -8,7 +8,7 @@ public struct BreadcrumbReducer<State, Action>: Reducer {
 		self.reducer = reducer
 	}
 
-	@Dependency(\.analytics) var analytics
+	@Dependency(AnalyticsService.self) var analytics
 
 	public var body: some Reducer<State, Action> {
 		Reduce { state, action in

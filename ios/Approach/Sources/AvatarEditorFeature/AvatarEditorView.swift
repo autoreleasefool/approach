@@ -112,7 +112,7 @@ struct AvatarEditorViewPreview: PreviewProvider {
 				initialState: AvatarEditor.State(avatar: .init(id: UUID(), value: .text("Ye", .rgb(.default)))),
 				reducer: AvatarEditor.init
 			) {
-				$0.avatars.render = { _ in Asset.Media.Charts.error.image }
+				$0[AvatarService.self].render = { @Sendable _ in Asset.Media.Charts.error.image }
 			})
 		}
 	}

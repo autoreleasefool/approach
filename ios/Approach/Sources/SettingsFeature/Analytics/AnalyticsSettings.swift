@@ -13,7 +13,7 @@ public struct AnalyticsSettings: Reducer {
 		public var analyticsOptIn: Bool
 
 		public init() {
-			@Dependency(\.analytics) var analytics
+			@Dependency(AnalyticsService.self) var analytics
 			switch analytics.getOptInStatus() {
 			case .optedIn:
 				self.analyticsOptIn = true
@@ -40,7 +40,7 @@ public struct AnalyticsSettings: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
+	@Dependency(AnalyticsService.self) var analytics
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
@@ -132,7 +132,7 @@ struct AnalyticsSettingsPreview: PreviewProvider {
 		NavigationStack {
 			AnalyticsSettingsView(store: .init(
 				initialState: withDependencies {
-					$0.analytics = .init(
+					$0[AnalyticsService.self] = .init(
 						initialize: { },
 						setGlobalProperty: { _, _ in },
 						trackEvent: { _ in },

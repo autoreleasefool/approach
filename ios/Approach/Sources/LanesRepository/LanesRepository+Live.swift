@@ -7,7 +7,7 @@ import ModelsLibrary
 
 extension LanesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
+		@Dependency(DatabaseService.self) var database
 
 		return Self(
 			list: { alley in

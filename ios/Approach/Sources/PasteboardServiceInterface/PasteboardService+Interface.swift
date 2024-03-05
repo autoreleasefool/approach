@@ -15,10 +15,3 @@ extension PasteboardService: TestDependencyKey {
 		copyToClipboard: { _ in unimplemented("\(Self.self).copyToClipboard") }
 	)
 }
-
-extension DependencyValues {
-	public var pasteboard: PasteboardService {
-		get { self[PasteboardService.self] }
-		set { self[PasteboardService.self] = newValue }
-	}
-}

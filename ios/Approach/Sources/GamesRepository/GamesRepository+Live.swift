@@ -10,8 +10,8 @@ import RepositoryLibrary
 
 extension GamesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
-		@Dependency(\.matchPlays) var matchPlays
+		@Dependency(DatabaseService.self) var database
+		@Dependency(MatchPlaysRepository.self) var matchPlays
 
 		@Sendable func requestList(forSeries: Series.ID, ordering: Game.Ordering) -> QueryInterfaceRequest<Game.Database> {
 			switch ordering {

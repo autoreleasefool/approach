@@ -10,7 +10,7 @@ import XCTest
 
 @MainActor
 final class MatchPlaysRepositoryTests: XCTestCase {
-	@Dependency(\.matchPlays) var matchPlays
+	@Dependency(MatchPlaysRepository.self) var matchPlays
 
 	// MARK: Create
 

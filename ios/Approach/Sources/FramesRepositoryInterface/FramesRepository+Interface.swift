@@ -25,10 +25,3 @@ extension FramesRepository: TestDependencyKey {
 		update: { _ in unimplemented("\(Self.self).update") }
 	)
 }
-
-extension DependencyValues {
-	public var frames: FramesRepository {
-		get { self[FramesRepository.self] }
-		set { self[FramesRepository.self] = newValue }
-	}
-}

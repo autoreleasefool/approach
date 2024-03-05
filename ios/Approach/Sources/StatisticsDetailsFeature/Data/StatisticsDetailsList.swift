@@ -28,11 +28,11 @@ public struct StatisticsDetailsList: Reducer {
 			self.listEntries = listEntries
 			self.hasTappableElements = hasTappableElements
 
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
 			self.isHidingStatisticsDescriptions = preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false
 
-			@Dependency(\.tips) var tips
+			@Dependency(TipsService.self) var tips
 			self.isShowingStatisticDescriptionTip = tips.shouldShow(tipFor: .statisticsDescriptionTip)
 		}
 	}
@@ -63,8 +63,8 @@ public struct StatisticsDetailsList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.preferences) var preferences
-	@Dependency(\.tips) var tips
+	@Dependency(PreferenceService.self) var preferences
+	@Dependency(TipsService.self) var tips
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

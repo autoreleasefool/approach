@@ -48,7 +48,7 @@ public struct AlleysList: Reducer {
 				)
 			)
 
-			@Dependency(\.featureFlags) var featureFlags
+			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isAlleyAndGearAveragesEnabled = featureFlags.isEnabled(.alleyAndGearAverages)
 		}
 	}
@@ -88,8 +88,8 @@ public struct AlleysList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.alleys) var alleys
-	@Dependency(\.featureFlags) var featureFlags
+	@Dependency(AlleysRepository.self) var alleys
+	@Dependency(FeatureFlagsService.self) var featureFlags
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

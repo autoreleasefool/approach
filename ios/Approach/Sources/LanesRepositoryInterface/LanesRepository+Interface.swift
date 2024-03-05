@@ -32,10 +32,3 @@ extension LanesRepository: TestDependencyKey {
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }
-
-extension DependencyValues {
-	public var lanes: LanesRepository {
-		get { self[LanesRepository.self] }
-		set { self[LanesRepository.self] = newValue }
-	}
-}

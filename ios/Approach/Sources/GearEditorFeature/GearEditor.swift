@@ -107,7 +107,7 @@ public struct GearEditor: Reducer {
 			case avatar(AvatarEditor.Action)
 		}
 
-		@Dependency(\.bowlers) var bowlers
+		@Dependency(BowlersRepository.self) var bowlers
 
 		public var body: some ReducerOf<Self> {
 			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
@@ -121,9 +121,9 @@ public struct GearEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.gear) var gear
+	@Dependency(GearRepository.self) var gear
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
@@ -131,7 +131,7 @@ public struct GearEditor: Reducer {
 
 		Scope(state: \.form, action: \.internal.form) {
 			GearForm()
-				.dependency(\.records, .init(
+				.dependency(RecordPersistence(
 					create: gear.create,
 					update: gear.update,
 					delete: gear.delete,

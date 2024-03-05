@@ -14,10 +14,3 @@ extension JSONEncoderService: TestDependencyKey {
 		encode: { _ in unimplemented("\(Self.self).encode") }
 	)
 }
-
-extension DependencyValues {
-	public var jsonEncoder: JSONEncoderService {
-		get { self[JSONEncoderService.self] }
-		set { self[JSONEncoderService.self] = newValue }
-	}
-}

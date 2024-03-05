@@ -28,10 +28,3 @@ extension AppIconService: TestDependencyKey {
 		supportsAlternateIcons: { unimplemented("\(Self.self).supportsAlternateIcons") }
 	)
 }
-
-extension DependencyValues {
-	public var appIcon: AppIconService {
-		get { self[AppIconService.self] }
-		set { self[AppIconService.self] = newValue }
-	}
-}

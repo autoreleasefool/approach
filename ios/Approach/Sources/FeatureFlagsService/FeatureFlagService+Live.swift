@@ -89,7 +89,7 @@ extension FeatureFlagsService: DependencyKey {
 class FeatureFlagOverrides {
 	private let queue: DispatchQueue
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
-	@Dependency(\.preferences) var preferences
+	@Dependency(PreferenceService.self) var preferences
 
 	init(queue: DispatchQueue) {
 		self.queue = queue

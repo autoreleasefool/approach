@@ -57,10 +57,3 @@ extension RecordPersistence: TestDependencyKey {
 		archive: { _ in unimplemented("\(Self.self).archive") }
 	)
 }
-
-extension DependencyValues {
-	public var records: RecordPersistence {
-		get { self[RecordPersistence.self] }
-		set { self[RecordPersistence.self] = newValue }
-	}
-}

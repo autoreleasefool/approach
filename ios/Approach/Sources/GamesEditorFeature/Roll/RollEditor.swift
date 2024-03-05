@@ -4,6 +4,7 @@ import ComposableArchitecture
 import EquatableLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
+import FeatureFlagsServiceInterface
 import GearRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
@@ -51,8 +52,8 @@ public struct RollEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.gear) var gear
-	@Dependency(\.recentlyUsed) var recentlyUsed
+	@Dependency(GearRepository.self) var gear
+	@Dependency(RecentlyUsedService.self) var recentlyUsed
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -191,7 +192,7 @@ struct RollEditorPreview: PreviewProvider {
 			),
 			reducer: RollEditor.init
 		) {
-			$0.gear.mostRecentlyUsed = { @Sendable _, _ in
+			$0[GearRepository.self].mostRecentlyUsed = { @Sendable _, _ in
 				let (stream, continuation) = AsyncThrowingStream<[Gear.Summary], Error>.makeStream()
 				let task = Task {
 					while !Task.isCancelled {
@@ -217,7 +218,7 @@ struct RollEditorPreview: PreviewProvider {
 				continuation.onTermination = { _ in task.cancel() }
 				return stream
 			}
-			$0.featureFlags.isEnabled = { _ in true }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
 		})
 		.background(.black)
 	}

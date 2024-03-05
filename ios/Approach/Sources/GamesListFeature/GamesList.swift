@@ -53,10 +53,10 @@ public struct GamesList: Reducer {
 				)
 			)
 
-			@Dependency(\.featureFlags) var featureFlags
+			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isSeriesSharingEnabled = featureFlags.isEnabled(.sharingSeries)
 
-			@Dependency(\.tips) var tips
+			@Dependency(TipsService.self) var tips
 			self.isShowingArchiveTip = tips.shouldShow(tipFor: .gameArchiveTip)
 		}
 	}
@@ -104,11 +104,11 @@ public struct GamesList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.analytics) var analytics
+	@Dependency(AnalyticsService.self) var analytics
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.games) var games
-	@Dependency(\.series) var series
-	@Dependency(\.tips) var tips
+	@Dependency(GamesRepository.self) var games
+	@Dependency(SeriesRepository.self) var series
+	@Dependency(TipsService.self) var tips
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

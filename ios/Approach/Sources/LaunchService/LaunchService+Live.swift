@@ -8,7 +8,7 @@ import ProductsServiceInterface
 extension LaunchService: DependencyKey {
 	public static var liveValue: Self = {
 		@Sendable func initializeAnalytics() {
-			@Dependency(\.analytics) var analytics
+			@Dependency(AnalyticsService.self) var analytics
 			analytics.initialize()
 
 			Task.detached(priority: .utility) {
@@ -17,12 +17,12 @@ extension LaunchService: DependencyKey {
 		}
 
 		@Sendable func initializeProducts() {
-			@Dependency(\.products) var products
+			@Dependency(ProductsService.self) var products
 			products.initialize()
 		}
 
 		@Sendable func initializeAppInfo() async {
-			@Dependency(\.appInfo) var appInfo
+			@Dependency(AppInfoService.self) var appInfo
 			await appInfo.recordInstallDate()
 			await appInfo.recordNewSession()
 		}
@@ -34,7 +34,7 @@ extension LaunchService: DependencyKey {
 			},
 			didLaunch: {
 				// For async initializers that can wait until task
-				@Dependency(\.featureFlags) var features
+				@Dependency(FeatureFlagsService.self) var features
 				let isProductsEnabled = features.isEnabled(.purchases)
 				if isProductsEnabled {
 					initializeProducts()

@@ -22,10 +22,3 @@ extension AvatarService: TestDependencyKey {
 		preRender: { _ in unimplemented("\(Self.self).preRender")}
 	)
 }
-
-extension DependencyValues {
-	public var avatars: AvatarService {
-		get { self[AvatarService.self] }
-		set { self[AvatarService.self] = newValue }
-	}
-}

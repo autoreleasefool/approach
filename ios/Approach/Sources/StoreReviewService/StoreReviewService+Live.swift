@@ -8,10 +8,10 @@ extension StoreReviewService: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
 			shouldRequestReview: {
-				@Dependency(\.appInfo) var appInfo
+				@Dependency(AppInfoService.self) var appInfo
 				let numberOfSessions = appInfo.numberOfSessions()
 
-				@Dependency(\.preferences) var preferences
+				@Dependency(PreferenceService.self) var preferences
 				let lastReviewRequest = Date(timeIntervalSince1970: preferences.double(forKey: .appLastReviewRequestDate) ?? 0)
 
 				@Dependency(\.date) var date
@@ -29,8 +29,8 @@ extension StoreReviewService: DependencyKey {
 					lastReviewedVersion != appInfo.appVersion()
 			},
 			didRequestReview: {
-				@Dependency(\.appInfo) var appInfo
-				@Dependency(\.preferences) var preferences
+				@Dependency(AppInfoService.self) var appInfo
+				@Dependency(PreferenceService.self) var preferences
 				@Dependency(\.date) var date
 				preferences.setKey(.appLastReviewRequestDate, toDouble: date.now.timeIntervalSince1970)
 				preferences.setKey(.appLastReviewVersion, toString: appInfo.appVersion())

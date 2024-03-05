@@ -12,9 +12,9 @@ extension QuickLaunchRepository: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
 			defaultSource: {
-				@Dependency(\.database) var database
-				@Dependency(\.recentlyUsed) var recentlyUsed
-				@Dependency(\.leagues) var leagues
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+				@Dependency(LeaguesRepository.self) var leagues
 
 				guard let recentBowlerId = recentlyUsed.getRecentlyUsed(.bowlers).first?.id else { return nil }
 				for try await leagues in leagues.list(

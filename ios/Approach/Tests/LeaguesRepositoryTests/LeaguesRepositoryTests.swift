@@ -12,7 +12,7 @@ import XCTest
 
 @MainActor
 final class LeaguesRepositoryTests: XCTestCase {
-	@Dependency(\.leagues) var leagues
+	@Dependency(LeaguesRepository.self) var leagues
 
 	// MARK: - List
 

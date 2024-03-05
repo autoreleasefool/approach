@@ -121,9 +121,9 @@ public struct SeriesList: Reducer {
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.featureFlags) var featureFlags
-	@Dependency(\.leagues) var leagues
-	@Dependency(\.series) var series
+	@Dependency(FeatureFlagsService.self) var featureFlags
+	@Dependency(LeaguesRepository.self) var leagues
+	@Dependency(SeriesRepository.self) var series
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

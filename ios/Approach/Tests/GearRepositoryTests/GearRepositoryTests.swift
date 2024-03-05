@@ -12,7 +12,7 @@ import XCTest
 
 @MainActor
 final class GearRepositoryTests: XCTestCase {
-	@Dependency(\.gear) var gear
+	@Dependency(GearRepository.self) var gear
 
 	// MARK: - List
 

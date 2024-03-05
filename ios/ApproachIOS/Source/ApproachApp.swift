@@ -20,7 +20,7 @@ public struct ApproachApp: App {
 			options.dsn = AppConstants.ApiKey.sentry
 		}
 
-		@Dependency(\.launch) var launch
+		@Dependency(LaunchService.self) var launch
 		launch.didInit()
 		Task.detached(priority: .high) {
 			await launch.didLaunch()

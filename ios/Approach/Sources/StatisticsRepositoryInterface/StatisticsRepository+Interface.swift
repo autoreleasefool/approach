@@ -60,10 +60,3 @@ extension StatisticsRepository: TestDependencyKey {
 		hideNewStatisticLabels: { unimplemented("\(Self.self).hideNewStatisticsLabels") }
 	)
 }
-
-extension DependencyValues {
-	public var statistics: StatisticsRepository {
-		get { self[StatisticsRepository.self] }
-		set { self[StatisticsRepository.self] = newValue }
-	}
-}

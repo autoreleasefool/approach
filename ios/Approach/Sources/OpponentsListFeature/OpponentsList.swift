@@ -55,7 +55,7 @@ public struct OpponentsList: Reducer {
 				)
 			)
 
-			@Dependency(\.featureFlags) var features
+			@Dependency(FeatureFlagsService.self) var features
 			self.isOpponentDetailsEnabled = features.isEnabled(.opponentDetails)
 		}
 	}
@@ -95,10 +95,10 @@ public struct OpponentsList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.uuid) var uuid
-	@Dependency(\.recentlyUsed) var recentlyUsed
+	@Dependency(RecentlyUsedService.self) var recentlyUsed
 
 	public var body: some ReducerOf<Self> {
 		Scope(state: \.errors, action: \.internal.errors) {

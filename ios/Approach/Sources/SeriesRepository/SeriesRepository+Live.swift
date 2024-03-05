@@ -8,7 +8,7 @@ import SeriesRepositoryInterface
 
 extension SeriesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
+		@Dependency(DatabaseService.self) var database
 		@Dependency(\.uuid) var uuid
 
 		return Self(

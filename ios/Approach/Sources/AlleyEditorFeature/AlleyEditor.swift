@@ -123,16 +123,16 @@ public struct AlleyEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.alleys) var alleys
+	@Dependency(AlleysRepository.self) var alleys
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(\.lanes) var lanes
+	@Dependency(LanesRepository.self) var lanes
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
 
 		Scope(state: \.form, action: \.internal.form) {
 			AlleyForm()
-				.dependency(\.records, .init(
+				.dependency(RecordPersistence(
 					create: alleys.create,
 					update: alleys.update,
 					delete: alleys.delete,

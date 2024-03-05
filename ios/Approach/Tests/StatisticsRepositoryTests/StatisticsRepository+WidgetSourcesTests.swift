@@ -10,7 +10,7 @@ import XCTest
 
 @MainActor
 final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
-	@Dependency(\.statistics) var statistics
+	@Dependency(StatisticsRepository.self) var statistics
 
 	func testLoadsWidgetSources_ForBowler() async throws {
 		let db = try generatePopulatedDatabase()

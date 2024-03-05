@@ -28,10 +28,3 @@ extension TipsService: TestDependencyKey {
 		hideTip: { _ in unimplemented("\(Self.self).hideTip") }
 	)
 }
-
-extension DependencyValues {
-	public var tips: TipsService {
-		get { self[TipsService.self] }
-		set { self[TipsService.self] = newValue }
-	}
-}

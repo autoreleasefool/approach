@@ -15,10 +15,3 @@ extension EmailService: TestDependencyKey {
 		canSendEmail: { unimplemented("\(Self.self).canSendEmail") }
 	)
 }
-
-extension DependencyValues {
-	public var email: EmailService {
-		get { self[EmailService.self] }
-		set { self[EmailService.self] = newValue }
-	}
-}

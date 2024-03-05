@@ -1,6 +1,7 @@
 import AnalyticsServiceInterface
 import AnnouncementsFeature
 import AnnouncementsLibrary
+import AnnouncementsServiceInterface
 import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
@@ -69,10 +70,10 @@ public struct BowlersList: Reducer {
 				)
 			)
 
-			@Dependency(\.preferences) var preferences
+			@Dependency(PreferenceService.self) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
 
-			@Dependency(\.tips) var tips
+			@Dependency(TipsService.self) var tips
 			self.isShowingQuickLaunchTip = tips.shouldShow(tipFor: .quickLaunchTip)
 		}
 	}
@@ -124,15 +125,15 @@ public struct BowlersList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.announcements) var announcements
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(AnnouncementsService.self) var announcements
+	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
-	@Dependency(\.preferences) var preferences
-	@Dependency(\.quickLaunch) var quickLaunch
-	@Dependency(\.recentlyUsed) var recentlyUsed
-	@Dependency(\.tips) var tips
+	@Dependency(PreferenceService.self) var preferences
+	@Dependency(QuickLaunchRepository.self) var quickLaunch
+	@Dependency(RecentlyUsedService.self) var recentlyUsed
+	@Dependency(TipsService.self) var tips
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

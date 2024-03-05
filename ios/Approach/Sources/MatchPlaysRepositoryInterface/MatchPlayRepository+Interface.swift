@@ -24,10 +24,3 @@ extension MatchPlaysRepository: TestDependencyKey {
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }
-
-extension DependencyValues {
-	public var matchPlays: MatchPlaysRepository {
-		get { self[MatchPlaysRepository.self] }
-		set { self[MatchPlaysRepository.self] = newValue }
-	}
-}

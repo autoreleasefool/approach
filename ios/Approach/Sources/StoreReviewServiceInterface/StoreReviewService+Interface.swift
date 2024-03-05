@@ -19,10 +19,3 @@ extension StoreReviewService: TestDependencyKey {
 		didRequestReview: { unimplemented("\(Self.self).didRequestReview") }
 	)
 }
-
-extension DependencyValues {
-	public var storeReview: StoreReviewService {
-		get { self[StoreReviewService.self] }
-		set { self[StoreReviewService.self] = newValue }
-	}
-}

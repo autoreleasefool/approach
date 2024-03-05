@@ -13,10 +13,3 @@ extension DatabaseMockingService: TestDependencyKey {
 		mockDatabase: { unimplemented("\(Self.self).mockDatabase") }
 	)
 }
-
-extension DependencyValues {
-	public var databaseMocking: DatabaseMockingService {
-		get { self[DatabaseMockingService.self] }
-		set { self[DatabaseMockingService.self] = newValue }
-	}
-}

@@ -111,10 +111,3 @@ extension GamesRepository: TestDependencyKey {
 		reorderGames: { _, _ in unimplemented("\(Self.self).reorderGames") }
 	)
 }
-
-extension DependencyValues {
-	public var games: GamesRepository {
-		get { self[GamesRepository.self] }
-		set { self[GamesRepository.self] = newValue }
-	}
-}

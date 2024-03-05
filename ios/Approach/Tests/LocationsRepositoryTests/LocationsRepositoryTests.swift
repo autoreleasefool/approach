@@ -10,7 +10,7 @@ import XCTest
 
 @MainActor
 final class LocationsRepositoryTests: XCTestCase {
-	@Dependency(\.locations) var locations
+	@Dependency(LocationsRepository.self) var locations
 
 	// MARK: - InsertOrUpdate
 

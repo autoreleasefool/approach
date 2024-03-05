@@ -44,10 +44,3 @@ extension FileManagerService: TestDependencyKey {
 		getZip: { _, _ in unimplemented("\(Self.self).getZip") }
 	)
 }
-
-extension DependencyValues {
-	public var fileManager: FileManagerService {
-		get { self[FileManagerService.self] }
-		set { self[FileManagerService.self] = newValue }
-	}
-}

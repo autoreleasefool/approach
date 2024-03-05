@@ -13,10 +13,10 @@ import StatisticsWidgetsLibrary
 extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(\.calendar) var calendar
-		@Dependency(\.database) var database
+		@Dependency(DatabaseService.self) var database
 		@Dependency(\.date) var date
-		@Dependency(\.featureFlags) var featureFlags
-		@Dependency(\.preferences) var preferences
+		@Dependency(FeatureFlagsService.self) var featureFlags
+		@Dependency(PreferenceService.self) var preferences
 		@Dependency(\.uuid) var uuid
 
 		@Sendable func isSeenKey(forStatistic: Statistic.Type) -> String {
@@ -373,7 +373,7 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			hideNewStatisticLabels: {
-				@Dependency(\.preferences) var preferences
+				@Dependency(PreferenceService.self) var preferences
 				Statistics.allCases.forEach {
 					preferences.setBool(isSeenKey(forStatistic: $0), true)
 				}

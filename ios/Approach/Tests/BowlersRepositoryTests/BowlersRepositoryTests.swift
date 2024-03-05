@@ -12,7 +12,7 @@ import XCTest
 
 @MainActor
 final class BowlersRepositoryTests: XCTestCase {
-	@Dependency(\.bowlers) var bowlers
+	@Dependency(BowlersRepository.self) var bowlers
 
 	// MARK: List
 

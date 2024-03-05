@@ -65,7 +65,7 @@ public struct MidGameStatisticsDetails: Reducer {
 
 	public init() {}
 
-	@Dependency(\.statistics) var statistics
+	@Dependency(StatisticsRepository.self) var statistics
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

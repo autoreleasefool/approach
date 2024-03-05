@@ -20,10 +20,3 @@ extension AnnouncementsService: TestDependencyKey {
 		hideAnnouncement: { _ in unimplemented("\(Self.self).hideAnnouncement")}
 	)
 }
-
-extension DependencyValues {
-	public var announcements: AnnouncementsService {
-		get { self[AnnouncementsService.self] }
-		set { self[AnnouncementsService.self] = newValue }
-	}
-}

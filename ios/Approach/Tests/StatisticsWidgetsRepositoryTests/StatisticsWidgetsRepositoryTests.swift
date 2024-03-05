@@ -13,7 +13,7 @@ import TestUtilitiesLibrary
 import XCTest
 
 final class StatisticsWidgetsRepositoryTests: XCTestCase {
-	@Dependency(\.statisticsWidgets) var statisticsWidgets
+	@Dependency(StatisticsWidgetsRepository.self) var statisticsWidgets
 
 	// MARK: Fetch
 

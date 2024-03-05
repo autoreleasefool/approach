@@ -20,10 +20,3 @@ extension DatabaseService: TestDependencyKey {
 		writer: { unimplemented("\(Self.self).writer") }
 	)
 }
-
-extension DependencyValues {
-	public var database: DatabaseService {
-		get { self[DatabaseService.self] }
-		set { self[DatabaseService.self] = newValue }
-	}
-}

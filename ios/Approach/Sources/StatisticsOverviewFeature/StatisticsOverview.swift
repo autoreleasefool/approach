@@ -19,7 +19,7 @@ public struct StatisticsOverview: Reducer {
 		@Presents public var destination: Destination.State?
 
 		public init() {
-			@Dependency(\.tips) var tips
+			@Dependency(TipsService.self) var tips
 			self.isShowingOverviewTip = tips.shouldShow(tipFor: .statisticsOverview)
 			self.isShowingDetailsTip = tips.shouldShow(tipFor: .statisticsDetails)
 		}
@@ -51,8 +51,8 @@ public struct StatisticsOverview: Reducer {
 
 	public init() {}
 
-	@Dependency(\.statistics) var statistics
-	@Dependency(\.tips) var tips
+	@Dependency(StatisticsRepository.self) var statistics
+	@Dependency(TipsService.self) var tips
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in

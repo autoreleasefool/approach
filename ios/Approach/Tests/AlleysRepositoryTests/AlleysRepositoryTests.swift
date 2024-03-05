@@ -13,7 +13,7 @@ import XCTest
 
 @MainActor
 final class AlleysRepositoryTests: XCTestCase {
-	@Dependency(\.alleys) var alleys
+	@Dependency(AlleysRepository.self) var alleys
 
 	// MARK: - List
 

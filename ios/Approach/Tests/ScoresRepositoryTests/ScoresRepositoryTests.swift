@@ -14,7 +14,7 @@ import XCTest
 
 @MainActor
 final class ScoresRepositoryTests: XCTestCase {
-	@Dependency(\.scores) var scores
+	@Dependency(ScoresRepository.self) var scores
 
 	func testCalculatesScoreForFramesWithSteps() async throws {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()

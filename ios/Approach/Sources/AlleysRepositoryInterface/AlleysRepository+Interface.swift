@@ -83,10 +83,3 @@ extension AlleysRepository: TestDependencyKey {
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }
-
-extension DependencyValues {
-	public var alleys: AlleysRepository {
-		get { self[AlleysRepository.self] }
-		set { self[AlleysRepository.self] = newValue }
-	}
-}

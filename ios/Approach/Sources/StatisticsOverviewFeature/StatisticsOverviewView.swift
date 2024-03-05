@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import PreferenceServiceInterface
 import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
@@ -78,7 +79,7 @@ struct StatisticsOverviewPreviews: PreviewProvider {
 				store: .init(initialState: .init()) {
 					StatisticsOverview()
 				} withDependencies: {
-					$0.preferences.getBool = { _ in false }
+					$0[PreferenceService.self].getBool = { @Sendable _ in false }
 				}
 			)
 		}
