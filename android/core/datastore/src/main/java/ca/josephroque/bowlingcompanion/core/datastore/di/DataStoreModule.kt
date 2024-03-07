@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package ca.josephroque.bowlingcompanion.core.datastore.di
 
 import android.content.Context
