@@ -22,6 +22,10 @@ extension FeatureFlag {
 		.sharingSeries,
 		.teams,
 	]
+
+	public static func find(byId: FeatureFlag.ID) -> FeatureFlag? {
+		allFlags.first { $0.id == byId }
+	}
 }
 
 // swiftlint:enable line_length
