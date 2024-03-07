@@ -21,18 +21,11 @@ public struct FeatureFlagsListView: View {
 					Button(Strings.Settings.FeatureFlags.matchDevelopment) { send(.didTapMatchDevelopmentButton) }
 				}
 
-				// FIXME: Can't using store.binding here to bind feature flag state
-//				Section(Strings.Settings.FeatureFlags.title) {
-//					ForEach(store.featureFlags, id: \.flag.id) { item in
-//						Toggle(
-//							item.flag.name,
-//							isOn: store.binding(
-//								get: { _ in item.enabled },
-//								send: { _ in .didToggle(item.flag) }
-//							)
-//						).disabled(!item.flag.isOverridable)
-//					}
-//				}
+				Section(Strings.Settings.FeatureFlags.title) {
+					ForEach(store.scope(state: \.featureFlags, action: \.internal.featureFlagToggle)) { store in
+						FeatureFlagToggleView(store: store)
+					}
+				}
 			}
 			.navigationTitle(Strings.Settings.FeatureFlags.title)
 			.task { await send(.didStartObservingFlags).finish() }

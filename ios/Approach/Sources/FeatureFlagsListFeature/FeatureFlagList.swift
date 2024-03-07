@@ -3,11 +3,16 @@ import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 
+public struct FeatureFlagItem: Equatable {
+	let flag: FeatureFlag
+	var enabled: Bool
+}
+
 @Reducer
 public struct FeatureFlagsList: Reducer {
 	@ObservableState
 	public struct State: Equatable {
-		public var featureFlags: [FeatureFlagItem] = []
+		public var featureFlags: IdentifiedArrayOf<FeatureFlagToggle.State> = []
 
 		public init() {}
 	}
@@ -15,7 +20,6 @@ public struct FeatureFlagsList: Reducer {
 	public enum Action: FeatureAction, ViewAction {
 		@CasePathable public enum View {
 			case didStartObservingFlags
-			case didToggle(FeatureFlag)
 			case didTapResetOverridesButton
 			case didTapMatchReleaseButton
 			case didTapMatchDevelopmentButton
@@ -24,16 +28,12 @@ public struct FeatureFlagsList: Reducer {
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
 			case didLoadFlags([FeatureFlagItem])
+			case featureFlagToggle(IdentifiedActionOf<FeatureFlagToggle>)
 		}
 
 		case view(View)
 		case delegate(Delegate)
 		case `internal`(Internal)
-	}
-
-	public struct FeatureFlagItem: Equatable {
-		let flag: FeatureFlag
-		let enabled: Bool
 	}
 
 	public init() {}
@@ -55,46 +55,57 @@ public struct FeatureFlagsList: Reducer {
 						}
 					}
 
-				case let .didToggle(featureFlag):
-					let isEnabled = featureFlagService.isEnabled(featureFlag)
-					featureFlagService.setEnabled(featureFlag, !isEnabled)
-					return .none
-
 				case .didTapResetOverridesButton:
-					for flag in FeatureFlag.allFlags {
-						featureFlagService.setEnabled(flag, nil)
+					return .run { _ in
+						for flag in FeatureFlag.allFlags {
+							featureFlagService.setEnabled(flag, nil)
+						}
 					}
-					return .none
 
 				case .didTapMatchReleaseButton:
-					for flag in FeatureFlag.allFlags where flag.isOverridable {
-						featureFlagService.setEnabled(flag, flag.stage >= .release)
+					return .run { _ in
+						for flag in FeatureFlag.allFlags where flag.isOverridable {
+							featureFlagService.setEnabled(flag, flag.stage >= .release)
+						}
 					}
-					return .none
 
 				case .didTapMatchDevelopmentButton:
-					for flag in FeatureFlag.allFlags where flag.isOverridable {
-						featureFlagService.setEnabled(flag, flag.stage >= .development)
+					return .run { _ in
+						for flag in FeatureFlag.allFlags where flag.isOverridable {
+							featureFlagService.setEnabled(flag, flag.stage >= .development)
+						}
 					}
-					return .none
 
 				case .didTapMatchTestButton:
-					for flag in FeatureFlag.allFlags where flag.isOverridable {
-						featureFlagService.setEnabled(flag, flag.stage >= .test)
+					return .run { _ in
+						for flag in FeatureFlag.allFlags where flag.isOverridable {
+							featureFlagService.setEnabled(flag, flag.stage >= .test)
+						}
 					}
-					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadFlags(featureFlags):
-					state.featureFlags = featureFlags
+					state.featureFlags = .init(uniqueElements: featureFlags.map { FeatureFlagToggle.State(flag: $0 ) })
+					return .none
+
+				case let .featureFlagToggle(.element(id, .binding(\.flag))):
+					guard let flag = FeatureFlag.find(byId: id) else { return .none }
+					return .run { _ in
+						let isEnabled = featureFlagService.isEnabled(flag)
+						featureFlagService.setEnabled(flag, !isEnabled)
+					}
+
+				case .featureFlagToggle:
 					return .none
 				}
 
 			case .delegate:
 				return .none
 			}
+		}.forEach(\.featureFlags, action: \.internal.featureFlagToggle) {
+			FeatureFlagToggle()
 		}
 	}
 }
