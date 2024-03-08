@@ -6,7 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.Roll
 import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
-import ca.josephroque.bowlingcompanion.core.model.nextFrameToRecord
+import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import ca.josephroque.bowlingcompanion.core.scoresheet.ScoreSheetUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.GamesEditorUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDetailsUiState
@@ -151,7 +151,7 @@ fun GameDetailsUiState.updateHeader(
 	frames: List<FrameEdit>,
 ): GameDetailsUiState {
 	val isManualGame = scoringMethod.scoringMethod == GameScoringMethod.MANUAL
-	val isGameFinished = !frames.nextFrameToRecord().hasUntouchedRoll
+	val isGameFinished = frames.isGameFinished()
 	val isGameLocked = gameProperties.locked == GameLockState.LOCKED
 	val nextGameIndex = currentGameIndex + 1
 

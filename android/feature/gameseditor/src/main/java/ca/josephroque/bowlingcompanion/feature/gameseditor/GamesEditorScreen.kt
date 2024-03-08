@@ -139,8 +139,9 @@ internal fun GamesEditorScreen(
 	val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 	val handleHeight = remember { mutableFloatStateOf(56f) }
 
-	LaunchedEffect(Unit) {
+	DisposableEffect(Unit) {
 		onAction(GamesEditorScreenUiAction.DidAppear)
+		onDispose { onAction(GamesEditorScreenUiAction.DidDisappear) }
 	}
 
 	var hasExpandedSheet by remember { mutableStateOf(true) }

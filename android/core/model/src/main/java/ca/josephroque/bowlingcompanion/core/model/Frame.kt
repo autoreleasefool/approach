@@ -138,3 +138,5 @@ fun List<FrameEdit>.nextIndexToRecord(): Int {
 }
 
 fun List<FrameEdit>.nextFrameToRecord(): FrameEdit = this[nextIndexToRecord()]
+
+fun List<FrameEdit>.isGameFinished(): Boolean = !this.nextFrameToRecord().hasUntouchedRoll

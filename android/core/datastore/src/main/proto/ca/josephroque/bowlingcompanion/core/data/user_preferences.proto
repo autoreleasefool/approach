@@ -41,5 +41,9 @@ message UserPreferences {
   bool is_lane_form_swipe_to_edit_tip_dismissed = 25;
   bool is_quick_play_tip_dismissed = 31;
 
-  // Next ID: 32
+  // Game in progress
+  repeated string latest_series_in_editor = 32;
+  optional string latest_game_in_editor = 33;
+
+  // Next ID: 34
 }

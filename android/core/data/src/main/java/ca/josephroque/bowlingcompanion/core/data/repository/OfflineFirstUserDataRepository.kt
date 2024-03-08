@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
@@ -104,5 +105,18 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		StatisticID.entries.forEach {
 			setStatisticIDSeen(it)
 		}
+	}
+
+	override suspend fun setLatestGameInEditor(id: UUID) {
+		approachPreferencesDataSource.setLatestGameInEditor(id.toString())
+	}
+
+	override suspend fun setLatestSeriesInEditor(ids: List<UUID>) {
+		approachPreferencesDataSource.setLatestSeriesInEditor(ids.map { it.toString() })
+	}
+
+	override suspend fun dismissLatestGameInEditor() {
+		approachPreferencesDataSource.setLatestGameInEditor(null)
+		approachPreferencesDataSource.setLatestSeriesInEditor(emptyList())
 	}
 }

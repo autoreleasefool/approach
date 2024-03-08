@@ -114,3 +114,8 @@ enum class GameScoringMethod {
 	MANUAL,
 	BY_FRAME,
 }
+
+data class GameInProgress(
+	val seriesIds: List<UUID>,
+	val currentGameId: UUID,
+)

@@ -64,6 +64,7 @@ sealed interface GamesEditorScreenUiState {
 
 sealed interface GamesEditorScreenUiAction {
 	data object DidAppear : GamesEditorScreenUiAction
+	data object DidDisappear : GamesEditorScreenUiAction
 	data object GameLockSnackBarDismissed : GamesEditorScreenUiAction
 
 	data class GearUpdated(val gearIds: Set<UUID>) : GamesEditorScreenUiAction

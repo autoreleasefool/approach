@@ -15,9 +15,11 @@ import ca.josephroque.bowlingcompanion.core.model.FrameCreate
 import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
 import ca.josephroque.bowlingcompanion.core.model.GameEdit
+import ca.josephroque.bowlingcompanion.core.model.GameInProgress
 import ca.josephroque.bowlingcompanion.core.model.GameListItem
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
+import ca.josephroque.bowlingcompanion.core.model.isGameFinished
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,6 +33,7 @@ class OfflineFirstGamesRepository @Inject constructor(
 	private val gameDao: GameDao,
 	private val gearDao: GearDao,
 	private val framesRepository: FramesRepository,
+	private val userDataRepository: UserDataRepository,
 	private val transactionRunner: TransactionRunner,
 	@Dispatcher(IO) private val ioDispatcher: CoroutineDispatcher,
 ) : GamesRepository {
@@ -45,6 +48,25 @@ class OfflineFirstGamesRepository @Inject constructor(
 	override fun getArchivedGames(): Flow<List<ArchivedGame>> = gameDao.getArchivedGames()
 
 	override fun getGameIndex(gameId: UUID): Flow<Int> = gameDao.getGameIndex(gameId)
+
+	override suspend fun isGameInProgress(): Boolean = getGameInProgress() != null
+
+	override suspend fun getGameInProgress(): GameInProgress? {
+		val userData = userDataRepository.userData.first()
+		val latestGameIdStr = userData.latestGameInEditor
+		val latestSeriesIdsStr = userData.latestSeriesInEditor
+		if (latestGameIdStr == null || latestSeriesIdsStr.isEmpty()) return null
+
+		val latestGameId = UUID.fromString(latestGameIdStr)
+		val latestSeriesIds = latestSeriesIdsStr.map { UUID.fromString(it) }
+
+		val frames = framesRepository.getFrames(latestGameId).first()
+		if (frames.isGameFinished()) return null
+		return GameInProgress(
+			seriesIds = latestSeriesIds,
+			currentGameId = latestGameId,
+		)
+	}
 
 	override suspend fun setGameScoringMethod(
 		gameId: UUID,

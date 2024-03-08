@@ -23,6 +23,7 @@ fun NavGraphBuilder.overviewScreen(
 	onEditStatisticsWidgets: (String) -> Unit,
 	onShowStatistics: (UUID) -> Unit,
 	onShowQuickPlay: () -> Unit,
+	onResumeGame: (List<UUID>, UUID) -> Unit,
 ) {
 	composable(
 		route = Route.Overview.route,
@@ -41,6 +42,7 @@ fun NavGraphBuilder.overviewScreen(
 				onEditStatisticsWidgets = onEditStatisticsWidgets,
 				onShowStatistics = onShowStatistics,
 				onShowQuickPlay = onShowQuickPlay,
+				onResumeGame = onResumeGame,
 			)
 		}
 	}

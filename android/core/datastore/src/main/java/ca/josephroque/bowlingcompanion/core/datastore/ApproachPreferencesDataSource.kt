@@ -48,6 +48,8 @@ class ApproachPreferencesDataSource @Inject constructor(
 				isQuickPlayTipDismissed = it.isQuickPlayTipDismissed,
 				lastTrackableFilter = it.parseTrackableFilterSource(),
 				seenStatisticIds = it.seenStatisticsIdsList.toSet(),
+				latestSeriesInEditor = it.latestSeriesInEditorList,
+				latestGameInEditor = if (it.latestGameInEditor.isNullOrBlank()) null else it.latestGameInEditor,
 			)
 		}
 
@@ -236,6 +238,21 @@ class ApproachPreferencesDataSource @Inject constructor(
 				.clearRecentlyUsedLeagueIds()
 				.addAllRecentlyUsedLeagueIds(recentLeagues)
 				.build()
+		}
+	}
+
+	suspend fun setLatestSeriesInEditor(ids: List<String>) {
+		userPreferences.updateData {
+			it.toBuilder()
+				.clearLatestSeriesInEditor()
+				.addAllLatestSeriesInEditor(ids)
+				.build()
+		}
+	}
+
+	suspend fun setLatestGameInEditor(id: String?) {
+		userPreferences.updateData {
+			it.copy { this.latestGameInEditor = id ?: "" }
 		}
 	}
 }

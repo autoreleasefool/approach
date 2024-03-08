@@ -62,6 +62,7 @@ fun NavGraphBuilder.overviewGraph(
 		},
 		onShowStatistics = { /* TODO: onShowStatistics */ },
 		onShowQuickPlay = navController::navigateToQuickPlay,
+		onResumeGame = navController::navigateToGamesEditor,
 	)
 	onboardingScreen(
 		finishActivity = finishActivity,

@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
+import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 
 interface UserDataRepository {
@@ -36,6 +37,10 @@ interface UserDataRepository {
 
 	suspend fun didDismissLaneFormSwipeToEditTip()
 	suspend fun didDismissQuickPlayTip()
+
+	suspend fun setLatestSeriesInEditor(ids: List<UUID>)
+	suspend fun setLatestGameInEditor(id: UUID)
+	suspend fun dismissLatestGameInEditor()
 }
 
 fun UserData.hasSeenStatistic(id: StatisticID): Boolean = seenStatisticIds.contains(id.name)

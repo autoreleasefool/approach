@@ -31,4 +31,8 @@ data class UserData(
 	// Tips
 	val isLaneFormSwipeToEditTipDismissed: Boolean,
 	val isQuickPlayTipDismissed: Boolean,
+
+	// Game in progress
+	val latestSeriesInEditor: List<String>,
+	val latestGameInEditor: String?,
 )

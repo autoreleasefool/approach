@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerViewed
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
@@ -33,11 +34,13 @@ private const val STATISTICS_WIDGET_CONTEXT = "overview"
 @HiltViewModel
 class OverviewViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
+	private val gamesRepository: GamesRepository,
 	statisticsWidgetsRepository: StatisticsWidgetsRepository,
-	userDataRepository: UserDataRepository,
+	private val userDataRepository: UserDataRepository,
 	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<OverviewScreenEvent>() {
 	private val bowlerToArchive: MutableStateFlow<BowlerListItem?> = MutableStateFlow(null)
+	private val isGameInProgressSnackBarVisible: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
 	private val bowlersListState: Flow<BowlersListUiState> =
 		combine(
@@ -63,12 +66,14 @@ class OverviewViewModel @Inject constructor(
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		bowlersListState,
 		widgets,
-	) { bowlersList, widgets ->
+		isGameInProgressSnackBarVisible,
+	) { bowlersList, widgets, isGameInProgressSnackBarVisible ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
 				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
 			),
+			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
 		)
 	}.stateIn(
 		scope = viewModelScope,
@@ -78,7 +83,9 @@ class OverviewViewModel @Inject constructor(
 
 	fun handleAction(action: OverviewScreenUiAction) {
 		when (action) {
-			OverviewScreenUiAction.DidAppear -> Unit
+			OverviewScreenUiAction.DidAppear -> checkForGameInProgress()
+			OverviewScreenUiAction.GameInProgressSnackBarDismissed -> dismissGameInProgressSnackBar()
+			OverviewScreenUiAction.ResumeGameInProgressClicked -> resumeGameInProgress()
 			is OverviewScreenUiAction.OverviewAction -> handleOverviewAction(action.action)
 		}
 	}
@@ -119,6 +126,13 @@ class OverviewViewModel @Inject constructor(
 		}
 	}
 
+	private fun checkForGameInProgress() {
+		viewModelScope.launch {
+			val isGameInProgress = gamesRepository.isGameInProgress()
+			isGameInProgressSnackBarVisible.value = isGameInProgress
+		}
+	}
+
 	private fun showBowlerDetails(bowler: BowlerListItem) {
 		sendEvent(OverviewScreenEvent.ShowBowlerDetails(bowler.id))
 		analyticsClient.trackEvent(BowlerViewed(BowlerKind.PLAYABLE))
@@ -133,6 +147,20 @@ class OverviewViewModel @Inject constructor(
 		viewModelScope.launch {
 			bowlersRepository.archiveBowler(bowlerToArchive.id)
 			setBowlerArchivePrompt(null)
+		}
+	}
+
+	private fun dismissGameInProgressSnackBar() {
+		isGameInProgressSnackBarVisible.value = false
+		viewModelScope.launch {
+			userDataRepository.dismissLatestGameInEditor()
+		}
+	}
+
+	private fun resumeGameInProgress() {
+		viewModelScope.launch {
+			val game = gamesRepository.getGameInProgress() ?: return@launch
+			sendEvent(OverviewScreenEvent.ResumeGame(game.seriesIds, game.currentGameId))
 		}
 	}
 }

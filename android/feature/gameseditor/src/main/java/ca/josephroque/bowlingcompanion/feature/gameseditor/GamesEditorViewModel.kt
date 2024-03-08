@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameManualScoreSet
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameUpdated
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.game.GameViewed
+import ca.josephroque.bowlingcompanion.core.common.dispatcher.di.ApplicationScope
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
@@ -19,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.MatchPlaysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.RecentlyUsedRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.ScoresRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.GameLockState
@@ -56,6 +58,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.updateSelection
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -84,6 +87,8 @@ class GamesEditorViewModel @Inject constructor(
 	private val lanesRepository: LanesRepository,
 	private val seriesRepository: SeriesRepository,
 	private val analyticsClient: AnalyticsClient,
+	private val userDataRepository: UserDataRepository,
+	@ApplicationScope private val scope: CoroutineScope,
 ) : ApproachViewModel<GamesEditorScreenEvent>(), DefaultLifecycleObserver {
 	private val initialGameId = Route.EditGame.getGame(savedStateHandle)!!
 
@@ -145,6 +150,7 @@ class GamesEditorViewModel @Inject constructor(
 	fun handleAction(action: GamesEditorScreenUiAction) {
 		when (action) {
 			GamesEditorScreenUiAction.DidAppear -> loadInitialGame()
+			GamesEditorScreenUiAction.DidDisappear -> dismissLatestGameInEditor()
 			GamesEditorScreenUiAction.GameLockSnackBarDismissed -> dismissGameLockSnackBar()
 			is GamesEditorScreenUiAction.GamesEditor -> handleGamesEditorAction(action.action)
 			is GamesEditorScreenUiAction.GameDetails -> handleGameDetailsAction(action.action)
@@ -187,7 +193,7 @@ class GamesEditorViewModel @Inject constructor(
 
 	private fun handleGamesEditorAction(action: GamesEditorUiAction) {
 		when (action) {
-			GamesEditorUiAction.BackClicked -> sendEvent(GamesEditorScreenEvent.Dismissed)
+			GamesEditorUiAction.BackClicked -> dismiss()
 			GamesEditorUiAction.SettingsClicked -> openGameSettings()
 			GamesEditorUiAction.ManualScoreClicked -> openScoreSettings()
 			is GamesEditorUiAction.FrameEditor -> handleFrameEditorAction(action.action)
@@ -252,6 +258,7 @@ class GamesEditorViewModel @Inject constructor(
 		gamesEditorState.update { it.copy(gameId = gameToLoad) }
 
 		analyticsClient.trackEvent(GameViewed(eventId = gameId))
+		setLatestGameId(gameId)
 
 		gameDetailsJob?.cancel()
 		gameDetailsJob = viewModelScope.launch {
@@ -445,6 +452,26 @@ class GamesEditorViewModel @Inject constructor(
 					setCurrentSelection(frameIndex = newFrameIndex, rollIndex = newRollIndex)
 				}
 			}
+		}
+	}
+
+	private fun dismiss() {
+		viewModelScope.launch {
+			userDataRepository.dismissLatestGameInEditor()
+			sendEvent(GamesEditorScreenEvent.Dismissed)
+		}
+	}
+
+	private fun setLatestGameId(gameId: UUID) {
+		viewModelScope.launch {
+			userDataRepository.setLatestGameInEditor(gameId)
+			userDataRepository.setLatestSeriesInEditor(series.value)
+		}
+	}
+
+	private fun dismissLatestGameInEditor() {
+		scope.launch {
+			userDataRepository.dismissLatestGameInEditor()
 		}
 	}
 
