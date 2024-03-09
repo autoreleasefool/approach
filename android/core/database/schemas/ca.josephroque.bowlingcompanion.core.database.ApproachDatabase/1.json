@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "47f59e32b0e248651178d53f5ed098c6",
+    "identityHash": "d3b407c3b4240e668cd6a72bdebaafa6",
     "entities": [
       {
         "tableName": "bowlers",
@@ -263,7 +263,7 @@
       },
       {
         "tableName": "games",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `series_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `score` INTEGER NOT NULL, `locked` TEXT NOT NULL, `scoring_method` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, `duration` REAL NOT NULL DEFAULT 0, PRIMARY KEY(`id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` BLOB NOT NULL, `series_id` BLOB NOT NULL, `index` INTEGER NOT NULL, `score` INTEGER NOT NULL, `locked` TEXT NOT NULL, `scoring_method` TEXT NOT NULL, `exclude_from_statistics` TEXT NOT NULL, `archived_on` INTEGER DEFAULT NULL, `durationMillis` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`), FOREIGN KEY(`series_id`) REFERENCES `series`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -315,9 +315,9 @@
             "defaultValue": "NULL"
           },
           {
-            "fieldPath": "duration",
-            "columnName": "duration",
-            "affinity": "REAL",
+            "fieldPath": "durationMillis",
+            "columnName": "durationMillis",
+            "affinity": "INTEGER",
             "notNull": true,
             "defaultValue": "0"
           }
@@ -1500,7 +1500,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47f59e32b0e248651178d53f5ed098c6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd3b407c3b4240e668cd6a72bdebaafa6')"
     ]
   }
 }

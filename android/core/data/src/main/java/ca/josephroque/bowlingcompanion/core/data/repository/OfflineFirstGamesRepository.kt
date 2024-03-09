@@ -93,6 +93,11 @@ class OfflineFirstGamesRepository @Inject constructor(
 		gameDao.setGameScore(gameId, score)
 	}
 
+	override suspend fun setGameDuration(gameId: UUID, durationMillis: Long) =
+		withContext(ioDispatcher) {
+			gameDao.setGameDuration(gameId, durationMillis)
+		}
+
 	override suspend fun setGameLanes(gameId: UUID, lanes: Set<UUID>) = withContext(ioDispatcher) {
 		transactionRunner {
 			gameDao.deleteGameLanes(gameId)

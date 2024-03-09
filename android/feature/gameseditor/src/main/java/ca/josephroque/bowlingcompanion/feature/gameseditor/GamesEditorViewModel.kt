@@ -43,6 +43,7 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGa
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiAction
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.lanes.CopyLanesDialogUiState
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.rolleditor.RollEditorUiAction
+import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.GameLoadDate
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.ensureRollExists
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.selectedFrame
 import ca.josephroque.bowlingcompanion.feature.gameseditor.utils.setBallRolled
@@ -102,6 +103,8 @@ class GamesEditorViewModel @Inject constructor(
 
 	private val isGameDetailsSheetVisible = MutableStateFlow(true)
 	private val isGameLockSnackBarVisible = MutableStateFlow(false)
+
+	private val lastLoadedGameAt = MutableStateFlow<GameLoadDate?>(null)
 
 	private var ballsJob: Job? = null
 	private var framesJob: Job? = null
@@ -299,6 +302,18 @@ class GamesEditorViewModel @Inject constructor(
 						),
 					)
 				}
+
+				lastLoadedGameAt.update { lastLoadedGameAt ->
+					if (lastLoadedGameAt?.gameId != gameDetails.properties.id) {
+						GameLoadDate(
+							gameId = gameDetails.properties.id,
+							durationMillisWhenLoaded = gameDetails.properties.durationMillis,
+							loadedAt = System.currentTimeMillis(),
+						)
+					} else {
+						lastLoadedGameAt
+					}
+				}
 			}
 		}
 
@@ -430,6 +445,15 @@ class GamesEditorViewModel @Inject constructor(
 							gameDetails.gameId,
 							gameDetails.scoringMethod.score,
 						)
+
+						val lastLoadedGameAt = this@GamesEditorViewModel.lastLoadedGameAt.value
+						if (lastLoadedGameAt?.gameId == gameDetails.gameId) {
+							val durationMillis = System.currentTimeMillis() - lastLoadedGameAt.loadedAt
+							gamesRepository.setGameDuration(
+								gameDetails.gameId,
+								lastLoadedGameAt.durationMillisWhenLoaded + durationMillis,
+							)
+						}
 					}
 				}
 			}

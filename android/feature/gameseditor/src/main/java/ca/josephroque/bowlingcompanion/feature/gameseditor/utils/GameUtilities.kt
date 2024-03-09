@@ -17,6 +17,12 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 
+data class GameLoadDate(
+	val gameId: UUID,
+	val durationMillisWhenLoaded: Long,
+	val loadedAt: Long,
+)
+
 inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetails(
 	gameId: UUID,
 	function: (GameDetailsUiState) -> GameDetailsUiState,

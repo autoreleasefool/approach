@@ -25,7 +25,7 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 				games.locked AS locked,
 				games.scoring_method AS scoringMethod,
 				games.exclude_from_statistics AS excludeFromStatistics,
-				games.duration AS duration,
+				games.durationMillis AS durationMillis,
 				series.id AS series_id,
 				series.`date` AS series_date,
 				series.pre_bowl AS series_preBowl,
@@ -106,6 +106,9 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 
 	@Query("UPDATE games SET score = :score WHERE id = :gameId")
 	abstract fun setGameScore(gameId: UUID, score: Int)
+
+	@Query("UPDATE games SET durationMillis = :durationMillis WHERE id = :gameId")
+	abstract fun setGameDuration(gameId: UUID, durationMillis: Long)
 
 	@Query("UPDATE games SET exclude_from_statistics = :excludeFromStatistics WHERE id = :gameId")
 	abstract fun setGameExcludedFromStatistics(

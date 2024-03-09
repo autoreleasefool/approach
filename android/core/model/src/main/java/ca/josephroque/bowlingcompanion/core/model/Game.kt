@@ -56,7 +56,7 @@ data class GameEdit(
 		val locked: GameLockState,
 		val scoringMethod: GameScoringMethod,
 		val excludeFromStatistics: ExcludeFromStatistics,
-		val duration: Double,
+		val durationMillis: Long,
 	)
 
 	data class Series(
