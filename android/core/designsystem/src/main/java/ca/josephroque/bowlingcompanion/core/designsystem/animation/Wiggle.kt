@@ -21,7 +21,7 @@ import kotlin.random.Random
 @Composable
 fun Wiggle(
 	modifier: Modifier = Modifier,
-	infiniteTransition: InfiniteTransition = rememberInfiniteTransition(),
+	infiniteTransition: InfiniteTransition = rememberInfiniteTransition(label = "wiggle"),
 	content: @Composable (Modifier) -> Unit,
 ) {
 	val randomizer = remember { Random.nextFloat() }

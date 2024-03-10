@@ -69,11 +69,13 @@ class TrackableFrameUtilsTest {
 		assertEquals(listOf(roll(0, setOf(Pin.HEAD_PIN))), frame3.firstRolls)
 	}
 
+	@Test
 	fun testFirstRolls_WithNoRolls_ReturnsEmptyArray() {
 		val frame = frame(0, emptyList())
 		assertEquals(emptyList(), frame.firstRolls)
 	}
 
+	@Test
 	fun testFirstRolls_InLastFrame_WithNoStrikesOrSpares_ReturnsFirstRoll() {
 		val frame = frame(
 			Game.NUMBER_OF_FRAMES - 1,

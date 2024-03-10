@@ -43,8 +43,8 @@ internal fun GearFormRoute(
 					when (it) {
 						GearFormScreenEvent.Dismissed -> onDismiss()
 						is GearFormScreenEvent.EditAvatar ->
-							onEditAvatar(it.avatar) {
-								viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(it))
+							onEditAvatar(it.avatar) { avatar ->
+								viewModel.handleAction(GearFormScreenUiAction.UpdatedAvatar(avatar))
 							}
 						is GearFormScreenEvent.EditOwner ->
 							onEditOwner(it.owner) { ids ->

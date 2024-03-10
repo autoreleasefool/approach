@@ -19,6 +19,7 @@ object BowlerSummaryStub {
 	fun single(): BowlerSummary = list().first()
 }
 
+@Suppress("unused")
 object BowlerListItemStub {
 	fun list(): List<BowlerListItem> = listOf(
 		BowlerListItem(
@@ -32,6 +33,4 @@ object BowlerListItemStub {
 			average = 213.5,
 		),
 	)
-
-	fun single(): BowlerListItem = list().first()
 }

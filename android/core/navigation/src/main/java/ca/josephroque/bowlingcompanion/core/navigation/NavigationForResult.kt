@@ -72,6 +72,7 @@ fun <T> NavController.navigateForResult(
  *
  * @throws IllegalArgumentException if the given route is invalid
  */
+@Suppress("unused")
 fun <T> NavController.navigateForResult(
 	route: String,
 	navResultCallback: NavResultCallback<T>,

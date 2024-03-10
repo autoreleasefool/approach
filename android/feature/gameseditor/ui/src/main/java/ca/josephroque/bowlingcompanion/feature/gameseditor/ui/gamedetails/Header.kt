@@ -55,10 +55,10 @@ internal fun Header(
 }
 
 @Composable
-private fun RowScope.BowlerDetails(name: String, league: String, modifier: Modifier = Modifier) {
+private fun RowScope.BowlerDetails(name: String, league: String) {
 	Column(
 		horizontalAlignment = Alignment.Start,
-		modifier = modifier.weight(1f),
+		modifier = Modifier.weight(1f),
 	) {
 		Text(
 			text = name,
@@ -73,13 +73,9 @@ private fun RowScope.BowlerDetails(name: String, league: String, modifier: Modif
 }
 
 @Composable
-private fun NextButton(
-	next: NextGameEditableElement?,
-	onClick: () -> Unit,
-	modifier: Modifier = Modifier,
-) {
+private fun NextButton(next: NextGameEditableElement?, onClick: () -> Unit) {
 	Box(
-		modifier = modifier.alpha(if (next == null) 0f else 1f),
+		modifier = Modifier.alpha(if (next == null) 0f else 1f),
 	) {
 		Surface(
 			modifier = Modifier

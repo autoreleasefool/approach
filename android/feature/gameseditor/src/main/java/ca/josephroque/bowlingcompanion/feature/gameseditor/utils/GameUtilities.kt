@@ -13,7 +13,6 @@ import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.GameDe
 import ca.josephroque.bowlingcompanion.feature.gameseditor.ui.gamedetails.NextGameEditableElement
 import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 
@@ -47,17 +46,6 @@ inline fun MutableStateFlow<GameDetailsUiState>.updateGameDetailsAndGet(
 	}
 }
 
-inline fun MutableStateFlow<GameDetailsUiState>.getAndUpdateGameDetails(
-	gameId: UUID,
-	function: (GameDetailsUiState) -> GameDetailsUiState,
-) = this.getAndUpdate { state ->
-	if (state.gameId != gameId) {
-		state
-	} else {
-		function(state)
-	}
-}
-
 inline fun MutableStateFlow<GamesEditorUiState>.updateGamesEditor(
 	gameId: UUID,
 	function: (GamesEditorUiState) -> GamesEditorUiState,
@@ -75,17 +63,6 @@ inline fun MutableStateFlow<GamesEditorUiState>.updateGamesEditorAndGet(
 	gameId: UUID,
 	function: (GamesEditorUiState) -> GamesEditorUiState,
 ): GamesEditorUiState = this.updateAndGet { state ->
-	if (state.gameId != gameId) {
-		state
-	} else {
-		function(state)
-	}
-}
-
-inline fun MutableStateFlow<GamesEditorUiState>.getAndUpdateGamesEditor(
-	gameId: UUID,
-	function: (GamesEditorUiState) -> GamesEditorUiState,
-): GamesEditorUiState = this.getAndUpdate { state ->
 	if (state.gameId != gameId) {
 		state
 	} else {

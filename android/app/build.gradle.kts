@@ -1,5 +1,3 @@
-@file:Suppress("SpellCheckingInspection", "SpellCheckingInspection")
-
 import ca.josephroque.bowlingcompanion.ApproachBuildType
 
 plugins {

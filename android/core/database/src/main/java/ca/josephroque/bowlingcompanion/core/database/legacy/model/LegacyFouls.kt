@@ -26,24 +26,4 @@ object LegacyFouls {
 			else -> "0"
 		}
 	}
-
-	/**
-	 * Gets the int representation of a String of fouls in a frame.
-	 * Historic implementation from pre-3.0.0, required for database format
-	 *
-	 * @param s string representation of the number of fouls
-	 * @return integer representation of the number of fouls
-	 */
-	fun foulStringToInt(s: String): Int {
-		return when (s) {
-			"3" -> 24
-			"2" -> 25
-			"23" -> 26
-			"1" -> 27
-			"13" -> 28
-			"12" -> 29
-			"123" -> 30
-			else -> 0
-		}
-	}
 }

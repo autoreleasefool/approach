@@ -104,16 +104,11 @@ fun QuickPlayOnboarding(
 }
 
 @Composable
-private fun ActionRow(
-	title: String,
-	modifier: Modifier = Modifier,
-	subtitle: String? = null,
-	icon: @Composable () -> Unit = {},
-) {
+private fun ActionRow(title: String, subtitle: String? = null, icon: @Composable () -> Unit = {}) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
-		modifier = modifier
+		modifier = Modifier
 			.padding(vertical = 8.dp),
 	) {
 		icon()

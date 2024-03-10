@@ -16,6 +16,4 @@ object GameStub {
 			score = 225,
 		),
 	)
-
-	fun single() = list().first()
 }

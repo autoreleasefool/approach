@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -59,7 +59,7 @@ fun ColorPicker(
 	when (state) {
 		ColorPickerUiState.Hidden -> Unit
 		is ColorPickerUiState.Primary, is ColorPickerUiState.Secondary -> {
-			AlertDialog(
+			BasicAlertDialog(
 				onDismissRequest = { onAction(ColorPickerUiAction.ColorChanged(initialColor)) },
 			) {
 				Surface(

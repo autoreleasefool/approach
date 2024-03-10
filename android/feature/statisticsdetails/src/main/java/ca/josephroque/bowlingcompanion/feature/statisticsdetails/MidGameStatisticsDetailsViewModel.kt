@@ -31,8 +31,9 @@ class MidGameStatisticsDetailsViewModel @Inject constructor(
 	private val userDataRepository: UserDataRepository,
 	@ApplicationScope private val scope: CoroutineScope,
 ) : ApproachViewModel<MidGameStatisticsDetailsScreenEvent>() {
-	private val sourceType = Route.StatisticsDetails.getSourceType(savedStateHandle)!!
-	private val sourceId = Route.StatisticsDetails.getSourceId(savedStateHandle) ?: UUID.randomUUID()
+	private val sourceType = Route.MidGameStatisticsDetails.getSourceType(savedStateHandle)!!
+	private val sourceId = Route.MidGameStatisticsDetails.getSourceId(savedStateHandle)
+		?: UUID.randomUUID()
 	private val initialFilterSource = when (sourceType) {
 		StatisticsDetailsSourceType.BOWLER -> TrackableFilter.Source.Bowler(sourceId)
 		StatisticsDetailsSourceType.LEAGUE -> TrackableFilter.Source.League(sourceId)

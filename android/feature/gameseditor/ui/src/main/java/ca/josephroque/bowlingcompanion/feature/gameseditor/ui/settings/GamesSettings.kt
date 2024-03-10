@@ -117,12 +117,11 @@ private fun Bowler(
 	bowler: BowlerSummary,
 	isSelected: Boolean,
 	onAction: (GamesSettingsUiAction) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,
-		modifier = modifier
+		modifier = Modifier
 			.background(MaterialTheme.colorScheme.surface)
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(GamesSettingsUiAction.BowlerClicked(bowler)) })
@@ -157,7 +156,6 @@ private fun Game(
 	game: GameListItem,
 	isSelected: Boolean,
 	onAction: (GamesSettingsUiAction) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	Surface(
 		color = if (isSelected) {
@@ -165,7 +163,7 @@ private fun Game(
 		} else {
 			MaterialTheme.colorScheme.surface
 		},
-		modifier = modifier
+		modifier = Modifier
 			.selectable(
 				selected = isSelected,
 				onClick = { onAction(GamesSettingsUiAction.GameClicked(game)) },

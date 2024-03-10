@@ -22,5 +22,4 @@
 	<string name="quick_play_tap_to_edit">Tap a bowler to choose a different league</string>
 	<string name="quick_play_swipe_to_delete">Swipe a bowler to remove them from your recording</string>
 	<string name="quick_play_long_press_to_reorder">Long press a bowler to change their order</string>
-	<string name="quick_play_start_bowling">Start Bowling!</string>
 </resources>

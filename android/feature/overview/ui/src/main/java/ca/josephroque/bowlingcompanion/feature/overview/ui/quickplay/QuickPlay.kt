@@ -16,7 +16,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -136,12 +135,11 @@ fun QuickPlay(
 private fun QuickPlayBowler(
 	bowler: Pair<BowlerSummary, LeagueSummary>,
 	onAction: (QuickPlayUiAction) -> Unit,
-	modifier: Modifier = Modifier,
 ) {
 	Row(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalAlignment = Alignment.CenterVertically,
-		modifier = modifier
+		modifier = Modifier
 			.background(MaterialTheme.colorScheme.surface)
 			.fillMaxWidth()
 			.clickable(onClick = { onAction(QuickPlayUiAction.BowlerClicked(bowler.first)) })
@@ -176,7 +174,6 @@ private fun QuickPlayBowler(
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun QuickPlayTip(onClick: () -> Unit, modifier: Modifier = Modifier) {
 	Card(

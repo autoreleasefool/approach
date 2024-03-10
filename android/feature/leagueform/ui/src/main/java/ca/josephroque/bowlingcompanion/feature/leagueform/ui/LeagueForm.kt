@@ -129,7 +129,7 @@ fun LeagueForm(
 
 		HorizontalDivider()
 
-		// TODO: add explanation with R.string-league_form_property_pinfall_footr
+		// TODO: add explanation with R.string-league_form_property_pinfall_footer
 
 		IncludeAdditionalPinFallSwitch(
 			includeAdditionalPinFall = state.includeAdditionalPinFall,

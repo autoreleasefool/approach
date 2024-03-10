@@ -1,7 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.designsystem.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.R
 fun BackButton(onClick: () -> Unit) {
 	IconButton(onClick = onClick) {
 		Icon(
-			Icons.Default.ArrowBack,
+			Icons.AutoMirrored.Filled.ArrowBack,
 			contentDescription = stringResource(R.string.cd_back),
 			tint = MaterialTheme.colorScheme.onSurface,
 		)

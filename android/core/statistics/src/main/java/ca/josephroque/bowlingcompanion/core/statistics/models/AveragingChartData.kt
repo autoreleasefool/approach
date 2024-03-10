@@ -8,9 +8,9 @@ data class AveragingChartData(
 	val entries: List<AveragingChartEntry>,
 	val preferredTrendDirection: PreferredTrendDirection?,
 ) {
-	val minimumValue: Double
-	val maximumValue: Double
-	val percentDifferenceOverFullTimeSpan: Double
+	private val minimumValue: Double
+	private val maximumValue: Double
+	private val percentDifferenceOverFullTimeSpan: Double
 
 	init {
 		val minimumValue = entries.minOfOrNull { it.value } ?: 0.0

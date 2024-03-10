@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.featureflags
 
+@Suppress("unused")
 enum class RolloutStage {
 	DISABLED,
 	DEVELOPMENT,

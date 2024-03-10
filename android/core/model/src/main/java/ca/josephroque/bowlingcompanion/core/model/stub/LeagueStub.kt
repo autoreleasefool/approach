@@ -20,6 +20,7 @@ object LeagueSummaryStub {
 	fun single(): LeagueSummary = list().first()
 }
 
+@Suppress("unused")
 object LeagueListItemStub {
 	fun list(): List<LeagueListItem> = listOf(
 		LeagueListItem(
@@ -37,6 +38,4 @@ object LeagueListItemStub {
 			recurrence = LeagueRecurrence.REPEATING,
 		),
 	)
-
-	fun single(): LeagueListItem = list().first()
 }
