@@ -28,7 +28,7 @@ protobufPlugin = "0.9.4"
 room = "2.6.1"
 secrets = "2.0.1"
 sentry = "7.1.0"
-swipe = "1.2.0"
+swipe = "1.3.0"
 telemetryDeck = "1.1.0"
 vico = "1.12.0"
 
