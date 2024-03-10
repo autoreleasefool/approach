@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -69,7 +69,7 @@ fun GameDetails(
 			)
 		}
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		StatisticsButtons(
 			gameIndex = state.currentGameIndex,
@@ -77,7 +77,7 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		GearCard(
 			state = state.gear,
@@ -85,7 +85,7 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		AlleyCard(
 			state = state.alley,
@@ -93,7 +93,7 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		MatchPlayCard(
 			state = state.matchPlay,
@@ -101,7 +101,7 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		ScoringMethodCard(
 			state = state.scoringMethod,
@@ -109,7 +109,7 @@ fun GameDetails(
 			modifier = Modifier.padding(horizontal = 16.dp),
 		)
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		GamePropertiesCard(
 			state = state.gameProperties,

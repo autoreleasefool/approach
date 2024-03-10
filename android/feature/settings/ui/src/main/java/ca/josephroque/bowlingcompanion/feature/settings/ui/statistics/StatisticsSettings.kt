@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
@@ -28,7 +28,7 @@ fun StatisticsSettings(
 			onAction = onAction,
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		OverallSettingsSection(
 			isHidingZeroStatistics = state.isHidingZeroStatistics,
@@ -36,7 +36,7 @@ fun StatisticsSettings(
 			onAction = onAction,
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		WidgetsSettingsSection(
 			isHidingWidgetsInBowlersList = state.isHidingWidgetsInBowlersList,

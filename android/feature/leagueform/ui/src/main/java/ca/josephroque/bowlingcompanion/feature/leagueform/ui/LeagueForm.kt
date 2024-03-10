@@ -14,7 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -72,7 +72,7 @@ fun LeagueForm(
 		}
 
 		state.recurrence?.let {
-			Divider()
+			HorizontalDivider()
 			FormSection(Modifier.padding(top = 16.dp)) {
 				RecurrencePicker(
 					recurrence = it,
@@ -82,7 +82,7 @@ fun LeagueForm(
 		}
 
 		if (state.recurrence != null || state.gamesPerSeries != null) {
-			Divider()
+			HorizontalDivider()
 
 			when (state.recurrence) {
 				LeagueRecurrence.ONCE, null -> Unit
@@ -90,7 +90,13 @@ fun LeagueForm(
 					FormSection(Modifier.padding(top = 16.dp)) {
 						GamesPerSeriesPicker(
 							gamesPerSeries = it,
-							onGamesPerSeriesChanged = { onAction(LeagueFormUiAction.GamesPerSeriesChanged(it)) },
+							onGamesPerSeriesChanged = {
+								onAction(
+									LeagueFormUiAction.GamesPerSeriesChanged(
+										it,
+									),
+								)
+							},
 						)
 					}
 				}
@@ -108,14 +114,20 @@ fun LeagueForm(
 					) {
 						NumberOfGamesSlider(
 							numberOfGames = it,
-							onNumberOfGamesChanged = { onAction(LeagueFormUiAction.NumberOfGamesChanged(it)) },
+							onNumberOfGamesChanged = {
+								onAction(
+									LeagueFormUiAction.NumberOfGamesChanged(
+										it,
+									),
+								)
+							},
 						)
 					}
 				}
 			}
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		// TODO: add explanation with R.string-league_form_property_pinfall_footr
 
@@ -136,19 +148,32 @@ fun LeagueForm(
 				) {
 					AdditionalPinFallField(
 						additionalPinFall = state.additionalPinFall,
-						onAdditionalPinFallChanged = { onAction(LeagueFormUiAction.AdditionalPinFallChanged(it)) },
+						onAdditionalPinFallChanged = {
+							onAction(
+								LeagueFormUiAction.AdditionalPinFallChanged(
+									it,
+								),
+							)
+						},
 					)
 
 					AdditionalGamesField(
 						additionalGames = state.additionalGames,
-						onAdditionalGamesChanged = { onAction(LeagueFormUiAction.AdditionalGamesChanged(it)) },
+						onAdditionalGamesChanged = {
+							onAction(
+								LeagueFormUiAction.AdditionalGamesChanged(
+									it,
+								),
+							)
+						},
 					)
 				}
 			}
+
 			IncludeAdditionalPinFall.NONE -> Unit
 		}
 
-		Divider()
+		HorizontalDivider()
 		FormSection(Modifier.padding(top = 16.dp)) {
 			ExcludeFromStatisticsPicker(
 				excludeFromStatistics = state.excludeFromStatistics,

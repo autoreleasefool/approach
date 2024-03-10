@@ -13,8 +13,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -85,14 +85,14 @@ fun SeriesForm(
 			modifier = Modifier.padding(bottom = 16.dp),
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		AlleySection(
 			alley = state.alley,
 			onClick = { onAction(SeriesFormUiAction.AlleyClicked) },
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		PreBowlSection(
 			preBowl = state.preBowl,
@@ -100,7 +100,7 @@ fun SeriesForm(
 			modifier = Modifier.padding(top = 16.dp),
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		ExcludeFromStatisticsSection(
 			excludeFromStatistics = state.excludeFromStatistics,
@@ -114,7 +114,7 @@ fun SeriesForm(
 			modifier = Modifier.padding(top = 16.dp),
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		if (state.isArchiveButtonEnabled) {
 			Button(
@@ -186,7 +186,7 @@ private fun SeriesDatePicker(
 	val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialSelection)
 
 	val onDismiss = {
-		datePickerState.setSelection(initialSelection)
+		datePickerState.selectedDateMillis = initialSelection
 		onDatePickerDismissed()
 	}
 

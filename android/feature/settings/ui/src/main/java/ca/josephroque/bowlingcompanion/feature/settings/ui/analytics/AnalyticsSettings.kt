@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,7 +46,7 @@ fun AnalyticsSettings(
 				.padding(bottom = 16.dp),
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		LabeledSwitch(
 			checked = state.analyticsOptInStatus == AnalyticsOptInStatus.OPTED_IN,
@@ -54,7 +54,7 @@ fun AnalyticsSettings(
 			titleResourceId = R.string.analytics_settings_share_anonymous_analytics,
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		Text(
 			text = stringResource(R.string.analytics_settings_opt_out),
@@ -70,7 +70,9 @@ fun AnalyticsSettings(
 			titleResourceId = R.string.analytics_settings_privacy_policy,
 			iconResourceId = ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_open_in_new,
 			onClick = {
-				uriHandler.openUri(context.resources.getString(R.string.analytics_settings_privacy_policy_url))
+				uriHandler.openUri(
+					context.resources.getString(R.string.analytics_settings_privacy_policy_url),
+				)
 			},
 			modifier = Modifier.padding(top = 16.dp),
 		)

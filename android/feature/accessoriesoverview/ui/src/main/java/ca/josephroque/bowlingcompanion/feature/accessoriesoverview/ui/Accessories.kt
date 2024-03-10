@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.accessoriesoverview.ui
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -61,7 +61,7 @@ fun Accessories(
 		}
 
 		item {
-			Divider(thickness = 8.dp, modifier = Modifier.padding(vertical = 16.dp))
+			HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), thickness = 8.dp)
 		}
 
 		header(

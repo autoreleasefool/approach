@@ -128,10 +128,12 @@ private fun FoulChip(isEnabled: Boolean, onClick: () -> Unit) {
 		},
 		border = if (isEnabled) {
 			AssistChipDefaults.assistChipBorder(
+				enabled = true,
 				borderColor = Color.Transparent,
 			)
 		} else {
 			AssistChipDefaults.assistChipBorder(
+				enabled = false,
 				borderColor = Color.White,
 			)
 		},

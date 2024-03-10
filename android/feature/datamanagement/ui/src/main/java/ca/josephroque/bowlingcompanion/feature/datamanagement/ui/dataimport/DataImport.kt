@@ -17,7 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -250,6 +250,7 @@ private fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
+
 				DataImportProgress.Importing -> {
 					Text(
 						text = stringResource(R.string.data_import_progress_importing),
@@ -258,6 +259,7 @@ private fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
+
 				DataImportProgress.ImportComplete -> {
 					Text(
 						text = stringResource(R.string.data_import_progress_import_success),
@@ -268,6 +270,7 @@ private fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
+
 				DataImportProgress.RestoreComplete -> {
 					Text(
 						text = stringResource(R.string.data_import_progress_restore_success),
@@ -278,6 +281,7 @@ private fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 				}
+
 				is DataImportProgress.Failed -> {
 					Text(
 						text = stringResource(R.string.data_import_progress_error),
@@ -295,7 +299,7 @@ private fun DataImportProgressCard(
 						modifier = Modifier.padding(horizontal = 16.dp),
 					)
 
-					Divider()
+					HorizontalDivider()
 
 					Text(
 						text = stringResource(R.string.data_import_progress_error_report),

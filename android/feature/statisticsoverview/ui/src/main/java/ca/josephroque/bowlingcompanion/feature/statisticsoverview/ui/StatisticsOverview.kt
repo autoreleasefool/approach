@@ -10,8 +10,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
@@ -47,7 +47,7 @@ fun StatisticsOverview(
 				text = stringResource(R.string.statistics_get_an_overview_description),
 				style = MaterialTheme.typography.bodyMedium,
 			)
-			
+
 			SuggestionChip(
 				onClick = {},
 				label = {
@@ -60,7 +60,7 @@ fun StatisticsOverview(
 			)
 		}
 
-		Divider(thickness = 8.dp)
+		HorizontalDivider(thickness = 8.dp)
 
 		Column(
 			verticalArrangement = Arrangement.spacedBy(8.dp),

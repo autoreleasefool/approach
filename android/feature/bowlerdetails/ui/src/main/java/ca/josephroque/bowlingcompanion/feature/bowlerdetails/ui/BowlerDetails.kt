@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -62,7 +62,7 @@ fun BowlerDetails(
 		)
 
 		item {
-			Divider(thickness = 8.dp)
+			HorizontalDivider(thickness = 8.dp)
 		}
 
 		bowlerGearList(

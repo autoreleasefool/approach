@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -105,9 +105,9 @@ fun SeriesDetailsHeader(
 		if (scores != null) {
 			ScoreChart(scores)
 
-			Divider(
-				thickness = 8.dp,
+			HorizontalDivider(
 				modifier = Modifier.padding(vertical = 8.dp),
+				thickness = 8.dp,
 			)
 		}
 	}

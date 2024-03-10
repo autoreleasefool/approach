@@ -12,7 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -81,7 +81,7 @@ fun AlleyForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
 			MaterialPicker(
@@ -90,7 +90,7 @@ fun AlleyForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
 			MechanismPicker(
@@ -99,7 +99,7 @@ fun AlleyForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
 			PinFallPicker(
@@ -108,7 +108,7 @@ fun AlleyForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
 			PinBasePicker(
@@ -117,7 +117,7 @@ fun AlleyForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		if (state.isDeleteButtonEnabled) {
 			Button(

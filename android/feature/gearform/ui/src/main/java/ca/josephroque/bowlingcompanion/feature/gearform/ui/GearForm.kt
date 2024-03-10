@@ -15,7 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -83,7 +83,7 @@ fun GearForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		FormSection(modifier = Modifier.padding(top = 16.dp)) {
 			GearKindPicker(
@@ -92,7 +92,7 @@ fun GearForm(
 			)
 		}
 
-		Divider()
+		HorizontalDivider()
 
 		FormSection(
 			titleResourceId = R.string.gear_form_section_avatar,

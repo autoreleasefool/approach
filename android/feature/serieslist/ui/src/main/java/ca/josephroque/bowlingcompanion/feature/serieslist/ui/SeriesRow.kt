@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -212,7 +212,7 @@ private fun SeriesItemPreview() {
 				onClick = {},
 			)
 
-			Divider(modifier = Modifier.padding(start = 16.dp))
+			HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
 
 			SeriesRow(
 				date = LocalDate.parse("2023-10-01"),
@@ -222,7 +222,7 @@ private fun SeriesItemPreview() {
 				onClick = {},
 			)
 
-			Divider(modifier = Modifier.padding(start = 16.dp))
+			HorizontalDivider(modifier = Modifier.padding(start = 16.dp))
 
 			SeriesRow(
 				date = LocalDate.parse("2023-10-01"),

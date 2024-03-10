@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,7 +34,8 @@ fun MatchPlayEditor(
 	) {
 		PickableResourceCard(
 			resourceName = stringResource(R.string.match_play_editor_opponent),
-			selectedName = state.opponent?.name ?: stringResource(R.string.match_play_editor_opponent_none),
+			selectedName = state.opponent?.name
+				?: stringResource(R.string.match_play_editor_opponent_none),
 			onClick = { onAction(MatchPlayEditorUiAction.OpponentClicked) },
 		)
 
@@ -55,7 +56,7 @@ fun MatchPlayEditor(
 				.padding(horizontal = 16.dp),
 		)
 
-		Divider()
+		HorizontalDivider()
 
 		FormRadioGroup(
 			title = stringResource(R.string.match_play_result_outcome),
@@ -74,13 +75,18 @@ fun MatchPlayEditor(
 					MatchPlayResult.WON -> stringResource(
 						ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_won,
 					)
+
 					MatchPlayResult.LOST -> stringResource(
 						ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_lost,
 					)
+
 					MatchPlayResult.TIED -> stringResource(
 						ca.josephroque.bowlingcompanion.core.model.ui.R.string.match_play_result_tied,
 					)
-					null -> stringResource(ca.josephroque.bowlingcompanion.core.designsystem.R.string.none)
+
+					null -> stringResource(
+						ca.josephroque.bowlingcompanion.core.designsystem.R.string.none,
+					)
 				}
 			},
 			onOptionSelected = { onAction(MatchPlayEditorUiAction.ResultChanged(it)) },
