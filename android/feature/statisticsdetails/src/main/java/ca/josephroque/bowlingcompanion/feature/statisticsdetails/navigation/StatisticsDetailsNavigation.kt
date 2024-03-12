@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.StatisticsDetailsRoute
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.sourceType
 import java.util.UUID
@@ -31,7 +32,10 @@ fun NavController.navigateToStatisticsDetails(
 	this.navigate(Route.StatisticsDetails.createRoute(sourceType.name, sourceId), navOptions)
 }
 
-fun NavGraphBuilder.statisticsDetailsScreen(onBackPressed: () -> Unit) {
+fun NavGraphBuilder.statisticsDetailsScreen(
+	onBackPressed: () -> Unit,
+	onShowStatisticChart: (TrackableFilter, StatisticID) -> Unit,
+) {
 	composable(
 		route = Route.StatisticsDetails.route,
 		arguments = listOf(
@@ -41,6 +45,9 @@ fun NavGraphBuilder.statisticsDetailsScreen(onBackPressed: () -> Unit) {
 			navArgument(Route.StatisticsDetails.ARG_SOURCE_ID) { type = NavType.StringType },
 		),
 	) {
-		StatisticsDetailsRoute(onBackPressed = onBackPressed)
+		StatisticsDetailsRoute(
+			onBackPressed = onBackPressed,
+			onShowStatisticChart = onShowStatisticChart,
+		)
 	}
 }

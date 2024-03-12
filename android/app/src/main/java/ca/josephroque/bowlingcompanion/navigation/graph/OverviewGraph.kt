@@ -37,6 +37,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToN
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToMidGameStatisticsDetails
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetailsChart
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticPickerForResult
@@ -217,5 +218,6 @@ fun NavGraphBuilder.overviewGraph(
 	)
 	statisticsDetailsScreen(
 		onBackPressed = navController::popBackStack,
+		onShowStatisticChart = navController::navigateToStatisticsDetailsChart,
 	)
 }

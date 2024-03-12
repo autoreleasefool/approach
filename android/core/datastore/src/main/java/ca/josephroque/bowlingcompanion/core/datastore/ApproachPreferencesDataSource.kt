@@ -46,6 +46,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 				recentlyUsedGearIds = it.recentlyUsedGearIdsList,
 				isLaneFormSwipeToEditTipDismissed = it.isLaneFormSwipeToEditTipDismissed,
 				isQuickPlayTipDismissed = it.isQuickPlayTipDismissed,
+				isStatisticsTapToViewChartTipDismissed = it.isStatisticsTapToViewChartTipDismissed,
 				lastTrackableFilter = it.parseTrackableFilterSource(),
 				seenStatisticIds = it.seenStatisticsIdsList.toSet(),
 				latestSeriesInEditor = it.latestSeriesInEditorList,
@@ -186,6 +187,12 @@ class ApproachPreferencesDataSource @Inject constructor(
 	suspend fun setIsQuickPlayTipDismissed(isDismissed: Boolean) {
 		userPreferences.updateData {
 			it.copy { this.isQuickPlayTipDismissed = isDismissed }
+		}
+	}
+
+	suspend fun setIsStatisticsTapToViewChartTipDismissed(isDismissed: Boolean) {
+		userPreferences.updateData {
+			it.copy { this.isStatisticsTapToViewChartTipDismissed = isDismissed }
 		}
 	}
 

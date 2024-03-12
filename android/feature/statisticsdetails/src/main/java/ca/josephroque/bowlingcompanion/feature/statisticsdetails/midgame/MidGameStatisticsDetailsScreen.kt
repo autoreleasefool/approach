@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.statisticsdetails
+package ca.josephroque.bowlingcompanion.feature.statisticsdetails.midgame
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.MidGameStatisticsDetailsTopBar
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsList
 import kotlinx.coroutines.launch
 

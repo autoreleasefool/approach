@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigat
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.resourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.midGameStatisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsChartSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsSourcePickerSheet
 
 fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
@@ -99,6 +100,9 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 		onDismiss = navController::popBackStack,
 	)
 	midGameStatisticsDetailsScreen(
+		onBackPressed = navController::popBackStack,
+	)
+	statisticsDetailsChartSheet(
 		onBackPressed = navController::popBackStack,
 	)
 	matchPlayEditorScreen(

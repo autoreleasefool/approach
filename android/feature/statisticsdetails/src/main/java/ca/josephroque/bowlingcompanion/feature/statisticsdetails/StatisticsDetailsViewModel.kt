@@ -1,9 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsdetails
 
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetValue
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
@@ -17,13 +14,8 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
-import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
-import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiAction
-import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
-import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -36,7 +28,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -56,8 +47,6 @@ class StatisticsDetailsViewModel @Inject constructor(
 		StatisticsDetailsSourceType.GAME -> TrackableFilter.Source.Game(sourceId)
 	}
 
-	private val chartEntryModelProducer = ChartEntryModelProducer()
-
 	private val filter: MutableStateFlow<TrackableFilter> =
 		MutableStateFlow(TrackableFilter(source = initialFilterSource))
 
@@ -65,20 +54,17 @@ class StatisticsDetailsViewModel @Inject constructor(
 		statisticsRepository.getSourceDetails(it.source)
 	}
 
-	private val headerPeekHeight = MutableStateFlow(0f)
-
-	@OptIn(ExperimentalMaterial3Api::class)
-	private val bottomSheetValue = MutableStateFlow(SheetValue.PartiallyExpanded)
-
 	private data class StatisticsSettings(
 		val isHidingZeroStatistics: Boolean,
 		val isHidingStatisticDescriptions: Boolean,
+		val isTapToViewChartTipDismissed: Boolean,
 	)
 	private val statisticsSettings: Flow<StatisticsSettings> =
 		userDataRepository.userData.map {
 			StatisticsSettings(
 				isHidingZeroStatistics = !it.isShowingZeroStatistics,
 				isHidingStatisticDescriptions = it.isHidingStatisticDescriptions,
+				isTapToViewChartTipDismissed = it.isStatisticsTapToViewChartTipDismissed,
 			)
 		}
 
@@ -92,46 +78,6 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private val selectedStatistic: MutableStateFlow<StatisticID?> = MutableStateFlow(
 		allStatistics(source = initialFilterSource).firstOrNull()?.id,
 	)
-
-	private val chartContent: Flow<StatisticsDetailsChartUiState.ChartContent?> = combine(
-		filter,
-		selectedStatistic,
-	) { filter, selectedStatistic ->
-		if (selectedStatistic == null) return@combine null
-		val chart = statisticsRepository.getStatisticsChart(
-			statistic = statisticInstanceFromID(selectedStatistic),
-			filter = filter,
-		)
-
-		StatisticsDetailsChartUiState.ChartContent(
-			chart = chart,
-			modelProducer = chartEntryModelProducer,
-		)
-	}
-
-	private val statisticsChartState: Flow<StatisticsDetailsChartUiState> = combine(
-		filter,
-		selectedStatistic,
-		chartContent,
-	) { filter, selectedStatistic, chartContent ->
-		if (chartContent == null || selectedStatistic == null) {
-			StatisticsDetailsChartUiState(
-				filter = filter,
-				isLoadingNextChart = true,
-				isFilterTooNarrow = false,
-				chartContent = null,
-				supportsAggregation = false,
-			)
-		} else {
-			StatisticsDetailsChartUiState(
-				filter = filter,
-				isLoadingNextChart = false,
-				isFilterTooNarrow = false,
-				chartContent = chartContent,
-				supportsAggregation = statisticInstanceFromID(selectedStatistic).supportsAggregation,
-			)
-		}
-	}
 
 	private val statisticsListState: Flow<StatisticsDetailsListUiState> = combine(
 		filter,
@@ -147,50 +93,24 @@ class StatisticsDetailsViewModel @Inject constructor(
 			highlightedEntry = selectedStatistic,
 			isHidingZeroStatistics = settings.isHidingZeroStatistics,
 			isHidingStatisticDescriptions = settings.isHidingStatisticDescriptions,
+			isShowingTapToViewChartTip = !settings.isTapToViewChartTipDismissed,
+			isChartSupportEnabled = true,
 		)
 	}
 
-	@OptIn(ExperimentalMaterial3Api::class)
-	val uiState: StateFlow<StatisticsDetailsScreenUiState> = combine(
-		statisticsListState,
-		statisticsChartState,
-		headerPeekHeight,
-		bottomSheetValue,
-	) { statisticsList, statisticsChart, headerPeekHeight, bottomSheetValue ->
-		StatisticsDetailsScreenUiState.Loaded(
-			list = statisticsList,
-			chart = statisticsChart,
-			headerPeekHeight = headerPeekHeight,
-			bottomSheetValue = bottomSheetValue,
-		)
+	val uiState: StateFlow<StatisticsDetailsScreenUiState> = statisticsListState.map {
+		StatisticsDetailsScreenUiState.Loaded(list = it)
 	}.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5_000),
 		initialValue = StatisticsDetailsScreenUiState.Loading,
 	)
 
-	init {
-		viewModelScope.launch {
-			chartContent.collect {
-				if (it != null) {
-					chartEntryModelProducer.setEntries(it.chart.getModelEntries())
-				}
-			}
-		}
-	}
-
-	@OptIn(ExperimentalMaterial3Api::class)
-	override fun onResume(owner: LifecycleOwner) {
-		bottomSheetValue.value = SheetValue.PartiallyExpanded
-	}
-
 	fun handleAction(action: StatisticsDetailsScreenUiAction) {
 		when (action) {
 			StatisticsDetailsScreenUiAction.OnDismissed -> hasSeenAllStatistics()
-			is StatisticsDetailsScreenUiAction.Chart -> handleChartAction(action.action)
 			is StatisticsDetailsScreenUiAction.List -> handleListAction(action.action)
 			is StatisticsDetailsScreenUiAction.TopBar -> handleTopBarAction(action.action)
-			is StatisticsDetailsScreenUiAction.BottomSheet -> handleBottomSheetAction(action.action)
 		}
 	}
 
@@ -202,7 +122,7 @@ class StatisticsDetailsViewModel @Inject constructor(
 				toggleHidingZeroStatistics(action.newValue)
 			is StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled ->
 				toggleHidingStatisticDescriptions(action.newValue)
-			is StatisticsDetailsListUiAction.HeaderHeightMeasured -> setHeaderPeekHeight(action.height)
+			StatisticsDetailsListUiAction.TapToViewChartTipDismissed -> dismissTapToViewChartTip()
 		}
 	}
 
@@ -212,37 +132,27 @@ class StatisticsDetailsViewModel @Inject constructor(
 		}
 	}
 
-	private fun handleChartAction(action: StatisticsDetailsChartUiAction) {
-		when (action) {
-			is StatisticsDetailsChartUiAction.AggregationChanged ->
-				toggleAggregation(action.newValue)
-		}
-	}
-
-	@OptIn(ExperimentalMaterial3Api::class)
-	private fun handleBottomSheetAction(action: StatisticsDetailsBottomSheetUiAction) {
-		when (action) {
-			is StatisticsDetailsBottomSheetUiAction.SheetValueChanged ->
-				bottomSheetValue.value = action.value
-		}
-	}
-
-	private fun setHeaderPeekHeight(height: Float) {
-		headerPeekHeight.value = height
-	}
-
 	private fun hasSeenAllStatistics() {
 		scope.launch {
 			userDataRepository.setAllStatisticIDsSeen()
 		}
 	}
 
-	@OptIn(ExperimentalMaterial3Api::class)
-	private fun showStatisticChart(statistic: StatisticID) {
-		bottomSheetValue.value = SheetValue.PartiallyExpanded
-		selectedStatistic.value = statistic
-
+	private fun dismissTapToViewChartTip() {
 		viewModelScope.launch {
+			userDataRepository.didDismissStatisticsTapToViewChartTip()
+		}
+	}
+
+	private fun showStatisticChart(statistic: StatisticID) {
+		sendEvent(
+			StatisticsDetailsScreenEvent.ShowStatisticChart(
+				filter = filter.value,
+				id = statistic,
+			),
+		)
+
+		scope.launch {
 			val userData = userDataRepository.userData.first()
 			analyticsClient.trackEvent(
 				StatisticViewed(
@@ -263,17 +173,6 @@ class StatisticsDetailsViewModel @Inject constructor(
 	private fun toggleHidingStatisticDescriptions(newValue: Boolean) {
 		viewModelScope.launch {
 			userDataRepository.setIsHidingStatisticDescriptions(newValue)
-		}
-	}
-
-	private fun toggleAggregation(newValue: Boolean) {
-		filter.update {
-			it.copy(
-				aggregation = when (newValue) {
-					true -> TrackableFilter.AggregationFilter.ACCUMULATE
-					false -> TrackableFilter.AggregationFilter.PERIODIC
-				},
-			)
 		}
 	}
 }

@@ -12,6 +12,8 @@ data class StatisticsDetailsListUiState(
 	val isHidingZeroStatistics: Boolean = true,
 	val isHidingStatisticDescriptions: Boolean = false,
 	val isShowingTitle: Boolean = true,
+	val isChartSupportEnabled: Boolean = false,
+	val isShowingTapToViewChartTip: Boolean = false,
 )
 
 sealed interface StatisticsDetailsListUiAction {
@@ -20,5 +22,5 @@ sealed interface StatisticsDetailsListUiAction {
 	data class HidingStatisticDescriptionsToggled(
 		val newValue: Boolean,
 	) : StatisticsDetailsListUiAction
-	data class HeaderHeightMeasured(val height: Float) : StatisticsDetailsListUiAction
+	data object TapToViewChartTipDismissed : StatisticsDetailsListUiAction
 }

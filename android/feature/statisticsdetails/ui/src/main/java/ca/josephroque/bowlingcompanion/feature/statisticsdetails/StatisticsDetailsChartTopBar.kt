@@ -7,20 +7,26 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import ca.josephroque.bowlingcompanion.core.designsystem.components.BackButton
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.chart.StatisticsDetailsChartUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StatisticsDetailsTopBar(onAction: (StatisticsDetailsTopBarUiAction) -> Unit) {
+fun StatisticsDetailsChartTopBar(
+	state: StatisticsDetailsChartUiState?,
+	onAction: (StatisticsDetailsChartTopBarUiAction) -> Unit,
+) {
 	TopAppBar(
 		title = {
 			Text(
-				text = stringResource(R.string.statistics_filter_title),
+				text = stringResource(
+					state?.chartContent?.chart?.titleResourceId ?: R.string.statistics_chart_title_loading,
+				),
 				style = MaterialTheme.typography.titleLarge,
 			)
 		},
 		navigationIcon = {
-			BackButton(onClick = { onAction(StatisticsDetailsTopBarUiAction.BackClicked) })
+			BackButton(onClick = { onAction(StatisticsDetailsChartTopBarUiAction.BackClicked) })
 		},
 	)
 }

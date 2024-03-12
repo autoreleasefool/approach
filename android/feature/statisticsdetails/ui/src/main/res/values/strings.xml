@@ -14,6 +14,10 @@
 	<string name="statistics_list_setting_hide_descriptions">Hide descriptions for each statistic?</string>
 
 	<string name="statistics_list_new">New</string>
+	<string name="statistics_list_tap_to_view_chart">Tap any statistic for better insights!</string>
+	<string name="statistics_list_tap_to_view_chart_message">See useful charts and how your game changes over time.</string>
+
+	<string name="statistics_chart_title_loading">Loading Statistic</string>
 
 	<string name="statistics_filter_title">Detailed Statistics</string>
 	<string name="statistics_filter_label_bowler">Bowler</string>

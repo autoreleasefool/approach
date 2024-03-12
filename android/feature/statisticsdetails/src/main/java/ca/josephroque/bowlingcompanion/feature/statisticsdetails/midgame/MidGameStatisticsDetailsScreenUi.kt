@@ -1,5 +1,6 @@
-package ca.josephroque.bowlingcompanion.feature.statisticsdetails
+package ca.josephroque.bowlingcompanion.feature.statisticsdetails.midgame
 
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.MidGameStatisticsDetailsTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
 
@@ -13,7 +14,8 @@ sealed interface MidGameStatisticsDetailsScreenUiState {
 
 sealed interface MidGameStatisticsDetailsScreenUiAction {
 	data object OnDismissed : MidGameStatisticsDetailsScreenUiAction
-	data class List(val action: StatisticsDetailsListUiAction) : MidGameStatisticsDetailsScreenUiAction
+	data class List(val action: StatisticsDetailsListUiAction) :
+		MidGameStatisticsDetailsScreenUiAction
 	data class TopBar(
 		val action: MidGameStatisticsDetailsTopBarUiAction,
 	) : MidGameStatisticsDetailsScreenUiAction

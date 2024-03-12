@@ -165,4 +165,4 @@ fun widgetStatistics(): List<StatisticGroup> = allStatistics(supportingWidgets =
 	.toSortedMap { o1, o2 -> o1.ordinal.compareTo(o2.ordinal) }
 	.map { StatisticGroup(it.key.titleResourceId, it.value) }
 
-fun statisticInstanceFromID(id: StatisticID): Statistic = allStatistics().first { it.id == id }
+fun statisticInstanceFromID(id: StatisticID?): Statistic? = allStatistics().first { it.id == id }

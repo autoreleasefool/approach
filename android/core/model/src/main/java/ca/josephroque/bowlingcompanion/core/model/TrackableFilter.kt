@@ -69,8 +69,8 @@ data class TrackableFilter(
 
 	data class SourceSummaries(
 		val bowler: BowlerSummary,
-		val league: LeagueSummary?,
-		val series: SeriesSummary?,
-		val game: GameSummary?,
+		val league: LeagueSummary? = null,
+		val series: SeriesSummary? = null,
+		val game: GameSummary? = null,
 	)
 }

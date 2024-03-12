@@ -97,6 +97,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setIsQuickPlayTipDismissed(isDismissed = true)
 	}
 
+	override suspend fun didDismissStatisticsTapToViewChartTip() {
+		approachPreferencesDataSource.setIsStatisticsTapToViewChartTipDismissed(isDismissed = true)
+	}
+
 	override suspend fun setStatisticIDSeen(statistic: StatisticID) {
 		approachPreferencesDataSource.setStatisticsIdsSeen(statistic.name)
 	}

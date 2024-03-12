@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.statisticsdetails
+package ca.josephroque.bowlingcompanion.feature.statisticsdetails.midgame
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.MidGameStatisticsDetailsTopBarUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsListUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -112,11 +113,11 @@ class MidGameStatisticsDetailsViewModel @Inject constructor(
 	private fun handleListAction(action: StatisticsDetailsListUiAction) {
 		when (action) {
 			is StatisticsDetailsListUiAction.StatisticClicked -> Unit
-			is StatisticsDetailsListUiAction.HeaderHeightMeasured -> Unit
 			is StatisticsDetailsListUiAction.HidingZeroStatisticsToggled ->
 				toggleHidingZeroStatistics(action.newValue)
 			is StatisticsDetailsListUiAction.HidingStatisticDescriptionsToggled ->
 				toggleHidingStatisticDescriptions(action.newValue)
+			is StatisticsDetailsListUiAction.TapToViewChartTipDismissed -> Unit
 		}
 	}
 

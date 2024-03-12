@@ -287,6 +287,25 @@ sealed class Route(
 		fun getSourceId(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("source_id")?.let { UUID.fromString(it) }
 	}
+	data object StatisticsDetailsChart : Route(
+		"statistics_details/{source_type}/{source_id}/{statistic_id}",
+		isBottomBarVisible = false,
+	) {
+		const val ARG_SOURCE_TYPE = "source_type"
+		const val ARG_SOURCE_ID = "source_id"
+		const val ARG_STATISTIC_ID = "statistic_id"
+		fun createRoute(sourceType: String, sourceId: UUID, statisticId: StatisticID): String =
+			"statistics_details/" +
+				"${Uri.encode(sourceType)}/" +
+				"${Uri.encode(sourceId.toString())}/" +
+				Uri.encode(statisticId.toString())
+		fun getSourceType(savedStateHandle: SavedStateHandle): StatisticsDetailsSourceType? =
+			savedStateHandle.get<StatisticsDetailsSourceType>("source_type")
+		fun getSourceId(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("source_id")?.let { UUID.fromString(it) }
+		fun getStatisticId(savedStateHandle: SavedStateHandle): StatisticID? =
+			savedStateHandle.get<StatisticID>("statistic_id")
+	}
 	data object StatisticsPicker : Route("statistics_picker/{statistic}") {
 		const val ARG_STATISTIC = "statistic"
 		fun createRoute(statistic: String): String = "statistics_picker/${Uri.encode(statistic)}"
