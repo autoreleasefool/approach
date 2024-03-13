@@ -80,7 +80,8 @@ private fun StatisticsWidgetRow(
 		widgets.forEach { widget ->
 			StatisticsWidgetCard(
 				widget = widget,
-				chart = null, // TODO: render widget chart
+				// TODO: render widget chart
+				chart = null,
 				onClick = { onAction(StatisticsWidgetLayoutUiAction.WidgetClicked(widget)) },
 				modifier = Modifier
 					.weight(1f)
