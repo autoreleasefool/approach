@@ -16,6 +16,7 @@
 	<string name="statistics_widget_editor_filter_bowler">Bowler</string>
 	<string name="statistics_widget_editor_filter_league">League</string>
 	<string name="statistics_widget_editor_filter_description">Filter to a specific league for a better look at how you perform in one setting.</string>
+	<string name="statistics_widget_editor_preview">Preview</string>
 
 	<string name="statistics_widget_editor_statistic">Statistic</string>
 

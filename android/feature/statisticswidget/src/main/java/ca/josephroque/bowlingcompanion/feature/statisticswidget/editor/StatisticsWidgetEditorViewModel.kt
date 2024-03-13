@@ -13,6 +13,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -42,6 +45,7 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	private val statisticsWidgetsRepository: StatisticsWidgetsRepository,
 	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<StatisticsWidgetEditorScreenEvent>() {
+	private val widgetId = UUID.randomUUID()
 	private val context = Route.StatisticsWidgetEditor.getContext(savedStateHandle)!!
 	private val initialSource: StatisticsWidgetInitialSource? =
 		Route.StatisticsWidgetEditor.getInitialSource(
@@ -93,20 +97,43 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 		}
 	}
 
-	val uiState: StateFlow<StatisticsWidgetEditorScreenUiState> = combine(
+	private val widget: Flow<StatisticsWidget?> = combine(
 		source,
 		timeline,
 		statistic,
+	) { source, timeline, statistic ->
+		val widgetSource = source ?: return@combine null
+		StatisticsWidget(
+			id = widgetId,
+			context = context,
+			priority = priority,
+			timeline = timeline,
+			statistic = statistic.id,
+			source = widgetSource,
+		)
+	}
+
+	private val preview: Flow<StatisticChartContent?> = widget.map {
+		it ?: return@map null
+		statisticsWidgetsRepository.getStatisticsWidgetChart(it)
+	}
+
+	val uiState: StateFlow<StatisticsWidgetEditorScreenUiState> = combine(
+		widget,
+		statistic,
 		bowler,
 		league,
-	) { source, timeline, statistic, bowler, league ->
+		preview,
+	) { widget, statistic, bowler, league, preview ->
 		StatisticsWidgetEditorScreenUiState.Loaded(
 			StatisticsWidgetEditorUiState(
-				source = source,
-				timeline = timeline,
+				source = widget?.source,
+				timeline = widget?.timeline ?: timeline.value,
 				statistic = statistic,
 				bowler = bowler,
 				league = league,
+				widget = widget,
+				preview = preview,
 			),
 		)
 	}.stateIn(

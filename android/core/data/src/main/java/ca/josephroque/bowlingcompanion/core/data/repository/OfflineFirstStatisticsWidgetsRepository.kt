@@ -6,6 +6,8 @@ import ca.josephroque.bowlingcompanion.core.database.dao.StatisticsWidgetDao
 import ca.josephroque.bowlingcompanion.core.database.model.StatisticsWidgetPriorityUpdateEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.database.model.asModel
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
 import java.util.UUID
 import javax.inject.Inject
@@ -39,4 +41,9 @@ class OfflineFirstStatisticsWidgetsRepository @Inject constructor(
 	override suspend fun deleteStatisticWidget(id: UUID) = withContext(ioDispatcher) {
 		statisticsWidgetDao.deleteStatisticWidget(id)
 	}
+
+	override suspend fun getStatisticsWidgetChart(widget: StatisticsWidget): StatisticChartContent =
+		withContext(ioDispatcher) {
+			StatisticChartContent.ChartUnavailable(id = widget.statistic)
+		}
 }

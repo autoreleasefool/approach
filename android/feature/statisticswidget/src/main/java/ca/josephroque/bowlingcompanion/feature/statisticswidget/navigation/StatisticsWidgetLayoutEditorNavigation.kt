@@ -35,7 +35,10 @@ fun NavGraphBuilder.statisticsWidgetLayoutEditorScreen(
 		route = Route.StatisticsWidgetLayoutEditor.route,
 		arguments = listOf(
 			navArgument(Route.StatisticsWidgetLayoutEditor.CONTEXT) { type = NavType.StringType },
-			navArgument(Route.StatisticsWidgetLayoutEditor.INITIAL_SOURCE) { type = NavType.StringType },
+			navArgument(Route.StatisticsWidgetLayoutEditor.INITIAL_SOURCE) {
+				type = NavType.StringType
+				nullable = true
+			},
 		),
 	) {
 		StatisticsWidgetLayoutEditorRoute(

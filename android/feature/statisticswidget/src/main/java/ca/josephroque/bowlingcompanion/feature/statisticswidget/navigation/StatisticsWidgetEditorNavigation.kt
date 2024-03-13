@@ -42,7 +42,10 @@ fun NavGraphBuilder.statisticsWidgetEditorScreen(
 		route = Route.StatisticsWidgetEditor.route,
 		arguments = listOf(
 			navArgument(Route.StatisticsWidgetEditor.CONTEXT) { type = NavType.StringType },
-			navArgument(Route.StatisticsWidgetEditor.INITIAL_SOURCE) { type = NavType.StringType },
+			navArgument(Route.StatisticsWidgetEditor.INITIAL_SOURCE) {
+				type = NavType.StringType
+				nullable = true
+			},
 			navArgument(Route.StatisticsWidgetEditor.PRIORITY) { type = NavType.IntType },
 		),
 	) {

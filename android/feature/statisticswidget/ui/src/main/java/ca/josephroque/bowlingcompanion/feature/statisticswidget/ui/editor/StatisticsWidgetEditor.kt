@@ -1,12 +1,16 @@
 package ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -15,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Pickabl
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
 
 @Composable
 fun StatisticsWidgetEditor(
@@ -27,6 +32,27 @@ fun StatisticsWidgetEditor(
 			.fillMaxSize()
 			.verticalScroll(rememberScrollState()),
 	) {
+		if (state.widget != null) {
+			StatisticsWidgetCard(
+				widget = state.widget,
+				chart = state.preview,
+				modifier = Modifier
+					.aspectRatio(2f)
+					.padding(horizontal = 16.dp),
+			)
+
+			Text(
+				text = stringResource(R.string.statistics_widget_editor_preview),
+				style = MaterialTheme.typography.labelSmall,
+				modifier = Modifier
+					.padding(horizontal = 16.dp)
+					.padding(top = 4.dp, bottom = 8.dp)
+					.align(Alignment.CenterHorizontally),
+			)
+
+			HorizontalDivider()
+		}
+
 		ListSectionFooter(
 			footer = stringResource(R.string.statistics_widget_editor_filter_description),
 		)
