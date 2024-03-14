@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRep
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
@@ -17,6 +18,7 @@ import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val STATISTICS_WIDGET_CONTEXT = "overview"
@@ -63,15 +66,25 @@ class OverviewViewModel @Inject constructor(
 			}
 		}
 
+	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticChartContent>> = MutableStateFlow(
+		emptyMap(),
+	)
+
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		bowlersListState,
 		widgets,
+		widgetCharts,
 		isGameInProgressSnackBarVisible,
-	) { bowlersList, widgets, isGameInProgressSnackBarVisible ->
+	) { bowlersList, widgets, widgetCharts, isGameInProgressSnackBarVisible ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
-				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
+				widgets = widgets?.let {
+					StatisticsWidgetLayoutUiState(
+						widgets = it,
+						widgetCharts = widgetCharts,
+					)
+				},
 			),
 			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
 		)
@@ -80,6 +93,21 @@ class OverviewViewModel @Inject constructor(
 		started = SharingStarted.WhileSubscribed(5_000),
 		initialValue = OverviewScreenUiState.Loading,
 	)
+
+	init {
+		viewModelScope.launch {
+			widgets.collect { widgets ->
+				widgets?.forEach { widget ->
+					launch {
+						val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(widget)
+						widgetCharts.update {
+							it + (widget.id to chart)
+						}
+					}
+				}
+			}
+		}
+	}
 
 	fun handleAction(action: OverviewScreenUiAction) {
 		when (action) {
@@ -118,7 +146,7 @@ class OverviewViewModel @Inject constructor(
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
-				OverviewScreenEvent.ShowStatistics(action.widget.id),
+				OverviewScreenEvent.ShowWidgetStatistics(action.widget.filter),
 			)
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),

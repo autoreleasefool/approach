@@ -4,6 +4,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.overview.OverviewRoute
 import java.util.UUID
@@ -15,7 +16,7 @@ fun NavGraphBuilder.overviewScreen(
 	onAddBowler: () -> Unit,
 	onShowBowlerDetails: (UUID) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
-	onShowStatistics: (UUID) -> Unit,
+	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
 	onResumeGame: (List<UUID>, UUID) -> Unit,
 ) {
@@ -34,7 +35,7 @@ fun NavGraphBuilder.overviewScreen(
 				onAddBowler = onAddBowler,
 				onShowBowlerDetails = onShowBowlerDetails,
 				onEditStatisticsWidgets = onEditStatisticsWidgets,
-				onShowStatistics = onShowStatistics,
+				onShowWidgetStatistics = onShowWidgetStatistics,
 				onShowQuickPlay = onShowQuickPlay,
 				onResumeGame = onResumeGame,
 			)

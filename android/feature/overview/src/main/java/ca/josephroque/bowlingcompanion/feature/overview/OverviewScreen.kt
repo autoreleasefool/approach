@@ -27,6 +27,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.overview.ui.Overview
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewFloatingActionButton
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewTopBar
@@ -39,7 +40,7 @@ internal fun OverviewRoute(
 	onAddBowler: () -> Unit,
 	onShowBowlerDetails: (UUID) -> Unit,
 	onEditStatisticsWidgets: (String) -> Unit,
-	onShowStatistics: (UUID) -> Unit,
+	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
 	onResumeGame: (List<UUID>, UUID) -> Unit,
 	modifier: Modifier = Modifier,
@@ -57,7 +58,7 @@ internal fun OverviewRoute(
 						is OverviewScreenEvent.ShowBowlerDetails -> onShowBowlerDetails(it.id)
 						is OverviewScreenEvent.EditBowler -> onEditBowler(it.id)
 						is OverviewScreenEvent.EditStatisticsWidget -> onEditStatisticsWidgets(it.context)
-						is OverviewScreenEvent.ShowStatistics -> onShowStatistics(it.widget)
+						is OverviewScreenEvent.ShowWidgetStatistics -> onShowWidgetStatistics(it.filter)
 						is OverviewScreenEvent.ResumeGame -> onResumeGame(it.seriesIds, it.currentGameId)
 						OverviewScreenEvent.ShowQuickPlay -> onShowQuickPlay()
 						OverviewScreenEvent.AddBowler -> onAddBowler()

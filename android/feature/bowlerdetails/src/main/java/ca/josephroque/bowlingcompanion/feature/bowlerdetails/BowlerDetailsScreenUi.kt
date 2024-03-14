@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.bowlerdetails
 
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiState
 import java.util.UUID
@@ -27,5 +28,5 @@ sealed interface BowlerDetailsScreenEvent {
 	data class ShowGearDetails(val gearId: UUID) : BowlerDetailsScreenEvent
 	data class ShowLeagueDetails(val leagueId: UUID) : BowlerDetailsScreenEvent
 	data class ShowEventDetails(val leagueId: UUID) : BowlerDetailsScreenEvent
-	data class ShowStatistics(val widget: UUID) : BowlerDetailsScreenEvent
+	data class ShowWidgetStatistics(val filter: TrackableFilter) : BowlerDetailsScreenEvent
 }

@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.designsystem.components.LoadingState
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.list.StatisticsDetailsList
@@ -82,7 +83,9 @@ private fun StatisticsDetailsScreen(
 		modifier = modifier,
 	) { padding ->
 		when (state) {
-			StatisticsDetailsScreenUiState.Loading -> Unit
+			StatisticsDetailsScreenUiState.Loading -> LoadingState(
+				modifier = Modifier.padding(padding),
+			)
 			is StatisticsDetailsScreenUiState.Loaded -> StatisticsDetailsList(
 				state = state.list,
 				onAction = { onAction(StatisticsDetailsScreenUiAction.List(it)) },

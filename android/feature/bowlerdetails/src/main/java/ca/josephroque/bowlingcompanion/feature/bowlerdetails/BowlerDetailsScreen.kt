@@ -15,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetails
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBar
@@ -32,7 +33,7 @@ internal fun BowlerDetailsRoute(
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditStatisticsWidgets: (String, UUID) -> Unit,
-	onShowStatistics: (UUID) -> Unit,
+	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
 ) {
@@ -55,7 +56,7 @@ internal fun BowlerDetailsRoute(
 							it.context,
 							it.bowlerId,
 						)
-						is BowlerDetailsScreenEvent.ShowStatistics -> onShowStatistics(it.widget)
+						is BowlerDetailsScreenEvent.ShowWidgetStatistics -> onShowWidgetStatistics(it.filter)
 						is BowlerDetailsScreenEvent.ShowPreferredGearPicker -> onShowPreferredGearPicker(
 							it.selectedGear,
 						) { selectedGear ->

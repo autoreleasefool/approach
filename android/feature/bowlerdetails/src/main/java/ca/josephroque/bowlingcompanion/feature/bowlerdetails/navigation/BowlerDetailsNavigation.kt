@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.BowlerDetailsRoute
@@ -24,7 +25,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onShowGearDetails: (UUID) -> Unit,
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditStatisticsWidgets: (String, UUID) -> Unit,
-	onShowStatistics: (UUID) -> Unit,
+	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 ) {
 	composable(
 		route = Route.BowlerDetails.route,
@@ -41,7 +42,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 			onShowGearDetails = onShowGearDetails,
 			onShowPreferredGearPicker = onShowPreferredGearPicker,
 			onEditStatisticsWidgets = onEditStatisticsWidgets,
-			onShowStatistics = onShowStatistics,
+			onShowWidgetStatistics = onShowWidgetStatistics,
 		)
 	}
 }

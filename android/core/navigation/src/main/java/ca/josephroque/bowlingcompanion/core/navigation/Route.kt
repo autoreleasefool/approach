@@ -274,10 +274,7 @@ sealed class Route(
 		fun getSourceId(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("source_id")?.let { UUID.fromString(it) }
 	}
-	data object StatisticsDetails : Route(
-		"statistics_details/{source_type}/{source_id}",
-		isBottomBarVisible = false,
-	) {
+	data object StatisticsDetails : Route("statistics_details/{source_type}/{source_id}") {
 		const val ARG_SOURCE_TYPE = "source_type"
 		const val ARG_SOURCE_ID = "source_id"
 		fun createRoute(sourceType: String, sourceId: UUID): String =

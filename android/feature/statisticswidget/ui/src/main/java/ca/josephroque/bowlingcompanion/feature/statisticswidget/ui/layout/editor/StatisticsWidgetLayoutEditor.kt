@@ -78,8 +78,7 @@ fun StatisticsWidgetLayoutEditor(
 					) {
 						StatisticsWidgetCard(
 							widget = widget,
-							// TODO: render widget chart
-							chart = null,
+							chart = state.widgetCharts[widget.id],
 							onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.WidgetClicked(widget)) },
 							modifier = Modifier
 								.aspectRatio(1f)

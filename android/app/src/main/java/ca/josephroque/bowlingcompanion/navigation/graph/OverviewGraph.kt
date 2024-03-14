@@ -37,6 +37,7 @@ import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToN
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToMidGameStatisticsDetails
+import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetailsChart
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
@@ -61,7 +62,7 @@ fun NavGraphBuilder.overviewGraph(
 		onEditStatisticsWidgets = {
 			navController.navigateToStatisticsWidgetLayoutEditor(it, null)
 		},
-		onShowStatistics = { /* TODO: onShowStatistics */ },
+		onShowWidgetStatistics = navController::navigateToStatisticsDetails,
 		onShowQuickPlay = navController::navigateToQuickPlay,
 		onResumeGame = navController::navigateToGamesEditor,
 	)
@@ -95,7 +96,7 @@ fun NavGraphBuilder.overviewGraph(
 				initialSource = StatisticsWidgetInitialSource.Bowler(bowlerId),
 			)
 		},
-		onShowStatistics = { /* TODO: onShowStatistics */ },
+		onShowWidgetStatistics = navController::navigateToStatisticsDetails,
 	)
 	leagueFormScreen(
 		onBackPressed = navController::popBackStack,

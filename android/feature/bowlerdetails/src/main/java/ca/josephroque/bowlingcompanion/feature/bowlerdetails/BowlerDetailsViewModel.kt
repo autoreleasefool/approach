@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiState
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val STATISTICS_WIDGET_CONTEXT = "bowler_details"
@@ -77,19 +79,29 @@ class BowlerDetailsViewModel @Inject constructor(
 			}
 		}
 
+	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticChartContent>> = MutableStateFlow(
+		emptyMap(),
+	)
+
 	val uiState: StateFlow<BowlerDetailsScreenUiState> = combine(
 		leaguesListState,
 		widgets,
+		widgetCharts,
 		bowlersRepository.getBowlerDetails(bowlerId),
 		gearRepository.getBowlerPreferredGear(bowlerId),
-	) { leaguesList, widgets, bowlerDetails, gearList ->
+	) { leaguesList, widgets, widgetCharts, bowlerDetails, gearList ->
 		BowlerDetailsScreenUiState.Loaded(
 			bowler = BowlerDetailsUiState(
 				bowler = bowlerDetails,
 				leaguesList = leaguesList,
 				gearList = GearListUiState(gearList, gearToDelete = null),
 				topBar = BowlerDetailsTopBarUiState(bowlerDetails.name),
-				widgets = widgets?.let { StatisticsWidgetLayoutUiState(widgets = it) },
+				widgets = widgets?.let {
+					StatisticsWidgetLayoutUiState(
+						widgets = it,
+						widgetCharts = widgetCharts,
+					)
+				},
 			),
 		)
 	}.stateIn(
@@ -101,6 +113,19 @@ class BowlerDetailsViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			recentlyUsedRepository.didRecentlyUseBowler(bowlerId)
+		}
+
+		viewModelScope.launch {
+			widgets.collect { widgets ->
+				widgets?.forEach { widget ->
+					launch {
+						val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(widget)
+						widgetCharts.update {
+							it + (widget.id to chart)
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -145,7 +170,7 @@ class BowlerDetailsViewModel @Inject constructor(
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
-				BowlerDetailsScreenEvent.ShowStatistics(action.widget.id),
+				BowlerDetailsScreenEvent.ShowWidgetStatistics(action.widget.filter),
 			)
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId),

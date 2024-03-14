@@ -68,6 +68,7 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 		if (hasLoadedWidgets) return
 		viewModelScope.launch {
 			val widgets = statisticsWidgetRepository.getStatisticsWidgets(context).first()
+
 			_uiState.update {
 				StatisticsWidgetLayoutEditorScreenUiState.Loaded(
 					topBar = StatisticsWidgetLayoutEditorTopBarUiState(),
@@ -75,6 +76,19 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 						widgets = widgets,
 					),
 				)
+			}
+
+			widgets.forEach { widget ->
+				launch {
+					val chart = statisticsWidgetRepository.getStatisticsWidgetChart(widget)
+					_uiState.updateWidgets {
+						it.copy(
+							layoutEditor = it.layoutEditor.copy(
+								widgetCharts = it.layoutEditor.widgetCharts + (widget.id to chart),
+							),
+						)
+					}
+				}
 			}
 		}
 	}
