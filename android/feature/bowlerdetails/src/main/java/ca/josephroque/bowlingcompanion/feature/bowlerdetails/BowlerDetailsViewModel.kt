@@ -14,7 +14,8 @@ import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.LeagueListItem
 import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.navigation.Route
-import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiState
@@ -23,6 +24,7 @@ import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiActio
 import ca.josephroque.bowlingcompanion.feature.leagueslist.ui.LeaguesListUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -79,29 +81,34 @@ class BowlerDetailsViewModel @Inject constructor(
 			}
 		}
 
-	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticChartContent>> = MutableStateFlow(
-		emptyMap(),
-	)
+	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>> =
+		MutableStateFlow(emptyMap())
+
+	private val widgetLayoutState = combine(
+		widgets,
+		widgetCharts,
+	) { widgets, widgetCharts ->
+		widgets?.let {
+			StatisticsWidgetLayoutUiState(
+				widgets = it,
+				widgetCharts = widgetCharts,
+			)
+		}
+	}
 
 	val uiState: StateFlow<BowlerDetailsScreenUiState> = combine(
 		leaguesListState,
-		widgets,
-		widgetCharts,
+		widgetLayoutState,
 		bowlersRepository.getBowlerDetails(bowlerId),
 		gearRepository.getBowlerPreferredGear(bowlerId),
-	) { leaguesList, widgets, widgetCharts, bowlerDetails, gearList ->
+	) { leaguesList, widgets, bowlerDetails, gearList ->
 		BowlerDetailsScreenUiState.Loaded(
 			bowler = BowlerDetailsUiState(
 				bowler = bowlerDetails,
 				leaguesList = leaguesList,
 				gearList = GearListUiState(gearList, gearToDelete = null),
 				topBar = BowlerDetailsTopBarUiState(bowlerDetails.name),
-				widgets = widgets?.let {
-					StatisticsWidgetLayoutUiState(
-						widgets = it,
-						widgetCharts = widgetCharts,
-					)
-				},
+				widgets = widgets,
 			),
 		)
 	}.stateIn(
@@ -120,8 +127,18 @@ class BowlerDetailsViewModel @Inject constructor(
 				widgets?.forEach { widget ->
 					launch {
 						val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(widget)
+
 						widgetCharts.update {
-							it + (widget.id to chart)
+							val widgetChart = it[widget.id] ?: StatisticsWidgetLayoutUiState.ChartContent(
+								chart,
+								ChartEntryModelProducer(),
+							)
+
+							if (widgetChart.chart.hasModelEntries()) {
+								widgetChart.modelProducer.setEntries(chart.getModelEntries())
+							}
+
+							it + (widget.id to widgetChart.copy(chart = chart))
 						}
 					}
 				}

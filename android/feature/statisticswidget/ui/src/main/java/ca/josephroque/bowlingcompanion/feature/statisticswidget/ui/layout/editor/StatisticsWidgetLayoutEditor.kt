@@ -76,9 +76,12 @@ fun StatisticsWidgetLayoutEditor(
 						contentAlignment = Alignment.TopEnd,
 						modifier = modifier,
 					) {
+						val chart = state.widgetCharts[widget.id]
+
 						StatisticsWidgetCard(
 							widget = widget,
-							chart = state.widgetCharts[widget.id],
+							chart = chart?.chart,
+							chartEntryModelProducer = chart?.modelProducer,
 							onClick = { onAction(StatisticsWidgetLayoutEditorUiAction.WidgetClicked(widget)) },
 							modifier = Modifier
 								.aspectRatio(1f)

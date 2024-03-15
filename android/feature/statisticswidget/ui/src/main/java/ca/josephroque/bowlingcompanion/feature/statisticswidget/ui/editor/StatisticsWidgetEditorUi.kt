@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.GameAverageStatistic
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 
 data class StatisticsWidgetEditorUiState(
 	val source: StatisticsWidgetSource? = null,
@@ -16,8 +17,13 @@ data class StatisticsWidgetEditorUiState(
 	val bowler: BowlerSummary? = null,
 	val league: LeagueSummary? = null,
 	val widget: StatisticsWidget? = null,
-	val preview: StatisticChartContent? = null,
-)
+	val preview: ChartContent? = null,
+) {
+	data class ChartContent(
+		val chart: StatisticChartContent,
+		val modelProducer: ChartEntryModelProducer,
+	)
+}
 
 sealed interface StatisticsWidgetEditorUiAction {
 	data object BackClicked : StatisticsWidgetEditorUiAction

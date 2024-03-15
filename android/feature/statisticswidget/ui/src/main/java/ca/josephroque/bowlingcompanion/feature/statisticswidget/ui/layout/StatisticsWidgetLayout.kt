@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
-import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
@@ -72,7 +71,7 @@ fun StatisticsWidgetLayout(
 @Composable
 private fun StatisticsWidgetRow(
 	widgets: List<StatisticsWidget>,
-	widgetCharts: Map<UUID, StatisticChartContent>,
+	widgetCharts: Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>,
 	onAction: (StatisticsWidgetLayoutUiAction) -> Unit,
 	modifier: Modifier = Modifier,
 ) {
@@ -81,9 +80,12 @@ private fun StatisticsWidgetRow(
 		modifier = modifier.fillMaxWidth(),
 	) {
 		widgets.forEach { widget ->
+			val chart = widgetCharts[widget.id]
+
 			StatisticsWidgetCard(
 				widget = widget,
-				chart = widgetCharts[widget.id],
+				chart = chart?.chart,
+				chartEntryModelProducer = chart?.modelProducer,
 				onClick = { onAction(StatisticsWidgetLayoutUiAction.WidgetClicked(widget)) },
 				modifier = Modifier
 					.weight(1f)

@@ -13,7 +13,8 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueSummary
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.Statistic
 import ca.josephroque.bowlingcompanion.core.statistics.allStatistics
-import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetCreate
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
@@ -21,6 +22,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTi
 import ca.josephroque.bowlingcompanion.core.statistics.trackable.overall.GameAverageStatistic
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.editor.StatisticsWidgetEditorUiState
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -113,9 +115,19 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 		)
 	}
 
-	private val preview: Flow<StatisticChartContent?> = widget.map {
+	private val preview: Flow<StatisticsWidgetEditorUiState.ChartContent?> = widget.map {
 		it ?: return@map null
-		statisticsWidgetsRepository.getStatisticsWidgetChart(it)
+		val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(it)
+		val modelProducer = ChartEntryModelProducer()
+
+		if (chart.hasModelEntries()) {
+			modelProducer.setEntries(chart.getModelEntries())
+		}
+
+		StatisticsWidgetEditorUiState.ChartContent(
+			chart = chart,
+			modelProducer = modelProducer,
+		)
 	}
 
 	val uiState: StateFlow<StatisticsWidgetEditorScreenUiState> = combine(

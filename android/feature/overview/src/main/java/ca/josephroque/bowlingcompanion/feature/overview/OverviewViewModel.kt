@@ -10,13 +10,15 @@ import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRep
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
-import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.StatisticsWidgetLayoutUiState
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -66,25 +68,30 @@ class OverviewViewModel @Inject constructor(
 			}
 		}
 
-	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticChartContent>> = MutableStateFlow(
-		emptyMap(),
-	)
+	private val widgetCharts: MutableStateFlow<Map<UUID, StatisticsWidgetLayoutUiState.ChartContent>> =
+		MutableStateFlow(emptyMap())
+
+	private val widgetLayoutState = combine(
+		widgets,
+		widgetCharts,
+	) { widgets, widgetCharts ->
+		widgets?.let {
+			StatisticsWidgetLayoutUiState(
+				widgets = it,
+				widgetCharts = widgetCharts,
+			)
+		}
+	}
 
 	val uiState: StateFlow<OverviewScreenUiState> = combine(
 		bowlersListState,
-		widgets,
-		widgetCharts,
+		widgetLayoutState,
 		isGameInProgressSnackBarVisible,
-	) { bowlersList, widgets, widgetCharts, isGameInProgressSnackBarVisible ->
+	) { bowlersList, widgets, isGameInProgressSnackBarVisible ->
 		OverviewScreenUiState.Loaded(
 			overview = OverviewUiState(
 				bowlersList = bowlersList,
-				widgets = widgets?.let {
-					StatisticsWidgetLayoutUiState(
-						widgets = it,
-						widgetCharts = widgetCharts,
-					)
-				},
+				widgets = widgets,
 			),
 			isGameInProgressSnackBarVisible = isGameInProgressSnackBarVisible,
 		)
@@ -95,13 +102,24 @@ class OverviewViewModel @Inject constructor(
 	)
 
 	init {
+		// FIXME: Share with BowlerDetailsViewModel, StatisticsWidgetLayoutEditorViewModel?
 		viewModelScope.launch {
 			widgets.collect { widgets ->
 				widgets?.forEach { widget ->
 					launch {
 						val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(widget)
+
 						widgetCharts.update {
-							it + (widget.id to chart)
+							val widgetChart = it[widget.id] ?: StatisticsWidgetLayoutUiState.ChartContent(
+								chart,
+								ChartEntryModelProducer(),
+							)
+
+							if (widgetChart.chart.hasModelEntries()) {
+								widgetChart.modelProducer.setEntries(chart.getModelEntries())
+							}
+
+							it + (widget.id to widgetChart.copy(chart = chart))
 						}
 					}
 				}

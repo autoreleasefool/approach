@@ -9,6 +9,8 @@ android {
 
 dependencies {
 	implementation(project(":core:statistics"))
+	implementation(project(":core:statistics:charts"))
 
 	implementation(libs.compose.reorderable)
+	implementation(libs.vico.compose)
 }

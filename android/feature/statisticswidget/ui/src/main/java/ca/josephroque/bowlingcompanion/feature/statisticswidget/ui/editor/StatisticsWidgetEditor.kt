@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.form.Pickabl
 import ca.josephroque.bowlingcompanion.core.designsystem.components.list.ListSectionFooter
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetTimeline
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.R
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.titleResourceId
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.widget.StatisticsWidgetCard
 
 @Composable
@@ -35,7 +36,8 @@ fun StatisticsWidgetEditor(
 		if (state.widget != null) {
 			StatisticsWidgetCard(
 				widget = state.widget,
-				chart = state.preview,
+				chart = state.preview?.chart,
+				chartEntryModelProducer = state.preview?.modelProducer,
 				modifier = Modifier
 					.aspectRatio(2f)
 					.padding(horizontal = 16.dp),
@@ -90,28 +92,10 @@ fun StatisticsWidgetEditor(
 			options = StatisticsWidgetTimeline.entries.toTypedArray(),
 			selected = state.timeline,
 			titleForOption = {
-				when (it) {
-					StatisticsWidgetTimeline.ONE_MONTH -> stringResource(
-						R.string.statistics_widget_timeline_one_month,
-					)
-
-					StatisticsWidgetTimeline.THREE_MONTHS -> stringResource(
-						R.string.statistics_widget_timeline_three_months,
-					)
-
-					StatisticsWidgetTimeline.SIX_MONTHS -> stringResource(
-						R.string.statistics_widget_timeline_six_months,
-					)
-
-					StatisticsWidgetTimeline.ONE_YEAR -> stringResource(
-						R.string.statistics_widget_timeline_one_year,
-					)
-
-					StatisticsWidgetTimeline.ALL_TIME -> stringResource(
-						R.string.statistics_widget_timeline_all_time,
-					)
-
-					null -> ""
+				if (it == null) {
+					""
+				} else {
+					stringResource(it.titleResourceId())
 				}
 			},
 			onOptionSelected = {

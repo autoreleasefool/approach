@@ -33,4 +33,9 @@
 	<string name="statistics_widget_placeholder_message">Tap here to configure the stats you want to see</string>
 
 	<string name="statistics_widget_layout_change">Tap to change layout</string>
+
+	<string name="statistics_widget_chart_unavailable">There doesn\'t seem to be any data available.</string>
+	<string name="statistics_widget_chart_unavailable_description">You may not have bowled enough games yet, or your filters are excluding too many games.</string>
+	<string name="statistics_widget_chart_data_missing">Not enough data</string>
+	<string name="statistics_widget_what_does_this_mean">What does this mean?</string>
 </resources>

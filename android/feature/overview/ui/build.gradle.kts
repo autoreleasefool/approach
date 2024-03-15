@@ -13,4 +13,5 @@ dependencies {
 
 	implementation(libs.compose.reorderable)
 	implementation(libs.swipe)
+	implementation(libs.vico.compose)
 }

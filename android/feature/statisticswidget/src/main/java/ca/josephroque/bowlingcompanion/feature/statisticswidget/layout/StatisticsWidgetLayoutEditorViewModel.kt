@@ -9,11 +9,14 @@ import ca.josephroque.bowlingcompanion.core.analytics.trackable.widget.WidgetLay
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsWidgetsRepository
 import ca.josephroque.bowlingcompanion.core.navigation.Route
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.ui.layout.editor.StatisticsWidgetLayoutEditorUiState
+import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.UUID
 import javax.inject.Inject
@@ -82,9 +85,23 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 				launch {
 					val chart = statisticsWidgetRepository.getStatisticsWidgetChart(widget)
 					_uiState.updateWidgets {
+						val widgetChart = it.layoutEditor.widgetCharts[widget.id]
+							?: StatisticsWidgetLayoutEditorUiState.ChartContent(
+								chart,
+								ChartEntryModelProducer(),
+							)
+
+						if (widgetChart.chart.hasModelEntries()) {
+							widgetChart.modelProducer.setEntries(chart.getModelEntries())
+						}
+
 						it.copy(
 							layoutEditor = it.layoutEditor.copy(
-								widgetCharts = it.layoutEditor.widgetCharts + (widget.id to chart),
+								widgetCharts = it.layoutEditor.widgetCharts + (
+									widget.id to widgetChart.copy(
+										chart = chart,
+									)
+									),
 							),
 						)
 					}

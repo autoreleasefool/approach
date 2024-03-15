@@ -14,6 +14,14 @@ fun StatisticChartContent.getModelEntries(): List<ChartEntry> = when (this) {
 	else -> throw IllegalStateException("Unsupported chart type: $this")
 }
 
+fun StatisticChartContent.hasModelEntries(): Boolean = when (this) {
+	is StatisticChartContent.CountableChart,
+	is StatisticChartContent.AveragingChart,
+	is StatisticChartContent.PercentageChart,
+	-> true
+	else -> false
+}
+
 fun CountableChartData.getModelEntries(): List<ChartEntry> = entries.map {
 	entryOf(it.key.value, it.value.toFloat())
 }
