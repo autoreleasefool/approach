@@ -44,7 +44,6 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.Statistic
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticPickerForResult
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetLayoutEditor
-import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticPickerScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetEditorScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetLayoutEditorScreen
 
@@ -213,9 +212,6 @@ fun NavGraphBuilder.overviewGraph(
 				navResultCallback = result,
 			)
 		},
-	)
-	statisticPickerScreen(
-		onDismissWithResult = navController::popBackStackWithResult,
 	)
 	statisticsDetailsScreen(
 		onBackPressed = navController::popBackStack,

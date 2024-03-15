@@ -303,7 +303,10 @@ sealed class Route(
 		fun getStatisticId(savedStateHandle: SavedStateHandle): StatisticID? =
 			savedStateHandle.get<StatisticID>("statistic_id")
 	}
-	data object StatisticsPicker : Route("statistics_picker/{statistic}") {
+	data object StatisticsPicker : Route(
+		"statistics_picker/{statistic}",
+		isBottomBarVisible = false,
+	) {
 		const val ARG_STATISTIC = "statistic"
 		fun createRoute(statistic: String): String = "statistics_picker/${Uri.encode(statistic)}"
 		fun getStatistic(savedStateHandle: SavedStateHandle): StatisticID? =
@@ -311,6 +314,7 @@ sealed class Route(
 	}
 	data object StatisticsWidgetEditor : Route(
 		"statisticswidgeteditor/{context}/{initial_source}/{priority}",
+		isBottomBarVisible = false,
 	) {
 		const val CONTEXT = "context"
 		const val INITIAL_SOURCE = "initial_source"
@@ -325,6 +329,7 @@ sealed class Route(
 	}
 	data object StatisticsWidgetLayoutEditor : Route(
 		"statisticswidgetlayouteditor/{context}/{initial_source}",
+		isBottomBarVisible = false,
 	) {
 		const val CONTEXT = "context"
 		const val INITIAL_SOURCE = "initial_source"

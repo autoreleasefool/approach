@@ -4,13 +4,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.navigation.navigateForResult
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.statisticpicker.StatisticPickerRoute
+import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
+import com.google.accompanist.navigation.material.bottomSheet
 
 fun NavController.navigateToStatisticPickerForResult(
 	selectedStatistic: StatisticID,
@@ -24,8 +25,9 @@ fun NavController.navigateToStatisticPickerForResult(
 	)
 }
 
-fun NavGraphBuilder.statisticPickerScreen(onDismissWithResult: (StatisticID) -> Unit) {
-	composable(
+@OptIn(ExperimentalMaterialNavigationApi::class)
+fun NavGraphBuilder.statisticPickerSheet(onDismissWithResult: (StatisticID) -> Unit) {
+	bottomSheet(
 		route = Route.StatisticsPicker.route,
 		arguments = listOf(
 			navArgument(Route.StatisticsPicker.ARG_STATISTIC) {
