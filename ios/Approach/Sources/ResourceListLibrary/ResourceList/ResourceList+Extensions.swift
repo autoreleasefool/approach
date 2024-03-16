@@ -7,7 +7,11 @@ extension ResourceList {
 			let task = Task {
 				do {
 					for try await resources in self.fetchResources(query) {
-						continuation.yield([.init(id: "", items: .init(uniqueElements: resources))])
+						if resources.isEmpty {
+							continuation.yield([])
+						} else {
+							continuation.yield([.init(id: "", items: .init(uniqueElements: resources))])
+						}
 					}
 				} catch {
 					continuation.finish(throwing: error)
