@@ -203,62 +203,64 @@ public struct StatisticsWidgetLayoutView: View {
 
 	public var body: some View {
 		WithPerceptionTracking {
-			Group {
-				if let widgets = store.widgetRows {
-					if widgets.isEmpty && store.leftoverWidget == nil {
-						Button { send(.didTapConfigureStatisticsButton) } label: {
-							StatisticsWidget.PlaceholderWidget()
-						}
-						.buttonStyle(TappableElement())
-					} else {
-						VStack(spacing: 0) {
-							LazyVGrid(
-								columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
-								spacing: .standardSpacing
-							) {
-								ForEach(widgets) { widget in
-									WithPerceptionTracking {
-										SquareWidget(
-											configuration: widget,
-											chartContent: store.widgetData[widget.id]
-										) {
-											send(.didTapWidget(id: widget.id))
-										}
-									}
-								}
-							}
+			widgetRows
+				.task { await send(.task).finish() }
+				.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
+				.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
+				.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
+				.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		}
+	}
 
-							if let leftoverWidget = store.leftoverWidget {
-								RectangleWidget(
-									configuration: leftoverWidget,
-									chartContent: store.widgetData[leftoverWidget.id]
+	@MainActor @ViewBuilder private var widgetRows: some View {
+		if let widgets = store.widgetRows {
+			if widgets.isEmpty && store.leftoverWidget == nil {
+				Button { send(.didTapConfigureStatisticsButton) } label: {
+					StatisticsWidget.PlaceholderWidget()
+				}
+				.buttonStyle(TappableElement())
+			} else {
+				VStack(spacing: 0) {
+					LazyVGrid(
+						columns: [.init(spacing: .standardSpacing), .init(spacing: .standardSpacing)],
+						spacing: .standardSpacing
+					) {
+						ForEach(widgets) { widget in
+							WithPerceptionTracking {
+								SquareWidget(
+									configuration: widget,
+									chartContent: store.widgetData[widget.id]
 								) {
-									send(.didTapWidget(id: leftoverWidget.id))
+									send(.didTapWidget(id: widget.id))
 								}
-								.padding(.top, widgets.isEmpty ? .zero : .standardSpacing)
 							}
-
-							Button {
-								send(.didTapConfigureStatisticsButton)
-							} label: {
-								Text(Strings.Widget.LayoutBuilder.tapToChange)
-									.font(.caption)
-									.opacity(0.7)
-									.frame(maxWidth: .infinity, alignment: .trailing)
-							}
-							.buttonStyle(.plain)
-							.padding(.top, .smallSpacing)
 						}
 					}
-				} else {
-					Text("")
+
+					if let leftoverWidget = store.leftoverWidget {
+						RectangleWidget(
+							configuration: leftoverWidget,
+							chartContent: store.widgetData[leftoverWidget.id]
+						) {
+							send(.didTapWidget(id: leftoverWidget.id))
+						}
+						.padding(.top, widgets.isEmpty ? .zero : .standardSpacing)
+					}
+
+					Button {
+						send(.didTapConfigureStatisticsButton)
+					} label: {
+						Text(Strings.Widget.LayoutBuilder.tapToChange)
+							.font(.caption)
+							.opacity(0.7)
+							.frame(maxWidth: .infinity, alignment: .trailing)
+					}
+					.buttonStyle(.plain)
+					.padding(.top, .smallSpacing)
 				}
 			}
-			.task { await send(.task).finish() }
-			.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
-			.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
-			.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
-			 .errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		} else {
+			Text("")
 		}
 	}
 }

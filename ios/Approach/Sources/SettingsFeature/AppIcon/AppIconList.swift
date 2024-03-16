@@ -153,11 +153,13 @@ public struct AppIconListView: View {
 				ForEach(AppIcon.Category.allCases) { category in
 					Section(String(describing: category)) {
 						ForEach(category.matchingIcons) { icon in
-							if icon.isProRequired && !store.isPurchasesEnabled {
-								EmptyView()
-							} else {
-								Button { send(.didTapIcon(icon)) } label: {
-									AppIconView(String(describing: icon), icon: .appIcon(icon))
+							WithPerceptionTracking {
+								if icon.isProRequired && !store.isPurchasesEnabled {
+									EmptyView()
+								} else {
+									Button { send(.didTapIcon(icon)) } label: {
+										AppIconView(String(describing: icon), icon: .appIcon(icon))
+									}
 								}
 							}
 						}

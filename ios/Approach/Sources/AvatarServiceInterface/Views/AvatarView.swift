@@ -19,23 +19,25 @@ public struct AvatarView: View {
 	}
 
 	public var body: some View {
-		Group {
-			if let image {
-				Image(uiImage: image)
-					.resizable()
-					.scaledToFit()
-					.frame(width: size, height: size)
-					.cornerRadius(size)
-			} else {
-				Color.clear
-					.frame(width: size, height: size)
-					.cornerRadius(size)
+		avatarImage
+			.task(id: avatar) {
+				guard let avatar else { return }
+				@Dependency(AvatarService.self) var avatars
+				image = await avatars.render(avatar)
 			}
-		}
-		.task(id: avatar) {
-			guard let avatar else { return }
-			@Dependency(AvatarService.self) var avatars
-			image = await avatars.render(avatar)
+	}
+
+	@MainActor @ViewBuilder private var avatarImage: some View {
+		if let image {
+			Image(uiImage: image)
+				.resizable()
+				.scaledToFit()
+				.frame(width: size, height: size)
+				.cornerRadius(size)
+		} else {
+			Color.clear
+				.frame(width: size, height: size)
+				.cornerRadius(size)
 		}
 	}
 }

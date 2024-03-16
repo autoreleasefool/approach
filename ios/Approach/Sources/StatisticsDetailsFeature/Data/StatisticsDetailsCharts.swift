@@ -86,8 +86,11 @@ public struct StatisticsDetailsChartsView: View {
 						Strings.Statistics.Filter.aggregation,
 						selection: $store.aggregation
 					) {
-						ForEach(TrackableFilter.Aggregation.allCases) {
-							Text($0.description(forSource: store.filterSource)).tag($0)
+						ForEach(TrackableFilter.Aggregation.allCases) { aggregation in
+							WithPerceptionTracking {
+								Text(aggregation.description(forSource: store.filterSource))
+									.tag(aggregation)
+							}
 						}
 					}
 					.pickerStyle(.segmented)

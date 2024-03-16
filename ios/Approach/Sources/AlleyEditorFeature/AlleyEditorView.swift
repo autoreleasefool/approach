@@ -140,16 +140,14 @@ public struct AlleyEditorView: View {
 
 	private var lanesSection: some View {
 		Section {
-			Group {
-				if store.newLanes.isEmpty && store.existingLanes.isEmpty {
-					Text(Strings.Alley.Properties.Lanes.none)
-				} else {
-					ForEach(store.existingLanes) { lane in
-						Lane.View(label: lane.label, position: lane.position)
-					}
-					ForEach(store.newLanes) { lane in
-						Lane.View(label: lane.label, position: lane.position)
-					}
+			if store.newLanes.isEmpty && store.existingLanes.isEmpty {
+				Text(Strings.Alley.Properties.Lanes.none)
+			} else {
+				ForEach(store.existingLanes) { lane in
+					Lane.View(label: lane.label, position: lane.position)
+				}
+				ForEach(store.newLanes) { lane in
+					Lane.View(label: lane.label, position: lane.position)
 				}
 			}
 		} header: {
