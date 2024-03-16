@@ -12,6 +12,7 @@ public struct AddressLookup: Reducer {
 	@ObservableState
 	public struct State: Equatable {
 		public var query: String
+		public var isSearchPresented: Bool = true
 		public var results: IdentifiedArrayOf<AddressLookupResult> = []
 
 		public var isLoadingAddress = false
@@ -29,6 +30,8 @@ public struct AddressLookup: Reducer {
 			case onAppear
 			case didFirstAppear
 			case didTapCancelButton
+			case didChangeQuery(String)
+			case didChangeQueryDebounced
 			case didTapResult(AddressLookupResult.ID)
 
 		}
@@ -45,6 +48,7 @@ public struct AddressLookup: Reducer {
 	}
 
 	enum SearchID { case lookup }
+	enum CancelID { case lookup }
 	enum LookupError: Error, LocalizedError {
 		case addressNotFound
 
@@ -84,6 +88,26 @@ public struct AddressLookup: Reducer {
 							await addressLookup.updateSearchQuery(SearchID.lookup, query)
 						}
 					)
+
+				case let .didChangeQuery(query):
+					state.query = query
+					state.loadingAddressError = nil
+					state.loadingResultsError = nil
+
+					guard !state.query.isEmpty else {
+						state.results = []
+						state.lookUpResult = nil
+						return .cancel(id: CancelID.lookup)
+					}
+					return .none
+
+				case .didChangeQueryDebounced:
+					guard !state.query.isEmpty else { return .none }
+
+					return .run { [query = state.query] _ in
+						await addressLookup.updateSearchQuery(SearchID.lookup, query)
+					}
+					.cancellable(id: CancelID.lookup)
 
 				case .didTapCancelButton:
 					return .run { _ in await dismiss() }
@@ -125,13 +149,6 @@ public struct AddressLookup: Reducer {
 					state.isLoadingAddress = false
 					state.loadingAddressError = error.localizedDescription
 					return .none
-				}
-
-			case .binding(\.query):
-				state.loadingAddressError = nil
-				state.loadingResultsError = nil
-				return .run { [query = state.query] _ in
-					await addressLookup.updateSearchQuery(SearchID.lookup, query)
 				}
 
 			case .delegate, .binding:

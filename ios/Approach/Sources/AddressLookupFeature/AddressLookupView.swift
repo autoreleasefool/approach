@@ -57,7 +57,8 @@ public struct AddressLookupView: View {
 			}
 		}
 		.searchable(
-			text: $store.query,
+			text: $store.query.sending(\.view.didChangeQuery),
+			isPresented: $store.isSearchPresented,
 			prompt: Text(Strings.Action.search)
 		)
 		.toolbar {
@@ -67,5 +68,11 @@ public struct AddressLookupView: View {
 		}
 		.onFirstAppear { send(.didFirstAppear) }
 		.onAppear { send(.onAppear) }
+		.task(id: store.query) {
+			do {
+				try await Task.sleep(for: .milliseconds(300))
+				await send(.didChangeQueryDebounced).finish()
+			} catch {}
+		}
 	}
 }
