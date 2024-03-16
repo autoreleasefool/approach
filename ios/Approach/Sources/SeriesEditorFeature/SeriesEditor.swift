@@ -7,13 +7,15 @@ import FeatureActionLibrary
 import FormFeature
 import Foundation
 import LanesRepositoryInterface
+import MapKit
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
 import SeriesRepositoryInterface
 import StringsLibrary
+import SwiftUI
 
-public typealias SeriesForm = Form<Series.Create, Series.Edit>
+public typealias SeriesForm = FormFeature.Form<Series.Create, Series.Edit>
 
 @Reducer
 public struct SeriesEditor: Reducer {
@@ -25,7 +27,7 @@ public struct SeriesEditor: Reducer {
 		public var date: Date
 		public var preBowl: Series.PreBowl
 		public var excludeFromStatistics: Series.ExcludeFromStatistics
-		public var coordinate: CoordinateRegion
+		public var mapPosition: MapCameraPosition
 		public var location: Alley.Summary?
 
 		public let initialValue: SeriesForm.Value
@@ -50,7 +52,7 @@ public struct SeriesEditor: Reducer {
 				self.preBowl = new.preBowl
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
-				self.coordinate = .init(coordinate: .init())
+				self.mapPosition = .automatic
 				self.initialValue = .create(new)
 			case let .edit(existing):
 				self.numberOfGames = existing.numberOfGames
@@ -58,7 +60,7 @@ public struct SeriesEditor: Reducer {
 				self.preBowl = existing.preBowl
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
-				self.coordinate = .init(coordinate: existing.location?.location?.coordinate.mapCoordinate ?? .init())
+				self.mapPosition = existing.location?.location?.coordinate.mapPosition ?? .automatic
 				self.initialValue = .edit(existing)
 			}
 			self.form = .init(initialValue: self.initialValue)
@@ -154,7 +156,7 @@ public struct SeriesEditor: Reducer {
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
-						state.coordinate = .init(coordinate: state.location?.location?.coordinate.mapCoordinate ?? .init())
+						state.mapPosition = state.location?.location?.coordinate.mapPosition ?? .automatic
 						state.syncFormSharedState()
 						return .none
 					}
@@ -286,4 +288,10 @@ extension Series.Edit: EditableRecord {
 	}
 	public var isSaveable: Bool { true }
 	public var name: String { date.longFormat }
+}
+
+extension Location.Coordinate {
+	var mapPosition: MapCameraPosition {
+		.region(.init(center: mapCoordinate, latitudinalMeters: 200, longitudinalMeters: 200))
+	}
 }

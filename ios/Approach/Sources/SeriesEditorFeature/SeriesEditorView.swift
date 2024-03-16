@@ -90,12 +90,9 @@ public struct SeriesEditorView: View {
 			.buttonStyle(.navigation)
 
 			if let location = store.location?.location {
-				Map(
-					coordinateRegion: $store.coordinate.mkCoordinateRegion,
-					interactionModes: [],
-					annotationItems: [location]
-				) { place in
-					MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Asset.Colors.Action.default.swiftUIColor)
+				Map(position: $store.mapPosition, interactionModes: []) {
+					Marker(location.title, coordinate: location.coordinate.mapCoordinate)
+						.tint(Asset.Colors.Action.default.swiftUIColor)
 				}
 				.frame(maxWidth: .infinity)
 				.frame(height: 125)

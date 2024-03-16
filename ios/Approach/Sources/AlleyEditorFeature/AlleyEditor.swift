@@ -9,10 +9,12 @@ import Foundation
 import LaneEditorFeature
 import LanesRepositoryInterface
 import LocationsRepositoryInterface
+import MapKit
 import ModelsLibrary
 import StringsLibrary
+import SwiftUI
 
-public typealias AlleyForm = Form<Alley.Create, Alley.Edit>
+public typealias AlleyForm = FormFeature.Form<Alley.Create, Alley.Edit>
 
 @Reducer
 public struct AlleyEditor: Reducer {
@@ -23,7 +25,7 @@ public struct AlleyEditor: Reducer {
 		public var pinFall: Alley.PinFall?
 		public var mechanism: Alley.Mechanism?
 		public var pinBase: Alley.PinBase?
-		public var coordinate: CoordinateRegion
+		public var mapPosition: MapCameraPosition
 		public var location: Location.Edit?
 
 		public var existingLanes: IdentifiedArrayOf<Lane.Edit>
@@ -42,7 +44,7 @@ public struct AlleyEditor: Reducer {
 				self.pinFall = new.pinFall
 				self.mechanism = new.mechanism
 				self.pinBase = new.pinBase
-				self.coordinate = .init(coordinate: .init())
+				self.mapPosition = .automatic
 				self.existingLanes = []
 				self.newLanes = []
 				self.initialValue = .create(new)
@@ -54,7 +56,11 @@ public struct AlleyEditor: Reducer {
 				self.pinBase = existing.alley.pinBase
 				self.existingLanes = existing.lanes
 				self.location = existing.alley.location
-				self.coordinate = .init(coordinate: existing.alley.location?.coordinate.mapCoordinate ?? .init())
+				if let location = existing.alley.location {
+					self.mapPosition = location.coordinate.mapPosition
+				} else {
+					self.mapPosition = .automatic
+				}
 				self.newLanes = []
 				self.initialValue = .edit(existing.alley)
 			}
@@ -152,7 +158,7 @@ public struct AlleyEditor: Reducer {
 						state.destination = .addressLookup(.init(initialQuery: state.location?.title ?? ""))
 					} else {
 						state.location = nil
-						state.coordinate = .init(coordinate: .init())
+						state.mapPosition = .automatic
 					}
 					return .none
 
@@ -227,9 +233,11 @@ public struct AlleyEditor: Reducer {
 						if state.location == nil {
 							state.location = result
 						} else {
-							state.location?.updateProperties(with: result)
+							state.location!.updateProperties(with: result)
 						}
-						state.coordinate = .init(coordinate: state.location?.coordinate.mapCoordinate ?? .init())
+
+						state.mapPosition = state.location!.coordinate.mapPosition
+
 						state.syncFormSharedState()
 						return .none
 					case .none:
@@ -292,4 +300,10 @@ extension Alley.Create: CreateableRecord {
 extension Alley.Edit: EditableRecord {
 	public var isDeleteable: Bool { true }
 	public var isArchivable: Bool { false }
+}
+
+extension Location.Coordinate {
+	var mapPosition: MapCameraPosition {
+		.region(.init(center: mapCoordinate, latitudinalMeters: 200, longitudinalMeters: 200))
+	}
 }

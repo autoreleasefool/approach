@@ -5,12 +5,14 @@ import EquatableLibrary
 import FeatureActionLibrary
 import FormFeature
 import LeaguesRepositoryInterface
+import MapKit
 import ModelsLibrary
 import PickableModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
+import SwiftUI
 
-public typealias LeagueForm = Form<League.Create, League.Edit>
+public typealias LeagueForm = FormFeature.Form<League.Create, League.Edit>
 
 @Reducer
 public struct LeagueEditor: Reducer {
@@ -22,7 +24,7 @@ public struct LeagueEditor: Reducer {
 		public var additionalPinfall: String
 		public var additionalGames: String
 		public var excludeFromStatistics: League.ExcludeFromStatistics
-		public var coordinate: CoordinateRegion
+		public var mapPosition: MapCameraPosition
 		public var location: Alley.Summary?
 
 		public var gamesPerSeries: GamesPerSeries
@@ -53,7 +55,7 @@ public struct LeagueEditor: Reducer {
 				self.additionalPinfall = additionalPinfall > 0 ? String(additionalPinfall) : ""
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
-				self.coordinate = .init(coordinate: .init())
+				self.mapPosition = .automatic
 				defaultNumberOfGames = new.defaultNumberOfGames ?? 0
 				additionalGames = new.additionalGames ?? 0
 				self.gamesPerSeries = .dynamic
@@ -66,7 +68,7 @@ public struct LeagueEditor: Reducer {
 				self.additionalPinfall = additionalPinfall > 0 ? String(additionalPinfall) : ""
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
-				self.coordinate = .init(coordinate: existing.location?.location?.coordinate.mapCoordinate ?? .init())
+				self.mapPosition = existing.location?.location?.coordinate.mapPosition ?? .automatic
 				defaultNumberOfGames = existing.defaultNumberOfGames ?? 0
 				additionalGames = existing.additionalGames ?? 0
 				self.shouldShowLocationSection = existing.recurrence.shouldShowLocationSection
@@ -185,7 +187,7 @@ public struct LeagueEditor: Reducer {
 					switch delegateAction {
 					case let .didChangeSelection(alley):
 						state.location = alley.first
-						state.coordinate = .init(coordinate: state.location?.location?.coordinate.mapCoordinate ?? .init())
+						state.mapPosition = state.location?.location?.coordinate.mapPosition ?? .automatic
 						state.syncFormSharedState()
 						return .none
 					}
@@ -319,5 +321,11 @@ extension League.ExcludeFromStatistics: CustomStringConvertible {
 		case .include: return Strings.League.Properties.ExcludeFromStatistics.include
 		case .exclude: return Strings.League.Properties.ExcludeFromStatistics.exclude
 		}
+	}
+}
+
+extension Location.Coordinate {
+	var mapPosition: MapCameraPosition {
+		.region(.init(center: mapCoordinate, latitudinalMeters: 200, longitudinalMeters: 200))
 	}
 }

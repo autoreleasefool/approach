@@ -57,12 +57,9 @@ public struct AlleyEditorView: View {
 	@ViewBuilder private var mapSection: some View {
 		if let location = store.location {
 			Section {
-				Map(
-					coordinateRegion: $store.coordinate.mkCoordinateRegion,
-					interactionModes: [],
-					annotationItems: [location]
-				) { place in
-					MapMarker(coordinate: place.coordinate.mapCoordinate, tint: Asset.Colors.Action.default.swiftUIColor)
+				Map(position: $store.mapPosition, interactionModes: []) {
+					Marker(location.title, coordinate: location.coordinate.mapCoordinate)
+						.tint(Asset.Colors.Action.default.swiftUIColor)
 				}
 				.frame(maxWidth: .infinity)
 				.frame(height: 125)
