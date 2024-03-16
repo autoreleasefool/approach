@@ -67,64 +67,62 @@ public struct AlleysFilter: Reducer {
 
 @ViewAction(for: AlleysFilter.self)
 public struct AlleysFilterView: View {
-	@Perception.Bindable public var store: StoreOf<AlleysFilter>
+	@Bindable public var store: StoreOf<AlleysFilter>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section(Strings.Alley.Properties.title) {
-					Picker(
-						Strings.Alley.Properties.material,
-						selection: $store.filter.material
-					) {
-						Text("").tag(nil as Alley.Material?)
-						ForEach(Alley.Material.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
-					}
-
-					Picker(
-						Strings.Alley.Properties.mechanism,
-						selection: $store.filter.mechanism
-					) {
-						Text("").tag(nil as Alley.Mechanism?)
-						ForEach(Alley.Mechanism.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
-					}
-
-					Picker(
-						Strings.Alley.Properties.pinFall,
-						selection: $store.filter.pinFall
-					) {
-						Text("").tag(nil as Alley.PinFall?)
-						ForEach(Alley.PinFall.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
-					}
-
-					Picker(
-						Strings.Alley.Properties.pinBase,
-						selection: $store.filter.pinBase
-					) {
-						Text("").tag(nil as Alley.PinBase?)
-						ForEach(Alley.PinBase.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
+		List {
+			Section(Strings.Alley.Properties.title) {
+				Picker(
+					Strings.Alley.Properties.material,
+					selection: $store.filter.material
+				) {
+					Text("").tag(nil as Alley.Material?)
+					ForEach(Alley.Material.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
 					}
 				}
 
-				Section {
-					Button(Strings.Action.reset) { send(.didTapClearButton) }
-						.tint(Asset.Colors.Destructive.default)
+				Picker(
+					Strings.Alley.Properties.mechanism,
+					selection: $store.filter.mechanism
+				) {
+					Text("").tag(nil as Alley.Mechanism?)
+					ForEach(Alley.Mechanism.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
+					}
+				}
+
+				Picker(
+					Strings.Alley.Properties.pinFall,
+					selection: $store.filter.pinFall
+				) {
+					Text("").tag(nil as Alley.PinFall?)
+					ForEach(Alley.PinFall.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
+					}
+				}
+
+				Picker(
+					Strings.Alley.Properties.pinBase,
+					selection: $store.filter.pinBase
+				) {
+					Text("").tag(nil as Alley.PinBase?)
+					ForEach(Alley.PinBase.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
+					}
 				}
 			}
-			.navigationTitle(Strings.Alley.Filters.title)
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { send(.didTapApplyButton) }
-				}
+
+			Section {
+				Button(Strings.Action.reset) { send(.didTapClearButton) }
+					.tint(Asset.Colors.Destructive.default)
+			}
+		}
+		.navigationTitle(Strings.Alley.Filters.title)
+		.navigationBarTitleDisplayMode(.inline)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				Button(Strings.Action.apply) { send(.didTapApplyButton) }
 			}
 		}
 	}

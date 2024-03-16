@@ -10,51 +10,49 @@ import SwiftUI
 
 @ViewAction(for: TabbedContent.self)
 public struct TabbedContentView: View {
-	@Perception.Bindable public var store: StoreOf<TabbedContent>
+	@Bindable public var store: StoreOf<TabbedContent>
 
 	public init(store: StoreOf<TabbedContent>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			// FIXME: create sidebar for ipad size devices
-			TabView(selection: $store.selectedTab) {
-				NavigationStack {
-					BowlersListView(
-						store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
-					)
-				}
-				.tag(TabbedContent.Tab.overview)
-				.tabItem { TabbedContent.Tab.overview.label }
-
-				NavigationStack {
-					StatisticsOverviewView(
-						store: store.scope(state: \.statistics, action: \.internal.statistics)
-					)
-				}
-				.tag(TabbedContent.Tab.statistics)
-				.tabItem { TabbedContent.Tab.statistics.label }
-
-				NavigationStack {
-					AccessoriesOverviewView(
-						store: store.scope(state: \.accessories, action: \.internal.accessories)
-					)
-				}
-				.tag(TabbedContent.Tab.accessories)
-				.tabItem { TabbedContent.Tab.accessories.label }
-
-				NavigationStack {
-					SettingsView(
-						store: store.scope(state: \.settings, action: \.internal.settings)
-					)
-				}
-				.tag(TabbedContent.Tab.settings)
-				.tabItem { TabbedContent.Tab.settings.label }
+		// FIXME: create sidebar for ipad size devices
+		TabView(selection: $store.selectedTab) {
+			NavigationStack {
+				BowlersListView(
+					store: store.scope(state: \.bowlersList, action: \.internal.bowlersList)
+				)
 			}
-			.tint(Asset.Colors.Action.default)
-			.task { await send(.didAppear).finish() }
+			.tag(TabbedContent.Tab.overview)
+			.tabItem { TabbedContent.Tab.overview.label }
+
+			NavigationStack {
+				StatisticsOverviewView(
+					store: store.scope(state: \.statistics, action: \.internal.statistics)
+				)
+			}
+			.tag(TabbedContent.Tab.statistics)
+			.tabItem { TabbedContent.Tab.statistics.label }
+
+			NavigationStack {
+				AccessoriesOverviewView(
+					store: store.scope(state: \.accessories, action: \.internal.accessories)
+				)
+			}
+			.tag(TabbedContent.Tab.accessories)
+			.tabItem { TabbedContent.Tab.accessories.label }
+
+			NavigationStack {
+				SettingsView(
+					store: store.scope(state: \.settings, action: \.internal.settings)
+				)
+			}
+			.tag(TabbedContent.Tab.settings)
+			.tabItem { TabbedContent.Tab.settings.label }
 		}
+		.tint(Asset.Colors.Action.default)
+		.task { await send(.didAppear).finish() }
 	}
 }
 

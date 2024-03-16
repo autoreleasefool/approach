@@ -14,41 +14,39 @@ import ViewsLibrary
 
 @ViewAction(for: AlleysList.self)
 public struct AlleysListView: View {
-	@Perception.Bindable public var store: StoreOf<AlleysList>
+	@Bindable public var store: StoreOf<AlleysList>
 
 	public init(store: StoreOf<AlleysList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ResourceListView(
-				store: store.scope(state: \.list, action: \.internal.list)
-			) { alley in
-				if store.isShowingAverages {
-					VStack {
-						Alley.View(alley)
-						Text(format(average: alley.average))
-							.font(.caption)
-					}
-				} else {
+		ResourceListView(
+			store: store.scope(state: \.list, action: \.internal.list)
+		) { alley in
+			if store.isShowingAverages {
+				VStack {
 					Alley.View(alley)
+					Text(format(average: alley.average))
+						.font(.caption)
 				}
-			} header: {
-				header
+			} else {
+				Alley.View(alley)
 			}
-			.navigationTitle(Strings.Alley.List.title)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: store.isAnyFilterActive) {
-						send(.didTapFiltersButton)
-					}
-				}
-			}
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.alleyEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-			.alleysFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
+		} header: {
+			header
 		}
+		.navigationTitle(Strings.Alley.List.title)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				FilterButton(isActive: store.isAnyFilterActive) {
+					send(.didTapFiltersButton)
+				}
+			}
+		}
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.alleyEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+		.alleysFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
 	}
 
 	@ViewBuilder private var header: some View {

@@ -16,43 +16,41 @@ import ViewsLibrary
 
 @ViewAction(for: SeriesList.self)
 public struct SeriesListView: View {
-	@Perception.Bindable public var store: StoreOf<SeriesList>
+	@Bindable public var store: StoreOf<SeriesList>
 
 	public init(store: StoreOf<SeriesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			SectionResourceListView(
-				store: store.scope(state: \.list, action: \.internal.list)
-			) { _, series in
-				Button { send(.didTapSeries(series.id)) } label: {
-					SeriesListItem(series: series)
-				}
-				.buttonStyle(.plain)
-				.listRowInsets(EdgeInsets())
-				.alignmentGuide(.listRowSeparatorLeading) { d in
-						d[.leading]
-				}
+		SectionResourceListView(
+			store: store.scope(state: \.list, action: \.internal.list)
+		) { _, series in
+			Button { send(.didTapSeries(series.id)) } label: {
+				SeriesListItem(series: series)
 			}
-			.navigationTitle(store.league.name)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					EditButton { send(.didTapEditButton) }
-				}
-
-				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { send(.didTapSortOrderButton) }
-				}
+			.buttonStyle(.plain)
+			.listRowInsets(EdgeInsets())
+			.alignmentGuide(.listRowSeparatorLeading) { d in
+					d[.leading]
 			}
-			.onAppear { send(.onAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
-			.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
-			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 		}
+		.navigationTitle(store.league.name)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				EditButton { send(.didTapEditButton) }
+			}
+
+			ToolbarItem(placement: .navigationBarTrailing) {
+				SortButton(isActive: false) { send(.didTapSortOrderButton) }
+			}
+		}
+		.onAppear { send(.onAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+		.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 	}
 }
 
@@ -83,7 +81,7 @@ public struct SeriesListView: View {
 	}
 
 	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<GamesList>) in
+		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
 		}
 	}

@@ -108,51 +108,49 @@ public struct GameDetailsHeaderView: View {
 	public let store: StoreOf<GameDetailsHeader>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			HStack(alignment: .center) {
-				VStack(alignment: .leading, spacing: .tinySpacing) {
-					Text(store.currentBowlerName)
-						.font(.headline)
-						.padding(.tinySpacing)
-						.background(
-							RoundedRectangle(cornerRadius: .smallRadius)
-								.fill(store.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
-						)
+		HStack(alignment: .center) {
+			VStack(alignment: .leading, spacing: .tinySpacing) {
+				Text(store.currentBowlerName)
+					.font(.headline)
+					.padding(.tinySpacing)
+					.background(
+						RoundedRectangle(cornerRadius: .smallRadius)
+							.fill(store.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
+					)
 
-					Text(store.currentLeagueName)
-						.font(.subheadline)
-						.padding(.tinySpacing)
-						.background(
-							RoundedRectangle(cornerRadius: .smallRadius)
-								.fill(store.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
-						)
-				}
-
-				Spacer()
-
-				if let next = store.next {
-					Button { send(.didTapNext(next)) } label: {
-						HStack {
-							Text(String(describing: next))
-								.font(.caption)
-							Image(systemSymbol: .chevronForward)
-								.resizable()
-								.scaledToFit()
-								.frame(width: .tinyIcon, height: .tinyIcon)
-						}
-						.foregroundColor(Asset.Colors.Text.onAction)
-						.padding(.standardSpacing)
-						.background(
-							RoundedRectangle(cornerRadius: .standardRadius)
-								.fill(Asset.Colors.Action.default.swiftUIColor)
-						)
-					}
-					.contentShape(Rectangle())
-					.buttonStyle(TappableElement())
-				}
+				Text(store.currentLeagueName)
+					.font(.subheadline)
+					.padding(.tinySpacing)
+					.background(
+						RoundedRectangle(cornerRadius: .smallRadius)
+							.fill(store.shimmerColor ?? Asset.Colors.Primary.light.swiftUIColor.opacity(0))
+					)
 			}
-			.task { await send(.didStartTask).finish() }
+
+			Spacer()
+
+			if let next = store.next {
+				Button { send(.didTapNext(next)) } label: {
+					HStack {
+						Text(String(describing: next))
+							.font(.caption)
+						Image(systemSymbol: .chevronForward)
+							.resizable()
+							.scaledToFit()
+							.frame(width: .tinyIcon, height: .tinyIcon)
+					}
+					.foregroundColor(Asset.Colors.Text.onAction)
+					.padding(.standardSpacing)
+					.background(
+						RoundedRectangle(cornerRadius: .standardRadius)
+							.fill(Asset.Colors.Action.default.swiftUIColor)
+					)
+				}
+				.contentShape(Rectangle())
+				.buttonStyle(TappableElement())
+			}
 		}
+		.task { await send(.didStartTask).finish() }
 	}
 }
 

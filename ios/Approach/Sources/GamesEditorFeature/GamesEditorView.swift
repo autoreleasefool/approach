@@ -16,7 +16,7 @@ import SwiftUIExtensionsLibrary
 
 @ViewAction(for: GamesEditor.self)
 public struct GamesEditorView: View {
-	@Perception.Bindable public var store: StoreOf<GamesEditor>
+	@Bindable public var store: StoreOf<GamesEditor>
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -27,113 +27,109 @@ public struct GamesEditorView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
+		VStack {
+			GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
+				.measure(key: HeaderContentSizeKey.self, to: $store.headerContentSize)
+
 			VStack {
-				GamesHeaderView(store: store.scope(state: \.gamesHeader, action: \.internal.gamesHeader))
-					.measure(key: HeaderContentSizeKey.self, to: $store.headerContentSize)
+				if let manualScore = store.manualScore {
+					Spacer()
 
-				VStack {
-					if let manualScore = store.manualScore {
-						Spacer()
+					VStack {
+						Text(String(manualScore))
+							.font(.largeTitle)
+						Text(Strings.Game.Editor.Fields.ManualScore.caption)
+							.font(.caption)
+					}
+					.padding()
+					.background(.regularMaterial, in: RoundedRectangle(cornerRadius: .standardRadius, style: .continuous))
+					.padding()
 
-						VStack {
-							Text(String(manualScore))
-								.font(.largeTitle)
-							Text(Strings.Game.Editor.Fields.ManualScore.caption)
-								.font(.caption)
-						}
-						.padding()
-						.background(.regularMaterial, in: RoundedRectangle(cornerRadius: .standardRadius, style: .continuous))
-						.padding()
+					Spacer()
 
-						Spacer()
+				} else {
 
-					} else {
+					Spacer()
 
-						Spacer()
+					FrameEditorView(store: store.scope(state: \.frameEditor, action: \.internal.frameEditor))
+						.padding(.top)
 
-						FrameEditorView(store: store.scope(state: \.frameEditor, action: \.internal.frameEditor))
+					Spacer()
+
+					RollEditorView(store: store.scope(state: \.rollEditor, action: \.internal.rollEditor))
+						.measure(key: RollEditorSizeKey.self, to: $store.rollEditorSize)
+						.padding(.horizontal)
+
+					if store.isScoreSheetVisible {
+						scoreSheet
 							.padding(.top)
-
-						Spacer()
-
-						RollEditorView(store: store.scope(state: \.rollEditor, action: \.internal.rollEditor))
-							.measure(key: RollEditorSizeKey.self, to: $store.rollEditorSize)
 							.padding(.horizontal)
-
-						if store.isScoreSheetVisible {
-							scoreSheet
-								.padding(.top)
-								.padding(.horizontal)
-								.measure(key: FrameContentSizeKey.self, to: $store.frameContentSize)
-						}
+							.measure(key: FrameContentSizeKey.self, to: $store.frameContentSize)
 					}
 				}
-				.frame(idealWidth: store.measuredBackdropSize.width, maxHeight: store.measuredBackdropSize.height)
+			}
+			.frame(idealWidth: store.measuredBackdropSize.width, maxHeight: store.measuredBackdropSize.height)
 
-				Spacer()
-			}
-			.measure(key: WindowContentSizeKey.self, to: $store.windowContentSize)
-			.onChange(of: safeAreaInsets) { send(.didChangeSafeAreaInsets($0)) }
-			.background(alignment: .top) {
-				VStack(spacing: 0) {
-					Asset.Media.Lane.galaxy.swiftUIImage
-						.resizable()
-						.scaledToFill()
-					Asset.Media.Lane.wood.swiftUIImage
-						.resizable()
-						.scaledToFill()
-				}
-				.frame(width: store.measuredBackdropSize.width, height: store.backdropImageHeight)
-				.faded()
-				.clipped()
-				.padding(.top, store.headerContentSize.height)
-			}
-			.background(Color.black)
-			.toolbar(.hidden, for: .tabBar, .navigationBar)
-			.sheet(
-				item: $store.scope(state: \.destination?.gameDetails, action: \.internal.destination.gameDetails),
-				onDismiss: { send(.didDismissGameDetails) },
-				content: { (store: StoreOf<GameDetails>) in
-					WithPerceptionTracking {
-						gameDetails(gameDetailsStore: store)
-					}
-				}
-			)
-			.onChange(of: store.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
-				if shouldRequestAppStoreReview {
-					requestReview()
-					send(.didRequestReview)
-				}
-			}
-			.onAppear { send(.onAppear) }
-			.onFirstAppear { send(.didFirstAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.alert(
-				$store.scope(
-					state: \.destination?.duplicateLanesAlert,
-					action: \.internal.destination.duplicateLanesAlert
-				)
-			)
-			.alert(
-				$store.scope(
-					state: \.destination?.lockedAlert,
-					action: \.internal.destination.lockedAlert
-				)
-			)
-			.ballPicker(
-				$store.scope(state: \.destination?.sheets?.ballPicker, action: \.internal.destination.sheets.ballPicker),
-				onDismiss: { send(.didDismissOpenSheet) }
-			)
-			.settings(
-				$store.scope(state: \.destination?.sheets?.settings, action: \.internal.destination.sheets.settings),
-				onDismiss: { send(.didDismissOpenSheet) }
-			)
-			.sharing(
-				$store.scope(state: \.destination?.sheets?.sharing, action: \.internal.destination.sheets.sharing),
-				onDismiss: { send(.didDismissOpenSheet) }
-			)
+			Spacer()
 		}
+		.measure(key: WindowContentSizeKey.self, to: $store.windowContentSize)
+		.onChange(of: safeAreaInsets) { send(.didChangeSafeAreaInsets($0)) }
+		.background(alignment: .top) {
+			VStack(spacing: 0) {
+				Asset.Media.Lane.galaxy.swiftUIImage
+					.resizable()
+					.scaledToFill()
+				Asset.Media.Lane.wood.swiftUIImage
+					.resizable()
+					.scaledToFill()
+			}
+			.frame(width: store.measuredBackdropSize.width, height: store.backdropImageHeight)
+			.faded()
+			.clipped()
+			.padding(.top, store.headerContentSize.height)
+		}
+		.background(Color.black)
+		.toolbar(.hidden, for: .tabBar, .navigationBar)
+		.sheet(
+			item: $store.scope(state: \.destination?.gameDetails, action: \.internal.destination.gameDetails),
+			onDismiss: { send(.didDismissGameDetails) },
+			content: { (store: StoreOf<GameDetails>) in
+				gameDetails(gameDetailsStore: store)
+			}
+		)
+		.onChange(of: store.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
+			if shouldRequestAppStoreReview {
+				requestReview()
+				send(.didRequestReview)
+			}
+		}
+		.onAppear { send(.onAppear) }
+		.onFirstAppear { send(.didFirstAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.alert(
+			$store.scope(
+				state: \.destination?.duplicateLanesAlert,
+				action: \.internal.destination.duplicateLanesAlert
+			)
+		)
+		.alert(
+			$store.scope(
+				state: \.destination?.lockedAlert,
+				action: \.internal.destination.lockedAlert
+			)
+		)
+		.ballPicker(
+			$store.scope(state: \.destination?.sheets?.ballPicker, action: \.internal.destination.sheets.ballPicker),
+			onDismiss: { send(.didDismissOpenSheet) }
+		)
+		.settings(
+			$store.scope(state: \.destination?.sheets?.settings, action: \.internal.destination.sheets.settings),
+			onDismiss: { send(.didDismissOpenSheet) }
+		)
+		.sharing(
+			$store.scope(state: \.destination?.sheets?.sharing, action: \.internal.destination.sheets.sharing),
+			onDismiss: { send(.didDismissOpenSheet) }
+		)
 	}
 
 	private func gameDetails(gameDetailsStore: StoreOf<GameDetails>) -> some View {

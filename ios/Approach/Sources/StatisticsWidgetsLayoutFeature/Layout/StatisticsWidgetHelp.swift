@@ -60,49 +60,47 @@ public struct StatisticsWidgetHelpView: View {
 	public let store: StoreOf<StatisticsWidgetHelp>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section {
-					VStack(alignment: .leading, spacing: .smallSpacing) {
-						SquareWidget(
-							configuration: store.missingStatistic,
-							chartContent: .dataMissing(statistic: store.missingStatistic.statistic),
-							onPress: {}
-						)
-						.frame(maxWidth: 150)
+		List {
+			Section {
+				VStack(alignment: .leading, spacing: .smallSpacing) {
+					SquareWidget(
+						configuration: store.missingStatistic,
+						chartContent: .dataMissing(statistic: store.missingStatistic.statistic),
+						onPress: {}
+					)
+					.frame(maxWidth: 150)
 
-						Text(Strings.Widget.Help.NotEnoughData.title)
-							.font(.headline)
+					Text(Strings.Widget.Help.NotEnoughData.title)
+						.font(.headline)
 
-						Text(Strings.Widget.Help.NotEnoughData.description1)
-						Text(Strings.Widget.Help.NotEnoughData.description2)
-					}
+					Text(Strings.Widget.Help.NotEnoughData.description1)
+					Text(Strings.Widget.Help.NotEnoughData.description2)
 				}
-				.listRowSeparator(.hidden)
-
-				Section {
-					VStack(alignment: .leading, spacing: .smallSpacing) {
-						SquareWidget(
-							configuration: store.missingStatistic,
-							chartContent: .chartUnavailable(statistic: store.missingStatistic.statistic),
-							onPress: {}
-						)
-						.frame(maxWidth: 150)
-
-						Text(Strings.Widget.Help.Error.title)
-							.font(.headline)
-
-						Text(Strings.Widget.Help.Error.description1)
-						Text(Strings.Widget.Help.Error.description2)
-					}
-				}
-				.listRowSeparator(.hidden)
 			}
-			.navigationTitle(Strings.Widget.Help.title)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.done) { send(.didTapDoneButton) }
+			.listRowSeparator(.hidden)
+
+			Section {
+				VStack(alignment: .leading, spacing: .smallSpacing) {
+					SquareWidget(
+						configuration: store.missingStatistic,
+						chartContent: .chartUnavailable(statistic: store.missingStatistic.statistic),
+						onPress: {}
+					)
+					.frame(maxWidth: 150)
+
+					Text(Strings.Widget.Help.Error.title)
+						.font(.headline)
+
+					Text(Strings.Widget.Help.Error.description1)
+					Text(Strings.Widget.Help.Error.description2)
 				}
+			}
+			.listRowSeparator(.hidden)
+		}
+		.navigationTitle(Strings.Widget.Help.title)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				Button(Strings.Action.done) { send(.didTapDoneButton) }
 			}
 		}
 	}

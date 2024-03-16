@@ -67,34 +67,32 @@ public struct LeaguesFilter: Reducer {
 
 @ViewAction(for: LeaguesFilter.self)
 public struct LeaguesFilterView: View {
-	@Perception.Bindable public var store: StoreOf<LeaguesFilter>
+	@Bindable public var store: StoreOf<LeaguesFilter>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section {
-					Picker(
-						Strings.League.Properties.recurrence,
-						selection: $store.recurrence
-					) {
-						Text("").tag(nil as League.Recurrence?)
-						ForEach(League.Recurrence.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
+		List {
+			Section {
+				Picker(
+					Strings.League.Properties.recurrence,
+					selection: $store.recurrence
+				) {
+					Text("").tag(nil as League.Recurrence?)
+					ForEach(League.Recurrence.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
 					}
 				}
-
-				Section {
-					Button(Strings.Action.reset) { send(.didTapClearButton) }
-						.tint(Asset.Colors.Destructive.default)
-				}
 			}
-			.navigationTitle(Strings.League.Filters.title)
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { send(.didTapApplyButton) }
-				}
+
+			Section {
+				Button(Strings.Action.reset) { send(.didTapClearButton) }
+					.tint(Asset.Colors.Destructive.default)
+			}
+		}
+		.navigationTitle(Strings.League.Filters.title)
+		.navigationBarTitleDisplayMode(.inline)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				Button(Strings.Action.apply) { send(.didTapApplyButton) }
 			}
 		}
 	}

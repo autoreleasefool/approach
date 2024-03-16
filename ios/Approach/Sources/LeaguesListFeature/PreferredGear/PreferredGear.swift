@@ -110,46 +110,43 @@ public struct PreferredGear: Reducer {
 
 @ViewAction(for: PreferredGear.self)
 public struct PreferredGearView: View {
-	@Perception.Bindable public var store: StoreOf<PreferredGear>
+	@Bindable public var store: StoreOf<PreferredGear>
 
 	public init(store: StoreOf<PreferredGear>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			Section {
-				if store.gear.isEmpty {
-					Text(Strings.Bowler.List.PreferredGear.footer)
-				} else {
-					ForEach(store.gear) { gear in
-						Gear.ViewWithAvatar(gear)
-					}
-				}
-			} header: {
-				HStack(alignment: .firstTextBaseline) {
-					Text(Strings.Bowler.List.preferredGear)
-					Spacer()
-					Button { send(.didTapManageButton) } label: {
-						Text(Strings.Action.manage)
-							.font(.caption)
-					}
-				}
-				Text(Strings.Bowler.List.preferredGear)
-			} footer: {
-				if store.gear.isEmpty {
-					EmptyView()
-				} else {
-					Text(Strings.Bowler.List.PreferredGear.footer)
+		Section {
+			if store.gear.isEmpty {
+				Text(Strings.Bowler.List.PreferredGear.footer)
+			} else {
+				ForEach(store.gear) { gear in
+					Gear.ViewWithAvatar(gear)
 				}
 			}
-			.onFirstAppear { send(.didFirstAppear) }
-			.navigationDestinationWrapper(
-				item: $store.scope(state: \.gearPicker, action: \.internal.gearPicker)
-			) { store in
-				ResourcePickerView(store: store) {
-					Gear.ViewWithAvatar($0)
+		} header: {
+			HStack(alignment: .firstTextBaseline) {
+				Text(Strings.Bowler.List.preferredGear)
+				Spacer()
+				Button { send(.didTapManageButton) } label: {
+					Text(Strings.Action.manage)
+						.font(.caption)
 				}
+			}
+		} footer: {
+			if store.gear.isEmpty {
+				EmptyView()
+			} else {
+				Text(Strings.Bowler.List.PreferredGear.footer)
+			}
+		}
+		.onFirstAppear { send(.didFirstAppear) }
+		.navigationDestination(
+			item: $store.scope(state: \.gearPicker, action: \.internal.gearPicker)
+		) { store in
+			ResourcePickerView(store: store) {
+				Gear.ViewWithAvatar($0)
 			}
 		}
 	}

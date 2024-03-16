@@ -13,29 +13,27 @@ import ViewsLibrary
 
 @ViewAction(for: AlleyEditor.self)
 public struct AlleyEditorView: View {
-	@Perception.Bindable public var store: StoreOf<AlleyEditor>
+	@Bindable public var store: StoreOf<AlleyEditor>
 
 	public init(store: StoreOf<AlleyEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-				detailsSection
-				mapSection
-				materialSection
-				mechanismSection
-				pinFallSection
-				pinBaseSection
-				lanesSection
-				Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
-					.listRowInsets(EdgeInsets())
-			}
-			.onAppear { send(.onAppear) }
-			.alleyLanes($store.scope(state: \.destination?.alleyLanes, action: \.internal.destination.alleyLanes))
-			.addressLookup($store.scope(state: \.destination?.addressLookup, action: \.internal.destination.addressLookup))
+		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
+			detailsSection
+			mapSection
+			materialSection
+			mechanismSection
+			pinFallSection
+			pinBaseSection
+			lanesSection
+			Banner(.message(Strings.Alley.Editor.Help.askAStaffMember))
+				.listRowInsets(EdgeInsets())
 		}
+		.onAppear { send(.onAppear) }
+		.alleyLanes($store.scope(state: \.destination?.alleyLanes, action: \.internal.destination.alleyLanes))
+		.addressLookup($store.scope(state: \.destination?.addressLookup, action: \.internal.destination.addressLookup))
 	}
 
 	private var detailsSection: some View {
@@ -165,7 +163,7 @@ public struct AlleyEditorView: View {
 
 @MainActor extension View {
 	fileprivate func alleyLanes(_ store: Binding<StoreOf<AlleyLanesEditor>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<AlleyLanesEditor>) in
+		navigationDestination(item: store) { (store: StoreOf<AlleyLanesEditor>) in
 			AlleyLanesEditorView(store: store)
 		}
 	}

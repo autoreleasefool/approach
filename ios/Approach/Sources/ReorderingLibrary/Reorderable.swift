@@ -68,29 +68,25 @@ public struct ReorderableView<Content: View, Item: Identifiable & Equatable>: Vi
 	@State private var draggedItemHasMoved = false
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ForEach(store.items) { item in
-				WithPerceptionTracking {
-					content(item)
-						.opacity(
-							itemBeingDragged == item && draggedItemHasMoved
-							? 0.7
-							: 1.0
-						)
-						.onDrag {
-							itemBeingDragged = item
-							return NSItemProvider(object: "\(item.id)" as NSString)
-						}
-						.onDrop(of: [UTType.text], delegate: ReorderingDelegate(
-							item: item,
-							items: store.items,
-							itemBeingDragged: $itemBeingDragged,
-							draggedItemHasMoved: $draggedItemHasMoved,
-							onMove: { store.send(.view(.didMoveItem(from: $0, to: $1)), animation: .easeInOut) },
-							onDrop: { store.send(.view(.didFinishReordering)) }
-						))
+		ForEach(store.items) { item in
+			content(item)
+				.opacity(
+					itemBeingDragged == item && draggedItemHasMoved
+					? 0.7
+					: 1.0
+				)
+				.onDrag {
+					itemBeingDragged = item
+					return NSItemProvider(object: "\(item.id)" as NSString)
 				}
-			}
+				.onDrop(of: [UTType.text], delegate: ReorderingDelegate(
+					item: item,
+					items: store.items,
+					itemBeingDragged: $itemBeingDragged,
+					draggedItemHasMoved: $draggedItemHasMoved,
+					onMove: { store.send(.view(.didMoveItem(from: $0, to: $1)), animation: .easeInOut) },
+					onDrop: { store.send(.view(.didFinishReordering)) }
+				))
 		}
 	}
 }

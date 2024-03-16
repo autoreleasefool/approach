@@ -10,7 +10,7 @@ import ViewsLibrary
 
 @ViewAction(for: Sharing.self)
 public struct SharingView: View {
-	@Perception.Bindable public var store: StoreOf<Sharing>
+	@Bindable public var store: StoreOf<Sharing>
 
 	@Environment(\.displayScale) var displayScale
 
@@ -19,34 +19,32 @@ public struct SharingView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			VStack(spacing: 0) {
-				preview
+		VStack(spacing: 0) {
+			preview
 
-				List {
-					styleOptions
-					frameOptions
-					labelOptions
-					layoutOptions
-				}
-
-				Divider()
-
-				shareButtons
+			List {
+				styleOptions
+				frameOptions
+				labelOptions
+				layoutOptions
 			}
-			.navigationTitle(store.navigationTitle)
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarLeading) {
-					Button(Strings.Action.done) { send(.didTapDoneButton) }
-				}
-			}
-			.onAppear { send(.onAppear) }
-			.onFirstAppear { send(.didFirstAppear) }
-			.onFirstAppear { send(.didUpdateDisplayScale(displayScale)) }
-			.onChange(of: displayScale) { send(.didUpdateDisplayScale($0)) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+
+			Divider()
+
+			shareButtons
 		}
+		.navigationTitle(store.navigationTitle)
+		.navigationBarTitleDisplayMode(.inline)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarLeading) {
+				Button(Strings.Action.done) { send(.didTapDoneButton) }
+			}
+		}
+		.onAppear { send(.onAppear) }
+		.onFirstAppear { send(.didFirstAppear) }
+		.onFirstAppear { send(.didUpdateDisplayScale(displayScale)) }
+		.onChange(of: displayScale) { send(.didUpdateDisplayScale($0)) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 
 	private var preview: some View {
@@ -71,19 +69,17 @@ public struct SharingView: View {
 				ForEach(ScoreSheetStyleGroup.scoreSheetStyles) { group in
 					GridRow {
 						ForEach(group.styles) { style in
-							WithPerceptionTracking {
-								Button { send(.didTapStyle(style)) } label: {
-									PreviewingScoreSheet(style: style)
-										.padding(.unitSpacing)
-										.background(
-											style.id == store.style.id
-											? RoundedRectangle(cornerRadius: .standardRadius)
-												.fill(Asset.Colors.List.selection.swiftUIColor)
-											: nil
-										)
-								}
-								.buttonStyle(TappableElement())
+							Button { send(.didTapStyle(style)) } label: {
+								PreviewingScoreSheet(style: style)
+									.padding(.unitSpacing)
+									.background(
+										style.id == store.style.id
+										? RoundedRectangle(cornerRadius: .standardRadius)
+											.fill(Asset.Colors.List.selection.swiftUIColor)
+										: nil
+									)
 							}
+							.buttonStyle(TappableElement())
 						}
 					}
 					.frame(maxWidth: .infinity)
@@ -145,7 +141,7 @@ public struct SharingView: View {
 //			}
 //			.modifier(PrimaryButton())
 
-//			ShareLi
+			//			ShareLi
 
 			ShareLink(
 				item: ShareableGameSet(

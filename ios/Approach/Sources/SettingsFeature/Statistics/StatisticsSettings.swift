@@ -102,48 +102,46 @@ public struct StatisticsSettings: Reducer {
 
 @ViewAction(for: StatisticsSettings.self)
 public struct StatisticsSettingsView: View {
-	@Perception.Bindable public var store: StoreOf<StatisticsSettings>
+	@Bindable public var store: StoreOf<StatisticsSettings>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section(Strings.Settings.Statistics.PerFrame.title) {
-					Toggle(
-						Strings.Settings.Statistics.PerFrame.countH2AsH,
-						isOn: $store.isCountingH2AsH
-					)
+		List {
+			Section(Strings.Settings.Statistics.PerFrame.title) {
+				Toggle(
+					Strings.Settings.Statistics.PerFrame.countH2AsH,
+					isOn: $store.isCountingH2AsH
+				)
 
-					Toggle(
-						Strings.Settings.Statistics.PerFrame.countSplitWithBonusAsSplit,
-						isOn: $store.isCountingSplitWithBonusAsSplit
-					)
-				}
-
-				Section(Strings.Settings.Statistics.Overall.title) {
-					Toggle(
-						Strings.Settings.Statistics.Overall.hideZeroStatistics,
-						isOn: $store.isHidingZeroStatistics
-					)
-
-					Toggle(
-						Strings.Settings.Statistics.Overall.hideStatisticsDescriptions,
-						isOn: $store.isHidingStatisticsDescriptions
-					)
-				}
-
-				Section(Strings.Settings.Statistics.Widgets.title) {
-					Toggle(
-						Strings.Settings.Statistics.Widgets.hideInBowlerList,
-						isOn: $store.isHidingWidgetsInBowlerList
-					)
-					Toggle(
-						Strings.Settings.Statistics.Widgets.hideInLeagueList,
-						isOn: $store.isHidingWidgetsInLeagueList
-					)
-				}
+				Toggle(
+					Strings.Settings.Statistics.PerFrame.countSplitWithBonusAsSplit,
+					isOn: $store.isCountingSplitWithBonusAsSplit
+				)
 			}
-			.navigationTitle(Strings.Settings.Statistics.title)
-			.onAppear { send(.onAppear) }
+
+			Section(Strings.Settings.Statistics.Overall.title) {
+				Toggle(
+					Strings.Settings.Statistics.Overall.hideZeroStatistics,
+					isOn: $store.isHidingZeroStatistics
+				)
+
+				Toggle(
+					Strings.Settings.Statistics.Overall.hideStatisticsDescriptions,
+					isOn: $store.isHidingStatisticsDescriptions
+				)
+			}
+
+			Section(Strings.Settings.Statistics.Widgets.title) {
+				Toggle(
+					Strings.Settings.Statistics.Widgets.hideInBowlerList,
+					isOn: $store.isHidingWidgetsInBowlerList
+				)
+				Toggle(
+					Strings.Settings.Statistics.Widgets.hideInLeagueList,
+					isOn: $store.isHidingWidgetsInLeagueList
+				)
+			}
 		}
+		.navigationTitle(Strings.Settings.Statistics.title)
+		.onAppear { send(.onAppear) }
 	}
 }

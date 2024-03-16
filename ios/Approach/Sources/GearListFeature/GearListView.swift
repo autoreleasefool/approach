@@ -15,36 +15,34 @@ import ViewsLibrary
 
 @ViewAction(for: GearList.self)
 public struct GearListView: View {
-	@Perception.Bindable public var store: StoreOf<GearList>
+	@Bindable public var store: StoreOf<GearList>
 
 	public init(store: StoreOf<GearList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ResourceListView(
-				store: store.scope(state: \.list, action: \.internal.list)
-			) {
-				Gear.ViewWithAvatar($0)
-			}
-			.navigationTitle(Strings.Gear.List.title)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: store.isAnyFilterActive) {
-						send(.didTapFilterButton)
-					}
-				}
-				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { send(.didTapSortOrderButton) }
-				}
-			}
-			.onAppear { send(.onAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.gearEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-			.gearFilters($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
-			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+		ResourceListView(
+			store: store.scope(state: \.list, action: \.internal.list)
+		) {
+			Gear.ViewWithAvatar($0)
 		}
+		.navigationTitle(Strings.Gear.List.title)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				FilterButton(isActive: store.isAnyFilterActive) {
+					send(.didTapFilterButton)
+				}
+			}
+			ToolbarItem(placement: .navigationBarTrailing) {
+				SortButton(isActive: false) { send(.didTapSortOrderButton) }
+			}
+		}
+		.onAppear { send(.onAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.gearEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+		.gearFilters($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 	}
 }
 

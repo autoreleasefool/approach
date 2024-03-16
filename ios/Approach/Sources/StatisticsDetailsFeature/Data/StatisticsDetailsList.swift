@@ -116,7 +116,7 @@ public struct StatisticsDetailsList: Reducer {
 // MARK: - View
 @ViewAction(for: StatisticsDetails.self)
 public struct StatisticsDetailsListView<Header: View>: View {
-	@Perception.Bindable public var store: StoreOf<StatisticsDetailsList>
+	@Bindable public var store: StoreOf<StatisticsDetailsList>
 	let header: Header
 
 	init(store: StoreOf<StatisticsDetailsList>, @ViewBuilder header: () -> Header) {
@@ -129,113 +129,107 @@ public struct StatisticsDetailsListView<Header: View>: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ScrollViewReader { scrollViewProxy in
-				WithPerceptionTracking {
-					List {
-						header
+		ScrollViewReader { scrollViewProxy in
+			List {
+				header
 
-						if store.isShowingStatisticDescriptionTip {
-							BasicTipView(tip: .statisticsDescriptionTip) {
-								send(.didTapDismissDescriptionsTip, animation: .default)
+				if store.isShowingStatisticDescriptionTip {
+					BasicTipView(tip: .statisticsDescriptionTip) {
+						send(.didTapDismissDescriptionsTip, animation: .default)
+					}
+				}
+
+				ForEach(store.listEntries) { group in
+					Section(group.title) {
+						if group.description != nil || group.images != nil {
+							VStack(alignment: .center) {
+								if let description = group.description {
+									Text(description)
+										.font(.caption)
+								}
+
+								if let images = group.images, !images.isEmpty {
+									HStack(alignment: .center) {
+										ForEach(images) {
+											Image(uiImage: $0.image)
+												.resizable()
+												.scaledToFit()
+												.frame(width: .smallerIcon, height: .smallerIcon)
+										}
+									}
+								}
 							}
 						}
 
-						ForEach(store.listEntries) { group in
-							Section(group.title) {
-								if group.description != nil || group.images != nil {
-									VStack(alignment: .center) {
-										if let description = group.description {
+						ForEach(group.entries) { entry in
+							Button { send(.didTapEntry(id: entry.id)) } label: {
+								HStack(alignment: .center, spacing: .smallSpacing) {
+									if entry.highlightAsNew {
+										Text(Strings.Statistics.List.new.uppercased())
+											.font(.caption)
+											.fontWeight(.thin)
+											.foregroundColor(Asset.Colors.Action.default)
+									}
+
+									VStack(alignment: .leading) {
+										Text(entry.title)
+										if !store.isHidingStatisticsDescriptions, let description = entry.description {
 											Text(description)
-												.font(.caption)
+												.font(.caption2)
 										}
+									}
 
-										if let images = group.images, !images.isEmpty {
-											HStack(alignment: .center) {
-												ForEach(images) {
-													Image(uiImage: $0.image)
-														.resizable()
-														.scaledToFit()
-														.frame(width: .smallerIcon, height: .smallerIcon)
-												}
-											}
+									Spacer()
+
+									VStack(alignment: .trailing) {
+										Text(entry.value)
+										if !store.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
+											Text(valueDescription)
+												.font(.caption2)
 										}
 									}
 								}
-
-								ForEach(group.entries) { entry in
-									WithPerceptionTracking {
-										Button { send(.didTapEntry(id: entry.id)) } label: {
-											HStack(alignment: .center, spacing: .smallSpacing) {
-												if entry.highlightAsNew {
-													Text(Strings.Statistics.List.new.uppercased())
-														.font(.caption)
-														.fontWeight(.thin)
-														.foregroundColor(Asset.Colors.Action.default)
-												}
-
-												VStack(alignment: .leading) {
-													Text(entry.title)
-													if !store.isHidingStatisticsDescriptions, let description = entry.description {
-														Text(description)
-															.font(.caption2)
-													}
-												}
-
-												Spacer()
-
-												VStack(alignment: .trailing) {
-													Text(entry.value)
-													if !store.isHidingStatisticsDescriptions, let valueDescription = entry.valueDescription {
-														Text(valueDescription)
-															.font(.caption2)
-													}
-												}
-											}
-										}
-										.if(!store.hasTappableElements) {
-											$0.buttonStyle(.plain)
-										}
-										.if(store.hasTappableElements) {
-											$0
-												.buttonStyle(.navigation)
-												.contentShape(Rectangle())
-										}
-										.listRowBackground(
-											entry.id == store.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
-										)
-										.id(entry.id)
-									}
-								}
 							}
-						}
-
-						Section {
-							Toggle(
-								Strings.Statistics.List.hideZeroStatistics,
-								isOn: $store.isHidingZeroStatistics
-							)
-						} footer: {
-							if store.isHidingZeroStatistics {
-								Text(Strings.Statistics.List.HideZeroStatistics.help)
+							.if(!store.hasTappableElements) {
+								$0.buttonStyle(.plain)
 							}
-						}
-
-						Section {
-							Toggle(
-								Strings.Statistics.List.statisticsDescription,
-								isOn: $store.isHidingStatisticsDescriptions
+							.if(store.hasTappableElements) {
+								$0
+									.buttonStyle(.navigation)
+									.contentShape(Rectangle())
+							}
+							.listRowBackground(
+								entry.id == store.entryToHighlight ? Asset.Colors.Charts.List.background.swiftUIColor : nil
 							)
-						} footer: {
-							Text(Strings.Statistics.List.StatisticsDescription.help)
+							.id(entry.id)
 						}
 					}
-					.onChange(of: store.entryToHighlight) {
-						guard let id = $0 else { return }
-						withAnimation {
-							scrollViewProxy.scrollTo(id, anchor: .center)
-						}
+				}
+
+				Section {
+					Toggle(
+						Strings.Statistics.List.hideZeroStatistics,
+						isOn: $store.isHidingZeroStatistics
+					)
+				} footer: {
+					if store.isHidingZeroStatistics {
+						Text(Strings.Statistics.List.HideZeroStatistics.help)
 					}
+				}
+
+				Section {
+					Toggle(
+						Strings.Statistics.List.statisticsDescription,
+						isOn: $store.isHidingStatisticsDescriptions
+					)
+				} footer: {
+					Text(Strings.Statistics.List.StatisticsDescription.help)
+				}
+			}
+			.onChange(of: store.entryToHighlight) {
+				guard let id = $0 else { return }
+				withAnimation {
+					scrollViewProxy.scrollTo(id, anchor: .center)
 				}
 			}
 		}

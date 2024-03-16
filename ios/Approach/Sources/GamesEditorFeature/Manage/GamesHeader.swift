@@ -120,36 +120,34 @@ public struct GamesHeaderView: View {
 	public let store: StoreOf<GamesHeader>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ZStack {
-				HStack {
-					Text(Strings.Game.titleWithOrdinal(store.currentGameIndex + 1))
-						.font(.caption)
-						.foregroundColor(.white)
-						.padding(.tinySpacing)
-						.background(
-							RoundedRectangle(cornerRadius: .smallRadius)
-								.fill(store.shimmerColor ?? Asset.Colors.Primary.default.swiftUIColor.opacity(0))
-						)
+		ZStack {
+			HStack {
+				Text(Strings.Game.titleWithOrdinal(store.currentGameIndex + 1))
+					.font(.caption)
+					.foregroundColor(.white)
+					.padding(.tinySpacing)
+					.background(
+						RoundedRectangle(cornerRadius: .smallRadius)
+							.fill(store.shimmerColor ?? Asset.Colors.Primary.default.swiftUIColor.opacity(0))
+					)
+			}
+
+			HStack {
+				headerButton(systemSymbol: .chevronBackward) { send(.didTapCloseButton) }
+
+				Spacer()
+
+				if store.isSharingGameEnabled {
+					headerButton(systemSymbol: .squareAndArrowUp) { send(.didTapShareButton) }
 				}
 
-				HStack {
-					headerButton(systemSymbol: .chevronBackward) { send(.didTapCloseButton) }
-
-					Spacer()
-
-					if store.isSharingGameEnabled {
-						headerButton(systemSymbol: .squareAndArrowUp) { send(.didTapShareButton) }
-					}
-
-					headerButton(systemSymbol: .gear) { send(.didTapSettingsButton) }
-				}
+				headerButton(systemSymbol: .gear) { send(.didTapSettingsButton) }
 			}
-			.onChange(of: store.currentGameIndex) { _ in
-				send(.didStartShimmering)
-			}
-			.task { await send(.didStartTask).finish() }
 		}
+		.onChange(of: store.currentGameIndex) { _ in
+			send(.didStartShimmering)
+		}
+		.task { await send(.didStartTask).finish() }
 	}
 
 	private func headerButton(systemSymbol: SFSymbol, action: @escaping () -> Void) -> some View {

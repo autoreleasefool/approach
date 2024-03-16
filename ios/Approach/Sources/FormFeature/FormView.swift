@@ -10,7 +10,7 @@ public struct FormView<
 	Existing: EditableRecord,
 	Content: View
 >: View where New.ID == Existing.ID {
-	@Perception.Bindable public var store: StoreOf<Form<New, Existing>>
+	@Bindable public var store: StoreOf<Form<New, Existing>>
 	let content: Content
 
 	public init(
@@ -22,40 +22,38 @@ public struct FormView<
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			SwiftUI.Form {
-				content
-					.disabled(store.isLoading)
+		SwiftUI.Form {
+			content
+				.disabled(store.isLoading)
 
-				if store.isDeleteable {
-					Section {
-						DeleteButton { store.send(.view(.didTapDeleteButton)) }
-					}
-					.disabled(store.isLoading)
+			if store.isDeleteable {
+				Section {
+					DeleteButton { store.send(.view(.didTapDeleteButton)) }
 				}
-
-				if store.isArchivable {
-					Section {
-						ArchiveButton { store.send(.view(.didTapArchiveButton)) }
-					}
-					.disabled(store.isLoading)
-				}
+				.disabled(store.isLoading)
 			}
-			.navigationTitle(store.title)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(store.saveButtonText) { store.send(.view(.didTapSaveButton)) }
-						.disabled(!store.isSaveable)
-				}
 
-				if store.hasChanges {
-					ToolbarItem(placement: .navigationBarLeading) {
-						Button(Strings.Action.discard) { store.send(.view(.didTapDiscardButton)) }
-					}
+			if store.isArchivable {
+				Section {
+					ArchiveButton { store.send(.view(.didTapArchiveButton)) }
 				}
+				.disabled(store.isLoading)
 			}
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.alert($store.scope(state: \.alert, action: \.view.alert))
 		}
+		.navigationTitle(store.title)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				Button(store.saveButtonText) { store.send(.view(.didTapSaveButton)) }
+					.disabled(!store.isSaveable)
+			}
+
+			if store.hasChanges {
+				ToolbarItem(placement: .navigationBarLeading) {
+					Button(Strings.Action.discard) { store.send(.view(.didTapDiscardButton)) }
+				}
+			}
+		}
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.alert($store.scope(state: \.alert, action: \.view.alert))
 	}
 }

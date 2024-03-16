@@ -71,12 +71,10 @@ public struct AnnouncementsView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			AnnouncementsLibrary.AnnouncementView(
-				announcement: store.announcement,
-				onAction: { send(.didDoAction($0)) },
-				onDismiss: { send(.didDismiss) }
-			)
-		}
+		AnnouncementsLibrary.AnnouncementView(
+			announcement: store.announcement,
+			onAction: { send(.didDoAction($0)) },
+			onDismiss: { send(.didDismiss) }
+		)
 	}
 }

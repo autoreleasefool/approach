@@ -13,95 +13,93 @@ import ViewsLibrary
 
 @ViewAction(for: GameDetails.self)
 public struct GameDetailsView: View {
-	@Perception.Bindable public var store: StoreOf<GameDetails>
+	@Bindable public var store: StoreOf<GameDetails>
 
 	@State private var minimumSheetContentSize: CGSize = .zero
 	@State private var sectionHeaderContentSize: CGSize = .zero
 
 	public var body: some View {
 		NavigationStack {
-			WithPerceptionTracking {
-				Form {
-					Section {
-						GameDetailsHeaderView(
-							store: store.scope(state: \.gameDetailsHeader, action: \.internal.gameDetailsHeader)
-						)
-						.listRowInsets(EdgeInsets())
-						.listRowBackground(Color.clear)
-						.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
-					} header: {
-						Color.clear
-							.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
+			Form {
+				Section {
+					GameDetailsHeaderView(
+						store: store.scope(state: \.gameDetailsHeader, action: \.internal.gameDetailsHeader)
+					)
+					.listRowInsets(EdgeInsets())
+					.listRowBackground(Color.clear)
+					.measure(key: MinimumSheetContentSizeKey.self, to: $minimumSheetContentSize)
+				} header: {
+					Color.clear
+						.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
+				}
+				.onChange(of: minimumSheetContentSize) { send(.didMeasureMinimumSheetContentSize($0)) }
+				.onChange(of: sectionHeaderContentSize) { send(.didMeasureSectionHeaderContentSize($0)) }
+				// We force these extra measures on appear/disappear to let child navigation screens
+				// take the full height of the screen.
+				// This value is used as a negative top padding in `GamesEditor`
+				.onAppear { send(.didMeasureSectionHeaderContentSize(sectionHeaderContentSize), animation: .easeInOut) }
+				.onDisappear { send(.didMeasureSectionHeaderContentSize(.zero), animation: .easeInOut) }
+
+				if let game = store.game {
+					StatisticsSummarySection(
+						currentGameIndex: game.index,
+						onTapSeries: { send(.didTapSeriesStatisticsButton) },
+						onTapGame: { send(.didTapGameStatisticsButton) }
+					)
+
+					GearSummarySection(gear: game.gear) {
+						send(.didTapGear)
 					}
-					.onChange(of: minimumSheetContentSize) { send(.didMeasureMinimumSheetContentSize($0)) }
-					.onChange(of: sectionHeaderContentSize) { send(.didMeasureSectionHeaderContentSize($0)) }
-					// We force these extra measures on appear/disappear to let child navigation screens
-					// take the full height of the screen.
-					// This value is used as a negative top padding in `GamesEditor`
-					.onAppear { send(.didMeasureSectionHeaderContentSize(sectionHeaderContentSize), animation: .easeInOut) }
-					.onDisappear { send(.didMeasureSectionHeaderContentSize(.zero), animation: .easeInOut) }
 
-					if let game = store.game {
-						StatisticsSummarySection(
-							currentGameIndex: game.index,
-							onTapSeries: { send(.didTapSeriesStatisticsButton) },
-							onTapGame: { send(.didTapGameStatisticsButton) }
+					MatchPlaySummarySection(matchPlay: game.matchPlay) {
+						send(.didTapMatchPlay)
+					}
+
+					AlleySummarySection(
+						alleyInfo: game.series.alley,
+						lanes: game.lanes
+					) {
+						send(.didTapAlley)
+					}
+
+					ScoringSummarySection(scoringMethod: game.scoringMethod, score: game.score) {
+						send(.didTapScoring)
+					}
+
+					Section {
+						Toggle(
+							Strings.Game.Editor.Fields.Lock.label,
+							isOn: $store.isLocked.sending(\.view.didToggleLock)
 						)
+						.toggleStyle(CheckboxToggleStyle())
+					} footer: {
+						Text(Strings.Game.Editor.Fields.Lock.help)
+					}
 
-						GearSummarySection(gear: game.gear) {
-							send(.didTapGear)
-						}
-
-						MatchPlaySummarySection(matchPlay: game.matchPlay) {
-							send(.didTapMatchPlay)
-						}
-
-						AlleySummarySection(
-							alleyInfo: game.series.alley,
-							lanes: game.lanes
-						) {
-							send(.didTapAlley)
-						}
-
-						ScoringSummarySection(scoringMethod: game.scoringMethod, score: game.score) {
-							send(.didTapScoring)
-						}
-
-						Section {
-							Toggle(
-								Strings.Game.Editor.Fields.Lock.label,
-								isOn: $store.isLocked.sending(\.view.didToggleLock)
-							)
-							.toggleStyle(CheckboxToggleStyle())
-						} footer: {
-							Text(Strings.Game.Editor.Fields.Lock.help)
-						}
-
-						Section {
-							Toggle(
-								Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
-								isOn: $store.isExcludedFromStatistics.sending(\.view.didToggleExclude)
-							)
-							.toggleStyle(CheckboxToggleStyle())
-						} footer: {
-							excludeFromStatisticsHelp(
-								excludeLeagueFromStatistics: game.league.excludeFromStatistics,
-								seriesPreBowl: game.series.preBowl,
-								excludeSeriesFromStatistics: game.series.excludeFromStatistics
-							)
-						}
+					Section {
+						Toggle(
+							Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
+							isOn: $store.isExcludedFromStatistics.sending(\.view.didToggleExclude)
+						)
+						.toggleStyle(CheckboxToggleStyle())
+					} footer: {
+						excludeFromStatisticsHelp(
+							excludeLeagueFromStatistics: game.league.excludeFromStatistics,
+							seriesPreBowl: game.series.preBowl,
+							excludeSeriesFromStatistics: game.series.excludeFromStatistics
+						)
 					}
 				}
-				.task { await send(.task).finish() }
-				.onAppear { send(.onAppear) }
-				.onFirstAppear { send(.didFirstAppear) }
-				.toolbar(.hidden)
-				.gearPicker($store.scope(state: \.destination?.gearPicker, action: \.internal.destination.gearPicker))
-				.lanePicker($store.scope(state: \.destination?.lanePicker, action: \.internal.destination.lanePicker))
-				.matchPlay($store.scope(state: \.destination?.matchPlay, action: \.internal.destination.matchPlay))
-				.scoring($store.scope(state: \.destination?.scoring, action: \.internal.destination.scoring))
-				.statistics($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
 			}
+			.task { await send(.task).finish() }
+			.onAppear { send(.onAppear) }
+			.onFirstAppear { send(.didFirstAppear) }
+			.toolbar(.hidden)
+			.gearPicker($store.scope(state: \.destination?.gearPicker, action: \.internal.destination.gearPicker))
+			.lanePicker($store.scope(state: \.destination?.lanePicker, action: \.internal.destination.lanePicker))
+			.matchPlay($store.scope(state: \.destination?.matchPlay, action: \.internal.destination.matchPlay))
+			.scoring($store.scope(state: \.destination?.scoring, action: \.internal.destination.scoring))
+			.statistics($store.scope(state: \.destination?.statistics, action: \.internal.destination.statistics))
 		}
 	}
 
@@ -136,7 +134,7 @@ public struct GameDetailsView: View {
 	fileprivate func gearPicker(
 		_ store: Binding<StoreOf<ResourcePicker<Gear.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			ResourcePickerView(store: $0) {
 				Gear.ViewWithAvatar($0)
 			}
@@ -144,7 +142,7 @@ public struct GameDetailsView: View {
 	}
 
 	fileprivate func lanePicker(_ store: Binding<StoreOf<ResourcePicker<Lane.Summary, Alley.ID>>?>) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			ResourcePickerView(store: $0) {
 				Lane.View($0)
 			}
@@ -152,19 +150,19 @@ public struct GameDetailsView: View {
 	}
 
 	fileprivate func matchPlay(_ store: Binding<StoreOf<MatchPlayEditor>?>) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			MatchPlayEditorView(store: $0)
 		}
 	}
 
 	fileprivate func scoring(_ store: Binding<StoreOf<ScoringEditor>?>) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			ScoringEditorView(store: $0)
 		}
 	}
 
 	fileprivate func statistics(_ store: Binding<StoreOf<MidGameStatisticsDetails>?>) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			MidGameStatisticsDetailsView(store: $0)
 		}
 	}

@@ -138,39 +138,35 @@ public struct AppIconList: Reducer {
 
 @ViewAction(for: AppIconList.self)
 public struct AppIconListView: View {
-	@Perception.Bindable public var store: StoreOf<AppIconList>
+	@Bindable public var store: StoreOf<AppIconList>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section {
-					Button { send(.didTapReset) } label: {
-						AppIconView(Strings.App.Icon.current, icon: .image(store.appIconImage))
-					}
-					.buttonStyle(.plain)
+		List {
+			Section {
+				Button { send(.didTapReset) } label: {
+					AppIconView(Strings.App.Icon.current, icon: .image(store.appIconImage))
 				}
+				.buttonStyle(.plain)
+			}
 
-				ForEach(AppIcon.Category.allCases) { category in
-					Section(String(describing: category)) {
-						ForEach(category.matchingIcons) { icon in
-							WithPerceptionTracking {
-								if icon.isProRequired && !store.isPurchasesEnabled {
-									EmptyView()
-								} else {
-									Button { send(.didTapIcon(icon)) } label: {
-										AppIconView(String(describing: icon), icon: .appIcon(icon))
-									}
-								}
+			ForEach(AppIcon.Category.allCases) { category in
+				Section(String(describing: category)) {
+					ForEach(category.matchingIcons) { icon in
+						if icon.isProRequired && !store.isPurchasesEnabled {
+							EmptyView()
+						} else {
+							Button { send(.didTapIcon(icon)) } label: {
+								AppIconView(String(describing: icon), icon: .appIcon(icon))
 							}
 						}
 					}
 				}
 			}
-			.navigationTitle(Strings.Settings.AppIcon.title)
-			.onFirstAppear { send(.didFirstAppear) }
-			.onAppear { send(.onAppear) }
-			.alert($store.scope(state: \.alert, action: \.internal.alert))
 		}
+		.navigationTitle(Strings.Settings.AppIcon.title)
+		.onFirstAppear { send(.didFirstAppear) }
+		.onAppear { send(.onAppear) }
+		.alert($store.scope(state: \.alert, action: \.internal.alert))
 	}
 }
 
@@ -212,13 +208,13 @@ struct AppIconListViewPreviews: PreviewProvider {
 	static var previews: some View {
 		NavigationStack {
 			AppIconListView(store:
-				.init(
-					initialState: .init(),
-					reducer: { AppIconList() },
-					withDependencies: {
-						$0[AppIconService.self].getAppIconName = { @Sendable in nil }
-					}
-				)
+					.init(
+						initialState: .init(),
+						reducer: { AppIconList() },
+						withDependencies: {
+							$0[AppIconService.self].getAppIconName = { @Sendable in nil }
+						}
+					)
 			)
 		}
 	}

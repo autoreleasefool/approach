@@ -131,120 +131,116 @@ public struct ErrorReport: Reducer {
 
 @ViewAction(for: ErrorReport.self)
 public struct ErrorReportView: View {
-	@Perception.Bindable public var store: StoreOf<ErrorReport>
+	@Bindable public var store: StoreOf<ErrorReport>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			VStack {
-				HStack {
-					Spacer()
-					Button {
-						send(.didTapDismissButton)
-					} label: {
-						Image(systemSymbol: .xmark)
-							.resizable()
-							.scaledToFit()
-							.frame(width: .extraTinyIcon, height: .extraTinyIcon)
-							.foregroundColor(.white)
-							.padding(.smallSpacing)
-							.background(
-								Circle()
-									.fill(.gray)
-							)
-					}
-				}
-
-				ScrollView {
-					VStack(alignment: .leading, spacing: .standardSpacing) {
-						Text(Strings.ErrorReport.reportingAnError)
-							.font(.title)
-							.bold()
-
-						Text(Strings.ErrorReport.youveEncountered)
-
-						Button {
-							send(.didTapCopyErrorButton)
-						} label: {
-							VStack {
-								Text(store.thrownError.wrapped.localizedDescription)
-									.multilineTextAlignment(.leading)
-
-								HStack {
-									Spacer()
-									Image(systemSymbol: .squareOnSquare)
-										.resizable()
-										.scaledToFit()
-										.frame(width: .tinyIcon)
-								}
-							}
-							.foregroundColor(.white)
-							.padding(.smallSpacing)
-							.background(
-								RoundedRectangle(cornerRadius: .standardRadius)
-									.fill(Asset.Colors.Error.default.swiftUIColor)
-							)
-							.shadow(radius: .smallRadius)
-						}
-
-						Text(Strings.ErrorReport.maybeWeCanHelp)
-							.font(.headline)
-					}
-				}
-
+		VStack {
+			HStack {
 				Spacer()
-
-				if store.canSendEmail {
-					GroupBox {
-						VStack(spacing: .smallSpacing) {
-							Toggle(
-								Strings.ErrorReport.includeDeviceLogs,
-								isOn: $store.isIncludingDeviceLogs
-							)
-
-							Text(Strings.ErrorReport.IncludeDeviceLogs.disclaimer)
-								.font(.caption2)
-								.foregroundColor(.gray)
-						}
-					}
-				}
-
-				VStack(spacing: .standardSpacing) {
-					Button {
-						send(.didTapEmailButton)
-					} label: {
-						Text(Strings.ErrorReport.emailReport)
-							.frame(maxWidth: .infinity)
-					}
-					.modifier(PrimaryButton())
-
-					if let logDataUrl = store.logDataUrl {
-						ShareLink(item: logDataUrl) {
-							Text(Strings.ErrorReport.shareReport)
-						}
-						.disabled(!store.isIncludingDeviceLogs)
-					}
-				}
-			}
-			.padding()
-			.onAppear { send(.onAppear) }
-			.alert($store.scope(state: \.alert, action: \.internal.alert))
-			.sheet(isPresented: $store.isShowingEmailReport) {
-				WithPerceptionTracking {
-					EmailView(
-						content: .init(
-							recipients: [Strings.Settings.Help.ReportBug.email],
-							subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable),
-							body: Strings.ErrorReport.emailBody(
-								store
-									.allErrors
-									.map { $0.localizedDescription }
-									.joined(separator: "\n- ")
-							),
-							attachment: .init(data: store.isIncludingDeviceLogs ? store.logData : nil)
+				Button {
+					send(.didTapDismissButton)
+				} label: {
+					Image(systemSymbol: .xmark)
+						.resizable()
+						.scaledToFit()
+						.frame(width: .extraTinyIcon, height: .extraTinyIcon)
+						.foregroundColor(.white)
+						.padding(.smallSpacing)
+						.background(
+							Circle()
+								.fill(.gray)
 						)
-					)
 				}
 			}
+
+			ScrollView {
+				VStack(alignment: .leading, spacing: .standardSpacing) {
+					Text(Strings.ErrorReport.reportingAnError)
+						.font(.title)
+						.bold()
+
+					Text(Strings.ErrorReport.youveEncountered)
+
+					Button {
+						send(.didTapCopyErrorButton)
+					} label: {
+						VStack {
+							Text(store.thrownError.wrapped.localizedDescription)
+								.multilineTextAlignment(.leading)
+
+							HStack {
+								Spacer()
+								Image(systemSymbol: .squareOnSquare)
+									.resizable()
+									.scaledToFit()
+									.frame(width: .tinyIcon)
+							}
+						}
+						.foregroundColor(.white)
+						.padding(.smallSpacing)
+						.background(
+							RoundedRectangle(cornerRadius: .standardRadius)
+								.fill(Asset.Colors.Error.default.swiftUIColor)
+						)
+						.shadow(radius: .smallRadius)
+					}
+
+					Text(Strings.ErrorReport.maybeWeCanHelp)
+						.font(.headline)
+				}
+			}
+
+			Spacer()
+
+			if store.canSendEmail {
+				GroupBox {
+					VStack(spacing: .smallSpacing) {
+						Toggle(
+							Strings.ErrorReport.includeDeviceLogs,
+							isOn: $store.isIncludingDeviceLogs
+						)
+
+						Text(Strings.ErrorReport.IncludeDeviceLogs.disclaimer)
+							.font(.caption2)
+							.foregroundColor(.gray)
+					}
+				}
+			}
+
+			VStack(spacing: .standardSpacing) {
+				Button {
+					send(.didTapEmailButton)
+				} label: {
+					Text(Strings.ErrorReport.emailReport)
+						.frame(maxWidth: .infinity)
+				}
+				.modifier(PrimaryButton())
+
+				if let logDataUrl = store.logDataUrl {
+					ShareLink(item: logDataUrl) {
+						Text(Strings.ErrorReport.shareReport)
+					}
+					.disabled(!store.isIncludingDeviceLogs)
+				}
+			}
+		}
+		.padding()
+		.onAppear { send(.onAppear) }
+		.alert($store.scope(state: \.alert, action: \.internal.alert))
+		.sheet(isPresented: $store.isShowingEmailReport) {
+			EmailView(
+				content: .init(
+					recipients: [Strings.Settings.Help.ReportBug.email],
+					subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable),
+					body: Strings.ErrorReport.emailBody(
+						store
+							.allErrors
+							.map { $0.localizedDescription }
+							.joined(separator: "\n- ")
+					),
+					attachment: .init(data: store.isIncludingDeviceLogs ? store.logData : nil)
+				)
+			)
 		}
 	}
 }

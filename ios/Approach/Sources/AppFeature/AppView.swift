@@ -13,18 +13,20 @@ public struct AppView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			switch store.state {
-			case .content:
-				if let store = store.scope(state: \.content, action: \.internal.content) {
-					TabbedContentView(store: store)
-				}
-			case .onboarding:
-				if let store = store.scope(state: \.onboarding, action: \.internal.onboarding) {
-					OnboardingView(store: store)
-				}
+		content
+			.onFirstAppear { send(.didFirstAppear) }
+	}
+
+	@MainActor @ViewBuilder private var content: some View {
+		switch store.state {
+		case .content:
+			if let store = store.scope(state: \.content, action: \.internal.content) {
+				TabbedContentView(store: store)
+			}
+		case .onboarding:
+			if let store = store.scope(state: \.onboarding, action: \.internal.onboarding) {
+				OnboardingView(store: store)
 			}
 		}
-		.onFirstAppear { send(.didFirstAppear) }
 	}
 }

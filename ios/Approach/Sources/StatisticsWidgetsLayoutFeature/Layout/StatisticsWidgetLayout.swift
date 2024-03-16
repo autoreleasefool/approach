@@ -195,21 +195,19 @@ public struct StatisticsWidgetLayout: Reducer {
 
 @ViewAction(for: StatisticsWidgetLayout.self)
 public struct StatisticsWidgetLayoutView: View {
-	@Perception.Bindable public var store: StoreOf<StatisticsWidgetLayout>
+	@Bindable public var store: StoreOf<StatisticsWidgetLayout>
 
 	public init(store: StoreOf<StatisticsWidgetLayout>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			widgetRows
-				.task { await send(.task).finish() }
-				.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
-				.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
-				.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
-				.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-		}
+		widgetRows
+			.task { await send(.task).finish() }
+			.details($store.scope(state: \.destination?.details, action: \.internal.destination.details))
+			.layoutBuilder($store.scope(state: \.destination?.layout, action: \.internal.destination.layout))
+			.help($store.scope(state: \.destination?.help, action: \.internal.destination.help))
+			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 
 	@MainActor @ViewBuilder private var widgetRows: some View {
@@ -226,13 +224,11 @@ public struct StatisticsWidgetLayoutView: View {
 						spacing: .standardSpacing
 					) {
 						ForEach(widgets) { widget in
-							WithPerceptionTracking {
-								SquareWidget(
-									configuration: widget,
-									chartContent: store.widgetData[widget.id]
-								) {
-									send(.didTapWidget(id: widget.id))
-								}
+							SquareWidget(
+								configuration: widget,
+								chartContent: store.widgetData[widget.id]
+							) {
+								send(.didTapWidget(id: widget.id))
 							}
 						}
 					}
@@ -267,7 +263,7 @@ public struct StatisticsWidgetLayoutView: View {
 
 @MainActor extension View {
 	fileprivate func details(_ store: Binding<StoreOf<StatisticsDetails>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<StatisticsDetails>) in
+		navigationDestination(item: store) { (store: StoreOf<StatisticsDetails>) in
 			StatisticsDetailsView(store: store)
 		}
 	}

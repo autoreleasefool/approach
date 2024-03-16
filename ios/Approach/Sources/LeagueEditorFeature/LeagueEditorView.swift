@@ -13,30 +13,28 @@ import ViewsLibrary
 
 @ViewAction(for: LeagueEditor.self)
 public struct LeagueEditorView: View {
-	@Perception.Bindable public var store: StoreOf<LeagueEditor>
+	@Bindable public var store: StoreOf<LeagueEditor>
 
 	public init(store: StoreOf<LeagueEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-				detailsSection
-				recurrenceSection
-				locationSection
-				statisticsSection
-				gamesSection
-				additionalPinfallSection
-			}
-			.interactiveDismissDisabled(store.isDismissDisabled)
-			.onAppear { send(.onAppear) }
-			.navigationDestinationWrapper(
-				item: $store.scope(state: \.alleyPicker, action: \.internal.alleyPicker)
-			) { store in
-				ResourcePickerView(store: store) { alley in
-					Alley.View(alley)
-				}
+		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
+			detailsSection
+			recurrenceSection
+			locationSection
+			statisticsSection
+			gamesSection
+			additionalPinfallSection
+		}
+		.interactiveDismissDisabled(store.isDismissDisabled)
+		.onAppear { send(.onAppear) }
+		.navigationDestination(
+			item: $store.scope(state: \.alleyPicker, action: \.internal.alleyPicker)
+		) { store in
+			ResourcePickerView(store: store) { alley in
+				Alley.View(alley)
 			}
 		}
 	}

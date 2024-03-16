@@ -116,67 +116,65 @@ public struct GamesSettings: Reducer {
 
 @ViewAction(for: GamesSettings.self)
 public struct GamesSettingsView: View {
-	@Perception.Bindable public var store: StoreOf<GamesSettings>
+	@Bindable public var store: StoreOf<GamesSettings>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section(Strings.Game.Settings.current) {
-					Picker(
-						Strings.Game.title,
-						selection: $store.gameIndex.sending(\.view.didSwitchGame)
-					) {
-						ForEach(Array(0..<store.numberOfGames), id: \.self) { index in
-							Text(Strings.Game.titleWithOrdinal(index + 1))
-								.tag(index)
-						}
-					}
-
-					if store.isTeamsEnabled {
-						Picker(
-							Strings.Bowler.title,
-							selection: $store.currentBowlerId.sending(\.view.didSwitchBowler)
-						) {
-							ForEach(store.bowlers) { bowler in
-								Text(bowler.name)
-									.tag(bowler.id)
-							}
-						}
+		List {
+			Section(Strings.Game.Settings.current) {
+				Picker(
+					Strings.Game.title,
+					selection: $store.gameIndex.sending(\.view.didSwitchGame)
+				) {
+					ForEach(Array(0..<store.numberOfGames), id: \.self) { index in
+						Text(Strings.Game.titleWithOrdinal(index + 1))
+							.tag(index)
 					}
 				}
 
 				if store.isTeamsEnabled {
-					Section {
+					Picker(
+						Strings.Bowler.title,
+						selection: $store.currentBowlerId.sending(\.view.didSwitchBowler)
+					) {
 						ForEach(store.bowlers) { bowler in
 							Text(bowler.name)
+								.tag(bowler.id)
 						}
-						.onMove { send(.didMoveBowlers(source: $0, destination: $1)) }
-					} header: {
-						Text(Strings.Bowler.List.title)
-					} footer: {
-						Text(Strings.Game.Editor.Bowlers.dragToReorder)
 					}
 				}
+			}
 
+			if store.isTeamsEnabled {
 				Section {
-					Toggle(
-						Strings.Game.Editor.Preferences.flashEditorChanges,
-						isOn: $store.isFlashEditorChangesEnabled
-					)
+					ForEach(store.bowlers) { bowler in
+						Text(bowler.name)
+					}
+					.onMove { send(.didMoveBowlers(source: $0, destination: $1)) }
 				} header: {
-					Text(Strings.Game.Editor.Preferences.title)
+					Text(Strings.Bowler.List.title)
 				} footer: {
-					Text(Strings.Game.Editor.Preferences.FlashEditorChanges.footer)
+					Text(Strings.Game.Editor.Bowlers.dragToReorder)
 				}
 			}
-			.environment(\.editMode, .constant(.active))
-			.navigationTitle(Strings.Game.Settings.title)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarLeading) {
-					Button(Strings.Action.done) { send(.didTapDone) }
-				}
+
+			Section {
+				Toggle(
+					Strings.Game.Editor.Preferences.flashEditorChanges,
+					isOn: $store.isFlashEditorChangesEnabled
+				)
+			} header: {
+				Text(Strings.Game.Editor.Preferences.title)
+			} footer: {
+				Text(Strings.Game.Editor.Preferences.FlashEditorChanges.footer)
 			}
-			.onAppear { send(.onAppear) }
 		}
+		.environment(\.editMode, .constant(.active))
+		.navigationTitle(Strings.Game.Settings.title)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarLeading) {
+				Button(Strings.Action.done) { send(.didTapDone) }
+			}
+		}
+		.onAppear { send(.onAppear) }
 	}
 }

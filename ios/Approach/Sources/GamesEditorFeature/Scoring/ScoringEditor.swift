@@ -89,35 +89,33 @@ public struct ScoringEditor: Reducer {
 
 @ViewAction(for: ScoringEditor.self)
 public struct ScoringEditorView: View {
-	@Perception.Bindable public var store: StoreOf<ScoringEditor>
+	@Bindable public var store: StoreOf<ScoringEditor>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section {
-					Toggle(
-						Strings.Scoring.Editor.Fields.ManualScore.title,
-						isOn: $store.isManualScoring.sending(\.view.toggleManualScoring)
-					)
-					.toggleStyle(CheckboxToggleStyle())
-				} footer: {
-					Text(Strings.Scoring.Editor.Fields.ManualScore.help)
-				}
+		List {
+			Section {
+				Toggle(
+					Strings.Scoring.Editor.Fields.ManualScore.title,
+					isOn: $store.isManualScoring.sending(\.view.toggleManualScoring)
+				)
+				.toggleStyle(CheckboxToggleStyle())
+			} footer: {
+				Text(Strings.Scoring.Editor.Fields.ManualScore.help)
+			}
 
-				if store.scoringMethod == .manual {
-					Section {
-						TextField(
-							Strings.Scoring.Editor.Fields.ManualScore.label,
-							value: $store.score,
-							formatter: NumberFormatter()
-						)
-						.keyboardType(.numberPad)
-					}
+			if store.scoringMethod == .manual {
+				Section {
+					TextField(
+						Strings.Scoring.Editor.Fields.ManualScore.label,
+						value: $store.score,
+						formatter: NumberFormatter()
+					)
+					.keyboardType(.numberPad)
 				}
 			}
-			.navigationTitle(Strings.Scoring.title)
-			.onAppear { send(.onAppear) }
 		}
+		.navigationTitle(Strings.Scoring.title)
+		.onAppear { send(.onAppear) }
 	}
 }
 

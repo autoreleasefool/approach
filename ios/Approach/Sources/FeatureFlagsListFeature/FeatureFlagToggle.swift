@@ -25,14 +25,12 @@ public struct FeatureFlagToggle: Reducer {
 }
 
 public struct FeatureFlagToggleView: View {
-	@Perception.Bindable public var store: StoreOf<FeatureFlagToggle>
+	@Bindable public var store: StoreOf<FeatureFlagToggle>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			Toggle(
-				store.flag.flag.name,
-				isOn: $store.flag.enabled
-			).disabled(!store.flag.flag.isOverridable)
-		}
+		Toggle(
+			store.flag.flag.name,
+			isOn: $store.flag.enabled
+		).disabled(!store.flag.flag.isOverridable)
 	}
 }

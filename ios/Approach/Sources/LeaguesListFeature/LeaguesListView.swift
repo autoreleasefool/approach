@@ -16,55 +16,53 @@ import ViewsLibrary
 
 @ViewAction(for: LeaguesList.self)
 public struct LeaguesListView: View {
-	@Perception.Bindable public var store: StoreOf<LeaguesList>
+	@Bindable public var store: StoreOf<LeaguesList>
 
 	public init(store: StoreOf<LeaguesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ResourceListView(
-				store: store.scope(state: \.list, action: \.internal.list)
-			) { league in
-				Button { send(.didTapLeague(id: league.id)) } label: {
-					LabeledContent(league.name, value: format(average: league.average))
-				}
-				.buttonStyle(.navigation)
-			} header: {
-				if store.isShowingWidgets {
-					Section {
-						StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
-					}
-					.listRowSeparator(.hidden)
-					.listRowInsets(EdgeInsets())
-					.listRowBackground(Color.clear)
-				}
-			} footer: {
-				PreferredGearView(
-					store: store.scope(state: \.preferredGear, action: \.internal.preferredGear)
-				)
+		ResourceListView(
+			store: store.scope(state: \.list, action: \.internal.list)
+		) { league in
+			Button { send(.didTapLeague(id: league.id)) } label: {
+				LabeledContent(league.name, value: format(average: league.average))
 			}
-			.navigationTitle(store.bowler.name)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: store.isAnyFilterActive) {
-						send(.didTapFilterButton)
-					}
+			.buttonStyle(.navigation)
+		} header: {
+			if store.isShowingWidgets {
+				Section {
+					StatisticsWidgetLayoutView(store: store.scope(state: \.widgets, action: \.internal.widgets))
 				}
-				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { send(.didTapSortOrderButton) }
-				}
+				.listRowSeparator(.hidden)
+				.listRowInsets(EdgeInsets())
+				.listRowBackground(Color.clear)
 			}
-			.task { send(.didStartTask) }
-			.onAppear { send(.onAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.leagueEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-			.leaguesFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
-			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-			.seriesList($store.scope(state: \.destination?.series, action: \.internal.destination.series))
-			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
+		} footer: {
+			PreferredGearView(
+				store: store.scope(state: \.preferredGear, action: \.internal.preferredGear)
+			)
 		}
+		.navigationTitle(store.bowler.name)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				FilterButton(isActive: store.isAnyFilterActive) {
+					send(.didTapFilterButton)
+				}
+			}
+			ToolbarItem(placement: .navigationBarTrailing) {
+				SortButton(isActive: false) { send(.didTapSortOrderButton) }
+			}
+		}
+		.task { send(.didStartTask) }
+		.onAppear { send(.onAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.leagueEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+		.leaguesFilter($store.scope(state: \.destination?.filters, action: \.internal.destination.filters))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+		.seriesList($store.scope(state: \.destination?.series, action: \.internal.destination.series))
+		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
 	}
 }
 
@@ -96,13 +94,13 @@ public struct LeaguesListView: View {
 	}
 
 	fileprivate func seriesList(_ store: Binding<StoreOf<SeriesList>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<SeriesList>) in
+		navigationDestination(item: store) { (store: StoreOf<SeriesList>) in
 			SeriesListView(store: store)
 		}
 	}
 
 	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<GamesList>) in
+		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
 		}
 	}

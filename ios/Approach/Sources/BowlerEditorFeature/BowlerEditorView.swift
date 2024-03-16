@@ -9,25 +9,23 @@ import ViewsLibrary
 
 @ViewAction(for: BowlerEditor.self)
 public struct BowlerEditorView: View {
-	@Perception.Bindable public var store: StoreOf<BowlerEditor>
+	@Bindable public var store: StoreOf<BowlerEditor>
 
 	public init(store: StoreOf<BowlerEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-				Section(Strings.Editor.Fields.Details.title) {
-					TextField(
-						Strings.Editor.Fields.Details.name,
-						text: $store.name
-					)
-					.textContentType(.name)
-				}
+		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
+			Section(Strings.Editor.Fields.Details.title) {
+				TextField(
+					Strings.Editor.Fields.Details.name,
+					text: $store.name
+				)
+				.textContentType(.name)
 			}
-			.onAppear { send(.onAppear) }
 		}
+		.onAppear { send(.onAppear) }
 	}
 }
 

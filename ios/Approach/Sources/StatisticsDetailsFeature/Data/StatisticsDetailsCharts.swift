@@ -56,46 +56,42 @@ public struct StatisticsDetailsCharts: Reducer {
 // MARK: - View
 
 public struct StatisticsDetailsChartsView: View {
-	@Perception.Bindable public var store: StoreOf<StatisticsDetailsCharts>
+	@Bindable public var store: StoreOf<StatisticsDetailsCharts>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			VStack {
-				if store.isLoadingNextChart {
-					ProgressView()
-						.padding(.bottom)
-				}
+		VStack {
+			if store.isLoadingNextChart {
+				ProgressView()
+					.padding(.bottom)
+			}
 
-				if let chartContent = store.chartContent {
-					switch chartContent {
-					case let .counting(data):
-						CountingChart.Default(data)
-					case let .averaging(data):
-						AveragingChart.Default(data)
-					case let .percentage(data):
-						PercentageChart.Default(data)
-					case let .chartUnavailable(statistic), let .dataMissing(statistic):
-						emptyChart(statistic, warnTooNarrow: store.isFilterTooNarrow)
+			if let chartContent = store.chartContent {
+				switch chartContent {
+				case let .counting(data):
+					CountingChart.Default(data)
+				case let .averaging(data):
+					AveragingChart.Default(data)
+				case let .percentage(data):
+					PercentageChart.Default(data)
+				case let .chartUnavailable(statistic), let .dataMissing(statistic):
+					emptyChart(statistic, warnTooNarrow: store.isFilterTooNarrow)
+				}
+			}
+
+			Spacer()
+
+			if store.chartContent?.showsAggregationPicker ?? false {
+				Picker(
+					Strings.Statistics.Filter.aggregation,
+					selection: $store.aggregation
+				) {
+					ForEach(TrackableFilter.Aggregation.allCases) { aggregation in
+						Text(aggregation.description(forSource: store.filterSource))
+							.tag(aggregation)
 					}
 				}
-
-				Spacer()
-
-				if store.chartContent?.showsAggregationPicker ?? false {
-					Picker(
-						Strings.Statistics.Filter.aggregation,
-						selection: $store.aggregation
-					) {
-						ForEach(TrackableFilter.Aggregation.allCases) { aggregation in
-							WithPerceptionTracking {
-								Text(aggregation.description(forSource: store.filterSource))
-									.tag(aggregation)
-							}
-						}
-					}
-					.pickerStyle(.segmented)
-					.padding()
-				}
+				.pickerStyle(.segmented)
+				.padding()
 			}
 		}
 	}

@@ -15,61 +15,59 @@ import ViewsLibrary
 
 @ViewAction(for: GearEditor.self)
 public struct GearEditorView: View {
-	@Perception.Bindable public var store: StoreOf<GearEditor>
+	@Bindable public var store: StoreOf<GearEditor>
 
 	public init(store: StoreOf<GearEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-				Section(Strings.Editor.Fields.Details.title) {
-					TextField(
-						Strings.Editor.Fields.Details.name,
-						text: $store.name
-					)
-					.textContentType(.name)
+		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
+			Section(Strings.Editor.Fields.Details.title) {
+				TextField(
+					Strings.Editor.Fields.Details.name,
+					text: $store.name
+				)
+				.textContentType(.name)
 
-					Picker(
-						Strings.Gear.Properties.kind,
-						selection: $store.kind
-					) {
-						ForEach(Gear.Kind.allCases) {
-							Text(String(describing: $0)).tag($0)
-						}
+				Picker(
+					Strings.Gear.Properties.kind,
+					selection: $store.kind
+				) {
+					ForEach(Gear.Kind.allCases) {
+						Text(String(describing: $0)).tag($0)
 					}
-					.disabled(store.isEditing)
 				}
-
-				Section {
-					Button { send(.didTapAvatar) } label: {
-						HStack {
-							AvatarView(store.avatar, size: .standardIcon)
-							Text(Strings.Gear.Properties.Avatar.customize)
-						}
-					}
-					.buttonStyle(.navigation)
-				} header: {
-					Text(Strings.Gear.Properties.Avatar.title)
-				} footer: {
-					Text(Strings.Gear.Properties.Avatar.description)
-				}
-
-				Section(Strings.Gear.Properties.owner) {
-					Button { send(.didTapOwner) } label: {
-						LabeledContent(
-							Strings.Bowler.title,
-							value: store.owner?.name ?? Strings.none
-						)
-					}
-					.buttonStyle(.navigation)
-				}
+				.disabled(store.isEditing)
 			}
-			.onAppear { send(.onAppear) }
-			.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
-			.avatar($store.scope(state: \.destination?.avatar, action: \.internal.destination.avatar))
+
+			Section {
+				Button { send(.didTapAvatar) } label: {
+					HStack {
+						AvatarView(store.avatar, size: .standardIcon)
+						Text(Strings.Gear.Properties.Avatar.customize)
+					}
+				}
+				.buttonStyle(.navigation)
+			} header: {
+				Text(Strings.Gear.Properties.Avatar.title)
+			} footer: {
+				Text(Strings.Gear.Properties.Avatar.description)
+			}
+
+			Section(Strings.Gear.Properties.owner) {
+				Button { send(.didTapOwner) } label: {
+					LabeledContent(
+						Strings.Bowler.title,
+						value: store.owner?.name ?? Strings.none
+					)
+				}
+				.buttonStyle(.navigation)
+			}
 		}
+		.onAppear { send(.onAppear) }
+		.bowlerPicker($store.scope(state: \.destination?.bowlerPicker, action: \.internal.destination.bowlerPicker))
+		.avatar($store.scope(state: \.destination?.avatar, action: \.internal.destination.avatar))
 	}
 }
 
@@ -77,7 +75,7 @@ public struct GearEditorView: View {
 	fileprivate func bowlerPicker(
 		_ store: Binding<StoreOf<ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>>?>
 	) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			ResourcePickerView(store: $0) { bowler in
 				Bowler.View(bowler)
 			}
@@ -85,7 +83,7 @@ public struct GearEditorView: View {
 	}
 
 	fileprivate func avatar(_ store: Binding<StoreOf<AvatarEditor>?>) -> some View {
-		navigationDestinationWrapper(item: store) {
+		navigationDestination(item: store) {
 			AvatarEditorView(store: $0)
 		}
 	}

@@ -14,7 +14,7 @@ public struct SectionResourceListView<
 	Footer: View
 >: View {
 	public typealias SectionList = SectionResourceList<R, Q>
-	@Perception.Bindable public var store: StoreOf<SectionList>
+	@Bindable public var store: StoreOf<SectionList>
 
 	let row: (SectionList.Section.ID, R) -> Row
 	let header: () -> Header
@@ -56,99 +56,7 @@ public struct SectionResourceListView<
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			Group {
-				switch store.listContent {
-				case .notLoaded:
-					List {
-						Color.clear
-					}
-					.listStyle(.insetGrouped)
-
-				case .loading:
-					List {
-						ListProgressView()
-					}
-					.listStyle(.insetGrouped)
-
-				case let .loaded(sections):
-					if sections.isEmpty {
-						ResourceListEmptyView(
-							store: store.scope(state: \.emptyState, action: \.internal.empty)
-						)
-					} else {
-						WithPerceptionTracking {
-							List {
-								header()
-
-								ForEach(sections) { section in
-									WithPerceptionTracking {
-										Section {
-											ForEach(section.items) { element in
-												WithPerceptionTracking {
-													Group {
-														if store.features.contains(.tappable) && store.editMode != .active {
-															Button {
-																store.send(.view(.didTap(element)))
-															} label: {
-																row(section.id, element)
-															}
-														} else {
-															row(section.id, element)
-														}
-													}
-													.swipeActions(allowsFullSwipe: true) {
-														if store.editMode != .active {
-															if store.features.contains(.swipeToEdit) {
-																EditButton { store.send(.view(.didSwipe(.edit, element))) }
-															}
-
-															if store.features.contains(.swipeToDelete) {
-																DeleteButton { store.send(.view(.didSwipe(.delete, element))) }
-															}
-
-															if store.features.contains(.swipeToArchive) {
-																ArchiveButton { store.send(.view(.didSwipe(.archive, element))) }
-															}
-														}
-													}
-													.moveDisabled(store.editMode != .active || !store.features.contains(.moveable))
-												}
-											}
-											.onMove { store.send(.view(.didMove(section: section.id, source: $0, destination: $1))) }
-										} header: {
-											WithPerceptionTracking {
-												if section.items.isEmpty {
-													EmptyView()
-												} else {
-													if store.features.contains(.moveable) && section.items.count > 1 {
-														reorderableHeader(title: store.listTitle, editMode: store.editMode) {
-															store.send(.view(.didTapReorderButton))
-														}
-													} else if let title = section.title {
-														Text(title)
-													} else if sections.first == section, let title = store.listTitle {
-														Text(title)
-													}
-												}
-											}
-										}
-									}
-								}
-
-								footer()
-							}
-							.listStyle(.insetGrouped)
-							.environment(\.editMode, $store.editMode)
-						}
-					}
-
-				case .error:
-					if let childStore = store.scope(state: \.errorState, action: \.internal.error) {
-						ResourceListEmptyView(store: childStore)
-					}
-				}
-			}
+		listContent
 			.toolbar {
 				if store.features.contains(.add) {
 					ToolbarItem(placement: .navigationBarTrailing) {
@@ -159,6 +67,95 @@ public struct SectionResourceListView<
 			.alert($store.scope(state: \.alert, action: \.view.alert))
 			.onAppear { store.send(.view(.onAppear)) }
 			.task { await store.send(.view(.task)).finish() }
+	}
+
+	@MainActor @ViewBuilder private var listContent: some View {
+		switch store.listContent {
+		case .notLoaded:
+			List {
+				Color.clear
+			}
+			.listStyle(.insetGrouped)
+
+		case .loading:
+			List {
+				ListProgressView()
+			}
+			.listStyle(.insetGrouped)
+
+		case let .loaded(sections):
+			if sections.isEmpty {
+				ResourceListEmptyView(
+					store: store.scope(state: \.emptyState, action: \.internal.empty)
+				)
+			} else {
+				List {
+					header()
+
+					ForEach(sections) { section in
+						Section {
+							ForEach(section.items) { element in
+								buildRow(forElement: element, inSection: section)
+									.swipeActions(allowsFullSwipe: true) {
+										if store.editMode != .active {
+											if store.features.contains(.swipeToEdit) {
+												EditButton { store.send(.view(.didSwipe(.edit, element))) }
+											}
+
+											if store.features.contains(.swipeToDelete) {
+												DeleteButton { store.send(.view(.didSwipe(.delete, element))) }
+											}
+
+											if store.features.contains(.swipeToArchive) {
+												ArchiveButton { store.send(.view(.didSwipe(.archive, element))) }
+											}
+										}
+									}
+									.moveDisabled(store.editMode != .active || !store.features.contains(.moveable))
+							}
+							.onMove { store.send(.view(.didMove(section: section.id, source: $0, destination: $1))) }
+						} header: {
+							if section.items.isEmpty {
+								EmptyView()
+							} else {
+								if store.features.contains(.moveable) && section.items.count > 1 {
+									reorderableHeader(title: store.listTitle, editMode: store.editMode) {
+										store.send(.view(.didTapReorderButton))
+									}
+								} else if let title = section.title {
+									Text(title)
+								} else if sections.first == section, let title = store.listTitle {
+									Text(title)
+								}
+							}
+						}
+					}
+
+					footer()
+				}
+				.listStyle(.insetGrouped)
+				.environment(\.editMode, $store.editMode)
+			}
+
+		case .error:
+			if let childStore = store.scope(state: \.errorState, action: \.internal.error) {
+				ResourceListEmptyView(store: childStore)
+			}
+		}
+	}
+
+	@MainActor @ViewBuilder private func buildRow(
+		forElement element: R,
+		inSection section: SectionList.Section
+	) -> some View {
+		if store.features.contains(.tappable) && store.editMode != .active {
+			Button {
+				store.send(.view(.didTap(element)))
+			} label: {
+				row(section.id, element)
+			}
+		} else {
+			row(section.id, element)
 		}
 	}
 

@@ -9,7 +9,7 @@ import ViewsLibrary
 
 @ViewAction(for: StatisticsDetails.self)
 public struct StatisticsDetailsView: View {
-	@Perception.Bindable public var store: StoreOf<StatisticsDetails>
+	@Bindable public var store: StoreOf<StatisticsDetails>
 
 	@Environment(\.continuousClock) private var clock
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
@@ -21,89 +21,85 @@ public struct StatisticsDetailsView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
+		VStack {
 			VStack {
-				VStack {
-					if let sources = store.sources {
-						StatisticsFilterView(
-							sources: sources,
-							filter: store.filter,
-							size: store.filtersSize
-						)
-					}
-
-					StatisticsDetailsChartsView(
-						store: store.scope(state: \.charts, action: \.internal.charts)
+				if let sources = store.sources {
+					StatisticsFilterView(
+						sources: sources,
+						filter: store.filter,
+						size: store.filtersSize
 					)
-					.padding(.horizontal)
-					.layoutPriority(1)
 				}
-				.frame(
-					idealWidth: store.backdropSize.width,
-					maxHeight: store.backdropSize.height == .zero ? nil : store.backdropSize.height
-				)
 
-				Spacer()
-			}
-			.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
-			.toolbar(.hidden, for: .tabBar)
-			.navigationTitle(store.sources?.bowler.name ?? "")
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: false) { send(.didTapSourcePicker) }
-				}
-			}
-			.sheet(
-				item: $store.scope(state: \.destination?.list, action: \.internal.destination.list)
-			) { store in
-				WithPerceptionTracking {
-					NavigationStack {
-						StatisticsDetailsListView(store: store)
-							.toolbar(.hidden, for: .navigationBar)
-					}
-					.presentationBackgroundInteraction(.enabled(upThrough: .medium))
-					.presentationDetents(
-						[
-							StatisticsDetails.defaultSheetDetent,
-							.medium,
-							.large,
-						],
-						selection: $store.sheetDetent
-					)
-					.interactiveDismissDisabled()
-					.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
-				}
-			}
-			.onChange(of: store.willAdjustLaneLayoutAt) { _ in
-				send(
-					.didAdjustChartSize(
-						backdropSize: measuredBackdropSize,
-						filtersSize: store.filterViewSize
-					),
-					animation: .easeInOut
+				StatisticsDetailsChartsView(
+					store: store.scope(state: \.charts, action: \.internal.charts)
 				)
+				.padding(.horizontal)
+				.layoutPriority(1)
 			}
-			.onChange(of: sheetContentSize) { _ in
-				send(
-					.didAdjustChartSize(
-						backdropSize: measuredBackdropSize,
-						filtersSize: store.filterViewSize
-					),
-					animation: .easeInOut
-				)
+			.frame(
+				idealWidth: store.backdropSize.width,
+				maxHeight: store.backdropSize.height == .zero ? nil : store.backdropSize.height
+			)
+
+			Spacer()
+		}
+		.measure(key: WindowContentSizeKey.self, to: $windowContentSize)
+		.toolbar(.hidden, for: .tabBar)
+		.navigationTitle(store.sources?.bowler.name ?? "")
+		.navigationBarTitleDisplayMode(.inline)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				FilterButton(isActive: false) { send(.didTapSourcePicker) }
 			}
-			.task { await send(.didFirstAppear).finish() }
-			.onAppear { send(.onAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.sheet(
-				item: $store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker)
-			) { store in
-				NavigationStack {
-					StatisticsSourcePickerView(store: store)
-				}
-				.presentationDetents([.medium, .large])
+		}
+		.sheet(
+			item: $store.scope(state: \.destination?.list, action: \.internal.destination.list)
+		) { store in
+			NavigationStack {
+				StatisticsDetailsListView(store: store)
+					.toolbar(.hidden, for: .navigationBar)
 			}
+			.presentationBackgroundInteraction(.enabled(upThrough: .medium))
+			.presentationDetents(
+				[
+					StatisticsDetails.defaultSheetDetent,
+					.medium,
+					.large,
+				],
+				selection: $store.sheetDetent
+			)
+			.interactiveDismissDisabled()
+			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
+		}
+		.onChange(of: store.willAdjustLaneLayoutAt) { _ in
+			send(
+				.didAdjustChartSize(
+					backdropSize: measuredBackdropSize,
+					filtersSize: store.filterViewSize
+				),
+				animation: .easeInOut
+			)
+		}
+		.onChange(of: sheetContentSize) { _ in
+			send(
+				.didAdjustChartSize(
+					backdropSize: measuredBackdropSize,
+					filtersSize: store.filterViewSize
+				),
+				animation: .easeInOut
+			)
+		}
+		.task { await send(.didFirstAppear).finish() }
+		.onAppear { send(.onAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.sheet(
+			item: $store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker)
+		) { store in
+			NavigationStack {
+				StatisticsSourcePickerView(store: store)
+			}
+			.presentationDetents([.medium, .large])
 		}
 	}
 

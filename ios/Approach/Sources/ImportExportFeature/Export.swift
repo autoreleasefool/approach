@@ -129,37 +129,35 @@ public struct ExportView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			VStack(spacing: 0) {
-				List {
-					Section {
-						Text(Strings.Export.exportAnytime)
-					}
+		VStack(spacing: 0) {
+			List {
+				Section {
+					Text(Strings.Export.exportAnytime)
+				}
 
-					Section {
-						Text(Strings.Export.weRecommend)
-					} footer: {
-						if store.lastExportAt.timeIntervalSince1970 == .zero {
-							Text(Strings.Export.neverExported)
-						} else {
-							Text(Strings.Export.lastExportedAt(store.lastExportAt.longFormat))
-						}
-					}
-
-					Section {
-						Text(Strings.Export.yourData)
+				Section {
+					Text(Strings.Export.weRecommend)
+				} footer: {
+					if store.lastExportAt.timeIntervalSince1970 == .zero {
+						Text(Strings.Export.neverExported)
+					} else {
+						Text(Strings.Export.lastExportedAt(store.lastExportAt.longFormat))
 					}
 				}
 
-				Divider()
-
-				exportButton
-				errorView
+				Section {
+					Text(Strings.Export.yourData)
+				}
 			}
-			.navigationTitle(Strings.Export.title)
-			.onFirstAppear { send(.didFirstAppear) }
-			.onAppear { send(.onAppear) }
+
+			Divider()
+
+			exportButton
+			errorView
 		}
+		.navigationTitle(Strings.Export.title)
+		.onFirstAppear { send(.didFirstAppear) }
+		.onAppear { send(.onAppear) }
 	}
 
 	private var exportButton: some View {

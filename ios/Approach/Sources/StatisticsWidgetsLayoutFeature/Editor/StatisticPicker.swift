@@ -82,32 +82,28 @@ public struct StatisticPickerView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				ForEach(store.groups) { group in
-					Section(String(describing: group.category)) {
-						ForEach(group.statistics, id: \.self) { statistic in
-							WithPerceptionTracking {
-								Button { send(.didTapStatistic(statistic)) } label: {
-									HStack(alignment: .center, spacing: .standardSpacing) {
-										Image(systemSymbol: store.selectedStatistic == statistic ? .checkmarkCircleFill : .circle)
-											.resizable()
-											.frame(width: .smallIcon, height: .smallIcon)
-											.foregroundColor(Asset.Colors.Action.default)
+		List {
+			ForEach(store.groups) { group in
+				Section(String(describing: group.category)) {
+					ForEach(group.statistics, id: \.self) { statistic in
+						Button { send(.didTapStatistic(statistic)) } label: {
+							HStack(alignment: .center, spacing: .standardSpacing) {
+								Image(systemSymbol: store.selectedStatistic == statistic ? .checkmarkCircleFill : .circle)
+									.resizable()
+									.frame(width: .smallIcon, height: .smallIcon)
+									.foregroundColor(Asset.Colors.Action.default)
 
-										Text(statistic)
-											.frame(maxWidth: .infinity, alignment: .leading)
-									}
-									.frame(maxWidth: .infinity)
-									.contentShape(Rectangle())
-								}
-								.buttonStyle(TappableElement())
+								Text(statistic)
+									.frame(maxWidth: .infinity, alignment: .leading)
 							}
+							.frame(maxWidth: .infinity)
+							.contentShape(Rectangle())
 						}
+						.buttonStyle(TappableElement())
 					}
 				}
 			}
-			.navigationTitle(Strings.Statistics.Picker.title)
 		}
+		.navigationTitle(Strings.Statistics.Picker.title)
 	}
 }

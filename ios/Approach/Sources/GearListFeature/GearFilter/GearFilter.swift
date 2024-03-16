@@ -67,34 +67,32 @@ public struct GearFilter: Reducer {
 
 @ViewAction(for: GearFilter.self)
 public struct GearFilterView: View {
-	@Perception.Bindable public var store: StoreOf<GearFilter>
+	@Bindable public var store: StoreOf<GearFilter>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section {
-					Picker(
-						Strings.Gear.Properties.kind,
-						selection: $store.kind
-					) {
-						Text("").tag(nil as Gear.Kind?)
-						ForEach(Gear.Kind.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
+		List {
+			Section {
+				Picker(
+					Strings.Gear.Properties.kind,
+					selection: $store.kind
+				) {
+					Text("").tag(nil as Gear.Kind?)
+					ForEach(Gear.Kind.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
 					}
 				}
-
-				Section {
-					Button(Strings.Action.reset) { send(.didTapClearButton) }
-						.tint(Asset.Colors.Destructive.default)
-				}
 			}
-			.navigationTitle(Strings.Gear.Filters.title)
-			.navigationBarTitleDisplayMode(.inline)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { send(.didTapApplyButton) }
-				}
+
+			Section {
+				Button(Strings.Action.reset) { send(.didTapClearButton) }
+					.tint(Asset.Colors.Destructive.default)
+			}
+		}
+		.navigationTitle(Strings.Gear.Filters.title)
+		.navigationBarTitleDisplayMode(.inline)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				Button(Strings.Action.apply) { send(.didTapApplyButton) }
 			}
 		}
 	}

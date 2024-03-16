@@ -12,7 +12,7 @@ public struct ResourceListView<
 	Header: View,
 	Footer: View
 >: View {
-	@Perception.Bindable var store: StoreOf<ResourceList<R, Q>>
+	public var store: StoreOf<ResourceList<R, Q>>
 
 	let row: (R) -> Row
 	let header: () -> Header
@@ -54,14 +54,12 @@ public struct ResourceListView<
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			SectionResourceListView(
-				store: store.scope(state: \.sectionList, action: \.internal.sectionList),
-				row: { _, element in row(element) },
-				header: header,
-				footer: footer
-			)
-		}
+		SectionResourceListView(
+			store: store.scope(state: \.sectionList, action: \.internal.sectionList),
+			row: { _, element in row(element) },
+			header: header,
+			footer: footer
+		)
 	}
 }
 

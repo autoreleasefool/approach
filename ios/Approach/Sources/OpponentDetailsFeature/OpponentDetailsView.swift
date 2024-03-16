@@ -16,35 +16,33 @@ public struct OpponentDetailsView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				if let details = store.opponentDetails {
-					Section(Strings.Opponent.record) {
-						LabeledContent(Strings.Opponent.Record.matchesPlayed, value: String(details.gamesPlayed))
-						LabeledContent(Strings.Opponent.Record.matchesWon, value: String(details.gamesWon))
-						LabeledContent(Strings.Opponent.Record.matchesLost, value: String(details.gamesLost))
-						LabeledContent(Strings.Opponent.Record.matchesTied, value: String(details.gamesTied))
-					}
+		List {
+			if let details = store.opponentDetails {
+				Section(Strings.Opponent.record) {
+					LabeledContent(Strings.Opponent.Record.matchesPlayed, value: String(details.gamesPlayed))
+					LabeledContent(Strings.Opponent.Record.matchesWon, value: String(details.gamesWon))
+					LabeledContent(Strings.Opponent.Record.matchesLost, value: String(details.gamesLost))
+					LabeledContent(Strings.Opponent.Record.matchesTied, value: String(details.gamesTied))
+				}
 
-					Section(Strings.Opponent.matches) {
-						if details.matchesAgainst.isEmpty {
-							Text(Strings.Opponent.Matches.none)
-						} else {
-							ForEach(details.matchesAgainst) {
-								LabeledContent(String($0.score), value: String($0.opponentScore ?? 0))
-									.listRowBackground($0.result.listBackgroundColor)
-							}
+				Section(Strings.Opponent.matches) {
+					if details.matchesAgainst.isEmpty {
+						Text(Strings.Opponent.Matches.none)
+					} else {
+						ForEach(details.matchesAgainst) {
+							LabeledContent(String($0.score), value: String($0.opponentScore ?? 0))
+								.listRowBackground($0.result.listBackgroundColor)
 						}
 					}
-				} else {
-					ListProgressView()
 				}
+			} else {
+				ListProgressView()
 			}
-			.navigationTitle(store.opponent.name)
-			.onFirstAppear { send(.didFirstAppear) }
-			.onAppear { send(.onAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		}
+		.navigationTitle(store.opponent.name)
+		.onFirstAppear { send(.didFirstAppear) }
+		.onAppear { send(.onAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 	}
 }
 

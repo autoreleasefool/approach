@@ -107,44 +107,42 @@ public struct ResourceListEmptyView: View {
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
+		VStack {
 			VStack {
-				VStack {
-					Spacer()
+				Spacer()
 
-					store.content.image.swiftUIImage
-						.resizable()
-						.scaledToFit()
-						.padding(.bottom, .smallSpacing)
-
-					Spacer()
-
-					VStack(spacing: .smallSpacing) {
-						Text(store.content.title)
-							.font(.headline)
-
-						if let message = store.content.message {
-							Text(message)
-								.multilineTextAlignment(.center)
-						}
-					}
-					.padding()
-					.frame(maxWidth: .infinity)
-					.background(store.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
-					.cornerRadius(.standardRadius)
+				store.content.image.swiftUIImage
+					.resizable()
+					.scaledToFit()
 					.padding(.bottom, .smallSpacing)
-					.layoutPriority(1)
-				}
 
-				Button {
-					send(.didTapActionButton)
-				} label: {
-					Text(store.content.action)
-						.frame(maxWidth: .infinity)
+				Spacer()
+
+				VStack(spacing: .smallSpacing) {
+					Text(store.content.title)
+						.font(.headline)
+
+					if let message = store.content.message {
+						Text(message)
+							.multilineTextAlignment(.center)
+					}
 				}
-				.modifier(PrimaryButton())
+				.padding()
+				.frame(maxWidth: .infinity)
+				.background(store.style == .error ? Asset.Colors.Error.light : Asset.Colors.Primary.light)
+				.cornerRadius(.standardRadius)
+				.padding(.bottom, .smallSpacing)
+				.layoutPriority(1)
 			}
-			.padding()
+
+			Button {
+				send(.didTapActionButton)
+			} label: {
+				Text(store.content.action)
+					.frame(maxWidth: .infinity)
+			}
+			.modifier(PrimaryButton())
 		}
+		.padding()
 	}
 }

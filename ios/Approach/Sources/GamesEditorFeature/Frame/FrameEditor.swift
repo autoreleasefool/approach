@@ -133,54 +133,50 @@ public struct FrameEditorView: View {
 	@State private var touchablePins: [PinContainer] = []
 
 	public var body: some View {
-		WithPerceptionTracking {
-			GeometryReader { parentProxy in
-				HStack(alignment: .center, spacing: .smallSpacing) {
-					Spacer(minLength: .standardSpacing)
-					ForEach(Pin.allCases) { pin in
-						WithPerceptionTracking {
-							ZStack {
-								(store.downedPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
-									.resizable()
-									.aspectRatio(contentMode: .fit)
-									.shadow(color: .black, radius: 2)
-							}
-							.frame(width: getWidth(for: pin, parentWidth: parentProxy.size.width))
-							.background(
-								GeometryReader { proxy in
-									Color.clear
-										.preference(
-											key: PinContainerPreferenceKey.self,
-											value: [PinContainer(pin: pin, bounds: proxy.frame(in: .named("FrameEditor")))]
-										)
-								}
-							)
-							.opacity(store.lockedPins.contains(pin) ? 0.25 : 1)
-							.onTapGesture { send(.didTapPin(pin)) }
-						}
+		GeometryReader { parentProxy in
+			HStack(alignment: .center, spacing: .smallSpacing) {
+				Spacer(minLength: .standardSpacing)
+				ForEach(Pin.allCases) { pin in
+					ZStack {
+						(store.downedPins.contains(pin) ? Asset.Media.Frame.pinDown.swiftUIImage : Asset.Media.Frame.pin.swiftUIImage)
+							.resizable()
+							.aspectRatio(contentMode: .fit)
+							.shadow(color: .black, radius: 2)
 					}
-					Spacer(minLength: .standardSpacing)
+					.frame(width: getWidth(for: pin, parentWidth: parentProxy.size.width))
+					.background(
+						GeometryReader { proxy in
+							Color.clear
+								.preference(
+									key: PinContainerPreferenceKey.self,
+									value: [PinContainer(pin: pin, bounds: proxy.frame(in: .named("FrameEditor")))]
+								)
+						}
+					)
+					.opacity(store.lockedPins.contains(pin) ? 0.25 : 1)
+					.onTapGesture { send(.didTapPin(pin)) }
 				}
-				.frame(maxHeight: .infinity)
+				Spacer(minLength: .standardSpacing)
 			}
-			.onPreferenceChange(PinContainerPreferenceKey.self) { pinContainers = $0 }
-			.simultaneousGesture(
-				DragGesture()
-					.onChanged { drag in
-						if !store.isDragging {
-							touchablePins = pinContainers
-							send(.didStartDragging)
-						}
-
-						if let index = touchablePins.firstIndex(where: { $0.bounds.contains(drag.location) }) {
-							send(.didDragOverPin(touchablePins[index].pin))
-							touchablePins.remove(at: index)
-						}
-					}
-					.onEnded { _ in send(.didStopDragging) }
-			)
-			.coordinateSpace(name: "FrameEditor")
+			.frame(maxHeight: .infinity)
 		}
+		.onPreferenceChange(PinContainerPreferenceKey.self) { pinContainers = $0 }
+		.simultaneousGesture(
+			DragGesture()
+				.onChanged { drag in
+					if !store.isDragging {
+						touchablePins = pinContainers
+						send(.didStartDragging)
+					}
+
+					if let index = touchablePins.firstIndex(where: { $0.bounds.contains(drag.location) }) {
+						send(.didDragOverPin(touchablePins[index].pin))
+						touchablePins.remove(at: index)
+					}
+				}
+				.onEnded { _ in send(.didStopDragging) }
+		)
+		.coordinateSpace(name: "FrameEditor")
 	}
 
 	private func getWidth(for pin: Pin, parentWidth: CGFloat) -> CGFloat {

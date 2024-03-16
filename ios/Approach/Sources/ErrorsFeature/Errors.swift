@@ -228,17 +228,15 @@ public struct ErrorsViewModifier<ErrorID: Hashable>: ViewModifier {
 	@SwiftUI.State var store: StoreOf<Errors<ErrorID>>
 
 	public func body(content: Content) -> some View {
-		WithPerceptionTracking {
-			content
-				.toast($store.scope(state: \.destination?.toast, action: \.internal.destination.toast))
-				.sheet(
-					item: $store.scope(state: \.destination?.report, action: \.internal.destination.report),
-					onDismiss: { store.send(.view(.didFinishDismissingReport)) },
-					content: { store in
-						ErrorReportView(store: store)
-					}
-				)
-		}
+		content
+			.toast($store.scope(state: \.destination?.toast, action: \.internal.destination.toast))
+			.sheet(
+				item: $store.scope(state: \.destination?.report, action: \.internal.destination.report),
+				onDismiss: { store.send(.view(.didFinishDismissingReport)) },
+				content: { store in
+					ErrorReportView(store: store)
+				}
+			)
 	}
 }
 

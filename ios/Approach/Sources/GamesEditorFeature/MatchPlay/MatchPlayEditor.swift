@@ -134,52 +134,50 @@ public struct MatchPlayEditor: Reducer {
 
 @ViewAction(for: MatchPlayEditor.self)
 public struct MatchPlayEditorView: View {
-	@Perception.Bindable public var store: StoreOf<MatchPlayEditor>
+	@Bindable public var store: StoreOf<MatchPlayEditor>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			Form {
-				Section(Strings.MatchPlay.Editor.Fields.Opponent.title) {
-					NavigationButton { send(.didTapOpponent) } content: {
-						LabeledContent(
-							Strings.MatchPlay.Editor.Fields.Opponent.title,
-							value: store.matchPlay.opponent?.name ?? Strings.none
-						)
-					}
-
-					TextField(
-						Strings.MatchPlay.Editor.Fields.Opponent.score,
-						text: $store.score.sending(\.view.didSetScore)
+		Form {
+			Section(Strings.MatchPlay.Editor.Fields.Opponent.title) {
+				NavigationButton { send(.didTapOpponent) } content: {
+					LabeledContent(
+						Strings.MatchPlay.Editor.Fields.Opponent.title,
+						value: store.matchPlay.opponent?.name ?? Strings.none
 					)
-					.keyboardType(.numberPad)
 				}
 
-				Section {
-					Picker(
-						Strings.MatchPlay.Editor.Fields.Result.title,
-						selection: $store.matchPlay.result.sending(\.view.didSetResult)
-					) {
-						Text("").tag(nil as MatchPlay.Result?)
-						ForEach(MatchPlay.Result.allCases) {
-							Text(String(describing: $0)).tag(Optional($0))
-						}
-					}
-				} footer: {
-					Text(Strings.MatchPlay.Editor.Fields.Result.footer(String(describing: MatchPlay.Result.won)))
-				}
-
-				Section {
-					DeleteButton { send(.didTapDeleteButton) }
-				}
+				TextField(
+					Strings.MatchPlay.Editor.Fields.Opponent.score,
+					text: $store.score.sending(\.view.didSetScore)
+				)
+				.keyboardType(.numberPad)
 			}
-			.onAppear { send(.onAppear) }
-			.navigationTitle(Strings.MatchPlay.title)
-			.navigationDestinationWrapper(
-				item: $store.scope(state: \.opponentPicker, action: \.internal.opponentPicker)
-			) { store in
-				ResourcePickerView(store: store) {
-					Bowler.View($0)
+
+			Section {
+				Picker(
+					Strings.MatchPlay.Editor.Fields.Result.title,
+					selection: $store.matchPlay.result.sending(\.view.didSetResult)
+				) {
+					Text("").tag(nil as MatchPlay.Result?)
+					ForEach(MatchPlay.Result.allCases) {
+						Text(String(describing: $0)).tag(Optional($0))
+					}
 				}
+			} footer: {
+				Text(Strings.MatchPlay.Editor.Fields.Result.footer(String(describing: MatchPlay.Result.won)))
+			}
+
+			Section {
+				DeleteButton { send(.didTapDeleteButton) }
+			}
+		}
+		.onAppear { send(.onAppear) }
+		.navigationTitle(Strings.MatchPlay.title)
+		.navigationDestination(
+			item: $store.scope(state: \.opponentPicker, action: \.internal.opponentPicker)
+		) { store in
+			ResourcePickerView(store: store) {
+				Bowler.View($0)
 			}
 		}
 	}

@@ -60,27 +60,25 @@ public struct AddLaneForm: Reducer {
 
 @ViewAction(for: AddLaneForm.self)
 public struct AddLaneFormView: View {
-	@Perception.Bindable public var store: StoreOf<AddLaneForm>
+	@Bindable public var store: StoreOf<AddLaneForm>
 
 	public var body: some View {
-		WithPerceptionTracking {
-			VStack(spacing: .standardSpacing) {
-				HStack {
-					Button(Strings.Action.cancel) {
-						send(.didTapCancelButton)
-					}
-					Spacer()
-					Button(Strings.Action.add) {
-						send(.didTapSaveButton)
-					}
+		VStack(spacing: .standardSpacing) {
+			HStack {
+				Button(Strings.Action.cancel) {
+					send(.didTapCancelButton)
 				}
-
-				Stepper(
-					Strings.Lane.Editor.Fields.addLanes(store.lanesToAdd),
-					value: $store.lanesToAdd,
-					in: Alley.NUMBER_OF_LANES_RANGE
-				)
+				Spacer()
+				Button(Strings.Action.add) {
+					send(.didTapSaveButton)
+				}
 			}
+
+			Stepper(
+				Strings.Lane.Editor.Fields.addLanes(store.lanesToAdd),
+				value: $store.lanesToAdd,
+				in: Alley.NUMBER_OF_LANES_RANGE
+			)
 		}
 	}
 }

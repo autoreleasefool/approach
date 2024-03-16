@@ -21,44 +21,40 @@ import ViewsLibrary
 
 @ViewAction(for: BowlersList.self)
 public struct BowlersListView: View {
-	@Perception.Bindable public var store: StoreOf<BowlersList>
+	@Bindable public var store: StoreOf<BowlersList>
 
 	public init(store: StoreOf<BowlersList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			ResourceListView(
-				store: store.scope(state: \.list, action: \.internal.list)
-			) { bowler in
-				WithPerceptionTracking {
-					Button { send(.didTapBowler(bowler.id)) } label: {
-						LabeledContent(bowler.name, value: format(average: bowler.average))
-					}
-					.buttonStyle(.navigation)
-				}
-			} header: {
-				quickLaunch
-				widgets
+		ResourceListView(
+			store: store.scope(state: \.list, action: \.internal.list)
+		) { bowler in
+			Button { send(.didTapBowler(bowler.id)) } label: {
+				LabeledContent(bowler.name, value: format(average: bowler.average))
 			}
-			.navigationTitle(Strings.Bowler.List.title)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					SortButton(isActive: false) { send(.didTapSortOrderButton) }
-				}
-			}
-			.task { await send(.didStartTask).finish() }
-			.onAppear { send(.onAppear) }
-			.onFirstAppear { send(.didFirstAppear) }
-			.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-			.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
-			.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
-			.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
-			.leaguesList($store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
-			.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
-			.announcement($store.scope(state: \.destination?.announcement, action: \.internal.destination.announcement))
+			.buttonStyle(.navigation)
+		} header: {
+			quickLaunch
+			widgets
 		}
+		.navigationTitle(Strings.Bowler.List.title)
+		.toolbar {
+			ToolbarItem(placement: .navigationBarTrailing) {
+				SortButton(isActive: false) { send(.didTapSortOrderButton) }
+			}
+		}
+		.task { await send(.didStartTask).finish() }
+		.onAppear { send(.onAppear) }
+		.onFirstAppear { send(.didFirstAppear) }
+		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.bowlerEditor($store.scope(state: \.destination?.editor, action: \.internal.destination.editor))
+		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
+		.seriesEditor($store.scope(state: \.destination?.seriesEditor, action: \.internal.destination.seriesEditor))
+		.leaguesList($store.scope(state: \.destination?.leagues, action: \.internal.destination.leagues))
+		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
+		.announcement($store.scope(state: \.destination?.announcement, action: \.internal.destination.announcement))
 	}
 
 	@MainActor @ViewBuilder private var quickLaunch: some View {
@@ -142,13 +138,13 @@ public struct BowlersListView: View {
 	}
 
 	fileprivate func leaguesList(_ store: Binding<StoreOf<LeaguesList>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<LeaguesList>) in
+		navigationDestination(item: store) { (store: StoreOf<LeaguesList>) in
 			LeaguesListView(store: store)
 		}
 	}
 
 	fileprivate func gamesList(_ store: Binding<StoreOf<GamesList>?>) -> some View {
-		navigationDestinationWrapper(item: store) { (store: StoreOf<GamesList>) in
+		navigationDestination(item: store) { (store: StoreOf<GamesList>) in
 			GamesListView(store: store)
 		}
 	}

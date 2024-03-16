@@ -123,56 +123,52 @@ public struct RollEditorView: View {
 	private static let selectedStrokeStyle = StrokeStyle(lineWidth: 4, lineCap: .round, dash: [8])
 
 	public var body: some View {
-		WithPerceptionTracking {
-			HStack(alignment: .bottom) {
-				VStack(alignment: .leading, spacing: .unitSpacing) {
-					Text(Strings.Roll.Properties.Ball.title)
-						.font(.caption)
-						.italic()
-						.foregroundColor(.white)
+		HStack(alignment: .bottom) {
+			VStack(alignment: .leading, spacing: .unitSpacing) {
+				Text(Strings.Roll.Properties.Ball.title)
+					.font(.caption)
+					.italic()
+					.foregroundColor(.white)
 
-					HStack(spacing: .smallSpacing) {
-						ForEach(store.recentGear) { gear in
-							WithPerceptionTracking {
-								Button { send(.didTapBall(gear.id)) } label: {
-									AvatarView(gear.avatar, size: .smallerIcon)
-										.overlay(
-											Circle()
-												.stroke(gear.id == store.ballRolled?.id ? .white : .clear, style: Self.selectedStrokeStyle)
-										)
-										.opacity(gear.id == store.ballRolled?.id ? 1 : 0.8)
-										.padding(.tinySpacing)
-								}
-							}
-						}
-
-						Button { send(.didTapOtherButton) } label: {
-							Image(systemSymbol: .chevronRightSquare)
-								.resizable()
-								.scaledToFit()
-								.foregroundColor(.white)
-								.frame(width: .smallIcon, height: .smallIcon)
-								.padding(.smallSpacing)
+				HStack(spacing: .smallSpacing) {
+					ForEach(store.recentGear) { gear in
+						Button { send(.didTapBall(gear.id)) } label: {
+							AvatarView(gear.avatar, size: .smallerIcon)
+								.overlay(
+									Circle()
+										.stroke(gear.id == store.ballRolled?.id ? .white : .clear, style: Self.selectedStrokeStyle)
+								)
+								.opacity(gear.id == store.ballRolled?.id ? 1 : 0.8)
+								.padding(.tinySpacing)
 						}
 					}
-				}
 
-				Spacer()
-
-				Button { send(.didToggleFoul) } label: {
-					HStack(spacing: .smallSpacing) {
-						Text(Strings.Roll.Properties.Foul.title)
-							.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
-						Image(systemSymbol: store.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
+					Button { send(.didTapOtherButton) } label: {
+						Image(systemSymbol: .chevronRightSquare)
 							.resizable()
+							.scaledToFit()
+							.foregroundColor(.white)
 							.frame(width: .smallIcon, height: .smallIcon)
-							.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+							.padding(.smallSpacing)
 					}
 				}
-				.buttonStyle(TappableElement())
 			}
-			.task { await send(.didStartTask).finish() }
+
+			Spacer()
+
+			Button { send(.didToggleFoul) } label: {
+				HStack(spacing: .smallSpacing) {
+					Text(Strings.Roll.Properties.Foul.title)
+						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+					Image(systemSymbol: store.didFoul ? .fCursiveCircleFill : .fCursiveCircle)
+						.resizable()
+						.frame(width: .smallIcon, height: .smallIcon)
+						.foregroundColor(store.didFoul ? Asset.Colors.ScoreSheet.Text.OnBackground.foul.swiftUIColor : .white)
+				}
+			}
+			.buttonStyle(TappableElement())
 		}
+		.task { await send(.didStartTask).finish() }
 	}
 }
 

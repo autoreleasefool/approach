@@ -87,42 +87,40 @@ public struct AnalyticsSettings: Reducer {
 
 @ViewAction(for: AnalyticsSettings.self)
 public struct AnalyticsSettingsView: View {
-	@Perception.Bindable public var store: StoreOf<AnalyticsSettings>
+	@Bindable public var store: StoreOf<AnalyticsSettings>
 
 	init(store: StoreOf<AnalyticsSettings>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithPerceptionTracking {
-			List {
-				Section {
-					Text(Strings.Settings.Analytics.Info.paragraphOne)
-					Text(Strings.Settings.Analytics.Info.paragraphTwo)
-				}
-				.listRowInsets(EdgeInsets(top: .standardSpacing, leading: 0, bottom: 0, trailing: 0))
-				.listRowBackground(Color.clear)
-				.listRowSeparator(.hidden)
-
-				Section {
-					Toggle(
-						Strings.Settings.Analytics.shareAnonymousAnalytics,
-						isOn: $store.analyticsOptIn
-					)
-				} footer: {
-					Text(Strings.Settings.Analytics.ShareAnonymousAnalytics.footer)
-				}
-
-				Section {
-					Link(
-						Strings.Settings.Analytics.privacyPolicy,
-						destination: AppConstants.privacyPolicyUrl
-					)
-				}
+		List {
+			Section {
+				Text(Strings.Settings.Analytics.Info.paragraphOne)
+				Text(Strings.Settings.Analytics.Info.paragraphTwo)
 			}
-			.navigationTitle(Strings.Settings.Analytics.title)
-			.onAppear { send(.onAppear) }
+			.listRowInsets(EdgeInsets(top: .standardSpacing, leading: 0, bottom: 0, trailing: 0))
+			.listRowBackground(Color.clear)
+			.listRowSeparator(.hidden)
+
+			Section {
+				Toggle(
+					Strings.Settings.Analytics.shareAnonymousAnalytics,
+					isOn: $store.analyticsOptIn
+				)
+			} footer: {
+				Text(Strings.Settings.Analytics.ShareAnonymousAnalytics.footer)
+			}
+
+			Section {
+				Link(
+					Strings.Settings.Analytics.privacyPolicy,
+					destination: AppConstants.privacyPolicyUrl
+				)
+			}
 		}
+		.navigationTitle(Strings.Settings.Analytics.title)
+		.onAppear { send(.onAppear) }
 	}
 }
 
