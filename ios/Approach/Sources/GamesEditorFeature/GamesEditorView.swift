@@ -73,7 +73,7 @@ public struct GamesEditorView: View {
 			Spacer()
 		}
 		.measure(key: WindowContentSizeKey.self, to: $store.windowContentSize)
-		.onChange(of: safeAreaInsets) { _, newValue in send(.didChangeSafeAreaInsets(newValue)) }
+		.onChange(of: safeAreaInsets) { send(.didChangeSafeAreaInsets(safeAreaInsets)) }
 		.background(alignment: .top) {
 			VStack(spacing: 0) {
 				Asset.Media.Lane.galaxy.swiftUIImage
@@ -97,8 +97,8 @@ public struct GamesEditorView: View {
 				gameDetails(gameDetailsStore: store)
 			}
 		)
-		.onChange(of: store.shouldRequestAppStoreReview) { shouldRequestAppStoreReview in
-			if shouldRequestAppStoreReview {
+		.onChange(of: store.shouldRequestAppStoreReview) {
+			if store.shouldRequestAppStoreReview {
 				requestReview()
 				send(.didRequestReview)
 			}

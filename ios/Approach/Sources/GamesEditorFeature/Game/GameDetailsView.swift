@@ -32,8 +32,8 @@ public struct GameDetailsView: View {
 					Color.clear
 						.measure(key: SectionHeaderContentSizeKey.self, to: $sectionHeaderContentSize)
 				}
-				.onChange(of: minimumSheetContentSize) { _, newValue in send(.didMeasureMinimumSheetContentSize(newValue)) }
-				.onChange(of: sectionHeaderContentSize) { _, newValue in send(.didMeasureSectionHeaderContentSize(newValue)) }
+				.onChange(of: minimumSheetContentSize) { send(.didMeasureMinimumSheetContentSize(minimumSheetContentSize)) }
+				.onChange(of: sectionHeaderContentSize) { send(.didMeasureSectionHeaderContentSize(sectionHeaderContentSize)) }
 				// We force these extra measures on appear/disappear to let child navigation screens
 				// take the full height of the screen.
 				// This value is used as a negative top padding in `GamesEditor`

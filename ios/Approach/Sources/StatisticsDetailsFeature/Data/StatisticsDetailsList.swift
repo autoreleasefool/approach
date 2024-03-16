@@ -226,8 +226,8 @@ public struct StatisticsDetailsListView<Header: View>: View {
 					Text(Strings.Statistics.List.StatisticsDescription.help)
 				}
 			}
-			.onChange(of: store.entryToHighlight) { _, newValue in
-				guard let id = newValue else { return }
+			.onChange(of: store.entryToHighlight) {
+				guard let id = store.entryToHighlight else { return }
 				withAnimation {
 					scrollViewProxy.scrollTo(id, anchor: .center)
 				}

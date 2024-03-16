@@ -58,7 +58,7 @@ public struct ScoreSheet: View {
 				}
 			}
 			.cornerRadius(.standardRadius)
-			.onChange(of: selection) { selection in
+			.onChange(of: selection) {
 				withAnimation(.easeInOut(duration: 300)) {
 					proxy.scrollTo(selection.frameId, anchor: selection.isLast ? .trailing : .leading)
 				}
