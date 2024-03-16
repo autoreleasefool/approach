@@ -118,13 +118,15 @@ public struct PreferredGearView: View {
 
 	public var body: some View {
 		Section {
-			if store.gear.isEmpty {
-				Text(Strings.Bowler.List.PreferredGear.footer)
-			} else {
-				ForEach(store.gear) { gear in
-					Gear.ViewWithAvatar(gear)
+			gearList
+				.onFirstAppear { send(.didFirstAppear) }
+				.navigationDestination(
+					item: $store.scope(state: \.gearPicker, action: \.internal.gearPicker)
+				) { store in
+					ResourcePickerView(store: store) {
+						Gear.ViewWithAvatar($0)
+					}
 				}
-			}
 		} header: {
 			HStack(alignment: .firstTextBaseline) {
 				Text(Strings.Bowler.List.preferredGear)
@@ -141,12 +143,14 @@ public struct PreferredGearView: View {
 				Text(Strings.Bowler.List.PreferredGear.footer)
 			}
 		}
-		.onFirstAppear { send(.didFirstAppear) }
-		.navigationDestination(
-			item: $store.scope(state: \.gearPicker, action: \.internal.gearPicker)
-		) { store in
-			ResourcePickerView(store: store) {
-				Gear.ViewWithAvatar($0)
+	}
+
+	@MainActor @ViewBuilder private var gearList: some View {
+		if store.gear.isEmpty {
+			Text(Strings.Bowler.List.PreferredGear.footer)
+		} else {
+			ForEach(store.gear) { gear in
+				Gear.ViewWithAvatar(gear)
 			}
 		}
 	}
