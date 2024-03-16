@@ -73,7 +73,7 @@ public struct GamesEditorView: View {
 			Spacer()
 		}
 		.measure(key: WindowContentSizeKey.self, to: $store.windowContentSize)
-		.onChange(of: safeAreaInsets) { send(.didChangeSafeAreaInsets($0)) }
+		.onChange(of: safeAreaInsets) { _, newValue in send(.didChangeSafeAreaInsets(newValue)) }
 		.background(alignment: .top) {
 			VStack(spacing: 0) {
 				Asset.Media.Lane.galaxy.swiftUIImage

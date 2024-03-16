@@ -144,9 +144,7 @@ public struct GamesHeaderView: View {
 				headerButton(systemSymbol: .gear) { send(.didTapSettingsButton) }
 			}
 		}
-		.onChange(of: store.currentGameIndex) { _ in
-			send(.didStartShimmering)
-		}
+		.onChange(of: store.currentGameIndex) { send(.didStartShimmering) }
 		.task { await send(.didStartTask).finish() }
 	}
 

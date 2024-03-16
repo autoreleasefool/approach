@@ -72,7 +72,7 @@ public struct StatisticsDetailsView: View {
 			.interactiveDismissDisabled()
 			.measure(key: SheetContentSizeKey.self, to: $sheetContentSize)
 		}
-		.onChange(of: store.willAdjustLaneLayoutAt) { _ in
+		.onChange(of: store.willAdjustLaneLayoutAt) {
 			send(
 				.didAdjustChartSize(
 					backdropSize: measuredBackdropSize,
@@ -81,7 +81,7 @@ public struct StatisticsDetailsView: View {
 				animation: .easeInOut
 			)
 		}
-		.onChange(of: sheetContentSize) { _ in
+		.onChange(of: sheetContentSize) {
 			send(
 				.didAdjustChartSize(
 					backdropSize: measuredBackdropSize,
