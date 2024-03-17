@@ -3,6 +3,5 @@ import Dependencies
 @testable import NotificationsServiceInterface
 import XCTest
 
-@MainActor
 final class UIDeviceNotificationsTests: XCTestCase {
 }

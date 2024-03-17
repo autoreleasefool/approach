@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 @testable import FramesRepository
 @testable import FramesRepositoryInterface
@@ -8,7 +9,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class FramesRepositoryTests: XCTestCase {
 	@Dependency(FramesRepository.self) var frames
 
@@ -23,8 +23,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 		// Editing the frames
 		let frames = withDependencies {
-			$0.database.reader = { db }
-			$0.frames = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FramesRepository.self] = .liveValue
 		} operation: {
 			self.frames.observe(UUID(0))
 		}
@@ -64,8 +64,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 		// Editing the frames
 		let frames = withDependencies {
-			$0.database.reader = { db }
-			$0.frames = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FramesRepository.self] = .liveValue
 		} operation: {
 			self.frames.observe(UUID(0))
 		}
@@ -93,8 +93,8 @@ final class FramesRepositoryTests: XCTestCase {
 
 		// Editing the game
 		let frames = withDependencies {
-			$0.database.reader = { db }
-			$0.frames = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FramesRepository.self] = .liveValue
 		} operation: {
 			self.frames.observe(UUID(0))
 		}
@@ -123,8 +123,8 @@ final class FramesRepositoryTests: XCTestCase {
 			]
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.frames = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[FramesRepository.self] = .liveValue
 		} operation: {
 			try await self.frames.update(editable)
 		}
@@ -163,8 +163,8 @@ final class FramesRepositoryTests: XCTestCase {
 				]
 			)
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.frames = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[FramesRepository.self] = .liveValue
 			} operation: {
 				try await self.frames.update(editable)
 			}

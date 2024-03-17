@@ -10,7 +10,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class LeaguesRepositoryTests: XCTestCase {
 	@Dependency(LeaguesRepository.self) var leagues
 
@@ -26,8 +25,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -49,8 +48,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues by recurrence
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), withRecurrence: .once, ordering: .byName)
 		}
@@ -69,8 +68,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues by bowler
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -90,8 +89,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -118,9 +117,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byRecentlyUsed)
 		}
@@ -150,8 +149,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the league
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -184,8 +183,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the league
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -215,8 +214,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the league
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.list(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -239,8 +238,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.pickable(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -262,8 +261,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues by recurrence
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.pickable(bowledBy: UUID(0), withRecurrence: .once, ordering: .byName)
 		}
@@ -282,8 +281,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues by bowler
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.pickable(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -303,8 +302,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.pickable(bowledBy: UUID(0), ordering: .byName)
 		}
@@ -331,9 +330,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.pickable(bowledBy: UUID(0), ordering: .byRecentlyUsed)
 		}
@@ -378,8 +377,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the archived leagues
 		let leagues = withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			self.leagues.archived()
 		}
@@ -403,8 +402,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Fetching the league
 		let league = try await withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.seriesHost(UUID(0))
 		}
@@ -430,8 +429,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Fetching the league
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.leagues = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[LeaguesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.leagues.seriesHost(UUID(0))
 			}
@@ -458,8 +457,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		)
 		await assertThrowsError(ofType: DatabaseError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.leagues = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[LeaguesRepository.self] = .liveValue
 			} operation: {
 				try await self.leagues.create(new)
 			}
@@ -491,10 +490,10 @@ final class LeaguesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .exclude
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
 			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.create(new)
 		}
@@ -526,10 +525,10 @@ final class LeaguesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .exclude
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
 			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.create(new)
 		}
@@ -561,10 +560,10 @@ final class LeaguesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .exclude
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
 			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.create(new)
 		}
@@ -590,10 +589,10 @@ final class LeaguesRepositoryTests: XCTestCase {
 			excludeFromStatistics: .exclude
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
 			$0.date = .constant(Date(timeIntervalSince1970: 123_456_000))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.create(new)
 		}
@@ -627,8 +626,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 			excludeFromStatistics: league1.excludeFromStatistics
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.update(existing)
 		}
@@ -659,8 +658,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		)
 		await assertThrowsError(ofType: RecordError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.leagues = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[LeaguesRepository.self] = .liveValue
 			} operation: {
 				try await self.leagues.update(existing)
 			}
@@ -684,8 +683,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Editing the league
 		let league = try await withDependencies {
-			$0.database.reader = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.edit(UUID(0))
 		}
@@ -712,8 +711,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 		// Editing the league
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.leagues = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[LeaguesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.leagues.edit(UUID(0))
 			}
@@ -730,9 +729,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Archiving the first league
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.archive(UUID(0))
 		}
@@ -761,9 +760,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Archiving a non-existent league
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.archive(UUID(1))
 		}
@@ -786,9 +785,9 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Unarchiving the first league
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.leagues = .liveValue
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.unarchive(UUID(0))
 		}
@@ -817,8 +816,8 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 		// Unarchiving a non-existent league
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.leagues = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LeaguesRepository.self] = .liveValue
 		} operation: {
 			try await self.leagues.unarchive(UUID(1))
 		}

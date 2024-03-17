@@ -9,7 +9,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class SeriesRepositoryTests: XCTestCase {
 	@Dependency(SeriesRepository.self) var series
 
@@ -30,8 +29,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.list(bowledIn: UUID(0), orderedBy: .newestFirst)
 		}
@@ -59,8 +58,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series by league
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.list(bowledIn: UUID(0), orderedBy: .newestFirst)
 		}
@@ -91,8 +90,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.list(bowledIn: UUID(0), orderedBy: .newestFirst)
 		}
@@ -125,8 +124,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.list(bowledIn: UUID(0), orderedBy: .oldestFirst)
 		}
@@ -161,8 +160,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.list(bowledIn: UUID(0), orderedBy: .lowestToHighest)
 		}
@@ -198,8 +197,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.list(bowledIn: UUID(0), orderedBy: .highestToLowest)
 		}
@@ -227,8 +226,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.summaries(bowledIn: UUID(0))
 		}
@@ -251,8 +250,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series by league
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.summaries(bowledIn: UUID(0))
 		}
@@ -273,8 +272,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.summaries(bowledIn: UUID(0))
 		}
@@ -310,8 +309,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Fetching the archived series
 		let series = withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			self.series.archived()
 		}
@@ -344,8 +343,8 @@ final class SeriesRepositoryTests: XCTestCase {
 				numberOfGames: 1
 			)
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.series = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[SeriesRepository.self] = .liveValue
 			} operation: {
 				try await self.series.create(create)
 			}
@@ -375,9 +374,9 @@ final class SeriesRepositoryTests: XCTestCase {
 			numberOfGames: 1
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.create(create)
 		}
@@ -406,9 +405,9 @@ final class SeriesRepositoryTests: XCTestCase {
 			numberOfGames: 1
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.create(create)
 		}
@@ -435,9 +434,9 @@ final class SeriesRepositoryTests: XCTestCase {
 			numberOfGames: 1
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.create(create)
 		}
@@ -466,8 +465,8 @@ final class SeriesRepositoryTests: XCTestCase {
 			location: nil
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.update(editable)
 		}
@@ -499,8 +498,8 @@ final class SeriesRepositoryTests: XCTestCase {
 		)
 		await assertThrowsError(ofType: RecordError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.series = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[SeriesRepository.self] = .liveValue
 			} operation: {
 				try await self.series.update(editable)
 			}
@@ -522,11 +521,11 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Adding games to the series
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
 			_ = $0.uuid()
 			_ = $0.uuid()
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.addGamesToSeries(UUID(0), 2)
 		}
@@ -554,9 +553,9 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Adding games to the series
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.addGamesToSeries(UUID(0), 2)
 		}
@@ -584,10 +583,10 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Adding a game to the series
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.uuid = .incrementing
 			_ = $0.uuid()
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.addGamesToSeries(UUID(0), 1)
 		}
@@ -610,8 +609,8 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Editing the series
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.series = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[SeriesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.series.addGamesToSeries(UUID(0), 3)
 			}
@@ -627,8 +626,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Editing the series
 		let series = try await withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.edit(UUID(0))
 		}
@@ -656,8 +655,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Editing the series
 		let series = try await withDependencies {
-			$0.database.reader = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.edit(UUID(0))
 		}
@@ -698,8 +697,8 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Editing the series
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.series = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[SeriesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.series.edit(UUID(0))
 			}
@@ -716,9 +715,9 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Archiving the first series
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.archive(UUID(0))
 		}
@@ -746,9 +745,9 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Archiving a non-existent series
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.series = .liveValue
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.archive(UUID(1))
 		}
@@ -771,8 +770,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Unarchiving the first series
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.unarchive(UUID(0))
 		}
@@ -801,8 +800,8 @@ final class SeriesRepositoryTests: XCTestCase {
 
 		// Unarchiving a non-existent series
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.series = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
 		} operation: {
 			try await self.series.unarchive(UUID(1))
 		}

@@ -10,7 +10,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class GearRepositoryTests: XCTestCase {
 	@Dependency(GearRepository.self) var gear
 
@@ -24,8 +23,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.list(ordered: .byName)
 		}
@@ -47,8 +46,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.list(ofKind: .bowlingBall, ordered: .byName)
 		}
@@ -69,8 +68,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.list(ownedBy: UUID(0), ordered: .byName)
 		}
@@ -96,9 +95,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.list(ordered: .byRecentlyUsed)
 		}
@@ -130,8 +129,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = try await withDependencies {
-			$0.database.reader = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.preferredGear(forBowler: UUID(0))
 		}
@@ -159,9 +158,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.mostRecentlyUsed(limit: 3)
 		}
@@ -190,9 +189,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.mostRecentlyUsed(limit: 3)
 		}
@@ -221,9 +220,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.mostRecentlyUsed(limit: 1)
 		}
@@ -250,9 +249,9 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Fetching the gear
 		let gear = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			self.gear.mostRecentlyUsed(ofKind: .bowlingBall)
 		}
@@ -276,8 +275,8 @@ final class GearRepositoryTests: XCTestCase {
 		await assertThrowsError(ofType: DatabaseError.self) {
 			let create = Gear.Create(id: UUID(0), name: "Blue", kind: .towel, owner: .init(id: UUID(1), name: "Sarah"), avatar: .mock(id: UUID(0)))
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.gear = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GearRepository.self] = .liveValue
 			} operation: {
 				try await self.gear.create(create)
 			}
@@ -302,8 +301,8 @@ final class GearRepositoryTests: XCTestCase {
 		// Creating a gear
 		let create = Gear.Create(id: UUID(0), name: "Yellow", kind: .bowlingBall, owner: nil, avatar: .mock(id: UUID(0)))
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.create(create)
 		}
@@ -326,8 +325,8 @@ final class GearRepositoryTests: XCTestCase {
 		// Creating a gear
 		let create = Gear.Create(id: UUID(0), name: "Yellow", kind: .bowlingBall, owner: nil, avatar: .init(id: UUID(0), value: .mock))
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.create(create)
 		}
@@ -352,8 +351,8 @@ final class GearRepositoryTests: XCTestCase {
 		// Editing the gear
 		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .mock(id: UUID(0)))
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.update(editable)
 		}
@@ -379,8 +378,8 @@ final class GearRepositoryTests: XCTestCase {
 		await assertThrowsError(ofType: RecordError.self) {
 			let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: nil, avatar: .mock(id: UUID(0)))
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.gear = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GearRepository.self] = .liveValue
 			} operation: {
 				try await self.gear.update(editable)
 			}
@@ -400,8 +399,8 @@ final class GearRepositoryTests: XCTestCase {
 		// Editing the gear
 		let editable = Gear.Edit(id: UUID(0), kind: .bowlingBall, name: "Blue", owner: .init(id: UUID(0), name: "Sarah"), avatar: .init(id: UUID(0), value: .text("Bl", .rgb(.init(0, 0, 1)))))
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.update(editable)
 		}
@@ -427,8 +426,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Editing the gear
 		let editable = try await withDependencies {
-			$0.database.reader = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.edit(UUID(0))
 		}
@@ -447,8 +446,8 @@ final class GearRepositoryTests: XCTestCase {
 		// Editing a gear
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.gear = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[GearRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.gear.edit(UUID(0))
 			}
@@ -465,8 +464,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Deleting the first gear
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.delete(UUID(0))
 		}
@@ -487,8 +486,8 @@ final class GearRepositoryTests: XCTestCase {
 
 		// Deleting a non-existent gear
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.gear = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GearRepository.self] = .liveValue
 		} operation: {
 			try await self.gear.delete(UUID(1))
 		}

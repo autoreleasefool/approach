@@ -10,7 +10,6 @@ import PreferenceServiceInterface
 import TestDatabaseUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	@Dependency(StatisticsRepository.self) var statistics
 
@@ -145,10 +144,10 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 		line: UInt = #line
 	) async throws {
 		let entries: (first: Entry?, last: Entry?) = try await withDependencies {
-			$0.database.reader = { db }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .incrementing
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			if let counting = statistic as? CountingStatistic.Type {
 				let data = try await self.statistics.chart(statistic: counting, filter: filter)

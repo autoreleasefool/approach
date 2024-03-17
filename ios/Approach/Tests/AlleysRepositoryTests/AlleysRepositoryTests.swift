@@ -11,7 +11,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class AlleysRepositoryTests: XCTestCase {
 	@Dependency(AlleysRepository.self) var alleys
 
@@ -25,8 +24,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.list(ordered: .byName)
 		}
@@ -43,8 +42,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.list(ordered: .byName)
 		}
@@ -94,8 +93,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys by wood material
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.filteredList(withMaterial: .wood, ordered: .byName)
 		}
@@ -115,8 +114,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys by wood material and freefall
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.filteredList(withMaterial: .wood, withPinFall: .freefall, ordered: .byName)
 		}
@@ -135,8 +134,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.list(ordered: .byName)
 		}
@@ -159,9 +158,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.list(ordered: .byRecentlyUsed)
 		}
@@ -188,8 +187,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.list(ordered: .byName)
 		}
@@ -219,9 +218,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.mostRecentlyUsed(3)
 		}
@@ -250,9 +249,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.mostRecentlyUsed(3)
 		}
@@ -281,9 +280,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.mostRecentlyUsed(1)
 		}
@@ -312,9 +311,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.pickable()
 		}
@@ -340,9 +339,9 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alleys = withDependencies {
-			$0.database.reader = { db }
-			$0.recentlyUsed.observeRecentlyUsedIds = { _ in recentStream }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[RecentlyUsedService.self].observeRecentlyUsedIds = { @Sendable _ in recentStream }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.pickable()
 		}
@@ -363,8 +362,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alley = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.load(UUID(0))
 		}
@@ -387,8 +386,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alley = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.load(UUID(0))
 		}
@@ -421,8 +420,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Fetching the alleys
 		let alley = withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			self.alleys.load(UUID(0))
 		}
@@ -452,8 +451,8 @@ final class AlleysRepositoryTests: XCTestCase {
 		)
 		await assertThrowsError(ofType: DatabaseError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.alleys = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[AlleysRepository.self] = .liveValue
 			} operation: {
 				try await self.alleys.create(new)
 			}
@@ -485,7 +484,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			location: nil
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 		} operation: {
 			try await AlleysRepository.liveValue.create(new)
 		}
@@ -518,8 +517,8 @@ final class AlleysRepositoryTests: XCTestCase {
 			location: nil
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			try await self.alleys.update(editable)
 		}
@@ -552,8 +551,8 @@ final class AlleysRepositoryTests: XCTestCase {
 		)
 		await assertThrowsError(ofType: RecordError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.alleys = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[AlleysRepository.self] = .liveValue
 			} operation: {
 				try await self.alleys.update(editable)
 			}
@@ -573,8 +572,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Editing the alley
 		let alley = try await withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			try await self.alleys.edit(UUID(0))
 		}
@@ -604,8 +603,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Editing the alley
 		let alley = try await withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			try await self.alleys.edit(UUID(0))
 		}
@@ -647,8 +646,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Editing the alley
 		let alley = try await withDependencies {
-			$0.database.reader = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			try await self.alleys.edit(UUID(0))
 		}
@@ -682,8 +681,8 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Editing the alley
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.alleys = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[AlleysRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.alleys.edit(UUID(0))
 			}
@@ -700,8 +699,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Deleting the first alley
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			try await self.alleys.delete(UUID(0))
 		}
@@ -722,8 +721,8 @@ final class AlleysRepositoryTests: XCTestCase {
 
 		// Deleting a non-existent alley
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.alleys = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[AlleysRepository.self] = .liveValue
 		} operation: {
 			try await self.alleys.delete(UUID(1))
 		}

@@ -4,7 +4,6 @@ import SnapshotTesting
 import SwiftUI
 import XCTest
 
-@MainActor
 final class SortOrderViewSnapshotTests: XCTestCase {
 	func testSortOrderViewSnapshot() async {
 //		let view = SortOrderView(store: .init(

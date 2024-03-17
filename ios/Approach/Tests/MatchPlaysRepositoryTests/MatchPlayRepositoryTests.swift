@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import MatchPlaysRepository
@@ -8,7 +9,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class MatchPlaysRepositoryTests: XCTestCase {
 	@Dependency(MatchPlaysRepository.self) var matchPlays
 
@@ -29,8 +29,8 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 		await assertThrowsError(ofType: DatabaseError.self) {
 			let create = MatchPlay.Create(gameId: UUID(0), id: UUID(1), opponent: nil, opponentScore: 456, result: .tied)
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.matchPlays = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[MatchPlaysRepository.self] = .liveValue
 			} operation: {
 				try await self.matchPlays.create(create)
 			}
@@ -54,8 +54,8 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 		// Creating a match play
 		let create = MatchPlay.Create(gameId: UUID(0), id: UUID(1), opponent: nil, opponentScore: 456, result: .tied)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.matchPlays = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[MatchPlaysRepository.self] = .liveValue
 		} operation: {
 			try await self.matchPlays.create(create)
 		}
@@ -87,8 +87,8 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 		// Updating the match play
 		let edit = MatchPlay.Edit(gameId: UUID(0), id: UUID(1), opponent: nil, opponentScore: 456, result: .tied)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.matchPlays = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[MatchPlaysRepository.self] = .liveValue
 		} operation: {
 			try await self.matchPlays.update(edit)
 		}
@@ -112,8 +112,8 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 		await assertThrowsError(ofType: RecordError.self) {
 			let edit = MatchPlay.Edit(gameId: UUID(0), id: UUID(1), opponent: nil, opponentScore: 456, result: .tied)
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.matchPlays = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[MatchPlaysRepository.self] = .liveValue
 			} operation: {
 				try await self.matchPlays.update(edit)
 			}
@@ -146,8 +146,8 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 
 		// Deleting the first match play
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.matchPlays = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[MatchPlaysRepository.self] = .liveValue
 		} operation: {
 			try await self.matchPlays.delete(UUID(0))
 		}
@@ -174,8 +174,8 @@ final class MatchPlaysRepositoryTests: XCTestCase {
 
 		// Deleting a non-existent match play
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.matchPlays = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[MatchPlaysRepository.self] = .liveValue
 		} operation: {
 			try await self.matchPlays.delete(UUID(1))
 		}

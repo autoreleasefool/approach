@@ -10,7 +10,6 @@ import StringsLibrary
 import TestDatabaseUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class TrackableFilterSourceTests: XCTestCase {
 	@Dependency(StatisticsRepository.self) var statistics
 
@@ -21,20 +20,20 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler]))
 
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
@@ -43,20 +42,20 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try initializeDatabase(withLeagues: .custom([league]))
 
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
@@ -65,19 +64,19 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try initializeDatabase(withSeries: .custom([series]))
 
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "—", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
@@ -86,17 +85,17 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let db = try initializeDatabase(withGames: .custom([game]))
 
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
@@ -105,76 +104,76 @@ final class TrackableFilterSourceTests: XCTestCase {
 	func testBowler_NoFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .bowler(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "183", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "626", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "183", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "626", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
 	func testLeague_NoFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .league(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "96", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "96", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
 	func testSeries_NoFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .series(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "3", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "197.2", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "269", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "3", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
 	func testGame_NoFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(source: .game(UUID(0))))
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
@@ -183,11 +182,11 @@ final class TrackableFilterSourceTests: XCTestCase {
 	func testBowler_WithFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .bowler(UUID(0)),
@@ -206,21 +205,21 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "6", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "6", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
 	func testLeague_WithFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .league(UUID(0)),
@@ -238,21 +237,21 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "6", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "6", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSeriesOf3, description: nil, value: "0", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
 	func testSeries_WithFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .series(UUID(0)),
@@ -265,20 +264,20 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", highlightAsNew: false),
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.gameAverage, description: nil, value: "192", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.highSingle, description: nil, value: "192", valueDescription: nil, highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 
 	func testGame_WithFilters_ReturnsStatistics() async throws {
 		let db = try generatePopulatedDatabase()
 		let statistics = try await withDependencies {
-			$0.database.reader = { db }
-			$0.featureFlags.isEnabled = { _ in true }
-			$0.preferences.getBool = { _ in true }
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
+			$0[PreferenceService.self].getBool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
-			$0.statistics = .liveValue
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.load(for: .init(
 				source: .game(UUID(0)),
@@ -287,7 +286,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		}
 
 		XCTAssertEqual(statistics.flatMap { $0.entries }, [
-			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", highlightAsNew: false),
+			.init(title: Strings.Statistics.Title.headPins, description: nil, value: "1", valueDescription: nil, highlightAsNew: false),
 		])
 	}
 }

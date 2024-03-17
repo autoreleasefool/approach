@@ -18,16 +18,16 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		let now = Date(timeIntervalSince1970: 1672519204)
 
 		withDependencies {
-			$0.recentlyUsed = .liveValue
+			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0.preferences.setString = { key, value in
+			$0[PreferenceService.self].setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}
@@ -43,15 +43,15 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		let now = Date(timeIntervalSince1970: 1672519204)
 
 		withDependencies {
-			$0.recentlyUsed = .liveValue
+			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { _ in
+			$0[PreferenceService.self].getString = { @Sendable _ in
 				return cache.value
 			}
 
-			$0.preferences.setString = { _, value in
+			$0[PreferenceService.self].setString = { @Sendable _, value in
 				cache.setValue(value)
 			}
 
@@ -76,16 +76,16 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		let now = Date(timeIntervalSince1970: 1672519204)
 
 		withDependencies {
-			$0.recentlyUsed = .liveValue
+			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0.preferences.setString = { key, value in
+			$0[PreferenceService.self].setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}
@@ -100,8 +100,8 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		let cache = LockIsolated<String?>(Self.entriesString(ids: [UUID(0), UUID(1)]))
 
 		withDependencies {
-			$0.recentlyUsed = .liveValue
-			$0.preferences.remove = { key in
+			$0[RecentlyUsedService.self] = .liveValue
+			$0[PreferenceService.self].remove = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(nil)
 			}
@@ -117,15 +117,15 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		let now = Date(timeIntervalSince1970: 1672519204)
 
 		await withDependencies {
-			$0.recentlyUsed = .liveValue
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[RecentlyUsedService.self] = .liveValue
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0.preferences.setString = { key, value in
+			$0[PreferenceService.self].setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}
@@ -156,10 +156,10 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		var recentlyUsedIterator: AsyncStream<[RecentlyUsedService.Entry]>.Iterator?
 
 		await withDependencies {
-			$0.recentlyUsed = .liveValue
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[RecentlyUsedService.self] = .liveValue
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
@@ -174,16 +174,16 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		cache.setValue(Self.entriesString(ids: [UUID(1)]))
 
 		withDependencies {
-			$0.recentlyUsed = .liveValue
+			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
 				return cache.value
 			}
 
-			$0.preferences.setString = { key, value in
+			$0[PreferenceService.self].setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
 				cache.setValue(value)
 			}
@@ -196,16 +196,16 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		cache.setValue(Self.entriesString(ids: [UUID(2)]))
 
 		await withDependencies {
-			$0.recentlyUsed = .liveValue
+			$0[RecentlyUsedService.self] = .liveValue
 			$0.date = .constant(now)
-			$0.jsonEncoder.encode = { try Self.encoder.encode($0) }
+			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0.preferences.setString = { key, value in
+			$0[PreferenceService.self].setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}

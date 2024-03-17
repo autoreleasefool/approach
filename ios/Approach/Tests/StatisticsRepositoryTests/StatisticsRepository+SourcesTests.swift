@@ -1,13 +1,13 @@
 import DatabaseServiceInterface
 import Dependencies
 @testable import ModelsLibrary
+import PreferenceServiceInterface
 @testable import StatisticsLibrary
 @testable import StatisticsRepository
 @testable import StatisticsRepositoryInterface
 import TestDatabaseUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class StatisticsRepositorySourcesTests: XCTestCase {
 	@Dependency(StatisticsRepository.self) var statistics
 
@@ -17,8 +17,9 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .zero)
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
+			$0[PreferenceService.self].getString = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -31,8 +32,9 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
+			$0[PreferenceService.self].getString = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -51,8 +53,9 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
+			$0[PreferenceService.self].getString = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -66,8 +69,9 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
+			$0[PreferenceService.self].getString = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -87,8 +91,8 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let source: TrackableFilter.Source = .bowler(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadSources(source)
 		}
@@ -106,8 +110,8 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let source: TrackableFilter.Source = .league(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadSources(source)
 		}
@@ -125,8 +129,8 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let source: TrackableFilter.Source = .series(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadSources(source)
 		}
@@ -144,8 +148,8 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let source: TrackableFilter.Source = .game(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadSources(source)
 		}

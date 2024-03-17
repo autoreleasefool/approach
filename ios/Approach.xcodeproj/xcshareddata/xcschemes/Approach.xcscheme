@@ -20,6 +20,34 @@
                ReferencedContainer = "container:Approach.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AnnouncementsServiceTests"
+               BuildableName = "AnnouncementsServiceTests"
+               BlueprintName = "AnnouncementsServiceTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AnnouncementsLibraryTests"
+               BuildableName = "AnnouncementsLibraryTests"
+               BlueprintName = "AnnouncementsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

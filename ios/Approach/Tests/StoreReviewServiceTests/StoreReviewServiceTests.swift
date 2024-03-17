@@ -1,5 +1,6 @@
 import AppInfoServiceInterface
 import Dependencies
+import PreferenceServiceInterface
 @testable import StoreReviewService
 @testable import StoreReviewServiceInterface
 import XCTest
@@ -13,13 +14,13 @@ final class StoreReviewServiceTests: XCTestCase {
 			$0.calendar = .current
 			$0.date.now = Date(timeIntervalSince1970: 1700462054)
 
-			$0.appInfo.numberOfSessions = { 1 }
+			$0[AppInfoService.self].numberOfSessions = { @Sendable in 1 }
 
 			// Nov 12, 2023
-			$0.appInfo.installDate = { Date(timeIntervalSince1970: 1699770852) }
+			$0[AppInfoService.self].installDate = { @Sendable in Date(timeIntervalSince1970: 1699770852) }
 
-			$0.preferences.contains = { _ in true }
-			$0.preferences.getDouble = { key in
+			$0[PreferenceService.self].contains = { @Sendable _ in true }
+			$0[PreferenceService.self].getDouble = { @Sendable key in
 				switch key {
 				// Nov 12, 2023
 				case "appLastReviewRequestDate": return 1699770852
@@ -27,15 +28,15 @@ final class StoreReviewServiceTests: XCTestCase {
 				}
 			}
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				switch key {
 				case "appLastReviewVersion": return "1.2.3"
 				default: return nil
 				}
 			}
-			$0.appInfo.appVersion = { "1.2.4" }
+			$0[AppInfoService.self].appVersion = { @Sendable in "1.2.4" }
 
-			$0.storeReview.shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
+			$0[StoreReviewService.self].shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
 		} operation: {
 			XCTAssertFalse(storeReview.shouldRequestReview())
 		}
@@ -47,13 +48,13 @@ final class StoreReviewServiceTests: XCTestCase {
 			$0.calendar = .current
 			$0.date.now = Date(timeIntervalSince1970: 1700462054)
 
-			$0.appInfo.numberOfSessions = { 5 }
+			$0[AppInfoService.self].numberOfSessions = { @Sendable in 5 }
 
 			// Nov 19, 2023
-			$0.appInfo.installDate = { Date(timeIntervalSince1970: 1700462054) }
+			$0[AppInfoService.self].installDate = { @Sendable in Date(timeIntervalSince1970: 1700462054) }
 
-			$0.preferences.contains = { _ in true }
-			$0.preferences.getDouble = { key in
+			$0[PreferenceService.self].contains = { @Sendable _ in true }
+			$0[PreferenceService.self].getDouble = { @Sendable key in
 				switch key {
 				// Nov 12, 2023
 				case "appLastReviewRequestDate": return 1699770852
@@ -61,15 +62,15 @@ final class StoreReviewServiceTests: XCTestCase {
 				}
 			}
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				switch key {
 				case "appLastReviewVersion": return "1.2.3"
 				default: return nil
 				}
 			}
-			$0.appInfo.appVersion = { "1.2.4" }
+			$0[AppInfoService.self].appVersion = { @Sendable in "1.2.4" }
 
-			$0.storeReview.shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
+			$0[StoreReviewService.self].shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
 		} operation: {
 			XCTAssertFalse(storeReview.shouldRequestReview())
 		}
@@ -81,13 +82,13 @@ final class StoreReviewServiceTests: XCTestCase {
 			$0.calendar = .current
 			$0.date.now = Date(timeIntervalSince1970: 1700462054)
 
-			$0.appInfo.numberOfSessions = { 5 }
+			$0[AppInfoService.self].numberOfSessions = { @Sendable in 5 }
 
 			// Nov 12, 2023
-			$0.appInfo.installDate = { Date(timeIntervalSince1970: 1699770852) }
+			$0[AppInfoService.self].installDate = { @Sendable in Date(timeIntervalSince1970: 1699770852) }
 
-			$0.preferences.contains = { _ in true }
-			$0.preferences.getDouble = { key in
+			$0[PreferenceService.self].contains = { @Sendable _ in true }
+			$0[PreferenceService.self].getDouble = { @Sendable key in
 				switch key {
 				// Nov 12, 2023
 				case "appLastReviewRequestDate": return 1699770852
@@ -95,15 +96,15 @@ final class StoreReviewServiceTests: XCTestCase {
 				}
 			}
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				switch key {
 				case "appLastReviewVersion": return "1.2.3"
 				default: return nil
 				}
 			}
-			$0.appInfo.appVersion = { "1.2.4" }
+			$0[AppInfoService.self].appVersion = { @Sendable in "1.2.4" }
 
-			$0.storeReview.shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
+			$0[StoreReviewService.self].shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
 		} operation: {
 			XCTAssertTrue(storeReview.shouldRequestReview())
 		}
@@ -115,13 +116,13 @@ final class StoreReviewServiceTests: XCTestCase {
 			$0.calendar = .current
 			$0.date.now = Date(timeIntervalSince1970: 1700462054)
 
-			$0.appInfo.numberOfSessions = { 1 }
+			$0[AppInfoService.self].numberOfSessions = { @Sendable in 1 }
 
 			// Nov 12, 2023
-			$0.appInfo.installDate = { Date(timeIntervalSince1970: 1699770852) }
+			$0[AppInfoService.self].installDate = { @Sendable in Date(timeIntervalSince1970: 1699770852) }
 
-			$0.preferences.contains = { _ in true }
-			$0.preferences.getDouble = { key in
+			$0[PreferenceService.self].contains = { @Sendable _ in true }
+			$0[PreferenceService.self].getDouble = { @Sendable key in
 				switch key {
 				// Nov 12, 2023
 				case "appLastReviewRequestDate": return 1699770852
@@ -129,15 +130,15 @@ final class StoreReviewServiceTests: XCTestCase {
 				}
 			}
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				switch key {
 				case "appLastReviewVersion": return "1.2.3"
 				default: return nil
 				}
 			}
-			$0.appInfo.appVersion = { "1.2.3" }
+			$0[AppInfoService.self].appVersion = { @Sendable in "1.2.3" }
 
-			$0.storeReview.shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
+			$0[StoreReviewService.self].shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
 		} operation: {
 			XCTAssertFalse(storeReview.shouldRequestReview())
 		}
@@ -149,13 +150,13 @@ final class StoreReviewServiceTests: XCTestCase {
 			$0.calendar = .current
 			$0.date.now = Date(timeIntervalSince1970: 1700462054)
 
-			$0.appInfo.numberOfSessions = { 5 }
+			$0[AppInfoService.self].numberOfSessions = { @Sendable in 5 }
 
 			// Nov 12, 2023
-			$0.appInfo.installDate = { Date(timeIntervalSince1970: 1699770852) }
+			$0[AppInfoService.self].installDate = { @Sendable in Date(timeIntervalSince1970: 1699770852) }
 
-			$0.preferences.contains = { _ in true }
-			$0.preferences.getDouble = { key in
+			$0[PreferenceService.self].contains = { @Sendable _ in true }
+			$0[PreferenceService.self].getDouble = { @Sendable key in
 				switch key {
 				// Nov 12, 2023
 				case "appLastReviewRequestDate": return 1699770852
@@ -163,15 +164,15 @@ final class StoreReviewServiceTests: XCTestCase {
 				}
 			}
 
-			$0.preferences.getString = { key in
+			$0[PreferenceService.self].getString = { @Sendable key in
 				switch key {
 				case "appLastReviewVersion": return "1.2.3"
 				default: return nil
 				}
 			}
-			$0.appInfo.appVersion = { "1.2.4" }
+			$0[AppInfoService.self].appVersion = { @Sendable in "1.2.4" }
 
-			$0.storeReview.shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
+			$0[StoreReviewService.self].shouldRequestReview = StoreReviewService.liveValue.shouldRequestReview
 		} operation: {
 			XCTAssertTrue(storeReview.shouldRequestReview())
 		}
@@ -183,13 +184,13 @@ final class StoreReviewServiceTests: XCTestCase {
 
 		await withDependencies {
 			$0.date.now = Date(timeIntervalSince1970: 456.0)
-			$0.appInfo.appVersion = { "1.2.4" }
-			$0.preferences.contains = { _ in true }
-			$0.preferences.getDouble = { _ in lastReviewRequestDate.value }
-			$0.preferences.setDouble = { _, newValue in lastReviewRequestDate.setValue(newValue) }
-			$0.preferences.getString = { _ in lastReviewVersion.value }
-			$0.preferences.setString = { _, newValue in lastReviewVersion.setValue(newValue) }
-			$0.storeReview.didRequestReview = StoreReviewService.liveValue.didRequestReview
+			$0[AppInfoService.self].appVersion = { @Sendable in "1.2.4" }
+			$0[PreferenceService.self].contains = { @Sendable _ in true }
+			$0[PreferenceService.self].getDouble = { @Sendable _ in lastReviewRequestDate.value }
+			$0[PreferenceService.self].setDouble = { @Sendable _, newValue in lastReviewRequestDate.setValue(newValue) }
+			$0[PreferenceService.self].getString = { @Sendable _ in lastReviewVersion.value }
+			$0[PreferenceService.self].setString = { @Sendable _, newValue in lastReviewVersion.setValue(newValue) }
+			$0[StoreReviewService.self].didRequestReview = StoreReviewService.liveValue.didRequestReview
 		} operation: {
 			await storeReview.didRequestReview()
 			XCTAssertEqual(lastReviewRequestDate.value, 456.0)

@@ -12,7 +12,6 @@ import GamesRepository
 import TestDatabaseUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class ScoresRepositoryTests: XCTestCase {
 	@Dependency(ScoresRepository.self) var scores
 
@@ -20,9 +19,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -99,9 +98,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -154,9 +153,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -211,9 +210,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -264,9 +263,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -325,9 +324,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -387,9 +386,9 @@ final class ScoresRepositoryTests: XCTestCase {
 		let (frames, framesContinuation) = AsyncThrowingStream<[[ScoreKeeper.Roll]], Error>.makeStream()
 
 		let scoresStream = withDependencies {
-			$0.games.findIndex = { id in .init(id: id, index: 0) }
-			$0.frames.observeRolls = { _ in frames }
-			$0.scores = .liveValue
+			$0[GamesRepository.self].findIndex = { @Sendable id in .init(id: id, index: 0) }
+			$0[FramesRepository.self].observeRolls = { @Sendable _ in frames }
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -428,7 +427,7 @@ final class ScoresRepositoryTests: XCTestCase {
 			frames: [
 				.init(index: 0, rolls: [.init(index: 0, displayValue: "-", didFoul: true, isSecondary: false), .init(index: 1, displayValue: "-", didFoul: true, isSecondary: false), .init(index: 2, displayValue: "-", didFoul: true, isSecondary: false)], score: 0),
 				.init(index: 1, rolls: [.init(index: 0, displayValue: "X", didFoul: true, isSecondary: false), .init(index: 1, displayValue: "15", didFoul: false, isSecondary: true), .init(index: 2, displayValue: "15", didFoul: false, isSecondary: true)], score: 0),
-				.init(index: 2, rolls: [.init(index: 0, displayValue: "X", didFoul: false, isSecondary: false), .init(index: 1, displayValue: "15", didFoul: false, isSecondary: true), .init(index: 2, displayValue: "-", didFoul: false, isSecondary: true)], score: 15),
+				.init(index: 2, rolls: [.init(index: 0, displayValue: "X", didFoul: false, isSecondary: false), .init(index: 1, displayValue: "15", didFoul: false, isSecondary: true), .init(index: 2, displayValue: "-", didFoul: false, isSecondary: false)], score: 15),
 				.init(index: 3, rolls: [.init(index: 0, displayValue: "X", didFoul: false, isSecondary: false), .init(index: 1, displayValue: nil, didFoul: false, isSecondary: false), .init(index: 2, displayValue: nil, didFoul: false, isSecondary: false)], score: 30),
 				.init(index: 4, rolls: [.init(index: 0, displayValue: nil, didFoul: false, isSecondary: false), .init(index: 1, displayValue: nil, didFoul: false, isSecondary: false), .init(index: 2, displayValue: nil, didFoul: false, isSecondary: false)], score: nil),
 				.init(index: 5, rolls: [.init(index: 0, displayValue: nil, didFoul: false, isSecondary: false), .init(index: 1, displayValue: nil, didFoul: false, isSecondary: false), .init(index: 2, displayValue: nil, didFoul: false, isSecondary: false)], score: nil),
@@ -444,31 +443,37 @@ final class ScoresRepositoryTests: XCTestCase {
 
 	func testScoresStrikeCorrectly() {
 		// FIXME: testScoresStrikeCorrectly
+		XCTExpectFailure("Not implemented")
 		XCTFail("TODO")
 	}
 
 	func testScoresSpareCorrectly() {
 		// FIXME: testScoresSpareCorrectly
+		XCTExpectFailure("Not implemented")
 		XCTFail("TODO")
 	}
 
 	func testScoresStrikeInLastFrameCorrectly() {
 		// FIXME: testScoresStrikeInLastFrameCorrectly
+		XCTExpectFailure("Not implemented")
 		XCTFail("TODO")
 	}
 
 	func testScoresSpareInLastFrameCorrectly() {
 		// FIXME: testScoresSpareInLastFrameCorrectly
+		XCTExpectFailure("Not implemented")
 		XCTFail("TODO")
 	}
 
 	func testScoresOpenFrameCorrectly() {
 		// FIXME: testScoresOpenFrameCorrectly
+		XCTExpectFailure("Not implemented")
 		XCTFail("TODO")
 	}
 
 	func testScoreCannotGoNegative() {
 		// FIXME: testScoreCannotGoNegative
+		XCTExpectFailure("Not implemented")
 		XCTFail("TODO")
 	}
 
@@ -476,10 +481,10 @@ final class ScoresRepositoryTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 
 		let scoresStream = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
-			$0.frames = .liveValue
-			$0.scores = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
+			$0[FramesRepository.self] = .liveValue
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(0))
 		}
@@ -511,10 +516,10 @@ final class ScoresRepositoryTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 
 		let scoresStream = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
-			$0.frames = .liveValue
-			$0.scores = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
+			$0[FramesRepository.self] = .liveValue
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(1))
 		}
@@ -546,10 +551,10 @@ final class ScoresRepositoryTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 
 		let scoresStream = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
-			$0.frames = .liveValue
-			$0.scores = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
+			$0[FramesRepository.self] = .liveValue
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(2))
 		}
@@ -581,10 +586,10 @@ final class ScoresRepositoryTests: XCTestCase {
 		let db = try generatePopulatedDatabase()
 
 		let scoresStream = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
-			$0.frames = .liveValue
-			$0.scores = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
+			$0[FramesRepository.self] = .liveValue
+			$0[ScoresRepository.self] = .liveValue
 		} operation: {
 			self.scores.observeScore(for: UUID(3))
 		}

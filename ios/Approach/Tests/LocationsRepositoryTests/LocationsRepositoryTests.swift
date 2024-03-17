@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import LocationsRepository
@@ -8,7 +9,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class LocationsRepositoryTests: XCTestCase {
 	@Dependency(LocationsRepository.self) var locations
 
@@ -26,8 +26,8 @@ final class LocationsRepositoryTests: XCTestCase {
 			coordinate: .init(latitude: 456, longitude: 456)
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.locations = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LocationsRepository.self] = .liveValue
 		} operation: {
 			try await self.locations.insertOrUpdate(new)
 		}
@@ -55,8 +55,8 @@ final class LocationsRepositoryTests: XCTestCase {
 			coordinate: .init(latitude: 456, longitude: 456)
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.locations = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LocationsRepository.self] = .liveValue
 		} operation: {
 			try await self.locations.insertOrUpdate(existing)
 		}

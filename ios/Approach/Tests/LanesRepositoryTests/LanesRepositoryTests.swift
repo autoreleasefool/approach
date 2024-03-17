@@ -1,4 +1,5 @@
 import DatabaseModelsLibrary
+import DatabaseServiceInterface
 import Dependencies
 import GRDB
 @testable import LanesRepository
@@ -8,7 +9,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class LanesRepositoryTests: XCTestCase {
 	@Dependency(LanesRepository.self) var lanes
 
@@ -23,8 +23,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Getting the lanes
 		let lanes = withDependencies {
-			$0.database.reader = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			self.lanes.list(nil)
 		}
@@ -54,8 +54,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Getting the lanes
 		let lanes = withDependencies {
-			$0.database.reader = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			self.lanes.list(nil)
 		}
@@ -85,8 +85,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Getting the lanes
 		let lanes = withDependencies {
-			$0.database.reader = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			self.lanes.list(UUID(0))
 		}
@@ -111,8 +111,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Editing the lanes
 		let lanes = try await withDependencies {
-			$0.database.reader = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.edit(UUID(0))
 		}
@@ -130,8 +130,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Editing the lanes
 		let lanes = try await withDependencies {
-			$0.database.reader = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.edit(UUID(0))
 		}
@@ -148,8 +148,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Editing the lanes
 		let lanes = try await withDependencies {
-			$0.database.reader = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.edit(UUID(0))
 		}
@@ -169,8 +169,8 @@ final class LanesRepositoryTests: XCTestCase {
 		let created = Lane.Create(alleyId: UUID(0), id: UUID(0), label: "2", position: .noWall)
 		await assertThrowsError(ofType: DatabaseError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.lanes = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[LanesRepository.self] = .liveValue
 			} operation: {
 				try await self.lanes.create([created])
 			}
@@ -193,8 +193,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		let created = Lane.Create(alleyId: UUID(0), id: UUID(0), label: "1", position: .noWall)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.create([created])
 		}
@@ -217,8 +217,8 @@ final class LanesRepositoryTests: XCTestCase {
 		let created1 = Lane.Create(alleyId: UUID(0), id: UUID(0), label: "1", position: .noWall)
 		let created2 = Lane.Create(alleyId: UUID(0), id: UUID(1), label: "2", position: .leftWall)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.create([created1, created2])
 		}
@@ -243,8 +243,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		let edit = Lane.Edit(id: UUID(0), label: "2", position: .noWall)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.update([edit])
 		}
@@ -268,8 +268,8 @@ final class LanesRepositoryTests: XCTestCase {
 		let edit = Lane.Edit(id: UUID(0), label: "2", position: .noWall)
 		await assertThrowsError(ofType: RecordError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.lanes = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[LanesRepository.self] = .liveValue
 			} operation: {
 				try await self.lanes.update([edit])
 			}
@@ -289,8 +289,8 @@ final class LanesRepositoryTests: XCTestCase {
 		let edit1 = Lane.Edit(id: UUID(0), label: "3", position: .noWall)
 		let edit2 = Lane.Edit(id: UUID(1), label: "4", position: .noWall)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.update([edit1, edit2])
 		}
@@ -320,8 +320,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Deleting the first lane
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.delete([UUID(0)])
 		}
@@ -342,8 +342,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Deleting a non-existent lane
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.delete([UUID(1)])
 		}
@@ -362,8 +362,8 @@ final class LanesRepositoryTests: XCTestCase {
 
 		// Deleting two lanes
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.lanes = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[LanesRepository.self] = .liveValue
 		} operation: {
 			try await self.lanes.delete([UUID(0), UUID(1)])
 		}

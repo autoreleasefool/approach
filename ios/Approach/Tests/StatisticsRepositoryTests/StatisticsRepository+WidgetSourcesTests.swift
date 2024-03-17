@@ -8,7 +8,6 @@ import Dependencies
 import TestDatabaseUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 	@Dependency(StatisticsRepository.self) var statistics
 
@@ -17,8 +16,8 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 		let source: StatisticsWidget.Source = .bowler(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadWidgetSources(source)
 		}
@@ -34,8 +33,8 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 		let source: StatisticsWidget.Source = .league(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadWidgetSources(source)
 		}
@@ -53,8 +52,8 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1]))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadDefaultWidgetSources()
 		}
@@ -69,8 +68,8 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .zero)
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadDefaultWidgetSources()
 		}
@@ -84,8 +83,8 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadDefaultWidgetSources()
 		}
@@ -99,8 +98,8 @@ final class StatisticsRepositoryWidgetSourcesTests: XCTestCase {
 		let db = try initializeDatabase(withBowlers: .custom([bowler1, bowler2]))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
 			try await self.statistics.loadDefaultWidgetSources()
 		}

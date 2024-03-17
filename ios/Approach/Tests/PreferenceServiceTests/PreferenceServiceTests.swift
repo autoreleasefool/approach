@@ -9,10 +9,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testRemovesKey() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setString = liveValue.setString
-			$0.preferences.getString = liveValue.getString
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setString = liveValue.setString
+			$0[PreferenceService.self].getString = liveValue.getString
 		} operation: {
 			let key = "key"
 
@@ -34,10 +34,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testStoreAndRetrievesBool() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setBool = liveValue.setBool
-			$0.preferences.getBool = liveValue.getBool
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setBool = liveValue.setBool
+			$0[PreferenceService.self].getBool = liveValue.getBool
 		} operation: {
 			let key = "bool"
 
@@ -59,10 +59,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testStoreAndRetrievesInt() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setInt = liveValue.setInt
-			$0.preferences.getInt = liveValue.getInt
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setInt = liveValue.setInt
+			$0[PreferenceService.self].getInt = liveValue.getInt
 		} operation: {
 			let key = "int"
 			XCTAssertFalse(preferences.contains(key))
@@ -83,10 +83,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testStoreAndRetrievesFloat() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setFloat = liveValue.setFloat
-			$0.preferences.getFloat = liveValue.getFloat
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setFloat = liveValue.setFloat
+			$0[PreferenceService.self].getFloat = liveValue.getFloat
 		} operation: {
 			let key = "float"
 			XCTAssertFalse(preferences.contains(key))
@@ -107,10 +107,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testStoreAndRetrievesDouble() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setDouble = liveValue.setDouble
-			$0.preferences.getDouble = liveValue.getDouble
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setDouble = liveValue.setDouble
+			$0[PreferenceService.self].getDouble = liveValue.getDouble
 		} operation: {
 			let key = "double"
 			XCTAssertFalse(preferences.contains(key))
@@ -131,10 +131,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testStoreAndRetrievesString() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setString = liveValue.setString
-			$0.preferences.getString = liveValue.getString
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setString = liveValue.setString
+			$0[PreferenceService.self].getString = liveValue.getString
 		} operation: {
 			let key = "string"
 			XCTAssertFalse(preferences.contains(key))
@@ -155,10 +155,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testStoreAndRetrievesStringArray() {
 		withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setStringArray = liveValue.setStringArray
-			$0.preferences.getStringArray = liveValue.getStringArray
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setStringArray = liveValue.setStringArray
+			$0[PreferenceService.self].getStringArray = liveValue.getStringArray
 		} operation: {
 			let key = "stringArray"
 			XCTAssertFalse(preferences.contains(key))
@@ -179,11 +179,11 @@ final class PreferenceServiceTests: XCTestCase {
 	func testSubscribe_ReceivesChanges() async {
 		await withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setString = liveValue.setString
-			$0.preferences.setBool = liveValue.setBool
-			$0.preferences.observe = liveValue.observe
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setString = liveValue.setString
+			$0[PreferenceService.self].setBool = liveValue.setBool
+			$0[PreferenceService.self].observe = liveValue.observe
 		} operation: {
 			var observations = preferences.observe(
 				keys: [.appDidCompleteOnboarding, .statisticsCountH2AsH]
@@ -207,10 +207,10 @@ final class PreferenceServiceTests: XCTestCase {
 	func testSubscribe_DoesNotReceiveUnrelatedChanges() async {
 		await withDependencies {
 			let liveValue = PreferenceService.liveValue
-			$0.preferences.contains = liveValue.contains
-			$0.preferences.remove = liveValue.remove
-			$0.preferences.setBool = liveValue.setBool
-			$0.preferences.observe = liveValue.observe
+			$0[PreferenceService.self].contains = liveValue.contains
+			$0[PreferenceService.self].remove = liveValue.remove
+			$0[PreferenceService.self].setBool = liveValue.setBool
+			$0[PreferenceService.self].observe = liveValue.observe
 		} operation: {
 			var observations = preferences.observe(
 				keys: [.appDidCompleteOnboarding]

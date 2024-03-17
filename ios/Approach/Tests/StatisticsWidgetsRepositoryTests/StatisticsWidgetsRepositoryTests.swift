@@ -27,8 +27,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Fetching the widgets
 		let widgets = withDependencies {
-			$0.database.reader = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			self.statisticsWidgets.fetchAll(forContext: nil)
 		}
@@ -54,8 +54,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Fetching the widgets
 		let widgets = withDependencies {
-			$0.database.reader = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			self.statisticsWidgets.fetchAll(forContext: "context")
 		}
@@ -78,8 +78,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Fetching the widgets
 		let widgets = withDependencies {
-			$0.database.reader = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			self.statisticsWidgets.fetchAll(forContext: "context")
 		}
@@ -101,9 +101,9 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let source: StatisticsWidget.Source = .bowler(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			try await self.statisticsWidgets.loadSources(source)
 		}
@@ -119,9 +119,9 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		let source: StatisticsWidget.Source = .league(UUID(0))
 
 		let sources = try await withDependencies {
-			$0.database.reader = { db }
-			$0.statistics = .liveValue
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[StatisticsRepository.self] = .liveValue
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			try await self.statisticsWidgets.loadSources(source)
 		}
@@ -143,9 +143,9 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Updating the priorities
 		try await withDependencies {
-			$0.database.reader = { db }
-			$0.database.writer = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			try await self.statisticsWidgets.updatePriorities([UUID(2), UUID(0), UUID(1)])
 		}
@@ -169,8 +169,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		// Updating the priorities throws an error
 		await assertThrowsError(ofType: StatisticsWidget.ContextError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.statisticsWidgets = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[StatisticsWidgetsRepository.self] = .liveValue
 			} operation: {
 				try await self.statisticsWidgets.updatePriorities([UUID(0), UUID(1)])
 			}
@@ -188,8 +188,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		await assertThrowsError(ofType: DatabaseError.self) {
 			let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average Pins Left on Deck", context: "", priority: 0)
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.statisticsWidgets = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[StatisticsWidgetsRepository.self] = .liveValue
 			} operation: {
 				try await self.statisticsWidgets.create(create)
 			}
@@ -213,8 +213,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 		// Creating a widget
 		let create = StatisticsWidget.Create(id: UUID(0), created: Date(), bowlerId: UUID(0), leagueId: nil, timeline: .allTime, statistic: "Average Pins Left on Deck", context: "", priority: 0)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			try await self.statisticsWidgets.create(create)
 		}
@@ -240,8 +240,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Deleting the first bowler
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			try await self.statisticsWidgets.delete(UUID(0))
 		}
@@ -262,8 +262,8 @@ final class StatisticsWidgetsRepositoryTests: XCTestCase {
 
 		// Deleting a non-existent widget
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.statisticsWidgets = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[StatisticsWidgetsRepository.self] = .liveValue
 		} operation: {
 			try await self.statisticsWidgets.delete(UUID(1))
 		}

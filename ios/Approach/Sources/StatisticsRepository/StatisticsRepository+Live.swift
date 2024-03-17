@@ -12,13 +12,6 @@ import StatisticsWidgetsLibrary
 
 extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.calendar) var calendar
-		@Dependency(DatabaseService.self) var database
-		@Dependency(\.date) var date
-		@Dependency(FeatureFlagsService.self) var featureFlags
-		@Dependency(PreferenceService.self) var preferences
-		@Dependency(\.uuid) var uuid
-
 		@Sendable func isSeenKey(forStatistic: Statistic.Type) -> String {
 			"Statistic.IsSeen.\(forStatistic.title)"
 		}
@@ -26,6 +19,8 @@ extension StatisticsRepository: DependencyKey {
 		// MARK: - Per Series
 
 		@Sendable func adjust(statistics: inout [Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
+			@Dependency(PreferenceService.self) var preferences
+
 			let perSeriesConfiguration = preferences.perSeriesConfiguration()
 			while let series = try bySeries?.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
@@ -38,6 +33,8 @@ extension StatisticsRepository: DependencyKey {
 			statistic: Statistic.Type,
 			bySeries: RecordCursor<Series.TrackableEntry>?
 		) throws -> [Key: Statistic] {
+			@Dependency(PreferenceService.self) var preferences
+
 			let perSeriesConfiguration = preferences.perSeriesConfiguration()
 			var allEntries: [Key: Statistic] = [:]
 			while let series = try bySeries?.next() {
@@ -54,6 +51,8 @@ extension StatisticsRepository: DependencyKey {
 		// MARK: - Per Game
 
 		@Sendable func adjust(statistics: inout [Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
+			@Dependency(PreferenceService.self) var preferences
+
 			let perGameConfiguration = preferences.perGameConfiguration()
 			while let game = try byGames?.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
@@ -66,6 +65,8 @@ extension StatisticsRepository: DependencyKey {
 			statistic: Statistic.Type,
 			byGames: RecordCursor<Game.TrackableEntry>?
 		) throws -> [Key: Statistic] {
+			@Dependency(PreferenceService.self) var preferences
+
 			let perGameConfiguration = preferences.perGameConfiguration()
 			var allEntries: [Key: Statistic] = [:]
 			while let game = try byGames?.next() {
@@ -82,6 +83,8 @@ extension StatisticsRepository: DependencyKey {
 		// MARK: - Per Frame
 
 		@Sendable func adjust(statistics: inout [Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
+			@Dependency(PreferenceService.self) var preferences
+
 			let perFrameConfiguration = preferences.perFrameConfiguration()
 			while let frame = try byFrames?.next() {
 				for index in statistics.startIndex..<statistics.endIndex {
@@ -94,6 +97,8 @@ extension StatisticsRepository: DependencyKey {
 			statistic: Statistic.Type,
 			byFrames: RecordCursor<Frame.TrackableEntry>?
 		) throws -> [Key: Statistic] {
+			@Dependency(PreferenceService.self) var preferences
+
 			let perFrameConfiguration = preferences.perFrameConfiguration()
 			var allEntries: [Key: Statistic] = [:]
 			while let frame = try byFrames?.next() {
@@ -130,7 +135,9 @@ extension StatisticsRepository: DependencyKey {
 		}
 
 		@Sendable func loadSources(source: TrackableFilter.Source) async throws -> TrackableFilter.Sources {
-			try await database.reader().read {
+			@Dependency(DatabaseService.self) var database
+
+			return try await database.reader().read {
 				switch source {
 				case let .bowler(id):
 					let request = Bowler.Database
@@ -171,6 +178,9 @@ extension StatisticsRepository: DependencyKey {
 		return Self(
 			loadSources: loadSources(source:),
 			loadDefaultSources: {
+				@Dependency(DatabaseService.self) var database
+				@Dependency(PreferenceService.self) var preferences
+
 				let decoder = JSONDecoder()
 				if let lastUsedSource = preferences.string(forKey: .statisticsLastUsedTrackableFilterSource),
 					 let data = lastUsedSource.data(using: .utf8),
@@ -193,6 +203,8 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			saveLastUsedSource: { source in
+				@Dependency(PreferenceService.self) var preferences
+
 				let encoder = JSONEncoder()
 				guard let data = try? encoder.encode(source),
 							let lastUsed = String(data: data, encoding: .utf8) else {
@@ -202,6 +214,9 @@ extension StatisticsRepository: DependencyKey {
 				preferences.setKey(.statisticsLastUsedTrackableFilterSource, toString: lastUsed)
 			},
 			loadValues: { filter in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(PreferenceService.self) var preferences
+
 				let statistics = try await database.reader().read {
 					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }
 
@@ -253,6 +268,9 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadChart: { statistic, filter in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(\.uuid) var uuid
+
 				@Sendable func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: statistic.title)
 				}
@@ -294,7 +312,9 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadWidgetSources: { source in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					switch source {
 					case let .bowler(id):
 						let request = Bowler.Database
@@ -313,7 +333,9 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadDefaultWidgetSources: {
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					let bowlers = try Bowler.Database
 						.limit(2)
 						.filter(byKind: .playable)
@@ -328,6 +350,11 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			loadWidgetData: { configuration in
+				@Dependency(\.calendar) var calendar
+				@Dependency(\.date) var date
+				@Dependency(DatabaseService.self) var database
+				@Dependency(\.uuid) var uuid
+
 				@Sendable func unavailable() -> Statistics.ChartContent {
 					.chartUnavailable(statistic: configuration.statistic)
 				}

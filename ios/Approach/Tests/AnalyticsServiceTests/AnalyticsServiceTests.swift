@@ -3,7 +3,6 @@
 import TelemetryClient
 import XCTest
 
-@MainActor
 final class AnalyticsServiceTests: XCTestCase {
 	func testInitializes() {
 		let analytics: AnalyticsService = .liveValue
