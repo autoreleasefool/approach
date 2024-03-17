@@ -9,6 +9,7 @@ import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
 import GamesListFeature
+import GamesRepositoryInterface
 import LeaguesListFeature
 import ModelsLibrary
 import PreferenceServiceInterface
@@ -130,6 +131,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
+	@Dependency(GamesRepository.self) var games
 	@Dependency(PreferenceService.self) var preferences
 	@Dependency(QuickLaunchRepository.self) var quickLaunch
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
@@ -157,10 +159,17 @@ public struct BowlersList: Reducer {
 					return .none
 
 				case .didFirstAppear:
-					return .run { send in
-						guard let announcement = announcements.announcement() else { return }
-						await send(.internal(.showAnnouncement(announcement)))
-					}
+					return .merge(
+						.run { send in
+							guard let announcement = announcements.announcement() else { return }
+							await send(.internal(.showAnnouncement(announcement)))
+						},
+						.run { _ in
+							do {
+								try await games.lockStaleGames()
+							} catch {} // ignore failures
+						}
+					)
 
 				case .didStartTask:
 					return .merge(
