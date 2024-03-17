@@ -39,6 +39,7 @@ public struct GamesRepository: Sendable {
 	public var unarchive: @Sendable (Game.ID) async throws -> Void
 	public var duplicateLanes: @Sendable (Game.ID, [Game.ID]) async throws -> Void
 	public var reorderGames: @Sendable (Series.ID, [Game.ID]) async throws -> Void
+	public var lockStaleGames: @Sendable () async throws -> Void
 
 	public init(
 		list: @escaping @Sendable (Series.ID, Game.Ordering) -> AsyncThrowingStream<[Game.List], Error>,
@@ -53,7 +54,8 @@ public struct GamesRepository: Sendable {
 		archive: @escaping @Sendable (Game.ID) async throws -> Void,
 		unarchive: @escaping @Sendable (Game.ID) async throws -> Void,
 		duplicateLanes: @escaping @Sendable (Game.ID, [Game.ID]) async throws -> Void,
-		reorderGames: @escaping @Sendable (Series.ID, [Game.ID]) async throws -> Void
+		reorderGames: @escaping @Sendable (Series.ID, [Game.ID]) async throws -> Void,
+		lockStaleGames: @escaping @Sendable () async throws -> Void
 	) {
 		self.list = list
 		self.archived = archived
@@ -68,6 +70,7 @@ public struct GamesRepository: Sendable {
 		self.unarchive = unarchive
 		self.duplicateLanes = duplicateLanes
 		self.reorderGames = reorderGames
+		self.lockStaleGames = lockStaleGames
 	}
 
 	public func seriesGames(forId: Series.ID, ordering: Game.Ordering) -> AsyncThrowingStream<[Game.List], Error> {
@@ -108,6 +111,7 @@ extension GamesRepository: TestDependencyKey {
 		archive: { _ in unimplemented("\(Self.self).archive") },
 		unarchive: { _ in unimplemented("\(Self.self).unarchive") },
 		duplicateLanes: { _, _ in unimplemented("\(Self.self).duplicateLanes") },
-		reorderGames: { _, _ in unimplemented("\(Self.self).reorderGames") }
+		reorderGames: { _, _ in unimplemented("\(Self.self).reorderGames") },
+		lockStaleGames: { unimplemented("\(Self.self).lockStaleGames") }
 	)
 }

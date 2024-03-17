@@ -2,6 +2,7 @@ import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
 import ExtensionsLibrary
+import Foundation
 import GamesRepositoryInterface
 import GRDB
 import MatchPlaysRepositoryInterface
@@ -289,6 +290,23 @@ extension GamesRepository: DependencyKey {
 			reorderGames: { series, games in
 				try await database.writer().write {
 					try reorderGames(series: series, games: games, db: $0)
+				}
+			},
+			lockStaleGames: {
+				@Dependency(\.date) var date
+
+				try await database.writer().write { db in
+					let currentDate = date()
+					let staleLengthOfTime: TimeInterval = 60 * 60 * 24 * 7
+					let staleDate = currentDate.advanced(by: -staleLengthOfTime)
+
+					try Game.Database
+						.filter(Game.Database.Columns.locked == Game.Lock.open)
+						.including(
+							required: Game.Database.series
+								.filter(Series.Database.Columns.date <= staleDate)
+						)
+						.updateAll(db, Game.Database.Columns.locked.set(to: Game.Lock.locked))
 				}
 			}
 		)

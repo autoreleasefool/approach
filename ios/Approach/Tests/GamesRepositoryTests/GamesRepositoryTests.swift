@@ -10,7 +10,6 @@ import TestDatabaseUtilitiesLibrary
 import TestUtilitiesLibrary
 import XCTest
 
-@MainActor
 final class GamesRepositoryTests: XCTestCase {
 	@Dependency(GamesRepository.self) var games
 
@@ -25,8 +24,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.seriesGames(forId: UUID(0), ordering: .byIndex)
 		}
@@ -48,8 +47,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games by series
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.seriesGames(forId: UUID(0), ordering: .byIndex)
 		}
@@ -70,8 +69,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.seriesGames(forId: UUID(0), ordering: .byIndex)
 		}
@@ -96,8 +95,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.seriesGamesSummaries(forId: UUID(0), ordering: .byIndex)
 		}
@@ -119,8 +118,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games by series
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.seriesGamesSummaries(forId: UUID(0), ordering: .byIndex)
 		}
@@ -141,8 +140,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.seriesGamesSummaries(forId: UUID(0), ordering: .byIndex)
 		}
@@ -171,8 +170,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the archived games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.archived()
 		}
@@ -205,8 +204,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.matches(against: UUID(0))
 		}
@@ -236,8 +235,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.matches(against: UUID(0))
 		}
@@ -265,8 +264,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = try await withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.shareGames([UUID(0), UUID(1)])
 		}
@@ -339,8 +338,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Fetching the games throws an error
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.games.shareGames([UUID(0), UUID(1)])
 			}
@@ -362,8 +361,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the games
 		let games = try await withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.shareSeries(UUID(0))
 		}
@@ -409,8 +408,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Fetching the series throws an error
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.reader = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.games.shareSeries(UUID(0))
 			}
@@ -426,8 +425,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Editing the game
 		let game = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.observe(UUID(0))
 		}
@@ -476,8 +475,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Editing the game
 		let game = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.observe(UUID(0))
 		}
@@ -530,8 +529,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Editing the game
 		let game = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.observe(UUID(0))
 		}
@@ -583,8 +582,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Editing the game
 		let game = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.observe(UUID(0))
 		}
@@ -629,8 +628,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Editing the game
 		let game = withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			self.games.observe(UUID(0))
 		}
@@ -651,8 +650,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the game
 		let game = try await withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.findIndex(UUID(0))
 		}
@@ -666,8 +665,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Fetching the game
 		let game = try await withDependencies {
-			$0.database.reader = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.findIndex(UUID(0))
 		}
@@ -706,8 +705,8 @@ final class GamesRepositoryTests: XCTestCase {
 			)
 		)
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.update(editable)
 		}
@@ -762,9 +761,9 @@ final class GamesRepositoryTests: XCTestCase {
 
 		let updatedMatchPlay = self.expectation(description: "updated match play")
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games.update = GamesRepository.liveValue.update
-			$0.matchPlays.update = { matchPlay in
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self].update = GamesRepository.liveValue.update
+			$0[MatchPlaysRepository.self].update = { @Sendable matchPlay in
 				XCTAssertEqual(
 					matchPlay,
 					.init(
@@ -818,8 +817,8 @@ final class GamesRepositoryTests: XCTestCase {
 		)
 
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games.update = GamesRepository.liveValue.update
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self].update = GamesRepository.liveValue.update
 		} operation: {
 			try await self.games.update(editable)
 		}
@@ -863,8 +862,8 @@ final class GamesRepositoryTests: XCTestCase {
 		)
 
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games.update = GamesRepository.liveValue.update
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self].update = GamesRepository.liveValue.update
 		} operation: {
 			try await self.games.update(editable)
 		}
@@ -902,8 +901,8 @@ final class GamesRepositoryTests: XCTestCase {
 				)
 			)
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				try await self.games.update(editable)
 			}
@@ -924,9 +923,9 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Archiving the first game
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.games = .liveValue
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.archive(UUID(0))
 		}
@@ -957,9 +956,9 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Archiving the second game
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.games = .liveValue
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.archive(UUID(1))
 		}
@@ -984,9 +983,9 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Archiving the games
 		try await withDependencies {
-			$0.database.writer = { db }
+			$0[DatabaseService.self].writer = { @Sendable in db }
 			$0.date = .constant(Date(timeIntervalSince1970: 123))
-			$0.games = .liveValue
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.archive(UUID(0))
 			try await self.games.archive(UUID(1))
@@ -1010,9 +1009,9 @@ final class GamesRepositoryTests: XCTestCase {
 		// Archiving a non-existent game
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
+				$0[DatabaseService.self].writer = { @Sendable in db }
 				$0.date = .constant(Date(timeIntervalSince1970: 123))
-				$0.games = .liveValue
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				try await self.games.archive(UUID(1))
 			}
@@ -1036,8 +1035,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Unarchiving the first game
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.unarchive(UUID(0))
 		}
@@ -1069,8 +1068,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Unarchiving the first game
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.unarchive(UUID(0))
 		}
@@ -1089,8 +1088,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Unarchiving the first game
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.unarchive(UUID(0))
 		}
@@ -1110,8 +1109,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Unarchiving a non-existent game
 		await assertThrowsError(ofType: FetchableError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				try await self.games.unarchive(UUID(1))
 			}
@@ -1134,8 +1133,8 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .zero)
 
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.duplicateLanes(from: UUID(0), toAllGames: [UUID(1), UUID(2)])
 		}
@@ -1153,8 +1152,8 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2]))
 
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.duplicateLanes(from: UUID(0), toAllGames: [UUID(1), UUID(2)])
 		}
@@ -1185,8 +1184,8 @@ final class GamesRepositoryTests: XCTestCase {
 		let db = try initializeDatabase(withLanes: .default, withGames: .custom([game1, game2, game3]), withGameLanes: .custom([gameLane1, gameLane2, gameLane3]))
 
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.duplicateLanes(from: UUID(0), toAllGames: [UUID(1), UUID(2)])
 		}
@@ -1217,8 +1216,8 @@ final class GamesRepositoryTests: XCTestCase {
 
 		// Changing the order
 		try await withDependencies {
-			$0.database.writer = { db }
-			$0.games = .liveValue
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
 		} operation: {
 			try await self.games.reorderGames([game2.id, game4.id, game1.id, game3.id], inSeries: series1.id)
 		}
@@ -1241,8 +1240,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Changing the order throws an error
 		await assertThrowsError(ofType: GamesRepositoryError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				try await self.games.reorderGames([game2.id, game4.id, game1.id], inSeries: series1.id)
 			}
@@ -1266,8 +1265,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Changing the order throws an error
 		await assertThrowsError(ofType: GamesRepositoryError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				try await self.games.reorderGames([game2.id, game4.id, game1.id, game3.id, UUID(5)], inSeries: series1.id)
 			}
@@ -1291,8 +1290,8 @@ final class GamesRepositoryTests: XCTestCase {
 		// Changing the order throws an error
 		await assertThrowsError(ofType: GamesRepositoryError.self) {
 			try await withDependencies {
-				$0.database.writer = { db }
-				$0.games = .liveValue
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[GamesRepository.self] = .liveValue
 			} operation: {
 				try await self.games.reorderGames([game2.id, game4.id, game1.id, game3.id, game2.id], inSeries: series1.id)
 			}
@@ -1302,5 +1301,62 @@ final class GamesRepositoryTests: XCTestCase {
 		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
 		XCTAssertEqual(games, [game1, game2, game3, game4])
 		XCTAssertEqual(games.map(\.index), [0, 1, 2, 4])
+	}
+
+	// MARK: Lock Stale Games
+	func testLockStaleGames_WithStaleGame_LocksGame() async throws {
+		let testDate = Date()
+		let seriesDate = testDate.advanced(by: -(60 * 60 * 24 * 7 + 1))
+
+		// Given a database with 2 old games, 2 recent games
+		let series1 = Series.Database.mock(id: UUID(0), date: seriesDate)
+		let series2 = Series.Database.mock(id: UUID(1), date: testDate)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, locked: .open)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, locked: .locked)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 2, locked: .open)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 3, locked: .locked)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
+
+		// Locking stale games
+		try await withDependencies {
+			$0.date.now = testDate
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
+		} operation: {
+			try await self.games.lockStaleGames()
+		}
+
+		// Locks stale games
+		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+//		XCTAssertEqual(games, [game1, game2, game3, game4])
+		XCTAssertEqual(games.map(\.locked), [.locked, .locked, .open, .locked])
+	}
+
+	func testLockStaleGames_WithNoStaleGame_LeavesGame() async throws {
+		let testDate = Date()
+		let seriesDate = testDate.advanced(by: -(60 * 60 * 24 * 7 - 1))
+
+		// Given a database with 4 recent games
+		let series1 = Series.Database.mock(id: UUID(0), date: seriesDate)
+		let series2 = Series.Database.mock(id: UUID(1), date: testDate)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, locked: .open)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, locked: .locked)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 2, locked: .open)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 3, locked: .locked)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3, game4]))
+
+		// Locking stale games
+		try await withDependencies {
+			$0.date.now = testDate
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[GamesRepository.self] = .liveValue
+		} operation: {
+			try await self.games.lockStaleGames()
+		}
+
+		// Leaves data unchanged
+		let games = try await db.read { try Game.Database.all().orderByIndex().fetchAll($0) }
+		XCTAssertEqual(games, [game1, game2, game3, game4])
+		XCTAssertEqual(games.map(\.locked), [.open, .locked, .open, .locked])
 	}
 }
