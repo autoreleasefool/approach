@@ -7,11 +7,11 @@ import ModelsLibrary
 
 extension LocationsRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-
 		return Self(
 			insertOrUpdate: { location in
-				try await database.writer().write {
+				@Dependency(DatabaseService.self) var database
+
+				_ = try await database.writer().write {
 					let exists = try location.exists($0)
 					if exists {
 						try location.update($0)

@@ -7,11 +7,11 @@ import ModelsLibrary
 
 extension LanesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-
 		return Self(
 			list: { alley in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Lane.Database
 						.all()
 						.filter(byAlley: alley)
@@ -21,7 +21,9 @@ extension LanesRepository: DependencyKey {
 				}
 			},
 			edit: { alley in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try Lane.Database
 						.all()
 						.orderByLabel()
@@ -31,6 +33,8 @@ extension LanesRepository: DependencyKey {
 				}
 			},
 			create: { lanes in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					for lane in lanes {
 						try lane.insert($0)
@@ -38,6 +42,8 @@ extension LanesRepository: DependencyKey {
 				}
 			},
 			update: { lanes in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					for lane in lanes {
 						try lane.update($0)
@@ -45,6 +51,8 @@ extension LanesRepository: DependencyKey {
 				}
 			},
 			delete: { ids in
+				@Dependency(DatabaseService.self) var database
+
 				_ = try await database.writer().write {
 					try Lane.Database.deleteAll($0, ids: ids)
 				}

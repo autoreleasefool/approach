@@ -11,12 +11,11 @@ import StatisticsModelsLibrary
 
 extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-		@Dependency(RecentlyUsedService.self) var recentlyUsed
-		@Dependency(LocationsRepository.self) var locations
-
 		return Self(
 			list: { material, pinFall, mechanism, pinBase, ordering in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let alleys = database.reader().observe {
 					let series = Alley.Database.trackableSeries(filter: nil)
 					let games = Alley.Database.trackableGames(through: series, filter: nil)
@@ -42,6 +41,9 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			mostRecentlyUsed: { limit in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let alleys = database.reader().observe {
 					try Alley.Database
 						.all()
@@ -54,6 +56,9 @@ extension AlleysRepository: DependencyKey {
 				return prefix(sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys)), ofSize: limit)
 			},
 			pickable: {
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let alleys = database.reader().observe {
 					try Alley.Database
 						.all()
@@ -66,7 +71,9 @@ extension AlleysRepository: DependencyKey {
 				return sort(alleys, byIds: recentlyUsed.observeRecentlyUsedIds(.alleys))
 			},
 			load: { id in
-				database.reader().observeOne {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observeOne {
 					try Alley.Database
 						.filter(Alley.Database.Columns.id == id)
 						.including(optional: Alley.Database.location)
@@ -75,6 +82,8 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			edit: { id in
+				@Dependency(DatabaseService.self) var database
+
 				let lanesAlias = TableAlias(name: "lanes")
 				return try await database.reader().read {
 					try Alley.Database
@@ -90,6 +99,9 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			create: { alley in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(LocationsRepository.self) var locations
+
 				if let location = alley.location {
 					try await locations.insertOrUpdate(location)
 				}
@@ -98,6 +110,9 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			update: { alley in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(LocationsRepository.self) var locations
+
 				if let location = alley.location {
 					try await locations.insertOrUpdate(location)
 				}
@@ -106,6 +121,8 @@ extension AlleysRepository: DependencyKey {
 				}
 			},
 			delete: { id in
+				@Dependency(DatabaseService.self) var database
+
 				_ = try await database.writer().write {
 					try Alley.Database.deleteOne($0, id: id)
 				}

@@ -11,13 +11,12 @@ public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 
 extension GearRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-		@Dependency(RecentlyUsedService.self) var recentlyUsed
-
 		@Sendable func sortGear(
 			_ gear: GearStream,
 			_ ordering: Gear.Ordering
 		) -> GearStream {
+			@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 			switch ordering {
 			case .byName:
 				return gear
@@ -28,6 +27,8 @@ extension GearRepository: DependencyKey {
 
 		return Self(
 			list: { owner, kind, ordering in
+				@Dependency(DatabaseService.self) var database
+
 				let gear = database.reader().observe {
 					try Gear.Database
 						.all()
@@ -41,7 +42,9 @@ extension GearRepository: DependencyKey {
 				return sortGear(gear, ordering)
 			},
 			preferred: { bowler in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try Gear.Database
 						.having(
 							Gear.Database.bowlerPreferredGear
@@ -54,6 +57,8 @@ extension GearRepository: DependencyKey {
 				}
 			},
 			mostRecentlyUsed: { kind, limit in
+				@Dependency(DatabaseService.self) var database
+
 				let gear = database.reader().observe {
 					try Gear.Database
 						.all()
@@ -66,7 +71,9 @@ extension GearRepository: DependencyKey {
 				return prefix(sortGear(gear, .byRecentlyUsed), ofSize: limit)
 			},
 			edit: { id in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try Gear.Database
 						.filter(Gear.Database.Columns.id == id)
 						.including(optional: Gear.Database.bowler.forKey("owner"))
@@ -76,23 +83,31 @@ extension GearRepository: DependencyKey {
 				}
 			},
 			create: { gear in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try gear.avatar.databaseModel.insert($0)
 					try gear.insert($0)
 				}
 			},
 			update: { gear in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try gear.update($0)
 					try gear.avatar.databaseModel.update($0)
 				}
 			},
 			delete: { id in
+				@Dependency(DatabaseService.self) var database
+
 				_ = try await database.writer().write {
 					try Gear.Database.deleteOne($0, id: id)
 				}
 			},
 			updatePreferredGear: { bowler, gear in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					// FIXME: Rather than deleting all associations, should only add new/remove old
 					try BowlerPreferredGear.Database

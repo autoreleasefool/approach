@@ -13,11 +13,11 @@ typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
 extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-		@Dependency(RecentlyUsedService.self) var recentlyUsed
-
 		return Self(
 			list: { ordering in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let bowlers = database.reader().observe {
 					let leagues = Bowler.Database.trackableLeagues(filter: nil)
 					let series = Bowler.Database.trackableSeries(through: leagues, filter: nil)
@@ -44,6 +44,9 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			summaries: { kind, ordering in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
@@ -62,7 +65,9 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			archived: {
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Bowler.Database
 						.all()
 						.isArchived()
@@ -75,6 +80,9 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			opponents: { ordering in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let bowlers = database.reader().observe {
 					try Bowler.Database
 						.all()
@@ -92,6 +100,8 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			fetchSummaries: { ids in
+				@Dependency(DatabaseService.self) var database
+
 				let bowlers = try await database.reader().read {
 					try Bowler.Database
 						.all()
@@ -103,7 +113,9 @@ extension BowlersRepository: DependencyKey {
 				return bowlers.sortBy(ids: ids)
 			},
 			opponentRecord: { opponent in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					let seriesAlias = TableAlias()
 
 					// FIXME: filter out games that have leagues/series/games with excludeFromStatistics
@@ -157,30 +169,40 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			edit: { id in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try Bowler.Edit.fetchOneGuaranteed($0, id: id)
 				}
 			},
 			create: { bowler in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try bowler.insert($0)
 				}
 			},
 			update: { bowler in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try bowler.update($0)
 				}
 			},
 			archive: { id in
+				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
-				return try await database.writer().write {
+
+				try await database.writer().write {
 					try Bowler.Database
 						.filter(id: id)
 						.updateAll($0, Bowler.Database.Columns.archivedOn.set(to: date()))
 				}
 			},
 			unarchive: { id in
-				return try await database.writer().write {
+				@Dependency(DatabaseService.self) var database
+
+				try await database.writer().write {
 					try Bowler.Database
 						.filter(id: id)
 						.updateAll($0, Bowler.Database.Columns.archivedOn.set(to: nil))

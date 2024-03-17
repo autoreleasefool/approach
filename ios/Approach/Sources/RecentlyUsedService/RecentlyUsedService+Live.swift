@@ -13,9 +13,6 @@ extension RecentlyUsedService: DependencyKey {
 	public static var maximumEntries: Int { 20 }
 
 	public static var liveValue: Self = {
-		@Dependency(PreferenceService.self) var preferences
-		@Dependency(\.date) var date
-
 		// FIXME: Replace with a @Dependency
 		let decoder = JSONDecoder()
 
@@ -24,6 +21,8 @@ extension RecentlyUsedService: DependencyKey {
 		}
 
 		@Sendable func entries(forCategory category: Resource) -> [Entry] {
+			@Dependency(PreferenceService.self) var preferences
+
 			let categoryKey = key(forCategory: category)
 			let string = preferences.getString(categoryKey) ?? "[]"
 			guard let data = string.data(using: .utf8),
@@ -36,6 +35,9 @@ extension RecentlyUsedService: DependencyKey {
 
 		return Self(
 			didRecentlyUseResource: { category, uuid in
+				@Dependency(\.date) var date
+				@Dependency(PreferenceService.self) var preferences
+
 				let categoryKey = key(forCategory: category)
 				var recentlyUsed = entries(forCategory: category)
 				let entry = Entry(id: uuid, lastUsedAt: date())
@@ -97,6 +99,8 @@ extension RecentlyUsedService: DependencyKey {
 					}
 			},
 			resetRecentlyUsed: { category in
+				@Dependency(PreferenceService.self) var preferences
+
 				let categoryKey = key(forCategory: category)
 				preferences.remove(categoryKey)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)

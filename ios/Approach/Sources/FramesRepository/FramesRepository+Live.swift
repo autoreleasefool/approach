@@ -8,11 +8,11 @@ import RepositoryLibrary
 
 extension FramesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-
 		return Self(
 			observe: { game in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Frame.Database
 						.all()
 						.filter(byGame: game)
@@ -39,7 +39,9 @@ extension FramesRepository: DependencyKey {
 				}
 			},
 			observeRolls: { game in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Frame.Database
 						.all()
 						.filter(byGame: game)
@@ -55,6 +57,8 @@ extension FramesRepository: DependencyKey {
 				}
 			},
 			update: { frame in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try frame.update($0)
 				}

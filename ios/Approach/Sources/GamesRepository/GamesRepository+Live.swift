@@ -11,9 +11,6 @@ import RepositoryLibrary
 
 extension GamesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-		@Dependency(MatchPlaysRepository.self) var matchPlays
-
 		@Sendable func requestList(forSeries: Series.ID, ordering: Game.Ordering) -> QueryInterfaceRequest<Game.Database> {
 			switch ordering {
 			case .byIndex:
@@ -92,7 +89,9 @@ extension GamesRepository: DependencyKey {
 
 		return Self(
 			list: { series, ordering in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try requestList(forSeries: series, ordering: ordering)
 						.annotated(withRequired: Game.Database.bowler.select(Bowler.Database.Columns.id.forKey("bowlerId")))
 						.asRequest(of: Game.List.self)
@@ -100,7 +99,9 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			archived: {
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Game.Database
 						.all()
 						.isArchived()
@@ -113,14 +114,18 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			summariesList: { series, ordering in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try requestList(forSeries: series, ordering: ordering)
 						.asRequest(of: Game.Summary.self)
 						.fetchAll($0)
 				}
 			},
 			matchesAgainstOpponent: { opponent in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					let seriesAlias = TableAlias()
 					return try Game.Database
 						.all()
@@ -136,6 +141,8 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			shareGames: { gameIds in
+				@Dependency(DatabaseService.self) var database
+
 				let games = try await database.reader().read {
 					try share(
 						request: Game.Database
@@ -151,7 +158,9 @@ extension GamesRepository: DependencyKey {
 				return games.sortBy(ids: gameIds)
 			},
 			shareSeries: { seriesId in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					guard try Series.Database.exists($0, id: seriesId) else {
 						throw FetchableError.recordNotFound(type: Series.self, id: seriesId)
 					}
@@ -165,7 +174,9 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			observe: { id in
-				database.reader().observeOne {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observeOne {
 					try Game.Database
 						.filter(id: id)
 						.including(required: Game.Database.bowler)
@@ -194,7 +205,9 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			findIndex: { id in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try Game.Database
 						.filter(id: id)
 						.asRequest(of: Game.Indexed.self)
@@ -202,6 +215,9 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			update: { game in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(MatchPlaysRepository.self) var matchPlays
+
 				try await database.writer().write {
 					try game.update($0)
 
@@ -229,8 +245,10 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			archive: { id in
+				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
-				return try await database.writer().write {
+
+				try await database.writer().write {
 					let game = try Game.Database.fetchOneGuaranteed($0, id: id)
 
 					try Game.Database
@@ -252,7 +270,9 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			unarchive: { id in
-				return try await database.writer().write {
+				@Dependency(DatabaseService.self) var database
+
+				try await database.writer().write {
 					let game = try Game.Database.fetchOneGuaranteed($0, id: id)
 					let series = try Series.Database
 						.filter(id: game.seriesId)
@@ -270,6 +290,8 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			duplicateLanes: { source, destinations in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					let lanesForGame = try GameLane.Database
 						.filter(GameLane.Database.Columns.gameId == source)
@@ -288,11 +310,14 @@ extension GamesRepository: DependencyKey {
 				}
 			},
 			reorderGames: { series, games in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try reorderGames(series: series, games: games, db: $0)
 				}
 			},
 			lockStaleGames: {
+				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
 
 				try await database.writer().write { db in

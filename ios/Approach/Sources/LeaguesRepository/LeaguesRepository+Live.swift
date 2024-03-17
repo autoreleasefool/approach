@@ -10,11 +10,6 @@ import StatisticsModelsLibrary
 
 extension LeaguesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-		@Dependency(RecentlyUsedService.self) var recentlyUsed
-		@Dependency(\.uuid) var uuid
-		@Dependency(\.date) var date
-
 		@Sendable func requestList(
 			bowledBy: Bowler.ID,
 			withRecurrence: League.Recurrence?,
@@ -30,6 +25,9 @@ extension LeaguesRepository: DependencyKey {
 
 		return Self(
 			list: { bowler, recurrence, ordering in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let leagues = database.reader().observe {
 					let series = League.Database.trackableSeries(filter: nil)
 					let games = League.Database.trackableGames(through: series, filter: nil)
@@ -50,6 +48,9 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			pickable: { bowler, recurrence, ordering in
+				@Dependency(DatabaseService.self) var database
+				@Dependency(RecentlyUsedService.self) var recentlyUsed
+
 				let leagues = database.reader().observe {
 					try requestList(bowledBy: bowler, withRecurrence: recurrence, ordered: ordering)
 						.asRequest(of: League.Summary.self)
@@ -64,7 +65,9 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			archived: {
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try League.Database
 						.all()
 						.isArchived()
@@ -77,7 +80,9 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			seriesHost: { id in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
 						.asRequest(of: League.SeriesHost.self)
@@ -85,7 +90,9 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			edit: { id in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try League.Database
 						.filter(League.Database.Columns.id == id)
 						.including(optional: League.Database.alleys.forKey("location"))
@@ -94,6 +101,8 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			create: { league in
+				@Dependency(DatabaseService.self) var database
+
 				try await withEscapedDependencies { dependencies in
 					try await database.writer().write { db in
 						let bowler = try Bowler.Database
@@ -106,6 +115,9 @@ extension LeaguesRepository: DependencyKey {
 						try league.insert(db)
 
 						try dependencies.yield {
+							@Dependency(\.date) var date
+							@Dependency(\.uuid) var uuid
+
 							if league.recurrence == .once, let numberOfGames = league.defaultNumberOfGames {
 								let series = Series.Database(
 									leagueId: league.id,
@@ -132,20 +144,26 @@ extension LeaguesRepository: DependencyKey {
 				}
 			},
 			update: { league in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					try league.update($0)
 				}
 			},
 			archive: { id in
+				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
-				return try await database.writer().write {
+
+				_ = try await database.writer().write {
 					try League.Database
 						.filter(id: id)
 						.updateAll($0, League.Database.Columns.archivedOn.set(to: date()))
 				}
 			},
 			unarchive: { id in
-				return try await database.writer().write {
+				@Dependency(DatabaseService.self) var database
+
+				_ = try await database.writer().write {
 					try League.Database
 						.filter(id: id)
 						.updateAll($0, League.Database.Columns.archivedOn.set(to: nil))

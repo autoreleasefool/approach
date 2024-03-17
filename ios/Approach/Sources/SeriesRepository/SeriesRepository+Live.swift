@@ -8,12 +8,11 @@ import SeriesRepositoryInterface
 
 extension SeriesRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(DatabaseService.self) var database
-		@Dependency(\.uuid) var uuid
-
 		return Self(
 			list: { league, ordering in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					var request = Series.Database
 						.all()
 						.isNotArchived()
@@ -54,7 +53,9 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			summaries: { league in
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Series.Database
 						.all()
 						.isNotArchived()
@@ -65,7 +66,9 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			eventSeries: { league in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					try Series.Database
 						.all()
 						.isNotArchived()
@@ -76,7 +79,9 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			archived: {
-				database.reader().observe {
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
 					try Series.Database
 						.all()
 						.isArchived()
@@ -89,7 +94,9 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			edit: { id in
-				try await database.reader().read {
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
 					let lanesAlias = TableAlias(name: "lanes")
 					return try Series.Database
 						.filter(id: id)
@@ -108,6 +115,8 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			create: { series in
+				@Dependency(DatabaseService.self) var database
+
 				try await withEscapedDependencies { dependencies in
 					try await database.writer().write { db in
 						let bowler = try Bowler.Database
@@ -133,6 +142,8 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			update: { series in
+				@Dependency(DatabaseService.self) var database
+
 				try await database.writer().write {
 					if let existing = try Series.Database.fetchOne($0, id: series.id) {
 						switch (existing.preBowl, series.preBowl) {
@@ -153,6 +164,8 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			addGamesToSeries: { id, count in
+				@Dependency(DatabaseService.self) var database
+
 				try await withEscapedDependencies { dependencies in
 					try await database.writer().write { db in
 						let series = try Series.Database
@@ -181,15 +194,19 @@ extension SeriesRepository: DependencyKey {
 				}
 			},
 			archive: { id in
+				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
-				return try await database.writer().write {
+
+				_ = try await database.writer().write {
 					try Series.Database
 						.filter(id: id)
 						.updateAll($0, Series.Database.Columns.archivedOn.set(to: date()))
 				}
 			},
 			unarchive: { id in
-				return try await database.writer().write {
+				@Dependency(DatabaseService.self) var database
+
+				_ = try await database.writer().write {
 					try Series.Database
 						.filter(id: id)
 						.updateAll($0, Series.Database.Columns.archivedOn.set(to: nil))
