@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.NavResultCallback
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePicker
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBar
+import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
 import java.util.UUID
 import kotlinx.coroutines.launch
@@ -94,6 +95,10 @@ private fun SourcePickerScreen(
 	Scaffold(
 		topBar = {
 			SourcePickerTopBar(
+				state = when (state) {
+					SourcePickerScreenUiState.Loading -> SourcePickerTopBarUiState()
+					is SourcePickerScreenUiState.Loaded -> state.topBar
+				},
 				onAction = { onAction(SourcePickerScreenUiAction.SourcePicker(it)) },
 				scrollBehavior = scrollBehavior,
 			)

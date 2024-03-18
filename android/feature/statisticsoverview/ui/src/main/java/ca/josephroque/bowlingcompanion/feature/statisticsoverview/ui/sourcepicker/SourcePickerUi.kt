@@ -6,6 +6,10 @@ data class SourcePickerUiState(
 	val source: TrackableFilter.SourceSummaries? = null,
 )
 
+data class SourcePickerTopBarUiState(
+	val isApplyEnabled: Boolean = false,
+)
+
 sealed interface SourcePickerUiAction {
 	data object ApplyFilterClicked : SourcePickerUiAction
 

@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SourcePickerTopBar(
+	state: SourcePickerTopBarUiState,
 	onAction: (SourcePickerUiAction) -> Unit,
 	scrollBehavior: TopAppBarScrollBehavior,
 ) {
@@ -26,7 +27,10 @@ fun SourcePickerTopBar(
 			CloseButton(onClick = { onAction(SourcePickerUiAction.Dismissed) })
 		},
 		actions = {
-			TextButton(onClick = { onAction(SourcePickerUiAction.ApplyFilterClicked) }) {
+			TextButton(
+				onClick = { onAction(SourcePickerUiAction.ApplyFilterClicked) },
+				enabled = state.isApplyEnabled,
+			) {
 				Text(
 					text = stringResource(R.string.statistics_filter_apply),
 					style = MaterialTheme.typography.bodyMedium,

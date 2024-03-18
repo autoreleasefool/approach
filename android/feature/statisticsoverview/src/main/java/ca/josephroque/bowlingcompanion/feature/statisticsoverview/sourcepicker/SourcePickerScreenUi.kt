@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.statisticsoverview.sourcepicker
 
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiState
 import java.util.UUID
@@ -10,6 +11,7 @@ sealed interface SourcePickerScreenUiState {
 
 	data class Loaded(
 		val sourcePicker: SourcePickerUiState,
+		val topBar: SourcePickerTopBarUiState,
 	) : SourcePickerScreenUiState
 }
 

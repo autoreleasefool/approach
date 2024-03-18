@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.StatisticsRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
+import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiAction
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.ui.sourcepicker.SourcePickerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,9 @@ class SourcePickerViewModel @Inject constructor(
 	val uiState = sourceSummaries
 		.map { source ->
 			SourcePickerScreenUiState.Loaded(
+				topBar = SourcePickerTopBarUiState(
+					isApplyEnabled = source != null,
+				),
 				sourcePicker = SourcePickerUiState(
 					source = source,
 				),
