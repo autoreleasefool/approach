@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.GameLockState
 import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 @Dao
 abstract class GameDao : LegacyMigratingDao<GameEntity> {
@@ -130,4 +131,19 @@ abstract class GameDao : LegacyMigratingDao<GameEntity> {
 
 	@Insert
 	abstract fun insertGames(games: List<GameEntity>)
+
+	@Query(
+		"""
+			UPDATE games
+			SET locked = 'LOCKED'
+			WHERE 
+				games.locked = 'UNLOCKED' AND
+				games.series_id IN (
+					SELECT series.id
+					FROM series
+					WHERE series.date < :cutOffDate
+				)
+		""",
+	)
+	abstract fun lockStaleGames(cutOffDate: LocalDate)
 }

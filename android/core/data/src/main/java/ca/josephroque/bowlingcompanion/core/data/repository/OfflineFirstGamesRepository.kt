@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.core.data.repository
 
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.ApproachDispatchers.IO
 import ca.josephroque.bowlingcompanion.core.common.dispatcher.Dispatcher
+import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.database.dao.BowlerDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GameDao
 import ca.josephroque.bowlingcompanion.core.database.dao.GearDao
@@ -27,6 +28,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.minus
 
 class OfflineFirstGamesRepository @Inject constructor(
 	private val bowlerDao: BowlerDao,
@@ -147,5 +151,11 @@ class OfflineFirstGamesRepository @Inject constructor(
 
 	override suspend fun unarchiveGame(gameId: UUID) = withContext(ioDispatcher) {
 		gameDao.unarchiveGame(gameId)
+	}
+
+	override suspend fun lockStaleGames() = withContext(ioDispatcher) {
+		val currentDate = Clock.System.now().toLocalDate()
+		val staleDate = currentDate.minus(7, DateTimeUnit.DAY)
+		gameDao.lockStaleGames(staleDate)
 	}
 }

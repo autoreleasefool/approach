@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppLaunched
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppTabSwitched
+import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.navigation.TopLevelDestination
 import ca.josephroque.bowlingcompanion.ui.ApproachAppUiState
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
+	private val gamesRepository: GamesRepository,
 	userDataRepository: UserDataRepository,
 ) : ViewModel() {
 	private val isLaunchComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -52,6 +54,10 @@ class MainActivityViewModel @Inject constructor(
 		viewModelScope.launch {
 			analyticsClient.initialize()
 			analyticsClient.trackEvent(AppLaunched)
+		}
+
+		viewModelScope.launch {
+			gamesRepository.lockStaleGames()
 		}
 
 		isLaunchComplete.value = true

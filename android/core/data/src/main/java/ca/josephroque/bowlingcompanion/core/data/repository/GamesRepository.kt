@@ -36,4 +36,6 @@ interface GamesRepository {
 	suspend fun insertGames(games: List<GameCreate>)
 	suspend fun archiveGame(gameId: UUID)
 	suspend fun unarchiveGame(gameId: UUID)
+
+	suspend fun lockStaleGames()
 }
