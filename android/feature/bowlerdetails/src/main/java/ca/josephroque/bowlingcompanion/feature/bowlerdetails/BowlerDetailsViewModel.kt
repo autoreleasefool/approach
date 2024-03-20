@@ -40,8 +40,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-private const val STATISTICS_WIDGET_CONTEXT = "bowler_details"
-
 @HiltViewModel
 class BowlerDetailsViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
@@ -54,6 +52,8 @@ class BowlerDetailsViewModel @Inject constructor(
 	private val analyticsClient: AnalyticsClient,
 ) : ApproachViewModel<BowlerDetailsScreenEvent>() {
 	private val bowlerId = Route.BowlerDetails.getBowler(savedStateHandle)!!
+	private val statisticsWidgetContext: String
+		get() = "bowler_details_$bowlerId"
 
 	private val leagueToArchive: MutableStateFlow<LeagueListItem?> = MutableStateFlow(null)
 
@@ -77,7 +77,7 @@ class BowlerDetailsViewModel @Inject constructor(
 			if (it) {
 				flowOf(null)
 			} else {
-				statisticsWidgetsRepository.getStatisticsWidgets(STATISTICS_WIDGET_CONTEXT)
+				statisticsWidgetsRepository.getStatisticsWidgets(statisticsWidgetContext)
 			}
 		}
 
@@ -158,7 +158,7 @@ class BowlerDetailsViewModel @Inject constructor(
 			BowlerDetailsUiAction.BackClicked -> sendEvent(BowlerDetailsScreenEvent.Dismissed)
 			BowlerDetailsUiAction.AddLeagueClicked -> sendEvent(BowlerDetailsScreenEvent.AddLeague(bowlerId))
 			BowlerDetailsUiAction.EditStatisticsWidgetClicked -> sendEvent(
-				BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId),
+				BowlerDetailsScreenEvent.EditStatisticsWidget(statisticsWidgetContext, bowlerId),
 			)
 			BowlerDetailsUiAction.ManageGearClicked -> showPreferredGearPicker()
 			is BowlerDetailsUiAction.GearClicked -> sendEvent(
@@ -190,7 +190,7 @@ class BowlerDetailsViewModel @Inject constructor(
 				BowlerDetailsScreenEvent.ShowWidgetStatistics(action.widget.filter),
 			)
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
-				BowlerDetailsScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT, bowlerId),
+				BowlerDetailsScreenEvent.EditStatisticsWidget(statisticsWidgetContext, bowlerId),
 			)
 		}
 	}
