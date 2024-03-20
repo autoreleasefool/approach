@@ -28,8 +28,17 @@ data class AveragingChartData(
 		}
 	}
 
+	val numberOfVerticalTicks: Int
+		get() {
+			val maxValue = entries.maxOfOrNull { it.value } ?: 0.0
+			return if (maxValue > 50) 8 else 4
+		}
+
 	val isEmpty: Boolean
 		get() = entries.size <= 1
+
+	val firstKey: ChartEntryKey?
+		get() = entries.firstOrNull()?.key
 }
 
 data class AveragingChartEntry(

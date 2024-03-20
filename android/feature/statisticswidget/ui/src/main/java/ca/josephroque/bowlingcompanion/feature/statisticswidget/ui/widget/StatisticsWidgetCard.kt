@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LoadingState
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
+import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.CountingChart
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
@@ -47,17 +48,37 @@ fun StatisticsWidgetCard(
 			LoadingState()
 		} else {
 			when (chart) {
-				is StatisticChartContent.AveragingChart -> Unit
+				is StatisticChartContent.AveragingChart -> AveragingChartWidget(
+					widget = widget,
+					chart = chart,
+					chartEntryModelProducer = chartEntryModelProducer,
+				)
 				is StatisticChartContent.PercentageChart -> Unit
 				is StatisticChartContent.CountableChart -> CountingChartWidget(
-					widget,
-					chart,
-					chartEntryModelProducer,
+					widget = widget,
+					chart = chart,
+					chartEntryModelProducer = chartEntryModelProducer,
 				)
 				is StatisticChartContent.DataMissing -> DataMissingWidget(chart.id)
 				is StatisticChartContent.ChartUnavailable -> UnavailableWidget(chart.id)
 			}
 		}
+	}
+}
+
+@Composable
+private fun AveragingChartWidget(
+	widget: StatisticsWidget,
+	chart: StatisticChartContent.AveragingChart,
+	chartEntryModelProducer: ChartEntryModelProducer,
+) {
+	Widget(
+		title = stringResource(widget.statistic.titleResourceId),
+		footer = {
+			Timeline(widget.timeline)
+		},
+	) {
+		AveragingChart(chartData = chart.data, chartModel = chartEntryModelProducer)
 	}
 }
 

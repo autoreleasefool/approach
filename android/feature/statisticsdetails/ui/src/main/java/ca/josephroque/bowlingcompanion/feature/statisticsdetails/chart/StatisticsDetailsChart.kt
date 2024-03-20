@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
+import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.CountingChart
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.components.FilterDetails
@@ -65,7 +66,10 @@ fun StatisticsDetailsChart(
 					chart.data,
 					state.chartContent.modelProducer,
 				)
-// 			is StatisticChartContent.AveragingChart -> AveragingChart(state.chart.data)
+				is StatisticChartContent.AveragingChart -> AveragingChart(
+					chart.data,
+					state.chartContent.modelProducer,
+				)
 // 			is StatisticChartContent.PercentageChart -> PercentageChart(state.chart.data)
 // 			is StatisticChartContent.DataMissing -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
 // 			is StatisticChartContent.ChartUnavailable -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
