@@ -193,7 +193,7 @@ extension BowlersRepository: DependencyKey {
 				@Dependency(DatabaseService.self) var database
 				@Dependency(\.date) var date
 
-				try await database.writer().write {
+				_ = try await database.writer().write {
 					try Bowler.Database
 						.filter(id: id)
 						.updateAll($0, Bowler.Database.Columns.archivedOn.set(to: date()))
@@ -202,7 +202,7 @@ extension BowlersRepository: DependencyKey {
 			unarchive: { id in
 				@Dependency(DatabaseService.self) var database
 
-				try await database.writer().write {
+				_ = try await database.writer().write {
 					try Bowler.Database
 						.filter(id: id)
 						.updateAll($0, Bowler.Database.Columns.archivedOn.set(to: nil))

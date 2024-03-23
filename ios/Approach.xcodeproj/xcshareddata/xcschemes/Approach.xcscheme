@@ -966,6 +966,26 @@
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AnnouncementsLibraryTests"
+               BuildableName = "AnnouncementsLibraryTests"
+               BlueprintName = "AnnouncementsLibraryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AnnouncementsServiceTests"
+               BuildableName = "AnnouncementsServiceTests"
+               BlueprintName = "AnnouncementsServiceTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
