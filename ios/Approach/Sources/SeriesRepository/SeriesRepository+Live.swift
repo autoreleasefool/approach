@@ -32,18 +32,16 @@ extension SeriesRepository: DependencyKey {
 
 					switch ordering {
 					case .oldestFirst:
-						request = request.order(Series.Database.Columns.date.asc)
+						request = request.order(sql: "\(Series.Database.Columns.coalescedDate) ASC")
 					case .newestFirst:
-						request = request.order(Series.Database.Columns.date.desc)
+						request = request.order(sql: "\(Series.Database.Columns.coalescedDate) DESC")
 					case .highestToLowest:
 						request = request.order(
-							Column("total").detached.desc,
-							Series.Database.Columns.date.asc
+							sql: "total DESC, \(Series.Database.Columns.coalescedDate) ASC"
 						)
 					case .lowestToHighest:
 						request = request.order(
-							Column("total").detached.asc,
-							Series.Database.Columns.date.asc
+							sql: "total ASC, \(Series.Database.Columns.coalescedDate) ASC"
 						)
 					}
 

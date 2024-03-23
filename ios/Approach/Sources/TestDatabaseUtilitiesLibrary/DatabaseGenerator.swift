@@ -113,6 +113,7 @@ private func generateSeries(
 				leagueId: league,
 				id: UUID(firstId + series.count),
 				date: Date(timeIntervalSince1970: date.timeIntervalSince1970),
+				appliedDate: nil,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				alleyId: alley ?? UUID(series.count % 2),

@@ -8,6 +8,7 @@ extension Series {
 		public let leagueId: League.ID
 		public let id: Series.ID
 		public var date: Date
+		public var appliedDate: Date?
 		public var preBowl: PreBowl
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var alleyId: Alley.ID?
@@ -17,6 +18,7 @@ extension Series {
 			leagueId: League.ID,
 			id: Series.ID,
 			date: Date,
+			appliedDate: Date?,
 			preBowl: PreBowl,
 			excludeFromStatistics: ExcludeFromStatistics,
 			alleyId: Alley.ID?,
@@ -25,6 +27,7 @@ extension Series {
 			self.leagueId = leagueId
 			self.id = id
 			self.date = date
+			self.appliedDate = appliedDate
 			self.preBowl = preBowl
 			self.excludeFromStatistics = excludeFromStatistics
 			self.alleyId = alleyId
@@ -45,17 +48,19 @@ extension Series.Database {
 		public static let leagueId = Column(CodingKeys.leagueId)
 		public static let id = Column(CodingKeys.id)
 		public static let date = Column(CodingKeys.date)
+		public static let appliedDate = Column(CodingKeys.appliedDate)
 		public static let preBowl = Column(CodingKeys.preBowl)
 		public static let excludeFromStatistics = Column(CodingKeys.excludeFromStatistics)
 		public static let alleyId = Column(CodingKeys.alleyId)
 		public static let archivedOn = Column(CodingKeys.archivedOn)
+
+		public static var coalescedDate = "COALESCE(\(appliedDate.name), \(date.name))"
 	}
 }
 
 extension DerivableRequest<Series.Database> {
 	public func orderByDate() -> Self {
-		let date = Series.Database.Columns.date
-		return order(date.desc)
+		order(sql: "\(Series.Database.Columns.coalescedDate) DESC")
 	}
 
 	public func bowled(inLeague: League.ID) -> Self {
