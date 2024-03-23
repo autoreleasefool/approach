@@ -169,6 +169,7 @@
 "series.list.scores.chart.xAxisLabel" = "Game";
 "series.list.scores.chart.yAxisLabel" = "Score";
 "series.list.scores.range" = "%d — %d";
+"series.list.scores.total" = "Total";
 "series.properties.numberOfGames" = "Number of games";
 "series.properties.alley" = "Bowling Alley";
 "series.properties.date" = "Date";

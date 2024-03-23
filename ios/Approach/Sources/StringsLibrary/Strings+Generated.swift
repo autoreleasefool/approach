@@ -1116,6 +1116,8 @@ public enum Strings {
         public static func range(_ p1: Int, _ p2: Int) -> String {
           return Strings.tr("Localizable", "series.list.scores.range", p1, p2, fallback: "%d — %d")
         }
+        /// Total
+        public static let total = Strings.tr("Localizable", "series.list.scores.total", fallback: "Total")
         public enum Chart {
           /// Game
           public static let xAxisLabel = Strings.tr("Localizable", "series.list.scores.chart.xAxisLabel", fallback: "Game")

@@ -100,10 +100,16 @@ public struct SeriesListItem: View {
 					Spacer()
 
 					if series.total > 0 {
-						Text(String(series.total))
-							.font(.title2)
-							.fontWeight(.heavy)
-							.italic()
+						VStack(alignment: .trailing, spacing: 0) {
+							Text(String(series.total))
+								.font(.title2)
+								.fontWeight(.heavy)
+								.italic()
+
+							Text(Strings.Series.List.Scores.total)
+								.font(.caption2)
+								.italic()
+						}
 					}
 				}
 			}
@@ -140,94 +146,101 @@ private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 
 #if DEBUG
 struct SeriesListItemPreview: PreviewProvider {
+	static var preBowls: [Series.List] = [
+		.init(
+			id: UUID(1),
+			date: Date(),
+			scores: [
+				.init(index: 0, score: 5),
+				.init(index: 1, score: 445),
+			],
+			total: 450,
+			preBowl: .regular
+		),
+	]
+
+	static var regular: [Series.List] = [
+		.init(
+			id: UUID(0),
+			date: Date(),
+			scores: [
+				.init(index: 0, score: 233),
+				.init(index: 1, score: 198),
+				.init(index: 2, score: 204),
+				.init(index: 3, score: 238),
+				.init(index: 4, score: 221),
+				.init(index: 5, score: 253),
+				.init(index: 6, score: 304),
+				.init(index: 7, score: 208),
+				.init(index: 8, score: 210),
+				.init(index: 9, score: 193),
+				.init(index: 10, score: 357),
+				.init(index: 11, score: 368),
+			],
+			total: 1651,
+			preBowl: .regular
+		),
+		.init(
+			id: UUID(1),
+			date: Date(),
+			scores: [
+				.init(index: 0, score: 233),
+				.init(index: 1, score: 198),
+				.init(index: 2, score: 204),
+				.init(index: 3, score: 238),
+				.init(index: 4, score: 221),
+				.init(index: 5, score: 253),
+				.init(index: 6, score: 304),
+				.init(index: 7, score: 208),
+				.init(index: 8, score: 210),
+				.init(index: 9, score: 193),
+				.init(index: 10, score: 357),
+				.init(index: 11, score: 368),
+			],
+			total: 1651,
+			preBowl: .regular
+		),
+		.init(
+			id: UUID(1),
+			date: Date(),
+			scores: [
+				.init(index: 0, score: 233),
+			],
+			total: 233,
+			preBowl: .regular
+		),
+		.init(
+			id: UUID(1),
+			date: Date(),
+			scores: [
+				.init(index: 0, score: 5),
+				.init(index: 1, score: 445),
+			],
+			total: 450,
+			preBowl: .regular
+		),
+	]
+
 	static var previews: some View {
 		List {
 			Section {
-				SeriesListItem(
-					series: .init(
-						id: UUID(1),
-						date: Date(),
-						scores: [
-							.init(index: 0, score: 5),
-							.init(index: 1, score: 445),
-						],
-						total: 450,
-						preBowl: .regular
-					)
-				)
+				ForEach(preBowls) {
+					SeriesListItem(series: $0)
+						.listRowInsets(EdgeInsets())
+						.alignmentGuide(.listRowSeparatorLeading) { d in
+								d[.leading]
+						}
+				}
 			}
 
 			Section {
-				SeriesListItem(
-					series: .init(
-						id: UUID(0),
-						date: Date(),
-						scores: [
-							.init(index: 0, score: 233),
-							.init(index: 1, score: 198),
-							.init(index: 2, score: 204),
-							.init(index: 3, score: 238),
-							.init(index: 4, score: 221),
-							.init(index: 5, score: 253),
-							.init(index: 6, score: 304),
-							.init(index: 7, score: 208),
-							.init(index: 8, score: 210),
-							.init(index: 9, score: 193),
-							.init(index: 10, score: 357),
-							.init(index: 11, score: 368),
-						],
-						total: 1651,
-						preBowl: .regular
-					)
-				)
-
-				SeriesListItem(
-					series: .init(
-						id: UUID(1),
-						date: Date(),
-						scores: [
-							.init(index: 0, score: 233),
-							.init(index: 1, score: 198),
-							.init(index: 2, score: 204),
-							.init(index: 3, score: 238),
-							.init(index: 4, score: 221),
-							.init(index: 5, score: 253),
-							.init(index: 6, score: 304),
-							.init(index: 7, score: 208),
-							.init(index: 8, score: 210),
-							.init(index: 9, score: 193),
-							.init(index: 10, score: 357),
-							.init(index: 11, score: 368),
-						],
-						total: 1651,
-						preBowl: .regular
-					)
-				)
-
-				SeriesListItem(
-					series: .init(
-						id: UUID(1),
-						date: Date(),
-						scores: [
-							.init(index: 0, score: 233),
-						],
-						total: 233,
-						preBowl: .regular
-					)
-				)
-
-				SeriesListItem(
-					series: .init(
-						id: UUID(1),
-						date: Date(),
-						scores: [
-							.init(index: 0, score: 5),
-							.init(index: 1, score: 445),
-						],
-						total: 450,
-						preBowl: .regular
-					)
-				)
+				ForEach(regular) {
+					SeriesListItem(series: $0)
+						.listRowInsets(EdgeInsets())
+						.alignmentGuide(.listRowSeparatorLeading) { d in
+								d[.leading]
+						}
+				}
 			}
 		}
 	}
