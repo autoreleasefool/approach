@@ -42,6 +42,7 @@ data class SeriesListProperties(
 	val date: LocalDate,
 	val total: Int,
 	val preBowl: SeriesPreBowl,
+	val appliedDate: LocalDate?,
 )
 
 data class TrackableSeries(

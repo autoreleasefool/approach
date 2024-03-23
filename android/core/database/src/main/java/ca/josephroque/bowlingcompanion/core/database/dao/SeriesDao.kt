@@ -44,8 +44,10 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		SELECT
 		 series.id AS id,
 		 series."date" AS "date",
+		 series.applied_date AS appliedDate,
 		 series.pre_bowl AS preBowl,
-		 SUM(games.score) AS "total"
+		 SUM(games.score) AS "total",
+		 COALESCE(series.applied_date, series."date") AS orderingDate
 		FROM series
 		LEFT JOIN games
 			ON games.series_id = series.id AND games.archived_on IS NULL
@@ -53,8 +55,8 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 			AND series.archived_on IS NULL
 		GROUP BY series.id
 		ORDER BY
-		CASE WHEN :seriesSortOrder = "OLDEST_TO_NEWEST" THEN series."date" END ASC,
-		CASE WHEN :seriesSortOrder = "NEWEST_TO_OLDEST" THEN series."date" END DESC,
+		CASE WHEN :seriesSortOrder = "OLDEST_TO_NEWEST" THEN orderingDate END ASC,
+		CASE WHEN :seriesSortOrder = "NEWEST_TO_OLDEST" THEN orderingDate END DESC,
 		CASE WHEN :seriesSortOrder = "HIGHEST_TO_LOWEST" THEN total END DESC,
 		CASE WHEN :seriesSortOrder = "LOWEST_TO_HIGHEST" THEN total END ASC
 		""",
