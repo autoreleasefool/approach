@@ -22,4 +22,6 @@
 
 	<string name="cd_series_item_size_compact">Compact Rows</string>
 	<string name="cd_series_item_size_default">Expanded Rows</string>
+
+	<string name="series_property_total">Total</string>
 </resources>

@@ -46,28 +46,38 @@ fun SeriesRow(
 	itemSize: SeriesItemSize,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	preBowledForDate: LocalDate? = null,
 	scores: ScoreData? = null,
 ) {
 	if (scores == null) {
-		CompactSeriesRow(date, total, onClick, modifier)
+		CompactSeriesRow(date, preBowledForDate, total, onClick, modifier)
 		return
 	}
 
 	when (itemSize) {
-		SeriesItemSize.DEFAULT -> DefaultSeriesRow(date, total, scores, onClick, modifier)
-		SeriesItemSize.COMPACT -> CompactSeriesRow(date, total, onClick, modifier)
+		SeriesItemSize.DEFAULT -> DefaultSeriesRow(
+			date = date,
+			preBowledForDate = preBowledForDate,
+			total = total,
+			scores = scores,
+			onClick = onClick,
+			modifier = modifier,
+		)
+		SeriesItemSize.COMPACT -> CompactSeriesRow(date, preBowledForDate, total, onClick, modifier)
 	}
 }
 
 @Composable
 private fun CompactSeriesRow(
 	date: LocalDate,
+	preBowledForDate: LocalDate?,
 	total: Int,
 	onClick: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
 	ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow(
 		date = date,
+		preBowledForDate = preBowledForDate,
 		total = total,
 		itemSize = SeriesItemSize.COMPACT,
 		modifier = modifier
@@ -79,6 +89,7 @@ private fun CompactSeriesRow(
 @Composable
 private fun DefaultSeriesRow(
 	date: LocalDate,
+	preBowledForDate: LocalDate?,
 	total: Int,
 	scores: ScoreData,
 	onClick: () -> Unit,
@@ -102,6 +113,7 @@ private fun DefaultSeriesRow(
 		) {
 			ca.josephroque.bowlingcompanion.core.model.ui.SeriesRow(
 				date = date,
+				preBowledForDate = preBowledForDate,
 				total = total,
 				itemSize = SeriesItemSize.DEFAULT,
 			)
@@ -194,6 +206,7 @@ private fun SeriesItemPreview() {
 		Column {
 			SeriesRow(
 				date = LocalDate.parse("2023-09-24"),
+				preBowledForDate = LocalDate.parse("2023-09-24"),
 				total = 880,
 				scores = ScoreData(
 					numberOfGames = 4,
