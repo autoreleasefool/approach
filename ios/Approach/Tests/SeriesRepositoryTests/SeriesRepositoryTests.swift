@@ -106,6 +106,40 @@ final class SeriesRepositoryTests: XCTestCase {
 		])
 	}
 
+	func testList_Ordering_ByNewestFirst_WithAppliedDate_ReturnsSeriesOrderedByDate() async throws {
+		// Given a database with three series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001), appliedDate: Date(timeIntervalSince1970: 123_456_003))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_002))
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_000))
+
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 1)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 2)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 456)
+		let game4 = Game.Database.mock(seriesId: UUID(1), id: UUID(3), index: 1, score: 123)
+		let game5 = Game.Database.mock(seriesId: UUID(2), id: UUID(4), index: 2, score: 450)
+		let game6 = Game.Database.mock(seriesId: UUID(2), id: UUID(5), index: 1, score: 321)
+		let game7 = Game.Database.mock(seriesId: UUID(2), id: UUID(6), index: 0, score: 0)
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3]), withGames: .custom([game1, game2, game3, game4, game5, game6, game7]))
+
+		// Fetching the series
+		let series = withDependencies {
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			self.series.list(bowledIn: UUID(0), orderedBy: .newestFirst)
+		}
+		var iterator = series.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the series sorted by date
+		XCTAssertEqual(fetched, [
+			.init(series1, withScores: [.init(index: 0, score: 1), .init(index: 1, score: 2)], withTotal: 3),
+			.init(series2, withScores: [.init(index: 0, score: 456), .init(index: 1, score: 123)], withTotal: 579),
+			.init(series3, withScores: [.init(index: 0, score: 0), .init(index: 1, score: 321), .init(index: 2, score: 450)], withTotal: 771),
+		])
+	}
+
 	func testList_Ordering_ByOldestFirst_ReturnsSeriesOrderedByDate() async throws {
 		// Given a database with three series
 		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_001))
@@ -238,6 +272,34 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [
 			.init(series1),
 			.init(series2),
+		])
+	}
+
+	func testSummaries_WithAppliedDate_SortsByAppliedDate() async throws {
+		// Given a database with four series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_002))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_000), appliedDate: Date(timeIntervalSince1970: 123_456_005))
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_006), appliedDate: Date(timeIntervalSince1970: 123_456_003))
+		let series4 = Series.Database.mock(id: UUID(3), date: Date(timeIntervalSince1970: 123_456_004))
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3, series4]))
+
+		// Fetching the series
+		let series = withDependencies {
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			self.series.summaries(bowledIn: UUID(0))
+		}
+		var iterator = series.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns all the series in order by appliedDate
+		XCTAssertEqual(fetched, [
+			.init(series2),
+			.init(series4),
+			.init(series3),
+			.init(series1),
 		])
 	}
 
