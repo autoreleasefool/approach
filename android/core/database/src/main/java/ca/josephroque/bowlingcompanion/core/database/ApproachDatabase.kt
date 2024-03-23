@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.core.database
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -49,6 +50,10 @@ const val DATABASE_SHM_NAME = "$DATABASE_NAME-shm"
 const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 
 @Database(
+	version = 2,
+	autoMigrations = [
+		AutoMigration(from = 1, to = 2),
+	],
 	entities = [
 		BowlerEntity::class,
 		LeagueEntity::class,
@@ -69,7 +74,6 @@ const val DATABASE_WAL_NAME = "$DATABASE_NAME-wal"
 		LegacyIDMappingEntity::class,
 		StatisticsWidgetEntity::class,
 	],
-	version = 1,
 )
 @TypeConverters(
 	AvatarConverter::class,
