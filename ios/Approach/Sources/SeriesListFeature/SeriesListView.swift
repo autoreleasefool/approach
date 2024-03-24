@@ -35,7 +35,7 @@ public struct SeriesListView: View {
 					d[.leading]
 			}
 		} header: {
-			if store.hasPreBowls {
+			if store.isPreBowlFormEnabled && store.hasPreBowls {
 				Section {
 					Button { send(.didTapUpdatePreBowlsButton) } label: {
 						Text(Strings.Series.List.PreBowl.usedAPreBowl)
