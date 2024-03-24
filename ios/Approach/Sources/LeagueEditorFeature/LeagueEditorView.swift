@@ -53,7 +53,7 @@ public struct LeagueEditorView: View {
 			Section {
 				Picker(
 					Strings.League.Properties.recurrence,
-					selection: $store.recurrence
+					selection: $store.recurrence.animation()
 				) {
 					ForEach(League.Recurrence.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -117,7 +117,7 @@ public struct LeagueEditorView: View {
 			Section {
 				Picker(
 					Strings.League.Properties.numberOfGames,
-					selection: $store.gamesPerSeries
+					selection: $store.gamesPerSeries.animation()
 				) {
 					ForEach(LeagueEditor.GamesPerSeries.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -147,7 +147,7 @@ public struct LeagueEditorView: View {
 		Section {
 			Toggle(
 				Strings.League.Editor.Fields.AdditionalPinfall.title,
-				isOn: $store.hasAdditionalPinfall
+				isOn: $store.hasAdditionalPinfall.animation()
 			)
 			.toggleStyle(SwitchToggleStyle())
 

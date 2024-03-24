@@ -60,7 +60,7 @@ public struct BowlersListView: View {
 	@MainActor @ViewBuilder private var quickLaunch: some View {
 		if let quickLaunch = store.quickLaunch {
 			Section {
-				Button { send(.didTapQuickLaunchButton) } label: {
+				Button { send(.didTapQuickLaunchButton, animation: .default) } label: {
 					HStack(spacing: .standardSpacing) {
 						Asset.Media.Icons.rocket.swiftUIImage
 							.resizable()
