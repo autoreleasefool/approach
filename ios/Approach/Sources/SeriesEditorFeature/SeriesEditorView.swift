@@ -41,7 +41,7 @@ public struct SeriesEditorView: View {
 			Section {
 				Picker(
 					Strings.Series.Editor.Fields.PreBowl.label,
-					selection: $store.preBowl
+					selection: $store.preBowl.animation()
 				) {
 					ForEach(Series.PreBowl.allCases) {
 						Text(String(describing: $0)).tag($0)
@@ -51,7 +51,7 @@ public struct SeriesEditorView: View {
 				if store.isPreBowlFormEnabled && store.preBowl == .preBowl {
 					Toggle(
 						Strings.Series.Editor.Fields.PreBowl.usePreBowl,
-						isOn: $store.isUsingPreBowl
+						isOn: $store.isUsingPreBowl.animation()
 					)
 
 					if store.isUsingPreBowl {
