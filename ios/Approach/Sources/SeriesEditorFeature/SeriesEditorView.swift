@@ -48,7 +48,7 @@ public struct SeriesEditorView: View {
 					}
 				}
 
-				if store.preBowl == .preBowl {
+				if store.isPreBowlFormEnabled && store.preBowl == .preBowl {
 					Toggle(
 						Strings.Series.Editor.Fields.PreBowl.usePreBowl,
 						isOn: $store.isUsingPreBowl

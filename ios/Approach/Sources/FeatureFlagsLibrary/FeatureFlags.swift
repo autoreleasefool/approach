@@ -10,12 +10,14 @@ extension FeatureFlag {
 	public static let proSubscription = Self(name: "proSubscription", introduced: "2023-08-08", stage: .development)
 	public static let purchases = Self(name: "purchase", introduced: "2023-09-15", stage: .disabled)
 	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .development)
+	public static let preBowlForm = Self(name: "preBowlForm", introduced: "2024-03-23", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.alleyAndGearAverages,
 		.dataImport,
 		.developerOptions,
 		.opponentDetails,
+		.preBowlForm,
 		.proSubscription,
 		.purchases,
 		.sharingGame,

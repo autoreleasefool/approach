@@ -42,6 +42,7 @@ public struct SeriesList: Reducer {
 	public struct State: Equatable {
 		public var league: League.SeriesHost
 		public var ordering: Series.Ordering = .default
+		public let isPreBowlFormEnabled: Bool
 
 		public var list: SectionResourceList<Series.List, Series.List.FetchRequest>.State
 
@@ -72,6 +73,9 @@ public struct SeriesList: Reducer {
 					action: Strings.Series.List.add
 				)
 			)
+
+			@Dependency(FeatureFlagsService.self) var featureFlags
+			self.isPreBowlFormEnabled = featureFlags.isEnabled(.preBowlForm)
 		}
 	}
 
