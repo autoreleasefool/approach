@@ -65,9 +65,20 @@ public struct SeriesListItem: View {
 
 			VStack(spacing: .standardSpacing) {
 				HStack {
-					Label(series.date.longFormat, systemSymbol: .calendar)
-						.font(.subheadline)
-						.labelStyle(.titleAndIcon)
+					Image(systemSymbol: .calendar)
+						.resizable()
+						.frame(width: .smallIcon, height: .smallIcon)
+						.padding(.trailing, .standardSpacing)
+
+					VStack(alignment: .leading, spacing: 0) {
+						Text((series.appliedDate ?? series.date).longFormat)
+							.font(.subheadline)
+
+						if series.appliedDate != nil {
+							Text(Strings.Series.List.PreBowl.preBowledOn(series.date.longFormat))
+								.font(.caption)
+						}
+					}
 
 					Spacer()
 
@@ -150,6 +161,7 @@ struct SeriesListItemPreview: PreviewProvider {
 		.init(
 			id: UUID(1),
 			date: Date(),
+			appliedDate: Date(),
 			scores: [
 				.init(index: 0, score: 5),
 				.init(index: 1, score: 445),
@@ -163,6 +175,7 @@ struct SeriesListItemPreview: PreviewProvider {
 		.init(
 			id: UUID(0),
 			date: Date(),
+			appliedDate: nil,
 			scores: [
 				.init(index: 0, score: 233),
 				.init(index: 1, score: 198),
@@ -183,6 +196,7 @@ struct SeriesListItemPreview: PreviewProvider {
 		.init(
 			id: UUID(1),
 			date: Date(),
+			appliedDate: nil,
 			scores: [
 				.init(index: 0, score: 233),
 				.init(index: 1, score: 198),
@@ -203,6 +217,7 @@ struct SeriesListItemPreview: PreviewProvider {
 		.init(
 			id: UUID(1),
 			date: Date(),
+			appliedDate: nil,
 			scores: [
 				.init(index: 0, score: 233),
 			],
@@ -212,6 +227,7 @@ struct SeriesListItemPreview: PreviewProvider {
 		.init(
 			id: UUID(1),
 			date: Date(),
+			appliedDate: nil,
 			scores: [
 				.init(index: 0, score: 5),
 				.init(index: 1, score: 445),

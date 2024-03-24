@@ -51,6 +51,10 @@ public struct SeriesList: Reducer {
 
 		@Presents public var destination: Destination.State?
 
+		var hasPreBowls: Bool {
+			list.sections?.first { $0.id == SectionID.preBowl.rawValue }?.items.isEmpty == false
+		}
+
 		public init(league: League.SeriesHost) {
 			self.league = league
 			self.list = .init(
@@ -76,6 +80,7 @@ public struct SeriesList: Reducer {
 			case onAppear
 			case didTapEditButton
 			case didTapSortOrderButton
+			case didTapUpdatePreBowlsButton
 			case didTapSeries(Series.ID)
 		}
 
@@ -114,6 +119,7 @@ public struct SeriesList: Reducer {
 		case leagueEditor(LeagueEditor)
 		case games(GamesList)
 		case sortOrder(SortOrderLibrary.SortOrder<Series.Ordering>)
+		case preBowl(SeriesPreBowlEditor)
 	}
 
 	public init() {}
@@ -157,6 +163,10 @@ public struct SeriesList: Reducer {
 
 				case .didTapSortOrderButton:
 					state.destination = .sortOrder(.init(initialValue: state.ordering))
+					return .none
+
+				case .didTapUpdatePreBowlsButton:
+					state.destination = .preBowl(.init(league: state.league.id))
 					return .none
 				}
 
@@ -254,6 +264,9 @@ public struct SeriesList: Reducer {
 						return .none
 					}
 
+				case .destination(.presented(.preBowl(.delegate(.doNothing)))):
+					return .none
+
 				case .destination(.presented(.games(.delegate(.doNothing)))):
 					return .none
 
@@ -272,6 +285,9 @@ public struct SeriesList: Reducer {
 						.destination(.presented(.seriesEditor(.view))),
 						.destination(.presented(.seriesEditor(.internal))),
 						.destination(.presented(.seriesEditor(.binding))),
+						.destination(.presented(.preBowl(.view))),
+						.destination(.presented(.preBowl(.internal))),
+						.destination(.presented(.preBowl(.binding))),
 						.destination(.presented(.leagueEditor(.binding))),
 						.destination(.presented(.leagueEditor(.view))),
 						.destination(.presented(.leagueEditor(.internal))),
@@ -320,17 +336,12 @@ public struct SeriesList: Reducer {
 						case .newestFirst:
 							preBowlSeries = .init(uniqueElements: series.filter {
 								switch $0.preBowl {
-								case .preBowl: return true
+								case .preBowl: return $0.appliedDate == nil
 								case .regular: return false
 								}
 							})
 
-							regularSeries = .init(uniqueElements: series.filter {
-								switch $0.preBowl {
-								case .preBowl: return false
-								case .regular: return true
-								}
-							})
+							regularSeries = .init(uniqueElements: series.filter { !preBowlSeries.ids.contains($0.id) })
 						case .oldestFirst, .highestToLowest, .lowestToHighest:
 							preBowlSeries = []
 							regularSeries = .init(uniqueElements: series)

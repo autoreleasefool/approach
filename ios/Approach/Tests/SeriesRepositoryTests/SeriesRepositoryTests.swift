@@ -350,6 +350,35 @@ final class SeriesRepositoryTests: XCTestCase {
 		])
 	}
 
+	// MARK: Unused Pre-Bowls
+
+	func testUnusedPreBowls_ReturnsUnusedPreBowls() async throws {
+		// Given a database with series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_005))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123_456_004), preBowl: .preBowl)
+		let series3 = Series.Database.mock(id: UUID(2), date: Date(timeIntervalSince1970: 123_456_003), archivedOn: Date())
+		let series4 = Series.Database.mock(id: UUID(3), date: Date(timeIntervalSince1970: 123_456_002), appliedDate: Date(timeIntervalSince1970: 123_456_000), preBowl: .preBowl)
+		let series5 = Series.Database.mock(id: UUID(4), date: Date(timeIntervalSince1970: 123_456_001), preBowl: .preBowl)
+
+		let db = try initializeDatabase(withSeries: .custom([series1, series2, series3, series4, series5]))
+
+		// Fetching the series
+		let series = withDependencies {
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			self.series.unusedPreBowls(bowledIn: UUID(0))
+		}
+		var iterator = series.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the unused series
+		XCTAssertEqual(fetched, [
+			.init(series2),
+			.init(series5),
+		])
+	}
+
 	// MARK: Archived
 
 	func testArchived_ReturnsArchivedSeries() async throws {
@@ -385,6 +414,94 @@ final class SeriesRepositoryTests: XCTestCase {
 			.init(id: UUID(3), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 0, archivedOn: Date(timeIntervalSince1970: 2)),
 			.init(id: UUID(0), date: Date(timeIntervalSince1970: 123), bowlerName: "Joseph", leagueName: "Majors", totalNumberOfGames: 2, archivedOn: Date(timeIntervalSince1970: 1)),
 		])
+	}
+
+	// MARK: Use Pre-Bowl
+
+	func testUsePreBowl_WhenSeriesNotExists_ThrowsError() async throws {
+		// Given a database with no existing series
+		let db = try initializeDatabase(withSeries: .zero)
+
+		// Updating the series throws an error
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0[DatabaseService.self].writer = { @Sendable in db }
+				$0[SeriesRepository.self] = .liveValue
+			} operation: {
+				try await series.usePreBowl(UUID(0), Date(timeIntervalSince1970: 123))
+			}
+		}
+
+		// Does not insert any records
+		let count = try await db.read { try Series.Database.fetchCount($0) }
+		XCTAssertEqual(count, 0)
+	}
+
+	func testUsePreBowl_WhenIsExcluded_UpdatesToInclude() async throws {
+		// Given a database with a pre-bowl
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), preBowl: .preBowl, excludeFromStatistics: .exclude)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
+
+		// Updating the series
+		try await withDependencies {
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await series.usePreBowl(UUID(0), Date(timeIntervalSince1970: 123_456))
+		}
+
+		// Updates the database
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updated?.id, UUID(0))
+		XCTAssertEqual(updated?.excludeFromStatistics, .include)
+	}
+
+	func testUsePreBowl_WhenIsExcluded_UpdatesToIncludeGames() async throws {
+		// Given a database with a pre-bowl and excluded games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), preBowl: .preBowl, excludeFromStatistics: .exclude)
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 123), preBowl: .preBowl, excludeFromStatistics: .exclude)
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, excludeFromStatistics: .exclude)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, excludeFromStatistics: .exclude)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, excludeFromStatistics: .exclude)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
+
+		// Updating the series
+		try await withDependencies {
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await series.usePreBowl(UUID(0), Date(timeIntervalSince1970: 123_456))
+		}
+
+		// Updates the database
+		let updatedGame1 = try await db.read { try Game.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updatedGame1?.excludeFromStatistics, .include)
+		let updatedGame2 = try await db.read { try Game.Database.fetchOne($0, id: UUID(1)) }
+		XCTAssertEqual(updatedGame2?.excludeFromStatistics, .include)
+
+		// Does not update unrelated games
+		let updatedGame3 = try await db.read { try Game.Database.fetchOne($0, id: UUID(2)) }
+		XCTAssertEqual(updatedGame3?.excludeFromStatistics, .exclude)
+	}
+
+	func testUsePreBowl_UpdatesAppliedDate() async throws {
+		// Given a database with a pre-bowl
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123), preBowl: .preBowl, excludeFromStatistics: .exclude)
+		let db = try initializeDatabase(withSeries: .custom([series1]))
+
+		// Updating the series
+		try await withDependencies {
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await series.usePreBowl(UUID(0), Date(timeIntervalSince1970: 123_456))
+		}
+
+		// Updates the database
+		let updated = try await db.read { try Series.Database.fetchOne($0, id: UUID(0)) }
+		XCTAssertEqual(updated?.id, UUID(0))
+		XCTAssertEqual(updated?.date, Date(timeIntervalSince1970: 123))
+		XCTAssertEqual(updated?.appliedDate, Date(timeIntervalSince1970: 123_456))
 	}
 
 	// MARK: Create

@@ -42,6 +42,7 @@ extension Series.List {
 		self.init(
 			id: from.id,
 			date: from.date,
+			appliedDate: from.appliedDate,
 			scores: withScores,
 			total: withTotal,
 			preBowl: from.preBowl

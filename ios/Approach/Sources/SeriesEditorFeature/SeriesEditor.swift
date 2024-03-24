@@ -25,6 +25,8 @@ public struct SeriesEditor: Reducer {
 
 		public var numberOfGames: Int
 		public var date: Date
+		public var isUsingPreBowl: Bool
+		public var appliedDate: Date
 		public var preBowl: Series.PreBowl
 		public var excludeFromStatistics: Series.ExcludeFromStatistics
 		public var mapPosition: MapCameraPosition
@@ -32,6 +34,10 @@ public struct SeriesEditor: Reducer {
 
 		public let initialValue: SeriesForm.Value
 		public var form: SeriesForm.State
+
+		var isExcludeFromStatisticsToggleEnabled: Bool {
+			(preBowl == .preBowl && !isUsingPreBowl) || league.excludeFromStatistics == .exclude
+		}
 
 		var isDismissDisabled: Bool { alleyPicker != nil }
 		var isEditing: Bool {
@@ -44,11 +50,15 @@ public struct SeriesEditor: Reducer {
 		@Presents public var alleyPicker: ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.State?
 
 		public init(value: InitialValue, inLeague: League.SeriesHost) {
+			@Dependency(\.date) var date
+
 			self.league = inLeague
 			switch value {
 			case let .create(new):
 				self.numberOfGames = new.numberOfGames
 				self.date = new.date
+				self.appliedDate = new.appliedDate ?? date()
+				self.isUsingPreBowl = new.appliedDate != nil
 				self.preBowl = new.preBowl
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
@@ -57,7 +67,9 @@ public struct SeriesEditor: Reducer {
 			case let .edit(existing):
 				self.numberOfGames = existing.numberOfGames
 				self.date = existing.date
+				self.appliedDate = existing.appliedDate ?? date()
 				self.preBowl = existing.preBowl
+				self.isUsingPreBowl = existing.appliedDate != nil
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
 				self.mapPosition = existing.location?.location?.coordinate.mapPosition ?? .automatic
@@ -71,14 +83,16 @@ public struct SeriesEditor: Reducer {
 			case var .create(new):
 				new.date = date
 				new.preBowl = preBowl
-				new.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
+				new.appliedDate = isUsingPreBowl ? appliedDate : nil
+				new.excludeFromStatistics = (preBowl == .preBowl && !isUsingPreBowl) ? .exclude : excludeFromStatistics
 				new.numberOfGames = numberOfGames
 				new.location = location
 				form.value = .create(new)
 			case var .edit(existing):
 				existing.date = date
+				existing.appliedDate = isUsingPreBowl ? appliedDate : nil
 				existing.preBowl = preBowl
-				existing.excludeFromStatistics = preBowl == .preBowl ? .exclude : excludeFromStatistics
+				existing.excludeFromStatistics = (preBowl == .preBowl && !isUsingPreBowl) ? .exclude : excludeFromStatistics
 				existing.location = location
 				form.value = .edit(existing)
 			}
@@ -214,7 +228,9 @@ public struct SeriesEditor: Reducer {
 				case (.exclude, _):
 					state.excludeFromStatistics = .exclude
 				case (_, .preBowl):
-					state.excludeFromStatistics = .exclude
+					if !state.isUsingPreBowl {
+						state.excludeFromStatistics = .exclude
+					}
 				case (.include, .regular):
 					break
 				}
@@ -226,9 +242,21 @@ public struct SeriesEditor: Reducer {
 				case (.exclude, _):
 					state.excludeFromStatistics = .exclude
 				case (_, .preBowl):
-					state.excludeFromStatistics = .exclude
+					if !state.isUsingPreBowl {
+						state.excludeFromStatistics = .exclude
+					}
 				case (.include, .regular):
 					state.excludeFromStatistics = .include
+				}
+				state.syncFormSharedState()
+				return .none
+
+			case .binding(\.isUsingPreBowl):
+				switch (state.preBowl, state.isUsingPreBowl) {
+				case (.preBowl, false):
+					state.excludeFromStatistics = .exclude
+				case (.preBowl, true), (.regular, _):
+					break
 				}
 				state.syncFormSharedState()
 				return .none
