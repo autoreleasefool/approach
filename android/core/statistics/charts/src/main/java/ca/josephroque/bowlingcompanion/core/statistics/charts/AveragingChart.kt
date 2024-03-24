@@ -63,7 +63,7 @@ fun AveragingChart(chartData: AveragingChartData, chartModel: ChartEntryModelPro
 				},
 				valueFormatter = remember {
 					DecimalFormatAxisValueFormatter(pattern = "#;-#")
-				}
+				},
 			),
 			modifier = Modifier
 				.fillMaxWidth()
