@@ -8,6 +8,7 @@ extension Series {
 		public let id: Series.ID
 
 		public var date: Date
+		public var appliedDate: Date?
 		public var preBowl: PreBowl
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var numberOfGames: Int
@@ -18,6 +19,7 @@ extension Series {
 				leagueId: inLeague.id,
 				id: withId,
 				date: onDate,
+				appliedDate: nil,
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				numberOfGames: inLeague.defaultNumberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,

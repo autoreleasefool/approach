@@ -63,6 +63,21 @@ extension SeriesRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
+			unusedPreBowls: { league in
+				@Dependency(DatabaseService.self) var database
+
+				return database.reader().observe {
+					try Series.Database
+						.all()
+						.isNotArchived()
+						.orderByDate()
+						.bowled(inLeague: league)
+						.filter(Series.Database.Columns.preBowl == Series.PreBowl.preBowl)
+						.filter(Series.Database.Columns.appliedDate == nil)
+						.asRequest(of: Series.Summary.self)
+						.fetchAll($0)
+				}
+			},
 			eventSeries: { league in
 				@Dependency(DatabaseService.self) var database
 
@@ -112,6 +127,21 @@ extension SeriesRepository: DependencyKey {
 						.fetchOneGuaranteed($0)
 				}
 			},
+			usePreBowl: { series, date in
+				@Dependency(DatabaseService.self) var database
+
+				try await database.writer().write {
+					var existing = try Series.Database.fetchOneGuaranteed($0, id: series)
+
+					try Game.Database
+						.filter(Game.Database.Columns.seriesId == series)
+						.updateAll($0, Game.Database.Columns.excludeFromStatistics.set(to: Game.ExcludeFromStatistics.include))
+
+					existing.excludeFromStatistics = .include
+					existing.appliedDate = date
+					try existing.update($0)
+				}
+			},
 			create: { series in
 				@Dependency(DatabaseService.self) var database
 
@@ -144,16 +174,16 @@ extension SeriesRepository: DependencyKey {
 
 				try await database.writer().write {
 					if let existing = try Series.Database.fetchOne($0, id: series.id) {
-						switch (existing.preBowl, series.preBowl) {
-						case (.preBowl, .regular):
+						switch (existing.preBowl, series.preBowl, series.appliedDate) {
+						case (.preBowl, .regular, _), (.regular, .preBowl, .some), (.preBowl, .preBowl, .some):
 							try Game.Database
 								.filter(Game.Database.Columns.seriesId == series.id)
 								.updateAll($0, Game.Database.Columns.excludeFromStatistics.set(to: Game.ExcludeFromStatistics.include))
-						case (.regular, .preBowl):
+						case (.regular, .preBowl, .none), (.preBowl, .preBowl, .none):
 							try Game.Database
 								.filter(Game.Database.Columns.seriesId == series.id)
 								.updateAll($0, Game.Database.Columns.excludeFromStatistics.set(to: Game.ExcludeFromStatistics.exclude))
-						case (.preBowl, .preBowl), (.regular, .regular):
+						case (.regular, .regular, _):
 							break
 						}
 					}

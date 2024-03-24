@@ -1069,8 +1069,8 @@ public enum Strings {
         public enum ExcludeFromStatistics {
           /// All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.
           public static let excludedWhenLeagueExcluded = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded", fallback: "All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.")
-          /// Pre-bowls are automatically excluded from all statistics.
-          public static let excludedWhenPreBowl = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl", fallback: "Pre-bowls are automatically excluded from all statistics.")
+          /// Pre-bowls are automatically excluded from all statistics until you use them.
+          public static let excludedWhenPreBowl = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl", fallback: "Pre-bowls are automatically excluded from all statistics until you use them.")
           /// This series and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your average or other statistics.
           public static let help = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.help", fallback: "This series and all of its games will not count towards any statistics. They will still appear in the app, but won't affect your average or other statistics.")
           /// Exclude from all statistics?
@@ -1079,12 +1079,16 @@ public enum Strings {
           public static let title = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
         }
         public enum PreBowl {
+          /// Date to apply
+          public static let date = Strings.tr("Localizable", "series.editor.fields.preBowl.date", fallback: "Date to apply")
           /// Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.
           public static let help = Strings.tr("Localizable", "series.editor.fields.preBowl.help", fallback: "Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.")
-          /// This is a pre-bowl
-          public static let label = Strings.tr("Localizable", "series.editor.fields.preBowl.label", fallback: "This is a pre-bowl")
+          /// Is this a pre-bowl?
+          public static let label = Strings.tr("Localizable", "series.editor.fields.preBowl.label", fallback: "Is this a pre-bowl?")
           /// Pre-Bowl
           public static let title = Strings.tr("Localizable", "series.editor.fields.preBowl.title", fallback: "Pre-Bowl")
+          /// Use pre-bowl on date?
+          public static let usePreBowl = Strings.tr("Localizable", "series.editor.fields.preBowl.usePreBowl", fallback: "Use pre-bowl on date?")
         }
       }
     }
@@ -1111,6 +1115,14 @@ public enum Strings {
       }
       /// Series
       public static let title = Strings.tr("Localizable", "series.list.title", fallback: "Series")
+      public enum PreBowl {
+        /// Pre-bowled on %@
+        public static func preBowledOn(_ p1: Any) -> String {
+          return Strings.tr("Localizable", "series.list.preBowl.preBowledOn", String(describing: p1), fallback: "Pre-bowled on %@")
+        }
+        /// Use a pre-bowl?
+        public static let usedAPreBowl = Strings.tr("Localizable", "series.list.preBowl.usedAPreBowl", fallback: "Use a pre-bowl?")
+      }
       public enum Scores {
         /// %d — %d
         public static func range(_ p1: Int, _ p2: Int) -> String {
@@ -1129,6 +1141,26 @@ public enum Strings {
     public enum PreBowl {
       /// Pre-Bowls
       public static let title = Strings.tr("Localizable", "series.preBowl.title", fallback: "Pre-Bowls")
+    }
+    public enum PreBowlEditor {
+      /// Use a pre-bowl
+      public static let title = Strings.tr("Localizable", "series.preBowlEditor.title", fallback: "Use a pre-bowl")
+      public enum Description {
+        /// But it will affect your stats as a bowler as if you had bowled it on the original date, because you did!
+        public static let affectsBowlerAverage = Strings.tr("Localizable", "series.preBowlEditor.description.affectsBowlerAverage", fallback: "But it will affect your stats as a bowler as if you had bowled it on the original date, because you did!")
+        /// A pre-bowl will appear in your league as if you had bowled it on the latter date, to match your league stats and average.
+        public static let affectsLeagueAverage = Strings.tr("Localizable", "series.preBowlEditor.description.affectsLeagueAverage", fallback: "A pre-bowl will appear in your league as if you had bowled it on the latter date, to match your league stats and average.")
+        /// You can choose to use a pre-bowl on a date different than when you first bowled it.
+        public static let chooseToApply = Strings.tr("Localizable", "series.preBowlEditor.description.chooseToApply", fallback: "You can choose to use a pre-bowl on a date different than when you first bowled it.")
+      }
+      public enum Fields {
+        /// Date to apply pre-bowl
+        public static let appliedDate = Strings.tr("Localizable", "series.preBowlEditor.fields.appliedDate", fallback: "Date to apply pre-bowl")
+        /// Date originally bowled
+        public static let originalDate = Strings.tr("Localizable", "series.preBowlEditor.fields.originalDate", fallback: "Date originally bowled")
+        /// Pre-Bowled Series
+        public static let series = Strings.tr("Localizable", "series.preBowlEditor.fields.series", fallback: "Pre-Bowled Series")
+      }
     }
     public enum Properties {
       /// Bowling Alley

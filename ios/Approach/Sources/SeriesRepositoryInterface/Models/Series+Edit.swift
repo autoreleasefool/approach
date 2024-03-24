@@ -10,6 +10,7 @@ extension Series {
 		public let leagueRecurrence: League.Recurrence
 
 		public var date: Date
+		public var appliedDate: Date?
 		public var preBowl: PreBowl
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var location: Alley.Summary?

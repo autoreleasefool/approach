@@ -34,6 +34,15 @@ public struct SeriesListView: View {
 			.alignmentGuide(.listRowSeparatorLeading) { d in
 					d[.leading]
 			}
+		} header: {
+			if store.hasPreBowls {
+				Section {
+					Button { send(.didTapUpdatePreBowlsButton) } label: {
+						Text(Strings.Series.List.PreBowl.usedAPreBowl)
+					}
+					.buttonStyle(.navigation)
+				}
+			}
 		}
 		.navigationTitle(store.league.name)
 		.toolbar {
@@ -51,6 +60,7 @@ public struct SeriesListView: View {
 		.leagueEditor($store.scope(state: \.destination?.leagueEditor, action: \.internal.destination.leagueEditor))
 		.sortOrder($store.scope(state: \.destination?.sortOrder, action: \.internal.destination.sortOrder))
 		.gamesList($store.scope(state: \.destination?.games, action: \.internal.destination.games))
+		.preBowl($store.scope(state: \.destination?.preBowl, action: \.internal.destination.preBowl))
 	}
 }
 
@@ -59,6 +69,14 @@ public struct SeriesListView: View {
 		sheet(item: store) { (store: StoreOf<SeriesEditor>) in
 			NavigationStack {
 				SeriesEditorView(store: store)
+			}
+		}
+	}
+
+	fileprivate func preBowl(_ store: Binding<StoreOf<SeriesPreBowlEditor>?>) -> some View {
+		sheet(item: store) { (store: StoreOf<SeriesPreBowlEditor>) in
+			NavigationStack {
+				SeriesPreBowlEditorView(store: store)
 			}
 		}
 	}

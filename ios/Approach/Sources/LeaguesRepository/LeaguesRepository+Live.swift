@@ -123,6 +123,7 @@ extension LeaguesRepository: DependencyKey {
 									leagueId: league.id,
 									id: uuid(),
 									date: date(),
+									appliedDate: nil,
 									preBowl: .regular,
 									excludeFromStatistics: .init(from: league.excludeFromStatistics),
 									alleyId: league.location?.id,

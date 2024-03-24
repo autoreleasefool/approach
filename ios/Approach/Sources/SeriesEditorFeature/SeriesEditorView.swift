@@ -47,6 +47,22 @@ public struct SeriesEditorView: View {
 						Text(String(describing: $0)).tag($0)
 					}
 				}
+
+				if store.preBowl == .preBowl {
+					Toggle(
+						Strings.Series.Editor.Fields.PreBowl.usePreBowl,
+						isOn: $store.isUsingPreBowl
+					)
+
+					if store.isUsingPreBowl {
+						DatePicker(
+							Strings.Series.Editor.Fields.PreBowl.date,
+							selection: $store.appliedDate,
+							displayedComponents: [.date]
+						)
+						.datePickerStyle(.graphical)
+					}
+				}
 			} header: {
 				Text(Strings.Series.Editor.Fields.PreBowl.title)
 			} footer: {
@@ -61,7 +77,8 @@ public struct SeriesEditorView: View {
 					ForEach(Series.ExcludeFromStatistics.allCases) {
 						Text(String(describing: $0)).tag($0)
 					}
-				}.disabled(store.preBowl == .preBowl || store.league.excludeFromStatistics == .exclude)
+				}
+				.disabled(store.isExcludeFromStatisticsToggleEnabled)
 			} header: {
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
 			} footer: {
@@ -113,11 +130,11 @@ public struct SeriesEditorView: View {
 			Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
 				.foregroundColor(Asset.Colors.Warning.default)
 		case .include:
-			switch store.preBowl {
-			case .preBowl:
+			switch (store.preBowl, store.isUsingPreBowl) {
+			case (.preBowl, false):
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenPreBowl)
 					.foregroundColor(Asset.Colors.Warning.default)
-			case .regular:
+			case (.preBowl, true), (.regular, _):
 				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
 			}
 		}
