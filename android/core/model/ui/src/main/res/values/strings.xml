@@ -24,4 +24,5 @@
 	<string name="cd_series_item_size_default">Expanded Rows</string>
 
 	<string name="series_property_total">Total</string>
+	<string name="series_property_originally_bowled">Pre-bowled on %1$s</string>
 </resources>

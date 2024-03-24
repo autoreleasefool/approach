@@ -51,13 +51,13 @@ fun SeriesRow(
 
 			Column {
 				Text(
-					text = date.simpleFormat(),
+					text = (preBowledForDate ?: date).simpleFormat(),
 					style = MaterialTheme.typography.titleMedium,
 				)
 
 				if (preBowledForDate != null) {
 					Text(
-						text = "Pre-bowl for ${preBowledForDate.simpleFormat()}",
+						text = stringResource(R.string.series_property_originally_bowled, date.simpleFormat()),
 						style = MaterialTheme.typography.bodySmall,
 					)
 				}
