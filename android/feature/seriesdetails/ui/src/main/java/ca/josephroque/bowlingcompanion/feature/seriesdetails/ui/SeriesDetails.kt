@@ -16,6 +16,8 @@ fun SeriesDetails(
 		modifier = modifier,
 		header = {
 			SeriesDetailsHeader(
+				preBowl = state.details.preBowl,
+				preBowledDate = state.details.appliedDate?.let { state.details.date },
 				numberOfGames = state.details.numberOfGames,
 				seriesTotal = state.details.total,
 				scores = state.scores,

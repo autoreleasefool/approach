@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
+import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
@@ -29,9 +31,12 @@ import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.entry.entryOf
+import kotlinx.datetime.LocalDate
 
 @Composable
 fun SeriesDetailsHeader(
+	preBowl: SeriesPreBowl,
+	preBowledDate: LocalDate?,
 	numberOfGames: Int,
 	seriesTotal: Int,
 	seriesLow: Int?,
@@ -41,6 +46,36 @@ fun SeriesDetailsHeader(
 	modifier: Modifier = Modifier,
 ) {
 	Column(modifier = modifier) {
+		when (preBowl) {
+			SeriesPreBowl.REGULAR -> Unit
+			SeriesPreBowl.PRE_BOWL -> {
+				Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+					Text(
+						text = stringResource(R.string.series_details_header_pre_bowl),
+						style = MaterialTheme.typography.bodyMedium,
+						fontWeight = FontWeight.Bold,
+					)
+
+					if (preBowledDate == null) {
+						Text(
+							text = stringResource(R.string.series_details_header_unused_pre_bowl),
+							style = MaterialTheme.typography.bodyMedium,
+						)
+					} else {
+						Text(
+							text = stringResource(
+								R.string.series_details_header_pre_bowled_on,
+								preBowledDate.simpleFormat(),
+							),
+							style = MaterialTheme.typography.bodyMedium,
+						)
+					}
+				}
+
+				HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp))
+			}
+		}
+
 		Row(
 			horizontalArrangement = Arrangement.SpaceBetween,
 			modifier = Modifier
@@ -148,6 +183,8 @@ private fun ScoreChart(scores: ChartEntryModelProducer) {
 private fun SeriesDetailsHeaderPreview() {
 	Surface {
 		SeriesDetailsHeader(
+			preBowl = SeriesPreBowl.PRE_BOWL,
+			preBowledDate = null,
 			numberOfGames = 4,
 			seriesTotal = 880,
 			seriesLow = 200,
