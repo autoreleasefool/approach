@@ -504,6 +504,48 @@ final class SeriesRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.appliedDate, Date(timeIntervalSince1970: 123_456))
 	}
 
+	// MARK: Game Host
+
+	func testGameHost_WhenSeriesExists_ReturnsSeries() async throws {
+		// Given a database with an existing series
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123_456_000))
+		let db = try initializeDatabase(withSeries: .custom([series1]))
+
+		// Fetching the series
+		let series = try await withDependencies {
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await self.series.gameHost(UUID(0))
+		}
+
+		// Returns the series
+		XCTAssertEqual(
+			series,
+			.init(
+				id: UUID(0),
+				date: Date(timeIntervalSince1970: 123_456_000),
+				appliedDate: nil,
+				preBowl: .regular
+			)
+		)
+	}
+
+	func testGameHost_WhenSeriesNotExists_ThrowsError() async throws {
+		// Given a database with no seroes
+		let db = try initializeDatabase(withSeries: .zero)
+
+		// Fetching the series throws an error
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[SeriesRepository.self] = .liveValue
+			} operation: {
+				_ = try await self.series.gameHost(UUID(0))
+			}
+		}
+	}
+
 	// MARK: Create
 
 	func testCreate_WhenSeriesExists_ThrowsError() async throws {

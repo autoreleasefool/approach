@@ -248,7 +248,7 @@ public struct BowlersList: Reducer {
 					switch delegateAction {
 					case let .didFinishCreating(created):
 						guard let quickLaunch = state.quickLaunch else { return .none }
-						state.destination = .games(.init(series: created.asSummary, host: quickLaunch.league))
+						state.destination = .games(.init(series: created.asGameHost, host: quickLaunch.league))
 						return .none
 
 					case .didFinishArchiving, .didFinishUpdating:

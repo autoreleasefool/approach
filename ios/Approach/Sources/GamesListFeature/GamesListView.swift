@@ -37,6 +37,7 @@ public struct GamesListView: View {
 				$0.buttonStyle(.navigation)
 			}
 		} header: {
+			PreBowlHeader(series: store.series)
 			GamesListHeaderView(scores: store.list.resources?.map { .init(index: $0.index, score: $0.score) } ?? [])
 		} footer: {
 			if store.isShowingArchiveTip {
@@ -62,7 +63,7 @@ public struct GamesListView: View {
 				AddButton { send(.didTapAddButton) }
 			}
 		}
-		.navigationTitle(store.series.date.longFormat)
+		.navigationTitle(store.series.primaryDate.longFormat)
 		.onAppear { send(.onAppear) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
 		.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))

@@ -3,7 +3,7 @@ import IdentifiedCollections
 import ModelsLibrary
 
 extension Series {
-	public struct Create: Identifiable, Equatable, Codable {
+	public struct Create: Identifiable, Equatable, Codable, CanPreBowl {
 		public let leagueId: League.ID
 		public let id: Series.ID
 
@@ -29,6 +29,10 @@ extension Series {
 
 		public var asSummary: Summary {
 			.init(id: id, date: date)
+		}
+
+		public var asGameHost: GameHost {
+			.init(id: id, date: date, appliedDate: appliedDate, preBowl: preBowl)
 		}
 	}
 }

@@ -92,6 +92,7 @@ public struct SeriesList: Reducer {
 			case didArchiveSeries(Result<Series.List, Error>)
 			case didLoadEditableSeries(Result<Series.Edit, Error>)
 			case didLoadEditableLeague(Result<League.Edit, Error>)
+			case didLoadGameSeries(Result<Series.GameHost, Error>)
 
 			case errors(Errors<ErrorID>.Action)
 			case destination(PresentationAction<Destination.Action>)
@@ -153,10 +154,11 @@ public struct SeriesList: Reducer {
 					return .none
 
 				case let .didTapSeries(id):
-					if let series = state.list.findResource(byId: id) {
-						state.destination = .games(.init(series: series.asSummary, host: state.league))
+					return .run { send in
+						await send(.internal(.didLoadGameSeries(Result {
+							try await series.gameHost(id)
+						})))
 					}
-					return .none
 
 				case .didTapEditButton:
 					return .run { [id = state.league.id] send in
@@ -184,6 +186,10 @@ public struct SeriesList: Reducer {
 					state.destination = .leagueEditor(.init(value: .edit(league)))
 					return .none
 
+				case let .didLoadGameSeries(.success(series)):
+					state.destination = .games(.init(series: series, host: state.league))
+					return .none
+
 				case .didArchiveSeries(.success):
 					return .none
 
@@ -202,11 +208,16 @@ public struct SeriesList: Reducer {
 						.enqueue(.leagueNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
 						.map { .internal(.errors($0)) }
 
+				case let .didLoadGameSeries(.failure(error)):
+					return state.errors
+						.enqueue(.seriesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+						.map { .internal(.errors($0)) }
+
 				case .list(.internal(.sectionsResponse)):
 					if let seriesToNavigate = state.seriesToNavigate {
 						if let destination = state.list.findResource(byId: seriesToNavigate) {
 							state.seriesToNavigate = nil
-							state.destination = .games(.init(series: destination.asSummary, host: state.league))
+							state.destination = .games(.init(series: destination.asGameHost, host: state.league))
 						} else {
 							return .send(.internal(.didLoadEditableSeries(.failure(SeriesListError.seriesNotFound(seriesToNavigate)))))
 						}
@@ -245,7 +256,7 @@ public struct SeriesList: Reducer {
 					switch delegateAction {
 					case let .didFinishCreating(created):
 						if let series = state.list.findResource(byId: created.id) {
-							state.destination = .games(.init(series: series.asSummary, host: state.league))
+							state.destination = .games(.init(series: series.asGameHost, host: state.league))
 						} else {
 							state.seriesToNavigate = created.id
 						}

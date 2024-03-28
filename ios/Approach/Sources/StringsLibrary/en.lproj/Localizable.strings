@@ -216,6 +216,9 @@
 "game.list.header.seriesTotal" = "Series total";
 "game.list.header.seeYourScores" = "See your scores";
 "game.list.header.whenYouStartBowling" = "Start bowling to see them charted here";
+"game.list.header.preBowl" = "Pre-bowl";
+"game.list.header.preBowledOn" = "This series was originally bowled on %@";
+"game.list.header.unusedPreBowl" = "This pre-bowl has not been used yet";
 "game.list.footer.archiveTip.title" = "You can now add and archive games to series";
 "game.list.footer.archiveTip.message" = "Tap the '+' to add more games to any series, and swipe to hide any unwanted games.";
 "game.settings.title" = "Game Settings";

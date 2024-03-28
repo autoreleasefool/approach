@@ -61,7 +61,7 @@ public struct SeriesEditor: Reducer {
 				self.numberOfGames = new.numberOfGames
 				self.date = new.date
 				self.appliedDate = new.appliedDate ?? date()
-				self.isUsingPreBowl = new.appliedDate != nil
+				self.isUsingPreBowl = new.isPreBowlUsed
 				self.preBowl = new.preBowl
 				self.excludeFromStatistics = new.excludeFromStatistics
 				self.location = new.location
@@ -72,7 +72,7 @@ public struct SeriesEditor: Reducer {
 				self.date = existing.date
 				self.appliedDate = existing.appliedDate ?? date()
 				self.preBowl = existing.preBowl
-				self.isUsingPreBowl = existing.appliedDate != nil
+				self.isUsingPreBowl = existing.isPreBowlUsed
 				self.excludeFromStatistics = existing.excludeFromStatistics
 				self.location = existing.location
 				self.mapPosition = existing.location?.location?.coordinate.mapPosition ?? .automatic

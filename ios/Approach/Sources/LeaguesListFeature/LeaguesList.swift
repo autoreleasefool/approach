@@ -374,6 +374,6 @@ extension LeaguesList {
 extension LeaguesList {
 	public struct EventSeries {
 		let host: League.SeriesHost
-		let series: Series.Summary
+		let series: Series.GameHost
 	}
 }
