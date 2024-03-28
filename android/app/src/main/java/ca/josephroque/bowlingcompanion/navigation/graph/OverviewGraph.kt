@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.GearKind
 import ca.josephroque.bowlingcompanion.core.model.ResourcePickerType
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.navigation.popBackStackWithResult
 import ca.josephroque.bowlingcompanion.feature.avatarform.navigation.avatarFormScreen
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.navigation.bowlerDetailsScreen
@@ -35,7 +36,9 @@ import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.navigate
 import ca.josephroque.bowlingcompanion.feature.seriesdetails.navigation.seriesDetailsScreen
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToNewSeriesForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesForm
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.navigateToSeriesPreBowlForm
 import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesFormScreen
+import ca.josephroque.bowlingcompanion.feature.seriesform.navigation.seriesPreBowlFormScreen
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToMidGameStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navigateToStatisticsDetailsChart
@@ -107,6 +110,7 @@ fun NavGraphBuilder.overviewGraph(
 		},
 		onShowSeriesDetails = navController::navigateToSeriesDetails,
 		onBackPressed = navController::popBackStack,
+		onUsePreBowl = navController::navigateToSeriesPreBowlForm,
 	)
 	seriesFormScreen(
 		onDismissWithResult = navController::popBackStackWithResult,
@@ -116,6 +120,18 @@ fun NavGraphBuilder.overviewGraph(
 				limit = 1,
 				navResultCallback = result,
 				resourceType = ResourcePickerType.ALLEY,
+			)
+		},
+	)
+	seriesPreBowlFormScreen(
+		onDismiss = navController::popBackStack,
+		onShowSeriesPicker = { leagueId, seriesId, result ->
+			navController.navigateToResourcePickerForResult(
+				selectedIds = seriesId?.let { setOf(it) } ?: emptySet(),
+				limit = 1,
+				navResultCallback = result,
+				resourceType = ResourcePickerType.SERIES,
+				filter = "$leagueId:${SeriesPreBowl.PRE_BOWL}",
 			)
 		},
 	)

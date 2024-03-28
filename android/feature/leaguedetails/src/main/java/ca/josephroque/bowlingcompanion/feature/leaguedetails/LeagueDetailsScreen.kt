@@ -28,6 +28,7 @@ internal fun LeagueDetailsRoute(
 	onEditSeries: (UUID) -> Unit,
 	onAddSeries: (UUID, NavResultCallback<UUID?>) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
+	onUsePreBowl: (UUID) -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: LeagueDetailsViewModel = hiltViewModel(),
 ) {
@@ -44,6 +45,7 @@ internal fun LeagueDetailsRoute(
 							seriesId ?: return@onAddSeries
 							viewModel.handleAction(LeagueDetailsScreenUiAction.SeriesAdded(seriesId))
 						}
+						is LeagueDetailsScreenEvent.UsePreBowl -> onUsePreBowl(it.leagueId)
 						is LeagueDetailsScreenEvent.EditSeries -> onEditSeries(it.seriesId)
 						is LeagueDetailsScreenEvent.Dismissed -> onBackPressed()
 						is LeagueDetailsScreenEvent.ShowSeriesDetails -> onShowSeriesDetails(it.seriesId)

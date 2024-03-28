@@ -9,6 +9,9 @@ data class SeriesFormUiState(
 	val numberOfGames: Int?,
 	val date: LocalDate,
 	val isDatePickerVisible: Boolean,
+	val isUsingPreBowl: Boolean,
+	val appliedDate: LocalDate,
+	val isAppliedDatePickerVisible: Boolean,
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
 	val leagueExcludeFromStatistics: ExcludeFromStatistics,
@@ -16,6 +19,7 @@ data class SeriesFormUiState(
 	val isShowingArchiveDialog: Boolean,
 	val isArchiveButtonEnabled: Boolean,
 	val isShowingDiscardChangesDialog: Boolean,
+	val isPreBowlFormEnabled: Boolean,
 )
 
 sealed interface SeriesFormUiAction {
@@ -33,10 +37,14 @@ sealed interface SeriesFormUiAction {
 
 	data object DateClicked : SeriesFormUiAction
 	data object DatePickerDismissed : SeriesFormUiAction
+	data object AppliedDateClicked : SeriesFormUiAction
+	data object AppliedDatePickerDismissed : SeriesFormUiAction
 
 	data class NumberOfGamesChanged(val numberOfGames: Int) : SeriesFormUiAction
 	data class DateChanged(val date: LocalDate) : SeriesFormUiAction
 	data class PreBowlChanged(val preBowl: SeriesPreBowl) : SeriesFormUiAction
+	data class IsUsingPreBowlChanged(val isUsingPreBowl: Boolean) : SeriesFormUiAction
+	data class AppliedDateChanged(val date: LocalDate) : SeriesFormUiAction
 	data class ExcludeFromStatisticsChanged(
 		val excludeFromStatistics: ExcludeFromStatistics,
 	) : SeriesFormUiAction

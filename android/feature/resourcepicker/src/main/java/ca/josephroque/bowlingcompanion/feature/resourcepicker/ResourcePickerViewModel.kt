@@ -62,7 +62,7 @@ class ResourcePickerViewModel @Inject constructor(
 				ResourcePickerType.LEAGUE -> ResourcePickerFilter.Str(it)
 				ResourcePickerType.GEAR -> ResourcePickerFilter.Gear(GearKind.valueOf(it))
 				ResourcePickerType.LANE -> ResourcePickerFilter.Alley(UUID.fromString(it))
-				ResourcePickerType.SERIES -> ResourcePickerFilter.League(UUID.fromString(it))
+				ResourcePickerType.SERIES -> ResourcePickerFilter.Str(it)
 				ResourcePickerType.GAME -> ResourcePickerFilter.Series(UUID.fromString(it))
 				ResourcePickerType.BOWLER, ResourcePickerType.ALLEY -> null
 			}
@@ -76,7 +76,7 @@ class ResourcePickerViewModel @Inject constructor(
 		)
 		ResourcePickerType.SERIES -> SeriesPickerDataProvider(
 			seriesRepository,
-			(filter as? ResourcePickerFilter.League)?.id,
+			(filter as? ResourcePickerFilter.Str)?.value ?: "",
 		)
 		ResourcePickerType.GAME -> GamePickerDataProvider(
 			gamesRepository,

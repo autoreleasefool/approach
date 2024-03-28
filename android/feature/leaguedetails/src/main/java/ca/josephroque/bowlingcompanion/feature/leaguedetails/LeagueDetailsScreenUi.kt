@@ -23,4 +23,5 @@ sealed interface LeagueDetailsScreenEvent {
 	data class AddSeries(val leagueId: UUID) : LeagueDetailsScreenEvent
 	data class EditSeries(val seriesId: UUID) : LeagueDetailsScreenEvent
 	data class ShowSeriesDetails(val seriesId: UUID) : LeagueDetailsScreenEvent
+	data class UsePreBowl(val leagueId: UUID) : LeagueDetailsScreenEvent
 }

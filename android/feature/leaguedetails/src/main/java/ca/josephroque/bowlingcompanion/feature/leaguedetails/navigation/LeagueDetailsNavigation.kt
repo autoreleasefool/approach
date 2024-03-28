@@ -20,6 +20,7 @@ fun NavGraphBuilder.leagueDetailsScreen(
 	onEditSeries: (UUID) -> Unit,
 	onAddSeries: (UUID, NavResultCallback<UUID?>) -> Unit,
 	onShowSeriesDetails: (UUID) -> Unit,
+	onUsePreBowl: (UUID) -> Unit,
 ) {
 	composable(
 		route = Route.LeagueDetails.route,
@@ -32,6 +33,7 @@ fun NavGraphBuilder.leagueDetailsScreen(
 			onAddSeries = onAddSeries,
 			onShowSeriesDetails = onShowSeriesDetails,
 			onBackPressed = onBackPressed,
+			onUsePreBowl = onUsePreBowl,
 		)
 	}
 }

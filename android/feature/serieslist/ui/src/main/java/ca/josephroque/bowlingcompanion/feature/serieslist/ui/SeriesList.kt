@@ -14,6 +14,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
 import ca.josephroque.bowlingcompanion.core.designsystem.components.ArchiveDialog
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.HeaderAction
+import ca.josephroque.bowlingcompanion.core.designsystem.components.list.header
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import me.saket.swipe.SwipeAction
@@ -35,7 +37,7 @@ fun SeriesList(
 	}
 
 	LazyColumn(modifier = modifier) {
-		if (state.list.isEmpty()) {
+		if (state.isEmpty) {
 			item {
 				DefaultEmptyState(
 					title = R.string.series_list_empty_title,
@@ -53,8 +55,10 @@ fun SeriesList(
 			}
 
 			seriesList(
-				list = state.list,
+				preBowlSeries = state.preBowlSeries,
+				regularSeries = state.regularSeries,
 				itemSize = state.itemSize,
+				onUsePreBowlClick = { onAction(SeriesListUiAction.UsePreBowlClicked) },
 				onSeriesClick = { onAction(SeriesListUiAction.SeriesClicked(it.id)) },
 				onArchiveSeries = { onAction(SeriesListUiAction.ArchiveSeriesClicked(it)) },
 				onEditSeries = { onAction(SeriesListUiAction.EditSeriesClicked(it.id)) },
@@ -64,52 +68,122 @@ fun SeriesList(
 }
 
 fun LazyListScope.seriesList(
-	list: List<SeriesListChartItem>,
+	preBowlSeries: List<SeriesListChartItem>,
+	regularSeries: List<SeriesListChartItem>,
 	itemSize: SeriesItemSize,
+	onUsePreBowlClick: () -> Unit,
 	onSeriesClick: (SeriesListChartItem) -> Unit,
 	onArchiveSeries: (SeriesListChartItem) -> Unit,
 	onEditSeries: (SeriesListChartItem) -> Unit,
 ) {
-	itemsIndexed(
-		items = list,
-		key = { _, series -> series.id },
-	) { index, series ->
-		val archiveAction = SwipeAction(
-			icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
-			background = colorResource(
-				ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+	if (preBowlSeries.isNotEmpty()) {
+		header(
+			R.string.series_list_pre_bowl_title,
+			action = HeaderAction(
+				actionResourceId = R.string.series_list_use_pre_bowl,
+				onClick = onUsePreBowlClick,
 			),
-			onSwipe = { onArchiveSeries(series) },
 		)
 
-		val editAction = SwipeAction(
-			icon = rememberVectorPainter(Icons.Default.Edit),
-			background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
-			onSwipe = { onEditSeries(series) },
-		)
-
-		SwipeableActionsBox(
-			startActions = listOf(archiveAction),
-			endActions = listOf(editAction),
-		) {
+		itemsIndexed(
+			items = preBowlSeries,
+			key = { _, series -> series.id },
+		) { index, series ->
 			SeriesRow(
-				date = series.date,
-				total = series.total,
-				scores = series.scores?.let {
-					ScoreData(
-						seriesLow = series.lowestScore,
-						seriesHigh = series.highestScore,
-						numberOfGames = series.numberOfGames,
-						model = it,
-					)
-				},
-				onClick = { onSeriesClick(series) },
+				series = series,
 				itemSize = itemSize,
+				onClick = { onSeriesClick(series) },
+				onArchive = { onArchiveSeries(series) },
+				onEdit = { onEditSeries(series) },
 			)
+
+			if (index < preBowlSeries.size - 1) {
+				HorizontalDivider()
+			}
+		}
+	}
+
+	if (regularSeries.isNotEmpty()) {
+		if (preBowlSeries.isNotEmpty()) {
+			item {
+				HorizontalDivider()
+			}
+
+			header(R.string.series_list_regular_title)
 		}
 
-		if (index < list.size - 1) {
-			HorizontalDivider()
+		itemsIndexed(
+			items = regularSeries,
+			key = { _, series -> series.id },
+		) { index, series ->
+			SeriesRow(
+				series = series,
+				itemSize = itemSize,
+				onClick = { onSeriesClick(series) },
+				onArchive = { onArchiveSeries(series) },
+				onEdit = { onEditSeries(series) },
+			)
+
+			if (index < regularSeries.size - 1) {
+				HorizontalDivider()
+			}
 		}
+	}
+}
+
+@Composable
+private fun seriesActions(
+	onArchiveSeries: () -> Unit,
+	onEditSeries: () -> Unit,
+): Pair<List<SwipeAction>, List<SwipeAction>> {
+	val archiveAction = SwipeAction(
+		icon = painterResource(ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_archive),
+		background = colorResource(
+			ca.josephroque.bowlingcompanion.core.designsystem.R.color.destructive,
+		),
+		onSwipe = onArchiveSeries,
+	)
+
+	val editAction = SwipeAction(
+		icon = rememberVectorPainter(Icons.Default.Edit),
+		background = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.blue_300),
+		onSwipe = onEditSeries,
+	)
+
+	return listOf(archiveAction) to listOf(editAction)
+}
+
+@Composable
+private fun SeriesRow(
+	series: SeriesListChartItem,
+	itemSize: SeriesItemSize,
+	onArchive: () -> Unit,
+	onEdit: () -> Unit,
+	onClick: () -> Unit,
+) {
+	val (startActions, endActions) = seriesActions(
+		onArchiveSeries = onArchive,
+		onEditSeries = onEdit,
+	)
+
+	SwipeableActionsBox(
+		startActions = startActions,
+		endActions = endActions,
+	) {
+		SeriesRow(
+			date = series.date,
+			preBowledForDate = series.appliedDate,
+			total = series.total,
+			scores = series.scores?.let {
+				ScoreData(
+					seriesLow = series.lowestScore,
+					seriesHigh = series.highestScore,
+					numberOfGames = series.numberOfGames,
+					model = it,
+				)
+			},
+			onClick = onClick,
+			itemSize = itemSize,
+		)
 	}
 }

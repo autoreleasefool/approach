@@ -250,6 +250,12 @@ sealed class Route(
 		fun getEvent(savedStateHandle: SavedStateHandle): UUID? =
 			savedStateHandle.get<String>("event")?.let { UUID.fromString(it) }
 	}
+	data object SeriesPreBowl : Route("edit_pre_bowl/{league}", isBottomBarVisible = false) {
+		const val ARG_LEAGUE = "league"
+		fun createRoute(league: UUID): String = "edit_pre_bowl/${Uri.encode(league.toString())}"
+		fun getLeague(savedStateHandle: SavedStateHandle): UUID? =
+			savedStateHandle.get<String>("league")?.let { UUID.fromString(it) }
+	}
 
 	// Settings
 	data object Settings : Route("settings_overview")

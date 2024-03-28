@@ -14,6 +14,9 @@
 	<string name="series_form_pre_bowl_no">No</string>
 	<string name="series_form_pre_bowl_yes">Yes</string>
 
+	<string name="series_form_pre_bowl_use_on_date">Use pre-bowl on date?</string>
+	<string name="series_form_pre_bowl_date_to_apply">Date to apply</string>
+
 	<string name="series_form_section_statistics">Statistics</string>
 	<string name="series_form_section_statistics_description">If excluded, this series and all of its games will not count towards any statistics. They will still appear in the app, but won\'t affect your average or other statistics.</string>
 	<string name="series_form_section_statistics_description_excluded_when_pre_bowl">Pre-bowls are automatically excluded from all statistics.</string>
@@ -22,4 +25,12 @@
 	<string name="series_form_exclude_exclude">Exclude</string>
 
 	<string name="series_form_archive">Archive Series</string>
+
+	<string name="series_pre_bowl_form_title">Use a pre-bowl</string>
+	<string name="series_pre_bowl_form_choose_to_apply">You can choose to use a pre-bowl on a date different than when you first bowled it.</string>
+	<string name="series_pre_bowl_form_affects_league_average">A pre-bowl will appear in your league as if you had bowled it on the latter date, to match your league stats and average.</string>
+	<string name="series_pre_bowl_form_affects_bowler_average">But it will affect your stats as a bowler as if you had bowled it on the original date, because you did!</string>
+	<string name="series_pre_bowl_form_series">Pre-bowled series</string>
+	<string name="series_pre_bowl_form_date_bowled">Date originally bowled</string>
+	<string name="series_pre_bowl_form_date_to_apply">Date to apply pre-bowl</string>
 </resources>
