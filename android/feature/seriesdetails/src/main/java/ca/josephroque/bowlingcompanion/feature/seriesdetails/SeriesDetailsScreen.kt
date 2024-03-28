@@ -69,7 +69,9 @@ internal fun SeriesDetailsScreen(
 			SeriesDetailsTopBar(
 				seriesDate = when (state) {
 					SeriesDetailsScreenUiState.Loading -> null
-					is SeriesDetailsScreenUiState.Loaded -> state.seriesDetails.details.date
+					is SeriesDetailsScreenUiState.Loaded ->
+						state.seriesDetails.details.appliedDate
+							?: state.seriesDetails.details.date
 				},
 				onAction = { onAction(SeriesDetailsScreenUiAction.SeriesDetails(it)) },
 				scrollBehavior = scrollBehavior,
