@@ -21,6 +21,7 @@ enum class FeatureFlag(
 ) : Feature {
 	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.RELEASE),
 	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
+	PRE_BOWL_FORM("PreBowlForm", "2024-03-24", RolloutStage.DEVELOPMENT),
 }
 
 fun FeatureFlag.isEnabled(): Boolean = if (BuildConfig.DEBUG) {

@@ -11,10 +11,12 @@ import ca.josephroque.bowlingcompanion.core.database.model.SeriesEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesListEntity
 import ca.josephroque.bowlingcompanion.core.database.model.SeriesUpdateEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 @Dao
 abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
@@ -53,6 +55,10 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 			ON games.series_id = series.id AND games.archived_on IS NULL
 		WHERE series.league_id = :leagueId
 			AND series.archived_on IS NULL
+			AND (
+				:preBowl IS NULL
+				OR series.pre_bowl = :preBowl
+			)
 		GROUP BY series.id
 		ORDER BY
 		CASE WHEN :seriesSortOrder = "OLDEST_TO_NEWEST" THEN orderingDate END ASC,
@@ -64,6 +70,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 	abstract fun getSeriesList(
 		leagueId: UUID,
 		seriesSortOrder: SeriesSortOrder,
+		preBowl: SeriesPreBowl?,
 	): Flow<List<SeriesListEntity>>
 
 	@Query(
@@ -100,4 +107,15 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 
 	@Query("UPDATE series SET archived_on = NULL WHERE id = :seriesId")
 	abstract fun unarchiveSeries(seriesId: UUID)
+
+	@Query(
+		"""
+			UPDATE series 
+			SET 
+				exclude_from_statistics = 'INCLUDE',
+				applied_date = :appliedDate
+			WHERE id = :seriesId
+		""",
+	)
+	abstract fun usePreBowl(seriesId: UUID, appliedDate: LocalDate)
 }

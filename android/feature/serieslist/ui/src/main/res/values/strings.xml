@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<string name="series_list_regular_title">Series</string>
+	<string name="series_list_pre_bowl_title">Pre-Bowls</string>
+	<string name="series_list_use_pre_bowl">Use</string>
+
 	<string name="series_list_add">Add Series</string>
 
 	<string name="series_list_score_range">%1$d — %2$d</string>

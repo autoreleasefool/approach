@@ -96,7 +96,7 @@ class SeriesDetailsViewModel @Inject constructor(
 	init {
 		if (eventId != null) {
 			viewModelScope.launch {
-				val series = seriesRepository.getSeriesList(eventId, SeriesSortOrder.NEWEST_TO_OLDEST)
+				val series = seriesRepository.getSeriesList(eventId, SeriesSortOrder.NEWEST_TO_OLDEST, null)
 				seriesId.value = series.first().firstOrNull()?.properties?.id
 			}
 		}

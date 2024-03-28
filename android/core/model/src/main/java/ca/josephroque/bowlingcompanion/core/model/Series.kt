@@ -72,6 +72,7 @@ data class SeriesDetailsProperties(
 	val alleyId: UUID?,
 	val id: UUID,
 	val date: LocalDate,
+	val appliedDate: LocalDate?,
 	val total: Int,
 	val numberOfGames: Int,
 	val preBowl: SeriesPreBowl,
@@ -82,6 +83,7 @@ data class SeriesCreate(
 	val leagueId: UUID,
 	val id: UUID,
 	val date: LocalDate,
+	val appliedDate: LocalDate?,
 	val numberOfGames: Int,
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
@@ -91,6 +93,7 @@ data class SeriesCreate(
 data class SeriesUpdate(
 	val id: UUID,
 	val date: LocalDate,
+	val appliedDate: LocalDate?,
 	val preBowl: SeriesPreBowl,
 	val excludeFromStatistics: ExcludeFromStatistics,
 	val alleyId: UUID?,

@@ -138,6 +138,7 @@ class QuickPlayViewModel @Inject constructor(
 						leagueId = it,
 						id = id,
 						date = Clock.System.now().toLocalDate(),
+						appliedDate = null,
 						numberOfGames = numberOfGames,
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,

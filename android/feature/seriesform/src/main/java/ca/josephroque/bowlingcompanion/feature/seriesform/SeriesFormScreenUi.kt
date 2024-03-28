@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.feature.seriesform
 
+import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesUpdate
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.seriesform.ui.SeriesFormUiAction
@@ -39,7 +41,12 @@ sealed interface SeriesFormScreenUiState {
 fun SeriesFormUiState.updatedModel(existing: SeriesUpdate): SeriesUpdate = existing.copy(
 	date = date,
 	preBowl = preBowl,
-	excludeFromStatistics = excludeFromStatistics,
+	appliedDate = if (isUsingPreBowl) appliedDate else null,
+	excludeFromStatistics = if (preBowl == SeriesPreBowl.PRE_BOWL && !isUsingPreBowl) {
+		ExcludeFromStatistics.EXCLUDE
+	} else {
+		excludeFromStatistics
+	},
 	alleyId = alley?.id,
 )
 

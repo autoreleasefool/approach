@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
 import ca.josephroque.bowlingcompanion.core.model.SeriesItemSize
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
+import ca.josephroque.bowlingcompanion.core.model.SeriesPreBowl
 import ca.josephroque.bowlingcompanion.core.model.SeriesSortOrder
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.feature.leaguedetails.ui.LeagueDetailsTopBarUiState
@@ -67,7 +68,7 @@ class LeagueDetailsViewModel @Inject constructor(
 	}
 
 	private val seriesList = seriesSortOrder.flatMapLatest { sortOrder ->
-		seriesRepository.getSeriesList(leagueId, sortOrder)
+		seriesRepository.getSeriesList(leagueId, sortOrder, null)
 	}
 
 	val uiState: StateFlow<LeagueDetailsScreenUiState> = combine(
@@ -75,6 +76,8 @@ class LeagueDetailsViewModel @Inject constructor(
 		leaguesRepository.getLeagueDetails(leagueId),
 		seriesList,
 	) { config, league, series ->
+		val (preBowlSeries, regularSeries) = buildSeriesLists(series, config.seriesSortOrder)
+
 		LeagueDetailsScreenUiState.Loaded(
 			leagueDetails = LeagueDetailsUiState(
 				topBar = LeagueDetailsTopBarUiState(
@@ -86,20 +89,8 @@ class LeagueDetailsViewModel @Inject constructor(
 					seriesItemSize = config.seriesItemSize,
 				),
 				seriesList = SeriesListUiState(
-					list = series.map { item ->
-						val chartModelProducer = seriesChartModelProducers.getOrPut(item.properties.id) {
-							ChartEntryModelProducer()
-						}
-						chartModelProducer.setEntries(
-							item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
-						)
-
-						if (item.scores.all { it == 0 } || item.scores.size == 1) {
-							item.withoutChart()
-						} else {
-							item.withChart(chartModelProducer)
-						}
-					},
+					preBowlSeries = preBowlSeries,
+					regularSeries = regularSeries,
 					seriesToArchive = config.seriesToArchive,
 					itemSize = config.seriesItemSize,
 				),
@@ -147,6 +138,7 @@ class LeagueDetailsViewModel @Inject constructor(
 			is SeriesListUiAction.EditSeriesClicked -> sendEvent(
 				LeagueDetailsScreenEvent.EditSeries(action.id),
 			)
+			SeriesListUiAction.UsePreBowlClicked -> sendEvent(LeagueDetailsScreenEvent.UsePreBowl(leagueId))
 			SeriesListUiAction.AddSeriesClicked -> sendEvent(LeagueDetailsScreenEvent.AddSeries(leagueId))
 			is SeriesListUiAction.ArchiveSeriesClicked -> seriesToArchive.value = action.series
 			SeriesListUiAction.ConfirmArchiveClicked -> archiveSeries()
@@ -166,11 +158,53 @@ class LeagueDetailsViewModel @Inject constructor(
 			this@LeagueDetailsViewModel.seriesToArchive.value = null
 		}
 	}
+
+	private fun buildSeriesLists(
+		list: List<SeriesListItem>,
+		sortOrder: SeriesSortOrder,
+	): Pair<List<SeriesListChartItem>, List<SeriesListChartItem>> {
+		return when (sortOrder) {
+			SeriesSortOrder.NEWEST_TO_OLDEST -> {
+				val preBowlSeries = list.filter {
+					when (it.properties.preBowl) {
+						SeriesPreBowl.PRE_BOWL -> it.properties.appliedDate == null
+						SeriesPreBowl.REGULAR -> false
+					}
+				}
+				val preBowlSeriesIds = preBowlSeries.map { it.properties.id }.toSet()
+				val regularSeries = list.filter { !preBowlSeriesIds.contains(it.properties.id) }
+
+				preBowlSeries.map(::buildSeriesListChartItem) to regularSeries.map(::buildSeriesListChartItem)
+			}
+			SeriesSortOrder.OLDEST_TO_NEWEST,
+			SeriesSortOrder.HIGHEST_TO_LOWEST,
+			SeriesSortOrder.LOWEST_TO_HIGHEST,
+			-> {
+				emptyList<SeriesListChartItem>() to list.map(::buildSeriesListChartItem)
+			}
+		}
+	}
+
+	private fun buildSeriesListChartItem(item: SeriesListItem): SeriesListChartItem {
+		val chartModelProducer = seriesChartModelProducers.getOrPut(item.properties.id) {
+			ChartEntryModelProducer()
+		}
+		chartModelProducer.setEntries(
+			item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
+		)
+
+		return if (item.scores.all { it == 0 } || item.scores.size == 1) {
+			item.withoutChart()
+		} else {
+			item.withChart(chartModelProducer)
+		}
+	}
 }
 
 private fun SeriesListItem.withoutChart(): SeriesListChartItem = SeriesListChartItem(
 	id = properties.id,
 	date = properties.date,
+	appliedDate = properties.appliedDate,
 	preBowl = properties.preBowl,
 	total = properties.total,
 	numberOfGames = scores.size,
@@ -184,6 +218,7 @@ private fun SeriesListItem.withChart(
 ): SeriesListChartItem = SeriesListChartItem(
 	id = properties.id,
 	date = properties.date,
+	appliedDate = properties.appliedDate,
 	preBowl = properties.preBowl,
 	total = properties.total,
 	numberOfGames = scores.size,

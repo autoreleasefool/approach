@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:featureflags"))
 	implementation(project(":feature:seriesform:ui"))
 	implementation(libs.kotlinx.datetime)
 }

@@ -56,6 +56,7 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 						id = UUID.randomUUID(),
 						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						date = Clock.System.now().toLocalDate(),
+						appliedDate = null,
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 						alleyId = null,

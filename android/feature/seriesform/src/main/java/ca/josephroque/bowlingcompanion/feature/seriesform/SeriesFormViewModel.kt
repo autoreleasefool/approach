@@ -10,6 +10,8 @@ import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.AlleysRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.LeaguesRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
+import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.Series
@@ -39,6 +41,7 @@ class SeriesFormViewModel @Inject constructor(
 	private val seriesRepository: SeriesRepository,
 	private val leaguesRepository: LeaguesRepository,
 	private val analyticsClient: AnalyticsClient,
+	private val featureFlags: FeatureFlagsClient,
 ) : ApproachViewModel<SeriesFormScreenEvent>() {
 	private val _uiState: MutableStateFlow<SeriesFormScreenUiState> =
 		MutableStateFlow(SeriesFormScreenUiState.Loading)
@@ -76,6 +79,10 @@ class SeriesFormViewModel @Inject constructor(
 			is SeriesFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(
 				action.excludeFromStatistics,
 			)
+			is SeriesFormUiAction.AppliedDateChanged -> updateAppliedDate(action.date)
+			SeriesFormUiAction.AppliedDateClicked -> setAppliedDatePicker(isVisible = true)
+			SeriesFormUiAction.AppliedDatePickerDismissed -> setAppliedDatePicker(isVisible = false)
+			is SeriesFormUiAction.IsUsingPreBowlChanged -> updateIsUsingPreBowl(action.isUsingPreBowl)
 		}
 	}
 
@@ -89,10 +96,12 @@ class SeriesFormViewModel @Inject constructor(
 			} ?: return@launch
 
 			val uiState = if (series == null) {
+				val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
 				SeriesFormScreenUiState.Create(
 					form = SeriesFormUiState(
 						numberOfGames = league.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
-						date = Clock.System.todayIn(TimeZone.currentSystemDefault()),
+						date = currentDate,
+						appliedDate = currentDate,
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 						leagueExcludeFromStatistics = league.excludeFromStatistics,
@@ -101,6 +110,9 @@ class SeriesFormViewModel @Inject constructor(
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = false,
 						isShowingDiscardChangesDialog = false,
+						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
+						isAppliedDatePickerVisible = false,
+						isUsingPreBowl = false,
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = null,
@@ -112,12 +124,14 @@ class SeriesFormViewModel @Inject constructor(
 						id = series.properties.id,
 						alleyId = series.alley?.id,
 						date = series.properties.date,
+						appliedDate = series.properties.appliedDate,
 						preBowl = series.properties.preBowl,
 						excludeFromStatistics = series.properties.excludeFromStatistics,
 					),
 					form = SeriesFormUiState(
 						numberOfGames = null,
 						date = series.properties.date,
+						appliedDate = series.properties.appliedDate ?: series.properties.date,
 						isDatePickerVisible = false,
 						preBowl = series.properties.preBowl,
 						excludeFromStatistics = series.properties.excludeFromStatistics,
@@ -126,6 +140,10 @@ class SeriesFormViewModel @Inject constructor(
 						isShowingArchiveDialog = false,
 						isArchiveButtonEnabled = true,
 						isShowingDiscardChangesDialog = false,
+						isAppliedDatePickerVisible = false,
+						isUsingPreBowl = series.properties.appliedDate != null &&
+							series.properties.preBowl == SeriesPreBowl.PRE_BOWL,
+						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = series.properties.date,
@@ -173,6 +191,10 @@ class SeriesFormViewModel @Inject constructor(
 		_uiState.updateForm { it.copy(isDatePickerVisible = isVisible) }
 	}
 
+	private fun setAppliedDatePicker(isVisible: Boolean) {
+		_uiState.updateForm { it.copy(isAppliedDatePickerVisible = isVisible) }
+	}
+
 	private fun setArchiveSeriesPrompt(isVisible: Boolean) {
 		_uiState.updateForm { it.copy(isShowingArchiveDialog = isVisible) }
 	}
@@ -196,17 +218,71 @@ class SeriesFormViewModel @Inject constructor(
 		_uiState.updateForm { it.copy(date = date, isDatePickerVisible = false) }
 	}
 
+	private fun updateAppliedDate(date: LocalDate) {
+		_uiState.updateForm { it.copy(appliedDate = date, isAppliedDatePickerVisible = false) }
+	}
+
 	private fun updatePreBowl(preBowl: SeriesPreBowl) {
-		_uiState.updateForm { it.copy(preBowl = preBowl) }
+		_uiState.updateForm {
+			when {
+				it.leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE ->
+					it.copy(
+						preBowl = preBowl,
+						excludeFromStatistics = ExcludeFromStatistics.EXCLUDE,
+					)
+				preBowl == SeriesPreBowl.PRE_BOWL ->
+					it.copy(
+						preBowl = preBowl,
+						excludeFromStatistics = if (it.isUsingPreBowl) {
+							it.excludeFromStatistics
+						} else {
+							ExcludeFromStatistics.EXCLUDE
+						},
+					)
+				it.leagueExcludeFromStatistics == ExcludeFromStatistics.INCLUDE &&
+					preBowl == SeriesPreBowl.REGULAR ->
+					it.copy(
+						preBowl = preBowl,
+						isUsingPreBowl = false,
+						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
+					)
+				else -> it.copy(preBowl = preBowl)
+			}
+		}
+	}
+
+	private fun updateIsUsingPreBowl(isUsingPreBowl: Boolean) {
+		_uiState.updateForm {
+			if (it.preBowl == SeriesPreBowl.PRE_BOWL) {
+				it.copy(
+					isUsingPreBowl = isUsingPreBowl,
+					excludeFromStatistics = if (isUsingPreBowl) {
+						it.excludeFromStatistics
+					} else {
+						ExcludeFromStatistics.EXCLUDE
+					},
+				)
+			} else {
+				it
+			}
+		}
 	}
 
 	private fun updateExcludeFromStatistics(excludeFromStatistics: ExcludeFromStatistics) {
 		_uiState.updateForm {
 			when {
-				it.leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE -> return@updateForm it
-				it.preBowl == SeriesPreBowl.PRE_BOWL -> return@updateForm it
+				it.leagueExcludeFromStatistics == ExcludeFromStatistics.EXCLUDE ->
+					it.copy(excludeFromStatistics = ExcludeFromStatistics.EXCLUDE)
+				it.preBowl == SeriesPreBowl.PRE_BOWL ->
+					it.copy(
+						excludeFromStatistics = if (it.isUsingPreBowl) {
+							excludeFromStatistics
+						} else {
+							ExcludeFromStatistics.EXCLUDE
+						},
+					)
+				else -> it.copy(excludeFromStatistics = excludeFromStatistics)
 			}
-			it.copy(excludeFromStatistics = excludeFromStatistics)
 		}
 	}
 
@@ -219,14 +295,22 @@ class SeriesFormViewModel @Inject constructor(
 			when (val state = _uiState.value) {
 				SeriesFormScreenUiState.Loading -> return@launch
 				is SeriesFormScreenUiState.Create -> {
+					val isUnusedPreBowl = state.form.preBowl == SeriesPreBowl.PRE_BOWL &&
+						!state.form.isUsingPreBowl
+
 					val series = SeriesCreate(
 						leagueId = leagueId ?: return@launch,
 						id = seriesId ?: UUID.randomUUID(),
 						alleyId = state.form.alley?.id,
 						date = state.form.date,
 						preBowl = state.form.preBowl,
-						excludeFromStatistics = state.form.excludeFromStatistics,
+						excludeFromStatistics = if (isUnusedPreBowl) {
+							ExcludeFromStatistics.EXCLUDE
+						} else {
+							state.form.excludeFromStatistics
+						},
 						numberOfGames = state.form.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
+						appliedDate = if (state.form.isUsingPreBowl) state.form.appliedDate else null,
 					)
 
 					seriesRepository.insertSeries(series)

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
 
 class OfflineFirstSeriesRepository @Inject constructor(
 	private val seriesDao: SeriesDao,
@@ -40,8 +41,9 @@ class OfflineFirstSeriesRepository @Inject constructor(
 	override fun getSeriesList(
 		leagueId: UUID,
 		sortOrder: SeriesSortOrder,
+		preBowl: SeriesPreBowl?,
 	): Flow<List<SeriesListItem>> =
-		seriesDao.getSeriesList(leagueId, sortOrder).map { it.map(SeriesListEntity::asModel) }
+		seriesDao.getSeriesList(leagueId, sortOrder, preBowl).map { it.map(SeriesListEntity::asModel) }
 
 	override fun getArchivedSeries(): Flow<List<ArchivedSeries>> = seriesDao.getArchivedSeries()
 
@@ -118,5 +120,14 @@ class OfflineFirstSeriesRepository @Inject constructor(
 
 	override suspend fun unarchiveSeries(id: UUID) = withContext(ioDispatcher) {
 		seriesDao.unarchiveSeries(id)
+	}
+
+	override suspend fun usePreBowl(id: UUID, date: LocalDate) = withContext(ioDispatcher) {
+		val games = gameDao.getGamesList(id).first()
+		games.forEach {
+			gameDao.setGameExcludedFromStatistics(it.id, ExcludeFromStatistics.INCLUDE)
+		}
+
+		seriesDao.usePreBowl(id, date)
 	}
 }
