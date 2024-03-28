@@ -78,6 +78,16 @@ extension SeriesRepository: DependencyKey {
 						.fetchAll($0)
 				}
 			},
+			gameHost: { series in
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
+					try Series.Database
+						.filter(Series.Database.Columns.id == series)
+						.asRequest(of: Series.GameHost.self)
+						.fetchOneGuaranteed($0)
+				}
+			},
 			eventSeries: { league in
 				@Dependency(DatabaseService.self) var database
 
@@ -87,7 +97,7 @@ extension SeriesRepository: DependencyKey {
 						.isNotArchived()
 						.orderByDate()
 						.bowled(inLeague: league)
-						.asRequest(of: Series.Summary.self)
+						.asRequest(of: Series.GameHost.self)
 						.fetchOneGuaranteed($0)
 				}
 			},

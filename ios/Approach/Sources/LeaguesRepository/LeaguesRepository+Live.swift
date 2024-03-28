@@ -84,7 +84,7 @@ extension LeaguesRepository: DependencyKey {
 
 				return try await database.reader().read {
 					try League.Database
-						.filter(League.Database.Columns.id == id)
+						.filter(id: id)
 						.asRequest(of: League.SeriesHost.self)
 						.fetchOneGuaranteed($0)
 				}

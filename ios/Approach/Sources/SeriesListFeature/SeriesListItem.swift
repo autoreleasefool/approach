@@ -71,11 +71,11 @@ public struct SeriesListItem: View {
 						.padding(.trailing, .standardSpacing)
 
 					VStack(alignment: .leading, spacing: 0) {
-						Text((series.appliedDate ?? series.date).longFormat)
+						Text(series.primaryDate.longFormat)
 							.font(.subheadline)
 
-						if series.appliedDate != nil {
-							Text(Strings.Series.List.PreBowl.preBowledOn(series.date.longFormat))
+						if let bowledOnDate = series.bowledOnDate {
+							Text(Strings.Series.List.PreBowl.preBowledOn(bowledOnDate.longFormat))
 								.font(.caption)
 						}
 					}

@@ -17,7 +17,8 @@ public struct SeriesRepository: Sendable {
 	public var list: @Sendable (League.ID, Series.Ordering) -> AsyncThrowingStream<[Series.List], Error>
 	public var summaries: @Sendable (League.ID) -> AsyncThrowingStream<[Series.Summary], Error>
 	public var unusedPreBowls: @Sendable (League.ID) -> AsyncThrowingStream<[Series.Summary], Error>
-	public var eventSeries: @Sendable (League.ID) async throws -> Series.Summary
+	public var gameHost: @Sendable (Series.ID) async throws -> Series.GameHost
+	public var eventSeries: @Sendable (League.ID) async throws -> Series.GameHost
 	public var archived: @Sendable () -> AsyncThrowingStream<[Series.Archived], Error>
 	public var edit: @Sendable (Series.ID) async throws -> Series.Edit
 	public var usePreBowl: @Sendable (Series.ID, Date) async throws -> Void
@@ -31,7 +32,8 @@ public struct SeriesRepository: Sendable {
 		list: @escaping @Sendable (League.ID, Series.Ordering) -> AsyncThrowingStream<[Series.List], Error>,
 		summaries: @escaping @Sendable (League.ID) -> AsyncThrowingStream<[Series.Summary], Error>,
 		unusedPreBowls: @escaping @Sendable (League.ID) -> AsyncThrowingStream<[Series.Summary], Error>,
-		eventSeries: @escaping @Sendable (League.ID) async throws -> Series.Summary,
+		gameHost: @escaping @Sendable (Series.ID) async throws -> Series.GameHost,
+		eventSeries: @escaping @Sendable (League.ID) async throws -> Series.GameHost,
 		archived: @escaping @Sendable () -> AsyncThrowingStream<[Series.Archived], Error>,
 		edit: @escaping @Sendable (Series.ID) async throws -> Series.Edit,
 		usePreBowl: @escaping @Sendable (Series.ID, Date) async throws -> Void,
@@ -44,6 +46,7 @@ public struct SeriesRepository: Sendable {
 		self.list = list
 		self.summaries = summaries
 		self.unusedPreBowls = unusedPreBowls
+		self.gameHost = gameHost
 		self.eventSeries = eventSeries
 		self.archived = archived
 		self.edit = edit
@@ -73,6 +76,7 @@ extension SeriesRepository: TestDependencyKey {
 		list: { _, _ in unimplemented("\(Self.self).list") },
 		summaries: { _ in unimplemented("\(Self.self).summaries") },
 		unusedPreBowls: { _ in unimplemented("\(Self.self).unusedPreBowls") },
+		gameHost: { _ in unimplemented("\(Self.self).gameHost") },
 		eventSeries: { _ in unimplemented("\(Self.self).eventSeries") },
 		archived: { unimplemented("\(Self.self).archived") },
 		edit: { _ in unimplemented("\(Self.self).edit") },

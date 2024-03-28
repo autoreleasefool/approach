@@ -83,6 +83,7 @@ extension DerivableRequest<Series.Database> {
 extension Series.Summary: FetchableRecord {}
 extension Series.List: FetchableRecord {}
 extension Series.Archived: FetchableRecord {}
+extension Series.GameHost: FetchableRecord {}
 
 extension Series {
 	// swiftlint:disable:next function_parameter_count

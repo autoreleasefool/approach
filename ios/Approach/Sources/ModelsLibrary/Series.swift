@@ -46,7 +46,23 @@ extension Series {
 }
 
 extension Series {
-	public struct List: Identifiable, Codable, Equatable {
+	public struct GameHost: Identifiable, Codable, Equatable, CanPreBowl {
+		public let id: Series.ID
+		public let date: Date
+		public let appliedDate: Date?
+		public let preBowl: Series.PreBowl
+
+		public init(id: Series.ID, date: Date, appliedDate: Date?, preBowl: Series.PreBowl) {
+			self.id = id
+			self.date = date
+			self.appliedDate = appliedDate
+			self.preBowl = preBowl
+		}
+	}
+}
+
+extension Series {
+	public struct List: Identifiable, Codable, Equatable, CanPreBowl {
 		public let id: Series.ID
 		public let date: Date
 		public let appliedDate: Date?
@@ -73,6 +89,10 @@ extension Series {
 		public var asSummary: Summary {
 			.init(id: id, date: date)
 		}
+
+		public var asGameHost: GameHost {
+			.init(id: id, date: date, appliedDate: appliedDate, preBowl: preBowl)
+		}
 	}
 }
 
@@ -98,5 +118,25 @@ extension Series.List {
 			self.index = index
 			self.score = score
 		}
+	}
+}
+
+public protocol CanPreBowl {
+	var date: Date { get }
+	var appliedDate: Date? { get }
+	var preBowl: Series.PreBowl { get }
+}
+
+extension CanPreBowl {
+	public var primaryDate: Date {
+		appliedDate ?? date
+	}
+
+	public var bowledOnDate: Date? {
+		appliedDate == nil ? nil : date
+	}
+
+	public var isPreBowlUsed: Bool {
+		preBowl == .preBowl && appliedDate != nil
 	}
 }

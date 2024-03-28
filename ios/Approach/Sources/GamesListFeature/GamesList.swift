@@ -27,7 +27,7 @@ extension Game.List: ResourceListItem {
 public struct GamesList: Reducer {
 	@ObservableState
 	public struct State: Equatable {
-		public var series: Series.Summary
+		public var series: Series.GameHost
 		public let seriesHost: League.SeriesHost
 
 		public var list: ResourceList<Game.List, Series.ID>.State
@@ -39,7 +39,7 @@ public struct GamesList: Reducer {
 		public let isSeriesSharingEnabled: Bool
 		public var isShowingArchiveTip: Bool
 
-		public init(series: Series.Summary, host: League.SeriesHost) {
+		public init(series: Series.GameHost, host: League.SeriesHost) {
 			self.seriesHost = host
 			self.series = series
 			self.list = .init(
@@ -228,7 +228,7 @@ public struct GamesList: Reducer {
 				case let .destination(.presented(.seriesEditor(.delegate(delegateAction)))):
 					switch delegateAction {
 					case let .didFinishUpdating(series):
-						state.series = series.asSummary
+						state.series = series.asGameHost
 						return .none
 
 					case .didFinishArchiving:
