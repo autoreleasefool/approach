@@ -90,8 +90,12 @@ extension Frame.Edit {
 
 	public mutating func setDownedPins(rollIndex: Int, to downedPins: Set<Pin>) {
 		rolls[rollIndex].roll.pinsDowned = downedPins
+		let clearRolledBall = !(Frame.isLast(index) || Frame.isLastRoll(index)) && deck(forRoll: rollIndex).arePinsCleared
 		for roll in (rollIndex + 1..<rolls.endIndex) {
 			rolls[roll].roll.pinsDowned.subtract(downedPins)
+			if clearRolledBall {
+				rolls[roll].bowlingBall = nil
+			}
 		}
 	}
 
