@@ -9,6 +9,11 @@
 
 	<string name="series_form_bowling_alley">Bowling Alley</string>
 
+	<string name="series_form_manual_series">Manual Series</string>
+	<string name="series_form_manual_series_description">Add a series without recording the frames. The scores will count towards your average and high series. You can still edit the game details later.</string>
+	<string name="series_form_manual_series_manual">Set manual scores for games?</string>
+	<string name="series_form_manual_series_game_score">Game %1$d score</string>
+
 	<string name="series_form_section_pre_bowl_description">Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and change their date for when you plan to use them.</string>
 	<string name="series_form_pre_bowl">Pre-Bowling?</string>
 	<string name="series_form_pre_bowl_no">No</string>

@@ -11,6 +11,8 @@ import ca.josephroque.bowlingcompanion.core.database.model.asEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedSeries
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
 import ca.josephroque.bowlingcompanion.core.model.GameCreate
+import ca.josephroque.bowlingcompanion.core.model.GameLockState
+import ca.josephroque.bowlingcompanion.core.model.GameScoringMethod
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
 import ca.josephroque.bowlingcompanion.core.model.SeriesDetails
 import ca.josephroque.bowlingcompanion.core.model.SeriesListItem
@@ -51,10 +53,22 @@ class OfflineFirstSeriesRepository @Inject constructor(
 		transactionRunner {
 			seriesDao.insertSeries(series.asEntity())
 			val games = (0..<series.numberOfGames).map { index ->
+				val score = series.manualScores?.getOrNull(index)
 				GameCreate(
 					id = UUID.randomUUID(),
 					seriesId = series.id,
 					index = index,
+					score = score ?: 0,
+					locked = if (score != null) {
+						GameLockState.LOCKED
+					} else {
+						GameLockState.UNLOCKED
+					},
+					scoringMethod = if (score != null) {
+						GameScoringMethod.MANUAL
+					} else {
+						GameScoringMethod.BY_FRAME
+					},
 					excludeFromStatistics = series.excludeFromStatistics,
 				)
 			}

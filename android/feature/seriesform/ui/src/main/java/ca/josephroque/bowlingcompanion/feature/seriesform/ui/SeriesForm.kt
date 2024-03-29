@@ -5,16 +5,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.common.utils.simpleFormat
@@ -75,6 +79,22 @@ fun SeriesForm(
 			alley = state.alley,
 			onClick = { onAction(SeriesFormUiAction.AlleyClicked) },
 		)
+
+		HorizontalDivider()
+
+		if (state.isManualSeriesEnabled && state.isCreatingManualSeries != null) {
+			ManualSeriesSection(
+				isCreatingManualSeries = state.isCreatingManualSeries,
+				manualScores = state.manualScores,
+				onManualScoreChanged = { index, score ->
+					onAction(SeriesFormUiAction.ManualScoreChanged(index, score))
+				},
+				onIsCreatingManualSeriesChanged = {
+					onAction(SeriesFormUiAction.IsCreatingManualSeriesChanged(it))
+				},
+				modifier = Modifier.padding(top = 16.dp),
+			)
+		}
 
 		HorizontalDivider()
 
@@ -175,6 +195,51 @@ private fun AlleySection(alley: AlleyDetails?, onClick: () -> Unit) {
 }
 
 @Composable
+private fun ManualSeriesSection(
+	isCreatingManualSeries: Boolean,
+	manualScores: List<Int>,
+	onManualScoreChanged: (Int, String) -> Unit,
+	onIsCreatingManualSeriesChanged: (Boolean) -> Unit,
+	modifier: Modifier = Modifier,
+) {
+	FormSection(
+		titleResourceId = R.string.series_form_manual_series,
+		footerResourceId = R.string.series_form_manual_series_description,
+		modifier = modifier,
+	) {
+		FormSwitch(
+			titleResourceId = R.string.series_form_manual_series_manual,
+			isChecked = isCreatingManualSeries,
+			onCheckChanged = onIsCreatingManualSeriesChanged,
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 16.dp),
+		)
+
+		if (isCreatingManualSeries) {
+			manualScores.forEachIndexed { index, score ->
+				OutlinedTextField(
+					value = score.toString(),
+					onValueChange = { onManualScoreChanged(index, it) },
+					singleLine = true,
+					keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+					label = {
+						Text(
+							stringResource(R.string.series_form_manual_series_game_score, index + 1),
+							style = MaterialTheme.typography.bodyMedium,
+						)
+					},
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(horizontal = 16.dp)
+						.padding(bottom = if (index == manualScores.size - 1) 0.dp else 16.dp),
+				)
+			}
+		}
+	}
+}
+
+@Composable
 private fun PreBowlSection(
 	preBowl: SeriesPreBowl,
 	isPreBowlFormEnabled: Boolean,
@@ -188,9 +253,7 @@ private fun PreBowlSection(
 	onAppliedDatePickerDismissed: () -> Unit,
 	modifier: Modifier = Modifier,
 ) {
-	FormSection(
-		modifier = modifier,
-	) {
+	FormSection(modifier = modifier) {
 		FormRadioGroup(
 			titleResourceId = R.string.series_form_pre_bowl,
 			subtitleResourceId = R.string.series_form_section_pre_bowl_description,
@@ -304,6 +367,9 @@ private fun SeriesFormPreview() {
 				isArchiveButtonEnabled = true,
 				isShowingDiscardChangesDialog = false,
 				isPreBowlFormEnabled = true,
+				isCreatingManualSeries = true,
+				manualScores = listOf(100, 200),
+				isManualSeriesEnabled = true,
 			),
 			onAction = {},
 		)

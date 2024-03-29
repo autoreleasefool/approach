@@ -86,6 +86,7 @@ data class SeriesCreate(
 	val appliedDate: LocalDate?,
 	val numberOfGames: Int,
 	val preBowl: SeriesPreBowl,
+	val manualScores: List<Int>?,
 	val excludeFromStatistics: ExcludeFromStatistics,
 	val alleyId: UUID?,
 )
