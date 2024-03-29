@@ -93,17 +93,25 @@ extension Series {
 		withPreferredGear preferredGear: [Gear.Database],
 		startIndex: Int,
 		count: Int,
+		manualScores: [Int]?,
 		db: GRDB.Database
 	) throws {
 		@Dependency(\.uuid) var uuid
 		for index in (startIndex..<startIndex + count) {
+			let manualScore: Int?
+			if let manualScores {
+				manualScore = index - startIndex < manualScores.count ? manualScores[index - startIndex] : nil
+			} else {
+				manualScore = nil
+			}
+
 			let game = Game.Database(
 				seriesId: seriesId,
 				id: uuid(),
 				index: index,
-				score: 0,
-				locked: .open,
-				scoringMethod: .byFrame,
+				score: manualScore ?? 0,
+				locked: manualScore == nil ? .open : .locked,
+				scoringMethod: manualScore == nil ? .byFrame : .manual,
 				excludeFromStatistics: .init(from: excludeFromStatistics),
 				duration: 0,
 				archivedOn: nil

@@ -137,6 +137,7 @@ extension LeaguesRepository: DependencyKey {
 									withPreferredGear: preferredGear,
 									startIndex: 0,
 									count: numberOfGames,
+									manualScores: nil,
 									db: db
 								)
 							}

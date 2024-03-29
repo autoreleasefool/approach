@@ -1086,6 +1086,18 @@ public enum Strings {
           /// Statistics
           public static let title = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
         }
+        public enum Manual {
+          /// Add a series without recording the frames. The scores will count towards your average and high series. You can still edit the game details later.
+          public static let footer = Strings.tr("Localizable", "series.editor.fields.manual.footer", fallback: "Add a series without recording the frames. The scores will count towards your average and high series. You can still edit the game details later.")
+          /// Game %d score
+          public static func scoreForGameOrdinal(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "series.editor.fields.manual.scoreForGameOrdinal", p1, fallback: "Game %d score")
+          }
+          /// Set scores manually?
+          public static let setScoresManually = Strings.tr("Localizable", "series.editor.fields.manual.setScoresManually", fallback: "Set scores manually?")
+          /// Manual Recording
+          public static let title = Strings.tr("Localizable", "series.editor.fields.manual.title", fallback: "Manual Recording")
+        }
         public enum PreBowl {
           /// Date to apply
           public static let date = Strings.tr("Localizable", "series.editor.fields.preBowl.date", fallback: "Date to apply")

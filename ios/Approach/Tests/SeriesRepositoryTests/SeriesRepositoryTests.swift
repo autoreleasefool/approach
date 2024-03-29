@@ -645,7 +645,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Given a database with no series
 		let db = try initializeDatabase(withGear: .default, withLeagues: .default, withSeries: nil, withBowlerPreferredGear: .default)
 
-		// Creating the series throws an error
+		// Creating the series
 		let create = Series.Create(
 			leagueId: UUID(0),
 			id: UUID(0),
@@ -665,6 +665,39 @@ final class SeriesRepositoryTests: XCTestCase {
 		// Inserts game gear
 		let numberOfGameGear = try await db.read { try GameGear.Database.fetchCount($0) }
 		XCTAssertEqual(numberOfGameGear, 2)
+	}
+
+	func testCreate_WhenSeriesNotExists_WithManualScores_CreatesGamesWithScores() async throws {
+		// Given a database with no series
+		let db = try initializeDatabase(withLeagues: .default, withSeries: nil)
+
+		// Creating the series
+		let create = Series.Create(
+			leagueId: UUID(0),
+			id: UUID(0),
+			date: Date(timeIntervalSince1970: 123_456_001),
+			preBowl: .regular,
+			excludeFromStatistics: .include,
+			numberOfGames: 2,
+			manualScores: [125, 400]
+		)
+		try await withDependencies {
+			$0[DatabaseService.self].writer = { @Sendable in db }
+			$0.uuid = .incrementing
+			$0[SeriesRepository.self] = .liveValue
+		} operation: {
+			try await self.series.create(create)
+		}
+
+		// Inserts games with manual scores
+		let games = try await db.read { try Game.Database.order(Game.Database.Columns.index.asc).fetchAll($0) }
+		XCTAssertEqual(
+			games,
+			[
+				.mock(id: UUID(0), index: 0, score: 125, locked: .locked, scoringMethod: .manual),
+				.mock(id: UUID(1), index: 1, score: 400, locked: .locked, scoringMethod: .manual),
+			]
+		)
 	}
 
 	// MARK: Update

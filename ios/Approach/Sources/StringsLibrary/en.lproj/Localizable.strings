@@ -179,6 +179,10 @@
 "series.properties.preBowl.regular" = "Regular";
 "series.properties.excludeFromStatistics.include" = "Include";
 "series.properties.excludeFromStatistics.exclude" = "Exclude";
+"series.editor.fields.manual.title" = "Manual Recording";
+"series.editor.fields.manual.setScoresManually" = "Set scores manually?";
+"series.editor.fields.manual.scoreForGameOrdinal" = "Game %d score";
+"series.editor.fields.manual.footer" = "Add a series without recording the frames. The scores will count towards your average and high series. You can still edit the game details later.";
 "series.editor.fields.alley.title" = "Alley";
 "series.editor.fields.alley.help" = "This is where you plan on bowling this series.";
 "series.editor.fields.alley.lanes" = "Lanes";
