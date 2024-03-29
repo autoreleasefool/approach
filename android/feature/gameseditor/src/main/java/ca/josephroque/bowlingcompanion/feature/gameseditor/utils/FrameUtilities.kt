@@ -1,7 +1,10 @@
 package ca.josephroque.bowlingcompanion.feature.gameseditor.utils
 
+import ca.josephroque.bowlingcompanion.core.model.Frame
 import ca.josephroque.bowlingcompanion.core.model.FrameEdit
 import ca.josephroque.bowlingcompanion.core.model.Pin
+import ca.josephroque.bowlingcompanion.core.model.Roll
+import ca.josephroque.bowlingcompanion.core.model.arePinsCleared
 
 fun MutableList<FrameEdit>.ensureRollExists(frameIndex: Int, rollIndex: Int) {
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
@@ -12,8 +15,13 @@ fun MutableList<FrameEdit>.setPinsDowned(frameIndex: Int, rollIndex: Int, pinsDo
 	val frame = this[frameIndex].ensureRollExists(upTo = rollIndex)
 	val rolls = frame.rolls.toMutableList()
 	rolls[rollIndex] = rolls[rollIndex].copy(pinsDowned = pinsDowned)
+	val clearRolledBall = !(Frame.isLastFrame(frameIndex) || Roll.isLastRoll(rollIndex)) &&
+		frame.deckForRoll(rollIndex).arePinsCleared()
 	rolls.subList(rollIndex + 1, rolls.size).forEachIndexed { index, roll ->
-		rolls[index + rollIndex + 1] = roll.copy(pinsDowned = roll.pinsDowned.subtract(pinsDowned))
+		rolls[index + rollIndex + 1] = roll.copy(
+			pinsDowned = roll.pinsDowned.subtract(pinsDowned),
+			bowlingBall = roll.bowlingBall?.takeIf { !clearRolledBall },
+		)
 	}
 	this[frameIndex] = frame.copy(rolls = rolls)
 }
