@@ -22,7 +22,7 @@ enum class FeatureFlag(
 	DATA_EXPORT("DataExport", "2023-10-12", RolloutStage.RELEASE),
 	DATA_IMPORT("DataImport", "2023-10-13", RolloutStage.RELEASE),
 	PRE_BOWL_FORM("PreBowlForm", "2024-03-24", RolloutStage.RELEASE),
-	MANUAL_SERIES_FORM("ManualSeriesForm", "2024-03-28", RolloutStage.DEVELOPMENT),
+	MANUAL_SERIES_FORM("ManualSeriesForm", "2024-03-28", RolloutStage.RELEASE),
 }
 
 fun FeatureFlag.isEnabled(): Boolean = if (BuildConfig.DEBUG) {
