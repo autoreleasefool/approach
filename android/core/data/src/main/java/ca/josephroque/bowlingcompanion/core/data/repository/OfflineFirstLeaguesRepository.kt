@@ -60,6 +60,7 @@ class OfflineFirstLeaguesRepository @Inject constructor(
 						preBowl = SeriesPreBowl.REGULAR,
 						excludeFromStatistics = ExcludeFromStatistics.INCLUDE,
 						alleyId = null,
+						manualScores = null,
 					),
 				)
 			}

@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.data.repository.SeriesRepository
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlag
 import ca.josephroque.bowlingcompanion.core.featureflags.FeatureFlagsClient
 import ca.josephroque.bowlingcompanion.core.model.ExcludeFromStatistics
+import ca.josephroque.bowlingcompanion.core.model.Game
 import ca.josephroque.bowlingcompanion.core.model.League
 import ca.josephroque.bowlingcompanion.core.model.Series
 import ca.josephroque.bowlingcompanion.core.model.SeriesCreate
@@ -76,13 +77,15 @@ class SeriesFormViewModel @Inject constructor(
 			is SeriesFormUiAction.NumberOfGamesChanged -> updateNumberOfGames(action.numberOfGames)
 			is SeriesFormUiAction.DateChanged -> updateDate(action.date)
 			is SeriesFormUiAction.PreBowlChanged -> updatePreBowl(action.preBowl)
-			is SeriesFormUiAction.ExcludeFromStatisticsChanged -> updateExcludeFromStatistics(
-				action.excludeFromStatistics,
-			)
+			is SeriesFormUiAction.ExcludeFromStatisticsChanged ->
+				updateExcludeFromStatistics(action.excludeFromStatistics)
 			is SeriesFormUiAction.AppliedDateChanged -> updateAppliedDate(action.date)
 			SeriesFormUiAction.AppliedDateClicked -> setAppliedDatePicker(isVisible = true)
 			SeriesFormUiAction.AppliedDatePickerDismissed -> setAppliedDatePicker(isVisible = false)
 			is SeriesFormUiAction.IsUsingPreBowlChanged -> updateIsUsingPreBowl(action.isUsingPreBowl)
+			is SeriesFormUiAction.ManualScoreChanged -> updateManualScore(action.index, action.score)
+			is SeriesFormUiAction.IsCreatingManualSeriesChanged ->
+				updateIsCreatingManualSeries(action.isCreatingManualSeries)
 		}
 	}
 
@@ -113,6 +116,9 @@ class SeriesFormViewModel @Inject constructor(
 						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
 						isAppliedDatePickerVisible = false,
 						isUsingPreBowl = false,
+						isCreatingManualSeries = false,
+						manualScores = emptyList(),
+						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_SERIES_FORM),
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = null,
@@ -144,6 +150,9 @@ class SeriesFormViewModel @Inject constructor(
 						isUsingPreBowl = series.properties.appliedDate != null &&
 							series.properties.preBowl == SeriesPreBowl.PRE_BOWL,
 						isPreBowlFormEnabled = featureFlags.isEnabled(FeatureFlag.PRE_BOWL_FORM),
+						isCreatingManualSeries = false,
+						manualScores = emptyList(),
+						isManualSeriesEnabled = featureFlags.isEnabled(FeatureFlag.MANUAL_SERIES_FORM),
 					),
 					topBar = SeriesFormTopBarUiState(
 						existingDate = series.properties.date,
@@ -268,6 +277,37 @@ class SeriesFormViewModel @Inject constructor(
 		}
 	}
 
+	private fun updateIsCreatingManualSeries(isCreatingManualSeries: Boolean) {
+		_uiState.updateForm {
+			it.copy(
+				isCreatingManualSeries = isCreatingManualSeries,
+				manualScores = if (isCreatingManualSeries) {
+					List(it.numberOfGames ?: 0) { 0 }
+				} else {
+					emptyList()
+				},
+			)
+		}
+	}
+
+	private fun updateManualScore(index: Int, score: String) {
+		val intScore = score.toIntOrNull()?.coerceIn(0..Game.MAX_SCORE) ?: 0
+		_uiState.updateForm {
+			it.copy(
+				manualScores = it.manualScores.toMutableList().apply {
+					set(
+						index,
+						if (it.manualScores[index] == 0 && intScore % 10 == 0) {
+							intScore / 10
+						} else {
+							intScore
+						},
+					)
+				},
+			)
+		}
+	}
+
 	private fun updateExcludeFromStatistics(excludeFromStatistics: ExcludeFromStatistics) {
 		_uiState.updateForm {
 			when {
@@ -287,7 +327,20 @@ class SeriesFormViewModel @Inject constructor(
 	}
 
 	private fun updateNumberOfGames(numberOfGames: Int) {
-		_uiState.updateForm { it.copy(numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange)) }
+		_uiState.updateForm {
+			it.copy(
+				numberOfGames = numberOfGames.coerceIn(League.NumberOfGamesRange),
+				manualScores = if (it.isCreatingManualSeries == true) {
+					if (it.manualScores.size < numberOfGames) {
+						it.manualScores + List(numberOfGames - it.manualScores.size) { 0 }
+					} else {
+						it.manualScores.take(numberOfGames)
+					}
+				} else {
+					it.manualScores
+				},
+			)
+		}
 	}
 
 	private fun saveSeries() {
@@ -311,6 +364,11 @@ class SeriesFormViewModel @Inject constructor(
 						},
 						numberOfGames = state.form.numberOfGames ?: Series.DEFAULT_NUMBER_OF_GAMES,
 						appliedDate = if (state.form.isUsingPreBowl) state.form.appliedDate else null,
+						manualScores = if (state.form.isCreatingManualSeries == true) {
+							state.form.manualScores
+						} else {
+							null
+						},
 					)
 
 					seriesRepository.insertSeries(series)
