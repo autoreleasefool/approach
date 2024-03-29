@@ -173,6 +173,7 @@ extension SeriesRepository: DependencyKey {
 								withPreferredGear: preferredGear,
 								startIndex: 0,
 								count: series.numberOfGames,
+								manualScores: series.manualScores,
 								db: db
 							)
 						}
@@ -225,6 +226,7 @@ extension SeriesRepository: DependencyKey {
 								withPreferredGear: preferredGear,
 								startIndex: series.maxGameIndex < 0 ? 0 : series.maxGameIndex + 1,
 								count: count,
+								manualScores: nil,
 								db: db
 							)
 						}

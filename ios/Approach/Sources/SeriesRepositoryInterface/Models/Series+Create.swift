@@ -13,6 +13,7 @@ extension Series {
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var numberOfGames: Int
 		public var location: Alley.Summary?
+		public var manualScores: [Int]?
 
 		public static func `default`(withId: UUID, onDate: Date, inLeague: League.SeriesHost) -> Self {
 			.init(
@@ -23,7 +24,8 @@ extension Series {
 				preBowl: .regular,
 				excludeFromStatistics: .include,
 				numberOfGames: inLeague.defaultNumberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,
-				location: inLeague.alley
+				location: inLeague.alley,
+				manualScores: nil
 			)
 		}
 

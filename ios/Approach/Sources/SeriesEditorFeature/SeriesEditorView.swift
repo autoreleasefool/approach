@@ -20,70 +20,15 @@ public struct SeriesEditorView: View {
 
 	public var body: some View {
 		FormView(store: store.scope(state: \.form, action: \.internal.form)) {
-			Section(Strings.Editor.Fields.Details.title) {
-				Stepper(
-					Strings.Series.Editor.Fields.numberOfGames(store.numberOfGames),
-					value: $store.numberOfGames,
-					in: League.NUMBER_OF_GAMES_RANGE
-				)
-				.disabled(store.isEditing)
+			detailsSection
 
-				DatePicker(
-					Strings.Series.Properties.date,
-					selection: $store.date,
-					displayedComponents: [.date]
-				)
-				.datePickerStyle(.graphical)
+			if store.isManualSeriesEnabled && !store.isEditing {
+				manualSection
 			}
 
 			locationSection
-
-			Section {
-				Picker(
-					Strings.Series.Editor.Fields.PreBowl.label,
-					selection: $store.preBowl.animation()
-				) {
-					ForEach(Series.PreBowl.allCases) {
-						Text(String(describing: $0)).tag($0)
-					}
-				}
-
-				if store.isPreBowlFormEnabled && store.preBowl == .preBowl {
-					Toggle(
-						Strings.Series.Editor.Fields.PreBowl.usePreBowl,
-						isOn: $store.isUsingPreBowl.animation()
-					)
-
-					if store.isUsingPreBowl {
-						DatePicker(
-							Strings.Series.Editor.Fields.PreBowl.date,
-							selection: $store.appliedDate,
-							displayedComponents: [.date]
-						)
-						.datePickerStyle(.graphical)
-					}
-				}
-			} header: {
-				Text(Strings.Series.Editor.Fields.PreBowl.title)
-			} footer: {
-				Text(Strings.Series.Editor.Fields.PreBowl.help)
-			}
-
-			Section {
-				Picker(
-					Strings.Series.Editor.Fields.ExcludeFromStatistics.label,
-					selection: $store.excludeFromStatistics
-				) {
-					ForEach(Series.ExcludeFromStatistics.allCases) {
-						Text(String(describing: $0)).tag($0)
-					}
-				}
-				.disabled(store.isExcludeFromStatisticsToggleEnabled)
-			} header: {
-				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
-			} footer: {
-				excludeFromStatisticsHelp
-			}
+			preBowlSection
+			statisticsSection
 		}
 		.interactiveDismissDisabled(store.isDismissDisabled)
 		.onAppear { send(.onAppear) }
@@ -93,6 +38,43 @@ public struct SeriesEditorView: View {
 			ResourcePickerView(store: store) { alley in
 				Alley.View(alley)
 			}
+		}
+	}
+
+	private var detailsSection: some View {
+		Section(Strings.Editor.Fields.Details.title) {
+			Stepper(
+				Strings.Series.Editor.Fields.numberOfGames(store.numberOfGames),
+				value: $store.numberOfGames,
+				in: League.NUMBER_OF_GAMES_RANGE
+			)
+			.disabled(store.isEditing)
+
+			DatePicker(
+				Strings.Series.Properties.date,
+				selection: $store.date,
+				displayedComponents: [.date]
+			)
+			.datePickerStyle(.graphical)
+		}
+	}
+
+	private var manualSection: some View {
+		Section {
+			Toggle(
+				Strings.Series.Editor.Fields.Manual.setScoresManually,
+				isOn: $store.isCreatingManualSeries.animation()
+			)
+
+			if store.isCreatingManualSeries {
+				ForEach(store.scope(state: \.manualScores, action: \.internal.manualSeriesGame), id: \.state.id) {
+					ManualSeriesGameEditorView(store: $0)
+				}
+			}
+		} header: {
+			Text(Strings.Series.Editor.Fields.Manual.title)
+		} footer: {
+			Text(Strings.Series.Editor.Fields.Manual.footer)
 		}
 	}
 
@@ -122,6 +104,57 @@ public struct SeriesEditorView: View {
 			Text(Strings.Series.Editor.Fields.Alley.help)
 		}
 		.listRowSeparator(.hidden)
+	}
+
+	private var preBowlSection: some View {
+		Section {
+			Picker(
+				Strings.Series.Editor.Fields.PreBowl.label,
+				selection: $store.preBowl.animation()
+			) {
+				ForEach(Series.PreBowl.allCases) {
+					Text(String(describing: $0)).tag($0)
+				}
+			}
+
+			if store.isPreBowlFormEnabled && store.preBowl == .preBowl {
+				Toggle(
+					Strings.Series.Editor.Fields.PreBowl.usePreBowl,
+					isOn: $store.isUsingPreBowl.animation()
+				)
+
+				if store.isUsingPreBowl {
+					DatePicker(
+						Strings.Series.Editor.Fields.PreBowl.date,
+						selection: $store.appliedDate,
+						displayedComponents: [.date]
+					)
+					.datePickerStyle(.graphical)
+				}
+			}
+		} header: {
+			Text(Strings.Series.Editor.Fields.PreBowl.title)
+		} footer: {
+			Text(Strings.Series.Editor.Fields.PreBowl.help)
+		}
+	}
+
+	private var statisticsSection: some View {
+		Section {
+			Picker(
+				Strings.Series.Editor.Fields.ExcludeFromStatistics.label,
+				selection: $store.excludeFromStatistics
+			) {
+				ForEach(Series.ExcludeFromStatistics.allCases) {
+					Text(String(describing: $0)).tag($0)
+				}
+			}
+			.disabled(store.isExcludeFromStatisticsToggleEnabled)
+		} header: {
+			Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
+		} footer: {
+			excludeFromStatisticsHelp
+		}
 	}
 
 	@ViewBuilder private var excludeFromStatisticsHelp: some View {

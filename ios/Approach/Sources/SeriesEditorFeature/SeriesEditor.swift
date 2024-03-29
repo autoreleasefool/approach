@@ -19,6 +19,7 @@ import SwiftUI
 public typealias SeriesForm = FormFeature.Form<Series.Create, Series.Edit>
 
 @Reducer
+// swiftlint:disable:next type_body_length
 public struct SeriesEditor: Reducer {
 	@ObservableState
 	public struct State: Equatable {
@@ -32,11 +33,14 @@ public struct SeriesEditor: Reducer {
 		public var excludeFromStatistics: Series.ExcludeFromStatistics
 		public var mapPosition: MapCameraPosition
 		public var location: Alley.Summary?
+		public var isCreatingManualSeries: Bool = false
+		public var manualScores: IdentifiedArrayOf<ManualSeriesGameEditor.State> = []
 
 		public let initialValue: SeriesForm.Value
 		public var form: SeriesForm.State
 
 		public var isPreBowlFormEnabled: Bool
+		public var isManualSeriesEnabled: Bool
 
 		var isExcludeFromStatisticsToggleEnabled: Bool {
 			(preBowl == .preBowl && !isUsingPreBowl) || league.excludeFromStatistics == .exclude
@@ -82,6 +86,7 @@ public struct SeriesEditor: Reducer {
 
 			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isPreBowlFormEnabled = featureFlags.isEnabled(.preBowlForm)
+			self.isManualSeriesEnabled = featureFlags.isEnabled(.manualSeries)
 		}
 
 		mutating func syncFormSharedState() {
@@ -93,6 +98,7 @@ public struct SeriesEditor: Reducer {
 				new.excludeFromStatistics = (preBowl == .preBowl && !isUsingPreBowl) ? .exclude : excludeFromStatistics
 				new.numberOfGames = numberOfGames
 				new.location = location
+				new.manualScores = isCreatingManualSeries ? manualScores.map { $0.score } : nil
 				form.value = .create(new)
 			case var .edit(existing):
 				existing.date = date
@@ -118,6 +124,7 @@ public struct SeriesEditor: Reducer {
 		@CasePathable public enum Internal {
 			case form(SeriesForm.Action)
 			case alleyPicker(PresentationAction<ResourcePicker<Alley.Summary, AlwaysEqual<Void>>.Action>)
+			case manualSeriesGame(IdentifiedActionOf<ManualSeriesGameEditor>)
 		}
 
 		case view(View)
@@ -172,6 +179,13 @@ public struct SeriesEditor: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case .manualSeriesGame(.element(_, .delegate(.doNothing))):
+					return .none
+
+				case .manualSeriesGame(.element(_, .binding(\.score))):
+					state.syncFormSharedState()
+					return .none
+
 				case let .alleyPicker(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case let .didChangeSelection(alley):
@@ -217,10 +231,10 @@ public struct SeriesEditor: Reducer {
 						return .run { _ in await dismiss() }
 					}
 
-				case .form(.view), .form(.internal):
-					return .none
-
-				case .alleyPicker(.presented(.internal)), .alleyPicker(.presented(.view)), .alleyPicker(.dismiss):
+				case .form(.view), .form(.internal),
+						.alleyPicker(.presented(.internal)), .alleyPicker(.presented(.view)), .alleyPicker(.dismiss),
+						.manualSeriesGame(.element(_, .view)), .manualSeriesGame(.element(_, .internal)),
+						.manualSeriesGame(.element(_, .binding)):
 					return .none
 				}
 
@@ -268,6 +282,28 @@ public struct SeriesEditor: Reducer {
 				state.syncFormSharedState()
 				return .none
 
+			case .binding(\.isCreatingManualSeries):
+				if state.isCreatingManualSeries {
+					state.manualScores = .init(uniqueElements: (0..<state.numberOfGames).map {
+						ManualSeriesGameEditor.State(id: uuid(), index: $0)
+					})
+				} else {
+					state.manualScores = []
+				}
+				state.syncFormSharedState()
+				return .none
+
+			case .binding(\.numberOfGames):
+				if state.numberOfGames < state.manualScores.count {
+					state.manualScores.removeLast(state.manualScores.count - state.numberOfGames)
+				} else if state.numberOfGames > state.manualScores.count {
+					state.manualScores.append(
+						contentsOf: (state.manualScores.count..<state.numberOfGames).map { .init(id: uuid(), index: $0) }
+					)
+				}
+				state.syncFormSharedState()
+				return .none
+
 			case .binding:
 				state.syncFormSharedState()
 				return .none
@@ -280,6 +316,9 @@ public struct SeriesEditor: Reducer {
 			ResourcePicker { _ in
 				alleys.pickable()
 			}
+		}
+		.forEach(\.manualScores, action: \.internal.manualSeriesGame) {
+			ManualSeriesGameEditor()
 		}
 
 		AnalyticsReducer<State, Action> { _, action in
