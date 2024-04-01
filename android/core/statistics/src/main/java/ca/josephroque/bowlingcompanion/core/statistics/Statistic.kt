@@ -41,6 +41,9 @@ enum class StatisticCategory {
 	STRIKES_AND_SPARES {
 		override val titleResourceId = R.string.statistic_category_strikes_and_spares
 	},
+	FIRST_ROLL {
+		override val titleResourceId = R.string.statistic_category_first_roll
+	},
 	HEAD_PINS {
 		override val titleResourceId = R.string.statistic_category_head_pins
 	},
@@ -255,6 +258,9 @@ enum class StatisticID {
 	},
 	TOTAL_PINS_LEFT_ON_DECK {
 		override val titleResourceId = R.string.statistic_title_pins_left_on_deck
+	},
+	AVERAGE_FIRST_ROLL {
+		override val titleResourceId = R.string.statistic_title_average_first_roll
 	},
 	HIGH_SERIES_OF_3 {
 		override val titleResourceId = R.string.statistic_title_high_series_of_3

@@ -15,6 +15,8 @@
 	<string name="statistic_title_spare_chances">Opportunities to Spare</string>
 	<string name="statistic_title_spare_conversions">Spare Conversions</string>
 
+	<string name="statistic_title_average_first_roll">Average First Roll Pinfall</string>
+
 	<string name="statistic_title_head_pins">Head Pins</string>
 	<string name="statistic_title_head_pins_spared">Head Pins Spared</string>
 
@@ -80,6 +82,8 @@
 	<string name="statistic_category_middle_hits_description">Any time you throw the first roll of a frame and knock over at least the head pin</string>
 	<string name="statistic_category_strikes_and_spares">Strikes and Spares</string>
 	<string name="statistic_category_strikes_and_spares_description">Any time you clear all of the pins in one or two rolls</string>
+	<string name="statistic_category_first_roll">First Roll</string>
+	<string name="statistic_category_first_roll_description">The first roll is any time you throw a ball at a full deck of pins, either on the first ball of a frame, or after a strike or spare in the 10th frame</string>
 	<string name="statistic_category_head_pins">Head Pins</string>
 	<string name="statistic_category_head_pins_description_without_H2">With your first roll, knock over only the head pin</string>
 	<string name="statistic_category_head_pins_description_with_H2">With your first roll, knock over only the head pin, or the head pin and exactly one of the 2-pins</string>
