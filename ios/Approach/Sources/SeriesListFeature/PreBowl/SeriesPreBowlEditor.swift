@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
@@ -148,6 +149,15 @@ public struct SeriesPreBowlEditor: Reducer {
 		}
 		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didUpdateSeries(.failure(error))):
+				return error
+			default:
+				return nil
+			}
 		}
 	}
 }

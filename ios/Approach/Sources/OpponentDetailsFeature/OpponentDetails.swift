@@ -93,6 +93,15 @@ public struct OpponentDetails: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadDetails(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func refreshDetails(forOpponent: Bowler.ID) -> Effect<Action> {

@@ -268,6 +268,18 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.widgetsResponse(.failure(error))),
+				let .internal(.didLoadChartContent(_, .failure(error))),
+				let .internal(.didUpdatePriorities(.failure(error))),
+				let .internal(.didDeleteWidget(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }
 

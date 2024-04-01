@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import ExtensionsLibrary
@@ -275,6 +276,15 @@ public struct SectionResourceList<
 			}
 		}.ifLet(\.errorState, action: \.internal.error) {
 			ResourceListEmpty()
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.sectionsResponse(.failure(error))):
+				return error
+			default:
+				return nil
+			}
 		}
 	}
 }

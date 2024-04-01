@@ -123,5 +123,14 @@ public struct Paywall: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didFinishRestoringPurchases(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

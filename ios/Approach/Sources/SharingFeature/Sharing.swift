@@ -187,5 +187,14 @@ public struct Sharing: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadGames(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

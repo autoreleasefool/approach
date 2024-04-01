@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
@@ -109,6 +110,15 @@ public struct RollEditor: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadGear(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}

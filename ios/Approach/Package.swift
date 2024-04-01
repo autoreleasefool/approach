@@ -127,6 +127,7 @@ let package = Package(
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "EquatableLibrary", targets: ["EquatableLibrary"]),
+		.library(name: "ErrorHandlerLibrary", targets: ["ErrorHandlerLibrary"]),
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
@@ -603,6 +604,7 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"DateTimeLibrary",
+				"FeatureFlagsServiceInterface",
 				"FormFeature",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
@@ -1126,10 +1128,10 @@ let package = Package(
 		.target(
 			name: "AnalyticsService",
 			dependencies: [
-				.product(name: "Sentry", package: "sentry-cocoa"),
 				.product(name: "TelemetryClient", package: "SwiftClient"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
+				"ErrorHandlerLibrary",
 				"PreferenceServiceInterface",
 			]
 		),
@@ -1237,6 +1239,7 @@ let package = Package(
 		.target(
 			name: "DatabaseService",
 			dependencies: [
+				"AnalyticsServiceInterface",
 				"DatabaseLibrary",
 				"DatabaseServiceInterface",
 				"FileManagerServiceInterface",
@@ -1562,6 +1565,7 @@ let package = Package(
 			name: "DatabaseLibrary",
 			dependencies: [
 				.product(name: "GRDB", package: "GRDB.swift"),
+				"ErrorHandlerLibrary",
 				"ScoreKeeperLibrary",
 			]
 		),
@@ -1600,6 +1604,12 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"EquatableLibrary",
+			]
+		),
+		.target(
+			name: "ErrorHandlerLibrary",
+			dependencies: [
+				.product(name: "Sentry", package: "sentry-cocoa"),
 			]
 		),
 		.target(

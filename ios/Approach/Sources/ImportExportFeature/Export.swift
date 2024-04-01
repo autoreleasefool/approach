@@ -104,6 +104,15 @@ public struct Export: Reducer {
 				return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didReceiveEvent(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func fetchExportData(_ state: inout State) -> Effect<Action> {

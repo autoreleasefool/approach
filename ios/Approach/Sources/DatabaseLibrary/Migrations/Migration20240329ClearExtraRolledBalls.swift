@@ -1,3 +1,4 @@
+import ErrorHandlerLibrary
 import Foundation
 import GRDB
 
@@ -79,7 +80,7 @@ WHERE (frame.gameId, frame.'index') IN (
 """
 			)
 		} catch {
-			// TODO: Report error to sentry
+			ErrorHandler.capture(error: error)
 		}
 	}
 }

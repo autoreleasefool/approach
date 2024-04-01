@@ -362,6 +362,18 @@ public struct LeaguesList: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadSeriesLeague(.failure(error))),
+				let .internal(.didArchiveLeague(.failure(error))),
+				let .internal(.didLoadEditableLeague(.failure(error))),
+				let .internal(.didLoadEventSeries(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }
 

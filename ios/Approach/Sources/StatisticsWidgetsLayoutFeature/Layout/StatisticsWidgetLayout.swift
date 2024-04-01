@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
@@ -172,6 +173,16 @@ public struct StatisticsWidgetLayout: Reducer {
 			}
 		}
 		.ifLet(\.$destination, action: \.internal.destination)
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.widgetsResponse(.failure(error))),
+				let .internal(.didLoadChartContent(_, .failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func presentDetails(for widget: StatisticsWidget.Configuration, in state: inout State) -> Effect<Action> {

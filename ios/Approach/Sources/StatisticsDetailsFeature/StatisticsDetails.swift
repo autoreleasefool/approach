@@ -346,5 +346,16 @@ public struct StatisticsDetails: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadSources(.failure(error))),
+				let .internal(.didLoadListEntries(.failure(error))),
+				let .internal(.didLoadChartContent(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

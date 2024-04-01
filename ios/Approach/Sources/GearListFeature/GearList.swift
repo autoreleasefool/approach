@@ -236,5 +236,15 @@ public struct GearList: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadEditableGear(.failure(error))),
+				let .internal(.didDeleteGear(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

@@ -276,6 +276,18 @@ public struct GamesList: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didReorderGames(.failure(error))),
+				let .internal(.didAddGameToSeries(.failure(error))),
+				let .internal(.didArchiveGame(.failure(error))),
+				let .internal(.didLoadEditableSeries(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func fetchGames(seriesId: Series.ID) -> AsyncThrowingStream<[Game.List], Error> {

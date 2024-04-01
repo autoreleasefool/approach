@@ -227,5 +227,15 @@ public struct OpponentsList: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadEditableOpponent(.failure(error))),
+				let .internal(.didArchiveOpponent(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

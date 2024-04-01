@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import DateTimeLibrary
@@ -268,6 +269,15 @@ public struct StatisticsSourcePicker: Reducer {
 		}
 		.ifLet(\.$destination, action: \.internal.destination) {
 			Destination()
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadSources(.failure(error))):
+				return error
+			default:
+				return nil
+			}
 		}
 	}
 }

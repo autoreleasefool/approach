@@ -510,10 +510,32 @@ public struct GamesEditor: Reducer {
 
 		GamesEditorAnalyticsReducer()
 
+		GamesEditorErrorHandlerReducer()
+
 		BreadcrumbReducer<State, Action> { _, action in
 			switch action {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
+			}
+		}
+	}
+}
+
+@Reducer
+public struct GamesEditorErrorHandlerReducer: Reducer {
+	public var body: some ReducerOf<GamesEditor> {
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.bowlersResponse(.failure(error))),
+				let .internal(.framesResponse(.failure(error))),
+				let .internal(.gameResponse(.failure(error))),
+				let .internal(.didUpdateFrame(.failure(error))),
+				let .internal(.didUpdateGame(.failure(error))),
+				let .internal(.didUpdateMatchPlay(.failure(error))),
+				let .internal(.didDuplicateLanes(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}

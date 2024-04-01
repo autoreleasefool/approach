@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AvatarServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
@@ -104,6 +105,16 @@ public struct PreferredGear: Reducer {
 		}
 		.ifLet(\.$gearPicker, action: \.internal.gearPicker) {
 			ResourcePicker { _ in gear.list(ordered: .byName) }
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadGear(.failure(error))),
+				let .internal(.didUpdatePreferredGear(.failure(error))):
+				return error
+			default:
+				return nil
+			}
 		}
 	}
 }

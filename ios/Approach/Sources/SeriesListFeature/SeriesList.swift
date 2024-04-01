@@ -336,6 +336,18 @@ public struct SeriesList: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didArchiveSeries(.failure(error))),
+				let .internal(.didLoadEditableSeries(.failure(error))),
+				let .internal(.didLoadEditableLeague(.failure(error))),
+				let .internal(.didLoadGameSeries(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func fetchResources(

@@ -352,6 +352,18 @@ public struct StatisticsWidgetEditor: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadSources(.failure(error))),
+				let .internal(.didLoadDefaultSources(.failure(error))),
+				let .internal(.didLoadChartContent(.failure(error))),
+				let .internal(.didFinishSavingConfiguration(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func loadSources(_ state: inout State) -> Effect<Action> {

@@ -298,5 +298,14 @@ public struct Settings: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didFetchIcon(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

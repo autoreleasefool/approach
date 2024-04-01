@@ -169,5 +169,14 @@ public struct AlleyLanesEditor: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didDeleteLane(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

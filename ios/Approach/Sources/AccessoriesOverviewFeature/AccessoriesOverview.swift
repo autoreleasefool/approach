@@ -101,6 +101,7 @@ public struct AccessoriesOverview: Reducer {
 	public init() {}
 
 	@Dependency(AlleysRepository.self) var alleys
+	@Dependency(AnalyticsService.self) var analytics
 	@Dependency(GearRepository.self) var gear
 	@Dependency(\.uuid) var uuid
 
@@ -263,6 +264,18 @@ public struct AccessoriesOverview: Reducer {
 			switch action {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didFinishDeletingItem(.failure(error))),
+				let .internal(.didLoadEditableGear(.failure(error))),
+				let .internal(.didLoadEditableAlley(.failure(error))),
+				let .internal(.itemsResponse(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}

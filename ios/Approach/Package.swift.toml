@@ -118,6 +118,7 @@ services = [ "Products" ]
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
+services = [ "FeatureFlags" ]
 libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
@@ -215,8 +216,8 @@ dependencies = [ "XCTestDynamicOverlay" ]
 
 [services.Analytics]
 services = [ "Preference" ]
-libraries = [ "Constants" ]
-dependencies = [ "Sentry", "TelemetryClient" ]
+libraries = [ "Constants", "ErrorHandler" ]
+dependencies = [ "TelemetryClient" ]
 [services.Analytics.interface]
 dependencies = [ "ComposableArchitecture" ]
 
@@ -241,7 +242,7 @@ libraries = [ "ModelsViews" ]
 
 [services.Database]
 libraries = [ "Database" ]
-services = [ "FileManager" ]
+services = [ "Analytics", "FileManager" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
 dependencies = [ "GRDB" ]
@@ -312,7 +313,7 @@ libraries = [ "Strings" ]
 processed = [ "Resources" ]
 
 [libraries.Database]
-libraries = [ "ScoreKeeper" ]
+libraries = [ "ErrorHandler", "ScoreKeeper" ]
 dependencies = [ "GRDB" ]
 
 [libraries.DatabaseModels]
@@ -321,6 +322,10 @@ libraries = [ "Models" ]
 dependencies = [ "Dependencies", "GRDB" ]
 
 [libraries.DateTime]
+
+[libraries.ErrorHandler]
+dependencies = [ "Sentry" ]
+skip_tests = true
 
 [libraries.Equatable]
 

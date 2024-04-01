@@ -201,5 +201,15 @@ public struct AlleysList: Reducer {
 				return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadEditableAlley(.failure(error))),
+				let .internal(.didDeleteAlley(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

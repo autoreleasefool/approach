@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import ComposableArchitecture
 import ExtensionsLibrary
 import FeatureActionLibrary
@@ -153,5 +154,14 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 //			default: return nil
 //			}
 //		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadResources(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

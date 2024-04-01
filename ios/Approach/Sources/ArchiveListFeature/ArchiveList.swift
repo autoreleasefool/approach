@@ -214,6 +214,19 @@ public struct ArchiveList: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.unarchived(.failure(error))),
+				let .internal(.bowlersResponse(.failure(error))),
+				let .internal(.leaguesResponse(.failure(error))),
+				let .internal(.seriesResponse(.failure(error))),
+				let .internal(.gamesResponse(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 
 	private func observeBowlers() -> Effect<Action> {

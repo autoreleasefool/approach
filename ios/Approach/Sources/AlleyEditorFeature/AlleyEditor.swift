@@ -286,6 +286,17 @@ public struct AlleyEditor: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.form(.delegate(.didCreate(.failure(error))))),
+				let .internal(.form(.delegate(.didUpdate(.failure(error))))),
+				let .internal(.form(.delegate(.didDelete(.failure(error))))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }
 

@@ -162,5 +162,15 @@ public struct AddressLookup: Reducer {
 			default: return nil
 			}
 		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didReceiveResults(.failure(error))),
+				let .internal(.didLoadAddress(.failure(error))):
+				return error
+			default:
+				return nil
+			}
+		}
 	}
 }

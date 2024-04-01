@@ -126,6 +126,7 @@ public struct BowlersList: Reducer {
 
 	public init() {}
 
+	@Dependency(AnalyticsService.self) var analytics
 	@Dependency(AnnouncementsService.self) var announcements
 	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.calendar) var calendar
@@ -167,7 +168,9 @@ public struct BowlersList: Reducer {
 						.run { _ in
 							do {
 								try await games.lockStaleGames()
-							} catch {} // ignore failures
+							} catch {
+								analytics.captureException(error)
+							}
 						}
 					)
 
@@ -348,6 +351,17 @@ public struct BowlersList: Reducer {
 			switch action {
 			case .view(.onAppear): return .navigationBreadcrumb(type(of: self))
 			default: return nil
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didLoadEditableBowler(.failure(error))),
+				let .internal(.didArchiveBowler(.failure(error))),
+				let .internal(.didLoadQuickLaunch(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}
