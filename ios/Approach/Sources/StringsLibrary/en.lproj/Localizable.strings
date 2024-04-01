@@ -15,7 +15,7 @@
 "alley.properties.material" = "Material";
 "alley.properties.material.synthetic" = "Synthetic";
 "alley.properties.material.wood" = "Wood";
-"alley.properties.pinFall" = "Pin Fall";
+"alley.properties.pinFall" = "Pinfall";
 "alley.properties.pinFall.strings" = "Strings";
 "alley.properties.pinFall.freefall" = "Freefall";
 "alley.properties.mechanism" = "Mechanism";
@@ -310,7 +310,7 @@
 "statistics.filter.label.series.alley.title" = "Alley";
 "statistics.filter.label.series.alley.material" = "Material";
 "statistics.filter.label.series.alley.mechanism" = "Mechanism";
-"statistics.filter.label.series.alley.pinFall" = "Pin Fall";
+"statistics.filter.label.series.alley.pinFall" = "Pinfall";
 "statistics.filter.label.series.alley.pinBase" = "Pin Base";
 "statistics.filter.label.game.title" = "Game";
 "statistics.filter.label.game.lanes.title" = "Lanes";
@@ -348,6 +348,8 @@
 "statistics.categories.middleHits.description" = "A middle hit is any time you throw the first roll of a frame and you knock over at least the head pin";
 "statistics.categories.strikesAndSpares.title" = "Strikes and Spares";
 "statistics.categories.strikesAndSpares.description" = "Any time you clear all of the remaining pins in one or two rolls";
+"statistics.categories.firstRoll.title" = "First Roll";
+"statistics.categories.firstRoll.description" = "The first roll is any time you throw a ball at a full deck of pins, either on the first ball of a frame, or after a strike or spare in the 10th frame";
 "statistics.categories.headPins.title" = "Head Pins";
 "statistics.categories.headPins.description.withoutH2" = "With your first roll, knock over only the head pin";
 "statistics.categories.headPins.description.withH2" = "With your first roll, knock over only the head pin, or the head pin and exactly one of the 2-pins";
@@ -419,6 +421,7 @@
 "statistics.title.totalPinfall" = "Total Pinfall";
 "statistics.title.totalPinsLeftOnDeck" = "Total Pins Left on Deck";
 "statistics.title.averagePinsLeftOnDeck" = "Average Pins Left on Deck";
+"statistics.title.firstRollAverage" = "Average First Roll Pinfall";
 "statistics.title.fives" = "Fives";
 "statistics.title.fivesSpared" = "Fives Spared";
 "statistics.title.leftFives" = "Left Fives";
@@ -447,6 +450,7 @@
 "statistics.description.totalPinfall" = "Total sum of the scores across all counted games";
 "statistics.description.totalPinsLeftOnDeck" = "Total value of pins you've left standing at the end of frames across all counted games";
 "statistics.description.averagePinsLeftOnDeck" = "Average value of pins you've left standing at the end of frames per game";
+"statistics.description.firstRollAverage" = "Average value of pins knocked down on the first roll of a frame";
 
 /* Avatar */
 

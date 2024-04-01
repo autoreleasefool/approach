@@ -23,6 +23,7 @@ extension StatisticCategory {
 		case .twelves: return Strings.Statistics.Categories.Twelves.description
 		case .middleHits: return Strings.Statistics.Categories.MiddleHits.description
 		case .strikesAndSpares: return Strings.Statistics.Categories.StrikesAndSpares.description
+		case .firstRoll: return Strings.Statistics.Categories.FirstRoll.description
 		case .fouls: return nil
 		case .matchPlayResults: return nil
 		case .overall: return nil
@@ -54,6 +55,7 @@ extension StatisticCategory {
 		case .twelves: return [Asset.Media.Icons.Pins.leftTwelve, Asset.Media.Icons.Pins.rightTwelve]
 		case .middleHits: return [Asset.Media.Icons.Pins.headPin]
 		case .strikesAndSpares: return nil
+		case .firstRoll: return nil
 		case .fouls: return nil
 		case .matchPlayResults: return nil
 		case .overall: return nil

@@ -32,6 +32,7 @@ public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 	case overall
 	case middleHits
 	case strikesAndSpares
+	case firstRoll
 	case headPins
 	case fives
 	case threes
@@ -50,6 +51,7 @@ public enum StatisticCategory: CaseIterable, CustomStringConvertible {
 		case .overall: return Strings.Statistics.Categories.Overall.title
 		case .middleHits: return Strings.Statistics.Categories.MiddleHits.title
 		case .strikesAndSpares: return Strings.Statistics.Categories.StrikesAndSpares.title
+		case .firstRoll: return Strings.Statistics.Categories.FirstRoll.title
 		case .headPins: return Strings.Statistics.Categories.HeadPins.title
 		case .fives: return Strings.Statistics.Categories.Fives.title
 		case .threes: return Strings.Statistics.Categories.Threes.title

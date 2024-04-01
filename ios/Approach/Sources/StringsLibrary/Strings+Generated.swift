@@ -164,8 +164,8 @@ public enum Strings {
       public static let mechanism = Strings.tr("Localizable", "alley.properties.mechanism", fallback: "Mechanism")
       /// Pin Base
       public static let pinBase = Strings.tr("Localizable", "alley.properties.pinBase", fallback: "Pin Base")
-      /// Pin Fall
-      public static let pinFall = Strings.tr("Localizable", "alley.properties.pinFall", fallback: "Pin Fall")
+      /// Pinfall
+      public static let pinFall = Strings.tr("Localizable", "alley.properties.pinFall", fallback: "Pinfall")
       /// Properties
       public static let title = Strings.tr("Localizable", "alley.properties.title", fallback: "Properties")
       public enum Lanes {
@@ -1467,6 +1467,12 @@ public enum Strings {
         /// Chop Offs
         public static let title = Strings.tr("Localizable", "statistics.categories.chopOffs.title", fallback: "Chop Offs")
       }
+      public enum FirstRoll {
+        /// The first roll is any time you throw a ball at a full deck of pins, either on the first ball of a frame, or after a strike or spare in the 10th frame
+        public static let description = Strings.tr("Localizable", "statistics.categories.firstRoll.description", fallback: "The first roll is any time you throw a ball at a full deck of pins, either on the first ball of a frame, or after a strike or spare in the 10th frame")
+        /// First Roll
+        public static let title = Strings.tr("Localizable", "statistics.categories.firstRoll.title", fallback: "First Roll")
+      }
       public enum Fives {
         /// With your first roll, knock over only the 2- and 3-pins on the same side
         public static let description = Strings.tr("Localizable", "statistics.categories.fives.description", fallback: "With your first roll, knock over only the 2- and 3-pins on the same side")
@@ -1563,6 +1569,8 @@ public enum Strings {
     public enum Description {
       /// Average value of pins you've left standing at the end of frames per game
       public static let averagePinsLeftOnDeck = Strings.tr("Localizable", "statistics.description.averagePinsLeftOnDeck", fallback: "Average value of pins you've left standing at the end of frames per game")
+      /// Average value of pins knocked down on the first roll of a frame
+      public static let firstRollAverage = Strings.tr("Localizable", "statistics.description.firstRollAverage", fallback: "Average value of pins knocked down on the first roll of a frame")
       /// Number of times you marked a roll as a foul
       public static let fouls = Strings.tr("Localizable", "statistics.description.fouls", fallback: "Number of times you marked a roll as a foul")
       /// Average score across all counted games
@@ -1684,8 +1692,8 @@ public enum Strings {
             public static let mechanism = Strings.tr("Localizable", "statistics.filter.label.series.alley.mechanism", fallback: "Mechanism")
             /// Pin Base
             public static let pinBase = Strings.tr("Localizable", "statistics.filter.label.series.alley.pinBase", fallback: "Pin Base")
-            /// Pin Fall
-            public static let pinFall = Strings.tr("Localizable", "statistics.filter.label.series.alley.pinFall", fallback: "Pin Fall")
+            /// Pinfall
+            public static let pinFall = Strings.tr("Localizable", "statistics.filter.label.series.alley.pinFall", fallback: "Pinfall")
             /// Alley
             public static let title = Strings.tr("Localizable", "statistics.filter.label.series.alley.title", fallback: "Alley")
           }
@@ -1771,6 +1779,8 @@ public enum Strings {
       public static let chopOffs = Strings.tr("Localizable", "statistics.title.chopOffs", fallback: "Chop Offs")
       /// Chop Offs Spared
       public static let chopOffsSpared = Strings.tr("Localizable", "statistics.title.chopOffsSpared", fallback: "Chop Offs Spared")
+      /// Average First Roll Pinfall
+      public static let firstRollAverage = Strings.tr("Localizable", "statistics.title.firstRollAverage", fallback: "Average First Roll Pinfall")
       /// Fives
       public static let fives = Strings.tr("Localizable", "statistics.title.fives", fallback: "Fives")
       /// Fives Spared

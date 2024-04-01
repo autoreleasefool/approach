@@ -17,6 +17,9 @@ extension Statistics {
 		Statistics.Strikes.self,
 		Statistics.SpareConversions.self,
 
+		// First Rolls
+		Statistics.FirstRollAverage.self,
+
 		// Head Pins
 		Statistics.HeadPins.self,
 		Statistics.HeadPinsSpared.self,

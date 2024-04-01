@@ -66,3 +66,9 @@ extension Statistics.TotalPinsLeftOnDeck: DescribableStatistic {
 extension Statistics.AveragePinsLeftOnDeck: DescribableStatistic {
 	static var pinDescription: String { Strings.Statistics.Description.averagePinsLeftOnDeck }
 }
+
+extension Statistics.FirstRollAverage: DescribableStatistic {
+	static var pinDescription: String {
+		Strings.Statistics.Description.firstRollAverage
+	}
+}
