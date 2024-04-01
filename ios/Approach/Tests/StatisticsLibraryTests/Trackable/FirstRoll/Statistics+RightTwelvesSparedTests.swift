@@ -54,7 +54,7 @@ final class RightTwelvesSparedTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 3, formattedAs: "33.3% (1)")
+		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 3, formattedAs: "33.3%")
 	}
 
 	func testAdjust_ByFramesWithoutRightTwelvesSpared_DoesNotAdjust() {
@@ -182,7 +182,7 @@ final class RightTwelvesSparedTests: XCTestCase {
 				]
 			)
 
-			AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60% (3)")
+			AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60%")
 		}
 
 	func testAdjustBySeries_DoesNothing() {
