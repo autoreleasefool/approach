@@ -197,6 +197,7 @@ private fun StatisticCategory.description(
 		StatisticCategory.OVERALL -> null
 		StatisticCategory.MIDDLE_HITS -> R.string.statistic_category_middle_hits_description
 		StatisticCategory.STRIKES_AND_SPARES -> R.string.statistic_category_strikes_and_spares_description
+		StatisticCategory.FIRST_ROLL -> R.string.statistic_category_first_roll_description
 		StatisticCategory.HEAD_PINS -> if (frameConfiguration.countHeadPin2AsHeadPin) {
 			R.string.statistic_category_head_pins_description_with_H2
 		} else {
