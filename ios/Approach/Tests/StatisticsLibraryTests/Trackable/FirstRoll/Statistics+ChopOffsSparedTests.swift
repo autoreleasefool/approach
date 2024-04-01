@@ -47,7 +47,7 @@ final class ChopOffsSparedTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 4, formattedAs: "50% (2)")
+		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 4, formattedAs: "50%")
 	}
 
 	func testAdjust_ByFramesWithoutChopOffsSpared_DoesNotAdjust() {
@@ -166,7 +166,7 @@ final class ChopOffsSparedTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60% (3)")
+		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60%")
 	}
 
 	func testAdjustBySeries_DoesNothing() {

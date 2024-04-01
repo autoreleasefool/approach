@@ -2,6 +2,7 @@ import Foundation
 import GRDB
 
 struct Migration20240329ClearExtraRolledBalls: DBMigration {
+	// swiftlint:disable:next function_body_length
 	static func migrate(_ db: Database) throws {
 		do {
 			try db.execute(sql:

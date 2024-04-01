@@ -47,7 +47,7 @@ final class FivesSparedTests: XCTestCase {
 			withFrameConfiguration: .default
 		)
 
-		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 2, formattedAs: "100% (2)")
+		AssertPercentage(statistic, hasNumerator: 2, withDenominator: 2, formattedAs: "100%")
 	}
 
 	func testAdjust_ByFramesWithoutFivesSpared_DoesNotAdjust() {
@@ -166,7 +166,7 @@ final class FivesSparedTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60% (3)")
+		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 5, formattedAs: "60%")
 	}
 
 	func testAdjustBySeries_DoesNothing() {

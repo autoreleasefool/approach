@@ -6,7 +6,7 @@ import XCTest
 final class MatchesWonTests: XCTestCase {
 	func testAdjustByGame() {
 		let statistic = create(statistic: Statistics.MatchesWon.self, adjustedByGames: Game.TrackableEntry.mocks)
-		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 9, formattedAs: "33.3% (3)")
+		AssertPercentage(statistic, hasNumerator: 3, withDenominator: 9, formattedAs: "33.3%")
 	}
 
 	func testAdjustBySeries_DoesNothing() {

@@ -36,7 +36,7 @@ final class StrikesTests: XCTestCase {
 			]
 		)
 
-		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 4, formattedAs: "25% (1)")
+		AssertPercentage(statistic, hasNumerator: 1, withDenominator: 4, formattedAs: "25%")
 	}
 
 	func testAdjust_ByFramesWithoutStrike_DoesNotAdjust() {

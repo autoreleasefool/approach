@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
