@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.service.DataImportService
+import ca.josephroque.bowlingcompanion.core.error.ErrorReporting
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportProgress
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportUiAction
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.dataimport.DataImportUiState
@@ -29,6 +30,7 @@ class DataImportViewModel @Inject constructor(
 	private val dataImportService: DataImportService,
 	systemInfoService: SystemInfoService,
 	private val analyticsClient: AnalyticsClient,
+	private val errorReporting: ErrorReporting,
 ) : ApproachViewModel<DataImportScreenEvent>() {
 
 	private val dataImportState = MutableStateFlow(
@@ -86,6 +88,7 @@ class DataImportViewModel @Inject constructor(
 				dataImportService.restoreData()
 				dataImportState.update { it.copy(progress = DataImportProgress.RestoreComplete) }
 			} catch (e: Exception) {
+				errorReporting.captureException(e)
 				dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
 			}
 		}
@@ -115,6 +118,7 @@ class DataImportViewModel @Inject constructor(
 			dataImportState.update { it.copy(progress = DataImportProgress.ImportComplete) }
 			analyticsClient.trackEvent(ImportedData)
 		} catch (e: Exception) {
+			errorReporting.captureException(e)
 			dataImportState.update { it.copy(progress = DataImportProgress.Failed(e)) }
 		}
 	}

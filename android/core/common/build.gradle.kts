@@ -8,6 +8,8 @@ android {
 }
 
 dependencies {
+	implementation(project(":core:error"))
+
 	implementation(libs.androidx.navigation.compose)
 	implementation(libs.kotlinx.datetime)
 }

@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.common.system.SystemInfoService
 import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.service.DataExportService
+import ca.josephroque.bowlingcompanion.core.error.ErrorReporting
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportProgress
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiAction
 import ca.josephroque.bowlingcompanion.feature.datamanagement.ui.export.DataExportUiState
@@ -27,6 +28,7 @@ class DataExportViewModel @Inject constructor(
 	private val dataExportService: DataExportService,
 	systemInfoService: SystemInfoService,
 	private val analyticsClient: AnalyticsClient,
+	private val errorReporting: ErrorReporting,
 ) : ApproachViewModel<DataExportScreenEvent>() {
 
 	private val dataExportState = MutableStateFlow(
@@ -93,6 +95,7 @@ class DataExportViewModel @Inject constructor(
 				val exportFile = dataExportService.getOrCreateExport()
 				sendEvent(DataExportScreenEvent.LaunchShareIntent(exportFile))
 			} catch (e: Exception) {
+				errorReporting.captureException(e)
 				dataExportState.update { it.copy(progress = DataExportProgress.Failed(e)) }
 			}
 		}
@@ -113,6 +116,7 @@ class DataExportViewModel @Inject constructor(
 				dataExportService.exportDataToUri(uri = uri)
 				dataExportState.update { it.copy(progress = DataExportProgress.Complete) }
 			} catch (e: Exception) {
+				errorReporting.captureException(e)
 				dataExportState.update { it.copy(progress = DataExportProgress.Failed(e)) }
 			}
 		}
