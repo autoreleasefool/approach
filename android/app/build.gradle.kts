@@ -6,6 +6,7 @@ plugins {
 	id("approach.android.room")
 	id("approach.android.hilt")
 	id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+	alias(libs.plugins.gradle.versions)
 	alias(libs.plugins.ktlint)
 }
 
