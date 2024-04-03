@@ -56,6 +56,7 @@ import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 
@@ -720,6 +721,7 @@ class SQLiteMigrationService @Inject constructor(
 
 	private suspend fun migrateMatchPlaysToRoom(matchPlays: List<LegacyMatchPlay>) {
 		val migratedMatchPlays = mutableListOf<MatchPlayEntity>()
+		val migratedOpponents = mutableMapOf<String, BowlerEntity>()
 		val matchPlayIdMappings = mutableListOf<LegacyIDMappingEntity>()
 
 		val legacyGameIds = matchPlays.map(LegacyMatchPlay::gameId)
@@ -730,10 +732,38 @@ class SQLiteMigrationService @Inject constructor(
 		val existingMatchPlays = matchPlayDao
 			.getMatchPlaysForGames(gameIdMappings.values)
 			.associateBy { it.gameId }
+		val existingBowlers = bowlerDao
+			.getBowlersList()
+			.first()
+			.associateBy { it.name.lowercase() }
 
 		for (legacyMatchPlay in matchPlays) {
 			if (legacyMatchPlay.opponentScore == 0 && legacyMatchPlay.opponentName.isNullOrBlank()) {
 				continue
+			}
+
+			val processedOpponentName = legacyMatchPlay.opponentName?.trim()
+			val comparableOpponentName = processedOpponentName?.lowercase()
+			val opponentId: UUID?
+
+			if (processedOpponentName != null &&
+				comparableOpponentName != null &&
+				processedOpponentName.isNotBlank()
+			) {
+				if (existingBowlers.containsKey(comparableOpponentName)) {
+					opponentId = existingBowlers[comparableOpponentName]?.id
+				} else if (migratedOpponents.containsKey(comparableOpponentName)) {
+					opponentId = migratedOpponents[comparableOpponentName]?.id
+				} else {
+					opponentId = UUID.randomUUID()
+					migratedOpponents[comparableOpponentName] = BowlerEntity(
+						id = opponentId,
+						name = processedOpponentName,
+						kind = BowlerKind.OPPONENT,
+					)
+				}
+			} else {
+				opponentId = null
 			}
 
 			val gameId = gameIdMappings[legacyMatchPlay.gameId]!!
@@ -751,7 +781,7 @@ class SQLiteMigrationService @Inject constructor(
 			migratedMatchPlays.add(
 				MatchPlayEntity(
 					id = matchPlayId,
-					opponentId = existingMatchPlay?.opponentId,
+					opponentId = opponentId,
 					opponentScore = existingMatchPlay?.opponentScore ?: legacyMatchPlay.opponentScore,
 					result = existingMatchPlay?.result,
 					gameId = gameId,
@@ -761,6 +791,7 @@ class SQLiteMigrationService @Inject constructor(
 
 		legacyIDMappingDao.insertAll(matchPlayIdMappings)
 		matchPlayDao.migrateAll(migratedMatchPlays)
+		bowlerDao.migrateAll(migratedOpponents.values.toList())
 	}
 
 	private suspend fun migrateFrames(db: SQLiteDatabase) {
