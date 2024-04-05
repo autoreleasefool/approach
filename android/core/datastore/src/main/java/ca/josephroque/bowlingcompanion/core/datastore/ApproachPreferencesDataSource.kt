@@ -18,6 +18,7 @@ class ApproachPreferencesDataSource @Inject constructor(
 		.map {
 			UserData(
 				isOnboardingComplete = it.isOnboardingComplete,
+				isOpponentMigrationComplete = it.isOpponentMigrationComplete,
 				isLegacyMigrationComplete = it.isLegacyMigrationComplete,
 				hasOpenedAccessoriesTab = it.hasOpenedAccessoriesTab,
 				analyticsOptIn = when (it.analyticsOptIn) {
@@ -58,6 +59,14 @@ class ApproachPreferencesDataSource @Inject constructor(
 		userPreferences.updateData {
 			it.copy {
 				this.isOnboardingComplete = isOnboardingComplete
+			}
+		}
+	}
+
+	suspend fun setOpponentMigrationComplete(isOpponentMigrationComplete: Boolean) {
+		userPreferences.updateData {
+			it.copy {
+				this.isOpponentMigrationComplete = isOpponentMigrationComplete
 			}
 		}
 	}

@@ -12,6 +12,7 @@ interface UserDataRepository {
 	val userData: Flow<UserData>
 
 	suspend fun didCompleteOnboarding()
+	suspend fun didCompleteOpponentMigration()
 	suspend fun didCompleteLegacyMigration()
 	suspend fun didOpenAccessoriesTab()
 

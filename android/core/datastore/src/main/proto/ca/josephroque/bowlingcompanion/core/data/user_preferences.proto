@@ -11,6 +11,7 @@ message UserPreferences {
 
   // Onboarding
   bool is_onboarding_complete = 16;
+  bool is_opponent_migration_complete = 35;
   bool is_legacy_migration_complete = 17;
   bool has_opened_accessories_tab = 30;
 
@@ -46,5 +47,5 @@ message UserPreferences {
   repeated string latest_series_in_editor = 32;
   optional string latest_game_in_editor = 33;
 
-  // Next ID: 35
+  // Next ID: 36
 }

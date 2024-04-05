@@ -21,6 +21,10 @@ class OfflineFirstUserDataRepository @Inject constructor(
 		approachPreferencesDataSource.setOnboardingComplete(true)
 	}
 
+	override suspend fun didCompleteOpponentMigration() {
+		approachPreferencesDataSource.setOpponentMigrationComplete(true)
+	}
+
 	override suspend fun didCompleteLegacyMigration() {
 		approachPreferencesDataSource.setLegacyMigrationComplete(true)
 	}
