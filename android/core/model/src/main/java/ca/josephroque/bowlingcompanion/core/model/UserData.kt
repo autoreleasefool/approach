@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.model
 data class UserData(
 	// Onboarding
 	val isOnboardingComplete: Boolean,
+	val isOpponentMigrationComplete: Boolean,
 	val isLegacyMigrationComplete: Boolean,
 	val hasOpenedAccessoriesTab: Boolean,
 
@@ -36,4 +37,17 @@ data class UserData(
 	// Game in progress
 	val latestSeriesInEditor: List<String>,
 	val latestGameInEditor: String?,
-)
+) {
+	data class Onboarding(
+		val isOnboardingComplete: Boolean,
+		val isOpponentMigrationComplete: Boolean,
+		val isLegacyMigrationComplete: Boolean,
+	)
+
+	val onboarding: Onboarding
+		get() = Onboarding(
+			isOnboardingComplete = isOnboardingComplete,
+			isOpponentMigrationComplete = isOpponentMigrationComplete,
+			isLegacyMigrationComplete = isLegacyMigrationComplete,
+		)
+}
