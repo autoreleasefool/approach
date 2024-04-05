@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration
 
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
-import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import java.util.UUID
 
 data class MergedBowler(
