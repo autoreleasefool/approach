@@ -122,8 +122,11 @@ abstract class BowlerDao : LegacyMigratingDao<BowlerEntity> {
 	@Update(entity = BowlerEntity::class)
 	abstract fun updateBowler(bowler: BowlerUpdateEntity)
 
-	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id = :bowlerId")
-	abstract fun archiveBowler(bowlerId: UUID, archivedOn: Instant)
+	@Update
+	abstract fun updateBowlerEntity(bowler: BowlerEntity)
+
+	@Query("UPDATE bowlers SET archived_on = :archivedOn WHERE id IN (:bowlerIds)")
+	abstract fun archiveBowlers(bowlerIds: List<UUID>, archivedOn: Instant)
 
 	@Query("UPDATE bowlers SET archived_on = NULL WHERE id = :bowlerId")
 	abstract fun unarchiveBowler(bowlerId: UUID)

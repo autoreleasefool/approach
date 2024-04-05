@@ -39,4 +39,7 @@ abstract class MatchPlayDao : LegacyMigratingDao<MatchPlayEntity> {
 
 	@Query("SELECT * FROM match_plays WHERE game_id IN (:gameIds)")
 	abstract suspend fun getMatchPlaysForGames(gameIds: Collection<UUID>): List<MatchPlayEntity>
+
+	@Query("UPDATE match_plays SET opponent_id = :newOpponentId WHERE opponent_id = :oldOpponentId")
+	abstract suspend fun replaceOpponentId(oldOpponentId: UUID, newOpponentId: UUID)
 }

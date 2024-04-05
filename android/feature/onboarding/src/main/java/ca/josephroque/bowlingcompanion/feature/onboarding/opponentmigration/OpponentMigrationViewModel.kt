@@ -1,9 +1,14 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding.opponentmigration
 
 import androidx.lifecycle.viewModelScope
+import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppOnboardingCompleted
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppOpponentMigrationCompleted
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.UserDataRepository
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
+import ca.josephroque.bowlingcompanion.core.error.ErrorReporting
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration.MergedBowler
 import ca.josephroque.bowlingcompanion.feature.onboarding.ui.legacyuser.opponentmigration.OpponentMigrationBottomBarUiAction
@@ -27,6 +32,8 @@ import kotlinx.coroutines.launch
 class OpponentMigrationViewModel @Inject constructor(
 	private val bowlersRepository: BowlersRepository,
 	private val userDataRepository: UserDataRepository,
+	private val analyticsClient: AnalyticsClient,
+	private val errorReporting: ErrorReporting,
 ) : ApproachViewModel<OpponentMigrationScreenEvent>() {
 	private val _uiState: MutableStateFlow<OpponentMigrationScreenUiState> =
 		MutableStateFlow(OpponentMigrationScreenUiState.Loading)
@@ -129,12 +136,26 @@ class OpponentMigrationViewModel @Inject constructor(
 
 	private fun migrateOpponents() {
 		viewModelScope.launch {
-			TODO()
+			val state = _uiState.value as? OpponentMigrationScreenUiState.Loaded ?: return@launch
+			val bowlers = state.opponentMigration.list.map {
+				BowlerEntity(
+					id = it.id,
+					name = it.name,
+					kind = it.kind,
+				)
+			}
 
-			// userData.didCompleteOpponentMigration()
-			// analyticsClient.track(AnalyticsEvent.OpponentMigrationCompleted)
-			// userData.didCompleteOnboarding()
-			// analyticsClient.track(AnalyticsEvent.AppOnboardingCompleted)
+			try {
+				bowlersRepository.mergeBowlers(bowlers, mergedOpponentIds)
+			} catch (e: Exception) {
+				errorReporting.captureException(e)
+			}
+
+			userDataRepository.didCompleteOpponentMigration()
+			analyticsClient.trackEvent(AppOpponentMigrationCompleted)
+
+			userDataRepository.didCompleteOnboarding()
+			analyticsClient.trackEvent(AppOnboardingCompleted)
 		}
 	}
 

@@ -191,7 +191,7 @@ class OnboardingViewModel @Inject constructor(
 				userDataRepository.didCompleteLegacyMigration()
 				analyticsClient.trackEvent(AppLegacyMigrationCompleted)
 
-				if (bowlersRepository.hasMigratedOpponents()) {
+				if (bowlersRepository.hasOpponents()) {
 					sendEvent(OnboardingScreenEvent.MigrateOpponents)
 				} else {
 					userDataRepository.didCompleteOnboarding()
