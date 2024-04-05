@@ -27,4 +27,23 @@
 	<string name="onboarding_legacy_data_error_attach_data">Use the button below to send us your bowling data in an email so we can examine the error and help you sooner.</string>
 	<string name="onboarding_legacy_data_error_email_subject">Approach Onboarding Error (%1$s - %2$s)</string>
 
+	<string name="onboarding_opponents_data_migration_title">Data Migration</string>
+	<string name="onboarding_opponents_action_required">Action Required</string>
+	<string name="onboarding_opponents_list_title">Bowlers &amp; Opponents</string>
+	<string name="onboarding_opponents_description_1_previous_version">In a previous version of the 5 Pin Bowling Companion, you recorded opponent names in some of your match plays.</string>
+	<string name="onboarding_opponents_description_2_current_version">In Approach, Opponents are treated as first-class, and you\'ll soon be able to view your match play results against individual opponents.</string>
+	<string name="onboarding_opponents_description_3_opponents_created">To get the most out of this feature, we\'ve created opponents in the database based on the names of opponents you previously recorded. But we can\'t be certain we\'ve merged them all together correctly.</string>
+	<string name="onboarding_opponents_description_4_migration_required">Below, you can select multiple opponents if you believe they\'re the same person, and combine their results into one entry.</string>
+	<string name="onboarding_opponents_description_5_when_done">When you think you\'ve correctly identified your set of opponents, hit save.</string>
+
+	<string name="onboarding_opponents_name">Name</string>
+	<string name="onboarding_opponents_choose_a_name">Choose a name for your opponent</string>
+	<string name="onboarding_opponents_merged_with">Merged with %1$s</string>
+
+	<string name="onboarding_opponents_too_many_bowlers_title">Too many bowlers</string>
+	<string name="onboarding_opponents_too_many_bowlers_message">You can\'t merge more than 2 bowlers, only opponents. Remove \'%1$s\' or \'%2$s\' before merging again.</string>
+
+	<string name="action_undo_merge">Undo Merge</string>
+	<string name="action_merge_bowlers">Merge Bowlers</string>
+	<string name="action_start">Start</string>
 </resources>
