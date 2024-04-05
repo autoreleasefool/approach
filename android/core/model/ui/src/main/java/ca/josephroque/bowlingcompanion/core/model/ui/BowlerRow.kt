@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.ui.utils.formatAsAverage
@@ -27,11 +28,12 @@ fun BowlerRow(
 	modifier: Modifier = Modifier,
 	average: Double? = null,
 	kind: BowlerKind = BowlerKind.PLAYABLE,
+	iconSpacing: Dp = 16.dp,
 	onClick: (() -> Unit)? = null,
 ) {
 	Row(
 		verticalAlignment = Alignment.CenterVertically,
-		horizontalArrangement = Arrangement.spacedBy(16.dp),
+		horizontalArrangement = Arrangement.spacedBy(iconSpacing),
 		modifier = modifier
 			.fillMaxWidth()
 			.then(

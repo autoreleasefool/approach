@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import ca.josephroque.bowlingcompanion.core.designsystem.components.CheckBoxRow
 import ca.josephroque.bowlingcompanion.core.designsystem.components.state.DefaultEmptyState
 
 @Composable
@@ -30,7 +31,7 @@ fun ResourcePicker(
 				items = state.items,
 				key = { it.id },
 			) { item ->
-				PickableRow(
+				CheckBoxRow(
 					isSelected = state.selectedItems.contains(item.id),
 					onClick = { onAction(ResourcePickerUiAction.ItemClicked(item.id)) },
 					content = {
