@@ -31,7 +31,7 @@ class MainActivityViewModel @Inject constructor(
 	) { userData, isLaunchComplete ->
 		MainActivityUiState.Success(
 			appState = ApproachAppUiState(
-				isOnboardingComplete = userData.isOnboardingComplete,
+				onboarding = userData.onboarding,
 				destinations = TopLevelDestination.entries,
 				badgeCount = if (!userData.hasOpenedAccessoriesTab) {
 					mapOf(TopLevelDestination.ACCESSORIES_OVERVIEW to 1)

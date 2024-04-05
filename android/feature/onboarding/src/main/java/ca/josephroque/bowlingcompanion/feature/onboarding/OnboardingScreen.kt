@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -18,11 +19,17 @@ import kotlinx.coroutines.launch
 
 @Composable
 internal fun OnboardingRoute(
+	onDismiss: () -> Unit,
 	onCompleteOnboarding: () -> Unit,
+	onMigrateOpponents: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	
+	BackHandler {
+		onDismiss()
+	}
 
 	val lifecycleOwner = LocalLifecycleOwner.current
 	LaunchedEffect(Unit) {
@@ -32,6 +39,7 @@ internal fun OnboardingRoute(
 				.collect {
 					when (it) {
 						OnboardingScreenEvent.FinishedOnboarding -> onCompleteOnboarding()
+						OnboardingScreenEvent.MigrateOpponents -> onMigrateOpponents()
 					}
 				}
 		}

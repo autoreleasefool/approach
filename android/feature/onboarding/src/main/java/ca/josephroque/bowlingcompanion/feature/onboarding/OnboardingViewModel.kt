@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.feature.onboarding
 
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
+import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppLegacyMigrationCompleted
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.app.AppOnboardingCompleted
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.onboarding.OnboardingErrorReported
 import ca.josephroque.bowlingcompanion.core.common.filesystem.FileManager
@@ -187,8 +188,15 @@ class OnboardingViewModel @Inject constructor(
 					migrationService.migrateDefaultLegacyDatabase()
 				}
 
-				userDataRepository.didCompleteOnboarding()
-				analyticsClient.trackEvent(AppOnboardingCompleted)
+				userDataRepository.didCompleteLegacyMigration()
+				analyticsClient.trackEvent(AppLegacyMigrationCompleted)
+
+				if (bowlersRepository.hasMigratedOpponents()) {
+					sendEvent(OnboardingScreenEvent.MigrateOpponents)
+				} else {
+					userDataRepository.didCompleteOnboarding()
+					analyticsClient.trackEvent(AppOnboardingCompleted)
+				}
 			} catch (e: Exception) {
 				errorReporting.captureException(e)
 

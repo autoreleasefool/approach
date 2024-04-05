@@ -63,7 +63,7 @@ fun ApproachApp(
 			) {
 				ApproachNavHost(
 					appState = appState,
-					isOnboardingComplete = state.isOnboardingComplete,
+					onboarding = state.onboarding,
 					finishActivity = finishActivity,
 				)
 			}

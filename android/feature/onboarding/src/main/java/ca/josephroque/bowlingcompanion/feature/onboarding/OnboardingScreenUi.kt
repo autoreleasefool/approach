@@ -31,4 +31,5 @@ sealed interface OnboardingScreenUiAction {
 
 sealed interface OnboardingScreenEvent {
 	data object FinishedOnboarding : OnboardingScreenEvent
+	data object MigrateOpponents : OnboardingScreenEvent
 }

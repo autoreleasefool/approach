@@ -176,6 +176,7 @@ sealed class Route(
 
 	// Onboarding
 	data object Onboarding : Route("onboarding", isBottomBarVisible = false)
+	data object OpponentMigration : Route("opponent_migration", isBottomBarVisible = false)
 
 	// Opponents
 	data object OpponentsList : Route("opponents")
