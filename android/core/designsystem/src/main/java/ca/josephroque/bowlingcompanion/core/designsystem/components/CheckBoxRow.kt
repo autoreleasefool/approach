@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.feature.resourcepicker.ui
+package ca.josephroque.bowlingcompanion.core.designsystem.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +16,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.designsystem.R
 
 @Composable
-fun PickableRow(
+fun CheckBoxRow(
 	isSelected: Boolean,
 	onClick: () -> Unit,
 	content: @Composable BoxScope.() -> Unit,
@@ -35,20 +36,20 @@ fun PickableRow(
 		if (isSelected) {
 			Icon(
 				painter = painterResource(
-					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box,
+					R.drawable.ic_check_box,
 				),
 				contentDescription = stringResource(
-					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_selected,
+					R.string.cd_resource_selected,
 				),
-				tint = colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_500),
+				tint = colorResource(R.color.purple_500),
 			)
 		} else {
 			Icon(
 				painter = painterResource(
-					ca.josephroque.bowlingcompanion.core.designsystem.R.drawable.ic_check_box_outline,
+					R.drawable.ic_check_box_outline,
 				),
 				contentDescription = stringResource(
-					ca.josephroque.bowlingcompanion.core.designsystem.R.string.cd_resource_deselected,
+					R.string.cd_resource_deselected,
 				),
 				tint = MaterialTheme.colorScheme.onSurface,
 			)
