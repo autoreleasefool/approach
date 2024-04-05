@@ -790,8 +790,8 @@ class SQLiteMigrationService @Inject constructor(
 		}
 
 		legacyIDMappingDao.insertAll(matchPlayIdMappings)
-		matchPlayDao.migrateAll(migratedMatchPlays)
 		bowlerDao.migrateAll(migratedOpponents.values.toList())
+		matchPlayDao.migrateAll(migratedMatchPlays)
 	}
 
 	private suspend fun migrateFrames(db: SQLiteDatabase) {
