@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerUpdate
+import ca.josephroque.bowlingcompanion.core.model.OpponentListItem
 import java.util.UUID
 import kotlinx.datetime.Instant
 
@@ -37,4 +38,10 @@ data class BowlerUpdateEntity(
 fun BowlerUpdate.asEntity(): BowlerUpdateEntity = BowlerUpdateEntity(
 	id = id,
 	name = name,
+)
+
+fun OpponentListItem.asEntity(): BowlerEntity = BowlerEntity(
+	id = id,
+	name = name,
+	kind = kind,
 )

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.data.repository
 
+import ca.josephroque.bowlingcompanion.core.database.model.BowlerEntity
 import ca.josephroque.bowlingcompanion.core.model.ArchivedBowler
 import ca.josephroque.bowlingcompanion.core.model.BowlerCreate
 import ca.josephroque.bowlingcompanion.core.model.BowlerDetails
@@ -25,4 +26,7 @@ interface BowlersRepository {
 	suspend fun updateBowler(bowler: BowlerUpdate)
 	suspend fun archiveBowler(id: UUID)
 	suspend fun unarchiveBowler(id: UUID)
+
+	suspend fun hasOpponents(): Boolean
+	suspend fun mergeBowlers(bowlers: List<BowlerEntity>, associateBy: Map<UUID, UUID>)
 }
