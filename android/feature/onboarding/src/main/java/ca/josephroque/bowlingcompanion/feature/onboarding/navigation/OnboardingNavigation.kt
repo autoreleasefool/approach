@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.feature.onboarding.navigation
 
-import androidx.activity.compose.BackHandler
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,14 +11,18 @@ fun NavController.navigateToOnboarding(navOptions: NavOptions? = null) {
 	this.navigate(Route.Onboarding.route, navOptions)
 }
 
-fun NavGraphBuilder.onboardingScreen(finishActivity: () -> Unit, onCompleteOnboarding: () -> Unit) {
+fun NavGraphBuilder.onboardingScreen(
+	onDismiss: () -> Unit,
+	onCompleteOnboarding: () -> Unit,
+	onMigrateOpponents: () -> Unit,
+) {
 	composable(
 		route = Route.Onboarding.route,
 	) {
-		BackHandler {
-			finishActivity()
-		}
-
-		OnboardingRoute(onCompleteOnboarding)
+		OnboardingRoute(
+			onDismiss = onDismiss,
+			onCompleteOnboarding = onCompleteOnboarding,
+			onMigrateOpponents = onMigrateOpponents,
+		)
 	}
 }

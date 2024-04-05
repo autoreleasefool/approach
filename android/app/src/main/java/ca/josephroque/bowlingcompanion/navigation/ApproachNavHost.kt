@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
+import ca.josephroque.bowlingcompanion.core.model.UserData
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.navigation.graph.accessoriesGraph
 import ca.josephroque.bowlingcompanion.navigation.graph.bottomSheetGraph
@@ -18,16 +19,14 @@ import ca.josephroque.bowlingcompanion.ui.ApproachAppState
 fun ApproachNavHost(
 	appState: ApproachAppState,
 	modifier: Modifier = Modifier,
-	isOnboardingComplete: Boolean?,
+	onboarding: UserData.Onboarding,
 	finishActivity: () -> Unit = {},
 	startDestination: String = TopLevelDestination.APP_OVERVIEW.graphName,
 ) {
 	val navController = appState.navController
 
-	isOnboardingComplete ?: return
-
-	val shouldShowOnboarding = remember(isOnboardingComplete) {
-		mutableStateOf(!isOnboardingComplete)
+	val shouldShowOnboarding = remember(onboarding.isOnboardingComplete) {
+		mutableStateOf(!onboarding.isOnboardingComplete)
 	}
 
 	NavHost(
@@ -42,6 +41,8 @@ fun ApproachNavHost(
 			overviewGraph(
 				navController = navController,
 				shouldShowOnboarding = shouldShowOnboarding,
+				isLegacyMigrationComplete = onboarding.isLegacyMigrationComplete,
+				isOpponentMigrationComplete = onboarding.isOpponentMigrationComplete,
 				finishActivity = finishActivity,
 			)
 		}

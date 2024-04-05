@@ -27,7 +27,9 @@ import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToL
 import ca.josephroque.bowlingcompanion.feature.leagueform.navigation.navigateToNewLeagueForm
 import ca.josephroque.bowlingcompanion.feature.matchplayeditor.navigation.navigateToMatchPlayEditor
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOnboarding
+import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.navigateToOpponentMigration
 import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.onboardingScreen
+import ca.josephroque.bowlingcompanion.feature.onboarding.navigation.opponentMigrationScreen
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.navigateToQuickPlay
 import ca.josephroque.bowlingcompanion.feature.overview.navigation.overviewScreen
 import ca.josephroque.bowlingcompanion.feature.resourcepicker.navigation.navigateToResourcePickerForResult
@@ -53,11 +55,24 @@ import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.stati
 fun NavGraphBuilder.overviewGraph(
 	navController: NavController,
 	shouldShowOnboarding: MutableState<Boolean>,
+	isLegacyMigrationComplete: Boolean,
+	isOpponentMigrationComplete: Boolean,
 	finishActivity: () -> Unit,
 ) {
+	val finishOnboarding: () -> Unit = {
+		shouldShowOnboarding.value = false
+		navController.popBackStack()
+	}
+
 	overviewScreen(
 		shouldShowOnboarding = shouldShowOnboarding,
-		showOnboarding = navController::navigateToOnboarding,
+		showOnboarding = {
+			when {
+				!isLegacyMigrationComplete -> navController.navigateToOnboarding()
+				!isOpponentMigrationComplete -> navController.navigateToOpponentMigration()
+				else -> finishOnboarding()
+			}
+		},
 		onEditBowler = navController::navigateToBowlerForm,
 		onAddBowler = { navController.navigateToNewBowlerForm(BowlerKind.PLAYABLE) },
 		onShowBowlerDetails = navController::navigateToBowlerDetails,
@@ -69,11 +84,13 @@ fun NavGraphBuilder.overviewGraph(
 		onResumeGame = navController::navigateToGamesEditor,
 	)
 	onboardingScreen(
-		finishActivity = finishActivity,
-		onCompleteOnboarding = {
-			shouldShowOnboarding.value = false
-			navController.popBackStack()
-		},
+		onDismiss = finishActivity,
+		onCompleteOnboarding = finishOnboarding,
+		onMigrateOpponents = navController::navigateToOpponentMigration,
+	)
+	opponentMigrationScreen(
+		onDismiss = finishActivity,
+		onCompleteMigration = finishOnboarding,
 	)
 	bowlerFormScreen(
 		onBackPressed = navController::popBackStack,
