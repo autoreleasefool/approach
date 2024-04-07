@@ -21,6 +21,7 @@ public protocol Statistic {
 	static func supports(trackableSource: TrackableFilter.Source) -> Bool
 
 	mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration)
+	mutating func adjust(byFrameSet: [Frame.TrackableEntry], configuration: TrackablePerFrameSetConfiguration)
 	mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration)
 	mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration)
 	mutating func aggregate(with: Statistic)
@@ -89,6 +90,20 @@ public struct TrackablePerFrameConfiguration {
 
 public protocol TrackablePerFrame: Statistic {}
 extension TrackablePerFrame {
+	public mutating func adjust(byFrameSet: [Frame.TrackableEntry], configuration: TrackablePerFrameSetConfiguration) {}
+	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
+	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
+}
+
+// MARK: - Trackable Per Frame Set
+
+public struct TrackablePerFrameSetConfiguration {
+	public init() {}
+}
+
+public protocol TrackablePerFrameSet: Statistic {}
+extension TrackablePerFrameSet {
+	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
 	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
 	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
 }
@@ -134,6 +149,7 @@ public struct TrackablePerGameConfiguration {
 public protocol TrackablePerGame: Statistic {}
 extension TrackablePerGame {
 	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
+	public mutating func adjust(byFrameSet: [Frame.TrackableEntry], configuration: TrackablePerFrameSetConfiguration) {}
 	public mutating func adjust(bySeries: Series.TrackableEntry, configuration: TrackablePerSeriesConfiguration) {}
 }
 
@@ -146,5 +162,6 @@ public struct TrackablePerSeriesConfiguration {
 public protocol TrackablePerSeries: Statistic {}
 extension TrackablePerSeries {
 	public mutating func adjust(byFrame: Frame.TrackableEntry, configuration: TrackablePerFrameConfiguration) {}
+	public mutating func adjust(byFrameSet: [Frame.TrackableEntry], configuration: TrackablePerFrameSetConfiguration) {}
 	public mutating func adjust(byGame: Game.TrackableEntry, configuration: TrackablePerGameConfiguration) {}
 }

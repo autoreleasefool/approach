@@ -76,3 +76,10 @@ extension Frame.TrackableEntry {
 		}
 	}
 }
+
+extension Frame {
+	public struct TrackableFrameSet {
+		let firstFrame: Frame.TrackableEntry
+		let secondFrame: Frame.
+	}
+}

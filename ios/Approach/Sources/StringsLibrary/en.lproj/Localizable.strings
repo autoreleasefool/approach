@@ -434,6 +434,8 @@
 "statistics.title.leftThreesSpared" = "Left Threes Spared";
 "statistics.title.rightThrees" = "Right Threes";
 "statistics.title.rightThreesSpared" = "Right Threes Spared";
+"statistics.title.averageStrikeCount" = "Average Strike Count";
+"statistics.title.averageSpareCount" = "Average Spare Count";
 
 "statistics.description.fouls" = "Number of times you marked a roll as a foul";
 "statistics.description.gameAverage" = "Average score across all counted games";
@@ -451,6 +453,8 @@
 "statistics.description.totalPinsLeftOnDeck" = "Total value of pins you've left standing at the end of frames across all counted games";
 "statistics.description.averagePinsLeftOnDeck" = "Average value of pins you've left standing at the end of frames per game";
 "statistics.description.firstRollAverage" = "Average value of pins knocked down on the first roll of a frame";
+"statistics.description.averageStrikeCount" = "Average count earned on a strike. Up to 30";
+"statistics.description.averageSpareCount" = "Average count earned on a spare. Up to 15";
 
 /* Avatar */
 

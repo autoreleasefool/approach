@@ -1569,6 +1569,10 @@ public enum Strings {
     public enum Description {
       /// Average value of pins you've left standing at the end of frames per game
       public static let averagePinsLeftOnDeck = Strings.tr("Localizable", "statistics.description.averagePinsLeftOnDeck", fallback: "Average value of pins you've left standing at the end of frames per game")
+      /// Average count earned on a spare. Up to 15
+      public static let averageSpareCount = Strings.tr("Localizable", "statistics.description.averageSpareCount", fallback: "Average count earned on a spare. Up to 15")
+      /// Average count earned on a strike. Up to 30
+      public static let averageStrikeCount = Strings.tr("Localizable", "statistics.description.averageStrikeCount", fallback: "Average count earned on a strike. Up to 30")
       /// Average value of pins knocked down on the first roll of a frame
       public static let firstRollAverage = Strings.tr("Localizable", "statistics.description.firstRollAverage", fallback: "Average value of pins knocked down on the first roll of a frame")
       /// Number of times you marked a roll as a foul
@@ -1775,6 +1779,10 @@ public enum Strings {
       public static let acesSpared = Strings.tr("Localizable", "statistics.title.acesSpared", fallback: "Aces Spared")
       /// Average Pins Left on Deck
       public static let averagePinsLeftOnDeck = Strings.tr("Localizable", "statistics.title.averagePinsLeftOnDeck", fallback: "Average Pins Left on Deck")
+      /// Average Spare Count
+      public static let averageSpareCount = Strings.tr("Localizable", "statistics.title.averageSpareCount", fallback: "Average Spare Count")
+      /// Average Strike Count
+      public static let averageStrikeCount = Strings.tr("Localizable", "statistics.title.averageStrikeCount", fallback: "Average Strike Count")
       /// Chop Offs
       public static let chopOffs = Strings.tr("Localizable", "statistics.title.chopOffs", fallback: "Chop Offs")
       /// Chop Offs Spared
