@@ -1,15 +1,29 @@
+import CloudKit
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension GameLane {
 	public struct Database: Sendable, Codable, Equatable {
 		public let gameId: Game.ID
 		public let laneId: Lane.ID
+		public var archivedRecordData: Data?
 
 		public init(gameId: Game.ID, laneId: Lane.ID) {
 			self.gameId = gameId
 			self.laneId = laneId
 		}
+	}
+}
+
+extension GameLane.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

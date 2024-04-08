@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension MatchPlay {
@@ -10,6 +12,7 @@ extension MatchPlay {
 		public var opponentId: Bowler.ID?
 		public var opponentScore: Int?
 		public var result: MatchPlay.Result?
+		public var archivedRecordData: Data?
 
 		public init(
 			gameId: Game.ID,
@@ -24,6 +27,17 @@ extension MatchPlay {
 			self.opponentScore = opponentScore
 			self.result = result
 		}
+	}
+}
+
+extension MatchPlay.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

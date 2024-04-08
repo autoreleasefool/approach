@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Bowler {
@@ -8,6 +10,7 @@ extension Bowler {
 		public var name: String
 		public var kind: Kind
 		public var archivedOn: Date?
+		public var archivedRecordData: Data?
 
 		public init(
 			id: Bowler.ID,
@@ -20,6 +23,17 @@ extension Bowler {
 			self.kind = kind
 			self.archivedOn = archivedOn
 		}
+	}
+}
+
+extension Bowler.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

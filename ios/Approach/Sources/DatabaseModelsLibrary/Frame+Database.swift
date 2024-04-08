@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Frame {
@@ -13,6 +15,7 @@ extension Frame {
 		public var ball0: Gear.ID?
 		public var ball1: Gear.ID?
 		public var ball2: Gear.ID?
+		public var archivedRecordData: Data?
 
 		public var id: String { Frame.buildId(game: gameId, index: index) }
 
@@ -35,6 +38,17 @@ extension Frame {
 			self.ball1 = ball1
 			self.ball2 = ball2
 		}
+	}
+}
+
+extension Frame.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

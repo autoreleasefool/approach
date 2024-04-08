@@ -1,6 +1,8 @@
+import CloudKit
 import Dependencies
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Series {
@@ -13,6 +15,7 @@ extension Series {
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var alleyId: Alley.ID?
 		public var archivedOn: Date?
+		public var archivedRecordData: Data?
 
 		public init(
 			leagueId: League.ID,
@@ -33,6 +36,17 @@ extension Series {
 			self.alleyId = alleyId
 			self.archivedOn = archivedOn
 		}
+	}
+}
+
+extension Series.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

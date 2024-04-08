@@ -1,35 +1,49 @@
 import AnalyticsServiceInterface
 import DatabaseLibrary
+import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
 import FileManagerServiceInterface
 import GRDB
+import Harmony
+import ModelsLibrary
 
 extension DatabaseService: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(AnalyticsService.self) var analytics
 		@Dependency(FileManagerService.self) var fileManager
-		let writer: any DatabaseWriter
+//		let writer: any DatabaseWriter
 
-		do {
-			let folderUrl = try fileManager
-				.getUserDirectory()
-				.appending(path: "database", directoryHint: .isDirectory)
+		var migrator = DatabaseMigrator()
+		migrator.registerDBMigrations()
 
-			try fileManager.createDirectory(folderUrl)
+		@Harmony(
+			records: [
+				Bowler.Database.self,
+			],
+			configuration: .init(),
+			migrator: migrator
+		) var harmony
 
-			let dbUrl = folderUrl.appending(path: "db.sqlite")
-			let dbPool = try DatabasePool(path: dbUrl.path())
-			writer = dbPool
+//		do {
+//			let folderUrl = try fileManager
+//				.getUserDirectory()
+//				.appending(path: "database", directoryHint: .isDirectory)
+//
+//			try fileManager.createDirectory(folderUrl)
 
-			var migrator = DatabaseMigrator()
-			migrator.registerDBMigrations()
-			try migrator.migrate(writer)
-		} catch {
-			// FIXME: should notify user of failure to open DB
-			analytics.captureException(error)
-			fatalError("Unable to access database service: \(error)")
-		}
+//			let dbUrl = folderUrl.appending(path: "db.sqlite")
+//			let dbPool = try DatabasePool(path: dbUrl.path())
+//			writer = dbPool
+
+//			var migrator = DatabaseMigrator()
+//			migrator.registerDBMigrations()
+//			try migrator.migrate(writer)
+//		} catch {
+//			// FIXME: should notify user of failure to open DB
+//			analytics.captureException(error)
+//			fatalError("Unable to access database service: \(error)")
+//		}
 
 		return Self(
 			reader: { writer },

@@ -1,16 +1,30 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Avatar {
 	public struct Database: Sendable, Identifiable, Codable, Equatable {
 		public let id: Avatar.ID
 		public var value: Avatar.Value
+		public var archivedRecordData: Data?
 
 		public init(id: Avatar.ID, value: Avatar.Value) {
 			self.id = id
 			self.value = value
 		}
+	}
+}
+
+extension Avatar.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

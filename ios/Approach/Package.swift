@@ -1242,6 +1242,7 @@ let package = Package(
 			dependencies: [
 				"AnalyticsServiceInterface",
 				"DatabaseLibrary",
+				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
 				"FileManagerServiceInterface",
 			]
@@ -1582,6 +1583,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
+				.product(name: "Harmony", package: "Harmony"),
 				"ModelsLibrary",
 			]
 		),

@@ -241,7 +241,7 @@ libraries = [ "Extensions" ]
 libraries = [ "ModelsViews" ]
 
 [services.Database]
-libraries = [ "Database" ]
+libraries = [ "Database", "DatabaseModels" ]
 services = [ "Analytics", "FileManager" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
@@ -319,7 +319,7 @@ dependencies = [ "GRDB" ]
 [libraries.DatabaseModels]
 skip_tests = true
 libraries = [ "Models" ]
-dependencies = [ "Dependencies", "GRDB" ]
+dependencies = [ "Dependencies", "GRDB", "Harmony" ]
 
 [libraries.DateTime]
 

@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Game {
@@ -13,6 +15,7 @@ extension Game {
 		public var excludeFromStatistics: ExcludeFromStatistics
 		public var duration: TimeInterval
 		public var archivedOn: Date?
+		public var archivedRecordData: Data?
 
 		public init(
 			seriesId: Series.ID,
@@ -35,6 +38,17 @@ extension Game {
 			self.duration = duration
 			self.archivedOn = archivedOn
 		}
+	}
+}
+
+extension Game.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Location {
@@ -9,6 +11,7 @@ extension Location {
 		public var subtitle: String
 		public var latitude: Double
 		public var longitude: Double
+		public var archivedRecordData: Data?
 
 		public init(id: Location.ID, title: String, subtitle: String, latitude: Double, longitude: Double) {
 			self.id = id
@@ -17,6 +20,17 @@ extension Location {
 			self.latitude = latitude
 			self.longitude = longitude
 		}
+	}
+}
+
+extension Location.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

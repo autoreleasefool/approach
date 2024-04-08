@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Gear {
@@ -9,6 +11,7 @@ extension Gear {
 		public var kind: Kind
 		public var bowlerId: Bowler.ID?
 		public var avatarId: Avatar.ID
+		public var archivedRecordData: Data?
 
 		public init(
 			id: Gear.ID,
@@ -23,6 +26,17 @@ extension Gear {
 			self.bowlerId = bowlerId
 			self.avatarId = avatarId
 		}
+	}
+}
+
+extension Ger.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

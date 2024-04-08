@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension StatisticsWidget {
@@ -12,6 +14,7 @@ extension StatisticsWidget {
 		public var statistic: String
 		public var context: String
 		public var priority: Int
+		public var archivedRecordData: Data?
 
 		public init(
 			id: StatisticsWidget.ID,
@@ -32,6 +35,17 @@ extension StatisticsWidget {
 			self.context = context
 			self.priority = priority
 		}
+	}
+}
+
+extension StatisticsWidget.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

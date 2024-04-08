@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Lane {
@@ -8,6 +10,7 @@ extension Lane {
 		public let id: Lane.ID
 		public var label: String
 		public var position: Lane.Position
+		public var archivedRecordData: Data?
 
 		public init(
 			alleyId: Alley.ID,
@@ -20,6 +23,17 @@ extension Lane {
 			self.label = label
 			self.position = position
 		}
+	}
+}
+
+extension Lane.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 

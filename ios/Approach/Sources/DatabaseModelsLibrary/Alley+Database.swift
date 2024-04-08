@@ -1,5 +1,7 @@
+import CloudKit
 import Foundation
 import GRDB
+import Harmony
 import ModelsLibrary
 
 extension Alley {
@@ -11,6 +13,7 @@ extension Alley {
 		public var mechanism: Mechanism?
 		public var pinBase: PinBase?
 		public var locationId: Location.ID?
+		public var archivedRecordData: Data?
 
 		public init(
 			id: Alley.ID,
@@ -29,6 +32,17 @@ extension Alley {
 			self.pinBase = pinBase
 			self.locationId = locationId
 		}
+	}
+}
+
+extension Alley.Database: HRecord {
+	public var zoneID: CKRecordZone.ID {
+		.init(zoneName: Self.databaseTableName, ownerName: CKCurrentUserDefaultName)
+	}
+
+	public var record: CKRecord {
+		let encoder = CKRecordEncoder(zoneID: zoneID)
+		return try! encoder.encode(self)
 	}
 }
 
