@@ -1,4 +1,3 @@
-import AnalyticsServiceInterface
 import ComposableArchitecture
 import EquatableLibrary
 import ExtensionsLibrary
@@ -278,13 +277,14 @@ public struct SectionResourceList<
 			ResourceListEmpty()
 		}
 
-		ErrorHandlerReducer<State, Action> { _, action in
-			switch action {
-			case let .internal(.sectionsResponse(.failure(error))):
-				return error
-			default:
-				return nil
-			}
-		}
+		// TODO: Add ErrorHandler to SectionResourceList
+//		ErrorHandlerReducer<State, Action> { _, action in
+//			switch action {
+//			case let .internal(.sectionsResponse(.failure(error))):
+//				return error
+//			default:
+//				return nil
+//			}
+//		}
 	}
 }
