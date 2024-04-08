@@ -69,6 +69,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CA1607CD2BC12748002E8DC2 /* ApproachDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ApproachDebug.entitlements; path = Approach/ApproachDebug.entitlements; sourceTree = "<group>"; };
 		CA2F033928F87C4100030BFE /* Approach */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Approach; sourceTree = "<group>"; };
 		CA5F86EE2A01E58D0092F519 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		CA5F86EF2A01E5930092F519 /* Test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Test.xcconfig; sourceTree = "<group>"; };
@@ -218,6 +219,7 @@
 		CA8BBC4C28D59B8B00653A1E = {
 			isa = PBXGroup;
 			children = (
+				CA1607CD2BC12748002E8DC2 /* ApproachDebug.entitlements */,
 				CA2F033928F87C4100030BFE /* Approach */,
 				CA8BBC5728D59B8B00653A1E /* ApproachIOS */,
 				CA632F6329BD26F200272ADB /* Previews */,
@@ -499,6 +501,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CA5F86F12A01E5A70092F519 /* AppApproach.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Approach/ApproachDebug.entitlements;
 			};
 			name = Debug;
 		};

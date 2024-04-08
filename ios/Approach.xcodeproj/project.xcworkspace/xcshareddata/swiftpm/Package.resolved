@@ -32,8 +32,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/groue/GRDB.swift.git",
       "state" : {
-        "revision" : "bd9aea303d9dab3a4941ee838a0e4ff51c9448df",
-        "version" : "6.25.0"
+        "revision" : "77b85bed259b7f107710a0b78c439b1c5839dc45",
+        "version" : "6.26.0"
+      }
+    },
+    {
+      "identity" : "harmony",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aaronpearce/Harmony.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "124ba5674d64923646bee319571b1be9ec638cf9"
       }
     },
     {
