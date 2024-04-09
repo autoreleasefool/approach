@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.CountingChart
+import ca.josephroque.bowlingcompanion.core.statistics.charts.PercentageChart
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.components.FilterDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
@@ -67,6 +68,10 @@ fun StatisticsDetailsChart(
 					state.chartContent.modelProducer,
 				)
 				is StatisticChartContent.AveragingChart -> AveragingChart(
+					chart.data,
+					state.chartContent.modelProducer,
+				)
+				is StatisticChartContent.PercentageChart -> PercentageChart(
 					chart.data,
 					state.chartContent.modelProducer,
 				)

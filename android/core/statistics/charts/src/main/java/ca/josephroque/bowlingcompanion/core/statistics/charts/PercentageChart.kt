@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
-import ca.josephroque.bowlingcompanion.core.statistics.models.AveragingChartData
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
+import ca.josephroque.bowlingcompanion.core.statistics.models.PercentageChartData
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -21,12 +21,13 @@ import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
+import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun AveragingChart(chartData: AveragingChartData, chartModel: ChartEntryModelProducer) {
+fun PercentageChart(chartData: PercentageChartData, chartModel: ChartEntryModelProducer) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
 			chartColors = listOf(
@@ -35,7 +36,12 @@ fun AveragingChart(chartData: AveragingChartData, chartModel: ChartEntryModelPro
 		),
 	) {
 		Chart(
-			chart = lineChart(),
+			chart = lineChart(
+				axisValuesOverrider = AxisValuesOverrider.fixed(
+					minY = 0f,
+					maxY = 1f,
+				),
+			),
 			chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
 			chartModelProducer = chartModel,
 			horizontalLayout = HorizontalLayout.FullWidth(
@@ -59,10 +65,10 @@ fun AveragingChart(chartData: AveragingChartData, chartModel: ChartEntryModelPro
 			),
 			startAxis = rememberStartAxis(
 				itemPlacer = remember {
-					AxisItemPlacer.Vertical.default(maxItemCount = chartData.numberOfVerticalTicks)
+					AxisItemPlacer.Vertical.default(maxItemCount = 5)
 				},
 				valueFormatter = remember {
-					DecimalFormatAxisValueFormatter(pattern = "#;-#")
+					DecimalFormatAxisValueFormatter(pattern = "#%;-#%")
 				},
 			),
 			modifier = Modifier

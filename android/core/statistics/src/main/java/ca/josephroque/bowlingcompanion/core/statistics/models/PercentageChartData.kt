@@ -30,6 +30,12 @@ data class PercentageChartData(
 
 	val isEmpty: Boolean
 		get() = entries.size <= 1
+
+	val numberOfHorizontalTicks: Int
+		get() = if (entries.size > 4) 4 else entries.size
+
+	val firstKey: ChartEntryKey?
+		get() = entries.firstOrNull()?.key
 }
 
 data class PercentageChartEntry(

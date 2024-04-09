@@ -40,17 +40,23 @@ fun CountingChart(chartData: CountableChartData, chartModel: ChartEntryModelProd
 		),
 	) {
 		Chart(
-			chart = if (chartData.isAccumulating) lineChart() else columnChart(),
+			chart = if (chartData.isAccumulating) {
+				lineChart()
+			} else {
+				columnChart(
+					spacing = 8.dp,
+				)
+			},
 			chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
 			chartModelProducer = chartModel,
-			horizontalLayout = HorizontalLayout.FullWidth(),
+			horizontalLayout = HorizontalLayout.FullWidth(
+				unscalableStartPaddingDp = 16f,
+				unscalableEndPaddingDp = 16f,
+			),
 			bottomAxis = rememberBottomAxis(
+				labelRotationDegrees = 90f,
 				itemPlacer = remember {
-					AxisItemPlacer.Horizontal.default(
-						spacing = 2,
-						offset = 2,
-						shiftExtremeTicks = true,
-					)
+					AxisItemPlacer.Horizontal.default(spacing = 2)
 				},
 				valueFormatter = remember {
 					AxisValueFormatter { value, _ ->
@@ -68,10 +74,6 @@ fun CountingChart(chartData: CountableChartData, chartModel: ChartEntryModelProd
 				},
 				valueFormatter = remember {
 					DecimalFormatAxisValueFormatter(pattern = "#;-#")
-// 					AxisValueFormatter { value, x ->
-// 						value.roundToInt().toString()
-// //						if (value.isFinite() && value.roundToInt().toFloat() == value) value.roundToInt().toString() else ""
-// 					}
 				},
 			),
 			modifier = Modifier
