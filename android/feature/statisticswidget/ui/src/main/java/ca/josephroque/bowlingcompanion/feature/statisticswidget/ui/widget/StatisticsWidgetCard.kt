@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.core.designsystem.components.LoadingState
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.CountingChart
+import ca.josephroque.bowlingcompanion.core.statistics.charts.PercentageChart
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidget
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticsWidgetSource
@@ -53,7 +54,11 @@ fun StatisticsWidgetCard(
 					chart = chart,
 					chartEntryModelProducer = chartEntryModelProducer,
 				)
-				is StatisticChartContent.PercentageChart -> Unit
+				is StatisticChartContent.PercentageChart -> PercentageChartWidget(
+					widget = widget,
+					chart = chart,
+					chartEntryModelProducer = chartEntryModelProducer,
+				)
 				is StatisticChartContent.CountableChart -> CountingChartWidget(
 					widget = widget,
 					chart = chart,
@@ -95,6 +100,22 @@ private fun CountingChartWidget(
 		},
 	) {
 		CountingChart(chartData = chart.data, chartModel = chartEntryModelProducer)
+	}
+}
+
+@Composable
+private fun PercentageChartWidget(
+	widget: StatisticsWidget,
+	chart: StatisticChartContent.PercentageChart,
+	chartEntryModelProducer: ChartEntryModelProducer,
+) {
+	Widget(
+		title = stringResource(widget.statistic.titleResourceId),
+		footer = {
+			Timeline(widget.timeline)
+		},
+	) {
+		PercentageChart(chartData = chart.data, chartModel = chartEntryModelProducer)
 	}
 }
 

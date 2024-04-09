@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.feature.overview
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.bowler.BowlerViewed
+import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GamesRepository
@@ -33,6 +34,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 private const val STATISTICS_WIDGET_CONTEXT = "overview"
 
@@ -164,7 +166,9 @@ class OverviewViewModel @Inject constructor(
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
-				OverviewScreenEvent.ShowWidgetStatistics(action.widget.filter),
+				OverviewScreenEvent.ShowWidgetStatistics(
+					action.widget.filter(Clock.System.now().toLocalDate()),
+				),
 			)
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),

@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.core.statistics.models
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import java.util.UUID
+import kotlinx.datetime.LocalDate
 
 data class StatisticsWidget(
 	val source: StatisticsWidgetSource,
@@ -12,13 +13,19 @@ data class StatisticsWidget(
 	val context: String,
 	val priority: Int,
 ) {
-	val filter: TrackableFilter
-		get() = TrackableFilter(
-			source = when (source) {
-				is StatisticsWidgetSource.Bowler -> TrackableFilter.Source.Bowler(source.bowlerId)
-				is StatisticsWidgetSource.League -> TrackableFilter.Source.League(source.leagueId)
-			},
-		)
+	fun filter(currentDate: LocalDate): TrackableFilter = TrackableFilter(
+		source = filterSource,
+		series = TrackableFilter.SeriesFilter(
+			startDate = timeline.relativeTo(currentDate),
+		),
+		aggregation = TrackableFilter.AggregationFilter.ACCUMULATE,
+	)
+
+	val filterSource: TrackableFilter.Source
+		get() = when (source) {
+			is StatisticsWidgetSource.Bowler -> TrackableFilter.Source.Bowler(source.bowlerId)
+			is StatisticsWidgetSource.League -> TrackableFilter.Source.League(source.leagueId)
+		}
 }
 
 data class StatisticsWidgetCreate(

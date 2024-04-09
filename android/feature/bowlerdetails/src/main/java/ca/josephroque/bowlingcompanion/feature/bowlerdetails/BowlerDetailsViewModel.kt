@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import ca.josephroque.bowlingcompanion.core.analytics.AnalyticsClient
 import ca.josephroque.bowlingcompanion.core.analytics.trackable.league.LeagueViewed
+import ca.josephroque.bowlingcompanion.core.common.utils.toLocalDate
 import ca.josephroque.bowlingcompanion.core.common.viewmodel.ApproachViewModel
 import ca.josephroque.bowlingcompanion.core.data.repository.BowlersRepository
 import ca.josephroque.bowlingcompanion.core.data.repository.GearRepository
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 @HiltViewModel
 class BowlerDetailsViewModel @Inject constructor(
@@ -187,7 +189,9 @@ class BowlerDetailsViewModel @Inject constructor(
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
 			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
-				BowlerDetailsScreenEvent.ShowWidgetStatistics(action.widget.filter),
+				BowlerDetailsScreenEvent.ShowWidgetStatistics(
+					action.widget.filter(Clock.System.now().toLocalDate()),
+				),
 			)
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				BowlerDetailsScreenEvent.EditStatisticsWidget(statisticsWidgetContext, bowlerId),

@@ -15,5 +15,6 @@ dependencies {
 	implementation(project(":feature:gearlist:ui"))
 	implementation(project(":feature:statisticswidget:ui"))
 
+	implementation(libs.kotlinx.datetime)
 	implementation(libs.vico.compose)
 }
