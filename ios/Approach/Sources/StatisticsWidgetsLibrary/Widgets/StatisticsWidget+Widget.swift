@@ -60,9 +60,7 @@ extension StatisticsWidget {
 				PercentageChart.Compact(
 					data,
 					style: .init(
-						barMarkColor: Asset.Colors.Charts.Percentage.Compact.barMark,
-						denominatorLineMarkColor: Asset.Colors.Charts.Percentage.Compact.denominatorLineMark,
-						numeratorLineMarkColor: Asset.Colors.Charts.Percentage.Compact.numeratorLineMark,
+						lineMarkColor: Asset.Colors.Charts.Percentage.Compact.lineMark,
 						axesColor: Asset.Colors.Charts.Percentage.Compact.axes,
 						hideXAxis: true
 					)

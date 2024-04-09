@@ -18,20 +18,10 @@ public struct PercentageChart: View {
 	public var body: some View {
 		Chart {
 			ForEach(data.entries) {
-				if data.isAccumulating {
-					$0.numeratorAreaMark(withTitle: data.title)
-						.lineStyle(StrokeStyle(lineWidth: 3))
-						.foregroundStyle(style.numeratorLineMarkColor.swiftUIColor)
-						.interpolationMethod(.catmullRom)
-
-					$0.denominatorAreaMark(withTitle: data.title)
-						.lineStyle(StrokeStyle(lineWidth: 3))
-						.foregroundStyle(style.denominatorLineMarkColor.swiftUIColor)
-						.interpolationMethod(.catmullRom)
-				} else {
-					$0.barMark(withTitle: data.title)
-						.foregroundStyle(barMarkGradient)
-				}
+				$0.lineMark(withTitle: data.title)
+					.lineStyle(StrokeStyle(lineWidth: 2))
+					.foregroundStyle(style.lineMarkColor.swiftUIColor)
+					.interpolationMethod(.catmullRom)
 			}
 		}
 		.chartXAxis {
@@ -47,26 +37,17 @@ public struct PercentageChart: View {
 			}
 		}
 		.chartYAxis {
-			AxisMarks {
+			AxisMarks(values: [0, 25, 50, 75, 100]) {
 				AxisGridLine()
 					.foregroundStyle(style.axesColor.swiftUIColor)
+			}
+			AxisMarks(values: [0, 50, 100]) {
 				AxisTick()
 					.foregroundStyle(style.axesColor.swiftUIColor)
-				AxisValueLabel()
+				AxisValueLabel(format: Decimal.FormatStyle.Percent.percent.scale(1))
 					.foregroundStyle(style.axesColor.swiftUIColor)
 			}
 		}
-	}
-
-	private var barMarkGradient: LinearGradient {
-		.init(
-			gradient: Gradient(colors: [
-				style.barMarkColor.swiftUIColor.opacity(0.8),
-				style.barMarkColor.swiftUIColor.opacity(0.3),
-			]),
-			startPoint: .top,
-			endPoint: .bottom
-		)
 	}
 }
 
@@ -123,6 +104,22 @@ extension PercentageChart.Data {
 			self.denominator = denominator
 			self.percentage = denominator > 0 ? Double(numerator) / Double(denominator) : 0
 			self.xAxis = xAxis
+		}
+
+		func lineMark(withTitle title: String) -> LineMark {
+			switch xAxis {
+			case let .date(date, _):
+				LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.date, date),
+					y: .value(title, percentage * 100)
+				)
+			case let .game(ordinal):
+				LineMark(
+					x: .value(Strings.Statistics.Charts.AxesLabels.game, Strings.Game.titleWithOrdinal(ordinal)),
+					y: .value(title, percentage * 100),
+					series: .value("", title)
+				)
+			}
 		}
 
 		func numeratorAreaMark(withTitle title: String) -> AreaMark {
@@ -187,22 +184,16 @@ extension PercentageChart.Data {
 
 extension PercentageChart {
 	public struct Style {
-		public let barMarkColor: ColorAsset
-		public let denominatorLineMarkColor: ColorAsset
-		public let numeratorLineMarkColor: ColorAsset
+		public let lineMarkColor: ColorAsset
 		public let axesColor: ColorAsset
 		public let hideXAxis: Bool
 
 		public init(
-			barMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.barMark,
-			denominatorLineMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.denominatorLineMark,
-			numeratorLineMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.numeratorLineMark,
+			lineMarkColor: ColorAsset = Asset.Colors.Charts.Percentage.lineMark,
 			axesColor: ColorAsset = Asset.Colors.Charts.Percentage.axes,
 			hideXAxis: Bool = false
 		) {
-			self.barMarkColor = barMarkColor
-			self.denominatorLineMarkColor = denominatorLineMarkColor
-			self.numeratorLineMarkColor = numeratorLineMarkColor
+			self.lineMarkColor = lineMarkColor
 			self.axesColor = axesColor
 			self.hideXAxis = hideXAxis
 		}
