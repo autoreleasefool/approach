@@ -50,8 +50,8 @@ data class TrackableSeriesQueryComponents(
 	}
 
 	fun whereClauseArgs(): Map<String, Any> = mapOfNullableValues(
-		"$tableAlias.startDate" to filter.startDate,
-		"$tableAlias.endDate" to filter.endDate,
+		"$tableAlias.startDate" to filter.startDate.toString(),
+		"$tableAlias.endDate" to filter.endDate.toString(),
 		"$tableAlias.alleyId" to (filter.alleys as? TrackableFilter.AlleyFilter.Alley)?.id,
 		"$tableAlias.alleyMaterial" to
 			(filter.alleys as? TrackableFilter.AlleyFilter.Properties)?.material,
