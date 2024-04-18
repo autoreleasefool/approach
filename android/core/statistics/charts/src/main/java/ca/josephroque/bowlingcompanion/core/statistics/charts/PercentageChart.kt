@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
+import ca.josephroque.bowlingcompanion.core.charts.rememberEmptyBottomAxis
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.horizontalLayout
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import ca.josephroque.bowlingcompanion.core.statistics.models.PercentageChartData
@@ -18,7 +20,6 @@ import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
-import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import kotlin.math.roundToInt
@@ -52,16 +53,7 @@ fun PercentageChart(
 			),
 			chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
 			chartModelProducer = chartModel,
-			horizontalLayout = when (size) {
-				ChartSize.DEFAULT -> HorizontalLayout.FullWidth(
-					unscalableStartPaddingDp = 16f,
-					unscalableEndPaddingDp = 16f,
-				)
-				ChartSize.COMPACT -> HorizontalLayout.FullWidth(
-					unscalableStartPaddingDp = 0f,
-					unscalableEndPaddingDp = 0f,
-				)
-			},
+			horizontalLayout = size.horizontalLayout,
 			bottomAxis = when (size) {
 				ChartSize.DEFAULT ->
 					rememberBottomAxis(
@@ -79,11 +71,7 @@ fun PercentageChart(
 							}
 						},
 					)
-				ChartSize.COMPACT -> rememberBottomAxis(
-					label = null,
-					tick = null,
-					guideline = null,
-				)
+				ChartSize.COMPACT -> rememberEmptyBottomAxis()
 			},
 			startAxis = rememberStartAxis(
 				itemPlacer = remember {
