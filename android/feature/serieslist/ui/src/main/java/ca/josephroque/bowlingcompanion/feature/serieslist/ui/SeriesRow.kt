@@ -173,8 +173,11 @@ private fun ScoreSummary(
 private fun ScoreChart(seriesLow: Int, seriesHigh: Int, scores: ChartEntryModelProducer) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
-			chartColors = listOf(
-				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			lineChartColors = listOf(
+				Pair(
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+				),
 			),
 		),
 	) {

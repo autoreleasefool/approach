@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.charts
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -14,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import ca.josephroque.bowlingcompanion.core.statistics.charts.stub.CountableChartDataStub
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
+import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import ca.josephroque.bowlingcompanion.core.statistics.models.CountableChartData
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
@@ -31,11 +30,22 @@ import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun CountingChart(chartData: CountableChartData, chartModel: ChartEntryModelProducer) {
+fun CountingChart(
+	chartData: CountableChartData,
+	chartModel: ChartEntryModelProducer,
+	size: ChartSize,
+	modifier: Modifier = Modifier,
+) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
-			chartColors = listOf(
+			columnChartColors = listOf(
 				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
+			lineChartColors = listOf(
+				Pair(
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_200),
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.pink_200),
+				),
 			),
 		),
 	) {
@@ -44,30 +54,46 @@ fun CountingChart(chartData: CountableChartData, chartModel: ChartEntryModelProd
 				lineChart()
 			} else {
 				columnChart(
-					spacing = 8.dp,
+					spacing = when (size) {
+						ChartSize.DEFAULT -> 8.dp
+						ChartSize.COMPACT -> 4.dp
+					},
 				)
 			},
 			chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
 			chartModelProducer = chartModel,
-			horizontalLayout = HorizontalLayout.FullWidth(
-				unscalableStartPaddingDp = 16f,
-				unscalableEndPaddingDp = 16f,
-			),
-			bottomAxis = rememberBottomAxis(
-				labelRotationDegrees = 90f,
-				itemPlacer = remember {
-					AxisItemPlacer.Horizontal.default(spacing = 2)
-				},
-				valueFormatter = remember {
-					AxisValueFormatter { value, _ ->
-						if (chartData.firstKey is ChartEntryKey.Date) {
-							LocalDate.fromEpochDays(value.roundToInt()).toString()
-						} else {
-							"Game ${value.roundToInt()}"
+			horizontalLayout = when (size) {
+				ChartSize.DEFAULT -> HorizontalLayout.FullWidth(
+					unscalableStartPaddingDp = 16f,
+					unscalableEndPaddingDp = 16f,
+				)
+				ChartSize.COMPACT -> HorizontalLayout.FullWidth(
+					unscalableStartPaddingDp = 0f,
+					unscalableEndPaddingDp = 0f,
+				)
+			},
+			bottomAxis = when (size) {
+				ChartSize.DEFAULT -> rememberBottomAxis(
+					labelRotationDegrees = 90f,
+					itemPlacer = remember {
+						AxisItemPlacer.Horizontal.default(spacing = 2)
+					},
+					valueFormatter = remember {
+						AxisValueFormatter { value, _ ->
+							if (chartData.firstKey is ChartEntryKey.Date) {
+								LocalDate.fromEpochDays(value.roundToInt()).toString()
+							} else {
+								"Game ${value.roundToInt()}"
+							}
 						}
-					}
-				},
-			),
+					},
+				)
+				ChartSize.COMPACT -> rememberBottomAxis(
+					label = null,
+					tick = null,
+					guideline = null,
+				)
+			},
 			startAxis = rememberStartAxis(
 				itemPlacer = remember {
 					AxisItemPlacer.Vertical.default(maxItemCount = chartData.numberOfVerticalTicks)
@@ -76,10 +102,7 @@ fun CountingChart(chartData: CountableChartData, chartModel: ChartEntryModelProd
 					DecimalFormatAxisValueFormatter(pattern = "#;-#")
 				},
 			),
-			modifier = Modifier
-				.fillMaxWidth()
-				.fillMaxHeight()
-				.padding(top = 16.dp),
+			modifier = modifier.fillMaxSize(),
 		)
 	}
 }
@@ -93,6 +116,7 @@ private fun CountingChartPreview() {
 		CountingChart(
 			chartData = data,
 			chartModel = ChartEntryModelProducer(data.getModelEntries()),
+			size = ChartSize.DEFAULT,
 		)
 	}
 }

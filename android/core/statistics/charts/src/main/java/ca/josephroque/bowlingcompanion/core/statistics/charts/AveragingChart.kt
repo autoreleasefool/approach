@@ -1,16 +1,15 @@
 package ca.josephroque.bowlingcompanion.core.statistics.charts
 
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import android.graphics.Color
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import ca.josephroque.bowlingcompanion.core.charts.rememberChartStyle
 import ca.josephroque.bowlingcompanion.core.statistics.models.AveragingChartData
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
+import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -21,43 +20,73 @@ import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.chart.layout.HorizontalLayout
+import com.patrykandpatrick.vico.core.component.text.textComponent
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.extension.copyColor
 import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 
 @Composable
-fun AveragingChart(chartData: AveragingChartData, chartModel: ChartEntryModelProducer) {
+fun AveragingChart(
+	chartData: AveragingChartData,
+	chartModel: ChartEntryModelProducer,
+	size: ChartSize,
+	modifier: Modifier = Modifier,
+) {
 	ProvideChartStyle(
 		chartStyle = rememberChartStyle(
-			chartColors = listOf(
-				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			lineChartColors = listOf(
+				Pair(
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.pink_200),
+					null,
+				),
 			),
+			axisColor = colorResource(
+				ca.josephroque.bowlingcompanion.core.designsystem.R.color.black,
+			).copy(alpha = 0.6f),
 		),
 	) {
 		Chart(
 			chart = lineChart(),
 			chartScrollSpec = rememberChartScrollSpec(isScrollEnabled = false),
 			chartModelProducer = chartModel,
-			horizontalLayout = HorizontalLayout.FullWidth(
-				unscalableStartPaddingDp = 16f,
-				unscalableEndPaddingDp = 16f,
-			),
-			bottomAxis = rememberBottomAxis(
-				labelRotationDegrees = 90f,
-				itemPlacer = remember {
-					AxisItemPlacer.Horizontal.default(spacing = 2)
-				},
-				valueFormatter = remember {
-					AxisValueFormatter { value, _ ->
-						if (chartData.firstKey is ChartEntryKey.Date) {
-							LocalDate.fromEpochDays(value.roundToInt()).toString()
-						} else {
-							"Game ${value.roundToInt()}"
+			horizontalLayout = when (size) {
+				ChartSize.DEFAULT -> HorizontalLayout.FullWidth(
+					unscalableStartPaddingDp = 16f,
+					unscalableEndPaddingDp = 16f,
+				)
+				ChartSize.COMPACT -> HorizontalLayout.FullWidth(
+					unscalableStartPaddingDp = 0f,
+					unscalableEndPaddingDp = 0f,
+				)
+			},
+			bottomAxis = when (size) {
+				ChartSize.DEFAULT -> rememberBottomAxis(
+					labelRotationDegrees = 90f,
+					itemPlacer = remember {
+						AxisItemPlacer.Horizontal.default(spacing = 2)
+					},
+					valueFormatter = remember {
+						AxisValueFormatter { value, _ ->
+							if (chartData.firstKey is ChartEntryKey.Date) {
+								LocalDate.fromEpochDays(value.roundToInt()).toString()
+							} else {
+								"Game ${value.roundToInt()}"
+							}
 						}
-					}
-				},
-			),
+					},
+				)
+				ChartSize.COMPACT -> rememberBottomAxis(
+					label = null,
+					tick = null,
+					guideline = null,
+				)
+			},
 			startAxis = rememberStartAxis(
+				label = textComponent {
+					color = Color.BLACK.copyColor(alpha = 0.6f)
+					textSizeSp = 12f
+				},
 				itemPlacer = remember {
 					AxisItemPlacer.Vertical.default(maxItemCount = chartData.numberOfVerticalTicks)
 				},
@@ -65,10 +94,7 @@ fun AveragingChart(chartData: AveragingChartData, chartModel: ChartEntryModelPro
 					DecimalFormatAxisValueFormatter(pattern = "#;-#")
 				},
 			),
-			modifier = Modifier
-				.fillMaxWidth()
-				.fillMaxHeight()
-				.padding(top = 16.dp),
+			modifier = modifier.fillMaxSize(),
 		)
 	}
 }

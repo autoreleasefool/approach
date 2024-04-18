@@ -10,7 +10,7 @@ data class AveragingChartData(
 ) {
 	private val minimumValue: Double
 	private val maximumValue: Double
-	private val percentDifferenceOverFullTimeSpan: Double
+	val percentDifferenceOverFullTimeSpan: Double
 
 	init {
 		val minimumValue = entries.minOfOrNull { it.value } ?: 0.0

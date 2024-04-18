@@ -38,4 +38,6 @@
 	<string name="statistics_widget_chart_unavailable_description">You may not have bowled enough games yet, or your filters are excluding too many games.</string>
 	<string name="statistics_widget_chart_data_missing">Not enough data</string>
 	<string name="statistics_widget_what_does_this_mean">What does this mean?</string>
+
+	<string name="statistics_widget_percentage">%.1f%%</string>
 </resources>

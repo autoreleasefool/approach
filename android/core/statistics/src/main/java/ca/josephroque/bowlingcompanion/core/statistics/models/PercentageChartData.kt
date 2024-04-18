@@ -10,7 +10,7 @@ data class PercentageChartData(
 	val isAccumulating: Boolean,
 	val preferredTrendDirection: PreferredTrendDirection?,
 ) {
-	private val percentDifferenceOverFullTimeSpan: Double?
+	val percentDifferenceOverFullTimeSpan: Double?
 
 	init {
 		if (isAccumulating) {

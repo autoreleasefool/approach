@@ -17,15 +17,19 @@ import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 
 @Composable
-fun rememberChartStyle(columnChartColors: List<Color>, lineChartColors: List<Color>): ChartStyle {
+fun rememberChartStyle(
+	columnChartColors: List<Color> = emptyList(),
+	lineChartColors: List<Pair<Color, Color?>> = emptyList(),
+	axisColor: Color? = null,
+): ChartStyle {
 	val isSystemInDarkTheme = isSystemInDarkTheme()
 	return remember(columnChartColors, lineChartColors, isSystemInDarkTheme) {
 		val defaultColors = if (isSystemInDarkTheme) DefaultColors.Dark else DefaultColors.Light
 		ChartStyle(
 			ChartStyle.Axis(
-				axisLabelColor = Color(defaultColors.axisLabelColor),
-				axisGuidelineColor = Color(defaultColors.axisGuidelineColor),
-				axisLineColor = Color(defaultColors.axisLineColor),
+				axisLabelColor = axisColor ?: Color(defaultColors.axisLabelColor),
+				axisGuidelineColor = axisColor ?: Color(defaultColors.axisGuidelineColor),
+				axisLineColor = axisColor ?: Color(defaultColors.axisLineColor),
 			),
 			ChartStyle.ColumnChart(
 				columnChartColors.map { columnChartColor ->
@@ -37,17 +41,19 @@ fun rememberChartStyle(columnChartColors: List<Color>, lineChartColors: List<Col
 				},
 			),
 			ChartStyle.LineChart(
-				lineChartColors.map { lineChartColor ->
+				lines = lineChartColors.map { lineColors ->
 					LineChart.LineSpec(
-						lineColor = lineChartColor.toArgb(),
-						lineBackgroundShader = DynamicShaders.fromBrush(
-							Brush.verticalGradient(
-								listOf(
-									lineChartColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_START),
-									lineChartColor.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END),
+						lineColor = lineColors.first.toArgb(),
+						lineBackgroundShader = lineColors.second?.let {
+							DynamicShaders.fromBrush(
+								Brush.verticalGradient(
+									listOf(
+										it.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_START),
+										it.copy(DefaultAlpha.LINE_BACKGROUND_SHADER_END),
+									),
 								),
-							),
-						),
+							)
+						},
 					)
 				},
 			),
@@ -56,7 +62,3 @@ fun rememberChartStyle(columnChartColors: List<Color>, lineChartColors: List<Col
 		)
 	}
 }
-
-@Composable
-fun rememberChartStyle(chartColors: List<Color>) =
-	rememberChartStyle(columnChartColors = chartColors, lineChartColors = chartColors)

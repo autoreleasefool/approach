@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.core.model.StatisticsDetailsSourceType
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.statisticInstanceFromID
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.StatisticsDetailsChartTopBarUiAction
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -79,7 +80,7 @@ class StatisticsDetailsChartViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			chartContent.collect {
-				if (it != null) {
+				if (it != null && it.chart.hasModelEntries()) {
 					chartEntryModelProducer.setEntries(it.chart.getModelEntries())
 				}
 			}

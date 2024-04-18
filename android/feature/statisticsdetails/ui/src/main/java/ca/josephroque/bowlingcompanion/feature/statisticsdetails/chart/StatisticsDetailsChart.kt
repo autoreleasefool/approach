@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
 import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.CountingChart
 import ca.josephroque.bowlingcompanion.core.statistics.charts.PercentageChart
+import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.components.FilterDetails
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.ui.R
@@ -66,14 +67,20 @@ fun StatisticsDetailsChart(
 				is StatisticChartContent.CountableChart -> CountingChart(
 					chart.data,
 					state.chartContent.modelProducer,
+					size = ChartSize.DEFAULT,
+					modifier = Modifier.padding(top = 16.dp),
 				)
 				is StatisticChartContent.AveragingChart -> AveragingChart(
 					chart.data,
 					state.chartContent.modelProducer,
+					size = ChartSize.DEFAULT,
+					modifier = Modifier.padding(top = 16.dp),
 				)
 				is StatisticChartContent.PercentageChart -> PercentageChart(
 					chart.data,
 					state.chartContent.modelProducer,
+					size = ChartSize.DEFAULT,
+					modifier = Modifier.padding(top = 16.dp),
 				)
 // 			is StatisticChartContent.PercentageChart -> PercentageChart(state.chart.data)
 // 			is StatisticChartContent.DataMissing -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
