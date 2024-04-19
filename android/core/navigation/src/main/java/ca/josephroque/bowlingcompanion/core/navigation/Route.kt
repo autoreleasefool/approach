@@ -347,6 +347,9 @@ sealed class Route(
 		fun getInitialSource(savedStateHandle: SavedStateHandle): String? =
 			savedStateHandle.get<String>("initial_source")
 	}
+	data object StatisticsWidgetError : Route("statisticswidgeterror", isBottomBarVisible = false) {
+		fun createRoute(): String = "statisticswidgeterror"
+	}
 }
 
 fun <T> List<T>.encode(): String = if (isEmpty()) {

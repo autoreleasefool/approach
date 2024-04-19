@@ -32,4 +32,6 @@ sealed interface OverviewScreenEvent {
 	data class ResumeGame(val seriesIds: List<UUID>, val currentGameId: UUID) : OverviewScreenEvent
 	data class ShowBowlerDetails(val id: UUID) : OverviewScreenEvent
 	data class ShowWidgetStatistics(val filter: TrackableFilter) : OverviewScreenEvent
+	data object ShowWidgetNotEnoughDataError : OverviewScreenEvent
+	data object ShowWidgetUnavailableError : OverviewScreenEvent
 }

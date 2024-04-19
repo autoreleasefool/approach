@@ -48,6 +48,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.stat
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.editor.StatisticsWidgetInitialSource
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticPickerForResult
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetEditor
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetError
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.navigateToStatisticsWidgetLayoutEditor
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetEditorScreen
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetLayoutEditorScreen
@@ -82,6 +83,7 @@ fun NavGraphBuilder.overviewGraph(
 		onShowWidgetStatistics = navController::navigateToStatisticsDetails,
 		onShowQuickPlay = navController::navigateToQuickPlay,
 		onResumeGame = navController::navigateToGamesEditor,
+		onShowWidgetError = navController::navigateToStatisticsWidgetError,
 	)
 	onboardingScreen(
 		onDismiss = finishActivity,
@@ -116,6 +118,7 @@ fun NavGraphBuilder.overviewGraph(
 			)
 		},
 		onShowWidgetStatistics = navController::navigateToStatisticsDetails,
+		onShowWidgetError = navController::navigateToStatisticsWidgetError,
 	)
 	leagueFormScreen(
 		onBackPressed = navController::popBackStack,

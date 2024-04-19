@@ -43,6 +43,8 @@ internal fun OverviewRoute(
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
 	onResumeGame: (List<UUID>, UUID) -> Unit,
+	onShowWidgetNotEnoughDataError: () -> Unit,
+	onShowWidgetUnavailableError: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: OverviewViewModel = hiltViewModel(),
 ) {
@@ -62,6 +64,8 @@ internal fun OverviewRoute(
 						is OverviewScreenEvent.ResumeGame -> onResumeGame(it.seriesIds, it.currentGameId)
 						OverviewScreenEvent.ShowQuickPlay -> onShowQuickPlay()
 						OverviewScreenEvent.AddBowler -> onAddBowler()
+						OverviewScreenEvent.ShowWidgetNotEnoughDataError -> onShowWidgetNotEnoughDataError()
+						OverviewScreenEvent.ShowWidgetUnavailableError -> onShowWidgetUnavailableError()
 					}
 				}
 		}

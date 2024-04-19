@@ -19,6 +19,7 @@ fun NavGraphBuilder.overviewScreen(
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
 	onShowQuickPlay: () -> Unit,
 	onResumeGame: (List<UUID>, UUID) -> Unit,
+	onShowWidgetError: () -> Unit,
 ) {
 	composable(
 		route = Route.Overview.route,
@@ -38,6 +39,8 @@ fun NavGraphBuilder.overviewScreen(
 				onShowWidgetStatistics = onShowWidgetStatistics,
 				onShowQuickPlay = onShowQuickPlay,
 				onResumeGame = onResumeGame,
+				onShowWidgetNotEnoughDataError = onShowWidgetError,
+				onShowWidgetUnavailableError = onShowWidgetError,
 			)
 		}
 	}

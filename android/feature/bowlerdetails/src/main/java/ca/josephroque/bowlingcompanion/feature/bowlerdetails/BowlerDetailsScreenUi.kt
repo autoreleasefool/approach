@@ -29,4 +29,6 @@ sealed interface BowlerDetailsScreenEvent {
 	data class ShowLeagueDetails(val leagueId: UUID) : BowlerDetailsScreenEvent
 	data class ShowEventDetails(val leagueId: UUID) : BowlerDetailsScreenEvent
 	data class ShowWidgetStatistics(val filter: TrackableFilter) : BowlerDetailsScreenEvent
+	data object ShowWidgetNotEnoughDataError : BowlerDetailsScreenEvent
+	data object ShowWidgetUnavailableError : BowlerDetailsScreenEvent
 }

@@ -21,6 +21,7 @@ import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.navi
 import ca.josephroque.bowlingcompanion.feature.statisticsdetails.navigation.statisticsDetailsChartSheet
 import ca.josephroque.bowlingcompanion.feature.statisticsoverview.navigation.statisticsSourcePickerSheet
 import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticPickerSheet
+import ca.josephroque.bowlingcompanion.feature.statisticswidget.navigation.statisticsWidgetError
 
 fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	resourcePickerSheet(
@@ -122,5 +123,8 @@ fun NavGraphBuilder.bottomSheetGraph(navController: NavController) {
 	)
 	statisticPickerSheet(
 		onDismissWithResult = navController::popBackStackWithResult,
+	)
+	statisticsWidgetError(
+		onDismiss = navController::popBackStack,
 	)
 }

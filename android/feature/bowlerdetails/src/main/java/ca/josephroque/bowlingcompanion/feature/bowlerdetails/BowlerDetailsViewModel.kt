@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.core.model.LeagueRecurrence
 import ca.josephroque.bowlingcompanion.core.navigation.Route
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsTopBarUiState
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerdetails.ui.BowlerDetailsUiState
@@ -188,11 +189,22 @@ class BowlerDetailsViewModel @Inject constructor(
 
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
-			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
-				BowlerDetailsScreenEvent.ShowWidgetStatistics(
-					action.widget.filter(Clock.System.now().toLocalDate()),
-				),
-			)
+			is StatisticsWidgetLayoutUiAction.WidgetClicked ->
+				when (widgetCharts.value[action.widget.id]?.chart) {
+					is StatisticChartContent.CountableChart,
+					is StatisticChartContent.AveragingChart,
+					is StatisticChartContent.PercentageChart,
+					null,
+					-> sendEvent(
+						BowlerDetailsScreenEvent.ShowWidgetStatistics(
+							action.widget.filter(Clock.System.now().toLocalDate()),
+						),
+					)
+					is StatisticChartContent.ChartUnavailable ->
+						sendEvent(BowlerDetailsScreenEvent.ShowWidgetUnavailableError)
+					is StatisticChartContent.DataMissing ->
+						sendEvent(BowlerDetailsScreenEvent.ShowWidgetNotEnoughDataError)
+				}
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				BowlerDetailsScreenEvent.EditStatisticsWidget(statisticsWidgetContext, bowlerId),
 			)

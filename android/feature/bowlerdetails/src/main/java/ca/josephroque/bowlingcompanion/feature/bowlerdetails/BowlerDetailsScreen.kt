@@ -34,6 +34,8 @@ internal fun BowlerDetailsRoute(
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditStatisticsWidgets: (String, UUID) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
+	onShowWidgetNotEnoughDataError: () -> Unit,
+	onShowWidgetUnavailableError: () -> Unit,
 	modifier: Modifier = Modifier,
 	viewModel: BowlerDetailsViewModel = hiltViewModel(),
 ) {
@@ -62,6 +64,8 @@ internal fun BowlerDetailsRoute(
 						) { selectedGear ->
 							viewModel.handleAction(BowlerDetailsScreenUiAction.PreferredGearSelected(selectedGear))
 						}
+						BowlerDetailsScreenEvent.ShowWidgetNotEnoughDataError -> onShowWidgetNotEnoughDataError()
+						BowlerDetailsScreenEvent.ShowWidgetUnavailableError -> onShowWidgetUnavailableError()
 					}
 				}
 		}

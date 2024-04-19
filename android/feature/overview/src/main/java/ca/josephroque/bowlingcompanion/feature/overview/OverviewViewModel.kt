@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.core.model.BowlerKind
 import ca.josephroque.bowlingcompanion.core.model.BowlerListItem
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.getModelEntries
 import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.hasModelEntries
+import ca.josephroque.bowlingcompanion.core.statistics.models.StatisticChartContent
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiAction
 import ca.josephroque.bowlingcompanion.feature.bowlerslist.ui.BowlersListUiState
 import ca.josephroque.bowlingcompanion.feature.overview.ui.OverviewUiAction
@@ -165,11 +166,22 @@ class OverviewViewModel @Inject constructor(
 
 	private fun handleStatisticsWidgetLayoutAction(action: StatisticsWidgetLayoutUiAction) {
 		when (action) {
-			is StatisticsWidgetLayoutUiAction.WidgetClicked -> sendEvent(
-				OverviewScreenEvent.ShowWidgetStatistics(
-					action.widget.filter(Clock.System.now().toLocalDate()),
-				),
-			)
+			is StatisticsWidgetLayoutUiAction.WidgetClicked ->
+				when (widgetCharts.value[action.widget.id]?.chart) {
+					is StatisticChartContent.CountableChart,
+					is StatisticChartContent.AveragingChart,
+					is StatisticChartContent.PercentageChart,
+					null,
+					-> sendEvent(
+						OverviewScreenEvent.ShowWidgetStatistics(
+							action.widget.filter(Clock.System.now().toLocalDate()),
+						),
+					)
+					is StatisticChartContent.ChartUnavailable ->
+						sendEvent(OverviewScreenEvent.ShowWidgetUnavailableError)
+					is StatisticChartContent.DataMissing ->
+						sendEvent(OverviewScreenEvent.ShowWidgetNotEnoughDataError)
+				}
 			is StatisticsWidgetLayoutUiAction.ChangeLayoutClicked -> sendEvent(
 				OverviewScreenEvent.EditStatisticsWidget(STATISTICS_WIDGET_CONTEXT),
 			)

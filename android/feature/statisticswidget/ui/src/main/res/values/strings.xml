@@ -40,4 +40,14 @@
 	<string name="statistics_widget_what_does_this_mean">What does this mean?</string>
 
 	<string name="statistics_widget_percentage">%.1f%%</string>
+
+	<string name="statistics_widget_error_title">Widget Errors</string>
+
+	<string name="statistics_widget_not_enough_data_error_title">Why does my widget say \'Not enough data\'?</string>
+	<string name="statistics_widget_not_enough_data_error_description_1">Approach works best when you\'ve been using the app for a short while and have recorded a few games. Theses statistics are compiled and showed as trends over time.</string>
+	<string name="statistics_widget_not_enough_data_error_description_2">Try to make sure you add at least 2 games on different days to start seeing your statistics appear.</string>
+
+	<string name="statistics_widget_unavailable_error_title">Why does my widget show an error message?</string>
+	<string name="statistics_widget_unavailable_error_description_1">This is probably an unexpected error. First, try restarting the app.</string>
+	<string name="statistics_widget_unavailable_error_description_2">If that doesn\'t help, you can report the bug through the app settings and we\'ll do our best to help you resolve the problem.</string>
 </resources>

@@ -26,6 +26,7 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 	onShowPreferredGearPicker: (Set<UUID>, NavResultCallback<Set<UUID>>) -> Unit,
 	onEditStatisticsWidgets: (String, UUID) -> Unit,
 	onShowWidgetStatistics: (TrackableFilter) -> Unit,
+	onShowWidgetError: () -> Unit,
 ) {
 	composable(
 		route = Route.BowlerDetails.route,
@@ -43,6 +44,8 @@ fun NavGraphBuilder.bowlerDetailsScreen(
 			onShowPreferredGearPicker = onShowPreferredGearPicker,
 			onEditStatisticsWidgets = onEditStatisticsWidgets,
 			onShowWidgetStatistics = onShowWidgetStatistics,
+			onShowWidgetNotEnoughDataError = onShowWidgetError,
+			onShowWidgetUnavailableError = onShowWidgetError,
 		)
 	}
 }
