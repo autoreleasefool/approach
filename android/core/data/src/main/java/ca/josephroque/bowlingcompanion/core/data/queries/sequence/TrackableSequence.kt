@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 
 abstract class TrackableSequence<Entity : Any, Model : Any> {
 	companion object {
-		private const val PAGE_SIZE = 50
+		private const val PAGE_SIZE = 100
 	}
 
 	suspend fun applySequence(apply: (Model) -> Unit) {

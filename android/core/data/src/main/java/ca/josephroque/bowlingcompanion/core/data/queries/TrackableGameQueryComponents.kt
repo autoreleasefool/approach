@@ -19,7 +19,7 @@ data class TrackableGameQueryComponents(
 		val whereConditions = mutableListOf<String>()
 
 		// Filter excluded games
-		whereConditions.add("$tableAlias.exclude_from_statistics = \"INCLUDE\"")
+		whereConditions.add("$tableAlias.exclude_from_statistics = 'INCLUDE'")
 		whereConditions.add("$tableAlias.archived_on IS NULL")
 		whereConditions.add("$tableAlias.score > 0")
 

@@ -13,7 +13,7 @@ data class TrackableLeagueQueryComponents(
 		val whereConditions = mutableListOf<String>()
 
 		// Filter excluded leagues
-		whereConditions.add("$tableAlias.exclude_from_statistics = \"INCLUDE\"")
+		whereConditions.add("$tableAlias.exclude_from_statistics = 'INCLUDE'")
 		whereConditions.add("$tableAlias.archived_on IS NULL")
 
 		if (filter.recurrence != null) {

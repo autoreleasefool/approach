@@ -27,12 +27,12 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 				series.league_id AS leagueId,
 				series.alley_id AS alleyId,
 				series.id AS id,
-				series."date" AS "date",
+				series.'date' AS 'date',
 				series.applied_date AS appliedDate,
 				series.pre_bowl AS preBowl,
 				series.exclude_from_statistics AS excludeFromStatistics,
 				COUNT(games.id) AS numberOfGames,
-				SUM(games.score) AS "total"
+				SUM(games.score) AS 'total'
 			FROM series
 			LEFT JOIN games
 				ON games.series_id = series.id AND games.archived_on IS NULL
@@ -46,11 +46,11 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		"""
 		SELECT
 		 series.id AS id,
-		 series."date" AS "date",
+		 series.'date' AS 'date',
 		 series.applied_date AS appliedDate,
 		 series.pre_bowl AS preBowl,
-		 SUM(games.score) AS "total",
-		 COALESCE(series.applied_date, series."date") AS orderingDate
+		 SUM(games.score) AS 'total',
+		 COALESCE(series.applied_date, series.'date') AS orderingDate
 		FROM series
 		LEFT JOIN games
 			ON games.series_id = series.id AND games.archived_on IS NULL
@@ -62,10 +62,10 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 			)
 		GROUP BY series.id
 		ORDER BY
-		CASE WHEN :seriesSortOrder = "OLDEST_TO_NEWEST" THEN orderingDate END ASC,
-		CASE WHEN :seriesSortOrder = "NEWEST_TO_OLDEST" THEN orderingDate END DESC,
-		CASE WHEN :seriesSortOrder = "HIGHEST_TO_LOWEST" THEN total END DESC,
-		CASE WHEN :seriesSortOrder = "LOWEST_TO_HIGHEST" THEN total END ASC
+		CASE WHEN :seriesSortOrder = 'OLDEST_TO_NEWEST' THEN orderingDate END ASC,
+		CASE WHEN :seriesSortOrder = 'NEWEST_TO_OLDEST' THEN orderingDate END DESC,
+		CASE WHEN :seriesSortOrder = 'HIGHEST_TO_LOWEST' THEN total END DESC,
+		CASE WHEN :seriesSortOrder = 'LOWEST_TO_HIGHEST' THEN total END ASC
 		""",
 	)
 	abstract fun getSeriesList(
@@ -78,7 +78,7 @@ abstract class SeriesDao : LegacyMigratingDao<SeriesEntity> {
 		"""
 			SELECT
 				series.id AS id,
-				series."date" AS "date",
+				series.'date' AS 'date',
 				series.archived_on AS archivedOn,
 				bowlers.name AS bowlerName,
 				leagues.name AS leagueName,
