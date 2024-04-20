@@ -6,19 +6,19 @@
 - Fix: Ensure TelemetryDeck is initiated immediately, instead of in a later task to avoid crash when newSessionSignal is sent
 ```
 
-## Android v3.2.0
+## Android 4.0.0b321
 
 ```
-A lot of users have been having issues with the current transfer functionality, so I've created a new process which will let you export and save the data wherever you'd like, and then import it on a new device. Hopefully this helps those with longstanding issues of being unable to move to new devices.
+Complete rewrite of the 5 Pin Bowling Companion as Approach, for Android.
 
-This update also comes with some quality of life fixes:
-- No more ads
-- No more analytics
+- Refactored to use modern Android technologies, including Jetpack Compose
+- New and improved charts for all statistics
+- New statistics, including 3-counts, 5-counts, average roll count
 ```
 
 ---
 
-# Legacy versions
+# Legacy iOS Versions
 
 ## iOS 1.4.1b20
 
@@ -151,6 +151,20 @@ This update also comes with some quality of life fixes:
 
 ```
 First official release of Approach for iOS!
+```
+
+---
+
+# Legacy Android Versions
+
+## Android v3.2.0
+
+```
+A lot of users have been having issues with the current transfer functionality, so I've created a new process which will let you export and save the data wherever you'd like, and then import it on a new device. Hopefully this helps those with longstanding issues of being unable to move to new devices.
+
+This update also comes with some quality of life fixes:
+- No more ads
+- No more analytics
 ```
 
 ## v3.1.2
