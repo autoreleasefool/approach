@@ -12,7 +12,8 @@ class OfflineFirstAcknowledgementsRepository @Inject constructor(
 	override fun getAcknowledgements(): Flow<List<Acknowledgement>> = flowOf(
 		fileManager.getAssets("acknowledgements")
 			.map { Pair(assetNameToAcknowledgementName(it), fileManager.getAsset("acknowledgements/$it")) }
-			.map { Acknowledgement(it.first, it.second) },
+			.map { Acknowledgement(it.first, it.second) }
+			.sortedBy { it.name.lowercase() },
 	)
 
 	override fun getAcknowledgement(name: String): Flow<Acknowledgement> {
