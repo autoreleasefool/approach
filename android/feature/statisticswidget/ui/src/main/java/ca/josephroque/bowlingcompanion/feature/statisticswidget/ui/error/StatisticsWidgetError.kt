@@ -62,7 +62,8 @@ fun StatisticsWidgetError(state: StatisticsWidgetErrorUiState, modifier: Modifie
 
 		Column(
 			verticalArrangement = Arrangement.spacedBy(4.dp),
-			modifier = Modifier.padding(bottom = 16.dp), // TODO: use safe area padding instead
+			// TODO: use safe area padding instead
+			modifier = Modifier.padding(bottom = 16.dp),
 		) {
 			Text(
 				text = stringResource(R.string.statistics_widget_unavailable_error_title),
