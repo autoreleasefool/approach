@@ -193,6 +193,7 @@ private fun ScoreChart(seriesLow: Int, seriesHigh: Int, scores: ChartEntryModelP
 					maxY = seriesHigh.toFloat() + 5,
 				),
 			),
+			runInitialAnimation = false,
 			chartModelProducer = scores,
 			horizontalLayout = HorizontalLayout.FullWidth(),
 			modifier = Modifier
