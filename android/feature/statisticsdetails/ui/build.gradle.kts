@@ -9,6 +9,7 @@ android {
 
 dependencies {
 	implementation(project(":core:common"))
+	implementation(project(":core:charts"))
 	implementation(project(":core:statistics"))
 	implementation(project(":core:statistics:charts"))
 

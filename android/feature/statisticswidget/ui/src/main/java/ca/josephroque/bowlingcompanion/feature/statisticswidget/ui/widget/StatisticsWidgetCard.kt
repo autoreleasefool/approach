@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.charts.ProvideWidgetChartStyle
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LoadingState
 import ca.josephroque.bowlingcompanion.core.statistics.StatisticID
 import ca.josephroque.bowlingcompanion.core.statistics.charts.AveragingChart
@@ -66,24 +67,29 @@ fun StatisticsWidgetCard(
 				),
 			)
 		} else {
-			when (chart) {
-				is StatisticChartContent.AveragingChart -> AveragingChartWidget(
-					widget = widget,
-					chart = chart,
-					chartEntryModelProducer = chartEntryModelProducer,
-				)
-				is StatisticChartContent.PercentageChart -> PercentageChartWidget(
-					widget = widget,
-					chart = chart,
-					chartEntryModelProducer = chartEntryModelProducer,
-				)
-				is StatisticChartContent.CountableChart -> CountingChartWidget(
-					widget = widget,
-					chart = chart,
-					chartEntryModelProducer = chartEntryModelProducer,
-				)
-				is StatisticChartContent.DataMissing -> DataMissingWidget(chart.id)
-				is StatisticChartContent.ChartUnavailable -> UnavailableWidget(chart.id)
+			ProvideWidgetChartStyle {
+				when (chart) {
+					is StatisticChartContent.AveragingChart -> AveragingChartWidget(
+						widget = widget,
+						chart = chart,
+						chartEntryModelProducer = chartEntryModelProducer,
+					)
+
+					is StatisticChartContent.PercentageChart -> PercentageChartWidget(
+						widget = widget,
+						chart = chart,
+						chartEntryModelProducer = chartEntryModelProducer,
+					)
+
+					is StatisticChartContent.CountableChart -> CountingChartWidget(
+						widget = widget,
+						chart = chart,
+						chartEntryModelProducer = chartEntryModelProducer,
+					)
+
+					is StatisticChartContent.DataMissing -> DataMissingWidget(chart.id)
+					is StatisticChartContent.ChartUnavailable -> UnavailableWidget(chart.id)
+				}
 			}
 		}
 	}

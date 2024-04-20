@@ -6,8 +6,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.colorResource
 import com.patrykandpatrick.vico.compose.component.shape.shader.fromBrush
 import com.patrykandpatrick.vico.compose.style.ChartStyle
+import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.DefaultAlpha
 import com.patrykandpatrick.vico.core.DefaultColors
 import com.patrykandpatrick.vico.core.DefaultDimens
@@ -15,6 +17,44 @@ import com.patrykandpatrick.vico.core.chart.line.LineChart
 import com.patrykandpatrick.vico.core.component.shape.LineComponent
 import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
+
+@Composable
+fun ProvideDefaultChartStyle(content: @Composable () -> Unit) {
+	ProvideChartStyle(
+		chartStyle = rememberChartStyle(
+			columnChartColors = listOf(
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
+			lineChartColors = listOf(
+				Pair(
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.yellow_700),
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.pink_500),
+				),
+			),
+		),
+	) {
+		content()
+	}
+}
+
+@Composable
+fun ProvideWidgetChartStyle(context: @Composable () -> Unit) {
+	ProvideChartStyle(
+		chartStyle = rememberChartStyle(
+			columnChartColors = listOf(
+				colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.purple_300),
+			),
+			lineChartColors = listOf(
+				Pair(
+					colorResource(ca.josephroque.bowlingcompanion.core.designsystem.R.color.pink_200),
+					null,
+				),
+			),
+		),
+	) {
+		context()
+	}
+}
 
 @Composable
 fun rememberChartStyle(

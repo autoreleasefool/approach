@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ca.josephroque.bowlingcompanion.core.charts.ProvideDefaultChartStyle
 import ca.josephroque.bowlingcompanion.core.designsystem.components.LabeledSwitch
 import ca.josephroque.bowlingcompanion.core.model.TrackableFilter
 import ca.josephroque.bowlingcompanion.core.model.stub.BowlerSummaryStub
@@ -61,31 +62,36 @@ fun StatisticsDetailsChart(
 		Box(
 			modifier = Modifier
 				.weight(1f)
-				.padding(horizontal = 16.dp),
+				.padding(horizontal = 16.dp)
+				.padding(bottom = 16.dp),
 		) {
-			when (val chart = state.chartContent?.chart) {
-				is StatisticChartContent.CountableChart -> CountingChart(
-					chart.data,
-					state.chartContent.modelProducer,
-					size = ChartSize.DEFAULT,
-					modifier = Modifier.padding(top = 16.dp),
-				)
-				is StatisticChartContent.AveragingChart -> AveragingChart(
-					chart.data,
-					state.chartContent.modelProducer,
-					size = ChartSize.DEFAULT,
-					modifier = Modifier.padding(top = 16.dp),
-				)
-				is StatisticChartContent.PercentageChart -> PercentageChart(
-					chart.data,
-					state.chartContent.modelProducer,
-					size = ChartSize.DEFAULT,
-					modifier = Modifier.padding(top = 16.dp),
-				)
+			ProvideDefaultChartStyle {
+				when (val chart = state.chartContent?.chart) {
+					is StatisticChartContent.CountableChart -> CountingChart(
+						chart.data,
+						state.chartContent.modelProducer,
+						size = ChartSize.DEFAULT,
+						modifier = Modifier.padding(top = 16.dp),
+					)
+
+					is StatisticChartContent.AveragingChart -> AveragingChart(
+						chart.data,
+						state.chartContent.modelProducer,
+						size = ChartSize.DEFAULT,
+						modifier = Modifier.padding(top = 16.dp),
+					)
+
+					is StatisticChartContent.PercentageChart -> PercentageChart(
+						chart.data,
+						state.chartContent.modelProducer,
+						size = ChartSize.DEFAULT,
+						modifier = Modifier.padding(top = 16.dp),
+					)
 // 			is StatisticChartContent.PercentageChart -> PercentageChart(state.chart.data)
 // 			is StatisticChartContent.DataMissing -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
 // 			is StatisticChartContent.ChartUnavailable -> EmptyChart(state.chart.id, tooNarrow = state.isFilterTooNarrow)
-				else -> Unit
+					else -> Unit
+				}
 			}
 		}
 
@@ -101,7 +107,7 @@ fun StatisticsDetailsChart(
 						R.string.statistics_details_aggregation_periodic_subtitle
 				},
 				compact = true,
-				modifier = Modifier.padding(vertical = 8.dp),
+				modifier = Modifier.padding(bottom = 8.dp),
 			)
 		}
 	}
