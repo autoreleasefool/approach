@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.core.statistics.charts
 
+import android.graphics.Color
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.horizontalLa
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
 import ca.josephroque.bowlingcompanion.core.statistics.models.CountableChartData
+import com.patrykandpatrick.vico.compose.axis.axisLabelComponent
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -26,7 +28,9 @@ import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
+import com.patrykandpatrick.vico.core.component.text.textComponent
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
+import com.patrykandpatrick.vico.core.extension.copyColor
 import kotlin.math.roundToInt
 import kotlinx.datetime.LocalDate
 
@@ -83,6 +87,13 @@ fun CountingChart(
 				ChartSize.COMPACT -> rememberEmptyBottomAxis()
 			},
 			startAxis = rememberStartAxis(
+				label = when (size) {
+					ChartSize.COMPACT -> textComponent {
+						color = Color.BLACK.copyColor(alpha = 0.6f)
+						textSizeSp = 12f
+					}
+					ChartSize.DEFAULT -> axisLabelComponent()
+				},
 				itemPlacer = remember {
 					AxisItemPlacer.Vertical.default(maxItemCount = chartData.numberOfVerticalTicks)
 				},

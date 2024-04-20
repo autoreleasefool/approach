@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.core.statistics.charts.utils.horizontalLa
 import ca.josephroque.bowlingcompanion.core.statistics.models.AveragingChartData
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartEntryKey
 import ca.josephroque.bowlingcompanion.core.statistics.models.ChartSize
+import com.patrykandpatrick.vico.compose.axis.axisLabelComponent
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
@@ -71,9 +72,12 @@ fun AveragingChart(
 				ChartSize.COMPACT -> rememberEmptyBottomAxis()
 			},
 			startAxis = rememberStartAxis(
-				label = textComponent {
-					color = Color.BLACK.copyColor(alpha = 0.6f)
-					textSizeSp = 12f
+				label = when (size) {
+					ChartSize.COMPACT -> textComponent {
+						color = Color.BLACK.copyColor(alpha = 0.6f)
+						textSizeSp = 12f
+					}
+					ChartSize.DEFAULT -> axisLabelComponent()
 				},
 				itemPlacer = remember {
 					AxisItemPlacer.Vertical.default(maxItemCount = chartData.numberOfVerticalTicks)
