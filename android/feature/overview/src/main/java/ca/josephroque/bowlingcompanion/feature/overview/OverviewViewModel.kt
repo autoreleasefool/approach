@@ -119,7 +119,7 @@ class OverviewViewModel @Inject constructor(
 							)
 
 							if (widgetChart.chart.hasModelEntries()) {
-								widgetChart.modelProducer.setEntries(chart.getModelEntries())
+								widgetChart.modelProducer.setEntriesSuspending(chart.getModelEntries()).await()
 							}
 
 							it + (widget.id to widgetChart.copy(chart = chart))

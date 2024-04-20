@@ -118,10 +118,10 @@ class StatisticsWidgetEditorViewModel @Inject constructor(
 	private val preview: Flow<StatisticsWidgetEditorUiState.ChartContent?> = widget.map {
 		it ?: return@map null
 		val chart = statisticsWidgetsRepository.getStatisticsWidgetChart(it)
-		val modelProducer = ChartEntryModelProducer()
-
-		if (chart.hasModelEntries()) {
-			modelProducer.setEntries(chart.getModelEntries())
+		val modelProducer = if (chart.hasModelEntries()) {
+			ChartEntryModelProducer(chart.getModelEntries())
+		} else {
+			ChartEntryModelProducer()
 		}
 
 		StatisticsWidgetEditorUiState.ChartContent(

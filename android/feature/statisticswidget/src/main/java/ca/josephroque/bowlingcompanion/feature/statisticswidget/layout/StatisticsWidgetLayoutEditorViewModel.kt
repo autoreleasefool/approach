@@ -92,7 +92,7 @@ class StatisticsWidgetLayoutEditorViewModel @Inject constructor(
 							)
 
 						if (widgetChart.chart.hasModelEntries()) {
-							widgetChart.modelProducer.setEntries(chart.getModelEntries())
+							widgetChart.modelProducer.setEntriesSuspending(chart.getModelEntries()).await()
 						}
 
 						it.copy(

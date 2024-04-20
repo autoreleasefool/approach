@@ -187,11 +187,10 @@ class LeagueDetailsViewModel @Inject constructor(
 
 	private fun buildSeriesListChartItem(item: SeriesListItem): SeriesListChartItem {
 		val chartModelProducer = seriesChartModelProducers.getOrPut(item.properties.id) {
-			ChartEntryModelProducer()
+			ChartEntryModelProducer(
+				item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
+			)
 		}
-		chartModelProducer.setEntries(
-			item.scores.mapIndexed { index, value -> entryOf(index.toFloat(), value.toFloat()) },
-		)
 
 		return if (item.scores.all { it == 0 } || item.scores.size == 1) {
 			item.withoutChart()

@@ -81,7 +81,7 @@ class StatisticsDetailsChartViewModel @Inject constructor(
 		viewModelScope.launch {
 			chartContent.collect {
 				if (it != null && it.chart.hasModelEntries()) {
-					chartEntryModelProducer.setEntries(it.chart.getModelEntries())
+					chartEntryModelProducer.setEntriesSuspending(it.chart.getModelEntries()).await()
 				}
 			}
 		}

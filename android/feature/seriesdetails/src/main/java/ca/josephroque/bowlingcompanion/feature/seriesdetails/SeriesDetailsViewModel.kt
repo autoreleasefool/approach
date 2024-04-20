@@ -56,7 +56,7 @@ class SeriesDetailsViewModel @Inject constructor(
 		gamesList,
 	) { gameToArchive, seriesDetails, games ->
 		val isShowingPlaceholder = seriesDetails.scores.all { it == 0 }
-		chartModelProducer.setEntries(
+		chartModelProducer.setEntriesSuspending(
 			if (isShowingPlaceholder) {
 				listOf(
 					entryOf(0f, 75f),
@@ -72,7 +72,7 @@ class SeriesDetailsViewModel @Inject constructor(
 					)
 				}
 			},
-		)
+		).await()
 
 		return@combine SeriesDetailsScreenUiState.Loaded(
 			seriesDetails = SeriesDetailsUiState(
