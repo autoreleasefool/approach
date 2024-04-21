@@ -532,7 +532,7 @@ final class SeriesRepositoryTests: XCTestCase {
 	}
 
 	func testGameHost_WhenSeriesNotExists_ThrowsError() async throws {
-		// Given a database with no seroes
+		// Given a database with no series
 		let db = try initializeApproachDatabase(withSeries: .zero)
 
 		// Fetching the series throws an error
@@ -542,6 +542,56 @@ final class SeriesRepositoryTests: XCTestCase {
 				$0[SeriesRepository.self] = .liveValue
 			} operation: {
 				_ = try await self.series.gameHost(UUID(0))
+			}
+		}
+	}
+
+	// MARK: Shareable
+
+	func testShareable_WhenSeriesExists_ReturnsSeries() async throws {
+		// Given a database with series and games
+		let series1 = Series.Database.mock(id: UUID(0), date: Date(timeIntervalSince1970: 123))
+		let series2 = Series.Database.mock(id: UUID(1), date: Date(timeIntervalSince1970: 1234))
+		let game1 = Game.Database.mock(seriesId: UUID(0), id: UUID(0), index: 0, score: 225)
+		let game2 = Game.Database.mock(seriesId: UUID(0), id: UUID(1), index: 1, score: 300)
+		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 225)
+		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
+
+		//Fetching the series
+		let series = try await withDependencies {
+			$0[DatabaseService.self].reader = { @Sendable in db }
+			$0[SeriesRepository.self].shareable = SeriesRepository.liveValue.shareable
+		} operation: {
+			try await self.series.shareable(UUID(0))
+		}
+
+		XCTAssertEqual(
+			series,
+			Series.Shareable(
+				id: UUID(0),
+				date: Date(timeIntervalSince1970: 123),
+				bowlerName: "Joseph",
+				leagueName: "Majors",
+				total: 525,
+				scores: [
+					.init(index: 0, score: 225),
+					.init(index: 1, score: 300),
+				]
+			)
+		)
+	}
+
+	func testShareable_WhenSeriesNotExists_ThrowsError() async throws {
+		// Given a database with no series
+		let db = try initializeDatabase(withSeries: .zero)
+
+		// Fetching the series throws an error
+		await assertThrowsError(ofType: FetchableError.self) {
+			try await withDependencies {
+				$0[DatabaseService.self].reader = { @Sendable in db }
+				$0[SeriesRepository.self].shareable = SeriesRepository.liveValue.shareable
+			} operation: {
+				_ = try await self.series.shareable(UUID(0))
 			}
 		}
 	}

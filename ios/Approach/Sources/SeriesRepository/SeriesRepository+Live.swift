@@ -101,6 +101,30 @@ extension SeriesRepository: DependencyKey {
 						.fetchOneGuaranteed($0)
 				}
 			},
+			shareable: { series in
+				@Dependency(DatabaseService.self) var database
+
+				return try await database.reader().read {
+					try Series.Database
+						.filter(Series.Database.Columns.id == series)
+						.annotated(withRequired: Series.Database.bowler.select(Bowler.Database.Columns.name.forKey("bowlerName")))
+						.annotated(withRequired: Series.Database.league.select(League.Database.Columns.name.forKey("leagueName")))
+						.annotated(
+							with: Series.Database.games
+								.isNotArchived()
+								.sum(Game.Database.Columns.score).forKey("total") ?? 0
+						)
+						.including(
+							all: Series.Database.games
+								.isNotArchived()
+								.order(Game.Database.Columns.index)
+								.select(Game.Database.Columns.index, Game.Database.Columns.score)
+								.forKey("scores")
+						)
+						.asRequest(of: Series.Shareable.self)
+						.fetchOneGuaranteed($0)
+				}
+			},
 			archived: {
 				@Dependency(DatabaseService.self) var database
 

@@ -2,6 +2,8 @@ import Foundation
 
 public enum Series {}
 
+// MARK: - Properties
+
 extension Series {
 	public typealias ID = UUID
 }
@@ -32,6 +34,8 @@ extension Series {
 		}
 	}
 }
+
+// MARK: - Models
 
 extension Series {
 	public struct Summary: Identifiable, Codable, Equatable {
@@ -96,17 +100,6 @@ extension Series {
 	}
 }
 
-extension Series {
-	public struct Archived: Identifiable, Codable, Equatable {
-		public let id: Series.ID
-		public let date: Date
-		public let bowlerName: String
-		public let leagueName: String
-		public let totalNumberOfGames: Int
-		public let archivedOn: Date?
-	}
-}
-
 extension Series.List {
 	public struct Score: Identifiable, Equatable, Codable {
 		public let index: Int
@@ -120,6 +113,60 @@ extension Series.List {
 		}
 	}
 }
+
+extension Series {
+	public struct Archived: Identifiable, Codable, Equatable {
+		public let id: Series.ID
+		public let date: Date
+		public let bowlerName: String
+		public let leagueName: String
+		public let totalNumberOfGames: Int
+		public let archivedOn: Date?
+	}
+}
+
+extension Series {
+	public struct Shareable: Identifiable, Codable, Equatable {
+		public let id: Series.ID
+		public let date: Date
+		public let bowlerName: String
+		public let leagueName: String
+		public let total: Int
+		public let scores: [Series.Shareable.Score]
+
+		public init(
+			id: Series.ID,
+			date: Date,
+			bowlerName: String,
+			leagueName: String,
+			total: Int,
+			scores: [Series.Shareable.Score]
+		) {
+			self.id = id
+			self.date = date
+			self.bowlerName = bowlerName
+			self.leagueName = leagueName
+			self.total = total
+			self.scores = scores
+		}
+	}
+}
+
+extension Series.Shareable {
+	public struct Score: Identifiable, Equatable, Codable {
+		public let index: Int
+		public let score: Int
+
+		public var id: Int { index }
+
+		public init(index: Int, score: Int) {
+			self.index = index
+			self.score = score
+		}
+	}
+}
+
+// MARK: - Protocols
 
 public protocol CanPreBowl {
 	var date: Date { get }
