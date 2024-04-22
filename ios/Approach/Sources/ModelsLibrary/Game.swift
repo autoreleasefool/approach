@@ -97,6 +97,42 @@ extension Game {
 	}
 }
 
+extension Game {
+	public struct Score: Identifiable, Equatable, Codable {
+		public let index: Int
+		public let score: Int
+
+		public var id: Int { index }
+
+		public init(index: Int, score: Int) {
+			self.index = index
+			self.score = score
+		}
+	}
+}
+
+extension Array where Element == Game.Score {
+	public var lowestScore: Int { self.min { $0.score < $1.score }?.score ?? 0 }
+	public var highestScore: Int { self.max { $0.score < $1.score }?.score ?? 0 }
+
+	public var scoreRange: (lowest: Int, highest: Int)? {
+		let (lowest, highest) = (self.lowestScore, self.highestScore)
+		if count > 1 && lowest != highest {
+			return (lowest, highest)
+		} else {
+			return nil
+		}
+	}
+
+	public var scoreDomain: ClosedRange<Int> {
+		if let scoreRange {
+			return Swift.max(scoreRange.lowest - 10, 0)...Swift.min(scoreRange.highest + 10, Game.MAXIMUM_SCORE)
+		} else {
+			return 0...Game.MAXIMUM_SCORE
+		}
+	}
+}
+
 public struct ScoredGame: Sendable, Identifiable, Equatable {
 	public let id: Game.ID
 	public let index: Int

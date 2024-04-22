@@ -2,6 +2,7 @@ import AssetsLibrary
 import Charts
 import DateTimeLibrary
 import ModelsLibrary
+import ModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
@@ -10,10 +11,10 @@ import ViewsLibrary
 public struct GamesListHeaderView: View {
 	@State private var contentSize: CGSize = .zero
 
-	let scores: [Score]
+	let scores: [Game.Score]
 	let total: Int
 
-	init(scores: [Score]) {
+	init(scores: [Game.Score]) {
 		self.scores = scores
 		self.total = scores.reduce(0) { $0 + $1.score }
 	}
@@ -36,12 +37,11 @@ public struct GamesListHeaderView: View {
 					}
 			} else {
 				ZStack(alignment: .bottomLeading) {
-					GamesListHeaderChart(
+					Series.ScoreChart(
 						scores: scores,
-						width: contentSize.width,
-						height: contentSize.height * 0.7,
-						isMocked: false
+						style: .gamesListHeader
 					)
+					.frame(width: contentSize.width, height: contentSize.height * 0.7)
 
 					VStack {
 						HStack(alignment: .firstTextBaseline) {
@@ -50,7 +50,7 @@ public struct GamesListHeaderView: View {
 									.font(.subheadline)
 									.bold()
 
-								if let scoreRange {
+								if let scoreRange = scores.scoreRange {
 									Group {
 										Text(Strings.Game.List.Header.highGame(scoreRange.highest))
 											.padding(.top, .smallSpacing)
@@ -96,7 +96,7 @@ public struct GamesListHeaderView: View {
 private struct MockGamesListHeaderView: View {
 	@State private var contentSize: CGSize = .zero
 
-	private static let scores: [GamesListHeaderView.Score] = [
+	private static let scores: [Game.Score] = [
 		.init(index: 0, score: 0),
 		.init(index: 1, score: 200),
 		.init(index: 2, score: 125),
@@ -105,12 +105,11 @@ private struct MockGamesListHeaderView: View {
 
 	var body: some View {
 		ZStack(alignment: .bottomLeading) {
-			GamesListHeaderChart(
+			Series.ScoreChart(
 				scores: MockGamesListHeaderView.scores,
-				width: contentSize.width,
-				height: contentSize.height * 0.7,
-				isMocked: true
+				style: .gamesListHeaderMock
 			)
+			.frame(width: contentSize.width, height: contentSize.height * 0.7)
 
 			VStack(alignment: .leading) {
 				Text(Strings.Game.List.Header.seeYourScores)
@@ -128,109 +127,40 @@ private struct MockGamesListHeaderView: View {
 	}
 }
 
-private struct GamesListHeaderChart: View {
-	let scores: [GamesListHeaderView.Score]
-	let width: CGFloat
-	let height: CGFloat
-	let isMocked: Bool
+extension Series.ScoreChart.Style {
+	static var gamesListHeader: Self = Self(
+		areaMarkForeground: .linearGradient(
+			stops: gradientStops(withColor: Asset.Colors.Charts.Game.areaMark.swiftUIColor),
+			startPoint: .leading,
+			endPoint: .trailing
+		),
+		lineMarkForeground: .linearGradient(
+			stops: gradientStops(withColor: Asset.Colors.Charts.Game.lineMark.swiftUIColor),
+			startPoint: .leading,
+			endPoint: .trailing
+		)
+	)
 
-	var body: some View {
-		Chart {
-			ForEach(scores) { score in
-				AreaMark(
-					x: .value(Strings.Game.List.Header.Chart.xAxisLabel, score.index + 1),
-					y: .value(Strings.Game.List.Header.Chart.yAxisLabel, score.score)
-				)
-				.foregroundStyle(
-					.linearGradient(
-						stops: isMocked ? Self.areaMarkMockedStops : Self.areaMarkStops,
-						startPoint: .leading,
-						endPoint: .trailing
-					)
-				)
-				.interpolationMethod(.catmullRom)
+	static var gamesListHeaderMock: Self = Self(
+		areaMarkForeground: .linearGradient(
+			stops: gradientStops(withColor: Asset.Colors.Charts.Mock.areaMark.swiftUIColor),
+			startPoint: .leading,
+			endPoint: .trailing
+		),
+		lineMarkForeground: .linearGradient(
+			stops: gradientStops(withColor: Asset.Colors.Charts.Mock.lineMark.swiftUIColor),
+			startPoint: .leading,
+			endPoint: .trailing
+		)
+	)
 
-				LineMark(
-					x: .value(Strings.Game.List.Header.Chart.xAxisLabel, score.index + 1),
-					y: .value(Strings.Game.List.Header.Chart.yAxisLabel, score.score)
-				)
-				.lineStyle(StrokeStyle(lineWidth: 2))
-				.foregroundStyle(
-					.linearGradient(
-						stops: isMocked ? Self.linearMarkMockedStops : Self.linearMarkStops,
-						startPoint: .leading,
-						endPoint: .trailing
-					)
-				)
-				.interpolationMethod(.catmullRom)
-			}
-		}
-		.chartXAxis(.hidden)
-		.chartYAxis(.hidden)
-		.chartLegend(.hidden)
-		.chartYScale(domain: 0...Game.MAXIMUM_SCORE)
-		.chartXScale(domain: 1...scores.count)
-		.frame(width: width, height: height)
-	}
-
-	private static let areaMarkStops: [Gradient.Stop] = [
-		.init(color: Color.clear, location: 0),
-		.init(color: Asset.Colors.Charts.Game.areaMark.swiftUIColor.opacity(0.4), location: 0.3),
-		.init(color: Asset.Colors.Charts.Game.areaMark.swiftUIColor.opacity(0.5), location: 0.7),
-		.init(color: Color.clear, location: 1),
-	]
-
-	private static let areaMarkMockedStops: [Gradient.Stop] = [
-		.init(color: Color.clear, location: 0),
-		.init(color: Asset.Colors.Charts.Mock.areaMark.swiftUIColor.opacity(0.4), location: 0.3),
-		.init(color: Asset.Colors.Charts.Mock.areaMark.swiftUIColor.opacity(0.5), location: 0.7),
-		.init(color: Color.clear, location: 1),
-	]
-
-	private static let linearMarkStops: [Gradient.Stop] = [
-		.init(color: Color.clear, location: 0),
-		.init(color: Asset.Colors.Charts.Game.lineMark.swiftUIColor.opacity(0.4), location: 0.3),
-		.init(color: Asset.Colors.Charts.Game.lineMark.swiftUIColor.opacity(0.5), location: 0.7),
-		.init(color: Color.clear, location: 1),
-	]
-
-	private static let linearMarkMockedStops: [Gradient.Stop] = [
-		.init(color: Color.clear, location: 0),
-		.init(color: Asset.Colors.Charts.Mock.lineMark.swiftUIColor.opacity(0.4), location: 0.3),
-		.init(color: Asset.Colors.Charts.Mock.lineMark.swiftUIColor.opacity(0.5), location: 0.7),
-		.init(color: Color.clear, location: 1),
-	]
-}
-
-// MARK: Score
-
-extension GamesListHeaderView {
-	public struct Score: Identifiable, Equatable, Codable {
-		public let index: Int
-		public let score: Int
-
-		public var id: Int { index }
-
-		public init(index: Int, score: Int) {
-			self.index = index
-			self.score = score
-		}
-	}
-}
-
-// MARK: Score Range
-
-extension GamesListHeaderView {
-	var lowestScore: Int { scores.min { $0.score < $1.score }?.score ?? 0 }
-	var highestScore: Int { scores.max { $0.score < $1.score }?.score ?? 0 }
-
-	var scoreRange: (lowest: Int, highest: Int)? {
-		let (lowest, highest) = (self.lowestScore, self.highestScore)
-		if scores.count > 1 && lowest != highest {
-			return (lowest, highest)
-		} else {
-			return nil
-		}
+	private static func gradientStops(withColor: Color) -> [Gradient.Stop] {
+		[
+			.init(color: Color.clear, location: 0),
+			.init(color: withColor.opacity(0.4), location: 0.3),
+			.init(color: withColor.opacity(0.5), location: 0.7),
+			.init(color: Color.clear, location: 1),
+		]
 	}
 }
 

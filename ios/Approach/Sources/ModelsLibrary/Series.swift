@@ -70,7 +70,7 @@ extension Series {
 		public let id: Series.ID
 		public let date: Date
 		public let appliedDate: Date?
-		public let scores: [Series.List.Score]
+		public let scores: [Game.Score]
 		public let total: Int
 		public let preBowl: Series.PreBowl
 
@@ -78,7 +78,7 @@ extension Series {
 			id: Series.ID,
 			date: Date,
 			appliedDate: Date?,
-			scores: [Series.List.Score],
+			scores: [Game.Score],
 			total: Int,
 			preBowl: Series.PreBowl
 		) {
@@ -96,20 +96,6 @@ extension Series {
 
 		public var asGameHost: GameHost {
 			.init(id: id, date: date, appliedDate: appliedDate, preBowl: preBowl)
-		}
-	}
-}
-
-extension Series.List {
-	public struct Score: Identifiable, Equatable, Codable {
-		public let index: Int
-		public let score: Int
-
-		public var id: Int { index }
-
-		public init(index: Int, score: Int) {
-			self.index = index
-			self.score = score
 		}
 	}
 }
@@ -132,7 +118,7 @@ extension Series {
 		public let bowlerName: String
 		public let leagueName: String
 		public let total: Int
-		public let scores: [Series.Shareable.Score]
+		public let scores: [Game.Score]
 
 		public init(
 			id: Series.ID,
@@ -140,7 +126,7 @@ extension Series {
 			bowlerName: String,
 			leagueName: String,
 			total: Int,
-			scores: [Series.Shareable.Score]
+			scores: [Game.Score]
 		) {
 			self.id = id
 			self.date = date
@@ -148,20 +134,6 @@ extension Series {
 			self.leagueName = leagueName
 			self.total = total
 			self.scores = scores
-		}
-	}
-}
-
-extension Series.Shareable {
-	public struct Score: Identifiable, Equatable, Codable {
-		public let index: Int
-		public let score: Int
-
-		public var id: Int { index }
-
-		public init(index: Int, score: Int) {
-			self.index = index
-			self.score = score
 		}
 	}
 }

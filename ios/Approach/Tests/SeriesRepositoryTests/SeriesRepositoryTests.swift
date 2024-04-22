@@ -557,7 +557,7 @@ final class SeriesRepositoryTests: XCTestCase {
 		let game3 = Game.Database.mock(seriesId: UUID(1), id: UUID(2), index: 0, score: 225)
 		let db = try initializeDatabase(withSeries: .custom([series1, series2]), withGames: .custom([game1, game2, game3]))
 
-		//Fetching the series
+		// Fetching the series
 		let series = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[SeriesRepository.self].shareable = SeriesRepository.liveValue.shareable

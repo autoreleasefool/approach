@@ -2,6 +2,7 @@ import AssetsLibrary
 import Charts
 import DateTimeLibrary
 import ModelsLibrary
+import ModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsPackageLibrary
@@ -14,54 +15,14 @@ public struct SeriesListItem: View {
 
 	public var body: some View {
 		ZStack(alignment: .bottomLeading) {
-			if series.scores.count > 1 {
-				Chart {
-					ForEach(series.scores) { score in
-						AreaMark(
-							x: .value(Strings.Series.List.Scores.Chart.xAxisLabel, score.index + 1),
-							y: .value(Strings.Series.List.Scores.Chart.yAxisLabel, score.score)
-						)
-						.foregroundStyle(
-							.linearGradient(
-								stops: [
-									.init(color: Asset.Colors.Charts.Series.areaMark.swiftUIColor, location: 0.3),
-									.init(color: Color.clear, location: 0.95),
-								],
-								startPoint: .leading,
-								endPoint: .trailing
-							)
-						)
-						.interpolationMethod(.catmullRom)
-
-						LineMark(
-							x: .value(Strings.Series.List.Scores.Chart.xAxisLabel, score.index + 1),
-							y: .value(Strings.Series.List.Scores.Chart.yAxisLabel, score.score)
-						)
-						.lineStyle(StrokeStyle(lineWidth: 2))
-						.foregroundStyle(
-							.linearGradient(
-								stops: [
-									.init(color: Asset.Colors.Charts.Series.lineMark.swiftUIColor, location: 0.3),
-									.init(color: Color.clear, location: 0.95),
-								],
-								startPoint: .leading,
-								endPoint: .trailing
-							)
-						)
-						.interpolationMethod(.catmullRom)
-					}
-
-				}
-				.chartXAxis(.hidden)
-				.chartYAxis(.hidden)
-				.chartLegend(.hidden)
-				.chartYScale(domain: series.scoreDomain)
-				.chartXScale(domain: 1...series.scores.count)
-				.frame(
-					width: contentSize.width * 0.9,
-					height: contentSize.height / 2
-				)
-			}
+			Series.ScoreChart(
+				scores: series.scores,
+				style: .listItem
+			)
+			.frame(
+				width: contentSize.width * 0.9,
+				height: contentSize.height / 2
+			)
 
 			VStack(spacing: .standardSpacing) {
 				HStack {
@@ -95,7 +56,7 @@ public struct SeriesListItem: View {
 							.padding(.horizontal, .unitSpacing)
 							.bold()
 
-						if let range = series.scoreRange {
+						if let range = series.scores.scoreRange {
 							Text(Strings.Series.List.Scores.range(range.lowest, range.highest))
 								.font(.caption)
 								.italic()
@@ -131,29 +92,28 @@ public struct SeriesListItem: View {
 	}
 }
 
-extension Series.List {
-	var lowestScore: Int { scores.min { $0.score < $1.score }?.score ?? 0 }
-	var highestScore: Int { scores.max { $0.score < $1.score }?.score ?? 0 }
-
-	var scoreRange: (lowest: Int, highest: Int)? {
-		let (lowest, highest) = (self.lowestScore, self.highestScore)
-		if scores.count > 1 && lowest != highest {
-			return (lowest, highest)
-		} else {
-			return nil
-		}
-	}
-
-	var scoreDomain: ClosedRange<Int> {
-		if let scoreRange {
-			return max(scoreRange.lowest - 10, 0)...min(scoreRange.highest + 10, Game.MAXIMUM_SCORE)
-		} else {
-			return 0...Game.MAXIMUM_SCORE
-		}
-	}
-}
-
 private struct ContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+
+extension Series.ScoreChart.Style {
+	static var listItem: Self = Self(
+		areaMarkForeground: .linearGradient(
+			stops: [
+				.init(color: Asset.Colors.Charts.Series.areaMark.swiftUIColor, location: 0.3),
+				.init(color: Color.clear, location: 0.95),
+			],
+			startPoint: .leading,
+			endPoint: .trailing
+		),
+		lineMarkForeground: .linearGradient(
+			stops: [
+				.init(color: Asset.Colors.Charts.Series.lineMark.swiftUIColor, location: 0.3),
+				.init(color: Color.clear, location: 0.95),
+			],
+			startPoint: .leading,
+			endPoint: .trailing
+		)
+	)
+}
 
 #if DEBUG
 struct SeriesListItemPreview: PreviewProvider {
