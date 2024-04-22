@@ -83,6 +83,14 @@ public enum Asset {
         public static let lineMark = ColorAsset(name: "Charts/Series/LineMark")
       }
     }
+    public enum Chip {
+      public static let infoBackground = ColorAsset(name: "Chip/infoBackground")
+      public static let infoForeground = ColorAsset(name: "Chip/infoForeground")
+      public static let plainBackground = ColorAsset(name: "Chip/plainBackground")
+      public static let plainForeground = ColorAsset(name: "Chip/plainForeground")
+      public static let primaryBackground = ColorAsset(name: "Chip/primaryBackground")
+      public static let primaryForeground = ColorAsset(name: "Chip/primaryForeground")
+    }
     public enum Destructive {
       public static let `default` = ColorAsset(name: "Destructive/Default")
     }
