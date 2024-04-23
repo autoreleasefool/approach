@@ -79,6 +79,7 @@ public enum Asset {
         public static let lineMark = ColorAsset(name: "Charts/Percentage/LineMark")
       }
       public enum Series {
+        public static let annotation = ColorAsset(name: "Charts/Series/Annotation")
         public static let areaMark = ColorAsset(name: "Charts/Series/AreaMark")
         public static let lineMark = ColorAsset(name: "Charts/Series/LineMark")
       }
