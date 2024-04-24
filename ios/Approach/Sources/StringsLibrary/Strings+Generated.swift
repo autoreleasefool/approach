@@ -1390,6 +1390,36 @@ public enum Strings {
     public static let sharingSeries = Strings.tr("Localizable", "sharing.sharingSeries", fallback: "Share Series")
     /// Sharing
     public static let title = Strings.tr("Localizable", "sharing.title", fallback: "Share")
+    public enum Details {
+      /// Bowler
+      public static let bowlerName = Strings.tr("Localizable", "sharing.details.bowlerName", fallback: "Bowler")
+      /// Date
+      public static let date = Strings.tr("Localizable", "sharing.details.date", fallback: "Date")
+      /// High
+      public static let highScore = Strings.tr("Localizable", "sharing.details.highScore", fallback: "High")
+      /// League
+      public static let leagueName = Strings.tr("Localizable", "sharing.details.leagueName", fallback: "League")
+      /// Low
+      public static let lowScore = Strings.tr("Localizable", "sharing.details.lowScore", fallback: "Low")
+      /// Summary
+      public static let scoreSummary = Strings.tr("Localizable", "sharing.details.scoreSummary", fallback: "Summary")
+      /// Details
+      public static let title = Strings.tr("Localizable", "sharing.details.title", fallback: "Details")
+      public enum Chart {
+        /// Chart Range
+        public static let range = Strings.tr("Localizable", "sharing.details.chart.range", fallback: "Chart Range")
+        public enum Range {
+          /// %d Maximum
+          public static func maximum(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "sharing.details.chart.range.maximum", p1, fallback: "%d Maximum")
+          }
+          /// %d Minimum
+          public static func minimum(_ p1: Int) -> String {
+            return Strings.tr("Localizable", "sharing.details.chart.range.minimum", p1, fallback: "%d Minimum")
+          }
+        }
+      }
+    }
     public enum Frames {
       /// Show full game details?
       public static let includeDetails = Strings.tr("Localizable", "sharing.frames.includeDetails", fallback: "Show full game details?")

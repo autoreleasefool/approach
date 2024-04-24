@@ -24,12 +24,13 @@ public struct Chip: View {
 			if let icon {
 				Image(systemSymbol: icon)
 					.resizable()
-					.frame(width: .smallIcon, height: .smallIcon)
+					.frame(width: .tinyIcon, height: .tinyIcon)
 					.padding(.trailing, .smallSpacing)
 					.foregroundColor(style.foreground)
 			}
 
 			Text(title)
+				.lineLimit(0)
 				.font(.body)
 				.foregroundColor(style.foreground)
 
@@ -38,7 +39,7 @@ public struct Chip: View {
 			if let accessory {
 				Image(systemSymbol: accessory.systemSymbol)
 					.resizable()
-					.frame(width: .smallIcon, height: .smallIcon)
+					.frame(width: .tinyIcon, height: .tinyIcon)
 					.padding(.leading, .smallSpacing)
 					.foregroundColor(style.foreground)
 			}

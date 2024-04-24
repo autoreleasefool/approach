@@ -27,31 +27,31 @@ public struct ShareableSeriesImage: View {
 					ChartLabel(symbol: .repeat, title: leagueName, style: .plain)
 				}
 			}
-//			.background(.red)
 
 			Spacer()
 		}
-//		.background(.blue)
 		.padding(.horizontal, .standardSpacing)
 		.padding(.top, .standardSpacing)
 		.padding(.bottom, .extraLargeSpacing)
 		.frame(minHeight: 200, alignment: .top)
 		.overlay(seriesDetails, alignment: .bottomLeading)
 		.background(chart)
-//		.background(.green)
 	}
 
+	@ViewBuilder
 	private var seriesDetails: some View {
-		HStack(spacing: .smallSpacing) {
-			if let total = configuration.total {
-				ChartLabel(symbol: .checkmarkSealFill, title: "\(total) TOTAL", style: .small)
-			}
+		if configuration.showDetails {
+			HStack(spacing: .smallSpacing) {
+				if let total = configuration.total {
+					ChartLabel(symbol: .checkmarkSealFill, title: "\(total) TOTAL", style: .small)
+				}
 
-			ChartLabel(symbol: .arrowUp, title: "\(configuration.scores.highestScore) HIGH", style: .small)
-			ChartLabel(symbol: .arrowDown, title: "\(configuration.scores.lowestScore) LOW", style: .small)
+				ChartLabel(symbol: .arrowUp, title: "\(configuration.scores.highestScore) HIGH", style: .small)
+				ChartLabel(symbol: .arrowDown, title: "\(configuration.scores.lowestScore) LOW", style: .small)
+			}
+			.font(.caption2)
+			.padding(.standardSpacing)
 		}
-		.font(.caption2)
-		.padding(.standardSpacing)
 	}
 
 	private var chart: some View {
@@ -78,7 +78,7 @@ public struct ShareableSeriesImage: View {
 				lineWidth: 4,
 				annotateMaxScore: configuration.labelHighestScore,
 				annotateMinScore: configuration.labelLowestScore,
-				scoreDomain: 0...450
+				scoreDomain: configuration.scoreDomain
 			)
 		)
 		.padding(.top, .extraLargeSpacing)
@@ -147,28 +147,34 @@ extension ShareableSeriesImage {
 	public struct Configuration: Equatable {
 		public var date: Date?
 		public var total: Int?
+		public var showDetails: Bool
 		public var scores: [Game.Score]
 		public var bowlerName: String?
 		public var leagueName: String?
 		public var labelHighestScore: Bool
 		public var labelLowestScore: Bool
+		public var scoreDomain: ClosedRange<Int>
 
 		public init(
 			date: Date? = nil,
 			total: Int? = nil,
+			showDetails: Bool = true,
 			scores: [Game.Score] = [],
 			bowlerName: String? = nil,
 			leagueName: String? = nil,
 			labelHighestScore: Bool,
-			labelLowestScore: Bool
+			labelLowestScore: Bool,
+			scoreDomain: ClosedRange<Int>
 		) {
 			self.date = date
 			self.total = total
+			self.showDetails = showDetails
 			self.scores = scores
 			self.bowlerName = bowlerName
 			self.leagueName = leagueName
 			self.labelLowestScore = labelLowestScore
 			self.labelHighestScore = labelHighestScore
+			self.scoreDomain = scoreDomain
 		}
 	}
 }
@@ -180,12 +186,13 @@ extension ShareableSeriesImage {
 		scores: [
 			.init(index: 0, score: 225),
 			.init(index: 1, score: 225),
-			.init(index: 2, score: 0),
+			.init(index: 2, score: 100),
 			.init(index: 3, score: 450),
 		],
 //		bowlerName: "Joseph",
 //		leagueName: "Majors",
 		labelHighestScore: true,
-		labelLowestScore: true
+		labelLowestScore: true,
+		scoreDomain: 0...450
 	))
 }

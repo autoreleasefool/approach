@@ -660,10 +660,13 @@ let package = Package(
 			name: "SharingFeature",
 			dependencies: [
 				.product(name: "Algorithms", package: "swift-algorithms"),
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"ErrorsFeature",
 				"GamesRepositoryInterface",
+				"ModelsViewsLibrary",
 				"ScoreSheetLibrary",
 				"ScoresRepositoryInterface",
+				"SeriesRepositoryInterface",
 			]
 		),
 		.testTarget(

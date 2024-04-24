@@ -478,6 +478,17 @@
 
 "sharing.title" = "Share";
 "sharing.sharingSeries" = "Share Series";
+"sharing.details.title" = "Details";
+"sharing.details.date" = "Date";
+"sharing.details.scoreSummary" = "Summary";
+"sharing.details.bowlerName" = "Bowler";
+"sharing.details.leagueName" = "League";
+"sharing.details.highScore" = "High";
+"sharing.details.lowScore" = "Low";
+"sharing.details.chart.range" = "Chart Range";
+"sharing.details.chart.range.minimum" = "%d Minimum";
+"sharing.details.chart.range.maximum" = "%d Maximum";
+
 "sharing.sharingGame" = "Share Game";
 "sharing.sharingGames" = "Share Games";
 "sharing.style.title" = "Style";
