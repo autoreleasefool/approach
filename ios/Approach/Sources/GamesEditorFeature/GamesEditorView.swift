@@ -126,10 +126,6 @@ public struct GamesEditorView: View {
 			$store.scope(state: \.destination?.sheets?.settings, action: \.internal.destination.sheets.settings),
 			onDismiss: { send(.didDismissOpenSheet) }
 		)
-		.sharing(
-			$store.scope(state: \.destination?.sheets?.sharing, action: \.internal.destination.sheets.sharing),
-			onDismiss: { send(.didDismissOpenSheet) }
-		)
 	}
 
 	private func gameDetails(gameDetailsStore: StoreOf<GameDetails>) -> some View {
@@ -175,14 +171,6 @@ public struct GamesEditorView: View {
 		sheet(item: store, onDismiss: onDismiss) { store in
 			NavigationStack {
 				GamesSettingsView(store: store)
-			}
-		}
-	}
-
-	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>, onDismiss: @escaping () -> Void) -> some View {
-		sheet(item: store, onDismiss: onDismiss) { store in
-			NavigationStack {
-				SharingView(store: store)
 			}
 		}
 	}

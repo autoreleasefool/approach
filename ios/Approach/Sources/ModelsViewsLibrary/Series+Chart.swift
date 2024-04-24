@@ -111,7 +111,7 @@ extension Series.ScoreChart {
 		public init(
 			areaMarkForeground: LinearGradient,
 			lineMarkForeground: LinearGradient,
-			annotationForeground: Color,
+			annotationForeground: Color = .clear,
 			lineWidth: CGFloat = 2,
 			annotateMaxScore: Bool = false,
 			annotateMinScore: Bool = false,

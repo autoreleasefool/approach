@@ -25,7 +25,7 @@ extension GamesEditor {
 				return .none
 
 			case .didShareGame:
-				state.destination = .sheets(.sharing(.init(dataSource: .games([state.currentGameId]))))
+				// TODO: Show share sheet
 				return .none
 			}
 

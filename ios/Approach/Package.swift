@@ -659,13 +659,10 @@ let package = Package(
 		.target(
 			name: "SharingFeature",
 			dependencies: [
-				.product(name: "Algorithms", package: "swift-algorithms"),
 				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
+				"DateTimeLibrary",
 				"ErrorsFeature",
-				"GamesRepositoryInterface",
 				"ModelsViewsLibrary",
-				"ScoreSheetLibrary",
-				"ScoresRepositoryInterface",
 				"SeriesRepositoryInterface",
 			]
 		),

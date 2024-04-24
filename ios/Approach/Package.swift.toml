@@ -140,9 +140,9 @@ dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
 features = [ "Errors" ]
-repositories = [ "Games", "Scores", "Series" ]
-libraries = [ "ScoreSheet", "ModelsViews" ]
-dependencies = [ "Algorithms", "ExtensionsPackageLibrary" ]
+repositories = [ "Series" ]
+libraries = [ "DateTime", "ModelsViews" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]

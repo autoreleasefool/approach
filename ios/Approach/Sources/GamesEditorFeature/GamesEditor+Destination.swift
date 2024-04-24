@@ -14,13 +14,11 @@ extension GamesEditor {
 		public enum State: Equatable {
 			case settings(GamesSettings.State)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.State)
-			case sharing(Sharing.State)
 		}
 
 		public enum Action {
 			case settings(GamesSettings.Action)
 			case ballPicker(ResourcePicker<Gear.Summary, AlwaysEqual<Void>>.Action)
-			case sharing(Sharing.Action)
 		}
 
 		@Dependency(BowlersRepository.self) var bowlers
@@ -32,9 +30,6 @@ extension GamesEditor {
 			}
 			Scope(state: \.ballPicker, action: \.ballPicker) {
 				ResourcePicker { _ in gear.list(ofKind: .bowlingBall, ordered: .byName) }
-			}
-			Scope(state: \.sharing, action: \.sharing) {
-				Sharing()
 			}
 		}
 	}
