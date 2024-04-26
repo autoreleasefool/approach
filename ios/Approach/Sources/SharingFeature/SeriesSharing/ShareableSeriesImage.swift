@@ -7,6 +7,8 @@ import StringsLibrary
 import SwiftUI
 
 public struct ShareableSeriesImage: View {
+	@Environment(\.colorScheme) var colorScheme
+
 	public var configuration: Configuration
 
 	public init(configuration: Configuration) {
@@ -37,6 +39,7 @@ public struct ShareableSeriesImage: View {
 		.frame(minHeight: 200, alignment: .top)
 		.overlay(seriesDetails, alignment: .bottomLeading)
 		.background(chart)
+		.background(colorScheme == .dark ? .black : .white)
 	}
 
 	@ViewBuilder
@@ -88,6 +91,8 @@ public struct ShareableSeriesImage: View {
 }
 
 private struct ChartLabel: View {
+	@Environment(\.colorScheme) private var colorScheme
+
 	let symbol: SFSymbol
 	let title: String
 	let style: Style
@@ -110,7 +115,7 @@ private struct ChartLabel: View {
 		.padding(.horizontal, .smallSpacing)
 		.padding(.vertical, style.padding)
 		.background(
-			Material.thinMaterial,
+			colorScheme == .dark ? Color.gray.opacity(0.8) : Color.black.opacity(0.2),
 			in: RoundedRectangle(cornerRadius: .standardRadius)
 		)
 	}
@@ -155,6 +160,8 @@ extension ShareableSeriesImage {
 		public var labelHighestScore: Bool
 		public var labelLowestScore: Bool
 		public var scoreDomain: ClosedRange<Int>
+		public var displayScale: CGFloat
+		public var colorScheme: ColorScheme
 
 		public init(
 			date: Date? = nil,
@@ -163,9 +170,11 @@ extension ShareableSeriesImage {
 			scores: [Game.Score] = [],
 			bowlerName: String? = nil,
 			leagueName: String? = nil,
-			labelHighestScore: Bool,
-			labelLowestScore: Bool,
-			scoreDomain: ClosedRange<Int>
+			labelHighestScore: Bool = false,
+			labelLowestScore: Bool = false,
+			scoreDomain: ClosedRange<Int> = 0...Game.MAXIMUM_SCORE,
+			displayScale: CGFloat = .zero,
+			colorScheme: ColorScheme
 		) {
 			self.date = date
 			self.total = total
@@ -176,6 +185,8 @@ extension ShareableSeriesImage {
 			self.labelLowestScore = labelLowestScore
 			self.labelHighestScore = labelHighestScore
 			self.scoreDomain = scoreDomain
+			self.displayScale = displayScale
+			self.colorScheme = colorScheme
 		}
 	}
 }
@@ -194,6 +205,7 @@ extension ShareableSeriesImage {
 //		leagueName: "Majors",
 		labelHighestScore: true,
 		labelLowestScore: true,
-		scoreDomain: 0...450
+		scoreDomain: 0...450,
+		colorScheme: .light
 	))
 }

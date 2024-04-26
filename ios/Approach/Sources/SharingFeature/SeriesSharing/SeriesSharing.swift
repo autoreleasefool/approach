@@ -31,6 +31,9 @@ public struct SeriesSharing: Reducer {
 
 		public var errors: Errors<ErrorID>.State = .init()
 
+		public var displayScale: CGFloat = .zero
+		public var preferredAppearance: Appearance = .dark
+
 		var configuration: ShareableSeriesImage.Configuration? {
 			guard let series else { return nil }
 			return .init(
@@ -42,7 +45,9 @@ public struct SeriesSharing: Reducer {
 				leagueName: isShowingLeagueName ? series.leagueName : nil,
 				labelHighestScore: isLabellingHighestScore,
 				labelLowestScore: isLabellingLowestScore,
-				scoreDomain: scoreLowerBound...scoreUpperBound
+				scoreDomain: scoreLowerBound...scoreUpperBound,
+				displayScale: displayScale,
+				colorScheme: preferredAppearance.colorScheme
 			)
 		}
 
@@ -54,8 +59,12 @@ public struct SeriesSharing: Reducer {
 	public enum Action: FeatureAction, ViewAction, BindableAction {
 		@CasePathable public enum View {
 			case task
+			case didUpdateDisplayScale(CGFloat)
+			case didUpdateColorScheme(ColorScheme)
 		}
-		@CasePathable public enum Delegate { case doNothing }
+		@CasePathable public enum Delegate {
+			case imageRendered(UIImage)
+		}
 		@CasePathable public enum Internal {
 			case loadSeriesResponse(Result<Series.Shareable, Error>)
 			case errors(Errors<ErrorID>.Action)
@@ -71,52 +80,111 @@ public struct SeriesSharing: Reducer {
 		case seriesNotFound
 	}
 
+	public enum CancelID: Hashable {
+		case imageRenderer
+	}
+
+	public enum Appearance: CaseIterable, Hashable, Identifiable {
+		case dark
+		case light
+
+		public var id: Self { self }
+
+		var colorScheme: ColorScheme {
+			switch self {
+			case .dark: .dark
+			case .light: .light
+			}
+		}
+
+		var title: String {
+			switch self {
+			case .light: Strings.Sharing.ColorScheme.light
+			case .dark: Strings.Sharing.ColorScheme.dark
+			}
+		}
+	}
+
 	public init() {}
 
 	@Dependency(SeriesRepository.self) var series
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
+		CombineReducers {
+			BindingReducer()
 
-		Scope(state: \.errors, action: \.internal.errors) {
-			Errors()
-		}
+			Scope(state: \.errors, action: \.internal.errors) {
+				Errors()
+			}
 
-		Reduce<State, Action> { state, action in
-			switch action {
-			case let .view(viewAction):
-				switch viewAction {
-				case .task:
-					return .run { [seriesId = state.seriesId] send in
-						await send(.internal(.loadSeriesResponse(Result {
-							try await series.shareable(seriesId)
-						})))
+			Reduce<State, Action> { state, action in
+				switch action {
+				case let .view(viewAction):
+					switch viewAction {
+					case .task:
+						return .run { [seriesId = state.seriesId] send in
+							await send(.internal(.loadSeriesResponse(Result {
+								try await series.shareable(seriesId)
+							})))
+						}
+
+					case let .didUpdateDisplayScale(displayScale):
+						state.displayScale = displayScale
+						return .none
+
+					case let .didUpdateColorScheme(colorScheme):
+						switch colorScheme {
+						case .dark: state.preferredAppearance = .dark
+						case .light: state.preferredAppearance = .light
+						@unknown default: state.preferredAppearance = .light
+						}
+						return .none
 					}
-				}
 
-			case let .internal(internalAction):
-				switch internalAction {
-				case let .loadSeriesResponse(.success(series)):
-					state.series = series
-					let scoreDomain = series.scores.scoreDomain
-					state.scoreLowerBound = scoreDomain.lowerBound.roundedDown(toMultipleOf: 5)
-					state.scoreUpperBound = scoreDomain.upperBound.roundedUp(toMultipleOf: 5)
+				case let .internal(internalAction):
+					switch internalAction {
+					case let .loadSeriesResponse(.success(series)):
+						state.series = series
+						let scoreDomain = series.scores.scoreDomain
+						state.scoreLowerBound = scoreDomain.lowerBound.roundedDown(toMultipleOf: 5)
+						state.scoreUpperBound = scoreDomain.upperBound.roundedUp(toMultipleOf: 5)
 
-					state.scoreLowerBoundRange = Array(stride(from: 0, to: state.scoreLowerBound + 1, by: 5))
-					state.scoreUpperBoundRange = Array(stride(from: state.scoreUpperBound, to: Game.MAXIMUM_SCORE + 1, by: 5))
+						state.scoreLowerBoundRange = Array(stride(from: 0, to: state.scoreLowerBound + 1, by: 5))
+						state.scoreUpperBoundRange = Array(stride(from: state.scoreUpperBound, to: Game.MAXIMUM_SCORE + 1, by: 5))
+						return .none
+
+					case let .loadSeriesResponse(.failure(error)):
+						return state.errors
+							.enqueue(.seriesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
+							.map { .internal(.errors($0)) }
+
+					case .errors(.delegate(.doNothing)), .errors(.internal), .errors(.view):
+						return .none
+					}
+
+				case .delegate, .binding:
 					return .none
-
-				case let .loadSeriesResponse(.failure(error)):
-					return state.errors
-						.enqueue(.seriesNotFound, thrownError: error, toastMessage: Strings.Error.Toast.dataNotFound)
-						.map { .internal(.errors($0)) }
-
-				case .errors(.delegate(.doNothing)), .errors(.internal), .errors(.view):
-					return .none
 				}
+			}
+		}
+		.onChange(of: \.configuration) { _, configuration in
+			Reduce<State, Action> { _, _ in
+				return .run { @MainActor send in
+					guard let configuration else { return }
+					let imageRenderer = ImageRenderer(
+						content: ShareableSeriesImage(configuration: configuration)
+							.frame(minWidth: 400)
+							.environment(\.colorScheme, configuration.colorScheme)
+					)
+					imageRenderer.scale = configuration.displayScale
 
-			case .delegate, .binding:
-				return .none
+					guard let image = imageRenderer.uiImage else {
+						return
+					}
+
+					send(.delegate(.imageRendered(image)))
+				}
+				.cancellable(id: CancelID.imageRenderer, cancelInFlight: true)
 			}
 		}
 	}
@@ -128,6 +196,9 @@ public struct SeriesSharing: Reducer {
 public struct SeriesSharingView: View {
 	@Bindable public var store: StoreOf<SeriesSharing>
 
+	@Environment(\.colorScheme) var colorScheme
+	@Environment(\.displayScale) var displayScale
+
 	public init(store: StoreOf<SeriesSharing>) {
 		self.store = store
 	}
@@ -137,16 +208,23 @@ public struct SeriesSharingView: View {
 			previewSection
 			detailsSection
 			domainSection
+			colorSchemeSection
 		}
 		.task { await send(.task).finish() }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
+		.onAppear {
+			send(.didUpdateColorScheme(colorScheme))
+			send(.didUpdateDisplayScale(displayScale))
+		}
+		.onChange(of: displayScale) { send(.didUpdateDisplayScale(displayScale)) }
 	}
 
 	@ViewBuilder
 	private var previewSection: some View {
-		Section {
+		Section(Strings.Sharing.Preview.title) {
 			if let configuration = store.configuration {
 				ShareableSeriesImage(configuration: configuration)
+					.environment(\.colorScheme, configuration.colorScheme)
 			}
 		}
 		.listRowSeparator(.hidden)
@@ -205,7 +283,7 @@ public struct SeriesSharingView: View {
 	}
 
 	private var domainSection: some View {
-		Section(Strings.Sharing.Details.Chart.range) {
+		Section(Strings.Sharing.Chart.Range.title) {
 			DisclosureGroup(
 				content: {
 					HStack {
@@ -238,6 +316,19 @@ public struct SeriesSharingView: View {
 			)
 		}
 		.listRowSeparator(.hidden)
+	}
+
+	private var colorSchemeSection: some View {
+		Section {
+			Picker(
+				Strings.Sharing.ColorScheme.title,
+				selection: $store.preferredAppearance
+			) {
+				ForEach(SeriesSharing.Appearance.allCases) { appearance in
+					Text(appearance.title)
+				}
+			}
+		}
 	}
 }
 

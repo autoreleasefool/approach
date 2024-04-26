@@ -485,9 +485,12 @@
 "sharing.details.leagueName" = "League";
 "sharing.details.highScore" = "High";
 "sharing.details.lowScore" = "Low";
-"sharing.details.chart.range" = "Chart Range";
-"sharing.details.chart.range.minimum" = "%d Minimum";
-"sharing.details.chart.range.maximum" = "%d Maximum";
+"sharing.chart.range.title" = "Chart Range";
+"sharing.chart.range.minimum" = "%d Minimum";
+"sharing.chart.range.maximum" = "%d Maximum";
+"sharing.colorScheme.title" = "Appearance";
+"sharing.colorScheme.light" = "Light";
+"sharing.colorScheme.dark" = "Dark";
 
 "sharing.sharingGame" = "Share Game";
 "sharing.sharingGames" = "Share Games";
@@ -754,6 +757,7 @@
 "action.deselectAll" = "Deselect all";
 "action.shareToStories" = "Share to Stories";
 "action.shareToOther" = "Other";
+"action.share" = "Share";
 "action.reorder" = "Reorder";
 "action.finish" = "Finish";
 

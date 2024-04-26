@@ -79,6 +79,8 @@ public enum Strings {
     public static let search = Strings.tr("Localizable", "action.search", fallback: "Search")
     /// Select
     public static let select = Strings.tr("Localizable", "action.select", fallback: "Select")
+    /// Share
+    public static let share = Strings.tr("Localizable", "action.share", fallback: "Share")
     /// Other
     public static let shareToOther = Strings.tr("Localizable", "action.shareToOther", fallback: "Other")
     /// Share to Stories
@@ -1390,6 +1392,28 @@ public enum Strings {
     public static let sharingSeries = Strings.tr("Localizable", "sharing.sharingSeries", fallback: "Share Series")
     /// Sharing
     public static let title = Strings.tr("Localizable", "sharing.title", fallback: "Share")
+    public enum Chart {
+      public enum Range {
+        /// %d Maximum
+        public static func maximum(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.chart.range.maximum", p1, fallback: "%d Maximum")
+        }
+        /// %d Minimum
+        public static func minimum(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "sharing.chart.range.minimum", p1, fallback: "%d Minimum")
+        }
+        /// Chart Range
+        public static let title = Strings.tr("Localizable", "sharing.chart.range.title", fallback: "Chart Range")
+      }
+    }
+    public enum ColorScheme {
+      /// Dark
+      public static let dark = Strings.tr("Localizable", "sharing.colorScheme.dark", fallback: "Dark")
+      /// Light
+      public static let light = Strings.tr("Localizable", "sharing.colorScheme.light", fallback: "Light")
+      /// Appearance
+      public static let title = Strings.tr("Localizable", "sharing.colorScheme.title", fallback: "Appearance")
+    }
     public enum Details {
       /// Bowler
       public static let bowlerName = Strings.tr("Localizable", "sharing.details.bowlerName", fallback: "Bowler")
@@ -1405,20 +1429,6 @@ public enum Strings {
       public static let scoreSummary = Strings.tr("Localizable", "sharing.details.scoreSummary", fallback: "Summary")
       /// Details
       public static let title = Strings.tr("Localizable", "sharing.details.title", fallback: "Details")
-      public enum Chart {
-        /// Chart Range
-        public static let range = Strings.tr("Localizable", "sharing.details.chart.range", fallback: "Chart Range")
-        public enum Range {
-          /// %d Maximum
-          public static func maximum(_ p1: Int) -> String {
-            return Strings.tr("Localizable", "sharing.details.chart.range.maximum", p1, fallback: "%d Maximum")
-          }
-          /// %d Minimum
-          public static func minimum(_ p1: Int) -> String {
-            return Strings.tr("Localizable", "sharing.details.chart.range.minimum", p1, fallback: "%d Minimum")
-          }
-        }
-      }
     }
     public enum Frames {
       /// Show full game details?
