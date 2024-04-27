@@ -62,38 +62,34 @@ public struct StatisticsWidgetHelpView: View {
 	public var body: some View {
 		List {
 			Section {
-				VStack(alignment: .leading, spacing: .smallSpacing) {
-					SquareWidget(
-						configuration: store.missingStatistic,
-						chartContent: .dataMissing(statistic: store.missingStatistic.statistic),
-						onPress: {}
-					)
-					.frame(maxWidth: 150)
+				RectangleWidget(
+					configuration: store.missingStatistic,
+					chartContent: .dataMissing(statistic: store.missingStatistic.statistic),
+					onPress: {}
+				)
+				.listRowInsets(EdgeInsets())
 
-					Text(Strings.Widget.Help.NotEnoughData.title)
-						.font(.headline)
+				Text(Strings.Widget.Help.NotEnoughData.title)
+					.font(.headline)
 
-					Text(Strings.Widget.Help.NotEnoughData.description1)
-					Text(Strings.Widget.Help.NotEnoughData.description2)
-				}
+				Text(Strings.Widget.Help.NotEnoughData.description1)
+				Text(Strings.Widget.Help.NotEnoughData.description2)
 			}
 			.listRowSeparator(.hidden)
 
 			Section {
-				VStack(alignment: .leading, spacing: .smallSpacing) {
-					SquareWidget(
-						configuration: store.missingStatistic,
-						chartContent: .chartUnavailable(statistic: store.missingStatistic.statistic),
-						onPress: {}
-					)
-					.frame(maxWidth: 150)
+				RectangleWidget(
+					configuration: store.missingStatistic,
+					chartContent: .chartUnavailable(statistic: store.missingStatistic.statistic),
+					onPress: {}
+				)
+				.listRowInsets(EdgeInsets())
 
-					Text(Strings.Widget.Help.Error.title)
-						.font(.headline)
+				Text(Strings.Widget.Help.Error.title)
+					.font(.headline)
 
-					Text(Strings.Widget.Help.Error.description1)
-					Text(Strings.Widget.Help.Error.description2)
-				}
+				Text(Strings.Widget.Help.Error.description1)
+				Text(Strings.Widget.Help.Error.description2)
 			}
 			.listRowSeparator(.hidden)
 		}
