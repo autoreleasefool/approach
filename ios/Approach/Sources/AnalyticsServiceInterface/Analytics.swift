@@ -20,6 +20,7 @@ extension Analytics {
 	public enum MatchPlay {}
 	public enum Series {}
 	public enum Settings {}
+	public enum Sharing {}
 	public enum Statistic {}
 	public enum Widget {}
 }

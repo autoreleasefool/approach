@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -108,6 +109,13 @@ public struct GamesHeader: Reducer {
 
 			case .delegate:
 				return .none
+			}
+		}
+
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapShareButton): return Analytics.Game.Shared()
+			default: return nil
 			}
 		}
 	}

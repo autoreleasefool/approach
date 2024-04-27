@@ -275,6 +275,13 @@ public struct GamesList: Reducer {
 			}
 		}
 
+		AnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case .view(.didTapShareButton): return Analytics.Series.Shared()
+			default: return nil
+			}
+		}
+
 		ErrorHandlerReducer<State, Action> { _, action in
 			switch action {
 			case let .internal(.didReorderGames(.failure(error))),
