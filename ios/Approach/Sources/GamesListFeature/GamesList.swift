@@ -87,7 +87,7 @@ public struct GamesList: Reducer {
 
 	@Reducer(state: .equatable)
 	public enum Destination {
-		case sharing(SeriesSharing)
+		case sharing(Sharing)
 		case gameEditor(GamesEditor)
 		case seriesEditor(SeriesEditor)
 	}
@@ -127,7 +127,7 @@ public struct GamesList: Reducer {
 					return .none
 
 				case .didTapShareButton:
-					state.destination = .sharing(.init(seriesId: state.series.id))
+					state.destination = .sharing(.init(source: .series(state.series.id)))
 					return .none
 
 				case .didTapArchiveTipDismissButton:
@@ -258,7 +258,6 @@ public struct GamesList: Reducer {
 						.destination(.presented(.seriesEditor(.binding))),
 						.destination(.presented(.sharing(.internal))),
 						.destination(.presented(.sharing(.view))),
-						.destination(.presented(.sharing(.binding))),
 						.errors(.internal), .errors(.view):
 					return .none
 				}

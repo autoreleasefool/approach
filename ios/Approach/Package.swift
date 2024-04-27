@@ -41,6 +41,7 @@ let package = Package(
 		.library(name: "SharingFeature", targets: ["SharingFeature"]),
 		.library(name: "StatisticsDetailsFeature", targets: ["StatisticsDetailsFeature"]),
 		.library(name: "StatisticsOverviewFeature", targets: ["StatisticsOverviewFeature"]),
+		.library(name: "StatisticsWidgetEditorFeature", targets: ["StatisticsWidgetEditorFeature"]),
 		.library(name: "StatisticsWidgetsLayoutFeature", targets: ["StatisticsWidgetsLayoutFeature"]),
 
 		// MARK: - Repositories
@@ -712,11 +713,30 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "StatisticsWidgetEditorFeature",
+			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
+				"BowlersRepositoryInterface",
+				"ErrorsFeature",
+				"LeaguesRepositoryInterface",
+				"ModelsViewsLibrary",
+				"PickableModelsLibrary",
+				"StatisticsWidgetsRepositoryInterface",
+			]
+		),
+		.testTarget(
+			name: "StatisticsWidgetEditorFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"StatisticsWidgetEditorFeature",
+			]
+		),
+		.target(
 			name: "StatisticsWidgetsLayoutFeature",
 			dependencies: [
 				"ReorderingLibrary",
 				"StatisticsDetailsFeature",
-				"StatisticsWidgetsRepositoryInterface",
+				"StatisticsWidgetEditorFeature",
 			]
 		),
 		.testTarget(

@@ -154,9 +154,14 @@ services = [ "Notifications", "RecentlyUsed", "Preference", "Tips" ]
 libraries = [ "ModelsViews", "PickableModels" ]
 dependencies = [ "ExtensionsPackageLibrary" ]
 
+[features.StatisticsWidgetEditor]
+features = [ "Errors" ]
+repositories = [ "Bowlers", "Leagues", "StatisticsWidgets" ]
+libraries = [ "ModelsViews", "PickableModels" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
+
 [features.StatisticsWidgetsLayout]
-features = [ "StatisticsDetails" ]
-repositories = [ "StatisticsWidgets" ]
+features = [ "StatisticsDetails", "StatisticsWidgetEditor" ]
 libraries = [ "Reordering" ]
 
 # Repositories

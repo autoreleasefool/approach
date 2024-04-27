@@ -6,6 +6,7 @@ import ModelsLibrary
 import ReorderingLibrary
 import StatisticsChartsLibrary
 import StatisticsLibrary
+import StatisticsWidgetEditorFeature
 import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
@@ -230,7 +231,6 @@ public struct StatisticsWidgetLayoutBuilder: Reducer {
 				case .editor(.dismiss),
 						.editor(.presented(.internal)),
 						.editor(.presented(.view)),
-						.editor(.presented(.binding)),
 						.reordering(.internal), .reordering(.view),
 						.errors(.internal), .errors(.view), .errors(.delegate(.doNothing)):
 					return .none

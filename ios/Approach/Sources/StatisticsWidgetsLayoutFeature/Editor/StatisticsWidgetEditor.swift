@@ -1,5 +1,4 @@
 import AnalyticsServiceInterface
-import BowlersRepositoryInterface
 import ComposableArchitecture
 import EquatablePackageLibrary
 import ErrorsFeature
@@ -12,6 +11,7 @@ import ResourcePickerLibrary
 import StatisticsChartsLibrary
 import StatisticsDetailsFeature
 import StatisticsLibrary
+import StatisticsWidgetEditorFeature
 import StatisticsWidgetsLibrary
 import StatisticsWidgetsRepositoryInterface
 import StringsLibrary
@@ -19,29 +19,18 @@ import TipsLibrary
 import TipsServiceInterface
 
 @Reducer
-// swiftlint:disable file_length
-// swiftlint:disable:next type_body_length
 public struct StatisticsWidgetEditor: Reducer {
 	static let chartLoadingAnimationTime: TimeInterval = 0.5
 
 	@ObservableState
 	public struct State: Equatable {
-		public let id: StatisticsWidget.ID
 		public let context: String
 		public let priority: Int
-		public let initialSource: StatisticsWidget.Source?
 
-		public var source: StatisticsWidget.Source?
-		public var timeline: StatisticsWidget.Timeline = .past3Months
-		public var statistic: String = Statistics.GameAverage.title
-		var isSaveable: Bool { source != nil }
+		public var editor: StatisticsWidgetConfigurationEditor.State
 
-		public var sources: StatisticsWidget.Sources?
-		public var bowler: Bowler.Summary?
-		public var league: League.Summary?
-		var isShowingLeaguePicker: Bool { bowler != nil }
+		var isSaveable: Bool { editor.source != nil }
 
-		public var isLoadingSources = false
 		public var isLoadingPreview = false
 		public var widgetPreviewData: Statistics.ChartContent?
 
@@ -51,52 +40,32 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		@Presents public var destination: Destination.State?
 
-		var configuration: StatisticsWidget.Configuration? {
-			guard let source else { return nil }
-			return .init(id: id, bowlerId: source.bowlerId, leagueId: source.leagueId, timeline: timeline, statistic: statistic)
-		}
-
-		var isBowlerEditable: Bool {
-			switch initialSource {
-			case .bowler, .league: return false
-			case .none: return true
-			}
-		}
-
 		public init(context: String, priority: Int, source: StatisticsWidget.Source?) {
-			@Dependency(\.uuid) var uuid
-			self.id = uuid()
 			self.context = context
 			self.priority = priority
-			self.initialSource = source
-			self.source = source
+			self.editor = .init(source: source)
 
 			@Dependency(TipsService.self) var tips
 			self.isShowingTapThroughTip = tips.shouldShow(tipFor: .tapThroughStatisticTip)
 		}
 	}
 
-	public enum Action: FeatureAction, ViewAction, BindableAction {
+	public enum Action: FeatureAction, ViewAction {
 		@CasePathable public enum View {
 			case onAppear
-			case didFirstAppear
-			case didTapBowler
-			case didTapLeague
 			case didTapSaveButton
 			case didTapWidget
-			case didTapStatistic
 			case didTapDismissTapThroughTip
 		}
 		@CasePathable public enum Delegate {
 			case didCreateConfiguration(StatisticsWidget.Configuration)
 		}
 		@CasePathable public enum Internal {
+			case editor(StatisticsWidgetConfigurationEditor.Action)
 			case destination(PresentationAction<Destination.Action>)
 			case errors(Errors<ErrorID>.Action)
 
 			case didStartLoadingPreview
-			case didLoadSources(Result<StatisticsWidget.Sources, Error>)
-			case didLoadDefaultSources(Result<StatisticsWidget.Sources?, Error>)
 			case didLoadChartContent(Result<Statistics.ChartContent, Error>)
 			case didFinishSavingConfiguration(Result<StatisticsWidget.Configuration, Error>)
 			case hideChart
@@ -105,40 +74,21 @@ public struct StatisticsWidgetEditor: Reducer {
 		case view(View)
 		case delegate(Delegate)
 		case `internal`(Internal)
-		case binding(BindingAction<State>)
 	}
 
 	@Reducer
 	public struct Destination: Reducer {
 		public enum State: Equatable {
-			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.State)
-			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.State)
 			case help(StatisticsWidgetHelp.State)
-			case statisticPicker(StatisticPicker.State)
 		}
 
 		public enum Action {
-			case bowlerPicker(ResourcePicker<Bowler.Summary, AlwaysEqual<Void>>.Action)
-			case leaguePicker(ResourcePicker<League.Summary, Bowler.ID>.Action)
 			case help(StatisticsWidgetHelp.Action)
-			case statisticPicker(StatisticPicker.Action)
 		}
 
-		@Dependency(BowlersRepository.self) var bowlers
-		@Dependency(LeaguesRepository.self) var leagues
-
 		public var body: some ReducerOf<Self> {
-			Scope(state: \.bowlerPicker, action: \.bowlerPicker) {
-				ResourcePicker { _ in bowlers.pickable() }
-			}
-			Scope(state: \.leaguePicker, action: \.leaguePicker) {
-				ResourcePicker { bowler in leagues.pickable(bowledBy: bowler, ordering: .byName) }
-			}
 			Scope(state: \.help, action: \.help) {
 				StatisticsWidgetHelp()
-			}
-			Scope(state: \.statisticPicker, action: \.statisticPicker) {
-				StatisticPicker()
 			}
 		}
 	}
@@ -148,7 +98,6 @@ public struct StatisticsWidgetEditor: Reducer {
 	}
 
 	public enum ErrorID: Hashable {
-		case failedToLoadSources
 		case failedToLoadChart
 		case failedToSaveConfiguration
 	}
@@ -163,10 +112,12 @@ public struct StatisticsWidgetEditor: Reducer {
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {
-		BindingReducer()
-
 		Scope(state: \.errors, action: \.internal.errors) {
 			Errors()
+		}
+
+		Scope(state: \.editor, action: \.internal.editor) {
+			StatisticsWidgetConfigurationEditor()
 		}
 
 		Reduce<State, Action> { state, action in
@@ -176,44 +127,17 @@ public struct StatisticsWidgetEditor: Reducer {
 				case .onAppear:
 					return .none
 
-				case .didFirstAppear:
-					return loadSources(&state)
-
-				case .didTapStatistic:
-					state.destination = .statisticPicker(.init(selected: state.statistic))
-					return .none
-
 				case .didTapWidget:
 					switch state.widgetPreviewData {
 					case .averaging, .counting, .percentage:
 						return .none
 					case .dataMissing, .chartUnavailable, .none:
-						state.destination = .help(.init(missingStatistic: state.configuration))
+						state.destination = .help(.init(missingStatistic: state.editor.configuration))
 					}
 					return .none
 
-				case .didTapBowler:
-					guard state.isBowlerEditable else { return .none }
-					state.destination = .bowlerPicker(.init(
-						selected: Set([state.bowler?.id].compactMap { $0 }),
-						query: .init(()),
-						limit: 1,
-						showsCancelHeaderButton: false
-					))
-					return .none
-
-				case .didTapLeague:
-					guard let bowler = state.bowler else { return .none }
-					state.destination = .leaguePicker(.init(
-						selected: Set([state.league?.id].compactMap { $0 }),
-						query: bowler.id,
-						limit: 1,
-						showsCancelHeaderButton: false
-					))
-					return .none
-
 				case .didTapSaveButton:
-					guard let configuration = state.configuration,
+					guard let configuration = state.editor.configuration,
 								let widget = configuration.make(on: date(), context: state.context, priority: state.priority) else {
 						return .none
 					}
@@ -241,25 +165,6 @@ public struct StatisticsWidgetEditor: Reducer {
 					state.widgetPreviewData = nil
 					return .none
 
-				case let .didLoadSources(.success(sources)):
-					state.isLoadingSources = false
-					state.sources = sources
-					state.bowler = sources.bowler
-					state.league = sources.league
-					return .none
-
-				case let .didLoadDefaultSources(.success(sources)):
-					state.isLoadingSources = false
-					state.sources = sources
-					state.bowler = sources?.bowler
-					state.league = sources?.league
-					if let league = sources?.league {
-						state.source = .league(league.id)
-					} else if let bowler = sources?.bowler {
-						state.source = .bowler(bowler.id)
-					}
-					return refreshChart(withConfiguration: state.configuration, state: &state)
-
 				case let .didLoadChartContent(.success(content)):
 					state.widgetPreviewData = content
 					return .none
@@ -269,12 +174,6 @@ public struct StatisticsWidgetEditor: Reducer {
 						.send(.delegate(.didCreateConfiguration(configuration))),
 						.run { _ in await dismiss() }
 					)
-
-				case let .didLoadSources(.failure(error)), let .didLoadDefaultSources(.failure(error)):
-					state.isLoadingSources = false
-					return state.errors
-						.enqueue(.failedToLoadSources, thrownError: error, toastMessage: Strings.Error.Toast.failedToLoad)
-						.map { .internal(.errors($0)) }
 
 				case let .didLoadChartContent(.failure(error)):
 					return state.errors
@@ -286,59 +185,23 @@ public struct StatisticsWidgetEditor: Reducer {
 						.enqueue(.failedToSaveConfiguration, thrownError: error, toastMessage: Strings.Error.Toast.failedToSave)
 						.map { .internal(.errors($0)) }
 
-				case let .destination(.presented(.bowlerPicker(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didChangeSelection(bowler):
-						state.bowler = bowler.first
-						state.league = nil
-						if let bowler = bowler.first {
-							state.source = .bowler(bowler.id)
-						} else {
-							state.source = nil
-						}
-						return refreshChart(withConfiguration: state.configuration, state: &state)
-					}
-
-				case let .destination(.presented(.leaguePicker(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didChangeSelection(league):
-						state.league = league.first
-						if let league = league.first {
-							state.source = .league(league.id)
-						} else if let bowler = state.bowler {
-							state.source = .bowler(bowler.id)
-						} else {
-							state.source = nil
-						}
-						return refreshChart(withConfiguration: state.configuration, state: &state)
-					}
-
 				case .destination(.presented(.help(.delegate(.doNothing)))):
 					return .none
-
-				case let .destination(.presented(.statisticPicker(.delegate(delegateAction)))):
-					switch delegateAction {
-					case let .didSelectStatistic(statistic):
-						state.statistic = statistic
-						return refreshChart(withConfiguration: state.configuration, state: &state)
-					}
 
 				case .errors(.delegate(.doNothing)):
 					return .none
 
+				case let .editor(.delegate(.didChangeConfiguration(configuration))):
+					return refreshChart(withConfiguration: configuration, state: &state)
+
 				case .destination(.dismiss),
-						.destination(.presented(.bowlerPicker(.internal))), .destination(.presented(.bowlerPicker(.view))),
-						.destination(.presented(.leaguePicker(.internal))), .destination(.presented(.leaguePicker(.view))),
 						.destination(.presented(.help(.internal))), .destination(.presented(.help(.view))),
-						.destination(.presented(.statisticPicker(.internal))), .destination(.presented(.statisticPicker(.view))),
+						.editor(.view), .editor(.binding), .editor(.internal),
 						.errors(.internal), .errors(.view):
 					return .none
 				}
 
-			case .binding(\.timeline):
-				return refreshChart(withConfiguration: state.configuration, state: &state)
-
-			case .delegate, .binding:
+			case .delegate:
 				return .none
 			}
 		}
@@ -355,30 +218,11 @@ public struct StatisticsWidgetEditor: Reducer {
 
 		ErrorHandlerReducer<State, Action> { _, action in
 			switch action {
-			case let .internal(.didLoadSources(.failure(error))),
-				let .internal(.didLoadDefaultSources(.failure(error))),
-				let .internal(.didLoadChartContent(.failure(error))),
+			case let .internal(.didLoadChartContent(.failure(error))),
 				let .internal(.didFinishSavingConfiguration(.failure(error))):
 				return error
 			default:
 				return nil
-			}
-		}
-	}
-
-	private func loadSources(_ state: inout State) -> Effect<Action> {
-		state.isLoadingSources = true
-		if let source = state.source {
-			return .run { send in
-				await send(.internal(.didLoadSources(Result {
-					try await statisticsWidgets.loadSources(source)
-				})))
-			}
-		} else {
-			return .run { send in
-				await send(.internal(.didLoadDefaultSources(Result {
-					try await statisticsWidgets.loadDefaultSources()
-				})))
 			}
 		}
 	}

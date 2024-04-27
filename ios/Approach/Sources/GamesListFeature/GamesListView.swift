@@ -73,10 +73,10 @@ public struct GamesListView: View {
 }
 
 @MainActor extension View {
-	fileprivate func sharing(_ store: Binding<StoreOf<SeriesSharing>?>) -> some View {
+	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>) -> some View {
 		sheet(item: store) { store in
 			NavigationStack {
-				SeriesSharingView(store: store)
+				SharingView(store: store)
 			}
 		}
 	}
