@@ -14,6 +14,7 @@ extension FeatureFlag {
 	public static let dataImport = Self(name: "dataImport", introduced: "2023-09-17", stage: .development)
 	public static let preBowlForm = Self(name: "preBowlForm", introduced: "2024-03-23", stage: .release)
 	public static let manualSeries = Self(name: "manualSeries", introduced: "2024-03-28", stage: .release)
+	public static let sharingStatistic = Self(name: "sharingStatistic", introduced: "2024-04-27", stage: .development)
 
 	public static let allFlags: [Self] = [
 		.alleyAndGearAverages,
@@ -26,6 +27,7 @@ extension FeatureFlag {
 		.purchases,
 		.sharingGame,
 		.sharingSeries,
+		.sharingStatistic,
 		.teams,
 	]
 
