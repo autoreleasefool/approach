@@ -22,8 +22,8 @@ public struct StatisticsWidgetConfigurationEditor: Reducer {
 		public let initialSource: StatisticsWidget.Source?
 
 		public var source: StatisticsWidget.Source?
-		public var timeline: StatisticsWidget.Timeline = .past3Months
-		public var statistic: String = Statistics.GameAverage.title
+		public var timeline: StatisticsWidget.Timeline
+		public var statistic: String
 
 		public var sources: StatisticsWidget.Sources?
 		public var bowler: Bowler.Summary?
@@ -54,11 +54,17 @@ public struct StatisticsWidgetConfigurationEditor: Reducer {
 			}
 		}
 
-		public init(source: StatisticsWidget.Source?) {
+		public init(
+			source: StatisticsWidget.Source?,
+			timeline: StatisticsWidget.Timeline = .past3Months,
+			statistic: String = Statistics.GameAverage.title
+		) {
 			@Dependency(\.uuid) var uuid
 			self.id = uuid()
 			self.initialSource = source
 			self.source = source
+			self.timeline = timeline
+			self.statistic = statistic
 		}
 	}
 

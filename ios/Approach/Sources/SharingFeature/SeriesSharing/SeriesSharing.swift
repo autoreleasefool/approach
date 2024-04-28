@@ -84,38 +84,17 @@ public struct SeriesSharing: Reducer {
 		case imageRenderer
 	}
 
-	public enum Appearance: CaseIterable, Hashable, Identifiable {
-		case dark
-		case light
-
-		public var id: Self { self }
-
-		var colorScheme: ColorScheme {
-			switch self {
-			case .dark: .dark
-			case .light: .light
-			}
-		}
-
-		var title: String {
-			switch self {
-			case .light: Strings.Sharing.ColorScheme.light
-			case .dark: Strings.Sharing.ColorScheme.dark
-			}
-		}
-	}
-
 	public init() {}
 
 	@Dependency(SeriesRepository.self) var series
 
 	public var body: some ReducerOf<Self> {
+		Scope(state: \.errors, action: \.internal.errors) {
+			Errors()
+		}
+
 		CombineReducers {
 			BindingReducer()
-
-			Scope(state: \.errors, action: \.internal.errors) {
-				Errors()
-			}
 
 			Reduce<State, Action> { state, action in
 				switch action {
@@ -182,6 +161,8 @@ public struct SeriesSharing: Reducer {
 						return
 					}
 
+					guard !Task.isCancelled else { return }
+
 					send(.delegate(.imageRendered(image)))
 				}
 				.cancellable(id: CancelID.imageRenderer, cancelInFlight: true)
@@ -221,14 +202,14 @@ public struct SeriesSharingView: View {
 
 	@ViewBuilder
 	private var previewSection: some View {
-		Section(Strings.Sharing.Preview.title) {
-			if let configuration = store.configuration {
+		if let configuration = store.configuration {
+			Section(Strings.Sharing.Preview.title) {
 				ShareableSeriesImage(configuration: configuration)
 					.environment(\.colorScheme, configuration.colorScheme)
 			}
+			.listRowSeparator(.hidden)
+			.listRowInsets(EdgeInsets())
 		}
-		.listRowSeparator(.hidden)
-		.listRowInsets(EdgeInsets())
 	}
 
 	private var detailsSection: some View {
@@ -320,14 +301,7 @@ public struct SeriesSharingView: View {
 
 	private var colorSchemeSection: some View {
 		Section {
-			Picker(
-				Strings.Sharing.ColorScheme.title,
-				selection: $store.preferredAppearance
-			) {
-				ForEach(SeriesSharing.Appearance.allCases) { appearance in
-					Text(appearance.title)
-				}
-			}
+			AppearancePicker(selection: $store.preferredAppearance)
 		}
 	}
 }

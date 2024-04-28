@@ -660,11 +660,8 @@ let package = Package(
 		.target(
 			name: "SharingFeature",
 			dependencies: [
-				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
-				"DateTimeLibrary",
-				"ErrorsFeature",
-				"ModelsViewsLibrary",
 				"SeriesRepositoryInterface",
+				"StatisticsWidgetEditorFeature",
 			]
 		),
 		.testTarget(
@@ -736,7 +733,6 @@ let package = Package(
 			dependencies: [
 				"ReorderingLibrary",
 				"StatisticsDetailsFeature",
-				"StatisticsWidgetEditorFeature",
 			]
 		),
 		.testTarget(

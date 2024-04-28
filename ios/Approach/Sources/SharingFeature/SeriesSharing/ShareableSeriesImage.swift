@@ -9,7 +9,7 @@ import SwiftUI
 public struct ShareableSeriesImage: View {
 	@Environment(\.colorScheme) var colorScheme
 
-	public var configuration: Configuration
+	public let configuration: Configuration
 
 	public init(configuration: Configuration) {
 		self.configuration = configuration
@@ -151,17 +151,17 @@ private struct ChartLabel: View {
 
 extension ShareableSeriesImage {
 	public struct Configuration: Equatable {
-		public var date: Date?
-		public var total: Int?
-		public var showDetails: Bool
-		public var scores: [Game.Score]
-		public var bowlerName: String?
-		public var leagueName: String?
-		public var labelHighestScore: Bool
-		public var labelLowestScore: Bool
-		public var scoreDomain: ClosedRange<Int>
-		public var displayScale: CGFloat
-		public var colorScheme: ColorScheme
+		public let date: Date?
+		public let total: Int?
+		public let showDetails: Bool
+		public let scores: [Game.Score]
+		public let bowlerName: String?
+		public let leagueName: String?
+		public let labelHighestScore: Bool
+		public let labelLowestScore: Bool
+		public let scoreDomain: ClosedRange<Int>
+		public let displayScale: CGFloat
+		public let colorScheme: ColorScheme
 
 		public init(
 			date: Date? = nil,

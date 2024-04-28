@@ -55,7 +55,7 @@ extension StatisticsDetails {
 		switch state.destination {
 		case let .list(existingState):
 			list?.entryToHighlight = existingState.entryToHighlight
-		case .sourcePicker, .none:
+		case .sourcePicker, .sharing, .none:
 			break
 		}
 

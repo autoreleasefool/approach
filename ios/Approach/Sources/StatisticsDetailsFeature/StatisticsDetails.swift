@@ -2,9 +2,12 @@ import AnalyticsServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsPackageServiceInterface
 import NotificationsServiceInterface
 import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
+import SharingFeature
 import StatisticsChartsLibrary
 import StatisticsLibrary
 import StatisticsRepositoryInterface
@@ -37,6 +40,8 @@ public struct StatisticsDetails: Reducer {
 
 		public var charts: StatisticsDetailsCharts.State
 
+		public let isSharingStatisticsEnabled: Bool
+
 		@Presents public var destination: Destination.State?
 
 		var filterViewSize: StatisticsFilterView.Size {
@@ -60,6 +65,9 @@ public struct StatisticsDetails: Reducer {
 
 			@Dependency(\.date) var date
 			self.willAdjustLaneLayoutAt = date()
+
+			@Dependency(\.featureFlags) var featureFlags
+			self.isSharingStatisticsEnabled = featureFlags.isFlagEnabled(.sharingStatistic)
 		}
 
 		mutating func syncChartsSharedState() {
@@ -76,6 +84,7 @@ public struct StatisticsDetails: Reducer {
 			case onAppear
 			case didFirstAppear
 			case didTapSourcePicker
+			case didTapShareButton
 			case didAdjustChartSize(backdropSize: CGSize, filtersSize: StatisticsFilterView.Size)
 		}
 		@CasePathable public enum Delegate { case doNothing }
@@ -103,6 +112,7 @@ public struct StatisticsDetails: Reducer {
 	public enum Destination {
 		case list(StatisticsDetailsList)
 		case sourcePicker(StatisticsSourcePicker)
+		case sharing(Sharing)
 	}
 
 	public enum CancelID {
@@ -163,6 +173,13 @@ public struct StatisticsDetails: Reducer {
 
 				case .didTapSourcePicker:
 					state.destination = .sourcePicker(.init(source: state.filter.source))
+					return .none
+
+				case .didTapShareButton:
+					state.destination = .sharing(.init(source: .statistic(
+						state.filter.source.widgetSource,
+						statistic: state.selectedStatistic
+					)))
 					return .none
 
 				case let .didAdjustChartSize(backdropSize, filtersSize):
@@ -245,7 +262,7 @@ public struct StatisticsDetails: Reducer {
 					case let .list(list):
 						return list.scrollTo(id: id)
 							.map { .internal(.destination(.presented(.list($0)))) }
-					case .sourcePicker, .none:
+					case .sourcePicker, .sharing, .none:
 						return .none
 					}
 
@@ -284,6 +301,9 @@ public struct StatisticsDetails: Reducer {
 						return refreshStatistics(state: state)
 					}
 
+				case .destination(.presented(.sharing(.delegate(.doNothing)))):
+					return .none
+
 				case let .charts(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didChangeAggregation(aggregation):
@@ -310,6 +330,8 @@ public struct StatisticsDetails: Reducer {
 						.destination(.presented(.list(.binding))),
 						.destination(.presented(.sourcePicker(.internal))),
 						.destination(.presented(.sourcePicker(.view))),
+						.destination(.presented(.sharing(.internal))),
+						.destination(.presented(.sharing(.view))),
 						.errors(.internal), .errors(.view),
 						.charts(.internal), .charts(.view), .charts(.binding):
 					return .none

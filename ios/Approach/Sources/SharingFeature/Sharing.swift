@@ -3,6 +3,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import ModelsLibrary
+import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -13,6 +14,7 @@ public struct Sharing: Reducer {
 		public let source: Source
 
 		public var seriesSharing: SeriesSharing.State?
+		public var statisticsSharing: StatisticsWidgetSharing.State?
 
 		public var tabs: [SharingTab]
 		public var selectedTab: SharingTab
@@ -27,6 +29,10 @@ public struct Sharing: Reducer {
 				seriesSharing = .init(seriesId: seriesId)
 				tabs = [.series]
 				selectedTab = .series
+			case let .statistic(source, statistic):
+				statisticsSharing = .init(source: source, statistic: statistic)
+				tabs = [.statistic]
+				selectedTab = .statistic
 			}
 		}
 	}
@@ -41,6 +47,7 @@ public struct Sharing: Reducer {
 		@CasePathable public enum Delegate { case doNothing }
 		@CasePathable public enum Internal {
 			case seriesSharing(SeriesSharing.Action)
+			case statisticsSharing(StatisticsWidgetSharing.Action)
 		}
 
 		case view(View)
@@ -50,10 +57,12 @@ public struct Sharing: Reducer {
 
 	public enum Source: Equatable {
 		case series(Series.ID)
+		case statistic(StatisticsWidget.Source?, statistic: String?)
 	}
 
 	public enum SharingTab: Equatable {
 		case series
+		case statistic
 	}
 
 	public init() {}
@@ -84,7 +93,12 @@ public struct Sharing: Reducer {
 					state.shareImage = Image(uiImage: image)
 					return .none
 
-				case .seriesSharing(.binding), .seriesSharing(.internal), .seriesSharing(.view):
+				case let .statisticsSharing(.delegate(.imageRendered(image))):
+					state.shareImage = Image(uiImage: image)
+					return .none
+
+				case .statisticsSharing(.binding), .statisticsSharing(.internal), .statisticsSharing(.view),
+						.seriesSharing(.binding), .seriesSharing(.internal), .seriesSharing(.view):
 					return .none
 				}
 
@@ -94,6 +108,9 @@ public struct Sharing: Reducer {
 		}
 		.ifLet(\.seriesSharing, action: \.internal.seriesSharing) {
 			SeriesSharing()
+		}
+		.ifLet(\.statisticsSharing, action: \.internal.statisticsSharing) {
+			StatisticsWidgetSharing()
 		}
 
 		BreadcrumbReducer<State, Action> { _, action in
@@ -123,6 +140,8 @@ public struct SharingView: View {
 				switch store.selectedTab {
 				case .series:
 					seriesSharing
+				case .statistic:
+					statisticsSharing
 				}
 			}
 
@@ -155,29 +174,56 @@ public struct SharingView: View {
 	}
 
 	@ViewBuilder
+	private var statisticsSharing: some View {
+		if let store = store.scope(state: \.statisticsSharing, action: \.internal.statisticsSharing) {
+			StatisticsWidgetSharingView(store: store)
+		}
+	}
+
+	@ViewBuilder
 	private var shareButton: some View {
 		if let image = store.shareImage {
 			ShareLink(item: image, preview: SharePreview(Strings.App.name, image: image)) {
-				HStack(alignment: .center, spacing: .standardSpacing) {
-					Spacer()
-
-					Image(systemSymbol: .squareAndArrowUp)
-						.resizable()
-						.scaledToFit()
-						.frame(width: .smallIcon, height: .smallIcon)
-
-					Text(Strings.Action.share)
-						.font(.subheadline)
-						.fontWeight(.bold)
-
-					Spacer()
-				}
+				ShareImageButton()
 			}
+			.modifier(ShareImageButtonModifier())
+			.padding()
+		} else {
+			Button { } label: {
+				ShareImageButton()
+			}
+			.modifier(ShareImageButtonModifier())
+			.disabled(true)
+			.padding()
+		}
+	}
+}
+
+private struct ShareImageButton: View {
+	var body: some View {
+		HStack(alignment: .center, spacing: .standardSpacing) {
+			Spacer()
+
+			Image(systemSymbol: .squareAndArrowUp)
+				.resizable()
+				.scaledToFit()
+				.frame(width: .smallIcon, height: .smallIcon)
+
+			Text(Strings.Action.share)
+				.font(.subheadline)
+				.fontWeight(.bold)
+
+			Spacer()
+		}
+	}
+}
+
+private struct ShareImageButtonModifier: ViewModifier {
+	func body(content: Content) -> some View {
+		content
 			.buttonStyle(.borderedProminent)
 			.controlSize(.large)
 			.foregroundColor(Asset.Colors.Text.onPrimary)
 			.tint(Asset.Colors.Primary.default)
-			.padding()
-		}
 	}
 }

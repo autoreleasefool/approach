@@ -53,9 +53,7 @@ public struct GamesListView: View {
 
 			if store.isSeriesSharingEnabled {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button { send(.didTapShareButton) } label: {
-						Image(systemSymbol: .squareAndArrowUp)
-					}
+					ShareButton { send(.didTapShareButton) }
 				}
 			}
 

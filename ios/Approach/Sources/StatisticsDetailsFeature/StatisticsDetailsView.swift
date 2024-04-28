@@ -1,6 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
+import SharingFeature
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
@@ -49,6 +50,12 @@ public struct StatisticsDetailsView: View {
 		.navigationTitle(store.sources?.bowler.name ?? "")
 		.navigationBarTitleDisplayMode(.inline)
 		.toolbar {
+			if store.isSharingStatisticsEnabled {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					ShareButton { send(.didTapShareButton) }
+				}
+			}
+
 			ToolbarItem(placement: .navigationBarTrailing) {
 				FilterButton(isActive: false) { send(.didTapSourcePicker) }
 			}
@@ -101,6 +108,8 @@ public struct StatisticsDetailsView: View {
 			}
 			.presentationDetents([.medium, .large])
 		}
+		.sourcePicker($store.scope(state: \.destination?.sourcePicker, action: \.internal.destination.sourcePicker))
+		.sharing($store.scope(state: \.destination?.sharing, action: \.internal.destination.sharing))
 	}
 
 	private var measuredBackdropSize: CGSize {
@@ -114,3 +123,22 @@ public struct StatisticsDetailsView: View {
 
 private struct SheetContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
 private struct WindowContentSizeKey: PreferenceKey, CGSizePreferenceKey {}
+
+@MainActor extension View {
+	fileprivate func sharing(_ store: Binding<StoreOf<Sharing>?>) -> some View {
+		sheet(item: store) { store in
+			NavigationStack {
+				SharingView(store: store)
+			}
+		}
+	}
+
+	fileprivate func sourcePicker(_ store: Binding<StoreOf<StatisticsSourcePicker>?>) -> some View {
+		sheet(item: store) { store in
+			NavigationStack {
+				StatisticsSourcePickerView(store: store)
+			}
+			.presentationDetents([.medium, .large])
+		}
+	}
+}

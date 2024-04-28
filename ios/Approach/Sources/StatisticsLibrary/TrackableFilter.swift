@@ -63,6 +63,25 @@ extension TrackableFilter {
 	}
 }
 
+extension TrackableFilter.Source {
+	public var widgetSource: StatisticsWidget.Source? {
+		switch self {
+		case let .bowler(id): .bowler(id)
+		case let .league(id): .league(id)
+		case .game, .series: nil
+		}
+	}
+}
+
+extension StatisticsWidget.Source {
+	public var trackableSource: TrackableFilter.Source {
+		switch self {
+		case let .bowler(id): .bowler(id)
+		case let .league(id): .league(id)
+		}
+	}
+}
+
 // MARK: - Leagues
 
 extension TrackableFilter {

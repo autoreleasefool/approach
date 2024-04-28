@@ -139,10 +139,8 @@ services = [ "AppIcon", "DatabaseMocking", "Products" ]
 dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
-features = [ "Errors" ]
+features = [ "StatisticsWidgetEditor" ]
 repositories = [ "Series" ]
-libraries = [ "DateTime", "ModelsViews" ]
-dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]
@@ -161,7 +159,7 @@ libraries = [ "ModelsViews", "PickableModels" ]
 dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.StatisticsWidgetsLayout]
-features = [ "StatisticsDetails", "StatisticsWidgetEditor" ]
+features = [ "StatisticsDetails" ]
 libraries = [ "Reordering" ]
 
 # Repositories
