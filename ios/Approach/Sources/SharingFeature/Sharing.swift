@@ -148,6 +148,7 @@ public struct SharingView: View {
 			VStack(spacing: 0) {
 				Divider()
 
+				previewImage
 				shareButton
 			}
 		}
@@ -177,6 +178,18 @@ public struct SharingView: View {
 	private var statisticsSharing: some View {
 		if let store = store.scope(state: \.statisticsSharing, action: \.internal.statisticsSharing) {
 			StatisticsWidgetSharingView(store: store)
+		}
+	}
+
+	@ViewBuilder
+	private var previewImage: some View {
+		if let preview = store.shareImage {
+			preview
+				.resizable()
+				.aspectRatio(contentMode: .fit)
+				.clipShape(RoundedRectangle(cornerRadius: .standardRadius))
+				.padding(.top)
+				.padding(.horizontal)
 		}
 	}
 

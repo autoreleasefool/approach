@@ -199,9 +199,6 @@ public struct StatisticsWidgetSharingView: View {
 	public var body: some View {
 		StatisticsWidgetConfigurationEditorView(
 			store: store.scope(state: \.editor, action: \.internal.editor),
-			header: {
-				previewSection
-			},
 			footer: {
 				colorSchemeSection
 			}
@@ -213,18 +210,6 @@ public struct StatisticsWidgetSharingView: View {
 		}
 		.onChange(of: displayScale) { send(.didUpdateDisplayScale(displayScale)) }
 		.errors(store: store.scope(state: \.errors, action: \.internal.errors))
-	}
-
-	@ViewBuilder
-	private var previewSection: some View {
-		if let configuration = store.configuration {
-			Section(Strings.Sharing.Preview.title) {
-				ShareableStatisticsImage(configuration: configuration)
-					.environment(\.colorScheme, configuration.colorScheme)
-			}
-			.listRowSeparator(.hidden)
-			.listRowInsets(EdgeInsets())
-		}
 	}
 
 	private var colorSchemeSection: some View {

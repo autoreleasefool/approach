@@ -186,7 +186,6 @@ public struct SeriesSharingView: View {
 
 	public var body: some View {
 		List {
-			previewSection
 			detailsSection
 			domainSection
 			colorSchemeSection
@@ -198,18 +197,6 @@ public struct SeriesSharingView: View {
 			send(.didUpdateDisplayScale(displayScale))
 		}
 		.onChange(of: displayScale) { send(.didUpdateDisplayScale(displayScale)) }
-	}
-
-	@ViewBuilder
-	private var previewSection: some View {
-		if let configuration = store.configuration {
-			Section(Strings.Sharing.Preview.title) {
-				ShareableSeriesImage(configuration: configuration)
-					.environment(\.colorScheme, configuration.colorScheme)
-			}
-			.listRowSeparator(.hidden)
-			.listRowInsets(EdgeInsets())
-		}
 	}
 
 	private var detailsSection: some View {
