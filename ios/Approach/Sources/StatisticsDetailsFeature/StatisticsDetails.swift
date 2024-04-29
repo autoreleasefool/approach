@@ -36,7 +36,7 @@ public struct StatisticsDetails: Reducer {
 		public var willAdjustLaneLayoutAt: Date
 		public var backdropSize: CGSize = .zero
 		public var filtersSize: StatisticsFilterView.Size = .regular
-		public var lastOrientation: UIDeviceOrientation?
+		public var latestOrientation: UIDeviceOrientation?
 
 		public var charts: StatisticsDetailsCharts.State
 
@@ -201,7 +201,7 @@ public struct StatisticsDetails: Reducer {
 
 				case let .didLoadListEntries(.success(statistics)):
 					state.listEntries = .init(uniqueElements: statistics)
-					let presentEffect = presentDestinationForLastOrientation(withState: &state, scrollingTo: state.selectedStatistic)
+					let presentEffect = presentDestinationForLatestOrientation(withState: &state, scrollingTo: state.selectedStatistic)
 
 					let statisticChartToLoad: Statistic.Type?
 					if let statisticId = state.selectedStatistic,
@@ -252,7 +252,7 @@ public struct StatisticsDetails: Reducer {
 
 				case .adjustBackdrop:
 					state.willAdjustLaneLayoutAt = date()
-					return presentDestinationForLastOrientation(
+					return presentDestinationForLatestOrientation(
 						withState: &state,
 						scrollingTo: state.listEntries.isEmpty ? nil : state.selectedStatistic
 					)
@@ -267,9 +267,14 @@ public struct StatisticsDetails: Reducer {
 					}
 
 				case let .orientationChange(orientation):
-					state.lastOrientation = orientation
+					guard orientation.isLandscape != state.latestOrientation?.isLandscape else {
+						state.latestOrientation = orientation
+						return .none
+					}
+
+					state.latestOrientation = orientation
 					return .merge(
-						presentDestinationForLastOrientation(
+						presentDestinationForLatestOrientation(
 							withState: &state,
 							scrollingTo: state.listEntries.isEmpty ? nil : state.selectedStatistic
 						),

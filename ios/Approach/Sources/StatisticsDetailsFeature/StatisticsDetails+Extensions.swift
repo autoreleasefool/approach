@@ -38,12 +38,12 @@ extension StatisticsDetails {
 		.cancellable(id: CancelID.loadingChartValues, cancelInFlight: true)
 	}
 
-	func presentDestinationForLastOrientation(
+	func presentDestinationForLatestOrientation(
 		withState state: inout State,
 		scrollingTo entryId: Statistics.ListEntry.ID? = nil
 	) -> Effect<StatisticsDetails.Action> {
 		var list: StatisticsDetailsList.State?
-		switch state.lastOrientation {
+		switch state.latestOrientation {
 		case .portrait, .portraitUpsideDown, .faceUp, .faceDown, .unknown, .none:
 			list = .init(listEntries: state.listEntries, hasTappableElements: true)
 		case .landscapeLeft, .landscapeRight:
