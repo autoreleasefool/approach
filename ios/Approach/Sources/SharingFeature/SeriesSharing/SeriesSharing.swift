@@ -1,3 +1,4 @@
+import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
@@ -166,6 +167,15 @@ public struct SeriesSharing: Reducer {
 					send(.delegate(.imageRendered(image)))
 				}
 				.cancellable(id: CancelID.imageRenderer, cancelInFlight: true)
+			}
+		}
+
+		ErrorHandlerReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.loadSeriesResponse(.failure(error))):
+				return error
+			default:
+				return nil
 			}
 		}
 	}
