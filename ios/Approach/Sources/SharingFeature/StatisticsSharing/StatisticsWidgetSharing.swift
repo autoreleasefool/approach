@@ -33,7 +33,7 @@ public struct StatisticsWidgetSharing: Reducer {
 		}
 
 		var configuration: ShareableStatisticsImage.Configuration? {
-			guard let configuration = editor.configuration,
+			guard let configuration = editor.configuration?.withSubtitle(),
 						let chartContent = widgetPreviewData else { return nil }
 			return .init(
 				widget: configuration,
@@ -126,7 +126,10 @@ public struct StatisticsWidgetSharing: Reducer {
 							.map { .internal(.errors($0)) }
 
 					case let .editor(.delegate(.didChangeConfiguration(configuration))):
-						return refreshChart(withConfiguration: configuration, state: &state)
+						return refreshChart(
+							withConfiguration: configuration?.withSubtitle(),
+							state: &state
+						)
 
 					case .editor(.internal), .editor(.view), .editor(.binding),
 							.errors(.delegate(.doNothing)), .errors(.internal), .errors(.view):
@@ -143,9 +146,8 @@ public struct StatisticsWidgetSharing: Reducer {
 				return .run { @MainActor send in
 					guard let configuration else { return }
 					let imageRenderer = ImageRenderer(
-						content: StatisticsWidget.Widget(
-							configuration: configuration.widget,
-							chartContent: configuration.chart
+						content: ShareableStatisticsImage(
+							configuration: configuration
 						)
 						.frame(minWidth: 400)
 						.environment(\.colorScheme, configuration.colorScheme)
@@ -190,6 +192,19 @@ public struct StatisticsWidgetSharing: Reducer {
 				try await statisticsWidgets.chart(configuration)
 			})))
 		}.cancellable(id: CancelID.loadingPreview, cancelInFlight: true)
+	}
+}
+
+private extension StatisticsWidget.Configuration {
+	func withSubtitle() -> StatisticsWidget.Configuration {
+		.init(
+			id: id,
+			bowlerId: bowlerId,
+			leagueId: leagueId,
+			timeline: timeline,
+			statistic: statistic,
+			subtitle: "\(Strings.Sharing.Watermark.madeWithApproach) - \(Strings.Sharing.Watermark.tryApproach)"
+		)
 	}
 }
 

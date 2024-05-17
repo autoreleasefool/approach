@@ -15,6 +15,7 @@ public struct Sharing: Reducer {
 
 		public var seriesSharing: SeriesSharing.State?
 		public var statisticsSharing: StatisticsWidgetSharing.State?
+		public var gamesSharing: GamesSharing.State?
 
 		public var tabs: [SharingTab]
 		public var selectedTab: SharingTab
@@ -26,13 +27,17 @@ public struct Sharing: Reducer {
 
 			switch source {
 			case let .series(seriesId):
-				seriesSharing = .init(seriesId: seriesId)
+				seriesSharing = .init(seriesId: seriesId) // TODO: We can also eventually instantiate GamesSharing here
 				tabs = [.series]
 				selectedTab = .series
 			case let .statistic(source, statistic):
 				statisticsSharing = .init(source: source, statistic: statistic)
 				tabs = [.statistic]
 				selectedTab = .statistic
+			case let .games(seriesId):
+				gamesSharing = .init(seriesId: seriesId)
+				tabs = [.games]
+				selectedTab = .games
 			}
 		}
 	}
@@ -48,6 +53,7 @@ public struct Sharing: Reducer {
 		@CasePathable public enum Internal {
 			case seriesSharing(SeriesSharing.Action)
 			case statisticsSharing(StatisticsWidgetSharing.Action)
+			case gamesSharing(GamesSharing.Action)
 		}
 
 		case view(View)
@@ -56,12 +62,14 @@ public struct Sharing: Reducer {
 	}
 
 	public enum Source: Equatable {
+		case games(Series.ID)
 		case series(Series.ID)
 		case statistic(StatisticsWidget.Source?, statistic: String?)
 	}
 
 	public enum SharingTab: Equatable {
 		case series
+		case games
 		case statistic
 	}
 
@@ -97,8 +105,13 @@ public struct Sharing: Reducer {
 					state.shareImage = Image(uiImage: image)
 					return .none
 
+				case let .gamesSharing(.delegate(.imageRendered(image))):
+					state.shareImage = Image(uiImage: image)
+					return .none
+
 				case .statisticsSharing(.binding), .statisticsSharing(.internal), .statisticsSharing(.view),
-						.seriesSharing(.binding), .seriesSharing(.internal), .seriesSharing(.view):
+						.seriesSharing(.binding), .seriesSharing(.internal), .seriesSharing(.view),
+						.gamesSharing(.binding), .gamesSharing(.internal), .gamesSharing(.view):
 					return .none
 				}
 
@@ -111,6 +124,9 @@ public struct Sharing: Reducer {
 		}
 		.ifLet(\.statisticsSharing, action: \.internal.statisticsSharing) {
 			StatisticsWidgetSharing()
+		}
+		.ifLet(\.gamesSharing, action: \.internal.gamesSharing) {
+			GamesSharing()
 		}
 
 		BreadcrumbReducer<State, Action> { _, action in
@@ -142,6 +158,8 @@ public struct SharingView: View {
 					seriesSharing
 				case .statistic:
 					statisticsSharing
+				case .games:
+					gamesSharing
 				}
 			}
 
@@ -182,10 +200,18 @@ public struct SharingView: View {
 	}
 
 	@ViewBuilder
+	private var gamesSharing: some View {
+		if let store = store.scope(state: \.gamesSharing, action: \.internal.gamesSharing) {
+			GamesSharingView(store: store)
+		}
+	}
+
+	@ViewBuilder
 	private var previewImage: some View {
 		if let preview = store.shareImage {
 			preview
 				.resizable()
+				.frame(maxWidth: .infinity)
 				.aspectRatio(contentMode: .fit)
 				.clipShape(RoundedRectangle(cornerRadius: .standardRadius))
 				.padding(.top)

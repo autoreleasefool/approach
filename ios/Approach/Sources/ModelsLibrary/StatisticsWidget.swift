@@ -13,19 +13,22 @@ extension StatisticsWidget {
 		public let leagueId: League.ID?
 		public let timeline: StatisticsWidget.Timeline
 		public let statistic: String
+		public let subtitle: String?
 
 		public init(
 			id: StatisticsWidget.ID,
 			bowlerId: Bowler.ID?,
 			leagueId: League.ID?,
 			timeline: StatisticsWidget.Timeline,
-			statistic: String
+			statistic: String,
+			subtitle: String? = nil
 		) {
 			self.id = id
 			self.bowlerId = bowlerId
 			self.leagueId = leagueId
 			self.timeline = timeline
 			self.statistic = statistic
+			self.subtitle = subtitle
 		}
 	}
 }

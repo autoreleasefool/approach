@@ -15,6 +15,14 @@ public struct ShareableSeriesImage: View {
 		self.configuration = configuration
 	}
 
+	var hasAnyPrimaryLabel: Bool {
+		configuration.date != nil || configuration.bowlerName != nil || configuration.leagueName != nil
+	}
+
+	var hasAnySecondaryLabel: Bool {
+		configuration.showDetails
+	}
+
 	public var body: some View {
 		HStack(alignment: .top) {
 			VStack(alignment: .leading, spacing: .smallSpacing) {
@@ -29,6 +37,15 @@ public struct ShareableSeriesImage: View {
 				if let leagueName = configuration.leagueName {
 					ChartLabel(symbol: .repeat, title: leagueName, style: .plain)
 				}
+
+				if hasAnyPrimaryLabel {
+					tagline
+						.padding(.top, .smallSpacing * -0.5)
+						.padding(.leading, .smallSpacing)
+
+					Spacer(minLength: 30)
+						.fixedSize()
+				}
 			}
 
 			Spacer()
@@ -42,20 +59,30 @@ public struct ShareableSeriesImage: View {
 		.background(colorScheme == .dark ? .black : .white)
 	}
 
-	@ViewBuilder
 	private var seriesDetails: some View {
-		if configuration.showDetails {
-			HStack(spacing: .smallSpacing) {
-				if let total = configuration.total {
-					ChartLabel(symbol: .checkmarkSealFill, title: "\(total) TOTAL", style: .small)
-				}
-
-				ChartLabel(symbol: .arrowUp, title: "\(configuration.scores.highestScore) HIGH", style: .small)
-				ChartLabel(symbol: .arrowDown, title: "\(configuration.scores.lowestScore) LOW", style: .small)
+		VStack(alignment: .leading, spacing: .smallSpacing) {
+			if !hasAnyPrimaryLabel {
+				tagline
 			}
-			.font(.caption2)
-			.padding(.standardSpacing)
+
+			HStack(spacing: .smallSpacing) {
+				if configuration.showDetails {
+					if let total = configuration.total {
+						ChartLabel(symbol: .checkmarkSealFill, title: "\(total) TOTAL", style: .small)
+					}
+
+					ChartLabel(symbol: .arrowUp, title: "\(configuration.scores.highestScore) HIGH", style: .small)
+					ChartLabel(symbol: .arrowDown, title: "\(configuration.scores.lowestScore) LOW", style: .small)
+				}
+			}
 		}
+		.padding(.standardSpacing)
+	}
+
+	private var tagline: some View {
+		Text("\(Strings.Sharing.Watermark.madeWithApproach)\n\(Strings.Sharing.Watermark.tryApproach)")
+			.font(.system(size: 8))
+			.monospaced()
 	}
 
 	private var chart: some View {
@@ -193,7 +220,7 @@ extension ShareableSeriesImage {
 
 #Preview {
 	ShareableSeriesImage(configuration: .init(
-		date: Date(),
+//		date: Date(),
 		total: 485,
 		scores: [
 			.init(index: 0, score: 225),

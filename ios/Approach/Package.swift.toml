@@ -140,7 +140,8 @@ dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
 features = [ "StatisticsWidgetEditor" ]
-repositories = [ "Series" ]
+repositories = [ "Games", "Scores", "Series" ]
+libraries = [ "ScoreSheet" ]
 
 [features.StatisticsOverview]
 features = [ "StatisticsDetails" ]

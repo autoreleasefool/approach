@@ -469,6 +469,9 @@ public struct GamesEditor: Reducer {
 				case let .destination(.presented(.sheets(.settings(action)))):
 					return reduce(into: &state, gamesSettingsAction: action)
 
+				case let .destination(.presented(.sheets(.sharing(action)))):
+					return reduce(into: &state, sharingAction: action)
+
 				case let .destination(.presented(.duplicateLanesAlert(action))):
 					return reduce(into: &state, duplicateLanesAction: action)
 

@@ -26,6 +26,8 @@ public struct ScoreSheet: View {
 
 		var isLast: Bool { Frame.isLast(frameIndex) }
 		var frameId: FrameID { .init(frameIndex: frameIndex) }
+
+		public static let none: Self = .init(frameIndex: -1, rollIndex: -1)
 	}
 
 	struct FrameID: Hashable {
@@ -34,7 +36,7 @@ public struct ScoreSheet: View {
 
 	public var body: some View {
 		ScrollViewReader { proxy in
-			ScrollView(.horizontal, showsIndicators: false) {
+//			ScrollView(.horizontal, showsIndicators: false) {
 				Grid(horizontalSpacing: 0, verticalSpacing: 0) {
 					GridRow {
 						ForEach(game.frames, id: \.index) { frame in
@@ -56,7 +58,7 @@ public struct ScoreSheet: View {
 						}
 					}
 				}
-			}
+//			}
 			.cornerRadius(.standardRadius)
 			.onChange(of: selection) {
 				withAnimation(.easeInOut(duration: 300)) {

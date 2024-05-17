@@ -25,7 +25,8 @@ extension GamesEditor {
 				return .none
 
 			case .didShareGame:
-				// TODO: Show share sheet
+				guard let series = state.game?.series.id else { return .none }
+				state.destination = .sheets(.sharing(.init(source: .games(series))))
 				return .none
 			}
 

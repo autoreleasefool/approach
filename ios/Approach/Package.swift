@@ -660,6 +660,9 @@ let package = Package(
 		.target(
 			name: "SharingFeature",
 			dependencies: [
+				"GamesRepositoryInterface",
+				"ScoreSheetLibrary",
+				"ScoresRepositoryInterface",
 				"SeriesRepositoryInterface",
 				"StatisticsWidgetEditorFeature",
 			]

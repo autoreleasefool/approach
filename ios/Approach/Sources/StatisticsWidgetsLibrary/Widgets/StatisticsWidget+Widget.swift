@@ -33,7 +33,7 @@ extension StatisticsWidget {
 		}
 
 		private func averagingWidget(_ data: AveragingChart.Data) -> some View {
-			StatisticsWidget.WidgetLayout(data.title) {
+			StatisticsWidget.WidgetLayout(data.title, subtitle: configuration.subtitle) {
 				AveragingChart.Compact(
 					data,
 					style: .init(
@@ -56,7 +56,7 @@ extension StatisticsWidget {
 		}
 
 		private func percentageWidget(_ data: PercentageChart.Data) -> some View {
-			StatisticsWidget.WidgetLayout(data.title) {
+			StatisticsWidget.WidgetLayout(data.title, subtitle: configuration.subtitle) {
 				PercentageChart.Compact(
 					data,
 					style: .init(
@@ -84,7 +84,7 @@ extension StatisticsWidget {
 		}
 
 		private func countingWidget(_ data: CountingChart.Data) -> some View {
-			StatisticsWidget.WidgetLayout(data.title) {
+			StatisticsWidget.WidgetLayout(data.title, subtitle: configuration.subtitle) {
 				CountingChart.Compact(
 					data,
 					style: .init(
@@ -103,7 +103,10 @@ extension StatisticsWidget {
 		}
 
 		private func dataMissing(_ statistic: String) -> some View {
-			StatisticsWidget.WidgetLayout(statistic, subtitle: Strings.Widget.Chart.Placeholder.notEnoughData) {
+			StatisticsWidget.WidgetLayout(
+				statistic,
+				subtitle: configuration.subtitle ?? Strings.Widget.Chart.Placeholder.notEnoughData
+			) {
 				AveragingChart.Compact(
 					.createPlaceholderData(forStatistic: statistic),
 					style: .init(
@@ -119,7 +122,10 @@ extension StatisticsWidget {
 		}
 
 		private func chartUnavailable(_ statistic: String) -> some View {
-			StatisticsWidget.WidgetLayout(statistic, subtitle: Strings.Widget.Chart.unavailable) {
+			StatisticsWidget.WidgetLayout(
+				statistic,
+				subtitle: configuration.subtitle ?? Strings.Widget.Chart.unavailable
+			) {
 				centered {
 					Asset.Media.Charts.error.swiftUIImage
 						.resizable()
