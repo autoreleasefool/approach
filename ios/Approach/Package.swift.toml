@@ -9,6 +9,11 @@ supported = [ "\"17.0\"" ]
 
 # Features
 
+[features.App]
+features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
+services = [ "Launch" ]
+dependencies = [ "PasteboardPackageService" ]
+
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
 dependencies = [ "Algorithms" ]
@@ -31,10 +36,6 @@ libraries = [ "ResourceList" ]
 [features.Announcements]
 services = [ "Announcements" ]
 
-[features.App]
-features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
-services = [ "Launch" ]
-
 [features.ArchiveList]
 features = [ "Errors" ]
 repositories = [ "Bowlers", "Games", "Leagues", "Series" ]
@@ -53,8 +54,9 @@ features = [ "Announcements", "BowlerEditor", "LeaguesList" ]
 repositories = [ "QuickLaunch" ]
 
 [features.Errors]
-services = [ "Email", "FileManager", "Logging", "Pasteboard" ]
+services = [ "Email", "FileManager", "Logging" ]
 libraries = [ "Constants", "Equatable", "Toast", "Views" ]
+dependencies = [ "PasteboardPackageServiceInterface" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -273,8 +275,6 @@ dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.Notifications]
 
-[services.Pasteboard]
-
 [services.Preference]
 
 [services.Products]
@@ -430,6 +430,11 @@ dependencies = [ "AlertToast" ]
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
 
+# Dependency Versions
+[sharedRefs.SwiftUtilities]
+url = "https://github.com/autoreleasefool/swift-utilities.git"
+branch = "main"
+
 # External Dependencies
 
 [dependencies.AlertToast]
@@ -484,6 +489,11 @@ from = "8.21.0"
 suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
 from = "1.15.4"
+
+[dependencies.PasteboardPackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.PasteboardPackageServiceInterface]
+sharedRef = "SwiftUtilities"
 
 [dependencies.TelemetryClient]
 url = "https://github.com/TelemetryDeck/SwiftClient.git"

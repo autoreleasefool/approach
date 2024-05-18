@@ -106,8 +106,6 @@ let package = Package(
 		.library(name: "LoggingServiceInterface", targets: ["LoggingServiceInterface"]),
 		.library(name: "NotificationsService", targets: ["NotificationsService"]),
 		.library(name: "NotificationsServiceInterface", targets: ["NotificationsServiceInterface"]),
-		.library(name: "PasteboardService", targets: ["PasteboardService"]),
-		.library(name: "PasteboardServiceInterface", targets: ["PasteboardServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
 		.library(name: "ProductsService", targets: ["ProductsService"]),
@@ -161,6 +159,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "1.0.0"),
+		.package(url: "https://github.com/autoreleasefool/swift-utilities.git", branch: "main"),
 		.package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack.git", from: "3.8.4"),
 		.package(url: "https://github.com/elai950/AlertToast.git", from: "1.3.9"),
 		.package(url: "https://github.com/getsentry/sentry-cocoa.git", from: "8.21.0"),
@@ -262,6 +261,7 @@ let package = Package(
 		.target(
 			name: "AppFeature",
 			dependencies: [
+				.product(name: "PasteboardPackageService", package: "swift-utilities"),
 				"AccessoriesOverviewFeature",
 				"BowlersListFeature",
 				"LaunchServiceInterface",
@@ -347,6 +347,7 @@ let package = Package(
 		.target(
 			name: "ErrorsFeature",
 			dependencies: [
+				.product(name: "PasteboardPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
 				"EmailServiceInterface",
@@ -354,7 +355,6 @@ let package = Package(
 				"FeatureActionLibrary",
 				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
-				"PasteboardServiceInterface",
 				"ToastLibrary",
 				"ViewsLibrary",
 			]
@@ -1403,25 +1403,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"NotificationsService",
-			]
-		),
-		.target(
-			name: "PasteboardService",
-			dependencies: [
-				"PasteboardServiceInterface",
-			]
-		),
-		.target(
-			name: "PasteboardServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-			]
-		),
-		.testTarget(
-			name: "PasteboardServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"PasteboardService",
 			]
 		),
 		.target(

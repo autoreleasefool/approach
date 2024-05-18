@@ -5,7 +5,7 @@ import ConstantsLibrary
 import EquatableLibrary
 import FeatureActionLibrary
 import FileManagerServiceInterface
-import PasteboardServiceInterface
+import PasteboardPackageServiceInterface
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -86,7 +86,7 @@ public struct ErrorReport: Reducer {
 
 				case .didTapCopyErrorButton:
 					return .run { [errorDescription = state.thrownError.wrapped.localizedDescription] send in
-						pasteboard.copyToClipboard(errorDescription)
+						try await pasteboard.copyToClipboard(errorDescription)
 						await send(.internal(.didCopyToClipboard))
 					}
 

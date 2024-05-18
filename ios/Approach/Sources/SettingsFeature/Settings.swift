@@ -14,7 +14,7 @@ import Foundation
 import ImportExportFeature
 import ImportExportServiceInterface
 import OpponentsListFeature
-import PasteboardServiceInterface
+import PasteboardPackageServiceInterface
 import StringsLibrary
 
 @Reducer
@@ -151,7 +151,7 @@ public struct Settings: Reducer {
 
 				case .didTapVersionNumber:
 					return .run { send in
-						pasteboard.copyToClipboard(AppConstants.appVersionReadable)
+						try await pasteboard.copyToClipboard(AppConstants.appVersionReadable)
 						await send(.internal(.didCopyToClipboard))
 					}
 

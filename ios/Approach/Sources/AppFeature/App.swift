@@ -3,6 +3,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import LaunchServiceInterface
 import OnboardingFeature
+import PasteboardPackageService
 import PreferenceServiceInterface
 import StatisticsRepositoryInterface
 

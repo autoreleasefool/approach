@@ -199,6 +199,15 @@
       }
     },
     {
+      "identity" : "swift-utilities",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/autoreleasefool/swift-utilities.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "8b406f005b27805742dfb2eee653f11e76a7d499"
+      }
+    },
+    {
       "identity" : "swiftclient",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/TelemetryDeck/SwiftClient.git",
