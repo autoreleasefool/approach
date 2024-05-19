@@ -1,4 +1,6 @@
 import AnalyticsServiceInterface
+import AppInfoPackageService
+import BundlePackageService
 import ComposableArchitecture
 import FeatureActionLibrary
 import LaunchServiceInterface
@@ -6,6 +8,8 @@ import OnboardingFeature
 import PasteboardPackageService
 import PreferenceServiceInterface
 import StatisticsRepositoryInterface
+import StoreReviewPackageService
+import UserDefaultsPackageService
 
 @Reducer
 public struct App: Reducer {

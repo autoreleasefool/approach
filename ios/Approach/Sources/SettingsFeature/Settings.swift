@@ -1,7 +1,9 @@
 import AnalyticsServiceInterface
 import AppIconServiceInterface
+import AppInfoPackageServiceInterface
 import ArchiveListFeature
 import AssetsLibrary
+import BundlePackageServiceInterface
 import ComposableArchitecture
 import ConstantsLibrary
 import DatabaseMockingServiceInterface
@@ -32,6 +34,9 @@ public struct Settings: Reducer {
 
 		@Presents public var destination: Destination.State?
 
+		public let appName: String
+		public let appVersion: String
+
 		public let isImportEnabled: Bool
 		public let isDeveloperOptionsEnabled: Bool
 
@@ -40,6 +45,10 @@ public struct Settings: Reducer {
 			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
 			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
 			self.isDeveloperOptionsEnabled = featureFlags.isEnabled(.developerOptions)
+
+			@Dependency(\.appInfo) var appInfo
+			self.appVersion = appInfo.getFullAppVersion()
+			self.appName = Strings.App.name
 		}
 
 		public mutating func showAppIconList() -> Effect<Settings.Action> {
@@ -151,7 +160,8 @@ public struct Settings: Reducer {
 
 				case .didTapVersionNumber:
 					return .run { send in
-						try await pasteboard.copyToClipboard(AppConstants.appVersionReadable)
+						@Dependency(\.appInfo) var appInfo
+						try await pasteboard.copyToClipboard(appInfo.getFullAppVersion())
 						await send(.internal(.didCopyToClipboard))
 					}
 

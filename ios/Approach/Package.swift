@@ -84,8 +84,6 @@ let package = Package(
 		.library(name: "AnnouncementsServiceInterface", targets: ["AnnouncementsServiceInterface"]),
 		.library(name: "AppIconService", targets: ["AppIconService"]),
 		.library(name: "AppIconServiceInterface", targets: ["AppIconServiceInterface"]),
-		.library(name: "AppInfoService", targets: ["AppInfoService"]),
-		.library(name: "AppInfoServiceInterface", targets: ["AppInfoServiceInterface"]),
 		.library(name: "AvatarService", targets: ["AvatarService"]),
 		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
 		.library(name: "DatabaseMockingService", targets: ["DatabaseMockingService"]),
@@ -112,8 +110,6 @@ let package = Package(
 		.library(name: "ProductsServiceInterface", targets: ["ProductsServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
-		.library(name: "StoreReviewService", targets: ["StoreReviewService"]),
-		.library(name: "StoreReviewServiceInterface", targets: ["StoreReviewServiceInterface"]),
 		.library(name: "TipsService", targets: ["TipsService"]),
 		.library(name: "TipsServiceInterface", targets: ["TipsServiceInterface"]),
 
@@ -261,7 +257,11 @@ let package = Package(
 		.target(
 			name: "AppFeature",
 			dependencies: [
+				.product(name: "AppInfoPackageService", package: "swift-utilities"),
+				.product(name: "BundlePackageService", package: "swift-utilities"),
 				.product(name: "PasteboardPackageService", package: "swift-utilities"),
+				.product(name: "StoreReviewPackageService", package: "swift-utilities"),
+				.product(name: "UserDefaultsPackageService", package: "swift-utilities"),
 				"AccessoriesOverviewFeature",
 				"BowlersListFeature",
 				"LaunchServiceInterface",
@@ -347,6 +347,7 @@ let package = Package(
 		.target(
 			name: "ErrorsFeature",
 			dependencies: [
+				.product(name: "AppInfoPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "PasteboardPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
@@ -399,6 +400,7 @@ let package = Package(
 		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
+				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				"AvatarServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"FramesRepositoryInterface",
@@ -407,7 +409,6 @@ let package = Package(
 				"RecentlyUsedServiceInterface",
 				"SharingFeature",
 				"StatisticsDetailsFeature",
-				"StoreReviewServiceInterface",
 			]
 		),
 		.testTarget(
@@ -636,6 +637,7 @@ let package = Package(
 		.target(
 			name: "SettingsFeature",
 			dependencies: [
+				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
 				"AppIconServiceInterface",
 				"ArchiveListFeature",
 				"DatabaseMockingServiceInterface",
@@ -1183,27 +1185,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "AppInfoService",
-			dependencies: [
-				"AppInfoServiceInterface",
-				"ConstantsLibrary",
-				"PreferenceServiceInterface",
-			]
-		),
-		.target(
-			name: "AppInfoServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-			]
-		),
-		.testTarget(
-			name: "AppInfoServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"AppInfoService",
-			]
-		),
-		.target(
 			name: "AvatarService",
 			dependencies: [
 				"AvatarServiceInterface",
@@ -1344,8 +1325,9 @@ let package = Package(
 		.target(
 			name: "LaunchService",
 			dependencies: [
+				.product(name: "AppInfoPackageServiceInterface", package: "swift-utilities"),
+				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
-				"AppInfoServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"LaunchServiceInterface",
 				"ProductsServiceInterface",
@@ -1427,6 +1409,7 @@ let package = Package(
 		.target(
 			name: "ProductsService",
 			dependencies: [
+				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
 				.product(name: "RevenueCat", package: "purchases-ios"),
 				"ConstantsLibrary",
 				"ProductsServiceInterface",
@@ -1464,27 +1447,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
-			]
-		),
-		.target(
-			name: "StoreReviewService",
-			dependencies: [
-				"AppInfoServiceInterface",
-				"PreferenceServiceInterface",
-				"StoreReviewServiceInterface",
-			]
-		),
-		.target(
-			name: "StoreReviewServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-			]
-		),
-		.testTarget(
-			name: "StoreReviewServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"StoreReviewService",
 			]
 		),
 		.target(
@@ -1536,6 +1498,7 @@ let package = Package(
 		.target(
 			name: "ConstantsLibrary",
 			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"StringsLibrary",
 			],
 			resources: [

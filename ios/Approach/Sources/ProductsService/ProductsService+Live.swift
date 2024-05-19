@@ -1,3 +1,4 @@
+import BundlePackageServiceInterface
 import ConstantsLibrary
 import Dependencies
 import ProductsLibrary
@@ -19,15 +20,17 @@ extension ProductsService: DependencyKey {
 
 		return Self(
 			initialize: {
-				let apiKey = AppConstants.ApiKey.revenueCat
+				@Dependency(\.bundle) var bundle
+				let apiKey = bundle.object(forInfoDictionaryKey: "REVENUE_CAT_API_KEY") as? String
 
-				if apiKey.isEmpty {
+				guard let apiKey, !apiKey.isEmpty else {
 					print("Products disabled")
 					return
 				}
 
-				// TODO: Remove for release builds
+				#if DEBUG
 				Purchases.logLevel = .debug
+				#endif
 
 				Purchases.configure(
 					with: Configuration.Builder(withAPIKey: apiKey)

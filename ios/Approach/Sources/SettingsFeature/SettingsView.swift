@@ -112,13 +112,13 @@ public struct SettingsView: View {
 			} header: {
 				Text(Strings.Settings.Help.Development.title)
 			} footer: {
-				Text(Strings.Settings.Help.Development.help(AppConstants.appName))
+				Text(Strings.Settings.Help.Development.help(store.appName))
 			}
 			.sheet(isPresented: $store.isShowingBugReportEmail) {
 				EmailView(
 					content: .init(
 						recipients: [Strings.Settings.Help.ReportBug.email],
-						subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable)
+						subject: Strings.Settings.Help.ReportBug.subject(store.appVersion)
 					)
 				)
 			}
@@ -134,7 +134,7 @@ public struct SettingsView: View {
 				Button {
 					send(.didTapVersionNumber)
 				} label: {
-					LabeledContent(Strings.Settings.AppInfo.version, value: AppConstants.appVersionReadable)
+					LabeledContent(Strings.Settings.AppInfo.version, value: store.appVersion)
 						.contentShape(Rectangle())
 				}
 				.buttonStyle(.plain)

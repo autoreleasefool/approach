@@ -12,7 +12,7 @@ supported = [ "\"17.0\"" ]
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
-dependencies = [ "PasteboardPackageService" ]
+dependencies = [ "AppInfoPackageService", "BundlePackageService", "PasteboardPackageService", "StoreReviewPackageService", "UserDefaultsPackageService" ]
 
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
@@ -56,7 +56,7 @@ repositories = [ "QuickLaunch" ]
 [features.Errors]
 services = [ "Email", "FileManager", "Logging" ]
 libraries = [ "Constants", "Equatable", "Toast", "Views" ]
-dependencies = [ "PasteboardPackageServiceInterface" ]
+dependencies = [ "AppInfoPackageServiceInterface", "PasteboardPackageServiceInterface" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -68,7 +68,8 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing", "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
-services = [ "Avatar", "FeatureFlags", "RecentlyUsed", "StoreReview" ]
+services = [ "Avatar", "FeatureFlags", "RecentlyUsed" ]
+dependencies = [ "StoreReviewPackageServiceInterface" ]
 
 [features.GamesList]
 features = [ "GamesEditor", "SeriesEditor" ]
@@ -130,6 +131,7 @@ libraries = [ "SortOrder" ]
 [features.Settings]
 features = [ "ArchiveList", "FeatureFlagsList", "ImportExport", "OpponentsList" ]
 services = [ "AppIcon", "DatabaseMocking", "Products" ]
+dependencies = [ "BundlePackageServiceInterface" ]
 
 [features.Sharing]
 features = [ "Errors" ]
@@ -233,10 +235,6 @@ skip_tests = true
 [services.AppIcon.interface]
 libraries = [ "Assets" ]
 
-[services.AppInfo]
-services = [ "Preference" ]
-libraries = [ "Constants" ]
-
 [services.Avatar]
 libraries = [ "Extensions" ]
 [services.Avatar.interface]
@@ -267,7 +265,8 @@ services = [ "Database", "FileManager" ]
 libraries = [ "DateTime" ]
 
 [services.Launch]
-services = [ "Analytics", "AppInfo", "FeatureFlags", "Products" ]
+services = [ "Analytics", "FeatureFlags", "Products" ]
+dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInterface" ]
 
 [services.Logging]
 services = [ "FileManager" ]
@@ -279,15 +278,12 @@ dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.Products]
 libraries = [ "Constants" ]
-dependencies = [ "RevenueCat" ]
+dependencies = [ "BundlePackageServiceInterface", "RevenueCat" ]
 [services.Products.interface]
 libraries = [ "Products" ]
 
 [services.RecentlyUsed]
 services = [ "Preference" ]
-
-[services.StoreReview]
-services = [ "AppInfo", "Preference" ]
 
 [services.Tips]
 services = [ "Preference" ]
@@ -309,6 +305,7 @@ processed = [ "Resources" ]
 [libraries.Constants]
 skip_tests = true
 libraries = [ "Strings" ]
+dependencies = [ "Dependencies" ]
 [libraries.Constants.resources]
 processed = [ "Resources" ]
 
@@ -490,11 +487,6 @@ suitable_for_dependents_matching = "\\w+Tests$"
 url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
 from = "1.15.4"
 
-[dependencies.PasteboardPackageService]
-sharedRef = "SwiftUtilities"
-[dependencies.PasteboardPackageServiceInterface]
-sharedRef = "SwiftUtilities"
-
 [dependencies.TelemetryClient]
 url = "https://github.com/TelemetryDeck/SwiftClient.git"
 from = "1.5.1"
@@ -506,6 +498,27 @@ from = "1.1.0"
 [dependencies.ZIPFoundation]
 url = "https://github.com/weichsel/ZIPFoundation.git"
 from = "0.9.18"
+
+[dependencies.AppInfoPackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.AppInfoPackageServiceInterface]
+sharedRef = "SwiftUtilities"
+[dependencies.BundlePackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.BundlePackageServiceInterface]
+sharedRef = "SwiftUtilities"
+[dependencies.PasteboardPackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.PasteboardPackageServiceInterface]
+sharedRef = "SwiftUtilities"
+[dependencies.StoreReviewPackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.StoreReviewPackageServiceInterface]
+sharedRef = "SwiftUtilities"
+[dependencies.UserDefaultsPackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.UserDefaultsPackageServiceInterface]
+sharedRef = "SwiftUtilities"
 
 # Default Imports
 

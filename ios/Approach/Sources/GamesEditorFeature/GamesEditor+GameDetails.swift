@@ -85,7 +85,7 @@ extension GamesEditor {
 					state.syncRollEditorSharedState()
 					return save(frame: state.frames?[state.currentFrameIndex])
 				case let .game(_, bowler, game):
-					state.shouldRequestAppStoreReview = storeReview.shouldRequestReview()
+					state.shouldRequestAppStoreReview = (try? storeReview.shouldRequestReview()) ?? false
 
 					let saveGameEffect = lockGameIfFinished(in: &state)
 					state.setCurrent(gameId: game, bowlerId: bowler)

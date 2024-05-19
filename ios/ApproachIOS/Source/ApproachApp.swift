@@ -1,3 +1,4 @@
+import BundlePackageServiceInterface
 import ConstantsLibrary
 import Dependencies
 import LaunchServiceInterface
@@ -17,7 +18,9 @@ public struct ApproachApp: App {
 
 	public init() {
 		SentrySDK.start { options in
-			options.dsn = AppConstants.ApiKey.sentry
+			@Dependency(\.bundle) var bundle
+			let sentryKey = bundle.object(forInfoDictionaryKey: "SENTRY_DSN") as? String
+			options.dsn = sentryKey
 		}
 
 		@Dependency(LaunchService.self) var launch

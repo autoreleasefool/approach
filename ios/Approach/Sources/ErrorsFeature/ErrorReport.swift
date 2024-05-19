@@ -1,4 +1,5 @@
 import AnalyticsServiceInterface
+import AppInfoPackageServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
@@ -22,6 +23,8 @@ public struct ErrorReport: Reducer {
 		public let logDataUrl: URL?
 		public let canSendEmail: Bool
 
+		public let appVersion: String
+
 		@Presents public var alert: AlertState<AlertAction>?
 
 		var logData: Data? {
@@ -44,6 +47,9 @@ public struct ErrorReport: Reducer {
 			self.additionalErrors = .init(additionalErrors)
 			self.logDataUrl = logDataUrl
 			self.canSendEmail = canSendEmail
+
+			@Dependency(\.appInfo) var appInfo
+			self.appVersion = appInfo.getFullAppVersion()
 		}
 	}
 
@@ -231,7 +237,7 @@ public struct ErrorReportView: View {
 			EmailView(
 				content: .init(
 					recipients: [Strings.Settings.Help.ReportBug.email],
-					subject: Strings.Settings.Help.ReportBug.subject(AppConstants.appVersionReadable),
+					subject: Strings.Settings.Help.ReportBug.subject(store.appVersion),
 					body: Strings.ErrorReport.emailBody(
 						store
 							.allErrors

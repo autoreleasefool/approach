@@ -16,7 +16,7 @@ import RecentlyUsedServiceInterface
 import ResourcePickerLibrary
 import ScoreSheetLibrary
 import ScoresRepositoryInterface
-import StoreReviewServiceInterface
+import StoreReviewPackageServiceInterface
 import StringsLibrary
 import SwiftUI
 
@@ -270,7 +270,7 @@ public struct GamesEditor: Reducer {
 
 				case .didRequestReview:
 					state.shouldRequestAppStoreReview = false
-					return .run { _ in await storeReview.didRequestReview() }
+					return .run { _ in storeReview.didRequestReview() }
 
 				case let .didChangeSafeAreaInsets(newInsets):
 					state.safeAreaInsets = newInsets
