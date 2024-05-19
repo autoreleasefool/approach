@@ -114,7 +114,7 @@ public struct Settings: Reducer {
 	@Dependency(EmailService.self) var email
 	@Dependency(ExportService.self) var export
 	@Dependency(\.openURL) var openURL
-	@Dependency(PasteboardService.self) var pasteboard
+	@Dependency(\.pasteboard) var pasteboard
 
 	public init() {}
 

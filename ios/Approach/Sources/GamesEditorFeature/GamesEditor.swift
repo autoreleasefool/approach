@@ -221,7 +221,7 @@ public struct GamesEditor: Reducer {
 	@Dependency(MatchPlaysRepository.self) var matchPlays
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
 	@Dependency(ScoresRepository.self) var scores
-	@Dependency(StoreReviewService.self) var storeReview
+	@Dependency(\.storeReview) var storeReview
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
