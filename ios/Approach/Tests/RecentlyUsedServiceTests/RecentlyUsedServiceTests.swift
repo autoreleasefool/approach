@@ -1,7 +1,7 @@
 import Dependencies
-import PreferenceServiceInterface
 @testable import RecentlyUsedService
 import RecentlyUsedServiceInterface
+import UserDefaultsPackageServiceInterface
 import XCTest
 
 final class RecentlyUsedServiceTests: XCTestCase {
@@ -22,12 +22,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0.date = .constant(now)
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable key in
+			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0[PreferenceService.self].setString = { @Sendable key, value in
+			$0.userDefaults.setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}
@@ -47,11 +47,11 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0.date = .constant(now)
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable _ in
+			$0.userDefaults.string = { @Sendable _ in
 				return cache.value
 			}
 
-			$0[PreferenceService.self].setString = { @Sendable _, value in
+			$0.userDefaults.setString = { @Sendable _, value in
 				cache.setValue(value)
 			}
 
@@ -80,12 +80,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0.date = .constant(now)
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable key in
+			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0[PreferenceService.self].setString = { @Sendable key, value in
+			$0.userDefaults.setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}
@@ -101,7 +101,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		withDependencies {
 			$0[RecentlyUsedService.self] = .liveValue
-			$0[PreferenceService.self].remove = { @Sendable key in
+			$0.userDefaults.remove = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(nil)
 			}
@@ -120,12 +120,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable key in
+			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0[PreferenceService.self].setString = { @Sendable key, value in
+			$0.userDefaults.setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}
@@ -159,7 +159,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0[RecentlyUsedService.self] = .liveValue
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable key in
+			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
@@ -178,12 +178,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0.date = .constant(now)
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable key in
+			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
 				return cache.value
 			}
 
-			$0[PreferenceService.self].setString = { @Sendable key, value in
+			$0.userDefaults.setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.alleys", key)
 				cache.setValue(value)
 			}
@@ -200,12 +200,12 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			$0.date = .constant(now)
 			$0[JSONEncoderService.self] = .init(Self.encoder)
 
-			$0[PreferenceService.self].getString = { @Sendable key in
+			$0.userDefaults.string = { @Sendable key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return cache.value
 			}
 
-			$0[PreferenceService.self].setString = { @Sendable key, value in
+			$0.userDefaults.setString = { @Sendable key, value in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				cache.setValue(value)
 			}

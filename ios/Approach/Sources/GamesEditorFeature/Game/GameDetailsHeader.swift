@@ -24,7 +24,7 @@ public struct GameDetailsHeader: Reducer {
 			self.currentLeagueName = currentLeagueName
 			self.next = nextElement
 
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
 	}
@@ -51,7 +51,7 @@ public struct GameDetailsHeader: Reducer {
 	enum CancelID { case shimmering }
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce { state, action in

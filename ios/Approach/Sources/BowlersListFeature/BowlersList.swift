@@ -71,7 +71,7 @@ public struct BowlersList: Reducer {
 				)
 			)
 
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInBowlerList) != true
 
 			@Dependency(TipsService.self) var tips
@@ -133,7 +133,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
 	@Dependency(GamesRepository.self) var games
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 	@Dependency(QuickLaunchRepository.self) var quickLaunch
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
 	@Dependency(TipsService.self) var tips

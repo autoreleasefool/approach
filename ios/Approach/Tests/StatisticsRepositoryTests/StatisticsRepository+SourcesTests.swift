@@ -19,7 +19,7 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[StatisticsRepository.self] = .liveValue
-			$0[PreferenceService.self].getString = { @Sendable _ in nil }
+			$0.preferences.string = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -34,7 +34,7 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[StatisticsRepository.self] = .liveValue
-			$0[PreferenceService.self].getString = { @Sendable _ in nil }
+			$0.preferences.string = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -55,7 +55,7 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[StatisticsRepository.self] = .liveValue
-			$0[PreferenceService.self].getString = { @Sendable _ in nil }
+			$0.preferences.string = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}
@@ -71,7 +71,7 @@ final class StatisticsRepositorySourcesTests: XCTestCase {
 		let sources = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[StatisticsRepository.self] = .liveValue
-			$0[PreferenceService.self].getString = { @Sendable _ in nil }
+			$0.preferences.string = { @Sendable _ in nil }
 		} operation: {
 			try await self.statistics.loadDefaultSources()
 		}

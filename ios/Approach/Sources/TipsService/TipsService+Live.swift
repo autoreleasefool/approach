@@ -1,17 +1,17 @@
 import Dependencies
-import PreferenceServiceInterface
 import TipsServiceInterface
+import UserDefaultsPackageServiceInterface
 
 extension TipsService: DependencyKey {
 	public static var liveValue: Self {
 		Self(
 			shouldShowTip: { tip in
-				@Dependency(PreferenceService.self) var preferences
-				return preferences.getBool(tip.preferenceKey) != true
+				@Dependency(\.userDefaults) var userDefaults
+				return userDefaults.bool(forKey: tip.preferenceKey) != true
 			},
 			hideTip: { tip in
-				@Dependency(PreferenceService.self) var preferences
-				preferences.setBool(tip.preferenceKey, true)
+				@Dependency(\.userDefaults) var userDefaults
+				userDefaults.setBool(forKey: tip.preferenceKey, to: true)
 			}
 		)
 	}

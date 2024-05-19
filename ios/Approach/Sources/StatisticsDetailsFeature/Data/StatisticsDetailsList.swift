@@ -28,7 +28,7 @@ public struct StatisticsDetailsList: Reducer {
 			self.listEntries = listEntries
 			self.hasTappableElements = hasTappableElements
 
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
 			self.isHidingStatisticsDescriptions = preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false
 
@@ -63,7 +63,7 @@ public struct StatisticsDetailsList: Reducer {
 
 	public init() {}
 
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 	@Dependency(TipsService.self) var tips
 
 	public var body: some ReducerOf<Self> {
@@ -91,7 +91,7 @@ public struct StatisticsDetailsList: Reducer {
 			case .binding(\.isHidingZeroStatistics):
 				return .concatenate(
 					.run { [updatedValue = state.isHidingZeroStatistics] _ in
-						preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
+						preferences.setBool(forKey: .statisticsHideZeroStatistics, to: updatedValue)
 					},
 					.send(.delegate(.listRequiresReload))
 				)
@@ -100,7 +100,7 @@ public struct StatisticsDetailsList: Reducer {
 			case .binding(\.isHidingStatisticsDescriptions):
 				return .concatenate(
 					.run { [updatedValue = state.isHidingStatisticsDescriptions] _ in
-						preferences.setKey(.statisticsHideStatisticsDescriptions, toBool: updatedValue)
+						preferences.setBool(forKey: .statisticsHideStatisticsDescriptions, to: updatedValue)
 					},
 					.send(.delegate(.listRequiresReload))
 				)

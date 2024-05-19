@@ -7,6 +7,7 @@ public enum PreferenceKey: String {
 	case appInstallDate                             // default: 0
 	case appLastReviewRequestDate                   // default: 0
 	case appLastReviewVersion                       // default: ""
+	case appDidMigrateToSwiftUtilities              // default: false
 
 	// MARK: - Game
 

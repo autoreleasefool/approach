@@ -22,7 +22,7 @@ public struct GamesHeader: Reducer {
 			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
 
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
 	}
@@ -53,7 +53,7 @@ public struct GamesHeader: Reducer {
 	enum CancelID { case shimmering }
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in

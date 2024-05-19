@@ -3,7 +3,7 @@ import Dependencies
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import Foundation
-import PreferenceServiceInterface
+import UserDefaultsPackageServiceInterface
 
 extension NSNotification.Name {
 	enum FeatureFlag {
@@ -89,13 +89,13 @@ extension FeatureFlagsService: DependencyKey {
 class FeatureFlagOverrides {
 	private let queue: DispatchQueue
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.userDefaults) var userDefaults
 
 	init(queue: DispatchQueue) {
 		self.queue = queue
 		queue.sync {
 			for flag in FeatureFlag.allFlags {
-				queue_overrides[flag] = preferences.getBool(flag.overrideKey)
+				queue_overrides[flag] = userDefaults.bool(forKey: flag.overrideKey)
 			}
 		}
 	}
@@ -105,7 +105,7 @@ class FeatureFlagOverrides {
 			let overridden = Array(self.queue_overrides.keys)
 			self.queue_overrides.removeAll()
 			for flag in FeatureFlag.allFlags {
-				preferences.remove(flag.overrideKey)
+				userDefaults.remove(key: flag.overrideKey)
 			}
 			return overridden
 		}
@@ -116,9 +116,9 @@ class FeatureFlagOverrides {
 			guard flag.isOverridable else { return }
 			self.queue_overrides[flag] = enabled
 			if let enabled {
-				self.preferences.setBool(flag.overrideKey, enabled)
+				self.userDefaults.setBool(forKey: flag.overrideKey, to: enabled)
 			} else {
-				self.preferences.remove(flag.overrideKey)
+				self.userDefaults.remove(key: flag.overrideKey)
 			}
 		}
 	}

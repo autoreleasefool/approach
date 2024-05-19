@@ -8,6 +8,7 @@ import PreferenceServiceInterface
 @testable import StatisticsRepositoryInterface
 import StringsLibrary
 import TestDatabaseUtilitiesLibrary
+import UserDefaultsPackageServiceInterface
 import XCTest
 
 final class TrackableFilterSourceTests: XCTestCase {
@@ -22,7 +23,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -44,7 +45,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -66,7 +67,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -87,7 +88,7 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -106,7 +107,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -126,7 +128,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -146,7 +149,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -165,7 +169,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -184,7 +189,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -217,7 +223,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -249,7 +256,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {
@@ -275,7 +283,8 @@ final class TrackableFilterSourceTests: XCTestCase {
 		let statistics = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
 			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
+			$0.userDefaults.bool = { @Sendable _ in true }
 			$0.uuid = .constant(UUID(0))
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {

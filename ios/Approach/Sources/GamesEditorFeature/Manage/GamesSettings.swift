@@ -31,7 +31,7 @@ public struct GamesSettings: Reducer {
 			@Dependency(FeatureFlagsService.self) var featureFlags
 			self.isTeamsEnabled = featureFlags.isEnabled(.teams)
 
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
 		}
 	}
@@ -58,7 +58,7 @@ public struct GamesSettings: Reducer {
 	}
 
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
@@ -94,7 +94,7 @@ public struct GamesSettings: Reducer {
 
 			case .binding(\.isFlashEditorChangesEnabled):
 				return .run { [updatedValue = state.isFlashEditorChangesEnabled] _ in
-					preferences.setKey(.gameShouldNotifyEditorChanges, toBool: updatedValue)
+					preferences.setBool(forKey: .gameShouldNotifyEditorChanges, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.gameShouldNotifyEditorChanges, cancelInFlight: true)
 

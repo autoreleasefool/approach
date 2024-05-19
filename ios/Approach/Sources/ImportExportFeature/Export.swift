@@ -20,7 +20,7 @@ public struct Export: Reducer {
 		public var errorMessage: String? = "Error"
 
 		public init() {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.lastExportAt = Date(timeIntervalSince1970: preferences.double(forKey: .dataLastExportDate) ?? 0)
 		}
 
@@ -47,7 +47,7 @@ public struct Export: Reducer {
 
 	@Dependency(\.date) var  date
 	@Dependency(ExportService.self) var export
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -60,7 +60,7 @@ public struct Export: Reducer {
 				case .didFirstAppear:
 					return .merge(
 						fetchExportData(&state),
-						.run { _ in preferences.setKey(.dataLastExportDate, toDouble: date().timeIntervalSince1970)}
+						.run { _ in preferences.setDouble(forKey: .dataLastExportDate, to: date().timeIntervalSince1970) }
 					)
 
 				case .didTapRetryButton:

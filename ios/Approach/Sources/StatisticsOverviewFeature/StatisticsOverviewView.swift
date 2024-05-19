@@ -77,7 +77,7 @@ struct StatisticsOverviewPreviews: PreviewProvider {
 				store: .init(initialState: .init()) {
 					StatisticsOverview()
 				} withDependencies: {
-					$0[PreferenceService.self].getBool = { @Sendable _ in false }
+					$0.preferences.bool = { @Sendable _ in false }
 				}
 			)
 		}

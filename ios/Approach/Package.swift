@@ -1049,6 +1049,7 @@ let package = Package(
 		.target(
 			name: "StatisticsRepository",
 			dependencies: [
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"DatabaseServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"PreferenceServiceInterface",
@@ -1153,8 +1154,8 @@ let package = Package(
 		.target(
 			name: "AnnouncementsService",
 			dependencies: [
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"AnnouncementsServiceInterface",
-				"PreferenceServiceInterface",
 			]
 		),
 		.target(
@@ -1261,8 +1262,8 @@ let package = Package(
 		.target(
 			name: "FeatureFlagsService",
 			dependencies: [
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"FeatureFlagsServiceInterface",
-				"PreferenceServiceInterface",
 			]
 		),
 		.target(
@@ -1306,9 +1307,11 @@ let package = Package(
 			dependencies: [
 				.product(name: "AppInfoPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"FeatureFlagsServiceInterface",
 				"LaunchServiceInterface",
+				"PreferenceServiceInterface",
 				"ProductsServiceInterface",
 			]
 		),
@@ -1369,6 +1372,7 @@ let package = Package(
 		.target(
 			name: "PreferenceService",
 			dependencies: [
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"PreferenceServiceInterface",
 			]
 		),
@@ -1376,6 +1380,7 @@ let package = Package(
 			name: "PreferenceServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 			]
 		),
 		.testTarget(
@@ -1411,7 +1416,7 @@ let package = Package(
 		.target(
 			name: "RecentlyUsedService",
 			dependencies: [
-				"PreferenceServiceInterface",
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"RecentlyUsedServiceInterface",
 			]
 		),
@@ -1431,7 +1436,7 @@ let package = Package(
 		.target(
 			name: "TipsService",
 			dependencies: [
-				"PreferenceServiceInterface",
+				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"TipsServiceInterface",
 			]
 		),

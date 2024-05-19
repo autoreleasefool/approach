@@ -10,6 +10,7 @@ import PreferenceServiceInterface
 import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StatisticsWidgetsLibrary
+import UserDefaultsPackageServiceInterface
 
 extension StatisticsRepository: DependencyKey {
 	public static var liveValue: Self {
@@ -20,7 +21,7 @@ extension StatisticsRepository: DependencyKey {
 		// MARK: - Per Series
 
 		@Sendable func adjust(statistics: inout [Statistic], bySeries: RecordCursor<Series.TrackableEntry>?) throws {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 
 			let perSeriesConfiguration = preferences.perSeriesConfiguration()
 			while let series = try bySeries?.next() {
@@ -34,7 +35,7 @@ extension StatisticsRepository: DependencyKey {
 			statistic: Statistic.Type,
 			bySeries: RecordCursor<Series.TrackableEntry>?
 		) throws -> [Key: Statistic] {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 
 			let perSeriesConfiguration = preferences.perSeriesConfiguration()
 			var allEntries: [Key: Statistic] = [:]
@@ -52,7 +53,7 @@ extension StatisticsRepository: DependencyKey {
 		// MARK: - Per Game
 
 		@Sendable func adjust(statistics: inout [Statistic], byGames: RecordCursor<Game.TrackableEntry>?) throws {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 
 			let perGameConfiguration = preferences.perGameConfiguration()
 			while let game = try byGames?.next() {
@@ -66,7 +67,7 @@ extension StatisticsRepository: DependencyKey {
 			statistic: Statistic.Type,
 			byGames: RecordCursor<Game.TrackableEntry>?
 		) throws -> [Key: Statistic] {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 
 			let perGameConfiguration = preferences.perGameConfiguration()
 			var allEntries: [Key: Statistic] = [:]
@@ -84,7 +85,7 @@ extension StatisticsRepository: DependencyKey {
 		// MARK: - Per Frame
 
 		@Sendable func adjust(statistics: inout [Statistic], byFrames: RecordCursor<Frame.TrackableEntry>?) throws {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 
 			let perFrameConfiguration = preferences.perFrameConfiguration()
 			while let frame = try byFrames?.next() {
@@ -98,7 +99,7 @@ extension StatisticsRepository: DependencyKey {
 			statistic: Statistic.Type,
 			byFrames: RecordCursor<Frame.TrackableEntry>?
 		) throws -> [Key: Statistic] {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 
 			let perFrameConfiguration = preferences.perFrameConfiguration()
 			var allEntries: [Key: Statistic] = [:]
@@ -180,7 +181,7 @@ extension StatisticsRepository: DependencyKey {
 			loadSources: loadSources(source:),
 			loadDefaultSources: {
 				@Dependency(DatabaseService.self) var database
-				@Dependency(PreferenceService.self) var preferences
+				@Dependency(\.preferences) var preferences
 
 				let decoder = JSONDecoder()
 				if let lastUsedSource = preferences.string(forKey: .statisticsLastUsedTrackableFilterSource),
@@ -204,7 +205,7 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			saveLastUsedSource: { source in
-				@Dependency(PreferenceService.self) var preferences
+				@Dependency(\.preferences) var preferences
 
 				let encoder = JSONEncoder()
 				guard let data = try? encoder.encode(source),
@@ -212,11 +213,12 @@ extension StatisticsRepository: DependencyKey {
 					return
 				}
 
-				preferences.setKey(.statisticsLastUsedTrackableFilterSource, toString: lastUsed)
+				preferences.setString(forKey: .statisticsLastUsedTrackableFilterSource, to: lastUsed)
 			},
 			loadValues: { filter in
 				@Dependency(DatabaseService.self) var database
-				@Dependency(PreferenceService.self) var preferences
+				@Dependency(\.preferences) var preferences
+				@Dependency(\.userDefaults) var userDefaults
 
 				let statistics = try await database.reader().read {
 					var statistics = Statistics.all(forSource: filter.source).map { $0.init() }
@@ -238,7 +240,7 @@ extension StatisticsRepository: DependencyKey {
 				let isShowingStatisticDescriptions = !(preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false)
 
 				return StatisticCategory.allCases.compactMap { category in
-					var categoryStatistics = statistics
+					let categoryStatistics = statistics
 						.filter { type(of: $0).category == category }
 						.filter { isHidingZeroStatistics ? !$0.isEmpty : true }
 
@@ -262,7 +264,7 @@ extension StatisticsRepository: DependencyKey {
 								value: $0.formattedValue,
 								valueDescription: $0.formattedValueDescription,
 								highlightAsNew: statistic.isEligibleForNewLabel
-									&& preferences.getBool(isSeenKey(forStatistic: statistic)) != true
+									&& userDefaults.bool(forKey: isSeenKey(forStatistic: statistic)) != true
 							)
 						})
 					)
@@ -401,9 +403,9 @@ extension StatisticsRepository: DependencyKey {
 				}
 			},
 			hideNewStatisticLabels: {
-				@Dependency(PreferenceService.self) var preferences
-				Statistics.allCases.forEach {
-					preferences.setBool(isSeenKey(forStatistic: $0), true)
+				@Dependency(\.userDefaults) var userDefaults
+				for statistic in Statistics.allCases {
+					userDefaults.setBool(forKey: isSeenKey(forStatistic: statistic), to: true)
 				}
 			}
 		)

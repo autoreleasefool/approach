@@ -3,8 +3,10 @@ import AppInfoPackageServiceInterface
 import Dependencies
 import FeatureFlagsServiceInterface
 import LaunchServiceInterface
+import PreferenceServiceInterface
 import ProductsServiceInterface
 import StoreReviewPackageServiceInterface
+import UserDefaultsPackageServiceInterface
 
 extension LaunchService: DependencyKey {
 	public static var liveValue: Self {
@@ -25,6 +27,23 @@ extension LaunchService: DependencyKey {
 				if isProductsEnabled {
 					@Dependency(ProductsService.self) var products
 					products.initialize()
+				}
+
+				@Dependency(\.preferences) var preferences
+				@Dependency(\.userDefaults) var userDefaults
+
+				let didMigrateToSwiftUtilities = preferences.bool(forKey: .appDidMigrateToSwiftUtilities) ?? false
+				if !didMigrateToSwiftUtilities {
+					// Migrate from deprecated PreferenceService values
+					if let deprecatedAppSessions = userDefaults.int(forKey: "appSessions") {
+						userDefaults.setInt(forKey: "AppInfo.NumberOfSessions", to: deprecatedAppSessions)
+					}
+
+					if let deprecatedAppInstallDate = userDefaults.double(forKey: "appInstallDate") {
+						userDefaults.setDouble(forKey: "AppInfo.InstallDate", to: deprecatedAppInstallDate)
+					}
+
+					preferences.setBool(forKey: .appDidMigrateToSwiftUtilities, to: true)
 				}
 
 				@Dependency(\.appInfo) var appInfo

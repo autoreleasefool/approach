@@ -22,7 +22,7 @@ public struct App: Reducer {
 		case content(TabbedContent.State)
 
 		public init() {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			if preferences.bool(forKey: .appDidCompleteOnboarding) == true {
 				self = .content(.init())
 			} else {
@@ -45,7 +45,7 @@ public struct App: Reducer {
 		case delegate(Delegate)
 	}
 
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 	@Dependency(StatisticsRepository.self) var statistics
 
 	public init() {}
@@ -73,7 +73,7 @@ public struct App: Reducer {
 					switch delegateAction {
 					case .didFinishOnboarding:
 						state = .content(.init())
-						return .run { _ in preferences.setKey(.appDidCompleteOnboarding, toBool: true) }
+						return .run { _ in preferences.setBool(forKey: .appDidCompleteOnboarding, to: true) }
 					}
 
 				case .content(.internal), .content(.view), .content(.binding):

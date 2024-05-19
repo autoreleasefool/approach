@@ -119,7 +119,7 @@ public struct StatisticsDetails: Reducer {
 
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 	@Dependency(StatisticsRepository.self) var statistics
 	@Dependency(UIDeviceNotifications.self) var uiDevice
 

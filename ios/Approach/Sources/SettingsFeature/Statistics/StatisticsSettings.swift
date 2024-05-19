@@ -18,7 +18,7 @@ public struct StatisticsSettings: Reducer {
 		public var isHidingWidgetsInLeagueList: Bool
 
 		init() {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isHidingZeroStatistics = preferences.bool(forKey: .statisticsHideZeroStatistics) ?? true
 			self.isHidingStatisticsDescriptions = preferences.bool(forKey: .statisticsHideStatisticsDescriptions) ?? false
 			self.isCountingH2AsH = preferences.bool(forKey: .statisticsCountH2AsH) ?? true
@@ -41,7 +41,7 @@ public struct StatisticsSettings: Reducer {
 		case binding(BindingAction<State>)
 	}
 
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()
@@ -59,37 +59,37 @@ public struct StatisticsSettings: Reducer {
 
 			case .binding(\.isHidingZeroStatistics):
 				return .run { [updatedValue = state.isHidingZeroStatistics] _ in
-					preferences.setKey(.statisticsHideZeroStatistics, toBool: updatedValue)
+					preferences.setBool(forKey: .statisticsHideZeroStatistics, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.statisticsHideZeroStatistics, cancelInFlight: true)
 
 			case .binding(\.isHidingStatisticsDescriptions):
 				return .run { [updatedValue = state.isHidingStatisticsDescriptions] _ in
-					preferences.setKey(.statisticsHideStatisticsDescriptions, toBool: updatedValue)
+					preferences.setBool(forKey: .statisticsHideStatisticsDescriptions, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.statisticsHideStatisticsDescriptions, cancelInFlight: true)
 
 			case .binding(\.isCountingH2AsH):
 				return .run { [updatedValue = state.isCountingH2AsH] _ in
-					preferences.setKey(.statisticsCountH2AsH, toBool: updatedValue)
+					preferences.setBool(forKey: .statisticsCountH2AsH, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.statisticsCountH2AsH, cancelInFlight: true)
 
 			case .binding(\.isCountingSplitWithBonusAsSplit):
 				return .run { [updatedValue = state.isCountingSplitWithBonusAsSplit] _ in
-					preferences.setKey(.statisticsCountSplitWithBonusAsSplit, toBool: updatedValue)
+					preferences.setBool(forKey: .statisticsCountSplitWithBonusAsSplit, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.statisticsCountSplitWithBonusAsSplit, cancelInFlight: true)
 
 			case .binding(\.isHidingWidgetsInBowlerList):
 				return .run { [updatedValue = state.isHidingWidgetsInBowlerList] _ in
-					preferences.setKey(.statisticsWidgetHideInBowlerList, toBool: updatedValue)
+					preferences.setBool(forKey: .statisticsWidgetHideInBowlerList, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.statisticsWidgetHideInBowlerList, cancelInFlight: true)
 
 			case .binding(\.isHidingWidgetsInLeagueList):
 				return .run { [updatedValue = state.isHidingWidgetsInLeagueList] _ in
-					preferences.setKey(.statisticsWidgetHideInLeagueList, toBool: updatedValue)
+					preferences.setBool(forKey: .statisticsWidgetHideInLeagueList, to: updatedValue)
 				}
 				.cancellable(id: PreferenceKey.statisticsWidgetHideInLeagueList, cancelInFlight: true)
 

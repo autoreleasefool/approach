@@ -77,7 +77,7 @@ public struct LeaguesList: Reducer {
 				)
 			)
 
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.preferences) var preferences
 			self.isShowingWidgets = preferences.bool(forKey: .statisticsWidgetHideInLeagueList) != true
 		}
 	}
@@ -134,7 +134,7 @@ public struct LeaguesList: Reducer {
 	@Dependency(FeatureFlagsService.self) var featureFlags
 	@Dependency(GearRepository.self) var gear
 	@Dependency(LeaguesRepository.self) var leagues
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 	@Dependency(RecentlyUsedService.self) var recentlyUsed
 	@Dependency(SeriesRepository.self) var series
 	@Dependency(\.uuid) var uuid

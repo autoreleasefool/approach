@@ -145,7 +145,7 @@ final class StatisticsRepositoryLoadChartsTests: XCTestCase {
 	) async throws {
 		let entries: (first: Entry?, last: Entry?) = try await withDependencies {
 			$0[DatabaseService.self].reader = { @Sendable in db }
-			$0[PreferenceService.self].getBool = { @Sendable _ in true }
+			$0.preferences.bool = { @Sendable _ in true }
 			$0.uuid = .incrementing
 			$0[StatisticsRepository.self] = .liveValue
 		} operation: {

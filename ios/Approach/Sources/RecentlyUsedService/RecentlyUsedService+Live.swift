@@ -1,7 +1,7 @@
 import Dependencies
 import Foundation
-import PreferenceServiceInterface
 import RecentlyUsedServiceInterface
+import UserDefaultsPackageServiceInterface
 
 extension Notification.Name {
 	enum RecentlyUsed {
@@ -21,10 +21,10 @@ extension RecentlyUsedService: DependencyKey {
 		}
 
 		@Sendable func entries(forCategory category: Resource) -> [Entry] {
-			@Dependency(PreferenceService.self) var preferences
+			@Dependency(\.userDefaults) var userDefaults
 
 			let categoryKey = key(forCategory: category)
-			let string = preferences.getString(categoryKey) ?? "[]"
+			let string = userDefaults.string(forKey: categoryKey) ?? "[]"
 			guard let data = string.data(using: .utf8),
 						let recentlyUsed = try? decoder.decode([Entry].self, from: data) else {
 				return []
@@ -36,7 +36,7 @@ extension RecentlyUsedService: DependencyKey {
 		return Self(
 			didRecentlyUseResource: { category, uuid in
 				@Dependency(\.date) var date
-				@Dependency(PreferenceService.self) var preferences
+				@Dependency(\.userDefaults) var userDefaults
 
 				let categoryKey = key(forCategory: category)
 				var recentlyUsed = entries(forCategory: category)
@@ -52,7 +52,7 @@ extension RecentlyUsedService: DependencyKey {
 					return
 				}
 
-				preferences.setString(categoryKey, recentlyUsedString)
+				userDefaults.setString(forKey: categoryKey, to: recentlyUsedString)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			},
 			getRecentlyUsed: { category in
@@ -99,10 +99,10 @@ extension RecentlyUsedService: DependencyKey {
 					}
 			},
 			resetRecentlyUsed: { category in
-				@Dependency(PreferenceService.self) var preferences
+				@Dependency(\.userDefaults) var userDefaults
 
 				let categoryKey = key(forCategory: category)
-				preferences.remove(categoryKey)
+				userDefaults.remove(key: categoryKey)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			}
 		)

@@ -208,6 +208,7 @@ repositories = [ "Frames", "Games" ]
 [repositories.Statistics]
 services = [ "Preference", "FeatureFlags" ]
 libraries = [ "StatisticsModels" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [repositories.Statistics.interface]
 libraries = [ "StatisticsWidgets" ]
 
@@ -232,7 +233,7 @@ dependencies = [ "BundlePackageServiceInterface", "TelemetryClient" ]
 dependencies = [ "ComposableArchitecture" ]
 
 [services.Announcements]
-services = [ "Preference" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [services.Announcements.interface]
 libraries = [ "Announcements" ]
 
@@ -260,7 +261,7 @@ skip_tests = true
 [services.Email]
 
 [services.FeatureFlags]
-services = [ "Preference" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [services.FeatureFlags.interface]
 libraries = [ "FeatureFlags" ]
 
@@ -270,8 +271,8 @@ libraries = [ "DateTime" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
 
 [services.Launch]
-services = [ "Analytics", "FeatureFlags", "Products" ]
-dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInterface" ]
+services = [ "Analytics", "FeatureFlags", "Preference", "Products" ]
+dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInterface", "UserDefaultsPackageServiceInterface" ]
 
 [services.Logging]
 services = [ "ZIP" ]
@@ -280,6 +281,9 @@ dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 [services.Notifications]
 
 [services.Preference]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
+[services.Preference.interface]
+dependencies = [ "DependenciesMacros"]
 
 [services.Products]
 libraries = [ "Constants" ]
@@ -288,10 +292,10 @@ dependencies = [ "BundlePackageServiceInterface", "RevenueCat" ]
 libraries = [ "Products" ]
 
 [services.RecentlyUsed]
-services = [ "Preference" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
 
 [services.Tips]
-services = [ "Preference" ]
+dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [services.Tips.interface]
 libraries = [ "Tips" ]
 

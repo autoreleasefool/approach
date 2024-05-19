@@ -1,21 +1,21 @@
 import AnnouncementsLibrary
 import AnnouncementsServiceInterface
 import Dependencies
-import PreferenceServiceInterface
+import UserDefaultsPackageServiceInterface
 
 extension AnnouncementsService: DependencyKey {
 	public static var liveValue: Self {
 		Self(
 			announcement: {
-				@Dependency(PreferenceService.self) var preferences
+				@Dependency(\.userDefaults) var userDefaults
 				return Announcement.allCases
 					.first(where: {
-						$0.meetsExpectationsToShow() && preferences.getBool($0.preferenceKey) != true
+						$0.meetsExpectationsToShow() && userDefaults.bool(forKey: $0.preferenceKey) != true
 					})
 			},
 			hideAnnouncement: { announcement in
-				@Dependency(PreferenceService.self) var preferences
-				preferences.setBool(announcement.preferenceKey, true)
+				@Dependency(\.userDefaults) var userDefaults
+				userDefaults.setBool(forKey: announcement.preferenceKey, to: true)
 			}
 		)
 	}

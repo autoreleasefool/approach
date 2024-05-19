@@ -1,230 +1,246 @@
 import Dependencies
 @testable import PreferenceService
 import PreferenceServiceInterface
+import UserDefaultsPackageServiceInterface
 import XCTest
 
 final class PreferenceServiceTests: XCTestCase {
-	@Dependency(PreferenceService.self) var preferences
+	@Dependency(\.preferences) var preferences
 
-	func testRemovesKey() {
+	func test_remove() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: String]>(["appDidCompleteOnboarding": "true"])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setString = liveValue.setString
-			$0[PreferenceService.self].getString = liveValue.getString
+			$0.userDefaults.remove = { @Sendable key in cache.withValue { $0[key] = nil } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "key"
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getString(key))
-
-			preferences.setString(key, "value")
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertNotNil(preferences.getString(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getString(key))
+			preferences.remove(key: .appDidCompleteOnboarding)
 		}
+
+		XCTAssertEqual(cache.value, [:])
 	}
 
-	func testStoreAndRetrievesBool() {
+	func test_setBool_setsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Bool]>([:])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setBool = liveValue.setBool
-			$0[PreferenceService.self].getBool = liveValue.getBool
+			$0.userDefaults.setBool = { @Sendable key, value in cache.withValue { $0[key] = value } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "bool"
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getBool(key))
-
-			preferences.setBool(key, true)
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertEqual(true, preferences.getBool(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getBool(key))
+			preferences.setBool(forKey: .appDidCompleteOnboarding, to: true)
 		}
+
+		XCTAssertEqual(cache.value, ["appDidCompleteOnboarding": true])
 	}
 
-	func testStoreAndRetrievesInt() {
+	func test_getBool_getsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Bool]>(["appDidCompleteOnboarding": true])
+
+		let appDidCompleteOnboarding = withDependencies {
+			$0.userDefaults.bool = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.bool(forKey: .appDidCompleteOnboarding)
+		}
+
+		XCTAssertNotNil(appDidCompleteOnboarding)
+		XCTAssertTrue(appDidCompleteOnboarding!)
+
+		let gameShouldNotifyEditorChanges = withDependencies {
+			$0.userDefaults.bool = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.bool(forKey: .gameShouldNotifyEditorChanges)
+		}
+
+		XCTAssertNil(gameShouldNotifyEditorChanges)
+	}
+
+	func test_setInt_setsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Int]>([:])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setInt = liveValue.setInt
-			$0[PreferenceService.self].getInt = liveValue.getInt
+			$0.userDefaults.setInt = { @Sendable key, value in cache.withValue { $0[key] = value } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "int"
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getInt(key))
-
-			preferences.setInt(key, 101)
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertEqual(101, preferences.getInt(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getInt(key))
+			preferences.setInt(forKey: .appDidCompleteOnboarding, to: 123)
 		}
+
+		XCTAssertEqual(cache.value, ["appDidCompleteOnboarding": 123])
 	}
 
-	func testStoreAndRetrievesFloat() {
+	func test_getInt_getsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Int]>(["appDidCompleteOnboarding": 123])
+
+		let appDidCompleteOnboarding = withDependencies {
+			$0.userDefaults.int = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.int(forKey: .appDidCompleteOnboarding)
+		}
+
+		XCTAssertEqual(appDidCompleteOnboarding, 123)
+
+		let gameShouldNotifyEditorChanges = withDependencies {
+			$0.userDefaults.int = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.int(forKey: .gameShouldNotifyEditorChanges)
+		}
+
+		XCTAssertNil(gameShouldNotifyEditorChanges)
+	}
+
+	func test_setFloat_setsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Float]>([:])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setFloat = liveValue.setFloat
-			$0[PreferenceService.self].getFloat = liveValue.getFloat
+			$0.userDefaults.setFloat = { @Sendable key, value in cache.withValue { $0[key] = value } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "float"
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getFloat(key))
-
-			preferences.setFloat(key, 101.2)
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertEqual(101.2, preferences.getFloat(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getFloat(key))
+			preferences.setFloat(forKey: .appDidCompleteOnboarding, to: 12.3)
 		}
+
+		XCTAssertEqual(cache.value, ["appDidCompleteOnboarding": 12.3])
 	}
 
-	func testStoreAndRetrievesDouble() {
+	func test_getFloat_getsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Float]>(["appDidCompleteOnboarding": 12.3])
+
+		let appDidCompleteOnboarding = withDependencies {
+			$0.userDefaults.float = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.float(forKey: .appDidCompleteOnboarding)
+		}
+
+		XCTAssertEqual(appDidCompleteOnboarding, 12.3)
+
+		let gameShouldNotifyEditorChanges = withDependencies {
+			$0.userDefaults.float = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.float(forKey: .gameShouldNotifyEditorChanges)
+		}
+
+		XCTAssertNil(gameShouldNotifyEditorChanges)
+	}
+
+	func test_setDouble_setsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Double]>([:])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setDouble = liveValue.setDouble
-			$0[PreferenceService.self].getDouble = liveValue.getDouble
+			$0.userDefaults.setDouble = { @Sendable key, value in cache.withValue { $0[key] = value } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "double"
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getDouble(key))
-
-			preferences.setDouble(key, 101.2)
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertEqual(101.2, preferences.getDouble(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getDouble(key))
+			preferences.setDouble(forKey: .appDidCompleteOnboarding, to: 12.3)
 		}
+
+		XCTAssertEqual(cache.value, ["appDidCompleteOnboarding": 12.3])
 	}
 
-	func testStoreAndRetrievesString() {
+	func test_getDouble_getsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: Double]>(["appDidCompleteOnboarding": 12.3])
+
+		let appDidCompleteOnboarding = withDependencies {
+			$0.userDefaults.double = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.double(forKey: .appDidCompleteOnboarding)
+		}
+
+		XCTAssertEqual(appDidCompleteOnboarding, 12.3)
+
+		let gameShouldNotifyEditorChanges = withDependencies {
+			$0.userDefaults.double = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.double(forKey: .gameShouldNotifyEditorChanges)
+		}
+
+		XCTAssertNil(gameShouldNotifyEditorChanges)
+	}
+
+	func test_setString_setsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: String]>([:])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setString = liveValue.setString
-			$0[PreferenceService.self].getString = liveValue.getString
+			$0.userDefaults.setString = { @Sendable key, value in cache.withValue { $0[key] = value } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "string"
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getString(key))
-
-			preferences.setString(key, "value")
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertEqual("value", preferences.getString(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getString(key))
+			preferences.setString(forKey: .appDidCompleteOnboarding, to: "some string")
 		}
+
+		XCTAssertEqual(cache.value, ["appDidCompleteOnboarding": "some string"])
 	}
 
-	func testStoreAndRetrievesStringArray() {
+	func test_getString_getsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: String]>(["appDidCompleteOnboarding": "some string"])
+
+		let appDidCompleteOnboarding = withDependencies {
+			$0.userDefaults.string = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.string(forKey: .appDidCompleteOnboarding)
+		}
+
+		XCTAssertEqual(appDidCompleteOnboarding, "some string")
+
+		let gameShouldNotifyEditorChanges = withDependencies {
+			$0.userDefaults.string = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
+		} operation: {
+			preferences.string(forKey: .gameShouldNotifyEditorChanges)
+		}
+
+		XCTAssertNil(gameShouldNotifyEditorChanges)
+	}
+
+	func test_setStringArray_setsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: [String]]>([:])
+
 		withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setStringArray = liveValue.setStringArray
-			$0[PreferenceService.self].getStringArray = liveValue.getStringArray
+			$0.userDefaults.setStringArray = { @Sendable key, value in cache.withValue { $0[key] = value } }
+			$0.preferences = liveValue
 		} operation: {
-			let key = "stringArray"
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getStringArray(key))
-
-			preferences.setStringArray(key, ["value1", "value2"])
-
-			XCTAssertTrue(preferences.contains(key))
-			XCTAssertEqual(["value1", "value2"], preferences.getStringArray(key))
-
-			preferences.remove(key)
-
-			XCTAssertFalse(preferences.contains(key))
-			XCTAssertNil(preferences.getStringArray(key))
+			preferences.setStringArray(forKey: .appDidCompleteOnboarding, to: ["some string", "another string"])
 		}
+
+		XCTAssertEqual(cache.value, ["appDidCompleteOnboarding": ["some string", "another string"]])
 	}
 
-	func testSubscribe_ReceivesChanges() async {
-		await withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setString = liveValue.setString
-			$0[PreferenceService.self].setBool = liveValue.setBool
-			$0[PreferenceService.self].observe = liveValue.observe
+	func test_getStringArray_getsValue() {
+		let liveValue: PreferenceService = .liveValue
+		let cache = LockIsolated<[String: [String]]>(["appDidCompleteOnboarding": ["some string", "another string"]])
+
+		let appDidCompleteOnboarding = withDependencies {
+			$0.userDefaults.stringArray = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
 		} operation: {
-			var observations = preferences.observe(
-				keys: [.appDidCompleteOnboarding, .statisticsCountH2AsH]
-			).makeAsyncIterator()
-
-			preferences.setKey(.appDidCompleteOnboarding, toBool: true)
-			preferences.setKey(.statisticsCountH2AsH, toString: "test")
-			preferences.remove(PreferenceKey.appDidCompleteOnboarding.rawValue)
-
-			let firstObservation = await observations.next()
-			XCTAssertEqual(firstObservation, .appDidCompleteOnboarding)
-
-			let secondObservation = await observations.next()
-			XCTAssertEqual(secondObservation, .statisticsCountH2AsH)
-
-			let thirdObservation = await observations.next()
-			XCTAssertEqual(thirdObservation, .appDidCompleteOnboarding)
+			preferences.stringArray(forKey: .appDidCompleteOnboarding)
 		}
-	}
 
-	func testSubscribe_DoesNotReceiveUnrelatedChanges() async {
-		await withDependencies {
-			let liveValue = PreferenceService.liveValue
-			$0[PreferenceService.self].contains = liveValue.contains
-			$0[PreferenceService.self].remove = liveValue.remove
-			$0[PreferenceService.self].setBool = liveValue.setBool
-			$0[PreferenceService.self].observe = liveValue.observe
+		XCTAssertEqual(appDidCompleteOnboarding, ["some string", "another string"])
+
+		let gameShouldNotifyEditorChanges = withDependencies {
+			$0.userDefaults.stringArray = { @Sendable key in cache.value[key] }
+			$0.preferences = liveValue
 		} operation: {
-			var observations = preferences.observe(
-				keys: [.appDidCompleteOnboarding]
-			).makeAsyncIterator()
-
-			preferences.setKey(.appDidCompleteOnboarding, toBool: true)
-			preferences.setKey(.statisticsCountH2AsH, toBool: false)
-			preferences.remove(PreferenceKey.appDidCompleteOnboarding.rawValue)
-
-			let firstObservation = await observations.next()
-			XCTAssertEqual(firstObservation, .appDidCompleteOnboarding)
-
-			let secondObservation = await observations.next()
-			XCTAssertEqual(secondObservation, .appDidCompleteOnboarding)
+			preferences.stringArray(forKey: .gameShouldNotifyEditorChanges)
 		}
+
+		XCTAssertNil(gameShouldNotifyEditorChanges)
 	}
 }
