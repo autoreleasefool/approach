@@ -2,7 +2,6 @@ import AnalyticsServiceInterface
 import BundlePackageServiceInterface
 import ConstantsLibrary
 import Dependencies
-import ErrorHandlerLibrary
 import Foundation
 import PreferenceServiceInterface
 import Sentry
@@ -75,12 +74,6 @@ extension AnalyticsService: DependencyKey {
 			},
 			forceCrash: {
 				SentrySDK.crash()
-			},
-			captureException: { error in
-				ErrorHandler.capture(error: error)
-			},
-			captureErrorMessage: { message in
-				ErrorHandler.capture(message: message)
 			}
 		)
 	}

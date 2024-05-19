@@ -2,12 +2,12 @@ import AnalyticsServiceInterface
 import DatabaseLibrary
 import DatabaseServiceInterface
 import Dependencies
+import ErrorReportingClientPackageLibrary
 import FileManagerPackageServiceInterface
 import GRDB
 
 extension DatabaseService: DependencyKey {
 	public static var liveValue: Self {
-		@Dependency(AnalyticsService.self) var analytics
 		@Dependency(\.fileManager) var fileManager
 		let writer: any DatabaseWriter
 
@@ -27,7 +27,8 @@ extension DatabaseService: DependencyKey {
 			try migrator.migrate(writer)
 		} catch {
 			// FIXME: should notify user of failure to open DB
-			analytics.captureException(error)
+			@Dependency(\.errors) var errors
+			errors.captureError(error)
 			fatalError("Unable to access database service: \(error)")
 		}
 

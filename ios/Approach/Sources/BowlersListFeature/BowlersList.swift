@@ -7,6 +7,7 @@ import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import ErrorsFeature
+import ErrorReportingClientPackageLibrary
 import FeatureActionLibrary
 import GamesListFeature
 import GamesRepositoryInterface
@@ -132,6 +133,7 @@ public struct BowlersList: Reducer {
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.continuousClock) var clock
 	@Dependency(\.date) var date
+	@Dependency(\.errors) var errors
 	@Dependency(GamesRepository.self) var games
 	@Dependency(\.preferences) var preferences
 	@Dependency(QuickLaunchRepository.self) var quickLaunch
@@ -169,7 +171,7 @@ public struct BowlersList: Reducer {
 							do {
 								try await games.lockStaleGames()
 							} catch {
-								analytics.captureException(error)
+								errors.captureError(error)
 							}
 						}
 					)

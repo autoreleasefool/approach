@@ -1,4 +1,5 @@
-import ErrorHandlerLibrary
+import Dependencies
+import ErrorReportingClientPackageLibrary
 import Foundation
 import GRDB
 
@@ -80,7 +81,8 @@ WHERE (frame.gameId, frame.'index') IN (
 """
 			)
 		} catch {
-			ErrorHandler.capture(error: error)
+			@Dependency(\.errors) var errors
+			errors.captureError(error)
 		}
 	}
 }

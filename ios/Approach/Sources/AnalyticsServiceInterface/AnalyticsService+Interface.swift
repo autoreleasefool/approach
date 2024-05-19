@@ -10,8 +10,6 @@ public struct AnalyticsService: Sendable {
 	public var getOptInStatus: @Sendable () -> Analytics.OptInStatus
 	public var setOptInStatus: @Sendable (Analytics.OptInStatus) async -> Analytics.OptInStatus
 	public var forceCrash: @Sendable () -> Void
-	public var captureException: @Sendable (Error) -> Void
-	public var captureErrorMessage: @Sendable (String) -> Void
 
 	public init(
 		initialize: @escaping @Sendable () -> Void,
@@ -21,9 +19,7 @@ public struct AnalyticsService: Sendable {
 		resetGameSessionID: @escaping @Sendable () async -> Void,
 		getOptInStatus: @escaping @Sendable () -> Analytics.OptInStatus,
 		setOptInStatus: @escaping @Sendable (Analytics.OptInStatus) async -> Analytics.OptInStatus,
-		forceCrash: @escaping @Sendable () -> Void,
-		captureException: @escaping @Sendable (Error) -> Void,
-		captureErrorMessage: @escaping @Sendable (String) -> Void
+		forceCrash: @escaping @Sendable () -> Void
 	) {
 		self.initialize = initialize
 		self.setGlobalProperty = setGlobalProperty
@@ -33,8 +29,6 @@ public struct AnalyticsService: Sendable {
 		self.getOptInStatus = getOptInStatus
 		self.setOptInStatus = setOptInStatus
 		self.forceCrash = forceCrash
-		self.captureException = captureException
-		self.captureErrorMessage = captureErrorMessage
 	}
 
 	public func setGlobalProperty(value: String?, forKey: String) async {
@@ -51,8 +45,6 @@ extension AnalyticsService: TestDependencyKey {
 		resetGameSessionID: { unimplemented("\(Self.self).resetGameSessionID") },
 		getOptInStatus: { unimplemented("\(Self.self).getOptInStatus") },
 		setOptInStatus: { _ in unimplemented("\(Self.self).setOptInStatus") },
-		forceCrash: { unimplemented("\(Self.self).forceCrash") },
-		captureException: { _ in unimplemented("\(Self.self).captureException") },
-		captureErrorMessage: { _ in unimplemented("\(Self.self).captureErrorMessage") }
+		forceCrash: { unimplemented("\(Self.self).forceCrash") }
 	)
 }

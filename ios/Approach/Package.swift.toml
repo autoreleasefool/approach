@@ -12,7 +12,7 @@ supported = [ "\"17.0\"" ]
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
-dependencies = [ "AppInfoPackageService", "BundlePackageService", "FileManagerPackageService", "PasteboardPackageService", "StoreReviewPackageService", "UserDefaultsPackageService" ]
+dependencies = [ "AppInfoPackageService", "BundlePackageService", "SentryErrorReportingPackageService", "FileManagerPackageService", "PasteboardPackageService", "StoreReviewPackageService", "UserDefaultsPackageService" ]
 
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
@@ -227,10 +227,10 @@ dependencies = [ "EquatablePackageLibrary", "XCTestDynamicOverlay" ]
 
 [services.Analytics]
 services = [ "Preference" ]
-libraries = [ "Constants", "ErrorHandler" ]
-dependencies = [ "BundlePackageServiceInterface", "TelemetryClient" ]
+libraries = [ "Constants" ]
+dependencies = [ "BundlePackageServiceInterface", "Sentry", "TelemetryClient" ]
 [services.Analytics.interface]
-dependencies = [ "ComposableArchitecture" ]
+dependencies = [ "ComposableArchitecture", "ErrorReportingClientPackageLibrary" ]
 
 [services.Announcements]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
@@ -328,8 +328,8 @@ dependencies = [ "Dependencies" ]
 processed = [ "Resources" ]
 
 [libraries.Database]
-libraries = [ "ErrorHandler", "ScoreKeeper" ]
-dependencies = [ "GRDB" ]
+libraries = [ "ScoreKeeper" ]
+dependencies = [ "Dependencies", "ErrorReportingClientPackageLibrary", "GRDB" ]
 
 [libraries.DatabaseModels]
 skip_tests = true
@@ -337,10 +337,6 @@ libraries = [ "Models" ]
 dependencies = [ "Dependencies", "GRDB" ]
 
 [libraries.DateTime]
-
-[libraries.ErrorHandler]
-dependencies = [ "Sentry" ]
-skip_tests = true
 
 [libraries.FeatureAction]
 skip_tests = true
@@ -517,34 +513,55 @@ from = "0.9.18"
 
 [dependencies.AppInfoPackageService]
 sharedRef = "SwiftUtilities"
+
 [dependencies.AppInfoPackageServiceInterface]
 sharedRef = "SwiftUtilities"
+
 [dependencies.BundlePackageService]
 sharedRef = "SwiftUtilities"
+
 [dependencies.BundlePackageServiceInterface]
 sharedRef = "SwiftUtilities"
+
 [dependencies.EquatablePackageLibrary]
 sharedRef = "SwiftUtilities"
+
+[dependencies.ErrorReportingClientPackageLibrary]
+sharedRef = "SwiftUtilities"
+
 [dependencies.ExtensionsPackageLibrary]
 sharedRef = "SwiftUtilities"
+
 [dependencies.FileManagerPackageService]
 sharedRef = "SwiftUtilities"
+
 [dependencies.FileManagerPackageServiceInterface]
 sharedRef = "SwiftUtilities"
+
 [dependencies.PasteboardPackageService]
 sharedRef = "SwiftUtilities"
+
 [dependencies.PasteboardPackageServiceInterface]
 sharedRef = "SwiftUtilities"
+
+[dependencies.SentryErrorReportingPackageService]
+sharedRef = "SwiftUtilities"
+
 [dependencies.StoreReviewPackageService]
 sharedRef = "SwiftUtilities"
+
 [dependencies.StoreReviewPackageServiceInterface]
 sharedRef = "SwiftUtilities"
+
 [dependencies.SwiftUIExtensionsPackageLibrary]
 sharedRef = "SwiftUtilities"
+
 [dependencies.TestUtilitiesPackageLibrary]
 sharedRef = "SwiftUtilities"
+
 [dependencies.UserDefaultsPackageService]
 sharedRef = "SwiftUtilities"
+
 [dependencies.UserDefaultsPackageServiceInterface]
 sharedRef = "SwiftUtilities"
 

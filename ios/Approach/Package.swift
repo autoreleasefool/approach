@@ -121,7 +121,6 @@ let package = Package(
 		.library(name: "DatabaseLibrary", targets: ["DatabaseLibrary"]),
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
-		.library(name: "ErrorHandlerLibrary", targets: ["ErrorHandlerLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "ListContentLibrary", targets: ["ListContentLibrary"]),
@@ -258,6 +257,7 @@ let package = Package(
 				.product(name: "BundlePackageService", package: "swift-utilities"),
 				.product(name: "FileManagerPackageService", package: "swift-utilities"),
 				.product(name: "PasteboardPackageService", package: "swift-utilities"),
+				.product(name: "SentryErrorReportingPackageService", package: "swift-utilities"),
 				.product(name: "StoreReviewPackageService", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageService", package: "swift-utilities"),
 				"AccessoriesOverviewFeature",
@@ -1130,10 +1130,10 @@ let package = Package(
 			name: "AnalyticsService",
 			dependencies: [
 				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
+				.product(name: "Sentry", package: "sentry-cocoa"),
 				.product(name: "TelemetryClient", package: "SwiftClient"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
-				"ErrorHandlerLibrary",
 				"PreferenceServiceInterface",
 			]
 		),
@@ -1142,6 +1142,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "ErrorReportingClientPackageLibrary", package: "swift-utilities"),
 			]
 		),
 		.testTarget(
@@ -1520,8 +1521,9 @@ let package = Package(
 		.target(
 			name: "DatabaseLibrary",
 			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "ErrorReportingClientPackageLibrary", package: "swift-utilities"),
 				.product(name: "GRDB", package: "GRDB.swift"),
-				"ErrorHandlerLibrary",
 				"ScoreKeeperLibrary",
 			]
 		),
@@ -1549,12 +1551,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DateTimeLibrary",
-			]
-		),
-		.target(
-			name: "ErrorHandlerLibrary",
-			dependencies: [
-				.product(name: "Sentry", package: "sentry-cocoa"),
 			]
 		),
 		.target(
