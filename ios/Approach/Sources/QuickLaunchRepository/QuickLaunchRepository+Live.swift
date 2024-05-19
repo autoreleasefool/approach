@@ -9,8 +9,8 @@ import RecentlyUsedServiceInterface
 import RepositoryLibrary
 
 extension QuickLaunchRepository: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			defaultSource: {
 				@Dependency(DatabaseService.self) var database
 				@Dependency(RecentlyUsedService.self) var recentlyUsed
@@ -34,5 +34,5 @@ extension QuickLaunchRepository: DependencyKey {
 				return nil
 			}
 		)
-	}()
+	}
 }

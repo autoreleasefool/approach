@@ -10,7 +10,7 @@ import ModelsLibrary
 import RepositoryLibrary
 
 extension GamesRepository: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		@Sendable func requestList(forSeries: Series.ID, ordering: Game.Ordering) -> QueryInterfaceRequest<Game.Database> {
 			switch ordering {
 			case .byIndex:
@@ -335,5 +335,5 @@ extension GamesRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

@@ -12,7 +12,7 @@ extension NSNotification.Name {
 }
 
 extension FeatureFlagsService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		@Dependency(\.featureFlagsQueue) var queue
 
 		let flagManager = FeatureFlagOverrides(queue: queue)
@@ -83,7 +83,7 @@ extension FeatureFlagsService: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }
 
 class FeatureFlagOverrides {
@@ -146,7 +146,12 @@ extension DependencyValues {
 	}
 
 	enum FeatureFlagsQueueKey: DependencyKey {
-		static var liveValue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
-		static var testValue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
+		static var liveValue: DispatchQueue {
+			DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
+		}
+
+		static var testValue: DispatchQueue {
+			DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
+		}
 	}
 }

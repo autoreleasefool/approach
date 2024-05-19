@@ -10,7 +10,7 @@ import RepositoryLibrary
 public typealias GearStream = AsyncThrowingStream<[Gear.Summary], Error>
 
 extension GearRepository: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		@Sendable func sortGear(
 			_ gear: GearStream,
 			_ ordering: Gear.Ordering
@@ -120,5 +120,5 @@ extension GearRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

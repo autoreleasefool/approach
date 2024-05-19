@@ -4,7 +4,7 @@ import Dependencies
 import PreferenceServiceInterface
 
 extension AnnouncementsService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		Self(
 			announcement: {
 				@Dependency(PreferenceService.self) var preferences
@@ -18,5 +18,5 @@ extension AnnouncementsService: DependencyKey {
 				preferences.setBool(announcement.preferenceKey, true)
 			}
 		)
-	}()
+	}
 }

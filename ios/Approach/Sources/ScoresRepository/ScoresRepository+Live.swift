@@ -12,8 +12,8 @@ struct SequencedRoll {
 }
 
 extension ScoresRepository: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			observeScore: { gameId in
 				@Dependency(FramesRepository.self) var framesRepository
 				@Dependency(GamesRepository.self) var gamesRepository
@@ -41,5 +41,5 @@ extension ScoresRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

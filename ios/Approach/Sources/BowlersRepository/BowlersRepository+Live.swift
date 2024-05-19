@@ -12,8 +12,8 @@ import StatisticsModelsLibrary
 typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
 extension BowlersRepository: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			list: { ordering in
 				@Dependency(DatabaseService.self) var database
 				@Dependency(RecentlyUsedService.self) var recentlyUsed
@@ -209,5 +209,5 @@ extension BowlersRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

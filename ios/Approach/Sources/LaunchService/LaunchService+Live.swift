@@ -7,8 +7,8 @@ import ProductsServiceInterface
 import StoreReviewPackageServiceInterface
 
 extension LaunchService: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			didInit: {
 				// For sync initializars that must run before anything else in the app
 				@Dependency(AnalyticsService.self) var analytics
@@ -39,5 +39,5 @@ extension LaunchService: DependencyKey {
 				)
 			}
 		)
-	}()
+	}
 }

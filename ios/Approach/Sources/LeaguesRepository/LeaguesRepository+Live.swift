@@ -9,7 +9,7 @@ import RepositoryLibrary
 import StatisticsModelsLibrary
 
 extension LeaguesRepository: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		@Sendable func requestList(
 			bowledBy: Bowler.ID,
 			withRecurrence: League.Recurrence?,
@@ -172,5 +172,5 @@ extension LeaguesRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

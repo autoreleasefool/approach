@@ -6,8 +6,8 @@ import LocationsRepositoryInterface
 import ModelsLibrary
 
 extension LocationsRepository: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			insertOrUpdate: { location in
 				@Dependency(DatabaseService.self) var database
 
@@ -21,5 +21,5 @@ extension LocationsRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

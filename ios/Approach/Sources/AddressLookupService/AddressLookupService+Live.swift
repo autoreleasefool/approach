@@ -3,7 +3,7 @@ import Dependencies
 import MapKit
 
 extension AddressLookupService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		final actor LocalSearch: GlobalActor {
 			final class Delegate: NSObject, MKLocalSearchCompleterDelegate {
 				@Dependency(\.uuid) var uuid
@@ -79,5 +79,5 @@ extension AddressLookupService: DependencyKey {
 				)
 			}
 		)
-	}()
+	}
 }

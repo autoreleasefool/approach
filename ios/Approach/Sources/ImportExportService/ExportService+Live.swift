@@ -6,7 +6,7 @@ import GRDB
 import ImportExportServiceInterface
 
 extension ExportService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		let exportCache = LockIsolated<Set<String>>([])
 
 		return Self(
@@ -48,5 +48,5 @@ extension ExportService: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

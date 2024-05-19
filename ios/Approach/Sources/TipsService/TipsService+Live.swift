@@ -3,8 +3,8 @@ import PreferenceServiceInterface
 import TipsServiceInterface
 
 extension TipsService: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			shouldShowTip: { tip in
 				@Dependency(PreferenceService.self) var preferences
 				return preferences.getBool(tip.preferenceKey) != true
@@ -14,5 +14,5 @@ extension TipsService: DependencyKey {
 				preferences.setBool(tip.preferenceKey, true)
 			}
 		)
-	}()
+	}
 }

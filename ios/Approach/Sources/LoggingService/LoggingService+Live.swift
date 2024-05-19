@@ -5,7 +5,7 @@ import LoggingServiceInterface
 import ZIPServiceInterface
 
 extension LoggingService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		let fileLogger = DDFileLogger()
 		let logFileManager = fileLogger.logFileManager
 
@@ -34,5 +34,5 @@ extension LoggingService: DependencyKey {
 				return try zip.zipContents(ofUrls: urls, to: "approach_logs.zip")
 			}
 		)
-	}()
+	}
 }

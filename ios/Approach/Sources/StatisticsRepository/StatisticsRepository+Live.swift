@@ -12,7 +12,7 @@ import StatisticsRepositoryInterface
 import StatisticsWidgetsLibrary
 
 extension StatisticsRepository: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		@Sendable func isSeenKey(forStatistic: Statistic.Type) -> String {
 			"Statistic.IsSeen.\(forStatistic.title)"
 		}
@@ -407,5 +407,5 @@ extension StatisticsRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

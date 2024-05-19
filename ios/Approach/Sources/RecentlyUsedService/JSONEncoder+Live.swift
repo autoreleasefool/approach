@@ -3,8 +3,7 @@ import Foundation
 import RecentlyUsedServiceInterface
 
 extension JSONEncoderService: DependencyKey {
-	public static var liveValue: Self = {
-		let encoder = JSONEncoder()
-		return .init(encoder)
-	}()
+	public static var liveValue: Self {
+		Self(JSONEncoder())
+	}
 }

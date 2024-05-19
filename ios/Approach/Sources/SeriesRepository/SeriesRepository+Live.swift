@@ -7,8 +7,8 @@ import RepositoryLibrary
 import SeriesRepositoryInterface
 
 extension SeriesRepository: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			list: { league, ordering in
 				@Dependency(DatabaseService.self) var database
 
@@ -253,5 +253,5 @@ extension SeriesRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

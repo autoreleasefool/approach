@@ -9,7 +9,7 @@ import Sentry
 import TelemetryClient
 
 extension AnalyticsService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		let properties = PropertyManager()
 
 		let gameSessionID: LockIsolated<UUID?> = .init(nil)
@@ -83,7 +83,7 @@ extension AnalyticsService: DependencyKey {
 				ErrorHandler.capture(message: message)
 			}
 		)
-	}()
+	}
 }
 
 actor PropertyManager {

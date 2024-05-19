@@ -12,7 +12,7 @@ extension Notification.Name {
 extension RecentlyUsedService: DependencyKey {
 	public static var maximumEntries: Int { 20 }
 
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		// FIXME: Replace with a @Dependency
 		let decoder = JSONDecoder()
 
@@ -106,5 +106,5 @@ extension RecentlyUsedService: DependencyKey {
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			}
 		)
-	}()
+	}
 }

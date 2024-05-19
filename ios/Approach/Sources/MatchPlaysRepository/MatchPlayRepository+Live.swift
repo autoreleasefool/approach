@@ -6,8 +6,8 @@ import MatchPlaysRepositoryInterface
 import ModelsLibrary
 
 extension MatchPlaysRepository: DependencyKey {
-	public static var liveValue: Self = {
-		return Self(
+	public static var liveValue: Self {
+		Self(
 			create: { matchPlay in
 				@Dependency(DatabaseService.self) var database
 
@@ -30,5 +30,5 @@ extension MatchPlaysRepository: DependencyKey {
 				}
 			}
 		)
-	}()
+	}
 }

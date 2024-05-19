@@ -6,7 +6,7 @@ import ProductsServiceInterface
 import RevenueCat
 
 extension ProductsService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		let isAvailableCache = LockIsolated<[Product: Bool]>([:])
 
 		@Sendable func updateCache(forProducts products: [Product], withEntitlements entitlements: EntitlementInfos) {
@@ -96,5 +96,5 @@ extension ProductsService: DependencyKey {
 				_ = try await Purchases.shared.restorePurchases()
 			}
 		)
-	}()
+	}
 }

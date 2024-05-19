@@ -6,7 +6,7 @@ import ModelsLibrary
 import UIKit
 
 extension AvatarService: DependencyKey {
-	public static var liveValue: Self = {
+	public static var liveValue: Self {
 		let cache = Cache()
 
 		@Sendable func render(text: String, background: Avatar.Background) -> UIImage {
@@ -75,13 +75,13 @@ extension AvatarService: DependencyKey {
 			return image
 		}
 
-		return .init(
+		return Self(
 			render: render(_:),
 			preRender: {
 				_ = await render($0)
 			}
 		)
-	}()
+	}
 }
 
 private actor Cache {
