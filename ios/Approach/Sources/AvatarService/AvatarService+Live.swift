@@ -1,6 +1,6 @@
 import AvatarServiceInterface
 import Dependencies
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import Foundation
 import ModelsLibrary
 import UIKit
@@ -97,5 +97,23 @@ private actor Cache {
 
 	func store(_ avatar: Avatar.Value, image: UIImage) async {
 		imageCache.setObject(image, forKey: NSString(string: String(describing: avatar)))
+	}
+}
+
+extension String {
+	var words: [String] {
+		components(separatedBy: .alphanumerics.inverted)
+			.filter { !$0.isEmpty }
+	}
+
+	var initials: String {
+		let words = self.words
+		if words.count > 1 {
+			return words.prefix(2)
+				.map { $0.first?.description ?? "" }
+				.joined()
+		} else {
+			return String(prefix(2))
+		}
 	}
 }

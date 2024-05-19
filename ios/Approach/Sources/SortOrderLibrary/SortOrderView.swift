@@ -2,7 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 public struct SortOrderView<Ordering: Orderable>: View {

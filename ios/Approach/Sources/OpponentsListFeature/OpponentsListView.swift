@@ -2,7 +2,7 @@ import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 import ModelsViewsLibrary
@@ -11,7 +11,7 @@ import ResourceListLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: OpponentsList.self)

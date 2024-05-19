@@ -4,7 +4,7 @@ import PreferenceServiceInterface
 import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import TipsLibrary
 import ViewsLibrary
 

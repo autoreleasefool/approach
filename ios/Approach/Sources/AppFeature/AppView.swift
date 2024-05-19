@@ -2,7 +2,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import OnboardingFeature
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 @ViewAction(for: App.self)
 public struct AppView: View {

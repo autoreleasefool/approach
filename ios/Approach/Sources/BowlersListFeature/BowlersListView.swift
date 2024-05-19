@@ -3,7 +3,7 @@ import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import GamesListFeature
 import LeaguesListFeature
 import ModelsLibrary
@@ -15,7 +15,7 @@ import StatisticsWidgetsLayoutFeature
 import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import TipsLibrary
 import ViewsLibrary
 

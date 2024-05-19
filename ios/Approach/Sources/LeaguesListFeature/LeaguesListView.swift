@@ -1,7 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import GamesListFeature
 import LeagueEditorFeature
 import ModelsLibrary
@@ -11,7 +11,7 @@ import SortOrderLibrary
 import StatisticsWidgetsLayoutFeature
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: LeaguesList.self)

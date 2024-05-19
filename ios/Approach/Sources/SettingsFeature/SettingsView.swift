@@ -2,14 +2,14 @@ import ArchiveListFeature
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import FeatureFlagsListFeature
 import ImportExportFeature
 import OpponentsListFeature
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: Settings.self)

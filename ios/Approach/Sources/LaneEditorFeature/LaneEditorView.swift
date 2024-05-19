@@ -3,7 +3,7 @@ import ComposableArchitecture
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: LaneEditor.self)

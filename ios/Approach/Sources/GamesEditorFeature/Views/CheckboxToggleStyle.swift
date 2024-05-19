@@ -1,10 +1,8 @@
 import AssetsLibrary
 import SwiftUI
 
-public struct CheckboxToggleStyle: ToggleStyle {
-	public init() {}
-
-	public func makeBody(configuration: Configuration) -> some View {
+struct CheckboxToggleStyle: ToggleStyle {
+	func makeBody(configuration: Configuration) -> some View {
 		HStack {
 			configuration.label
 
@@ -20,6 +18,10 @@ public struct CheckboxToggleStyle: ToggleStyle {
 			}
 		}
 	}
+}
+
+extension ToggleStyle where Self == CheckboxToggleStyle {
+	static var checkboxToggle: CheckboxToggleStyle { .init() }
 }
 
 #if DEBUG

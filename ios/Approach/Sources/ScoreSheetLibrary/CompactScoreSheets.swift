@@ -3,7 +3,7 @@ import DateTimeLibrary
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 public struct CompactScoreSheets: View {

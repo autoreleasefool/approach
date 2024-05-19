@@ -1,4 +1,4 @@
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import ModelsLibrary
 
 extension Frame {

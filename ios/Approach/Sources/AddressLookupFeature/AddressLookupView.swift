@@ -4,7 +4,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: AddressLookup.self)

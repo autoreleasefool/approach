@@ -5,7 +5,7 @@ import ModelsLibrary
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: MidGameStatisticsDetails.self)

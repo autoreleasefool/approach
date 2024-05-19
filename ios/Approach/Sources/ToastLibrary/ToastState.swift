@@ -1,7 +1,7 @@
 import AlertToast
 import AssetsLibrary
 import ComposableArchitecture
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import SwiftUI
 
 public protocol ToastableAction {

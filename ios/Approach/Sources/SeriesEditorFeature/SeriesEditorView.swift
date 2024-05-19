@@ -8,7 +8,7 @@ import ModelsViewsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 @ViewAction(for: SeriesEditor.self)
 public struct SeriesEditorView: View {

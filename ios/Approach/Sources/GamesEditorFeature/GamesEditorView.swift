@@ -3,7 +3,7 @@ import AvatarServiceInterface
 import ComposableArchitecture
 import EquatablePackageLibrary
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
@@ -12,7 +12,7 @@ import SharingFeature
 import StoreKit
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 @ViewAction(for: GamesEditor.self)
 public struct GamesEditorView: View {

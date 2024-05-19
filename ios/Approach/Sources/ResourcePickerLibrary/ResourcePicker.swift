@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import ExtensionsLibrary
+import ComposableExtensionsLibrary
 import FeatureActionLibrary
 import ListContentLibrary
 import ViewsLibrary

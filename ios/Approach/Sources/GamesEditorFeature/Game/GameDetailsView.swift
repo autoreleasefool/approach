@@ -2,13 +2,13 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import EquatablePackageLibrary
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import ModelsLibrary
 import ResourcePickerLibrary
 import StatisticsDetailsFeature
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: GameDetails.self)
@@ -71,7 +71,7 @@ public struct GameDetailsView: View {
 							Strings.Game.Editor.Fields.Lock.label,
 							isOn: $store.isLocked.sending(\.view.didToggleLock)
 						)
-						.toggleStyle(CheckboxToggleStyle())
+						.toggleStyle(.checkboxToggle)
 					} footer: {
 						Text(Strings.Game.Editor.Fields.Lock.help)
 					}
@@ -81,7 +81,7 @@ public struct GameDetailsView: View {
 							Strings.Game.Editor.Fields.ExcludeFromStatistics.label,
 							isOn: $store.isExcludedFromStatistics.sending(\.view.didToggleExclude)
 						)
-						.toggleStyle(CheckboxToggleStyle())
+						.toggleStyle(.checkboxToggle)
 					} footer: {
 						excludeFromStatisticsHelp(
 							excludeLeagueFromStatistics: game.league.excludeFromStatistics,

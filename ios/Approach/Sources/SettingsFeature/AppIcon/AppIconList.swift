@@ -7,7 +7,7 @@ import FeatureFlagsServiceInterface
 import ProductsServiceInterface
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 @Reducer
 public struct AppIconList: Reducer {

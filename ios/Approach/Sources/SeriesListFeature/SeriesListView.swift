@@ -2,7 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import GamesListFeature
 import LeagueEditorFeature
 import ModelsLibrary
@@ -11,7 +11,7 @@ import SeriesEditorFeature
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: SeriesList.self)

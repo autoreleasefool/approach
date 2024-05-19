@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import EquatablePackageLibrary
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import ModelsLibrary
 import ModelsViewsLibrary
 import ResourcePickerLibrary
@@ -9,7 +9,7 @@ import StatisticsLibrary
 import StatisticsWidgetsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import TipsLibrary
 import ViewsLibrary
 

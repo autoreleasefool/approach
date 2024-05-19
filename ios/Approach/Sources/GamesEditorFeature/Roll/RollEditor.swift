@@ -3,7 +3,7 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import EquatablePackageLibrary
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import GearRepositoryInterface

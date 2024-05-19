@@ -4,7 +4,7 @@ import ErrorsFeature
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: StatisticsDetails.self)

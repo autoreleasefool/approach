@@ -4,7 +4,7 @@ import FeatureActionLibrary
 import FramesRepositoryInterface
 import ModelsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer

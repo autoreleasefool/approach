@@ -1,6 +1,6 @@
 import ComposableArchitecture
+import ComposableExtensionsLibrary
 import EquatablePackageLibrary
-import ExtensionsLibrary
 import FeatureActionLibrary
 import ListContentLibrary
 import StringsLibrary

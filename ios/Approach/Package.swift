@@ -116,12 +116,12 @@ let package = Package(
 		// MARK: - Libraries
 		.library(name: "AnnouncementsLibrary", targets: ["AnnouncementsLibrary"]),
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
+		.library(name: "ComposableExtensionsLibrary", targets: ["ComposableExtensionsLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DatabaseLibrary", targets: ["DatabaseLibrary"]),
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "ErrorHandlerLibrary", targets: ["ErrorHandlerLibrary"]),
-		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "ListContentLibrary", targets: ["ListContentLibrary"]),
@@ -144,7 +144,6 @@ let package = Package(
 		.library(name: "StatisticsModelsLibrary", targets: ["StatisticsModelsLibrary"]),
 		.library(name: "StatisticsWidgetsLibrary", targets: ["StatisticsWidgetsLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
-		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "TestDatabaseUtilitiesLibrary", targets: ["TestDatabaseUtilitiesLibrary"]),
 		.library(name: "TestUtilitiesLibrary", targets: ["TestUtilitiesLibrary"]),
 		.library(name: "TipsLibrary", targets: ["TipsLibrary"]),
@@ -189,12 +188,12 @@ let package = Package(
 		.target(
 			name: "AddressLookupFeature",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"AddressLookupServiceInterface",
 				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
 				"LocationsRepositoryInterface",
 				"LoggingServiceInterface",
-				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -298,9 +297,9 @@ let package = Package(
 		.target(
 			name: "AvatarEditorFeature",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"AvatarServiceInterface",
-				"ExtensionsLibrary",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
 				"ViewsLibrary",
@@ -468,13 +467,13 @@ let package = Package(
 		.target(
 			name: "ImportExportFeature",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"DateTimeLibrary",
 				"FeatureActionLibrary",
 				"ImportExportServiceInterface",
 				"LoggingServiceInterface",
 				"PreferenceServiceInterface",
-				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -488,11 +487,11 @@ let package = Package(
 		.target(
 			name: "LaneEditorFeature",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
 				"ModelsLibrary",
-				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -537,12 +536,12 @@ let package = Package(
 		.target(
 			name: "OnboardingFeature",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"BowlersRepositoryInterface",
-				"ExtensionsLibrary",
 				"FeatureActionLibrary",
 				"LoggingServiceInterface",
-				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -790,7 +789,7 @@ let package = Package(
 			name: "FramesRepositoryInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
-				"ExtensionsLibrary",
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"ModelsLibrary",
 				"ScoreKeeperLibrary",
 			]
@@ -808,9 +807,9 @@ let package = Package(
 		.target(
 			name: "GamesRepository",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
-				"ExtensionsLibrary",
 				"GamesRepositoryInterface",
 				"RepositoryLibrary",
 			]
@@ -1188,7 +1187,6 @@ let package = Package(
 			name: "AvatarService",
 			dependencies: [
 				"AvatarServiceInterface",
-				"ExtensionsLibrary",
 			]
 		),
 		.target(
@@ -1496,6 +1494,12 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "ComposableExtensionsLibrary",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.target(
 			name: "ConstantsLibrary",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
@@ -1543,19 +1547,6 @@ let package = Package(
 			name: "ErrorHandlerLibrary",
 			dependencies: [
 				.product(name: "Sentry", package: "sentry-cocoa"),
-			]
-		),
-		.target(
-			name: "ExtensionsLibrary",
-			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(
-			name: "ExtensionsLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"ExtensionsLibrary",
 			]
 		),
 		.target(
@@ -1669,10 +1660,10 @@ let package = Package(
 			name: "ResourceListLibrary",
 			dependencies: [
 				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
-				"ExtensionsLibrary",
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
+				"ComposableExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -1685,10 +1676,10 @@ let package = Package(
 		.target(
 			name: "ResourcePickerLibrary",
 			dependencies: [
-				"ExtensionsLibrary",
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
+				"ComposableExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -1725,9 +1716,9 @@ let package = Package(
 		.target(
 			name: "ScoreSheetLibrary",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"DateTimeLibrary",
 				"ModelsLibrary",
-				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -1741,8 +1732,8 @@ let package = Package(
 		.target(
 			name: "SortOrderLibrary",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
 				"FeatureActionLibrary",
-				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -1767,9 +1758,10 @@ let package = Package(
 		.target(
 			name: "StatisticsChartsLibrary",
 			dependencies: [
+				.product(name: "SwiftUIExtensionsPackageLibrary", package: "swift-utilities"),
+				"AssetsLibrary",
 				"DateTimeLibrary",
 				"StatisticsLibrary",
-				"SwiftUIExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -1842,19 +1834,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "SwiftUIExtensionsLibrary",
-			dependencies: [
-				"AssetsLibrary",
-			]
-		),
-		.testTarget(
-			name: "SwiftUIExtensionsLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SwiftUIExtensionsLibrary",
-			]
-		),
-		.target(
 			name: "TestDatabaseUtilitiesLibrary",
 			dependencies: [
 				"DatabaseLibrary",
@@ -1882,8 +1861,9 @@ let package = Package(
 			name: "ToastLibrary",
 			dependencies: [
 				.product(name: "AlertToast", package: "AlertToast"),
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AssetsLibrary",
-				"ExtensionsLibrary",
 			]
 		),
 		.testTarget(

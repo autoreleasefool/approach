@@ -2,7 +2,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import GamesEditorFeature
 import ModelsLibrary
@@ -11,7 +11,7 @@ import SeriesEditorFeature
 import SharingFeature
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import TipsLibrary
 import ViewsLibrary
 

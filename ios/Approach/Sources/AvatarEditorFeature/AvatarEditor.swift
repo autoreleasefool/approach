@@ -1,7 +1,7 @@
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 import StringsLibrary

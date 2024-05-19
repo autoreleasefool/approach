@@ -11,7 +11,7 @@ import GearRepositoryInterface
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 @Reducer
 public struct AccessoriesOverview: Reducer {

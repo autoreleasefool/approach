@@ -1,9 +1,9 @@
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
+import ComposableExtensionsLibrary
 import DateTimeLibrary
 import EquatablePackageLibrary
-import ExtensionsLibrary
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import GearRepositoryInterface

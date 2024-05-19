@@ -1,7 +1,7 @@
 import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import ModelsLibrary
 

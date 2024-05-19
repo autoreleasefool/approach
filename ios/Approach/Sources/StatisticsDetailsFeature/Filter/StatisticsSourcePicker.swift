@@ -4,7 +4,7 @@ import ComposableArchitecture
 import DateTimeLibrary
 import EquatablePackageLibrary
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import GamesRepositoryInterface
 import LeaguesRepositoryInterface
@@ -17,7 +17,7 @@ import StatisticsLibrary
 import StatisticsRepositoryInterface
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer

@@ -5,14 +5,14 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import GearEditorFeature
 import GearListFeature
 import ModelsLibrary
 import ModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 struct GearKindGroup: Identifiable {

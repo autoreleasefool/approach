@@ -4,7 +4,7 @@ import DateTimeLibrary
 import StatisticsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 public struct PercentageChart: View {
 	let data: Data

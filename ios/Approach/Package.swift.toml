@@ -21,7 +21,8 @@ dependencies = [ "Algorithms" ]
 [features.AddressLookup]
 repositories = [ "Locations" ]
 services = [ "AddressLookup" ]
-libraries = [ "SwiftUIExtensions", "Views" ]
+libraries = [ "Views" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.AlleyEditor]
 features = [ "AddressLookup", "Form", "LaneEditor" ]
@@ -43,7 +44,8 @@ libraries = [ "DateTime", "ModelsViews" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
-libraries = [ "Extensions", "Views" ]
+libraries = [ "Views" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 
 [features.BowlerEditor]
 features = [ "Form" ]
@@ -87,10 +89,12 @@ libraries = [ "ResourceList", "SortOrder" ]
 
 [features.ImportExport]
 services = [ "ImportExport", "Preference" ]
-libraries = [ "DateTime", "SwiftUIExtensions", "Views" ]
+libraries = [ "DateTime", "Views" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.LaneEditor]
-libraries = [ "Models", "SwiftUIExtensions", "Views" ]
+libraries = [ "Models", "Views" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [features.LeagueEditor]
 features = [ "Form" ]
@@ -112,7 +116,8 @@ libraries = [ "ModelsViews", "SortOrder" ]
 
 [features.Onboarding]
 repositories = [ "Bowlers" ]
-libraries = [ "Extensions", "SwiftUIExtensions", "Views" ]
+libraries = [ "Views" ]
+dependencies = [ "ExtensionsPackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 
 [features.Paywall]
 features = [ "Errors" ]
@@ -167,10 +172,11 @@ libraries = [ "StatisticsModels" ]
 
 [repositories.Frames]
 [repositories.Frames.interface]
-libraries = [ "Extensions", "ScoreKeeper" ]
+libraries = [ "ScoreKeeper" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 
 [repositories.Games]
-libraries = [ "Extensions" ]
+dependencies = [ "ExtensionsPackageLibrary" ]
 [repositories.Games.interface]
 repositories = [ "MatchPlays" ]
 
@@ -236,7 +242,6 @@ skip_tests = true
 libraries = [ "Assets" ]
 
 [services.Avatar]
-libraries = [ "Extensions" ]
 [services.Avatar.interface]
 libraries = [ "ModelsViews" ]
 
@@ -302,6 +307,10 @@ dependencies = [ "SFSafeSymbols" ]
 [libraries.Assets.resources]
 processed = [ "Resources" ]
 
+[libraries.ComposableExtensions]
+skip_tests = true
+dependencies = [ "ComposableArchitecture" ]
+
 [libraries.Constants]
 skip_tests = true
 libraries = [ "Strings" ]
@@ -323,9 +332,6 @@ dependencies = [ "Dependencies", "GRDB" ]
 [libraries.ErrorHandler]
 dependencies = [ "Sentry" ]
 skip_tests = true
-
-[libraries.Extensions]
-dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureAction]
 skip_tests = true
@@ -361,11 +367,12 @@ libraries = [ "Sorting" ]
 dependencies = [ "AsyncAlgorithms" ]
 
 [libraries.ResourceList]
-libraries = [ "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
-dependencies = [ "EquatablePackageLibrary" ]
+libraries = [ "ComposableExtensions", "FeatureAction", "ListContent" ]
+dependencies = [ "EquatablePackageLibrary", "SwiftUIExtensionsPackageLibrary" ]
 
 [libraries.ResourcePicker]
-libraries = [ "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
+libraries = [ "ComposableExtensions", "FeatureAction", "ListContent" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [libraries.ScoreKeeper]
 libraries = [ "ScoreKeeperModels" ]
@@ -373,12 +380,14 @@ libraries = [ "ScoreKeeperModels" ]
 [libraries.ScoreKeeperModels]
 
 [libraries.ScoreSheet]
-libraries = [ "DateTime", "Models", "SwiftUIExtensions", "Views" ]
+libraries = [ "DateTime", "Models", "Views" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [libraries.Sorting]
 
 [libraries.SortOrder]
-libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
+libraries = [ "FeatureAction", "Views" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [libraries.Statistics]
 libraries = [ "Models", "Strings" ]
@@ -386,7 +395,8 @@ libraries = [ "Models", "Strings" ]
 dependencies = [ "Dependencies" ]
 
 [libraries.StatisticsCharts]
-libraries = [ "DateTime", "Statistics", "SwiftUIExtensions" ]
+libraries = [ "Assets", "DateTime", "Statistics" ]
+dependencies = [ "SwiftUIExtensionsPackageLibrary" ]
 
 [libraries.StatisticsChartsMocks]
 skip_tests = true
@@ -404,9 +414,6 @@ libraries = [ "StatisticsChartsMocks" ]
 
 [libraries.Strings]
 
-[libraries.SwiftUIExtensions]
-libraries = [ "Assets" ]
-
 [libraries.TestDatabaseUtilities]
 suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
@@ -420,8 +427,8 @@ skip_tests = true
 libraries = [ "Views" ]
 
 [libraries.Toast]
-libraries = [ "Assets", "Extensions" ]
-dependencies = [ "AlertToast" ]
+libraries = [ "Assets" ]
+dependencies = [ "AlertToast", "ComposableArchitecture", "ExtensionsPackageLibrary" ]
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]
@@ -508,6 +515,8 @@ sharedRef = "SwiftUtilities"
 sharedRef = "SwiftUtilities"
 [dependencies.EquatablePackageLibrary]
 sharedRef = "SwiftUtilities"
+[dependencies.ExtensionsPackageLibrary]
+sharedRef = "SwiftUtilities"
 [dependencies.PasteboardPackageService]
 sharedRef = "SwiftUtilities"
 [dependencies.PasteboardPackageServiceInterface]
@@ -515,6 +524,8 @@ sharedRef = "SwiftUtilities"
 [dependencies.StoreReviewPackageService]
 sharedRef = "SwiftUtilities"
 [dependencies.StoreReviewPackageServiceInterface]
+sharedRef = "SwiftUtilities"
+[dependencies.SwiftUIExtensionsPackageLibrary]
 sharedRef = "SwiftUtilities"
 [dependencies.UserDefaultsPackageService]
 sharedRef = "SwiftUtilities"

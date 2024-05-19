@@ -8,7 +8,7 @@ import ImportExportServiceInterface
 import PreferenceServiceInterface
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer

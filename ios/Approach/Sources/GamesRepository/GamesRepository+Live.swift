@@ -1,7 +1,7 @@
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import Foundation
 import GamesRepositoryInterface
 import GRDB

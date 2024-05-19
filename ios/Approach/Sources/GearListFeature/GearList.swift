@@ -11,7 +11,7 @@ import ResourceListLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 extension Gear.Summary: ResourceListItem {}

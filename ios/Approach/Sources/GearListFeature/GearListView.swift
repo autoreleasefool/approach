@@ -2,7 +2,7 @@ import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
 import ErrorsFeature
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import GearEditorFeature
 import ModelsLibrary

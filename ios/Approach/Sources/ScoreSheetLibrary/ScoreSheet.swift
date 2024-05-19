@@ -1,7 +1,7 @@
 import AssetsLibrary
 import ModelsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 public struct ScoreSheet: View {

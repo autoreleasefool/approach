@@ -4,7 +4,7 @@ import FeatureActionLibrary
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 
 @Reducer
 public struct ScoringEditor: Reducer {
@@ -98,7 +98,7 @@ public struct ScoringEditorView: View {
 					Strings.Scoring.Editor.Fields.ManualScore.title,
 					isOn: $store.isManualScoring.sending(\.view.toggleManualScoring)
 				)
-				.toggleStyle(CheckboxToggleStyle())
+				.toggleStyle(.checkboxToggle)
 			} footer: {
 				Text(Strings.Scoring.Editor.Fields.ManualScore.help)
 			}

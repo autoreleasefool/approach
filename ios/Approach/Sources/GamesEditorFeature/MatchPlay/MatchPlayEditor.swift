@@ -10,7 +10,7 @@ import PickableModelsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @Reducer

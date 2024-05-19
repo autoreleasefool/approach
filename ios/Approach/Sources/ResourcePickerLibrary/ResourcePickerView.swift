@@ -3,7 +3,7 @@ import ComposableArchitecture
 import ListContentLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, Row: View>: View {

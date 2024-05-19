@@ -2,7 +2,7 @@ import AvatarEditorFeature
 import AvatarServiceInterface
 import ComposableArchitecture
 import EquatablePackageLibrary
-import ExtensionsLibrary
+import ExtensionsPackageLibrary
 import FeatureActionLibrary
 import FormFeature
 import ModelsLibrary
@@ -10,7 +10,7 @@ import ModelsViewsLibrary
 import ResourcePickerLibrary
 import StringsLibrary
 import SwiftUI
-import SwiftUIExtensionsLibrary
+import SwiftUIExtensionsPackageLibrary
 import ViewsLibrary
 
 @ViewAction(for: GearEditor.self)

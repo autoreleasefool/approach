@@ -1,5 +1,6 @@
 import AnalyticsServiceInterface
 import ComposableArchitecture
+import ComposableExtensionsLibrary
 import ErrorsFeature
 import FeatureActionLibrary
 import ModelsLibrary
