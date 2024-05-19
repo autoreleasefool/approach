@@ -2,7 +2,7 @@ import AnalyticsServiceInterface
 import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface

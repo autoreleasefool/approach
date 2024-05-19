@@ -2,7 +2,7 @@ import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import DateTimeLibrary
-import EquatableLibrary
+import EquatablePackageLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
 import GamesRepositoryInterface

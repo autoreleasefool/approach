@@ -1,7 +1,7 @@
 import AvatarEditorFeature
 import AvatarServiceInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import ExtensionsLibrary
 import FeatureActionLibrary
 import FormFeature

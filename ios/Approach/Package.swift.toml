@@ -55,8 +55,8 @@ repositories = [ "QuickLaunch" ]
 
 [features.Errors]
 services = [ "Email", "FileManager", "Logging" ]
-libraries = [ "Constants", "Equatable", "Toast", "Views" ]
-dependencies = [ "AppInfoPackageServiceInterface", "PasteboardPackageServiceInterface" ]
+libraries = [ "Constants", "Toast", "Views" ]
+dependencies = [ "AppInfoPackageServiceInterface", "EquatablePackageLibrary", "PasteboardPackageServiceInterface" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -215,13 +215,13 @@ repositories = [ "Statistics" ]
 
 [services.AddressLookup]
 [services.AddressLookup.interface]
-libraries = [ "Equatable", "Models" ]
-dependencies = [ "XCTestDynamicOverlay" ]
+libraries = [ "Models" ]
+dependencies = [ "EquatablePackageLibrary", "XCTestDynamicOverlay" ]
 
 [services.Analytics]
 services = [ "Preference" ]
 libraries = [ "Constants", "ErrorHandler" ]
-dependencies = [ "TelemetryClient" ]
+dependencies = [ "BundlePackageServiceInterface", "TelemetryClient" ]
 [services.Analytics.interface]
 dependencies = [ "ComposableArchitecture" ]
 
@@ -324,8 +324,6 @@ dependencies = [ "Dependencies", "GRDB" ]
 dependencies = [ "Sentry" ]
 skip_tests = true
 
-[libraries.Equatable]
-
 [libraries.Extensions]
 dependencies = [ "ComposableArchitecture" ]
 
@@ -363,7 +361,8 @@ libraries = [ "Sorting" ]
 dependencies = [ "AsyncAlgorithms" ]
 
 [libraries.ResourceList]
-libraries = [ "Equatable", "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
+libraries = [ "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
+dependencies = [ "EquatablePackageLibrary" ]
 
 [libraries.ResourcePicker]
 libraries = [ "Extensions", "FeatureAction", "ListContent", "SwiftUIExtensions" ]
@@ -506,6 +505,8 @@ sharedRef = "SwiftUtilities"
 [dependencies.BundlePackageService]
 sharedRef = "SwiftUtilities"
 [dependencies.BundlePackageServiceInterface]
+sharedRef = "SwiftUtilities"
+[dependencies.EquatablePackageLibrary]
 sharedRef = "SwiftUtilities"
 [dependencies.PasteboardPackageService]
 sharedRef = "SwiftUtilities"

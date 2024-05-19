@@ -1,4 +1,4 @@
-import EquatableLibrary
+import EquatablePackageLibrary
 import Foundation
 import MapKit
 

@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import ErrorsFeature
 import ExtensionsLibrary
 import ModelsLibrary

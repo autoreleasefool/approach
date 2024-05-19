@@ -1,7 +1,7 @@
 import AnalyticsServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsLibrary

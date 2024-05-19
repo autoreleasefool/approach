@@ -1,6 +1,6 @@
 import BowlersRepositoryInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import GearRepositoryInterface
 import LanesRepositoryInterface
 import ModelsLibrary

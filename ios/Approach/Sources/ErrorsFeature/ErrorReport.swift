@@ -3,7 +3,7 @@ import AppInfoPackageServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import ConstantsLibrary
-import EquatableLibrary
+import EquatablePackageLibrary
 import FeatureActionLibrary
 import FileManagerServiceInterface
 import PasteboardPackageServiceInterface

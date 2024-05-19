@@ -1,7 +1,7 @@
 import AssetsLibrary
 import AvatarServiceInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import ErrorsFeature
 import ExtensionsLibrary
 import FeatureActionLibrary

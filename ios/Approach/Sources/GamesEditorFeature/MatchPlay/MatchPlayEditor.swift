@@ -1,7 +1,7 @@
 import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import FeatureActionLibrary
 import MatchPlaysRepositoryInterface
 import ModelsLibrary

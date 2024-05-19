@@ -1,7 +1,7 @@
 import AlleysRepositoryInterface
 import AnalyticsServiceInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import FeatureActionLibrary
 import FormFeature
 import LeaguesRepositoryInterface

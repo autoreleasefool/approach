@@ -2,7 +2,7 @@ import AnalyticsServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import DateTimeLibrary
-import EquatableLibrary
+import EquatablePackageLibrary
 import ErrorsFeature
 import ExtensionsLibrary
 import FeatureActionLibrary

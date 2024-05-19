@@ -1,7 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import EmailServiceInterface
-import EquatableLibrary
+import EquatablePackageLibrary
 import FeatureActionLibrary
 import Foundation
 import LoggingServiceInterface

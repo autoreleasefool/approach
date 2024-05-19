@@ -120,7 +120,6 @@ let package = Package(
 		.library(name: "DatabaseLibrary", targets: ["DatabaseLibrary"]),
 		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
-		.library(name: "EquatableLibrary", targets: ["EquatableLibrary"]),
 		.library(name: "ErrorHandlerLibrary", targets: ["ErrorHandlerLibrary"]),
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
@@ -348,11 +347,11 @@ let package = Package(
 			name: "ErrorsFeature",
 			dependencies: [
 				.product(name: "AppInfoPackageServiceInterface", package: "swift-utilities"),
+				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
 				.product(name: "PasteboardPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
 				"EmailServiceInterface",
-				"EquatableLibrary",
 				"FeatureActionLibrary",
 				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
@@ -1115,8 +1114,8 @@ let package = Package(
 			name: "AddressLookupServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
 				.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
-				"EquatableLibrary",
 				"ModelsLibrary",
 			]
 		),
@@ -1130,6 +1129,7 @@ let package = Package(
 		.target(
 			name: "AnalyticsService",
 			dependencies: [
+				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
 				.product(name: "TelemetryClient", package: "SwiftClient"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
@@ -1540,17 +1540,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "EquatableLibrary",
-			dependencies: []
-		),
-		.testTarget(
-			name: "EquatableLibraryTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"EquatableLibrary",
-			]
-		),
-		.target(
 			name: "ErrorHandlerLibrary",
 			dependencies: [
 				.product(name: "Sentry", package: "sentry-cocoa"),
@@ -1679,7 +1668,7 @@ let package = Package(
 		.target(
 			name: "ResourceListLibrary",
 			dependencies: [
-				"EquatableLibrary",
+				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
 				"ExtensionsLibrary",
 				"FeatureActionLibrary",
 				"ListContentLibrary",

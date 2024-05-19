@@ -3,7 +3,7 @@ import AvatarEditorFeature
 import AvatarServiceInterface
 import BowlersRepositoryInterface
 import ComposableArchitecture
-import EquatableLibrary
+import EquatablePackageLibrary
 import FeatureActionLibrary
 import FormFeature
 import Foundation
