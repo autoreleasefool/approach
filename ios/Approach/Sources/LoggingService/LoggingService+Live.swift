@@ -1,8 +1,8 @@
 import CocoaLumberjack
 import CocoaLumberjackSwift
 import Dependencies
-import FileManagerServiceInterface
 import LoggingServiceInterface
+import ZIPServiceInterface
 
 extension LoggingService: DependencyKey {
 	public static var liveValue: Self = {
@@ -29,9 +29,9 @@ extension LoggingService: DependencyKey {
 				}
 			},
 			fetchLogData: {
-				@Dependency(FileManagerService.self) var fileManager
+				@Dependency(ZIPService.self) var zip
 				let urls = logFileManager.unsortedLogFileNames.compactMap(URL.init)
-				return try fileManager.zipContents(ofUrls: urls, to: "approach_logs.zip")
+				return try zip.zipContents(ofUrls: urls, to: "approach_logs.zip")
 			}
 		)
 	}()

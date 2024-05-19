@@ -12,7 +12,7 @@ supported = [ "\"17.0\"" ]
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
-dependencies = [ "AppInfoPackageService", "BundlePackageService", "PasteboardPackageService", "StoreReviewPackageService", "UserDefaultsPackageService" ]
+dependencies = [ "AppInfoPackageService", "BundlePackageService", "FileManagerPackageService", "PasteboardPackageService", "StoreReviewPackageService", "UserDefaultsPackageService" ]
 
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
@@ -56,9 +56,9 @@ features = [ "Announcements", "BowlerEditor", "LeaguesList" ]
 repositories = [ "QuickLaunch" ]
 
 [features.Errors]
-services = [ "Email", "FileManager", "Logging" ]
+services = [ "Email", "Logging" ]
 libraries = [ "Constants", "Toast", "Views" ]
-dependencies = [ "AppInfoPackageServiceInterface", "EquatablePackageLibrary", "PasteboardPackageServiceInterface" ]
+dependencies = [ "AppInfoPackageServiceInterface", "EquatablePackageLibrary", "FileManagerPackageServiceInterface", "PasteboardPackageServiceInterface" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -242,12 +242,14 @@ skip_tests = true
 libraries = [ "Assets" ]
 
 [services.Avatar]
+dependencies = [ "ExtensionsPackageLibrary" ]
 [services.Avatar.interface]
 libraries = [ "ModelsViews" ]
 
 [services.Database]
 libraries = [ "Database" ]
-services = [ "Analytics", "FileManager" ]
+services = [ "Analytics" ]
+dependencies = [ "FileManagerPackageServiceInterface" ]
 [services.Database.interface]
 suitable_for_dependents_matching = "\\w+Repository$"
 dependencies = [ "GRDB" ]
@@ -262,19 +264,17 @@ services = [ "Preference" ]
 [services.FeatureFlags.interface]
 libraries = [ "FeatureFlags" ]
 
-[services.FileManager]
-dependencies = [ "ZIPFoundation" ]
-
 [services.ImportExport]
-services = [ "Database", "FileManager" ]
+services = [ "Database" ]
 libraries = [ "DateTime" ]
+dependencies = [ "FileManagerPackageServiceInterface" ]
 
 [services.Launch]
 services = [ "Analytics", "FeatureFlags", "Products" ]
 dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInterface" ]
 
 [services.Logging]
-services = [ "FileManager" ]
+services = [ "ZIP" ]
 dependencies = [ "CocoaLumberjack", "CocoaLumberjackSwift" ]
 
 [services.Notifications]
@@ -294,6 +294,11 @@ services = [ "Preference" ]
 services = [ "Preference" ]
 [services.Tips.interface]
 libraries = [ "Tips" ]
+
+[services.ZIP]
+dependencies = [ "FileManagerPackageServiceInterface", "ZIPFoundation" ]
+[services.ZIP.interface]
+dependencies = [ "DependenciesMacros" ]
 
 # Libraries
 
@@ -438,6 +443,10 @@ libraries = [ "Assets", "Strings" ]
 url = "https://github.com/autoreleasefool/swift-utilities.git"
 branch = "main"
 
+[sharedRefs.Dependencies]
+url = "https://github.com/pointfreeco/swift-dependencies.git"
+from = "1.2.2"
+
 # External Dependencies
 
 [dependencies.AlertToast]
@@ -469,8 +478,9 @@ url = "https://github.com/pointfreeco/swift-composable-architecture.git"
 from = "1.9.2"
 
 [dependencies.Dependencies]
-url = "https://github.com/pointfreeco/swift-dependencies.git"
-from = "1.2.2"
+sharedRef = "Dependencies"
+[dependencies.DependenciesMacros]
+sharedRef = "Dependencies"
 
 [dependencies.IdentifiedCollections]
 url = "https://github.com/pointfreeco/swift-identified-collections.git"
@@ -516,6 +526,10 @@ sharedRef = "SwiftUtilities"
 [dependencies.EquatablePackageLibrary]
 sharedRef = "SwiftUtilities"
 [dependencies.ExtensionsPackageLibrary]
+sharedRef = "SwiftUtilities"
+[dependencies.FileManagerPackageService]
+sharedRef = "SwiftUtilities"
+[dependencies.FileManagerPackageServiceInterface]
 sharedRef = "SwiftUtilities"
 [dependencies.PasteboardPackageService]
 sharedRef = "SwiftUtilities"

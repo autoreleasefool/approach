@@ -94,8 +94,6 @@ let package = Package(
 		.library(name: "EmailServiceInterface", targets: ["EmailServiceInterface"]),
 		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
-		.library(name: "FileManagerService", targets: ["FileManagerService"]),
-		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "ImportExportService", targets: ["ImportExportService"]),
 		.library(name: "ImportExportServiceInterface", targets: ["ImportExportServiceInterface"]),
 		.library(name: "LaunchService", targets: ["LaunchService"]),
@@ -112,6 +110,8 @@ let package = Package(
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 		.library(name: "TipsService", targets: ["TipsService"]),
 		.library(name: "TipsServiceInterface", targets: ["TipsServiceInterface"]),
+		.library(name: "ZIPService", targets: ["ZIPService"]),
+		.library(name: "ZIPServiceInterface", targets: ["ZIPServiceInterface"]),
 
 		// MARK: - Libraries
 		.library(name: "AnnouncementsLibrary", targets: ["AnnouncementsLibrary"]),
@@ -257,6 +257,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "AppInfoPackageService", package: "swift-utilities"),
 				.product(name: "BundlePackageService", package: "swift-utilities"),
+				.product(name: "FileManagerPackageService", package: "swift-utilities"),
 				.product(name: "PasteboardPackageService", package: "swift-utilities"),
 				.product(name: "StoreReviewPackageService", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageService", package: "swift-utilities"),
@@ -347,12 +348,12 @@ let package = Package(
 			dependencies: [
 				.product(name: "AppInfoPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "EquatablePackageLibrary", package: "swift-utilities"),
+				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "PasteboardPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"ConstantsLibrary",
 				"EmailServiceInterface",
 				"FeatureActionLibrary",
-				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
 				"ToastLibrary",
 				"ViewsLibrary",
@@ -1186,6 +1187,7 @@ let package = Package(
 		.target(
 			name: "AvatarService",
 			dependencies: [
+				.product(name: "ExtensionsPackageLibrary", package: "swift-utilities"),
 				"AvatarServiceInterface",
 			]
 		),
@@ -1218,10 +1220,10 @@ let package = Package(
 		.target(
 			name: "DatabaseService",
 			dependencies: [
+				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
 				"DatabaseLibrary",
 				"DatabaseServiceInterface",
-				"FileManagerServiceInterface",
 			]
 		),
 		.target(
@@ -1279,31 +1281,11 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "FileManagerService",
-			dependencies: [
-				.product(name: "ZIPFoundation", package: "ZIPFoundation"),
-				"FileManagerServiceInterface",
-			]
-		),
-		.target(
-			name: "FileManagerServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-			]
-		),
-		.testTarget(
-			name: "FileManagerServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"FileManagerService",
-			]
-		),
-		.target(
 			name: "ImportExportService",
 			dependencies: [
+				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
 				"DatabaseServiceInterface",
 				"DateTimeLibrary",
-				"FileManagerServiceInterface",
 				"ImportExportServiceInterface",
 			]
 		),
@@ -1349,8 +1331,8 @@ let package = Package(
 			dependencies: [
 				.product(name: "CocoaLumberjack", package: "CocoaLumberjack"),
 				.product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-				"FileManagerServiceInterface",
 				"LoggingServiceInterface",
+				"ZIPServiceInterface",
 			]
 		),
 		.target(
@@ -1466,6 +1448,28 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"TipsService",
+			]
+		),
+		.target(
+			name: "ZIPService",
+			dependencies: [
+				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
+				.product(name: "ZIPFoundation", package: "ZIPFoundation"),
+				"ZIPServiceInterface",
+			]
+		),
+		.target(
+			name: "ZIPServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "ZIPServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ZIPService",
 			]
 		),
 

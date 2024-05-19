@@ -1,7 +1,7 @@
 import DatabaseServiceInterface
 import DateTimeLibrary
 import Dependencies
-import FileManagerServiceInterface
+import FileManagerPackageServiceInterface
 import GRDB
 import ImportExportServiceInterface
 
@@ -14,11 +14,11 @@ extension ExportService: DependencyKey {
 				.init { continuation in
 					@Dependency(DatabaseService.self) var database
 					@Dependency(\.date) var date
-					@Dependency(FileManagerService.self) var fileManager
+					@Dependency(\.fileManager) var fileManager
 
 					do {
 						let backupFileName = "approach_data_\(date().machineDateFormat).sqlite"
-						let backupUrl = fileManager
+						let backupUrl = try fileManager
 							.getTemporaryDirectory()
 							.appending(path: backupFileName)
 
@@ -35,7 +35,7 @@ extension ExportService: DependencyKey {
 				}
 			},
 			cleanUp: {
-				@Dependency(FileManagerService.self) var fileManager
+				@Dependency(\.fileManager) var fileManager
 
 				exportCache.withValue {
 					for fileName in $0 {

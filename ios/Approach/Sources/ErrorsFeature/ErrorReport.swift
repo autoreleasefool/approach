@@ -5,7 +5,7 @@ import ComposableArchitecture
 import ConstantsLibrary
 import EquatablePackageLibrary
 import FeatureActionLibrary
-import FileManagerServiceInterface
+import FileManagerPackageServiceInterface
 import PasteboardPackageServiceInterface
 import StringsLibrary
 import SwiftUI

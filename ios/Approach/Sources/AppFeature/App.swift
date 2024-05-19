@@ -1,13 +1,15 @@
 import AnalyticsServiceInterface
-import AppInfoPackageService
-import BundlePackageService
 import ComposableArchitecture
 import FeatureActionLibrary
 import LaunchServiceInterface
 import OnboardingFeature
-import PasteboardPackageService
 import PreferenceServiceInterface
 import StatisticsRepositoryInterface
+
+import AppInfoPackageService
+import BundlePackageService
+import FileManagerPackageService
+import PasteboardPackageService
 import StoreReviewPackageService
 import UserDefaultsPackageService
 

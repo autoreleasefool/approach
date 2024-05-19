@@ -2,13 +2,13 @@ import AnalyticsServiceInterface
 import DatabaseLibrary
 import DatabaseServiceInterface
 import Dependencies
-import FileManagerServiceInterface
+import FileManagerPackageServiceInterface
 import GRDB
 
 extension DatabaseService: DependencyKey {
 	public static var liveValue: Self = {
 		@Dependency(AnalyticsService.self) var analytics
-		@Dependency(FileManagerService.self) var fileManager
+		@Dependency(\.fileManager) var fileManager
 		let writer: any DatabaseWriter
 
 		do {
