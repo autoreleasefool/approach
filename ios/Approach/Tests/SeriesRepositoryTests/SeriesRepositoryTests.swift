@@ -6,7 +6,7 @@ import GRDB
 @testable import SeriesRepository
 @testable import SeriesRepositoryInterface
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class SeriesRepositoryTests: XCTestCase {

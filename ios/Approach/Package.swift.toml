@@ -424,10 +424,6 @@ suitable_for_dependents_matching = "\\w+Tests$"
 skip_tests = true
 libraries = [ "Database", "DatabaseModels" ]
 
-[libraries.TestUtilities]
-suitable_for_dependents_matching = "\\w+Tests$"
-skip_tests = true
-
 [libraries.Tips]
 libraries = [ "Views" ]
 
@@ -541,6 +537,8 @@ sharedRef = "SwiftUtilities"
 sharedRef = "SwiftUtilities"
 [dependencies.SwiftUIExtensionsPackageLibrary]
 sharedRef = "SwiftUtilities"
+[dependencies.TestUtilitiesPackageLibrary]
+sharedRef = "SwiftUtilities"
 [dependencies.UserDefaultsPackageService]
 sharedRef = "SwiftUtilities"
 [dependencies.UserDefaultsPackageServiceInterface]
@@ -566,8 +564,8 @@ dependencies = [ "Dependencies" ]
 
 [defaults.repositories.tests]
 services = [ "Database" ]
-libraries = [ "TestUtilities", "TestDatabaseUtilities" ]
-dependencies = [ "SnapshotTesting" ]
+libraries = [ "TestDatabaseUtilities" ]
+dependencies = [ "SnapshotTesting", "TestUtilitiesPackageLibrary" ]
 
 [defaults.services.interface]
 dependencies = [ "Dependencies" ]

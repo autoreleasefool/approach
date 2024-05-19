@@ -8,7 +8,7 @@ import GRDB
 @testable import ModelsLibrary
 import RecentlyUsedServiceInterface
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class AlleysRepositoryTests: XCTestCase {

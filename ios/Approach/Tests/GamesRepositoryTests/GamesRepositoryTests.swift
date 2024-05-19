@@ -7,7 +7,7 @@ import GRDB
 @testable import MatchPlaysRepositoryInterface
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class GamesRepositoryTests: XCTestCase {

@@ -9,7 +9,7 @@ import StatisticsRepositoryInterface
 @testable import StatisticsWidgetsRepository
 @testable import StatisticsWidgetsRepositoryInterface
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class StatisticsWidgetsRepositoryTests: XCTestCase {

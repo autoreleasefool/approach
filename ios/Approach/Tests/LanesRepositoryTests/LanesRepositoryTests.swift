@@ -6,7 +6,7 @@ import GRDB
 @testable import LanesRepositoryInterface
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class LanesRepositoryTests: XCTestCase {

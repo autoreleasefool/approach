@@ -5,7 +5,7 @@ import ModelsLibrary
 @testable import StatisticsRepository
 @testable import StatisticsRepositoryInterface
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class TrackableFiltersTests: XCTestCase {

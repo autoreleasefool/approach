@@ -6,7 +6,7 @@ import GRDB
 @testable import LocationsRepositoryInterface
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class LocationsRepositoryTests: XCTestCase {

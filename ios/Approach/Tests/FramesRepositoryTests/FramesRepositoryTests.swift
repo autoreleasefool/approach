@@ -6,7 +6,7 @@ import Dependencies
 import GRDB
 @testable import ModelsLibrary
 import TestDatabaseUtilitiesLibrary
-import TestUtilitiesLibrary
+import TestUtilitiesPackageLibrary
 import XCTest
 
 final class FramesRepositoryTests: XCTestCase {
