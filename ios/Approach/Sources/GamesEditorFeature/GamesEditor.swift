@@ -552,16 +552,23 @@ public struct GamesEditorAnalyticsReducer: Reducer {
 				} else {
 					return Analytics.MatchPlay.Created()
 				}
-			case let .internal(.didUpdateFrame(.success(frame))):
-				return Analytics.Game.Updated(gameId: frame.gameId)
-			case let .internal(.didUpdateGame(.success(game))):
-				return Analytics.Game.Updated(gameId: game.id)
 			case let .internal(.didUpdateMatchPlay(.success(matchPlay))):
 				return Analytics.MatchPlay.Updated(
 					withOpponent: matchPlay.opponent != nil,
 					withScore: matchPlay.opponentScore != nil,
 					withResult: matchPlay.result?.rawValue ?? ""
 				)
+			default:
+				return nil
+			}
+		}
+
+		GameAnalyticsReducer<State, Action> { _, action in
+			switch action {
+			case let .internal(.didUpdateGame(.success(game))):
+				return Analytics.Game.Updated(gameId: game.id)
+			case let .internal(.didUpdateFrame(.success(frame))):
+				return Analytics.Game.Updated(gameId: frame.gameId)
 			default:
 				return nil
 			}

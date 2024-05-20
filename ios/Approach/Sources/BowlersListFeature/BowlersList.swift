@@ -6,8 +6,8 @@ import AssetsLibrary
 import BowlerEditorFeature
 import BowlersRepositoryInterface
 import ComposableArchitecture
-import ErrorsFeature
 import ErrorReportingClientPackageLibrary
+import ErrorsFeature
 import FeatureActionLibrary
 import GamesListFeature
 import GamesRepositoryInterface
@@ -127,7 +127,7 @@ public struct BowlersList: Reducer {
 
 	public init() {}
 
-	@Dependency(AnalyticsService.self) var analytics
+	@Dependency(\.analytics) var analytics
 	@Dependency(AnnouncementsService.self) var announcements
 	@Dependency(BowlersRepository.self) var bowlers
 	@Dependency(\.calendar) var calendar

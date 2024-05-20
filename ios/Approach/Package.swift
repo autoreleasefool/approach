@@ -253,12 +253,14 @@ let package = Package(
 		.target(
 			name: "AppFeature",
 			dependencies: [
+				.product(name: "AnalyticsPackageService", package: "swift-utilities"),
 				.product(name: "AppInfoPackageService", package: "swift-utilities"),
 				.product(name: "BundlePackageService", package: "swift-utilities"),
 				.product(name: "FileManagerPackageService", package: "swift-utilities"),
 				.product(name: "PasteboardPackageService", package: "swift-utilities"),
 				.product(name: "SentryErrorReportingPackageService", package: "swift-utilities"),
 				.product(name: "StoreReviewPackageService", package: "swift-utilities"),
+				.product(name: "TelemetryDeckAnalyticsPackageService", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageService", package: "swift-utilities"),
 				"AccessoriesOverviewFeature",
 				"BowlersListFeature",
@@ -1129,19 +1131,17 @@ let package = Package(
 		.target(
 			name: "AnalyticsService",
 			dependencies: [
-				.product(name: "BundlePackageServiceInterface", package: "swift-utilities"),
 				.product(name: "Sentry", package: "sentry-cocoa"),
-				.product(name: "TelemetryClient", package: "SwiftClient"),
 				"AnalyticsServiceInterface",
-				"ConstantsLibrary",
-				"PreferenceServiceInterface",
 			]
 		),
 		.target(
 			name: "AnalyticsServiceInterface",
 			dependencies: [
+				.product(name: "AnalyticsPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "DependenciesMacros", package: "swift-dependencies"),
 				.product(name: "ErrorReportingClientPackageLibrary", package: "swift-utilities"),
 			]
 		),

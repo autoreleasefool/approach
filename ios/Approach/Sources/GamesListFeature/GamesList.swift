@@ -104,8 +104,8 @@ public struct GamesList: Reducer {
 
 	public init() {}
 
-	@Dependency(AnalyticsService.self) var analytics
 	@Dependency(\.dismiss) var dismiss
+	@Dependency(\.gameAnalytics) var gameAnalytics
 	@Dependency(GamesRepository.self) var games
 	@Dependency(SeriesRepository.self) var series
 	@Dependency(TipsService.self) var tips
@@ -177,7 +177,7 @@ public struct GamesList: Reducer {
 						initialGameId: id
 					))
 
-					return .run { _ in await analytics.resetGameSessionID() }
+					return .run { _ in await gameAnalytics.resetGameSessionID() }
 				}
 
 			case let .internal(internalAction):

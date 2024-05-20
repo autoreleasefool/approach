@@ -108,8 +108,9 @@ public struct Settings: Reducer {
 		case didTapDismissButton
 	}
 
-	@Dependency(AnalyticsService.self) var analytics
+	@Dependency(\.analytics) var analytics
 	@Dependency(AppIconService.self) var appIcon
+	@Dependency(\.crash) var crash
 	@Dependency(DatabaseMockingService.self) var databaseMocking
 	@Dependency(EmailService.self) var email
 	@Dependency(ExportService.self) var export
@@ -195,7 +196,7 @@ public struct Settings: Reducer {
 					return .run { _ in await openURL(AppConstants.openSourceRepositoryUrl) }
 
 				case .didTapForceCrashButton:
-					return .run { _ in analytics.forceCrash() }
+					return .run { _ in crash() }
 
 				case .didTapAnalyticsButton:
 					state.destination = .analytics(.init())

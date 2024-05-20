@@ -1,20 +1,9 @@
+@_exported import AnalyticsPackageServiceInterface
 import Foundation
 
-public enum Analytics {}
-
-extension Analytics {
-	public enum OptInStatus: String {
-		case optedIn
-		case optedOut
-	}
-}
-
-public protocol TrackableEvent {
+public protocol GameSessionTrackableEvent {
 	var name: String { get }
 	var payload: [String: String]? { get }
-}
-
-public protocol GameSessionTrackableEvent: TrackableEvent {
 	var eventId: UUID { get }
 }
 

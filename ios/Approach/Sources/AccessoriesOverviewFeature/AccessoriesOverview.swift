@@ -101,7 +101,7 @@ public struct AccessoriesOverview: Reducer {
 	public init() {}
 
 	@Dependency(AlleysRepository.self) var alleys
-	@Dependency(AnalyticsService.self) var analytics
+	@Dependency(\.analytics) var analytics
 	@Dependency(GearRepository.self) var gear
 	@Dependency(\.uuid) var uuid
 

@@ -13,7 +13,7 @@ public struct AnalyticsSettings: Reducer {
 		public var analyticsOptIn: Bool
 
 		public init() {
-			@Dependency(AnalyticsService.self) var analytics
+			@Dependency(\.analytics) var analytics
 			switch analytics.getOptInStatus() {
 			case .optedIn:
 				self.analyticsOptIn = true
@@ -40,7 +40,7 @@ public struct AnalyticsSettings: Reducer {
 
 	public init() {}
 
-	@Dependency(AnalyticsService.self) var analytics
+	@Dependency(\.analytics) var analytics
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
@@ -68,7 +68,7 @@ public struct AnalyticsSettings: Reducer {
 			case .binding(\.analyticsOptIn):
 				return .run { [optedIn = state.analyticsOptIn] send in
 					let status = optedIn ? Analytics.OptInStatus.optedIn : Analytics.OptInStatus.optedOut
-					await send(.internal(.updatedOptInStatus(analytics.setOptInStatus(status))))
+					await send(.internal(.updatedOptInStatus((try? analytics.setOptInStatus(status)) ?? status)))
 				}
 
 			case .delegate, .binding:
@@ -123,29 +123,3 @@ public struct AnalyticsSettingsView: View {
 		.onAppear { send(.onAppear) }
 	}
 }
-
-#if DEBUG
-struct AnalyticsSettingsPreview: PreviewProvider {
-	static var previews: some View {
-		NavigationStack {
-			AnalyticsSettingsView(store: .init(
-				initialState: withDependencies {
-					$0[AnalyticsService.self] = .init(
-						initialize: { },
-						setGlobalProperty: { _, _ in },
-						trackEvent: { _ in },
-						breadcrumb: { _ in },
-						resetGameSessionID: { },
-						getOptInStatus: { .optedIn },
-						setOptInStatus: { _ in .optedIn },
-						forceCrash: {}
-					)
-				} operation: {
-					AnalyticsSettings.State()
-				},
-				reducer: AnalyticsSettings.init
-			))
-		}
-	}
-}
-#endif

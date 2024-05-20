@@ -6,12 +6,14 @@ import OnboardingFeature
 import PreferenceServiceInterface
 import StatisticsRepositoryInterface
 
+import AnalyticsPackageService
 import AppInfoPackageService
 import BundlePackageService
 import FileManagerPackageService
 import PasteboardPackageService
 import SentryErrorReportingPackageService
 import StoreReviewPackageService
+import TelemetryDeckAnalyticsPackageService
 import UserDefaultsPackageService
 
 @Reducer

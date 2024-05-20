@@ -13,11 +13,11 @@ extension LaunchService: DependencyKey {
 		Self(
 			didInit: {
 				// For sync initializars that must run before anything else in the app
-				@Dependency(AnalyticsService.self) var analytics
-				analytics.initialize()
+				@Dependency(\.analytics) var analytics
+				try? analytics.initialize()
 
 				Task.detached(priority: .utility) {
-					await analytics.trackEvent(Analytics.App.Launched())
+					try await analytics.trackEvent(Analytics.App.Launched())
 				}
 			},
 			didLaunch: {

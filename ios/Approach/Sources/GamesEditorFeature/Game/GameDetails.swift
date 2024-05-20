@@ -327,7 +327,7 @@ public struct GameDetails: Reducer {
 			Destination()
 		}
 
-		AnalyticsReducer<State, Action> { state, action in
+		GameAnalyticsReducer<State, Action> { state, action in
 			switch action {
 			case .internal(.destination(.presented(.scoring(.delegate(.didSetManualScore))))):
 				guard let gameId = state.game?.id else { return nil }

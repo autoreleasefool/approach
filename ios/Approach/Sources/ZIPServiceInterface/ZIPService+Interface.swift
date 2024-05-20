@@ -3,7 +3,7 @@ import DependenciesMacros
 import Foundation
 
 @DependencyClient
-public struct ZIPService {
+public struct ZIPService: Sendable {
 	public var zipContents: @Sendable (_ ofUrls: [URL], _ to: String) throws -> URL
 }
 

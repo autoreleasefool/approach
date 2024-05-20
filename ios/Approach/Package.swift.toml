@@ -12,7 +12,7 @@ supported = [ "\"17.0\"" ]
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
-dependencies = [ "AppInfoPackageService", "BundlePackageService", "SentryErrorReportingPackageService", "FileManagerPackageService", "PasteboardPackageService", "StoreReviewPackageService", "UserDefaultsPackageService" ]
+dependencies = [ "AnalyticsPackageService", "AppInfoPackageService", "BundlePackageService", "FileManagerPackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
@@ -226,11 +226,9 @@ libraries = [ "Models" ]
 dependencies = [ "EquatablePackageLibrary", "XCTestDynamicOverlay" ]
 
 [services.Analytics]
-services = [ "Preference" ]
-libraries = [ "Constants" ]
-dependencies = [ "BundlePackageServiceInterface", "Sentry", "TelemetryClient" ]
+dependencies = [ "Sentry" ]
 [services.Analytics.interface]
-dependencies = [ "ComposableArchitecture", "ErrorReportingClientPackageLibrary" ]
+dependencies = [ "AnalyticsPackageServiceInterface", "ComposableArchitecture", "DependenciesMacros", "ErrorReportingClientPackageLibrary" ]
 
 [services.Announcements]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
@@ -511,6 +509,12 @@ from = "1.1.0"
 url = "https://github.com/weichsel/ZIPFoundation.git"
 from = "0.9.18"
 
+[dependencies.AnalyticsPackageService]
+sharedRef = "SwiftUtilities"
+
+[dependencies.AnalyticsPackageServiceInterface]
+sharedRef = "SwiftUtilities"
+
 [dependencies.AppInfoPackageService]
 sharedRef = "SwiftUtilities"
 
@@ -554,6 +558,9 @@ sharedRef = "SwiftUtilities"
 sharedRef = "SwiftUtilities"
 
 [dependencies.SwiftUIExtensionsPackageLibrary]
+sharedRef = "SwiftUtilities"
+
+[dependencies.TelemetryDeckAnalyticsPackageService]
 sharedRef = "SwiftUtilities"
 
 [dependencies.TestUtilitiesPackageLibrary]
