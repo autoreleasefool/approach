@@ -3,7 +3,6 @@ import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
 import GamesListFeature
 import GearRepositoryInterface
 import LeagueEditorFeature
@@ -131,7 +130,6 @@ public struct LeaguesList: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(FeatureFlagsService.self) var featureFlags
 	@Dependency(GearRepository.self) var gear
 	@Dependency(LeaguesRepository.self) var leagues
 	@Dependency(\.preferences) var preferences

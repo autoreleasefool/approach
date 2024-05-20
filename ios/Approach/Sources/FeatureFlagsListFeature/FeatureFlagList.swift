@@ -1,7 +1,6 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 
 public struct FeatureFlagItem: Equatable {
 	let flag: FeatureFlag
@@ -38,7 +37,7 @@ public struct FeatureFlagsList: Reducer {
 
 	public init() {}
 
-	@Dependency(FeatureFlagsService.self) var featureFlagService
+	@Dependency(\.featureFlags) var featureFlagService
 
 	public var body: some ReducerOf<Self> {
 		Reduce<State, Action> { state, action in
@@ -48,7 +47,7 @@ public struct FeatureFlagsList: Reducer {
 				case .didStartObservingFlags:
 					return .run { send in
 						let observedFlags = FeatureFlag.allFlags
-						for await flags in featureFlagService.observeAll(observedFlags) {
+						for await flags in try featureFlagService.observeAll(observedFlags) {
 							await send(.internal(.didLoadFlags(observedFlags.map {
 								FeatureFlagItem(flag: $0, enabled: flags[$0] ?? false)
 							})))
@@ -93,7 +92,7 @@ public struct FeatureFlagsList: Reducer {
 				case let .featureFlagToggle(.element(id, .binding(\.flag))):
 					guard let flag = FeatureFlag.find(byId: id) else { return .none }
 					return .run { _ in
-						let isEnabled = featureFlagService.isEnabled(flag)
+						let isEnabled = featureFlagService.isFlagEnabled(flag)
 						featureFlagService.setEnabled(flag, !isEnabled)
 					}
 

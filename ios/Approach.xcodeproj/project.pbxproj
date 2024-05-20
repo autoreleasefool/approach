@@ -61,7 +61,6 @@
 		CAD15BBB29FDF8E40015E4CB /* GamesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BBA29FDF8E40015E4CB /* GamesRepository */; };
 		CAD15BC129FDFF890015E4CB /* TestDatabaseUtilitiesLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = CAD15BC029FDFF890015E4CB /* TestDatabaseUtilitiesLibrary */; };
 		CAECBAEB2ABD7323007713A8 /* LanesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAECBAEA2ABD7323007713A8 /* LanesRepository */; };
-		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
 		CAFF2FCB2AB19B3000AE31BF /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CAFF2FCA2AB19B3000AE31BF /* AvatarService */; };
 /* End PBXBuildFile section */
 
@@ -144,7 +143,6 @@
 				CA626E2F2A842032002BCC13 /* TipsService in Frameworks */,
 				CA5952BB2A1FF51D0002494C /* StatisticsRepository in Frameworks */,
 				CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */,
-				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
 				CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */,
 				CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */,
 			);
@@ -304,7 +302,6 @@
 				CA2890DD28F87FF2003C1EE9 /* AppFeature */,
 				CAC56850291F54A100192D12 /* PreferenceService */,
 				CAC56852291F54A100192D12 /* RecentlyUsedService */,
-				CAF8028F295D67FC00B19459 /* FeatureFlagsService */,
 				CA318B3F2999E1F500BD4BEC /* AnalyticsService */,
 				CA681DED29B94BE900535750 /* AvatarService */,
 				CABEC0CE29CBF9CD003CF669 /* AddressLookupService */,
@@ -716,10 +713,6 @@
 		CAECBAEA2ABD7323007713A8 /* LanesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LanesRepository;
-		};
-		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FeatureFlagsService;
 		};
 		CAFF2FCA2AB19B3000AE31BF /* AvatarService */ = {
 			isa = XCSwiftPackageProductDependency;

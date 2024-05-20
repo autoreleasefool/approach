@@ -5,7 +5,7 @@ import ComposableArchitecture
 import EquatablePackageLibrary
 import ExtensionsPackageLibrary
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import GearRepositoryInterface
 import ModelsLibrary
 import RecentlyUsedServiceInterface
@@ -181,55 +181,6 @@ public struct RollEditorView: View {
 		.task { await send(.didStartTask).finish() }
 	}
 }
-
-#if DEBUG
-struct RollEditorPreview: PreviewProvider {
-	static var previews: some View {
-		RollEditorView(store: .init(
-			initialState: .init(
-				ballRolled: .init(
-					id: UUID(0),
-					name: "Yellow",
-					kind: .bowlingBall,
-					ownerName: nil,
-					avatar: .init(id: UUID(0), value: .text("", .default))
-				),
-				didFoul: false
-			),
-			reducer: RollEditor.init
-		) {
-			$0[GearRepository.self].mostRecentlyUsed = { @Sendable _, _ in
-				let (stream, continuation) = AsyncThrowingStream<[Gear.Summary], Error>.makeStream()
-				let task = Task {
-					while !Task.isCancelled {
-						try await Task.sleep(for: .seconds(1))
-						continuation.yield([
-							.init(
-								id: UUID(0),
-								name: "Yellow",
-								kind: .bowlingBall,
-								ownerName: "Joseph",
-								avatar: .init(id: UUID(0), value: .text("", .default))
-							),
-							.init(
-								id: UUID(1),
-								name: "Blue",
-								kind: .bowlingBall,
-								ownerName: "Sarah",
-								avatar: .init(id: UUID(1), value: .text("", .default))
-							),
-						])
-					}
-				}
-				continuation.onTermination = { _ in task.cancel() }
-				return stream
-			}
-			$0[FeatureFlagsService.self].isEnabled = { @Sendable _ in true }
-		})
-		.background(.black)
-	}
-}
-#endif
 
 extension Color {
 	var rgb: Avatar.Background.RGB {

@@ -3,7 +3,7 @@ import AppIconServiceInterface
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import ProductsServiceInterface
 import StringsLibrary
 import SwiftUI
@@ -21,8 +21,8 @@ public struct AppIconList: Reducer {
 		public var isProEnabled: Bool
 
 		init() {
-			@Dependency(FeatureFlagsService.self) var features
-			self.isPurchasesEnabled = features.isEnabled(.purchases)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isPurchasesEnabled = featureFlags.isFlagEnabled(.purchases)
 
 			@Dependency(ProductsService.self) var products
 			self.isProEnabled = products.peekIsAvailable(.proSubscription)

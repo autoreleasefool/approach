@@ -4,7 +4,7 @@ import ComposableArchitecture
 import DateTimeLibrary
 import EquatablePackageLibrary
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import FormFeature
 import Foundation
 import LanesRepositoryInterface
@@ -84,9 +84,9 @@ public struct SeriesEditor: Reducer {
 			}
 			self.form = .init(initialValue: self.initialValue)
 
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isPreBowlFormEnabled = featureFlags.isEnabled(.preBowlForm)
-			self.isManualSeriesEnabled = featureFlags.isEnabled(.manualSeries)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isPreBowlFormEnabled = featureFlags.isFlagEnabled(.preBowlForm)
+			self.isManualSeriesEnabled = featureFlags.isFlagEnabled(.manualSeries)
 		}
 
 		mutating func syncFormSharedState() {

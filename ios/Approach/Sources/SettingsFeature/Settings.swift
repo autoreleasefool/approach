@@ -11,7 +11,6 @@ import EmailServiceInterface
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsListFeature
-import FeatureFlagsServiceInterface
 import Foundation
 import ImportExportFeature
 import ImportExportServiceInterface
@@ -41,10 +40,10 @@ public struct Settings: Reducer {
 		public let isDeveloperOptionsEnabled: Bool
 
 		public init() {
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isShowingDeveloperOptions = featureFlags.isEnabled(.developerOptions)
-			self.isImportEnabled = featureFlags.isEnabled(.dataImport)
-			self.isDeveloperOptionsEnabled = featureFlags.isEnabled(.developerOptions)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isShowingDeveloperOptions = featureFlags.isFlagEnabled(.developerOptions)
+			self.isImportEnabled = featureFlags.isFlagEnabled(.dataImport)
+			self.isDeveloperOptionsEnabled = featureFlags.isFlagEnabled(.developerOptions)
 
 			@Dependency(\.appInfo) var appInfo
 			self.appVersion = appInfo.getFullAppVersion()

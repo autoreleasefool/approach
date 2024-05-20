@@ -1,6 +1,6 @@
 import AppFeature
 import ComposableArchitecture
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import SwiftUI
 
 #if DEBUG

@@ -9,6 +9,7 @@ import StatisticsRepositoryInterface
 import AnalyticsPackageService
 import AppInfoPackageService
 import BundlePackageService
+import FeatureFlagsPackageService
 import FileManagerPackageService
 import PasteboardPackageService
 import SentryErrorReportingPackageService

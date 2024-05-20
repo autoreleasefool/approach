@@ -1,7 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import ModelsLibrary
 import PreferenceServiceInterface
 import StringsLibrary
@@ -19,8 +19,8 @@ public struct GamesHeader: Reducer {
 		public var isFlashEditorChangesEnabled: Bool
 
 		init() {
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isSharingGameEnabled = featureFlags.isEnabled(.sharingGame)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isSharingGameEnabled = featureFlags.isFlagEnabled(.sharingGame)
 
 			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true
@@ -159,22 +159,3 @@ public struct GamesHeaderView: View {
 		}
 	}
 }
-
-#if DEBUG
-struct GamesHeaderPreview: PreviewProvider {
-	static var previews: some View {
-		GamesHeaderView(store: .init(
-			initialState: GamesHeader.State(),
-			reducer: {
-				GamesHeader()
-					.dependency({ () -> FeatureFlagsService in
-						var service = FeatureFlagsService.testValue
-						service.isEnabled = { @Sendable _ in true }
-						return service
-					}())
-			}
-		))
-		.background(.black)
-	}
-}
-#endif

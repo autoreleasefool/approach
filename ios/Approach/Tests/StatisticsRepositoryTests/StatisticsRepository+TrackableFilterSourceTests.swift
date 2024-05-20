@@ -1,6 +1,6 @@
 import DatabaseServiceInterface
 import Dependencies
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 @testable import ModelsLibrary
 import PreferenceServiceInterface
 @testable import StatisticsLibrary

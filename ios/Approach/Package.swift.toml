@@ -12,7 +12,7 @@ supported = [ "\"17.0\"" ]
 [features.App]
 features = [ "AccessoriesOverview", "BowlersList", "Onboarding", "Settings", "StatisticsOverview" ]
 services = [ "Launch" ]
-dependencies = [ "AnalyticsPackageService", "AppInfoPackageService", "BundlePackageService", "FileManagerPackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
+dependencies = [ "AnalyticsPackageService", "AppInfoPackageService", "BundlePackageService", "FeatureFlagsPackageService", "FileManagerPackageService", "PasteboardPackageService", "SentryErrorReportingPackageService", "StoreReviewPackageService", "TelemetryDeckAnalyticsPackageService", "UserDefaultsPackageService" ]
 
 [features.AccessoriesOverview]
 features = [ "AlleysList", "GearList" ]
@@ -31,8 +31,7 @@ libraries = [ "ModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
-services = [ "FeatureFlags" ]
-libraries = [ "ResourceList" ]
+libraries = [ "FeatureFlags", "ResourceList" ]
 
 [features.Announcements]
 services = [ "Announcements" ]
@@ -61,8 +60,7 @@ libraries = [ "Constants", "Toast", "Views" ]
 dependencies = [ "AppInfoPackageServiceInterface", "EquatablePackageLibrary", "FileManagerPackageServiceInterface", "PasteboardPackageServiceInterface" ]
 
 [features.FeatureFlagsList]
-services = [ "FeatureFlags" ]
-libraries = [ "Strings" ]
+libraries = [ "FeatureFlags", "Strings" ]
 
 [features.Form]
 features = [ "Errors" ]
@@ -70,7 +68,8 @@ features = [ "Errors" ]
 [features.GamesEditor]
 features = [ "Sharing", "StatisticsDetails" ]
 repositories = [ "Frames", "Gear", "Lanes" ]
-services = [ "Avatar", "FeatureFlags", "RecentlyUsed" ]
+services = [ "Avatar", "RecentlyUsed" ]
+libraries = [ "FeatureFlags" ]
 dependencies = [ "StoreReviewPackageServiceInterface" ]
 
 [features.GamesList]
@@ -111,8 +110,8 @@ libraries = [ "ResourceList" ]
 
 [features.OpponentsList]
 features = [ "OpponentDetails" ]
-services = [ "FeatureFlags", "RecentlyUsed" ]
-libraries = [ "ModelsViews", "SortOrder" ]
+services = [ "RecentlyUsed" ]
+libraries = [ "FeatureFlags", "ModelsViews", "SortOrder" ]
 
 [features.Onboarding]
 repositories = [ "Bowlers" ]
@@ -126,8 +125,7 @@ services = [ "Products" ]
 [features.SeriesEditor]
 features = [ "Form" ]
 repositories = [ "Alleys", "Series" ]
-services = [ "FeatureFlags" ]
-libraries = [ "DateTime", "ModelsViews", "PickableModels" ]
+libraries = [ "DateTime", "FeatureFlags", "ModelsViews", "PickableModels" ]
 
 [features.SeriesList]
 features = [ "GamesList", "LeagueEditor" ]
@@ -206,8 +204,8 @@ repositories = [ "Frames", "Games" ]
 [repositories.Series.interface]
 
 [repositories.Statistics]
-services = [ "Preference", "FeatureFlags" ]
-libraries = [ "StatisticsModels" ]
+services = [ "Preference" ]
+libraries = [ "FeatureFlags", "StatisticsModels" ]
 dependencies = [ "UserDefaultsPackageServiceInterface" ]
 [repositories.Statistics.interface]
 libraries = [ "StatisticsWidgets" ]
@@ -258,18 +256,14 @@ skip_tests = true
 
 [services.Email]
 
-[services.FeatureFlags]
-dependencies = [ "UserDefaultsPackageServiceInterface" ]
-[services.FeatureFlags.interface]
-libraries = [ "FeatureFlags" ]
-
 [services.ImportExport]
 services = [ "Database" ]
 libraries = [ "DateTime" ]
 dependencies = [ "FileManagerPackageServiceInterface" ]
 
 [services.Launch]
-services = [ "Analytics", "FeatureFlags", "Preference", "Products" ]
+services = [ "Analytics", "Preference", "Products" ]
+libraries = [ "FeatureFlags" ]
 dependencies = [ "AppInfoPackageServiceInterface", "StoreReviewPackageServiceInterface", "UserDefaultsPackageServiceInterface" ]
 
 [services.Logging]
@@ -341,6 +335,8 @@ skip_tests = true
 dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureFlags]
+skip_tests = true
+dependencies = [ "FeatureFlagsPackageLibrary", "FeatureFlagsPackageServiceInterface" ]
 
 [libraries.ListContent]
 libraries = [ "Views" ]
@@ -534,6 +530,15 @@ sharedRef = "SwiftUtilities"
 sharedRef = "SwiftUtilities"
 
 [dependencies.ExtensionsPackageLibrary]
+sharedRef = "SwiftUtilities"
+
+[dependencies.FeatureFlagsPackageLibrary]
+sharedRef = "SwiftUtilities"
+
+[dependencies.FeatureFlagsPackageService]
+sharedRef = "SwiftUtilities"
+
+[dependencies.FeatureFlagsPackageServiceInterface]
 sharedRef = "SwiftUtilities"
 
 [dependencies.FileManagerPackageService]

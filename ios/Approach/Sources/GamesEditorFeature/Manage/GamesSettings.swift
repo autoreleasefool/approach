@@ -2,7 +2,6 @@ import AnalyticsServiceInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import GamesRepositoryInterface
 import ModelsLibrary
 import PreferenceServiceInterface
@@ -28,8 +27,8 @@ public struct GamesSettings: Reducer {
 			self.numberOfGames = numberOfGames
 			self.gameIndex = gameIndex
 
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isTeamsEnabled = featureFlags.isEnabled(.teams)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isTeamsEnabled = featureFlags.isFlagEnabled(.teams)
 
 			@Dependency(\.preferences) var preferences
 			self.isFlashEditorChangesEnabled = preferences.bool(forKey: .gameShouldNotifyEditorChanges) ?? true

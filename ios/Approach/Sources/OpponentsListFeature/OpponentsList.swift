@@ -6,7 +6,7 @@ import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import ModelsLibrary
 import OpponentDetailsFeature
 import RecentlyUsedServiceInterface
@@ -55,8 +55,8 @@ public struct OpponentsList: Reducer {
 				)
 			)
 
-			@Dependency(FeatureFlagsService.self) var features
-			self.isOpponentDetailsEnabled = features.isEnabled(.opponentDetails)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isOpponentDetailsEnabled = featureFlags.isFlagEnabled(.opponentDetails)
 		}
 	}
 

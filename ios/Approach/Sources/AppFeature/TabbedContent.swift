@@ -3,8 +3,6 @@ import AnalyticsServiceInterface
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
-import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import SettingsFeature
 import StatisticsOverviewFeature
 
@@ -49,8 +47,6 @@ public struct TabbedContent: Reducer {
 	}
 
 	public init() {}
-
-	@Dependency(FeatureFlagsService.self) var featureFlags
 
 	public var body: some ReducerOf<Self> {
 		BindingReducer()

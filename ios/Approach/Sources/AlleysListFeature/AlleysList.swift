@@ -5,7 +5,7 @@ import AssetsLibrary
 import ComposableArchitecture
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import ModelsLibrary
 import ResourceListLibrary
 import StringsLibrary
@@ -48,8 +48,8 @@ public struct AlleysList: Reducer {
 				)
 			)
 
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isAlleyAndGearAveragesEnabled = featureFlags.isEnabled(.alleyAndGearAverages)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isAlleyAndGearAveragesEnabled = try featureFlags.isFlagEnabled(.alleyAndGearAverages)
 		}
 	}
 
@@ -89,7 +89,6 @@ public struct AlleysList: Reducer {
 	public init() {}
 
 	@Dependency(AlleysRepository.self) var alleys
-	@Dependency(FeatureFlagsService.self) var featureFlags
 	@Dependency(\.uuid) var uuid
 
 	public var body: some ReducerOf<Self> {

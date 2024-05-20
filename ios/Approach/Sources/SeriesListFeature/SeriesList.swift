@@ -4,7 +4,7 @@ import ComposableArchitecture
 import EquatablePackageLibrary
 import ErrorsFeature
 import FeatureActionLibrary
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import Foundation
 import GamesListFeature
 import LeagueEditorFeature
@@ -74,8 +74,8 @@ public struct SeriesList: Reducer {
 				)
 			)
 
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isPreBowlFormEnabled = featureFlags.isEnabled(.preBowlForm)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isPreBowlFormEnabled = featureFlags.isFlagEnabled(.preBowlForm)
 		}
 	}
 
@@ -132,7 +132,6 @@ public struct SeriesList: Reducer {
 	@Dependency(\.calendar) var calendar
 	@Dependency(\.date) var date
 	@Dependency(\.dismiss) var dismiss
-	@Dependency(FeatureFlagsService.self) var featureFlags
 	@Dependency(LeaguesRepository.self) var leagues
 	@Dependency(SeriesRepository.self) var series
 	@Dependency(\.uuid) var uuid

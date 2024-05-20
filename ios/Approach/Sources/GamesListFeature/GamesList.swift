@@ -5,7 +5,6 @@ import EquatablePackageLibrary
 import ErrorsFeature
 import FeatureActionLibrary
 import FeatureFlagsLibrary
-import FeatureFlagsServiceInterface
 import Foundation
 import GamesEditorFeature
 import GamesRepositoryInterface
@@ -53,8 +52,8 @@ public struct GamesList: Reducer {
 				)
 			)
 
-			@Dependency(FeatureFlagsService.self) var featureFlags
-			self.isSeriesSharingEnabled = featureFlags.isEnabled(.sharingSeries)
+			@Dependency(\.featureFlags) var featureFlags
+			self.isSeriesSharingEnabled = featureFlags.isFlagEnabled(.sharingSeries)
 
 			@Dependency(TipsService.self) var tips
 			self.isShowingArchiveTip = tips.shouldShow(tipFor: .gameArchiveTip)

@@ -1,7 +1,7 @@
 import AnalyticsServiceInterface
 import AppInfoPackageServiceInterface
 import Dependencies
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import LaunchServiceInterface
 import PreferenceServiceInterface
 import ProductsServiceInterface
@@ -22,8 +22,10 @@ extension LaunchService: DependencyKey {
 			},
 			didLaunch: {
 				// For async initializers that can wait until task
-				@Dependency(FeatureFlagsService.self) var features
-				let isProductsEnabled = features.isEnabled(.purchases)
+				@Dependency(\.featureFlags) var featureFlags
+				featureFlags.initialize(registeringFeatureFlags: FeatureFlag.allFlags)
+
+				let isProductsEnabled = featureFlags.isFlagEnabled(.purchases)
 				if isProductsEnabled {
 					@Dependency(ProductsService.self) var products
 					products.initialize()

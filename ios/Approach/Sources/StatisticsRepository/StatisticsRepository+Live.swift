@@ -2,7 +2,7 @@
 import DatabaseModelsLibrary
 import DatabaseServiceInterface
 import Dependencies
-import FeatureFlagsServiceInterface
+import FeatureFlagsLibrary
 import Foundation
 import GRDB
 import ModelsLibrary

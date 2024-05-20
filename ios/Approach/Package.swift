@@ -92,8 +92,6 @@ let package = Package(
 		.library(name: "DatabaseServiceInterface", targets: ["DatabaseServiceInterface"]),
 		.library(name: "EmailService", targets: ["EmailService"]),
 		.library(name: "EmailServiceInterface", targets: ["EmailServiceInterface"]),
-		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
-		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "ImportExportService", targets: ["ImportExportService"]),
 		.library(name: "ImportExportServiceInterface", targets: ["ImportExportServiceInterface"]),
 		.library(name: "LaunchService", targets: ["LaunchService"]),
@@ -223,7 +221,7 @@ let package = Package(
 			name: "AlleysListFeature",
 			dependencies: [
 				"AlleyEditorFeature",
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"ResourceListLibrary",
 			]
 		),
@@ -256,6 +254,7 @@ let package = Package(
 				.product(name: "AnalyticsPackageService", package: "swift-utilities"),
 				.product(name: "AppInfoPackageService", package: "swift-utilities"),
 				.product(name: "BundlePackageService", package: "swift-utilities"),
+				.product(name: "FeatureFlagsPackageService", package: "swift-utilities"),
 				.product(name: "FileManagerPackageService", package: "swift-utilities"),
 				.product(name: "PasteboardPackageService", package: "swift-utilities"),
 				.product(name: "SentryErrorReportingPackageService", package: "swift-utilities"),
@@ -372,7 +371,7 @@ let package = Package(
 			dependencies: [
 				"AnalyticsServiceInterface",
 				"FeatureActionLibrary",
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"LoggingServiceInterface",
 				"StringsLibrary",
 			]
@@ -402,7 +401,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				"AvatarServiceInterface",
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"FramesRepositoryInterface",
 				"GearRepositoryInterface",
 				"LanesRepositoryInterface",
@@ -572,7 +571,7 @@ let package = Package(
 		.target(
 			name: "OpponentsListFeature",
 			dependencies: [
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"ModelsViewsLibrary",
 				"OpponentDetailsFeature",
 				"RecentlyUsedServiceInterface",
@@ -605,7 +604,7 @@ let package = Package(
 			dependencies: [
 				"AlleysRepositoryInterface",
 				"DateTimeLibrary",
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"FormFeature",
 				"ModelsViewsLibrary",
 				"PickableModelsLibrary",
@@ -1053,7 +1052,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"DatabaseServiceInterface",
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"PreferenceServiceInterface",
 				"RepositoryLibrary",
 				"StatisticsModelsLibrary",
@@ -1261,27 +1260,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "FeatureFlagsService",
-			dependencies: [
-				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
-				"FeatureFlagsServiceInterface",
-			]
-		),
-		.target(
-			name: "FeatureFlagsServiceInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"FeatureFlagsLibrary",
-			]
-		),
-		.testTarget(
-			name: "FeatureFlagsServiceTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"FeatureFlagsService",
-			]
-		),
-		.target(
 			name: "ImportExportService",
 			dependencies: [
 				.product(name: "FileManagerPackageServiceInterface", package: "swift-utilities"),
@@ -1310,7 +1288,7 @@ let package = Package(
 				.product(name: "StoreReviewPackageServiceInterface", package: "swift-utilities"),
 				.product(name: "UserDefaultsPackageServiceInterface", package: "swift-utilities"),
 				"AnalyticsServiceInterface",
-				"FeatureFlagsServiceInterface",
+				"FeatureFlagsLibrary",
 				"LaunchServiceInterface",
 				"PreferenceServiceInterface",
 				"ProductsServiceInterface",
@@ -1561,13 +1539,9 @@ let package = Package(
 		),
 		.target(
 			name: "FeatureFlagsLibrary",
-			dependencies: []
-		),
-		.testTarget(
-			name: "FeatureFlagsLibraryTests",
 			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"FeatureFlagsLibrary",
+				.product(name: "FeatureFlagsPackageLibrary", package: "swift-utilities"),
+				.product(name: "FeatureFlagsPackageServiceInterface", package: "swift-utilities"),
 			]
 		),
 		.target(

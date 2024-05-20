@@ -1,4 +1,6 @@
 // swiftlint:disable line_length
+@_exported import FeatureFlagsPackageLibrary
+@_exported import FeatureFlagsPackageServiceInterface
 
 extension FeatureFlag {
 	public static let developerOptions = Self(name: "developerOptions", introduced: "2022-11-10", stage: .development, isOverridable: false)
